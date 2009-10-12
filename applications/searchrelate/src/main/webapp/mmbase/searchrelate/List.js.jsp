@@ -96,17 +96,19 @@ function List(d) {
         this.validator.prefetchNodeManager(this.type);
         this.validator.setup(this.div);
         var validator = this.validator;
-        this.validator.validateHook =  function(valid, element) {
-            self.valid = valid;
-            self.lastChange = new Date();
-            if (self.lastCommit == null && element == null) {
-                self.lastCommit = self.lastChange;
+        $(document).bind("mmValidate", function(ev, validator, valid) {
+                var element = ev.target;
+                self.valid = valid;
+                self.lastChange = new Date();
+                if (self.lastCommit == null && element == null) {
+                    self.lastCommit = self.lastChange;
+                }
+                if (self.form != null) {
+                    self.form.valids[self.rid] = valid;
+                    self.triggerValidateHook();
+                }
             }
-            if (self.form != null) {
-                self.form.valids[self.rid] = valid;
-                self.triggerValidateHook();
-            }
-        };
+            );
         this.validator.validatePage(false);
     }
 
@@ -130,11 +132,11 @@ function List(d) {
 
 
     this.find("create", "a").each(function() {
-        self.bindCreate(this);
+            self.bindCreate(this);
     });
 
     this.find("delete", "a").each(function() {
-        self.bindDelete(this);
+            self.bindDelete(this);
     });
 
     this.checkForSize();
@@ -377,6 +379,27 @@ List.prototype.decSize = function() {
     this.checkForSize();
 }
 
+
+List.prototype.getMessage = function(key, p) {
+
+    var result;
+    var params = {};
+    params.key = key;
+    for (var param in p) {
+        params[param] = p[param];
+    }
+    $.ajax({async: false,
+                url: "${mm:link('/mmbase/searchrelate/message.jspx')}",
+
+                type: "GET", dataType: "xml",
+                data: params,
+                complete: function(res, status) {
+                    result = res.responseText;
+                }
+        });
+    return $(result);
+}
+
 List.prototype.checkForSize = function() {
     $(this.find("listinfo")).find("input[name=cursize]").val(this.cursize);
     var createVisible = this.cursize < this.max;
@@ -396,14 +419,14 @@ List.prototype.checkForSize = function() {
             }
         });
     this.find("errors", "span").each(function() {
-            var text = "";
+            var span = $(this);
+            span.empty();
             if (self.cursize > self.max) {
-                text += "<fmt:message key='listtoolong' />";
+                span.append(self.getMessage('listtoolong', {i0:self.max, i1:self.cursize}));
             }
             if (self.cursize < self.min) {
-                text += "<fmt:message key='listtooshort' />";
+                span.append(self.getMessage('listtooshort', {i0:self.min, i1:self.cursize}));
             }
-            $(this).text(text);
         });
     this.triggerValidateHook();
 }
@@ -412,37 +435,37 @@ List.prototype.checkForSize = function() {
 List.prototype.bindDelete = function(a) {
     a.list = this;
     $(a).click(function(ev) {
-        var really = true;
-        if ($(a).hasClass("confirm")) {
-            $($(a).parents("li")[0]).addClass("highlight");
-            really = confirm('<fmt:message key="really" />');
-            $($(a).parents("li")[0]).removeClass("highlight");
-        }
-        if (really) {
-            var url = a.href;
-            var params = {};
+            var really = true;
+            if ($(a).hasClass("confirm")) {
+                $($(a).parents("li")[0]).addClass("highlight");
+                really = confirm('<fmt:message key="really" />');
+                $($(a).parents("li")[0]).removeClass("highlight");
+            }
+            if (really) {
+                var url = a.href;
+                var params = {};
 
-            $.ajax({async: true, url: url, type: "GET", dataType: "xml", data: params,
-                    complete: function(res, status){
-                        if ( status == "success" || status == "notmodified" ) {
-                            var li = $(a).parents("li")[0];
-                            if (a.list.validator != null) {
-                                a.list.validator.removeValidation(li);
+                $.ajax({async: true, url: url, type: "GET", dataType: "xml", data: params,
+                            complete: function(res, status){
+                            if ( status == "success" || status == "notmodified" ) {
+                                var li = $(a).parents("li")[0];
+                                if (a.list.validator != null) {
+                                    a.list.validator.removeValidation(li);
+                                }
+                                var ol = $(a).parents("ol")[0];
+                                if (ol != null) { // seems to happen in IE sometimes?
+                                    ol.removeChild(li);
+                                }
+                                a.list.decSize();
+                                a.list.executeCallBack("delete", li);
+                            } else {
+                                alert(status + " " + res);
                             }
-                            var ol = $(a).parents("ol")[0];
-                            if (ol != null) { // seems to happen in IE sometimes?
-                                ol.removeChild(li);
-                            }
-                            a.list.decSize();
-                            a.list.executeCallBack("delete", li);
-                        } else {
-                            alert(status + " " + res);
                         }
-                    }
-                   });
-        }
-        return false;
-    });
+                    });
+            }
+            return false;
+        });
 
 }
 
