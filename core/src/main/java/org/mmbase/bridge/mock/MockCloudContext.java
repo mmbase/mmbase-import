@@ -12,7 +12,7 @@ package org.mmbase.bridge.mock;
 
 import java.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.BridgeCollections;
+import org.mmbase.bridge.util.AbstractCloudContext;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.implementation.*;
 import org.mmbase.storage.search.*;
@@ -21,7 +21,7 @@ import org.mmbase.util.*;
 import org.xml.sax.InputSource;
 
 /**
- * The 'dummy' cloud context is mainly meant for useage in junit test cases. It provides a
+ * The 'mock' cloud context is mainly meant for usage in junit test cases. It provides a
  * functional bridge implementation, without the backing of the MMBase core classes. This means on
  * one hand that it takes much less time to initialize, on the other hand that all data created is only
  * availabe in memory and is in no way persistent.
@@ -39,19 +39,12 @@ import org.xml.sax.InputSource;
  * @todo    EXPERIMENTAL
  */
 
-public class MockCloudContext implements CloudContext {
+public class MockCloudContext extends  AbstractCloudContext {
 
     private static final MockCloudContext virtual = new MockCloudContext();
     public static MockCloudContext getInstance() {
         return virtual;
     }
-
-    public static final String CLOUD = "mmbase";
-    static {
-        org.mmbase.util.xml.AbstractBuilderReader.registerSystemIDs();
-        org.mmbase.util.xml.AbstractBuilderReader.registerPublicIDs();
-    }
-
     private static SearchQueryHandler searchQueryHandler =
         new org.mmbase.storage.search.implementation.database.BasicQueryHandler(new org.mmbase.storage.search.implementation.database.BasicSqlHandler() {
                 @Override
@@ -100,17 +93,11 @@ public class MockCloudContext implements CloudContext {
 
     private int lastNodeNumber = 0;
     private final Authentication authentication = new NoAuthentication();
-    private final BasicStringList clouds        = new BasicStringList();
-
 
 
     final Map<Integer, NodeDescription>  nodes                 = Collections.synchronizedMap(new LinkedHashMap<Integer, NodeDescription>());
     final Map<String,  NodeManagerDescription> nodeManagers    = Collections.synchronizedMap(new LinkedHashMap<String, NodeManagerDescription>());
 
-
-    public MockCloudContext() {
-        clouds.add(CLOUD);
-    }
 
     public Map<Integer, NodeDescription>  getNodes() {
         return nodes;
@@ -176,97 +163,18 @@ public class MockCloudContext implements CloudContext {
         }
     }
 
-
-
     public synchronized int addNode(String type, Map<String, Object> map) {
         int number = ++lastNodeNumber;
         nodes.put(number, new NodeDescription(type, map));
         return number;
     }
 
-    public ModuleList getModules() {
-        return BridgeCollections.EMPTY_MODULELIST;
-    }
-
-    public Module getModule(String name) throws NotFoundException {
-        throw new NotFoundException();
-    }
-
-    public boolean hasModule(String name) {
-        return false;
-    }
-
-    public Cloud getCloud(String name) {
-        return new MockCloud(name, this, new BasicUser("anonymous"));
-    }
-
-    public Cloud getCloud(String name, String authenticationType, Map<String, ?> loginInfo) throws NotFoundException {
-        return new MockCloud(name, this, new BasicUser(authenticationType));
-    }
-
     public Cloud getCloud(String name, org.mmbase.security.UserContext user) throws NotFoundException {
-        return new MockCloud(name, this, user);
-    }
-
-    public StringList getCloudNames() {
-        return BridgeCollections.unmodifiableStringList(clouds);
-    }
-
-    public String getDefaultCharacterEncoding() {
-        return "UTF-8";
-    }
-
-    public Locale getDefaultLocale() {
-        return Locale.getDefault();
-    }
-
-    public TimeZone getDefaultTimeZone() {
-        return TimeZone.getDefault();
-    }
-
-
-    public FieldList createFieldList() {
-        return new BasicFieldList();
-    }
-
-    public NodeList createNodeList() {
-        return getCloud(CLOUD).createNodeList();
-    }
-
-    public RelationList createRelationList() {
-        return getCloud(CLOUD).createRelationList();
-    }
-
-
-    public NodeManagerList createNodeManagerList() {
-        return getCloud(CLOUD).createNodeManagerList();
-    }
-
-    public RelationManagerList createRelationManagerList() {
-        return getCloud(CLOUD).createRelationManagerList();
-    }
-    public ModuleList createModuleList() {
-        return new BasicModuleList();
-    }
-
-    public StringList createStringList() {
-        return new BasicStringList();
-    }
-
-    public AuthenticationData getAuthentication() {
-        return authentication;
-    }
-
-    public ActionRepository getActionRepository() {
-        return ActionRepository.getInstance();
-    }
-
-    public boolean isUp() {
-        return true;
-    }
-
-    public CloudContext assertUp() {
-        return this;
+        if (clouds.contains(name)) {
+            return new MockCloud(name, this, user);
+        } else {
+            throw new NotFoundException();
+        }
     }
 
 
