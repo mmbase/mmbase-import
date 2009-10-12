@@ -83,6 +83,7 @@ public class MockNodeManager extends AbstractNodeManager  {
 
 
 
+    @Override
     public NodeManagerList getDescendants() {
         NodeManagerList descendants = vcloud.createNodeManagerList();
         for (String nodeManagerName  : vcloud.cloudContext.nodeManagers.keySet()) {
@@ -104,6 +105,8 @@ public class MockNodeManager extends AbstractNodeManager  {
         return descendants;
     }
 
+
+    @Override
     public NodeManager getParent() throws NotFoundException {
         if (parent == null) {
             throw new NotFoundException();
