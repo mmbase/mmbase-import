@@ -36,8 +36,7 @@ public class MockNode extends MapNode  {
     public  void commit() {
         Collection<String> errors = validate();
         if (errors.size() > 0) {
-            String mes = "node " + getNumber() + getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString();
-            throw new IllegalArgumentException(mes);
+            throw new IllegalArgumentException("node " + getNumber() + getChanged() + ", builder '" + nodeManager.getName() + "' " + errors);
         }
         if (! originalMap.containsKey("number")) {
             // This is a new node, so generate a number first
