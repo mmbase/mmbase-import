@@ -104,7 +104,7 @@ function List(d) {
                 // only do something if the event is on _our_ mm_validate's.
                 if ($(element).closest("div.list").filter(function() {
                             return this.id == self.div.id;}).length > 0) {
-                    self.valid = valid;
+                    self.valid = validator.invalidElements == 0;
                     if (element.lastChange != null && element.lastChange.getTime() > self.lastChange.getTime()) {
                         self.lastChange = element.lastChange;
                     }
