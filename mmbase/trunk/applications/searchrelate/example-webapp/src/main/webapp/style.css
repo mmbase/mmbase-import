@@ -38,9 +38,17 @@ div.list div.list {
   border: solid 1px;
   background-color: #ddd;
 }
+div.list div.list.invalid {
+  background-color: #ffd;
+}
 div.list div.list div.list {
   background-color: #aaa;
 }
+div.list div.list div.list.invalid {
+  background-color: #ffa;
+
+}
+
 .searchable .searchform {
   border-bottom: none;
   background-color: #efe;
@@ -81,4 +89,11 @@ div.DONE  {
   background-color: #efe;
   left: 0;
   right: 0;
+}
+
+
+span.errors {
+  margin-left: 1ex;
+  font-weight: bold;
+  color: #f00;
 }
