@@ -50,7 +50,7 @@ import java.util.concurrent.*;
  *    </code>
  *
  * Thanks to contributions by Mathias Bogaert.
- * Licence was changed from apache 1.1 to Mozilla.
+ * License was changed from apache 1.1 to Mozilla.
  *
  * MMBase javadoc
  *

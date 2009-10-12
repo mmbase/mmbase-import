@@ -410,7 +410,7 @@ This principle also implies that the core must be as lean as possible. In this w
     </para>
   </section>
   <section>
-    <title>10) All source code of MMBase is subject to the Open Source licence MPL 1.0</title>
+    <title>10) All source code of MMBase is subject to the Open Source license MPL 1.0</title>
     <para>
     <itemizedlist>
     <listitem><para><![CDATA[State : active
