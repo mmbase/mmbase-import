@@ -21,6 +21,9 @@
   <jsp:directive.attribute name="cancel"        type="java.lang.Boolean"
                            description=""/>
 
+  <jsp:directive.attribute name="prefetch"        type="java.lang.String"
+                           description=""/>
+
   <mm:import externid="ct" />
 
   <mm:content
@@ -44,6 +47,17 @@
           <link rel="stylesheet" href="${_}" type="text/css" />
         </mm:link>
         <meta name="ContentRoot" content="${mm:link('/')}" />
+
+        <c:if test="${! empty prefetch}">
+          <script type="text/javascript">
+            var nm = "${prefetch}".split(",");
+            for (var i in nm) {
+            if (nm[i].length > 0) {
+            MMBaseValidator.prototype.prefetchNodeManager(nm[i]);
+            }
+            }
+          </script>
+        </c:if>
       </head>
       <body>
         <h1><mm:escape>${_title}</mm:escape></h1>
