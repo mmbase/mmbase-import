@@ -11,8 +11,6 @@
 
     <div class="info">No info</div>
 
-    <script type="text/javascript" src="validation.js" />
-
     <mm-sr:relatednodes
         idvar="rid"
         type="news"
@@ -21,7 +19,7 @@
         delete="true"
         fields="number,title"
         sortable="true"
-        min="2"
+        min="1"
         search="true"
         >
       <h4>${rid}</h4>
