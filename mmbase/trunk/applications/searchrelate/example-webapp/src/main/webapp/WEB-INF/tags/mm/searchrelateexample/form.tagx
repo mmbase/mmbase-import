@@ -18,6 +18,12 @@
   <jsp:directive.attribute name="name"
                            type="java.lang.String"
                            description=""/>
+
+  <mm:link page="/validation.js">
+    <script type="text/javascript" src="${_}" />
+  </mm:link>
+
+
   <mm:form
       name="${name}" jspvar="trans">
 
