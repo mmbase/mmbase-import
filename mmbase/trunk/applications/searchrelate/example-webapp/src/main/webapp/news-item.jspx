@@ -23,6 +23,7 @@
       idvar="rid"
       type="people"
       role="related"
+      min="1"
       search="true"
       fields="number,firstname">
     <h4><span class="debug">${rid} </span>authors</h4>
