@@ -85,7 +85,8 @@ function List(d) {
 
 
 
-    this.lastCommit = null;
+    this.lastCommit = new Date(); // now
+    this.lastChange = new Date(0); // long time ago
 
     this.defaultStale = 1000;
 
@@ -96,16 +97,21 @@ function List(d) {
         this.validator.prefetchNodeManager(this.type);
         this.validator.setup(this.div);
         var validator = this.validator;
+
+        // Bind the event handler on document, so we don't have to bind on creation of new items and so on.
         $(document).bind("mmValidate", function(ev, validator, valid) {
                 var element = ev.target;
-                self.valid = valid;
-                self.lastChange = new Date();
-                if (self.lastCommit == null && element == null) {
-                    self.lastCommit = self.lastChange;
-                }
-                if (self.form != null) {
-                    self.form.valids[self.rid] = valid;
-                    self.triggerValidateHook();
+                // only do something if the event is on _our_ mm_validate's.
+                if ($(element).closest("div.list").filter(function() {
+                            return this.id == self.div.id;}).length > 0) {
+                    self.valid = valid;
+                    if (element.lastChange != null && element.lastChange.getTime() > self.lastChange.getTime()) {
+                        self.lastChange = element.lastChange;
+                    }
+                    if (self.form != null) {
+                        self.form.valids[self.rid] = valid;
+                        self.triggerValidateHook();
+                    }
                 }
             }
             );
@@ -484,8 +490,8 @@ List.prototype.executeCallBack = function(type, element) {
 
 
 List.prototype.needsCommit = function() {
-    return this.lastChange != null &&
-        (this.lastCommit == null || this.lastCommit.getTime() < this.lastChange.getTime());
+    //console.log("lch " + this.lastChange + " lc: " + this.lastCommit);
+    return this.lastCommit.getTime() < this.lastChange.getTime();
 }
 
 List.prototype.status = function(message, fadeout) {
