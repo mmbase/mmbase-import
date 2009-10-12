@@ -52,8 +52,8 @@
          classification="mmbase.about:20"
          mimetype="text/html">
     <title xml:lang="nl">Licentie</title>
-    <title xml:lang="en">Licence</title>
-    <description xml:lang="en">Shows the MMBase licence</description>
+    <title xml:lang="en">License</title>
+    <description xml:lang="en">Shows the MMBase license</description>
     <description xml:lang="nl">De licentie waaronder MMBase verspreid wordt</description>
     <body jsp="mpl-1.0.jspx" />
   </block>

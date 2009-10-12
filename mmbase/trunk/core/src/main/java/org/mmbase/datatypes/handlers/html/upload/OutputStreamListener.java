@@ -1,4 +1,4 @@
-/* Licence:
+/* License:
 *   Use this however/wherever you like, just don't blame me if it breaks anything.
 *
 * Credit:

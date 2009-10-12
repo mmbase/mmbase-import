@@ -331,7 +331,7 @@ function refresh()
 	</td>
 	<td valign="top" align="left">
 		<br />
-		<b>Licence info</b><p />
+		<b>License info</b><p />
 		Type : <mm:field name="licensetype" /><br />
 		<mm:field name="licensename"><mm:compare value="" inverse="true">
 		Name : <mm:field name="licensename" /><br />
