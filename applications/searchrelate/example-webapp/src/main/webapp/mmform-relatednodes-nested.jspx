@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <mm-sre:html
+    prefetch="people,urls,images"
     title="Nested"
     xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
