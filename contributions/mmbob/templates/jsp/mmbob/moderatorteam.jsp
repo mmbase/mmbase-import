@@ -36,43 +36,86 @@
 
 <div class="bodypart">
 <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
-<mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
-<mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
-<mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
-<mm:include page="path.jsp?type=$pathtype" referids="logoutmodetype,posterid,forumid,active_nick" />
+    <mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
+    <mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
+    <mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
+    <mm:include page="path.jsp?type=$pathtype" referids="logoutmodetype,posterid,forumid,active_nick" />
 </mm:nodefunction>
 
 <mm:node referid="forumid">
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%">
-    <tr><th><mm:write referid="mlg.Administrators" /></th><th><mm:write referid="mlg.Location" /></th><th><mm:write referid="mlg.Last_seen" /></th></tr>
-    <mm:related path="rolerel,posters" constraints="rolerel.role like '%administrato%'">
-    <mm:node element="posters">
+    <%--show the adimistrators for this forum--%>
+    <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%">
+        <tr>
+            <th><mm:write referid="mlg.Administrators" /></th>
+            <th><mm:write referid="mlg.Location" /></th><th><mm:write referid="mlg.Last_seen" /></th>
+        </tr>
+            <mm:relatednodes path="rolerel,posters" constraints="rolerel.role like '%administrato%'" element="posters">
+                <tr>
+                    <td>
+                        <mm:import id="someposterid" reset="true"><mm:field name="number" /></mm:import>
+                        <mm:remove referid="p"/>
+                        <mm:nodefunction name="getPosterInfo" set="mmbob" referids="forumid,someposterid@posterid" id="p">
+                            <c:choose>
+                                <c:when test="${p.shareprofile == 'true' && posterid != '-1'}">
+                                    <a href="profile.jsp?forumid=${forumid}&posterid=${posterid}&pathtype=moderatorteam_poster">${p.identifier}</a>
+                                </c:when>
+                                <c:otherwise>${p.identifier} </c:otherwise>
+                            </c:choose>
+                        </mm:nodefunction>
+                        <%--
+                        <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=moderatorteam_poster"><mm:field name="firstname" /> <mm:field name="lastname" /></a>
+                        --%>
+                    </td>
+                    <td><mm:field name="location" /></td>
+                    <td><mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></td>
+                </tr>
+        </mm:relatednodes>
+    </table>
 
-    <tr><td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=moderatorteam_poster"><mm:field name="firstname" /> <mm:field name="lastname" /></a></td><td><mm:field name="location" /></td><td><mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></td></tr>
-    </mm:node>
-    </mm:related>
-</table>
 
+    <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%">
+        <tr>
+            <th><mm:write referid="mlg.Moderators" /></th>
+            <th><mm:write referid="mlg.Location" /></th>
+            <th><mm:write referid="mlg.Last_seen" /></th>
+        </tr>
+        <mm:relatednodes type="postareas">
+            <tr>
+                <th><mm:field name="name" /></th>
+                <th></th>
+                <th></th>
+            </tr>
+            <mm:relatednodes element="posters" path="rolerel,posters" constraints="rolerel.role like '%moderator%'">
+                <mm:first><mm:import id="foundresult" /></mm:first>
+                <tr>
+                    <td>
+                        <mm:import id="someposterid" reset="true"><mm:field name="number" /></mm:import>
+                        <mm:remove referid="p"/>
+                        <mm:nodefunction name="getPosterInfo" set="mmbob" referids="forumid,someposterid@posterid" id="p">
+                            <c:choose>
+                                <c:when test="${p.shareprofile == 'true' && posterid != '-1'}">
+                                    <a href="profile.jsp?forumid=${forumid}&posterid=${posterid}&pathtype=moderatorteam_poster">${p.identifier}</a>
+                                </c:when>
+                                <c:otherwise>${p.identifier} </c:otherwise>
+                            </c:choose>
+                        </mm:nodefunction>
+                        <%--
+                        <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=moderatorteam_poster"><mm:field name="firstname" /> <mm:field name="lastname" /></a>
+                    --%>
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%">
-    <tr><th><mm:write referid="mlg.Moderators" /></th><th><mm:write referid="mlg.Location" /></th><th><mm:write referid="mlg.Last_seen" /></th></tr>
-    <mm:related path="postareas">
-    <mm:node element="postareas">
-        <tr><th><mm:field name="name" /></th><th></th><th></th></tr>
-        <mm:related path="rolerel,posters" constraints="rolerel.role like '%moderator%'">
-        <mm:first><mm:import id="foundresult" /></mm:first>
-        <mm:node element="posters">
-
-    <tr><td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=moderatorteam_poster"><mm:field name="firstname" /> <mm:field name="lastname" /></a></td><td><mm:field name="location" /></td><td><mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></td></tr>
-        </mm:node>
-            </mm:related>
-        <mm:notpresent referid="foundresult">
-        <tr><td colspan="3">Geen <mm:write referid="mlg.Moderators" /></tr></td>
-        </mm:notpresent>
-        <mm:remove referid="foundresult" />
-    </mm:node>
-    </mm:related>
-</table>
+                    </td>
+                    <td><mm:field name="location" /></td>
+                    <td><mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></td>
+                </tr>
+            </mm:relatednodes>
+            <mm:notpresent referid="foundresult">
+                <tr>
+                    <td colspan="3">Geen <mm:write referid="mlg.Moderators" /> </td>
+                </tr>
+            </mm:notpresent>
+            <mm:remove referid="foundresult" />
+        </mm:relatednodes>
+    </table>
 
 </mm:node>
 

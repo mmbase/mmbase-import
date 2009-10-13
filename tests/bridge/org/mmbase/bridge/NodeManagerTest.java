@@ -21,7 +21,6 @@ import org.mmbase.tests.*;
 public class NodeManagerTest extends BridgeTest {
     Cloud cloud;
     NodeList nodes;
-    int offsetSize;
     int nrOfTestNodes;
     public final static String TEST_STRING_VALUE = "C05353E04zz HAVO, Cultuur/Maatschappij, Z'zee, 04-05";
 
@@ -33,9 +32,8 @@ public class NodeManagerTest extends BridgeTest {
         // Create some test nodes
         cloud = getCloud();
         nodes = cloud.createNodeList();
-        offsetSize = cloud.getNodeManager("aa").getList(null, null, null).size();
         Node node = cloud.getNodeManager("aa").createNode();
-        node.setByteValue("binaryfield", "100".getBytes());
+        node.setByteValue("bytefield", "100".getBytes());
         node.setDoubleValue("doublefield", 200);
         node.setFloatValue("floatfield", 300);
         node.setIntValue("intfield", 400);
@@ -45,7 +43,7 @@ public class NodeManagerTest extends BridgeTest {
         nodes.add(node);
 
         node = cloud.getNodeManager("aa").createNode();
-        node.setByteValue("binaryfield", "100".getBytes());
+        node.setByteValue("bytefield", "100".getBytes());
         node.setDoubleValue("doublefield", 200);
         node.setFloatValue("floatfield", 300);
         node.setIntValue("intfield", 400);
@@ -59,7 +57,7 @@ public class NodeManagerTest extends BridgeTest {
 
     public void tearDown() {
         // Remove test node.
-
+        
         for (NodeIterator i  = nodes.nodeIterator() ; i.hasNext() ; ){
             i.nextNode().delete();
         }
@@ -69,11 +67,11 @@ public class NodeManagerTest extends BridgeTest {
         NodeManager nodeManager = cloud.getNodeManager("aa");
         NodeList nodeList;
         nodeList = nodeManager.getList(null, null, null);
-        assertEquals(nodeList.size(), nodes.size() + offsetSize);
+        assertTrue(nodeList.size() == nodes.size());
         nodeList = nodeManager.getList("", "", "");
-        assertEquals(nodeList.size(), nodes.size() + offsetSize);
+        assertTrue(nodeList.size() == nodes.size());
     }
-
+    
     /**
      * Test if it is possible to search for a node that contains single quotes
      */

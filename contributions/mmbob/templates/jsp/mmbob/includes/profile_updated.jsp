@@ -6,7 +6,7 @@
         <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
         <mm:param name="profile" value="$profile" />
         <head>
-            <meta http-equiv="refresh" content="5; url=${link}"/>
+            <meta http-equiv="refresh" content="5; url=${_}"/>
             <title>MMBase Forum Profile</title>
                <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
           </head>

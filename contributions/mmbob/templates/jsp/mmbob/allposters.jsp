@@ -63,19 +63,55 @@
     </mm:compare>
   </tr>
 
-<mm:nodelistfunction set="mmbob" name="getPosters" referids="forumid,searchkey,page,pagesize">
+<mm:nodelistfunction set="mmbob" name="getPosters" referids="forumid,searchkey,page,pagesize" id="p">
   <tr>
-    <td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=allposters_poster"><mm:field name="firstname" /> <mm:field name="lastname" /> (<mm:field name="nick" />)</a></td>
+    <td>
+        <c:choose>
+            <c:when test="${p.shareprofile == 'true' && posterid != '-1'}">
+                <a href="profile.jsp?forumid=${forumid}&posterid=${posterid}&pathtype=allposters_poster">${p.identifier}</a>
+            </c:when>
+            <c:otherwise>${p.identifier} </c:otherwise>
+        </c:choose>
+        <%--
+        <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=allposters_poster"><mm:field name="firstname" /> <mm:field name="lastname" /> (<mm:field name="nick" />)</a>
+        --%>
+    </td>
     <td><mm:field name="location" /></td>
     <td><mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></td>
     <mm:compare referid="isadministrator" value="true">
-      <td><a href="removeposter.jsp?forumid=<mm:write referid="forumid" />&removeposterid=<mm:field name="number" />"/><mm:write referid="mlg.Delete"/></a> /
+      <td>
+        <mm:link page="admin/removeposter.jsp">
+            <mm:param name="forumid" value="${forumid}" />
+            <mm:param name="removeposterid" value="${p.posterid}" />
+            <a href="${_}"> <mm:write referid="mlg.Delete"/></a>
+        </mm:link>
+        <%--
+        <a href="admin/removeposter.jsp?forumid=<mm:write referid="forumid" />&removeposterid=<mm:field name="number" />"/>
+            <mm:write referid="mlg.Delete"/>
+        </a>
+        --%>
+        /
+
       <mm:field name="blocked">
         <mm:compare value="false">
-          <a href="disableposter.jsp?forumid=<mm:write referid="forumid" />&disableposterid=<mm:field name="number" />"/><mm:write referid="mlg.Disable"/></a>
+            <mm:link page="admin/disableposter.jsp">
+                <mm:param name="forumid" value="${forumid}"/>
+                <mm:param name="disableposterid" value="${p.posterid}"/>
+                <a href="${_}"/><mm:write referid="mlg.Disable"/></a>
+            </mm:link>
+            <%--
+          <a href="admin/disableposter.jsp?forumid=<mm:write referid="forumid" />&disableposterid=<mm:field name="number" />"/><mm:write referid="mlg.Disable"/></a>
+          --%>
         </mm:compare>
         <mm:compare value="true">
-          <a href="enableposter.jsp?forumid=<mm:write referid="forumid" />&enableposterid=<mm:field name="number" />"/><mm:write referid="mlg.Enable"/></a>
+            <mm:link page="admin/enableposter.jsp">
+                <mm:param name="forumid" value="${forumid}"/>
+                <mm:param name="enableposterid" value="${p.posterid}"/>
+                <a href="${_}"/><mm:write referid="mlg.Enable"/></a>
+            </mm:link>
+            <%--
+          <a href="admin/enableposter.jsp?forumid=<mm:write referid="forumid" />&enableposterid=<mm:field name="number" />"/><mm:write referid="mlg.Enable"/></a>
+          --%>
         </mm:compare>
       </mm:field>
       </td>

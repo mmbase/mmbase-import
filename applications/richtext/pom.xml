@@ -22,12 +22,11 @@
     <saxon.version>9.1.0.6</saxon.version>
   </properties>
 
-
   <dependencies>
     <dependency>
       <groupId>org.oscom</groupId>
       <artifactId>mmbase-kupu</artifactId>
-      <version>1.4.15</version>
+      <version>1.4.12</version>
       <type>war</type>
     </dependency>
 

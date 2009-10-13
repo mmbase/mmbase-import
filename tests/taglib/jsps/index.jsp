@@ -17,7 +17,7 @@
 <p>
   There are a few tests which test if an RunTimeexception is really
   occuring. It could be that these pages don't work well in the orion
-  application server.
+  application server. 
 </p>
 <p>
 <mm:import id="a">ba</mm:import>
@@ -26,16 +26,16 @@
 </p>
 <p>
   <mm:import id="text">
-    The cloud-tag is a rather complex thing, it has some attributes
+    bla bla The cloud-tag is a rather complex thing, it has some attributes
   which can influence each other.
   Start <a href="<mm:url page="cloud.jsp" />">here for cloud tag
   tests</a>. It will start with a login-popup (don't try with mMbase
   1.5). Run the sequence also with cookies disabled please, or perhaps
   even better in that case start <a href="cloud.html">here</a> (with
   cookies disabled, and url not encoded, cloud-tag will detect that
-  from 1.6 on).
+  from 1.6 on). http://www.mmbase.org
   </mm:import>
-  <mm:link page="cloud.jsp" />
+
   <mm:write referid="text" escape="links,censor" />
 </p>
 <p>
@@ -65,20 +65,11 @@
 <p>
   <a href="<mm:url page="vars.jsp" />">more vars</a>
 </p>
-<p>
-  <a href="<mm:url page="xml" />">Xinclude</a>
-</p>
-<p>
-  <a href="<mm:url page="fw" />">MMBase Framework</a>
-</p>
-<p>
-  <a href="<mm:url page="mmb-1730.jspx" />">request scoped contexts</a>
-</p>
 
 <hr />
 <p>
   An alternative <a href="<mm:url page="caches.jsp" />">Caches overview</a>
 </p>
-<a href="mailto:taglib@meeuw.org">Michiel Meeuwissen</a>
+<a href="mailto:mihxil@komputilo.org">Michiel Meeuwissen</a>
 </body>
 </html>

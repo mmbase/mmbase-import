@@ -10,6 +10,11 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
+import org.mmbase.datatypes.*;
+import java.util.*;
+import org.mmbase.util.*;
+import org.mmbase.tests.*;
+
 /**
  *
  * @author Michiel Meeuwissen
@@ -22,7 +27,8 @@ public class DataTypesTestTransaction extends DataTypesTest {
         super(name);
     }
     protected Cloud getCloud() {
-        return getTransaction();
+        Cloud cloud = super.getCloud();
+        return cloud.createTransaction(getClass().getName());
     }
 
     protected byte[] getBinary() {

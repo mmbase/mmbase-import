@@ -291,12 +291,5 @@ public class Clustering extends BridgeTest {
         }
     }
 
-
-
-    public void testShutDown() {
-        cloud1.shutdown();
-        cloud2.shutdown();
-    }
-
 }
 

@@ -1,3 +1,0 @@
-<jsp:directive.include
-    xmlns:jsp="http://java.sun.com/JSP/Page"
-    file="default.jsp" />

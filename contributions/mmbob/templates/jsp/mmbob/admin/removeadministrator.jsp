@@ -49,14 +49,14 @@
                 </mm:url>" method="post">
     <tr><th align="left"><mm:write referid="mlg.Current_administrators" /></th><td colspan="2" align="left">
           <mm:nodelistfunction set="mmbob" name="getAdministrators" referids="forumid">
-            <mm:field name="nick" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
+            <mm:field name="idenitifier" /><br />
           </mm:nodelistfunction>
     <p />
     </td></tr>
     <tr><th align="left" width="25%"><mm:write referid="mlg.Possible_administrators" /></th><td colspan="2" align="left">
           <select name="remadministrator">
-          <mm:nodelistfunction set="mmbob" name="getAdministrators" referids="forumid">
-                <option value="<mm:field name="id" />"><mm:field name="nick" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
+          <mm:nodelistfunction set="mmbob" name="getAdministrators" referids="forumid" id="a">
+                <option value="${a.posterid}"><mm:field name="identifier" /></option>
           </mm:nodelistfunction>
         </select>
     </td></tr>

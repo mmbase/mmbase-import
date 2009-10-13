@@ -1,3 +1,4 @@
+<%@page import="java.util.*"%>
 <%@ include file="jspbase.jsp" %>
 <mm:cloud>
     <mm:import externid="action" />
@@ -158,40 +159,54 @@
             </mm:compare>
 
             <mm:compare value="editposter" referid="action">
+            <%--
+                TODO: setting the basic profile fields and the profile entry fields are twoo distinct actions now.
+                they should be unified by one function that sets the error messages in the requrest.
+            --%>
                 <mm:import id="firstname" externid="newfirstname" />
+                <mm:import id="showfullname" externid="newshowfullname" />
+                <mm:import id="shareprofile" externid="newshareprofile" />
                 <mm:import id="lastname" externid="newlastname" />
                 <mm:import id="email" externid="newemail" />
                 <mm:import id="gender" externid="newgender" />
                 <mm:import id="location" externid="newlocation" />
                 <mm:import id="newpassword" externid="newpassword" />
                 <mm:import id="newconfirmpassword" externid="newconfirmpassword" />
-                <mm:import id="feedback"><mm:function set="mmbob" name="editPoster" referids="forumid,posterid,firstname,lastname,email,gender,location,newpassword,newconfirmpassword"/></mm:import>
-                <mm:write referid="feedback" session="feedback_message"/>
+                <mm:import id="feedback"><mm:function set="mmbob" name="editPoster" referids="forumid,posterid,firstname,lastname,email,gender,location,newpassword,newconfirmpassword,showfullname,shareprofile"/></mm:import>
+                <mm:write referid="feedback" request="feedback_message"/>
 
                 <mm:compare referid="feedback" value="passwordchanged">
                     <mm:write referid="newpassword" id="cwf$forumid" session="mmbobe" />
                 </mm:compare>
 
-                <mm:import id="guipos" reset="true">0</mm:import>
-                <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid,guipos" id="field">
-                <mm:import id="pname" reset="true"><mm:field name="name" /></mm:import>
-                    <c:if test="${field.edit == true}">
-                        <c:choose>
-                            <c:when test="${field.type == 'date'}">
-                                <c:set var="day">${pname}_day</c:set>
-                                <c:set var="month">${pname}_month</c:set>
-                                <c:set var="year">${pname}_year</c:set>
-                                <mm:import id="pvalue" reset="true">${param[day]}-${param[month]}-${param[year]}</mm:import>
-                            </c:when>
-                            <c:otherwise>
-                                <mm:import id="pvalue" reset="true">${param[pname]}</mm:import>
-                            </c:otherwise>
-                        </c:choose>
-                        <mm:import id="fb2" reset="true">
-                            <mm:function set="mmbob" name="setProfileValue" referids="forumid,posterid,pname,pvalue"/>
-                        </mm:import>
-                    </c:if>
-                 </mm:nodelistfunction>
+                <%--there is no point in going on if the abouve did not succeed--%>
+                <mm:compare referid="feedback" value="profilechanged">
+                    <mm:import id="guipos" reset="true">0</mm:import>
+                    <%
+                        Map profileFeedback = new HashMap();
+                        request.setAttribute("profileFeedback", profileFeedback);
+                    %>
+                    <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid,guipos" id="field">
+                    <mm:import id="pname" reset="true"><mm:field name="name" /></mm:import>
+                        <%--hack: the nick field can only be edited when it is empyt. it can not change--%>
+                        <c:if test="${field.edit == true && (empty field.value || field.changeable)}">
+                            <c:choose>
+                                <c:when test="${field.type == 'date'}">
+                                    <c:set var="day">${pname}_day</c:set>
+                                    <c:set var="month">${pname}_month</c:set>
+                                    <c:set var="year">${pname}_year</c:set>
+                                    <mm:import id="pvalue" reset="true">${param[day]}-${param[month]}-${param[year]}</mm:import>
+                                </c:when>
+                                <c:otherwise>
+                                    <mm:import id="pvalue" reset="true">${param[pname]}</mm:import>
+                                </c:otherwise>
+                            </c:choose>
+                            <c:set var="fieldname" value="${field.name}" />
+                            <c:set var="feedback"><mm:function set="mmbob" name="setProfileValue" referids="forumid,posterid,pname,pvalue"/></c:set>
+                            <% profileFeedback.put(pageContext.getAttribute("fieldname"), pageContext.getAttribute("feedback"));%>
+                        </c:if>
+                     </mm:nodelistfunction>
+                 </mm:compare>
              </mm:compare>
 
              <%--  admin actions--%>

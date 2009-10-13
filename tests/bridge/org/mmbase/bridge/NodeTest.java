@@ -11,9 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import java.util.Iterator;
-import java.util.regex.Pattern;
 import org.mmbase.tests.*;
-import org.mmbase.security.AuthenticationData;
 
 /**
  * Basic test class to test <code>Node</code> from the bridge package.
@@ -23,7 +21,7 @@ import org.mmbase.security.AuthenticationData;
  */
 public abstract class NodeTest extends BridgeTest {
     protected Node node;
-    protected final static String[] fieldTypes = {"float", "int", "long", "string", "xml", "node", "datetime", "boolean", "decimal", "double", "binary"}; //, "list"};
+    protected static String[] fieldTypes = {"byte", "double", "float", "int", "long", "string", "xml", "node", "datetime", "boolean"}; //, "list"};
     //protected static String[] fieldTypes = {"datetime"};
 
     public NodeTest(String name) {
@@ -39,7 +37,7 @@ public abstract class NodeTest extends BridgeTest {
     public void testGetValueCache() {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetValue();
-        testGetBinaryValue();
+        testGetByteValue();
         testGetDoubleValue();
         testGetFloatValue();
         testGetIntValue();
@@ -49,15 +47,14 @@ public abstract class NodeTest extends BridgeTest {
         testGetNodeValue();
         testGetBooleanValue();
         testGetDateTimeValue();
-        testGetDecimalValue();
         testGetListValue();
     }
 
-    abstract public void testGetBinaryValue();
+    abstract public void testGetByteValue();
 
-    public void testGetBinaryValueCache() {
+    public void testGetByteValueCache() {
         // Test if the first call doesn't make MMBase cache an incorrect value.
-        testGetBinaryValue();
+        testGetByteValue();
         testGetValue();
         testGetDoubleValue();
         testGetFloatValue();
@@ -68,7 +65,6 @@ public abstract class NodeTest extends BridgeTest {
         testGetNodeValue();
         testGetBooleanValue();
         testGetDateTimeValue();
-        testGetDecimalValue();
         testGetListValue();
     }
 
@@ -78,7 +74,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetDoubleValue();
         testGetValue();
-        testGetBinaryValue();
+        testGetByteValue();
         testGetFloatValue();
         testGetIntValue();
         testGetLongValue();
@@ -87,7 +83,6 @@ public abstract class NodeTest extends BridgeTest {
         testGetNodeValue();
         testGetBooleanValue();
         testGetDateTimeValue();
-        testGetDecimalValue();
         testGetListValue();
     }
 
@@ -97,7 +92,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetFloatValue();
         testGetValue();
-        testGetBinaryValue();
+        testGetByteValue();
         testGetDoubleValue();
         testGetIntValue();
         testGetLongValue();
@@ -112,7 +107,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetIntValue();
         testGetValue();
-        testGetBinaryValue();
+        testGetByteValue();
         testGetDoubleValue();
         testGetFloatValue();
         testGetLongValue();
@@ -130,7 +125,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetLongValue();
         testGetValue();
-        testGetBinaryValue();
+        testGetByteValue();
         testGetDoubleValue();
         testGetFloatValue();
         testGetIntValue();
@@ -139,7 +134,6 @@ public abstract class NodeTest extends BridgeTest {
         testGetNodeValue();
         testGetBooleanValue();
         testGetDateTimeValue();
-        testGetDecimalValue();
         testGetListValue();
     }
 
@@ -149,7 +143,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetStringValue();
         testGetValue();
-        testGetBinaryValue();
+        testGetByteValue();
         testGetDoubleValue();
         testGetFloatValue();
         testGetIntValue();
@@ -158,7 +152,6 @@ public abstract class NodeTest extends BridgeTest {
         testGetNodeValue();
         testGetBooleanValue();
         testGetDateTimeValue();
-        testGetDecimalValue();
         testGetListValue();
     }
 
@@ -168,7 +161,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetXMLValue();
         testGetValue();
-        testGetBinaryValue();
+        testGetByteValue();
         testGetDoubleValue();
         testGetFloatValue();
         testGetIntValue();
@@ -186,7 +179,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetNodeValue();
         testGetValue();
-        testGetBinaryValue();
+        testGetByteValue();
         testGetDoubleValue();
         testGetFloatValue();
         testGetIntValue();
@@ -204,7 +197,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetBooleanValue();
         testGetValue();
-        testGetBinaryValue();
+        testGetByteValue();
         testGetDoubleValue();
         testGetFloatValue();
         testGetIntValue();
@@ -213,7 +206,6 @@ public abstract class NodeTest extends BridgeTest {
         testGetXMLValue();
         testGetNodeValue();
         testGetDateTimeValue();
-        testGetDecimalValue();
         testGetListValue();
     }
 
@@ -223,7 +215,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetDateTimeValue();
         testGetValue();
-        testGetBinaryValue();
+        testGetByteValue();
         testGetDoubleValue();
         testGetFloatValue();
         testGetIntValue();
@@ -235,15 +227,13 @@ public abstract class NodeTest extends BridgeTest {
         testGetListValue();
     }
 
-    abstract public void testGetDecimalValue();
-
     abstract public void testGetListValue();
 
     public void testGetListValueCache() {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetListValue();
         testGetValue();
-        testGetBinaryValue();
+        testGetByteValue();
         testGetDoubleValue();
         testGetFloatValue();
         testGetIntValue();
@@ -293,7 +283,9 @@ public abstract class NodeTest extends BridgeTest {
         node.commit();
         // look it up again
         boolean found = false;
-        for (String alias : node.getAliases()) {
+        Iterator i = node.getAliases().iterator();
+        while (i.hasNext()) {
+            String alias = (String)i.next();
             if ("node_alias".equals(alias)) found = true;
         }
         assertTrue(found);
@@ -314,79 +306,47 @@ public abstract class NodeTest extends BridgeTest {
 
     public void testSetContext() {
 
-        if (Boolean.TRUE.equals(getCloudContext().getAuthentication().getAttribute(AuthenticationData.STORES_CONTEXT_IN_OWNER))) {
-            String context = node.getContext();
-            String otherContext = getOtherContext(node);
+        String context = node.getContext();
+        String otherContext = getOtherContext(node);
 
-            if (otherContext.equals(context)) {
-                otherContext = context + "other";
-                System.err.println("Could not find other context than " + context + ", setting to '" + otherContext + "'");
-            }
-
-            // set context to something different:
-            node.setContext(otherContext);
-            // now, the new context must be equal to otherContext
-            assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-            assertEquals(node.getContext(), node.getValue("owner"));
-            node.commit();
-
-            assertEquals("Context did not change '" + otherContext + "' != '" + node.getStringValue("owner") + "'", otherContext, node.getStringValue("owner"));
-            assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-            assertEquals(node.getContext(), node.getValue("owner"));
-        } else {
-            System.err.println("Warning: could not execute 'set owner' test, because security authorization implemention does not store context in owner field");
+        if (otherContext.equals(context)) {
+            otherContext = context + "other";
+            System.err.println("Could not find other context than " + context + ", setting to '" + otherContext + "'");
         }
+
+        // set context to something different:
+        node.setContext(otherContext);
+        // now, the new context must be equal to otherContext
+        assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
+        assertEquals(node.getContext(), node.getValue("owner"));
+        node.commit();
+
+        assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
+        assertEquals(node.getContext(), node.getValue("owner"));
     }
 
     public void testSetOwner() {
-        if (Boolean.TRUE.equals(getCloudContext().getAuthentication().getAttribute(AuthenticationData.STORES_CONTEXT_IN_OWNER))) {
-            String context = node.getContext();
-            String otherContext = getOtherContext(node);
+        String context = node.getContext();
+        String otherContext = getOtherContext(node);
 
-            if (otherContext.equals(context)) {
-                otherContext = context + "other";
-                System.err.println("Could not find other context than " + context + ", setting to '" + otherContext + "'");
-            }
-
-            // set context to something different:
-            node.setValue("owner", otherContext);
-            // now, the new context must be equal to otherContext
-            assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-            assertEquals(node.getContext(), node.getValue("owner"));
-            assertEquals(node.getContext(), node.getStringValue("owner"));
-            node.commit();
-
-            assertEquals("Context did not change '" + otherContext + "' != '" + node.getStringValue("owner") + "'", otherContext, node.getStringValue("owner"));
-            assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-            assertEquals(node.getContext(), node.getValue("owner"));
-        } else {
-            System.err.println("Warning: could not execute 'set owner' test, because security authorization implemention does not store context in owner field");
+        if (otherContext.equals(context)) {
+            otherContext = context + "other";
+            System.err.println("Could not find other context than " + context + ", setting to '" + otherContext + "'");
         }
+
+        // set context to something different:
+        node.setValue("owner", otherContext);
+        // now, the new context must be equal to otherContext
+        assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
+        assertEquals(node.getContext(), node.getValue("owner"));
+
+        node.commit();
+
+        assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
+        assertEquals(node.getContext(), node.getValue("owner"));
 
 
     }
-
-
-    public void testSetContext2() {
-
-        if (Boolean.TRUE.equals(getCloudContext().getAuthentication().getAttribute(AuthenticationData.STORES_CONTEXT_IN_OWNER))) {
-            String context = node.getContext();
-            String otherContext = getOtherContext(node);
-
-            node.setStringValue("stringfield", "Setting something else too");
-            // set context to something different:
-            node.setContext(otherContext);
-            assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-            assertEquals(node.getContext(), node.getValue("owner"));
-            node.commit();
-            assertEquals("Context did not change '" + otherContext + "' != '" + node.getStringValue("owner") + "'", otherContext, node.getStringValue("owner"));
-            assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-            assertEquals(node.getContext(), node.getValue("owner"));
-        } else {
-            System.err.println("Warning: could not execute 'set owner' test, because security authorization implemention does not store context in owner field");
-        }
-    }
-
 
     public void testFieldGUI() {
         try {
@@ -396,23 +356,5 @@ public abstract class NodeTest extends BridgeTest {
             fail("Should not raise exception but gave: " + e.getMessage() + org.mmbase.util.logging.Logging.stackTrace(e, 20));
         }
     }
-
-    private static final Pattern NO_FIELD = Pattern.compile("(?i).*field.*nonexistingfield.*");
-    public void testNonExistingField() {
-        try {
-            node.getStringValue("nonexistingfield");
-            fail("Getting non existing field should throw a (clear) exception");
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage() + " does not match " + NO_FIELD, NO_FIELD.matcher(e.getMessage()).matches());
-        }
-
-        try {
-            node.getFieldValue("nonexistingfield");
-            fail("Getting non existing field should throw a (clear) exception");
-        } catch (NotFoundException e) {
-            assertTrue(e.getMessage() + " does not match " + NO_FIELD, NO_FIELD.matcher(e.getMessage()).matches());
-        }
-    }
-
 
 }

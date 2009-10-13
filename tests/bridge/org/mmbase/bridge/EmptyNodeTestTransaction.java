@@ -24,7 +24,7 @@ public class EmptyNodeTestTransaction extends EmptyNodeTest {
     }
 
     protected Cloud getCloud() {
-        return getTransaction();
+        return super.getCloud().getTransaction("test_transaction");
     }
 
     public void tearDown() {

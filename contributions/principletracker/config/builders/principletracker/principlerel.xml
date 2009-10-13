@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder
+<builder 
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
-    name="principlerel" maintainer="mmbase.org" version="1" extends="insrel">
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="principlerel" maintainer="mmcoder.nl" version="0" extends="insrel">
 
   <names>
     <singular xml:lang="en">PrincipleRel</singular>
@@ -16,15 +16,24 @@
   </descriptions>
 
   <fieldlist>
-    <field name="state">
+    <field>
+      <descriptions>
+      </descriptions>
       <gui>
         <guiname xml:lang="en">State</guiname>
       </gui>
+      <editor>
+        <positions>
+          <input>1</input>
+          <list>4</list>
+          <search>4</search>
+        </positions>
+      </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>state</name>
         <type key="false" notnull="false" size="255" state="persistent">STRING</type>
       </db>
     </field>
   </fieldlist>
-
 </builder>

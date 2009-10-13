@@ -37,33 +37,52 @@
 <div class="bodypart">
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
-  <tr><th colspan="3"><mm:write referid="mlg.send"/> <mm:write referid="mlg.private_message" /></th></tr>
-  <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,postingid" />" method="post">
-    <tr><th><mm:write referid="mlg.To"/></th><td colspan="2">
-        <mm:node number="$postingid">
-        <mm:field name="c_poster" />
-        <input name="to" type="hidden" value="<mm:field name="c_poster" />">
-        <input name="poster" type="hidden" value="<mm:node referid="posterid"><mm:field name="account" /></mm:node>">
-    </td></tr>
-    <tr><th><mm:write referid="mlg.Subject"/></th><td colspan="2"><input name="subject" style="width: 100%" value="Re: <mm:field name="subject" />"></td></th>
-    </mm:node>
-    <tr><th><mm:write referid="mlg.Message" /></th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"></textarea></td></tr>
-    <tr><th>&nbsp;</th><td>
-    <input type="hidden" name="action" value="newprivatemessage">
-    <center><input type="submit" value="<mm:write referid="mlg.Send"/> <mm:write referid="mlg.message"/>"></center>
-    </form>
+    <tr>
+        <th colspan="3"><mm:write referid="mlg.send"/> <mm:write referid="mlg.private_message" /></th>
+    </tr>
+    <mm:link page="thread.jsp" referids="forumid,postareaid,postthreadid,postingid" >
+        <form action="${_}" method="post">
+        <mm:node number="${postingid}" notfound="skipbody">
+            <tr>
+                <th><mm:write referid="mlg.To"/></th>
+                <td colspan="2">
+                    <mm:field name="c_poster" write ="true">
+                        <input name="to" type="hidden" value="${_}">
+                    </mm:field>
+                    <p>test: <mm:write referid="posterid"/>::${posterid}</p>
+                    <mm:node referid="posterid" notfound="skipbody">
+                        <mm:field name="account" >
+                            <input name="poster" type="hidden" value="${_}">
+                        </mm:field>
+                    </mm:node>
+                </td>
+            </tr>
+            <tr>
+                <th><mm:write referid="mlg.Subject"/></th>
+                <td colspan="2"><input name="subject" style="width: 100%" value="Re: <mm:field name="subject" />"></td>
+            </tr>
+        </mm:node>
+        <tr>
+            <th><mm:write referid="mlg.Message" /></th>
+            <td colspan="2"><textarea name="body" rows="20" style="width: 100%"></textarea></td>
+        </tr>
+        <tr>
+            <th>&nbsp;</th>
+            <td>
+                <input type="hidden" name="action" value="newprivatemessage">
+                <center><input type="submit" value="<mm:write referid="mlg.Send"/> <mm:write referid="mlg.message"/>"></center>
+        </form>
+    </mm:link>
     </td>
     <td>
-    <form action="<mm:url page="postarea.jsp">
-    <mm:param name="forumid" value="$forumid" />
-    <mm:param name="postareaid" value="$postareaid" />
-    </mm:url>"
-    method="post">
-    <p />
-    <center>
-    <input type="submit" value="<mm:write referid="mlg.Cancel"/>">
-        </center>
-    </form>
+    <mm:link page="postarea.jsp">
+        <mm:param name="forumid" value="$forumid" />
+        <mm:param name="postareaid" value="$postareaid" />
+        <form action="${_}" method="post">
+            <p />
+            <center> <input type="submit" value="<mm:write referid="mlg.Cancel"/>"> </center>
+        </form>
+    </mm:link>
     </td>
     </tr>
 </table>

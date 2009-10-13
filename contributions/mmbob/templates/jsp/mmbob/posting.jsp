@@ -59,8 +59,7 @@
             <mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
             <mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
             <mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
-            <mm:import id="active_firstname"><mm:field name="active_firstname" /></mm:import>
-            <mm:import id="active_lastname"><mm:field name="active_lastname" /></mm:import>
+            <mm:import id="active_identifier"><mm:field name="active_identifier" /></mm:import>
             <mm:include page="path.jsp?type=postthread" referids="logoutmodetype,posterid,forumid,active_nick" />
         </mm:nodefunction>
 
@@ -85,11 +84,7 @@
                         <th width="20%"><mm:write referid="mlg.Name" /></th>
                         <td colspan="2">
                             <mm:compare referid="posterid" value="-1" inverse="true">
-                                <mm:write referid="active_nick" />
-                                    <mm:import id="fullname"><mm:write referid="active_firstname" /> <mm:write referid="active_lastname" /></mm:import>
-                                    <mm:write referid="fullname">
-                                        <mm:compare value=" " inverse="true">(<mm:write/>)</mm:compare>
-                                    </mm:write>
+                                <mm:write referid="active_identifier" />
                                 <input name="poster" type="hidden" value="<mm:write referid="active_nick" />" >
                             </mm:compare>
                             <mm:compare referid="posterid" value="-1"><input name="poster" size="32" value="gast" ></mm:compare>

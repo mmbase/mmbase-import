@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import org.mmbase.tests.*;
 import junit.framework.*;
 
 
@@ -18,16 +17,15 @@ import junit.framework.*;
  * Test class <code>CloudContext</code> from the bridge package.
  *
  * @author Jaco de Groot
- * @version $Id$
  */
-public class CloudContextTest extends BridgeTest {
+public class CloudContextTest extends TestCase {
 
     public CloudContextTest(String name) {
         super(name);
     }
 
     public void testListClouds() {
-        CloudContext cloudContext = getCloudContext();
+        CloudContext cloudContext = ContextProvider.getDefaultCloudContext(); 
         boolean defaultCloudFound = false;
         StringList stringList = cloudContext.getCloudNames();
         for (int i = 0; i < stringList.size(); i++) {
@@ -37,18 +35,6 @@ public class CloudContextTest extends BridgeTest {
             }
         }
         assertTrue(defaultCloudFound);
-    }
-    public void testUri() {
-
-        CloudContext cloudContext = getCloudContext();
-        // System.out.println(cloudContext.getClass() + " " + cloudContext.getUri());
-
-        Cloud cloud = cloudContext.getCloud("mmbase");
-        // http://www.mmbase.org/jira/browse/MMB-1816
-        assertEquals("" + cloud.getCloudContext().getClass() + " " + cloudContext.getClass(),
-                     cloudContext.getUri(),
-                     cloud.getCloudContext().getUri());
-
     }
 
 }

@@ -1,4 +1,13 @@
 <%@ include file="../jspbase.jsp" %>
+<%@ page import='org.mmbase.applications.profilesconnector.*' %>
+<%--
+    This template is called by entree-ng-jsp to handle the form that this page shows.
+    it dous the following:
+    1 handles the form submit
+    2 if there are rules, make shure the user accepts them
+    3 if there are errors in the form, redisplay the form, and revalidate it.
+
+--%>
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 
@@ -31,6 +40,8 @@
 <%@ include file="../thememanager/loadvars.jsp" %>
 <%-- end login part --%>
 
+
+
 <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
     <mm:import id="hasnick"><mm:field name="hasnick" /></mm:import>
 </mm:nodefunction>
@@ -53,6 +64,7 @@
             <mm:import id="gender" externid="newgender" />
 
             <%-- this function can return:  [createerror|inuse|ok|passwordnotequal|firstnameerror|lastnameerror|emailerror]--%>
+            <%-- this should never happen anymore. there is always a nick--%>
             <mm:compare referid="hasnick" value="false">
                 <mm:import id="feedback" reset="true"><mm:function set="mmbob" name="createPoster" referids="forumid,account,password,confirmpassword,firstname,lastname,email,gender,location" /></mm:import>
             </mm:compare>
@@ -128,146 +140,8 @@
                 </mm:node>
             </mm:present>
 
-            <%--  there are no forum ruls.--%>
-            <mm:notpresent referid="rulesid">
-
-                <%--  The poster is not created yet--%>
-                <mm:compare referid="feedback" value="none">
-                    <%-- <p>debug: no forumrules, no feedback</p> --%>
-                    <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="50%">
-                        <mm:link page="newentreengposter.jsp" referids="forumid,rulesaccepted">
-                            <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
-                            <form action="${_}" method="post">
-
-                                <%--  no entree id found (not logged in)--%>
-                                <mm:compare referid="entree" value="null">
-                                    <tr>
-                                        <th width="150" ><mm:write referid="mlg.Account"/></th>
-                                        <td> <input name="newaccount" value="" style="width: 100%" /> </td>
-                                    </tr>
-
-                                    <mm:compare referid="hasnick" value="true">
-                                        <tr>
-                                            <th width="150" >Nick</th>
-                                            <td> <input name="newnick" value="" style="width: 100%" /> </td>
-                                        </tr>
-                                    </mm:compare>
-
-                                    <tr>
-                                        <th width="150" ><mm:write referid="mlg.Password"/></th>
-                                        <td>
-                                            <input name="newpassword" style="width: 100%" type="password"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th width="150" ><mm:write referid="mlg.ConfirmPassword"/></th>
-                                        <td> <input name="newconfirmpassword" style="width: 100%" type="password"/> </td>
-                                    </tr>
-                                    <tr>
-                                        <th><mm:write referid="mlg.Firstname"/></th>
-                                        <td> <input name="newfirstname" value="" style="width: 100%" /> </td>
-                                    </tr>
-                                    <tr>
-                                        <th><mm:write referid="mlg.Lastname"/></th>
-                                        <td> <input name="newlastname" value="" style="width: 100%" /> </td>
-                                    </tr>
-                                    <tr>
-                                        <th><mm:write referid="mlg.Email"/></th>
-                                        <td> <input name="newemail" value="" style="width: 100%" /> </td>
-                                    </tr>
-                                    <tr>
-                                        <th><mm:write referid="mlg.Location"/></th>
-                                        <td> <input name="newlocation" value="" style="width: 100%" /> </td>
-                                    </tr>
-                                    <tr>
-                                        <th><mm:write referid="mlg.Gender"/></th>
-                                        <td>
-                                            <select name="newgender">
-                                                <option value="unknown">Unknown</option>
-                                                <option value="male"><mm:write referid="mlg.Male"/></option>
-                                                <option value="female"><mm:write referid="mlg.Female"/></option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                </mm:compare>
-                                <%--  end no entree id found (not logged in)--%>
-
-                                <%-- there is an entree id (logged in)--%>
-                                <mm:compare referid="entree" value="null" inverse="true">
-                                    <tr>
-                                        <th width="150" ><mm:write referid="mlg.Account"/></th>
-                                        <td>
-                                            <input type="hidden" name="newaccount" value="<%= request.getHeader("sm_user") %>">
-                                            <%= request.getHeader("sm_user") %>
-                                            <input type="hidden" name="newpassword" value="<%= request.getHeader("aad_nummer") %>">
-                                            <input type="hidden" name="newconfirmpassword" value="<%= request.getHeader("aad_nummer") %>">
-                                        </td>
-                                    </tr>
-                                    <mm:compare referid="hasnick" value="true">
-                                        <tr>
-                                            <th width="150" >Nick</th>
-                                            <td> <input name="newnick" value="" style="width: 100%" /> </td>
-                                        </tr>
-                                    </mm:compare>
-                                    <tr>
-                                        <th><mm:write referid="mlg.Firstname"/></th>
-                                        <td>
-                                            <input type="hidden" name="newfirstname" value="<%= request.getHeader("aad_voornaam") %>">
-                                            <%= request.getHeader("aad_voornaam") %>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th><mm:write referid="mlg.Lastname"/></th>
-                                        <td>
-                                            <mm:import id="tan"><%= request.getHeader("aad_achternaam") %></mm:import>
-                                            <mm:compare referid="tan" value="null" inverse="true">
-                                                <input type="hidden" name="newlastname" value="<%= request.getHeader("aad_achternaam") %>">
-                                                <%= request.getHeader("aad_achternaam") %>
-                                            </mm:compare>
-
-                                            <mm:compare referid="tan" value="null">
-                                                <input type="hidden" name="newlastname" value="   ">
-                                                missing
-                                            </mm:compare>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th><mm:write referid="mlg.Email"/></th>
-                                        <td>
-                                            <input name="newemail" value="" style="width: 100%" value="<%= request.getHeader("aad_emailadres") %>" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th><mm:write referid="mlg.Location"/></th>
-                                        <td> <input name="newlocation" value="" style="width: 100%" /> </td>
-                                    </tr>
-                                    <tr>
-                                        <th><mm:write referid="mlg.Gender"/></th>
-                                        <td>
-                                            <select name="newgender">
-                                                <option value="male"><mm:write referid="mlg.Male"/></option>
-                                                <option value="female"><mm:write referid="mlg.Female"/></option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                </mm:compare>
-                                <%-- end there is an entree id (logged in)--%>
-
-                                <tr>
-                                    <th colspan="2">
-                                        <input type="hidden" name="action" value="createposter">
-                                        <center><input type="submit" value="<mm:write referid="mlg.Save"/>"></center>
-                                    </th>
-                                </tr>
-                            </form>
-                        </mm:link>
-                    </table>
-                </mm:compare>
-                <%--  end: The poster is not created yet--%>
-            </mm:notpresent>
 
             <%--  poster creation did result into:  [createerror|inuse|ok|passwordnotequal]. this is always true! --%>
-            <mm:compare referid="feedback" value="none" inverse="true">
                 <mm:compare referid="feedback" value="ok" inverse="true">
                     <%-- <p>debug: no there is feedback, but it is not 'ok'</p> --%>
                     <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="50%">
@@ -276,10 +150,11 @@
                                 <font color="red"> ***
                                 <mm:compare referid="feedback" value="inuse"><mm:write referid="mlg.Account_allready_in_use"/></mm:compare>
                                 <mm:compare referid="feedback" value="nickinuse"><mm:write referid="mlg.Nick_allready_in_use"/></mm:compare>
+                                <mm:compare referid="feedback" value="nickempty"><mm:write referid="mlg.Nick_empty"/></mm:compare>
                                 <mm:compare referid="feedback" value="passwordnotequal"><mm:write referid="mlg.Password_notequal"/></mm:compare>
-                                <mm:compare referid="feedback" value="firstnameerror">Firstname invalid</mm:compare>
-                                <mm:compare referid="feedback" value="lastnameerror">Surname invalid</mm:compare>
-                                <mm:compare referid="feedback" value="emailerror">Email invalid</mm:compare>
+                                <mm:compare referid="feedback" value="firstnameerror"><mm:write referid="mlg.Firstname_invalid"/></mm:compare>
+                                <mm:compare referid="feedback" value="lastnameerror"><mm:write referid="mlg.Surname_invalid"/></mm:compare>
+                                <mm:compare referid="feedback" value="emailerror"><mm:write referid="mlg.Email_invalid"/></mm:compare>
                                 ***
                                 </font>
                             </th>
@@ -290,7 +165,7 @@
                             <form action="${_}" method="post">
 
                                 <%--  no entree id found (not logged in)--%>
-                                <%--  i don't know why this is. it seems to me that if there is no entree id, the whole deal is off, and you first have to loginto entree ????--%>
+                                <%--  i don't know why this is. it seems to me that if there is no entree id, the whole deal is off, and you first have to loginto entree ????
                                 <mm:compare referid="entree" value="null">
                                     <tr>
                                         <th width="150" ><mm:write referid="mlg.Account"/></th>
@@ -379,26 +254,28 @@
                                         </td>
                                     </tr>
                                 </mm:compare>
+                                --%>
                                 <%--  end no entree id found (not logged in)--%>
 
-                                <%-- there is an entree id (logged in)--%>
+                                <%-- there is an entree id (logged in)
                                 <mm:compare referid="entree" value="null" inverse="true">
+                            --%>
                                     <tr>
                                         <th width="150" ><mm:write referid="mlg.Account"/></th>
                                         <td>
-                                            <input type="hidden" name="newaccount" value="<%= request.getHeader("sm_user") %>">
-                                            <%= request.getHeader("sm_user") %>
-                                            <input type="hidden" name="newpassword" value="<%= request.getHeader("aad_nummer") %>">
-                                            <input type="hidden" name="newconfirmpassword" value="<%= request.getHeader("aad_nummer") %>">
+                                            <input type="hidden" name="newaccount" value="${param.newaccount}">
+                                            ${param.newaccount}
+                                            <input type="hidden" name="newpassword" value="${param.newpassord}">
+                                            <input type="hidden" name="newconfirmpassword" value="${param.newpassord}">
                                         </td>
                                     </tr>
 
                                     <mm:compare referid="hasnick" value="true">
                                         <tr>
-                                            <th width="150" >Nick</th>
+                                            <th width="150" >Nick *</th>
                                             <td>
                                                 <mm:import externid="newnick" />
-                                                <input name="newnick" value="<mm:write referid="newnick"/>" style="width: 100%" />
+                                                <input name="newnick" value="${param.newnick}" style="width: 100%" />
                                             </td>
                                         </tr>
                                     </mm:compare>
@@ -406,17 +283,17 @@
                                     <tr>
                                         <th><mm:write referid="mlg.Firstname"/></th>
                                         <td>
-                                            <input type="hidden" name="newfirstname" value="<%= request.getHeader("aad_voornaam") %>">
-                                            <%= request.getHeader("aad_voornaam") %>
+                                            <input type="hidden" name="newfirstname" value="${param.newfirstname}">
+                                            ${param.newfirstname}
                                         </td>
                                     </tr>
                                     <tr>
                                         <th><mm:write referid="mlg.Lastname"/></th>
                                         <td>
-                                            <mm:import id="tan"><%= request.getHeader("aad_achternaam") %></mm:import>
+                                            <mm:import id="tan">${param.newlastname}</mm:import>
                                             <mm:compare referid="tan" value="null" inverse="true">
-                                                <input type="hidden" name="newlastname" value="<%= request.getHeader("aad_achternaam") %>">
-                                                <%= request.getHeader("aad_achternaam") %>
+                                                <input type="hidden" name="newlastname" value="${param.newlastname}">
+                                                ${param.newlastname}
                                             </mm:compare>
 
                                             <mm:compare referid="tan" value="null">
@@ -429,8 +306,8 @@
                                     <tr>
                                         <th><mm:write referid="mlg.Email"/></th>
                                         <td>
-                                            <input type="hidden" name="newemail" value="<%= request.getHeader("aad_emailadres") %>" />
-                                            <%= request.getHeader("aad_emailadres") %>
+                                            <input type="hidden" name="newemail" value="${param.newemail}" />
+                                            ${param.newemail}
                                         </td>
                                     </tr>
 
@@ -438,30 +315,27 @@
                                         <th><mm:write referid="mlg.Location"/></th>
                                         <td>
                                             <mm:import externid="newlocation" />
-                                            <input name="newlocation" value="<mm:write referid="newlocation" />" style="width: 100%" />
+                                            <input name="newlocation" value="${param.newlocation}" style="width: 100%" />
                                         </td>
                                     </tr>
                                     <tr>
                                         <th><mm:write referid="mlg.Gender"/></th>
                                         <td>
-                                            <c:remove var="su"/>
-                                            <c:remove var="sm"/>
-                                            <c:remove var="sf"/>
-                                            <select name="newgender">
+                                            <c:remove var="su"/> <c:remove var="sm"/> <c:remove var="sf"/> <select name="newgender">
                                             <mm:import externid="newgender" />
                                                   <mm:write referid="newgender">
                                                     <c:if test="${_ == 'unknown'}"><c:set var="su"value="selected"></c:set></c:if>
                                                     <c:if test="${_ == 'male'}"><c:set var="sm"value="selected"></c:set></c:if>
                                                     <c:if test="${_ == 'female'}"><c:set var="sf"value="selected"></c:set></c:if>
                                                 </mm:write>
-                                                <option value="unknown" ${su} >Unknown</option>
+                                                <option value="unknown" ${su} ><mm:write referid="mlg.Unknown"/></option>
                                                 <option value="male" ${sm}><mm:write referid="mlg.Male"/></option>
                                                 <option value="female" ${sf}><mm:write referid="mlg.Female"/></option>
                                             </select>
                                         </td>
                                     </tr>
-                                </mm:compare>
-                                <%-- end there is an entree id (logged in)--%>
+                                <%-- </mm:compare>
+                                 end there is an entree id (logged in)--%>
 
                                 <tr>
                                     <th colspan="2">
@@ -472,10 +346,10 @@
                             </form>
                         </mm:link>
                     </table>
-                    <%--  end: feedback != ok--%>
+
                 </mm:compare>
-            <%--  end: feedback != none--%>
-            </mm:compare>
+                <%--end: feedback is not 'ok'--%>
+
 
             <mm:compare referid="feedback" value="ok">
                 <%-- <p>debug: there is feedback and it is 'ok'</p> --%>

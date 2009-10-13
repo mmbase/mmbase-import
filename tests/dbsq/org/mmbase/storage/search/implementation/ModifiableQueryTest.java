@@ -2,16 +2,15 @@ package org.mmbase.storage.search.implementation;
 
 import junit.framework.*;
 import java.util.*;
-
-import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.4 $
  */
 public class ModifiableQueryTest extends TestCase {
     
@@ -34,8 +33,8 @@ public class ModifiableQueryTest extends TestCase {
     private MMBase mmbase = null;
     private MMObjectBuilder images = null;
     private MMObjectBuilder news = null;
-    private CoreField imagesTitle = null;
-    private CoreField imagesDescription = null;
+    private FieldDefs imagesTitle = null;
+    private FieldDefs imagesDescription = null;
     private Step step1 = null;
     private StepField field1 = null;
     
@@ -127,9 +126,9 @@ public class ModifiableQueryTest extends TestCase {
     /** Test of setFields method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
     public void testSetFields() {
         StepField field2 = new BasicStepField(step1, imagesDescription);
-        List<StepField> fields1 = new ArrayList<StepField>();
+        List fields1 = new ArrayList();
         fields1.add(field1);
-        List<StepField> fields2 = new ArrayList<StepField>();
+        List fields2 = new ArrayList();
         fields2.add(field2);
         
         assertTrue(instance.getFields().equals(fields1));
@@ -150,11 +149,11 @@ public class ModifiableQueryTest extends TestCase {
     public void testSetSortOrders() {
         BasicSortOrder so1 = query.addSortOrder(field1)
             .setDirection(SortOrder.ORDER_ASCENDING);
-        List<BasicSortOrder> sortOrders1 = new ArrayList<BasicSortOrder>();
+        List sortOrders1 = new ArrayList();
         sortOrders1.add(so1);
         BasicSortOrder so2 = new BasicSortOrder(field1)
             .setDirection(SortOrder.ORDER_DESCENDING);
-        List<SortOrder> sortOrders2 = new ArrayList<SortOrder>();
+        List sortOrders2 = new ArrayList();
         sortOrders2.add(so2);
         
         assertTrue(instance.getSortOrders().equals(sortOrders1));
@@ -174,10 +173,10 @@ public class ModifiableQueryTest extends TestCase {
     /** Test of setSteps method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
     public void testSetSteps() {
         Step step2 = query.addStep(news);
-        List<Step> steps1 = new ArrayList<Step>();
+        List steps1 = new ArrayList();
         steps1.add(step1);
         steps1.add(step2);
-        List<Step> steps2 = new ArrayList<Step>();
+        List steps2 = new ArrayList();
         steps2.add(step1);
         
         assertTrue(instance.getSteps().equals(steps1));

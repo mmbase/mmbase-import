@@ -154,8 +154,8 @@
                             <a href="profile.jsp?forumid=${forumid}&posterid=${posterid}">
                                 <mm:field name="active_nick" /><br />
                                 <mm:field name="active_avatar">
-                                    <mm:compare value="-1" inverse="true">
-                                        <mm:node number="$_"><img src="<mm:image template="s(80x80)" />" width="80" border="0"></mm:node>
+                                    <mm:compare value="-1" inverse="true"><mm:write />
+                                        <mm:node number="$_"><mm:image template="s(80x80)" mode="img" border="0"/></mm:node>
                                     </mm:compare>
                                 </mm:field>
                             </a>
@@ -167,12 +167,12 @@
 
                         <td align="left" valign="top">
                             <mm:compare referid="image_logo" value="" inverse="true">
-                                <center> <img src="${image_logo}" width="98%"> </center>
+                                <center><img src="${image_logo}" width="98%"> </center>
                             </mm:compare>
 
                             <mm:compare referid="image_logo" value="">
                                 <h4>
-                                    <mm:write referid="mlg.Welcome" />  <mm:field name="active_firstname" />  <mm:field name="active_lastname" /> (<mm:field name="active_nick" />)
+                                    <mm:write referid="mlg.Welcome" /> <mm:field name="active_identifier"/>
                                     <br />
                                     <mm:write referid="mlg.on_the" />  <mm:field name="name" />  <mm:write referid="mlg.forum" /> !
                                 </h4>
@@ -206,8 +206,8 @@
                             <br />
                             <mm:field name="privatemessagesenabled">
                                 <mm:compare value="true">
-                                    <mm:nodefunction set="mmbob" name="getMailboxInfo" referids="forumid,posterid">
-                                        <mm:param name="mailboxid" value="Inbox" />
+                                    <mm:import id="mailboxid">Inbox</mm:import>
+                                    <mm:nodefunction set="mmbob" name="getMailboxInfo" referids="forumid,posterid,mailboxid">
                                         <b><mm:write referid="mlg.you_have"/>
                                         <mm:field name="messagecount">
                                             <mm:compare value="">
@@ -307,6 +307,8 @@
                     <tr><th colspan="5" align="left" height="25"><mm:write referid="tree" /></th></tr>
                 </mm:compare>
 
+                <%--TODO: double code for tree and list style postarea view. clean it up?--%>
+
                 <mm:nodelistfunction set="mmbob" name="getTreePostAreas" referids="forumid,posterid,tree" id="tpa">
                     <mm:field name="nodetype">
                         <mm:compare value="area">
@@ -334,9 +336,15 @@
                                                 <mm:write referid="mlg.by" />
                                                 <mm:field name="lastposternumber">
                                                     <mm:compare value="-1" inverse="true">
-                                                        <a href="profile.jsp?forumid=${forumid}&posterid=${tpa.lastposternumber}"><mm:field name="lastposter" /></a>
+                                                        <c:set var="postername" ><mm:nodefunction name="getPosterInfo" set="mmbob" referids="posterid,forumid"> <mm:field name="identifier" /> </mm:nodefunction></c:set>
+                                                        <c:choose>
+                                                            <c:when test="${lpa.active_shareprofile == 'true'}">
+                                                                <a href="profile.jsp?forumid=${forumid}&posterid=${lpa.lastposternumber}">${postername}</a>
+                                                            </c:when>
+                                                            <c:otherwise> ${postername} </c:otherwise>
+                                                        </c:choose>
                                                     </mm:compare>
-                                                    <mm:compare value="-1" ><mm:field name="lastposter" /></mm:compare>
+                                                    <mm:compare value="-1" >[onbekend]</mm:compare>
                                                 </mm:field>
                                                 <p />
                                                 <mm:field name="lastsubject" />
@@ -381,7 +389,7 @@
                     <th><mm:write referid="mlg.last_posting" />
                     </th>
                 </tr>
-                <mm:nodelistfunction set="mmbob" name="getPostAreas" referids="forumid,posterid">
+                <mm:nodelistfunction set="mmbob" name="getPostAreas" referids="forumid,posterid" id="lpa">
                     <mm:import id="guestreadmodetype" reset="true"><mm:field name="guestreadmodetype" /></mm:import>
                     <mm:compare referid="posterid" value="-1" inverse="true">
                         <mm:import id="guestreadmodetype" reset="true">open</mm:import>
@@ -404,9 +412,19 @@
                                 <mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field> <mm:write referid="mlg.by" />
                                     <mm:field name="lastposternumber">
                                         <mm:compare value="-1" inverse="true">
-                                            <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="lastposternumber" />"><mm:field name="lastposter" /></a>
+                                            <mm:import id="thisposter">${lpa.lastposternumber}</mm:import>
+                                            <mm:nodefunction name="getPosterInfo" set="mmbob" referids="forumid,thisposter@posterid">
+                                                <c:set var="postername" > <mm:field name="identifier" /></c:set>
+                                                <c:set var="shareprofile" ><mm:field name="shareprofile" /></c:set>
+                                            </mm:nodefunction>
+                                            <c:choose>
+                                                <c:when test="${shareprofile == 'true'}">
+                                                    <a href="profile.jsp?forumid=${forumid}&posterid=${lpa.lastposternumber}">${postername}</a>
+                                                </c:when>
+                                                <c:otherwise>${postername}</c:otherwise>
+                                            </c:choose>
                                         </mm:compare>
-                                        <mm:compare value="-1" ><mm:field name="lastposter" /></mm:compare>
+                                        <mm:compare value="-1" >[onbekend]</mm:compare>
                                     </mm:field>
                                     <p />
                                     <mm:field name="lastsubject" />

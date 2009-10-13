@@ -1,0 +1,41 @@
+<jsp:root version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:content expires="0" type="application/xml">
+    <mm:cloud method="asis">
+
+      <mm:import externid="status" from="request" />
+      <mm:import externid="id"     required="true" from="request,parameters" />
+      <mm:import externid="node"   required="true" from="request,parameters" />
+      <mm:import externid="fields" from="request,parameters" />
+      <mm:import externid="editrelations" from="request,parameters" />
+      <mm:import externid="customizedir" from="request,parameters" />
+      <mm:node referid="node">
+        <mm:nodeinfo type="nodemanager" id="nodemanager" write="false" />
+        <tr class="click ${(! empty status and status.index % 2 eq 0) ? 'even' : 'odd'} ${nodemanager}">
+          <td class="node number"><mm:field name="number" /></td>
+          <c:choose>
+            <c:when test="${!empty fields}">
+              <mm:fieldlist fields="$fields" varStatus="field">
+                <td class="fields ${field.current.name}"><mm:fieldinfo type="guivalue" /></td>
+              </mm:fieldlist>
+            </c:when>
+            <c:otherwise>
+              <td class="node"><mm:nodeinfo type="gui" /></td>
+              <mm:fieldlist type="list" varStatus="field">
+                <td class="fields ${field.current.name}"><mm:fieldinfo type="guivalue" /></td>
+              </mm:fieldlist>
+            </c:otherwise>
+          </c:choose>
+          <td class="node action">
+            <mm:haspage page="${customizedir}action.td.jspx">
+              <mm:include page="${customizedir}action.td.jspx" attributes="node,editrelations?" />
+            </mm:haspage>
+          </td>
+        </tr>
+      </mm:node>
+    </mm:cloud>
+  </mm:content>
+</jsp:root>
