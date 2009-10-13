@@ -62,6 +62,8 @@
           </includes>
           <excludes>
             <exclude>org/mmbase/bridge/BridgeList.class</exclude>
+            <exclude>org/mmbase/bridge/RemoteContext$*.class</exclude>
+            <exclude>org/mmbase/bridge/ContextProvider$*.class</exclude>
           </excludes>
         </configuration>
         <executions>
