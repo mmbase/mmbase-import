@@ -289,6 +289,19 @@
     <body jsp="security.jspx" />
   </block>
 
+  <block name="contextproviders"
+         classification="mmbase.admin"
+         mimetype="text/html">
+    <title xml:lang="en">MMCI context providers</title>
+    <title xml:lang="nl">MMCI Context-Providers</title>
+    <description xml:lang="en">
+    </description>
+    <description xml:lang="nl">
+      Toont de mogelijk context-provider 'uri' resolvers, welke gebruikt kunnen worden om een ContextProvider te verkrijgen (waaruit een Cloud kan worden verkegen).
+    </description>
+    <body jsp="contextproviders.jspx" />
+  </block>
+
   <block name="transactions"
          classification="mmbase.tools"
          mimetype="text/html">
