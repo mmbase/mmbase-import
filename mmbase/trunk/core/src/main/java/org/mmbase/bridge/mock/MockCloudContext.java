@@ -182,5 +182,28 @@ public class MockCloudContext extends  AbstractCloudContext {
         return "mock://localhost";
     }
 
+    public static class MockResolver extends ContextProvider.Resolver {
+        {
+            description.setKey("mock");
+        }
+        @Override
+        public CloudContext resolve(String uri) {
+            if (uri.startsWith("mock:")){
+                return org.mmbase.bridge.mock.MockCloudContext.getInstance();
+            } else {
+                return null;
+            }
+        }
+        @Override
+        public boolean equals(Object o) {
+            return o != null && o instanceof MockResolver;
+        }
+        @Override
+        public String toString() {
+            return "mock://localhost";
+        }
+    }
+
+
 
  }
