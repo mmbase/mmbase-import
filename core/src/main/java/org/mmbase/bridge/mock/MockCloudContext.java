@@ -179,7 +179,7 @@ public class MockCloudContext extends  AbstractCloudContext {
 
 
     public String getUri() {
-        return "dummy://localhost";
+        return "mock://localhost";
     }
 
 
