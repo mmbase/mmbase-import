@@ -127,7 +127,7 @@ public class MockCloudContext extends  AbstractCloudContext {
     }
 
     protected void addNodeManager(MockBuilderReader reader) {
-        nodeManagers.put(reader.getName(), new NodeManagerDescription(reader.getName(), reader, getTypeDefNode(reader.getName())));
+        nodeManagers.put(reader.getName(), new NodeManagerDescription(reader, getTypeDefNode(reader.getName())));
     }
 
     public void addNodeManagers(ResourceLoader directory) throws java.io.IOException {
