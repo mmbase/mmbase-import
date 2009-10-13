@@ -242,7 +242,7 @@ Applications build file
        <property name="download.dir"        value="${download.dir}" />
      </ant>
   </target>
-	
+
 	<target name="vpro-wizards" depends="init" if="vpro-wizards.exists">
 	     <ant dir="vpro-wizards"  target="package" inheritAll="false">
 	       <property name="project.zip.dir"        value="${applications.build.dir}" />
@@ -406,12 +406,7 @@ Applications build file
      <ant dir="commandserver"      target="clean" inheritAll="false" />
      <ant dir="largeobjects"      target="clean" inheritAll="false" />
 
-     <ant dir="cloudsecurity"      target="clean" inheritAll="false" />
-     <ant dir="mycompany"      target="clean" inheritAll="false" />
-     <ant dir="mynews"      target="clean" inheritAll="false" />
      <ant dir="jumpers"      target="clean" inheritAll="false" />
-     <ant dir="myyahoo"      target="clean" inheritAll="false" />
-     <ant dir="resources"      target="clean" inheritAll="false" />
 
      <delete dir="${applications.build.dir}" />
   </target>
