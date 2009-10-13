@@ -116,7 +116,7 @@ public class MockCloudContext extends  AbstractCloudContext {
         for (Map.Entry<String, DataType> e : map.entrySet()) {
             m.put(e.getKey(), new MockField(e.getKey(), null, e.getValue()));
         }
-        nodeManagers.put(name, new NodeManagerDescription(name, m, null,  getTypeDefNode(name)));
+        nodeManagers.put(name, new NodeManagerDescription(name, m, getTypeDefNode(name)));
     }
 
     public void addNodeManager(InputSource source) {
@@ -127,11 +127,7 @@ public class MockCloudContext extends  AbstractCloudContext {
     }
 
     protected void addNodeManager(MockBuilderReader reader) {
-        Map<String, Field> map = new HashMap<String, Field>();
-        for (Field f : reader.getFields()) {
-            map.put(f.getName(), f);
-        }
-        nodeManagers.put(reader.getName(), new NodeManagerDescription(reader.getName(), map, reader, getTypeDefNode(reader.getName())));
+        nodeManagers.put(reader.getName(), new NodeManagerDescription(reader.getName(), reader, getTypeDefNode(reader.getName())));
     }
 
     public void addNodeManagers(ResourceLoader directory) throws java.io.IOException {
