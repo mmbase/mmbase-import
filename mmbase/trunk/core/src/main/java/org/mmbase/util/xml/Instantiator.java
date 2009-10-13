@@ -50,7 +50,7 @@ public abstract class Instantiator {
      * Instantiates any object using an Dom Element and constructor arguments. Sub-param tags are
      * used on set-methods on the newly created object.
      * @param classElement a 'class' element with a 'name' attribute,
-     *        or any element with a 'class' attribute. Finally ff this any element has no 'class' attribute, it will try 'name' too.
+     *        or any element with a 'class' attribute. Finally if this any element has no 'class' attribute, it will try 'name' too.
      * @param args Constructor arguments.
      * @throws NoSuchMethodError If not matching constructor could be found
      * @throws ClassNotFoundException If the specified class does not exist.
