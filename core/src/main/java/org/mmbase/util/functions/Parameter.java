@@ -353,7 +353,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
         if (errors.size() == 0) {
             return dataType.cast(value, null, null);
         } else {
-            throw new CastException("" + errors);
+            throw new CastException("" + this + " " + errors);
         }
     }
 
