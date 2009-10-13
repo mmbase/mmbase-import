@@ -83,9 +83,4 @@ public class MockNodeManager extends AbstractNodeManager  {
     }
 
 
-    @Override
-    public String toString() {
-        return getName() + " " +  map.keySet();
-    }
-
 }
