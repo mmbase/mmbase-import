@@ -59,7 +59,9 @@ public class MockCloud extends AbstractCloud {
 
     public NodeManager getNodeManager(String name) throws NotFoundException {
         MockCloudContext.NodeManagerDescription d = cloudContext.nodeManagers.get(name);
-        if (d == null) throw new NotFoundException("No such node manager '" + name + "'");
+        if (d == null) {
+            throw new NotFoundException("No such node manager '" + name + "'");
+        }
         return new MockNodeManager(this, d);
     }
 
@@ -72,30 +74,11 @@ public class MockCloud extends AbstractCloud {
         return roleName.equals("related") || roleName.equals("posrel");
     }
 
-    public RelationManager getRelationManager(String roleName) throws NotFoundException {
-        throw new UnsupportedOperationException();
-    }
-
     public boolean hasRelationManager(String roleName) {
         return roleName.equals("related") || roleName.equals("posrel");
     }
     public boolean hasRelationManager(NodeManager sourceManager, NodeManager destinationManager, String roleName) {
         return hasRelationManager(roleName);
-    }
-    public RelationManager getRelationManager(NodeManager sourceManager, NodeManager destinationManager, String roleName) {
-        throw new UnsupportedOperationException();
-    }
-
-
-
-    public RelationManagerList getRelationManagers() {
-        throw new UnsupportedOperationException();
-    }
-
-
-    public RelationManagerList getRelationManagers(NodeManager sourceManager, NodeManager destinationManager,
-                                                   String roleName) throws NotFoundException {
-        throw new UnsupportedOperationException();
     }
 
     public MockCloudContext getCloudContext() {
