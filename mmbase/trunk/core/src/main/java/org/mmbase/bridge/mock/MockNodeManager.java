@@ -46,16 +46,6 @@ public class MockNodeManager extends AbstractNodeManager  {
         this.parent = e;
     }
 
-    public MockNodeManager(MockCloud cloud, MockBuilderReader reader) {
-        super(cloud);
-        this.vcloud = cloud;
-        this.name = reader.getName();
-        for (Field f : reader.getFields()) {
-            map.put(f.getName(), f);
-        }
-        oType = -1;
-        this.parent = reader.getExtends();
-    }
 
 
     @Override
