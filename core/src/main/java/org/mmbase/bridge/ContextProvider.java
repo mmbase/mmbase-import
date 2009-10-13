@@ -9,7 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge;
 
+import java.util.*;
+import java.util.concurrent.*;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.LocalizedString;
 import org.mmbase.util.logging.*;
+
+
 
 /**
  * Main class to aquire CloudContexts
@@ -30,30 +39,64 @@ public class ContextProvider {
     private static String defaultCloudContextName ;
 
     /**
+     * @since MMBase-1.9.2
+     */
+    private static final List<Resolver> resolvers = new CopyOnWriteArrayList<Resolver>();
+
+    static {
+        for (URL url : ResourceLoader.getConfigurationRoot().getResourceList("contextproviders")) {
+            try {
+                URLConnection uc = url.openConnection();
+                if (uc.getDoInput()) {
+                    InputStream is = uc.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                    String line = reader.readLine();
+                    while (line != null) {
+                        line = line.trim();
+                        if (line.length() > 0 && ! line.startsWith("#")) {
+                            try {
+                                Resolver resolver = (Resolver) Class.forName(line).newInstance();
+                                resolvers.add(resolver);
+                            } catch (Exception e) {
+                                log.error("During parsing of " + url + ": " + line + ":" + e.getMessage(), e);
+                            }
+                        }
+                        line = reader.readLine();
+                    }
+                }
+            } catch (Exception e) {
+                log.error("During parsing of " + url + ": " + e.getMessage(), e);
+            }
+        }
+    }
+
+    /**
      * Factory method to get an instance of a CloudContext. Depending
-     * on the uri parameter given the CloudContext might be a local context
-     * or a remote context (rmi)
+     * on the uri parameter given the CloudContext might be a local context,
+     * a remote context (rmi), or a CloudContext representing some other bridge implementation.
      * @param uri an identifier for the context<br />
-     * possible values:
+     * possible values are defined by {@link #getResolvers}, but probably include:
+     *
      * <ul>
      *   <li>local : will return a local context</li>
-     *   <li>rmi://hostname:port/contextname : will return a remote context</li>
-     *   <li>a null parameter: will return the default context </li>
+     *   <li>rmi://hostname:port/contextname : will return a remote context (only if the rmmci or rmmci-client jar is available)</li>
+     *   <li>a null parameter: will return the default context. See {@link #getDefaultCloudContext} </li>
      * </ul>
+     * The actual list can be found in the admin pages (a view on {@link #getResolvers}.
+     *
      * @return a cloud context
      * @throws BridgeException if the cloudcontext was not found
      */
     public static CloudContext getCloudContext(String uri) {
-        if (uri == null || (uri != null && uri.trim().length() == 0)){
+        if (uri == null || uri.trim().length() == 0) {
             uri = getDefaultCloudContextName();
 	}
 
-        if (uri.startsWith("rmi")){
-            return RemoteContext.getCloudContext(uri);
-        } else if (uri.startsWith("local")){
-            return LocalContext.getCloudContext();
-        } else if (uri.startsWith("dummy")) {
-            return org.mmbase.bridge.mock.MockCloudContext.getInstance();
+        for (Resolver resolver : resolvers) {
+            CloudContext cc = resolver.resolve(uri);
+            if (cc != null) {
+                return cc;
+            }
         }
 	throw new BridgeException("cloudcontext with name {" + uri + "} is not known to MMBase");
     }
@@ -101,7 +144,58 @@ public class ContextProvider {
         }
     }
 
-    private ContextProvider() {
+    /**
+     * Returns the list of {@link Resolver}s that is used in the implementation of {@link
+     * #getCloudContext(String)}.  The contents of this list are defined by the resource
+     * org.mmbase.config.contextproviders. A plain text resource just simply stating the
+     * Resolver-classes. E.g. the RMMCI-jar provides this resource too, to add itself to this list.
+     *
+     * @since MMBase-1.9.2
+     */
+    public static List<Resolver> getResolvers() {
+        return Collections.unmodifiableList(resolvers);
     }
+
+    private ContextProvider() {
+        // no instances
+    }
+
+
+
+
+    /**
+     * A Resolver resolves a URI-string to a CloudContext object.
+     */
+    public static abstract class Resolver {
+        protected final LocalizedString description = new LocalizedString(toString());
+        {
+            description.setBundle("org.mmbase.bridge.resources.contextproviders");
+        }
+
+        public abstract CloudContext resolve(String uri);
+        public LocalizedString getDescription() {
+            return description;
+        }
+    }
+
+    public static class LocalResolver extends Resolver {
+        @Override
+        public CloudContext resolve(String uri) {
+            if (uri.equals("local")){
+                return LocalContext.getCloudContext();
+            } else {
+                return null;
+            }
+        }
+        @Override
+        public boolean equals(Object o) {
+            return o != null && o instanceof LocalResolver;
+        }
+        @Override
+        public String toString() {
+            return "local";
+        }
+    }
+
 
 }
