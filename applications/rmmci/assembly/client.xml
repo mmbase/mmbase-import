@@ -86,7 +86,6 @@
           <include>org/mmbase/core/*.class</include>               <!-- DataTypes uses .. -->
           <include>org/mmbase/core/event/**</include>
 
-          <include>org/mmbase/module/core/MMBaseObserver.class</include>    <!-- resourcewatcher extends -->
           <include>org/mmbase/module/corebuilders/FieldDefs.class</include> <!-- DataTypes uses .. -->
 
           <include>org/mmbase/util/RandomPool*</include>          <!-- Used in test cases .. -->
