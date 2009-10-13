@@ -82,12 +82,16 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                     if (callback.addBrs) {
                         // before going into the parser, make existing newlines recognizable, by replacing them by a token
                         r = new TransformingReader(r, new ChunkedTransformer(ChunkedTransformer.XMLTEXT) {
+                                @Override
                                 protected boolean replace(String string, Writer w, Status status) throws IOException {
                                     w.write(string.replaceAll("\n", NL_TOKEN));
                                     return false;
                                 }
 
-                                protected String base() { return "nl"; }
+                                @Override
+                                protected String base() {
+                                    return "nl";
+                                }
 
                             });
                     }
