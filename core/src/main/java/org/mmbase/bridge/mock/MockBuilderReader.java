@@ -10,13 +10,11 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.mock;
 
-import org.mmbase.datatypes.DataType;
-import org.mmbase.core.util.Fields;
-import java.util.*;
+import org.mmbase.util.xml.ParentBuilderReader;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.NodeManagerDescription;
 import org.xml.sax.InputSource;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * This class can read builder XML's. For the moment it's main use is to parse to a Map of DataType's, which is used by {@link MockCloudContext} to create NodeManagers.
@@ -26,13 +24,9 @@ import org.w3c.dom.Element;
  * @since   MMBase-1.9.2
  */
 
-public class MockBuilderReader extends org.mmbase.util.xml.AbstractBuilderReader<Field>  {
+public class MockBuilderReader extends ParentBuilderReader {
 
 
-    static {
-        org.mmbase.datatypes.DataTypes.initialize();
-    }
-    MockBuilderReader parent;
     final MockCloudContext  cloudContext;
 
     MockBuilderReader(InputSource s, MockCloudContext cc) {
@@ -51,86 +45,9 @@ public class MockBuilderReader extends org.mmbase.util.xml.AbstractBuilderReader
     }
 
     @Override
-    protected boolean resolveInheritance() {
-        String parentBuilder = getExtends();
-        if ("".equals(parentBuilder)) {
-            parent = null;
-            inheritanceResolved = true;
-            return true;
-        } else {
-            MockCloudContext.NodeManagerDescription  p  = cloudContext.nodeManagers.get(parentBuilder);
-            if (p == null) {
-                return false;
-            }
-            if (p.reader == null) {
-                throw new UnsupportedOperationException("Parent '" + parentBuilder + "' of '" + getName() + "' was not configured with XML");
-            }
-
-
-            Document inherit = (Document) this.document.cloneNode(true);
-            Element root = (Element) (this.document.importNode(p.reader.getDocument().getDocumentElement(), true));
-            this.document.removeChild(this.document.getDocumentElement());
-            this.document.appendChild( root);
-            resolveInheritanceByXML(this.document, inherit);
-            parent = p.reader;
-            inheritanceResolved = true;
-            return true;
-        }
+    protected NodeManagerDescription getNodeManagerDescription(String parentBuilder) {
+        return cloudContext.nodeManagers.get(parentBuilder);
     }
 
-    @Override
-    protected int getParentSearchAge() {
-        return parent.getSearchAge();
-    }
-    @Override
-    protected String getParentClassName() {
-        return parent.getClassName();
-    }
 
-    @Override
-    public List<Field> getFields() {
-        List<Field> results = new ArrayList<Field>();
-        int pos = 1;
-        if (hasParent()) {
-            for (Field f : parent.getFields()) {
-                Field newField = new MockField(f, f.getDataType().clone());
-                results.add(newField);
-            }
-        }
-
-        for(Element fieldList : getChildElements("builder", "fieldlist")) {
-            for (Element field : getChildElements(fieldList,"field")) {
-                String fieldName = getElementAttributeValue(field, "name");
-                DataType dt = decodeDataType(getName(), org.mmbase.datatypes.DataTypes.getSystemCollector(),
-                                             fieldName, field, Field.TYPE_UNKNOWN, Field.TYPE_UNKNOWN, true);
-
-                MockField newField = new MockField(fieldName, null, dt);
-                String fieldState = getElementAttributeValue(field, "state");
-                if ("".equals(fieldState)) {
-                    newField.setState(Field.STATE_PERSISTENT);
-                } else {
-                    newField.setState(Fields.getState(fieldState));
-                }
-                results.add(newField);
-            }
-        }
-        return results;
-    }
-
-    @Override
-    protected Map<String, String> getParentProperties() {
-        return parent.getProperties();
-    }
-    @Override
-    protected boolean hasParent() {
-        return parent != null;
-    }
-    @Override
-    protected int getParentVersion() {
-        return parent.getVersion();
-    }
-    @Override
-    protected String getParentMaintainer() {
-        return parent.getMaintainer();
-    }
 }

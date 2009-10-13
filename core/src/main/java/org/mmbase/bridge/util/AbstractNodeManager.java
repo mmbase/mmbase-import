@@ -196,8 +196,26 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
         return Collections.emptyMap();
     }
 
+
     public NodeManagerList getDescendants() {
-        return BridgeCollections.EMPTY_NODEMANAGERLIST;
+        NodeManagerList descendants = getCloud().createNodeManagerList();
+        String name = getName();
+        for (NodeManager nm  : getCloud().getNodeManagers()) {
+            try {
+                NodeManager parent = nm.getParent();
+                if (parent != null && name.equals(parent.getName())) {
+                    if (! descendants.contains(nm)) {
+                        descendants.add(nm);
+                        for (NodeManager sub : nm.getDescendants()) {
+                            descendants.add(sub);
+                        }
+                    }
+                }
+            } catch (NotFoundException nfe) {
+                // never mind, getParent may do that, it simply means that it is object or so.
+            }
+        }
+        return descendants;
     }
 
     public Collection<Function<?>>  getFunctions() {

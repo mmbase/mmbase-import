@@ -34,12 +34,12 @@ public class MockField extends DataTypeField  {
         storagePosition = f.isVirtual() ? -1 : 1;
     }
 
-    MockField(Field f, DataType dt) {
+    public MockField(Field f, DataType dt) {
         super(f, dt);
         storagePosition = f.isVirtual() ? -1 : 1;
     }
 
-    MockField(String n, NodeManager nm, DataType dt) {
+    public MockField(String n, NodeManager nm, DataType dt) {
         super(n, nm, dt);
         setState(STATE_PERSISTENT);
         storagePosition = n.startsWith("_") ? -1 : 1;
