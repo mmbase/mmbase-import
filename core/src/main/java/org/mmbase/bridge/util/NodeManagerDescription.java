@@ -34,8 +34,8 @@ public class NodeManagerDescription {
     public final Map<String, String> properties = new HashMap<String, String>();
     public final int oType;
 
-    public NodeManagerDescription(String n, ParentBuilderReader r, int oType) {
-        name = n;
+    public NodeManagerDescription(ParentBuilderReader r, int oType) {
+        name = r.getName();
         reader = r;
         fields = new HashMap<String, Field>();
         for (Field f : reader.getFields()) {
