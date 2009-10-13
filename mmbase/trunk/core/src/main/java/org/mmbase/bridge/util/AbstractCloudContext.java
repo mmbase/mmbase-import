@@ -41,11 +41,6 @@ public abstract class AbstractCloudContext implements CloudContext {
     }
 
 
-    public AbstractCloudContext() {
-        clouds.add(CLOUD);
-    }
-
-
     public ModuleList getModules() {
         return BridgeCollections.EMPTY_MODULELIST;
     }

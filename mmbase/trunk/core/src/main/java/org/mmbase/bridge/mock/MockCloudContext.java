@@ -89,6 +89,10 @@ public class MockCloudContext extends  AbstractCloudContext {
         return nodes;
     }
 
+    public MockCloudContext() {
+        clouds.add(CLOUD);
+    }
+
     public void clear() {
         nodes.clear();
         nodeManagers.clear();
