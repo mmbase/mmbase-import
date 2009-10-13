@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packaging_java_jar PUBLIC "-//MMBase/DTD packaging_java_jar config 1.0//EN" "http://www.mmbase.org/dtd/packaging_java_jar_1_0.dtd">
+<packaging_java_jar>
+  <lastversion>6</lastversion>
+  <lastdate>Sun Nov 14 23:33:07 CET 2004</lastdate>
+  <name>packaging jars</name>
+  <maintainer>Submarine</maintainer>
+  <description>Jars for the package manager</description>
+  <license type="MPL" version="" name="" />
+  <releasenotes></releasenotes>
+  <installationnotes></installationnotes>
+  <basedir>build/</basedir>
+  <include>.jar</include>
+  <exclude>CVS</exclude>
+  <packagedepends>
+  </packagedepends>
+  <initiators>
+    <initiator name="Daniel Ockeloen" company="Submarine" />
+  </initiators>
+  <supporters>
+  </supporters>
+  <developers>
+    <developer name="Daniel Ockeloen" company="Submarine" />
+  </developers>
+  <contacts>
+    <contact name="Daniel Ockeloen" reason="Bugs Reports" mailto="daniel@xs4all.nl" />
+  </contacts>
+  <publishprovider name="" state="inactive" sharepassword="" />
+</packaging_java_jar>

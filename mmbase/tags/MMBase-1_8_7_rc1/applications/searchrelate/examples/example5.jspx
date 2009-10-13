@@ -1,0 +1,32 @@
+<div
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    class="drawer">
+  <jsp:output omit-xml-declaration="true" />
+  <h1><a href="#example5">Example5</a></h1>
+  <p>The 'current' repository, is actually optional. You'd probably bind some other functionality to the 'relate' function then.
+  That can be done by setting the 'relateCallBack' function</p>
+
+  <div id="example5">
+    <script type="text/javascript">
+      MMBaseRelater.ready(function(relater) {
+        if ($(relater.div).parents("#example5").length > 0) {
+          relater.relateCallBack = function(tr) {
+          var nodeNumber = relater.getNumber(tr);
+          alert("clicked on " + nodeNumber);
+        }
+        }
+	});
+    </script>
+    <mm:listnodescontainer type="news" id="repository" />
+    <a id="submit5">Submit</a>
+    <mm-sr:relate repository="${repository}"
+                  submit="#submit5"
+                  create="true"
+                  />
+
+    <div class="code"><textarea><mm:include cite="true" page="example5.jspx" escape="text/html" /></textarea></div>
+  </div>
+</div>

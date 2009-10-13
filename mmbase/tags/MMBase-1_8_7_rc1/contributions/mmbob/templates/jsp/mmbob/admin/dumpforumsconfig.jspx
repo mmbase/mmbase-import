@@ -1,0 +1,6 @@
+<mm:content type="text/xml" xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" xmlns:jsp="http://java.sun.com/JSP/Page">
+    <jsp:output omit-xml-declaration="true"/>
+    <mm:cloud method="http" rank="administrator">
+        <mm:function name="getForumsConfigXMLDump" escape="none" set="mmbob" />
+    </mm:cloud>
+</mm:content>

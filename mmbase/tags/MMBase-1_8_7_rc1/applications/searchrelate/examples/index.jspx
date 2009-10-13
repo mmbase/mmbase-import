@@ -1,0 +1,65 @@
+<mm:content
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    expires="0"
+    type="application/xhtml+xml" unacceptable="CRIPPLE" >
+
+  <jsp:output doctype-root-element="html"
+              doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
+              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+
+  <html  xmlns="http://www.w3.org/1999/xhtml">
+
+    <title><mm:write id="title" value="Search &amp; Relate examples" /></title>
+
+    <link rel="stylesheet" type="text/css" href="${mm:link('/mmbase/searchrelate/page.css.jsp')}" />
+
+    <link rel="stylesheet" type="text/css" href="${mm:link('example.css')}" />
+
+    <jsp:directive.include file="/mmbase/validation/javascript.jspxf" /> <!-- for jquery -->
+    <script type="text/javascript">
+      <!-- some javascript to make the examples slide away/slideToggable -->
+      $(document).ready(function() {
+      $("div.drawer > div").hide();
+      $("div.drawer h1 a").click(function(e) {
+         $(e.target).parent().parent().children("div").slideToggle("fast");
+         return false;
+         });
+      });
+    </script>
+    <body>
+      <h1>${title}</h1>
+      <mm:cloud rank="basic user">
+
+        You are <mm:cloudinfo type="user" />
+
+        <mm:import externid="mag">default.mags</mm:import>
+
+        <mm:hasnode number="$mag" inverse="true">
+          <p>
+            You need to have the MyNews application installed.
+          </p>
+        </mm:hasnode>
+        <mm:hasnode number="$mag">
+          <mm:node number="$mag">
+            <h1>
+              Using node ${_node}
+              <mm:hasfield name="title">'<mm:field name="title" />'</mm:hasfield>
+            </h1>
+
+
+            <mm:include page="example1.jspx" />
+            <mm:include page="example2.jspx" /> 
+            <mm:include page="example3.jspx" />
+            <mm:include page="example4.jspx" />
+            <mm:include page="example5.jspx" />
+
+            <mm:include page="relatednodes.jspx" />
+
+          </mm:node>
+        </mm:hasnode>
+      </mm:cloud>
+    </body>
+  </html>
+</mm:content>

@@ -1,0 +1,10 @@
+<!--
+    projects.dtd
+-->
+
+<!ELEMENT projects (project*)>
+
+<!ELEMENT project (#PCDATA)>
+<!ATTLIST project path CDATA #IMPLIED>
+<!ATTLIST project name CDATA #IMPLIED>
+

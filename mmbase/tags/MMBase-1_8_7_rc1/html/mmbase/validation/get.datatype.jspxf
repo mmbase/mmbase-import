@@ -1,0 +1,42 @@
+<jsp:root
+    version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
+  <jsp:directive.page
+      import="org.mmbase.bridge.*,org.mmbase.datatypes.*,java.util.*"
+      session="false" />
+
+  <mm:import externid="datatype" jspvar="dt" vartype="string" />
+  <mm:import externid="node" jspvar="n" vartype="string" />
+  <jsp:scriptlet>
+    Node node = null;
+    Field field = null;
+    DataType dataType = null;
+    Locale locale = null;
+    final boolean changed = "true".equals(request.getParameter("changed"));
+  </jsp:scriptlet>
+  <mm:cloud sessionname="${param.sessionname}" jspvar="cloud" method="asis">
+    <jsp:scriptlet>
+      locale = cloud.getLocale();
+    </jsp:scriptlet>
+    <mm:present referid="datatype">
+      <jsp:scriptlet>dataType = DataTypes.getSystemCollector().getDataType(dt);</jsp:scriptlet>
+    </mm:present>
+    <mm:notpresent referid="datatype">
+      <mm:import externid="field"       required="true" />
+      <mm:import externid="nodemanager" required="true" />
+
+      <jsp:scriptlet>
+        if (n != null &amp;&amp; ! "".equals(n)) {
+           node = cloud.getNode(n);
+        }
+      </jsp:scriptlet>
+      <mm:fieldlist nodetype="$nodemanager" fields="$field" jspvar="f">
+        <jsp:scriptlet>
+          field = f;
+          dataType = field.getDataType();
+        </jsp:scriptlet>
+      </mm:fieldlist>
+    </mm:notpresent>
+  </mm:cloud>
+</jsp:root>
