@@ -33,7 +33,7 @@ public class MockBuilderReader extends org.mmbase.util.xml.AbstractBuilderReader
         org.mmbase.datatypes.DataTypes.initialize();
     }
     MockBuilderReader parent;
-    MockCloudContext  cloudContext;
+    final MockCloudContext  cloudContext;
 
     MockBuilderReader(InputSource s, MockCloudContext cc) {
         super(s);
@@ -87,6 +87,7 @@ public class MockBuilderReader extends org.mmbase.util.xml.AbstractBuilderReader
         return parent.getClassName();
     }
 
+    @Override
     public List<Field> getFields() {
         List<Field> results = new ArrayList<Field>();
         int pos = 1;
