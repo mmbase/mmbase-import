@@ -13,6 +13,7 @@ package org.mmbase.bridge.mock;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.AbstractCloudContext;
+import org.mmbase.bridge.util.NodeManagerDescription;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.implementation.*;
 import org.mmbase.storage.search.*;
@@ -62,22 +63,7 @@ public class MockCloudContext extends  AbstractCloudContext {
                 }
             });
 
-    static class NodeManagerDescription {
-        public final String name;
-        public final Map<String, Field> fields;
-        public final MockBuilderReader reader;
-        public final Map<String, String> properties = new HashMap<String, String>();
-        public final int oType;
-        public NodeManagerDescription(String n, Map<String, Field> f, MockBuilderReader r, int oType) {
-            name = n;
-            fields = f;
-            reader = r;
-            this.oType = oType;
-        }
-        public String toString() {
-            return name + ":" + fields;
-        }
-    }
+
     public static class NodeDescription {
         public final String type;
         public final Map<String, Object> values;

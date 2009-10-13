@@ -31,7 +31,7 @@ public class MockNodeManager extends AbstractNodeManager  {
     protected final MockCloud vcloud;
     protected final int oType;
 
-    public MockNodeManager(MockCloud cloud, MockCloudContext.NodeManagerDescription desc) {
+    public MockNodeManager(MockCloud cloud, NodeManagerDescription desc) {
         super(cloud);
         this.vcloud = cloud;
         this.name = desc.name;
@@ -84,34 +84,11 @@ public class MockNodeManager extends AbstractNodeManager  {
 
 
     @Override
-    public NodeManagerList getDescendants() {
-        NodeManagerList descendants = vcloud.createNodeManagerList();
-        for (String nodeManagerName  : vcloud.cloudContext.nodeManagers.keySet()) {
-            NodeManager nm = vcloud.getNodeManager(nodeManagerName);
-            try {
-                NodeManager parent = nm.getParent();
-                if (parent != null && name.equals(parent.getName())) {
-                    if (! descendants.contains(nm)) {
-                        descendants.add(nm);
-                        for (NodeManager sub : nm.getDescendants()) {
-                            descendants.add(sub);
-                        }
-                    }
-                }
-            } catch (NotFoundException nfe) {
-                // never mind, getParent may do that, it simply means that it is object or so.
-            }
-        }
-        return descendants;
-    }
-
-
-    @Override
     public NodeManager getParent() throws NotFoundException {
         if (parent == null) {
             throw new NotFoundException();
         } else {
-            return vcloud.getNodeManager(parent);
+            return getCloud().getNodeManager(parent);
         }
     }
 
