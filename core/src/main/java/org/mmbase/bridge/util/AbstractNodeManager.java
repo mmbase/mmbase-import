@@ -222,4 +222,10 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
         return Collections.emptyList();
     }
 
+
+    @Override
+    public String toString() {
+        return getName() + " " +  getFieldTypes().keySet();
+    }
+
 }
