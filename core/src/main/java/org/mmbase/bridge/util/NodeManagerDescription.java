@@ -34,12 +34,22 @@ public class NodeManagerDescription {
     public final Map<String, String> properties = new HashMap<String, String>();
     public final int oType;
 
-    public NodeManagerDescription(String n, Map<String, Field> f, ParentBuilderReader r, int oType) {
+    public NodeManagerDescription(String n, ParentBuilderReader r, int oType) {
         name = n;
-        fields = f;
         reader = r;
+        fields = new HashMap<String, Field>();
+        for (Field f : reader.getFields()) {
+            fields.put(f.getName(), f);
+        }
         this.oType = oType;
     }
+    public NodeManagerDescription(String n, Map<String, Field> map, int oType) {
+        name = n;
+        fields = map;
+        reader = null;
+        this.oType = oType;
+    }
+
     public String toString() {
         return name + ":" + fields;
     }
