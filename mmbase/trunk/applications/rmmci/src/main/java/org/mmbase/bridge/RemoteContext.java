@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
+import org.mmbase.bridge.remote.*;
 import java.rmi.*;
 import java.lang.reflect.*;
 import java.net.MalformedURLException;
@@ -39,12 +40,8 @@ public final class RemoteContext {
      */
     public static CloudContext getCloudContext(String uri) {
         try {
-
-            Object remoteCloudContext= Naming.lookup(uri);
-            Class<?> clazz = Class.forName("org.mmbase.bridge.remote.proxy.UriRemoteCloudContext_Proxy");
-            Constructor<?> constr =  clazz.getConstructor(Class.forName("org.mmbase.bridge.remote.RemoteCloudContext"), String.class);
-            return (CloudContext) constr.newInstance(remoteCloudContext, uri);
-            //new RemoteCloudContext_Impl(remoteCloudContext);
+            RemoteCloudContext remoteCloudContext= (RemoteCloudContext) Naming.lookup(uri);
+            return new org.mmbase.bridge.remote.proxy.UriRemoteCloudContext_Proxy(remoteCloudContext, uri);
         } catch (MalformedURLException mue) {
             String message = mue.getMessage();
             if (message != null && message.indexOf("no protocol") > -1) {
@@ -59,6 +56,30 @@ public final class RemoteContext {
             throw new BridgeException("While connecting to " + uri + ": " + mue.getMessage(), mue);
         } catch (Exception e){
             throw new BridgeException("While connecting to " + uri + ": " + e.getClass() + " " +  e.getMessage(), e);
+        }
+    }
+
+    public static class RemoteResolver extends ContextProvider.Resolver {
+        {
+            description.setKey("rmi");
+            description.setBundle("org.mmbase.bridge.resources.remotecontextprovider");
+        }
+        @Override
+        public CloudContext resolve(String uri) {
+
+            if (uri.startsWith("rmi:")){
+                return RemoteContext.getCloudContext(uri);
+            } else {
+                return null;
+            }
+        }
+        @Override
+        public boolean equals(Object o) {
+            return o != null && o instanceof RemoteResolver;
+        }
+        @Override
+        public String toString() {
+            return "rmi://<host>:<port>/<context>";
         }
     }
     public static void main(String[] argv) {
