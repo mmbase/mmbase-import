@@ -29,7 +29,7 @@ public class MockField extends DataTypeField  {
     private int editPosition = 1;
     private int storagePosition = 1;
 
-    MockField(NodeManager nm, Field f) {
+    public MockField(NodeManager nm, Field f) {
         super(nm, f);
         storagePosition = f.isVirtual() ? -1 : 1;
     }
