@@ -83,11 +83,11 @@
 <xsl:template name="prompt_save">Opslaan &amp; beëindigen</xsl:template>
 <xsl:template name="prompt_save_only">Opslaan</xsl:template>
 <xsl:variable name="tooltip_save">Bewaar alle wijzigingen en sluit deze taak.</xsl:variable>
-<xsl:variable name="tooltip_save_only">Bewaar alle wijzigingen, maar ga door met editen.</xsl:variable>
+<xsl:variable name="tooltip_save_only">Bewaar alle wijzigingen, maar ga door met bewerken.</xsl:variable>
 <xsl:variable name="tooltip_no_save">De wijzigingen kunnen niet worden bewaard, sommige gegevens zijn niet correct ingevoerd.</xsl:variable>
 <!-- cancel button prompts and tooltips -->
 <xsl:template name="prompt_cancel">Annuleren</xsl:template>
-<xsl:variable name="tooltip_cancel">Annuleer deze taak, wijzigingen (sinds de laatste maal 'Opslaan') worden niet bewaard.</xsl:variable>
+<xsl:variable name="tooltip_cancel">Annuleer deze taak, wijzigingen (sinds de laatste keer 'opslaan') worden niet bewaard.</xsl:variable>
 <xsl:variable name="tooltip_no_cancel">Deze taak kan niet worden afgebroken.</xsl:variable>
 <!-- step (form) button prompts and tooltips -->
 <xsl:template name="prompt_step"><nobr>Stap <xsl:value-of select="position()" /></nobr></xsl:template>
