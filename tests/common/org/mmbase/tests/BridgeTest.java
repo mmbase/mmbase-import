@@ -58,6 +58,9 @@ public abstract class BridgeTest extends MMBaseTest {
                 if (tryCount > 20) {
                     throw be;
                 }
+            } catch (Throwable e) {
+                log.error(e.getMessage(), e);
+                break;
             }
         }
         return cc;
