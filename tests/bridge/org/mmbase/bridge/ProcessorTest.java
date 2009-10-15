@@ -239,9 +239,10 @@ public class ProcessorTest extends BridgeTest {
         Node clusterNode = clusterNodes.getNode(0);
 
         String getValue = clusterNode.getStringValue("processors.get");
+        assertTrue(clusterNode.getNodeManager().hasField("processors.get"));
         //MMB-1869
-        assertEquals(countBefore + 1, CountProcessor.count); // FAILS!!
-        assertEquals("BB", getValue); // FAILS
+        assertEquals(countBefore + 1, CountProcessor.count);
+        assertEquals("BB", getValue);
 
 
 
