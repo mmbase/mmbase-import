@@ -59,7 +59,7 @@ public abstract class BridgeTest extends MMBaseTest {
                     throw be;
                 }
             } catch (Throwable e) {
-                log.error(e.getMessage(), e);
+                log.fatal(e.getMessage(), e);
                 Throwable c = e.getCause();
                 while (c != null) {
                     log.error("CAUSE:" + c.getMessage(), c);
