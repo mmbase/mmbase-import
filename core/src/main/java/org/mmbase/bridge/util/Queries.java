@@ -471,6 +471,11 @@ abstract public class Queries {
             }
             if (operator != OPERATOR_IN && datePart == -1) { // should the elements of the collection then not be cast?
                 value = field.getDataType().castForSearch(value, null, field);
+                // in 1.8 This used to be simpley cast.
+                // casting of null for integers:
+                // 1.8:  -> -1
+                // 1.9:  -> null  -> Gives problems in BasicFieldValueConstraint (which does not except null, but does accept -1)
+                //          work around near 'FIXNULL'
             }
 
             Object compareValue = getCompareValue(fieldType, operator, value, datePart, cloud);
@@ -486,6 +491,12 @@ abstract public class Queries {
                     if (operator == FieldCompareConstraint.EQUAL  && compareValue == null) {
                         newConstraint = query.createConstraint(stepField);
                     } else {
+
+                        if (compareValue == null) {
+                            compareValue = Casting.toType(field.getDataType().getTypeAsClass(), null);
+                            // FIXNULL
+                            log.warn("" + originalValue + " -> " + value + " -> null resulted NULL. That won't work, taking " +  compareValue);
+                        }
                         newConstraint = query.createConstraint(stepField, operator, compareValue);
                     }
                 }
