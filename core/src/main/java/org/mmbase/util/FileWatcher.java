@@ -97,7 +97,11 @@ public abstract class FileWatcher {
     }
 
     static {
-        scheduleFileWatcherRunner();
+        try {
+            scheduleFileWatcherRunner();
+        } catch (Throwable t) {
+            log.error(t);
+        }
     }
 
 
