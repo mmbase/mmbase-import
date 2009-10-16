@@ -16,6 +16,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.*;
+import org.mmbase.util.functions.*;
 
 import org.mmbase.util.logging.*;
 
@@ -98,6 +99,14 @@ public class DayMarkers extends MMObjectBuilder {
             3600 * 24 - ((now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)) * 60 + now.get(Calendar.SECOND)),  // some effort to run shortly after midnight
             3600 * 24, TimeUnit.SECONDS);
         ThreadPools.identify(future, "DayMarker creation");
+
+        addFunction(new AbstractFunction<Integer>("ageForNumber", new Parameter[] { new Parameter<Integer>("nodenumber", Integer.class)}, ReturnType.INTEGER) {
+                public Integer getFunctionValue(Parameters parameters) {
+                    int nodeNumber = Casting.toInt(parameters.get("nodenumber"));
+                    return DayMarkers.this.getAge(nodeNumber);
+                }
+
+            });
         return result;
     }
 
