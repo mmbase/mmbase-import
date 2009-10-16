@@ -24,6 +24,7 @@ import java.text.*;
 import java.io.*;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
+import java.math.BigDecimal;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.util.NodeWrapper;
@@ -835,6 +836,41 @@ public class Casting {
      */
     static public double toDouble(Object i) {
         return toDouble(i, -1);
+    }
+
+
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    static public BigDecimal toDecimal(Object i) {
+        if (i instanceof BigDecimal) {
+            return (BigDecimal) i;
+        } else if (i instanceof CharSequence) {
+            try {
+                return new BigDecimal("" + i).stripTrailingZeros();
+            } catch (NumberFormatException nfe) {
+                if(i instanceof String){
+                    String s = ((String)i).toLowerCase();
+                    if (s.equals("true") || s.equals("yes")) {
+                        return BigDecimal.ONE;
+                    } else if(s.equals("false") || s.equals("no")) {
+                        return BigDecimal.ZERO;
+                    }
+                }
+                return BigDecimal.ONE.negate();
+            }
+        } else if (i instanceof Long) {
+            return new BigDecimal(((Long) i).longValue());
+        } else if (i instanceof Integer) {
+            return new BigDecimal(((Integer) i).intValue());
+        } else if (i instanceof Double) {
+            return new BigDecimal(((Double) i).doubleValue());
+        } else if (i instanceof Float) {
+            return new BigDecimal(((Float) i).floatValue());
+        } else {
+            return new BigDecimal(toDouble(i)).stripTrailingZeros();
+        }
     }
 
 
