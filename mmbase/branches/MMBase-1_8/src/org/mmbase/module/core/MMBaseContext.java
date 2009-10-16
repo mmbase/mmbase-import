@@ -361,7 +361,7 @@ public class MMBaseContext {
                         htmlRootUrlPath = "/";
                     } else if (sx.getMajorVersion() > 2 || (sx.getMajorVersion() == 2 && sx.getMinorVersion() >= 5)) {
                         try {
-                            htmlRootUrlPath = (String) sx.getClass().getMethod("getContextPath").invoke(sx) + "/";
+                            htmlRootUrlPath = (String) sx.getClass().getMethod("getContextPath", (Class[]) null).invoke(sx, (Object[]) null) + "/";
                         } catch(Exception e) {
                             log.error(e);
                         }
