@@ -15,6 +15,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.*;
+import org.mmbase.util.functions.*;
 
 import org.mmbase.util.logging.*;
 
@@ -89,6 +90,14 @@ public class DayMarkers extends MMObjectBuilder {
             result = false;
         }
         createMarker();
+
+        addFunction(new AbstractFunction("ageForNumber", new Parameter[] { new Parameter("nodenumber", Integer.class)}, ReturnType.INTEGER) {
+                public Object getFunctionValue(Parameters parameters) {
+                    int nodeNumber = Casting.toInt(parameters.get("nodenumber"));
+                    return Integer.valueOf(DayMarkers.this.getAge(nodeNumber));
+                }
+
+            });
 
         return result;
     }
