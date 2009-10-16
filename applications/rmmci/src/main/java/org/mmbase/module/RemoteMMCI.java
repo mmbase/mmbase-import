@@ -275,7 +275,7 @@ public class RemoteMMCI extends ProcessorModule {
            if (remoteCloudContext != null) {
               log.debug("RMI lookup ok");
               try {
-                    Class<?> clazz = Class.forName("org.mmbase.bridge.remote.implementation.RemoteCloudContext_Impl");
+                    Class<?> clazz = Class.forName("org.mmbase.bridge.remote.proxy.RemoteCloudContext_Proxy");
                     Constructor<?> constr =  clazz.getConstructor(new Class [] { Class.forName("org.mmbase.bridge.remote.RemoteCloudContext") });
                     CloudContext cloudContext = (CloudContext) constr.newInstance(new Object[] { remoteCloudContext } );
 
