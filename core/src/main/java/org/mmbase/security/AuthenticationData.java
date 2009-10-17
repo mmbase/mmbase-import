@@ -14,6 +14,7 @@ import org.mmbase.util.functions.*;
  * This interface represents information about the authentication implementation. It is the return
  * type of {@link org.mmbase.bridge.CloudContext#getAuthentication}.
  *
+ *
  * @author Michiel Meeuwissen
  * @version $Id$
  * @since MMBase-1.8
@@ -115,6 +116,8 @@ public interface AuthenticationData {
     /**
      * This method returns an MMBase node that corresponds with the given UserContext
      * @since MMBase-1.9
+     * @exception UnsupportedOperationException If the current authentication implementation does
+     * not associate UserContext's with MMBase nodes at all.
      */
     int getNode(UserContext userContext) throws SecurityException;
 
@@ -122,6 +125,8 @@ public interface AuthenticationData {
      * This method returns the builder name of the nodes that will be returned by the
      * {@link #getNode(UserContext)} call.
      * @since MMBase-1.9
+     * @exception UnsupportedOperationException If the current authentication implementation does
+     * not associate user with MMBase nodes at all.
      */
     String getUserBuilder();
 
