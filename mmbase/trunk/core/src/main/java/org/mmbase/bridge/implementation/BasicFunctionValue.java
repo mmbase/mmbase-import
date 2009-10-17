@@ -16,7 +16,8 @@ import org.mmbase.module.core.MMObjectNode;
 import java.util.*;
 
 /**
- * This implementation of the Field Value interface is used by getFunctionValue of Node. This
+ * This implementation of the Field Value interface is used by {@link Node#getFunctionValue} of
+ * {@link Node}. This
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author  Michiel Meeuwissen

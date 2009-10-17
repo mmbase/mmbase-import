@@ -16,8 +16,8 @@ import org.w3c.dom.Element;
 import java.util.*;
 
 /**
- * This implementation of the Field Value interface is used by getFunctionValue of Node. This
- * represents the result of a `function' on a node and it (therefore) is an unmodifiable.
+ * This abstract version of {@link FieldValue} only leaves {@link #get()} to implement. Many other
+ * methods ('to&lt;Some type&gt;') are implemented by wrapping methods of {@link Casting}.
  *
  * @author  Michiel Meeuwissen
  * @version $Id$
