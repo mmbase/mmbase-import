@@ -19,7 +19,7 @@ import org.mmbase.util.functions.Parameters;
 
 /**
  * Wraps another Node. You can use this if you want to implement Node, and want to base that
- * implementation on a existing <code>Node</code> instance.
+ * implementation on an existing <code>Node</code> instance.
  *
  * @author  Michiel Meeuwissen
  * @version $Id$
