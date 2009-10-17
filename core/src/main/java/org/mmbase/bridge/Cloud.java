@@ -15,8 +15,16 @@ import org.mmbase.security.UserContext;
 import org.mmbase.util.functions.Function;
 
 /**
- * A Cloud is a collection of Nodes (and relations that are also nodes).
- * A Cloud is part of a CloudContexts.
+ * Basicly a Cloud represents a collection of {@link Node}s (and {@link Relation}s that are also nodes), and
+ * is also associated with a certain authentication {@link UserContext}.
+ *
+ * A Cloud can be obtained using a {@link CloudContext} (which itself can be obtained from {@link
+ * ContextProvider}).
+ *
+ * The Cloud also contains the information about what types of nodes {@link #getNodeManagers} and
+ * what type of relations between nodes {@link #getRelationManagers} can be made.
+ *
+ * Cloud also can support {@link Transaction}s, which are a kind of temporary 'sub' clouds.
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
