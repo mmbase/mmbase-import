@@ -18,6 +18,8 @@ import org.mmbase.util.logging.*;
  * The goal of a Function object is to call its {@link #getFunctionValue(Parameters)} method, which
  * executes it, given the specified parameters.
  *
+ * The Parameter definition and {@link ReturnType} can be passed into your implementation using the constructor. The
+ * implementation must be provided by implementing {@link #getFunctionValue}.
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen

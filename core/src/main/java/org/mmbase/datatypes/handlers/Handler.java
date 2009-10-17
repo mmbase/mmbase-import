@@ -14,8 +14,8 @@ import org.mmbase.bridge.*;
 import org.mmbase.storage.search.Constraint;
 
 /**
- * Handlers can be associated to DataTypes, but different Handler can be associated with different
- * content types. The main implementation will of course be one that produces HTML, like forms, and
+ * Handlers can be associated to DataTypes, but different Handlers can be associated with different
+ * content types. The most important implementation will of course be one that produces HTML, like forms, and
  * post and things like that.
  *
  * @author Michiel Meeuwissen
