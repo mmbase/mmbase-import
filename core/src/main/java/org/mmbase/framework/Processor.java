@@ -18,6 +18,8 @@ import org.mmbase.util.functions.Parameters;
  * The other difference is that there be several {@link Block}s in a request, which are all
  * rendered, but at most one of them has its Processor executed.
  *
+ * Processing itself happens with the {@link #process} method, which is typically done using {@link Framework#process}.
+ *
  * @author Michiel Meeuwissen
  * @version $Id$
  * @since MMBase-1.9

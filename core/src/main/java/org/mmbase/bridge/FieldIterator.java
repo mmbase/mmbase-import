@@ -12,7 +12,9 @@ package org.mmbase.bridge;
 import java.util.ListIterator;
 
 /**
- * A list of nodes
+ * An iterator with {@link #nextField} and {#link previousField} methods. Note that since java 1.5/MMBase
+ * 1.9 the methods {@link #next} and {@link #previous} return {@link Field}s too because this
+ * Iterator now implements <code>ListIterator&lt;Field&gt;</code>.
  *
  * @author Pierre van Rooden
  * @version $Id$

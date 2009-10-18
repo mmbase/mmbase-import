@@ -20,6 +20,8 @@ import org.mmbase.util.functions.*;
  *
  * A Renderer is stateless.
  *
+ * Rendering itself happens with the {@link #render} method, which is typically done using {@link Framework#render}.
+ *
  * @author Michiel Meeuwissen
  * @version $Id$
  * @since MMBase-1.9
