@@ -127,7 +127,7 @@ public interface Cloud {
 
     /**
      * Determines whether a node with the specified number exists in this cloud.
-     * Note that this method does not determien whether you may actually access (read) this node,
+     * Note that this method does not determine whether you may actually access (read) this node,
      * use {@link #mayRead(int)} to determine this.
      *
      * @param number    the number of the node
@@ -139,7 +139,7 @@ public interface Cloud {
     /**
      * Determines whether a node with the specified number is available from this cloud.
      * If the string passed is not a number, the string is assumed to be an alias.
-     * Note that this method does not determien whether you may actually access (read) this node,
+     * Note that this method does not determine whether you may actually access (read) this node,
      * use {@link #mayRead(int)} to determine this.
      *
      * @param number a string containing the number or alias of the requested node
@@ -151,7 +151,7 @@ public interface Cloud {
     /**
      * Determines whether a relation with the specified number exists in this cloud.
      * The node returns true if a Node exists and is a relation.
-     * Note that this method does not determien whether you may actually access (read) this node,
+     * Note that this method does not determine whether you may actually access (read) this node,
      * use {@link #mayRead(int)} to determine this.
      *
      * @param number    the number of the node
@@ -164,7 +164,7 @@ public interface Cloud {
      * Determines whether a relation with the specified number is available from this cloud.
      * If the string passed is not a number, the string is assumed to be an alias.
      * The node returns true if a Node exists and is a relation.
-     * Note that this method does not determien whether you may actually access (read) this node,
+     * Note that this method does not determine whether you may actually access (read) this node,
      * use {@link #mayRead(int)} to determine this.
      *
      * @param number a string containing the number or alias of the requested node

@@ -19,9 +19,9 @@ import org.mmbase.util.logging.Logging;
  * A Block is a representation of a page within a component. It has two renderers,
  * 'head' and 'body', and a processor.
  *
- * Blocks can be configured in a {@link Component}. A typical block, this one is the
+ * Blocks can be configured in a {@link Component}. A typical block configuration - this one is the
  * 'applications' block (the former 'Applications' admin page) which is one of the
- * core components, looks like this:
+ * core components - looks like this:
  *
  * <p>
  *    &lt;block name="applications" classification="mmbase.admin" mimetype="text/html"&gt;<br />
@@ -33,6 +33,7 @@ import org.mmbase.util.logging.Logging;
  *     &lt;/body&gt;<br />
  *   &lt;/block&gt;
  * </p>
+ * An aspect of a block is rendered using one of it's {@link Renderer}s, of which one can be obtained using {@link #getRenderer}.
  *
  *
  * @author Johannes Verelst
