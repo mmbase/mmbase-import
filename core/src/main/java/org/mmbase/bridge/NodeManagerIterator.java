@@ -13,7 +13,8 @@ package org.mmbase.bridge;
 import java.util.ListIterator;
 
 /**
- * A list of nodes
+ * An iterator for {@link NodeManager}s.
+ * @see NodeIterator
  *
  * @author Pierre van Rooden
  * @version $Id$

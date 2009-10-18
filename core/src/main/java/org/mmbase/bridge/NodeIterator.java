@@ -12,7 +12,9 @@ package org.mmbase.bridge;
 import java.util.ListIterator;
 
 /**
- * A list of nodes
+ * An iterator for Nodes, provider {@link #nextNode} and {@link #previousNode}. Note that since
+ * MMBase-1.9/Java 1.5, this simply implements <code>ListIterator&lt;Node&gt;</code> and {@link
+ * #next} and {@link #previous} don't require casting either.
  *
  * @author Pierre van Rooden
  * @version $Id$
