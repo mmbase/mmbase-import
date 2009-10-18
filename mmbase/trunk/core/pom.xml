@@ -84,14 +84,14 @@ See http://www.MMBase.org/license
             </manifestSections>
           </archive>
         </configuration>
-	<executions>
-	  <execution>
-	    <id>attach-test</id>
-	    <goals>
-	      <goal>test-jar</goal>
-	    </goals>
-	  </execution>
-	</executions>
+        <executions>
+          <execution>
+            <id>attach-test</id>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
