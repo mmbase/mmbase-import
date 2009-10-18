@@ -271,7 +271,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
           <groups>
             <group>
               <title>Bridge Packages</title>
-              <packages>org.mmbase.bridge:org.mmbase.bridge.util:org.mmbase.security:org.mmbase.storage.search:org.mmbase.datatypes*:org.mmbase.util.functions:org.mmbase.cache,org.mmbase.framework</packages>
+              <packages>org.mmbase.bridge:org.mmbase.bridge.util:org.mmbase.security:org.mmbase.storage.search:org.mmbase.datatypes*:org.mmbase.util.functions:org.mmbase.cache:org.mmbase.framework</packages>
             </group>
             <group>
               <title>Core Packages</title>
