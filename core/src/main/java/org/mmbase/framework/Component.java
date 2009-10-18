@@ -18,6 +18,8 @@ import org.mmbase.security.Action;
  *
  * A Component bundles {@link Block}s, {@link Action}s and {@link Setting}s.
  *
+ * Component instances can be obtained using {@link ComponentRepository}.
+ *
  * @author Michiel Meeuwissen
  * @version $Id$
  * @since MMBase-1.9
