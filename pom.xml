@@ -44,7 +44,39 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
   <url>http://www.mmbase.org/mm2</url>
   <inceptionYear>2000</inceptionYear>
 
-  <organization>
+  <organization>    <profile>
+      <id>buildnumber</id>
+      <activation>
+        <os>
+          <family>!Windows</family> <!-- sigh, it simply won't work -->
+        </os>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>buildnumber-maven-plugin</artifactId>
+            <configuration>
+              <buildNumberPropertyName>sources.version</buildNumberPropertyName>
+              <timestampPropertyName>timestamp</timestampPropertyName>
+              <timestampFormat>{0,date,yyyy-MM-dd'T'HH:mm}</timestampFormat>
+              <doCheck>${buildnumber.doCheck}</doCheck>
+              <doUpdate>false</doUpdate>
+            </configuration>
+            <executions>
+              <execution>
+                <phase>validate</phase>
+                <goals>
+                  <goal>create</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+
     <name>MMBase.org</name>
     <url>http://www.mmbase.org</url>
   </organization>
@@ -271,11 +303,11 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
           <groups>
             <group>
               <title>Bridge Packages</title>
-              <packages>org.mmbase.bridge:org.mmbase.bridge.util:org.mmbase.security:org.mmbase.storage.search:org.mmbase.datatypes*:org.mmbase.util.functions:org.mmbase.cache:org.mmbase.framework</packages>
+              <packages>org.mmbase.bridge:org.mmbase.bridge.util:org.mmbase.security:org.mmbase.storage.search:org.mmbase.datatypes*:org.mmbase.util.functions:org.mmbase.cache:org.mmbase.framework:org.mmbase.servlet</packages>
             </group>
             <group>
               <title>Core Packages</title>
-              <packages>org.mmbase.core*:org.mmbase.module*</packages>
+              <packages>org.mmbase.core*:org.mmbase.module:org.mmbase.module.core*:org.mmbase.module.builders*:org.mmbase.module.database*</packages>
             </group>
             <group>
               <title>Util Packages</title>
