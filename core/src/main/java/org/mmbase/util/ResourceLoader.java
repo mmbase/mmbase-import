@@ -104,13 +104,12 @@ When you want to place a configuration file then you have several options, wich 
  * the order they appear in {@link #getResourceList}. E.g. an mmbase application providing a
  * security implementation would give a large weight to its own
  * <code>config/security/security.xml</code>, the ratio being that if you install a security
- * implementation, you probably want to <em>use</em> it too.</p>.
- * <p>Take a look e.g. at <a
- * href="https://scm.mmbase.org/mmbase/trunk/applications/cloudcontext/src/main/config/utils/resourceloader.xml">A
+ * implementation, you probably want to <em>use</em> it too.</p>
+ * <p>Take a look e.g. at <a href="https://scm.mmbase.org/mmbase/trunk/applications/cloudcontext/src/main/config/utils/resourceloader.xml">A
  * typical resourceloader.xml</a>. In this example every other resource in the same jar as the
  * resourceloader.xml itself (the '!'
  * when used as the first character of the key means 'replace this with the URL of this jar') is
- * attributed a relatively big weight.</p>
+ * attributed a relatively big weight (default it is 0).</p>
 
  * </p>
  * @author Michiel Meeuwissen
