@@ -95,7 +95,24 @@ When you want to place a configuration file then you have several options, wich 
  * <p>If you want to remove a resource, you must write <code>null</code> to all URL's returned by {@link #findResources} (Do for every URL:<code>url.openConnection().getOutputStream().write(null);</code>)</p>
  * <h3>Encodings</h3>
  * <p>ResourceLoader is well aware of encodings. You can open XML's as Reader, and this will be done using the encoding specified in the XML itself. When saving an XML using a Writer, this will also be done using the encoding specified in the XML.</p>
- * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
+ * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so
+ * there is no need to think of that.</p>
+ * <h3>Configuration and weights</h3>
+ * <p>The Classloader itself reads the resources <code>config/utils/resourceloader.xml</code>. This
+ * is mainly to attribute weights to certain resources. See {@link #getWeight}. This is used if a
+ * resource is available more than once (e.g. in several distinct jars in WEB-INF/lib), to determin
+ * the order they appear in {@link #getResourceList}. E.g. an mmbase application providing a
+ * security implementation would give a large weight to its own
+ * <code>config/security/security.xml</code>, the ratio being that if you install a security
+ * implementation, you probably want to <em>use</em> it too.</p>.
+ * <p>Take a look e.g. at <a
+ * href="https://scm.mmbase.org/mmbase/trunk/applications/cloudcontext/src/main/config/utils/resourceloader.xml">A
+ * typical resourceloader.xml</a>. In this example every other resource in the same jar as the
+ * resourceloader.xml itself (the '!'
+ * when used as the first character of the key means 'replace this with the URL of this jar') is
+ * attributed a relatively big weight.</p>
+
+ * </p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
  * @version $Id$
@@ -619,6 +636,8 @@ public class ResourceLoader extends ClassLoader {
      * Returns a List, containing all URL's which may represent the
      * given resource. This can be used to show what resource whould be loaded and what resource
      * whould be masked, or one can also simply somehow 'merge' all these resources.
+     * The List is ordered, the URL's appearing earlier in the list should be considered 'more
+     * important' or 'heavier'. See {@link #getWeight}.
      */
     public List<URL> getResourceList(final String name) {
         try {
@@ -1894,6 +1913,9 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
+     * Given an {@link URL}, which can be an entry of the result of {@link #getResourceList} or
+     * {@link #getResources}, returns its 'weight'. This is the weight that is used for the <em>order</em>
+     * in the resource list (heavier ones appear earlier).
      * @since MMBase-1.9.1
      */
     public static int getWeight(final URL u) {
