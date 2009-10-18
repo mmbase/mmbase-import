@@ -19,6 +19,8 @@ import org.mmbase.util.LocalizedString;
  *
  * Actions are checked using {@link Authorization#check(UserContext, Action, Parameters)}.
  *
+ * Action instances can be retrieved with the {@link ActionRepository}.
+ *
  * @author Michiel Meeuwissen
  * @version $Id$
  * @since MMBase-1.9

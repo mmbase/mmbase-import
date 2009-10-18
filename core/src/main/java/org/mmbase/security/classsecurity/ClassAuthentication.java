@@ -24,9 +24,23 @@ import org.xml.sax.InputSource;
 
 
 /**
- * Provides the static utility methods to authenticate by class. Default a file
- * security/&lt;classauthentication.xml&gt; is used for this. If using the wrapper authentication,
- * its configuration file, contains this configuration.
+ * Provides the static utility methods to authenticate by class. This means that the strack trace of
+ * the current Thread is explored, to assign a certain user/rank and produce a {@link
+ * org.mmbase.bridge.Cloud} object for the calling code (See {@link
+ * org.mmbase.bridge.ContextProvider}). Which code contains what user, is configured in the resource
+ * security/&lt;classauthentication.xml&gt; (it basicly conects certain classes to users). Multiple
+ * of those sources can be available (any jar can provide one). In case a class matches multiple
+ * entries in one of these XML, the can be assigned  weight
+ * (and resources have a weight too, see {@link org.mmbase.util.ResourceLoader}), and the 'heaviest'
+ * matching entry prevails.
+ *
+ * Most {@link org.mmbase.security.Authentication} implementations support the 'authentication type'
+ * 'class', which is then implemented using {@link #classCheck(String)} or {@link
+ * #classCheck(String, Map)}.
+ *
+ * In case an existing authentication implementation does <em>not</em> support class authentication
+ * by itself (all implementations in the MMBase repository <emo>do</em>), it may be emulated using
+ * {@link ClassAuthenticationWrapper}.
  *
  * @author   Michiel Meeuwissen
  * @version  $Id$

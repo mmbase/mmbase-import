@@ -15,10 +15,25 @@ import org.mmbase.util.xml.Instantiator;
 import org.mmbase.util.logging.*;
 
 /**
- * The defined 'actions' are maintained by the 'action' repository. The security implementation can
- * decide how to persist actions and how to connect rights to it. Every action is identified by two
+ * The defined 'actions' are maintained by the {@link Action} repository. The security implementation can
+ * decide how to persist actions and how to connect rights to it, and hence is responsible for
+ * implementation this.
+ *
+ * Every action is identified by two
  * strings: a <em>namespace</em> (which may be <code>null</code>) and it's name. Namespaces are likely to correspond with {@link
  * org.mmbase.framework.Component}s.
+ *
+ * <pre>
+    Action action = ActionRepository.getInstance().get("core", "viewsource");
+    Parameters params = action.createParameters();
+    // perhaps supply some parameters, not needed in this case (it may be null then too).
+    if (cloud.check(cloud.getUser(), action, parameters)) { // checks if current user may view the source
+       /// show the source..
+       ...
+    } else {
+       return "not allowed to view the source";
+    }
+    </pre>
  *
  * @see Action
  * @author Michiel Meeuwissen
@@ -30,6 +45,10 @@ public abstract class ActionRepository extends Configurable {
 
     protected static ActionRepository bootstrap = new MemoryActionRepository();
 
+    /**
+     * Returns the ActionRepository associated with the current MMBase's {@link MMBaseCop}. Or if
+     * that doesn't provide one, returns a {@link MemoryActionRepository}.
+     */
     public static final ActionRepository getInstance() {
         if (bootstrap != null) {
             return bootstrap;
