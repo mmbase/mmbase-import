@@ -30,9 +30,8 @@ import org.xml.sax.InputSource;
 
 public abstract class AbstractCloudContext implements CloudContext {
 
-    public static final String CLOUD = "mmbase";
     protected final BasicStringList clouds        = new BasicStringList();
-    private Authentication authentication = new NoAuthentication();
+    private static final Authentication NOAUTHENTICATION = new NoAuthentication();
 
 
     static {
@@ -74,32 +73,36 @@ public abstract class AbstractCloudContext implements CloudContext {
         return new BasicFieldList();
     }
 
+    protected String getDefaultCloudName() {
+        return getCloudNames().get(0);
+    }
+
 
     public Cloud getCloud(String name) {
         return getCloud(name, "anonymous", new HashMap<String, Object>());
     }
 
     public Cloud getCloud(String name, String authenticationType, Map<String, ?> loginInfo) throws NotFoundException {
-        UserContext uc =  getAuthentication().login(authenticationType, loginInfo, new Object[] {});
+        UserContext uc =  ((Authentication) getAuthentication()).login(authenticationType, loginInfo, new Object[] {});
         return getCloud(name, uc);
     }
 
 
     public NodeList createNodeList() {
-        return getCloud(CLOUD).createNodeList();
+        return getCloud(getDefaultCloudName()).createNodeList();
     }
 
     public RelationList createRelationList() {
-        return getCloud(CLOUD).createRelationList();
+        return getCloud(getDefaultCloudName()).createRelationList();
     }
 
 
     public NodeManagerList createNodeManagerList() {
-        return getCloud(CLOUD).createNodeManagerList();
+        return getCloud(getDefaultCloudName()).createNodeManagerList();
     }
 
     public RelationManagerList createRelationManagerList() {
-        return getCloud(CLOUD).createRelationManagerList();
+        return getCloud(getDefaultCloudName()).createRelationManagerList();
     }
     public ModuleList createModuleList() {
         return new BasicModuleList();
@@ -109,8 +112,8 @@ public abstract class AbstractCloudContext implements CloudContext {
         return new BasicStringList();
     }
 
-    public Authentication getAuthentication() {
-        return authentication;
+    public AuthenticationData getAuthentication() {
+        return NOAUTHENTICATION;
     }
 
     public ActionRepository getActionRepository() {
