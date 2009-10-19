@@ -165,7 +165,7 @@ public class MockCloudContext extends  AbstractCloudContext {
 
 
     public String getUri() {
-        return "mock://localhost";
+        return "mock:local";
     }
 
     public static class MockResolver extends ContextProvider.Resolver {
@@ -186,7 +186,7 @@ public class MockCloudContext extends  AbstractCloudContext {
         }
         @Override
         public String toString() {
-            return "mock://localhost";
+            return "mock:local";
         }
     }
 

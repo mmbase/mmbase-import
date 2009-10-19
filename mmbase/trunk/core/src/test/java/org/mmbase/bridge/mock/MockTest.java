@@ -54,6 +54,7 @@ public class MockTest  {
     public void uri() {
 
         CloudContext cloudContext = getCloudContext();
+        assertEquals("mock:local", cloudContext.getUri());
         Cloud cloud = cloudContext.getCloud("mmbase");
         assertEquals("" + cloud.getCloudContext().getClass() + " " + cloudContext.getClass(),
                      cloudContext.getUri(),
