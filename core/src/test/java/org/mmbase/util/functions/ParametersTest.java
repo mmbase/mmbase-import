@@ -284,6 +284,18 @@ public class ParametersTest {
             //System.out.println(ia);
 
         }
+    }
+
+    @Test
+    public void definition() {
+        Parameters params = new Parameters(A, PD);
+        params.setAutoCasting(true);
+        params.set("dd", "red");
+        params.set("ddd", "blue");
+        params.set("dddd", "green");
+        params.set("ddddd", "yellow");
+        assertEquals(5, params.size());
+        params.getDefinition();
 
     }
 
