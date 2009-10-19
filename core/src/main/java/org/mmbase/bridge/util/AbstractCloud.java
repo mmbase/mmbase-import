@@ -30,6 +30,7 @@ import org.mmbase.util.functions.*;
 public abstract class AbstractCloud implements Cloud {
 
     private final Map<Object, Object> properties = new ConcurrentHashMap<Object, Object>();
+    protected final Map<String, Transaction> transactions = new HashMap<String, Transaction>();
     private Locale locale = Locale.getDefault();
 
     private final String name;
@@ -171,21 +172,35 @@ public abstract class AbstractCloud implements Cloud {
 
 
     public Transaction createTransaction() {
-        throw new UnsupportedOperationException();
+        return createTransaction(null, false);
     }
 
 
     public Transaction createTransaction(String name) throws AlreadyExistsException {
-        throw new UnsupportedOperationException();
+        return createTransaction(name, false);
     }
 
 
     public Transaction createTransaction(String name, boolean overwrite) throws AlreadyExistsException {
+        if (transactions.containsKey(name)) {
+            throw new AlreadyExistsException("Transaction '" + name + "' already exists");
+        }
+        Transaction trans = newTransaction(name);
+        transactions.put(name, trans);
+        return trans;
+    }
+
+    protected Transaction newTransaction(String name) {
         throw new UnsupportedOperationException();
     }
 
+
     public Transaction getTransaction(String name) {
-        throw new UnsupportedOperationException();
+        Transaction tran = transactions.get(name);
+        if (tran == null) {
+            tran = createTransaction(name, false);
+        }
+        return tran;
     }
 
 
