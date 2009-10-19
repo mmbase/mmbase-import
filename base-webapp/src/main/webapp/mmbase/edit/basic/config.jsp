@@ -4,8 +4,8 @@
 
 <title><%= m.getString("config.config") %></title>
 </head>
-<mm:content language="$config.lang" country="$config.country" expires="0">
-<body class="basic">
+<mm:content language="$config.lang" country="$config.country" expires="0" jspvar="locale">
+<body class="basic config">
 
   <mm:context referid="config" id="config">
     <mm:write cookie="mmjspeditors_style"         referid="style_sheet" />
@@ -16,10 +16,26 @@
     <mm:write cookie="mmjspeditors_indexoffset"   referid="indexoffset"      />
     <mm:write cookie="mmjspeditors_page_size"     referid="page_size"      />
     <mm:write cookie="mmjspeditors_xmlmode"       referid="xmlmode"      />
+    <mm:write cookie="mmjspeditors_uri"           referid="uri"      />
   </mm:context>
   <form name="config">
     <table class="edit" summary="editor configuration" width="93%"  cellspacing="1" cellpadding="3" border="0">
       <tr><th colspan="2"><%= m.getString("config.config") %></th></tr>
+      <tr>
+        <td>URI</td>
+        <td>
+          <select name="mmjspeditors_uri">
+            <% for (ContextProvider.Resolver resolve : ContextProvider.getResolvers()) { %>
+            <option value="<mm:escape><%=resolve%></mm:escape>"
+                 <mm:write value="<%=resolve.toString()%>">
+                    <mm:compare  referid2="config.uri">selected="selected"</mm:compare></mm:write>
+            ><mm:escape><%=resolve.toString()%>: <%=resolve.getDescription().get(locale)%></mm:escape></option>
+            <% } %>
+            <option value="OTHER"><mm:write referid="config.uri" /></option>
+          </select>
+
+        </td>
+      </tr>
       <tr>
         <td><%= m.getString("config.pagesize")%></td>
         <td>
@@ -115,7 +131,7 @@
       <tr><td colspan="2"><input type="submit"  name="config" value="config" /></td></tr>
     </table>
   </form>
-  <mm:cloud method="asis" jspvar="cloud">
+  <mm:cloud method="asis" jspvar="cloud" uri="${config.uri}">
     <%@ include file="foot.jsp"  %>
   </mm:cloud>
 </mm:content>

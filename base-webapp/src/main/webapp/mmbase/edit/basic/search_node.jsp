@@ -1,7 +1,7 @@
 <%@ include file="page_base.jsp"
 %><mm:import externid="userlogon" from="parameters" />
 <mm:content language="$config.lang" country="$config.country" type="text/html" expires="0">
-<mm:cloud  loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" rank="$rank" jspvar="cloud">
+<mm:cloud  loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" rank="$rank" jspvar="cloud" uri="$config.uri">
 <mm:write referid="style" escape="none" />
 <!-- mm:timer name="search_node"-->
 <title><%=m.getString("search_node.search")%></title>
@@ -66,9 +66,11 @@
              <!-- mm:timer name="node_managers"-->
              <!-- quick search by number/alias: -->
              <form method="post" action="<mm:url page="change_node.jsp"/>">
+             <mm:log>NMS: <%=cloud.getNodeManagers()%></mm:log>
     	    	<table summary="node managers" width="100%" cellspacing="1" cellpadding="3" border="0">
 		    <% // functionality for listing nodemanagers is not (yet?) in taglib, using MMCI.
                      NodeManagerList l = cloud.getNodeManagers();
+
                     java.util.Collections.sort(l, new java.util.Comparator() {
                        public int  compare(Object o1, Object o2) {
                          NodeManager n1 = ((Node)o1).toNodeManager();
@@ -78,8 +80,13 @@
                     } ); // MMCI doesn't sort, do it ourselves.
                     for (int i=0; i<l.size(); i++) {
                         NodeManager nt = l.getNodeManager(i);
+                        %>
+                        <mm:log><%=nt.mayCreateNode()%></mm:log>
+                        <%
+
                         if ( (nt.mayCreateNode() && !nt.hasField("dnumber")) || !"short".equals(liststyle)) {
                 %>
+
       	    	    <tr valign="top">
       	    	    	<td title="<%=nt.getName()%>" class="data" width="100%" colspan="2">
                     <%=nt.getGUIName()%><span class="nmname"><%=nt.getName()%></span></td>

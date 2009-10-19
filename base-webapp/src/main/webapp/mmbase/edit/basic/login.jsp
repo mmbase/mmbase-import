@@ -6,7 +6,7 @@
 <body class="basic">
   <h2>Login</h2>
 
-  <mm:cloud sessionname="$config.session" method="logout" />
+  <mm:cloud sessionname="$config.session" method="logout" uri="$config.uri"/>
 
   <mm:include attributes="config.lang@language, config.country@country, config.session@sessionname"  page="login.p.jsp" />
   <%@ include file="footfoot.jsp"  %>

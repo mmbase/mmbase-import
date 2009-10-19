@@ -4,5 +4,6 @@
 <mm:locale jspvar="locale" language="$config.lang" country="$config.country">
 <%=m.getString("foot.language")%>: <%= locale.getDisplayLanguage(locale) /*cloud.getLocale().getDisplayLanguage(cloud.getLocale())*/ %> (<%=locale.getDisplayCountry(locale)%>)<br />
 </mm:locale>
+  Cloud: <%=cloud.getName()%>@<%=cloud.getCloudContext().getUri() %>
 </p>
 <%@include file="footfoot.jsp" %>

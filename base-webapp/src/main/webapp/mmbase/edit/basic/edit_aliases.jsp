@@ -1,6 +1,6 @@
 <%@ include file="page_base.jsp"
 %><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
-<mm:cloud loginpage="login.jsp" sessionname="$config.session" rank="$rank">
+<mm:cloud loginpage="login.jsp" sessionname="$config.session" rank="$rank" uri="$config.uri">
 <mm:write referid="style" escape="none" />
 <title>Edit aliases</title>
 </head>
@@ -25,7 +25,7 @@
 <tr><th>Aliases of node <mm:nodeinfo type="gui" /></th></tr>
 <tr><td>
 <table width="100%">
-<mm:aliaslist id="alias"> 
+<mm:aliaslist id="alias">
     <tr><td><mm:write /></td><td><a href="<mm:url referids="node_number">
          <mm:param name="delete_alias"><mm:write referid="alias" /></mm:param>
 	 </mm:url>">
@@ -33,7 +33,7 @@
 </mm:aliaslist>
 </table>
 </td></tr>
-<tr><td>Add alias:<input type="text" size="30" name="new_alias" /> 
+<tr><td>Add alias:<input type="text" size="30" name="new_alias" />
 <input type="submit"  name="add" value="add" /></td>
 </td></tr>
 <tr><td><a href="<mm:url page="change_node.jsp" referids="node_number" />" >
