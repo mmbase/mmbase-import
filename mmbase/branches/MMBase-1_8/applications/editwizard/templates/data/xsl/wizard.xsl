@@ -36,6 +36,11 @@
   <xsl:variable name="BodyOnLoad">doOnLoad_ew(); start_validator(); startHtmlArea(); initPopCalendar();</xsl:variable>
   <xsl:variable name="BodyOnunLoad">doOnUnLoad_ew();</xsl:variable>
 
+  <xsl:template name="extrameta">
+     <!-- Disable the Skype-toolbar to convert phone numbers to a button -->
+     <meta name="SKYPE_TOOLBAR" content ="SKYPE_TOOLBAR_PARSER_COMPATIBLE"/>
+  </xsl:template>
+
   <xsl:template name="javascript">
     <script type="text/javascript" src="{$javascriptdir}tools.js">
       <xsl:comment>help IE</xsl:comment>
