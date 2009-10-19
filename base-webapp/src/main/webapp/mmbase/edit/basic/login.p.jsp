@@ -16,7 +16,7 @@
 <mm:import from="request" externid="language">en</mm:import>
 <mm:import from="request" externid="country"></mm:import>
 <mm:import from="request" externid="sessionname">cloud_mmbase</mm:import>
-<mm:import from="request" externid="uri">local</mm:import>
+<mm:import from="request" externid="uri" jspvar="uri">local</mm:import>
 
 <mm:content type="text/html" language="$language" country="$country" expires="0" jspvar="locale">
 
@@ -37,11 +37,22 @@
   ${uri}
   <table class="login">
     <%
-      AuthenticationData authentication = ContextProvider.getDefaultCloudContext().getAuthentication();
+      AuthenticationData authentication = ContextProvider.getCloudContext(uri).getAuthentication();
       String[] authenticationTypes = authentication.getTypes(authentication.getDefaultMethod(request.getProtocol()));
+      StringList cloudNames = ContextProvider.getCloudContext(uri).getCloudNames();
     %>
     <mm:import externid="authenticate" jspvar="currentType" vartype="string" ><%=authenticationTypes[0]%></mm:import>
     <form method="post" action="<mm:write referid="referrer" />" >
+
+    <% if (cloudNames.size() > 1) { %>
+    <tr><td>Cloud</td>
+    <td>
+       <select name="cloud">
+         <% for(String cloudName : cloudNames) { %>
+          <option value="<%=cloudName%>"><%=cloudName%></option>
+         <% } %>
+       </select>
+    <% } %>
     <% Parameter[] params = authentication.createParameters(currentType).getDefinition();
        for (int j = 0; j < params.length ; j++) {
          Parameter param = params[j];
