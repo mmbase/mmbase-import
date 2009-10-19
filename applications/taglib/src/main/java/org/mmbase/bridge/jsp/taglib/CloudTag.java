@@ -67,8 +67,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     private static final Logger log = Logging.getLoggerInstance(CloudTag.class);
 
-    private static final String DEFAULT_CLOUD_NAME = "mmbase";
-
     private static final String REALM = "realm_";
 
 
@@ -111,6 +109,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      **/
     public  CloudContext getDefaultCloudContext() throws JspTagException {
         if (cloudContext == null) {
+            String uri = cloudURI.getString(this);
             cloudContext = ContextProvider.getCloudContext(cloudURI.getString(this));
             if (cloudContext == null) throw new RuntimeException("ContextProvider gave <code>null</code> for " + cloudURI.getString(this));
         }
@@ -127,7 +126,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     protected String getName() throws JspTagException {
         if (cloudName == Attribute.NULL) {
-            return DEFAULT_CLOUD_NAME;
+            return getDefaultCloudContext().getCloudNames().get(0);
         }
         return cloudName.getString(this);
     }
@@ -770,7 +769,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         if (cloud == null) {
             log.debug("Cloud is null, cannot check it");
             removeCloud();
-           return;
+            return;
         }
         // we have a cloud, check if it is a desired one
         // otherwise make it null.
@@ -791,6 +790,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             // something like that. This means that the cloud (probably gotten
             // from the session), cannot be used anymore.
             log.debug("found a cloud in the session, but is was expired, throwing it away");
+            removeCloud();
+            return;
+        }
+        if (! cloud.getCloudContext().getUri().equals(ContextProvider.getCloudContext(cloudURI.getString(this)).getUri())) {
+            log.debug("found a cloud in the session, but is of the wrong cloud context, throwing it away");
             removeCloud();
             return;
         }
@@ -1055,6 +1059,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 request.setAttribute("reason", reason);
                 request.setAttribute("exactreason", exactReason);
                 request.setAttribute("usernames", logon);
+                request.setAttribute("uri", getDefaultCloudContext().getUri());
                 rd.forward(request, response);
             }
             return SKIP_BODY;
