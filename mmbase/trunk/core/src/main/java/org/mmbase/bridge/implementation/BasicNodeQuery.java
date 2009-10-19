@@ -193,7 +193,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     }
 
     @Override
-    public Query cloneWithoutFields() {
+    public NodeQuery cloneWithoutFields() {
         BasicSearchQuery bsq = new BasicSearchQuery(query, BasicSearchQuery.COPY_WITHOUTFIELDS);
         if (queryCheck != null) {
             removeSecurityConstraintFromClone(bsq);
