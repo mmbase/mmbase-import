@@ -38,6 +38,7 @@ public class MockCloud extends AbstractCloud {
         return new MockNode(m, cloudContext, nm);
     }
 
+    @Override
     public Node getNode(int number) throws NotFoundException {
         MockCloudContext.NodeDescription nd = cloudContext.nodes.get(number);
         if (nd == null) throw new NotFoundException();
@@ -45,10 +46,12 @@ public class MockCloud extends AbstractCloud {
         return getNode(nd.values, nm);
     }
 
+    @Override
     public boolean hasNode(int number) {
         return cloudContext.nodes.containsKey(number);
     }
 
+    @Override
     public NodeManagerList getNodeManagers() {
         List<NodeManager> list = new ArrayList<NodeManager>();
         for (String name : cloudContext.nodeManagers.keySet()) {
@@ -57,6 +60,7 @@ public class MockCloud extends AbstractCloud {
         return new BasicNodeManagerList(list, this);
     }
 
+    @Override
     public NodeManager getNodeManager(String name) throws NotFoundException {
         NodeManagerDescription d = cloudContext.nodeManagers.get(name);
         if (d == null) {
@@ -66,27 +70,33 @@ public class MockCloud extends AbstractCloud {
     }
 
 
+    @Override
     public boolean hasNodeManager(String name) {
         return cloudContext.nodeManagers.containsKey(name);
     }
 
+    @Override
     public boolean hasRole(String roleName) {
         return roleName.equals("related") || roleName.equals("posrel");
     }
 
+    @Override
     public boolean hasRelationManager(String roleName) {
         return roleName.equals("related") || roleName.equals("posrel");
     }
+    @Override
     public boolean hasRelationManager(NodeManager sourceManager, NodeManager destinationManager, String roleName) {
         return hasRelationManager(roleName);
     }
 
+    @Override
     public MockCloudContext getCloudContext() {
         return cloudContext;
     }
     private final QueryHandler aggregatedQueryHandler = new AggregatedQueryHandler(this);
     private final NodeQueryHandler nodeQueryHandler = new NodeQueryHandler(this);
 
+    @Override
     public NodeList getList(final Query query) {
         if (query.isAggregating()) {
             List<Map<String, Object>> aggregatedResult = aggregatedQueryHandler.getRecords(query);
@@ -100,6 +110,12 @@ public class MockCloud extends AbstractCloud {
         }
     }
 
+
+    @Override
+    protected Transaction newTransaction(String name) {
+        // TODO
+        throw new UnsupportedOperationException();
+    }
 
 }
 
