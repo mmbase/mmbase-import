@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.regex.*;
 import org.junit.*;
 import static org.junit.Assert.*;
+import org.mmbase.util.logging.Logging;
 
 /**
  *
@@ -36,9 +37,10 @@ public class ParametersTest {
 
     private static final Parameter<Integer> PB = new PatternParameter<Integer>(Pattern.compile("b+"), Integer.class);
     private static final Parameter<Integer> PC = new PatternParameter<Integer>(Pattern.compile("c+"), Integer.class);
+    private static final Parameter<String> PD = new PatternParameter<String>(Pattern.compile("d+"), DataTypes.getDataType("colors"));
 
     @Test
-    public void testSimple() {
+    public void simple() {
         Parameters params = new Parameters(A, B);
         assertEquals(2, params.size());
         assertEquals(2, params.getDefinition().length);
@@ -73,7 +75,7 @@ public class ParametersTest {
 
     }
     @Test
-    public void testIllegalPatterns() {
+    public void illegalPatterns() {
         try {
             Parameters params = new Parameters(PB, A);
             fail("parameterpattern should be given last. Should have give exception about that");
@@ -81,7 +83,7 @@ public class ParametersTest {
         }
     }
     @Test
-    public void testPatterns() {
+    public void patterns() {
         Parameters params = new Parameters(A, PB);
         assertEquals(1, params.size());
         assertEquals(2, params.getDefinition().length);
@@ -122,7 +124,7 @@ public class ParametersTest {
     }
 
     @Test
-    public void testWrapper() {
+    public void wrapper() {
         Parameters params = new Parameters(A, B, new Parameter.Wrapper(C, D));
         assertEquals(4, params.size());
         params.set(B, 5);
@@ -144,7 +146,7 @@ public class ParametersTest {
     }
 
     @Test
-    public void testWrapperPatterns() {
+    public void wrapperPatterns() {
         Parameter[] params1 = new Parameter[] {A, PB};
         Parameter[] params2 = new Parameter[]{ B, PC};
         Parameters params = new Parameters(new Parameter.Wrapper(params1), new Parameter.Wrapper(params2));
@@ -157,7 +159,7 @@ public class ParametersTest {
 
     }
     @Test
-    public void testSubList() {
+    public void subList() {
         Parameters params = new Parameters(A, B, new Parameter.Wrapper(C, D));
         params.set(B, 5);
         Parameters subParams = params.subList(1, 3);
@@ -185,7 +187,7 @@ public class ParametersTest {
     @Test
     public void autoCast() {
 
-        Parameters params = new Parameters(B, G, PB);
+        Parameters params = new Parameters(B, G);
         params.set(B, 5); // OK
         params.set(G, new java.math.BigDecimal(5));
         try {
@@ -207,7 +209,7 @@ public class ParametersTest {
 
         try {
             params.set("b", "a");
-            fail("Should have given IllegalArgumentException since 'a' is not a valid integer");
+            fail("Should have given IllegalArgumentException since 'a' is not a valid integer " + params);
         } catch (IllegalArgumentException ia) {
             // ok this is expected
 
@@ -248,18 +250,42 @@ public class ParametersTest {
         }
         params.set("g", new String[] {"1.1"});
 
+    }
+
+
+    @Test
+    public void patternParameters() {
+        Parameters params = new Parameters(PB, PD);
+        params.set("dd", "a");
+        assertTrue(params.validate().size() > 0);
 
         try {
             params.set("bb", "a");
-            fail("Should have given IllegalArgumentException since 'a' is not a valid integer");
+            fail("Should have given IllegalArgumentException since 'a' cannot be casted to integer");
         } catch (IllegalArgumentException ia) {
             // ok this is expected
             //System.out.println(ia);
 
         }
     }
+    @Test
+    public void patternParametersAutoCast() {
+        Parameters params = new Parameters(PB, PD);
+        params.setAutoCasting(true);
 
+        params.set("dd", "a");
+        assertTrue(params.validate().size() > 0);
 
+        try {
+            params.set("bb", "a");
+            fail("Should have given IllegalArgumentException since 'a' cannot be casted to integer");
+        } catch (IllegalArgumentException ia) {
+            // ok this is expected
+            //System.out.println(ia);
+
+        }
+
+    }
 
 
 
