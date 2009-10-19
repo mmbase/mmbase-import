@@ -77,6 +77,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     private CloudContext cloudContext;
 
     private Attribute cloudName = Attribute.NULL;
+    private String    loginPageCloudName = null;
+
     private Attribute cloudURI = Attribute.NULL;
     private Cloud cloud;
     private Object prevCloud;
@@ -125,6 +127,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     }
 
     protected String getName() throws JspTagException {
+        if (loginPageCloudName != null) return loginPageCloudName;
         if (cloudName == Attribute.NULL) {
             return getDefaultCloudContext().getCloudNames().get(0);
         }
@@ -955,7 +958,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             }
             String cloudNamePassed = request.getParameter(LOGINPAGE_CLOUD_PARAMETER);
             if (cloudNamePassed != null) {
-                setName(cloudNamePassed); // THIS SEEM DANGEROUS
+                loginPageCloudName = cloudNamePassed;
             }
             user.setAutoCasting(true);
             Enumeration<String> enumeration = request.getParameterNames();
@@ -1060,6 +1063,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 request.setAttribute("exactreason", exactReason);
                 request.setAttribute("usernames", logon);
                 request.setAttribute("uri", getDefaultCloudContext().getUri());
+                if (cloudName != Attribute.NULL) {
+                    request.setAttribute("cloudname", cloudName.getString(this));
+                }
                 rd.forward(request, response);
             }
             return SKIP_BODY;
@@ -1373,6 +1379,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         session = null;
         request = null;
         response = null;
+        loginPageCloudName = null;
     }
 
     public void doFinally() {
