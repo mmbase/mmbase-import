@@ -44,7 +44,7 @@ public class ParametersTest {
         Parameters params = new Parameters(A, B);
         assertEquals(2, params.size());
         assertEquals(2, params.getDefinition().length);
-        assertEquals(3, params.patternLimit);
+        assertEquals(2, params.patternLimit);
 
         assertEquals("A", params.get(0));
         assertEquals("A", params.get("a"));
@@ -287,6 +287,27 @@ public class ParametersTest {
     }
 
     @Test
+    public void patternLimit1() {
+        Parameters params = new Parameters(A);
+        assertEquals(1, params.patternLimit);
+        assertEquals(1, params.definition.length);
+    }
+
+    @Test
+    public void patternLimit2() {
+        Parameters params = new Parameters(A, PD);
+        assertEquals(1, params.patternLimit);
+        assertEquals(2, params.definition.length);
+    }
+
+    @Test
+    public void patternLimit3() {
+        Parameters params = new Parameters(A, PB, PC, PD);
+        assertEquals(1, params.patternLimit);
+        assertEquals(4, params.definition.length);
+    }
+
+    @Test
     public void definition() {
         Parameters params = new Parameters(A, PD);
         params.setAutoCasting(true);
@@ -294,8 +315,23 @@ public class ParametersTest {
         params.set("ddd", "blue");
         params.set("dddd", "green");
         params.set("ddddd", "yellow");
+        params.set("ddddd", "blue");
         assertEquals(5, params.size());
-        params.getDefinition();
+
+        Parameters sublist = params.subList(0, 3);
+        assertEquals("red", sublist.get(1));
+        assertEquals(3, sublist.size());
+
+        assertEquals(2, params.getDefinition().length);
+        assertEquals(2, sublist.getDefinition().length);
+        assertEquals("a", sublist.getDefinition()[0].getName());
+        assertEquals("d+", sublist.getDefinition()[1].getName());
+
+        Parameters sublist2 = params.subList(1, 3);
+        assertEquals(2, sublist2.size());
+        assertEquals("red", sublist2.get(0));
+        assertEquals(1, sublist2.getDefinition().length);
+        assertEquals("d+", sublist2.getDefinition()[0].getName());
 
     }
 

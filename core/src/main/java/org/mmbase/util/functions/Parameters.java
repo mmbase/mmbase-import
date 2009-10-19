@@ -48,7 +48,6 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
 
     // Index of the first PatternParameter
     protected int patternLimit = -1;
-
     /**
      * This array maps integers (position in array) to map keys, making it possible to implement
      * List.
@@ -90,8 +89,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         List<Map.Entry<String, Object>> pb = null;
         // fill with default values, and check for non-unique keys.
         int i = fromIndex;
-        for (; i < definition.length; i++) {
-
+        while(i < definition.length) {
             if (definition[i]  instanceof PatternParameter) {
                 pb = new ArrayList<Map.Entry<String, Object>>();
                 break;
@@ -99,9 +97,9 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
             if (backing.put(definition[i].getName(), definition[i].getDefaultValue()) != null) {
                 throw new IllegalArgumentException("Parameter keys not unique");
             }
-
+            i++;
         }
-        patternLimit = i + (pb == null ? 1 : 0);
+        patternLimit = i;
         toIndex = i;
         patternBacking = pb;
 
@@ -205,7 +203,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         fromIndex = from + params.fromIndex;
         toIndex   = to   + params.fromIndex;
         if (fromIndex < 0) throw new IndexOutOfBoundsException("fromIndex < 0");
-        if (toIndex > definition.length) throw new IndexOutOfBoundsException("toIndex greater than length of list");
+        if (toIndex > definition.length + (patternBacking == null ? 0 : patternBacking.size())) throw new IndexOutOfBoundsException("toIndex greater than length of list");
         if (fromIndex > toIndex) throw new IndexOutOfBoundsException("fromIndex > toIndex");
 
     }
@@ -266,8 +264,18 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
 
     public Parameter<?>[] getDefinition() {
         checkDef();
-        if (fromIndex > 0 || toIndex != definition.length - 1) {
-            return Arrays.asList(definition).subList(fromIndex, toIndex).toArray(Parameter.emptyArray());
+        if (fromIndex > 0 || toIndex  < patternLimit) {
+
+            if (patternLimit < definition.length) {
+                int trunkTo = toIndex;
+                if (trunkTo >= patternLimit) trunkTo = patternLimit;
+                List<Parameter<Object>> nonPatterns  = Arrays.asList(definition).subList(fromIndex, trunkTo);
+                List<Parameter<Object>> patterns     = Arrays.asList(definition).subList(patternLimit, definition.length);
+                return new ChainedList<Parameter<?>>(nonPatterns, patterns).toArray(Parameter.emptyArray());
+            } else {
+                return Arrays.asList(definition).subList(fromIndex, definition.length).toArray(Parameter.emptyArray());
+            }
+
         } else {
             return definition;
         }
@@ -484,7 +492,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
                     return this;
                 }
             }
-            throw new IllegalArgumentException("The parameter '" + parameterName + "' is not defined (defined are " + toString() + ")");
+            throw new IllegalArgumentException("The parameter '" + parameterName + "' is not defined (defined are " + Arrays.asList(definition) + ") " + patternLimit);
         }
     }
 
