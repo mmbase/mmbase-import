@@ -1,6 +1,6 @@
 <%@page import="org.mmbase.util.Casting,org.mmbase.util.functions.*,java.util.*" %><%@ include file="page_base.jsp"
 %><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
-<mm:cloud loginpage="login.jsp" sessionname="$config.session" rank="$rank">
+<mm:cloud loginpage="login.jsp" sessionname="$config.session" rank="$rank" uri="$config.uri">
 <mm:write referid="style" escape="none" />
 <title>View functions</title>
 </head>
@@ -10,7 +10,7 @@
 <mm:node number="$node_number" jspvar="node">
   <h1><mm:nodeinfo type="gui" /> (<mm:nodeinfo type="guinodemanager" />)
         <a href="<mm:url referids="node_number,node_number" page="change_node.jsp"/>">
-           <span class="change"><!-- needed for IE --></span><span class="alt">[change]</span>  
+           <span class="change"><!-- needed for IE --></span><span class="alt">[change]</span>
          </a>
 
   </h1>
@@ -20,7 +20,7 @@
       <mm:listfunction nodemanager="$_" name="getFunctions" jspvar="f">
 	<form>
 	  <input type="hidden" name="node_number" value="<mm:write referid="node_number" />" />
-	<% Function function = (Function) f; 
+	<% Function function = (Function) f;
 	%>
 	<input type="hidden" name="function_name" value="<%=function.getName()%>" />
 	<%
@@ -64,7 +64,7 @@
       <mm:function name="<%=function.getName()%>" />
 
 	  </mm:compare>
-	  
+
 	  </td>
 	</tr>
   </mm:functioncontainer>

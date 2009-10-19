@@ -1,6 +1,6 @@
 <%@ include file="page_base.jsp"
 %><mm:content language="$config.lang" country="$config.country" expires="0" type="text/html" postprocessor="none">
-<mm:cloud loginpage="login.jsp" sessionname="$config.session" jspvar="cloud" rank="$rank">
+<mm:cloud loginpage="login.jsp" sessionname="$config.session" jspvar="cloud" rank="$rank" uri="$config.uri">
   <mm:param name="org.mmbase.xml-mode" value="$config.xmlmode" />
   <mm:param name="org.mmbase.richtext.wiki.show_broken"    value="true" />
   <mm:write referid="style" escape="none" />

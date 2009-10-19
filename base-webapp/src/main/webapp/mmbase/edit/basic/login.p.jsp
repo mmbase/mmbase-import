@@ -16,6 +16,7 @@
 <mm:import from="request" externid="language">en</mm:import>
 <mm:import from="request" externid="country"></mm:import>
 <mm:import from="request" externid="sessionname">cloud_mmbase</mm:import>
+<mm:import from="request" externid="uri">local</mm:import>
 
 <mm:content type="text/html" language="$language" country="$country" expires="0" jspvar="locale">
 
@@ -33,7 +34,8 @@
       <%=getPrompt("failed_rank", locale)%>
     </p>
   </mm:compare>
-  <table>
+  ${uri}
+  <table class="login">
     <%
       AuthenticationData authentication = ContextProvider.getDefaultCloudContext().getAuthentication();
       String[] authenticationTypes = authentication.getTypes(authentication.getDefaultMethod(request.getProtocol()));
