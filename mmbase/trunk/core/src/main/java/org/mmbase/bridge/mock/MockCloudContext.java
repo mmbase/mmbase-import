@@ -90,7 +90,7 @@ public class MockCloudContext extends  AbstractCloudContext {
     }
 
     public MockCloudContext() {
-        clouds.add(CLOUD);
+        clouds.add("mmbase");
     }
 
     public void clear() {
@@ -159,7 +159,7 @@ public class MockCloudContext extends  AbstractCloudContext {
         if (clouds.contains(name)) {
             return new MockCloud(name, this, user);
         } else {
-            throw new NotFoundException();
+            throw new NotFoundException("No such cloud '" + name + "'");
         }
     }
 
