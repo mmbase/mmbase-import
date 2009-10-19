@@ -31,13 +31,13 @@
 <xsl:variable name="date_november">november</xsl:variable>
 <xsl:variable name="date_december">december</xsl:variable>
 
-<xsl:variable name="day_sun">Sun</xsl:variable>
-<xsl:variable name="day_mon">Mon</xsl:variable>
-<xsl:variable name="day_tue">Tue</xsl:variable>
-<xsl:variable name="day_wed">Wed</xsl:variable>
-<xsl:variable name="day_thu">Thu</xsl:variable>
-<xsl:variable name="day_fri">Fri</xsl:variable>
-<xsl:variable name="day_sat">Sat</xsl:variable>
+<xsl:variable name="day_sun">Zon</xsl:variable>
+<xsl:variable name="day_mon">Maa</xsl:variable>
+<xsl:variable name="day_tue">Din</xsl:variable>
+<xsl:variable name="day_wed">Woe</xsl:variable>
+<xsl:variable name="day_thu">Don</xsl:variable>
+<xsl:variable name="day_fri">Vri</xsl:variable>
+<xsl:variable name="day_sat">Zat</xsl:variable>
 
 <xsl:variable name="datepicker_currentmonth">Ga naar huidige maand</xsl:variable>
 <xsl:variable name="datepicker_today">Vandaag is</xsl:variable>
@@ -82,12 +82,12 @@
 <!-- save button prompts and tooltips -->
 <xsl:template name="prompt_save">Opslaan &amp; beëindigen</xsl:template>
 <xsl:template name="prompt_save_only">Opslaan</xsl:template>
-<xsl:variable name="tooltip_save">Bewaar alle wijzigingen.</xsl:variable>
-<xsl:variable name="tooltip_save_only">Bewaar alle wijzigingen, maar ga door met editen.</xsl:variable>
+<xsl:variable name="tooltip_save">Bewaar alle wijzigingen en sluit deze taak.</xsl:variable>
+<xsl:variable name="tooltip_save_only">Bewaar alle wijzigingen, maar ga door met bewerken.</xsl:variable>
 <xsl:variable name="tooltip_no_save">De wijzigingen kunnen niet worden bewaard, sommige gegevens zijn niet correct ingevoerd.</xsl:variable>
 <!-- cancel button prompts and tooltips -->
 <xsl:template name="prompt_cancel">Annuleren</xsl:template>
-<xsl:variable name="tooltip_cancel">Annuleer deze taak, wijzigingen (sinds de laatste 'opslaan')worden niet bewaard.</xsl:variable>
+<xsl:variable name="tooltip_cancel">Annuleer deze taak, wijzigingen (sinds de laatste keer 'opslaan') worden niet bewaard.</xsl:variable>
 <xsl:variable name="tooltip_no_cancel">Deze taak kan niet worden afgebroken.</xsl:variable>
 <!-- step (form) button prompts and tooltips -->
 <xsl:template name="prompt_step"><nobr>Stap <xsl:value-of select="position()" /></nobr></xsl:template>
@@ -166,7 +166,7 @@
 <xsl:variable name="tooltip_end_search" >Toevoegen</xsl:variable>
 <!-- searchlist error messages for forms validation  -->
 <xsl:variable name="message_pattern" >De waarde {0} volgt niet het vereiste patroon</xsl:variable>
-<xsl:variable name="message_minlength" >Waarde moet minstens {0} karaktars lang zijn</xsl:variable>
+<xsl:variable name="message_minlength" >Waarde moet minstens {0} karakters lang zijn</xsl:variable>
 <xsl:variable name="message_maxlength" >Waarde kan hoogstens {0} karakters lang zijn</xsl:variable>
 <xsl:variable name="message_min" >Waarde moet groter of gelijk zijn aan {0}</xsl:variable>
 <xsl:variable name="message_max" >Waarde moet kleiner of gelijk zijn aan {0}</xsl:variable>
