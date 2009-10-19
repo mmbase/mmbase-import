@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0"  prefix="mm"
 %><%@include file="page_base_functionality.jsp"
-%><mm:cloud loginpage="login.jsp"  sessionname="$config.session" jspvar="cloud" rank="$rank">
+%><mm:cloud loginpage="login.jsp"  sessionname="$config.session" jspvar="cloud" rank="$rank" uri="$config.uri">
 <mm:param name="org.mmbase.xml-mode" value="$config.xmlmode" />
 
 <mm:log>Saving with XML-mode <%=cloud.getProperty("org.mmbase.xml-mode")%></mm:log>
