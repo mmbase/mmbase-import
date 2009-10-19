@@ -121,7 +121,7 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
             anchor.searcher = searcher;
             $(anchor).click(function(el) {
                 var id = anchor.href.substring(anchor.href.indexOf("#") + 1);
-                return this.searcher.search(document.getElementById(id), 0);
+                return this.searcher.search(document.getElementById(id), 0, anchor);
             });
         });
 
@@ -582,7 +582,7 @@ MMBaseSearcher.prototype.getResultDiv = function() {
  * Feeded are a.o. 'id' 'offset' and 'search'.
  * The actual query is supposed to be on the user's session, and will be picked up in page.jspx.
  */
-MMBaseSearcher.prototype.search = function(val, offset) {
+MMBaseSearcher.prototype.search = function(val, offset, anchor) {
     if (val != null) {
         $(this.div).find("input.search").val(val);
     }
@@ -643,7 +643,7 @@ MMBaseSearcher.prototype.search = function(val, offset) {
                         self.addNewlyRelated(rep);
                         self.deleteNewlyRemoved(rep);
                         self.bindEvents(rep);
-                        $(self.relater.div).trigger("mmsrPaged", [status, self.relater]);
+                        $(self.relater.div).trigger("mmsrPaged", [status, self.relater, self, anchor]);
                     }
                 }
                });
@@ -657,7 +657,7 @@ MMBaseSearcher.prototype.search = function(val, offset) {
         this.addNewlyRelated(rep);
         self.deleteNewlyRemoved(rep);
         this.bindEvents(rep);
-        $(self.relater.div).trigger("mmsrPaged", [status, self.relater]);
+        $(self.relater.div).trigger("mmsrPaged", [status, self.relater, self, anchor]);
     }
     return false;
 }
@@ -818,7 +818,7 @@ MMBaseSearcher.prototype.bindEvents = function() {
         self.logger.debug("navigating " + anchor);
 
         var id = anchor.href.substring(anchor.href.indexOf("#") + 1, anchor.href.lastIndexOf("_"));
-        return self.search(document.getElementById(id), anchor.name);
+        return self.search(document.getElementById(id), anchor.name, anchor);
     });
 }
 
