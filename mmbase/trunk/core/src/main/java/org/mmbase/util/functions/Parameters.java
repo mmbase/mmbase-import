@@ -300,8 +300,10 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         }
     }
 
-    // implementation of (modifiable) List
-    // @throws NullPointerException if definition not set
+    /**
+     * implementation of (modifiable) List
+     *  @exception NullPointerException if definition not set
+     */
     public Object set(int i, Object value) {
         checkDef();
         int j = i + fromIndex;
@@ -358,6 +360,18 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
                 ReplacingLocalizedString replacing = new ReplacingLocalizedString(ls);
                 replacing.replaceAll("\\A", a.getName() + ": ");
                 errors.add(replacing);
+            }
+        }
+        for (Map.Entry<String, Object> patternEntry : patternBacking) {
+            for (int i = patternLimit; i < definition.length; i++) {
+                Parameter<?> a = definition[i];
+                if (a.matches(patternEntry.getKey())) {
+                    for (LocalizedString ls : a.getDataType().castAndValidate(patternEntry.getValue(), null, null)) {
+                        ReplacingLocalizedString replacing = new ReplacingLocalizedString(ls);
+                        replacing.replaceAll("\\A", a.getName() + ": ");
+                        errors.add(replacing);
+                    }
+                }
             }
         }
         return errors;
@@ -461,7 +475,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
                         try {
                             value = a.autoCast(value);
                         } catch (org.mmbase.datatypes.CastException ce) {
-                            throw new IllegalArgumentException(ce);
+                            log.debug("" + ce.getMessage());
                         }
                     }
                     a.checkType(value);

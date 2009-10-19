@@ -210,6 +210,9 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      */
     public Parameter(String name, DataType<C> dataType, boolean copy) {
         super(name);
+        if (dataType == null) {
+            throw new NullPointerException("The datatype of a parameter ('" + name + "') cannot be null");
+        }
         if (copy) {
             this.dataType = dataType.clone(name);
         } else {
@@ -350,6 +353,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      */
     protected C autoCast(Object value) throws CastException {
         Collection<LocalizedString> errors = dataType.castAndValidate(value, null, null);
+
         if (errors.size() == 0) {
             return dataType.cast(value, null, null);
         } else {
