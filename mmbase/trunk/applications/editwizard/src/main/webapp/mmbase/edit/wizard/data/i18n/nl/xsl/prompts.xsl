@@ -31,13 +31,13 @@
 <xsl:variable name="date_november">november</xsl:variable>
 <xsl:variable name="date_december">december</xsl:variable>
 
-<xsl:variable name="day_sun">Sun</xsl:variable>
-<xsl:variable name="day_mon">Mon</xsl:variable>
-<xsl:variable name="day_tue">Tue</xsl:variable>
-<xsl:variable name="day_wed">Wed</xsl:variable>
-<xsl:variable name="day_thu">Thu</xsl:variable>
-<xsl:variable name="day_fri">Fri</xsl:variable>
-<xsl:variable name="day_sat">Sat</xsl:variable>
+<xsl:variable name="day_sun">Zon</xsl:variable>
+<xsl:variable name="day_mon">Maa</xsl:variable>
+<xsl:variable name="day_tue">Din</xsl:variable>
+<xsl:variable name="day_wed">Woe</xsl:variable>
+<xsl:variable name="day_thu">Don</xsl:variable>
+<xsl:variable name="day_fri">Vri</xsl:variable>
+<xsl:variable name="day_sat">Zat</xsl:variable>
 
 <xsl:variable name="datepicker_currentmonth">Ga naar huidige maand</xsl:variable>
 <xsl:variable name="datepicker_today">Vandaag is</xsl:variable>
