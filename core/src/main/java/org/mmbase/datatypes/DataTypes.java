@@ -81,7 +81,7 @@ public class DataTypes {
                 */
                 initialized = true;
             } else {
-                log.warn("Already initalized");
+                log.debug("Already initalized");
             }
         }
 
