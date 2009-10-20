@@ -58,6 +58,7 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E> {
         this.cloud = nodeManager.getCloud();
     }
 
+    @Override
     protected E convert(Object o) {
         if (o == null) {
             log.debug("Null");
