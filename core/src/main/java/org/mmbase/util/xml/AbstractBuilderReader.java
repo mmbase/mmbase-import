@@ -275,7 +275,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
         }
         // is it a full name or inside the org.mmbase.module.builders.* path
         int pos = val.indexOf('.');
-        if (pos==-1) {
+        if (pos == -1) {
             val = "org.mmbase.module.builders." + val;
         }
         if ("org.mmbase.module.corebuilders.ObjectTypes".equals(val)) {
@@ -404,6 +404,9 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
             baseDataType = DataTypes.getListDataType(listItemType);
         } else if (type != Field.TYPE_UNKNOWN) {
             baseDataType = DataTypes.getDataType(type);
+            if (baseDataType == null) {
+                log.error("Not found a baseDataType for " +  type);
+            }
         }
         BasicDataType dataType = null;
         Element guiTypeElement = getElementByPath(field, "field.gui.guitype");
@@ -526,7 +529,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
         if (dataType == null && forceInstance) {
             // DataType is null if no data type element was found
             if (baseDataType == null) {
-                throw new IllegalArgumentException("No datatype given, and no type defined");
+                throw new IllegalArgumentException("No datatype element given, and no type ('" + type + "') defined");
             }
             dataType = (BasicDataType) baseDataType.clone(""); // clone with empty id
         }
@@ -750,6 +753,11 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
         } else {
             return false;
         }
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ":" + getSystemId();
     }
 
 

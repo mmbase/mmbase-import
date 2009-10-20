@@ -95,7 +95,7 @@ public abstract class ParentBuilderReader extends AbstractBuilderReader<Field>  
      */
     @Override
     public List<Field> getFields() {
-        List<Field> results = new ArrayList<Field>();
+        final List<Field> results = new ArrayList<Field>();
         int pos = 1;
         if (hasParent()) {
             for (Field f : parent.getFields()) {
@@ -107,8 +107,29 @@ public abstract class ParentBuilderReader extends AbstractBuilderReader<Field>  
         for(Element fieldList : getChildElements("builder", "fieldlist")) {
             for (Element field : getChildElements(fieldList,"field")) {
                 String fieldName = getElementAttributeValue(field, "name");
+                // legacy support
+                if (fieldName.length() == 0) {
+                    Element name = getElementByPath(field, "field.db.name");
+                    if (name != null) {
+                        fieldName = getNodeTextValue(name);
+                    }
+                }
+
+                int type = Field.TYPE_UNKNOWN;
+                // legacy support
+                Element dbtype = getElementByPath(field, "field.db.type");
+                if (dbtype != null) {
+                    type = Fields.getType(getNodeTextValue(dbtype));
+                }
                 DataType dt = decodeDataType(getName(), org.mmbase.datatypes.DataTypes.getSystemCollector(),
-                                             fieldName, field, Field.TYPE_UNKNOWN, Field.TYPE_UNKNOWN, true);
+                                             fieldName, field, type, Field.TYPE_UNKNOWN, true);
+
+                if (dbtype != null) {
+                    if ("true".equals(dbtype.getAttribute("notnull"))) {// legacy
+                        dt.setRequired(true);
+                    }
+                }
+
 
                 MockField newField = new MockField(fieldName, null, dt);
                 String fieldState = getElementAttributeValue(field, "state");
@@ -117,8 +138,10 @@ public abstract class ParentBuilderReader extends AbstractBuilderReader<Field>  
                 } else {
                     newField.setState(Fields.getState(fieldState));
                 }
+                assert newField.getName().length() > 0 : XMLWriter.write(field);
                 results.add(newField);
             }
+
         }
         return results;
     }
