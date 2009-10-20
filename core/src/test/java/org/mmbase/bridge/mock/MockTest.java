@@ -184,6 +184,19 @@ public class MockTest  {
         assertEquals("" + cc.nodes, 5, result.size());
     }
 
+    @Test
+    public void transaction() throws Exception {
+        MockCloudContext cc = MockCloudContext.getInstance();
+        Cloud c = cc.getCloud("mmbase");
+
+        // at least it should be possible to obtain something
+        Transaction t = c.getTransaction("test123");
+
+        assertEquals("test123", t.getName());
+        assertEquals("mmbase", t.getCloudName());
+        assertEquals(c, t.getNonTransactionalCloud());
+    }
+
 
 
 
