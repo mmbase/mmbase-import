@@ -72,13 +72,14 @@ public abstract class ThreadPools {
     private static List<Thread> nameLess = new CopyOnWriteArrayList<Thread>();
 
     public static Thread newThread(final Runnable r, final String id) {
-        boolean isUp = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().isUp();
+        boolean isUp = org.mmbase.bridge.ContextProvider.getResolvers().size() == 0 || org.mmbase.bridge.ContextProvider.getDefaultCloudContext().isUp();
         Thread t = new Thread(threadGroup, r,
                               isUp ? getMachineName() + ":" + id : id) {
                 /**
                  * Overrides run of Thread to catch and log all exceptions. Otherwise they go through to app-server.
                  */
-                @Override public void run() {
+                @Override
+                public void run() {
                     try {
                         super.run();
                     } catch (org.mmbase.bridge.NotFoundException nf) {
@@ -126,6 +127,8 @@ public abstract class ThreadPools {
         try {
             org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
             machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
+        } catch (org.mmbase.bridge.BridgeException be) {
+            machineName = "localhost";
         } catch (NoClassDefFoundError cnfe) {
             // happens if no MMBaseContext, because this is used with the
             // rmmci-client jar.
