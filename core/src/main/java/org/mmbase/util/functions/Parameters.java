@@ -649,7 +649,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      * @since MMBase-1.9.1
      */
     protected Map<String, Object> undefaultBacking() {
-        return new AbstractMap<String, Object>() {
+        return new SerializableAbstractMap<String, Object>() {
             public Set<Map.Entry<String, Object>> entrySet() {
                 return new AbstractSet<Map.Entry<String, Object>>() {
                     public Iterator<Map.Entry<String, Object>> iterator() {
@@ -691,7 +691,8 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     }
 
     private Map<String, Object> toMap(final Map<String, Object> b) {
-        return new AbstractMap<String, Object>() {
+        return new SerializableAbstractMap<String, Object>() {
+            private static final long serialVersionUID = 1L;
             public Set<Map.Entry<String, Object>> entrySet() {
                 return new AbstractSet<Map.Entry<String, Object>>() {
                     public Iterator<Map.Entry<String, Object>> iterator() {
@@ -784,5 +785,11 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      */
     public  List<Map.Entry<String, Object>> toUndefaultEntryList() {
         return toEntryList(undefaultBacking());
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    protected static abstract class SerializableAbstractMap<K,V> extends AbstractMap<K,V> implements java.io.Serializable {
     }
 }
