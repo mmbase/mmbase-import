@@ -15,7 +15,9 @@ import org.mmbase.bridge.Query;
 import org.mmbase.storage.search.*;
 
 /**
-
+ * Query-handler that deals with aggregated queries.  At the moment this is only partly implemented
+ * (Only count queries with 1 step, and no constraint).
+ *
  * @author  Michiel Meeuwissen
  * @version $Id$
  * @since   MMBase-1.9.2

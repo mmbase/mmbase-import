@@ -14,7 +14,7 @@ import java.util.*;
 import org.mmbase.bridge.Query;
 
 /**
- * Interface for handling of Querys. A bit similar to {@link
+ * Interface for handling of Queries. A bit similar to {@link
  * org.mmbase.storage.search.SearchQueryHandler} but that one requires us to produces
  * MMObjectNode's, so we consider it unusable for this 'mock' implementation of the bridge.
  *
