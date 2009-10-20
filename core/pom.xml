@@ -58,7 +58,7 @@ See http://www.MMBase.org/license
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
-          <showDeprecation>false</showDeprecation>
+          <showDeprecation>true</showDeprecation>
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
@@ -194,7 +194,7 @@ See http://www.MMBase.org/license
     <dependency>
       <groupId>org.mmbase.tests</groupId>
       <artifactId>mmbase-rmmci</artifactId>
-      <version>1.9.2.0</version>
+      <version>1.9.2.1</version>
       <classifier>client-skinny</classifier>
       <scope>test</scope>
     </dependency>
