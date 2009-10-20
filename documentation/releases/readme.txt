@@ -15,7 +15,7 @@ It includes the following contents:
 LICENSE                     MPL-1.0 license
 readme.txt                  This file
 releasenotes.txt            Releasenotes for this distro (contains
-                            changes/bugfixes/know issues) 
+                            changes/bugfixes/known issues) 
 installation.txt            Instructions for installing MMBase
 upgrade.txt                 Instructions for upgrading existing MMBase
                             installations

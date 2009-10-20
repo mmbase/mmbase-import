@@ -33,4 +33,4 @@ important files (webapp, database) before upgrading.
 
 - Clean the working directory of your app-server (to recompile jsp's).
 
-- Check the releasenotes.txt for know issues and changes.
+- Check the releasenotes.txt for known issues and changes.
