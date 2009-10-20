@@ -36,9 +36,11 @@ class AggregatedQueryHandler extends  AbstractQueryHandler  {
             StepField field = query.getFields().get(0);
             if (field instanceof AggregatedField) {
                 AggregatedField af = (AggregatedField) field;
-                if (af.getAggregationType() == AggregatedField.AGGREGATION_TYPE_COUNT) {
+                if (af.getAggregationType() == AggregatedField.AGGREGATION_TYPE_COUNT ||
+                    af.getAggregationType() == AggregatedField.AGGREGATION_TYPE_COUNT_DISTINCT // we count for one field so it is automaticly distinct
+                    ) {
                     if (query.getConstraint() != null) {
-                        throw new UnsupportedOperationException();
+                        throw new UnsupportedOperationException("Query '" + query.toSql() + "' has a constraint, that is not yet supported");
                     } else {
                         String tableName = query.getSteps().get(0).getTableName();
                         Set<String> wantedNodeManagers = getNodeManagerAndDescendants(cloud.getNodeManager(tableName));
@@ -59,13 +61,13 @@ class AggregatedQueryHandler extends  AbstractQueryHandler  {
                         return list;
                     }
                 } else {
-                    throw new UnsupportedOperationException();
+                    throw new UnsupportedOperationException("Aggregation " + af.getAggregationType() + " is not supported");
                 }
             } else {
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("Field should be AggregatedField, but is " + field.getClass()); // RuntimeException ?
             }
         } else {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("Query '" + query.toSql() + "' has more than one field, which is not yet supported");
         }
     }
 
