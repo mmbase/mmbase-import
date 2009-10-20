@@ -17,6 +17,8 @@ import java.io.*;
  * This class wraps a {@link java.text.Collator} and associates it with a {@link
  * java.util.Locale}. Also, it is {@link java.io.Serializable} (mostly to help RMMCI).
  *
+ * An instance can be obtains with {@link #getInstance(String)}.
+ *
  * @author Michiel Meeuwissen
  * @version $Id$
  * @since MMBase-1.9.2
@@ -25,11 +27,27 @@ public class LocaleCollator  extends Collator implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+
+    /**
+     * An enum wrapping the 'strength' related constants of {@link Collator}. Mainly because {@link Strength#valueOf(String)} is used in the implementation of {@link LocaleCollator#getInstance(String)}.
+     */
     public static enum Strength {
+        /**
+         * Wraps {@link Collator#IDENTICAL}
+         */
         IDENTICAL(Collator.IDENTICAL),
-        PRIMARY(Collator.PRIMARY),
-        SECONDARY(Collator.SECONDARY),
-        TERTIARY(Collator.TERTIARY);
+        /**
+         * Wraps {@link Collator#PRIMARY}
+         */
+            PRIMARY(Collator.PRIMARY),
+            /**
+             * Wraps {@link Collator#SECONDARY}
+             */
+            SECONDARY(Collator.SECONDARY),
+            /**
+             * Wraps {@link Collator#TERTIARY}
+             */
+            TERTIARY(Collator.TERTIARY);
 
         private final int value;
         private Strength(int v) {
@@ -38,6 +56,9 @@ public class LocaleCollator  extends Collator implements Serializable {
         public int get() {
             return value;
         }
+        /**
+         * @param i {@link Collator#IDENTICAL}, {@link Collator#PRIMARY}, {@link Collator#SECONDARY} or {@link Collator#TERTIARY}.
+         */
         public static Strength valueOf(int i) {
             for (Strength s : Strength.values()) {
                 if (s.get() == i) return s;
@@ -46,6 +67,9 @@ public class LocaleCollator  extends Collator implements Serializable {
         }
 
     }
+    /**
+     * An enum wrapping the 'decompositon' related constants of {@link Collator}. Mainly because {@link Decomposition#valueOf(String)} is used in the implementation of {@link LocaleCollator#getInstance(String)}.
+     */
     public static enum Decomposition {
         CANONICAL(Collator.CANONICAL_DECOMPOSITION),
         FULL(Collator.FULL_DECOMPOSITION),
@@ -57,6 +81,9 @@ public class LocaleCollator  extends Collator implements Serializable {
         public int get() {
             return value;
         }
+        /**
+         * @param i {@link Collator#CANONICAL_DECOMPOSITION}, {@link Collator#FULL_DECOMPOSITION} or {@link Collator#NO_DECOMPOSITION}.
+         */
         public static Decomposition valueOf(int i) {
             for (Decomposition s : Decomposition.values()) {
                 if (s.get() == i) return s;
@@ -84,6 +111,8 @@ public class LocaleCollator  extends Collator implements Serializable {
      *  <li>"da_DK" The Collator associated with danish</li>
      *  <li>":IDENTIY The case sensitive Collator associated with the default locale</li>
      * </ul>
+     * @see Strength
+     * @see Decomposition
      */
 
     public static Collator getInstance(String s) {
