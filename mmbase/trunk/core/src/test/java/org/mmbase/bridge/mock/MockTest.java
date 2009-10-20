@@ -13,7 +13,7 @@ package org.mmbase.bridge.mock;
 import org.mmbase.bridge.mock.MockCloudContext;
 import org.mmbase.bridge.mock.MockBuilderReader;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
+import org.mmbase.bridge.util.*;
 import org.mmbase.datatypes.*;
 import java.util.*;
 import org.junit.*;
@@ -179,8 +179,23 @@ public class MockTest  {
         MockCloudContext cc = MockCloudContext.getInstance();
         Cloud c = cc.getCloud("mmbase");
         NodeManager typedef = c.getNodeManager("typedef");
+        assertTrue("" + typedef + new NodeMap(typedef), typedef.getNumber() > 0);
         NodeQuery q = typedef.createQuery();
         NodeList result = typedef.getList(q);
+        assertEquals("" + cc.nodes, 5, result.size());
+        assertTrue(" " + result.get(0).getClass(), result.get(0) instanceof NodeManager);
+        assertTrue("" + result + " does not contain "  + typedef, result.contains(typedef));
+        assertTrue("No node " + typedef.getNumber(), c.hasNode(typedef.getNumber()));
+    }
+
+    @Test
+    public void query() throws Exception {
+        MockCloudContext cc = MockCloudContext.getInstance();
+        Cloud c = cc.getCloud("mmbase");
+        NodeManager typedef = c.getNodeManager("typedef");
+        Query q = c.createQuery();
+        q.addStep(typedef);
+        NodeList result = c.getList(q);
         assertEquals("" + cc.nodes, 5, result.size());
     }
 
