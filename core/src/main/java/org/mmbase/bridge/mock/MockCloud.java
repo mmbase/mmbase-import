@@ -13,6 +13,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.implementation.*;
 import org.mmbase.security.*;
+import org.mmbase.util.Casting;
 import java.util.*;
 
 /**
@@ -41,9 +42,15 @@ public class MockCloud extends AbstractCloud {
     @Override
     public Node getNode(int number) throws NotFoundException {
         MockCloudContext.NodeDescription nd = cloudContext.nodes.get(number);
-        if (nd == null) throw new NotFoundException();
-        NodeManager nm = getNodeManager(nd.type);
-        return getNode(nd.values, nm);
+        if (nd == null) {
+            throw new NotFoundException();
+        }
+        if (nd.type.equals("typedef")) {
+            return  getNodeManager(org.mmbase.util.Casting.toString(nd.values.get("name")));
+        } else {
+            NodeManager nm = getNodeManager(nd.type);
+            return getNode(nd.values, nm);
+        }
     }
 
     @Override
@@ -95,6 +102,7 @@ public class MockCloud extends AbstractCloud {
     }
     private final QueryHandler aggregatedQueryHandler = new AggregatedQueryHandler(this);
     private final NodeQueryHandler nodeQueryHandler = new NodeQueryHandler(this);
+    private final MultilevelQueryHandler queryHandler = new MultilevelQueryHandler(this);
 
     @Override
     public NodeList getList(final Query query) {
@@ -104,9 +112,34 @@ public class MockCloud extends AbstractCloud {
             return new BasicNodeList(aggregatedResult, tempNodemanager);
         }  else if (query instanceof NodeQuery) {
             List<Map<String, Object>> result = nodeQueryHandler.getRecords(query);
-            return new BasicNodeList(result, ((NodeQuery) query).getNodeManager());
+            final NodeManager nm =  ((NodeQuery) query).getNodeManager();
+            return new BasicNodeList(result, nm) {
+                @Override
+                protected Node convert(Object o) {
+                    if (o == null) {
+                        return null;
+                    } else if (o instanceof Node) {
+                        return (Node) o;
+                    } else {
+                        Map<String, Object> m = (Map<String, Object>) o;
+                        if (nm.getName().equals("typedef")) {
+                            return MockCloud.this.getNodeManager(Casting.toString(m.get("name")));
+                        } else {
+                            return MockCloud.this.getNode(m, nm);
+                        }
+                    }
+                }
+            };
         } else {
-            throw new UnsupportedOperationException();
+            List<Map<String, Object>> result = queryHandler.getRecords(query);
+            NodeManager nm = new AbstractNodeManager(this) {
+                    @Override
+                    protected Map<String, Field> getFieldTypes() {
+                        return VirtualNodeManager.getFieldTypes(query, this);
+                    }
+                };
+            return new BasicNodeList(result, nm);
+
         }
     }
 
