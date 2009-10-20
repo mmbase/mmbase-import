@@ -12,22 +12,25 @@ package org.mmbase.util.xml;
 import org.xml.sax.*;
 import org.w3c.dom.*;
 import java.io.*;
-import junit.framework.TestCase;
+
+import org.junit.*;
+import static org.junit.Assert.*;
 
 /**
- * 
+ *
  * @author Michiel Meeuwissen
  * @verion $Id$
  */
-public class DocumentReaderTest extends TestCase {
+public class DocumentReaderTest {
 
 
     private Element getElement(String s) {
-        DocumentReader reader = new DocumentReader(new InputSource(new StringReader(s)), false); 
+        DocumentReader reader = new DocumentReader(new InputSource(new StringReader(s)), false);
         return reader.getRootElement();
     }
 
-    public void testAppendChild() {
+    @Test
+    public void appendChild() {
         Element parent = getElement("<a />");
         {
             String res = XMLWriter.write(parent, false, true);
@@ -41,63 +44,72 @@ public class DocumentReaderTest extends TestCase {
             assertEquals(res, res, "<a><b/></a>");
         }
     }
-    public void testAppendChild2() {
+    @Test
+    public void appendChild2() {
         Element parent =  getElement("<a><b /></a>");
         Element c = parent.getOwnerDocument().createElement("c");
         DocumentReader.appendChild(parent, c, "b,c");
         String res = XMLWriter.write(parent, false, true);
         assertEquals(res, res, "<a><b/><c/></a>");
     }
-    public void testAppendChild3() {
+    @Test
+    public void appendChild3() {
         Element parent =  getElement("<a></a>");
         Element c = parent.getOwnerDocument().createElement("c");
         DocumentReader.appendChild(parent, c, "b,c");
         String res = XMLWriter.write(parent, false, true);
         assertEquals(res, res, "<a><c/></a>");
     }
-    public void testAppendChild4() {
+    @Test
+    public void appendChild4() {
         Element parent =  getElement("<a><b /><b /></a>");
         Element c = parent.getOwnerDocument().createElement("c");
         DocumentReader.appendChild(parent, c, "b,c");
         String res = XMLWriter.write(parent, false, true);
         assertEquals(res, res, "<a><b/><b/><c/></a>");
     }
-    public void testAppendChild5() {
+    @Test
+    public void appendChild5() {
         Element parent =  getElement("<a><b /><b /><d /></a>");
         Element c = parent.getOwnerDocument().createElement("c");
         DocumentReader.appendChild(parent, c, "b,c");
         String res = XMLWriter.write(parent, false, true);
         assertEquals(res, res, "<a><b/><b/><c/><d/></a>");
     }
-    public void testAppendChild6() {
+    @Test
+    public void appendChild6() {
         Element parent =  getElement("<a><b /><b /><d /></a>");
         Element c = parent.getOwnerDocument().createElement("c");
         DocumentReader.appendChild(parent, c, "b");
         String res = XMLWriter.write(parent, false, true);
         assertEquals(res, res, "<a><b/><b/><c/><d/></a>");
     }
-    public void testAppendChild7() {
+    @Test
+    public void appendChild7() {
         Element parent =  getElement("<a><b /><b /><c id='t' /><d /></a>");
         Element c = parent.getOwnerDocument().createElement("c");
         DocumentReader.appendChild(parent, c, "b");
         String res = XMLWriter.write(parent, false, true);
         assertEquals(res, res, "<a><b/><b/><c/><c id=\"t\"/><d/></a>");
     }
-    public void testAppendChild8() {
+    @Test
+    public void appendChild8() {
         Element parent =  getElement("<a><b /><b /><c id='t' /><d /></a>");
         Element c = parent.getOwnerDocument().createElement("c");
         DocumentReader.appendChild(parent, c, "b,c");
         String res = XMLWriter.write(parent, false, true);
         assertEquals(res, res, "<a><b/><b/><c id=\"t\"/><c/><d/></a>");
     }
-    public void testAppendChild9() {
+    @Test
+    public void appendChild9() {
         Element parent =  getElement("<a><x /></a>");
         Element c = parent.getOwnerDocument().createElement("c");
         DocumentReader.appendChild(parent, c, "(x|y),c");
         String res = XMLWriter.write(parent, false, true);
         assertEquals(res, res, "<a><x/><c/></a>");
     }
-    public void testAppendChild10() {
+    @Test
+    public void appendChild10() {
         Element parent =  getElement("<a><q /></a>");
         Element c = parent.getOwnerDocument().createElement("c");
         DocumentReader.appendChild(parent, c, "(x|y),c");
@@ -112,8 +124,9 @@ public class DocumentReaderTest extends TestCase {
         String res2 = XMLWriter.write(parent2, false, true);
         assertTrue(res1 + "!=" + res2, res1.equals(res2));
     }
-    public void testToDocument() {
-        String[] cases = { "<a><b /></a>", 
+    @Test
+    public void toDocument() {
+        String[] cases = { "<a><b /></a>",
                            "<a xml:lang='nl'><b /></a>",
                            "<a xml:lang='nl' c='d'><b /></a>",
                            "<a xml:lang='nl' c='d'><b /><b /></a>",
