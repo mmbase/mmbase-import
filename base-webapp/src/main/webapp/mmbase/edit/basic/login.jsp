@@ -4,7 +4,7 @@
 <title>Login</title>
 </head>
 <body class="basic">
-  <h2>Login</h2>
+  <h2>Login: <span class="uri"><mm:escape>${config.uri}</mm:escape></span></h2>
 
   <mm:cloud sessionname="$config.session" method="logout" uri="$config.uri"/>
 

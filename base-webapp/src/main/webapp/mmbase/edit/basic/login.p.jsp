@@ -34,7 +34,6 @@
       <%=getPrompt("failed_rank", locale)%>
     </p>
   </mm:compare>
-  ${uri}
   <table class="login">
     <%
       AuthenticationData authentication = ContextProvider.getCloudContext(uri).getAuthentication();
