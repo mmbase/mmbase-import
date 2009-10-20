@@ -7,11 +7,8 @@
 ./tests/cc.xml
 ./tests/dd.xml
 ./tests/xx.xml
-./tests/extends_blob_on_disk.xml
 ./tests/mustbechanged.xml
 ./tests/aaerrors.xml
 ./tests/legacy_types.xml
-./tests/blob_on_disk.xml
-./tests/extends_images.xml
 ./tests/invalid_defaults.xml
 ./tests/processors.xml
