@@ -342,7 +342,12 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                                                                 String gui = function.getFunctionValue(function.createParameters()).toString();
                                                                 return new Entry<C, String>((C) next, gui);
                                                             } catch (NotFoundException nfe) {
-                                                                return new Entry<C, String>((C) next, "" + node.getNumber());
+                                                                if (node == null) {
+                                                                    return new Entry<C, String>((C) next, "-1");
+                                                                } else {
+                                                                    return new Entry<C, String>((C) next, "" + node.getNumber());
+                                                                }
+
                                                             }
                                                         }
                                                     } else {
