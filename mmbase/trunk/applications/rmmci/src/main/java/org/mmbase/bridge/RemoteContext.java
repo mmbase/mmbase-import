@@ -38,7 +38,7 @@ public final class RemoteContext {
      * @return the remote cloud context named remotecontext
      * @throws RuntimeException if anything goes wrong
      */
-    public static RemoteCloudContext getCloudContext(String uri) {
+    public static CloudContext getCloudContext(String uri) {
         try {
             RemoteCloudContext remoteCloudContext= (RemoteCloudContext) Naming.lookup(uri);
             return new org.mmbase.bridge.remote.proxy.UriRemoteCloudContext_Proxy(remoteCloudContext, uri);
