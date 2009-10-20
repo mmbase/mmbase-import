@@ -113,8 +113,7 @@ public class MockCloud extends AbstractCloud {
 
     @Override
     protected Transaction newTransaction(String name) {
-        // TODO
-        throw new UnsupportedOperationException();
+        return new MockTransaction(name, this);
     }
 
 }
