@@ -5,11 +5,13 @@
   <jsp:directive.include file="/mmbase/jquery/jquery.jspx" />
   <mm:context>
     <mm:import id="__javascript" from="request" externid="org.mmbase.validation" />
-    <mm:notpresent referid="__javascript">
+    <mm:log> JS ${__javascript}</mm:log>
+    <mm:isempty referid="__javascript">
+      <mm:log>SCHIJT</mm:log>
       <mm:link page="/mmbase/validation/validation.js.jsp">
         <script src="${_}" type="text/javascript"><!-- help IE --></script>
       </mm:link>
       <mm:write request="org.mmbase.validation" value="yes" />
-    </mm:notpresent>
+    </mm:isempty>
   </mm:context>
 </jsp:root>
