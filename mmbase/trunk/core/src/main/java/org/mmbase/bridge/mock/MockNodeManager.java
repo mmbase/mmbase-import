@@ -44,6 +44,10 @@ public class MockNodeManager extends AbstractNodeManager  {
         String e = desc.reader != null ? desc.reader.getExtends() : null;
         if (e != null && e.length() == 0) e = null;
         this.parent = e;
+
+        // it should behave as a proper node
+        values.put("number", desc.oType);
+        values.put("name",   desc.name);
     }
 
 

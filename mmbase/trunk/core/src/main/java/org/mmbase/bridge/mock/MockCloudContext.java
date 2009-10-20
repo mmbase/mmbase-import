@@ -19,6 +19,7 @@ import org.mmbase.bridge.implementation.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.security.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.Logging;
 import org.xml.sax.InputSource;
 
 /**
@@ -82,7 +83,7 @@ public class MockCloudContext extends  AbstractCloudContext {
 
 
     final Map<Integer, NodeDescription>  nodes                 = Collections.synchronizedMap(new LinkedHashMap<Integer, NodeDescription>());
-    final Map<String,  NodeManagerDescription> nodeManagers    = Collections.synchronizedMap(new LinkedHashMap<String, NodeManagerDescription>());
+    public final Map<String,  NodeManagerDescription> nodeManagers    = Collections.synchronizedMap(new LinkedHashMap<String, NodeManagerDescription>());
 
 
     public Map<Integer, NodeDescription>  getNodes() {
@@ -120,6 +121,7 @@ public class MockCloudContext extends  AbstractCloudContext {
         for (Map.Entry<String, DataType> e : map.entrySet()) {
             m.put(e.getKey(), new MockField(e.getKey(), null, e.getValue()));
         }
+
         nodeManagers.put(name, new NodeManagerDescription(name, m, getTypeDefNode(name)));
     }
 
@@ -142,7 +144,7 @@ public class MockCloudContext extends  AbstractCloudContext {
                     try {
                         addNodeManager(reader);
                     } catch (Exception e) {
-                        System.err.println(e.getMessage());
+                        System.err.println("" + reader + ": " + e.getMessage() + ": " + Logging.stackTrace(e));
                     }
                 }
             }
@@ -152,6 +154,8 @@ public class MockCloudContext extends  AbstractCloudContext {
     public synchronized int addNode(String type, Map<String, Object> map) {
         int number = ++lastNodeNumber;
         nodes.put(number, new NodeDescription(type, map));
+        map.put("number", number);
+        //System.out.println("produced " + number + " " + map);
         return number;
     }
 
