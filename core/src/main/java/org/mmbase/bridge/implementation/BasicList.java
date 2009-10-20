@@ -80,21 +80,26 @@ public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> 
         return newO;
     }
 
-    @Override public  E get(int i) {
+    @Override
+    public  E get(int i) {
         return convert(backing.get(i), i);
     }
 
 
-    @Override public int size() {
+    @Override
+    public int size() {
         return backing.size();
     }
-    @Override public E set(int i, E e) {
+    @Override
+    public E set(int i, E e) {
         return convert(backing.set(i, e));
     }
-    @Override public void add(int i, E e) {
+    @Override
+    public void add(int i, E e) {
         backing.add(i, e);
     }
-    @Override public E remove(int i) {
+    @Override
+    public E remove(int i) {
         return convert(backing.remove(i));
     }
 
@@ -121,11 +126,14 @@ public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> 
     }
 
 
-    @Override public Object[] toArray() { // needed when you e.g. want to sort the list.
+    @Override
+    public Object[] toArray() { // needed when you e.g. want to sort the list.
         // make sure every element is of the right type, otherwise sorting can happen on the wrong type.
         convertAll();
         return backing.toArray();
     }
+
+
 
     public BridgeList<E> subList(int fromIndex, int toIndex)  {
         return new BasicList<E>(super.subList(fromIndex, toIndex));
