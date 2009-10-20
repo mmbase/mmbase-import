@@ -33,10 +33,15 @@ public class BasicNodeManagerList extends AbstractNodeList<NodeManager> implemen
     }
 
 
+    @Override
     protected NodeManager convert(Object o) {
-        if (o == null) return null;
+        if (o == null) {
+            return null;
+        }
         if (o instanceof CharSequence) {
             return cloud.getNodeManager(o.toString());
+        } else if (o instanceof NodeManager) {
+            return (NodeManager) o;
         }
         return super.convert(o).toNodeManager();
     }
