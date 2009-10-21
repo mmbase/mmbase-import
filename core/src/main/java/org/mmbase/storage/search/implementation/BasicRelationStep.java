@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicRelationStep extends BasicStep implements RelationStep {
+public class BasicRelationStep extends BasicStep implements RelationStep, java.io.Serializable {
 
     /** Checked directionality property. */
     private boolean checkedDirectionality = false;

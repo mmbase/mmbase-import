@@ -18,7 +18,8 @@ import org.mmbase.storage.search.*;
  * @version $Id$
  * @since MMBase-1.8
  */
-public class BasicFieldValueDateConstraint extends BasicFieldValueConstraint implements FieldValueDateConstraint {
+public class BasicFieldValueDateConstraint extends BasicFieldValueConstraint implements FieldValueDateConstraint, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
     /** The date part. */
     private int part = -1; // unset

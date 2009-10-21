@@ -20,7 +20,8 @@ import org.mmbase.storage.search.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicFieldCompareConstraint extends BasicFieldConstraint implements FieldCompareConstraint {
+public class BasicFieldCompareConstraint extends BasicFieldConstraint implements FieldCompareConstraint, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
     /** The operator. */
     private int operator = FieldCompareConstraint.EQUAL;

@@ -18,8 +18,8 @@ import org.mmbase.storage.search.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicFieldValueBetweenConstraint extends BasicFieldConstraint
-implements FieldValueBetweenConstraint {
+public class BasicFieldValueBetweenConstraint extends BasicFieldConstraint implements FieldValueBetweenConstraint, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
     /** The lower limit. */
     private Object lowerLimit = null;

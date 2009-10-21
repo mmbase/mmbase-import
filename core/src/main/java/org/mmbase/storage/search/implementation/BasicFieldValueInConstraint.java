@@ -19,7 +19,8 @@ import org.mmbase.storage.search.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicFieldValueInConstraint extends BasicFieldConstraint implements FieldValueInConstraint {
+public class BasicFieldValueInConstraint extends BasicFieldConstraint implements FieldValueInConstraint, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final SortedSet<Object> values = new TreeSet<Object>();
 

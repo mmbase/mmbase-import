@@ -18,7 +18,8 @@ import org.mmbase.storage.search.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicDateSortOrder extends BasicSortOrder implements DateSortOrder {
+public class BasicDateSortOrder extends BasicSortOrder implements DateSortOrder, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
     private int part = -1; // unset
 

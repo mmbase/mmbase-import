@@ -18,7 +18,8 @@ import org.mmbase.storage.search.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicSortOrder implements SortOrder {
+public class BasicSortOrder implements SortOrder, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
 
     protected boolean modifiable = true;
