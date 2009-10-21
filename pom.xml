@@ -259,7 +259,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
 
           <doctitle>MMBase ${project.version}</doctitle>
           <windowtitle>MMBase ${project.artifactId} ${project.version} - API</windowtitle>
-          <bottom>${project.name} ${project.version} - ${timestamp}</bottom>
+          <bottom>${project.name} ${project.version} - ${javadoctimestamp}</bottom>
           <links>
             <link>http://download.java.net/jdk7/docs/api/</link>
             <link>http://java.sun.com/javaee/5/docs/api/</link>
@@ -433,12 +433,12 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
         <artifactId>maven-timestamp-plugin</artifactId>
         <version>0.1</version>
         <configuration>
-          <propertyName>timestamp</propertyName>
-          <timestampPattern>yyyy-MM-dd  HH:mm</timestampPattern>
+          <propertyName>javadoctimestamp</propertyName>
+          <timestampPattern>yyyy-MM-dd'T'HH:mm</timestampPattern>
         </configuration>
         <executions>
           <execution>
-            <phase>validate</phase>
+            <phase>generate-sources</phase>
             <goals>
               <goal>create</goal>
             </goals>
