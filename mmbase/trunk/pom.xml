@@ -270,16 +270,16 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
           </links>
           <groups>
             <group>
-              <title>Bridge Packages</title>
-              <packages>org.mmbase.bridge:org.mmbase.bridge.util:org.mmbase.security:org.mmbase.storage.search:org.mmbase.datatypes*:org.mmbase.util.functions:org.mmbase.cache:org.mmbase.framework:org.mmbase.servlet</packages>
+              <title>Bridge Packages and associated packages (probably most interesting)</title>
+              <packages>org.mmbase.bridge:org.mmbase.bridge.util:org.mmbase.security:org.mmbase.storage.search:org.mmbase.datatypes*:org.mmbase.util.functions:org.mmbase.cache:org.mmbase.framework:org.mmbase.servlet:org.mmbase.bridge.mock</packages>
             </group>
             <group>
-              <title>Core Packages</title>
-              <packages>org.mmbase.core*:org.mmbase.module:org.mmbase.module.core*:org.mmbase.module.builders*:org.mmbase.module.database*</packages>
-            </group>
-            <group>
-              <title>Util Packages</title>
+              <title>Utility Packages</title>
               <packages>org.mmbase.util*:org.mmbase.bridge.util*</packages>
+            </group>
+            <group>
+              <title>Core Packages (should only be of interest if you're changing MMBase itself)</title>
+              <packages>org.mmbase.core*:org.mmbase.module:org.mmbase.module.core*:org.mmbase.module.builders*:org.mmbase.module.database*</packages>
             </group>
             <group>
               <title>MMBase Taglib</title>
