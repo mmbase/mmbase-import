@@ -159,7 +159,6 @@ public class MockCloudContext extends  AbstractCloudContext {
         return number;
     }
 
-    @Override
     public Cloud getCloud(String name, org.mmbase.security.UserContext user) throws NotFoundException {
         if (clouds.contains(name)) {
             return new MockCloud(name, this, user);
@@ -168,8 +167,6 @@ public class MockCloudContext extends  AbstractCloudContext {
         }
     }
 
-
-    @Override
     public String getUri() {
         return "mock:local";
     }
