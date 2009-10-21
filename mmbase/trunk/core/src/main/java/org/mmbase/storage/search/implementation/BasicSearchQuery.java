@@ -28,8 +28,10 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicCloneable<BasicSearchQuery>,  SizeMeasurable {
+public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicCloneable<BasicSearchQuery>,  SizeMeasurable, java.io.Serializable {
     private static final Logger log = Logging.getLoggerInstance(BasicSearchQuery.class);
+
+    private static final long serialVersionUID = 1L;
 
     private boolean distinct = false;
     private int maxNumber = SearchQuery.DEFAULT_MAX_NUMBER;

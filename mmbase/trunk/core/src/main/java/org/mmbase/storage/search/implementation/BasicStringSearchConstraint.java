@@ -20,7 +20,8 @@ import org.mmbase.storage.search.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicStringSearchConstraint extends BasicFieldConstraint implements StringSearchConstraint {
+public class BasicStringSearchConstraint extends BasicFieldConstraint implements StringSearchConstraint, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
     /** The search type. */
     private int searchType = 0;

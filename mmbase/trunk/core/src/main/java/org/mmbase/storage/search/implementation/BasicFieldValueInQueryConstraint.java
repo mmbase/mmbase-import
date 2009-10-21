@@ -19,7 +19,8 @@ import org.mmbase.storage.search.*;
  * @version $Id$
  * @since MMBase-1.9.1
  */
-public class BasicFieldValueInQueryConstraint extends BasicFieldConstraint implements FieldValueInQueryConstraint {
+public class BasicFieldValueInQueryConstraint extends BasicFieldConstraint implements FieldValueInQueryConstraint, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
 
     private final SearchQuery query;

@@ -18,7 +18,8 @@ import org.mmbase.storage.search.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicFieldNullConstraint extends BasicFieldConstraint implements FieldNullConstraint {
+public class BasicFieldNullConstraint extends BasicFieldConstraint implements FieldNullConstraint, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructor.

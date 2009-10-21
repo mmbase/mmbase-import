@@ -19,8 +19,7 @@ import org.mmbase.storage.search.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicFieldValueConstraint extends BasicFieldCompareConstraint
-implements FieldValueConstraint {
+public class BasicFieldValueConstraint extends BasicFieldCompareConstraint implements FieldValueConstraint, java.io.Serializable {
 
     /** The value. */
     private Object value = null;

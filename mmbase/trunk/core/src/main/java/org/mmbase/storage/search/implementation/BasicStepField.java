@@ -22,9 +22,11 @@ import org.mmbase.util.SizeOf;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicStepField implements StepField, SizeMeasurable {
+public class BasicStepField implements StepField, SizeMeasurable, java.io.Serializable {
 
-    private final Field field;
+    private static final long serialVersionUID = 1L;
+
+    private final transient Field field;
 
     private final Step step;
 

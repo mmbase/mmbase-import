@@ -39,7 +39,8 @@ import org.mmbase.storage.search.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
+public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final String builder;
 

@@ -20,8 +20,8 @@ import org.mmbase.storage.search.*;
  */
 
 // this class would logically be abstract, but test-cases are instantiating it.
-public class BasicConstraint implements Constraint {
-
+public class BasicConstraint implements Constraint, java.io.Serializable  {
+    private static final long serialVersionUID = 1L;
     private boolean inverse = false;
     protected boolean modifiable = true;
 

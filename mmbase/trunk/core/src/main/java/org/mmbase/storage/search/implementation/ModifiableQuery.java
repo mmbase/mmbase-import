@@ -34,7 +34,8 @@ import org.mmbase.storage.search.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class ModifiableQuery implements SearchQuery {
+public class ModifiableQuery implements SearchQuery, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
     private boolean modifiable = true;
     private final SearchQuery query;
