@@ -27,11 +27,16 @@ public  class StringListTagTest {
 
     @Test
     public void basic() throws Exception {
-        PageContext pageContext = new MockPageContext();
+        final PageContext pageContext = new MockPageContext();
 
+
+        ContextTag context = new ContextTag();
+        context.setPageContext(pageContext);
+        context.doStartTag();
         {
             WriteTag i = new WriteTag();
             i.setPageContext(pageContext);
+            i.setParent(context);
             i.setId("list");
             i.setVartype("list");
             i.setWrite("false"); // getOut not supported in MockPageContext
@@ -60,6 +65,7 @@ public  class StringListTagTest {
         StringListTag tag = new StringListTag();
         tag.setReferid("list");
         tag.setPageContext(pageContext);
+        tag.setParent(context);
         int it = tag.doStartTag();
         tag.setBodyContent(null);
 
@@ -86,6 +92,10 @@ public  class StringListTagTest {
         tag.doEndTag();
 
         assertEquals("bla2", pageContext.getAttribute("foo")); // MMB-1702
+        assertEquals("bla2", context.getObject("foo"));
+
+        context.doEndTag();
+
     }
 
 
