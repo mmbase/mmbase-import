@@ -19,7 +19,8 @@ import org.mmbase.storage.search.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicCompareFieldsConstraint extends BasicFieldCompareConstraint implements CompareFieldsConstraint {
+public class BasicCompareFieldsConstraint extends BasicFieldCompareConstraint implements CompareFieldsConstraint, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final StepField field2;
 

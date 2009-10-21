@@ -20,12 +20,13 @@ import org.mmbase.util.logging.Logging;
  * @version $Id$
  * @since MMBase-1.8.5
  */
-public class BasicFunctionValueConstraint extends BasicFieldValueConstraint implements FunctionValueConstraint {
-	
+public class BasicFunctionValueConstraint extends BasicFieldValueConstraint implements FunctionValueConstraint, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
+
     private static final Logger log = Logging.getLoggerInstance(BasicFunctionValueConstraint.class);
-    
+
     private final String function;
-    
+
     public BasicFunctionValueConstraint(StepField field, Object value, String function) {
         super(field, value);
         this.function = function;
@@ -34,10 +35,10 @@ public class BasicFunctionValueConstraint extends BasicFieldValueConstraint impl
         }
     }
 
-    public String getFunction() { 
+    public String getFunction() {
         if (log.isDebugEnabled()) {
-            log.debug("for field(" + getField() + ") and object(" + getValue() + "): getting function(" + function + ")"); 
+            log.debug("for field(" + getField() + ") and object(" + getValue() + "): getting function(" + function + ")");
         }
-    	return this.function; 
+    	return this.function;
     }
 }

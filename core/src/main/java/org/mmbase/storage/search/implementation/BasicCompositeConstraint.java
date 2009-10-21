@@ -20,7 +20,8 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicCompositeConstraint extends BasicConstraint implements CompositeConstraint {
+public class BasicCompositeConstraint extends BasicConstraint implements CompositeConstraint, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     private static final Logger log = Logging.getLoggerInstance(BasicCompositeConstraint.class);
 
     private final List<Constraint> childs = new ArrayList<Constraint>();

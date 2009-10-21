@@ -21,7 +21,8 @@ import org.mmbase.storage.search.*;
  */
 
 // this class would logically be abstract, but test-cases are instantiating it.
-public class BasicFieldConstraint extends BasicConstraint implements FieldConstraint {
+public class BasicFieldConstraint extends BasicConstraint implements FieldConstraint, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
     final private StepField field;
 

@@ -21,7 +21,8 @@ import org.mmbase.storage.search.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicStep implements Step {
+public class BasicStep implements Step, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
     protected final String builder;
 
