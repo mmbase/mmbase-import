@@ -175,7 +175,11 @@ public abstract class BasicUserProvider implements UserProvider {
         MMObjectNode user = userCache.get(userName);
         if (user == null) {
             NodeSearchQuery nsq = new NodeSearchQuery(getUserBuilder());
-            StepField sf        = nsq.getField(getField(getUserNameField()));
+            org.mmbase.bridge.Field userNameField = getField(getUserNameField());
+            if (userNameField == null) {
+                throw new RuntimeException("The builder '" + getUserBuilder() + "' has no field '" + getUserNameField() + "'");
+            }
+            StepField sf        = nsq.getField(userNameField);
             BasicFieldValueConstraint cons = new BasicFieldValueConstraint(sf, userName);
             cons.setCaseSensitive(userNameCaseSensitive);
             nsq.setConstraint(cons);
