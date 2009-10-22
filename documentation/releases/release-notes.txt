@@ -41,6 +41,8 @@ alter table oi_icaches_table change ckey ckey varchar(255) collate utf8_bin not 
 
 If you fail to do this, performance may suffer, because the index cannot be used.
 
+Also, when using <mm:constraint> the following property can be used to change the case-setting:
+'casesensitive="true"' to set it case sensitive. This speeds up MySQL searching.
 
 
 
