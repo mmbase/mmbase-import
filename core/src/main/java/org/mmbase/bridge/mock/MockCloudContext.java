@@ -19,8 +19,9 @@ import org.mmbase.bridge.implementation.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.security.*;
 import org.mmbase.util.*;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.*;
 import org.xml.sax.InputSource;
+
 
 /**
  * The 'mock' cloud context is mainly meant for usage in junit test cases. It provides a
@@ -42,6 +43,8 @@ import org.xml.sax.InputSource;
  */
 
 public class MockCloudContext extends  AbstractCloudContext {
+
+    private static final Logger LOG = Logging.getLoggerInstance(MockCloudContext.class);
 
     private static final MockCloudContext virtual = new MockCloudContext();
     public static MockCloudContext getInstance() {
@@ -106,7 +109,11 @@ public class MockCloudContext extends  AbstractCloudContext {
      */
     public void addCore() throws java.io.IOException {
         for (String buil : new String[] {"object", "typedef", "typerel", "reldef", "insrel"}) {
-            addNodeManager(MockBuilderReader.getBuilderLoader().getInputSource("core/" + buil + ".xml"));
+            if (! nodeManagers.containsKey(buil)) {
+                addNodeManager(MockBuilderReader.getBuilderLoader().getInputSource("core/" + buil + ".xml"));
+            } else {
+                LOG.service("Builder with name '" + buil + "' already exists");
+            }
         }
     }
 
@@ -133,7 +140,11 @@ public class MockCloudContext extends  AbstractCloudContext {
     }
 
     protected void addNodeManager(MockBuilderReader reader) {
-        nodeManagers.put(reader.getName(), new NodeManagerDescription(reader, getTypeDefNode(reader.getName())));
+        if (! nodeManagers.containsKey(reader.getName())) {
+            nodeManagers.put(reader.getName(), new NodeManagerDescription(reader, getTypeDefNode(reader.getName())));
+        } else {
+            LOG.service("Builder with name '" + reader.getName() + "' already exists");
+        }
     }
 
     public void addNodeManagers(ResourceLoader directory) throws java.io.IOException {
@@ -169,6 +180,11 @@ public class MockCloudContext extends  AbstractCloudContext {
 
     public String getUri() {
         return "mock:local";
+    }
+
+    @Override
+    public String toString() {
+        return getUri() + "#" + hashCode();
     }
 
     public static class MockResolver extends ContextProvider.Resolver {
