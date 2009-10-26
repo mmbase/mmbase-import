@@ -111,17 +111,17 @@ public class BeanFunction extends AbstractFunction<Object> {
      */
     public static BeanFunction getFunction(final Class claz, String name) throws IllegalAccessException, InstantiationException, InvocationTargetException, DependencyException  {
         return getFunction(claz, name, new Producer() {
-            public Object getInstance()  {
-                try {
-                    return  claz.newInstance();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+                public Object getInstance()  {
+                    try {
+                        return  claz.newInstance();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
-            @Override
+                @Override
                 public String toString() {
-                return "";
-            }
+                    return "";
+                }
             });
     }
 
