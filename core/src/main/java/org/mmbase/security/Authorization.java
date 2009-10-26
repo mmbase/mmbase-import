@@ -257,7 +257,8 @@ public abstract class Authorization extends Configurable {
      * @since MMBase-1.7
      */
 
-    public static class QueryCheck {
+    public static class QueryCheck implements java.io.Serializable {
+        private static final long serialVersionUID = 1L;
         final Constraint constraint;
         final boolean    check;
         public QueryCheck(boolean ch, Constraint co) {
