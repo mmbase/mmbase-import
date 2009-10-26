@@ -16,12 +16,12 @@
   <mm:import from="session" externid="${id}" id="query" required="true" />
   <mm:content expires="0" type="application/xml" language="${query.cloud.locale}">
     <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
-      <mm:import externid="search" />
-      <mm:import externid="pagesize">10</mm:import>
-      <mm:import externid="maxpages">20</mm:import>
-      <mm:import externid="offset" vartype="integer">0</mm:import>
-      <mm:import externid="customizedir" />
-      <mm:import externid="relations" id="editrelations" />
+      <mm:import externid="search" from="parameters" />
+      <mm:import externid="pagesize" from="parameters">10</mm:import>
+      <mm:import externid="maxpages" from="parameters">20</mm:import>
+      <mm:import externid="offset" vartype="integer" from="parameters">0</mm:import>
+      <mm:import externid="customizedir" from="parameters"/>
+      <mm:import externid="relations" id="editrelations" from="parameters" />
       <mm:import externid="fields" from="parameters" id="flds" />
 
       <mm:listnodescontainer id="b" clone="query" jspvar="bq">
