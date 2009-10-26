@@ -36,7 +36,6 @@ public class QueriesTest  {
 
     @BeforeClass
     public static void setup() throws Exception {
-        MockCloudContext.getInstance().clear();
         MockCloudContext.getInstance().addCore();
         MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
         try {
