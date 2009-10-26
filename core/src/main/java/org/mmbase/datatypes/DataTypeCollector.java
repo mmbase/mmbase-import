@@ -282,6 +282,13 @@ public final class DataTypeCollector {
         dataType.finish(signature);
     }
 
+    void clear() {
+        dataTypes.clear();
+        specializations.clear();
+        roots.clear();
+
+    }
+
     @Override
     public String toString() {
         return signature +  ": " + dataTypes.values() + " " + collectors;
