@@ -53,18 +53,15 @@ public abstract class DataTypeXml {
      * @param tagName Wich tags to read. The bodies are the values.
      * @param element From which element this tags must be childs.
      * @param descriptions Existing LocalizedString instance or <code>null</code> if a new one must be created.
-     * @param defaultKey   If the localized string was created with some silly automatic key, it can be provided here, in
-     *                     which case it will be changed if a tag withouth xml:lang is found, or with xml:lang equals the current default.
-     *                     It can also be <code>null</code>
+     * @param key
      * @return A new LocalizedString or the updated 'descriptions' parameter if that was not <code>null</code>
      */
 
-    public static LocalizedString getLocalizedDescription(final String tagName, final Element element, LocalizedString descriptions, final String defaultKey) {
-        if (descriptions == null) descriptions = new LocalizedString(null);
-        descriptions.fillFromXml(tagName, element);
-        if (defaultKey != null &&  descriptions.getKey().equals(defaultKey)) {
-            descriptions.setKey(descriptions.get(LocalizedString.getDefault()));
+    public static LocalizedString getLocalizedDescription(final String tagName, final Element element, LocalizedString descriptions, String key) {
+        if (descriptions == null) {
+            descriptions = new LocalizedString(key);
         }
+        descriptions.fillFromXml(tagName, element);
         return descriptions;
     }
 
