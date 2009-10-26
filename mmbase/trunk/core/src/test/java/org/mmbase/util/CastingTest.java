@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 import org.mmbase.util.Casting;
 import org.mmbase.util.transformers.*;
+import org.mmbase.bridge.Node;
 import java.util.*;
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -78,6 +79,19 @@ public class CastingTest  {
     @Test
     public void testBinary() {
 
+    }
+
+
+    @Test
+    public void canCast() {
+        assertTrue(Casting.canCast(Node.class, Integer.class));
+
+        assertTrue(Casting.canCast(String.class, Integer.class));
+        assertTrue(Casting.canCast(String.class, Float.class));
+
+
+        assertTrue(Casting.canCast(Integer.class, String.class));
+        assertTrue(Casting.canCast(Float.class, String.class));
     }
 
 
