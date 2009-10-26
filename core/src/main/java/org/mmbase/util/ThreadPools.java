@@ -72,7 +72,14 @@ public abstract class ThreadPools {
     private static List<Thread> nameLess = new CopyOnWriteArrayList<Thread>();
 
     public static Thread newThread(final Runnable r, final String id) {
-        boolean isUp = org.mmbase.bridge.ContextProvider.getResolvers().size() == 0 || org.mmbase.bridge.ContextProvider.getDefaultCloudContext().isUp();
+        boolean isUp = false;
+        try {
+            isUp = org.mmbase.bridge.ContextProvider.getResolvers().size() == 0 || org.mmbase.bridge.ContextProvider.getDefaultCloudContext().isUp();
+        } catch (Throwable  t) {
+            log.warn(t);
+            // never mind, can happen during testing
+        }
+
         Thread t = new Thread(threadGroup, r,
                               isUp ? getMachineName() + ":" + id : id) {
                 /**
@@ -155,7 +162,6 @@ public abstract class ThreadPools {
     static {
         scheduler.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
 
-
         // after some time the machine name will be known, use it for the 'nameless' threads.
         // Actually, getMachineName is starting to wait too, so I think the scheduled delay here is
         // a bit silly, but otherwise I in some cases encountered an exception ('cannot be started
@@ -175,6 +181,7 @@ public abstract class ThreadPools {
         threadPools.put("jobs", jobsExecutor);
         threadPools.put("filters", filterExecutor);
         threadPools.put("schedules", scheduler);
+
     }
 
     public static Map<String, ExecutorService> getThreadPools() {
