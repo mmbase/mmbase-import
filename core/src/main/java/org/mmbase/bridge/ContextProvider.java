@@ -133,7 +133,7 @@ public class ContextProvider {
                 return cc;
             }
         }
-	throw new BridgeException("cloudcontext with name '" + uri + "' is not known to MMBase " + resolvers);
+	throw new NotFoundException("cloudcontext with name '" + uri + "' is not known to MMBase " + resolvers);
     }
 
     /**
@@ -152,7 +152,20 @@ public class ContextProvider {
              }
          }
          if (defaultCloudContextName == null) {
-             defaultCloudContextName = DEFAULT_CLOUD_CONTEXT_NAME;
+
+             // Let's try wether DEFAULT_CLOUD_CONTEXT_NAME is indeed useable.
+             for (Resolver resolver : resolvers) {
+                 CloudContext cc = resolver.resolve(DEFAULT_CLOUD_CONTEXT_NAME);
+                 if (cc != null) {
+                     defaultCloudContextName = DEFAULT_CLOUD_CONTEXT_NAME;
+                     break;
+                 }
+             }
+             // No? Fall back to a mock implementation. E.g. rmmci-client will have a 'mock' mmbase as default and fall back.
+             if (defaultCloudContextName == null) {
+                 defaultCloudContextName = "mock:local";
+             }
+
          }
          return defaultCloudContextName;
      }
