@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 import org.mmbase.datatypes.*;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.mock.*;
 import java.util.*;
 import java.util.regex.*;
 import org.junit.*;
@@ -22,10 +24,12 @@ import org.mmbase.util.logging.Logging;
  */
 public class ParameterTest {
 
-    static {
+    @BeforeClass
+    public static void setup() throws Exception {
         DataTypes.initialize();
+        MockCloudContext.getInstance().addCore();
+        MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
     }
-
 
     @Test
     public void autoCastInteger() throws Exception {
@@ -55,6 +59,26 @@ public class ParameterTest {
         } catch (CastException ie) {
         }
         assertEquals("red", param.autoCast("red"));
+    }
+
+    @Test
+    public void autoCastNodeEnumeration() throws Exception {
+        Parameter<Node> param = new Parameter<Node>("a", DataTypes.getDataType("typedef"));
+        org.mmbase.bridge.Node typedef =  MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("typedef").getList(null).getNode(0);
+        org.mmbase.bridge.Node news =  MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("news").createNode();
+        news.setStringValue("title", "bla");
+        news.commit();
+
+        param.checkType(typedef);
+        param.checkType(news); // it _is_ of the correct type (namely a node)
+
+        param.autoCast(typedef);
+        try {
+            param.autoCast(news);
+            fail();
+        } catch(CastException ce) {
+            // but it cannot be casted.
+        }
     }
 
 }

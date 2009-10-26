@@ -10,7 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 import org.mmbase.util.Casting;
 import org.mmbase.util.transformers.*;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.mock.*;
+
 import java.util.*;
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -21,6 +23,12 @@ import static org.junit.Assert.*;
  */
 public class CastingTest  {
 
+    @BeforeClass
+    public static void setup() throws Exception {
+        MockCloudContext.getInstance().addCore();
+        MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
+    }
+
 
     @Test
     public void testNull() {
@@ -28,7 +36,7 @@ public class CastingTest  {
         assertEquals("", Casting.wrap(null, new Xml()).toString());
     }
     @Test
-    public void testList() {
+    public void list() {
         List<String> list = new ArrayList<String>();
         list.add("a");
         list.add("b");
@@ -55,7 +63,7 @@ public class CastingTest  {
         assertEquals("15", Casting.toString(15));
     }
     @Test
-    public void testInteger() {
+    public void integer() {
         assertEquals(new Integer(10), (Object) Casting.toInteger("10"));
         assertEquals(new Integer(10), (Object) Casting.toInteger("1e1"));
         assertEquals(new Integer(-1), (Object) Casting.toInteger(null));
@@ -80,6 +88,26 @@ public class CastingTest  {
     public void testBinary() {
 
     }
+
+    @Test
+    public void node() {
+        Cloud cloud = MockCloudContext.getInstance().getCloud("mmbase");
+        Node news = cloud.getNodeManager("news").createNode();
+        news.setStringValue("title", "foobar");
+        news.commit();
+
+        assertEquals(news, Casting.toNode(news.getNumber(), cloud));
+        assertEquals(news, Casting.toNode("" + news.getNumber(), cloud));
+
+
+        assertEquals(news, Casting.toType(Node.class, cloud,  news.getNumber()));
+        assertEquals(news, Casting.toType(Node.class, cloud, "" + news.getNumber()));
+
+        assertEquals(news.getNumber(), Casting.toType(Node.class, null,  news.getNumber()).getNumber());
+        assertEquals(news.getNumber(), Casting.toType(Node.class, null, "" + news.getNumber()).getNumber());
+
+    }
+
 
 
     @Test
