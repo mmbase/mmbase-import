@@ -124,7 +124,8 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
     /**
      * @since MMBase-1.9
      */
-    @Override protected Object castToValidate(Object value, Node node, Field field) throws CastException {
+    @Override
+    protected Object castToValidate(Object value, Node node, Field field) throws CastException {
         if (value == null) return null;
         Object preCast = preCast(value, node, field); // resolves enumerations
 
@@ -135,7 +136,8 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
         return cs;
     }
 
-    @Override protected E cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
+    @Override
+    protected E cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
         Object preValue = preCast(value, cloud, node, field);
         if (log.isDebugEnabled()) {
             log.debug("Precast " + value + " to " + preValue);

@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes;
 
-import java.util.Collection;
+import java.util.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.LocalizedString;
 import org.mmbase.bridge.*;
@@ -104,6 +104,31 @@ public class NodeDataType extends BasicDataType<Node> {
         errors = super.validateCastValue(errors, castValue, value, node, field);
         errors = mustExistRestriction.validate(errors, value, node, field);
         return errors;
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    @Override
+    public Comparator<Node> getComparator() {
+        return new DataTypeComparator<Node>(this) {
+            public int compare(Node n1, Node n2) {
+                if (n1 == null) {
+                    if (n2 == null) {
+                        return 0;
+                    } else {
+                        return n2.getNumber();
+                    }
+                }
+                String uri1 = n1.getCloud().getCloudContext().getUri();
+                String uri2 = n2.getCloud().getCloudContext().getUri();
+                if (uri1.equals(uri2)) {
+                    return n2.getNumber() - n1.getNumber();
+                } else {
+                    return uri1.compareTo(uri2);
+                }
+            }
+        };
     }
 
     protected class MustExistRestriction extends AbstractRestriction<Boolean> {
