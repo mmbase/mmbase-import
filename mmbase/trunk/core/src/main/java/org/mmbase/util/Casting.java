@@ -269,6 +269,13 @@ public class Casting {
     }
 
     /**
+     * @since MMBase-1.9.2
+     */
+    public static boolean canCast(Class<? extends Object> from, Class<? extends Object> to) {
+        return isStringRepresentable(from) && isStringRepresentable(to);
+    }
+
+    /**
      * Whether or not Casting can more or less reliably cast a certain type to String and back.
      * For collection types also the entries of the collection must be string representable.
      * @since MMBase-1.8
@@ -286,6 +293,8 @@ public class Casting {
             Date.class.isAssignableFrom(type) ||
             Map.class.isAssignableFrom(type);
     }
+
+
 
     /**
      * Convert an object to a String.
