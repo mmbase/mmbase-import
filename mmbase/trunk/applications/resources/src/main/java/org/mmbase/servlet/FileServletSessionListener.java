@@ -36,7 +36,7 @@ public class FileServletSessionListener implements HttpSessionListener {
 
     public void sessionCreated(HttpSessionEvent se) {
         // nothing to
-        log.info("Created " + se.getSession());
+        log.debug("Created " + se.getSession());
     }
     public void sessionDestroyed(HttpSessionEvent se) {
         // delete files associated with this session
@@ -49,7 +49,7 @@ public class FileServletSessionListener implements HttpSessionListener {
                 f.delete();
                 File sessionFile = FileServlet.getSessionFile(f);
                 sessionFile.delete();
-                log.info("Deleted " + f + " (" + sessionFile + ")");
+                log.debug("Deleted " + f + " (" + sessionFile + ")");
             }
         }
     }
