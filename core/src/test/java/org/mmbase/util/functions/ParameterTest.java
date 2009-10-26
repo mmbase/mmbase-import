@@ -29,6 +29,7 @@ public class ParameterTest {
         DataTypes.initialize();
         MockCloudContext.getInstance().addCore();
         MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
+        MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("tests"));
     }
 
     @Test
@@ -75,7 +76,7 @@ public class ParameterTest {
         param.autoCast(typedef);
         try {
             param.autoCast(news);
-            fail();
+            fail("Node " + news + " should not have been valid for " + DataTypes.getDataType("typedef"));
         } catch(CastException ce) {
             // but it cannot be casted.
         }
