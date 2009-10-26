@@ -12,6 +12,7 @@ package org.mmbase.util.functions;
 import java.util.Arrays;
 import java.lang.reflect.*;
 
+import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
 /**
@@ -52,7 +53,7 @@ public class SetFunction extends AbstractFunction<Object> {
      *
      * @since MMBase-1.8.5
      */
-    protected static Class sophisticate(Class primitive) {
+    protected static Class<?> sophisticate(Class<?> primitive) {
 
         if (primitive.isPrimitive()) {
             if (primitive.equals(Boolean.TYPE)) {
@@ -79,16 +80,60 @@ public class SetFunction extends AbstractFunction<Object> {
         return primitive;
     }
 
+    /**
+     * Finds a method of a class more or less 'fuzzy'. Depending on e.g. {@link Casting#canCast}.
+     * @since MMBase-1.9.2
+     */
+    protected static Method getMethod(final Class functionClass, final String methodName, final Parameters parameters) {
+        Class<?>[] arguments = parameters.toClassArray();
+        Method method = null;
+        float score = -1.0f;
+        METHODS:
+        for (Method m : functionClass.getMethods()) {
+            String name = m.getName();
+            Class<?>[] parameterTypes = m.getParameterTypes();
+            if (methodName.equals(name) && arguments.length == parameterTypes.length) {
+                float newScore = 1.0f;
+                for (int i = 0; i < arguments.length; i++) {
+                    Class<?> methodArgument     = sophisticate(parameterTypes[i]);
+                    Class<?> parametersArgument = sophisticate(arguments[i]);
+                    if (parameterTypes[i].equals(arguments[i])) {
+                        newScore *= 2;
+                    } else if (sophisticate(methodArgument).isAssignableFrom(parametersArgument)) {
+                        newScore *= 1.5;
+                    } else if (Casting.canCast(parametersArgument, methodArgument)) {
+                        // ok
+                    } else {
+                        //System.out.println("" + parametersArgument + " not compatible with " + methodArgument);
+                        continue METHODS;
+                    }
+                }
+                if (method != null) {
+                    if (score == newScore) {
+                        log.warn("More methods match " + methodName + " " + Arrays.asList(parameters.getDefinition()) + " in " + functionClass + ": " + method + ", " + m + " (both scored " + newScore + ")");
+                    } if (score > newScore) {
+                        log.debug("More methods match " + methodName + " " + Arrays.asList(parameters.getDefinition()) + " in " + functionClass + ": " + method + ", " + m + " (First one is better");
+                        continue METHODS;
+                    } else {
+                        log.debug("More methods match " + methodName + " " + Arrays.asList(parameters.getDefinition()) + " in " + functionClass + ": " + method + ", " + m + " (Second one is better");
+                    }
+                }
+                method = m;
+                score = newScore;
+            }
+        }
+        if (method == null) {
+            throw new RuntimeException("Function method not found : " + functionClass + "." + methodName + " " +  Arrays.asList(parameters.getDefinition()));
+        }
+        return method;
+    }
+
 
     SetFunction(String name, Parameter[] def, ReturnType<Object> returnType, Class functionClass, String methodName, Type type) {
         super(name, def, returnType);
         this.type = type;
 
-        try {
-            functionMethod = functionClass.getMethod(methodName, createParameters().toClassArray());
-        } catch(NoSuchMethodException e) {
-            throw new RuntimeException("Function method not found : " + functionClass + "." + methodName + "(" +  Arrays.asList(getParameterDefinition()) +")", e);
-        }
+        functionMethod = getMethod(functionClass, methodName, createParameters());
 
         if (Modifier.isStatic(functionMethod.getModifiers())) {
             functionInstance = null;
@@ -139,6 +184,20 @@ public class SetFunction extends AbstractFunction<Object> {
         this(name, def, null, clazz, name, Type.CLASS);
     }
 
+
+    Object[] getValues(Parameters params) {
+        org.mmbase.bridge.Cloud cloud = null;
+        if (params.containsParameter(Parameter.CLOUD)) {
+            cloud = params.get(Parameter.CLOUD);
+        }
+        Class<?>[] parameterTypes = functionMethod.getParameterTypes();
+        Object[] result = new Object[parameterTypes.length];
+        for (int i = 0; i < parameterTypes.length; i++) {
+            result[i] = Casting.toType(parameterTypes[i], cloud, params.get(i));
+        }
+        return result;
+    }
+
     /**
      */
     public Object getFunctionValue(Parameters parameters) {
@@ -146,9 +205,9 @@ public class SetFunction extends AbstractFunction<Object> {
         try {
             if (defLength < parameters.size()) {
                 // when wrapping this fucntion, it can happen that the number of parameters increases.
-                return functionMethod.invoke(getInstance(), parameters.subList(0, defLength).toArray());
+                return functionMethod.invoke(getInstance(), getValues(parameters.subList(0, defLength)));
             } else {
-                return functionMethod.invoke(getInstance(), parameters.toArray());
+                return functionMethod.invoke(getInstance(), getValues(parameters));
             }
         } catch (IllegalAccessException iae) {
             log.error("Function call failed (method not available) : " + name +", method: " + functionMethod +
@@ -159,7 +218,7 @@ public class SetFunction extends AbstractFunction<Object> {
             if (te instanceof RuntimeException) {
                 throw (RuntimeException) te;
             } else {
-                throw new RuntimeException(te); // throw the actual exception that occurred
+                throw new RuntimeException(te);
             }
         }
     }
