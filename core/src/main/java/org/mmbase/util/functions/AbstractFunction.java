@@ -29,8 +29,10 @@ import org.mmbase.util.logging.*;
  * @see Parameters
  */
 abstract public class AbstractFunction<R> implements Function<R>, Comparable<Function<R>>, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
+
     private static final Logger log = Logging.getLoggerInstance(AbstractFunction.class);
-    protected String    name;
+    protected final String    name;
     protected ReturnType<R>  returnType;
     protected boolean autoReturnType = false;
 
