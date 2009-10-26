@@ -118,28 +118,21 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
 
             if (! "".equals(variant)) {
                 result = values.get(new Locale(language, country));
-                if (result != null) return result;
+                if (result != null) {
+                    return result;
+                }
             }
 
             if (! "".equals(country)) {
                 result = values.get(new Locale(language));
-                if (result != null) return result;
-            }
-
-            // Some LocalizedString instances may have a default value stored with the key 'null'
-            // instead of the locale from MMBase. This is the case for values stored while the
-            // MMBase module was not yet active.
-            // This code 'fixes' that reference.
-            // It's not nice, but as a proper fix likely requires a total rewrite of Module.java and
-            // MMBase.java, this will have to do for the moment.
-            Locale def = getDefault();
-            if (locale.equals(def)) {
-                result = values.get(null);
                 if (result != null) {
-                    values.put(locale, result);
                     return result;
                 }
+            }
 
+            result = values.get(null);
+            if (result != null) {
+                return result;
             }
         }
 
@@ -166,10 +159,6 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
 
         if (values == null) {
             values = new HashMap<Locale, String>();
-        }
-
-        if (locale == null) {
-            locale = getDefault();
         }
 
         values.put(locale, value);
