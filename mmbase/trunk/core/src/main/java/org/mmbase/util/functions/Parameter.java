@@ -99,14 +99,18 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
         String description   = element.getAttribute("description"); // actually description as attribute is not very sane
 
         boolean dataTypeDefined;
+        NodeList dataTypeElements = element.getElementsByTagNameNS(DataType.XMLNS, "datatype");
+
         DataType dataType;
         if (! "".equals(type)) {
             dataTypeDefined = false;
             Class<C> clazz = (Class<C>) getClassForName(type);
             dataType = DataTypes.createDataType(name, clazz);
+            if (dataTypeElements.getLength() > 0) {
+                log.warn("Ignored datatype element on '" + name  + "' (because of type attribute)");
+            }
         } else {
             dataTypeDefined = true;
-            NodeList dataTypeElements = element.getElementsByTagNameNS(DataType.XMLNS, "datatype");
             Element dataTypeElement = (Element) dataTypeElements.item(0);
             String base = dataTypeElement.getAttribute("base");
             BasicDataType baseDataType = DataTypes.getSystemCollector().getDataType(base);
@@ -357,8 +361,9 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
         if (errors.size() == 0) {
             return dataType.cast(value, null, null);
         } else {
-            throw new CastException("" + this + " " + errors);
+            throw new CastException("" + this, errors);
         }
+
     }
 
     /**
