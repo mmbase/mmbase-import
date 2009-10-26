@@ -38,10 +38,9 @@ public class DataTypesTest  {
     @BeforeClass
     public static void setUp() throws Exception {
         LocalizedString.setDefault(new Locale("da"));
-        DataTypes.reinitialize();
-        MockCloudContext.getInstance().clear();
-        MockCloudContext.getInstance().addNodeManagers(ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders/core"));
-        MockCloudContext.getInstance().addNodeManagers(ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders/tests"));
+        DataTypes.initialize();
+        MockCloudContext.getInstance().addCore();
+        MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("tests"));
     }
 
     private StringDataType getString() {
@@ -73,9 +72,14 @@ public class DataTypesTest  {
     }
     @Test
     public void guiName() {
+
+        assertEquals("da", LocalizedString.getDefault().getLanguage());
+
+        assertEquals("string", getString().getName());
+
         assertEquals("Tekst", getString().getGUIName(new Locale("nl")));
         assertEquals("Text", getString().getGUIName(new Locale("en")));
-        assertEquals("string", getString().getGUIName());
+        assertEquals(getString().getLocalizedGUIName().getDebugString(), "string", getString().getGUIName());
 
         StringDataType clone = getStringClone();
         assertEquals("Tekst", clone.getGUIName(new Locale("nl")));

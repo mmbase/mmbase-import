@@ -37,7 +37,7 @@ public class ParameterizedDataTypesTest  {
     static {
         DataTypes.initialize();
         try {
-            CLOUD_CONTEXT.addNodeManagers(ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders/core"));
+            CLOUD_CONTEXT.addCore();
             CLOUD_CONTEXT.addNodeManagers(ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders/tests"));
         } catch (java.io.IOException ioe) {
             throw new RuntimeException(ioe);

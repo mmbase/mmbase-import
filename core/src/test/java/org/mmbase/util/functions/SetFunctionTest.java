@@ -104,7 +104,7 @@ public class SetFunctionTest {
 
             try {
                 params.set("A", "" + news.getNumber());
-                fail();
+                fail("Node " + news + " should not have been valid for " + DataTypes.getDataType("typedef"));
             } catch (IllegalArgumentException  iae) {
                 //ok
             }
