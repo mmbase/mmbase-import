@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes;
 
+import java.util.*;
+import org.mmbase.util.LocalizedString;
 
 /**
  *
@@ -19,24 +21,55 @@ package org.mmbase.datatypes;
 public class CastException extends Exception {
 
     private static final long serialVersionUID = 0L;
+
+    final Collection<LocalizedString> errors = new ArrayList<LocalizedString>();
+
     //javadoc is inherited
     public CastException() {
         super();
+        errors.add(new LocalizedString(getMessage()));
     }
 
     //javadoc is inherited
-    public CastException(String message) {
-        super(message);
+    public CastException(String mes) {
+        super(mes);
+        errors.add(new LocalizedString(mes));
     }
 
     //javadoc is inherited
     public CastException(Throwable cause) {
         super(cause);
+        errors.add(new LocalizedString(cause.getMessage()));
     }
 
     //javadoc is inherited
-    public CastException(String message, Throwable cause) {
-        super(message,cause);
+    public CastException(String mes, Throwable cause) {
+        super(mes, cause);
+        errors.add(new LocalizedString(mes));
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public CastException(Collection<LocalizedString> mes) {
+        super(mes.toString());
+        errors.addAll(mes);
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public CastException(String mes, Collection<LocalizedString> errors) {
+        super(mes);
+        errors.addAll(errors);
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public CastException(Collection<LocalizedString> mes, Throwable cause) {
+        super(mes.toString(), cause);
+        errors.addAll(mes);
     }
 
 
