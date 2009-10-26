@@ -15,7 +15,7 @@
     Locale locale = null;
     final boolean changed = "true".equals(request.getParameter("changed"));
   </jsp:scriptlet>
-  <mm:cloud sessionname="${param.sessionname}" jspvar="cloud" method="asis">
+  <mm:cloud sessionname="${param.sessionname}" uri="${param.uri}" name="${param.cloud}" jspvar="cloud" method="asis">
     <jsp:scriptlet>
       locale = cloud.getLocale();
     </jsp:scriptlet>
