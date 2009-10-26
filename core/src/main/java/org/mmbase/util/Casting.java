@@ -269,6 +269,10 @@ public class Casting {
     }
 
     /**
+     * This method should report whether {@link #toType} is implemented for given 2 classes.
+     *
+     * It is not yet fully implemented.
+     *
      * @since MMBase-1.9.2
      */
     public static boolean canCast(Class<? extends Object> from, Class<? extends Object> to) {
