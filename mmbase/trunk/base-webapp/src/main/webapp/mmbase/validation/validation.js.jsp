@@ -34,6 +34,10 @@ function MMBaseValidator(root) {
     this.activeElement = null;
     this.checkAfter    = 600;
     this.logArea       = "logarea";
+    <mm:cloud jspvar="cloud">
+      this.uri = '<%=cloud.getCloudContext().getUri()%>';
+      this.cloud = '<%=cloud.getName()%>';
+    </mm:cloud>
 
 }
 
@@ -53,7 +57,7 @@ MMBaseValidator.watcher = function() {
                     el.lastChange = new Date(0);
                 }
                 if (new Date(validator.checkAfter + el.lastChange.getTime()) < now) {
-                    validator.validateElement(validator.activeElement, true);
+                    validator.validateElement(validator.activeElement, true, true);
                 }
             }
         }
@@ -485,13 +489,15 @@ MMBaseValidator.prototype.getDataTypeXml = function(el) {
 
 
 function Key() {
+    this.uri = null;
+    this.cloud = null;
     this.node = null;
     this.nodeManager = null;
     this.field = null;
     this.datatype = null;
 }
 Key.prototype.string = function() {
-    return this.dataType + "," + this.field + "," + this.nodeManager;
+    return this.cloud + "@" + this.uri + "," + this.dataType + "," + this.field + "," + this.nodeManager;
 }
 
 /**
@@ -505,6 +511,8 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
     if (el.mm_dataTypeStructure == null) {
         var classNames = el.className.split(" ");
         var result = new Key();
+        result.uri = this.uri;
+        result.cloud = this.cloud;
         for (var i = 0; i < classNames.length; i++) {
             var className = classNames[i];
             if (className.indexOf("mm_dt_") == 0) {
@@ -533,11 +541,21 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
  *
  */
 MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
-
     if (MMBaseValidator.prefetchedNodeManagers[nodemanager] != "success") {
+        var self = this;
         this.log("prefetching " + nodemanager);
         var url = '<mm:url page="/mmbase/validation/datatypes.jspx" />';
         var params = {nodemanager: nodemanager };
+        if (this.uri != null) {
+            params.uri = this.uri;
+        } else {
+            params.uri = "local";
+        }
+        if (this.cloud != null) {
+            params.cloud = this.cloud
+        } else {
+            params.cloud = "mmbase";
+        }
         var self = this;
         $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
                     complete: function(res, status){
@@ -547,6 +565,8 @@ MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
                         var fields = dataTypes.documentElement.childNodes;
                         for (var i = 0; i < fields.length; i++) {
                             var key = new Key();
+                            key.uri = params.uri;
+                            key.cloud = params.cloud;
                             key.nodeManager = nodemanager;
                             key.field = fields[i].getAttribute("name");
                             MMBaseValidator.dataTypeCache[key.string()] = fields[i];
@@ -571,9 +591,9 @@ MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
  */
 MMBaseValidator.prototype.getDataTypeArguments = function(key) {
     if (key.dataType != null) {
-        return {datatype: key.dataType};
+        return {datatype: key.dataType, uri: key.uri, cloud: key.cloud};
     } else {
-        return {field: key.field, nodemanager: key.nodeManager};
+        return {field: key.field, nodemanager: key.nodeManager, uri: key.uri, cloud: key.cloud};
     }
 }
 
