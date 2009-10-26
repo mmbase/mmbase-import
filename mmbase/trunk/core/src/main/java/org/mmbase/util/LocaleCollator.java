@@ -17,7 +17,7 @@ import java.io.*;
  * This class wraps a {@link java.text.Collator} and associates it with a {@link
  * java.util.Locale}. Also, it is {@link java.io.Serializable} (mostly to help RMMCI).
  *
- * An instance can be obtains with {@link #getInstance(String)}.
+ * An instance can be obtained with {@link #getInstance(String)}.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
