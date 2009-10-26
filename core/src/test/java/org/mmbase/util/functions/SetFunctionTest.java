@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 import org.mmbase.datatypes.*;
+import org.mmbase.bridge.Node;
 import java.util.*;
 import java.util.regex.*;
 import org.junit.*;
@@ -34,6 +35,14 @@ public class SetFunctionTest {
         return "aa" + a;
     }
 
+    @Test
+    public void getMethod() {
+        assertNotNull(SetFunction.getMethod(SetFunctionTest.class, "testFunction", new Parameters()));
+        assertNotNull(SetFunction.getMethod(SetFunctionTest.class, "testFunction", new Parameters(new Parameter<Integer>("A", int.class, 7))));
+        assertNotNull(SetFunction.getMethod(SetFunctionTest.class, "testFunction", new Parameters(new Parameter<Integer>("A", Integer.class, 8))));
+        assertNotNull(SetFunction.getMethod(SetFunctionTest.class, "testFunction", new Parameters(new Parameter<Node>("A", Node.class))));
+    }
+
 
     @Test
     public void noParameters() {
@@ -43,8 +52,19 @@ public class SetFunctionTest {
     }
 
     @Test
-    public void parameters() {
+    public void parametersMatch() {
         SetFunction function = new SetFunction("test", new Parameter[] {new Parameter<Integer>("A", int.class, 5)}, null, SetFunctionTest.class, "testFunction", SetFunction.Type.CLASS);
+        Parameters params = function.createParameters();
+        assertEquals("aa5", function.getFunctionValue(params));
+        params.set("A", 6);
+        assertEquals("aa6", function.getFunctionValue(params));
+    }
+
+
+    @Test
+    public void parametersDontMatch() {
+        // int.class != Integer.class but are trivially casted
+        SetFunction function = new SetFunction("test", new Parameter[] {new Parameter<Integer>("A", Integer.class, 5)}, null, SetFunctionTest.class, "testFunction", SetFunction.Type.CLASS);
         Parameters params = function.createParameters();
         assertEquals("aa5", function.getFunctionValue(params));
         params.set("A", 6);
