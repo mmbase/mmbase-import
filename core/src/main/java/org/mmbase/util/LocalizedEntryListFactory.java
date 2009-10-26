@@ -123,13 +123,11 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
      */
 
     protected List<Serializable> add(Locale locale, Object entry) {
-        if (locale == null) {
-            locale = LocalizedString.getDefault();
-        }
+
         LocalizedEntry local = localized.get(locale);
         if (local == null) {
             Locale loc = locale;
-            loc = LocalizedString.degrade(loc, locale);
+            loc = loc == null ? null : LocalizedString.degrade(loc, locale);
             while (loc != null && local == null) {
                 local = localized.get(loc);
                 loc = LocalizedString.degrade(loc, locale);
@@ -146,7 +144,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
 
         // If this locale with variant is added but the parent locale was not yet in the map, then
         // we first add the parent locale.
-        if (locale.getVariant() != null && !"".equals(locale.getVariant())) {
+        if (locale != null && locale.getVariant() != null && !"".equals(locale.getVariant())) {
             Locale l = new Locale(locale.getLanguage(), locale.getCountry());
             if (!localized.containsKey(l)) {
                 add(l, entry);
@@ -155,7 +153,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
 
         // If this locale with country is added, but the parent locale (only language) was not yet in
         // the map, we first add the parent language locale.
-        if (locale.getCountry() != null && !"".equals(locale.getCountry())) {
+        if (locale != null && locale.getCountry() != null && !"".equals(locale.getCountry())) {
             Locale l = new Locale(locale.getLanguage());
             if (!localized.containsKey(l)) {
                 add(l, entry);
@@ -179,7 +177,6 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
         Iterator<LocalizedEntry> i = localized.values().iterator();
         if (!i.hasNext()) {
             // adding very first localizedlist
-            Locale locale = LocalizedString.getDefault();
             LocalizedEntry local = new LocalizedEntry();
             local.entries.add(b);
             local.unusedKeys.addAll(fallBack);
@@ -216,7 +213,9 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                 log.warn("" + se.getMessage(), se);
                 try {
                     Cloud cloud = context.getCloud("mmbase");
-                    if (locale != null && cloud != null) cloud.setLocale(locale);
+                    if (locale != null && cloud != null) {
+                        cloud.setLocale(locale);
+                    }
                     return cloud;
                 } catch (SecurityException se2) {
                     return null;
@@ -257,7 +256,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
 
                         {
                             if (useLocale == null) {
-                                useLocale = useCloud != null ? useCloud.getLocale() : LocalizedString.getDefault();
+                                useLocale = useCloud != null ? useCloud.getLocale() : null;
                             }
                             log.debug("using locale " + useLocale);
                         }
@@ -278,9 +277,8 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                             }
                             if (loc == null) {
                                 useLocale = orgLocale;
-                                loc = localized.get(LocalizedString.getDefault());
+                                loc = localized.get(null);
                             }
-
                             if (loc == null) {
 
                                 iterator.addIterator(bundles.iterator());
@@ -455,13 +453,15 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
      * The size of the collections returned by {@link #get}
      */
     public int size(Cloud cloud) {
-        if (cloud == null) cloud = getCloud(LocalizedString.getDefault());
+        if (cloud == null) {
+            cloud = getCloud(LocalizedString.getDefault());
+        }
         int queriesSize = size();
         Locale locale = cloud == null ? LocalizedString.getDefault() : cloud.getLocale();
         LocalizedEntry localizedList = localized.get(locale);
         if (localizedList == null) {
             locale = LocalizedString.getDefault();
-            localizedList = localized.get(locale);
+            localizedList = localized.get(null);
         }
         if (localizedList != null) {
             Iterator i = localizedList.entries.iterator();
