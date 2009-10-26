@@ -34,7 +34,8 @@ public class CloneNodeFunction extends NodeFunction<Node> {
         super("clone", PARAMETERS);
     }
 
-    @Override protected Node getFunctionValue(Node node, Parameters parameters) {
+    @Override
+    protected Node getFunctionValue(Node node, Parameters parameters) {
         if (Boolean.TRUE.equals(parameters.get("relations"))) {
             return CloneUtil.cloneNodeWithRelations(node);
         } else {

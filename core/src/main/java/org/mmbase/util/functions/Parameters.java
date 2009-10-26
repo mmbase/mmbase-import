@@ -317,10 +317,11 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         int j = i + fromIndex;
         if (j < patternLimit) {
             Parameter<?> a = definition[j];
-            log.debug("Setting " + i + "( " + a.getName() + ")");
+            log.debug("Setting " + i + " (" + a.getName() + ")");
             if (autoCasting) {
                 try {
-                    value = a.autoCast(value);
+                    Object castValue = a.autoCast(value);
+                    value = castValue;
                 } catch (org.mmbase.datatypes.CastException ce) {
                     throw new IllegalArgumentException(ce);
                 }
