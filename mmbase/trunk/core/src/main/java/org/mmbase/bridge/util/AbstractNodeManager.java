@@ -79,8 +79,18 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
         return this;
     }
     public Node createNode() { throw new UnsupportedOperationException();}
-    public NodeList getList(String where, String sorted, boolean direction) { throw new UnsupportedOperationException(); }
-    public NodeList getList(String where, String sorted, String direction) { throw new UnsupportedOperationException(); }
+
+
+    public NodeList getList(String constraints, String sorted, String directions) {
+        NodeQuery query = createQuery();
+        Queries.addConstraints(query, constraints);
+        Queries.addSortOrders(query, sorted, directions);
+        NodeList list = getList(query);
+        list.setProperty("constraints", constraints);
+        list.setProperty("orderby",     sorted);
+        list.setProperty("directions",  directions);
+        return list;
+    }
 
 
     public FieldList createFieldList() {
@@ -100,6 +110,7 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
     }
 
     public NodeList getList(NodeQuery query) {
+        if (query == null) query = createQuery();
         return getCloud().getList(query);
     }
 
