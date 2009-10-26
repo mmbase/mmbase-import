@@ -73,6 +73,11 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
         requestVar = getAttribute(s);
     }
 
+    private boolean reset = false;
+
+    void setReset(boolean reset) {
+        this.reset = reset;
+    }
 
 
     /*
@@ -131,7 +136,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
         helper.setValue(getObject());
 
         if (getId() != null) {
-            getContextProvider().getContextContainer().register(getId(), helper.getValue());
+            getContextProvider().getContextContainer().register(getId(), helper.getValue(), ! reset);
         }
         if (sessionVar != Attribute.NULL) {
             if (pageContext.getSession() == null) {
