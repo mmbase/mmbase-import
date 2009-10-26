@@ -28,10 +28,10 @@ final public class NoAuthentication extends Authentication {
         private static final long serialVersionUID = -232773890397204840L;
 
         NoAuthenticationUser() {
-            super(TYPE);
+            super(new NoAuthentication(), TYPE, "anonymous");
         }
-        NoAuthenticationUser(String un) {
-            super(TYPE, un);
+        NoAuthenticationUser(NoAuthentication auth, String un) {
+            super(auth, TYPE, un);
         }
     }
 
@@ -52,7 +52,7 @@ final public class NoAuthentication extends Authentication {
     public UserContext login(String application, Map loginInfo, Object[] parameters) throws SecurityException {
         String userName = loginInfo == null ? null : (String) loginInfo.get(AuthenticationData.PARAMETER_USERNAME.getName());
         if (userName != null) {
-            return new NoAuthenticationUser(userName);
+            return new NoAuthenticationUser(this, userName);
         } else {
             return userContext;
         }

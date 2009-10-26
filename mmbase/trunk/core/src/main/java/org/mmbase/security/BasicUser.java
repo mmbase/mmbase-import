@@ -31,13 +31,18 @@ public class BasicUser implements UserContext, Comparable<Object> {
 
     protected final String authenticationType;
     private final String identifier;
+    protected final Authentication authentication;
 
     public BasicUser(String authenticationType) {
         this(authenticationType, "anonymous");
     }
     public BasicUser(String authenticationType, String identifier) {
+        this(null, authenticationType, identifier);
+    }
+    public BasicUser(Authentication auth, String authenticationType, String identifier) {
         this.authenticationType = authenticationType;
         this.identifier = identifier;
+        this.authentication = auth;
     }
 
     /**
@@ -84,7 +89,9 @@ public class BasicUser implements UserContext, Comparable<Object> {
 
     public boolean isValid() {
         try {
-            return org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthentication().isValid(this);
+            return authentication != null ?
+                authentication.isValid(this) :
+                org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthentication().isValid(this);
         } catch (Exception e) {
             log.warn(e);
             return false;
