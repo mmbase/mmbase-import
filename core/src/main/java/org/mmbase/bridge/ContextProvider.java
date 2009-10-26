@@ -113,7 +113,7 @@ public class ContextProvider {
      *
      * <ul>
      *   <li>local : will return a local context</li>
-     *   <li>mock://localhost : Will return a {@link org.mmbase.bridge.mock.MockCloudContext}.</li>
+     *   <li>mock:localhost : Will return a {@link org.mmbase.bridge.mock.MockCloudContext}.</li>
      *   <li>rmi://hostname:port/contextname : will return a remote context (only if the rmmci or rmmci-client jar is available)</li>
      *   <li>a null parameter: will return the default context. See {@link #getDefaultCloudContext} </li>
      * </ul>
@@ -133,7 +133,7 @@ public class ContextProvider {
                 return cc;
             }
         }
-	throw new BridgeException("cloudcontext with name {" + uri + "} is not known to MMBase");
+	throw new BridgeException("cloudcontext with name '" + uri + "' is not known to MMBase " + resolvers);
     }
 
     /**
