@@ -18,6 +18,10 @@
     <url>https://scm.mmbase.org/mmbase/trunk/applications/</url>
   </scm>
 
+  <build>
+    <defaultGoal>install</defaultGoal>
+  </build>
+
   <profiles>
     <profile>
       <id>mmapplications_all</id>
