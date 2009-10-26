@@ -144,7 +144,9 @@ public class DataTypeDefinition {
             }
 
             if (definedBaseDataType == null) {
-                log.debug("Attribute 'base' ('" + base + "') of datatype '" + id + "' is an unknown datatype (in " + dataTypeElement.getOwnerDocument().getDocumentURI() + ").");
+                if (log.isDebugEnabled()) {
+                    log.debug("Attribute 'base' ('" + base + "') of datatype '" + id + "' is an unknown datatype (in " + dataTypeElement.getOwnerDocument().getDocumentURI() + ").");
+                }
                 throw new DependencyException(dataTypeElement, requestBaseDataType, this);
             } else {
                 requestBaseDataType = definedBaseDataType;
@@ -173,7 +175,9 @@ public class DataTypeDefinition {
      * Configures the conditions of a datatype definition, using data from a DOM element
      */
     protected void configureConditions(Element dataTypeElement) {
-        log.debug("Now going to configure " + dataType);
+        if (log.isDebugEnabled()) {
+            log.debug("Now going to configure " + dataType);
+        }
         // add conditions
         NodeList childNodes = dataTypeElement.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
@@ -185,7 +189,9 @@ public class DataTypeDefinition {
                 if (nonConditions.matcher(childElement.getLocalName()).matches()) {
                     continue;
                 }
-                log.debug("Considering " + childElement.getLocalName() + " for " + dataType);
+                if (log.isDebugEnabled()) {
+                    log.debug("Considering " + childElement.getLocalName() + " for " + dataType);
+                }
                 if (!addCondition(childElement)) {
                     log.error("" + XMLWriter.write(childElement, true, true) + " defines '" + childElement.getLocalName() + "', but " + dataType + " doesn't support that in (" + dataTypeElement.getOwnerDocument().getDocumentURI() + ")");
                 }
@@ -196,7 +202,9 @@ public class DataTypeDefinition {
      * @since MMBase-1.9
      */
     protected void configureHandlers(Element dataTypeElement) {
-        log.debug("Now going to configure handlers for  " + dataType);
+        if (log.isDebugEnabled()) {
+            log.debug("Now going to configure handlers for  " + dataType);
+        }
         NodeList childNodes = dataTypeElement.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
             if (childNodes.item(k) instanceof Element) {
@@ -219,7 +227,9 @@ public class DataTypeDefinition {
      * @since MMBase-1.9.1
      */
     protected void configureStyleClasses(Element dataTypeElement) {
-        log.debug("Now going to configure style classes for  " + dataType);
+        if (log.isDebugEnabled()) {
+            log.debug("Now going to configure style classes for  " + dataType);
+        }
         NodeList childNodes = dataTypeElement.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
             if (childNodes.item(k) instanceof Element) {
@@ -235,7 +245,9 @@ public class DataTypeDefinition {
      * @since MMBase-1.9.2
      */
     protected void configureProcessors(Element dataTypeElement) {
-        log.debug("Now going to configure processors for  " + dataType);
+        if (log.isDebugEnabled()) {
+            log.debug("Now going to configure processors for  " + dataType);
+        }
         NodeList childNodes = dataTypeElement.getChildNodes();
         Set<Integer> getters = new HashSet<Integer>();
         Set<Integer> setters = new HashSet<Integer>();
@@ -325,7 +337,9 @@ public class DataTypeDefinition {
 
         Processor oldProcessor = dataType.getProcessorWithoutDefault(action, processingType);
         newProcessor = DataTypeXml.chainProcessors(oldProcessor, newProcessor);
-        log.debug("Adding processro to " + processingType + " " + dataType + " Found processor " + oldProcessor + "--> " + newProcessor);
+        if (log.isDebugEnabled()) {
+            log.debug("Adding processor to " + processingType + " " + dataType + " Found processor " + oldProcessor + "--> " + newProcessor);
+        }
         dataType.setProcessor(action, newProcessor, processingType);
     }
 
