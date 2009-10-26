@@ -370,14 +370,16 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
                 errors.add(replacing);
             }
         }
-        for (Map.Entry<String, Object> patternEntry : patternBacking) {
-            for (int i = patternLimit; i < definition.length; i++) {
-                Parameter<?> a = definition[i];
-                if (a.matches(patternEntry.getKey())) {
-                    for (LocalizedString ls : a.getDataType().castAndValidate(patternEntry.getValue(), null, null)) {
-                        ReplacingLocalizedString replacing = new ReplacingLocalizedString(ls);
-                        replacing.replaceAll("\\A", a.getName() + ": ");
-                        errors.add(replacing);
+        if (patternBacking != null) {
+            for (Map.Entry<String, Object> patternEntry : patternBacking) {
+                for (int i = patternLimit; i < definition.length; i++) {
+                    Parameter<?> a = definition[i];
+                    if (a.matches(patternEntry.getKey())) {
+                        for (LocalizedString ls : a.getDataType().castAndValidate(patternEntry.getValue(), null, null)) {
+                            ReplacingLocalizedString replacing = new ReplacingLocalizedString(ls);
+                            replacing.replaceAll("\\A", a.getName() + ": ");
+                            errors.add(replacing);
+                        }
                     }
                 }
             }
@@ -650,6 +652,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      */
     protected Map<String, Object> undefaultBacking() {
         return new SerializableAbstractMap<String, Object>() {
+            private static final long serialVersionUID = 1L;
             public Set<Map.Entry<String, Object>> entrySet() {
                 return new AbstractSet<Map.Entry<String, Object>>() {
                     public Iterator<Map.Entry<String, Object>> iterator() {
