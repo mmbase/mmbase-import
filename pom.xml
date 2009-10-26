@@ -402,6 +402,10 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
               <name>java.awt.headless</name>
               <value>${java.awt.headless}</value>
             </property>
+            <property>
+              <name>mmbase.defaultcloudcontext</name>
+              <value>mock:localhost</value>
+            </property>
 
             <!-- TODO should not depend on system  default locale -->
             <property>
