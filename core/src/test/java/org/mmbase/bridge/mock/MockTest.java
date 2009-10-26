@@ -32,10 +32,6 @@ public class MockTest  {
     }
     @BeforeClass()
     public static void setUp() throws Exception {
-        org.mmbase.util.LocalizedString.setDefault(new Locale("dk"));
-        // TODO, this has influence on DataTypeTest, if you remove this, it will fail guiName tests.
-        // probably because datatypes are initialized with an unexpected locale.
-        //
         DataTypes.initialize();
         MockCloudContext.getInstance().clear();
         MockCloudContext.getInstance().addCore();
