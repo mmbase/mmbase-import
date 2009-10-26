@@ -286,6 +286,9 @@ public final class DataTypeCollector {
         dataTypes.clear();
         specializations.clear();
         roots.clear();
+        collectors.clear();
+        signature = null;
+        systemDataTypeCollector = null;
 
     }
 

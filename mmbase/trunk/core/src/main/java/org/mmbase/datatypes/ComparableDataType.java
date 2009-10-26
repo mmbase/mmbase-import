@@ -37,7 +37,8 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
         super(name, classType);
     }
 
-    @Override protected void inheritRestrictions(BasicDataType<E> origin) {
+    @Override
+    protected void inheritRestrictions(BasicDataType<E> origin) {
         super.inheritRestrictions(origin);
         if (origin instanceof ComparableDataType) {
             ComparableDataType<E> compOrigin = (ComparableDataType<E>) origin;
@@ -60,7 +61,8 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
         }
     }
 
-    @Override protected void cloneRestrictions(BasicDataType<E> origin) {
+    @Override
+    protected void cloneRestrictions(BasicDataType<E> origin) {
         super.cloneRestrictions(origin);
         if (origin instanceof ComparableDataType) {
             ComparableDataType<E> dataType = (ComparableDataType<E>) origin;
@@ -103,7 +105,8 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
      *
      * If the default value of comparable datatype is somewhy out the range, it will be truncated into it.
      */
-    @Override public  E getDefaultValue(Locale locale, Cloud cloud, Field field) {
+    @Override
+    public  E getDefaultValue(Locale locale, Cloud cloud, Field field) {
         E def = super.getDefaultValue(locale, cloud, field);
         if (! minRestriction.valid(def, null, null)) {
             def = minRestriction.getValue();
@@ -114,7 +117,8 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
     }
 
 
-    @Override public void toXml(Element parent) {
+    @Override
+    public void toXml(Element parent) {
         super.toXml(parent);
 
         if (minRestriction.getValue() != null) {
@@ -162,24 +166,28 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
         maxRestriction.setValue(value);
     }
 
-    @Override public int getEnforceStrength() {
+    @Override
+    public int getEnforceStrength() {
         int enforceStrength = Math.max(super.getEnforceStrength(), minRestriction.getEnforceStrength());
         return Math.max(enforceStrength, maxRestriction.getEnforceStrength());
     }
 
-    @Override protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value,  Node node, Field field) {
+    @Override
+    protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value,  Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value, node, field);
         errors = minRestriction.validate(errors, castValue, node, field);
         errors = maxRestriction.validate(errors, castValue, node, field);
         return errors;
     }
 
-    @Override public ComparableDataType<E> clone(String name) {
+    @Override
+    public ComparableDataType<E> clone(String name) {
         ComparableDataType<E> clone = (ComparableDataType<E>) super.clone(name);
         return clone;
     }
 
-    @Override protected StringBuilder toStringBuilder() {
+    @Override
+    protected StringBuilder toStringBuilder() {
         StringBuilder buf = super.toStringBuilder();
         Object minValue = minRestriction.getValue();
         Object maxValue = maxRestriction.getValue();
@@ -215,6 +223,17 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
         return comp1.compareTo(comp2);
     }
 
+    /**
+     * @since MMBase-1.9.2
+     */
+    public Comparator<E> getComparator() {
+        return new DataTypeComparator<E>(this) {
+            public int compare(E comp1, E comp2) {
+                return ComparableDataType.this.compare(comp1, comp2);
+            }
+        };
+    }
+
     protected class MinRestriction extends AbstractRestriction<E> {
         private boolean inclusive;
         MinRestriction(MinRestriction source) {
@@ -226,7 +245,8 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
             inclusive = inc;
         }
 
-        @Override protected boolean simpleValid(Object v, Node node, Field field) {
+        @Override
+        protected boolean simpleValid(Object v, Node node, Field field) {
             if ((v == null) || (getValue() == null)) return true;
             E comparable = (E) v;
             E minimum;
@@ -255,7 +275,8 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
             super("max" + (inc ? "Inclusive" : "Exclusive"), null);
             inclusive = inc;
         }
-        @Override protected boolean simpleValid(Object v, Node node, Field field) {
+        @Override
+        protected boolean simpleValid(Object v, Node node, Field field) {
             if ((v == null) || (getValue() == null)) return true;
             E comparable = (E) v;
             E maximum;
