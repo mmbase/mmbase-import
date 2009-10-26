@@ -149,5 +149,10 @@ public class MockCloud extends AbstractCloud {
         return new MockTransaction(name, this);
     }
 
+    @Override
+    public String toString() {
+        return "MockCloud:" + getName() + "@" + cloudContext;
+    }
+
 }
 
