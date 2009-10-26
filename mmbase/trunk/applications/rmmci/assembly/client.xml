@@ -29,6 +29,8 @@
           <include>org/mmbase/security/UserContext.class</include>       <!-- security classes are bridge -->
           <include>org/mmbase/security/BasicUser.class</include>       <!-- security classes are bridge -->
           <include>org/mmbase/security/AuthenticationData*.class</include> <!-- security classes are bridge -->
+          <include>org/mmbase/security/Authentication*.class</include> <!-- security classes are bridge -->
+          <include>org/mmbase/security/NoAuthentication*.class</include> <!-- security classes are bridge -->
           <include>org/mmbase/security/Rank.class</include>              <!-- security classes are bridge -->
           <include>org/mmbase/security/SecurityException.class</include> <!-- security classes are bridge -->
           <include>org/mmbase/security/Action*.class</include> <!-- security classes are bridge -->
@@ -77,6 +79,12 @@
           <include>org/mmbase/util/IOUtil*</include>
           <include>org/mmbase/util/SizeOf*</include>
 
+          <include>org/mmbase/util/ChainedList*.class</include>            <!-- Used by Mock -->
+          <include>org/mmbase/util/LinkMap*.class</include>            <!-- Used by Mock -->
+          <include>org/mmbase/storage/search/implementation/**</include> <!-- Used by Mock, test cases -->
+          <include>org/mmbase/core/util/Fields**</include>                <!-- hmm -->
+
+
           <include>org/mmbase/storage/Storable.class</include>              <!-- DataTypes uses .. -->
           <include>org/mmbase/storage/StorageException.class</include>      <!--  -->
           <include>org/mmbase/storage/StorageNotFoundException.class</include> <!-- may be thrown through bridge. -->
@@ -92,6 +100,7 @@
           <include>org/mmbase/util/PasswordGenerator*</include>            <!-- Used in test cases .. -->
           <include>org/mmbase/config/functions/**</include>                  <!-- Used in test cases .. -->
           <include>org/mmbase/config/datatypes.xml</include>                  <!-- Used in test cases .. -->
+          <include>org/mmbase/config/builders/core/**</include>                  <!-- Used in Mock/test cases .. -->
         </includes>
         <excludes>
           <exclude>org/mmbase/storage/search/SearchQueryHandler*</exclude>   <!-- Has a dependency on MMObjectNode -->
