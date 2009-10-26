@@ -12,9 +12,9 @@
       author: Michiel Meeuwissen
   -->
   <mm:import externid="nodemanager" required="true" />
-  <datatypes 
+  <datatypes
       nodemanager="${nodemanager}">
-    <mm:cloud>
+    <mm:cloud uri="${param.uri}" name="${param.cloud}">
       <mm:fieldlist nodetype="${nodemanager}" type="edit" fields="owner">
         <mm:fieldinfo type="name">
           <field name="${_}">
