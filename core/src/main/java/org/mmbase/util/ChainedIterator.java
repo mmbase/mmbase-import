@@ -15,6 +15,11 @@ import java.util.*;
 /**
  * Like org.apache.commons.collections.iterators.IteratorChain, to avoid the dependency....
  *
+ * It is quite easy to understand what this actually is. It is an Iterator implemetnation which is
+ * based on other Iterators. During iterating, it simply iterates them all sequentially.
+ *
+ *
+ *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.8
  * @version $Id$
@@ -32,6 +37,10 @@ public class ChainedIterator<E> implements Iterator<E> {
         }
     }
 
+    /**
+     * Adds another iterator
+     * @exception IllegalStateException if iteration already started
+     */
     public ChainedIterator<E>  addIterator(Iterator<E> i) {
         if (iteratorIterator != null) throw new IllegalStateException();
         iterators.add(i);
@@ -69,6 +78,9 @@ public class ChainedIterator<E> implements Iterator<E> {
         return res;
 
     }
+    /**
+     * Not supported
+     */
     public void remove() {
         throw new UnsupportedOperationException();
     }

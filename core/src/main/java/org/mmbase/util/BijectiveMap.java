@@ -5,6 +5,8 @@ import java.util.*;
 /**
  * A map representing a 1-1 bijective relation between 2 sets of values.
  *
+ * So, this map can be turned around ({@link #getInverse}). resulting another BijectiveMap, but with keys an values switched.
+ *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9.1
  * @version $Id$
@@ -59,7 +61,9 @@ public class BijectiveMap<K, V> extends AbstractMap<K, V> {
         if (backing.containsKey(key)) {
             V prevValue = backing.get(key);
             if (! prevValue.equals(value)) {
-                if (inverse.containsKey(value)) throw new IllegalArgumentException();
+                if (inverse.containsKey(value)) {
+                    throw new IllegalArgumentException();
+                }
                 inverse.remove(prevValue);
                 inverse.put(value, key);
                 backing.put(key, value);
@@ -75,10 +79,18 @@ public class BijectiveMap<K, V> extends AbstractMap<K, V> {
         }
     }
 
+    /**
+     * Gets a key by value. That this is possible, is the essence of this class.
+     */
     public K inverseGet(V value) {
         return inverse.get(value);
     }
-    public Map<V, K> getInverse() {
+
+
+    /**
+     * Returns view on this map where the keys and values have switched their function.
+     */
+    public BijectiveMap<V, K> getInverse() {
         return new BijectiveMap<V, K>(inverse, backing);
     }
 }
