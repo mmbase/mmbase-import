@@ -86,6 +86,14 @@ public class DataTypes {
         }
 
     }
+    /**
+     * @since MMBase-1.9.2
+     */
+    public static synchronized void reinitialize() {
+        initialized = false;
+        dataTypeCollector.clear();
+        initialize();
+    }
 
     /**
      * Retry to read a datype which previously failed to read. It could succeed now, because other
