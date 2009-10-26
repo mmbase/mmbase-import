@@ -50,23 +50,6 @@ public class MockCloudContext extends  AbstractCloudContext {
     public static MockCloudContext getInstance() {
         return virtual;
     }
-    private static SearchQueryHandler searchQueryHandler =
-        new org.mmbase.storage.search.implementation.database.BasicQueryHandler(new org.mmbase.storage.search.implementation.database.BasicSqlHandler() {
-                @Override
-                public String getAllowedValue(String value) {
-                    return value;
-                }
-                @Override
-                protected void appendTableName(StringBuilder sb, Step step) {
-                    sb.append(step.getTableName());
-                    appendTableAlias(sb, step);
-                }
-                @Override
-                public String forceEncode(String st) {
-                    return st;
-                }
-            });
-
 
     public static class NodeDescription {
         public final String type;
@@ -184,7 +167,7 @@ public class MockCloudContext extends  AbstractCloudContext {
 
     @Override
     public String toString() {
-        return getUri() + "#" + hashCode();
+        return getUri() + "#" + hashCode() + "(" + nodes.size() + " nodes)";
     }
 
     public static class MockResolver extends ContextProvider.Resolver {
@@ -194,7 +177,8 @@ public class MockCloudContext extends  AbstractCloudContext {
         @Override
         public CloudContext resolve(String uri) {
             if (uri.startsWith("mock:")){
-                return org.mmbase.bridge.mock.MockCloudContext.getInstance();
+                CloudContext result = MockCloudContext.getInstance();
+                return result;
             } else {
                 return null;
             }
