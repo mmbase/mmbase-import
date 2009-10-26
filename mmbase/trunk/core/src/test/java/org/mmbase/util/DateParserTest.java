@@ -9,16 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 import org.mmbase.util.dateparser.*;
-
 import java.util.*;
-import junit.framework.TestCase;
+import org.junit.*;
+import static org.junit.Assert.*;
 
 /**
- * 
+ *
  * @author Michiel Meeuwissen
  * @verion $Id$
  */
-public class DateParserTest extends TestCase {
+public class DateParserTest  {
 
 
     protected boolean sufficientlyEqual(Object value1, Object value2) {
@@ -30,17 +30,13 @@ public class DateParserTest extends TestCase {
             return value1.equals(value2);
         }
     }
-    /**
-     */
-    public void testNow() {
-        try {
-            assertTrue(sufficientlyEqual(DynamicDate.getInstance("now"), new Date()));
-            assertTrue(sufficientlyEqual(DynamicDate.getInstance("now - 5 minute"), new Date(System.currentTimeMillis() - 5 * 60 * 1000)));
-            assertTrue(sufficientlyEqual(DynamicDate.getInstance("now + 5 minute"), new Date(System.currentTimeMillis() + 5 * 60 * 1000)));
-            assertTrue(sufficientlyEqual(DynamicDate.getInstance("now + 5 hour"), new Date(System.currentTimeMillis() + 5 * 60 * 60 * 1000)));
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+
+    @Test
+    public void now() throws Exception {
+        assertTrue(sufficientlyEqual(DynamicDate.getInstance("now"), new Date()));
+        assertTrue(sufficientlyEqual(DynamicDate.getInstance("now - 5 minute"), new Date(System.currentTimeMillis() - 5 * 60 * 1000)));
+        assertTrue(sufficientlyEqual(DynamicDate.getInstance("now + 5 minute"), new Date(System.currentTimeMillis() + 5 * 60 * 1000)));
+        assertTrue(sufficientlyEqual(DynamicDate.getInstance("now + 5 hour"), new Date(System.currentTimeMillis() + 5 * 60 * 60 * 1000)));
     }
 
     int NULL = -100000;
@@ -77,17 +73,19 @@ public class DateParserTest extends TestCase {
 
     }
 
-    protected void assertTrue(String date1, int[] date2) throws ParseException {
+    protected void assertValue(String date1, int[] date2) throws ParseException {
         Date  dyndate = DynamicDate.getInstance(date1);
         int[] r     = getNow(date2);
         Collection result = compare(dyndate, r);
         assertTrue(date1 + "->" + dyndate + " != " + new Date(r[0] - 1900, r[1], r[2], r[3], r[4], r[5]) + result, result.isEmpty());
     }
-    public void testDay() throws ParseException {
+
+    @Test
+    public void day() throws ParseException {
         Date date = DynamicDate.getInstance("today");
-        assertTrue("today", new int[] {0, 0, 0, NULL, NULL, NULL});
-        assertTrue("today + 1 day", new int[] {0, 0, 1, NULL, NULL, NULL});
-        assertTrue("tomorrow", new int[] {0, 0, 1, NULL, NULL, NULL});
+        assertValue("today", new int[] {0, 0, 0, NULL, NULL, NULL});
+        assertValue("today + 1 day", new int[] {0, 0, 1, NULL, NULL, NULL});
+        assertValue("tomorrow", new int[] {0, 0, 1, NULL, NULL, NULL});
         //for now only checking if no exception:
         DynamicDate.getInstance("tomorrow 5 oclock");
         DynamicDate.getInstance("now 5 oclock");
@@ -106,7 +104,9 @@ public class DateParserTest extends TestCase {
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.HOUR_OF_DAY, 0);
     }
-    public void testToday() {
+
+    @Test
+    public void today() {
         try {
             Calendar today = Calendar.getInstance();
             beginOfDay(today);
@@ -114,7 +114,7 @@ public class DateParserTest extends TestCase {
         } catch (Exception e) {
             fail(e.getMessage());
         }
-        
+
     }
 
 }
