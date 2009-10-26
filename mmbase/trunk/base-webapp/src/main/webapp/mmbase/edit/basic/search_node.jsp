@@ -66,7 +66,6 @@
              <!-- mm:timer name="node_managers"-->
              <!-- quick search by number/alias: -->
              <form method="post" action="<mm:url page="change_node.jsp"/>">
-             <mm:log>NMS: <%=cloud.getNodeManagers()%></mm:log>
     	    	<table summary="node managers" width="100%" cellspacing="1" cellpadding="3" border="0">
 		    <% // functionality for listing nodemanagers is not (yet?) in taglib, using MMCI.
                      NodeManagerList l = cloud.getNodeManagers();
@@ -80,9 +79,6 @@
                     } ); // MMCI doesn't sort, do it ourselves.
                     for (int i=0; i<l.size(); i++) {
                         NodeManager nt = l.getNodeManager(i);
-                        %>
-                        <mm:log><%=nt.mayCreateNode()%></mm:log>
-                        <%
 
                         if ( (nt.mayCreateNode() && !nt.hasField("dnumber")) || !"short".equals(liststyle)) {
                 %>
