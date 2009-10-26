@@ -37,7 +37,7 @@ public class DataTypesTest  {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        LocalizedString.setDefault(new Locale("dk"));
+        LocalizedString.setDefault(new Locale("da"));
         DataTypes.reinitialize();
         MockCloudContext.getInstance().clear();
         MockCloudContext.getInstance().addNodeManagers(ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders/core"));
@@ -59,9 +59,10 @@ public class DataTypesTest  {
         return getString().clone("clone");
     }
 
+
     @Test
     public void setup(){
-        assertEquals(new Locale("dk"), LocalizedString.getDefault());
+        assertEquals(new Locale("da"), LocalizedString.getDefault());
     }
 
     @Test
@@ -70,7 +71,7 @@ public class DataTypesTest  {
         assertEquals("clone", getStringClone().getName());
         assertEquals("eline", getLine().getName());
     }
-    @Test // something's going wrong with default locales
+    @Test
     public void guiName() {
         assertEquals("Tekst", getString().getGUIName(new Locale("nl")));
         assertEquals("Text", getString().getGUIName(new Locale("en")));
@@ -347,10 +348,10 @@ public class DataTypesTest  {
     public void required_integer() {
         DataType<?> dt = DataTypes.getDataType("integer").clone();
         dt.setRequired(true);
-        assertFalse(dt.castAndValidate("", null, null).size() == 0);
-        assertFalse(dt.castAndValidate(null, null, null).size() == 0);
-        assertFalse(dt.castAndValidate("aaa", null, null).size() == 0);
-        assertFalse(dt.castAndValidate("NaN", null, null).size() == 0);
+        assertTrue(dt.castAndValidate("", null, null).size() > 0);
+        assertTrue(dt.castAndValidate(null, null, null).size() > 0);
+        assertTrue(dt.castAndValidate("aaa", null, null).size() > 0);
+        assertTrue(dt.castAndValidate("NaN", null, null).size() > 0);
 
     }
 
@@ -358,10 +359,10 @@ public class DataTypesTest  {
     public void required_decimal() {
         DataType<?> dt = DataTypes.getDataType("decimal").clone();
         dt.setRequired(true);
-        assertFalse(dt.castAndValidate("", null, null).size() == 0);
-        assertFalse(dt.castAndValidate(null, null, null).size() == 0);
-        assertFalse(dt.castAndValidate("aaa", null, null).size() == 0);
-        assertFalse(dt.castAndValidate("NaN", null, null).size() == 0);
+        assertTrue(dt.castAndValidate("", null, null).size() > 0);
+        assertTrue(dt.castAndValidate(null, null, null).size() > 0);
+        assertTrue(dt.castAndValidate("aaa", null, null).size() > 0);
+        assertTrue(dt.castAndValidate("NaN", null, null).size() > 0);
 
     }
 
@@ -386,6 +387,45 @@ public class DataTypesTest  {
         assertTrue("" + nm.getFields(), nm.hasField("boolean_string"));
         assertTrue("" + nm.getFields(), nm.hasField("field"));
     }
+
+    /**
+     * The 'typedef' datatype is interesting, because it is a _restricted_ node datatype
+     */
+    @Test
+    public void typedef() throws Exception {
+        NodeDataType typedefDataType = (NodeDataType) DataTypes.getDataType("typedef");
+        org.mmbase.bridge.Node typedef =  MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("typedef").getList(null).getNode(0); // a valid node
+
+        assertEquals(typedef, typedefDataType.castToValidate(typedef, null, null));
+        assertEquals(typedef.getNumber(), ((org.mmbase.bridge.Node) typedefDataType.castToValidate(typedef.getNumber(), null, null)).getNumber());
+
+        assertTrue(typedefDataType.enumerationRestriction.simpleValid(typedef, null, null));
+        assertEquals(DataType.VALID, typedefDataType.enumerationRestriction.validate(DataType.VALID, typedef, null, null));
+
+        assertEquals(DataType.VALID, typedefDataType.castAndValidate(typedef, null, null));
+        assertEquals(DataType.VALID, typedefDataType.castAndValidate(typedef.getNumber(), null, null));
+        assertEquals(DataType.VALID, typedefDataType.castAndValidate("" + typedef.getNumber(), null, null));
+
+
+        org.mmbase.bridge.Node aa =  MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("aa").createNode(); // an invalid node
+        aa.commit();
+
+        assertFalse(typedefDataType.enumerationRestriction.simpleValid(aa, null, null));
+        assertTrue(typedefDataType.enumerationRestriction.validate(DataType.VALID, aa, null, null).size() > 0);
+
+
+        assertTrue(typedefDataType.castAndValidate(aa, null, null).size() > 0);
+        assertTrue(typedefDataType.castAndValidate(aa.getNumber(), null, null).size() > 0);
+        assertTrue(typedefDataType.castAndValidate("" + aa.getNumber(), null, null).size() > 0);
+
+
+        assertEquals(typedef.getNumber(), typedefDataType.cast(typedef, null, null).getNumber());
+
+        assertEquals(aa.getNumber(), typedefDataType.cast(aa, null, null).getNumber());
+    }
+
+
+
 
 
 }
