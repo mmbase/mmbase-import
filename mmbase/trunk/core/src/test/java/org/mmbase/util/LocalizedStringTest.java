@@ -13,20 +13,21 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 import java.io.*;
 import java.util.*;
-import junit.framework.TestCase;
+import org.junit.*;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author Michiel Meeuwissen
  * @verion $Id$
  */
-public class LocalizedStringTest extends TestCase {
+public class LocalizedStringTest  {
 
     public static final Locale NL = new Locale("nl");
     public static final Locale BE = new Locale("nl", "BE");
     public static final Locale BE_VAR = new Locale("nl", "BE", "a_b");
     public static final Locale EN = new Locale("en", "GB");
-    public static final Locale DK = new Locale("dk");
+    public static final Locale DK = new Locale("da");
     public static final Locale EO = new Locale("eo");
 
 
@@ -49,7 +50,8 @@ public class LocalizedStringTest extends TestCase {
         return fun;
     }
 
-    public void testBasic() {
+    @Test
+    public void basic() {
         LocalizedString fun = getInstance();
         assertEquals("funny", fun.get(null));
         assertEquals("amuza", fun.get(EO));
@@ -64,6 +66,7 @@ public class LocalizedStringTest extends TestCase {
 
     }
 
+    @Test
     public void testClone() {
         LocalizedString fun = getInstance();
         LocalizedString clone = fun.clone();
@@ -84,7 +87,8 @@ public class LocalizedStringTest extends TestCase {
     }
 
 
-    public void testSerializable() throws IOException, java.lang.ClassNotFoundException {
+    @Test
+    public void serializable() throws IOException, java.lang.ClassNotFoundException {
         LocalizedString l = getInstance();
 
         // serialize
@@ -101,7 +105,9 @@ public class LocalizedStringTest extends TestCase {
 
         assertEquals(l, dl);
     }
-    public void testReadonlySerializable() throws IOException, java.lang.ClassNotFoundException {
+
+    @Test
+    public void readonlySerializable() throws IOException, java.lang.ClassNotFoundException {
         LocalizedString rol = new ReadonlyLocalizedString(getInstance());
         // serialize
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -118,7 +124,8 @@ public class LocalizedStringTest extends TestCase {
         assertEquals(rol, drol);
     }
 
-    public void testMakeReadOnly() {
+    @Test
+    public void makeReadOnly() {
         LocalizedString l = getInstance();
         LocalizedString rol = l.getReadonlyLocalizedString();
 
@@ -136,7 +143,8 @@ public class LocalizedStringTest extends TestCase {
         assertEquals(l, rol);
     }
 
-    public void testMakeReadOnlyClone() {
+    @Test
+    public void makeReadOnlyClone() {
         LocalizedString rol = getInstance().getReadonlyLocalizedString();
         LocalizedString clone = rol.clone();
 
@@ -157,7 +165,8 @@ public class LocalizedStringTest extends TestCase {
         assertFalse(clone.equals(rol));
     }
 
-    public void testSetKey() {
+    @Test
+    public void setKey() {
         LocalizedString l = getInstance();
         LocalizedString rol = l.getReadonlyLocalizedString();
         LocalizedString clone = l.clone();
