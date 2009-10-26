@@ -11,7 +11,7 @@
 
   <artifactId>example-searchrelate-webapp</artifactId>
   <packaging>war</packaging>
-  <name>MMBase Example WebService webapp</name>
+  <name>MMBase Example Search &amp; Relate webapp</name>
 
   <properties>
     <base.version>${mmbase.version.number}-servlet25${mmbase.version.postfix}</base.version>
