@@ -20,7 +20,7 @@
     <description xml:lang="en">Generic action for things that may only be done by 'basic users' or higher ranked.</description>
   </action>
 
-  <action name="generic_admistrator" rank="administrator">
+  <action name="generic_administrator" rank="administrator">
     <description xml:lang="en">Generic action for things that may only be done by 'administrators'</description>
   </action>
 
