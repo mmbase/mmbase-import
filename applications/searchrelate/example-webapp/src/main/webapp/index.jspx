@@ -7,6 +7,8 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <mm:import externid="ct" />
+  <mm:import externid="debug" />
+  <mm:import id="referids">ct?,debug?</mm:import>
   <mm:content
       type="${empty ct ? 'application/xhtml+xml' : ct}"
       expires="0"
@@ -34,80 +36,80 @@
         <h2>mm-sr:relatednodes</h2>
         <ul>
           <li class="done">
-            <mm:link page="relatednodes-1.jspx" referids="ct?">
+            <mm:link page="relatednodes-1.jspx" referids="${referids}">
               <a href="${_}">mm-sr:relatednodes (max, sortable, search)</a>
             </mm:link>
           </li>
 
           <li class="done">
-            <mm:link page="relatednodes-2.jspx" referids="ct?">
+            <mm:link page="relatednodes-2.jspx" referids="${referids}">
               <a href="${_}">mm-sr:relatednodes (role, field)</a>
             </mm:link>
           </li>
 
           <li class="done">
-            <mm:link page="relatednodes-nested.jspx" referids="ct?">
+            <mm:link page="relatednodes-nested.jspx" referids="${referids}">
               <a href="${_}">mm-sr:relatednodes nested</a>
             </mm:link>
           </li>
 
           <li class="done">
-            <mm:link page="mmform-relatednodes.jspx" referids="ct?">
+            <mm:link page="mmform-relatednodes.jspx" referids="${referids}">
               <a href="${_}">mm-sr:relatednodes in an mm:form</a>
             </mm:link>
           </li>
 
           <li class="done">
-            <mm:link page="mmform-relatednodes-2.jspx" referids="ct?">
+            <mm:link page="mmform-relatednodes-2.jspx" referids="${referids}">
               <a href="${_}">2 mm-sr:relatednodes in one mm:form</a>
             </mm:link>
           </li>
 
           <li class="done">
-            <mm:link page="mmform-relatednodes-images.jspx" referids="ct?">
+            <mm:link page="mmform-relatednodes-images.jspx" referids="${referids}">
               <a href="${_}">mm-sr:relatednodes in an mm:form with image uploads</a>
             </mm:link>
           </li>
 
           <li class="done">
-            <mm:link page="mmform-relatednodes-images-nested.jspx" referids="ct?">
+            <mm:link page="mmform-relatednodes-images-nested.jspx" referids="${referids}">
               <a href="${_}">mm-sr:relatednodes in an mm:form with image uploads (nested)</a>
             </mm:link>
           </li>
 
           <li class="done">
-            <mm:link page="mmform-relatednodes-nested.jspx" referids="ct?">
+            <mm:link page="mmform-relatednodes-nested.jspx" referids="${referids}">
               <a href="${_}">mm-sr:relatednodes in a form and nested</a>
             </mm:link>
           </li>
 
           <li class="done">
-            <mm:link page="buttons.jspx" referids="ct?">
+            <mm:link page="buttons.jspx" referids="${referids}">
               <a href="${_}">Using different buttons</a>
             </mm:link>
           </li>
 
 
           <li class="done">
-            <mm:link page="searchdirs.jspx" referids="ct?">
+            <mm:link page="searchdirs.jspx" referids="${referids}">
               <a href="${_}">Searchdirs</a>
             </mm:link>
           </li>
 
           <li class="done">
-            <mm:link page="mmform-searchdirs.jspx" referids="ct?">
+            <mm:link page="mmform-searchdirs.jspx" referids="${referids}">
               <a href="${_}">Searchdirs in an mm:form</a>
             </mm:link>
           </li>
 
           <li class="done">
-            <mm:link page="validation.jspx" referids="ct?">
+            <mm:link page="validation.jspx" referids="${referids}">
               <a href="${_}">Validation in an mm:form</a>
             </mm:link>
           </li>
 
           <li class="done">
-            <mm:link page="searchConstraint.jspx" referids="ct?">
+            <mm:link page="searchConstraint.jspx" referids="${referids}">
               <a href="${_}">searchConstraint</a>
             </mm:link>
           </li>
@@ -156,7 +158,7 @@
         <h2>mm-sr:relate</h2>
         <ul>
           <li class="done">
-            <mm:link page="search.jspx" referids="ct?">
+            <mm:link page="search.jspx" referids="${referids}">
               <a href="${_}">mm-sr:search</a>
             </mm:link>
           </li>
