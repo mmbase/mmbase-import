@@ -16,7 +16,8 @@ import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
 /**
- * A SetFunction is a {@link Function} which wraps precisely one method of a class. It is used as one function of a 'set' of functions.
+ * A SetFunction is a {@link Function} which wraps precisely one method of a class. It is used as
+ * one function of {@linkplain FunctionSet a 'set' of functions}.
  *
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
