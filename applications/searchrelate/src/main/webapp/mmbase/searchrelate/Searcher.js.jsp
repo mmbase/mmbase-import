@@ -662,6 +662,44 @@ MMBaseSearcher.prototype.search = function(val, offset, anchor) {
     return false;
 }
 
+
+/**
+ * If you defined in your CSS that 'implicit' search results are not visible at all, then
+ * you can call this method to bind events to change the texts on the search buttons accordingly (between 'search' and 'close').
+ */
+MMBaseSearcher.prototype.implicitsAreHidden = function() {
+    $(document).bind("mmsrPaged",
+                     function (e, status, relater, searcher) {
+                         var anchor = $(searcher.div).find("a.search")[0];
+                         anchor.searcher = searcher;
+                         var div = searcher.getResultDiv();
+                         if (searcher.offset == 0 && ! $(div).hasClass("implicit")) {
+                             $(anchor).text('<fmt:message key="close" />');
+                         } else {
+                             $(anchor).text('<fmt:message key="search" />');
+                         }
+
+                     });
+
+    $(document).keyup(function(e) {
+            var target = e.target;
+            if (target.tagName == "input" && $(target).hasClass("search")) {
+                var anchor = $(target).closest("fieldset").find("a")[0];
+                var searcher = anchor.searcher;
+                if (searcher != null) {
+                    var div = searcher.getResultDiv();
+                    if (searcher.offset == 0 && searcher.value == $(target).val() && ! $(div).hasClass("implicit")) {
+                        $(anchor).text('<fmt:message key="close" />');
+                    } else {
+                        $(anchor).text('<fmt:message key="search" />');
+                    }
+                }
+            }
+
+        });
+}
+
+
 MMBaseSearcher.prototype.totalSize = function(size) {
     var span = $(this.div).find("caption span.size")[0];
     if (size == null) {
