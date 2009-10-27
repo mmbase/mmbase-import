@@ -64,12 +64,7 @@
                                         Staticly include /mmbase/searchrelate/list/paramters.jspf to get 'parameters' as Map.
                                         Default implementation is &lt;a href='https://scm.mmbase.org/mmbase/trunk/applications/searchrelate/src/main/webapp/mmbase/searchrelate/list/item.jspx'&gt;/mmbase/searchrelate/list/item.jspx&lt;/a&gt;, and could be used as a template for a customized version." />
 
-  <!--
 
-  <jsp:directive.attribute name="li"           type="java.lang.String"
-                           description="DEPRECATED, will be removed soon, use item"
-                           />
-  -->
   <jsp:directive.attribute name="precreate"           type="java.lang.String"
                            description="Jsp to call just before commit of the created node."
                            />
@@ -127,6 +122,12 @@
 
                            />
 
+  <mm:import id="previousParameters" from="request" externid="org.mmbase.sr.relatednodes.parameters" />
+  <!-- this is set by parameters.jspf.
+       TODO.
+       -The prefix should probably by org.mmbase.searchrelate.relatednodes
+       -Is this not exactly the same as org.mmbase.searchrelate.relatednodes
+       -->
 
   <mm:import id="requestid">R<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape></mm:import>
   <mm:import from="session" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
@@ -151,7 +152,9 @@
              externid="org.mmbase.searchrelate.relatednodes"
              id="parent" />
   <mm:write request="org.mmbase.searchrelate.relatednodes" value="${rid}" />
+
   <mm:import id="parentparameters" externid="${parent}_context" from="session" />
+
   <mm:import id="parentformtag">${parentparameters.formtag}</mm:import>
 
   <mm:import id="_formtag">${requestScope['org.mmbase.bridge.jsp.taglib.form'].name}</mm:import>
@@ -358,4 +361,5 @@
     </div>
   </fmt:bundle>
   <mm:write request="org.mmbase.searchrelate.relatednodes" referid="parameters.parent" />
+  <mm:write request="org.mmbase.sr.relatednodes.parameters" referid="previousParameters" />
 </jsp:root>
