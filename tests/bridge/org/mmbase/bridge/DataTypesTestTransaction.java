@@ -21,10 +21,13 @@ public class DataTypesTestTransaction extends DataTypesTest {
     public DataTypesTestTransaction(String name) {
         super(name);
     }
+
+    @Override
     protected Cloud getCloud() {
         return getTransaction();
     }
 
+    @Override
     protected byte[] getBinary() {
         return new byte[] {1, 2, 3, 4, 5};
     }
