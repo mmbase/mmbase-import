@@ -56,7 +56,7 @@ function List(d) {
     this.autosubmit = this.autosubmit == 'true';
     this.search     = this.search     == 'true';
 
-    if (this.formtag.length > 0) {
+    if (this.formtag.length > 0 || this.parentformtag.length > 0) {
         this.form = $(this.div).parents("form")[0];
         this.form.valids = {};
     }
@@ -210,6 +210,9 @@ List.prototype.triggerValidateHook = function() {
     }
     if (this.form != null) {
         $(this.form).trigger("mmsrValidateHook", [self, valid, reason, self.form]);
+    } else {
+        // console.log("No form");
+        //console.log(this);
     }
 }
 
