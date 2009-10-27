@@ -17,23 +17,26 @@
         class="${className}"
         xmlns="http://www.w3.org/1999/xhtml">
 
-      <mm:import id="fieldlistid">${parameters.fieldlistidprefix}_<mm:escape escape="identifier">${_node}</mm:escape></mm:import>
-
+      <mm:import id="fieldlistid">
+        <jsp:text>${parameters.fieldlistidprefix}_</jsp:text>
+        <mm:escape escape="identifier">${_node}</mm:escape>
+      </mm:import>
+      <mm:write request="org.mmbase.searchrelate.relatednodes" referid="parameters.rid" />
       <c:choose>
-        <c:when test="${! empty parameters.formtag}">
+        <c:when test="${! parameters.autosubmit}">
           <mm:include debug="html"
                       page="${parameters.item}"
                       referids="rid,fieldlistid">
           </mm:include>
         </c:when>
         <c:otherwise>
-          <mm:import id="formtagid">node${_node}</mm:import>
-          <mm:form name="${formtagid}">
+          <mm:import id="formtagid">${parameters.rid}_node${_node}_<mm:time time="now" /></mm:import>
+          <mm:form name="${formtagid}" jspvar="form" commitonclose="false">
             <mm:include debug="html"
                         page="${parameters.item}"
                         referids="rid,fieldlistid">
             </mm:include>
-            <mm:cancel />
+            <mm:cancel  />
           </mm:form>
         </c:otherwise>
       </c:choose>
