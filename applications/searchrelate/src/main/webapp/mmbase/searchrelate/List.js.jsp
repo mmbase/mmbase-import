@@ -1,7 +1,7 @@
 // -*- mode: javascript; -*-
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"  %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
+<%@page contentType="text/javascript; charset=UTF-8" %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"
+%><fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
 <mm:content type="text/javascript">
 
 /**
