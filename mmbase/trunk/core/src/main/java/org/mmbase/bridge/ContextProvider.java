@@ -70,7 +70,6 @@ public class ContextProvider {
     **/
 
     public final static String DEFAULT_CLOUD_CONTEXT_NAME = "local";
-    private static String defaultCloudContextName ;
 
     /**
      * @since MMBase-1.9.2
@@ -144,12 +143,12 @@ public class ContextProvider {
      **/
      public static String getDefaultCloudContextName() {
          //first choice.. set the cloud context using system properties
-         if (defaultCloudContextName == null) {
-             try {
-                 defaultCloudContextName = System.getProperty("mmbase.defaultcloudcontext");
-             } catch (SecurityException se) {
-                 log.info(se);
-             }
+
+         String defaultCloudContextName = null;
+         try {
+             defaultCloudContextName = System.getProperty("mmbase.defaultcloudcontext");
+         } catch (SecurityException se) {
+             log.info(se);
          }
          if (defaultCloudContextName == null) {
 
