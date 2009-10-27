@@ -39,7 +39,6 @@ import org.xml.sax.InputSource;
  * @author  Michiel Meeuwissen
  * @version $Id$
  * @since   MMBase-1.9.2
- * @todo    EXPERIMENTAL
  */
 
 public class MockCloudContext extends  AbstractCloudContext {
@@ -47,10 +46,20 @@ public class MockCloudContext extends  AbstractCloudContext {
     private static final Logger LOG = Logging.getLoggerInstance(MockCloudContext.class);
 
     private static final MockCloudContext virtual = new MockCloudContext();
+
+    /**
+     * Returns 'the' MockCloudContext. If you prefer a completely fresh copy, the {@linkplain
+     * #MockCloudContext constructor} is public too.
+     */
     public static MockCloudContext getInstance() {
         return virtual;
     }
 
+
+    /**
+     * Simple structure to contain the data of an MMBase node in memory. Basicly a container for
+     * {@link Map} and type information (The name of the associated nodemanager).
+     */
     public static class NodeDescription {
         public final String type;
         public final Map<String, Object> values;
@@ -68,8 +77,8 @@ public class MockCloudContext extends  AbstractCloudContext {
     private final Authentication authentication = new NoAuthentication();
 
 
-    final Map<Integer, NodeDescription>  nodes                 = Collections.synchronizedMap(new LinkedHashMap<Integer, NodeDescription>());
-    public final Map<String,  NodeManagerDescription> nodeManagers    = Collections.synchronizedMap(new LinkedHashMap<String, NodeManagerDescription>());
+    final Map<Integer, NodeDescription>  nodes                      = Collections.synchronizedMap(new LinkedHashMap<Integer, NodeDescription>());
+    public final Map<String,  NodeManagerDescription> nodeManagers  = Collections.synchronizedMap(new LinkedHashMap<String, NodeManagerDescription>());
 
 
     public Map<Integer, NodeDescription>  getNodes() {
