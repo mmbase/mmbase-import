@@ -33,6 +33,7 @@
         item="/news-item.jspx"
         delete="true"
         search="true"
+        sortable="true"
         max="3"
         >
       <h3 class="debug">${rid}</h3>

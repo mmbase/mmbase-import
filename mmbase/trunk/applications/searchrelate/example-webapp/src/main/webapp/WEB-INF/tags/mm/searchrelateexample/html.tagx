@@ -25,6 +25,7 @@
                            description=""/>
 
   <mm:import externid="ct" />
+  <mm:import externid="debug" />
 
   <mm:content
       type="${empty ct ? 'application/xhtml+xml' : ct}"
@@ -58,6 +59,9 @@
             }
           </script>
         </c:if>
+        <c:if test="${empty debug or debug eq 'false'}">
+          <style type="text/css">.debug { display: none; }</style>
+        </c:if>
       </head>
       <body>
         <h1><mm:escape>${_title}</mm:escape></h1>
@@ -78,17 +82,17 @@
 
         <hr />
         <c:if test="${cancel}">
-          <mm:link referids="ct?">
+          <mm:link referids="ct?,debug?">
             <mm:param name="cancel"></mm:param>
             <a href="${_}">cancel</a>
           </mm:link>
           <jsp:text> | </jsp:text>
         </c:if>
-        <mm:link referids="ct?">
+        <mm:link referids="ct?,debug?">
           <a href="${_}">reload</a>
         </mm:link>
         <jsp:text> | </jsp:text>
-        <mm:link page="." referids="ct?">
+        <mm:link page="." referids="ct?,debug?">
           <a href="${_}">back</a>
         </mm:link>
 

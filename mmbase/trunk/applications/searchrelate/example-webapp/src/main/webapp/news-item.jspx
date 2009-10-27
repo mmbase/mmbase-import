@@ -15,10 +15,6 @@
     <mm:fieldinfo type="errors" />
   </mm:field>
 
-  <mm-sr:unlink  />
-  <mm-sr:delete  />
-
-
   <mm-sr:relatednodes
       idvar="rid"
       type="people"
@@ -44,5 +40,6 @@
     <h4><span class="debug">${rid} </span>images</h4>
   </mm-sr:relatednodes>
 
-
+  <mm-sr:unlink />
+  <mm-sr:delete />
 </div>
