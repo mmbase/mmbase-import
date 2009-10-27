@@ -166,6 +166,32 @@
         </ul>
         <hr />
         <p>
+          <mm:link referids="ct?">
+            <c:choose>
+              <c:when test="${empty debug or debug eq 'false'}">
+                <mm:param name="debug">true</mm:param>
+                <a href="${_}">Debug ON</a>
+              </c:when>
+              <c:otherwise>
+                <a href="${_}">Debug OFF</a>
+              </c:otherwise>
+            </c:choose>
+          </mm:link>
+        </p>
+        <p>
+          <mm:link referids="debug?">
+            <c:choose>
+              <c:when test="${empty ct}">
+                <mm:param name="ct">text/html</mm:param>
+                <a href="${_}">HTML</a>
+              </c:when>
+              <c:otherwise>
+                <a href="${_}">XHTML</a>
+              </c:otherwise>
+            </c:choose>
+          </mm:link>
+        </p>
+        <p>
           <a href="http://www.mmbase.org/tags/mm/searchrelate">Taglib documentation</a>
         </p>
         <mm:escape escape="links">$URL$</mm:escape>
