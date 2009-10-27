@@ -583,5 +583,37 @@ public class TransactionTest extends BridgeTest {
     }
 
 
+    // MMB-1889
+    public void testCreateRelationAndDeleteNode() {
+        // Make a relation to an existing node. Then delete that node with the 'delete relations' option'. Commit the transaction.
+        // The new relations should not exist, since the node was deleted.
+        // No errors.
+
+        Cloud cloud = getCloud();
+
+        int urlCount = Queries.count(cloud.getNodeManager("urls").createQuery());
+        int relCount = Queries.count(cloud.getNodeManager("insrel").createQuery());
+
+        Node url = cloud.getNodeManager("urls").createNode();
+        url.commit();
+
+        Transaction t = cloud.getTransaction("relatedandelete");
+
+        Node turl = t.getNode(url.getNumber());
+        Node news = t.getNode(newNode);
+        RelationManager rm = t.getRelationManager("urls", "news", "posrel");
+        Relation r = turl.createRelation(news, rm);
+        r.commit();
+        turl.delete(true);
+        t.commit();
+
+        int urlCountAfter = Queries.count(cloud.getNodeManager("urls").createQuery());
+        assertEquals(urlCount, urlCountAfter);
+        int relCountAfter = Queries.count(cloud.getNodeManager("insrel").createQuery());
+        assertEquals(relCount, relCountAfter);
+
+    }
+
+
 
 }
