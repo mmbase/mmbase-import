@@ -15,11 +15,12 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
 
 /**
-
+ * MockNodes belong to a {@link MockCloud}. They represent {@linkplain
+ * MockCloudContext#NodeDescription data} in memory of a {@link MockCloudContext}.
+ *
  * @author  Michiel Meeuwissen
  * @version $Id$
  * @since   MMBase-1.9.2
- * @todo    EXPERIMENTAL
  */
 
 public class MockNode extends MapNode  {
