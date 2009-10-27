@@ -229,12 +229,25 @@ List.prototype.log = function(msg) {
 
 
 
+// I'd say it should be possbile with jquery.
+List.prototype._find = function(clazz, elname, parent) {
+    if (elname == null) elname = "";
+    if (parent == null) parent = this.div;
+    console.log($(parent).find("*"));
+    console.log($(parent).find("*").find("not(.list"));
+    if (clazz == null) {
+        return $(parent).find("not(.list").find(elname);
+    } else {
+        return $(parent).find("not(.list").find(elname + "." + clazz);
+    }
+}
+
 /**
  * This methods does not find anything in _nested_ lists.
  */
 List.prototype.find = function(clazz, elname, parent) {
 
-    this.log("---------Finding " + clazz + " " + elname + " in " + parent);
+    //    this.log("---------Finding " + clazz + " " + elname + " in " + parent);
     var result = [];
     var self = this;
     if (elname != null) elname = elname.toUpperCase();
@@ -254,7 +267,7 @@ List.prototype.find = function(clazz, elname, parent) {
             t = c;
 
         } else {
-            this.log(" - " + cn + " " + elname + " in " + $(t).hasClass(clazz) + " " + t.href);
+            //this.log(" - " + cn + " " + elname + " in " + $(t).hasClass(clazz) + " " + t.href);
             if ( (clazz == null || $(t).hasClass(clazz)) &&
                  (elname == null || cn == elname)) {
                 result[result.length] = t;
