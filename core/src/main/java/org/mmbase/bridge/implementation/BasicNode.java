@@ -617,6 +617,31 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * @param type  the type of relation (-1 = don't care)
      */
     private void deleteRelations(int type) {
+
+
+        if (cloud instanceof Transaction) {
+            // Fixing MMB-1889: should perhaps be somehow delegated to the cloud/transaction object itself. This is hackery
+            Transaction t = (Transaction) cloud;
+            String myNumber = "" + getNumber();
+            for (Node n : t.getNodes()) {
+                if (n instanceof Relation) {
+                    Relation r = (Relation) n;
+                    if (log.isDebugEnabled()) {
+                        log.debug("Considering" + r);
+                    }
+                    if (type == -1 || r.getIntValue("rnumber") == type) {
+                        String sNumber = r.getIntValue("snumber") < 0 ? r.getStringValue("_snumber") : r.getStringValue("snumber");
+                        String dNumber = r.getIntValue("dnumber") < 0 ? r.getStringValue("_dnumber") : r.getStringValue("dnumber");
+
+                        if (sNumber.equals(myNumber) || dNumber.equals(myNumber)) {
+                            r.delete(true);
+                        }
+                    }
+                }
+            }
+        }
+
+
         List<MMObjectNode> relations;
         try {
             if (type == -1) {
@@ -630,6 +655,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
         // check first
         checkAccount();
+
+
         for (MMObjectNode node : relations) {
             cloud.verify(Operation.DELETE, node.getNumber());
         }
