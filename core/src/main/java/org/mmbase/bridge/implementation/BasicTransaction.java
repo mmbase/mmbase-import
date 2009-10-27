@@ -128,10 +128,10 @@ public class BasicTransaction extends BasicCloud implements Transaction {
 
     public synchronized boolean commit() {
         if (canceled) {
-            throw new BridgeException("Cannot commit transaction'" + name + "' (" + transactionName +"), it was already canceled.");
+            throw new BridgeException("Cannot commit transaction '" + name + "' (" + transactionName +"), it was already canceled.");
         }
         if (committed) {
-            throw new BridgeException("Cannot commit transaction'" + name + "' (" + transactionName +"), it was already committed.");
+            throw new BridgeException("Cannot commit transaction '" + name + "' (" + transactionName +"), it was already committed.");
         }
         log.debug("Committing transaction " + transactionName);
 
@@ -214,10 +214,10 @@ public class BasicTransaction extends BasicCloud implements Transaction {
 
     public synchronized void cancel() {
         if (canceled) {
-            throw new BridgeException("Cannot cancel transaction'" + name + "' (" + transactionName +"), it was already canceled.");
+            throw new BridgeException("Cannot cancel transaction '" + name + "' (" + this +"), it was already canceled.");
         }
         if (committed) {
-            throw new BridgeException("Cannot cancel transaction'" + name + "' (" + transactionName +"), it was already committed.");
+            throw new BridgeException("Cannot cancel transaction '" + name + "' (" + this +"), it was already committed.");
         }
 
         // if this is a transaction within a transaction (theoretically possible)
@@ -358,6 +358,13 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         }
     }
 
+    /*
+    @Override
+    boolean check(org.mmbase.security.Operation operation, int nodeID) {
+        return true;
+    }
+    */
+
     public boolean isCanceled() {
         return canceled;
     }
@@ -373,10 +380,10 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             return value;
         }
     }
+
     @Override
-    @SuppressWarnings("unchecked")
-    public Map getProperties() {
-        Map ret = new HashMap();
+    public Map<Object, Object> getProperties() {
+        Map<Object, Object> ret = new HashMap<Object, Object>();
         ret.putAll(parentCloud.getProperties());
         ret.putAll(super.getProperties());
         return Collections.unmodifiableMap(ret);
