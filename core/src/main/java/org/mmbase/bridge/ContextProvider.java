@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * If your code does not have any user interaction, you'll typically be able to start like this:
  * <pre>
-    Cloud cloud = CloudContext.getDefaultCloudContext().getCloud("mmbase", "class", null);
+    Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
     // Now start doing things with the Cloud.
  </pre>
  * This acquires a cloud on the 'default context' authenticated with {@link
