@@ -258,7 +258,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
           <stylesheetfile>${basedir}/documentation/javadoc.css</stylesheetfile>
 
           <doctitle>MMBase ${project.version}</doctitle>
-          <windowtitle>MMBase ${project.artifactId} ${project.version} - API</windowtitle>
+          <windowtitle>MMBase ${project.version} - API</windowtitle>
           <bottom>${project.name} ${project.version} - ${javadoctimestamp}</bottom>
           <links>
             <link>http://download.java.net/jdk7/docs/api/</link>
@@ -404,7 +404,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
             </property>
             <property>
               <name>mmbase.defaultcloudcontext</name>
-              <value>mock:localhost</value>
+              <value>mock:local</value>
             </property>
 
             <!-- TODO should not depend on system  default locale -->
