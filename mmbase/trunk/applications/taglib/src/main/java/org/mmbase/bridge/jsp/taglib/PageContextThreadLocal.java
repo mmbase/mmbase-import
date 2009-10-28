@@ -55,7 +55,9 @@ public class PageContextThreadLocal {
 
     public static PageContext getThreadPageContext() {
         LinkedList<PageContextInfo> stack = threadPageContexts.get();
-        if (stack.size() == 0) throw new RuntimeException("Used in thread which did not yet use mmbase tags");
+        if (stack.size() == 0) {
+            throw new RuntimeException("Used in thread which did not yet use mmbase tags");
+        }
         PageContextInfo first = stack.getFirst();
         return first.pageContext;
     }
