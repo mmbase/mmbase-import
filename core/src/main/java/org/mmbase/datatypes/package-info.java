@@ -1,5 +1,5 @@
 /**
- * This package defines and implements {@link DataTypes}s, which are a way to apply restrictions to and
+ * This package defines and implements {@link org.mmbase.datatypes.DataType}s, which are a way to apply restrictions to and
  * annotate certain data. DataTypes are most commonly associated with {@link
  * org.mmbase.bridge.Field}s and function {@link org.mmbase.util.functions.Parameter}s.
  *
