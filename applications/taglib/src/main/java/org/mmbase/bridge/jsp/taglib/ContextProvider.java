@@ -17,7 +17,7 @@ import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
  * Abstract representation of a 'context' tag. The one context is of
  * course the context tag itself. But also List tags work as a kind of
  * contextes.
- * 
+ *
  * @since MMBase-1.7
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -25,7 +25,7 @@ import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 
 public interface ContextProvider  extends TagIdentifier {
 
-    public ContextContainer getContextContainer() throws JspTagException;
-    public PageContext      getPageContext() throws JspTagException;
+    ContextContainer getContextContainer() throws JspTagException;
+    PageContext      getPageContext() throws JspTagException;
 
 }
