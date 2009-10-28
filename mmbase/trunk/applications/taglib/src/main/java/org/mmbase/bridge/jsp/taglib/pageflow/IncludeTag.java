@@ -319,10 +319,13 @@ public class IncludeTag extends UrlTag {
 
         try {
             ServletContext sc = pageContext.getServletContext();
-            if (sc == null) log.error("Cannot retrieve ServletContext from PageContext");
+            if (sc == null) {
+                log.error("Cannot retrieve ServletContext from PageContext");
+            }
 
-            if (! ResourceLoader.getWebRoot().getResource(relativeUrl).openConnection().getDoInput()) {
-                handleResponse(404, "No such resource " + xml.transform(relativeUrl), relativeUrl);
+            URL url = ResourceLoader.getWebRoot().getResource(relativeUrl);
+            if (! url.openConnection().getDoInput()) {
+                handleResponse(404, "No such resource " + xml.transform(relativeUrl) + " in " + ResourceLoader.getWebRoot() + " (found resource: " + url + ")", relativeUrl);
             } else {
                 HttpServletRequestWrapper requestWrapper   = new HttpServletRequestWrapper(req);
 
