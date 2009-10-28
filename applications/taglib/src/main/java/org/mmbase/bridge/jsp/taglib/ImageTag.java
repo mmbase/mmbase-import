@@ -192,6 +192,7 @@ public class ImageTag extends FieldTag {
             return node;
         } else {
             // the cached image
+            log.debug("Getting cached node for " + node.getNumber());
             return node.getFunctionValue("cachednode", new Parameters(Images.CACHE_PARAMETERS).set("template", template)).toNode();
         }
 
