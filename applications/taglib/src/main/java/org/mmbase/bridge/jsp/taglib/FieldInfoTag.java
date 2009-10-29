@@ -90,6 +90,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     protected static final int TYPE_USESEARCHINPUT   = 19;
     protected static final int TYPE_REUSESEARCHINPUT = 20;
 
+    protected static final int TYPE_READONLYINPUT    = 25;
+
     private static final int TYPE_IGNORE           = 1000;
 
 
@@ -292,6 +294,31 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     }
 
 
+    private String getGui(Node node, Field field) throws JspTagException {
+        String fieldName = field.getName();
+        if (log.isDebugEnabled()) {
+            log.debug("field " + fieldName + " --> " + node.getStringValue(field.getName()));
+        }
+        String show;
+        try {
+            Function guiFunction = node.getFunction("gui");
+            Parameters args = guiFunction.createParameters();
+            args.set(Parameter.FIELD,    field.getName());
+            if (args.containsParameter("session")) {
+                args.set("session",  sessionName);
+            }
+            fillStandardParameters(args);
+
+            show = decode(Casting.toString(guiFunction.getFunctionValue(args)), node);
+        } catch (NotFoundException nfe) {
+            show = decode(Casting.toString(node.getStringValue(field.getName())), node);
+        }
+        if (show.trim().length() == 0) {
+            show = org.mmbase.util.transformers.Xml.XMLEscape(decode(node.getStringValue(fieldName), node));
+        }
+        return show;
+    }
+
     private FieldProvider fieldProvider;
 
     public int doStartTag() throws JspTagException {
@@ -359,19 +386,15 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             } // node can stay null.
             break;
         case TYPE_INPUT:
+            if (field.isReadOnly()) {
+                infoType = TYPE_READONLYINPUT;
+            }
+            // fall through
         case TYPE_FORID:
             if (node == null) { // try to find nodeProvider
                 log.debug("Getting field from " + fieldProvider);
                 node = fieldProvider.getNodeVar();
             } // node can stay null.
-            if (field.isReadOnly()) {
-                // show gui
-                if (node != null) {
-                    infoType = TYPE_GUIVALUE;
-                } else {
-                    infoType = TYPE_DEFAULTVALUE;
-                }
-            }
             break;
             // these types do really need a NodeProvider somewhere:
             // so 'node' may not stay null.
@@ -410,29 +433,9 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         case TYPE_VALUE:
             show = org.mmbase.util.transformers.Xml.XMLEscape(decode(node.getStringValue(fieldName), node));
             break;
-        case TYPE_GUIVALUE: {
-            if (log.isDebugEnabled()) {
-                log.debug("field " + fieldName + " --> " + node.getStringValue(field.getName()));
-            }
-            try {
-                Function guiFunction = node.getFunction("gui");
-                Parameters args = guiFunction.createParameters();
-                args.set(Parameter.FIELD,    field.getName());
-                if (args.containsParameter("session")) {
-                    args.set("session",  sessionName);
-                }
-                fillStandardParameters(args);
-
-                show = decode(Casting.toString(guiFunction.getFunctionValue(args)), node);
-            } catch (NotFoundException nfe) {
-                show = decode(Casting.toString(node.getStringValue(field.getName())), node);
-            }
-            if (show.trim().length() == 0) {
-                show = org.mmbase.util.transformers.Xml.XMLEscape(decode(node.getStringValue(fieldName), node));
-            }
-
+        case TYPE_GUIVALUE:
+            show = getGui(node, field);
             break;
-        }
         case TYPE_CHECK:
             checkHtmlInput(node, field, false);
             break;
@@ -493,6 +496,14 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             break;
         case TYPE_DEFAULTVALUE:
             show = Casting.toString(dataType.getDefaultValue(locale, getCloudVar(), field));
+            break;
+        case TYPE_READONLYINPUT:
+            String id = getTypeHandler(field).htmlInputId(node, field);
+            if (node != null) {
+                show = "<span id='" + id + "'>" + getGui(node, field) + "</span>";
+            } else {
+                show = "<span id='" + id + "'>" + Casting.toString(dataType.getDefaultValue(locale, getCloudVar(), field)) + "</span>";
+            }
             break;
         case TYPE_IGNORE:
             show = "";
