@@ -5,23 +5,25 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
   <jsp:output omit-xml-declaration="true" />
-  <li>
-    <mm:import externid="n"       required="true" />
-    <jsp:directive.include file="parameters.jspf" />
+  <mm:content type="text/xml" expires="0">
+    <li>
+      <mm:import externid="n"       required="true" />
+      <jsp:directive.include file="parameters.jspf" />
 
-    <mm:cloud method="asis">
-      <c:choose>
-        <c:when test="${parameters.autosubmit}">
-          <jsp:directive.include file="unlink.body.jspx" />
-        </c:when>
-        <c:otherwise>
-          <mm:transaction
-              name="${parameters.formtag}"
-              commitonclose="false">
+      <mm:cloud method="asis">
+        <c:choose>
+          <c:when test="${parameters.autosubmit}">
             <jsp:directive.include file="unlink.body.jspx" />
-          </mm:transaction>
-        </c:otherwise>
-      </c:choose>
-    </mm:cloud>
-  </li>
+          </c:when>
+          <c:otherwise>
+            <mm:transaction
+                name="${parameters.formtag}"
+                commitonclose="false">
+              <jsp:directive.include file="unlink.body.jspx" />
+            </mm:transaction>
+          </c:otherwise>
+        </c:choose>
+      </mm:cloud>
+    </li>
+  </mm:content>
 </jsp:root>
