@@ -11,7 +11,7 @@
     <p><mm:escape>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</mm:escape></p>
     <ol>
       <mm:listfunction set="core" name="contextproviders">
-        <li>${_}: <mm:escape>${mm:string(_.description)}</mm:escape></li>
+        <li><mm:escape>${_}</mm:escape>: <mm:escape>${mm:string(_.description)}</mm:escape></li>
       </mm:listfunction>
     </ol>
     <p>See <a href="http://www.mmbase.org/api/org/mmbase/bridge/ContextProvider.html#getCloudContext%28java.lang.String%29">ContextProvider#getCloudContext</a></p>
