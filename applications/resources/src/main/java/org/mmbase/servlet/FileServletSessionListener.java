@@ -40,7 +40,7 @@ public class FileServletSessionListener implements HttpSessionListener {
     }
     public void sessionDestroyed(HttpSessionEvent se) {
         // delete files associated with this session
-        log.info("Destroyed " + se.getSession());
+        log.debug("Destroyed " + se.getSession());
         HttpSession session = se.getSession();
         Set<File> protectedFiles = (Set<File>) session.getAttribute(FileServlet.PROTECTED_FILES);
         if (protectedFiles != null) {
