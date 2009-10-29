@@ -93,3 +93,11 @@ span.errors {
   font-weight: bold;
   color: #f00;
 }
+
+
+div.mm_field label,
+div.mm_field textarea,
+div.mm_field input,
+div.mm_field span {
+  vertical-align: top;
+}
