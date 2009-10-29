@@ -18,14 +18,14 @@ import org.mmbase.util.logging.*;
 
 /**
  *
- * @author Michiel Meeuwissen
+ * @author André van Toly
  * @version $Id: CreateCachesFunction.java 36715 2009-07-08 22:30:03Z michiel $
  */
 
-public class WaitUntilTranscodingFunction extends NodeFunction<Boolean> {
+public class WaitUntilRecognizedFunction extends NodeFunction<Boolean> {
 
-    private static final Logger LOG = Logging.getLoggerInstance(WaitUntilTranscodingFunction.class);
-    public WaitUntilTranscodingFunction() {
+    private static final Logger LOG = Logging.getLoggerInstance(WaitUntilRecognizedFunction.class);
+    public WaitUntilRecognizedFunction() {
         super("waitfor");
     }
 
@@ -35,7 +35,7 @@ public class WaitUntilTranscodingFunction extends NodeFunction<Boolean> {
         CreateCachesProcessor.Job job = CreateCachesProcessor.getJob(node);
         if (job != null) {
             try {
-                job.waitUntilTranscoding();
+                job.waitUntilRecognized();
             } catch (InterruptedException ie) {
                 return false;
             }

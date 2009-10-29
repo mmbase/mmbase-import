@@ -1014,6 +1014,17 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
             return res == null ? Stage.UNSTARTED : res.getJobDefinition().getStage();
         }
 
+        public void waitUntilRecognized() throws InterruptedException {
+            Stage stage = getStage();
+            while (stage.ordinal() < Stage.RECOGNIZER.ordinal()) {
+                synchronized(this) {
+                    LOG.info("Not yet recognized, but " + stage + " " + getCurrent());
+                    wait(100000);
+                }
+                stage = getStage();
+            }
+        }
+
         public void waitUntilTranscoding() throws InterruptedException {
             Stage stage = getStage();
             while (stage.ordinal() < Stage.TRANSCODER.ordinal()) {
