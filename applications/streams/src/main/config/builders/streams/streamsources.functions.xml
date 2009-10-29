@@ -9,6 +9,10 @@
     <class>org.mmbase.streams.CreateCachesFunction</class>
   </function>
 
+  <function name="waitUntilRecognized">
+    <class>org.mmbase.streams.waitUntilRecognizedFunction</class>
+  </function>
+  
   <function name="waitUntilTranscoding">
     <class>org.mmbase.streams.WaitUntilTranscodingFunction</class>
   </function>
