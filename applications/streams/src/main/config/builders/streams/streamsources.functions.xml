@@ -10,7 +10,7 @@
   </function>
 
   <function name="waitUntilRecognized">
-    <class>org.mmbase.streams.waitUntilRecognizedFunction</class>
+    <class>org.mmbase.streams.WaitUntilRecognizedFunction</class>
   </function>
   
   <function name="waitUntilTranscoding">
