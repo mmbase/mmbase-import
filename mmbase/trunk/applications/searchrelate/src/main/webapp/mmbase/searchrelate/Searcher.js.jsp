@@ -119,9 +119,9 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
         $(el).find("a.search").each(function() {
             var anchor = this;
             anchor.searcher = searcher;
-            $(anchor).click(function(el) {
-                var id = anchor.href.substring(anchor.href.indexOf("#") + 1);
-                return this.searcher.search(document.getElementById(id), 0, anchor);
+            $(anchor).click(function(event) {
+                    var id = anchor.href.substring(anchor.href.indexOf("#") + 1);
+                    return this.searcher.search(document.getElementById(id), 0, anchor);
             });
         });
 
