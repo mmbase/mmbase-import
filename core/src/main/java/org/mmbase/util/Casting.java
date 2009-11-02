@@ -531,7 +531,9 @@ public class Casting {
      * @since MMBase-1.8
      */
     public static Map toMap(Object o) {
-        if (o instanceof Map) {
+        if (o == null) {
+            return new HashMap();
+        } else if (o instanceof Map) {
             return (Map) o;
         } else if (o instanceof org.mmbase.util.functions.Parameters) {
             return ((org.mmbase.util.functions.Parameters) o).toMap();
@@ -551,7 +553,9 @@ public class Casting {
         } else if (o instanceof Node) {
             return new NodeMap((Node)o);
         } else {
-            return Collections.singletonMap(o, o);
+            Map m = return new HashMap();
+            m.put(o, o);
+            return m;
         }
     }
 
