@@ -28,6 +28,7 @@
   <mm-sr:relatednodes
       idvar="rid"
       type="urls"
+      search="true"
       sortable="true"
       fields="url">
     <h4><span class="debug">${rid} </span>urls</h4>

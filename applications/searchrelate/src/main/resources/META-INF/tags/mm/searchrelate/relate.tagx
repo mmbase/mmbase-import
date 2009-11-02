@@ -70,6 +70,12 @@
   <jsp:directive.attribute name="customizedir"        type="java.lang.String"
                            description="Enables the specification of the location of a directory with extra actions on nodes in the lists which will become visible in the td.action." />
 
+  <jsp:directive.attribute name="implicitRepository"   type="java.lang.Boolean"
+                           description="Wether to fill the repository even when not yet explicitely searched (defaults to true)" />
+
+  <jsp:directive.attribute name="config"               type="java.lang.String"
+                           description="Configuration file defaults to ('searchrelate')" />
+
   <jsp:directive.attribute name="load"                type="java.lang.Boolean"
                            description="Wether or not to load the javascript. Default should be ok, but sometimes it isn't (e.g. when using in ajax-included pieces of HTML)" />
 
@@ -94,6 +100,7 @@
       <script type="text/javascript" src="${_}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
     </mm:link>
   </c:if>
+  <jsp:directive.include file="/mmbase/searchrelate/settings.jspf" />
   <script type="text/javascript">
     $(document).ready(function(){
     $("body").find("div.mm_related").each(function() {
@@ -197,17 +204,24 @@
           </c:otherwise>
         </c:choose>
 
-        <mm:include page="/mmbase/searchrelate/page.jspx"
-                    referids="customizedir?,relations?,fields?">
-          <c:if test="${! empty pagesize}">
-            <mm:param name="pagesize" referid="pagesize" />
-          </c:if>
-          <c:if test="${! empty maxpages}">
-            <mm:param name="maxpages" referid="maxpages" />
-          </c:if>
-          <mm:param name="id">mm_related_${sid}_repository</mm:param>
-          <mm:param name="extraClass">implicit</mm:param>
-        </mm:include>
+        <c:choose>
+          <c:when test="${(empty implicitRepository and settings['implicitRepository'] eq 'true')  || implicitRepository}">
+            <mm:include page="/mmbase/searchrelate/page.jspx"
+                        referids="customizedir?,relations?,fields?">
+              <c:if test="${! empty pagesize}">
+                <mm:param name="pagesize" referid="pagesize" />
+            </c:if>
+            <c:if test="${! empty maxpages}">
+              <mm:param name="maxpages" referid="maxpages" />
+            </c:if>
+            <mm:param name="id">mm_related_${sid}_repository</mm:param>
+            <mm:param name="extraClass">implicit</mm:param>
+            </mm:include>
+          </c:when>
+          <c:otherwise>
+            <div class="searchresult implicit"><jsp:text> </jsp:text></div>
+          </c:otherwise>
+        </c:choose>
       </div>
     </div>
   </fmt:bundle>

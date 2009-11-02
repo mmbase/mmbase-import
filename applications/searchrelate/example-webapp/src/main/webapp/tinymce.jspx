@@ -1,5 +1,7 @@
 <?xml version="1.0" ?>
 <mm-sre:html
+    class="tinymcy"
+    title="Basic mm:form"
     xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
     xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
@@ -7,15 +9,20 @@
 
   <mm:node number="default.mags">
     <h3><mm:field name="title" /></h3>
+
     <mm-sr:relatednodes
+        idvar="rid"
         type="news"
+        role="posrel"
         unlink="true"
-        max="6"
+        delete="true"
+        fields="number,title,body"
         sortable="true"
-        config="mysearch"
-        search="true" />
+        search="true"
+        >
+      <h4 class="debug">${rid}</h4>
+    </mm-sr:relatednodes>
   </mm:node>
   <hr />
-  <mm:escape escape="links">$URL$</mm:escape>
-
+  <mm:escape escape="links">$URL: https://scm.mmbase.org/mmbase/trunk/applications/searchrelate/example-webapp/src/main/webapp/mmform-relatednodes.jspx $</mm:escape>
 </mm-sre:html>
