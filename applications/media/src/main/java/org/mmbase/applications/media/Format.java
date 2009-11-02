@@ -160,9 +160,20 @@ public enum Format {
     public static List<Format> getMediaFormats() {
         return Arrays.asList(Format.values());
     }
+
+    private static final Map<String,String> duplicates = new HashMap<String,String>() {
+        {
+            put("AIF", "AIFF");
+            put("JPG", "JPEG");
+            put("TIF", "TIFF");    
+        }
+    };
+
     public static Format get(String id) {
+        id = id.toUpperCase();
+        if (duplicates.containsKey(id)) id = duplicates.get(id);
         try {
-            return Format.valueOf(id.toUpperCase());
+            return Format.valueOf(id);
         } catch (IllegalArgumentException iae) {
             return UNKNOWN;
         }
@@ -188,6 +199,7 @@ public enum Format {
     public boolean isWindowsMedia() {
         return windowsMedia.contains(this);
     }
+    
     public List<Format> getSimilar() {
         if (isReal()) {
             return real;
