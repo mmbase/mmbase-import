@@ -17,7 +17,7 @@
 
 
   <h3>News</h3>
-  <mm-sr:search type="news" config="${config}" />
+  <mm-sr:search type="news"  />
 
   <h3>Urls</h3>
   <mm-sr:search type="urls" implicit="false" />
