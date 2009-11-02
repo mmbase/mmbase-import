@@ -82,7 +82,12 @@ public class ImagesURLComposer extends FragmentURLComposer {
         MMObjectNode icacheNode = getBuilder().getCachedNode(source, template);
         return new Dimension(icacheNode.getIntValue("width"), icacheNode.getIntValue("height"));
     }
-
+    
+    @Override
+    public int getFilesize() {
+        MMObjectNode icacheNode = getBuilder().getCachedNode(source, template);
+        return icacheNode.getIntValue("filesize");
+    }
 
     @Override
     protected StringBuilder getURLBuffer() {
