@@ -553,7 +553,7 @@ public class Casting {
         } else if (o instanceof Node) {
             return new NodeMap((Node)o);
         } else {
-            Map m = return new HashMap();
+            Map m = new HashMap();
             m.put(o, o);
             return m;
         }
