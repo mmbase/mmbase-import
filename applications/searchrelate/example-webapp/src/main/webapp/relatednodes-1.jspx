@@ -7,7 +7,7 @@
 
   <mm:node number="default.mags">
     <h3><mm:field name="title" /></h3>
-    <mm-sr:relatednodes
+    <mm-srt:relatednodes
         type="news"
         unlink="true"
         max="6"
