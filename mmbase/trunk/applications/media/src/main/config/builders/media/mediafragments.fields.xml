@@ -8,8 +8,8 @@
 
   <field name="title">
     <descriptions>
-      <description xml:lang="nl">Een beschrijvende titel voor dit fragment</description>
-      <description xml:lang="en">A descriptive title of this fragment</description>
+      <description xml:lang="nl">Een beschrijvende titel</description>
+      <description xml:lang="en">A descriptive title</description>
     </descriptions>
     <gui>
       <guiname xml:lang="nl">Titel</guiname>
@@ -49,7 +49,7 @@
   <field name="intro">
     <descriptions>
       <description xml:lang="nl">Korte inleidende beschrijving</description>
-      <description xml:lang="en">Short introductionary title</description>
+      <description xml:lang="en">Short introductionary description</description>
     </descriptions>
     <gui>
       <guiname xml:lang="nl">Introductie</guiname>

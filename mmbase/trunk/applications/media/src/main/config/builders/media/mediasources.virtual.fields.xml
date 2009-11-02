@@ -10,6 +10,10 @@
       name="mediafragment"
       state="virtual"
       readonly="true">
+    <descriptions>
+      <description xml:lang="en">Mediafragment this mediasource belongs to.</description>
+      <description xml:lang="nl">Mediafragment waartoe dit bronbestand behoort.</description>
+    </descriptions>
     <gui>
       <guiname xml:lang="nl">Fragment</guiname>
       <guiname xml:lang="en">Fragment</guiname>
@@ -35,6 +39,10 @@
       name="length"
       state="virtual"
       >
+    <descriptions>
+      <description xml:lang="nl">Duur van deze source (in millisecondes)</description>
+      <description xml:lang="en">Duration of this source (in milliseconds)</description>
+    </descriptions>
     <gui>
       <guiname xml:lang="nl">Lengte</guiname>
       <guiname xml:lang="en">Length</guiname>
