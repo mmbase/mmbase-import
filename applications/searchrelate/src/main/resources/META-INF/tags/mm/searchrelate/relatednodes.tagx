@@ -53,7 +53,7 @@
                            />
 
   <jsp:directive.attribute name="icondir"      type="java.lang.String"
-                           description="Directory from which to take create/delete icons, can be empty for default icons (in which case it defaults to /mmbase/style/images/)"
+                           description="Directory from which to take create/delete icons, can be empty for default icons (in which case it defaults to the 'icondir' property in searchrelate.xml, which is /mmbase/style/images)"
                            />
 
   <jsp:directive.attribute name="item"           type="java.lang.String"
@@ -93,7 +93,7 @@
                            />
 
   <jsp:directive.attribute name="implicitSearch"    type="java.lang.Boolean"
-                           description="Wether to fill automaticly even when not yet explicitely searched (defaults to true)" />
+                           description="Wether to fill automaticly even when not yet explicitely searched (defaults to the property 'implicitRepository' of searchrelate.xml, which itself defaults to 'true')" />
 
 
   <jsp:directive.attribute name="searchRepository"      type="org.mmbase.bridge.NodeQuery"
@@ -127,7 +127,7 @@
                            />
 
   <jsp:directive.attribute name="config"               type="java.lang.String"
-                           description="Configuration file defaults to ('searchrelate')" />
+                           description="Configuration file. Defaults to ('searchrelate')" />
 
 
   <mm:import id="previousParameters" from="request" externid="org.mmbase.sr.relatednodes.parameters" />
