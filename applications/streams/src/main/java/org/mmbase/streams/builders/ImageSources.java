@@ -22,6 +22,8 @@ import org.mmbase.util.logging.*;
 
 
 /**
+ * Builder for imagesources. Changes the behaviour of the default mediasources object to use 
+ * 'icaches' in stead of 'streamsourcescaches'.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -59,7 +61,8 @@ public class ImageSources extends MediaSources implements ImagesInterface {
     }
 
     /**
-     * Returns a icache node for given image node and conversion template. If such a node does not exist, it is created.
+     * Returns a icaches node for given image node and conversion template. 
+     * If no icaches node does not exist, it is created.
      *
      */
     public MMObjectNode getCachedNode(MMObjectNode node, String template) {
@@ -115,7 +118,6 @@ public class ImageSources extends MediaSources implements ImagesInterface {
     }
 
     private static ReturnType<Dimension> DIM_RT = new ReturnType<Dimension>(Dimension.class, "dimension");
-
     {
         addFunction(new NodeFunction<Dimension>("dimension", PARAMS , DIM_RT) {
                 public Dimension getFunctionValue(Node node, Parameters parameters) {
