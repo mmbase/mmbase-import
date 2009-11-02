@@ -108,6 +108,17 @@ public class CastingTest  {
 
     }
 
+    @Test
+    public void map() {
+        assertEquals(0, Casting.toMap(null).size());
+        assertEquals(1, Casting.toMap("bla").size());
+        {
+            Map<String, String> m = new HashMap<String, String>();
+            m.put("bla", "bla");
+            assertEquals(m, Casting.toMap("bla"));
+        }
+    }
+
 
 
     @Test
