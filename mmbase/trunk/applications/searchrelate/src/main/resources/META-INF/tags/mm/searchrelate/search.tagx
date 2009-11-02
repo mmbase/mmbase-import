@@ -3,11 +3,12 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
     version="2.0"
     >
   <!--
 
-    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+
 
       @author Michiel Meeuwissen
       @version $Id: relate.tagx,v 1.40 2008-11-27 16:03:47 andre Exp $
@@ -19,6 +20,12 @@
   <jsp:directive.attribute name="type"        type="java.lang.String"  required="true"
                            description="Node type to search" />
 
+  <jsp:directive.attribute name="implicit"    type="java.lang.Boolean"
+                           description="Wether to fill automaticly even when not yet explicitely searched (defaults to true)" />
+
+  <jsp:directive.attribute name="config"               type="java.lang.String"
+                           description="Configuration file defaults to ('searchrelate')" />
+
 
   <jsp:directive.attribute name="load"        type="java.lang.Boolean"
                            />
@@ -28,6 +35,6 @@
     <jsp:doBody />
     <mm:sortorder field="number" direction="down" />
   </mm:listnodescontainer>
-
-  <mm-sr:relate repository="${repository}" load="${load}" />
+  <jsp:directive.include file="/mmbase/searchrelate/settings.jspf" />
+  <mm-sr:relate repository="${repository}" load="${load}" implicitRepository="${empty implicit ? settings['implicitRepository'] : implicit}" />
 </jsp:root>

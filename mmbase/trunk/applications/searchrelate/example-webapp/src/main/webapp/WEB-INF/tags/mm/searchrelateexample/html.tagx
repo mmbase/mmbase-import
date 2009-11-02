@@ -24,6 +24,9 @@
   <jsp:directive.attribute name="prefetch"        type="java.lang.String"
                            description=""/>
 
+  <jsp:directive.attribute name="styleClass"        type="java.lang.String"
+                           description=""/>
+
   <mm:import externid="ct" />
   <mm:import externid="debug" />
 
@@ -31,7 +34,8 @@
       type="${empty ct ? 'application/xhtml+xml' : ct}"
       expires="0"
       language="nl">
-    <mm:cloud rank="administrator">
+    <mm:cloud
+        rank="administrator">
 
       <head>
         <mm:import id="_title">
@@ -63,7 +67,7 @@
           <style type="text/css">.debug { display: none; }</style>
         </c:if>
       </head>
-      <body>
+      <body class="${styleClass}">
         <h1><mm:escape>${_title}</mm:escape></h1>
         <mm:link page="/mmbase/upload/upload.js">
           <script type="text/javascript" src="${_}">

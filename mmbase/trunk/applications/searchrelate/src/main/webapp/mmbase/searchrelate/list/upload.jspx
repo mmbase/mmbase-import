@@ -19,7 +19,7 @@
           <mm:transaction
               name="${parameters.formtag}"
               commitonclose="false"
-                          >
+              >
             <jsp:directive.include file="upload.body.jspx" />
           </mm:transaction>
         </c:otherwise>

@@ -113,6 +113,12 @@
               <a href="${_}">searchConstraint</a>
             </mm:link>
           </li>
+
+          <li>
+            <mm:link page="tinymce.jspx" referids="${referids}">
+              <a href="${_}">S&amp;amp;R and tinyMCE</a>
+            </mm:link>
+          </li>
         </ul>
 
         <h3>TODO</h3>
