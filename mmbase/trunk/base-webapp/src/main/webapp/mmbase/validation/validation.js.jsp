@@ -114,9 +114,9 @@ MMBaseValidator.prototype.trace = function (msg) {
             errorTextArea.value = "TRACE: " + msg + "\n" + errorTextArea.value;
         } else {
             // firebug console
-	        if (typeof(console) != "undefined") {
-                    console.log(msg);
-	        }
+            if (typeof(console) != "undefined") {
+                console.log(msg);
+            }
         }
     }
 }
@@ -508,6 +508,7 @@ Key.prototype.string = function() {
  */
 MMBaseValidator.prototype.getDataTypeKey = function(el) {
     if (el == null) return;
+
     if (el.mm_dataTypeStructure == null) {
         var classNames = el.className.split(" ");
         var result = new Key();
@@ -526,7 +527,11 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
             }
 
         }
-        this.trace("got " + result);
+        if (result.field == null && result.datatype == null) {
+            //console.log("FOOOOOUUTTTT");
+            //console.log(el);
+        }
+        this.trace("got " + result.string());
         el.mm_dataTypeStructure = result;
     }
     return el.mm_dataTypeStructure;
@@ -614,10 +619,6 @@ MMBaseValidator.prototype.setClassName = function(valid, el) {
     }
 }
 
-MMBaseValidator.prototype.hasClass = function(el, searchClass) {
-    var pattern = new RegExp("(^|\\s)" + searchClass + "(\\s|$)");
-    return pattern.test(el.className);
-}
 
 MMBaseValidator.prototype.getValue = function(el) {
     if (this.isDateTime(el)) {
@@ -634,8 +635,9 @@ MMBaseValidator.prototype.getValue = function(el) {
     }
 }
 
+
 MMBaseValidator.prototype.getDateValue = function(el) {
-    if (this.hasClass(el, "mm_datetime")) {
+    if ($(el).hasClass("mm_datetime")) {
         var year = 0;
         var month = 0;
         var day = 0;
@@ -645,17 +647,18 @@ MMBaseValidator.prototype.getDateValue = function(el) {
         var els = el.childNodes;
         for (var  i = 0; i < els.length; i++) {
             var entry = els[i];
-            if (this.hasClass(entry, "mm_datetime_year")) {
+            if (entry.type == null) continue;
+            if ($(entry).hasClass("mm_datetime_year")) {
                 year = entry.value;
-            } else if (this.hasClass(entry, "mm_datetime_month")) {
+            } else if ($(entry).hasClass("mm_datetime_month")) {
                 month = entry.value;
-            } else if (this.hasClass(entry, "mm_datetime_day")) {
+            } else if ($(entry).hasClass("mm_datetime_day")) {
                 day = entry.value;
-            } else if (this.hasClass(entry, "mm_datetime_hour")) {
+            } else if ($(entry).hasClass("mm_datetime_hour")) {
                 hour = entry.value;
-            } else if (this.hasClass(entry, "mm_datetime_minute")) {
+            } else if ($(entry).hasClass("mm_datetime_minute")) {
                 minute = entry.value;
-            } else if (this.hasClass(entry, "mm_datetime_second")) {
+            } else if ($(entry).hasClass("mm_datetime_second")) {
                 second = entry.value;
             }
 
@@ -730,7 +733,6 @@ MMBaseValidator.prototype.serverValidation = function(el) {
             return $("<result valid='true' class='implicit_checkequality' />")[0];
         }
 
-
         var key = this.getDataTypeKey(el);
         var value = this.getValue(el);
 
@@ -795,11 +797,11 @@ MMBaseValidator.prototype.target = function(event) {
  * overriding this function.
  */
 MMBaseValidator.prototype.validate = function(event, server) {
-    this.log("event " + event.type + " on " + this.target(event));
     var target = this.target(event);
-    if (this.hasClass(target, "mm_validate")) {
+    //this.log("event " + event.type + " on " + target.id);
+    if ($(target).hasClass("mm_validate")) {
         this.validateElement(target, server);
-    } else if (this.hasClass(target.parentNode, "mm_validate")) {
+    } else if ($(target.parentNode).hasClass("mm_validate")) {
         this.validateElement(target.parentNode, server);
     }
 }
@@ -908,8 +910,11 @@ MMBaseValidator.prototype.setLastChange = function(event) {
 }
 
 MMBaseValidator.prototype.addValidationForElements = function(els) {
-   for (var i = 0; i < els.length; i++) {
+    for (var i = 0; i < els.length; i++) {
         var entry = els[i];
+        if (! $(entry).hasClass("mm_validate")) {
+            continue;
+        }
         if (entry.type == "textarea") {
             entry.value = entry.value.replace(/^\s+|\s+$/g, "");
         }
