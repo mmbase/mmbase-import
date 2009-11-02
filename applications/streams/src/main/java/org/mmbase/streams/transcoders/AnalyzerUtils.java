@@ -123,11 +123,13 @@ public final class AnalyzerUtils implements java.io.Serializable {
     public void toImage(Node source, Node dest) {
         Cloud cloud = source.getCloud();
         fixMimeType("image", source);
-        if (cloud != null) {
+        if (cloud != null) { 
             if (log.isDebugEnabled()) {
                 log.service("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""), new Exception());
             }
-            if (updateSource && cloud.hasNodeManager(IMAGE)) { // happens for example during junit tests
+            if (updateSource && cloud.hasNodeManager(IMAGE) 
+                    && ! source.getNodeManager().getName().equals(IMAGE)) {
+                log.debug("Setting nodemanager to: " + IMAGE);
                 source.setNodeManager(cloud.getNodeManager(IMAGE));
                 source.commit();
             }
