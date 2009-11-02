@@ -175,6 +175,10 @@
   <mm:import id="_unlink">${empty unlink ? (empty search ? 'false' : search) : unlink}</mm:import>
   <mm:import id="_max">${empty max ? 1000000 : max}</mm:import>
   <mm:import id="_min">${empty min ? 0 : min}</mm:import>
+
+
+  <jsp:directive.include file="/mmbase/searchrelate/settings.jspf" />
+
   <mm:import id="_icondir">
     <c:choose>
       <c:when test="${empty icondir}">
