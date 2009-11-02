@@ -25,6 +25,10 @@ public enum State {
     UNDEFINED(-1),
     REMOVED(10),
     /**
+     * Transcoding of the media source failed.
+     */
+    FAILED(19);
+    /**
      * Transcoding of the media source is interrupted.
      */
     INTERRUPTED(20);
