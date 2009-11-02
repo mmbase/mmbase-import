@@ -23,18 +23,19 @@ import org.mmbase.util.images.Dimension;
 import java.util.*;
 
 /**
- * URLComposer is a wrapper/container class  around an URL.  It contains besides the
+ * URLComposer is a wrapper/container class around an URL. It contains besides the
  * URL some extra meta information about it, like the original source
  * object of the resource it represents and if it is currently
  * available or not.  An URL can be unavailable because of two
- * reasons: Because the provider is offline, or because the fragment
- * where it belongs to is not valid (e.g. because of publishtimes)
+ * reasons: because the provider is offline, or because the fragment
+ * where it belongs to is not valid (e.g. because of publishtimes).
  *
  * It is used by the Media builders to pass around information (mainly
- * as entry in Lists)
+ * as an entry in Lists).
  *
  * @author Michiel Meeuwissen
  * @author Rob Vermeulen (VPRO)
+ * @version $Id$
  */
 public class URLComposer  {
     protected MMObjectNode  source;
@@ -82,7 +83,7 @@ public class URLComposer  {
     public int getBitrate() {
         return source.getIntValue("bitrate");
     }
-
+    
     /**
      * The mime-type of the produced URL. This is not necessarily the mimetype of the source.
      * (Though it normally would be)
@@ -95,8 +96,6 @@ public class URLComposer  {
         Codec c = Codec.get(source.getIntValue("codec"));
         return f.getMimeType(c == Codec.UNKNOWN ? null : c.toString().toLowerCase());
     }
-
-
 
     public String getGUIIndicator(Map<String,Locale> options) {
         Locale locale = options.get("locale");
@@ -113,6 +112,10 @@ public class URLComposer  {
         } else {
             return null;
         }
+    }
+
+    public int getFilesize() {
+        return source.getIntValue("filesize");
     }
 
     /**
