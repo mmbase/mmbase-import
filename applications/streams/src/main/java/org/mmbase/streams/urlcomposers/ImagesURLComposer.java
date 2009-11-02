@@ -57,22 +57,24 @@ public class ImagesURLComposer extends FragmentURLComposer {
         ImageSources imageCaches = (ImageSources) MMBase.getMMBase().getBuilder("imagesources");
         return imageCaches;
     }
-
+    
+    private String getImagetype() {
+        ImageCaches imageCaches = (ImageCaches) MMBase.getMMBase().getBuilder("icaches");
+        if (imageCaches == null) {
+            throw new UnsupportedOperationException("The 'icaches' builder is not availabe");
+        }
+        MMObjectNode icacheNode = imageCaches.getCachedNode(source.getNumber(), template);
+        return imageCaches.getImageFormat(icacheNode);
+    }
+    
     @Override
     public MimeType getMimeType() {
-        MMObjectNode icacheNode = getBuilder().getCachedNode(source, template);
-        String itype = icacheNode.getStringValue("itype");
-        return new MimeType("image", itype);
+        return new MimeType("image", getImagetype());
     }
 
     @Override
     public Format getFormat() {
-        ImageCaches imageCaches = (ImageCaches) MMBase.getMMBase().getBuilder("icaches");
-        if(imageCaches == null) {
-            throw new UnsupportedOperationException("The 'icaches' builder is not availabe");
-        }
-        MMObjectNode icacheNode = getBuilder().getCachedNode(source, template);
-        return Format.get(imageCaches.getImageFormat(icacheNode));
+        return Format.get(getImagetype());
     }
 
     @Override
