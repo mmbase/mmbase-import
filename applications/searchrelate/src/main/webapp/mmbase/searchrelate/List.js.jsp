@@ -119,9 +119,6 @@ function List(d) {
     }
 
     if (this.search) {
-        this.find("mm_related", "div").each(function() {
-                this.relater = new MMBaseRelater(this, self.validator);
-            });
 
         this.find("mm_related", "div").bind("mmsrRelate", function (e, relate, relater) {
                 self.relate(e, relate, relater);
@@ -160,7 +157,7 @@ function List(d) {
                        }
                    });
     // automaticly make the entries empty on focus if they evidently contain the default value only
-    this.find(null, "input").filter(function() {
+    this.find("mm_validate", "input").filter(function() {
         return this.type == 'text' && this.value.match(/^<.*>$/); }).one("focus", function() {
             this.value = "";
             if (self.validator != null) {
@@ -366,7 +363,7 @@ List.prototype.addItem = function(res, cleanOnFocus) {
     }
     if (cleanOnFocus == null || cleanOnFocus) {
         // remove default value on focus
-        $(r).find("input").one("focus", function() {
+        $(r).find("input.mm_validate").one("focus", function() {
                 this.value = "";
                 if (list.validator != null) {
                     list.validator.validateElement(this);
