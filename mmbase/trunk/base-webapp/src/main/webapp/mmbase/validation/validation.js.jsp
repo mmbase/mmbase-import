@@ -511,7 +511,7 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
     if (el.mm_dataTypeStructure == null) {
         var classNames = el.className.split(" ");
         var result = new Key();
-        result.uri = this.uri;
+        result.uri   = this.uri;
         result.cloud = this.cloud;
         for (var i = 0; i < classNames.length; i++) {
             var className = classNames[i];
@@ -756,7 +756,7 @@ MMBaseValidator.prototype.serverValidation = function(el) {
                         //console.log("" + res);
                     } else {
                         el.serverValidated = true;
-                        result = $("<result valid='false' />")[0];
+                        result = $("<result valid='true' />")[0];
                     }
                 }
             });
@@ -826,6 +826,7 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
 
     this.activeElement = element;
     if (server) {
+
         var serverXml = this.serverValidation(element);
         valid = this.validResult(serverXml);
         if (element.id) {
