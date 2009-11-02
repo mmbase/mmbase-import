@@ -5,6 +5,12 @@ body {
 .searchresult.implicit {
   display: none;
 }
+
+body.search .searchresult.implicit {
+  display: block;
+}
+
+
 .ui-sortable li {
   border: dashed 1px green;
   margin-bottom: 2px;

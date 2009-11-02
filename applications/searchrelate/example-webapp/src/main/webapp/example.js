@@ -11,7 +11,9 @@ $(document).ready(function() {
                              );
         }
 
-        MMBaseSearcher.prototype.implicitsAreHidden();
+        if (! $("body").hasClass("search")) {
+            MMBaseSearcher.prototype.implicitsAreHidden();
+        }
 
         {
             $(document).bind("mmsrStartSave",

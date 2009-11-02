@@ -92,6 +92,10 @@
                            description="Include also the possibility to search existing nodes"
                            />
 
+  <jsp:directive.attribute name="implicitSearch"    type="java.lang.Boolean"
+                           description="Wether to fill automaticly even when not yet explicitely searched (defaults to true)" />
+
+
   <jsp:directive.attribute name="searchRepository"      type="org.mmbase.bridge.NodeQuery"
                            description="An mmbase Query describing in which list the searcher must search. The query should return nodes of type 'type'. (This implies search=true). See also mm-rs:related#repository." />
 
@@ -121,6 +125,10 @@
                            description="If specified the current 'id' of this list will be made available in the variable. For debugging mainly."
 
                            />
+
+  <jsp:directive.attribute name="config"               type="java.lang.String"
+                           description="Configuration file defaults to ('searchrelate')" />
+
 
   <mm:import id="previousParameters" from="request" externid="org.mmbase.sr.relatednodes.parameters" />
   <!-- this is set by parameters.jspf.
@@ -170,7 +178,7 @@
   <mm:import id="_icondir">
     <c:choose>
       <c:when test="${empty icondir}">
-        <mm:treefile page="/mmbase/style/images" objectlist="${requestScope['org.mmbase.includePath']}" absolute="context" />
+        <mm:treefile page="${settings.icondir}" objectlist="${requestScope['org.mmbase.includePath']}" absolute="context" />
       </c:when>
       <c:otherwise>${icondir}</c:otherwise>
     </c:choose>
@@ -302,7 +310,7 @@
           <mm:cloud>
             <c:choose>
               <c:when test="${empty searchRepository}">
-                <mm-sr:search type="${query.nodeManager.name}" load="${empty load or load}">
+                <mm-sr:search type="${query.nodeManager.name}" load="${empty load or load}" implicit="${empty implicitSearch ? settings['implicitRepository'] : implicitSearch}">
                   <mm:constraint field="number" operator="IN" inverse="true" referid="related" />
                 </mm-sr:search>
               </c:when>
