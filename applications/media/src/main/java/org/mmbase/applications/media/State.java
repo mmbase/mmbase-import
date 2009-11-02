@@ -27,7 +27,7 @@ public enum State {
     /**
      * Transcoding of the media source failed.
      */
-    FAILED(19);
+    FAILED(19),
     /**
      * Transcoding of the media source is interrupted.
      */
