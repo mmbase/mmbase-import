@@ -47,6 +47,34 @@
     </para>
     <para>After Installation this documentation and examples can be found in the MMBase admin pages /mmbase/admin</para>
   </section>
+
+  <section id="configuration">
+    <title>Configuration</title>
+    <para>
+      Some things can be configured using WEB-INF/config/utils/searchrelate.xml (defaults are
+      present in the searchrelate.jar) The request property 'org.mmbase.searchrelate.config' can be
+      set to override it with a <emphasis>different</emphasis> XML. For example if you set it to
+      'myconfiguration' then first the default 'searchrelate.xml' is read in, and then the values
+      from '/WEB-INF/config/util/myconfiguration.xml are overwritten. Most tags also have a 'config'
+      attribute to point to a different configuration file. All this makes it possible to configure
+      some behaviour of the Search &amp; Relate tags for the entire application (using
+      WEB-INF/config/utils/searchrelate.xml), for a certain sub-domain of this application (arrange
+      the request property 'org.mmbase.searchrelate.config' to point to a certain other file in
+      WEB-INF/config/utils) or for a certain instance of the tag (using the 'config' attribute to
+      point to a certain fil in WEB-INF/config/utils).
+    </para>
+    <para>
+      Normally the behaviour for individual properties can also be set with attributes. E.g. the 'icondir' property of mm-sr:relatednodes can be set in the following ways:
+      <orderedlist>
+        <listitem><para>The icondir attribute</para></listitem>
+        <listitem><para>The config attribute, pointing to a 'utils' configuration XML with a 'icondir' property</para></listitem>
+        <listitem><para>The 'org.mmbase.searchrelate.config' request attribute, pointing to a 'utils' configuration XML with a 'icondir' property</para></listitem>
+        <listitem><para>The 'icondir' property in '&lt;config dir &gt;/utils/searchrelate.xml</para></listitem>
+        <listitem><para>The 'icondir' property in org/mmbase/config/utils/searchrelate.xml in the search-relate jar.</para></listitem>
+      </orderedlist>
+    </para>
+    <para>After Installation this documentation and examples can be found in the MMBase admin pages /mmbase/admin</para>
+  </section>
   <section id="ajax">
     <title>AJAX &amp; JQuery</title>
     <para>
