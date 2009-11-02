@@ -67,7 +67,11 @@
           <style type="text/css">.debug { display: none; }</style>
         </c:if>
       </head>
-      <body class="${styleClass}">
+
+      <mm:import externid="config" />
+      <mm:write request="org.mmbase.searchrelate.config" referid="config" />
+
+      <body class="${styleClass} ${requestScope['org.mmbase.searchrelate.config']}">
         <h1><mm:escape>${_title}</mm:escape></h1>
         <mm:link page="/mmbase/upload/upload.js">
           <script type="text/javascript" src="${_}">
@@ -86,17 +90,17 @@
 
         <hr />
         <c:if test="${cancel}">
-          <mm:link referids="ct?,debug?">
+          <mm:link referids="ct?,debug?,config?">
             <mm:param name="cancel"></mm:param>
             <a href="${_}">cancel</a>
           </mm:link>
           <jsp:text> | </jsp:text>
         </c:if>
-        <mm:link referids="ct?,debug?">
+        <mm:link referids="ct?,debug?,config?">
           <a href="${_}">reload</a>
         </mm:link>
         <jsp:text> | </jsp:text>
-        <mm:link page="." referids="ct?,debug?">
+        <mm:link page="." referids="ct?,debug?,config?">
           <a href="${_}">back</a>
         </mm:link>
 

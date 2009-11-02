@@ -8,7 +8,9 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <mm:import externid="ct" />
   <mm:import externid="debug" />
-  <mm:import id="referids">ct?,debug?</mm:import>
+  <mm:import externid="config" />
+  <mm:import from="this" id="configFile" externid="config" jspvar="configFile">searchrelate</mm:import>
+  <mm:import id="referids">ct?,debug?,config?</mm:import>
   <mm:content
       type="${empty ct ? 'application/xhtml+xml' : ct}"
       expires="0"
@@ -196,6 +198,28 @@
               </c:otherwise>
             </c:choose>
           </mm:link>
+        </p>
+        <p>
+          <jsp:text>Configuration: ${empty config ? 'default' : config} | </jsp:text>
+          <c:choose>
+            <c:when test="${empty config}">
+              <mm:link>
+                <mm:param name="config">mysearch</mm:param>
+                <a href="${_}">mysearch</a>
+              </mm:link>
+            </c:when>
+            <c:otherwise>
+              <mm:link>
+                <a href="${_}">default</a>
+              </mm:link>
+            </c:otherwise>
+          </c:choose>
+
+
+          <jsp:scriptlet>pageContext.setAttribute("settings", new org.mmbase.util.LinkMap(
+          org.mmbase.util.xml.UtilReader.get("searchrelate.xml").getProperties(),
+          org.mmbase.util.xml.UtilReader.get(configFile + ".xml").getProperties()));</jsp:scriptlet>
+          <jsp:text> (${settings})</jsp:text>
         </p>
         <p>
           <a href="http://www.mmbase.org/tags/mm/searchrelate">Taglib documentation</a>
