@@ -14,7 +14,13 @@
  *
  * Custom events (called on the associated div)
  * -  mmsrRelatedNodesReady
+ * -  mmsrRelatedNodesPost
  * -  mmsrCreated
+ * -  mmsrRelate
+ * -  mmsrValidateHook
+ * -  mmsrStartSave
+ * -  mmsrFinishedSave
+ * -  mmsrLeavePage
  *
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -100,21 +106,21 @@ function List(d) {
 
         // Bind the event handler on document, so we don't have to bind on creation of new items and so on.
         $(document).bind("mmValidate", function(ev, validator, valid) {
-                var element = ev.target;
-                // only do something if the event is on _our_ mm_validate's.
-                if ($(element).closest("div.list").filter(function() {
-                            return this.id == self.div.id;}).length > 0) {
-                    self.valid = validator.invalidElements == 0;
-                    if (element.lastChange != null && element.lastChange.getTime() > self.lastChange.getTime()) {
-                        self.lastChange = element.lastChange;
-                    }
-                    if (self.form != null) {
-                        self.form.valids[self.rid] = valid;
-                        self.triggerValidateHook();
-                    }
+            var element = ev.target;
+            // only do something if the event is on _our_ mm_validate's.
+            if ($(element).closest("div.list").filter(function() {
+                return this.id == self.div.id;}).length > 0) {
+                self.valid = validator.invalidElements == 0;
+                if (element.lastChange != null && element.lastChange.getTime() > self.lastChange.getTime()) {
+                    self.lastChange = element.lastChange;
+                }
+                if (self.form != null) {
+                    self.form.valids[self.rid] = valid;
+                    self.triggerValidateHook();
                 }
             }
-            );
+        }
+			);
         this.validator.validatePage(false);
     }
 
