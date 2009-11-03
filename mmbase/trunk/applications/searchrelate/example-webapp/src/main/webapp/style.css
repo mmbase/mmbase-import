@@ -11,7 +11,7 @@ body.search .searchresult.implicit {
 }
 
 
-.ui-sortable li {
+.ui-sortable>li {
   border: dashed 1px green;
   margin-bottom: 2px;
 }
