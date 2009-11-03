@@ -116,7 +116,7 @@
             </mm:link>
           </li>
 
-          <li>
+          <li class="done">
             <mm:link page="tinymce.jspx" referids="${referids}">
               <a href="${_}">S&amp;amp;R and tinyMCE</a>
             </mm:link>
