@@ -127,5 +127,6 @@ div.mm_tinymce {
   display: inline-block;
   border: groove 1px black;
   background-color: white;
+  overflow-y: hidden;
 }
 
