@@ -20,6 +20,8 @@ $().ready(function() {
 
             var tinyMceConfiguration = {
                 theme : "simple",
+                remove_trailing_nbsp : true,
+                entity_encoding : "raw",
                 verify_html : true,
                 setup : List.prototype.setupTinyMCE
             }
