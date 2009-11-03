@@ -150,9 +150,14 @@ function List(d) {
 
     this.checkForSize();
 
+    this.submitted = false;
+    $(this.form).submit(function() {
+            this.submitted = true;
+        });
+
     $(window).bind("beforeunload",
                    function(ev) {
-                       var result = self.commit(0, true);
+                       var result = self.commit(0, ! self.submitted);
                        if (!result) {
                            ev.returnValue = '<fmt:message key="invalid" />';
                        }
@@ -672,6 +677,7 @@ List.prototype.commit = function(stale, leavePage) {
         List.prototype.leftPage = true;
         $(self.div).trigger("mmsrLeavePage", [self]);
         $.ajax({ type: "GET", async: false, data: this.getListParameters(), url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
+        $(self.div).trigger("mmsrAfterLeavePage", [self]);
 
     }
     return result;
@@ -763,7 +769,7 @@ List.prototype.getOriginalPosition  = function(li) {
 }
 
 List.prototype.afterPost = function() {
-    //console.log("posted!" + this.order);
+    this.log("posted!" + this.order);
     if (this.sortable) {
         var order = "";
         var originalOrder = "";
