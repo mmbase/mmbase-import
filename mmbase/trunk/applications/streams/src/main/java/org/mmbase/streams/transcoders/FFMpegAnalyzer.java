@@ -107,7 +107,7 @@ public class FFMpegAnalyzer implements Analyzer {
 
             if (canbe.equals(IMAGE) && (sourceNode.isNull("bitrate") || sourceNode.getIntValue("bitrate") <= 0)) {
                 log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an image " + sourceNode);
-                util.toImage(sourceNode, destNode);
+                util.toImage(sourceNode, destNode);     // is already done (above) ?
 
             } else if (canbe.equals(AUDIO) && !sourceNode.getNodeManager().hasField("width") ) {
                 log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is audio " + sourceNode);
