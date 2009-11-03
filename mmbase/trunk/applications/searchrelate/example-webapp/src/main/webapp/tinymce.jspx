@@ -16,8 +16,6 @@
   <mm:node number="default.mags">
     <h3><mm:field name="title" /></h3>
 
-    <a id="savetinymce" href="#savetinymce">Save TinyMCE</a>
-
     <mm-sr:relatednodes
         idvar="rid"
         type="news"
@@ -31,6 +29,15 @@
       <h4 class="debug">${rid}</h4>
     </mm-sr:relatednodes>
   </mm:node>
+  <hr />
+  <p>TinyMCE does not very well coorporate with mmsr-relatednodes scripts, nor with
+  jquery/sortable. Using 2 helper functions in List.prototype (See <mm:escape
+  escape="links">https://scm.mmbase.org/mmbase/trunk/applications/searchrelate/example-webapp/src/main/webapp/example.js</mm:escape>),
+  it is arranged here that tinyMCE is only active if it currently edited. If the user clicks
+  somewhere else, e.g. to move, save or leave the page, the editors are replaced again with simple
+  div's. So the actual textarea's used be the form are invisible always.
+
+  </p>
   <hr />
   <mm:escape escape="links">$URL: https://scm.mmbase.org/mmbase/trunk/applications/searchrelate/example-webapp/src/main/webapp/mmform-relatednodes.jspx $</mm:escape>
 </mm-sre:html>
