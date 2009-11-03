@@ -15,19 +15,6 @@ $().ready(function() {
             MMBaseSearcher.prototype.implicitsAreHidden();
         }
 
-        {
-            $(document).bind("mmsrStartSave",
-                             function (e, list) {
-                                 //console.log("Starting save for " + list.rid);
-                             }
-                             );
-
-            $(document).bind("mmsrFinishedSave",
-                             function (e, list) {
-                                 //console.log("Finished saving for " + list.rid);
-                             }
-                             );
-        }
 
         if ($("body").hasClass("tinymce")) {
 
@@ -39,6 +26,11 @@ $().ready(function() {
 
             $(".mm_validate.mm_nm_news.mm_f_body").each(function() {
                     List.prototype.tinymce(this, tinyMceConfiguration);
+                });
+            $(document).bind("mmsrCreated", function(ev, el) {
+                    $(el).find(".mm_validate.mm_nm_news.mm_f_body").each(function() {
+                            List.prototype.tinymce(this, tinyMceConfiguration);
+                        });
                 });
 
         }
