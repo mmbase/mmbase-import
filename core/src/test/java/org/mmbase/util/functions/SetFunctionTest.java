@@ -38,6 +38,9 @@ public class SetFunctionTest {
     public static String testFunction(int a) {
         return "aa" + a;
     }
+    public static String testFunction(int a, int b, String c, String d) {
+        return "aa" + a;
+    }
 
 
     public static String testFunction(Cloud cloud, int nodeNumber) {
@@ -110,6 +113,21 @@ public class SetFunctionTest {
             }
 
         }
+    }
+
+    @Test
+    public void getValues() {
+        SetFunction function = new SetFunction("test", new Parameter[] {
+                new Parameter<Integer>("A", Integer.class, 5),
+                new Parameter<Integer>("B", Integer.class, null),
+                new Parameter<String>("C", String.class, "vijf"),
+                new Parameter<String>("D", String.class)
+            }, null, SetFunctionTest.class, "testFunction", SetFunction.Type.CLASS);
+        Parameters params = function.createParameters();
+        assertEquals(5, function.getValues(params)[0]);
+        assertNull(function.getValues(params)[1]);
+        assertEquals("vijf", function.getValues(params)[2]);
+        assertNull(function.getValues(params)[3]);
     }
 
 
