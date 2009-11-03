@@ -533,7 +533,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
 
     /**
      * Container for the result of a JobDefinition
-     * @TODO constructors correspond to more or less essentially different situation, perhaps clearer to use 2 extensions
+     * @TODO constructors correspond to more or less essentially different situations, perhaps clearer to use 2 extensions
      */
     public class TranscoderResult extends Result {
         final Node dest;
@@ -563,7 +563,12 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                 LOG.info("Setting " + dest.getNumber() + " to done");
                 File outFile = new File(getDirectory(), dest.getStringValue("url").replace("/", File.separator));
                 dest.setLongValue("filesize", outFile.length());
-                dest.setIntValue("state", State.DONE.getValue());
+                if (outFile.length() > 1) {     // @TODO: there should maybe be other ways to detect if a transcoding failed
+                    dest.setIntValue("state", State.DONE.getValue());
+                } else {
+                    LOG.warn("Filesize < 1, setting " + dest.getNumber() + " to failed");
+                    dest.setIntValue("state", State.FAILED.getValue());
+                }
                 if (definition.getLabel() != null && dest.getNodeManager().hasField("label")) {
                     dest.setStringValue("label", definition.getLabel());
                 }
@@ -733,6 +738,11 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                         if (inNode == null) {
                             inNode = node;
                         }
+                        
+                        if (prevResult.isReady() && inNode.getIntValue("state") == State.FAILED.getValue()) {
+                            LOG.warn("BREAK : Transcoding of inNode failed " + inNode);
+                            break;
+                        }
 
                     }
 
@@ -892,10 +902,10 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
             return logger;
         }
 
-            /**
-             * Gets and/or creates the node representing the 'cached' stream.
-             *
-             * @param key   representation of the way the stream was created from its source
+        /**
+         * Gets and/or creates the node representing the 'cached' stream.
+         *
+         * @param key   representation of the way the stream was created from its source
          * @return cached stream node
          */
         protected Node getCacheNode(final String key) {
@@ -966,6 +976,10 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                 interrupted = t.isInterrupted();
             }
         }
+        
+        /**
+         * The source Node on which this Job will run.
+         */
         public void setNode(Node n) {
             node = n;
             // mediafragment if it does not yet exist
