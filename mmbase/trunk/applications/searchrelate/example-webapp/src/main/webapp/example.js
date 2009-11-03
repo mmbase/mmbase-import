@@ -31,39 +31,70 @@ $().ready(function() {
 
         if ($("body").hasClass("tinymce")) {
 
+
             var tinyMceConfiguration = {
                 theme : "simple",
-                save_callback: function(ed) {
-                    $("#" + ed).trigger("paste");
-                },
-                onchange_callback : function(ed) {
-                    if (ed.isDirty()) {
-                        ed.save();
+                verify_html : true,
+                setup : function(ed) {
+                    var activeEditor = null;
+
+                    var remove = function(ed) {
+                        if (ed.isDirty()) {
+                            ed.save();
+                        }
+                        var textarea = $("#" + ed.editorId);
+                        var prev = textarea.prev();
+                        ed.remove();
+                        textarea.hide();
+                        prev.empty().append(textarea.val());
+                        prev.css("display", "inline-block");
+
                     }
+                    $("body").mousedown(function(ev) {
+                            if ($(ev.target).parents("span.mceEditor").length > 0) {
+
+                            } else {
+                                if (activeEditor != null) {
+                                    remove(activeEditor);
+                                    activeEditor = null;
+                                }
+                            }
+                        });
+                    var activate = function(ed) {
+                        if (activeEditor != null && activeEditor != ed) {
+                            remove(activeEditor);
+                        } else {
+
+                            activeEditor = ed;
+                        }
+                    }
+                    ed.onActivate.add(function(ed) { activate(ed); });
+                    ed.onNodeChange.add(function(ed) { activate(ed); });
+                    ed.onMouseDown.add(function(ed) { activate(ed); });
+                    ed.onSaveContent.add(function(ed) {
+                            $("#" + ed.editorId).trigger("paste");
+                        });
                 }
             }
 
-            $(".mm_validate.mm_nm_news.mm_f_body").tinymce(tinyMceConfiguration);
-            $("body").bind("mmsrCreated", function(ev, el) {
-                    $(el).find(".mm_validate.mm_nm_news.mm_f_body").tinymce(tinyMceConfiguration);
+            $(".mm_validate.mm_nm_news.mm_f_body").each(function() {
+                    var self = $(this);
+                    self.originalDisplay = self.css("display");
+                    var val = $("<div class='mm_tinymce' />");
+                    val.append(self.val());
+                    val.height(self.height());
 
+
+                    self.before(val).hide();
+
+                    val.click(function(ev) {
+                            self.css("display", val.css("display"));
+                            val.hide();
+                            self.tinymce(tinyMceConfiguration);
+
+                        });
                 });
 
-            // I'm starting to hate tinyMCE. It's a bit mistery when which function works, and how.
-            $(document).bind("sortstart", function(ev) {
-                    var el = ev.target;
-                    console.log(ev);
-                    tinyMCE.triggerSave();
-                    var t = tinyMCE.editors;
-                    for (var i in t){
-                        console.log($(el).find("#" + i));
-                        if ($(el).find("#" + i).length > 0) {
-                            console.log(t[i]);
-                            t[i].remove();
-                            tinyMCE.remove(t[i]);
-                        }
-                    }
-                });
         }
 
 

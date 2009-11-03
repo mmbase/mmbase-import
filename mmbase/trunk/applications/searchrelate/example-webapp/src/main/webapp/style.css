@@ -117,6 +117,15 @@ span.mceEditor {
 }
 input[type=text].mm_validate, textarea {
   width: 500px;
+  display: inline-block;
 }
 
+div.mm_tinymce {
+  margin: 0;
+  padding: 0;
+  width: 500px;
+  display: inline-block;
+  border: groove 1px black;
+  background-color: white;
+}
 
