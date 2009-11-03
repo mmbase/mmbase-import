@@ -186,6 +186,9 @@ public class SetFunction extends AbstractFunction<Object> {
     }
 
 
+    /**
+     * @since MMBase-1.9.2
+     */
     Object[] getValues(Parameters params) {
         org.mmbase.bridge.Cloud cloud = null;
         if (params.containsParameter(Parameter.CLOUD)) {
@@ -194,7 +197,8 @@ public class SetFunction extends AbstractFunction<Object> {
         Class<?>[] parameterTypes = functionMethod.getParameterTypes();
         Object[] result = new Object[parameterTypes.length];
         for (int i = 0; i < parameterTypes.length; i++) {
-            result[i] = Casting.toType(parameterTypes[i], cloud, params.get(i));
+            Object o = params.get(i);
+            result[i] = o == null ? null : Casting.toType(parameterTypes[i], cloud, o);
         }
         return result;
     }
