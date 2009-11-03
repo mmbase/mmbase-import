@@ -129,7 +129,7 @@ public class CacheManager implements CacheManagerMBean {
         SortedSet<Bean> result = new TreeSet<Bean>();
         for (Cache c : getInstance().caches.values()) {
             try {
-                if (className == null || Class.forName(className).isInstance(c)) {
+                if (className == null || "".equals(className) || Class.forName(className).isInstance(c)) {
                     result.add(new Bean(c));
                 }
             } catch (Exception e) {
@@ -349,11 +349,16 @@ public class CacheManager implements CacheManagerMBean {
         };
 
     static { // configure
-        log.debug("Static init of Caches");
-        configWatcher.add("caches.xml");
-        configWatcher.onChange("caches.xml");
-        configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
-        configWatcher.start();
+        try {
+            log.debug("Static init of Caches");
+            configWatcher.add("caches.xml");
+            configWatcher.onChange("caches.xml");
+            configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
+            configWatcher.start();
+        } catch (Throwable t) {
+            log.error(t);
+        }
+
 
     }
 
