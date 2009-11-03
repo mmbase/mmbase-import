@@ -797,9 +797,17 @@ List.prototype.afterPost = function() {
     }
 }
 
+/**
+ * The method is meant to be used in the 'setup' configuration handler ot tinyMCE.
+ * It keeps track of the 'active' editor. The can be null.
+ * All other editors are shown as plain HTML in a div.
+ */
 List.prototype.setupTinyMCE = function(ed) {
+    // the current active editor
     var activeEditor = null;
 
+    // the method is 'saves' the editor, and replaces it with 
+    // plain HTML
     var remove = function(ed) {
         if (ed.isDirty()) {
             ed.save();
@@ -812,16 +820,8 @@ List.prototype.setupTinyMCE = function(ed) {
         prev.css("display", "inline-block");
 
     }
-    $("body").mousedown(function(ev) {
-            if ($(ev.target).parents("span.mceEditor").length > 0) {
-
-            } else {
-                if (activeEditor != null) {
-                    remove(activeEditor);
-                    activeEditor = null;
-                }
-            }
-        });
+    // called on entrance of an editor.
+    // removes the possibly previous active editor, and set activeEditor
     var activate = function(ed) {
         if (activeEditor != null && activeEditor != ed) {
             remove(activeEditor);
@@ -830,15 +830,35 @@ List.prototype.setupTinyMCE = function(ed) {
             activeEditor = ed;
         }
     }
-    ed.onActivate.add(function(ed) { activate(ed); });
-    ed.onNodeChange.add(function(ed) { activate(ed); });
-    ed.onMouseDown.add(function(ed) { activate(ed); });
-    ed.onSaveContent.add(function(ed) {
-            $("#" + ed.editorId).trigger("paste");
+    
+    // tinyMCE does not provide an actual blur event.
+    // It is emulated by 'mousedown' on the entire page to detect blur
+    // and a bunch of other events are used to detect entrance into the editor.
+    
+    $("body").mousedown(function(ev) {
+            if ($(ev.target).parents("span.mceEditor").length > 0) {
+		// clicked in an editor, ignore that.
+            } else {
+                if (activeEditor != null) {
+                    remove(activeEditor);
+                    activeEditor = null;
+                }
+            }
         });
+
+    ed.onActivate.add(activate);
+    ed.onNodeChange.add(activate);
+    ed.onMouseDown.add(activate);
+    ed.onSaveContent.add(function(ed) {
+	//This triggers MMBaseValidator
+        $("#" + ed.editorId).trigger("paste");
+    });
 }
 
- List.prototype.tinymce = function(el, tinyMceConfiguration) {
+/**
+ * Binds the events to a text-area to make it editable via tinyMCE.
+*/
+List.prototype.tinymce = function(el, tinyMceConfiguration) {
      var self = $(el);
      self.originalDisplay = self.css("display");
      var val = $("<div class='mm_tinymce' />");
