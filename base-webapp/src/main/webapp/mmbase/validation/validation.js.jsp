@@ -39,11 +39,13 @@ function MMBaseValidator(root) {
       this.cloud = '<%=cloud.getName()%>';
     </mm:cloud>
 
+
 }
 
 MMBaseValidator.dataTypeCache   = {};
 MMBaseValidator.validators = [];
 MMBaseValidator.prefetchedNodeManagers = {};
+
 
 
 MMBaseValidator.watcher = function() {
@@ -460,6 +462,7 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
  * This will do a request to MMBase, unless this XML was cached already.
  */
 MMBaseValidator.prototype.getDataTypeXml = function(el) {
+    this.checkPrefetch();
     var key = this.getDataTypeKey(el);
     if (el.mm_key == null) {
         el.mm_key = key.string();
@@ -546,18 +549,37 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
  *
  */
 MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
-    if (MMBaseValidator.prefetchedNodeManagers[nodemanager] != "success") {
+    var nm = nodemanager.split(",");
+    for (var i in nm) {
+        if (nm[i].length > 0) {
+            var n = nm[i];
+            if (MMBaseValidator.prefetchedNodeManagers[n] == "success") {
+            } else {
+                MMBaseValidator.prefetchedNodeManagers[n] = "requested";
+            }
+        }
+    }
+}
+
+MMBaseValidator.prototype.checkPrefetch = function() {
+    var nodemanagers = "";
+    $.each(MMBaseValidator.prefetchedNodeManagers, function(k) {
+            if (MMBaseValidator.prefetchedNodeManagers[k] == "requested") {
+                nodemanagers += k + ",";
+            }
+        });
+    if (nodemanagers.length > 0) {
         var self = this;
-        this.log("prefetching " + nodemanager);
+        this.log("prefetching " + nodemanagers);
         var url = '<mm:url page="/mmbase/validation/datatypes.jspx" />';
-        var params = {nodemanager: nodemanager };
+        var params = {nodemanager: nodemanagers };
         if (this.uri != null) {
             params.uri = this.uri;
         } else {
             params.uri = "local";
         }
         if (this.cloud != null) {
-            params.cloud = this.cloud
+            params.cloud = this.cloud;
         } else {
             params.cloud = "mmbase";
         }
@@ -572,19 +594,15 @@ MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
                             var key = new Key();
                             key.uri = params.uri;
                             key.cloud = params.cloud;
-                            key.nodeManager = nodemanager;
+                            key.nodeManager = fields[i].getAttribute("nodemanager");
                             key.field = fields[i].getAttribute("name");
                             MMBaseValidator.dataTypeCache[key.string()] = fields[i];
+                            MMBaseValidator.prefetchedNodeManagers[key.nodeManager] = status;
                         }
-                        //console.log("" + res);
                     }
-                    MMBaseValidator.prefetchedNodeManagers[nodemanager] = status;
                 }
             });
-    } else {
-        this.log(nodemanager + " was already prefetched");
     }
-
 }
 
 
