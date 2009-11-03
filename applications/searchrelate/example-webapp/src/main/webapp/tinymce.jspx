@@ -1,14 +1,40 @@
 <?xml version="1.0" ?>
 <mm-sre:html
-    class="tinymcy"
+    styleClass="tinymce"
     title="Basic mm:form"
     xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
     xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <mm:link page="/tiny_mce/tiny_mce.js">
+    <script type="text/javascript" src="${_}"></script>
+  </mm:link>
+  <script type="text/javascript">
+    tinyMCE.init({
+    mode : "textareas",
+    theme : "simple",
+    save_onsavecallback: function(ed) {
+      console.log(ed);
+     }
+     });
+    $(document).bind("mmsrLeavePage", function() {
+      console.log(tinyMCE.editors);
+      tinyMCE.triggerSave();
+
+    });
+    $(document).ready(function() {
+    $("a[href=#savetinymce]").click(function(ev) {
+       console.log("bla");
+       console.log(tinyMCE.editors);
+       tinyMCE.triggerSave();
+       ev.stopPropagation();
+    })});
+  </script>
 
   <mm:node number="default.mags">
     <h3><mm:field name="title" /></h3>
+
+    <a id="savetinymce" href="#savetinymce">Save TinyMCE</a>
 
     <mm-sr:relatednodes
         idvar="rid"
