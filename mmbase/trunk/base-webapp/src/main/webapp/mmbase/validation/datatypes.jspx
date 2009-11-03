@@ -1,6 +1,7 @@
 <mm:content
     expires="3600"
     type="application/xml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
   <!--
@@ -11,17 +12,19 @@
       $Id$
       author: Michiel Meeuwissen
   -->
-  <mm:import externid="nodemanager" required="true" />
+  <mm:import externid="nodemanager" vartype="list" required="true" />
   <datatypes
       nodemanager="${nodemanager}">
     <mm:cloud uri="${param.uri}" name="${param.cloud}">
-      <mm:fieldlist nodetype="${nodemanager}" type="edit" fields="owner">
-        <mm:fieldinfo type="name">
-          <field name="${_}">
-            <mm:include referids="_@field,nodemanager" page="datatype.jspx" />
-          </field>
-        </mm:fieldinfo>
-      </mm:fieldlist>
+      <c:forEach items="${nodemanager}" var="nm">
+        <mm:fieldlist nodetype="${nm}" type="edit" fields="owner">
+          <mm:fieldinfo type="name">
+            <field name="${_}" nodemanager="${nm}">
+              <mm:include referids="_@field,nm@nodemanager" page="datatype.jspx" />
+            </field>
+          </mm:fieldinfo>
+        </mm:fieldlist>
+      </c:forEach>
     </mm:cloud>
   </datatypes>
 
