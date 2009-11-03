@@ -791,19 +791,27 @@ MMBaseValidator.prototype.validResult = function(xml) {
 MMBaseValidator.prototype.target = function(event) {
     return event.target || event.srcElement;
 }
+
+MMBaseValidator.prototype.getElement = function(event) {
+    var target = this.target(event);
+    //this.log("event " + event.type + " on " + target.id);
+    if ($(target).hasClass("mm_validate")) {
+        return target;
+    } else if ($(target.parentNode).hasClass("mm_validate")) {
+        return target.parentNode;
+    } else {
+	return null;
+    }
+}
+
 /**
  * The event handler which is linked to form elements
  * A 'validateHook' is called in this function, which you may want to set, in stead of
  * overriding this function.
  */
 MMBaseValidator.prototype.validate = function(event, server) {
-    var target = this.target(event);
     //this.log("event " + event.type + " on " + target.id);
-    if ($(target).hasClass("mm_validate")) {
-        this.validateElement(target, server);
-    } else if ($(target.parentNode).hasClass("mm_validate")) {
-        this.validateElement(target.parentNode, server);
-    }
+    this.validateElement(this.getElement(event), server);
 }
 
 MMBaseValidator.prototype.serverValidate = function(event) {
@@ -904,7 +912,7 @@ MMBaseValidator.prototype.removeValidation = function(el) {
 
 
 MMBaseValidator.prototype.setLastChange = function(event) {
-    var target = this.target(event);
+    var target = this.getElement(event);
     target.lastChange = new Date();
     target.serverValidated = false;
 }
