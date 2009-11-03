@@ -127,7 +127,7 @@
                            />
 
   <jsp:directive.attribute name="config"               type="java.lang.String"
-                           description="Configuration file. Defaults to ('searchrelate')" />
+                           description="Configuration file. Defaults to 'searchrelate'." />
 
 
   <mm:import id="previousParameters" from="request" externid="org.mmbase.sr.relatednodes.parameters" />
