@@ -107,3 +107,14 @@ div.mm_field input,
 div.mm_field span {
   vertical-align: top;
 }
+
+label { 
+  display: inline-block;
+  width: 8ex;
+}
+span.mceEditor { 
+  display: inline-block;
+}
+input[type=text], textarea { 
+  width: 500px;
+}
