@@ -16,7 +16,6 @@
  * -  mmsrRelatedNodesReady
  * -  mmsrRelatedNodesPost
  * -  mmsrCreated
- * -  mmsrRelate
  * -  mmsrValidateHook
  * -  mmsrStartSave
  * -  mmsrFinishedSave
@@ -643,7 +642,7 @@ List.prototype.commit = function(stale, leavePage) {
                     }
                 });
                 this.find(null, "textarea").each(function() {
-                    params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
+                        params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = $(this).val();
                 });
 
 

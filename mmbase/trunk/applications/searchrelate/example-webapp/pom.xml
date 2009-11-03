@@ -98,7 +98,7 @@
 
   <dependency>
     <groupId>org.mmbase.tinymce</groupId>
-    <artifactId>tinymce</artifactId>
+    <artifactId>tinymce-jquery</artifactId>
     <version>3.2.7</version>
      <type>war</type>
   </dependency>
