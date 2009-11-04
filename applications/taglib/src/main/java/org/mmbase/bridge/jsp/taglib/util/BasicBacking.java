@@ -127,6 +127,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
 
     }
 
+    @Override
     public Set<Map.Entry<String, Object>> entrySet() {
         return new AbstractSet<Map.Entry<String, Object>>() {
                 public int size() {
@@ -195,13 +196,15 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
             pageContext.removeAttribute(key, SCOPE);
         }
     }
+    @Override
     public Object put(String key, Object value) {
         mirrorPut(key, value);
         return b.put(key, value);
     }
 
     // overriden for efficiency only (the implementation of AbstractMap does not seem very efficient)
-    public Object get(String key) {
+    @Override
+    public Object get(Object key) {
         return b.get(key);
     }
 
@@ -212,6 +215,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     public Map<String, Object> getOriginalMap() {
         return b;
     }
+    @Override
     public boolean containsOwnKey(String key) {
         return b.containsKey(key);
     }
@@ -238,6 +242,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
         return isELIgnored;
     }
 
+    @Override
     public String toString() {
         return "BASIC BACKING " + super.toString();
     }
