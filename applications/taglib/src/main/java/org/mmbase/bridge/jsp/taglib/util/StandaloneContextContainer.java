@@ -46,24 +46,22 @@ public class StandaloneContextContainer extends ContextContainer {
         backing = new BasicBacking(values, ignoreEL);
 
     }
+
     protected BasicBacking createBacking(PageContext pc) {
         return new BasicBacking(pc, false);
     }
 
 
+    @Override
     public  final Backing getBacking() {
         return backing;
     }
 
+    @Override
     public void release(PageContext pc, ContextContainer p) {
         super.release(pc, p);
         backing.release();
     }
 
-
-
-    protected boolean checkJspVar(String jspvar, String id) {
-        return true;
-    }
 
 }
