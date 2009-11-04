@@ -37,33 +37,49 @@ public  class ContextCollectorTest {
 
         ContextTag context = new ContextTag();
         context.setPageContext(pageContext);
+        context.doStartTag();
+        assertNotNull(context.getContextContainer());
 
-        ContextProvider provider = new MockContextProvider(pageContext);
-        ContextCollector collector = new ContextCollector(context);
-
-        collector.register("a", "A");
-        assertEquals("A", collector.get("a"));
-        assertEquals("A", pageContext.getAttribute("a"));
-
-        collector.doAfterBody();
-
-        collector.register("a", "B", false);
-
-        assertEquals("B", collector.get("a"));
-        assertEquals("B", pageContext.getAttribute("a"));
+        context.getContextContainer().register("x", "X");
 
 
-        collector.doAfterBody();
+        {
+            ContextCollector collector = new ContextCollector(context);
 
-        collector.register("a", "C", false);
+            collector.register("a", "A");
+            assertEquals("A", collector.get("a"));
+            assertEquals("A", pageContext.getAttribute("a"));
 
-        assertEquals("C", collector.get("a"));
+            try {
+                collector.register("x", "Y");
+                fail("Should already be registered");
+            } catch (Exception e) {
+            }
+
+            collector.doAfterBody();
+
+            collector.register("a", "B", false);
+
+            assertEquals("B", collector.get("a"));
+            assertEquals("B", pageContext.getAttribute("a"));
+
+
+            collector.doAfterBody();
+
+            collector.register("a", "C", false);
+
+            assertEquals("C", collector.get("a"));
+            assertEquals("C", pageContext.getAttribute("a"));
+
+            collector.doAfterBody();
+            collector.release(pageContext, context.getContextContainer());
+        }
+
+        assertEquals("C", context.getContextContainer().get("a"));
         assertEquals("C", pageContext.getAttribute("a"));
 
-        collector.doAfterBody();
-        collector.release(pageContext, provider.getContextContainer());
-
-        assertEquals("C", pageContext.getAttribute("a"));
+        assertEquals("X", context.getContextContainer().get("x"));
+        assertEquals("X", pageContext.getAttribute("x"));
 
 
     }

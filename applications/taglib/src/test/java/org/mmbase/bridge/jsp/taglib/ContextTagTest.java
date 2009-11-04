@@ -30,6 +30,8 @@ public  class ContextTagTest {
         ContextTag tag = new ContextTag();
         tag.setPageContext(pageContext);
         tag.doStartTag();
+        assertNotNull(tag.getContextProvider());
+
         tag.register("a", "A");
         try {
             tag.register("a", "B");

@@ -89,7 +89,7 @@ public  class BasicBackingTest {
 
     }
 
-    //@Test
+    @Test
     public void mirrorPut() {
         PageContext pageContext = new MockPageContext();
         pageContext.setAttribute("a", "X");
@@ -107,7 +107,7 @@ public  class BasicBackingTest {
 
         assertEquals("X",  backing.pageContextValues.get("a"));
         assertEquals("B",  backing.pageContextValues.get("b"));
-        assertEquals(null, backing.pageContextValues.get("c"));
+        assertEquals("C",  backing.pageContextValues.get("c"));
 
         backing.release();
 
@@ -118,7 +118,7 @@ public  class BasicBackingTest {
 
     }
 
-    //@Test
+    @Test
     public void basic() {
         // put something on the pageContext
         // use a backing
@@ -132,7 +132,7 @@ public  class BasicBackingTest {
 
     }
 
-    //@Test
+    @Test
     public void reset() {
         // put something on the pageContext
         // use a backing, in which we _reset_ that value
@@ -149,27 +149,28 @@ public  class BasicBackingTest {
         PageContext pageContext = new MockPageContext();
         pageContext.setAttribute("a", "X");
         ContextProvider parent = new MockContextProvider(pageContext);
+
         ContextCollector collector = new ContextCollector(parent);
 
         basic(collector.createBacking(pageContext), pageContext);
 
         collector.release(pageContext, parent.getContextContainer());
 
-        //
-        assertEquals("BB", pageContext.getAttribute("b"));
-        assertEquals("X",  pageContext.getAttribute("a"));
 
         // collectors are 'transparent' to parent
-        assertEquals("BB", parent.getContextContainer().get("b")); // should have the last value set in the backing
-        assertEquals("X",  parent.getContextContainer().get("a")); // should have the original value
+        assertEquals("BB",  parent.getContextContainer().get("b")); // should have the last value set in the backing
+        assertEquals("AA",  parent.getContextContainer().get("a")); // should have the last value set in the backing
+        //
+        System.out.println("NOW releasing " +         parent.getContextContainer());
+        parent.getContextContainer().release(pageContext, null);
 
-
-
+        assertEquals("BB", pageContext.getAttribute("b"));
+        assertEquals("X",  pageContext.getAttribute("a")); // FAILS
 
 
     }
 
-    //@Test
+    @Test
     public void resetCollector() throws Exception {
         PageContext pageContext = new MockPageContext();
         pageContext.setAttribute("a", "X");

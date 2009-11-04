@@ -93,8 +93,9 @@ public  class StringListTagTest {
         }
         tag.doEndTag();
 
-        assertEquals("bla3", pageContext.getAttribute("foo")); // MMB-1702
         assertEquals("bla3", context.getObject("foo"));
+        assertEquals("bla3", pageContext.getAttribute("foo")); // MMB-1702
+
 
         context.doEndTag();
 
