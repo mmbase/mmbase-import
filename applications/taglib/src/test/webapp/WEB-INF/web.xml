@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+         version="2.4">
+  <description>
+
+  </description>
+
+  <display-name>MMBase taglib tests</display-name>
+
+  <taglib>
+    <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
+    <taglib-location>/META-INF/mmbase-taglib.tld</taglib-location>
+  </taglib>
+
+  <taglib>
+    <taglib-uri>http://www.mmbase.org/mmbase-taglib-2.0</taglib-uri>
+    <taglib-location>/META-INF/mmbase-taglib-2.tld</taglib-location>
+  </taglib>
+
+</web-app>
