@@ -250,6 +250,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.6</version>
         <configuration>
+
           <maxmemory>1024</maxmemory>
           <!--
               Very nice, but mvn site fails on it.
@@ -655,6 +656,37 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
           <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
       </distributionManagement>
+    </profile>
+    <profile>
+      <id>uml</id>
+      <properties>
+        <umlgraph.version>5.1</umlgraph.version>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.6</version>
+            <configuration>
+              <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+              <docletArtifact>
+                <groupId>org.umlgraph</groupId>
+                <artifactId>doclet</artifactId>
+                <version>${umlgraph.version}</version>
+              </docletArtifact>
+              <usestandardparameters>true</usestandardparameters>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencies>
+        <dependency>
+          <groupId>org.umlgraph</groupId>
+          <artifactId>doclet</artifactId>
+          <version>${umlgraph.version}</version>
+        </dependency>
+      </dependencies>
     </profile>
 
 
