@@ -35,13 +35,18 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     private static final Logger log = Logging.getLoggerInstance(BasicBacking.class);
 
     private static final String PAGECONTEXT_KEY = "org.mmbase.taglib.basicbacking$";
+    //private static final String PAGECONTEXT_KEY = "org.mmbase.taglib.basicbacking$";
 
     private static int uniqueNumbers = 0;
     private static final int SCOPE = PageContext.PAGE_SCOPE;
 
     private final int uniqueNumber = ++uniqueNumbers;
 
+    /**
+     * In this map we keep track of what should be in the page context when this backing is {@link #release}d.
+     */
     protected Map<String, Object> pageContextValues;
+    protected Set<String> myPageContextKeys;
     private final Map<String, Object> b; // the actual backing.
 
     private final boolean isELIgnored;
@@ -59,6 +64,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
         }
         if (! isELIgnored) {
             pageContextValues = new HashMap<String, Object>();
+            myPageContextKeys = new HashSet<String>();
             pageContext.setAttribute(PAGECONTEXT_KEY + uniqueNumber, pageContextValues);
         } else {
             pageContextValues = null;
@@ -191,9 +197,22 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
             return;
         }
 
+        if (reset) {
+            pageContextValues.put(key, value);
+        }
         if (! pageContextValues.containsKey(key)) {
             // log.debug("Storing pageContext key " + key);
-            pageContextValues.put( key, pageContext.getAttribute(key, SCOPE));
+            Object prevValue = pageContext.getAttribute(key, SCOPE);
+            if (prevValue != null && ! myPageContextKeys.contains(key)) {
+                pageContextValues.put(key, prevValue);
+            } else {
+                // nothing in the pageContext, we'll decide it.
+                // By not putting it in pageContextValues, it will not be reset to null.
+
+                // remember though that we put it in ourselves, because that means that we're reponsible for it
+                // in the next iteration e.g. we'll simply do the same thing
+                myPageContextKeys.add(key);
+            }
         }
         if (value != null) {
             pageContext.setAttribute(key, Casting.wrap(value, (CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
