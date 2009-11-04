@@ -41,7 +41,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
 
     private final int uniqueNumber = ++uniqueNumbers;
 
-    protected Map<String, Object> originalPageContextValues;
+    protected Map<String, Object> pageContextValues;
     private final Map<String, Object> b; // the actual backing.
 
     private final boolean isELIgnored;
@@ -58,10 +58,10 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
             log.debug("Pushing page Context " + pc + " --> " + isELIgnored);
         }
         if (! isELIgnored) {
-            originalPageContextValues = new HashMap<String, Object>();
-            pageContext.setAttribute(PAGECONTEXT_KEY + uniqueNumber, originalPageContextValues);
+            pageContextValues = new HashMap<String, Object>();
+            pageContext.setAttribute(PAGECONTEXT_KEY + uniqueNumber, pageContextValues);
         } else {
-            originalPageContextValues = null;
+            pageContextValues = null;
             if (log.isDebugEnabled()) {
                 if (ignoreEL) {
                     log.debug("ISELIGNORED because specified");
@@ -93,10 +93,10 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
             log.debug("Pushing page context " + b);
         }
 
-        originalPageContextValues = (Map<String, Object>) pageContext.getAttribute(PAGECONTEXT_KEY + uniqueNumber);
-        if (originalPageContextValues == null) {
-            originalPageContextValues = new HashMap<String, Object>();
-            pageContext.setAttribute(PAGECONTEXT_KEY + uniqueNumber, originalPageContextValues);
+        pageContextValues = (Map<String, Object>) pageContext.getAttribute(PAGECONTEXT_KEY + uniqueNumber);
+        if (pageContextValues == null) {
+            pageContextValues = new HashMap<String, Object>();
+            pageContext.setAttribute(PAGECONTEXT_KEY + uniqueNumber, pageContextValues);
         }
         for (Map.Entry<String, Object> entry : b.entrySet()) {
             mirrorPut(entry.getKey(), entry.getValue());
@@ -105,7 +105,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     public void pullPageContext(PageContext pc) {
         pageContext = pc;
         if (isELIgnored) return;
-        originalPageContextValues = (Map<String, Object>) pageContext.getAttribute(PAGECONTEXT_KEY + uniqueNumber);
+        pageContextValues = (Map<String, Object>) pageContext.getAttribute(PAGECONTEXT_KEY + uniqueNumber);
     }
 
     public PageContext getPageContext() {
@@ -166,8 +166,8 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
                             i.remove();
                             if (! isELIgnored) {
                                 String key = last.getKey();
-                                if (! originalPageContextValues.containsKey(key)) {
-                                    originalPageContextValues.put(key, pageContext.getAttribute(key, SCOPE));
+                                if (! pageContextValues.containsKey(key)) {
+                                    pageContextValues.put(key, pageContext.getAttribute(key, SCOPE));
                                 }
                                 pageContext.removeAttribute(key, SCOPE);
                             }
@@ -177,7 +177,12 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
         };
     }
 
-    protected void mirrorPut(String key, Object value) {
+    /**
+     * Put the value also in the 'parent' of this backing.
+     * @param reset If true (default it's false) allow the already existing value in the parent to be replaced.
+     * @since MMBase-1.9.2
+     */
+    protected void mirrorPut(String key, Object value, boolean reset) {
         if (log.isDebugEnabled()) {
             log.debug("Mirror putting " + key + "=" + value + " in a " + getClass() + "( " + uniqueNumber + ") with  pageContext " + pageContext);
         }
@@ -186,20 +191,31 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
             return;
         }
 
-        if (! originalPageContextValues.containsKey(key)) {
+        if (! pageContextValues.containsKey(key)) {
             // log.debug("Storing pageContext key " + key);
-            originalPageContextValues.put( key, pageContext.getAttribute(key, SCOPE));
+            pageContextValues.put( key, pageContext.getAttribute(key, SCOPE));
         }
         if (value != null) {
             pageContext.setAttribute(key, Casting.wrap(value, (CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
         } else {
             pageContext.removeAttribute(key, SCOPE);
         }
+
+
     }
+
+    protected void mirrorPut(String key, Object value) {
+        mirrorPut(key, value, false);
+    }
+
+    public Object put(String key, Object value, boolean reset) {
+        mirrorPut(key, value, reset);
+        return b.put(key, value);
+    }
+
     @Override
     public Object put(String key, Object value) {
-        mirrorPut(key, value);
-        return b.put(key, value);
+        return put(key, value, false);
     }
 
     // overriden for efficiency only (the implementation of AbstractMap does not seem very efficient)
@@ -221,17 +237,17 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     }
 
     void release() {
-        if (originalPageContextValues != null && pageContext != null) {
-            //log.debug("Restoring pageContext with " + originalPageContextValues);
+        if (pageContextValues != null && pageContext != null) {
+            //log.debug("Restoring pageContext with " + pageContextValues);
             // restore the pageContext
-            for (Map.Entry<String, Object> e : originalPageContextValues.entrySet()) {
+            for (Map.Entry<String, Object> e : pageContextValues.entrySet()) {
                 if (e.getValue() == null) {
                     pageContext.removeAttribute(e.getKey(), SCOPE);
                 } else {
                     pageContext.setAttribute(e.getKey(), e.getValue(), SCOPE);
                 }
             }
-            originalPageContextValues.clear();
+            pageContextValues.clear();
         }
     }
 
