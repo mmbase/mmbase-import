@@ -101,6 +101,12 @@
           <include>org/mmbase/config/functions/**</include>                  <!-- Used in test cases .. -->
           <include>org/mmbase/config/datatypes.xml</include>                  <!-- Used in test cases .. -->
           <include>org/mmbase/config/builders/core/**</include>                  <!-- Used in Mock/test cases .. -->
+
+
+          <include>org/mmbase/framework/**</include>                  <!-- Used in taglib .. -->
+          <include>org/mmbase/util/externalprocess/**</include>                  <!-- Used in taglib .. -->
+          <include>org/mmbase/util/ReaderInputStream*</include>                  <!-- Used in taglib .. -->
+          <include>org/mmbase/util/ExprCalc*</include>                  <!-- Used in taglib .. -->
         </includes>
         <excludes>
           <exclude>org/mmbase/storage/search/SearchQueryHandler*</exclude>   <!-- Has a dependency on MMObjectNode -->
