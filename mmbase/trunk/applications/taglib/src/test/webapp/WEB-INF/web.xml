@@ -16,7 +16,13 @@
 
   <taglib>
     <taglib-uri>http://www.mmbase.org/mmbase-taglib-2.0</taglib-uri>
+    <!--
+        tag-files don't work at all in jetty:run
+        For now the tag-files can't be tested like this.
+
     <taglib-location>/META-INF/mmbase-taglib-2.tld</taglib-location>
+    -->
+    <taglib-location>/META-INF/mmbase-taglib.tld</taglib-location>
   </taglib>
 
 </web-app>
