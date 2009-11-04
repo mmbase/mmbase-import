@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 
 /**
- * @version $Id: BasicBacking.java 36504 2009-06-30 12:39:45Z michiel $
+ * @version $Id$
  */
 
 public  class ContextTagTest {

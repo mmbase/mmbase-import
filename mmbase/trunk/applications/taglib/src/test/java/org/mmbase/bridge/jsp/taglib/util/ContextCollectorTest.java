@@ -25,7 +25,7 @@ import static org.junit.Assume.*;
 
 
 /**
- * @version $Id: BasicBacking.java 36504 2009-06-30 12:39:45Z michiel $
+ * @version $Id$
  */
 
 public  class ContextCollectorTest {
@@ -34,12 +34,41 @@ public  class ContextCollectorTest {
     @Test
     public void basic() throws Exception {
         PageContext pageContext = new MockPageContext();
-        ContextCollector collector = new ContextCollector(new MockContextProvider(pageContext));
 
-        collector.put("a", "A");
+        ContextTag context = new ContextTag();
+        context.setPageContext(pageContext);
+
+        ContextProvider provider = new MockContextProvider(pageContext);
+        ContextCollector collector = new ContextCollector(context);
+
+        collector.register("a", "A");
         assertEquals("A", collector.get("a"));
         assertEquals("A", pageContext.getAttribute("a"));
 
+        collector.doAfterBody();
+
+        collector.register("a", "B", false);
+
+        assertEquals("B", collector.get("a"));
+        assertEquals("B", pageContext.getAttribute("a"));
+
+
+        collector.doAfterBody();
+
+        collector.register("a", "C", false);
+
+        assertEquals("C", collector.get("a"));
+        assertEquals("C", pageContext.getAttribute("a"));
+
+        collector.doAfterBody();
+        collector.release(pageContext, provider.getContextContainer());
+
+        assertEquals("C", pageContext.getAttribute("a"));
+
+
+    }
+    @Test
+    public void mmb1702() {
 
     }
 
