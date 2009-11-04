@@ -63,8 +63,9 @@ public  class StandaloneContextContainerTest {
         container.setParent(pageContext2, parent2);
 
         assertEquals("AA", container.get("a"));
-        assertEquals("AA", pageContext1.getAttribute("a"));
         assertEquals("AA", pageContext2.getAttribute("a"));
+        assertEquals("AA", pageContext1.getAttribute("a")); // FAILS
+
 
 
 

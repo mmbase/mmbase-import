@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
 public class  ContextCollector extends StandaloneContextContainer {
     private static final Logger log = Logging.getLoggerInstance(ContextCollector.class);
 
-    private final Set<String> parentCheckedKeys = new HashSet<String>();
+    private final Set<String> myKeys = new HashSet<String>();
 
     public ContextCollector(ContextProvider p) throws JspTagException {
         super(p.getPageContext(), "CONTEXT-COLLECTOR " + (p.getId() == null ? "" : "-" + p.getId()), p.getContextContainer());
@@ -43,7 +43,7 @@ public class  ContextCollector extends StandaloneContextContainer {
 
     @Override
     protected BasicBacking createBacking(PageContext pc) {
-
+        System.out.println("IGNORE " + (parent instanceof PageContextContainer || parent instanceof ContextCollector));
         return new BasicBacking(pc, parent instanceof PageContextContainer || parent instanceof ContextCollector) {
 
             @Override
@@ -51,16 +51,17 @@ public class  ContextCollector extends StandaloneContextContainer {
                 if (log.isDebugEnabled()) {
                     log.debug("Putting in collector " + key + "=" + value + " " + parent);
                 }
-                if (parentCheckedKeys.contains(key)) {
-                    parent.put(key, value);
-                } else {
-                    parentCheckedKeys.add(key);
-                    try {
+                System.out.println("Putting in collector " + key + "=" + value + " " + parent + " " + myPageContextKeys);
+                try {
+                    if (reset || myKeys.contains(key)) {
+                        parent.reregister(key, value);
+                    } else {
                         parent.register(key, value);
-                    } catch (JspTagException jte) {
-                        throw new RuntimeException(jte);
                     }
+                } catch (JspTagException jte) {
+                    throw new RuntimeException(jte);
                 }
+                myKeys.add(key);
                 return super.put(key, value, reset);
             }
         };
@@ -89,7 +90,6 @@ public class  ContextCollector extends StandaloneContextContainer {
 
     @Override
     public void release(PageContext pc, ContextContainer p) {
-        parentCheckedKeys.clear();
         super.release(pc, p);
     }
 

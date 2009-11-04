@@ -109,6 +109,8 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
         }
     }
     public void pullPageContext(PageContext pc) {
+        System.out.println("Pulling " + pc);
+        release();
         pageContext = pc;
         if (isELIgnored) return;
         pageContextValues = (Map<String, Object>) pageContext.getAttribute(PAGECONTEXT_KEY + uniqueNumber);
@@ -192,12 +194,13 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
         if (log.isDebugEnabled()) {
             log.debug("Mirror putting " + key + "=" + value + " in a " + getClass() + "( " + uniqueNumber + ") with  pageContext " + pageContext);
         }
+        System.out.println("Mirror putting " + key + "=" + value + " in a " + getClass() + "( " + uniqueNumber + ") with  pageContext " + pageContext + " (ELIgnored " + isELIgnored + ")");
         if (isELIgnored) {
             log.debug("EL IGNORED!");
             return;
         }
 
-        if (reset) {
+        if (reset || myPageContextKeys.contains(key)) {
             pageContextValues.put(key, value);
         }
         if (! pageContextValues.containsKey(key)) {
@@ -208,11 +211,10 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
             } else {
                 // nothing in the pageContext, we'll decide it.
                 // By not putting it in pageContextValues, it will not be reset to null.
-
-                // remember though that we put it in ourselves, because that means that we're reponsible for it
-                // in the next iteration e.g. we'll simply do the same thing
-                myPageContextKeys.add(key);
             }
+            // remember though that we put it in ourselves, because that means that we're reponsible for it
+            // in the next iteration e.g. we'll simply do the same thing
+            myPageContextKeys.add(key);
         }
         if (value != null) {
             pageContext.setAttribute(key, Casting.wrap(value, (CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
@@ -259,6 +261,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
         if (pageContextValues != null && pageContext != null) {
             //log.debug("Restoring pageContext with " + pageContextValues);
             // restore the pageContext
+            System.out.println("Restoring pageContext with " + pageContextValues);
             for (Map.Entry<String, Object> e : pageContextValues.entrySet()) {
                 if (e.getValue() == null) {
                     pageContext.removeAttribute(e.getKey(), SCOPE);
