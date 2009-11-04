@@ -41,9 +41,13 @@ public class  ContextCollector extends StandaloneContextContainer {
         }
     }
 
-    @Override protected BasicBacking createBacking(PageContext pc) {
+    @Override
+    protected BasicBacking createBacking(PageContext pc) {
+
         return new BasicBacking(pc, parent instanceof PageContextContainer || parent instanceof ContextCollector) {
-            @Override public Object put(String key, Object value) {
+
+            @Override
+            public Object put(String key, Object value, boolean reset) {
                 if (log.isDebugEnabled()) {
                     log.debug("Putting in collector " + key + "=" + value + " " + parent);
                 }
@@ -57,18 +61,19 @@ public class  ContextCollector extends StandaloneContextContainer {
                         throw new RuntimeException(jte);
                     }
                 }
-                return super.put(key, value);
+                return super.put(key, value, reset);
             }
         };
     }
 
-
-    @Override public void unRegister(String key) throws JspTagException {
+    @Override
+    public void unRegister(String key) throws JspTagException {
         super.unRegister(key);
         parent.unRegister(key);
 
     }
-    @Override protected void register(String newid, Object n, boolean check, boolean checkParent) throws JspTagException {
+    @Override
+    protected void register(String newid, Object n, boolean check, boolean checkParent) throws JspTagException {
         if (! check) {
             parent.unRegister(newid);
         }
@@ -82,7 +87,8 @@ public class  ContextCollector extends StandaloneContextContainer {
         clear();
     }
 
-    @Override public void release(PageContext pc, ContextContainer p) {
+    @Override
+    public void release(PageContext pc, ContextContainer p) {
         parentCheckedKeys.clear();
         super.release(pc, p);
     }
