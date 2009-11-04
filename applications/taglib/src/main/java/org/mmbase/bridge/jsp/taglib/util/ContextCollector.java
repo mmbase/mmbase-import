@@ -43,7 +43,7 @@ public class  ContextCollector extends StandaloneContextContainer {
 
     @Override
     protected BasicBacking createBacking(PageContext pc) {
-        System.out.println("IGNORE " + (parent instanceof PageContextContainer || parent instanceof ContextCollector));
+        //        System.out.println("IGNORE " + (parent instanceof PageContextContainer || parent instanceof ContextCollector));
         return new BasicBacking(pc, parent instanceof PageContextContainer || parent instanceof ContextCollector) {
 
             @Override
@@ -51,18 +51,25 @@ public class  ContextCollector extends StandaloneContextContainer {
                 if (log.isDebugEnabled()) {
                     log.debug("Putting in collector " + key + "=" + value + " " + parent);
                 }
-                System.out.println("Putting in collector " + key + "=" + value + " " + parent + " " + myPageContextKeys);
+                //System.out.println("Putting in collector " + key + "=" + value + " " + parent + " " + myPageContextKeys);
                 try {
+                    assert parent != null;
                     if (reset || myKeys.contains(key)) {
                         parent.reregister(key, value);
+                        myKeys.add(key);
                     } else {
-                        parent.register(key, value);
+                        if (! parent.containsKey(key)) {
+                            myKeys.add(key);
+                            parent.register(key, value);
+                        } else {
+                            parent.register(key, value);
+                        }
                     }
                 } catch (JspTagException jte) {
                     throw new RuntimeException(jte);
                 }
-                myKeys.add(key);
-                return super.put(key, value, reset);
+                boolean r = reset || myKeys.contains(key);
+                return super.put(key, value, r);
             }
         };
     }
