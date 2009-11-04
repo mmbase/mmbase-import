@@ -89,7 +89,7 @@ public  class BasicBackingTest {
 
     }
 
-    @Test
+    //@Test
     public void mirrorPut() {
         PageContext pageContext = new MockPageContext();
         pageContext.setAttribute("a", "X");
@@ -118,7 +118,7 @@ public  class BasicBackingTest {
 
     }
 
-    @Test
+    //@Test
     public void basic() {
         // put something on the pageContext
         // use a backing
@@ -132,7 +132,7 @@ public  class BasicBackingTest {
 
     }
 
-    @Test
+    //@Test
     public void reset() {
         // put something on the pageContext
         // use a backing, in which we _reset_ that value
@@ -153,6 +153,8 @@ public  class BasicBackingTest {
 
         basic(collector.createBacking(pageContext), pageContext);
 
+        collector.release(pageContext, parent.getContextContainer());
+
         //
         assertEquals("BB", pageContext.getAttribute("b"));
         assertEquals("X",  pageContext.getAttribute("a"));
@@ -167,7 +169,7 @@ public  class BasicBackingTest {
 
     }
 
-    @Test
+    //@Test
     public void resetCollector() throws Exception {
         PageContext pageContext = new MockPageContext();
         pageContext.setAttribute("a", "X");
