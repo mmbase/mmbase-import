@@ -79,7 +79,8 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
 
     }
 
-    @Override public Set<Map.Entry<String, Object>> entrySet() {
+    @Override
+    public Set<Map.Entry<String, Object>> entrySet() {
         return new AbstractSet<Map.Entry<String, Object>>() {
             Set<String> names = new HashSet<String>(Collections.list(pageContext.getAttributeNamesInScope(PageContext.PAGE_SCOPE)));
 
@@ -142,7 +143,8 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
     }
 
 
-    @Override public Object put(String key, Object value) {
+    @Override
+    public Object put(String key, Object value) {
         if (value == null) {
             nulls.add(key);
         } else {
@@ -153,7 +155,8 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
         return unwrapped.put(key, value);
     }
 
-    @Override public Object get(Object key) {
+    @Override
+    public Object get(Object key) {
         if (key instanceof String) {
             return pageContext.findAttribute((String) key);
         } else {
@@ -183,7 +186,8 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
         }
     }
 
-    @Override public boolean containsKey(Object key) {
+    @Override
+    public boolean containsKey(Object key) {
         if (key instanceof String) {
             return pageContext.findAttribute((String) key) != null ||  nulls.contains(key);
         } else {
@@ -209,6 +213,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
         return false;
     }
 
+    @Override
     public String toString() {
         return "PAGECONTEXT BACKING " + super.toString();
     }
