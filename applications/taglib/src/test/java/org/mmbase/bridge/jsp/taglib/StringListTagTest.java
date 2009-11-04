@@ -19,13 +19,13 @@ import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 
 /**
- * @version $Id: BasicBacking.java 36504 2009-06-30 12:39:45Z michiel $
+ * @version $Id$
  */
 
 public  class StringListTagTest {
 
 
-    @Test 
+    @Test
     public void basic() throws Exception {
         final PageContext pageContext = new MockPageContext();
 
@@ -81,18 +81,20 @@ public  class StringListTagTest {
                 assertEquals(tag, i.getContextProvider());
                 i.setId("foo");
                 i.setWrite("false");
-                i.setValue("bla" + (index++));
+                i.setValue("bla" + (++index));
                 i.setReset(true);
                 i.doStartTag();
                 i.doEndTag();
             }
 
+            assertEquals("bla" + index, pageContext.getAttribute("foo")); // MMB-1702
             it = tag.doAfterBody();
+            assertEquals(null, pageContext.getAttribute("foo"));
         }
         tag.doEndTag();
 
-        //assertEquals("bla2", pageContext.getAttribute("foo")); // FAILS MMB-1702
-        //assertEquals("bla2", context.getObject("foo"));
+        assertEquals("bla3", pageContext.getAttribute("foo")); // MMB-1702
+        assertEquals("bla3", context.getObject("foo"));
 
         context.doEndTag();
 
