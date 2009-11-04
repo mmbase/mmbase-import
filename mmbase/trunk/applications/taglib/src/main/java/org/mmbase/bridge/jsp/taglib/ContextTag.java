@@ -60,7 +60,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
 
     private static int  latestNumber = 0;
 
-    private int number;
+    int number;
 
     private CloudContext cloudContext;
     private ContextContainer prevParent;
@@ -128,12 +128,16 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         } else {
             container = new StandaloneContextContainer(pageContext, getId(), c);
         }
+        //System.out.println("Creatign for " + this + " -> " + container);
+
         pageContext.setAttribute(CONTAINER_KEY_PREFIX + number, container, PageContext.PAGE_SCOPE);
         return container;
     }
 
     public ContextContainer getContextContainer() {
-        return (ContextContainer)pageContext.getAttribute(CONTAINER_KEY_PREFIX + number);
+        ContextContainer container = (ContextContainer)pageContext.getAttribute(CONTAINER_KEY_PREFIX + number);
+        if (container == null) throw new IllegalStateException("No container for " + this.getClass().getName() + " (" + CONTAINER_KEY_PREFIX + number + "). doStartTag not yet called?");
+        return container;
     }
 
 
@@ -212,8 +216,10 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                     id = CONTEXTTAG_KEY + "." + scope.getString(this).toLowerCase();
                 }
             }
-            ContextContainer storedContainer =  new StandaloneContextContainer(id, container.getBacking().getOriginalMap(), container.getBacking().isELIgnored());
-            log.debug("Using " + id + " to store in " + scope.getString(this) + " " + storedContainer);
+            ContextContainer storedContainer =  null; //new StandaloneContextContainer(id, container.getBacking().getOriginalMap(), container.getBacking().isELIgnored());
+            if (log.isDebugEnabled()) {
+                log.debug("Using " + id + " to store in " + scope.getString(this) + " " + storedContainer);
+            }
 
             pageContext.setAttribute(id, storedContainer, s);
         }
@@ -378,7 +384,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     }
 
     public String toString() {
-        return getClass().getName() + " with id " + getId() + " with container " + getContextContainer();
+        return getClass().getName() + " with id " + getId() + " with container " + (ContextContainer)pageContext.getAttribute(CONTAINER_KEY_PREFIX + number);
     }
 }
 
