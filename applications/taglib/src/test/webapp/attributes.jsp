@@ -1,4 +1,4 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><html>
 <body>
 <mm:import externid="abcde">ABC</mm:import>
@@ -29,7 +29,7 @@
       <td><mm:aliaslist referid="list">${_}<mm:last inverse="true">, </mm:last></mm:aliaslist></td>
       <td>&nbsp;</td></tr>
  </table>
-  
+
 <hr />
 <a href="<mm:url page="." />">back </a>
 </body>
