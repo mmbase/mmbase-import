@@ -222,14 +222,7 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/config/functions/**"/>                   <!-- Used in test cases .. -->
 
 
-        <!-- external interfaces used by bridge, but not always present client side, so provide them. -->
-        <include name="org/w3c/dom/Document.class"/>
-        <include name="org/w3c/dom/Node.class"/>
-        <include name="org/w3c/dom/Element.class"/>
-        <include name="javax/servlet/ServletRequest.class"/>
-        <include name="javax/servlet/ServletResponse.class"/>
-        <include name="javax/servlet/http/HttpServletRequest.class"/>
-        <include name="javax/servlet/http/HttpServletResponse.class"/>
+
       </fileset>
     </jar>
     <delete dir="build/rmmcitmp"/>
