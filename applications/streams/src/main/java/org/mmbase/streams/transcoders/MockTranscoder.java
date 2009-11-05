@@ -61,7 +61,7 @@ public class MockTranscoder extends AbstractTranscoder {
         File outFile = new File(out.getPath());
         outFile.getParentFile().mkdirs();
         if (empty ) {
-            org.mmbase.util.IOUtil.copy(new ByteArrayInputStream(new byte[0]),
+            org.mmbase.util.IOUtil.copy(new ByteArrayInputStream(new byte[] { 0, 1 }), // nearly empty. If completely empty it would be considered failed
                                         new FileOutputStream(new File(out.getPath())));
 
         } else {
