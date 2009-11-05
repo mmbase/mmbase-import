@@ -633,7 +633,11 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             buf.append("  unique");
         }
         if (enumerationRestriction.getValue() != null && ! enumerationRestriction.getEnumerationFactory().isEmpty()) {
-            buf.append(" " + enumerationRestriction);
+            try {
+                buf.append(" " + enumerationRestriction);
+            } catch (Throwable t) {
+                // never mind
+            }
         }
         return buf;
 
