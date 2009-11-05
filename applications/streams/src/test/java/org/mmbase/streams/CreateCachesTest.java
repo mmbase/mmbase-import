@@ -50,7 +50,7 @@ public class CreateCachesTest {
             System.out.println("Found remote cloud " + remoteCloud);
         } catch (Exception e) {
             System.err.println("Cannot get RemoteCloud. (" + e.getMessage() + "). Some tests will be skipped. (but reported as succes: see http://jira.codehaus.org/browse/SUREFIRE-542)");
-            System.err.println("You can start up a test-environment for remote tests: trunk/example-webapp$ mvn jetty:run");
+            System.err.println("You can start up a test-environment for remote tests: toip/trunk$ mvn jetty:run");
             remoteCloud = null;
         }
 
