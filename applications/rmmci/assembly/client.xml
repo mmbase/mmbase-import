@@ -15,11 +15,6 @@
 
       <unpackOptions>
         <includes>
-          <include>javax/servlet/ServletRequest.class</include>
-          <include>javax/servlet/ServletResponse.class</include>
-          <include>javax/servlet/http/HttpServletRequest.class</include>
-          <include>javax/servlet/http/HttpServletResponse.class</include>
-
           <include>org/mmbase/bridge/**</include>               <!-- of course -->
           <include>org/mmbase/bridge/util/**</include>                   <!-- not essential, but the idea is that you could use those with any bridge impl, so you should want them -->
           <include>org/mmbase/storage/search/*</include>                <!-- those interfaces are  part of bridge -->
