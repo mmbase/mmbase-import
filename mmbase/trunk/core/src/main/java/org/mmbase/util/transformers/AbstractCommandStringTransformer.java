@@ -52,7 +52,7 @@ public abstract class AbstractCommandStringTransformer extends StringTransformer
             if (throwErrors) {
                 throw new RuntimeException(pe);
             } else {
-                log.erroer(pe.toString());
+                log.error(pe.toString());
             }
         }
         return s;
