@@ -86,6 +86,7 @@ public class RecognizerTest {
         undef.put("mediafragment", DATATYPE_NODE);
         undef.put("url", DATATYPE_STRING);
         undef.put("state", DATATYPE_INTEGER);
+        undef.put("codec", DATATYPE_INTEGER);
         return undef;
     }
 
