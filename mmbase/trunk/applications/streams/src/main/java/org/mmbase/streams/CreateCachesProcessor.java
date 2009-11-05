@@ -136,7 +136,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                                     LOG.debug("Created " + transcoder);
                                     Stage stage = Stage.valueOf(el.getTagName().toUpperCase());
                                     if (stage.ordinal() < prevStage.ordinal()) {
-                                        LOG.warn("Wrong ordering " + stage + " < " + prevStage);
+                                        LOG.warn("Wrong ordering (config err) " + stage + " < " + prevStage);
                                     }
                                     prevStage = stage;
                                     JobDefinition def = new JobDefinition(id, in.length() > 0 ? in : null, label.length() > 0 ? label : null, transcoder, mimeType, stage);
@@ -159,6 +159,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                                         LOG.warn("" + newList + " already contains an entry with id " + id);
                                     }
                                     newList.put(id, def);
+                                
                                 } else if (el.getTagName().equals("localhost")) {
                                     int max = Integer.parseInt(el.getAttribute("max_simultaneous_transcoders"));
                                     totalTranscoders += max;
@@ -218,7 +219,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
 
     private static final Map<Integer, Job> runningJobs = Collections.synchronizedMap(new LinkedHashMap<Integer, Job>());
 
-
+    /* Jobs user with this context has started */
     public static Set<Job> myJobs(UserContext u) {
         Set<Job> myjobs = new LinkedHashSet<Job>();
         synchronized(runningJobs) {
@@ -266,7 +267,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
 
     /**
      * Creates and submits a job transcoding everything as configured for one source object, this
-     * produces all new 'caches' as configured in createcaches.xml.
+     * produces all new 'streamssourcescaches' as configured in createcaches.xml.
      * @param node      source stream
      * @param logger    a logger that keeps track
      * @return job trans coding a source stream in (an)other stream(s)
@@ -274,9 +275,8 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
     private Job createJob(final Cloud ntCloud, final int node, final ChainedLogger logger) {
         synchronized(runningJobs) {
             Job job = runningJobs.get(node);
-            if (job != null) {
+            if (job != null) {  // already running?
                 LOG.warn("This job is already running, node #" + node);
-                // already running
                 return null;
             }
             final Job thisJob = new Job(ntCloud, logger);
@@ -291,19 +291,17 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
 
 
     /**
-     * Creates caches nodes when not existing
-     * @param ntCloud   cloud
+     * Creates caches nodes when not existing by creating a transcoding Job 
+     * @param ntCloud   a non transactional cloud
      * @param int       node number
+     * @return Job recognizing and/or transcoding the source stream
      */
     Job createCaches(final Cloud ntCloud, final int node) {
         final ChainedLogger logger = new ChainedLogger(LOG);
         final Job thisJob = createJob(ntCloud, node, logger);
 
         LOG.info("Triggering caches for " + list + "  -> " + thisJob);
-
-
         if (thisJob != null) {
-
             // If the node happens to be deleted before the future with cache creations is ready, cancel the future
             EventManager.getInstance().addEventListener(new WeakNodeEventListener() {
                     public void notify(NodeEvent event) {
@@ -324,15 +322,19 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         return thisJob;
     }
 
+    /**
+     * Commit the mediastreamsources node and calls createCaches to create resulting streamscaches nodes
+     * and start transcoding.
+     */
     public void commit(final Node node, final Field field) {
         if (node.getCloud().getProperty(NOT) != null) {
             LOG.service("Not doing because of property");
             return;
         }
         if (node.getNumber() > 0) {
-
             if (node.isChanged(field.getName())) {
                 LOG.service("For node " + node.getNumber() + ", the field '" + field.getName() + "' is changed " + node.getChanged() + ". That means that we must schedule create caches");
+                
                 final Cloud ntCloud = node.getCloud().getNonTransactionalCloud();
                 final int nodeNumber = node.getNumber();
                 createCaches(ntCloud, nodeNumber);
@@ -342,8 +344,8 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         } else {
             LOG.info("Cannot execute processor, because node has not yet a real number " + node);
         }
-
     }
+
     @Override
     protected CreateCachesProcessor clone() throws CloneNotSupportedException {
         CreateCachesProcessor clone = (CreateCachesProcessor) super.clone();
@@ -373,6 +375,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         final String label;
 
         final Stage stage;
+        
         /**
          * Creates an JobDefinition template (used in the configuration container).
          */
@@ -511,6 +514,11 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
 
 
     }
+    
+    /**
+     * Result of a recognizer JobDefinition, just recognizes the type of stream etc. 
+     * Does not transcode. The result out is the same as in, same for mimetype.
+     */
     public class RecognizerResult extends Result {
         final Node source;
         RecognizerResult(JobDefinition def, Node source, URI in) {
@@ -550,7 +558,6 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         }
         public MimeType getMimeType() {
             return null;
-
         }
         public boolean isReady() {
             return true;
@@ -586,7 +593,6 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         boolean interrupted = false;
         boolean ready = false;
 
-
         public Job(Cloud cloud, ChainedLogger chain) {
             user = cloud.getUser().getIdentifier();
             logger = new BufferedLogger();
@@ -597,45 +603,20 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         }
 
         /**
-         * The several stream cache nodes (which are certain already) get created here.
-         * It checks if the source node is not of state 'SOURCE_UNSUPPORTED'.
+         * Defines the several Results by reading the JobDefinitions in the list. 
+         * Creates streamsourcescaches for transcoders and asigns TranscoderResults to them or creates 
+         * RecognizerResults for JobDefinitions of recognizers.
          */
-        protected void createCacheNodes() {
-            LOG.debug("state: " + node.getIntValue("state") + " nodenr: " + node.getNumber());
-            if ( node.getIntValue("state") == State.SOURCE_UNSUPPORTED.getValue() ) {
-                LOG.warn("Source not supported: " + node.getNumber() + " " + node.getStringValue("url") + " " + node.getStringValue("format"));
-                return;
-            }
-            LOG.info("Results are now " + results);
-            synchronized(CreateCachesProcessor.this.list) {
-                for (Map.Entry<String, JobDefinition> entry : CreateCachesProcessor.this.list.entrySet()) {
-
-                    JobDefinition jd = entry.getValue();
-                    String id = entry.getKey();
-
-                    if (jd.transcoder.getKey() != null) {
-
-                        String inId = jd.getInId();
-                        LOG.info(jd + ": " + inId);
-                        if ((inId == null || lookup.containsKey(inId))) {
-
-                        } else {
-
-                            LOG.info("Skipping " + jd + " because inid '" + inId + "' is not yet in " + results);
-                        }
-                    }
-                }
-            }
-        }
         protected void findResults() {
-            // createCacheNodes();
             int i = -1;
-            for (Map.Entry<String, JobDefinition> n : CreateCachesProcessor.this.list.entrySet()) {
+            for (Map.Entry<String, JobDefinition> entry : CreateCachesProcessor.this.list.entrySet()) {
                 i++;
                 if (results.get(i) == null) {
-                    JobDefinition jd = n.getValue();
+                    JobDefinition jd = entry.getValue();
                     URI inURI;
                     Node inNode;
+                    
+                    // inNode (input stream) to be used
                     if (jd.getInId() == null) {
                         String url = node.getStringValue("url");
                         assert url.length() > 0;
@@ -660,12 +641,12 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                         }
 
                         if (prevResult.isReady() && inNode.getIntValue("state") == State.FAILED.getValue()) {
-                            LOG.warn("BREAK : Transcoding of inNode failed " + inNode);
+                            LOG.warn("BREAK, transcoding of inNode failed " + inNode);
                             break;
                         }
-
                     }
 
+                    // mimetype: skip when no match
                     if (! jd.getMimeType().matches(new MimeType(inNode.getStringValue("mimetype")))) {
                         LOG.info("SKIPPING " + jd);
                         results.set(i, new SkippedResult(jd, inURI));
@@ -675,10 +656,11 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                     }
 
                     assert inURI != null;
+                    // not a recognizer (it has a transcoder key)
                     if (jd.transcoder.getKey() != null) {
                         LOG.info(jd.getMimeType());
                         LOG.info("" + inNode);
-                        Node dest = getCacheNode(jd.transcoder.getKey());
+                        Node dest = getCacheNode(jd.transcoder.getKey());   // gets node (and creates when yet not present)
                         if (dest == null) {
                             LOG.warn("Could not create cache node from " + node.getNodeManager().getName() + " " + node.getNumber() + " for " + jd.transcoder.getKey());
                             continue;
@@ -742,11 +724,12 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
 
                         URI outURI = outFile.toURI();
                         Result result = new TranscoderResult(jd, dest, inURI, outURI);
+                        
                         LOG.info("Added result to results list with key: " + dest.getStringValue("key"));
                         results.set(i, result);
                         lookup.put(jd.getId(), result);
                     } else {
-                        // recognizers;
+                        // recognizers
                         Result result = new RecognizerResult(jd, inNode, inURI);
                         results.set(i, result);
                         lookup.put(jd.getId(), result);
@@ -832,8 +815,6 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
             return getCacheNode(node, key);
         }
 
-
-
         /**
          * Gets and/or creates the node representing the 'cached' stream (the result of a conversion),
          * see the builder property 'org.mmbase.streams.cachestype'. It first looks if it already
@@ -853,7 +834,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                         Queries.addConstraint(q, Queries.createConstraint(q, "id",  FieldCompareConstraint.EQUAL, src));
                         Queries.addConstraint(q, Queries.createConstraint(q, "key", FieldCompareConstraint.EQUAL, key));
 
-                        LOG.debug("Executing " + q.toSql());
+                        LOG.debug("Execute query " + q.toSql());
                         NodeList nodes = caches.getList(q);
                         if (nodes.size() > 0) {
                             logger.service("Found existing node for " + key + "(" + src.getNumber() + "): " + nodes.getNode(0).getNumber());
