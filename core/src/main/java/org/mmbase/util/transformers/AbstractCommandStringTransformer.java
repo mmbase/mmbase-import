@@ -18,16 +18,22 @@ import org.mmbase.util.logging.*;
  * If you want to transform a Reader stream by the use of an external command, than you can extend
  * this class. Implement the 'getCommand' function.
  *
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  * @since MMBase-1.7
  */
 
-public abstract class AbstractCommandStringTransformer extends StringTransformer 
-    implements CharTransformer {
+public abstract class AbstractCommandStringTransformer extends StringTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(AbstractCommandStringTransformer.class);
 
+    private boolean throwErrors = false;
+
+    public void setThrowErrors(boolean te) {
+        throwErrors = te;
+    }
 
     protected abstract String[] getCommand();
+
+
 
     // javadoc inherited
     public final String transform(String s) {
@@ -38,12 +44,16 @@ public abstract class AbstractCommandStringTransformer extends StringTransformer
             InputStream inputStream = new ByteArrayInputStream(s.getBytes(encoding));
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             launcher.execute(getCommand());
-            launcher.waitAndWrite(inputStream, outputStream, errorStream);        
+            launcher.waitAndWrite(inputStream, outputStream, errorStream);
             return new String(outputStream.toByteArray(), encoding) + new String(errorStream.toByteArray(), encoding);
         } catch (UnsupportedEncodingException uee) {
             log.error(uee.toString());
         } catch (org.mmbase.util.externalprocess.ProcessException pe) {
-            log.error(pe.toString());
+            if (throwErrors) {
+                throw new RuntimeException(pe);
+            } else {
+                log.erroer(pe.toString());
+            }
         }
         return s;
     }
