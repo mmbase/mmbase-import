@@ -521,6 +521,14 @@
     <param name="radix" />
   </parameterizedescaper>
 
+  <parameterizedescaper id="graphviz">
+    <class>org.mmbase.util.transformers.Graphviz</class>
+    <info>
+    </info>
+    <param name="command" value="dot"/>
+    <param name="type"    value="svg"/>
+  </parameterizedescaper>
+
 
   <!-- The content-tag then can 'postprocess' everything in its body.
        These are meant to be simple transformations, like throwing
