@@ -282,86 +282,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
             final Job thisJob = new Job(ntCloud, logger);
             runningJobs.put(node, thisJob);
 
-            thisJob.setFuture(transcoderExecutor.submit(new Callable<Integer>() {
-                        public Integer call() {
-                            thisJob.setThread(Thread.currentThread());
-                            if (ntCloud instanceof org.mmbase.bridge.implementation.BasicCloud) {
-                                try {
-                                    synchronized(ntCloud) {
-                                        while (! ntCloud.hasNode(node)) {
-                                            ntCloud.wait(200);
-                                        }
-                                    }
-                                } catch (InterruptedException ie) {
-                                    LOG.info(ie);
-                                    return null;
-                                }
-                            }
-                            final Node ntNode = ntCloud.getNode(node);
-                            ntNode.getStringValue("title"); // This triggers RelatedField$Creator to create a mediafragment
-                            Node mediafragment = ntNode.getNodeValue("mediafragment");
-                            thisJob.setNode(ntNode);
-                            int resultCount = 0;
-                            try {
-                                LOG.info("Executing " + thisJob);
-                                for (final Result result : thisJob) {
-                                    LOG.info("NOW doing " + result);
-                                    URI in  = result.getIn();
-                                    URI out = result.getOut();
-
-                                    JobDefinition jd = result.getJobDefinition();
-                                    final List<AnalyzerLogger> analyzerLoggers = new ArrayList<AnalyzerLogger>();
-                                    for (Analyzer a: jd.analyzers) {
-                                        AnalyzerLogger al = new AnalyzerLogger(a.clone(), thisJob.getNode(), result.getDestination());
-                                        analyzerLoggers.add(al);
-                                        logger.addLogger(al);
-                                    }
-                                    assert in != null;
-
-                                    try {
-                                        jd.transcoder.transcode(in, out, logger);
-                                        for (AnalyzerLogger al : analyzerLoggers) {
-                                            al.getAnalyzer().ready(thisJob.getNode(), result.getDestination());
-                                        }
-                                        resultCount++;
-                                        result.ready();
-                                        logger.info("RESULT " + thisJob + "(" + thisJob.getNode().getNodeManager().getName() + ":" + thisJob.getNode().getNumber() + "):" + result);
-                                        if (thisJob.isInterrupted() || Thread.currentThread().isInterrupted()){
-                                            logger.info("Interrupted");
-                                            break;
-                                        }
-                                    } catch (InterruptedException ie) {
-                                        thisJob.interrupt();
-                                        logger.info("Interrupted");
-                                        break;
-                                    } catch (Throwable e) {
-                                        result.ready();
-                                        logger.error(e.getMessage(), e);
-                                    } finally {
-                                        for (AnalyzerLogger al : analyzerLoggers) {
-                                            logger.removeLogger(al);
-                                        }
-                                    }
-                                    thisJob.findResults();
-
-                                }
-                                if (! thisJob.isInterrupted()) {
-                                    logger.info("READY " + thisJob + "(" + thisJob.getNode().getNodeManager().getName() + ":" + thisJob.getNode().getNumber() + ")");
-                                    //thisJob.getNode().commit();
-                                }
-                            } catch (RuntimeException e) {
-                                logger.error(e.getMessage(), e);
-                                throw e;
-                            } finally {
-                                logger.info("FINALLY " + resultCount);
-                                thisJob.ready(); // notify waiters
-                                runningJobs.remove(thisJob.getNode().getNumber());
-                            }
-                            return resultCount;
-                        }
-
-                    })
-                );
+            thisJob.setFuture(transcoderExecutor.submit(new JobCallable(thisJob, ntCloud, logger, node)));
 
             return thisJob;
         }
@@ -533,7 +454,6 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
 
     /**
      * Container for the result of a JobDefinition
-     * @TODO constructors correspond to more or less essentially different situations, perhaps clearer to use 2 extensions
      */
     public class TranscoderResult extends Result {
         final Node dest;
@@ -738,7 +658,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                         if (inNode == null) {
                             inNode = node;
                         }
-                        
+
                         if (prevResult.isReady() && inNode.getIntValue("state") == State.FAILED.getValue()) {
                             LOG.warn("BREAK : Transcoding of inNode failed " + inNode);
                             break;
@@ -867,8 +787,8 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                             for (CommandExecutor.Method e : executors) {
                                 if (! e.isInUse()) {
                                     e.setInUse(true);
-                                        m = e;
-                                        break;
+                                    m = e;
+                                    break;
                                 }
                             }
                         }
@@ -976,7 +896,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                 interrupted = t.isInterrupted();
             }
         }
-        
+
         /**
          * The source Node on which this Job will run.
          */
@@ -1085,6 +1005,111 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         RECOGNIZER,
         TRANSCODER,
         READY;
+    }
+
+    protected class JobCallable implements Callable<Integer> {
+        private final Job thisJob;
+        private final Cloud ntCloud;
+        private final ChainedLogger logger;
+        private final int node;
+        private Node ntNode;
+        private Iterator<Result> iterator;
+
+        public JobCallable(Job j, Cloud cloud, ChainedLogger l, int node) {
+            this.thisJob = j;
+            this.ntCloud = cloud;
+            this.logger = l;
+            this.node   = node;
+
+        }
+        protected void init() {
+            if (ntNode == null) {
+                thisJob.setThread(Thread.currentThread());
+                if (ntCloud instanceof org.mmbase.bridge.implementation.BasicCloud) {
+                    try {
+                        synchronized(ntCloud) {
+                            while (! ntCloud.hasNode(node)) {
+                                ntCloud.wait(200);
+                            }
+                        }
+                    } catch (InterruptedException ie) {
+                        LOG.info(ie);
+                        return;
+                    }
+                }
+                ntNode = ntCloud.getNode(node);
+                ntNode.getStringValue("title"); // This triggers RelatedField$Creator to create a mediafragment
+                Node mediafragment = ntNode.getNodeValue("mediafragment");
+                thisJob.setNode(ntNode);
+            }
+            if (iterator == null) {
+                iterator = thisJob.iterator();
+            }
+        }
+
+        public Integer call() {
+            init();
+
+            int resultCount = 0;
+            try {
+                LOG.info("Executing " + thisJob);
+                while (iterator.hasNext()) {
+                    final Result result = iterator.next();
+                    LOG.info("NOW doing " + result);
+                    URI in  = result.getIn();
+                    URI out = result.getOut();
+
+                    JobDefinition jd = result.getJobDefinition();
+                    final List<AnalyzerLogger> analyzerLoggers = new ArrayList<AnalyzerLogger>();
+                    for (Analyzer a: jd.analyzers) {
+                        AnalyzerLogger al = new AnalyzerLogger(a.clone(), thisJob.getNode(), result.getDestination());
+                        analyzerLoggers.add(al);
+                        logger.addLogger(al);
+                    }
+                    assert in != null;
+
+                    try {
+                        jd.transcoder.transcode(in, out, logger);
+                        for (AnalyzerLogger al : analyzerLoggers) {
+                            al.getAnalyzer().ready(thisJob.getNode(), result.getDestination());
+                        }
+                        resultCount++;
+                        result.ready();
+                        logger.info("RESULT " + thisJob + "(" + thisJob.getNode().getNodeManager().getName() + ":" + thisJob.getNode().getNumber() + "):" + result);
+                        if (thisJob.isInterrupted() || Thread.currentThread().isInterrupted()){
+                            logger.info("Interrupted");
+                            break;
+                        }
+                    } catch (InterruptedException ie) {
+                        thisJob.interrupt();
+                        logger.info("Interrupted");
+                        break;
+                    } catch (Throwable e) {
+                        result.ready();
+                        logger.error(e.getMessage(), e);
+                    } finally {
+                        for (AnalyzerLogger al : analyzerLoggers) {
+                            logger.removeLogger(al);
+                        }
+                    }
+                    thisJob.findResults();
+
+                }
+                if (! thisJob.isInterrupted()) {
+                    logger.info("READY " + thisJob + "(" + thisJob.getNode().getNodeManager().getName() + ":" + thisJob.getNode().getNumber() + ")");
+                    //thisJob.getNode().commit();
+                }
+            } catch (RuntimeException e) {
+                logger.error(e.getMessage(), e);
+                throw e;
+            } finally {
+                logger.info("FINALLY " + resultCount);
+                thisJob.ready(); // notify waiters
+                runningJobs.remove(thisJob.getNode().getNumber());
+            }
+            return resultCount;
+        }
+
     }
 
 }

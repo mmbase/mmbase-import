@@ -85,6 +85,7 @@ public class RecognizerTest {
         undef.put("mimetype", DATATYPE_STRING);
         undef.put("mediafragment", DATATYPE_NODE);
         undef.put("url", DATATYPE_STRING);
+        undef.put("state", DATATYPE_INTEGER);
         return undef;
     }
 
@@ -170,6 +171,7 @@ public class RecognizerTest {
             chain.removeLogger(an);
 
             assertEquals(c.toString(), c.sourceType, source.getNodeManager().getName());
+
             if (source.getNodeManager().hasField("height")) {
                 assertEquals(c.toString(), c.sourceHeight, source.getIntValue("height"));
                 assertEquals(c.toString(), c.sourceWidth, source.getIntValue("width"));
