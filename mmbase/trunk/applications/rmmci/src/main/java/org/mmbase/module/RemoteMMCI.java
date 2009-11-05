@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  * @since MMBase-1.5
  */
-public class RemoteMMCI extends ProcessorModule {
+public class RemoteMMCI extends Module {
 
     private Registry registry;
 
