@@ -42,7 +42,7 @@
           <jsp:text>Search and Relate examples/tests.</jsp:text>
           <c:if test="${! empty title}"> ${title}.</c:if>
         </mm:import>
-        <title><mm:escape>${_title}</mm:escape></title>
+        <title>${_title}</title>
         <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
         <jsp:directive.include file="/mmbase/jquery/jquery-ui.jspx" />
         <mm:link page="/mmbase/searchrelate/page.css.jsp">
@@ -72,7 +72,7 @@
       <mm:write request="org.mmbase.searchrelate.config" referid="config" />
 
       <body class="${styleClass} ${requestScope['org.mmbase.searchrelate.config']}">
-        <h1><mm:escape>${_title}</mm:escape></h1>
+        <h1>${_title}</h1>
         <mm:link page="/mmbase/upload/upload.js">
           <script type="text/javascript" src="${_}">
             <jsp:text> </jsp:text>
