@@ -24,6 +24,7 @@ $().ready(function() {
                 
                 var tinyMceConfiguration = {
                     theme : "simple",
+                    content_css: "style.css",
                     entity_encoding : "raw", /* needed when XHTML */
                     setup : List.prototype.setupTinyMCE
                 }
