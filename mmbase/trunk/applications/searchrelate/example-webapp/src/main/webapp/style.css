@@ -19,7 +19,8 @@ li {
   background-color: #eee;
 }
 
-div.mm_tinymce li {
+
+div.mm_tinymce li, #tinymce li {
   border: none !important;
   background-color: transparent !important;
 }
