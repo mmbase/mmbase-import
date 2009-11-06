@@ -1,7 +1,7 @@
 // -*- mode: javascript; -*-
-<%@page contentType="text/javascript; charset=UTF-8" %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"
-%><fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
+<%@page contentType="text/javascript; charset=UTF-8" %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
 <mm:content type="text/javascript">
 
 /**
@@ -692,7 +692,7 @@ List.prototype.getOrder = function(ol) {
     }
     var order = "";
     var self = this;
-    $(ol).find("li").each(function() {
+    $(ol).find("> li").each(function() {
             if (order != "") {
                 order += ",";
             }
@@ -753,7 +753,13 @@ List.prototype.getLiForNode = function(nodenumber) {
 }
 
 List.prototype.getNodeForLi  = function(li) {
-    return $(li).attr("id").substring(("node_" + this.rid + "_").length);
+    var id = $(li).attr("id");
+    if (id != null) {
+	return id.substring(("node_" + this.rid + "_").length);
+    } else {
+	return null;
+    }
+
 }
 
 List.prototype.getOriginalPosition  = function(li) {
@@ -773,14 +779,16 @@ List.prototype.afterPost = function() {
         var order = "";
         var originalOrder = "";
         var self = this;
-        self.find(null, "li").each(function() {
-                if (order != "") {
+        self.find("ui-sortable", "ol").each(function() {
+	    $(this).find(">li").each(function() {
+		if (order != "") {
                     order += ",";
                     originalOrder += ",";
-                }
-                order += self.getNodeForLi(this);
-                originalOrder += self.getOriginalPosition(this);
-            });
+		}
+		order += self.getNodeForLi(this);
+		originalOrder += self.getOriginalPosition(this);
+	    });
+        });
         var params = this.getListParameters();
         params.order = order;
         params.originalOrder = originalOrder;
