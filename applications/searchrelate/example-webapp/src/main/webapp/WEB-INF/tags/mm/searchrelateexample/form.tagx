@@ -72,27 +72,29 @@
 
     <c:set value="${requestScope['org.mmbase.transaction']}"  var="t"  />
   </mm:form>
-  <div class="debug">
-    <h2>Debugging</h2>
-    <p>Transaction: ${t.name}</p>
-    <p>Number of nodes in transaction: ${fn:length(t.nodes)}</p>
-    <table>
-      <tr><th>#</th><th>real number</th><th>temporary number</th><th>_exists</th><th>new</th><th>deleted</th><th>gui</th><th>snumber</th><th>dnumber</th><th>handle</th></tr>
-      <mm:listnodes referid="t.nodes" commitonclose="false">
-        <tr>
-          <th><mm:index /></th>
-          <td>${_node.number}</td>
-          <td>${_node._number}</td>
-          <td>${_node._exists}</td>
-          <td>${_node.number lt 0}</td>
-          <td>${_node._exists eq 'nolonger'}</td>
-          <td><mm:nodeinfo type="gui" /></td>
-          <td><mm:hasfield name="snumber">${_node.snumber} / ${_node._snumber}</mm:hasfield></td>
-          <td><mm:hasfield name="dnumber">${_node.dnumber} / ${_node._dnumber}</mm:hasfield></td>
-          <td><mm:hasfield name="handle"><mm:escape escape="text/xml"><c:catch var="e">H: </c:catch>${e}</mm:escape></mm:hasfield></td>
-        </tr>
-      </mm:listnodes>
-    </table>
-  </div>
+  <c:if test="${'true' eq debug}">
+    <div class="debug">
+      <h2>Debugging</h2>
+      <p>Transaction: ${t.name}</p>
+      <p>Number of nodes in transaction: ${fn:length(t.nodes)}</p>
+      <table>
+        <tr><th>#</th><th>real number</th><th>temporary number</th><th>_exists</th><th>new</th><th>deleted</th><th>gui</th><th>snumber</th><th>dnumber</th><th>handle</th></tr>
+        <mm:listnodes referid="t.nodes" commitonclose="false">
+          <tr>
+            <th><mm:index /></th>
+            <td>${_node.number}</td>
+            <td>${_node._number}</td>
+            <td>${_node._exists}</td>
+            <td>${_node.number lt 0}</td>
+            <td>${_node._exists eq 'nolonger'}</td>
+            <td><mm:nodeinfo type="gui" /></td>
+            <td><mm:hasfield name="snumber">${_node.snumber} / ${_node._snumber}</mm:hasfield></td>
+            <td><mm:hasfield name="dnumber">${_node.dnumber} / ${_node._dnumber}</mm:hasfield></td>
+            <td><mm:hasfield name="handle"><mm:escape escape="text/xml"><c:catch var="e">H: </c:catch>${e}</mm:escape></mm:hasfield></td>
+          </tr>
+        </mm:listnodes>
+      </table>
+    </div>
+  </c:if>
 </jsp:root>
 

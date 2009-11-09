@@ -55,12 +55,7 @@
 
         <c:if test="${! empty prefetch}">
           <script type="text/javascript">
-            var nm = "${prefetch}".split(",");
-            for (var i in nm) {
-            if (nm[i].length > 0) {
-            MMBaseValidator.prototype.prefetchNodeManager(nm[i]);
-            }
-            }
+            MMBaseValidator.prototype.prefetchNodeManager('${prefetch}');
           </script>
         </c:if>
         <c:if test="${empty debug or debug eq 'false'}">
