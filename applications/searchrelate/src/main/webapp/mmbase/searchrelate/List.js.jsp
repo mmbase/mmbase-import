@@ -189,10 +189,13 @@ function List(d) {
         $(this.div).trigger("mmsrRelatedNodesPost", [self]);
         this.afterPost();
     }
+    List.prototype.instances[this.rid] = this;
 }
 
 
 List.prototype.wasResetSequence = false;
+List.prototype.leftPage = false;
+List.prototype.instances = {};
 
 List.prototype.triggerValidateHook = function() {
     var reason = "";
@@ -686,8 +689,20 @@ List.prototype.commit = function(stale, leavePage) {
 
 List.prototype.leavePage = function() {
     $(self.div).trigger("mmsrLeavePage", [self]);
-    var params = this.getListParameters();
-    $.ajax({ type: "GET", async: false, data: params, url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
+    if (! List.prototype.leftPage) {
+
+        var rids = "";
+        for (r in List.prototype.instances) {
+            if (rids.length > 0) {
+                rids += ",";
+            }
+            rids += r;
+        }
+        var params = {};
+        params.rids = rids;
+        $.ajax({ type: "GET", async: false, data: params, url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
+        List.prototype.leftPage = true;
+    }
     $(self.div).trigger("mmsrAfterLeavePage", [self]);
 }
 
@@ -789,7 +804,7 @@ List.prototype.getOriginalPosition  = function(li) {
     for (var i in classes) {
         var cl = classes[i];
         if (cl.indexOf("origPos-") == 0) {
-            return cl.substring("origPos-".length);
+            return parseInt(cl.substring("origPos-".length));
         }
     }
     alert(li);
@@ -801,6 +816,8 @@ List.prototype.afterPost = function() {
         var order = "";
         var originalOrder = "";
         var self = this;
+        var expectedOriginal = 0;
+        var needsSave = false;
         self.find("ui-sortable", "ol").each(function() {
 	    $(this).find(">li").each(function() {
 		if (order != "") {
@@ -808,15 +825,18 @@ List.prototype.afterPost = function() {
                     originalOrder += ",";
 		}
 		order += self.getNodeForLi(this);
+                var originalPos =  self.getOriginalPosition(this);
+                if (originalPos != expectedOriginal) needsSave = true;
 		originalOrder += self.getOriginalPosition(this);
+                expectedOriginal++;
 	    });
         });
         var params = this.getListParameters();
         params.order = order;
         params.originalOrder = originalOrder;
         var self = this;
-        this.loader();
-        if (params.originalOrder != "") {
+        if (needsSave) {
+            this.loader();
             this.log("Submitting order for " + this.rid + " " + params.originalOrder + "-> " + params.order );
             $.ajax({ type: "POST",
                         async: false,
