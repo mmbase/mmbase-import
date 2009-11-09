@@ -31,7 +31,6 @@
         </style>
       </head>
       <body>
-        <jsp:scriptlet>((HttpServletRequest) pageContext.getRequest()).getSession(true).invalidate();</jsp:scriptlet>
         <h1>Search and Relate examples/tests</h1>
 
 
