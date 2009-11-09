@@ -10,13 +10,11 @@
   -->
   <mm:content type="application/xml" expires="0">
     <jsp:output omit-xml-declaration="true" />
-    <jsp:directive.include file="parameters.jspf" />
+    <mm:import externid="requestid" required="true" />
+
     <seq>
-      <old>${parameters.rid} <mm:escape>${parameters}</mm:escape></old>
-      <mm:write session="${rid}_context" value="" />
-      <mm:write session="${parameters.requestid}_sequence" value="0" />
-      <mm:import from="session" externid="${parameters.requestid}_sequence" id="newseq" />
-      <new>${newseq}</new>
+      <mm:log level="info">clearing ${rid}</mm:log>
+      <mm:write session="${requestid}_sequence" value="0" />
     </seq>
   </mm:content>
 </mm:cloud>
