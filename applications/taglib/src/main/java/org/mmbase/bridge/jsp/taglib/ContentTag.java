@@ -115,7 +115,7 @@ public class ContentTag extends LocaleTag  {
 
     private static ParameterizedTransformerFactory<CharTransformer> readTransformerFactory(final DocumentReader reader, final Element parentElement, final String id) {
         final String claz = reader.getElementValue(reader.getChildElements(parentElement, "class").get(0));
-        final Map configuredParams = new HashMap();
+        final Map<String, String> configuredParams = new HashMap<String, String>();
         for (Element param: reader.getChildElements(parentElement, "param")) {
             String name = param.getAttribute("name");
             String value = param.getAttribute("value");
@@ -127,7 +127,7 @@ public class ContentTag extends LocaleTag  {
             return Transformers.getTransformerFactory(claz, " parameterizedescaper " + id);
         } else {
             return new ParameterizedTransformerFactory() {
-                ParameterizedTransformerFactory wrapped = Transformers.getTransformerFactory(claz, " parameterizedescaper " + id);
+                final ParameterizedTransformerFactory wrapped = Transformers.getTransformerFactory(claz, " parameterizedescaper " + id);
                 public Transformer createTransformer(Parameters parameters) {
                     return wrapped.createTransformer(parameters);
                 }
