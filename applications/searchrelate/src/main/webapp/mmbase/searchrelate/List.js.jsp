@@ -159,16 +159,12 @@ function List(d) {
                      function(ev) {
                          self.leavePage();
                          var result = self.commit(0, ! self.submitted);
-                         if (!result) {
+                         if (result != null) {
                              ev.returnValue = '<fmt:message key="invalid" />';
                          }
                          self.resetSequence();
 
-                         if (result) {
-                             return null;
-                         } else {
-                             return result;
-                         }
+                         return result;
                      });
     // automaticly make the entries empty on focus if they evidently contain the default value only
     this.find("mm_validate", "input").filter(function() {
@@ -671,16 +667,16 @@ List.prototype.commit = function(stale, leavePage) {
                         }
                        });
 
-                result = true;
+                result = null;
             } else {
                 // not stale enough
-                result = false;
+                result = "not stale";
             }
         } else {
-            result = false;
+            result = "not valid";
         }
     } else {
-        result = true;
+        result = null;
     }
     if (leavePage) {
         this.leavePage();
