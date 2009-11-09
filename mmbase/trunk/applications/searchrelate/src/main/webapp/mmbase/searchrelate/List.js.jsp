@@ -151,19 +151,16 @@ function List(d) {
 
     this.submitted = false;
     $(this.form).submit(function() {
-            self.leavePage();
             self.submitted = true;
         });
 
     $(window).bind("beforeunload",
                      function(ev) {
-                         self.leavePage();
-                         var result = self.commit(0, ! self.submitted);
+                         var result = self.commit(0, true);
                          if (result != null) {
                              ev.returnValue = '<fmt:message key="invalid" />';
                          }
                          self.resetSequence();
-
                          return result;
                      });
     // automaticly make the entries empty on focus if they evidently contain the default value only
