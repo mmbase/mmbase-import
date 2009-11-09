@@ -20,12 +20,21 @@
                            description=""/>
 
   <mm:link page="/validation.js">
-    <script type="text/javascript" src="${_}" />
+    <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
   </mm:link>
 
 
   <mm:form
       name="${name}" jspvar="trans">
+
+    <mm:import externid="debug" />
+    <mm:present referid="debug">
+      <input type="hidden"  name="debug" value="${debug}" />
+    </mm:present>
+    <mm:import externid="ct" />
+    <mm:present referid="ct">
+      <input type="hidden"  name="ct" value="${ct}" />
+    </mm:present>
 
     <mm:import externid="cancel" />
 
@@ -45,7 +54,7 @@
 
     <input type="submit" name="submit" value="submit" />
     <jsp:text> | </jsp:text>
-    <mm:link>
+    <mm:link referids="debug?,ct?">
       <mm:param name="cancel"></mm:param>
       <a href="${_}">cancel</a>
     </mm:link>
