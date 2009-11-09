@@ -151,17 +151,19 @@ function List(d) {
 
     this.submitted = false;
     $(this.form).submit(function() {
-            self.leavePage(true);
+            self.leavePage();
             self.submitted = true;
         });
 
-    $(document).bind("beforeunload",
+    $(window).bind("beforeunload",
                      function(ev) {
-                         self.leavePage(true);
+                         self.leavePage();
                          var result = self.commit(0, ! self.submitted);
                          if (!result) {
                              ev.returnValue = '<fmt:message key="invalid" />';
                          }
+                         self.resetSequence();
+
                          if (result) {
                              return null;
                          } else {
@@ -184,12 +186,13 @@ function List(d) {
     this.uploading = {};
     this.uploadingSize = 0;
 
-    self.resetSequence();
+    List.prototype.instances[this.rid] = this;
+
     if ($(this.div).hasClass("POST")) {
         $(this.div).trigger("mmsrRelatedNodesPost", [self]);
         this.afterPost();
     }
-    List.prototype.instances[this.rid] = this;
+
 }
 
 
@@ -706,15 +709,32 @@ List.prototype.leavePage = function() {
     $(self.div).trigger("mmsrAfterLeavePage", [self]);
 }
 
+List.prototype.getRequestIds = function() {
+    var requestids = {};
+    for (r in List.prototype.instances) {
+        requestids[List.prototype.instances[r].requestid] = true;
+    }
+    return requestids;
+}
+
 List.prototype.resetSequence = function() {
     if (! List.prototype.wasResetSequence) {
-        this.log("Resetting sequence for " + this.requestid);
-        var params = {};
-        params.requestid = this.requestid;
-        $.ajax({ type: "GET", async: false, data: params, url: "${mm:link('/mmbase/searchrelate/list/resetSequence.jspx')}" });
+        var requestids = "";
+        for (r in List.prototype.getRequestIds()) {
+            if (requestids.length > 0) {
+                requestids += ",";
+            }
+            requestids += r;
+        }
+        if (requestids.length > 0) {
+            this.log("Resetting sequence for " + requestids);
+            var params = {};
+            params.requestids = requestids;
+            $.ajax({ type: "GET", async: false, data: params, url: "${mm:link('/mmbase/searchrelate/list/resetSequence.jspx')}" });
+        } else {
+
+        }
         List.prototype.wasResetSequence = true;
-    } else {
-        //console.log("No need resettign sequence for " + this.requestid);
     }
 
 }
