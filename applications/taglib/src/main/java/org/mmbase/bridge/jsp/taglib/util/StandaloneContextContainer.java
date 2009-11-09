@@ -49,19 +49,16 @@ public class StandaloneContextContainer extends ContextContainer {
     /**
      * @since MMBase-1.9
      */
-    /*
     public StandaloneContextContainer(String i, java.util.Map<String, Object> values, boolean ignoreEL) {
         super(i);
         parent = null;
         backing = new BasicBacking(values, ignoreEL);
 
     }
-    */
 
     @Override
     public void setParent(PageContext pc, ContextContainer p) {
         super.setParent(pc, p);
-        assert p != null;
         parent = p;
     }
 
@@ -137,7 +134,6 @@ public class StandaloneContextContainer extends ContextContainer {
     public void release(PageContext pc, ContextContainer p) {
         super.release(pc, p);
         // restore also the parent.
-        assert p != null;
         parent = p;
         //backing.release();
     }

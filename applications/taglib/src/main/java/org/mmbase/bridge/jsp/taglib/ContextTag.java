@@ -216,7 +216,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                     id = CONTEXTTAG_KEY + "." + scope.getString(this).toLowerCase();
                 }
             }
-            ContextContainer storedContainer = container; //new StandaloneContextContainer(id, container.getBacking().getOriginalMap(), container.getBacking().isELIgnored());
+            ContextContainer storedContainer = new StandaloneContextContainer(id, container.getBacking().getOriginalMap(), container.getBacking().isELIgnored());
             if (log.isDebugEnabled()) {
                 log.debug("Using " + id + " to store in " + scope.getString(this) + " " + storedContainer);
             }
