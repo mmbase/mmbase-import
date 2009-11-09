@@ -10,11 +10,15 @@
   -->
   <mm:content type="application/xml" expires="0">
     <jsp:output omit-xml-declaration="true" />
-    <mm:import externid="requestid" required="true" />
+    <mm:import externid="requestids" required="true" vartype="list"/>
 
-    <seq>
-      <mm:log level="info">clearing ${rid}</mm:log>
-      <mm:write session="${requestid}_sequence" value="0" />
-    </seq>
+    <reset>
+      <c:forEach items="${requestids}" var="requestid">
+        <seq>
+          <mm:log level="info">clearing ${requestid}</mm:log>
+          <mm:write session="${requestid}_sequence" value="0" />
+        </seq>
+      </c:forEach>
+    </reset>
   </mm:content>
 </mm:cloud>
