@@ -19,10 +19,10 @@
         delete="true"
         fields="number,title"
         sortable="true"
-        min="1"
+        min="4"
         search="true"
         >
-      <h4>${rid}</h4>
+      <h4 class="debug">${rid}</h4>
     </mm-sr:relatednodes>
 
 

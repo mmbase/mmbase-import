@@ -1,5 +1,7 @@
 body {
   background-color: white;
+  font-family: sans-serif;
+
 }
 
 .searchresult.implicit {
@@ -12,10 +14,10 @@ body.search .searchresult.implicit {
 
 .ui-sortable>li {
   border: dashed 1px green;
-  margin-bottom: 2px;
 }
 li {
-  border: solid 1px;
+  border: solid 1px #aaa;
+  margin-bottom: 2px;
   background-color: #eee;
 }
 
@@ -36,13 +38,16 @@ div.mm_tinymce li, #tinymce li {
 img.icon {
   border: none;
 }
+a.create img.icon {
+  float: left;
+}
 
 
 div.list div.list {
   margin: 3px;
-  margin-top: 20px;
-  margin-left: 30px;
-  border: solid 1px;
+  margin-top: 8px;
+  margin-left: 20px;
+  border: solid 1px #aaa;
   background-color: #ddd;
 }
 div.list div.list.invalid {
@@ -59,10 +64,16 @@ div.list div.list div.list.invalid {
 .searchable .searchform {
   border-bottom: none;
   background-color: #efe;
+  border-color: #aaa;
   left: 0;
   right: 0;
   width: auto;
 }
+.searchresult table,
+.searchresult table caption {
+  border-color: #aaa;
+}
+
 .searchable .searchform legend {
   display: none;
 }
@@ -77,6 +88,7 @@ div.list div.list div.list.invalid {
 
 div.list h4 {
   margin-top: 0px;
+  margin-bottom: 3px;
   border-bottom: dashed 1px white;
   padding-left: 2ex;
   right: 0;
@@ -85,7 +97,7 @@ div.list h4 {
 }
 
 span.status {
-  display: block;
+  display: inline;
   height: 20px;
   left: 0;
   right: 0;
@@ -134,3 +146,12 @@ div.mm_tinymce {
   overflow-y: hidden;
 }
 
+form.searchform fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+
+.searchresult {
+  font-size: 10%;
+}
