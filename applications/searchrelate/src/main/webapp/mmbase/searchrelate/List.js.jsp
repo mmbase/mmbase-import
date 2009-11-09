@@ -2,7 +2,7 @@
 <%@page contentType="text/javascript; charset=UTF-8" %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
-<mm:content type="text/javascript">
+<mm:content type="text/javascript" expires="0">
 
 /**
  * This javascript binds to a div.list.
@@ -151,11 +151,13 @@ function List(d) {
 
     this.submitted = false;
     $(this.form).submit(function() {
-            this.submitted = true;
+            self.leavePage(true);
+            self.submitted = true;
         });
 
-    $(window).bind("beforeunload",
+    $(document).bind("beforeunload",
                    function(ev) {
+                       console.log(self.rid + " " + self.submitted);
                        var result = self.commit(0, ! self.submitted);
                        if (!result) {
                            ev.returnValue = '<fmt:message key="invalid" />';
@@ -187,6 +189,7 @@ function List(d) {
         this.afterPost();
     }
 }
+
 
 List.prototype.leftPage = false;
 
@@ -672,14 +675,27 @@ List.prototype.commit = function(stale, leavePage) {
     } else {
         result = true;
     }
-    if (leavePage && ! List.prototype.leftPage) {
-        List.prototype.leftPage = true;
-        $(self.div).trigger("mmsrLeavePage", [self]);
-        $.ajax({ type: "GET", async: false, data: this.getListParameters(), url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
-        $(self.div).trigger("mmsrAfterLeavePage", [self]);
+    if (leavePage) {
+        this.leavePage(false);
 
     }
     return result;
+}
+
+
+List.prototype.leavePage = function(clean) {
+    if (clean && List.prototype.leftPage) return;
+    if (clean) {
+        List.prototype.leftPage = true;
+    }
+    $(self.div).trigger("mmsrLeavePage", [self]);
+    var params = this.getListParameters();
+    params.submitted = clean;
+    $.ajax({ type: "GET", async: false, data: params, url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
+    $(self.div).trigger("mmsrAfterLeavePage", [self]);
+    if (clean) {
+        List.prototype.leftPage = true;
+    }
 }
 
 
@@ -794,6 +810,7 @@ List.prototype.afterPost = function() {
         params.originalOrder = originalOrder;
         var self = this;
         this.loader();
+        //alert("Submitting order for " + this.rid);
         $.ajax({ type: "POST",
                     async: false,
                     url: "${mm:link('/mmbase/searchrelate/list/submitOrder.jspx')}",
@@ -814,7 +831,7 @@ List.prototype.setupTinyMCE = function(ed) {
     // the current active editor
     var activeEditor = null;
 
-    // the method is 'saves' the editor, and replaces it with 
+    // the method is 'saves' the editor, and replaces it with
     // plain HTML
     var remove = function(ed) {
         if (ed.isDirty()) {
@@ -838,11 +855,11 @@ List.prototype.setupTinyMCE = function(ed) {
             activeEditor = ed;
         }
     }
-    
+
     // tinyMCE does not provide an actual blur event.
     // It is emulated by 'mousedown' on the entire page to detect blur
     // and a bunch of other events are used to detect entrance into the editor.
-    
+
     $("body").mousedown(function(ev) {
             if ($(ev.target).parents("span.mceEditor").length > 0) {
 		// clicked in an editor, ignore that.
