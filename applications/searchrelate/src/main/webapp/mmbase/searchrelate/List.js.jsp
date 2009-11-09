@@ -156,18 +156,18 @@ function List(d) {
         });
 
     $(document).bind("beforeunload",
-                   function(ev) {
-                       console.log(self.rid + " " + self.submitted);
-                       var result = self.commit(0, ! self.submitted);
-                       if (!result) {
-                           ev.returnValue = '<fmt:message key="invalid" />';
-                       }
-                       if (result) {
-                           return null;
-                       } else {
-                           return result;
-                       }
-                   });
+                     function(ev) {
+                         self.leavePage(true);
+                         var result = self.commit(0, ! self.submitted);
+                         if (!result) {
+                             ev.returnValue = '<fmt:message key="invalid" />';
+                         }
+                         if (result) {
+                             return null;
+                         } else {
+                             return result;
+                         }
+                     });
     // automaticly make the entries empty on focus if they evidently contain the default value only
     this.find("mm_validate", "input").filter(function() {
         return this.type == 'text' && this.value.match(/^<.*>$/); }).one("focus", function() {
@@ -184,6 +184,7 @@ function List(d) {
     this.uploading = {};
     this.uploadingSize = 0;
 
+    self.resetSequence();
     if ($(this.div).hasClass("POST")) {
         $(this.div).trigger("mmsrRelatedNodesPost", [self]);
         this.afterPost();
@@ -191,7 +192,7 @@ function List(d) {
 }
 
 
-List.prototype.leftPage = false;
+List.prototype.wasResetSequence = false;
 
 List.prototype.triggerValidateHook = function() {
     var reason = "";
@@ -676,26 +677,31 @@ List.prototype.commit = function(stale, leavePage) {
         result = true;
     }
     if (leavePage) {
-        this.leavePage(false);
+        this.leavePage();
 
     }
     return result;
 }
 
 
-List.prototype.leavePage = function(clean) {
-    if (clean && List.prototype.leftPage) return;
-    if (clean) {
-        List.prototype.leftPage = true;
-    }
+List.prototype.leavePage = function() {
     $(self.div).trigger("mmsrLeavePage", [self]);
     var params = this.getListParameters();
-    params.submitted = clean;
     $.ajax({ type: "GET", async: false, data: params, url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
     $(self.div).trigger("mmsrAfterLeavePage", [self]);
-    if (clean) {
-        List.prototype.leftPage = true;
+}
+
+List.prototype.resetSequence = function() {
+    if (! List.prototype.wasResetSequence) {
+        this.log("Resetting sequence for " + this.requestid);
+        var params = {};
+        params.requestid = this.requestid;
+        $.ajax({ type: "GET", async: false, data: params, url: "${mm:link('/mmbase/searchrelate/list/resetSequence.jspx')}" });
+        List.prototype.wasResetSequence = true;
+    } else {
+        //console.log("No need resettign sequence for " + this.requestid);
     }
+
 }
 
 
@@ -810,15 +816,17 @@ List.prototype.afterPost = function() {
         params.originalOrder = originalOrder;
         var self = this;
         this.loader();
-        //alert("Submitting order for " + this.rid);
-        $.ajax({ type: "POST",
-                    async: false,
-                    url: "${mm:link('/mmbase/searchrelate/list/submitOrder.jspx')}",
-                    data: params,
-                    complete: function(req, textStatus) {
-                    self.status('<fmt:message key="saved" />', true);
+        if (params.originalOrder != "") {
+            this.log("Submitting order for " + this.rid + " " + params.originalOrder + "-> " + params.order );
+            $.ajax({ type: "POST",
+                        async: false,
+                        url: "${mm:link('/mmbase/searchrelate/list/submitOrder.jspx')}",
+                        data: params,
+                        complete: function(req, textStatus) {
+                        self.status('<fmt:message key="saved" />', true);
                 }
-            });
+                });
+        }
     }
 }
 
