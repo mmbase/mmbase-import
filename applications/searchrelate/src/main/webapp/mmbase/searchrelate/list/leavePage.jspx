@@ -11,9 +11,12 @@
   <mm:content type="application/xml" expires="0">
     <jsp:output omit-xml-declaration="true" />
     <jsp:directive.include file="parameters.jspf" />
+    <mm:import externid="submitted" />
     <seq>
       <old>${parameters.seq}</old>
-      <mm:write session="${rid}_context" value="" />
+      <c:if test="${'true' eq submitted}">
+        <mm:write session="${rid}_context" value="" />
+      </c:if>
       <mm:write session="${parameters.requestid}_sequence" value="0" />
       <mm:import from="session" externid="${parameters.requestid}_sequence" id="newseq" />
       <new>${newseq}</new>
