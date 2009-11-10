@@ -827,10 +827,14 @@ List.prototype.afterPost = function() {
                     order += ",";
                     originalOrder += ",";
 		}
-		order += self.getNodeForLi(this);
+                var nodeNumber = self.getNodeForLi(this);
+		order += nodeNumber;
+                if (nodeNumber[0] === "-") {
+                    needsSave = true;
+                }
                 var originalPos =  self.getOriginalPosition(this);
                 if (originalPos != expectedOriginal) needsSave = true;
-		originalOrder += self.getOriginalPosition(this);
+		originalOrder += originalPos;
                 expectedOriginal++;
 	    });
         });
@@ -849,6 +853,8 @@ List.prototype.afterPost = function() {
                         self.status('<fmt:message key="saved" />', true);
                 }
                 });
+        } else {
+            //console.log("No need to save order for " + order + " " + originalOrder);
         }
     }
 }

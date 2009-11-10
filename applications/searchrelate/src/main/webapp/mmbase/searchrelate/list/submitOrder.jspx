@@ -53,7 +53,7 @@
           </mm:index>
         </mm:relatednodes>
       </mm:relatednodescontainer>
-      <changes><jsp:expression>org.mmbase.bridge.util.Queries.reorderResult(query, iorder)</jsp:expression></changes>
+      <changes><jsp:expression>iorder</jsp:expression>-<jsp:expression>org.mmbase.bridge.util.Queries.reorderResult(query, iorder)</jsp:expression></changes>
     </div>
   </mm:content>
 </mm:cloud>
