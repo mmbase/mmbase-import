@@ -108,7 +108,7 @@ function List(d) {
             var element = ev.target;
             // only do something if the event is on _our_ mm_validate's.
             if ($(element).closest("div.list").filter(function() {
-                return this.id == self.div.id;}).length > 0) {
+                        return this.id == self.div.id;}).length > 0) {
                 self.valid = validator.invalidElements == 0;
                 if (element.lastChange != null && element.lastChange.getTime() > self.lastChange.getTime()) {
                     self.lastChange = element.lastChange;
@@ -134,8 +134,15 @@ function List(d) {
     }
 
 
+    this.saving = false;
+
     $.timer(1000, function(timer) {
-            self.commit();
+            if (List.prototype.leftPage) {
+                timer.stop();
+            } else {
+                self.commit();
+            }
+
         });
 
 
@@ -159,8 +166,11 @@ function List(d) {
                        var result = self.commit(0, true);
                        if (result != null) {
                            ev.returnValue = '<fmt:message key="invalid" />';
+                           alert(result);
+                           return false;
                        }
                        return result;
+
                    });
     // automaticly make the entries empty on focus if they evidently contain the default value only
     this.find("mm_validate", "input").filter(function() {
@@ -178,6 +188,8 @@ function List(d) {
     this.uploading = {};
     this.uploadingSize = 0;
 
+    this.leftPage = false;
+
     List.prototype.instances[this.rid] = this;
 
     if ($(this.div).hasClass("POST")) {
@@ -189,7 +201,6 @@ function List(d) {
 
 
 List.prototype.wasResetSequence = false;
-List.prototype.leftPage = false;
 List.prototype.instances = {};
 
 List.prototype.triggerValidateHook = function() {
@@ -611,7 +622,7 @@ List.prototype.upload = function(fileid) {
 List.prototype.commit = function(stale, leavePage) {
     var result;
     var self = this;
-    if(this.needsCommit()) {
+    if(this.needsCommit() && ! List.prototype.leftPage) {
         this.find(null, "input").each(function() {
                 if (this.type == 'file') {
                     if ($(this).val().length > 0) {
@@ -625,7 +636,6 @@ List.prototype.commit = function(stale, leavePage) {
             var now = new Date();
             if (stale == null) stale = this.defaultStale; //
             if (now.getTime() - this.lastChange.getTime() > stale) {
-                this.lastCommit = now;
                 var params = this.getListParameters();
                 params.leavePage = leavePage ? true : false;
 
@@ -653,17 +663,22 @@ List.prototype.commit = function(stale, leavePage) {
                 var self = this;
                 this.loader();
                 $(self.div).trigger("mmsrStartSave", [self]);
+                result = null;
+                self.saving = true;
                 $.ajax({ type: "POST",
                          async: leavePage == null ? true : !leavePage,
                          url: "${mm:link('/mmbase/searchrelate/list/save.jspx')}",
                          data: params,
                             complete: function(req, textStatus) {
-                            self.status('<fmt:message key="saved" />', self.uploadingSize == 0);
-                            $(self.div).trigger("mmsrFinishedSave", [self]);
+                               self.status('<fmt:message key="saved" />', self.uploadingSize == 0);
+                               $(self.div).trigger("mmsrFinishedSave", [self]);
+                               if (textStatus != "success") {
+                                   result = textStatus;
+                               }
+                               self.saving = false;
                         }
                        });
-
-                result = null;
+                this.lastCommit = now;
             } else {
                 // not stale enough
                 result = "not stale";
@@ -675,6 +690,17 @@ List.prototype.commit = function(stale, leavePage) {
         result = null;
     }
     if (leavePage) {
+        if (self.saving) {
+            return "Cannot leave because still saving " + result;
+        }
+        if (result != null) {
+            return "Cannot leave because save failed: " + result;
+        }
+        if (self.submitted) {
+            // no need leaving, because just 'submitted'
+            return result;
+        }
+
         this.leavePage();
 
     }
@@ -708,14 +734,24 @@ List.prototype.getRequestIds = function() {
     return requestids;
 }
 
+List.prototype.allInstancesLeftPage = function() {
+    for (r in List.prototype.instances) {
+        if (!List.prototype.instances[r].leftPage) {
+            return false;
+        }
+    }
+    return true;
+}
+
 List.prototype.leavePage = function() {
     $(self.div).trigger("mmsrLeavePage", [self]);
-    if (! List.prototype.leftPage) {
+    this.leftPage = true;
+
+    if (List.prototype.allInstancesLeftPage()) {
         var params = {};
-        params.rids = this.getRids();
-        params.requestids = this.getRequestIds();
+        params.rids = List.prototype.getRids();
+        params.requestids = List.prototype.getRequestIds();
         $.ajax({ type: "GET", async: false, data: params, url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
-        List.prototype.leftPage = true;
     }
     $(self.div).trigger("mmsrAfterLeavePage", [self]);
 }
