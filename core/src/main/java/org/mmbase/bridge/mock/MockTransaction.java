@@ -19,7 +19,7 @@ import java.util.*;
  * MockTransaction for the moment only does't give too much exceptions. It doesn't actually work, so {@link #cancel} still throws UnsupportedOperationException.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: MockCloud.java 39226 2009-10-19 20:00:46Z michiel $
+ * @version $Id$
  * @since   MMBase-1.9.2
  * @todo    EXPERIMENTAL
  */

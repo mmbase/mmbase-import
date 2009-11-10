@@ -22,7 +22,7 @@ import javax.servlet.*;
  * This arranges the MockCloudContext to be (minimalisticly) set up, so that a mock bridge is available. E.g. to test taglib or so.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: MockCloud.java 39226 2009-10-19 20:00:46Z michiel $
+ * @version $Id$
  * @since   MMBase-1.9.2
  * @todo    EXPERIMENTAL
  */
