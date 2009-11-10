@@ -11,13 +11,20 @@
   <mm:content type="application/xml" expires="0">
     <jsp:output omit-xml-declaration="true" />
     <mm:import externid="rids" required="true" vartype="list" />
+    <mm:import externid="requestids" required="true" vartype="list" />
     <left>
       <c:forEach items="${rids}" var="rid">
         <mm:context>
           <mm:import id="parameters" externid="${rid}_context" from="session" />
           <clear>${rid} ${parameters}</clear>
-          <mm:write session="${rid}_context" value="" />
+          <mm:remove from="session" referid="${rid}_context" />
         </mm:context>
+      </c:forEach>
+      <c:forEach items="${requestids}" var="requestid">
+        <seq>
+          <mm:log level="info">clearing ${requestid}</mm:log>
+          <mm:remove from="session" referid="${requestid}_sequence" />
+        </seq>
       </c:forEach>
     </left>
   </mm:content>

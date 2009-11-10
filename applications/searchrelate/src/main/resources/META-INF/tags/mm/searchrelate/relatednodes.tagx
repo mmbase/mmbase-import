@@ -1,5 +1,6 @@
 <jsp:root
     xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
@@ -137,8 +138,21 @@
        -Is this not exactly the same as org.mmbase.searchrelate.relatednodes
        -->
 
-  <mm:import id="requestid">R<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape></mm:import>
-  <mm:import from="session" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
+  <mm:import from="request"
+             externid="org.mmbase.searchrelate.relatednodes"
+             id="parent" />
+
+  <c:choose>
+    <c:when test="${empty parent}">
+      <mm:import id="requestid">R<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape></mm:import>
+      <mm:import from="request" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
+    </c:when>
+    <c:otherwise>
+      <mm:import id="requestid">${fn:substringBefore(parent, '_')}</mm:import>
+      <mm:import from="session" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
+    </c:otherwise>
+  </c:choose>
+
   <mm:write session="${requestid}_sequence" value="${seq + 1}" />
   <mm:import id="rid">${requestid}_${seq}</mm:import>
 
@@ -156,9 +170,7 @@
   <mm:import id="_direction">${empty direction? 'UP' : direction}</mm:import><!-- defaults to UP -->
   <mm:import id="_createposition">${empty createposition? 'bottom' : createposition}</mm:import>
 
-  <mm:import from="request"
-             externid="org.mmbase.searchrelate.relatednodes"
-             id="parent" />
+
   <mm:write request="org.mmbase.searchrelate.relatednodes" value="${rid}" />
 
   <mm:import id="parentparameters" externid="${parent}_context" from="session" />
