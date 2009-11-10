@@ -19,6 +19,7 @@
           unlink="true"
           delete="true"
           fields="url"
+          search="true"
           sortable="true"
           >
         <h4><span class="debug">${rid}: </span>urls</h4>
@@ -26,7 +27,9 @@
 
       <mm-sr:relatednodes
           idvar="rid2"
-          type="images" fields="title,handle">
+          type="images"
+          search="true"
+          fields="title,handle">
         <h4><span class="debug">${rid2}: </span>images</h4>
       </mm-sr:relatednodes>
 

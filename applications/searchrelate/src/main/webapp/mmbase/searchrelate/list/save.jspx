@@ -13,7 +13,7 @@
     xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
 
   -->
-  <div class="saveresult">
+  <div class="saveresult" id="${parameters.rid}">
     <mm:relatednodescontainer clone="parameters.query">
       <mm:relatednodes usetransaction="true">
         <mm:import id="formtagid">

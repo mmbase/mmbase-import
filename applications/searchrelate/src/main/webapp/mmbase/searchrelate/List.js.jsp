@@ -155,14 +155,13 @@ function List(d) {
         });
 
     $(window).bind("beforeunload",
-                     function(ev) {
-                         var result = self.commit(0, true);
-                         if (result != null) {
-                             ev.returnValue = '<fmt:message key="invalid" />';
-                         }
-                         self.resetSequence();
-                         return result;
-                     });
+                   function(ev) {
+                       var result = self.commit(0, true);
+                       if (result != null) {
+                           ev.returnValue = '<fmt:message key="invalid" />';
+                       }
+                       return result;
+                   });
     // automaticly make the entries empty on focus if they evidently contain the default value only
     this.find("mm_validate", "input").filter(function() {
         return this.type == 'text' && this.value.match(/^<.*>$/); }).one("focus", function() {
@@ -683,54 +682,45 @@ List.prototype.commit = function(stale, leavePage) {
 }
 
 
+List.prototype.getRids = function() {
+    var rids = "";
+    for (r in List.prototype.instances) {
+        if (rids.length > 0) {
+            rids += ",";
+        }
+        rids += r;
+    }
+    return rids;
+}
+List.prototype.getRequestIds = function() {
+    var map = {};
+    for (r in List.prototype.instances) {
+        map[List.prototype.instances[r].requestid] = true;
+    }
+
+    var requestids = "";
+    for (r in map) {
+        if (requestids.length > 0) {
+            requestids += ",";
+        }
+        requestids += r;
+    }
+    return requestids;
+}
+
 List.prototype.leavePage = function() {
     $(self.div).trigger("mmsrLeavePage", [self]);
     if (! List.prototype.leftPage) {
-
-        var rids = "";
-        for (r in List.prototype.instances) {
-            if (rids.length > 0) {
-                rids += ",";
-            }
-            rids += r;
-        }
         var params = {};
-        params.rids = rids;
+        params.rids = this.getRids();
+        params.requestids = this.getRequestIds();
         $.ajax({ type: "GET", async: false, data: params, url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
         List.prototype.leftPage = true;
     }
     $(self.div).trigger("mmsrAfterLeavePage", [self]);
 }
 
-List.prototype.getRequestIds = function() {
-    var requestids = {};
-    for (r in List.prototype.instances) {
-        requestids[List.prototype.instances[r].requestid] = true;
-    }
-    return requestids;
-}
 
-List.prototype.resetSequence = function() {
-    if (! List.prototype.wasResetSequence) {
-        var requestids = "";
-        for (r in List.prototype.getRequestIds()) {
-            if (requestids.length > 0) {
-                requestids += ",";
-            }
-            requestids += r;
-        }
-        if (requestids.length > 0) {
-            this.log("Resetting sequence for " + requestids);
-            var params = {};
-            params.requestids = requestids;
-            $.ajax({ type: "GET", async: false, data: params, url: "${mm:link('/mmbase/searchrelate/list/resetSequence.jspx')}" });
-        } else {
-
-        }
-        List.prototype.wasResetSequence = true;
-    }
-
-}
 
 
 /**
