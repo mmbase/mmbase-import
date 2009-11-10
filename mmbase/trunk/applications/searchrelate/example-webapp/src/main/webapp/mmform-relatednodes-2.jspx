@@ -9,8 +9,15 @@
   <mm-sre:form>
     <h3><mm:field name="title" /></h3>
 
-
     <mm:listnodes type="news" max="1">
+
+      <mm-sr:relatednodes
+          idvar="rid2"
+          type="images"
+          search="true"
+          fields="title,handle">
+        <h4><span class="debug">${rid2}: </span>images</h4>
+      </mm-sr:relatednodes>
 
       <mm-sr:relatednodes
           idvar="rid"
@@ -25,13 +32,7 @@
         <h4><span class="debug">${rid}: </span>urls</h4>
       </mm-sr:relatednodes>
 
-      <mm-sr:relatednodes
-          idvar="rid2"
-          type="images"
-          search="true"
-          fields="title,handle">
-        <h4><span class="debug">${rid2}: </span>images</h4>
-      </mm-sr:relatednodes>
+
 
     </mm:listnodes>
 
