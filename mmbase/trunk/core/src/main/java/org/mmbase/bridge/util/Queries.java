@@ -1301,12 +1301,8 @@ abstract public class Queries {
             int result = compare(node1, node2, order);
             if (result != 0) return result;
         }
-        // if all fields match - try at least make it as unique as possible.
-        int result =  node1.getStringValue("_number").compareTo(node2.getStringValue("_number"));
-        if (result != 0) return result;
-        result =  node2.getNumber() - node1.getNumber();
+        // if all fields match -
         return 0;
-
     }
 
     /**
@@ -1337,6 +1333,21 @@ abstract public class Queries {
      */
     public static Comparator<Node> getComparator(final Query q) {
         return new QueryComparator(q);
+    }
+
+    /**
+     * Compare 2 nodes from a transaction. If it's 'earlier', it's smaller.
+     */
+    private static class TransactionNodeComparator implements Comparator<Node> {
+        public int compare(Node node1, Node node2) {
+            int result =  node1.getStringValue("_number").compareTo(node2.getStringValue("_number"));
+            if (result != 0) return result;
+            result =  node2.getNumber() - node1.getNumber();
+            return 0;
+        }
+        public boolean equals(Object o) {
+            return o instanceof TransactionNodeComparator;
+        }
     }
 
     // The start node is hacked in the query when it is new, and hence query object forbids it to be an actual startnode.
@@ -2051,6 +2062,7 @@ abstract public class Queries {
                         log.debug("Nodemananager of " + destNode + "  is not " + destManager);
                         continue;
                     }
+
                     newNodes.add(0, Queries.clusterNode(r, relStep.getAlias(), destNode));
 
                 } else {
@@ -2066,7 +2078,8 @@ abstract public class Queries {
             log.debug("newNodes now contain the correct nodes. Now make sure these nodes are in the _correct order_. Unsorted: " + Casting.toString(newNodes));
         }
 
-        Collections.sort(newNodes, getComparator(clone));
+        Collections.sort(newNodes, new ChainedComparator<Node>(getComparator(clone),
+                                                               new TransactionNodeComparator()));
 
         if (log.isDebugEnabled()) {
             log.debug("sorted: " + Casting.toString(newNodes));
