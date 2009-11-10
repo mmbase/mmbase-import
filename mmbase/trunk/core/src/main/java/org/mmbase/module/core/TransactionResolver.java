@@ -25,6 +25,18 @@ class TransactionResolver {
     private static final Logger log = Logging.getLoggerInstance(TransactionResolver.class);
     private final MMBase mmbase;
 
+    // Using predicatable iteration order to ensure that object which are created first in the transaction also receive the lowest number
+    private static final Comparator<MMObjectNode> COMP = new Comparator<MMObjectNode>() {
+        public int compare(MMObjectNode o1, MMObjectNode o2) {
+            if (o1 == null || o2 == null) return 0;
+            return o1.getStringValue("_number").compareTo(o2.getStringValue("_number"));
+        }
+
+        public boolean equals(Object obj) {
+            return this == obj;
+        }
+    };
+
     TransactionResolver(MMBase mmbase) {
         this.mmbase = mmbase;
     }
@@ -138,8 +150,8 @@ class TransactionResolver {
      * @throws TransactionManagerException if the transactiosn could not be successfully completely resolved.
     */
     void resolve(final Collection<MMObjectNode> nodes) throws TransactionManagerException {
-        final Map<String, Integer> numbers = new HashMap<String, Integer>(); /* Temp key -> Real node number */
-        final Map<MMObjectNode, Collection<String>> nnodes  = new HashMap<MMObjectNode, Collection<String>>(); /* MMObjectNode --> List of changed fields */
+        final Map<String, Integer> numbers = new TreeMap<String, Integer>(); /* Temp key -> Real node number */
+        final Map<MMObjectNode, Collection<String>> nnodes  = new TreeMap<MMObjectNode, Collection<String>>(COMP); /* MMObjectNode --> List of changed fields */
 
 
 
