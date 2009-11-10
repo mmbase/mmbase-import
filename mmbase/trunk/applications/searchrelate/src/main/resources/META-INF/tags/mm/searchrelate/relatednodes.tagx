@@ -154,6 +154,8 @@
   </c:choose>
 
   <mm:write session="${requestid}_sequence" value="${seq + 1}" />
+  <mm:write request="${requestid}_sequence" value="${seq + 1}" />
+
   <mm:import id="rid">${requestid}_${seq}</mm:import>
 
 
