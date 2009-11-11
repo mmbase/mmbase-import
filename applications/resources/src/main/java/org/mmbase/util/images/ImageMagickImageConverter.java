@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
 public class ImageMagickImageConverter extends AbstractImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
 
-    private static final Pattern IM_VERSION_PATTERN = Pattern.compile("(?is).*?\\s(\\d+)\\.(\\d+)\\.(\\d+)\\s.*");
+    static final Pattern IM_VERSION_PATTERN = Pattern.compile("(?is).*?\\s(\\d+)\\.(\\d+)\\.(\\d+)(-[0-9]+)?\\s.*");
     private static final Pattern IM_FORMAT_PATTERN  = Pattern.compile("(?is)\\s*([A-Z0-9]+)\\*?\\s+[A-Z0-9]*\\s*[r\\-]w[\\+\\-]\\s+.*");
 
     private int imVersionMajor = 5;
@@ -227,7 +227,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 log.service("Found ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
             } else {
                 log.error( "converter from location " + converterPath + ", gave strange result: " + imOutput
-                           + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
+                           + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'. (Doesn't match " + IM_VERSION_PATTERN + ")");
                 log.info("Supposing ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
 
             }
