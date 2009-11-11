@@ -65,7 +65,7 @@ public abstract class BridgeTest extends MMBaseTest {
                     log.error("CAUSE:" + c.getMessage(), c);
                     c = c.getCause();
                 }
-                System.exit(1);
+                return null;
             }
         }
         return cc;
@@ -83,6 +83,7 @@ public abstract class BridgeTest extends MMBaseTest {
         } catch (Throwable t) {
             System.err.println(t.getMessage());
             System.err.println(Logging.stackTrace(t));
+            System.exit(1);
             return null;
         }
     }
