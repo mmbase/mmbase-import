@@ -31,6 +31,18 @@
         }
 
       </style>
+      <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js"></script>
+      <script type="text/javascript">
+        $(function() {
+         $("table tr").each(function() {
+           var actual = $(this).find("td:eq(1)").text();
+           var expected = $(this).find("td:eq(2)").text();
+           if (actual != expected) {
+             $(this).addClass('todo');
+           }
+        });
+        });
+      </script>
     </head>
     <body>
       <mm:import id="list" vartype="list">1,2,3,4</mm:import>
@@ -67,9 +79,9 @@
         <tr><td>a a</td><td><mm:write referid="aa" />, <mm:write referid="contexta.aa" />, ${aa}, ${contexta.aa}</td><td>A, A, A, A</td></tr>
         <tr><td>a b</td><td><mm:write referid="ab" />, <mm:write referid="contexta.ab" />, ${ab}, ${contexta.ab}</td><td>B, BB, B, BB</td></tr>
         <tr><td>a c</td><td><mm:write referid="ac" />, <mm:write referid="contexta.ac" />, ${ac}, ${contexta.ac}</td><td>C, CC, C, CC</td><td>A bit like <a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></td></tr>
-        <tr class="todo">
+        <tr>
           <td>a e</td>
-          <td><c:catch var="e"><mm:write referid="ae" /></c:catch>${e}, (${ae})</td>
+          <td><c:catch var="e"><mm:write referid="ae" /></c:catch>${empty e ? '' : 'an exception'}, (${ae})</td>
           <td>an exception, ()</td>
           <td> Fails in 1.9</td>
         </tr>
@@ -101,10 +113,12 @@
           <tr><td>b b</td><td><mm:write referid="bb" />, <mm:write referid="contextb.bb" />, ${bb}, ${contextb.bb}</td><td>B, BB, B, BB</td></tr>
           <tr><td>b c</td><td><mm:write referid="bc" />, <mm:write referid="contextb.bc" />, ${bc}, ${contextb.bc}</td><td>C, CC, C, CC</td><td>A bit like <a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></td></tr>
           <tr><td>b d</td><td><mm:write referid="bd" />, ${bd}</td><td>DD, DD</td></tr>
-          <tr class="todo">
+          <tr>
             <td>b e</td>
             <td>
-              <c:catch var="e"><mm:write referid="be" /></c:catch>${e}, (${be})
+              <c:catch var="e"><mm:write referid="be" /></c:catch>
+              <jsp:text>${empty e ? '' : 'an exception'}</jsp:text>
+              <jsp:text>, (${be})</jsp:text>
             </td>
             <td>an exception, ()</td>
             <td> Fails in 1.9</td>
@@ -128,23 +142,24 @@
           <mm:import id="ca" reset="true"><mm:write /></mm:import>
           <tr>
             <td>c a</td>
-            <td><mm:write referid="ca" />,${ca}</td>
+            <td><mm:write referid="ca" />, ${ca}</td>
             <td><mm:index />, <mm:index /></td>
           </tr>
           <mm:import id="cb"><mm:write /></mm:import>
           <tr>
             <td>c b</td>
-            <td><mm:write referid="cb" />,${cb}</td>
+            <td><mm:write referid="cb" />, ${cb}</td>
             <td><mm:index />, <mm:index /></td>
           </tr>
           <tr>
             <td>c c</td>
             <td>
               <c:catch var="e"><mm:import id="cc"><mm:write /></mm:import></c:catch>
-              <jsp:text>${e}</jsp:text>
-              <mm:write referid="cc" />, ${cc}
+              <jsp:text>${empty e ? '' : 'an exception, '}</jsp:text>
+              <mm:write referid="cc" />
+              <jsp:text>, ${cc}</jsp:text>
             </td>
-            <td>An exception</td>
+            <td>an exception, C, C</td>
             <td>
               <mm:index>
                 <mm:isgreaterthan value="1">Fails in 1.8 (only exception in first iteration)</mm:isgreaterthan>
@@ -156,10 +171,11 @@
               <td>c d</td>
               <td>
                 <c:catch var="e"><mm:import id="cd"><mm:write /></mm:import></c:catch>
-                <jsp:text>${e}</jsp:text>
-                <mm:write referid="cd" />, ${cd}
+                <jsp:text>${empty e ? '' : 'an exception, '}</jsp:text>
+                <mm:write referid="cd" />
+                <jsp:text>, ${cd}</jsp:text>
               </td>
-              <td>An exception</td>
+              <td>an exception, D, D</td>
             </tr>
           </mm:first>
         </mm:stringlist>
@@ -181,23 +197,24 @@
             <mm:import id="da" reset="true"><mm:write /></mm:import>
             <tr>
               <td>d a</td>
-              <td><mm:write referid="da" />,${da}</td>
+              <td><mm:write referid="da" />, ${da}</td>
               <td><mm:index />, <mm:index /></td>
             </tr>
             <mm:import id="db"><mm:write /></mm:import>
             <tr>
               <td>d b</td>
-              <td><mm:write referid="db" />,${db}</td>
+              <td><mm:write referid="db" />, ${db}</td>
               <td><mm:index />, <mm:index /></td>
             </tr>
             <tr>
               <td>d c</td>
               <td>
                 <c:catch var="e"><mm:import id="dc"><mm:write /></mm:import></c:catch>
-                <jsp:text>${e}</jsp:text>
-                <mm:write referid="dc" />, ${dc}
+                <jsp:text>${empty e ? '' : 'an exception, '}</jsp:text>
+                <mm:write referid="dc" />
+                <jsp:text>, ${dc}</jsp:text>
               </td>
-              <td>An exception</td>
+              <td>an exception, C, C</td>
               <td>
                 <mm:index>
                   <mm:isgreaterthan value="1">Fails in 1.8 (only exception in first iteration)</mm:isgreaterthan>
@@ -209,10 +226,11 @@
                 <td>d d</td>
                 <td>
                   <c:catch var="e"><mm:import id="dd"><mm:write /></mm:import></c:catch>
-                  <jsp:text>${e}</jsp:text>
-                  <mm:write referid="dd" />, ${dd}
+                  <jsp:text>${empty e ? '' : 'an exception, '}</jsp:text>
+                  <mm:write referid="dd" />
+                  <jsp:text>, ${dd}</jsp:text>
                 </td>
-                <td>An exception</td>
+                <td>an exception, D, D</td>
               </tr>
             </mm:first>
           </mm:stringlist>
