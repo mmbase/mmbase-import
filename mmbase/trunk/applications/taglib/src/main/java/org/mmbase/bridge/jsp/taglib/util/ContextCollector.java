@@ -32,7 +32,6 @@ import org.mmbase.util.logging.Logging;
 public class  ContextCollector extends StandaloneContextContainer {
     private static final Logger log = Logging.getLoggerInstance(ContextCollector.class);
 
-    private final Set<String> myKeys = new HashSet<String>();
 
     public ContextCollector(ContextProvider p) throws JspTagException {
         super(p.getPageContext(), "CONTEXT-COLLECTOR " + (p.getId() == null ? "" : "-" + p.getId()), p.getContextContainer());
@@ -44,34 +43,7 @@ public class  ContextCollector extends StandaloneContextContainer {
     @Override
     protected BasicBacking createBacking(PageContext pc) {
         //        System.out.println("IGNORE " + (parent instanceof PageContextContainer || parent instanceof ContextCollector));
-        return new BasicBacking(pc, parent instanceof PageContextContainer || parent instanceof ContextCollector) {
-
-            @Override
-            public Object put(String key, Object value, boolean reset) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Putting in collector " + key + "=" + value + " " + parent);
-                }
-                //System.out.println("Putting in collector " + key + "=" + value + " " + parent + " " + myPageContextKeys);
-                try {
-                    assert parent != null;
-                    if (reset || myKeys.contains(key)) {
-                        parent.reregister(key, value);
-                        myKeys.add(key);
-                    } else {
-                        if (! parent.containsKey(key)) {
-                            myKeys.add(key);
-                            parent.register(key, value);
-                        } else {
-                            parent.register(key, value);
-                        }
-                    }
-                } catch (JspTagException jte) {
-                    throw new RuntimeException(jte);
-                }
-                boolean r = reset || myKeys.contains(key);
-                return super.put(key, value, r);
-            }
-        };
+        return new CollectorBacking(pc, parent);
     }
 
     @Override

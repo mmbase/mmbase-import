@@ -56,7 +56,6 @@ public  class PageContextContainerTest {
         assertEquals("AA", pageContext.getAttribute("a"));
 
 
-
     }
 
 }
