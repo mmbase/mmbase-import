@@ -28,14 +28,8 @@ Digraph MMBase {
             }
          }
       }
-      if (nodemanager != null) {
-         for (String nm : set) {
-            out.println(nm  + " [URL=\"" + url + "?nodemanager=" + nm + "\"];");
-         }
-      } else {
-         for (NodeManager nm : cloud.getNodeManagers()) {
-            out.println(nm.getName() + " [URL=\"" + url + "?nodemanager=" + nm.getName() + "\"];");
-        }
+      for (String nm : set) {
+         out.println(nm  + " [URL=\"" + url + "?nodemanager=" + nm + "\"];");
       }
   %>
 
