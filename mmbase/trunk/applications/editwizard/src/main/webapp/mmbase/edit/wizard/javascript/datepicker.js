@@ -606,9 +606,9 @@
 
 	document.onkeypress = function hidecal1 (ev) {
 		ev = (window.event) ? window.event : ev;
-		var key = String.fromCharCode(HTMLArea && HTMLArea.is_ie ? ev.keyCode : ev.charCode).toLowerCase();
+                var key = (document.all)? event.keyCode:ev.charCode;
 		if (key == 27) {
-			hideCalendar()
+                    hideCalendar()
 		}
 	}
 	document.onclick = function hidecal2 () {
