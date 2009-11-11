@@ -53,7 +53,7 @@
 
       <table>
         <tr><th class="id">id</th><th>is</th><th>should be</th><th>remarks</th></tr>
-        <mm:context>
+        <mm:context id="contexta">
           <mm:import externid="aa" from="parent" required="true"/>
           <mm:import id="ab">BB</mm:import>
           <mm:import id="ac" reset="true">CC</mm:import>
@@ -64,9 +64,9 @@
           <tr><td>a e</td><td><mm:write referid="ae" />, ${ae}</td><td>EE, EE</td></tr>
         </mm:context>
 
-        <tr><td>a a</td><td><mm:write referid="aa" />, ${aa}</td><td>A, A</td></tr>
-        <tr><td>a b</td><td><mm:write referid="ab" />, ${ab}</td><td>B, B</td></tr>
-        <tr><td>a c</td><td><mm:write referid="ac" />, ${ac}</td><td>C, C</td><td>A bit like <a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></td></tr>
+        <tr><td>a a</td><td><mm:write referid="aa" />, <mm:write referid="contexta.aa" />, ${aa}, ${contexta.aa}</td><td>A, A, A, A</td></tr>
+        <tr><td>a b</td><td><mm:write referid="ab" />, <mm:write referid="contexta.ab" />, ${ab}, ${contexta.ab}</td><td>B, BB, B, BB</td></tr>
+        <tr><td>a c</td><td><mm:write referid="ac" />, <mm:write referid="contexta.ac" />, ${ac}, ${contexta.ac}</td><td>C, CC, C, CC</td><td>A bit like <a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></td></tr>
         <tr class="todo">
           <td>a e</td>
           <td><c:catch var="e"><mm:write referid="ae" /></c:catch>${e}, (${ae})</td>
@@ -84,7 +84,7 @@
 
         <table>
           <tr><th class="id">id</th><th>is</th><th>should be</th><th>remarks</th></tr>
-          <mm:context>
+          <mm:context id="contextb">
             <mm:import externid="ba" from="parent" required="true"/>
             <mm:import id="bb">BB</mm:import>
             <mm:import id="bc" reset="true">CC</mm:import>
@@ -97,13 +97,15 @@
             <tr><td>b e</td><td><mm:write referid="be" />, ${be}</td><td>EE, EE</td></tr>
           </mm:context>
 
-          <tr><td>b a</td><td><mm:write referid="ba" />, ${ba}</td><td>A, A</td></tr>
-          <tr><td>b b</td><td><mm:write referid="bb" />, ${bb}</td><td>B, B</td></tr>
-          <tr><td>b c</td><td><mm:write referid="bc" />, ${bc}</td><td>C, C</td><td>A bit like <a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></td></tr>
+          <tr><td>b a</td><td><mm:write referid="ba" />, <mm:write referid="contextb.ba" />, ${ba}, ${contextb.ba}</td><td>A, A, A, A</td></tr>
+          <tr><td>b b</td><td><mm:write referid="bb" />, <mm:write referid="contextb.bb" />, ${bb}, ${contextb.bb}</td><td>B, BB, B, BB</td></tr>
+          <tr><td>b c</td><td><mm:write referid="bc" />, <mm:write referid="contextb.bc" />, ${bc}, ${contextb.bc}</td><td>C, CC, C, CC</td><td>A bit like <a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></td></tr>
           <tr><td>b d</td><td><mm:write referid="bd" />, ${bd}</td><td>DD, DD</td></tr>
           <tr class="todo">
             <td>b e</td>
-            <td><c:catch var="e"><mm:write referid="be" /></c:catch>${e}, (${be})</td>
+            <td>
+              <c:catch var="e"><mm:write referid="be" /></c:catch>${e}, (${be})
+            </td>
             <td>an exception, ()</td>
             <td> Fails in 1.9</td>
           </tr>
