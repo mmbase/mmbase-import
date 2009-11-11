@@ -655,4 +655,15 @@
     </body>
   </block>
 
+  <block name="model"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <title xml:lang="nl">Objectmodel</title>
+    <title xml:lang="en">Object model</title>
+    <body jsp="model.jspx">
+      <param name="nodemanager"     type="java.lang.String" />
+    </body>
+  </block>
+
+
 </component>
