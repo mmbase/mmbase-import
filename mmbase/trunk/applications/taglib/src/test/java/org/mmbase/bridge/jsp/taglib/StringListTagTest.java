@@ -33,6 +33,7 @@ public  class StringListTagTest {
         ContextTag context = new ContextTag();
         context.setPageContext(pageContext);
         context.doStartTag();
+        context.setId("TEST");
         {
             WriteTag i = new WriteTag();
             i.setPageContext(pageContext);
@@ -47,6 +48,7 @@ public  class StringListTagTest {
         {
             WriteTag i = new WriteTag();
             i.setPageContext(pageContext);
+            i.setParent(context);
             i.setId("foo");
             i.setWrite("false"); // getOut not supported in MockPageContext
             i.setValue("bar");
@@ -63,9 +65,10 @@ public  class StringListTagTest {
 
 
         StringListTag tag = new StringListTag();
+        tag.setParent(context);
         tag.setReferid("list");
         tag.setPageContext(pageContext);
-        tag.setParent(context);
+
         int it = tag.doStartTag();
         tag.setBodyContent(null);
 
@@ -84,17 +87,20 @@ public  class StringListTagTest {
                 i.setValue("bla" + (++index));
                 i.setReset(true);
                 i.doStartTag();
+                i.doAfterBody();
                 i.doEndTag();
             }
 
-            assertEquals("bla" + index, pageContext.getAttribute("foo")); // MMB-1702
+            assertEquals("bla" + index, pageContext.getAttribute("foo"));
+            assertEquals("bla" + index, context.getObject("foo"));
             it = tag.doAfterBody();
             assertEquals(null, pageContext.getAttribute("foo"));
         }
         tag.doEndTag();
 
-        assertEquals("bla3", context.getObject("foo"));
-        assertEquals("bla3", pageContext.getAttribute("foo")); // MMB-1702
+        assertEquals("bla3", pageContext.getAttribute("foo"));
+        assertEquals("bla3", context.getObject("foo"));  // MMB-1702
+
 
 
         context.doEndTag();
