@@ -102,6 +102,8 @@
         <tr><td><mm:write referid="cb" />, ${cb}</td><td>4, 4</td><td><a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></td></tr>
       </table>
 
+      <hr />
+      <mm:escape escape="links">$URL: https://scm.mmbase.org/mmbase/trunk/applications/searchrelate/example-webapp/src/main/webapp/relatednodes-1.jspx $</mm:escape>
 
 
     </body>
