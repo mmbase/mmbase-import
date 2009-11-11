@@ -94,7 +94,7 @@ public  class StringListTagTest {
             assertEquals("bla" + index, pageContext.getAttribute("foo"));
             assertEquals("bla" + index, context.getObject("foo"));
             it = tag.doAfterBody();
-            assertEquals(null, pageContext.getAttribute("foo"));
+            assertEquals("bla" + index , pageContext.getAttribute("foo"));
         }
         tag.doEndTag();
 

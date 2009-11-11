@@ -40,9 +40,15 @@ public  class ContextTagTest {
             // ok
         }
         assertEquals("A", pageContext.getAttribute("a"));
+        assertEquals("A", tag.getObject("a"));
+
+        System.out.println("container impl: " + tag.getContextContainer().getClass().getName());
         tag.doAfterBody();
         tag.doEndTag();
+
+        assertEquals(null, pageContext.getAttribute("a"));
     }
+
 
 
 }
