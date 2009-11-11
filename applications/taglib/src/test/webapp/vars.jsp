@@ -99,7 +99,15 @@
         <tr><th>is</th><th>should be</th><th>remarks</th></tr>
         <mm:stringlist referid="list" max="3">
           <mm:import id="ca" reset="true"><mm:write /></mm:import>
+          <tr>
+            <td><mm:write referid="ca" />,${ca}</td>
+            <td><mm:index />, <mm:index /></td>
+          </tr>
           <mm:import id="cb"><mm:write /></mm:import>
+          <tr>
+            <td><mm:write referid="cb" />,${cb}</td>
+            <td><mm:index />, <mm:index /></td>
+          </tr>
           <tr>
             <td>
               <c:catch var="e"><mm:import id="cc"><mm:write /></mm:import></c:catch>
@@ -127,7 +135,15 @@
           <tr><th>is</th><th>should be</th><th>remarks</th></tr>
           <mm:stringlist referid="list" max="3">
             <mm:import id="da" reset="true"><mm:write /></mm:import>
+            <tr>
+              <td><mm:write referid="da" />,${da}</td>
+              <td><mm:index />, <mm:index /></td>
+            </tr>
             <mm:import id="db"><mm:write /></mm:import>
+            <tr>
+              <td><mm:write referid="db" />,${db}</td>
+              <td><mm:index />, <mm:index /></td>
+            </tr>
             <tr>
               <td>
                 <c:catch var="e"><mm:import id="dc"><mm:write /></mm:import></c:catch>
