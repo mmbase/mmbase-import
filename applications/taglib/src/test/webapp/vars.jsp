@@ -26,6 +26,9 @@
         dt {
           font-style: italic;
         }
+        tr.todo {
+        background-color: #faa;
+        }
 
       </style>
     </head>
@@ -64,7 +67,7 @@
         <tr><td>a a</td><td><mm:write referid="aa" />, ${aa}</td><td>A, A</td></tr>
         <tr><td>a b</td><td><mm:write referid="ab" />, ${ab}</td><td>B, B</td></tr>
         <tr><td>a c</td><td><mm:write referid="ac" />, ${ac}</td><td>C, C</td><td>A bit like <a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></td></tr>
-        <tr>
+        <tr class="todo">
           <td>a e</td>
           <td><c:catch var="e"><mm:write referid="ae" /></c:catch>${e}, (${ae})</td>
           <td>an exception, ()</td>
@@ -98,7 +101,7 @@
           <tr><td>b b</td><td><mm:write referid="bb" />, ${bb}</td><td>B, B</td></tr>
           <tr><td>b c</td><td><mm:write referid="bc" />, ${bc}</td><td>C, C</td><td>A bit like <a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></td></tr>
           <tr><td>b d</td><td><mm:write referid="bd" />, ${bd}</td><td>DD, DD</td></tr>
-          <tr>
+          <tr class="todo">
             <td>b e</td>
             <td><c:catch var="e"><mm:write referid="be" /></c:catch>${e}, (${be})</td>
             <td>an exception, ()</td>
