@@ -75,7 +75,11 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
 
     private boolean reset = false;
 
-    void setReset(boolean reset) {
+    /**
+     * Like reset of mm:import. Mainly implemented for testing.
+     * @since MMBase-1.9.2
+     */
+    public void setReset(boolean reset) {
         this.reset = reset;
     }
 
@@ -136,6 +140,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
         helper.setValue(getObject());
 
         if (getId() != null) {
+            //System.out.println("" + getId() + ":" + helper.getValue() + " " + reset);
             getContextProvider().getContextContainer().register(getId(), helper.getValue(), ! reset);
         }
         if (sessionVar != Attribute.NULL) {

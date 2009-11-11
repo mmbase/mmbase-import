@@ -4122,8 +4122,8 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-    The key of the variable to get. If it is missing (and value is
-    missing), then the parent Writer tag is written (if it exist).
+        The key of the variable to get. If it is missing (and value is
+        missing), then the parent Writer tag is written (if it exist).
       </info>
     </attribute>
     <attribute>
@@ -4132,9 +4132,9 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-    The value to write. In this you can use context variables with "$", the advantage of this
-    attribute above the referid attribute is that you can combine variables and add some text of
-    your own. The disadvantages relate to complexity and efficiency.
+        The value to write. In this you can use context variables with "$", the advantage of this
+        attribute above the referid attribute is that you can combine variables and add some text of
+        your own. The disadvantages relate to complexity and efficiency.
       </info>
     </attribute>
     <attribute>
@@ -4182,6 +4182,13 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         session.
       </info>
       <since>MMBase-1.7.4</since>
+    </attribute>
+    <attribute>
+      <name>reset</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="import" attribute="reset" />
+      <since>MMBase-1.9.2</since>
     </attribute>
     <example>&lt;!-- write the variable `hoi' to the page --&gt;
 &lt;mm:write referid="hoi" /&gt;</example>
