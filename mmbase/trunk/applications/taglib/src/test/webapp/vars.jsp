@@ -103,7 +103,7 @@
       </table>
 
       <hr />
-      <mm:escape escape="links">$URL: https://scm.mmbase.org/mmbase/trunk/applications/searchrelate/example-webapp/src/main/webapp/relatednodes-1.jspx $</mm:escape>
+      <mm:escape escape="links">$URL$</mm:escape>
 
 
     </body>
