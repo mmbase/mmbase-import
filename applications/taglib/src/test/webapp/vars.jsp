@@ -137,7 +137,7 @@
             <mm:import id="bc" reset="true">CC</mm:import>
             <mm:import id="bd" context="test">DD</mm:import>
             <mm:import id="be">EE</mm:import>
-            <mm:import id="bf">EF</mm:import>
+            <mm:import id="bf">FF</mm:import>
             <tr><td>b a</td><td><mm:write referid="ba" />, ${ba}</td><td>A, A</td></tr>
             <tr><td>b b</td><td><mm:write referid="bb" />, ${bb}</td><td>BB, BB</td></tr>
             <tr><td>b c</td><td><mm:write referid="bc" />, ${bc}</td><td>CC, CC</td></tr>
@@ -155,10 +155,9 @@
             <td>
               <c:catch var="e"><mm:write referid="be" />,</c:catch>
               <jsp:text>${empty e ? '' : 'an exception, '}</jsp:text>
-              <mm:write referid="be" />
-              <jsp:text>, (${be})</jsp:text>
+              <jsp:text>(${be})</jsp:text>
             </td>
-            <td>an exception, (EE)</td>
+            <td>an exception, ()</td>
             <td> Fails in 1.9. ${e}</td>
           </tr>
           <tr>
@@ -181,7 +180,7 @@
               <jsp:text>, ${bf}</jsp:text>
             </td>
             <td>4, 4</td>
-            <td>${e}</td>
+            <td>4, 1 in 1.8. ${e}</td>
           </tr>
         </table>
       </mm:context>
@@ -321,11 +320,15 @@
               <tr>
                 <td>d e</td>
                 <td>
-                  <mm:write write="false" id="de" value="EE" reset="true" />
-                  <mm:write referid="de" />
-                  <jsp:text>, ${de}</jsp:text>
+                  <c:catch var="e">
+                    <mm:write write="false" id="de" value="EE" reset="true" />
+                    <mm:write referid="de" />
+                    <jsp:text>, ${de}</jsp:text>
+                  </c:catch>
+                  <jsp:text>${e}</jsp:text>
                 </td>
                 <td>EE, EE</td>
+                <td>reset=true not supported in 1.8 (so fails)</td>
               </tr>
             </mm:first>
           </mm:stringlist>
@@ -333,7 +336,7 @@
           <tr><td>d b</td><td><mm:write referid="db" />, ${db}</td><td>3, 3</td><td>3,1 in MMBase 1.8 (Fail)</td></tr>
           <tr><td>d c</td><td><mm:write referid="dc" />, ${dc}</td><td>C, C</td><td>3,2 in MMBase 1.8 (Fail)</td></tr>
           <tr><td>d d</td><td><mm:write referid="dd" />, ${dd}</td><td>D, D</td></tr>
-          <tr><td>d e</td><td><mm:write referid="de" />, ${de}</td><td>EE, EE</td></tr>
+          <tr><td>d e</td><td><mm:write referid="de" />, ${de}</td><td>EE, EE</td><td>reset=true not supported in 1.8 (so fails)</td></tr>
         </table>
       </mm:context>
 
