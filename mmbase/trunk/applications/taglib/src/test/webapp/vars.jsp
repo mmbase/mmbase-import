@@ -55,6 +55,7 @@
         <tr>
           <td><c:catch var="e"><mm:write referid="ae" /></c:catch>${e}, (${ae})</td>
           <td>an exception, ()</td>
+          <td> Fails in 1.9</td>
         </tr>
       </table>
 
@@ -86,21 +87,67 @@
           <tr>
             <td><c:catch var="e"><mm:write referid="be" /></c:catch>${e}, (${be})</td>
             <td>an exception, ()</td>
+            <td> Fails in 1.9</td>
           </tr>
         </table>
       </mm:context>
 
-      <h3>(c) Lists</h3>
-      <mm:import id="ca">a</mm:import>
-      <mm:stringlist referid="list">
-        <mm:import id="ca" reset="true"><mm:write /></mm:import>
-        <mm:import id="cb"><mm:write /></mm:import>
-      </mm:stringlist>
+      <h2>(c) Lists</h2>
+      <mm:import id="ca">A</mm:import>
+      <mm:import id="cc">C</mm:import>
       <table>
         <tr><th>is</th><th>should be</th><th>remarks</th></tr>
-        <tr><td><mm:write referid="ca" />, ${ca}</td><td>4, 4</td></tr>
-        <tr><td><mm:write referid="cb" />, ${cb}</td><td>4, 4</td><td><a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></td></tr>
+        <mm:stringlist referid="list" max="3">
+          <mm:import id="ca" reset="true"><mm:write /></mm:import>
+          <mm:import id="cb"><mm:write /></mm:import>
+          <tr>
+            <td>
+              <c:catch var="e"><mm:import id="cc"><mm:write /></mm:import></c:catch>
+              <jsp:text>${e}</jsp:text>
+              <mm:write referid="cc" />, ${cc}
+            </td>
+            <td>An exception</td>
+            <td>
+              <mm:index>
+                <mm:isgreaterthan value="1">Fails in 1.8 (only exception in first iteration)</mm:isgreaterthan>
+              </mm:index>
+            </td>
+          </tr>
+        </mm:stringlist>
+        <tr><td><mm:write referid="ca" />, ${ca}</td><td>3, 3</td></tr>
+        <tr><td><mm:write referid="cb" />, ${cb}</td><td>3, 3</td><td><a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></td></tr>
+        <tr><td><mm:write referid="cc" />, ${cc}</td><td>C, C</td><td>3,3 in MMBase 1.8 (See remarks about exception in first iteration)</td></tr>
       </table>
+
+      <h2>(d) List in context</h2>
+      <mm:context id="test2">
+        <mm:import id="da">A</mm:import>
+        <mm:import id="dc">C</mm:import>
+        <table>
+          <tr><th>is</th><th>should be</th><th>remarks</th></tr>
+          <mm:stringlist referid="list" max="3">
+            <mm:import id="da" reset="true"><mm:write /></mm:import>
+            <mm:import id="db"><mm:write /></mm:import>
+            <tr>
+              <td>
+                <c:catch var="e"><mm:import id="dc"><mm:write /></mm:import></c:catch>
+                <jsp:text>${e}</jsp:text>
+                <mm:write referid="dc" />, ${dc}
+              </td>
+              <td>An exception</td>
+              <td>
+                <mm:index>
+                  <mm:isgreaterthan value="1">Fails in 1.8 (only exception in first iteration)</mm:isgreaterthan>
+                </mm:index>
+              </td>
+            </tr>
+          </mm:stringlist>
+          <tr><td><mm:write referid="da" />, ${da}</td><td>3, 3</td><td>3,1 in MMBase 1.8 (Fail)</td></tr>
+          <tr><td><mm:write referid="db" />, ${db}</td><td>3, 3</td><td>3,1 in MMBase 1.8 (Fail)</td></tr>
+          <tr><td><mm:write referid="dc" />, ${dc}</td><td>C, C</td><td>3,2 in MMBase 1.8 (Fail)</td></tr>
+        </table>
+      </mm:context>
+
 
       <hr />
       <mm:escape escape="links">$URL$</mm:escape>
