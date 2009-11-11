@@ -936,6 +936,10 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <see tag="formatter" attribute="format" />
       <since>MMBase-1.7</since>
     </attribute>
+    <attribute>
+      <name>reset</name>
+      <required>false</required>
+    </attribute>
   </taginterface>
   <taginterface>
     <name>container</name>
