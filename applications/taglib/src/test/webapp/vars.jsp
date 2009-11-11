@@ -7,9 +7,14 @@
     <head>
       <title>Testing MMBase/taglib</title>
       <style>
+        html {
+        background-color: #ccc;
+        color: black;
+        padding: 10px;
+        }
         body {
         background-color: white;
-        color: black;
+
         }
         table {
         width: 100%;
@@ -56,7 +61,8 @@
         <dt>b</dt><dd>Set before context, also set in context</dd>
         <dt>c</dt><dd>Set before context, reset in context</dd>
         <dt>d</dt><dd>Not set before context, set in parent in the context (only used in (b)</dd>
-        <dt>e</dt><dd>Not set before context, set in context</dd>
+        <dt>e</dt><dd>Not set before context, set in context, set after context</dd>
+        <dt>f</dt><dd>Not set before context, set in context, set after context in list</dd>
       </dl>
       <mm:import id="aa">A</mm:import>
       <mm:import id="ab">B</mm:import>
@@ -70,20 +76,49 @@
           <mm:import id="ab">BB</mm:import>
           <mm:import id="ac" reset="true">CC</mm:import>
           <mm:import id="ae">EE</mm:import>
+          <mm:import id="af">FF</mm:import>
           <tr><td>a a</td><td><mm:write referid="aa" />, ${aa}</td><td>A, A</td></tr>
           <tr><td>a b</td><td><mm:write referid="ab" />, ${ab}</td><td>BB, BB</td></tr>
           <tr><td>a c</td><td><mm:write referid="ac" />, ${ac}</td><td>CC, CC</td></tr>
           <tr><td>a e</td><td><mm:write referid="ae" />, ${ae}</td><td>EE, EE</td></tr>
+          <tr><td>a f</td><td><mm:write referid="af" />, ${af}</td><td>FF, FF</td></tr>
         </mm:context>
 
         <tr><td>a a</td><td><mm:write referid="aa" />, <mm:write referid="contexta.aa" />, ${aa}, ${contexta.aa}</td><td>A, A, A, A</td></tr>
         <tr><td>a b</td><td><mm:write referid="ab" />, <mm:write referid="contexta.ab" />, ${ab}, ${contexta.ab}</td><td>B, BB, B, BB</td></tr>
         <tr><td>a c</td><td><mm:write referid="ac" />, <mm:write referid="contexta.ac" />, ${ac}, ${contexta.ac}</td><td>C, CC, C, CC</td><td>A bit like <a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></td></tr>
+
+
         <tr>
           <td>a e</td>
-          <td><c:catch var="e"><mm:write referid="ae" /></c:catch>${empty e ? '' : 'an exception'}, (${ae})</td>
+          <td>
+            <c:catch var="e"><mm:write referid="ae" /></c:catch>
+            <jsp:text>${empty e ? '' : 'an exception'}, (${ae})</jsp:text>
+          </td>
           <td>an exception, ()</td>
-          <td> Fails in 1.9</td>
+          <td> Fails in 1.9, ${e}</td>
+        </tr>
+        <tr>
+          <td>a e</td>
+          <td>
+            <c:catch var="e"><mm:import id="ae">EEE</mm:import></c:catch>
+            <jsp:text>${empty e ? '' : 'an exception,'}</jsp:text>
+            <mm:write referid="ae" />
+            <jsp:text>, ${ae}</jsp:text>
+          </td>
+          <td>EEE, EEE</td>
+          <td>${e}</td>
+        </tr>
+        <tr>
+          <td>a f</td>
+          <td>
+            <c:catch var="e"><mm:stringlist referid="list"><mm:import id="af"><mm:index /></mm:import></mm:stringlist></c:catch>
+            <jsp:text>${empty e ? '' : 'an exception,'}</jsp:text>
+            <mm:write referid="af" />
+            <jsp:text>, ${af}</jsp:text>
+          </td>
+          <td>4, 4</td>
+          <td>${e}</td>
         </tr>
       </table>
 
@@ -102,11 +137,13 @@
             <mm:import id="bc" reset="true">CC</mm:import>
             <mm:import id="bd" context="test">DD</mm:import>
             <mm:import id="be">EE</mm:import>
+            <mm:import id="bf">EF</mm:import>
             <tr><td>b a</td><td><mm:write referid="ba" />, ${ba}</td><td>A, A</td></tr>
             <tr><td>b b</td><td><mm:write referid="bb" />, ${bb}</td><td>BB, BB</td></tr>
             <tr><td>b c</td><td><mm:write referid="bc" />, ${bc}</td><td>CC, CC</td></tr>
             <tr><td>b d</td><td><mm:write referid="bd" />, ${bd}</td><td>DD, DD</td></tr>
             <tr><td>b e</td><td><mm:write referid="be" />, ${be}</td><td>EE, EE</td></tr>
+            <tr><td>b f</td><td><mm:write referid="bf" />, ${bf}</td><td>FF, FF</td></tr>
           </mm:context>
 
           <tr><td>b a</td><td><mm:write referid="ba" />, <mm:write referid="contextb.ba" />, ${ba}, ${contextb.ba}</td><td>A, A, A, A</td></tr>
@@ -116,13 +153,35 @@
           <tr>
             <td>b e</td>
             <td>
-              <c:catch var="e"><mm:write referid="be" /></c:catch>
+              <c:catch var="e"><mm:write referid="be" />,</c:catch>
               <jsp:text>${empty e ? '' : 'an exception, '}</jsp:text>
               <mm:write referid="be" />
               <jsp:text>, (${be})</jsp:text>
             </td>
             <td>an exception, (EE)</td>
-            <td> Fails in 1.9</td>
+            <td> Fails in 1.9. ${e}</td>
+          </tr>
+          <tr>
+            <td>b e</td>
+            <td>
+              <c:catch var="e"><mm:import id="be">EEE</mm:import></c:catch>
+              <jsp:text>${empty e ? '' : 'an exception,'}</jsp:text>
+              <mm:write referid="be" />
+              <jsp:text>, ${be}</jsp:text>
+            </td>
+            <td>EEE, EEE</td>
+            <td>${e}</td>
+          </tr>
+          <tr>
+            <td>b f</td>
+            <td>
+              <c:catch var="e"><mm:stringlist referid="list"><mm:import id="bf"><mm:index /></mm:import></mm:stringlist></c:catch>
+              <jsp:text>${empty e ? '' : 'an exception,'}</jsp:text>
+              <mm:write referid="bf" />
+              <jsp:text>, ${bf}</jsp:text>
+            </td>
+            <td>4, 4</td>
+            <td>${e}</td>
           </tr>
         </table>
       </mm:context>
@@ -136,6 +195,7 @@
         <dt>e</dt><dd>Using not mm:import but mm:write</dd>
         <dt>f</dt><dd>Set in list, remove in list</dd>
       </dl>
+
       <mm:import id="ca">A</mm:import>
       <mm:import id="cc">C</mm:import>
       <mm:import id="cd">D</mm:import>
