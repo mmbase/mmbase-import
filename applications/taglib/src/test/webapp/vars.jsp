@@ -114,7 +114,8 @@
           <td>
             <c:catch var="e"><mm:stringlist referid="list"><mm:import id="af"><mm:index /></mm:import></mm:stringlist></c:catch>
             <jsp:text>${empty e ? '' : 'an exception,'}</jsp:text>
-            <mm:write referid="af" />
+            <c:catch var="e"><mm:write referid="af" /></c:catch>
+            <jsp:text>${empty e ? '' : 'an exception'}</jsp:text>
             <jsp:text>, ${af}</jsp:text>
           </td>
           <td>4, 4</td>
@@ -176,7 +177,8 @@
             <td>
               <c:catch var="e"><mm:stringlist referid="list"><mm:import id="bf"><mm:index /></mm:import></mm:stringlist></c:catch>
               <jsp:text>${empty e ? '' : 'an exception,'}</jsp:text>
-              <mm:write referid="bf" />
+              <c:catch var="e"><mm:write referid="bf" /></c:catch>
+              <jsp:text>${empty e ? '' : 'an exception'}</jsp:text>
               <jsp:text>, ${bf}</jsp:text>
             </td>
             <td>4, 4</td>
@@ -203,18 +205,18 @@
         <mm:stringlist referid="list" max="3">
           <mm:import id="ca" reset="true"><mm:write /></mm:import>
           <tr>
-            <td>c a</td>
+            <td>c a <mm:index /></td>
             <td><mm:write referid="ca" />, ${ca}</td>
             <td><mm:index />, <mm:index /></td>
           </tr>
           <mm:import id="cb"><mm:write /></mm:import>
           <tr>
-            <td>c b</td>
+            <td>c b <mm:index /></td>
             <td><mm:write referid="cb" />, ${cb}</td>
             <td><mm:index />, <mm:index /></td>
           </tr>
           <tr>
-            <td>c c</td>
+            <td>c c <mm:index /></td>
             <td>
               <c:catch var="e"><mm:import id="cc"><mm:write /></mm:import></c:catch>
               <jsp:text>${empty e ? '' : 'an exception, '}</jsp:text>
@@ -230,7 +232,7 @@
           </tr>
           <mm:first>
             <tr>
-              <td>c d</td>
+              <td>c d <mm:index /></td>
               <td>
                 <c:catch var="e"><mm:import id="cd"><mm:write /></mm:import></c:catch>
                 <jsp:text>${empty e ? '' : 'an exception, '}</jsp:text>
@@ -241,7 +243,7 @@
             </tr>
           </mm:first>
           <tr>
-            <td>c f</td>
+            <td>c f <mm:index /></td>
             <td>
               <mm:import id="cf"><mm:write /></mm:import>
               <mm:write referid="cf" />
@@ -254,10 +256,10 @@
             <td><mm:index />, <mm:index />, an exception, </td>
           </tr>
         </mm:stringlist>
-        <tr><td>c a</td><td><mm:write referid="ca" />, ${ca}</td><td>3, 3</td></tr>
-        <tr><td>c b</td><td><mm:write referid="cb" />, ${cb}</td><td>3, 3</td><td><a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></td></tr>
-        <tr><td>c c</td><td><mm:write referid="cc" />, ${cc}</td><td>C, C</td><td>3,3 in MMBase 1.8 (See remarks about exception in first iteration)</td></tr>
-        <tr><td>c d</td><td><mm:write referid="cd" />, ${cd}</td><td>D, D</td></tr>
+        <tr><td>c a</td><td><c:catch><mm:write referid="ca" /></c:catch>, ${ca}</td><td>3, 3</td></tr>
+        <tr><td>c b</td><td><c:catch><mm:write referid="cb" /></c:catch>, ${cb}</td><td>3, 3</td><td><a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></td></tr>
+        <tr><td>c c</td><td><c:catch><mm:write referid="cc" /></c:catch>, ${cc}</td><td>C, C</td><td>3,3 in MMBase 1.8 (See remarks about exception in first iteration)</td></tr>
+        <tr><td>c d</td><td><c:catch><mm:write referid="cd" /></c:catch>, ${cd}</td><td>D, D</td></tr>
         <tr>
           <td>c f</td>
           <td>
@@ -281,18 +283,18 @@
           <mm:stringlist referid="list" max="3">
             <mm:import id="da" reset="true"><mm:write /></mm:import>
             <tr>
-              <td>d a</td>
+              <td>d a <mm:index /></td>
               <td><mm:write referid="da" />, ${da}</td>
               <td><mm:index />, <mm:index /></td>
             </tr>
             <mm:import id="db"><mm:write /></mm:import>
             <tr>
-              <td>d b</td>
+              <td>d b <mm:index /></td>
               <td><mm:write referid="db" />, ${db}</td>
               <td><mm:index />, <mm:index /></td>
             </tr>
             <tr>
-              <td>d c</td>
+              <td>d c <mm:index /></td>
               <td>
                 <c:catch var="e"><mm:import id="dc"><mm:write /></mm:import></c:catch>
                 <jsp:text>${empty e ? '' : 'an exception, '}</jsp:text>
@@ -308,7 +310,7 @@
             </tr>
             <mm:first>
               <tr>
-                <td>d d</td>
+                <td>d d <mm:index /></td>
                 <td>
                   <c:catch var="e"><mm:import id="dd"><mm:write /></mm:import></c:catch>
                   <jsp:text>${empty e ? '' : 'an exception, '}</jsp:text>
@@ -318,7 +320,7 @@
                 <td>an exception, D, D</td>
               </tr>
               <tr>
-                <td>d e</td>
+                <td>d e <mm:index /></td>
                 <td>
                   <c:catch var="e">
                     <mm:write write="false" id="de" value="EE" reset="true" />
@@ -332,11 +334,11 @@
               </tr>
             </mm:first>
           </mm:stringlist>
-          <tr><td>d a</td><td><mm:write referid="da" />, <mm:write referid="test2.da" />, ${da}</td><td>3, 3, 3</td><td>3,1 in MMBase 1.8 (Fail)</td></tr>
-          <tr><td>d b</td><td><mm:write referid="db" />, ${db}</td><td>3, 3</td><td>3,1 in MMBase 1.8 (Fail)</td></tr>
-          <tr><td>d c</td><td><mm:write referid="dc" />, ${dc}</td><td>C, C</td><td>3,2 in MMBase 1.8 (Fail)</td></tr>
-          <tr><td>d d</td><td><mm:write referid="dd" />, ${dd}</td><td>D, D</td></tr>
-          <tr><td>d e</td><td><mm:write referid="de" />, ${de}</td><td>EE, EE</td><td>reset=true not supported in 1.8 (so fails)</td></tr>
+          <tr><td>d a</td><td><c:catch><mm:write referid="da" /></c:catch>, <c:catch><mm:write referid="test2.da" /></c:catch>, ${da}</td><td>3, 3, 3</td><td>3,1 in MMBase 1.8 (Fail)</td></tr>
+          <tr><td>d b</td><td><c:catch><mm:write referid="db" /></c:catch>, ${db}</td><td>3, 3</td><td>3,1 in MMBase 1.8 (Fail)</td></tr>
+          <tr><td>d c</td><td><c:catch><mm:write referid="dc" /></c:catch>, ${dc}</td><td>C, C</td><td>3,2 in MMBase 1.8 (Fail)</td></tr>
+          <tr><td>d d</td><td><c:catch><mm:write referid="dd" /></c:catch>, ${dd}</td><td>D, D</td></tr>
+          <tr><td>d e</td><td><c:catch><mm:write referid="de" /></c:catch>, ${de}</td><td>EE, EE</td><td>reset=true not supported in 1.8 (so fails)</td></tr>
         </table>
       </mm:context>
 

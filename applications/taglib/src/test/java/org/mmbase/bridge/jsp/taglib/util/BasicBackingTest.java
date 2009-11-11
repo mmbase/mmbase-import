@@ -29,11 +29,46 @@ public  class BasicBackingTest {
 
 
 
-    /**
-     * Tests a backing, using given pageContext.
-     */
-    static void basic(BasicBacking backing, PageContext pageContext) {
+    @Test
+    public void mirrorPut() {
+        PageContext pageContext = new MockPageContext();
+        pageContext.setAttribute("a", "X");
+        pageContext.setAttribute("b", "Y");
 
+        BasicBacking backing = new BasicBacking(pageContext, false);
+
+        backing.mirrorPut("a", "A", false);
+        backing.mirrorPut("b", "B", true);
+        backing.mirrorPut("c", "C", false);
+
+        assertEquals("A", pageContext.getAttribute("a"));
+        assertEquals("B", pageContext.getAttribute("b"));
+        assertEquals("C", pageContext.getAttribute("c"));
+
+        assertEquals("X",  backing.originalPageContextValues.get("a"));
+        assertEquals("Y",  backing.originalPageContextValues.get("b"));
+        assertEquals(null,  backing.originalPageContextValues.get("c"));
+
+        backing.release();
+
+        assertEquals("X", pageContext.getAttribute("a"));
+        assertEquals("Y", pageContext.getAttribute("b"));
+        assertEquals(null, pageContext.getAttribute("c"));
+
+
+    }
+
+    @Test
+    public void basic() {
+        // put something on the pageContext
+        // use a backing
+        // check the pageContext
+
+        PageContext pageContext = new MockPageContext();
+        pageContext.setAttribute("a", "X");
+
+
+        BasicBacking backing = new BasicBacking(pageContext, false);
         // - put something in.   (a -> A)
         // - put something else in (b-> B)
         // (the point is that one of those was already in the pageContext(.
@@ -55,65 +90,7 @@ public  class BasicBackingTest {
 
         backing.release();
 
-
-    }
-
-    static void reset(BasicBacking backing, PageContext pageContext) {
-        pageContext.setAttribute("a", "X");
-
-        backing.put("a", "A", true);
-        assertEquals("A", backing.get("a"));
-        assertEquals("A", pageContext.getAttribute("a"));
-
-        backing.put("a", "AA", true);
-        assertEquals("AA", backing.get("a"));
-        assertEquals("AA", pageContext.getAttribute("a"));
-
-        backing.release();
-
-        assertEquals("AA", pageContext.getAttribute("a"));
-
-    }
-
-    @Test
-    public void mirrorPut() {
-        PageContext pageContext = new MockPageContext();
-        pageContext.setAttribute("a", "X");
-        pageContext.setAttribute("b", "Y");
-
-        BasicBacking backing = new BasicBacking(pageContext, false);
-
-        backing.mirrorPut("a", "A", false);
-        backing.mirrorPut("b", "B", true);
-        backing.mirrorPut("c", "C", false);
-
-        assertEquals("A", pageContext.getAttribute("a"));
-        assertEquals("B", pageContext.getAttribute("b"));
-        assertEquals("C", pageContext.getAttribute("c"));
-
-        assertEquals("X",  backing.pageContextValues.get("a"));
-        assertEquals("B",  backing.pageContextValues.get("b"));
-        assertEquals("C",  backing.pageContextValues.get("c"));
-
-        backing.release();
-
-        assertEquals("X", pageContext.getAttribute("a"));
-        assertEquals("B", pageContext.getAttribute("b"));
-        assertEquals("C", pageContext.getAttribute("c"));
-
-
-    }
-
-    @Test
-    public void basic() {
-        // put something on the pageContext
-        // use a backing
-        // check the pageContext
-
-        PageContext pageContext = new MockPageContext();
-        pageContext.setAttribute("a", "X");
-        basic(new BasicBacking(pageContext, false), pageContext);
-        assertEquals("B", pageContext.getAttribute("b"));  // should have the last value set in the backing
+        assertEquals(null, pageContext.getAttribute("b"));
         assertEquals("X", pageContext.getAttribute("a"));   // should have the original value
 
     }
@@ -126,50 +103,24 @@ public  class BasicBackingTest {
 
         PageContext pageContext = new MockPageContext();
         pageContext.setAttribute("a", "X");
-        reset(new BasicBacking(pageContext, false), pageContext);
-        assertEquals("AA", pageContext.getAttribute("a")); // Since the value was _reset_ it should not have the original value, but the last value set in the backing.
-    }
 
-    @Test
-    public void basicCollector() throws Exception {
-        PageContext pageContext = new MockPageContext();
+        BasicBacking backing = new BasicBacking(pageContext, false);
+
         pageContext.setAttribute("a", "X");
-        ContextProvider parent = new MockContextProvider(pageContext);
 
-        ContextCollector collector = new ContextCollector(parent);
+        backing.put("a", "A", true);
+        assertEquals("A", backing.get("a"));
+        assertEquals("A", pageContext.getAttribute("a"));
 
-        basic(collector.createBacking(pageContext), pageContext);
+        backing.put("a", "AA", true);
+        assertEquals("AA", backing.get("a"));
+        assertEquals("AA", pageContext.getAttribute("a"));
 
-        collector.release(pageContext, parent.getContextContainer());
+        backing.release();
 
-
-        // collectors are 'transparent' to parent
-        assertEquals("B",  parent.getContextContainer().get("b")); // should have the last value set in the backing
-
-        assertEquals("A",  parent.getContextContainer().get("a")); // should have the last value set in the backing
-        //
-        System.out.println("NOW releasing " +         parent.getContextContainer());
-        parent.getContextContainer().release(pageContext, null);
-
-        assertEquals("B", pageContext.getAttribute("b"));
-        //        assertEquals("X",  pageContext.getAttribute("a")); // FAILS
-
+        assertEquals("X", pageContext.getAttribute("a"));
 
     }
-
-    @Test
-    public void resetCollector() throws Exception {
-        PageContext pageContext = new MockPageContext();
-        pageContext.setAttribute("a", "X");
-        ContextProvider parent = new MockContextProvider(pageContext);
-        ContextCollector collector = new ContextCollector(parent);
-        reset(collector.createBacking(pageContext), pageContext);
-        assertEquals("AA",  parent.getContextContainer().get("a"));
-        assertEquals("AA",  pageContext.getAttribute("a"));
-
-    }
-
-
 
 
 }

@@ -34,17 +34,15 @@ public  class StandaloneContextContainerTest {
     @Test
     public void basic() throws Exception {
 
-        PageContext pageContext1 = new MockPageContext();
-        PageContextContainer parent1 = new PageContextContainer(pageContext1);
+        PageContext pageContext = new MockPageContext();
 
-        PageContext pageContext2 = new MockPageContext();
-        PageContextContainer parent2 = new PageContextContainer(pageContext2);
+        PageContextContainer parent = new PageContextContainer(pageContext);
 
-        StandaloneContextContainer container = new StandaloneContextContainer(pageContext1, "test", parent1);
+        StandaloneContextContainer container = new StandaloneContextContainer(pageContext, "test", parent);
 
         container.register("a", "A");
         assertEquals("A", container.get("a"));
-        assertEquals("A", pageContext1.getAttribute("a"));
+        assertEquals("A", pageContext.getAttribute("a"));
         try {
             container.register("a", "AA");
             fail("Should throw exception");
@@ -57,19 +55,12 @@ public  class StandaloneContextContainerTest {
         container.reregister("a", "AA");
 
         assertEquals("AA", container.get("a"));
-        assertEquals("AA", pageContext1.getAttribute("a"));
+        assertEquals("AA", pageContext.getAttribute("a"));
 
-        container.release(pageContext1, parent1);
-        container.setParent(pageContext2, parent2);
+        container.release(pageContext, null);
 
         assertEquals("AA", container.get("a"));
-        assertEquals("AA", pageContext2.getAttribute("a"));
-        assertEquals("AA", pageContext1.getAttribute("a")); // FAILS
-
-
-
-
-
+        assertEquals(null, pageContext.getAttribute("a"));
 
     }
 
