@@ -341,7 +341,24 @@
           <tr><td>d e</td><td><c:catch><mm:write referid="de" /></c:catch>, ${de}</td><td>EE, EE</td><td>reset=true not supported in 1.8 (so fails)</td></tr>
         </table>
       </mm:context>
-
+      <h2>(e) Lists in lists</h2>
+      <table>
+        <mm:stringlist referid="list" id="l1">
+          <mm:stringlist referid="list" id="l2">
+            <tr>
+              <td>e <mm:index list="l1" /><jsp:text> </jsp:text><mm:index list="l2" /></td>
+              <td>
+                <c:catch var="e">
+                  <mm:import id="ea"><mm:index /></mm:import>
+                  <mm:write referid="ea" />
+                </c:catch>
+              </td>
+              <td><mm:index /></td>
+              <td>${e}</td>
+            </tr>
+          </mm:stringlist>
+        </mm:stringlist>
+      </table>
 
       <hr />
       <mm:escape escape="links">$URL$</mm:escape>
