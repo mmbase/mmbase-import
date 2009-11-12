@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * pageContext is given in the constructor.
 
  * @author Michiel Meeuwissen
- * @since MMBase-1.8
+ * @since MMBase-1.9.2
  * @version $Id: BasicBacking.java 39537 2009-11-04 15:23:01Z michiel $
  */
 
@@ -37,7 +37,7 @@ public  class CollectorBacking extends BasicBacking {
 
     protected final Set<String> myKeys = new HashSet<String>();
 
-    private final ContextContainer parent;
+    final ContextContainer parent;
     /**
      * @param pc The page-context to which variables must be reflected or <code>null</code> if this must not happen.
      */
@@ -51,7 +51,6 @@ public  class CollectorBacking extends BasicBacking {
         if (log.isDebugEnabled()) {
             log.debug("Putting in collector " + key + "=" + value + " " + parent);
         }
-        //System.out.println("Putting in collector " + key + "=" + value + " " + parent + " " + myPageContextKeys);
         try {
             assert parent != null;
             if (reset || myKeys.contains(key)) {
@@ -71,23 +70,7 @@ public  class CollectorBacking extends BasicBacking {
         boolean r = reset || myKeys.contains(key);
         return super.put(key, value, r);
     }
-    /**
-     * Put the value also in the 'parent' of this backing.
-     * @param reset If true (default it's false) allow the already existing value in the parent to be replaced.
-     * @since MMBase-1.9.2
-     */
-    protected void _mirrorPut(String key, Object value, boolean reset) {
-        if (isELIgnored) {
-            log.debug("EL IGNORED!");
-            return;
-        }
-        if (reset) {
-            myPageContextKeys.add(key);
-        }
-        if (myPageContextKeys.contains(key)) {
-            originalPageContextValues.put(key, value);
-        }
-        super.mirrorPut(key, value, reset);
-    }
+
+
 
 }

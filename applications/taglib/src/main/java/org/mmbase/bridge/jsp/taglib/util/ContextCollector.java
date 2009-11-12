@@ -10,8 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.util;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
@@ -32,9 +31,10 @@ import org.mmbase.util.logging.Logging;
 public class  ContextCollector extends StandaloneContextContainer {
     private static final Logger log = Logging.getLoggerInstance(ContextCollector.class);
 
+    private Map<String, Object> unregister = new HashMap<String, Object>();
 
     public ContextCollector(ContextProvider p) throws JspTagException {
-        super(p.getPageContext(), "CONTEXT-COLLECTOR " + (p.getId() == null ? "" : "-" + p.getId()), p.getContextContainer());
+        super(p.getPageContext(), "CONTEXT-COLLECTOR" + (p.getId() == null ? "" : "-" + p.getId()), p.getContextContainer());
         if (log.isDebugEnabled()) {
             log.debug("Using collector with pagecontext " + p.getPageContext());
         }
@@ -62,9 +62,28 @@ public class  ContextCollector extends StandaloneContextContainer {
     }
 
 
-
-    public void doAfterBody() throws JspTagException {
+    /**
+     * For a context-collector it also interesting to have a 'doAFterBody', because it can be iterated again.
+     * It calls {@link #clear}.
+     */
+    public final void doAfterBody(boolean iteratesAgain) throws JspTagException {
+        if (iteratesAgain) {
+            for (Map.Entry<String, Object> e : backing.entrySet()) {
+                if (((CollectorBacking) backing).myKeys.contains(e.getKey())) {
+                    parent.unRegister(e.getKey());
+                    unregister.put(e.getKey(), e.getValue());
+                }
+            }
+            //
+        } else {
+            for (Map.Entry<String, Object> e : unregister.entrySet()) {
+                if (! parent.containsKey(e.getKey())) {
+                    parent.register(e.getKey(), e.getValue());
+                }
+            }
+        }
         clear();
+
     }
 
     @Override
