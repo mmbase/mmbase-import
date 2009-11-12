@@ -356,7 +356,7 @@
                   <mm:import id="ea"><mm:index /></mm:import>
                   <mm:write referid="ea" />
                 </c:catch>
-                <jsp:text>${empty e ? "" : "a exception"}</jsp:text>
+                <jsp:text>${empty e ? "" : "an exception"}</jsp:text>
               </td>
               <td><mm:index /></td>
               <td>${e}</td>

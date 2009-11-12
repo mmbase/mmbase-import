@@ -86,23 +86,24 @@ public  class StringListTagTest {
         Import.tag(pageContext, context, "list", "A,B,C", "list");
 
         StringListTag tag1 = new StringListTag();
+        tag1.setPageContext(pageContext);
         tag1.setParent(context);
         tag1.setReferid("list");
-        tag1.setPageContext(pageContext);
+
 
         tag1.doStartTag();
 
         StringListTag tag2 = new StringListTag();
+        tag2.setPageContext(pageContext);
         tag2.setParent(tag1);
         tag2.setReferid("list");
-        tag2.setPageContext(pageContext);
 
+        tag1.doInitBody();
         for (int i = 0; i < 3; i++) {
-            tag1.doInitBody();
             tag2.doStartTag();
             Import.tag(pageContext, tag1, "aaa", "AAA");
-            for (int j = 0; i < 3; i++) {
-                tag2.doInitBody();
+            tag2.doInitBody();
+            for (int j = 0; j < 3; j++) {
                 Import.tag(pageContext, tag2, "bbb", "BBB");
                 tag2.doAfterBody();
             }
@@ -112,6 +113,11 @@ public  class StringListTagTest {
         tag1.doEndTag();
 
         context.doEndTag();
+
+        tag1.release();
+        tag2.release();
+        context.release();
+
 
     }
 
