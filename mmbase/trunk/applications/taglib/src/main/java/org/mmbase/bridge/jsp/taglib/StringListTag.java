@@ -212,7 +212,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         }
 
         helper.doAfterBody();
-        collector.doAfterBody();
+        collector.doAfterBody(iterator.hasNext()); // clears
 
         if (iterator.hasNext()){
             setNext();
