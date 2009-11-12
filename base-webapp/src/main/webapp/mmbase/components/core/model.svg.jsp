@@ -8,15 +8,16 @@
 <mm:import id="baseurl" jspvar="url"><mm:url page="model.svg.jsp" /></mm:import>
 <mm:cloud jspvar="cloud">
 
-Digraph MMBase {
-	edge [fontsize=2,labelfontsize=2];
-	node [fontsize=2];
-	nodesep=0.2;
+Digraph "MMBase<%= nodemanager == null ? "" : " " + nodemanager %>" {
+	edge [fontsize=8.0];
+	node [fontsize=14.0];
+	nodesep=1;
 
   <%
       Set<String> set = new HashSet<String>();
       if (nodemanager != null) {
         set.add(nodemanager);
+        out.println("root=" + nodemanager + ";");
       }
       int size = -1;
       while (size < set.size()) {
@@ -29,7 +30,7 @@ Digraph MMBase {
          }
       }
       for (String nm : set) {
-         out.println(nm  + " [URL=\"" + url + "?nodemanager=" + nm + "\"];");
+         out.println(nm  + " [" + (nm.equals(nodemanager) ? "color=red,fontcolor=red," : "") + "URL=\"" + url + "?nodemanager=" + nm + "\"];");
       }
   %>
 
