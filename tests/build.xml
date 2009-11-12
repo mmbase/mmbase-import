@@ -91,7 +91,7 @@
       <fileset dir="target/dependency">
         <include name="mmbase-vpro-wizards*.jar" />
         <include name="spring*.jar" />
-        <include name="servletapi*.jar" />
+        <include name="servlet-api*.jar" />
         <include name="commons-*.jar" />
         <include name="collections-generic*.jar" />
       </fileset>
@@ -121,9 +121,10 @@
       <fileset dir="target/dependency">
         <include name="junit*.jar" />
         <include name="log4j*.jar" />
-        <include name="servletapi*.jar" />
+        <include name="servlet-api*.jar" />
         <include name="commons-fileupload*.jar" />
         <include name="commons-io*.jar" />
+        <include name="mmbase-${version}-tests.jar" />
         <include name="mmbase-rmmci-${version}-client.jar" />
         <include name="mmbase-richtext-${version}-classes.jar" />
       </fileset>
