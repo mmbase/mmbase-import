@@ -27,9 +27,18 @@ public class EmptyNodeTest extends NodeTest {
 
     public void setUp() {
         // Create a empty test node.
-        Cloud cloud = getCloud();
-        node = cloud.getNodeManager("aa").createNode();
-        node.commit();
+        try {
+            Cloud cloud = getCloud();
+            node = cloud.getNodeManager("aa").createNode();
+            node.commit();
+        } catch (Throwable e) {
+            Throwable c = e.getCause();
+            while (c != null) {
+                log.error("CAUSE:" + c.getMessage(), c);
+                c = c.getCause();
+            }
+            node = null;
+        }
     }
 
     public void tearDown() {
