@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 
 /**
  *
- * @author AndrÃ© van Toly
+ * @author André van Toly
  * @version $Id: CreateCachesFunction.java 36715 2009-07-08 22:30:03Z michiel $
  */
 
@@ -35,7 +35,7 @@ public class WaitUntilRecognizedFunction extends NodeFunction<Boolean> {
         CreateCachesProcessor.Job job = CreateCachesProcessor.getJob(node);
         if (job != null) {
             try {
-                job.waitUntilRecognized();
+                job.waitUntilAfter(CreateCachesProcessor.Stage.RECOGNIZER);
             } catch (InterruptedException ie) {
                 return false;
             }
