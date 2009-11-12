@@ -100,11 +100,14 @@ public  class StringListTagTest {
         for (int i = 0; i < 3; i++) {
             tag1.doInitBody();
             tag2.doStartTag();
+            Import.tag(pageContext, tag1, "aaa", "AAA");
             for (int j = 0; i < 3; i++) {
                 tag2.doInitBody();
-                Import.tag(pageContext, tag2, "foo", "bla");
+                Import.tag(pageContext, tag2, "bbb", "BBB");
+                tag2.doAfterBody();
             }
             tag2.doEndTag();
+            tag1.doAfterBody();
         }
         tag1.doEndTag();
 
