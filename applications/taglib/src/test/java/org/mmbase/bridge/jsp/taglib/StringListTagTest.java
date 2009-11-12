@@ -34,28 +34,9 @@ public  class StringListTagTest {
         context.setPageContext(pageContext);
         context.doStartTag();
         context.setId("TEST");
-        {
-            WriteTag i = new WriteTag();
-            i.setPageContext(pageContext);
-            i.setParent(context);
-            i.setId("list");
-            i.setVartype("list");
-            i.setWrite("false"); // getOut not supported in MockPageContext
-            i.setValue("A,B,C");
-            i.doStartTag();
-            i.doEndTag();
-        }
-        {
-            WriteTag i = new WriteTag();
-            i.setPageContext(pageContext);
-            i.setParent(context);
-            i.setId("foo");
-            i.setWrite("false"); // getOut not supported in MockPageContext
-            i.setValue("bar");
-            i.doStartTag();
-            i.doEndTag();
-        }
 
+        Import.tag(pageContext, context, "list", "A,B,C", "list");
+        Import.tag(pageContext, context, "foo", "bar");
 
 
         List<String> list = (List<String>) pageContext.getAttribute("list");
@@ -77,19 +58,7 @@ public  class StringListTagTest {
         while (it == 2) {
             tag.doInitBody();
 
-            {
-                WriteTag i = new WriteTag();
-                i.setPageContext(pageContext);
-                i.setParent(tag);
-                assertEquals(tag, i.getContextProvider());
-                i.setId("foo");
-                i.setWrite("false");
-                i.setValue("bla" + (++index));
-                i.setReset(true);
-                i.doStartTag();
-                i.doAfterBody();
-                i.doEndTag();
-            }
+            Import.tag(pageContext, tag, "foo", "bla" + (++index), true);
 
             assertEquals("bla" + index, pageContext.getAttribute("foo"));
             assertEquals("bla" + index, context.getObject("foo"));
@@ -104,6 +73,20 @@ public  class StringListTagTest {
 
 
         context.doEndTag();
+
+    }
+
+    //@Test
+    public void nested() throws Exception  {
+        final PageContext pageContext = new MockPageContext();
+
+
+        ContextTag context = new ContextTag();
+        context.setPageContext(pageContext);
+        context.doStartTag();
+        context.setId("TEST");
+
+
 
     }
 
