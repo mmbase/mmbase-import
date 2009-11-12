@@ -343,6 +343,7 @@
       </mm:context>
       <h2>(e) Lists in lists</h2>
       <table>
+        <tr><th class="id">id</th><th>is</th><th>should be</th><th>remarks</th></tr>
         <mm:stringlist referid="list" id="l1">
           <mm:stringlist referid="list" id="l2">
             <tr>
