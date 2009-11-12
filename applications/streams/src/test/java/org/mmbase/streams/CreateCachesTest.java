@@ -106,7 +106,7 @@ public class CreateCachesTest {
 
 
 
-    //@Test
+    @Test
     public void node() {
         Cloud cloud = getCloud();
         assumeNotNull(cloud);
@@ -191,7 +191,7 @@ public class CreateCachesTest {
             CreateCachesProcessor proc = get("crazycreatecaches.xml");
             Node source = getNode(proc.getDirectory());
             CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
-            job.waitUntilReady();
+            job.waitUntil(CreateCachesProcessor.Stage.READY);
             assertTrue("No node " + source.getNumber() + " in " + source.getCloud(), source.getCloud().hasNode(source.getNumber()));
             source = refresh(source);
         }
@@ -204,7 +204,7 @@ public class CreateCachesTest {
         Node source = getNode(proc.getDirectory());
         CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
 
-        job.waitUntilReady();
+        job.waitUntil(CreateCachesProcessor.Stage.READY);
 
         assertTrue("No node " + source.getNumber() + " in " + source.getCloud(), source.getCloud().hasNode(source.getNumber()));
         source = refresh(source);
@@ -217,7 +217,7 @@ public class CreateCachesTest {
         Node source = getNode(proc.getDirectory());
         CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
-        job.waitUntilReady();
+        job.waitUntil(CreateCachesProcessor.Stage.READY);
         assertTrue(source.getCloud().hasNode(source.getNumber()));
         source = refresh(source);
         checkSource(source, 2);
@@ -230,7 +230,7 @@ public class CreateCachesTest {
         Node source = getNode(proc.getDirectory());
         CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
-        job.waitUntilReady();
+        job.waitUntil(CreateCachesProcessor.Stage.READY);
         source = refresh(source);
         checkSource(source, 3);
     }
@@ -241,7 +241,7 @@ public class CreateCachesTest {
         Node source = getNode(proc.getDirectory());
         CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
-        job.waitUntilReady();
+        job.waitUntil(CreateCachesProcessor.Stage.READY);
         source = refresh(source);
         checkSource(source, 4);
     }
@@ -252,7 +252,7 @@ public class CreateCachesTest {
         Node source = getNode(proc.getDirectory());
         CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
-        job.waitUntilReady();
+        job.waitUntil(CreateCachesProcessor.Stage.READY);
         source = refresh(source);
         checkSource(source, 1);
     }
@@ -263,7 +263,7 @@ public class CreateCachesTest {
         Node source = getNode(proc.getDirectory());
         CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
-        job.waitUntilReady();
+        job.waitUntil(CreateCachesProcessor.Stage.READY);
         source = refresh(source);
         checkSource(source, 4);
     }

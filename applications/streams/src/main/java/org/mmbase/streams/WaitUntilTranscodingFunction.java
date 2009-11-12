@@ -35,7 +35,7 @@ public class WaitUntilTranscodingFunction extends NodeFunction<Boolean> {
         CreateCachesProcessor.Job job = CreateCachesProcessor.getJob(node);
         if (job != null) {
             try {
-                job.waitUntilTranscoding();
+                job.waitUntil(CreateCachesProcessor.Stage.TRANSCODER);
             } catch (InterruptedException ie) {
                 return false;
             }
