@@ -80,9 +80,14 @@ public abstract class BridgeTest extends MMBaseTest {
             ensureDeployed(c);
             CloudThreadLocal.bind(c);
             return c;
-        } catch (Throwable t) {
-            System.err.println(t.getMessage());
-            System.err.println(Logging.stackTrace(t));
+        } catch (Throwable e) {
+            System.err.println(e.getMessage());
+            System.err.println(Logging.stackTrace(e));
+            Throwable c = e.getCause();
+            while (c != null) {
+                log.error("CAUSE:" + c.getMessage(), c);
+                c = c.getCause();
+            }
             System.exit(1);
             return null;
         }
