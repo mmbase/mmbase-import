@@ -76,17 +76,39 @@ public  class StringListTagTest {
 
     }
 
-    //@Test
+    @Test
     public void nested() throws Exception  {
         final PageContext pageContext = new MockPageContext();
-
-
         ContextTag context = new ContextTag();
         context.setPageContext(pageContext);
         context.doStartTag();
         context.setId("TEST");
+        Import.tag(pageContext, context, "list", "A,B,C", "list");
 
+        StringListTag tag1 = new StringListTag();
+        tag1.setParent(context);
+        tag1.setReferid("list");
+        tag1.setPageContext(pageContext);
 
+        tag1.doStartTag();
+
+        StringListTag tag2 = new StringListTag();
+        tag2.setParent(tag1);
+        tag2.setReferid("list");
+        tag2.setPageContext(pageContext);
+
+        for (int i = 0; i < 3; i++) {
+            tag1.doInitBody();
+            tag2.doStartTag();
+            for (int j = 0; i < 3; i++) {
+                tag2.doInitBody();
+                Import.tag(pageContext, tag2, "foo", "bla");
+            }
+            tag2.doEndTag();
+        }
+        tag1.doEndTag();
+
+        context.doEndTag();
 
     }
 
