@@ -23,9 +23,12 @@ Digraph "MMBase<%= nodemanager == null ? "" : " " + nodemanager %>" {
       while (size < set.size()) {
          size = set.size();
          for (RelationManager rm : cloud.getRelationManagers()) {
+            try {
             if (set.contains(rm.getSourceManager().getName()) || set.contains(rm.getDestinationManager().getName()) || nodemanager == null) {
                 set.add(rm.getSourceManager().getName());
                 set.add(rm.getDestinationManager().getName());
+            }
+            } catch (NotFoundException nfe) {
             }
          }
       }
@@ -39,6 +42,7 @@ Digraph "MMBase<%= nodemanager == null ? "" : " " + nodemanager %>" {
 
   <jsp:scriptlet>
 	for (RelationManager rm : cloud.getRelationManagers()) {
+     try {
      if (set.contains(rm.getSourceManager().getName()) || set.contains(rm.getDestinationManager().getName())) {
             out.print(rm.getSourceManager().getName() + "->" + rm.getDestinationManager().getName());
             String role = rm.getForwardRole();
@@ -46,6 +50,8 @@ Digraph "MMBase<%= nodemanager == null ? "" : " " + nodemanager %>" {
                 out.print(" [label=" + role + "]");
             }
             out.println(";");
+     }
+     } catch (NotFoundException nfe) {
      }
 	}
   </jsp:scriptlet>
