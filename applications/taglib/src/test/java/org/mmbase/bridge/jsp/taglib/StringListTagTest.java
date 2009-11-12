@@ -25,7 +25,7 @@ import static org.junit.Assume.*;
 public  class StringListTagTest {
 
 
-    //@Test
+    @Test
     public void basic() throws Exception {
         final PageContext pageContext = new MockPageContext();
 
@@ -63,7 +63,6 @@ public  class StringListTagTest {
             assertEquals("bla" + index, pageContext.getAttribute("foo"));
             assertEquals("bla" + index, context.getObject("foo"));
             it = tag.doAfterBody();
-            assertEquals("bla" + index , pageContext.getAttribute("foo"));
         }
         tag.doEndTag();
 
@@ -106,7 +105,7 @@ public  class StringListTagTest {
             Import.tag(pageContext, tag1, "aaa", "AAA" + i);
             tag2.doInitBody();
             for (int j = 0; j < 3; j++) {
-                Import.tag(pageContext, tag2, "bbb", "BBB" + i + "" + j); // FAILS
+                Import.tag(pageContext, tag2, "bbb", "BBB" + i + "" + j);
                 tag2.doAfterBody();
             }
             tag2.doEndTag();
