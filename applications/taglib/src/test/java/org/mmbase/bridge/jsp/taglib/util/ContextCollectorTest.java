@@ -56,7 +56,7 @@ public  class ContextCollectorTest {
             } catch (Exception e) {
             }
 
-            collector.doAfterBody();
+            collector.doAfterBody(true);
 
             collector.register("a", "B", false);
 
@@ -64,14 +64,14 @@ public  class ContextCollectorTest {
             assertEquals("B", pageContext.getAttribute("a"));
 
 
-            collector.doAfterBody();
+            collector.doAfterBody(true);
 
             collector.register("a", "C", false);
 
             assertEquals("C", collector.get("a"));
             assertEquals("C", pageContext.getAttribute("a"));
 
-            collector.doAfterBody();
+            collector.doAfterBody(false);
             collector.release(pageContext, context.getContextContainer());
         }
 

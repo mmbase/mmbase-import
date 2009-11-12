@@ -297,7 +297,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             getContextProvider().getContextContainer().unRegister(getId());
         }
 
-        collector.doAfterBody();
+        collector.doAfterBody(fieldIterator.hasNext());
 
         if (fieldIterator.hasNext()){
             doInitBody();

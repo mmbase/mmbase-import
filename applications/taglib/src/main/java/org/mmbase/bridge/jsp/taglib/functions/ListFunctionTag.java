@@ -122,16 +122,18 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
         }
 
         helper.doAfterBody();
-        collector.doAfterBody();
 
         if (! "".equals(varStatus.getString(this))) {
             getContextProvider().getContextContainer().unRegister(varStatus.getString(this));
         }
 
         if (iterator.hasNext() && (currentItemIndex + 1) < max.getInt(this, Integer.MAX_VALUE)) {
+            collector.doAfterBody(true);
+
             doInitBody();
             return EVAL_BODY_AGAIN;
         } else {
+            collector.doAfterBody(false);
             if (bodyContent != null) {
                 try {
                     bodyContent.writeOut(bodyContent.getEnclosingWriter());

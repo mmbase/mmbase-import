@@ -25,7 +25,7 @@ import static org.junit.Assume.*;
 public  class StringListTagTest {
 
 
-    @Test
+    //@Test
     public void basic() throws Exception {
         final PageContext pageContext = new MockPageContext();
 
@@ -88,37 +88,43 @@ public  class StringListTagTest {
         StringListTag tag1 = new StringListTag();
         tag1.setPageContext(pageContext);
         tag1.setParent(context);
+        tag1.setId("tag1");
         tag1.setReferid("list");
 
 
         tag1.doStartTag();
 
-        StringListTag tag2 = new StringListTag();
-        tag2.setPageContext(pageContext);
-        tag2.setParent(tag1);
-        tag2.setReferid("list");
 
         tag1.doInitBody();
         for (int i = 0; i < 3; i++) {
+            StringListTag tag2 = new StringListTag();
+            tag2.setPageContext(pageContext);
+            tag2.setParent(tag1);
+            tag2.setId("tag2");
+            tag2.setReferid("list");
             tag2.doStartTag();
             Import.tag(pageContext, tag1, "aaa", "AAA" + i);
             tag2.doInitBody();
             for (int j = 0; j < 3; j++) {
-                Import.tag(pageContext, tag2, "bbb", "BBB" + j); // FAILS
+                Import.tag(pageContext, tag2, "bbb", "BBB" + i + "" + j); // FAILS
                 tag2.doAfterBody();
             }
             tag2.doEndTag();
+            tag2.release();
+
             tag1.doAfterBody();
         }
         tag1.doEndTag();
 
-        assertEquals("AAA2" , pageContext.getAttribute("aaa"));
-        assertEquals("BBB2" , pageContext.getAttribute("bbb"));
+        assertEquals("AAA2" ,  pageContext.getAttribute("aaa"));
+        assertEquals("BBB22" , pageContext.getAttribute("bbb"));
+
+        assertEquals("AAA2" ,  context.getObject("aaa"));
+        assertEquals("BBB22" , context.getObject("bbb"));
 
         context.doEndTag();
 
         tag1.release();
-        tag2.release();
         context.release();
 
 

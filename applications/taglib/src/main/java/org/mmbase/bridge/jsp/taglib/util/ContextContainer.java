@@ -118,8 +118,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
 
 
     /**
-     * Returns the Map which will is used for actually storing stuff.
-     *
+     * Returns the Map which will be used for actually storing stuff.
      * @since MMBase-1.8
      */
     public abstract Backing getBacking();

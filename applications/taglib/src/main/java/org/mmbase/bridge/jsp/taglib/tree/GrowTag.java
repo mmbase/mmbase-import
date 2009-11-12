@@ -51,8 +51,8 @@ public class GrowTag extends AbstractTreeReferrerListTag {
 
 
     protected final int doAfterBodyHelper() throws JspTagException {
-        collector.doAfterBody();
         depth++;
+        collector.doAfterBody(depth < endDepth);
         if (depth < endDepth) {
             index++;
             return EVAL_BODY_AGAIN;
