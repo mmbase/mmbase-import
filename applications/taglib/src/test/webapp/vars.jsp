@@ -342,6 +342,9 @@
         </table>
       </mm:context>
       <h2>(e) Lists in lists</h2>
+      <dl>
+        <dt>a</dt><dd>Repeatedly set in a nested list (${list} X ${list})</dd>
+      </dl>
       <table>
         <tr><th class="id">id</th><th>is</th><th>should be</th><th>remarks</th></tr>
         <mm:stringlist referid="list" id="l1">
