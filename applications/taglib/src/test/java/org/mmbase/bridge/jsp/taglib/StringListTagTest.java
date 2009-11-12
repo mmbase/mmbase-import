@@ -101,16 +101,19 @@ public  class StringListTagTest {
         tag1.doInitBody();
         for (int i = 0; i < 3; i++) {
             tag2.doStartTag();
-            Import.tag(pageContext, tag1, "aaa", "AAA");
+            Import.tag(pageContext, tag1, "aaa", "AAA" + i);
             tag2.doInitBody();
             for (int j = 0; j < 3; j++) {
-                Import.tag(pageContext, tag2, "bbb", "BBB");
+                Import.tag(pageContext, tag2, "bbb", "BBB" + j); // FAILS
                 tag2.doAfterBody();
             }
             tag2.doEndTag();
             tag1.doAfterBody();
         }
         tag1.doEndTag();
+
+        assertEquals("AAA2" , pageContext.getAttribute("aaa"));
+        assertEquals("BBB2" , pageContext.getAttribute("bbb"));
 
         context.doEndTag();
 
