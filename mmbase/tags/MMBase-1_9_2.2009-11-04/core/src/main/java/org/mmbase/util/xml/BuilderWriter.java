@@ -213,13 +213,15 @@ public class BuilderWriter extends DocumentWriter  {
                 addContentElement("search", "" + pos, positionsElm);
             }
 
-            Element dataTypeElm = null;
-            DataType dataType = fielddef.getDataType();
-            if ((parentField == null) || !dataType.equals(parentField.getDataType())) {
-                dataTypeElm = (Element) document.importNode(dataType.toXml(), true);
-            }
+//            Element dataTypeElm = null;
+//            DataType dataType = fielddef.getDataType();
+//            if ((parentField == null) || !dataType.equals(parentField.getDataType())) {
+//                dataTypeElm = (Element) document.importNode(dataType.toXml(), true);
+//            }
 
-            if ((parentField == null) || (dataTypeElm != null) || (descriptionsElm != null) || (guiElm != null) ||  (positionsElm != null)) {
+            if ((parentField == null) 
+//                  || (dataTypeElm != null) 
+                  || (descriptionsElm != null) || (guiElm != null) ||  (positionsElm != null)) {
                 addComment("builder.field", fieldname, ""+fielddef.getStoragePosition(), fieldlist);
                 Element field=document.createElement("field");
                 fieldlist.appendChild(field);
@@ -237,10 +239,10 @@ public class BuilderWriter extends DocumentWriter  {
                     editor.appendChild(positionsElm);
                     field.appendChild(editor);
                 }
-                if (dataTypeElm != null) {
-                    addComment("builder.field.datatype",field);
-                    field.appendChild(dataTypeElm);
-                }
+//                if (dataTypeElm != null) {
+//                    addComment("builder.field.datatype",field);
+//                    field.appendChild(dataTypeElm);
+//                }
                 Element db = document.createElement("db");
                 addComment("builder.field.db",field);
                 field.appendChild(db);

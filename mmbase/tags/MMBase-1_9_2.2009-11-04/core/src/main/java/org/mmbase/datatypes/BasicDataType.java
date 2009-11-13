@@ -75,7 +75,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
     private Map<String, Handler<?>> handlers = new ConcurrentHashMap<String, Handler<?>>();
 
-    private Element xml = null;
+//    private Element xml = null;
 
     private String[] styleClasses;
 
@@ -680,22 +680,18 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         return clone;
     }
 
-    public Element toXml() {
-        if (xml == null) {
-            xml = DocumentReader.getDocumentBuilder().newDocument().createElementNS(XMLNS, "datatype");
-            xml.getOwnerDocument().appendChild(xml);
-            toXml(xml);
-        }
-        return xml;
-    }
+//    public Element toXml() {
+//        if (xml == null) {
+//            xml = DocumentReader.getDocumentBuilder().newDocument().createElementNS(XMLNS, "datatype");
+//            xml.getOwnerDocument().appendChild(xml);
+//            toXml(xml);
+//        }
+//        return xml;
+//    }
 
     @SuppressWarnings("fallthrough")
     public void setXml(Element element) {
-        if (element == null) {
-            xml = null;
-            return;
-        }
-        xml = DocumentReader.toDocument(element).getDocumentElement();
+        Element xml = DocumentReader.toDocument(element).getDocumentElement();
         if (origin != null) {
             xml.setAttribute("base", origin.getName());
         }

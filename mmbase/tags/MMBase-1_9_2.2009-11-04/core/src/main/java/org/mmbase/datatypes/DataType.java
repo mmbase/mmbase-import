@@ -397,12 +397,12 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
     public DataType<C> clone(String name);
 
 
-    /**
-     * Returns a DOM element describing this DataType.
-     * @return a DOM element describing this DataType.
-     * @todo EXPERIMENTAL.
-     */
-    public org.w3c.dom.Element toXml();
+//    /**
+//     * Returns a DOM element describing this DataType.
+//     * @return a DOM element describing this DataType.
+//     * @todo EXPERIMENTAL.
+//     */
+//    public org.w3c.dom.Element toXml();
 
     /**
      * Fills this datatype in another XML (for example in the xml of {@link #getOrigin}, to make one

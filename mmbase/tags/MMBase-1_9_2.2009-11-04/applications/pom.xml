@@ -38,15 +38,15 @@
         <module>email</module>
         <module>media</module>
         <module>notifications</module>
-        <module>searchrelate</module>
-        <module>searchrelate/example-webapp</module>
+<!--        <module>searchrelate</module>-->
+<!--        <module>searchrelate/example-webapp</module>-->
 
         <module>richtext</module>
         <module>richtext/content</module>
         <module>richtext/wiki</module>
 
         <module>rmmci</module>
-        <module>rmmci/test</module>
+<!--        <module>rmmci/test</module>-->
 
         <module>jumpers</module>
         <module>xmlimporter</module>
@@ -57,8 +57,8 @@
         <module>cloudsecurity</module>
         <module>streams</module>
 
-        <module>mynews</module>
-        <module>vpro-wizards</module>
+<!--        <module>mynews</module>-->
+<!--        <module>vpro-wizards</module>-->
 
 
         <!-- deprecated-->
