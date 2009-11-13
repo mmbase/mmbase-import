@@ -457,7 +457,12 @@ public class MediaSources extends MMObjectBuilder {
         if (log.isDebugEnabled()) {
             log.debug("mediasource " + source.getStringValue("number"));
         }
-        return source.getRelatedNodes("mediaproviders");
+        if (source.getNumber() > 0) {
+            return source.getRelatedNodes("mediaproviders");
+        } else {
+            // e.g. new nodes don't have relations
+            return new ArrayList<Node>();
+        }
     }
 
 
