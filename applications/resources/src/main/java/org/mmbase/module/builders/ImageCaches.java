@@ -87,12 +87,8 @@ public class ImageCaches extends AbstractImages {
     protected boolean addFileName(MMObjectNode node, String servlet) {
         if (super.addFileName(node, servlet)) return true;
         MMObjectNode originalImage = originalImage(node);
-        if (originalImage != null) {
-            Images images = (Images) originalImage.getBuilder();
-            return images.addFileName(originalImage, servlet);
-        } else {
-            return false;
-        }
+        Images images = (Images) originalImage.getBuilder();
+        return images.addFileName(originalImage, servlet);
     }
 
     /**

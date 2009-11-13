@@ -330,7 +330,7 @@ public class NodeListHelper implements ListProvider {
 
         if (collector != null) { // might occur for some legacy extensions
             log.debug("copying to collector");
-            collector.doAfterBody(nodeIterator.hasNext());
+            collector.doAfterBody();
         }
         if (nodeIterator.hasNext()){
             setNext();

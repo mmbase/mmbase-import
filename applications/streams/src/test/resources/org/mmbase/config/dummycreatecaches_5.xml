@@ -3,8 +3,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/createcaches http://www.mmbase.org/xmlns/createcaches.xsd"
     >
-  <localhost max_simultaneous_transcoders="1" stage="recognizer" />
-  <localhost max_simultaneous_transcoders="1" stage="transcoder" />
+  <localhost max_simultaneous_transcoders="1" />
+
 
   <recognizer id="recognizer">
     <class name="org.mmbase.streams.transcoders.FFMpegRecognizer">

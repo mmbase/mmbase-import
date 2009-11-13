@@ -10,7 +10,8 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.util;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
@@ -31,29 +32,43 @@ import org.mmbase.util.logging.Logging;
 public class  ContextCollector extends StandaloneContextContainer {
     private static final Logger log = Logging.getLoggerInstance(ContextCollector.class);
 
-    private Map<String, Object> unregister = new HashMap<String, Object>();
+    private final Set<String> parentCheckedKeys = new HashSet<String>();
 
     public ContextCollector(ContextProvider p) throws JspTagException {
-        super(p.getPageContext(), "CONTEXT-COLLECTOR" + (p.getId() == null ? "" : "-" + p.getId()), p.getContextContainer());
+        super(p.getPageContext(), "CONTEXT-COLLECTOR " + (p.getId() == null ? "" : "-" + p.getId()), p.getContextContainer());
         if (log.isDebugEnabled()) {
             log.debug("Using collector with pagecontext " + p.getPageContext());
         }
     }
 
-    @Override
-    protected BasicBacking createBacking(PageContext pc) {
-        //        System.out.println("IGNORE " + (parent instanceof PageContextContainer || parent instanceof ContextCollector));
-        return new CollectorBacking(pc, parent);
+    @Override protected BasicBacking createBacking(PageContext pc) {
+        return new BasicBacking(pc, parent instanceof PageContextContainer || parent instanceof ContextCollector) {
+            @Override public Object put(String key, Object value) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Putting in collector " + key + "=" + value + " " + parent);
+                }
+                if (parentCheckedKeys.contains(key)) {
+                    parent.put(key, value);
+                } else {
+                    parentCheckedKeys.add(key);
+                    try {
+                        parent.register(key, value);
+                    } catch (JspTagException jte) {
+                        throw new RuntimeException(jte);
+                    }
+                }
+                return super.put(key, value);
+            }
+        };
     }
 
-    @Override
-    public void unRegister(String key) throws JspTagException {
+
+    @Override public void unRegister(String key) throws JspTagException {
         super.unRegister(key);
         parent.unRegister(key);
 
     }
-    @Override
-    protected void register(String newid, Object n, boolean check, boolean checkParent) throws JspTagException {
+    @Override protected void register(String newid, Object n, boolean check, boolean checkParent) throws JspTagException {
         if (! check) {
             parent.unRegister(newid);
         }
@@ -62,32 +77,13 @@ public class  ContextCollector extends StandaloneContextContainer {
     }
 
 
-    /**
-     * For a context-collector it also interesting to have a 'doAFterBody', because it can be iterated again.
-     * It calls {@link #clear}.
-     */
-    public final void doAfterBody(boolean iteratesAgain) throws JspTagException {
-        if (iteratesAgain) {
-            for (Map.Entry<String, Object> e : backing.entrySet()) {
-                if (((CollectorBacking) backing).myKeys.contains(e.getKey())) {
-                    parent.unRegister(e.getKey());
-                    unregister.put(e.getKey(), e.getValue());
-                }
-            }
-            //
-        } else {
-            for (Map.Entry<String, Object> e : unregister.entrySet()) {
-                if (! parent.containsKey(e.getKey())) {
-                    parent.register(e.getKey(), e.getValue());
-                }
-            }
-        }
-        clear();
 
+    public void doAfterBody() throws JspTagException {
+        clear();
     }
 
-    @Override
-    public void release(PageContext pc, ContextContainer p) {
+    @Override public void release(PageContext pc, ContextContainer p) {
+        parentCheckedKeys.clear();
         super.release(pc, p);
     }
 

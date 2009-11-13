@@ -968,9 +968,7 @@ abstract public class Queries {
         Step step = field.getStep();
         aggregate.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField(resultName), type);
         NodeList r = cloud.getList(aggregate);
-        if (r.size() != 1) {
-            throw new RuntimeException("Aggregated query " + query + " did not give one result but " + r);
-        }
+        if (r.size() != 1) throw new RuntimeException("Aggregated query " + query + " did not give one result but " + r);
         Node result = r.getNode(0);
         return result.getValue(resultName);
     }
@@ -1248,26 +1246,21 @@ abstract public class Queries {
      */
     public static int compare(Object value, Object value2, SortOrder sortOrder) {
         int result;
-        log.debug(sortOrder.toString());
         // compare values - if they differ, determine whether
         // they are bigger or smaller and return the result
         // remaining fields are not of interest once a difference is found
         if (value == null) {
             if (value2 != null) {
-                log.debug("" + value2 + "->" + 1);
-                result = 1;
+                return 1;
             } else {
-                log.debug("nulls ->" + 0);
                 result = 0;
             }
         } else if (value2 == null) {
-            log.debug("" + value + "->" + -1);
-            result = -1;
+            return -1;
         } else {
             // compare the results
             try {
                 result = ((Comparable<Object>)value).compareTo(value2);
-                log.debug("" + value + " ~ " + value2 + "  ->" + result);
             } catch (ClassCastException cce) {
                 // This should not occur, and indicates very odd values are being sorted on (i.e. byte arrays).
                 // warn and ignore this sortorder
@@ -1280,8 +1273,6 @@ abstract public class Queries {
         // then the result of the comparison is the reverse (the node is 'greater' if the value is 'less' )
         if (sortOrder.getDirection() == SortOrder.ORDER_DESCENDING) {
             result = -result;
-            log.debug("descending, " + result);
-
         }
         return result;
     }
@@ -1301,7 +1292,7 @@ abstract public class Queries {
             int result = compare(node1, node2, order);
             if (result != 0) return result;
         }
-        // if all fields match -
+        // if all fields match - return 0 as if equal
         return 0;
     }
 
@@ -1333,21 +1324,6 @@ abstract public class Queries {
      */
     public static Comparator<Node> getComparator(final Query q) {
         return new QueryComparator(q);
-    }
-
-    /**
-     * Compare 2 nodes from a transaction. If it's 'earlier', it's smaller.
-     */
-    private static class TransactionNodeComparator implements Comparator<Node> {
-        public int compare(Node node1, Node node2) {
-            int result =  node1.getStringValue("_number").compareTo(node2.getStringValue("_number"));
-            if (result != 0) return result;
-            result =  node2.getNumber() - node1.getNumber();
-            return 0;
-        }
-        public boolean equals(Object o) {
-            return o instanceof TransactionNodeComparator;
-        }
     }
 
     // The start node is hacked in the query when it is new, and hence query object forbids it to be an actual startnode.
@@ -1632,9 +1608,7 @@ abstract public class Queries {
      */
     public static int reorderResult(NodeQuery q, List<Integer> desiredOrder) {
         List<SortOrder> sos = q.getSortOrders();
-        if (sos == null || sos.size() == 0) {
-            throw new IllegalArgumentException("The query " + q + " is not sorted");
-        }
+        if (sos == null || sos.size() == 0) throw new IllegalArgumentException("The query " + q + " is not sorted");
         SortOrder so = sos.get(0);
         final StepField orderField = so.getField();
         if (orderField.getFieldName().equals("number")) {
@@ -1698,8 +1672,6 @@ abstract public class Queries {
 
         int numberOfChanges = 0;
 
-        log.debug("Desired order " + desiredOrder);
-
         {
             // First we make one iteration over all nodes to make sure all the 'orderFields' are different.
             // TODO, this code makes changes to existing data (rather then just interchanging that), and perhaps this should be made configurable?
@@ -1748,7 +1720,7 @@ abstract public class Queries {
 
 
         {
-            log.debug("Bubble sort now, to make the order as desired");
+            //Bubble sort now, the make the order as desired
             boolean madeChanges = true;
             while (madeChanges) {
                 madeChanges = false;
@@ -1761,13 +1733,9 @@ abstract public class Queries {
                         Object pos1 = n1order.getValue(orderField.getFieldName());
                         Object pos2 = n2order.getValue(orderField.getFieldName());
                         if (! (pos1 == null ? pos2 == null : pos1.equals(pos2))) {
-                            if (log.isDebugEnabled()) {
-                                log.debug("Setting " + n1order.getNumber() + ":" + n1order.getFunctionValue("gui", null) + " " + orderField.getFieldName() + " to " + pos2);
-                            }
+                            log.debug("Setting " + n1order + " " + orderField.getFieldName() + " to " + pos2);
                             n1order.setValue(orderField.getFieldName(), pos2);
-                            if (log.isDebugEnabled()) {
-                                log.debug("Setting " + n2order.getNumber() + ":" + n2order.getFunctionValue("gui", null) + " " + orderField.getFieldName() + " to " + pos1);
-                            }
+                            log.debug("Setting " + n2order + " " + orderField.getFieldName() + " to " + pos1);
                             n2order.setValue(orderField.getFieldName(), pos1);
                             list.set(i, n2);
                             list.set(i + 1, n1);
@@ -1779,7 +1747,6 @@ abstract public class Queries {
                 }
             }
         }
-        log.debug("Sorting ready (made " + numberOfChanges + " changes). Now committing the transaction)");
         if (t.commit()) {
             return numberOfChanges;
         } else {
@@ -1948,7 +1915,7 @@ abstract public class Queries {
     /**
      * Returns the related nodes of a certain node (defined by the query), <em>including</em> the one that where related to it in the current transaction.
      *
-     * This code understands how the MMBase 'transactions' work.  If the transaction implementation
+     * This code understand how the MMBase 'transactions' work.  If the transaction implementation
      * changes, (which seems a good idea) this will get broken, but well, we'll fix this too, then,
      * hopefully.
      * @since MMBase-1.9.2
@@ -1972,7 +1939,8 @@ abstract public class Queries {
 
         Transaction t = (Transaction) startNode.getCloud();
 
-        // The transaction code is rather convoluted
+        // The transaction code is rather convoluted.
+
 
 
 
@@ -2062,7 +2030,6 @@ abstract public class Queries {
                         log.debug("Nodemananager of " + destNode + "  is not " + destManager);
                         continue;
                     }
-
                     newNodes.add(0, Queries.clusterNode(r, relStep.getAlias(), destNode));
 
                 } else {
@@ -2074,16 +2041,9 @@ abstract public class Queries {
             }
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("newNodes now contain the correct nodes. Now make sure these nodes are in the _correct order_. Unsorted: " + Casting.toString(newNodes));
-        }
+        // newNodes now contain the correct nodes. Now make sure these nodes are in the _correct order_.
 
-        Collections.sort(newNodes, new ChainedComparator<Node>(getComparator(clone),
-                                                               new TransactionNodeComparator()));
-
-        if (log.isDebugEnabled()) {
-            log.debug("sorted: " + Casting.toString(newNodes));
-        }
+        Collections.sort(newNodes, getComparator(clone));
 
         // make the nodes 'normal' again (there are odd 'MapNodes' used now)
         for (int i = 0; i < newNodes.size(); i++) {

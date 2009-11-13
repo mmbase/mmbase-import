@@ -26,7 +26,7 @@
   <mm-sre:form>
     <h2><mm:field name="title" /></h2>
 
-    <mm-sr:relatednodes
+    <mm-srt:relatednodes
         idvar="rid"
         type="news"
         role="posrel"
@@ -34,10 +34,10 @@
         delete="true"
         search="true"
         sortable="true"
-        max="6"
+        max="3"
         >
       <h3 class="debug">${rid}</h3>
-    </mm-sr:relatednodes>
+    </mm-srt:relatednodes>
   </mm-sre:form>
 
   <hr />

@@ -71,13 +71,6 @@ public class Jumpers extends MMObjectBuilder {
         };
     {
         jumpCache.putCache();
-        addFunction(new AbstractFunction<String>("jump", new Parameter[] { new Parameter("key", String.class, true) }) {
-                @Override
-                public String  getFunctionValue(Parameters parameters) {
-                    String key = parameters.getString("key");
-                    return getJump(key);
-                }
-            });
     }
 
     /**

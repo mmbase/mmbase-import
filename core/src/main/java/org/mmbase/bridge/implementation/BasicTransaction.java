@@ -40,10 +40,10 @@ public class BasicTransaction extends BasicCloud implements Transaction {
 
     protected BasicCloud parentCloud; // not final because of deserialization
 
-    private final Set<String> commitProcessed = new TreeSet<String>();
-    private final Set<String> deleteProcessed = new TreeSet<String>();
+    private final Set<String> commitProcessed = new HashSet<String>();
+    private final Set<String> deleteProcessed = new HashSet<String>();
 
-    private final Map<String, BasicNode> nodes = Collections.synchronizedMap(new TreeMap<String, BasicNode>());
+    private final Map<String, BasicNode> nodes = Collections.synchronizedMap(new HashMap<String, BasicNode>());
 
     /**
      * @since MMBase 1.9

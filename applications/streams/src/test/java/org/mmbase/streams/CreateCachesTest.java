@@ -50,7 +50,7 @@ public class CreateCachesTest {
             System.out.println("Found remote cloud " + remoteCloud);
         } catch (Exception e) {
             System.err.println("Cannot get RemoteCloud. (" + e.getMessage() + "). Some tests will be skipped. (but reported as succes: see http://jira.codehaus.org/browse/SUREFIRE-542)");
-            System.err.println("You can start up a test-environment for remote tests: toip/trunk$ mvn jetty:run");
+            System.err.println("You can start up a test-environment for remote tests: trunk/example-webapp$ mvn jetty:run");
             remoteCloud = null;
         }
 
@@ -106,7 +106,7 @@ public class CreateCachesTest {
 
 
 
-    @Test
+    //@Test
     public void node() {
         Cloud cloud = getCloud();
         assumeNotNull(cloud);
@@ -191,7 +191,7 @@ public class CreateCachesTest {
             CreateCachesProcessor proc = get("crazycreatecaches.xml");
             Node source = getNode(proc.getDirectory());
             CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
-            job.waitUntil(CreateCachesProcessor.Stage.READY);
+            job.waitUntilReady();
             assertTrue("No node " + source.getNumber() + " in " + source.getCloud(), source.getCloud().hasNode(source.getNumber()));
             source = refresh(source);
         }
@@ -204,7 +204,7 @@ public class CreateCachesTest {
         Node source = getNode(proc.getDirectory());
         CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
 
-        job.waitUntil(CreateCachesProcessor.Stage.READY);
+        job.waitUntilReady();
 
         assertTrue("No node " + source.getNumber() + " in " + source.getCloud(), source.getCloud().hasNode(source.getNumber()));
         source = refresh(source);
@@ -217,7 +217,7 @@ public class CreateCachesTest {
         Node source = getNode(proc.getDirectory());
         CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
-        job.waitUntil(CreateCachesProcessor.Stage.READY);
+        job.waitUntilReady();
         assertTrue(source.getCloud().hasNode(source.getNumber()));
         source = refresh(source);
         checkSource(source, 2);
@@ -230,7 +230,7 @@ public class CreateCachesTest {
         Node source = getNode(proc.getDirectory());
         CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
-        job.waitUntil(CreateCachesProcessor.Stage.READY);
+        job.waitUntilReady();
         source = refresh(source);
         checkSource(source, 3);
     }
@@ -241,7 +241,7 @@ public class CreateCachesTest {
         Node source = getNode(proc.getDirectory());
         CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
-        job.waitUntil(CreateCachesProcessor.Stage.READY);
+        job.waitUntilReady();
         source = refresh(source);
         checkSource(source, 4);
     }
@@ -252,7 +252,7 @@ public class CreateCachesTest {
         Node source = getNode(proc.getDirectory());
         CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
-        job.waitUntil(CreateCachesProcessor.Stage.READY);
+        job.waitUntilReady();
         source = refresh(source);
         checkSource(source, 1);
     }
@@ -263,7 +263,7 @@ public class CreateCachesTest {
         Node source = getNode(proc.getDirectory());
         CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
-        job.waitUntil(CreateCachesProcessor.Stage.READY);
+        job.waitUntilReady();
         source = refresh(source);
         checkSource(source, 4);
     }

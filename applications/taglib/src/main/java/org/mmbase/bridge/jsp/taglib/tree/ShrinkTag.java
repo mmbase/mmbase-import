@@ -100,6 +100,7 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
 
     public int doAfterBody() throws JspTagException {
         log.debug("afterbody");
+        collector.doAfterBody();
         if (index == 0) {
             foundBody = true;
         }
@@ -107,7 +108,6 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
         Stack<Entry> stack  = tree.getShrinkStack();
 
         stack.pop();
-
         if (stack.size() > 0) {
             Entry entry = stack.peek();
             depth = entry.depth;
@@ -123,12 +123,11 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
                 }
 
                 index++;
-                collector.doAfterBody(true);
                 return EVAL_BODY_AGAIN;
             }
         }
 
-        collector.doAfterBody(false);
+
         if (bodyContent != null) {
             try {
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());

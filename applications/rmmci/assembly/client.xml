@@ -15,6 +15,11 @@
 
       <unpackOptions>
         <includes>
+          <include>javax/servlet/ServletRequest.class</include>
+          <include>javax/servlet/ServletResponse.class</include>
+          <include>javax/servlet/http/HttpServletRequest.class</include>
+          <include>javax/servlet/http/HttpServletResponse.class</include>
+
           <include>org/mmbase/bridge/**</include>               <!-- of course -->
           <include>org/mmbase/bridge/util/**</include>                   <!-- not essential, but the idea is that you could use those with any bridge impl, so you should want them -->
           <include>org/mmbase/storage/search/*</include>                <!-- those interfaces are  part of bridge -->
@@ -96,12 +101,6 @@
           <include>org/mmbase/config/functions/**</include>                  <!-- Used in test cases .. -->
           <include>org/mmbase/config/datatypes.xml</include>                  <!-- Used in test cases .. -->
           <include>org/mmbase/config/builders/core/**</include>                  <!-- Used in Mock/test cases .. -->
-
-
-          <include>org/mmbase/framework/**</include>                  <!-- Used in taglib .. -->
-          <include>org/mmbase/util/externalprocess/**</include>                  <!-- Used in taglib .. -->
-          <include>org/mmbase/util/ReaderInputStream*</include>                  <!-- Used in taglib .. -->
-          <include>org/mmbase/util/ExprCalc*</include>                  <!-- Used in taglib .. -->
         </includes>
         <excludes>
           <exclude>org/mmbase/storage/search/SearchQueryHandler*</exclude>   <!-- Has a dependency on MMObjectNode -->

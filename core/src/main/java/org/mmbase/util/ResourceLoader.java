@@ -832,15 +832,13 @@ public class ResourceLoader extends ClassLoader {
      * Static version of {@link #getDocument(String, boolean, Class)}, can e.g. be used in combination with {@link #getResourceList(String)}
      */
     public static Document getDocument(URL url, boolean validation, Class<?> baseClass) throws org.xml.sax.SAXException, IOException {
-
-        InputSource source = getInputSource(url);
-        if (source == null) return null;
-
         boolean xsd = validation;
         if (validation) {
             xsd = validateable(url);
         }
 
+        InputSource source = getInputSource(url);
+        if (source == null) return null;
         org.xml.sax.EntityResolver resolver = new org.mmbase.util.xml.EntityResolver(validation, baseClass);
         DocumentBuilder dbuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder(validation, xsd,
                                                                                          null/* default error handler */, resolver);
@@ -2225,21 +2223,15 @@ public class ResourceLoader extends ClassLoader {
             name = n;
         }
         @Override
-        public void connect() throws IOException {
-            throw new IOException("No such resource " + name);
-        };
+        public void connect() throws IOException {  throw new IOException("No such resource " + name); };
         @Override
         public boolean getDoInput() { return false; }
         @Override
         public boolean getDoOutput() { return false; }
         @Override
-        public InputStream getInputStream() throws IOException {
-            return null;
-        }
+        public InputStream getInputStream() throws IOException { connect(); return null;}
         @Override
-        public OutputStream getOutputStream() throws IOException {
-            return null;
-        }
+        public OutputStream getOutputStream() throws IOException { connect(); return null; }
         @Override
         public String toString() { return "NOTAVAILABLECONNECTION " + name; }
     };

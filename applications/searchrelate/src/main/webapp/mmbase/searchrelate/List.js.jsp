@@ -1,8 +1,8 @@
 // -*- mode: javascript; -*-
-<%@page contentType="text/javascript; charset=UTF-8" %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
-<mm:content type="text/javascript" expires="0">
+<%@page contentType="text/javascript; charset=UTF-8" %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"
+%><fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
+<mm:content type="text/javascript">
 
 /**
  * This javascript binds to a div.list.
@@ -108,7 +108,7 @@ function List(d) {
             var element = ev.target;
             // only do something if the event is on _our_ mm_validate's.
             if ($(element).closest("div.list").filter(function() {
-                        return this.id == self.div.id;}).length > 0) {
+                return this.id == self.div.id;}).length > 0) {
                 self.valid = validator.invalidElements == 0;
                 if (element.lastChange != null && element.lastChange.getTime() > self.lastChange.getTime()) {
                     self.lastChange = element.lastChange;
@@ -134,15 +134,8 @@ function List(d) {
     }
 
 
-    this.saving = false;
-
     $.timer(1000, function(timer) {
-            if (List.prototype.leftPage) {
-                timer.stop();
-            } else {
-                self.commit();
-            }
-
+            self.commit();
         });
 
 
@@ -158,19 +151,20 @@ function List(d) {
 
     this.submitted = false;
     $(this.form).submit(function() {
-            self.submitted = true;
+            this.submitted = true;
         });
 
     $(window).bind("beforeunload",
                    function(ev) {
-                       var result = self.commit(0, true);
-                       if (result != null) {
+                       var result = self.commit(0, ! self.submitted);
+                       if (!result) {
                            ev.returnValue = '<fmt:message key="invalid" />';
-                           alert(result);
-                           return false;
                        }
-                       return result;
-
+                       if (result) {
+                           return null;
+                       } else {
+                           return result;
+                       }
                    });
     // automaticly make the entries empty on focus if they evidently contain the default value only
     this.find("mm_validate", "input").filter(function() {
@@ -188,20 +182,13 @@ function List(d) {
     this.uploading = {};
     this.uploadingSize = 0;
 
-    this.leftPage = false;
-
-    List.prototype.instances[this.rid] = this;
-
     if ($(this.div).hasClass("POST")) {
         $(this.div).trigger("mmsrRelatedNodesPost", [self]);
         this.afterPost();
     }
-
 }
 
-
-List.prototype.wasResetSequence = false;
-List.prototype.instances = {};
+List.prototype.leftPage = false;
 
 List.prototype.triggerValidateHook = function() {
     var reason = "";
@@ -622,7 +609,7 @@ List.prototype.upload = function(fileid) {
 List.prototype.commit = function(stale, leavePage) {
     var result;
     var self = this;
-    if(this.needsCommit() && ! List.prototype.leftPage) {
+    if(this.needsCommit()) {
         this.find(null, "input").each(function() {
                 if (this.type == 'file') {
                     if ($(this).val().length > 0) {
@@ -636,6 +623,7 @@ List.prototype.commit = function(stale, leavePage) {
             var now = new Date();
             if (stale == null) stale = this.defaultStale; //
             if (now.getTime() - this.lastChange.getTime() > stale) {
+                this.lastCommit = now;
                 var params = this.getListParameters();
                 params.leavePage = leavePage ? true : false;
 
@@ -663,100 +651,36 @@ List.prototype.commit = function(stale, leavePage) {
                 var self = this;
                 this.loader();
                 $(self.div).trigger("mmsrStartSave", [self]);
-                result = null;
-                self.saving = true;
                 $.ajax({ type: "POST",
                          async: leavePage == null ? true : !leavePage,
                          url: "${mm:link('/mmbase/searchrelate/list/save.jspx')}",
                          data: params,
                             complete: function(req, textStatus) {
-                               self.status('<fmt:message key="saved" />', self.uploadingSize == 0);
-                               $(self.div).trigger("mmsrFinishedSave", [self]);
-                               if (textStatus != "success") {
-                                   result = textStatus;
-                               }
-                               self.saving = false;
+                            self.status('<fmt:message key="saved" />', self.uploadingSize == 0);
+                            $(self.div).trigger("mmsrFinishedSave", [self]);
                         }
                        });
-                this.lastCommit = now;
+
+                result = true;
             } else {
                 // not stale enough
-                result = "not stale";
+                result = false;
             }
         } else {
-            result = "not valid";
+            result = false;
         }
     } else {
-        result = null;
+        result = true;
     }
-    if (leavePage) {
-        if (self.saving) {
-            return "Cannot leave because still saving " + result;
-        }
-        if (result != null) {
-            return "Cannot leave because save failed: " + result;
-        }
-        if (self.submitted) {
-            // no need leaving, because just 'submitted'
-            return result;
-        }
-
-        this.leavePage();
+    if (leavePage && ! List.prototype.leftPage) {
+        List.prototype.leftPage = true;
+        $(self.div).trigger("mmsrLeavePage", [self]);
+        $.ajax({ type: "GET", async: false, data: this.getListParameters(), url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
+        $(self.div).trigger("mmsrAfterLeavePage", [self]);
 
     }
     return result;
 }
-
-
-List.prototype.getRids = function() {
-    var rids = "";
-    for (r in List.prototype.instances) {
-        if (rids.length > 0) {
-            rids += ",";
-        }
-        rids += r;
-    }
-    return rids;
-}
-List.prototype.getRequestIds = function() {
-    var map = {};
-    for (r in List.prototype.instances) {
-        map[List.prototype.instances[r].requestid] = true;
-    }
-
-    var requestids = "";
-    for (r in map) {
-        if (requestids.length > 0) {
-            requestids += ",";
-        }
-        requestids += r;
-    }
-    return requestids;
-}
-
-List.prototype.allInstancesLeftPage = function() {
-    for (r in List.prototype.instances) {
-        if (!List.prototype.instances[r].leftPage) {
-            return false;
-        }
-    }
-    return true;
-}
-
-List.prototype.leavePage = function() {
-    $(self.div).trigger("mmsrLeavePage", [self]);
-    this.leftPage = true;
-
-    if (List.prototype.allInstancesLeftPage()) {
-        var params = {};
-        params.rids = List.prototype.getRids();
-        params.requestids = List.prototype.getRequestIds();
-        $.ajax({ type: "GET", async: false, data: params, url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
-    }
-    $(self.div).trigger("mmsrAfterLeavePage", [self]);
-}
-
-
 
 
 /**
@@ -768,7 +692,7 @@ List.prototype.getOrder = function(ol) {
     }
     var order = "";
     var self = this;
-    $(ol).find("> li").each(function() {
+    $(ol).find("li").each(function() {
             if (order != "") {
                 order += ",";
             }
@@ -829,13 +753,7 @@ List.prototype.getLiForNode = function(nodenumber) {
 }
 
 List.prototype.getNodeForLi  = function(li) {
-    var id = $(li).attr("id");
-    if (id != null) {
-	return id.substring(("node_" + this.rid + "_").length);
-    } else {
-	return null;
-    }
-
+    return $(li).attr("id").substring(("node_" + this.rid + "_").length);
 }
 
 List.prototype.getOriginalPosition  = function(li) {
@@ -843,7 +761,7 @@ List.prototype.getOriginalPosition  = function(li) {
     for (var i in classes) {
         var cl = classes[i];
         if (cl.indexOf("origPos-") == 0) {
-            return parseInt(cl.substring("origPos-".length));
+            return cl.substring("origPos-".length);
         }
     }
     alert(li);
@@ -855,43 +773,27 @@ List.prototype.afterPost = function() {
         var order = "";
         var originalOrder = "";
         var self = this;
-        var expectedOriginal = 0;
-        var needsSave = false;
-        self.find("ui-sortable", "ol").each(function() {
-	    $(this).find(">li").each(function() {
-		if (order != "") {
+        self.find(null, "li").each(function() {
+                if (order != "") {
                     order += ",";
                     originalOrder += ",";
-		}
-                var nodeNumber = self.getNodeForLi(this);
-		order += nodeNumber;
-                if (nodeNumber[0] === "-") {
-                    needsSave = true;
                 }
-                var originalPos =  self.getOriginalPosition(this);
-                if (originalPos != expectedOriginal) needsSave = true;
-		originalOrder += originalPos;
-                expectedOriginal++;
-	    });
-        });
+                order += self.getNodeForLi(this);
+                originalOrder += self.getOriginalPosition(this);
+            });
         var params = this.getListParameters();
         params.order = order;
         params.originalOrder = originalOrder;
         var self = this;
-        if (needsSave) {
-            this.loader();
-            this.log("Submitting order for " + this.rid + " " + params.originalOrder + "-> " + params.order );
-            $.ajax({ type: "POST",
-                        async: false,
-                        url: "${mm:link('/mmbase/searchrelate/list/submitOrder.jspx')}",
-                        data: params,
-                        complete: function(req, textStatus) {
-                        self.status('<fmt:message key="saved" />', true);
+        this.loader();
+        $.ajax({ type: "POST",
+                    async: false,
+                    url: "${mm:link('/mmbase/searchrelate/list/submitOrder.jspx')}",
+                    data: params,
+                    complete: function(req, textStatus) {
+                    self.status('<fmt:message key="saved" />', true);
                 }
-                });
-        } else {
-            //console.log("No need to save order for " + order + " " + originalOrder);
-        }
+            });
     }
 }
 
@@ -904,7 +806,7 @@ List.prototype.setupTinyMCE = function(ed) {
     // the current active editor
     var activeEditor = null;
 
-    // the method is 'saves' the editor, and replaces it with
+    // the method is 'saves' the editor, and replaces it with 
     // plain HTML
     var remove = function(ed) {
         if (ed.isDirty()) {
@@ -928,11 +830,11 @@ List.prototype.setupTinyMCE = function(ed) {
             activeEditor = ed;
         }
     }
-
+    
     // tinyMCE does not provide an actual blur event.
     // It is emulated by 'mousedown' on the entire page to detect blur
     // and a bunch of other events are used to detect entrance into the editor.
-
+    
     $("body").mousedown(function(ev) {
             if ($(ev.target).parents("span.mceEditor").length > 0) {
 		// clicked in an editor, ignore that.

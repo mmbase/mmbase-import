@@ -341,7 +341,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             getContextProvider().getContextContainer().unRegister(varStatusName);
         }
 
-        collector.doAfterBody(nextNode != null);
+        collector.doAfterBody();
 
         if (nextNode != null) {
             log.debug("using next-node");

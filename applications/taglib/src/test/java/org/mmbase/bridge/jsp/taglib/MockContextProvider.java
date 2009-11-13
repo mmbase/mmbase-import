@@ -15,10 +15,7 @@ import org.mmbase.bridge.jsp.taglib.util.*;
 import javax.servlet.jsp.PageContext;
 
 /**
- * This mocks an MMBase taglib 'contextprovider' tag, i.e. it provided a {@link ContextContainer},
- * and 'referid' attributes and the like can be resolved.
- *
- * @version $Id$
+ * @version $Id: BasicBacking.java 36504 2009-06-30 12:39:45Z michiel $
  */
 
 public  class MockContextProvider implements ContextProvider {
@@ -28,7 +25,7 @@ public  class MockContextProvider implements ContextProvider {
 
     public MockContextProvider(PageContext pageContext) {
         this.pageContext = pageContext;
-        container = new PageContextContainer(pageContext);
+        container = new StandaloneContextContainer("MOCK", new HashMap<String, Object>(), true);
     }
 
     public ContextContainer getContextContainer()  {

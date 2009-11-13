@@ -56,13 +56,9 @@ public class TransactionReferrerTag extends CloudReferrerTag {
     protected Transaction getTransactionVar() throws JspTagException {
         // find the parent transaction:
         TransactionTag tt = findTransactionTag(false);
-        if (tt != null) {
-            log.debug("Found transactiontag " + tt);
-            return (Transaction) tt.getCloudVar();
-        }
+        if (tt != null) return (Transaction) tt.getCloudVar();
         Transaction t = (Transaction) pageContext.getAttribute(TransactionTag.KEY, TransactionTag.SCOPE);
         if (t != null) {
-            log.debug("Found transaction " + t);
             return t;
         }
         throw new JspTagException("Could not find parent transaction provider");
@@ -72,7 +68,6 @@ public class TransactionReferrerTag extends CloudReferrerTag {
     @Override
     public int doStartTag() throws JspTagException{
         Transaction trans = getTransactionVar();
-        log.debug("Found transaction " + trans);
         doAction(trans);
         if (refresh.getBoolean(this, false)) {
             findTransactionTag(true).refreshTransaction();

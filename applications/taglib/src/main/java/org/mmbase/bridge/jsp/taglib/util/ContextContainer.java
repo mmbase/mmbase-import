@@ -118,7 +118,8 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
 
 
     /**
-     * Returns the Map which will be used for actually storing stuff.
+     * Returns the Map which will is used for actually storing stuff.
+     *
      * @since MMBase-1.8
      */
     public abstract Backing getBacking();
@@ -126,6 +127,8 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
 
     public void release(PageContext pc, ContextContainer p) {
         getBacking().pullPageContext(pc);
+        // restore also the parent.
+        parent = p;
     }
 
 
@@ -137,11 +140,22 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     }
 
     public Set<Entry<String, Object>> entrySet(boolean checkParent) {
-        return getBacking().entrySet();
+        if (parent == null || ! checkParent) {
+            return getBacking().entrySet();
+        } else {
+            HashMap<String, Object> result = new HashMap<String, Object>();
+            if (parent != null) {
+                result.putAll(parent);
+            }
+
+            result.putAll(getBacking());
+            return result.entrySet();
+        }
     }
 
 
     private   final String id;
+    protected ContextContainer parent;
 
 
     /**
@@ -150,8 +164,9 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
      * has an id.
      */
 
-    public ContextContainer(String i) {
+    public ContextContainer(String i, ContextContainer p) {
         id = i;
+        parent = p;
     }
 
     public String getId() {
@@ -166,12 +181,15 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
             log.debug("Setting parent of " + getClass() + " "  + this + " to " + pc + " backing " + getBacking().getClass());
         }
         getBacking().pushPageContext(pc);
+        parent = p;
     }
 
     /**
      * @since MMBase-1.7
      */
-    public abstract ContextContainer getParent();
+    public ContextContainer getParent() {
+        return parent;
+    }
 
     /**
      * @since MMBase-1.8.3
@@ -221,8 +239,8 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
             // find the Context:
             boolean wentDown = true;
             Object c = simpleGet(contextKey, checkParent);
-            if(c == null && checkParent && getParent() != null) {
-                c =  getParent().get(key, true);
+            if(c == null && checkParent && parent != null) {
+                c =  parent.get(key, true);
                 wentDown = false;
             }
 
@@ -247,9 +265,17 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     /**
      * Like containsKey but doesn't check for dots.
      */
-    protected boolean simpleContainsKey(String key, boolean checkParent) {
-        return getBacking().containsKey(key);
-
+    private boolean simpleContainsKey(String key, boolean checkParent) {
+        if (getBacking().containsKey(key)) {
+            return true;
+        } else if (checkParent && parent != null) {
+            if (log.isDebugEnabled()) {
+                log.debug("Checking " + parent + " for " + key);
+            }
+            return parent.simpleContainsKey(key, true);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -289,7 +315,11 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
      * Like get, but does not try to search dots, because you know already that there aren't.
      */
     protected Object simpleGet(String key, boolean checkParent) { // already sure that there is no dot.
-        return getBacking().getOriginal(key);
+        Object result =  getBacking().getOriginal(key);
+        if (result == null && checkParent && parent != null) {
+            return parent.simpleGet(key, true);
+        }
+        return result;
     }
 
     /**
@@ -319,8 +349,16 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     /**
      * @since MMBase-1.7
      */
-    protected Set<String> keySet(boolean checkParent) {
-        return getBacking().keySet();
+    Set<String> keySet(boolean checkParent) {
+        if (checkParent && parent != null) {
+            HashSet<String> result = new HashSet<String>(getBacking().keySet());
+            if (parent != null) {
+                result.addAll(parent.keySet());
+            }
+            return result;
+        } else {
+            return getBacking().keySet();
+        }
     }
 
     // utilities, since MMBase-1.7 moved from ContextTag to here.
@@ -607,9 +645,9 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
         }
         break;
         case LOCATION_PARENT:
-            if (getParent() != null) {
-                if (getParent().containsKey(referId, true)) {
-                    result = getParent().get(referId);
+            if (parent != null) {
+                if (parent.containsKey(referId, true)) {
+                    result = parent.get(referId);
                     if (result == this) { // don't find this tag itself...
                         result = null;
                     }

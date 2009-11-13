@@ -35,22 +35,17 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     private static final Logger log = Logging.getLoggerInstance(BasicBacking.class);
 
     private static final String PAGECONTEXT_KEY = "org.mmbase.taglib.basicbacking$";
-    //private static final String PAGECONTEXT_KEY = "org.mmbase.taglib.basicbacking$";
 
     private static int uniqueNumbers = 0;
     private static final int SCOPE = PageContext.PAGE_SCOPE;
 
     private final int uniqueNumber = ++uniqueNumbers;
 
-    /**
-     * In this map we keep track of what should be in the page context when this backing is {@link #release}d.
-     */
     protected Map<String, Object> originalPageContextValues;
-    protected Set<String> myPageContextKeys;
     private final Map<String, Object> b; // the actual backing.
 
-    protected final boolean isELIgnored;
-    protected transient PageContext pageContext;
+    private final boolean isELIgnored;
+    private  transient PageContext pageContext;
 
     /**
      * @param pc The page-context to which variables must be reflected or <code>null</code> if this must not happen.
@@ -64,7 +59,6 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
         }
         if (! isELIgnored) {
             originalPageContextValues = new HashMap<String, Object>();
-            myPageContextKeys = new HashSet<String>();
             pageContext.setAttribute(PAGECONTEXT_KEY + uniqueNumber, originalPageContextValues);
         } else {
             originalPageContextValues = null;
@@ -91,7 +85,6 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     }
 
     public void pushPageContext(PageContext pc) {
-        PageContext origPageContext = pageContext;
         pageContext = pc;
         if (isELIgnored) {
             log.debug("EL ignored");
@@ -105,15 +98,11 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
             originalPageContextValues = new HashMap<String, Object>();
             pageContext.setAttribute(PAGECONTEXT_KEY + uniqueNumber, originalPageContextValues);
         }
-        if (! origPageContext.equals(pageContext)) {
-            for (Map.Entry<String, Object> entry : b.entrySet()) {
-                mirrorPut(entry.getKey(), entry.getValue());
-            }
+        for (Map.Entry<String, Object> entry : b.entrySet()) {
+            mirrorPut(entry.getKey(), entry.getValue());
         }
     }
     public void pullPageContext(PageContext pc) {
-        //System.out.println("Pulling " + pc);
-        release();
         pageContext = pc;
         if (isELIgnored) return;
         originalPageContextValues = (Map<String, Object>) pageContext.getAttribute(PAGECONTEXT_KEY + uniqueNumber);
@@ -138,7 +127,6 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
 
     }
 
-    @Override
     public Set<Map.Entry<String, Object>> entrySet() {
         return new AbstractSet<Map.Entry<String, Object>>() {
                 public int size() {
@@ -188,16 +176,10 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
         };
     }
 
-    /**
-     * Put the value also in the 'parent' of this backing.
-     * @param reset If true (default it's false) allow the already existing value in the parent to be replaced.
-     * @since MMBase-1.9.2
-     */
-    protected void mirrorPut(String key, Object value, boolean reset) {
+    protected void mirrorPut(String key, Object value) {
         if (log.isDebugEnabled()) {
             log.debug("Mirror putting " + key + "=" + value + " in a " + getClass() + "( " + uniqueNumber + ") with  pageContext " + pageContext);
         }
-        //System.out.println("Mirror putting " + key + "=" + value + " in a " + getClass() + "( " + uniqueNumber + ") with  pageContext " + pageContext + " (ELIgnored " + isELIgnored + ")");
         if (isELIgnored) {
             log.debug("EL IGNORED!");
             return;
@@ -205,37 +187,21 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
 
         if (! originalPageContextValues.containsKey(key)) {
             // log.debug("Storing pageContext key " + key);
-            Object prevValue = pageContext.getAttribute(key, SCOPE);
-            originalPageContextValues.put(key, prevValue);
+            originalPageContextValues.put( key, pageContext.getAttribute(key, SCOPE));
         }
-
-        //System.out.println("MP " + uniqueNumber + " --> " + pageContextValues + "(" + myPageContextKeys + ")");
         if (value != null) {
             pageContext.setAttribute(key, Casting.wrap(value, (CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
         } else {
             pageContext.removeAttribute(key, SCOPE);
         }
-
-
     }
-
-    protected void mirrorPut(String key, Object value) {
-        mirrorPut(key, value, false);
-    }
-
-    public Object put(String key, Object value, boolean reset) {
-        mirrorPut(key, value, reset);
+    public Object put(String key, Object value) {
+        mirrorPut(key, value);
         return b.put(key, value);
     }
 
-    @Override
-    public Object put(String key, Object value) {
-        return put(key, value, false);
-    }
-
     // overriden for efficiency only (the implementation of AbstractMap does not seem very efficient)
-    @Override
-    public Object get(Object key) {
+    public Object get(String key) {
         return b.get(key);
     }
 
@@ -251,7 +217,6 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     }
 
     void release() {
-        //System.out.println("Restoring with " + originalPageContextValues);
         if (originalPageContextValues != null && pageContext != null) {
             //log.debug("Restoring pageContext with " + originalPageContextValues);
             // restore the pageContext
@@ -273,7 +238,6 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
         return isELIgnored;
     }
 
-    @Override
     public String toString() {
         return "BASIC BACKING " + super.toString();
     }

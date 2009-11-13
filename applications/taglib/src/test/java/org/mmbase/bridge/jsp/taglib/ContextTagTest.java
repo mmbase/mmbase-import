@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 
 /**
- * @version $Id$
+ * @version $Id: BasicBacking.java 36504 2009-06-30 12:39:45Z michiel $
  */
 
 public  class ContextTagTest {
@@ -30,8 +30,6 @@ public  class ContextTagTest {
         ContextTag tag = new ContextTag();
         tag.setPageContext(pageContext);
         tag.doStartTag();
-        assertNotNull(tag.getContextProvider());
-
         tag.register("a", "A");
         try {
             tag.register("a", "B");
@@ -40,15 +38,9 @@ public  class ContextTagTest {
             // ok
         }
         assertEquals("A", pageContext.getAttribute("a"));
-        assertEquals("A", tag.getObject("a"));
-
-        System.out.println("container impl: " + tag.getContextContainer().getClass().getName());
         tag.doAfterBody();
         tag.doEndTag();
-
-        assertEquals(null, pageContext.getAttribute("a"));
     }
-
 
 
 }

@@ -33,7 +33,7 @@ public class PageContextContainer extends ContextContainer {
      * has an id.
      */
     public PageContextContainer(final PageContext pc) {
-        super("PAGECONTEXT");
+        super("PAGECONTEXT", null);
         if (log.isDebugEnabled()) {
             log.debug("Creating pagecontext container for " + pc);
         }
@@ -42,24 +42,12 @@ public class PageContextContainer extends ContextContainer {
         backing = new PageContextBacking(pc);
     }
 
-    @Override
     public void release(PageContext pc, ContextContainer p) {
         backing.release();
     }
 
-    @Override
     public PageContextBacking getBacking() {
         return backing;
-    }
-
-    @Override
-    public void setParent(PageContext pc, ContextContainer p) {
-        throw new IllegalStateException();
-    }
-
-    @Override
-    public ContextContainer getParent() {
-        return null;
     }
 
 }

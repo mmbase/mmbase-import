@@ -30,7 +30,28 @@
   </scm>
 
   <build>
-
+	<resources>
+		<resource>
+			<directory>${basedir}/target/generated-resources/xml/xslt</directory>
+			<targetPath>META-INF</targetPath>
+			<includes>
+				<include>**</include>
+			</includes>
+		</resource>
+		<resource>
+			<directory>${basedir}/src/main/resources</directory>
+			<includes>
+				<include>**/*</include>
+			</includes>
+		</resource>
+		<resource>
+			<directory>${basedir}/src/main/config</directory>
+			<targetPath>org/mmbase/config</targetPath>
+			<includes>
+				<include>**/*</include>
+			</includes>
+		</resource>
+	</resources>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -62,8 +83,7 @@
         <configuration>
           <transformationSets>
             <transformationSet>
-              <outputDir>${basedir}/target/generated/src/main/resources/META-INF</outputDir>
-              <dir>${basedir}/src/main/xml/</dir>
+              <dir>${basedir}/src/main/resources/</dir>
               <stylesheet>${basedir}/../share/xslt/xml2tld.xslt</stylesheet>
               <parameters>
                 <parameter><name>version</name><value>2.0</value></parameter>
@@ -77,8 +97,7 @@
               </fileMappers>
             </transformationSet>
             <transformationSet>
-              <outputDir>${basedir}/target/generated/src/main/resources/META-INF</outputDir>
-              <dir>${basedir}/src/main/xml/</dir>
+              <dir>${basedir}/src/main/resources/</dir>
               <stylesheet>${basedir}/../share/xslt/xml2tld.xslt</stylesheet>
               <includes><include>mmbase-taglib.xml</include></includes>
               <fileMappers>
@@ -117,38 +136,6 @@
         </executions>
       </plugin>
       -->
-      <plugin>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <version>7.0.0.pre5</version>
-        <configuration>
-          <!--
-          <jettyEnvXml>${basedir}/jetty-env.xml</jettyEnvXml>
-          -->
-          <systemProperties>
-          </systemProperties>
-          <webXml>${basedir}/src/test/webapp/WEB-INF/web.xml</webXml>
-          <webAppConfig>
-            <contextPath>/mmbase-taglib-test</contextPath>
-            <baseResource implementation="org.mortbay.resource.ResourceCollection">
-              <resourcesAsCSV>src/main/webapp,${basedir}/target/classes,src/test/webapp</resourcesAsCSV>
-            </baseResource>
-          </webAppConfig>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.mmbase</groupId>
-            <artifactId>mmbase-rmmci</artifactId>
-            <version>${project.version}</version>
-            <classifier>client</classifier>
-          </dependency>
-          <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>1.2.1</version>
-          </dependency>
-        </dependencies>
-        </plugin>
     </plugins>
   </build>
 

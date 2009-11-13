@@ -7,14 +7,13 @@
 
   <mm:node number="default.mags">
     <h3><mm:field name="title" /></h3>
-    <mm-sr:relatednodes
+    <mm-srt:relatednodes
         type="news"
         unlink="true"
         max="6"
         sortable="true"
         config="mysearch"
-        search="true"
-        />
+        search="true" />
   </mm:node>
   <hr />
   <mm:escape escape="links">$URL$</mm:escape>

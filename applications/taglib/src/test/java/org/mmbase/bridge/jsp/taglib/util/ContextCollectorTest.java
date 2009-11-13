@@ -25,7 +25,7 @@ import static org.junit.Assume.*;
 
 
 /**
- * @version $Id$
+ * @version $Id: BasicBacking.java 36504 2009-06-30 12:39:45Z michiel $
  */
 
 public  class ContextCollectorTest {
@@ -34,57 +34,12 @@ public  class ContextCollectorTest {
     @Test
     public void basic() throws Exception {
         PageContext pageContext = new MockPageContext();
+        ContextCollector collector = new ContextCollector(new MockContextProvider(pageContext));
 
-        ContextTag context = new ContextTag();
-        context.setPageContext(pageContext);
-        context.doStartTag();
-        assertNotNull(context.getContextContainer());
+        collector.put("a", "A");
+        assertEquals("A", collector.get("a"));
+        assertEquals("A", pageContext.getAttribute("a"));
 
-        context.getContextContainer().register("x", "X");
-
-
-        {
-            ContextCollector collector = new ContextCollector(context);
-
-            collector.register("a", "A");
-            assertEquals("A", collector.get("a"));
-            assertEquals("A", pageContext.getAttribute("a"));
-
-            try {
-                collector.register("x", "Y");
-                fail("Should already be registered");
-            } catch (Exception e) {
-            }
-
-            collector.doAfterBody(true);
-
-            collector.register("a", "B", false);
-
-            assertEquals("B", collector.get("a"));
-            assertEquals("B", pageContext.getAttribute("a"));
-
-
-            collector.doAfterBody(true);
-
-            collector.register("a", "C", false);
-
-            assertEquals("C", collector.get("a"));
-            assertEquals("C", pageContext.getAttribute("a"));
-
-            collector.doAfterBody(false);
-            collector.release(pageContext, context.getContextContainer());
-        }
-
-        assertEquals("C", context.getContextContainer().get("a"));
-        assertEquals("C", pageContext.getAttribute("a"));
-
-        assertEquals("X", context.getContextContainer().get("x"));
-        assertEquals("X", pageContext.getAttribute("x"));
-
-
-    }
-    @Test
-    public void mmb1702() {
 
     }
 

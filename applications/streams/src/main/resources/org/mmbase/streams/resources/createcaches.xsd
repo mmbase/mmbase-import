@@ -54,14 +54,12 @@
   <xsd:element name="localhost">
     <xsd:complexType>
       <xsd:attribute name="max_simultaneous_transcoders" type="xsd:integer" use="required" />
-      <xsd:attribute name="stage"                        type="type_stage"  use="required" />
     </xsd:complexType>
   </xsd:element>
 
   <xsd:element name="server">
     <xsd:complexType>
       <xsd:attribute name="max_simultaneous_transcoders" type="xsd:integer"  use="required" />
-      <xsd:attribute name="stage"                        type="type_stage"   use="required" />
       <xsd:attribute name="host" type="xsd:string"  use="required" />
       <xsd:attribute name="port" type="xsd:integer" use="required" />
     </xsd:complexType>
@@ -94,12 +92,5 @@
       <xsd:attribute name="value" type="xsd:string" />
     </xsd:complexType>
   </xsd:element>
-
-  <xsd:simpleType name="type_stage">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="recognizer" />
-      <xsd:enumeration value="transcoder" />
-    </xsd:restriction>
-  </xsd:simpleType>
 
 </xsd:schema>

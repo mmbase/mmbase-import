@@ -10,8 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.util;
 
-import org.mmbase.bridge.jsp.taglib.*;
-
 import javax.servlet.jsp.PageContext;
 import org.springframework.mock.web.*;
 
@@ -22,105 +20,24 @@ import static org.junit.Assume.*;
 
 
 /**
- * @version $Id$
+ * @version $Id: BasicBacking.java 36504 2009-06-30 12:39:45Z michiel $
  */
 
 public  class BasicBackingTest {
 
 
-
-    @Test
-    public void mirrorPut() {
-        PageContext pageContext = new MockPageContext();
-        pageContext.setAttribute("a", "X");
-        pageContext.setAttribute("b", "Y");
-
-        BasicBacking backing = new BasicBacking(pageContext, false);
-
-        backing.mirrorPut("a", "A", false);
-        backing.mirrorPut("b", "B", true);
-        backing.mirrorPut("c", "C", false);
-
-        assertEquals("A", pageContext.getAttribute("a"));
-        assertEquals("B", pageContext.getAttribute("b"));
-        assertEquals("C", pageContext.getAttribute("c"));
-
-        assertEquals("X",  backing.originalPageContextValues.get("a"));
-        assertEquals("Y",  backing.originalPageContextValues.get("b"));
-        assertEquals(null,  backing.originalPageContextValues.get("c"));
-
-        backing.release();
-
-        assertEquals("X", pageContext.getAttribute("a"));
-        assertEquals("Y", pageContext.getAttribute("b"));
-        assertEquals(null, pageContext.getAttribute("c"));
-
-
-    }
-
     @Test
     public void basic() {
-        // put something on the pageContext
-        // use a backing
-        // check the pageContext
-
         PageContext pageContext = new MockPageContext();
-        pageContext.setAttribute("a", "X");
-
-
         BasicBacking backing = new BasicBacking(pageContext, false);
-        // - put something in.   (a -> A)
-        // - put something else in (b-> B)
-        // (the point is that one of those was already in the pageContext(.
-
         backing.put("a", "A");
-        assertEquals("A", backing.get("a"));
-        if (pageContext != null) {
-            assertEquals("A", pageContext.getAttribute("a"));
-        }
-
-
-        backing.put("b", "B");
-
-        assertEquals("B", backing.get("b"));
-        if (pageContext != null) {
-            assertEquals("B", pageContext.getAttribute("b"));
-        }
-
-
-        backing.release();
-
-        assertEquals(null, pageContext.getAttribute("b"));
-        assertEquals("X", pageContext.getAttribute("a"));   // should have the original value
-
-    }
-
-    @Test
-    public void reset() {
-        // put something on the pageContext
-        // use a backing, in which we _reset_ that value
-        // check the pageContext
-
-        PageContext pageContext = new MockPageContext();
-        pageContext.setAttribute("a", "X");
-
-        BasicBacking backing = new BasicBacking(pageContext, false);
-
-        pageContext.setAttribute("a", "X");
-
-        backing.put("a", "A", true);
         assertEquals("A", backing.get("a"));
         assertEquals("A", pageContext.getAttribute("a"));
 
-        backing.put("a", "AA", true);
-        assertEquals("AA", backing.get("a"));
-        assertEquals("AA", pageContext.getAttribute("a"));
-
         backing.release();
 
-        assertEquals("X", pageContext.getAttribute("a"));
+        assertEquals(null, pageContext.getAttribute("a"));
 
     }
-
 
 }

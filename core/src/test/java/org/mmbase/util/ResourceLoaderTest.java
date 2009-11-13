@@ -88,9 +88,4 @@ public class ResourceLoaderTest {
         assertTrue(u.toString(), u.toString().endsWith("/mmbase-tests-1.jar!/org/mmbase/config/builders/core/object.xml"));
     }
 
-    @Test
-    public void getDocument() throws Exception {
-        assertNull(ResourceLoader.getConfigurationRoot().getDocument("doesnotexist.xml"));
-    }
-
 }

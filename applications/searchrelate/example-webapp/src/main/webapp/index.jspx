@@ -28,42 +28,11 @@
           .todo .done {
             text-decoration: line-through;
           }
-
-          div.session {
-          float: right;
-          width: 30%;
-          background-color: #eeb;
-          border: solid 1px;
-          }
-
         </style>
       </head>
       <body>
+        <jsp:scriptlet>((HttpServletRequest) pageContext.getRequest()).getSession(true).invalidate();</jsp:scriptlet>
         <h1>Search and Relate examples/tests</h1>
-
-        <div class="session">
-          <mm:import externid="invalidate" />
-          <mm:present referid="invalidate">
-            <jsp:scriptlet>pageContext.getSession().invalidate();</jsp:scriptlet>
-            <mm:redirect referids="${referids}" page="/" />
-          </mm:present>
-          <p>
-            <mm:link referids="${referids}">
-              <mm:param name="invalidate">now</mm:param>
-              <a href="${_}">Invalidate</a>
-            </mm:link>
-          </p>
-          <mm:notpresent referid="invalidate">
-            <table>
-              <c:forEach items="${sessionScope}" var="entry">
-                <tr>
-                  <td><mm:escape>${entry.key}</mm:escape></td>
-                  <td><mm:escape>${entry.value}</mm:escape></td>
-                </tr>
-              </c:forEach>
-            </table>
-          </mm:notpresent>
-        </div>
 
 
         <h2>mm-sr:relatednodes</h2>
