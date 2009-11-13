@@ -1,0 +1,17 @@
+<jsp:root version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <mm:field name="context">
+    <mm:isnotempty>
+      <mm:functioncontainer>
+        <mm:param name="operation">write</mm:param>
+        <mm:param name="usertocheck"><mm:cloudinfo type="usernode" /></mm:param>
+        <mm:function id="may" name="may" write="false" />
+      </mm:functioncontainer>
+    </mm:isnotempty>
+  </mm:field>
+  <c:if test="${empty may or may}">
+    <jsp:doBody />
+  </c:if>
+</jsp:root>

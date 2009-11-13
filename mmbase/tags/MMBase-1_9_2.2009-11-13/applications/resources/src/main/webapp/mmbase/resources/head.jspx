@@ -1,0 +1,17 @@
+<jsp:root 
+    version="1.2"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns="http://www.w3.org/1999/xhtml"
+    >
+  
+  <mm:link page="/mmbase/components/resources/images.css">
+    <mm:log>Found ${_}</mm:log>
+    <link rel="stylesheet" href="${_}" type="text/css" ><jsp:text> </jsp:text></link>
+  </mm:link>  
+  <mm:link page="/mmbase/style/js/mmbase.js">
+    <script type="text/javascript" src="${_}"> 
+      <jsp:text> </jsp:text>
+    </script>
+  </mm:link>
+</jsp:root>

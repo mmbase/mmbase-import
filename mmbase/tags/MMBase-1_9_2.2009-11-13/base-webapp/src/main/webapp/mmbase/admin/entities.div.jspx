@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<div
+    class="mm_c mm_c_core mm_c_b_entities ${requestScope.componentClassName}"
+    id="${requestScope.componentId}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.page import="org.mmbase.framework.*,java.util.*,java.io.*" />
+  <mm:content type="application/xhtml+xml" language="en_US" expires="0" postprocessor="none">
+    <h1>Entities review page</h1>
+    <mm:cloud>
+      <p>${mm:string(requestScope["org.mmbase.framework.renderer"].block.description)}</p>
+      <p>Available entities:</p>
+      <ul>
+        <jsp:scriptlet>
+          BufferedReader r  = new BufferedReader(new org.mmbase.util.XMLEntityResolver().resolveEntity(null, "http://www.mmbase.org/mmentities.ent").getCharacterStream());
+          String line = r.readLine();
+          while (line != null) {
+        </jsp:scriptlet>
+        <li>
+          <pre>
+            <mm:import id="l" reset="true"><jsp:expression>line</jsp:expression></mm:import>
+            <mm:write referid="l" />
+          </pre>
+        </li>
+        <jsp:scriptlet>
+          line = r.readLine();
+          }
+        </jsp:scriptlet>
+      </ul>
+    </mm:cloud>
+  </mm:content>
+</div>

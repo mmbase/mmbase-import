@@ -1,0 +1,144 @@
+===================================================================
+                     MMBase 1.9.0 - Installation
+===================================================================  
+ 
+MMBase is distributed as a webapplication, it's not packaged as a .war
+file, but the structure is the same. In order to install and get
+MMBase running, you must do the following:
+
+1. Download and install a Java Development Kit (j2sdk-1.5.x or newer).
+
+2. Download and install a Servlet Engine or an Applicationserver
+   (check if the Servlet Engine is up and running and if you can use
+   the jsp-examples), see releasenotes for tested Servlet Engines.
+   On default  the distro nees web-app 2.4. If the application server does not  support that
+   (e.g. Tomcat 4). then you need to replace web.xml with web-2.3.xml and mmbase-taglib-2.jar with
+   mmbase-taglib.jar.
+
+3. Download and install ImageMagick. See note below if you're having
+   problems with Imagemagick or don't want to use it.
+
+4. Copy the subdir mmbase-webapp into the servlet-engine's webapps
+   dir, or point to it in a configuration file (e.g. server.xml of tomcat).
+
+5. If ImageMagick's convert isn't in your path, edit
+   <mmbase-webapp/WEB-INF/config/applications/Resources/builders/images.xml>
+   (if you haven't installed the Resources application) or 
+   <mmbase-webapp/WEB-INF/config/builders/applications/builders/images.xml>
+   (if you already installed the Resources applications) for the
+   location of this tool.
+   
+6. Start servlet-engine if you want to use the default MMBase-config
+   (uses a hsqldb-database), or goto step 9 for changing default
+   configuration. 
+
+7. Check if mmbase is running using the following url:
+   <http://localhost:port/mmbase-webapp/version> 
+
+8. If this is running, goto <http://localhost:port/mmbase-webapp/> to
+   see an infopage about MMBase and links to editors, admin, examples,
+   etc. Use admin/admin2k when you're asked to login (see notes below
+   how to change this).
+
+9. Edit jdbc.xml a(in <mmbase-webapp/WEB-INF/config/modules>) for using a different database (see
+   releasenotes for tested databases). If the database is explicitely mentioned in mmbaseroot.xml
+   you should also change that.
+   
+    Other interesting settings can be found in
+   <mmbase-webapp/WEB-INF/config/security/context/config.xml> (users, groups, and contextes), and in
+   <mmbase-webapp/WEB-INF/config/log/log4j.xml> (logfile configuration and so on).
+
+10. You may want to replace the security implementation by e.g. cloud context security. Remove
+     the entire config/security and place mmbase-cloudcontextsecurity.jar in WEB-INF/lib to do that.
+
+11. For more information about installation en configuration see:
+    <http://localhost:8080/mmbase-webapp/mmdocs/administrators/install-tomcat.html>
+    <http://localhost:8080/mmbase-webapp/mmdocs/administrators/configuration.html>
+
+12. If you have any kind of problem goto:
+    website: <http://www.mmbase.org/>
+    irc: #mmbase at slashnet
+
+
+===================================================================
+                    Additional Installation Notes
+===================================================================  
+
+MMBASE SECURITY
+----------------------------------------------------------------------------------
+Check out the <mmbase-webapp/WEB-INF/config/security> dir, to
+customize the security settings. You _SHOULD CHANGE THE ADMIN
+PASSWORD_, and also the other passwords, if your setup is more then
+just a try-out.
+
+If you are not going to use MMBase security, you should not leave
+jsp-editors and admin pages unprotected (by e.g. tomcat or apache
+security). Remove them altogether if unsure (the /mmbase/edit/ and
+/mmbase/admin directories).
+
+The same goes for editwizards if you are going to install those.
+
+The shipped mmexamples directory is DANGEROUS and you should NOT leave
+it in a production site. It contains for the sake of _examples_
+various editors and e.g. a generic jsp to show the source code of
+other jsp's. Generally, for a production site, it is best to remove
+all jsp's which are shipped with this distro, besides the ones you are
+planning to actually use. 
+
+
+WEB-APPLICATION POLICY ISSUES
+----------------------------------------------------------------------------------
+Some application servers, such as the Sun Java System Application Server, put restrictions on 
+what web-applications can do. 
+To run MMBase in such web-application servers, you need to give the
+application a number of permisions, including the use of
+Classloaders for the MMBase web-applications, or they won't run.
+In the Sun Java System Application Server you configure this in the
+server.policy configuration file. Add:
+
+// permissions needed for MMBase
+grant {
+	// org.mmbase.util.ResourceLoader is a ClassLoader
+        permission java.lang.RuntimePermission  "createClassLoader";
+	// org.mmbase.util.ResourceLoader specified stream handlers
+        permission java.net.NetPermission       "specifyStreamHandler";
+
+	// org.mmbase.security.MMBaseCop is a SecurityManager
+        permission java.lang.RuntimePermission  "createSecurityManager";
+
+
+	// for RMMCI
+        permission java.util.PropertyPermission "java.rmi.server.hostname", "write";
+
+	// for documentation rendering in the admin pages:
+        permission java.io.FilePermission "${catalina.base}${file.separator}work${file.separator}-", "read,write,delete";
+        permission java.net.SocketPermission "scm.mmbase.org:80", "connect";
+        permission java.net.SocketPermission "*.oasis-open.org:80", "connect";
+
+};
+
+You may want to limit this permission to specific applications.
+Consult your server documentation and the java documentation for the various
+Permission classes for more information.
+
+
+IMAGE MAGICK:
+-----------------------------------------------------------------------------------
+Imagemagick does work with Windows 98/ME, but MMBase is not able to
+use it. You have to use Jai (Java Advanced Imaging API). You can do
+this by changing the properties in
+<mmbase-webapp/WEB-INF/config/builders/applications/images.xml> (if
+you've already installed the Resources application) or 
+<mmbase-webapp/WEB-INF/config/applications/Resources/builders/images.xml>
+(if you haven't installed the Resources applications) into:
+
+<properties> 
+  <property name="ImageConvertClass">org.mmbase.module.builders.ConvertJAI</property> 
+  <property name="MaxConcurrentRequests">20</property> 
+</properties>
+
+Please keep in mind that the image builder is less powerfull when
+using JAI instead of Imagemagick.
+
+When using ImageMagick in JVM with substantial amount of the total memory of a UNIX system, you may
+want to use the 'command server' to avoid errors because of the 'fork' required by a Runtime.exec.

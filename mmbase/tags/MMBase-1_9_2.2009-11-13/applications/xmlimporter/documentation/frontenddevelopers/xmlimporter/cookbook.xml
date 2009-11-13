@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<article>
+  <articleinfo>
+    <title>Merging Objects Cookbook</title>
+    <date>2004-11-04</date>
+    <edition>$Id$</edition>
+    <authorgroup>
+      <author>
+        <firstname>Rob</firstname>
+        <surname>van Maris</surname>
+        <affiliation>
+          <orgname>Finalist IT Group</orgname>
+        </affiliation>
+      </author>
+    </authorgroup>
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+  </articleinfo>
+
+  <section>
+    <title>Introduction</title>
+
+    <para>The most important new concept introduced by XML Importer is merging objects.
+    The XML Importer code will handle most of the details for you, and in order to put this to work, all you will have to do is provide implementations for these interfaces:</para>
+    <itemizedlist>
+      <listitem><simpara><classname>SimilarObjectFinder</classname></simpara></listitem>
+      <listitem><simpara><classname>ObjectMerger</classname></simpara></listitem>
+    </itemizedlist>
+    <para>The XML Importer provides basic implementations for both of these, but some additional work will be necessary to meet your needs.</para>
+    <para>In this document we'll have a look at some of the issues involved, and give some guidelines.</para>
+  </section>
+
+  <section>
+    <title>SimilarObjectFinder</title>
+    <para>When we have populated a transaction with (access and input) objects, we can merge all objects of a given type. In order to do so, the XML Importer performs these actions:</para>
+    <orderedlist>
+      <listitem><simpara>Walk through the list of objects in the transaction - in the order they were added to the transaction - of the given type.</simpara></listitem>
+      <listitem><simpara>For each such object, look for a similar object.</simpara></listitem>
+      <listitem><simpara>If a similar object is found, merge both objects to a single object.</simpara></listitem>
+      <listitem><simpara>If more than one similar object is found, the transaction cannot proceed, unless the user can choose the object to merge with.</simpara></listitem>
+    </orderedlist>
+    <para>The SimilarObjectFinder is needed to implement step 2. One fairly general way to do this is implemented by BasicFinder, which makes a distinction between <emphasis>exact matches</emphasis> (i.e. indistinguishable) and <emphasis>non-exact matches</emphasis> (e.g. different, but considered to be the same, based on some specified criteria - i.e. fuzzy comparison):</para>
+    <orderedlist>
+      <listitem><simpara>Walk through the list of objects in the transaction, that were added before this one, compare these with this object, and keep the results as a list of exact matches and a list of non-exact matches.</simpara></listitem>
+      <listitem><simpara>Look for exact matches in the persistent cloud</simpara></listitem>
+      <listitem><simpara>If exact matches were found in step 1 or 2, these are returned as the result of the search.</simpara></listitem>
+      <listitem><simpara>Otherwise, look for objects in the persistent cloud that are close enough to warrant further inspection, and compare these with this object.</simpara></listitem>
+      <listitem><simpara>If non-exact matches were found in step 1 or 4, these are returned as the result of the search.</simpara></listitem>
+    </orderedlist>
+    <para>This strategy has these characteristics:</para>
+    <itemizedlist>
+      <listitem><simpara>If the transaction introduces a number of similar objects, these are merged one by one, in the order they were added to the transaction.</simpara></listitem>
+      <listitem><simpara>If an exact match is found, the non-exact matches are ignored.</simpara></listitem>
+      <listitem><simpara>Searching the persistent cloud for non-exact matches occurs only if no exact match is found (performance optimimalization).</simpara></listitem>
+      <listitem><simpara>Searching the persistent cloud for non-exact matches is performed in two parts: selecting objects that are close enough, followed by comparing these objects with this object (performance optimalization, since this reduces the number of objects to be compared).</simpara></listitem>
+    </itemizedlist>
+    <para>For examples of implementation based on BasicFinder, see MoviesFinder and PersonsFinder in the XML Importer examples code.</para>
+  </section>
+
+  <section>
+    <title>ObjectMerger</title>
+    <para>The ObjectMerger is needed to implement merging two objects to a single object. In order to do so, the XML Importer performs these actions:</para>
+    <orderedlist>
+      <listitem><simpara>If one of the objects represents a persistent object, this object is made the <emphasis>merge target</emphasis>, e.g. the object that will hold the merge result.</simpara></listitem>
+      <listitem><simpara>The fields of both objects are merged - the resulting fields are set on the merge target.</simpara></listitem>
+      <listitem><simpara>The relations of both objects are merged - the resulting relations are set to the merge target.</simpara></listitem>
+      <listitem><simpara>If step 3 results in duplicate relations, the duplicating relations are deleted.</simpara></listitem>
+      <listitem><simpara>Of the two objects, only the merge target is retained - the object that is not the merge target is deleted.</simpara></listitem>
+      <listitem><simpara>If there was no similar object to merge with, this object will only be kept in the transaction if the ObjectMerger specifies so (see method <methodname>isAllowedToAdd()</methodname> in ObjectMerger).</simpara></listitem>
+    </orderedlist>
+    <para>A fairly general implementation is provided by BasicMerger, which has these characteristics:</para>
+    <itemizedlist>
+      <listitem><simpara>The fields of the merge target are unaffected (e.g. the merge result has the same fields of the merge target).</simpara></listitem>
+      <listitem><simpara>The relations of both objects are moved to the merge result.</simpara></listitem>
+      <listitem><simpara>Relations are considered duplicates when of same type and with same source and destination (e.g. in this case the duplicating relations are deleted).</simpara></listitem>
+      <listitem><simpara>Objects for which no similar object is found, are kept in the transaction.</simpara></listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Tips</title>
+    <itemizedlist>
+      <listitem><simpara>As a general rule, keep the transactions small.</simpara></listitem>
+      <listitem><simpara>If a number of transactions involve merging with the same objects over and over, it is worthwhile to combine these into a single transaction.</simpara></listitem>
+      <listitem><simpara>Within a transaction, the same object in the persistent cloud can be accessed repeatedly (e.g. &lt;accessObject mmbaseId="12345" id="id12345"&gt;), provided the same id is used each time. This proves handy when the XML file containing the TCP code is generated by a stylesheet transformation, where it can be hard to establish if an object had been accessed within the same transaction already. Just use the mmbaseId to create a unique id, so the same id will be used when accessing the same object again.</simpara></listitem>
+      <listitem><simpara>When it comes to performance and resources, merging objects can be expensive, therefore try to <emphasis>use the merging mechanism only when really needed</emphasis>. As an alternative, in many cases objects can be be accessed directly using their mmbase id.</simpara></listitem>
+      <listitem><simpara>If you want to see wich objects are merged, set logging priority for the class <classname>Transaction</classname> to "debug", and look at the log output of the Transaction method <methodname>commit()</methodname>.</simpara></listitem>
+      <listitem><simpara>Set the timeOut to a value sufficient for the transaction to be completed under normal circumstances. Keep in mind that transactions take longer to complete in interactive mode.</simpara></listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Performance issues</title>
+    <para>Merging objects can put a heavy stress on the MMBase server and database, so it is important to be aware of the following perfomance issues.</para>
+    <itemizedlist>
+      <listitem><simpara>When two objects are merged, all their relations are added to the transaction in order to be processed. Try to <emphasis>avoid merging objects that have a large number of relations</emphasis>.</simpara></listitem>
+      <listitem><para>When using SimilarObjectFinder to merge objects, based on a fuzzy match criterium, the search for non-exact matches in the persistent cloud occurs in two stages:
+        <orderedlist>
+          <listitem><simpara>Query the database for objects that are close enough and access these objects in the transaction.</simpara></listitem>
+          <listitem><simpara>Compare these with the original object.</simpara></listitem>
+        </orderedlist>
+      </para></listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Documentation</title>
+    <para>For a full understanding of the XML Importer, it is recommended to read the following documents, available on the <ulink url="http://www.mmbase.org">MMBase website</ulink></para>
+    <orderedlist>
+      <listitem><simpara>TCP 1.0 documentation (see Temporary Cloud Project).</simpara></listitem>
+      <listitem><simpara>XML Importer overview (see XML Importer Project).</simpara></listitem>
+      <listitem><simpara>The javadoc documentation of the <classname>org.mmbase.applications.xmlimporter</classname> package.</simpara></listitem>
+    </orderedlist>
+  </section>
+
+</article>

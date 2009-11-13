@@ -1,0 +1,19 @@
+<mm:cloud
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    method="asis">
+
+  <jsp:output omit-xml-declaration="true" />
+  <mm:import externid="type" required="true" />
+  <mm:import externid="source" required="true" />
+  <mm:import externid="role" required="true" />
+
+  <mm:transaction id="testform123">
+    <mm:createnode type="${type}" commitonclose="false" id="new">
+      <mm:include page="item.jspx" />
+    </mm:createnode>
+    <mm:node referid="source" id="source" />
+    <mm:createrelation source="source" destination="new" role="posrel" />
+  </mm:transaction>
+
+</mm:cloud>

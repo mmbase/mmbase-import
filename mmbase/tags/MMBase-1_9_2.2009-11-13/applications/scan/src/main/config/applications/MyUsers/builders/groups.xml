@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="groups" maintainer="mmbase.org" version="0" extends="object">
+	<!-- @version $Id$ -->
+	<!-- <status>
+		what is the status of this builder options : active or inactive
+-->
+	<status>active</status>
+	<searchage>90</searchage>
+	<!-- <names>
+		names defines the different names used in user visible parts, singular for
+		for talking about 1 object (Url,Person) and plurar for talking about multiple
+		(Urls, people).
+-->
+	<names>
+		<!-- singles per language as defined by ISO 639 -->
+		<singular xml:lang="en">Group</singular>
+		<singular xml:lang="nl">Groep</singular>
+		<!-- multiple per language as defined by ISO 639 -->
+		<plural xml:lang="en">Groups</plural>
+		<plural xml:lang="nl">Groepen</plural>
+	</names>
+	<!-- <descriptions>
+		small description of the builder for human reading
+-->
+	<descriptions>
+		<!-- descriptions per language as defined by ISO 639  -->
+		<description xml:lang="en">Different types of groups of people</description>
+		<description xml:lang="nl">Verschillende groepen van mensen</description>
+	</descriptions>
+	<!-- <fieldlist>
+		 defines the different fields in this object, be carefull the order is important
+		once defined keep them in the same order.
+		If you use number and owner (the 2 default fields, please check the docs for this)
+-->
+	<fieldlist>
+		<!-- POS 3 : <field> 'name'  -->
+		<field>
+			<descriptions>
+				<!-- descriptions per language as defined by ISO 639  -->
+				<description xml:lang="en">Group name</description>
+				<description xml:lang="nl">Naam vand e groep</description>
+			</descriptions>
+			<!-- gui related -->
+			<gui>
+				<guiname xml:lang="en">Name</guiname>
+				<guiname xml:lang="nl">Naam</guiname>
+				<guitype>string</guitype>
+			</gui>
+			<!-- editor related  -->
+			<editor>
+				<positions>
+					<!-- position in the input area of the editor -->
+					<input>1</input>
+					<!-- position in list area of the editor -->
+					<list>1</list>
+					<!-- position in search area of the editor -->
+					<search>1</search>
+				</positions>
+			</editor>
+			<!-- database related  -->
+			<db>
+				<!-- name of the field in the database -->
+				<name>name</name>
+				<!-- MMBase datatype and demands on it -->
+				<type state="persistent" size="32" notnull="false" key="false">STRING</type>
+			</db>
+		</field>
+		<!-- POS 4 : <field> 'description'  -->
+		<field>
+			<descriptions>
+				<!-- descriptions per language as defined by ISO 639  -->
+				<description xml:lang="en">Group description</description>
+				<description xml:lang="nl">Omschrijving van de groep</description>
+			</descriptions>
+			<!-- gui related -->
+			<gui>
+				<guiname xml:lang="en">Description</guiname>
+				<guiname xml:lang="nl">Omschrijving</guiname>
+				<guitype>field</guitype>
+			</gui>
+			<!-- editor related  -->
+			<editor>
+				<positions>
+					<!-- position in the input area of the editor -->
+					<input>2</input>
+					<!-- position in list area of the editor -->
+					<list>-1</list>
+					<!-- position in search area of the editor -->
+					<search>2</search>
+				</positions>
+			</editor>
+			<!-- database related  -->
+			<db>
+				<!-- name of the field in the database -->
+				<name>description</name>
+				<!-- MMBase datatype and demands on it -->
+				<type state="persistent" size="2048" notnull="false" key="false">STRING</type>
+			</db>
+		</field>
+	</fieldlist>
+</builder>
+

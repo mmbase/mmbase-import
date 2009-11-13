@@ -1,0 +1,70 @@
+<mm:content 
+    unacceptable="Please use a better browser"
+    type="application/xhtml+xml" language="client" expires="0" postprocessor="none" jspvar="locale"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output doctype-root-element="html"
+              doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
+              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+  <jsp:directive.page session="true" buffer="200kb" />
+  
+  <html lang="${locale}" xmlns="http://www.w3.org/1999/xhtml">
+
+    <!-- 
+         Offers a form for one new MMBase node.
+         Also handles the form, and then redirects to change.jspx, because the node is existng then.
+         $Id$
+    -->
+    <mm:include page="head.jspx" />
+    <body>
+      <mm:import id="referids">nodemanager,only?</mm:import>
+      <mm:cloud rank="basic user">
+        <mm:import externid="nodemanager" required="true" />        
+
+        <mm:import externid="submitted">new</mm:import>
+
+        <h1 class="${submitted}">
+          <mm:link page="." referids="$referids">
+            <a href="${_}" class="back"><span class="navigate">back</span></a>
+          </mm:link>
+            <a href="javascript:document.getElementById('createform').submit();" class="ok"><span class="navigate">ok</span></a>
+          <jsp:text>New <mm:nodeinfo nodetype="$nodemanager" type="guitype" /></jsp:text>
+
+        </h1>
+        <mm:form id="createform">
+          <input type="hidden" name="nodemanager" value="${nodemanager}" />
+          <input type="hidden" name="submitted" value="submitted" />
+          <table summary="fields of new node of type ${nodemanager}">
+            <mm:fieldlist type="edit" nodetype="$nodemanager">
+              <mm:index id="index" write="false" />
+              <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
+                <td><mm:fieldinfo type="guiname" /></td>
+                <td>
+                  <mm:fieldinfo type="input" />
+                  <mm:fieldinfo type="errors" />
+                </td>
+              </tr>
+            </mm:fieldlist>
+          </table>
+          <input type="submit" name="ok" value="create" />
+
+          <mm:compare referid="submitted" value="submitted">
+            <!-- handle the form -->
+            <mm:valid>
+              <mm:createnode id="newnode" type="${nodemanager}">
+                <mm:fieldlist type="edit">
+                  <mm:fieldinfo type="useinput" />
+                </mm:fieldlist>
+              </mm:createnode>
+              <mm:commit />
+              <mm:redirect page="change.jspx" referids="newnode@node,$referids">
+                <mm:param name="ok" value="ok" />
+              </mm:redirect>
+            </mm:valid>
+          </mm:compare>
+        </mm:form>
+      </mm:cloud>
+    </body>
+  </html>
+</mm:content>

@@ -1,0 +1,127 @@
+<html
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xml:lang="en"
+    lang="en">
+  <jsp:output doctype-root-element="html"
+              doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
+              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+  <jsp:text>&lt;!-- $Id$ --&gt;</jsp:text>
+  <mm:content type="text/html" expires="0">
+    <head>
+      <title>MMXF Format</title>
+
+      <mm:link page="/mmbase/style/css/mmbase.css">
+        <link rel="stylesheet"    href="${_}"     type="text/css" />
+      </mm:link>
+      <mm:link page="/mmbase/style/css/mmxf.css">
+        <link rel="stylesheet"    href="${_}"     type="text/css" />
+      </mm:link>
+      <mm:link page="/mmbase/style/images/favicon.ico">
+        <link rel="icon"          href="${_}" type="image/x-icon" />
+        <link rel="shortcut icon" href="${_}" type="image/x-icon" />
+      </mm:link>
+      <style>
+        h1.my,h2.my,h3.my,h4.my,h5.my,h6.my,h7.my {
+        color: green;
+        }
+      </style>
+    </head>
+
+    <mm:import id="demofiles" vartype="list">mmxf0,mmxf1,mmxf2,mmxf3,objects1,mmxft</mm:import>
+    <body >
+      <mm:cloud method="asis">
+      <mm:url id="back" write="false" page="/mmbase/style/images/back.png" />
+      <h1>MMBase MMXF Format</h1>
+      <mm:import externid="xslt">xslt/2xhtml.xslt</mm:import>
+      <mm:import externid="what">files</mm:import>
+      <mm:import externid="node" ></mm:import>
+      <mm:import externid="fields" >body</mm:import>
+      <mm:import externid="escape" >none</mm:import>
+      <form>
+        <select name="xslt" onchange="this.form.submit();">
+          <mm:option value="xslt/2xhtml.xslt"   compare="${xslt}">Default</mm:option>
+          <mm:option value="xslt/my2xhtml.xslt" compare="${xslt}">'My' XSLT</mm:option>
+          <mm:option value="xslt/mmxf2kupu.xslt" compare="${xslt}">Kupu input</mm:option>
+        </select>
+        <select name="what" onchange="this.form.submit();">
+          <mm:option value="files" compare="${what}">Example files</mm:option>
+          <mm:option value="node" compare="${what}">MMBase node</mm:option>
+        </select>
+        <input name="node" value="${node}" />
+        <input name="fields" value="${fields}" />
+        <select name="escape" onchange="this.form.submit();">
+          <mm:option value="none" compare="${escape}">None</mm:option>
+          <mm:option value="text/xml" compare="${escape}">XML</mm:option>
+        </select>
+      </form>
+      <table>
+        <mm:compare referid="what" value="files">
+          <mm:stringlist referid="demofiles">
+            <tr>
+              <th>
+                <pre>
+                  <mm:include cite="true" page="${_}.xml" escape="text/xml" />
+                </pre>
+              </th>
+              <td>
+                <mm:formatter xslt="${xslt}" escape="${escape}">
+                  <mm:include cite="true" page="${_}.xml" />
+                </mm:formatter>
+              </td>
+            </tr>
+          </mm:stringlist>
+        </mm:compare>
+        <mm:compare referid="what" value="node">
+          <tr>
+            <th>
+              <pre>
+                <mm:node number="$node">
+                  <mm:formatter format="escapexmlpretty" wants="dom">
+                    <mm:fieldlist fields="${fields}">
+                      <mm:field />
+                    </mm:fieldlist>
+                    <mm:listrelations searchdir="destination" role="idrel">
+                      <mm:relatednode>
+                        <mm:listrelations searchdir="destination" role="idrel">
+                          <mm:relatednode />
+                        </mm:listrelations>
+                      </mm:relatednode>
+                    </mm:listrelations>
+                  </mm:formatter>
+                </mm:node>
+
+              </pre>
+            </th>
+            <td>
+              <mm:node number="$node">
+
+                <mm:formatter xslt="${xslt}" escape="${escape}">
+                  <mm:fieldlist fields="${fields}">
+                    <mm:field />
+                  </mm:fieldlist>
+                  <mm:listrelations searchdir="destination" role="idrel">
+                      <mm:relatednode>
+                        <mm:listrelations searchdir="destination" role="idrel">
+                          <mm:relatednode />
+                        </mm:listrelations>
+                      </mm:relatednode>
+                  </mm:listrelations>
+                </mm:formatter>
+              </mm:node>
+            </td>
+          </tr>
+        </mm:compare>
+      </table>
+      <div class="link">
+        <mm:link page="..">
+          <a href="${_}" class="navigate">
+            <img alt="back" src="${back}" />
+          </a>
+        </mm:link>
+      </div>
+      </mm:cloud>
+    </body>
+  </mm:content>
+</html>
+

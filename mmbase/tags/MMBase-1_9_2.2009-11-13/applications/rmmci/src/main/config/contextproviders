@@ -1,0 +1,2 @@
+org.mmbase.bridge.mock.MockCloudContext$MockResolver
+org.mmbase.bridge.RemoteContext$RemoteResolver

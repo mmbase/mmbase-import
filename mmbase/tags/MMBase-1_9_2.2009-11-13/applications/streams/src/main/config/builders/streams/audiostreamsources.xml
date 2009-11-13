@@ -1,0 +1,27 @@
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    name="audiostreamsources" maintainer="mmbase.org" version="1" extends="audiosources">
+
+  <searchage>31</searchage>
+  <names>
+    <singular xml:lang="en">Streams: Audio source</singular>
+    <singular xml:lang="nl">Streams: Audiobron</singular>
+
+    <plural xml:lang="en">Streams: Audio sources</plural>
+    <plural xml:lang="nl">Streams: Audiobronnen</plural>
+  </names>
+
+  <properties>
+    <property name="org.mmbase.streams.cachestype">audiostreamsourcescaches</property>
+  </properties>
+
+  <xi:include href="streamsources.fields.xml" />
+  <xi:include href="http://www.mmbase.org/builders/media/mediasources.virtual.fields.xml" />
+  <xi:include href="http://www.mmbase.org/builders/media/mediasources.main.virtual.fields.xml" />
+  <xi:include href="streamsources.functions.xml" />
+
+</builder>

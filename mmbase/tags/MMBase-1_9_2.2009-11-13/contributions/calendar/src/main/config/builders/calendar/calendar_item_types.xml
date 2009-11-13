@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder xmlns="http://www.mmbase.org/xmlns/builder" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         extends="object" maintainer="mmbase.org" 
+         name="calendar_item_types" version="0" 
+         xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+  <names>
+    <singular xml:lang="en">Calendar item type</singular>
+    <singular xml:lang="nl">Agendaitemtype</singular>
+    <singular xml:lang="eo">Kalendarera tipo</singular>
+    <plural xml:lang="en">Calendar item types</plural>
+    <plural xml:lang="nl">Agendaitemtypes</plural>
+    <plural xml:lang="eo">Kalendareraj tipoj</plural>
+  </names>
+  <fieldlist>
+    <field name="title">
+      <gui>
+        <guiname xml:lang="en">Title</guiname>
+        <guiname xml:lang="fr">Titre</guiname>
+        <guiname xml:lang="nl">Titel</guiname>
+        <guiname xml:lang="eo">Titolo</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="trimmedline">
+        <default value="..." />
+        <required value="true" />
+        <minLength value="2" />
+        <maxLength value="255" />
+        <pattern value="\A\s*+[^\n\r]{1,}\S\s*\z"  />
+      </datatype> 
+    </field>
+    <field name="color">     
+      <gui>
+        <guiname xml:lang="en">Color</guiname>
+        <guiname xml:lang="nl">Kleur</guiname>
+        <guiname xml:lang="eo">Koloro</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>2</list>
+        </positions>
+      </editor>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="colors" />
+    </field>
+  </fieldlist>
+  <functionlist>
+    <function name="gui" >
+      <class>org.mmbase.calendar.GuiFunction</class>
+    </function>
+    <function name="contrast">
+      <class>org.mmbase.calendar.ContrastFunction</class>
+    </function>
+  </functionlist>  
+</builder>

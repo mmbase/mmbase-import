@@ -1,0 +1,4 @@
+<!ELEMENT preferredDimension (dimension+)>
+<!ELEMENT dimension (#PCDATA)>
+<!ATTLIST dimension x CDATA #REQUIRED >
+<!ATTLIST dimension y CDATA #REQUIRED >

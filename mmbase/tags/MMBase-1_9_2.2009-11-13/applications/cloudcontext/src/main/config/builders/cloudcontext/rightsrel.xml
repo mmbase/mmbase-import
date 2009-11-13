@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<builder
+  xmlns="http://www.mmbase.org/xmlns/builder"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                      http://www.mmbase.org/xmlns/builder.xsd"
+  name="rightsrel" maintainer="www.mmbase.org" version="1" extends="insrel"
+  defaultcontextintypedef="security"
+  >
+  <class>org.mmbase.security.implementation.cloudcontext.builders.RightsRel</class>
+  <searchage>14</searchage>
+  <names>
+    <singular xml:lang="en">Rights relation</singular>
+    <singular xml:lang="nl">Rechten relatie</singular>
+    <plural xml:lang="en">Rights relations</plural>
+    <plural xml:lang="nl">Rechten relaties</plural>
+  </names>
+  <descriptions>
+    <description xml:lang="nl">Rights (context-group) relations for security</description>
+    <description xml:lang="en">Rechten (context-groep) relaties voor security</description>
+  </descriptions>
+  <properties/>
+  <fieldlist>
+    <field name="operation">
+      <gui>
+        <guiname xml:lang="fr">Operation</guiname>
+        <guiname xml:lang="nl">Operatie</guiname>
+        <guiname xml:lang="eo">Ago</guiname>
+        <guiname xml:lang="en">Operation</guiname>
+      </gui>
+      <editor><positions><list>3</list></positions></editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <property name="collator" value=":IDENTICAL" />
+        <default value="read" />
+        <required value="true" enforce="never" />
+        <maxLength value="15" enforce="never" />
+        <enumeration>
+          <entry value="read" />
+          <entry value="write" />
+          <entry value="create" />
+          <entry value="change relation" />
+          <entry value="delete" />
+          <entry value="change context" />
+        </enumeration>
+      </datatype>
+    </field>
+  </fieldlist>
+</builder>

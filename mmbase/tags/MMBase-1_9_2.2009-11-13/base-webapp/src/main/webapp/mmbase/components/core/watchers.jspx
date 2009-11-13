@@ -1,0 +1,93 @@
+<mm:content
+    type="application/xml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.page import="org.mmbase.util.*,java.util.concurrent.*" />
+  <mm:cloud rank="administrator">
+  <div
+      class="mm_c c_core b_watchers ${requestScope.className}"
+      id="${requestScope['org.mmbase.componentId']}">
+    <p><em><mm:time time="now" format=":FULL.FULL" /></em> - <mm:cloudinfo type="user" /></p>
+    <p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
+    <table summary="Resource Watchers" border="0" cellspacing="0" cellpadding="3">
+      <caption>ResourceWatchers</caption>
+      <mm:listfunction set="utils" name="resourceWatchers" varStatus="status">
+        <tr><th colspan="5">${status.index} ${_.class.name}</th></tr>
+        <tr><th>Watches in</th><td>${_.resourceLoader}</td></tr>
+        <tr>
+          <th>Watches</th>
+          <td>
+            <c:forEach items="${_.resources}" var="res">
+              ${res}<mm:last inverse="true"><br /></mm:last>
+            </c:forEach>
+          </td>
+        </tr>
+        <tr><th>Delay</th><td>${_.delay} ms</td></tr>
+        <tr><th>Running</th><td>${_.running}</td></tr>
+        <tr>
+          <th>FileWatchers</th>
+          <td>
+            <table>
+              <c:forEach items="${_.fileWatchers}" var="fw">
+                <tr>
+                  <th colspan="5">${fw.key}</th>
+                </tr>
+                <tr>
+                  <th>files</th>
+                  <td>
+                    <c:forEach items="${fw.value.files}" var="f">
+                      ${f}<mm:last inverse="true"><br /></mm:last>
+                    </c:forEach>
+                  </td>
+                </tr>
+                <tr>
+                  <th>delay</th>
+                  <tr>${fw.value.delay} ms</tr>
+                </tr>
+                <tr>
+                  <th>last check</th>
+                  <tr>${fw.value.lastCheck}</tr>
+                </tr>
+
+              </c:forEach>
+            </table>
+          </td>
+
+        </tr>
+      </mm:listfunction>
+    </table>
+
+
+    <table summary="File Watchers" border="0" cellspacing="0" cellpadding="3">
+      <caption>FileWatchers</caption>
+      <mm:listfunction set="utils" name="fileWatchers" varStatus="status">
+        <tr>
+          <th colspan="5">${status.index} ${_.class}</th>
+        </tr>
+        <tr>
+          <th>files</th>
+          <td>
+            <c:forEach items="${_.files}" var="f">
+              ${f}<mm:last inverse="true"><br /></mm:last>
+            </c:forEach>
+          </td>
+        </tr>
+        <tr>
+          <th>delay</th>
+          <td>${_.delay} ms</td>
+        </tr>
+        <tr>
+          <th>last check</th>
+          <td>${_.lastCheck}</td>
+        </tr>
+      </mm:listfunction>
+    </table>
+  </div>
+  </mm:cloud>
+</mm:content>
+

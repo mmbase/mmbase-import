@@ -1,0 +1,21 @@
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    name="videostreamsourcescaches" maintainer="mmbase.org" version="1" extends="videosources">
+
+  <searchage>31</searchage>
+  <names>
+    <singular xml:lang="en">Streams: Video source cache</singular>
+    <singular xml:lang="nl">Streams: Videobron cache</singular>
+
+    <plural xml:lang="en">Streams: Video sources caches</plural>
+    <plural xml:lang="nl">Streams: Videobroncaches</plural>
+  </names>
+
+  <xi:include href="streamsourcescaches.fields.xml" />
+  <xi:include href="http://www.mmbase.org/builders/media/mediasources.virtual.fields.xml" />
+  <xi:include href="streamsourcescaches.virtual.fields.xml" />
+</builder>

@@ -1,0 +1,69 @@
+<fieldlist
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    >
+
+  <field name="ingroups" state="virtual">
+    <gui>
+      <guiname xml:lang="nl">Krijgt rechten van</guiname>
+      <guiname xml:lang="en">Gets rights from</guiname>
+    </gui>
+    <datatype base="list" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <property name="itemDataType" value="node" />
+      <required value="false" />
+      <enumeration enforce="never">
+        <query type="mmbasegroups"  xmlns="http://www.mmbase.org/xmlns/searchquery">
+          <constraint field="number" inverse="true" value="${_node}" />
+          <sortorder field="name" />
+        </query>
+      </enumeration>
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.RelatedList$Setter">
+          <param name="role">contains</param>
+          <param name="type">mmbasegroups</param>
+          <param name="searchDir">source</param>
+        </class>
+      </setprocessor>
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.RelatedList$Getter">
+          <param name="role">contains</param>
+          <param name="type">mmbasegroups</param>
+          <param name="searchDir">source</param>
+        </class>
+      </getprocessor>
+    </datatype>
+  </field>
+
+  <field name="containsgroups" state="virtual">
+    <gui>
+      <guiname xml:lang="nl">Geeft rechten aan</guiname>
+      <guiname xml:lang="en">Gives rights to</guiname>
+    </gui>
+    <datatype base="list" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <property name="itemDataType" value="node" />
+      <required value="false" />
+      <enumeration enforce="never">
+        <query type="mmbasegroups"  xmlns="http://www.mmbase.org/xmlns/searchquery">
+          <constraint field="number" inverse="true" value="${_node}" />
+          <sortorder field="name" />
+        </query>
+      </enumeration>
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.RelatedList$Setter">
+          <param name="role">contains</param>
+          <param name="type">mmbasegroups</param>
+          <param name="searchDir">destination</param>
+        </class>
+      </setprocessor>
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.RelatedList$Getter">
+          <param name="role">contains</param>
+          <param name="type">mmbasegroups</param>
+          <param name="searchDir">destination</param>
+        </class>
+      </getprocessor>
+    </datatype>
+  </field>
+
+</fieldlist>

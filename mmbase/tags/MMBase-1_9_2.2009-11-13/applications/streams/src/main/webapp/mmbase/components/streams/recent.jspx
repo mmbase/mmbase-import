@@ -1,0 +1,30 @@
+<div
+    class="mm_c c_streams b_recent ${requestScope.componentClassName}"
+    id="${requestScope.componentId}"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-res="urn:jsptagdir:/WEB-INF/tags/mm/resources"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:cloud>
+    <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+    <p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
+
+    <mm:listnodescontainer type="streamsources" id="q" >
+      SIZE <mm:size /> (${q.sql})
+      <mm:listnodes>
+        BLa
+        <mm:field name="number" />
+        <div class="stream" title="">
+          <h4>
+
+
+          </h4>
+
+          URL: <mm:function name="url" />
+        </div>
+      </mm:listnodes>
+    </mm:listnodescontainer>
+  </mm:cloud>
+</div>

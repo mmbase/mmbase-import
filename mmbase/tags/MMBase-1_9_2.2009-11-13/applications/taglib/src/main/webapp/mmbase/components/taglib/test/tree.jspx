@@ -1,0 +1,132 @@
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    class="mm_c c_taglib b_test_tree ${requestScope.componentClassName}"
+    id="${requestScope.componentId}">
+  <jsp:output omit-xml-declaration="true" />
+  <h2>tree</h2>
+
+  <h3>Reuse relatednodes</h3>
+  <mm:node number="default.mags">
+    <mm:relatednodescontainer type="news" role="posrel">
+      <mm:relatednodes />
+      <mm:treecontainer path="object" searchdirs="destination" id="t">
+        <mm:tree>
+          <mm:grow>
+            <jsp:text><![CDATA[<ul class="${branch}" id="${status.index}">]]></jsp:text>
+            <mm:onshrink><![CDATA[</ul>]]></mm:onshrink>
+          </mm:grow>
+          <li>
+            <mm:field name="number" /><jsp:text>: </jsp:text><mm:nodeinfo type="gui" />
+          </li>
+          <mm:shrink />
+        </mm:tree>
+      </mm:treecontainer>
+
+    </mm:relatednodescontainer>
+  </mm:node>
+
+  <mm:import externid="startnodes" vartype="string">default.mags</mm:import>
+
+  <h3>length</h3>
+  <table>
+    <tr>
+      <mm:log>=============================================</mm:log>
+      <td>
+        <mm:timer>
+          <mm:listnodescontainer type="object" id="q">
+            <mm:aliasconstraint name="$startnodes" />
+
+            <mm:log>${q}</mm:log>
+
+            <mm:tree id="tree" type="object" searchdir="destination" maxdepth="8"
+                     directions="down" varBranchStatus="branch" varStatus="status">
+
+              <mm:grow>
+                <jsp:text><![CDATA[<ul class="${branch}" id="${status.index}">]]></jsp:text>
+                <mm:onshrink><![CDATA[</ul>]]></mm:onshrink>
+              </mm:grow>
+
+              <jsp:text><![CDATA[<li class="${branch}" id="${status.index}">]]></jsp:text>
+              <mm:nodeinfo type="guitype" />
+              <jsp:text>: </jsp:text><mm:field name="number" />
+              <jsp:text> </jsp:text>
+              <mm:function name="gui" escape="none" />
+              <mm:onshrink><![CDATA[</li>]]></mm:onshrink>
+
+              <mm:shrink />
+
+              <mm:last>
+                <jsp:text>size: </jsp:text><mm:size />
+              </mm:last>
+
+            </mm:tree>
+          </mm:listnodescontainer>
+        </mm:timer>
+      </td>
+      <mm:log>-------------------------------------------</mm:log>
+      <td>
+        <mm:timer>
+          <mm:node number="$startnodes">
+            <mm:relatednodescontainer type="object" searchdirs="destination">
+              <mm:tree type="object" searchdir="destination" maxdepth="8" orderby="number">
+                <mm:grow>
+                  <jsp:text><![CDATA[<ul>]]></jsp:text>
+                  <mm:onshrink><![CDATA[</ul>]]></mm:onshrink>
+                </mm:grow>
+                <jsp:text><![CDATA[<li>]]></jsp:text>
+                <mm:depth />
+                <jsp:text>: </jsp:text><mm:nodeinfo type="guitype" />
+                <jsp:text>: </jsp:text><mm:field name="number" />
+                <jsp:text> </jsp:text>
+                <mm:function name="gui" escape="none" />
+
+                <mm:onshrink><![CDATA[</li>]]></mm:onshrink>
+
+                <mm:shrink />
+
+                <mm:last>
+                  <jsp:text>size: </jsp:text><mm:size />
+                </mm:last>
+              </mm:tree>
+            </mm:relatednodescontainer>
+          </mm:node>
+        </mm:timer>
+
+      </td>
+
+    </tr>
+  </table>
+  <mm:log>-------------------------------------------</mm:log>
+  <h3>tree2</h3>
+  <mm:timer>
+
+  <mm:listnodescontainer type="object" nodes="$startnodes">
+    <mm:tree id="tree2" type="object" searchdir="destination" maxdepth="8" orderby="number">
+      <mm:grow>
+        <mm:depth>
+          <mm:isgreaterthan value="1">
+            <jsp:text><![CDATA[<ul>]]></jsp:text>
+            <mm:onshrink>
+              <jsp:text><![CDATA[</ul>]]></jsp:text>
+            </mm:onshrink>
+          </mm:isgreaterthan>
+        </mm:depth>
+      </mm:grow>
+      <mm:depth>
+        <mm:isgreaterthan value="2"><![CDATA[<li>]]></mm:isgreaterthan>
+        <mm:write />: <mm:nodeinfo type="guitype" />: <mm:field name="number" /> <mm:function name="gui" escape="none" />
+        <mm:isgreaterthan value="2"><mm:onshrink><![CDATA[</li>]]></mm:onshrink></mm:isgreaterthan>
+      </mm:depth>
+
+      <mm:shrink />
+    </mm:tree>
+  </mm:listnodescontainer>
+</mm:timer>
+
+
+
+<hr />
+</div>

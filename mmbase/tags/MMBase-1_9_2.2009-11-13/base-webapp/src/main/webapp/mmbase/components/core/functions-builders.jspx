@@ -1,0 +1,27 @@
+<ul
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+
+  <mm:cloud id="cloud">
+
+    <c:forEach items="${cloud.nodeManagers}" var="nodeManager">
+      <li>
+        <p>${nodeManager.name}: <mm:write value="${nodeManager.description}" /></p>
+        <ul>
+          <c:forEach items="${nodeManager.functions}" var="fun">
+            <li>
+              ${fun.class}
+              <mm:escape>${fun}</mm:escape>
+              <p><mm:write value="${fun.description}" /></p>
+            </li>
+          </c:forEach>
+        </ul>
+      </li>
+    </c:forEach>
+  </mm:cloud>
+</ul>

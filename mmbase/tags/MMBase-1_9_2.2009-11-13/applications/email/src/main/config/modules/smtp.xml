@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
+<module>
+  <status>active</status>
+  <class>org.mmbase.module.smtp.SMTPModule</class>
+  <properties>
+
+    <!-- mandatory properties -->
+    <property name="hostname">localhost</property>
+    <!--
+        If port -1 then the module will actually not start a listener,
+        Suggested is to overrid this like so in your applicagtion context
+        <Environment name="mmbase/smtp/port"
+                     value="1025"    type="java.lang.String" />
+
+    -->
+    <property name="port">-1</property>
+    <property name="domains">localhost</property>
+
+
+    <!--
+        People nodes from the 'usersbuilder' are uses for linked mailboxes, or linked mails.
+    -->
+    <property name="usersbuilder">people</property>
+    <property name="usersbuilder.accountfield">username</property>
+
+    <!--
+         if you use mailboxes, you need to specify what behaviour should
+         be if no mailbox could be found. It can be any one of:
+         'bounce' -> will bounce the message back to the sender
+         'create' -> will create a new mailbox for the user
+         Default is 'bounce'
+    -->
+    <property name="mailboxbuilder.notfound">create</property>
+
+
+  </properties>
+</module>

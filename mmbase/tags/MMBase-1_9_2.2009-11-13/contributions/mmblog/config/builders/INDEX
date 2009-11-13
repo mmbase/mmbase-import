@@ -1,0 +1,7 @@
+## Used by ResourceLoader
+## Todo: Would like to generate this by ant. ant sucks.
+mmblog/weblogentries.xml
+mmblog/weblogrel.xml
+mmblog/weblogs.xml
+mmblog/weblogthemerel.xml
+mmblog/weblogthemes.xml

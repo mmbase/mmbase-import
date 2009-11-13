@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE fieldtypes PUBLIC "-//MMBase//DTD fieldtypes 1.0//EN" "http://www.mmbase.org/dtd/fieldtypes_1_0.dtd">
+<!-- version: $Id$-->
+<fieldtypes>
+  <fieldtype id="string">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.StringHandler</class>
+  </fieldtype>
+  <fieldtype id="integer">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.IntegerHandler</class>
+  </fieldtype>
+  <fieldtype id="long">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.LongHandler</class>
+  </fieldtype>
+  <fieldtype id="float">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.FloatHandler</class>
+  </fieldtype>
+  <fieldtype id="double">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.DoubleHandler</class>
+  </fieldtype>
+  <fieldtype id="binary">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.BinaryHandler</class>
+  </fieldtype>
+  <fieldtype id="xml">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.XmlHandler</class>
+  </fieldtype>
+  <fieldtype id="node">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.NodeHandler</class>
+  </fieldtype>
+  <fieldtype id="datetime">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.DateHandler</class>
+  </fieldtype>
+  <fieldtype id="boolean">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.BooleanHandler</class>
+  </fieldtype>
+  <fieldtype id="list">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.ListHandler</class>
+  </fieldtype>
+</fieldtypes>

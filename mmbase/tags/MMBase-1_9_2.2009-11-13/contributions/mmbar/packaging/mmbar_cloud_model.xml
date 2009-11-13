@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packaging_cloud_model PUBLIC "-//MMBase/DTD packaging_cloud_model config 1.0//EN" "http://www.mmbase.org/dtd/packaging_cloud_model_1_0.dtd">
+<packaging_cloud_model>
+	<lastversion>4</lastversion>
+	<lastdate>Fri Jun 03 12:54:09 CEST 2005</lastdate>
+	<name>mmbar model</name>
+	<maintainer>Kennisnet</maintainer>
+	<description>Model needed for the performance tests all start with mmpo as a prefix so they are easy to find and remove</description>
+	<license type="MPL" version="1.0" name="Mozzila Public License" />
+	<releasenotes></releasenotes>
+	<installationnotes></installationnotes>
+	<installreset>false</installreset>
+	<modelfile>config/models/default.xml</modelfile>
+	<buildersdir>config/models/default/</buildersdir>
+	<packagedepends>
+	</packagedepends>
+	<initiators>
+		<initiator name="Daniel Ockeloen" company="Kennisnet" />
+	</initiators>
+	<supporters>
+	</supporters>
+	<developers>
+		<developer name="Daniel Ockeloen" company="Kennisnet" />
+	</developers>
+	<contacts>
+		<contact name="Daniel Ockeloen" reason="Bugs Reports" mailto="daniel@xs4all.nl" />
+	</contacts>
+	<publishprovider name="" state="inactive" sharepassword="" />
+</packaging_cloud_model>

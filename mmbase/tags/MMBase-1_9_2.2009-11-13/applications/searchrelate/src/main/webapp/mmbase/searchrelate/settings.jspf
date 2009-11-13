@@ -1,0 +1,4 @@
+<mm:import from="this" externid="config" jspvar="configFile">${empty requestScope['org.mmbase.searchrelate.config'] ? 'searchrelate' : requestScope['org.mmbase.searchrelate.config']}</mm:import>
+<jsp:scriptlet>jspContext.setAttribute("settings", new org.mmbase.util.LinkMap(
+org.mmbase.util.xml.UtilReader.get("searchrelate.xml").getProperties(),
+org.mmbase.util.xml.UtilReader.get(configFile + ".xml").getProperties()));</jsp:scriptlet>
