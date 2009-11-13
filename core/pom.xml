@@ -190,7 +190,7 @@ See http://www.MMBase.org/license
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
-
+<!-- 
     <dependency>
       <groupId>org.mmbase.tests</groupId>
       <artifactId>mmbase-rmmci</artifactId>
@@ -198,7 +198,7 @@ See http://www.MMBase.org/license
       <classifier>client-skinny</classifier>
       <scope>test</scope>
     </dependency>
-
+ -->
   </dependencies>
 
   <reporting>

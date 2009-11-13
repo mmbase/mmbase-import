@@ -341,44 +341,44 @@ public class DataTypes {
         return dataTypeCollector;
     }
 
+//
+//    /**
+//     * Returns a new XML completely describing the given DataType.
+//     * This means that the XML will <em>not</em> have a base attribute.
+//     */
+//    public static Document toXml(DataType<?> dataType) {
+//        // create an inheritance stack
+//        LinkedList<DataType<?>> stack = new LinkedList<DataType<?>>();
+//        stack.addFirst(dataType);
+//        while (dataType.getOrigin() != null) {
+//            dataType = dataType.getOrigin();
+//            stack.addFirst(dataType);
+//        }
+//
+//        // new XML
+//        Document doc = DocumentReader.getDocumentBuilder().newDocument();
+//
+//        // iterate the stack to completely resolve everything.
+//        Iterator<DataType<?>> i = stack.iterator();
+//        dataType = i.next();
+//        Element e = (Element) doc.importNode(dataType.toXml(), true);
+//        doc.appendChild(e);
+//        dataType.toXml(e);
+//        while (i.hasNext()) {
+//            dataType = i.next();
+//            dataType.toXml(e);
+//        }
+//        DocumentReader.setPrefix(doc, DataType.XMLNS, "dt");
+//        return doc;
+//    }
 
-    /**
-     * Returns a new XML completely describing the given DataType.
-     * This means that the XML will <em>not</em> have a base attribute.
-     */
-    public static Document toXml(DataType<?> dataType) {
-        // create an inheritance stack
-        LinkedList<DataType<?>> stack = new LinkedList<DataType<?>>();
-        stack.addFirst(dataType);
-        while (dataType.getOrigin() != null) {
-            dataType = dataType.getOrigin();
-            stack.addFirst(dataType);
-        }
-
-        // new XML
-        Document doc = DocumentReader.getDocumentBuilder().newDocument();
-
-        // iterate the stack to completely resolve everything.
-        Iterator<DataType<?>> i = stack.iterator();
-        dataType = i.next();
-        Element e = (Element) doc.importNode(dataType.toXml(), true);
-        doc.appendChild(e);
-        dataType.toXml(e);
-        while (i.hasNext()) {
-            dataType = i.next();
-            dataType.toXml(e);
-        }
-        DocumentReader.setPrefix(doc, DataType.XMLNS, "dt");
-        return doc;
-    }
-
-    public static void main(String arg[]) throws Exception {
-        DataTypes.initialize();
-        DataType dt = DataTypes.getDataType(arg[0]);
-        if (dt == null) {
-            throw new Exception("No such datatyep " + arg[0]);
-        }
-        System.out.println(org.mmbase.util.xml.XMLWriter.write(DataTypes.toXml(dt), true, true));
-    }
+//    public static void main(String arg[]) throws Exception {
+//        DataTypes.initialize();
+//        DataType dt = DataTypes.getDataType(arg[0]);
+//        if (dt == null) {
+//            throw new Exception("No such datatyep " + arg[0]);
+//        }
+//        System.out.println(org.mmbase.util.xml.XMLWriter.write(DataTypes.toXml(dt), true, true));
+//    }
 
 }

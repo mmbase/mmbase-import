@@ -75,6 +75,7 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
+	<!--
     <dependency>
       <groupId>org.mmbase.tests</groupId>
       <artifactId>mmbase-rmmci</artifactId>
@@ -82,25 +83,18 @@
       <classifier>client-skinny</classifier>
       <scope>test</scope>
     </dependency>
+	-->    
     <!-- Testing on MySQL only for now -->
+    <!--
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.6</version>
       <scope>test</scope>
     </dependency>
+	-->
   </dependencies>
 
-  <repositories>
-    <repository>
-      <id>mmbase</id>
-      <url>http://www.mmbase.org/maven2</url>
-    </repository>
-    <repository>
-      <id>snapshots</id>
-      <url>http://www.mmbase.org/snapshots</url>
-    </repository>
-  </repositories>
 
 
   <developers>
