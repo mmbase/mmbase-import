@@ -3,5 +3,5 @@
 
 deploy-for-tests:
 	mvn deploy:deploy-file -DgroupId=org.mmbase.tests -DartifactId=mmbase-rmmci -Dversion=1.9.2.0 -Dclassifier=client-skinny -Dpackaging=jar \
-	-Dfile=target/mmbase-rmmci-1.9-SNAPSHOT-client-skinny.jar \
+	-Dfile=target/mmbase-rmmci-1.9.2-20091104-client-skinny.jar \
 	-Durl=scp://mmbase.org/home/mmweb/web/maven2 -DrepositoryId=mmbase
