@@ -130,6 +130,8 @@
       </fileset>
     </path>
 
+    <echo  message="${run.rmmci.client}" />
+
   </target>
 
 
@@ -204,7 +206,7 @@
           <jvmarg value="-Duser.dir=${tests.work.dir}" />
         </java>
       </daemons>
-      <echo message="starting client ${run.rmmci.client}" />
+      <echo message="starting client ${run.rmmci.client}  " />
       <java
           classname="${ui.class}"
           fork="true"
@@ -246,21 +248,6 @@
         classpathref="run.classpath"
         >
       <arg value="BaseSuite" />
-      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
-      <jvmarg value="-Duser.dir=${tests.work.dir}" />
-      <assertions><enable /></assertions>
-    </java>
-  </target>
-
-
-  <!-- Don't know how to do this -->
-  <target name="run.rmmciutil" depends="init" description="Various tests on utitilies (org.mmbase.util)">
-    <java
-        classname="${ui.class}"
-        fork="true"
-        timeout="300000"
-        classpathref="run.rmmci.client">
-      <arg value="org.mmbase.util.RmmciUtilTests" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
       <assertions><enable /></assertions>
