@@ -14,6 +14,7 @@ import java.util.*;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
 
+import org.mmbase.bridge.Node;
 
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
@@ -461,7 +462,7 @@ public class MediaSources extends MMObjectBuilder {
             return source.getRelatedNodes("mediaproviders");
         } else {
             // e.g. new nodes don't have relations
-            return new ArrayList<Node>();
+            return new ArrayList<MMObjectNode>();
         }
     }
 
