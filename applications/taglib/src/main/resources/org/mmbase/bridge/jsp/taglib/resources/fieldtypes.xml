@@ -35,4 +35,8 @@
   <fieldtype id="list">
     <class>org.mmbase.bridge.jsp.taglib.typehandler.ListHandler</class>
   </fieldtype>
+  <fieldtype id="decimal">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.DoubleHandler</class>
+  </fieldtype>
+
 </fieldtypes>
