@@ -6,6 +6,17 @@
     class="mm_c c_taglib b_test_vars ${requestScope.componentClassName}"
     id="${requestScope.componentId}">
   <jsp:output omit-xml-declaration="true" />
+  <script type="text/javascript">
+    $(function() {
+       $("table tr").each(function() {
+          var actual = $(this).find("td:eq(1)").text();
+          var expected = $(this).find("td:eq(2)").text();
+          if (actual != expected) {
+            $(this).addClass('todo');
+          }
+        });
+    });
+  </script>
 
 
   <mm:import id="list" vartype="list">1,2,3,4</mm:import>

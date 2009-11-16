@@ -59,6 +59,7 @@
   </block>
   <block name="test_contextvars" mimetype="text/html"
          classification="taglib.test">
+    <xi:include href="http://www.mmbase.org/components/jquery.head.xml" />
     <body jsp="test/context_vars.jspx" />
   </block>
   <block name="test_form" mimetype="text/html"
