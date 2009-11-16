@@ -137,7 +137,9 @@
           <mm:treeinclude debug="html"
                           notfound="message" page="${directory}${currentpage}${e}" objectlist="${objectlist}" />
         </mm:compare>
-        <mm:form page="" id="${f}_form"  jspvar="transaction">
+        <mm:form page=""
+                 name="${f}_form"
+                 jspvar="transaction">
           <mm:import id="cancel" externid="${f}_cancel" />
           <mm:import id="submit" externid="${f}_submit" />
           <mm:present referid="cancel">
