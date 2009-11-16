@@ -30,11 +30,14 @@
   <jsp:directive.attribute name="load"        type="java.lang.Boolean"
                            />
 
+  <jsp:directive.attribute name="create"        type="java.lang.Boolean"
+                           />
+
 
   <mm:listnodescontainer type="${type}" id="repository">
     <jsp:doBody />
     <mm:sortorder field="number" direction="down" />
   </mm:listnodescontainer>
   <jsp:directive.include file="/mmbase/searchrelate/settings.jspf" />
-  <mm-sr:relate repository="${repository}" load="${load}" implicitRepository="${empty implicit ? settings['implicitRepository'] : implicit}" />
+  <mm-sr:relate repository="${repository}" load="${load}" implicitRepository="${empty implicit ? settings['implicitRepository'] : implicit}" create="${create}" />
 </jsp:root>
