@@ -237,7 +237,6 @@ table
 	border-width: 1px 1px 0 1px;
 	border-style: solid solid none solid;
 	margin-bottom: 1em;
-	width: 100%;
 }
 
 caption
@@ -351,4 +350,21 @@ div.mm_c.iframe iframe {
 
 .b_mmbase_microblog_uncached li span.message {
   display: block;
+}
+
+
+tr.todo,
+td.todo {
+  background-color: #faa;
+}
+
+
+table.tests th,
+table.tests td {
+  width: 20%;
+}
+
+table.tests td div {
+  width: 100px;
+  overflow: hidden !important;
 }
