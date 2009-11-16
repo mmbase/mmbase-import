@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.util;
 
 import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.JspTagException;
 import java.util.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.transformers.CharTransformer;
@@ -223,14 +224,18 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
         mirrorPut(key, value, false);
     }
 
-    public Object put(String key, Object value, boolean reset) {
+    public Object put(String key, Object value, boolean reset) throws JspTagException {
         mirrorPut(key, value, reset);
         return b.put(key, value);
     }
 
     @Override
     public Object put(String key, Object value) {
-        return put(key, value, false);
+        try {
+            return put(key, value, false);
+        } catch (JspTagException jte) {
+            throw new RuntimeException(jte);
+        }
     }
 
     // overriden for efficiency only (the implementation of AbstractMap does not seem very efficient)
