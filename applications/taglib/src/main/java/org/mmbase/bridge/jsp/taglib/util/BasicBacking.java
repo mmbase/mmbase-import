@@ -105,7 +105,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
             originalPageContextValues = new HashMap<String, Object>();
             pageContext.setAttribute(PAGECONTEXT_KEY + uniqueNumber, originalPageContextValues);
         }
-        if (! origPageContext.equals(pageContext)) {
+        if (pageContext != null && ! pageContext.equals(origPageContext)) {
             for (Map.Entry<String, Object> entry : b.entrySet()) {
                 mirrorPut(entry.getKey(), entry.getValue());
             }
