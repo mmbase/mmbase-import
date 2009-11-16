@@ -9,9 +9,10 @@
 <mm:cloud jspvar="cloud">
 
 Digraph "MMBase<%= nodemanager == null ? "" : " " + nodemanager %>" {
-	edge [fontsize=8.0];
-	node [fontsize=14.0];
-	nodesep=1;
+  edge [fontsize=8.0];
+  node [fontsize=14.0];
+  nodesep=1;
+  rankdir=LR;
 
   <%
       Set<String> set = new HashSet<String>();
