@@ -17,10 +17,10 @@
 
 
   <h3>News</h3>
-  <mm-sr:search type="news"  />
+  <mm-sr:search type="news"  create="true" />
 
   <h3>Urls</h3>
-  <mm-sr:search type="urls" implicit="false" />
+  <mm-sr:search type="urls" implicit="false" create="true" />
 
 
   <h2>Remarks</h2>
