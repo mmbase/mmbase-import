@@ -6,6 +6,7 @@
   <html  xmlns="http://www.w3.org/1999/xhtml">
     <head>
       <title>Testing MMBase/taglib</title>
+      <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js"></script>
       <style>
         html {
         background-color: #ccc;
@@ -36,18 +37,7 @@
         }
 
       </style>
-      <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js"></script>
-      <script type="text/javascript">
-        $(function() {
-         $("table tr").each(function() {
-           var actual = $(this).find("td:eq(1)").text();
-           var expected = $(this).find("td:eq(2)").text();
-           if (actual != expected) {
-             $(this).addClass('todo');
-           }
-        });
-        });
-      </script>
+
     </head>
     <body>
       <h1>Testing MMBase/taglib - Contexts nesting and vars</h1>
