@@ -35,6 +35,7 @@ public class TagStripperTest   {
         assertEquals("aaa", stripper.transform("<p>aaa"));
         assertEquals("aaa", stripper.transform("<p>aaa"));
         assertEquals("aaa", stripper.transform("<p>aaa"));
+        assertEquals("aaa", stripper.transform("<p><a>aaa</a></p>"));
         assertEquals("aaa <p />", stripper.transform("<p>aaa\n&lt;p /&gt;</p> "));
 
 
