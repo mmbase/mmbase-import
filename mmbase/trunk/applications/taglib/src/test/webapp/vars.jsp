@@ -203,10 +203,15 @@
       <table>
         <tr><th class="id">id</th><th>is</th><th>should be</th><th>remarks</th></tr>
         <mm:stringlist referid="list" max="3">
-          <mm:import id="ca" reset="true"><mm:write /></mm:import>
           <tr>
             <td>c a <mm:index /></td>
-            <td><mm:write referid="ca" />, ${ca}</td>
+            <td>
+              <mm:escape escape="swallow"><c:catch var="e"><mm:write referid="ca" /></c:catch></mm:escape>
+              <jsp:text>${e}</jsp:text><!-- should never occur -->
+              <mm:import id="ca" reset="true"><mm:write /></mm:import>
+              <mm:write referid="ca" />
+              <jsp:text>, ${ca}</jsp:text>
+            </td>
             <td><mm:index />, <mm:index /></td>
           </tr>
           <mm:import id="cb"><mm:write /></mm:import>
