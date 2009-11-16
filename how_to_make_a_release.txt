@@ -17,6 +17,9 @@ $Id$
    And edit:
   - core/src/main/java/org/mmbase/Version.java
   - pom.xml
+    Change <mmbase.version.number> and <mmbase.version.postfix> to the right numbers.
+    Such as 1.9.2 and -20091104
+    
   - Fix the other poms:
    for i in `find . -name pom.xml` ; do cat $i | sed s/1.9-SNAPSHOT/1.9.1/g > $i.new ; mv $i.new $i   ; done
 
