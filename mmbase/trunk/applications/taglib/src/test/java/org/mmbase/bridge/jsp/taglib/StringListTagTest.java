@@ -35,8 +35,10 @@ public  class StringListTagTest {
         context.doStartTag();
         context.setId("TEST");
 
+
+        String fooValue = "bar";
         Import.tag(pageContext, context, "list", "A,B,C", "list");
-        Import.tag(pageContext, context, "foo", "bar");
+        Import.tag(pageContext, context, "foo", fooValue);
 
 
         List<String> list = (List<String>) pageContext.getAttribute("list");
@@ -60,9 +62,10 @@ public  class StringListTagTest {
         while (it == 2) {
             tag.doInitBody();
 
-            System.out.println("" + context.getObject("foo")); // Should not give exception
+            assertEquals(fooValue, "" + context.getObject("foo")); // Should not give exception
 
-            Import.tag(pageContext, tag, "foo", "bla" + (++index), true);
+            fooValue = "bla" + (++index);
+            Import.tag(pageContext, tag, "foo", fooValue, true);
 
             assertEquals("bla" + index, pageContext.getAttribute("foo"));
             assertEquals("bla" + index, context.getObject("foo"));
