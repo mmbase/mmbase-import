@@ -42,18 +42,20 @@
         // convert parameters to a list of integers
         List&lt;Integer&gt; iorigOrder = new ArrayList&lt;Integer&gt;();
         for (Object o : origOrder) {
-        iorigOrder.add(org.mmbase.util.Casting.toInt(o));
+          iorigOrder.add(org.mmbase.util.Casting.toInt(o));
         }
         List&lt;Integer&gt; iorder = new ArrayList&lt;Integer&gt;(origOrder); // the only reason for the copy is that it has the right length already then
       </jsp:scriptlet>
       <mm:relatednodescontainer clone="parameters.query">
+        <mm:sortorder field="number"  />
         <mm:relatednodes usetransaction="false" jspvar="n" commitonclose="false">
           <mm:index offset="0" jspvar="i">
-            <change number="${_}"><jsp:expression>iorder.set(iorigOrder.indexOf(i), n.getNumber())</jsp:expression></change>
+            <change number="${_}"><jsp:expression>n.getNumber()</jsp:expression> -&gt; <jsp:expression>iorder.set(iorigOrder.indexOf(i), n.getNumber())</jsp:expression></change>
           </mm:index>
         </mm:relatednodes>
       </mm:relatednodescontainer>
-      <changes><jsp:expression>iorder</jsp:expression>-<jsp:expression>org.mmbase.bridge.util.Queries.reorderResult(query, iorder)</jsp:expression></changes>
+      <mm:log>Sorting ${origOrder} <jsp:expression>iorigOrder</jsp:expression> to <jsp:expression>iorder</jsp:expression></mm:log>
+      <changes><jsp:expression>iorder</jsp:expression> <jsp:expression>org.mmbase.bridge.util.Queries.reorderResult(query, iorder)</jsp:expression></changes>
     </div>
   </mm:content>
 </mm:cloud>
