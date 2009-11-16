@@ -58,6 +58,8 @@ public  class StringListTagTest {
         while (it == 2) {
             tag.doInitBody();
 
+            context.getObject("foo"); // Should not give exception
+
             Import.tag(pageContext, tag, "foo", "bla" + (++index), true);
 
             assertEquals("bla" + index, pageContext.getAttribute("foo"));
