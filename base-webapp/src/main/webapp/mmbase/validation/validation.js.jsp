@@ -642,7 +642,10 @@ MMBaseValidator.prototype.getValue = function(el) {
     if (this.isDateTime(el)) {
         return  this.getDateValue(el);
     } else {
-        var value = el.value;
+        if (el.tagName == "div") {
+            return $(el).text();
+        }
+        var value = $(el).val();
         if( this.isNumeric(el)) {
             if (value == "") {
             } else {
@@ -812,6 +815,7 @@ MMBaseValidator.prototype.target = function(event) {
 
 MMBaseValidator.prototype.getElement = function(event) {
     var target = this.target(event);
+    if (target == null) target = event;
     //this.log("event " + event.type + " on " + target.id);
     if ($(target).hasClass("mm_validate")) {
         return target;
@@ -829,7 +833,8 @@ MMBaseValidator.prototype.getElement = function(event) {
  */
 MMBaseValidator.prototype.validate = function(event, server) {
     //this.log("event " + event.type + " on " + target.id);
-    this.validateElement(this.getElement(event), server);
+    var element = this.getElement(event);
+    return this.validateElement(element, server);
 }
 
 MMBaseValidator.prototype.serverValidate = function(event) {
@@ -891,6 +896,7 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
         this.validateHook(valid, element);
     }
     $(element).trigger("mmValidate", [this, valid]);
+    return valid;
 }
 
 /**
