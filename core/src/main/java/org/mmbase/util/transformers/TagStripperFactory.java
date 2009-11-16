@@ -276,6 +276,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         int removeBody = 0;
         State state = State.DEFAULT;
         StringBuilder spaceBuffer = new StringBuilder();
+        int wrote = 0;
 
         public TagStripper(Writer out, List<Tag> t) {
             this.out = out;
@@ -337,7 +338,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                         // see comment in handleAttributes
                         t = t.replaceAll("&", "&amp;");
                     }
-                    out.write(t);
+                    out.write(t); wrote+= t.length();
 
                 } else {
                     if (escapeAmps) {
@@ -349,13 +350,15 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                         }
                         // see comment in handleAttributes
                         t = t.replaceAll("&", "&amp;");
-                        out.write(t);
+                        out.write(t); wrote += t.length();
                     } else {
                         // no need to wrap in string first.
                         if (text[0] == '>') {
                             out.write(text, 1, text.length - 1);
+                            wrote += text.length - 2;
                         } else {
                             out.write(text);
+                            wrote += text.length;
                         }
                     }
 
@@ -390,12 +393,16 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                     set = set.getResolveParent();
                     value = set.getAttribute(attName);
                 }
-                if (t.allowsAttribute("" + attName, "" + value)) {
+                String att = "" + attName;
+                String val = "" + value;
+                if (t.allowsAttribute(att, val)) {
                     out.write(' ');
-                    out.write("" + attName);
+                    out.write(att);
                     out.write('=');
                     out.write('"');
-                    String s = "" + value;
+                    wrote +=3;
+                    wrote += att.length();
+                    String s = val;
                     if (escapeAmps) {
                         // HTMLEditorKit translates all Iso1 entities to unicode.
                         // Escape remaining amps, to produce valid Xml.
@@ -403,12 +410,14 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                     }
                     s = s.replaceAll("\"", "&quot;");
                     out.write(s);
-                    out.write('"');
+                    wrote += s.length();
+                    out.write('"'); wrote++;
                 }
             }
         }
         protected void space() throws IOException {
             out.write(spaceBuffer.toString());
+            wrote += spaceBuffer.length();
             spaceBuffer.setLength(0);
         }
 
@@ -425,14 +434,16 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                 if (removeBody == 0) {
                     if (t.allowed) {
                         space();
-                        out.write('<');
-                        out.write(tag.toString());
+                        out.write('<'); wrote++;
+                        String ts = tag.toString();
+                        out.write(ts);
+                        wrote += ts.length();
                         handleAttributes(t.tag, attributes);
-                        out.write('>');
+                        out.write('>'); wrote++;
                     } else {
                         if (tag == HTML.Tag.P && addNewlines) {
                         } else {
-                            if (position > 0) {
+                            if (wrote > 0) {
                                 spaceBuffer.append(' ');
                             }
                         }
@@ -461,9 +472,9 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
 
                 if (removeBody == 0) {
                     if (t.allowed) {
-                        out.write("</");
-                        out.write(tagName);
-                        out.write('>');
+                        out.write("</"); wrote +=2;
+                        out.write(tagName); wrote += tagName.length();
+                        out.write('>'); wrote++;
                     } else {
                         if (tag == HTML.Tag.P && addNewlines) {
                             spaceBuffer.append("\n\n");
@@ -484,10 +495,10 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                 TagCheck t = getTag(tag, attributes);
                 if (removeBody == 0) {
                     if (t.allowed) {
-                        out.write('<');
-                        out.write(tagName);
+                        out.write('<'); wrote++;
+                        out.write(tagName); wrote += tagName.length();
                         handleAttributes(t.tag, attributes);
-                        out.write(" />");
+                        out.write(" />"); wrote +=3;
                     } else {
                         if (tag == HTML.Tag.BR && addNewlines) {
                             spaceBuffer.append('\n');
