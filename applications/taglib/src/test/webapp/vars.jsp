@@ -96,7 +96,7 @@
             <jsp:text>${empty e ? '' : 'an exception'}, (${ae})</jsp:text>
           </td>
           <td>an exception, ()</td>
-          <td> Fails in 1.9, ${e}</td>
+          <td> ${e}</td>
         </tr>
         <tr>
           <td>a e</td>
@@ -159,7 +159,7 @@
               <jsp:text>(${be})</jsp:text>
             </td>
             <td>an exception, ()</td>
-            <td> Fails in 1.9. ${e}</td>
+            <td>${e}</td>
           </tr>
           <tr>
             <td>b e</td>
