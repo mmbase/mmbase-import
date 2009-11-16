@@ -3,6 +3,7 @@
     name="test"
     version="1"
     xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component
                         http://www.mmbase.org/xmlns/component.xsd">
@@ -62,6 +63,17 @@
       <param name="b" />
     </body>
   </block>
+
+  <block name="test_datatypes"
+         classification="mmbase.test"
+         mimetype="text/html">
+    <title xml:lang="en">Datatypes</title>
+    <title xml:lang="nl">Datatypes</title>
+    <xi:include href="http://www.mmbase.org/components/validation.head.xml" />
+    <body jsp="datatypes.jspx" />
+  </block>
+
+
 
 
 </component>
