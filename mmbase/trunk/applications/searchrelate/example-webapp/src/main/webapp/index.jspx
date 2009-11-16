@@ -201,6 +201,11 @@
               <a href="${_}">mm-sr:search</a>
             </mm:link>
           </li>
+          <li>
+            <mm:link page="mmform-search.jspx" referids="${referids}">
+              <a href="${_}">mm-sr:search in a mm:form</a>
+            </mm:link>
+          </li>
           <li>Make more test-cases for this tag</li>
         </ul>
         <hr />
