@@ -55,10 +55,12 @@ public  class StringListTagTest {
 
         int index = 0;
 
+        System.out.println("" + context.getContextContainer().getClass() + " " + context.getContextContainer());
+        System.out.println("" + tag.getContextContainer().getClass() + " " + tag.getContextContainer());
         while (it == 2) {
             tag.doInitBody();
 
-            context.getObject("foo"); // Should not give exception
+            System.out.println("" + context.getObject("foo")); // Should not give exception
 
             Import.tag(pageContext, tag, "foo", "bla" + (++index), true);
 

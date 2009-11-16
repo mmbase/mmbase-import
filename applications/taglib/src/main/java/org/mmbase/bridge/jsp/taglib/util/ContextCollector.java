@@ -54,10 +54,13 @@ public class  ContextCollector extends StandaloneContextContainer {
     }
     @Override
     protected void register(String newid, Object n, boolean check, boolean checkParent) throws JspTagException {
-        if (! check) {
+        if (! check || unregister.containsKey(newid)) {
             parent.unRegister(newid);
         }
-        super.register(newid, n, check, checkParent);
+        //log.debug("" + unregister + " check " + check);
+        boolean c = check;
+        if (unregister.containsKey(newid)) c = false;
+        super.register(newid, n, c , checkParent);
 
     }
 
@@ -70,7 +73,7 @@ public class  ContextCollector extends StandaloneContextContainer {
         if (iteratesAgain) {
             for (Map.Entry<String, Object> e : backing.entrySet()) {
                 if (((CollectorBacking) backing).myKeys.contains(e.getKey())) {
-                    parent.unRegister(e.getKey());
+                    //parent.unRegister(e.getKey());
                     unregister.put(e.getKey(), e.getValue());
                 }
             }

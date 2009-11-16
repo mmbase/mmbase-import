@@ -47,25 +47,21 @@ public  class CollectorBacking extends BasicBacking {
     }
 
     @Override
-    public Object put(String key, Object value, boolean reset) {
+    public Object put(String key, Object value, boolean reset) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("Putting in collector " + key + "=" + value + " " + parent);
         }
-        try {
-            assert parent != null;
-            if (reset || myKeys.contains(key)) {
-                parent.reregister(key, value);
+        assert parent != null;
+        if (reset || myKeys.contains(key)) {
+            parent.reregister(key, value);
+            myKeys.add(key);
+        } else {
+            if (! parent.containsKey(key)) {
                 myKeys.add(key);
+                parent.register(key, value);
             } else {
-                if (! parent.containsKey(key)) {
-                    myKeys.add(key);
-                    parent.register(key, value);
-                } else {
-                    parent.register(key, value);
-                }
+                parent.register(key, value);
             }
-        } catch (JspTagException jte) {
-            throw new RuntimeException(jte);
         }
         boolean r = reset || myKeys.contains(key);
         return super.put(key, value, r);

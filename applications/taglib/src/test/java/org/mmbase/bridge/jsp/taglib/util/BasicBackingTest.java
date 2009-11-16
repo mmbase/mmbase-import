@@ -96,7 +96,7 @@ public  class BasicBackingTest {
     }
 
     @Test
-    public void reset() {
+    public void reset() throws Exception {
         // put something on the pageContext
         // use a backing, in which we _reset_ that value
         // check the pageContext
