@@ -210,6 +210,7 @@
                             id="query">
     <mm:sortorder field="${_orderby}" direction="${_direction}" />
     <jsp:invoke fragment="constraints" />
+    <mm:sortorder field="number" direction="UP" />
   </mm:relatednodescontainer>
 
 
