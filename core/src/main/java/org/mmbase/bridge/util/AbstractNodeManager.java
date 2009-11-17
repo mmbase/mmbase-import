@@ -229,7 +229,8 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
         return descendants;
     }
 
-    public Collection<Function<?>>  getFunctions() {
+    @Override
+    public Collection< Function<?>>  getFunctions() {
         return Collections.emptyList();
     }
 
