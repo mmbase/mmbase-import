@@ -74,7 +74,7 @@
 						   />
 
   <jsp:directive.attribute name="addposition"      type="java.lang.String"
-						   description="Where new items will be added to the list. Either 'up' or 'down'. Default is the value of the 'createposition' attribute."
+						   description="Where new items will be added to the list. Either 'up' or 'down'. Default is the value of the 'createposition' attribute"
 						   />
 
   <jsp:directive.attribute name="constraints"           fragment="true"
@@ -185,7 +185,8 @@
 
   <mm:import id="parentformtag">${parentparameters.formtag}</mm:import>
 
-  <mm:import id="_formtag">${requestScope['org.mmbase.bridge.jsp.taglib.form'].name}</mm:import>
+  <mm:import id="__formtag">${requestScope['org.mmbase.bridge.jsp.taglib.form'].name}</mm:import>
+  <mm:import id="_formtag">${empty __formtag ? parentformtag : __formtag}</mm:import>
   <mm:import id="_orderby">${empty orderby ? _role : orderby}${empty orderby ? (_role eq 'posrel' ? '.pos' : '.number') : ''}</mm:import>
   <mm:import id="_fields">${fields}</mm:import>
   <mm:import id="_search">${empty searchRepository ? (empty search ? false : search) : true}</mm:import>
