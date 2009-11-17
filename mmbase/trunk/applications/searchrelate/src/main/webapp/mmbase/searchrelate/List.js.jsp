@@ -851,6 +851,7 @@ List.prototype.getOriginalPosition  = function(li) {
 List.prototype.afterPost = function() {
     this.log("posted!" + this.order);
     if (this.sortable) {
+        // Submit the new order seperately
         var order = "";
         var originalOrder = "";
         var self = this;
@@ -868,7 +869,9 @@ List.prototype.afterPost = function() {
                     needsSave = true;
                 }
                 var originalPos =  self.getOriginalPosition(this);
-                if (originalPos != expectedOriginal) needsSave = true;
+                if (originalPos != expectedOriginal) {
+                    needsSave = true;
+                }
 		originalOrder += originalPos;
                 expectedOriginal++;
 	    });
