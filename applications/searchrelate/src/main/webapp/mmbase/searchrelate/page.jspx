@@ -61,7 +61,7 @@
         <table cellspacing="0" summary="${mm:escape('tagstripper(none),text/xml', summary)}">
           <caption class="${empty search ? 'emptysearch' : 'search'} ${size gt pagesize ? 'paging needed' : 'paging notneeded'}">${summary}</caption>
           &lt;!-- <jsp:expression>bq.toSql()</jsp:expression> --&gt;
-          <thead class="${size gt 0 ? 'paging needed' : 'paging notneeded'}">
+          <thead>
             <tr class="${query.nodeManager.name}">
               <c:choose>
                 <c:when test="${!empty flds}">
