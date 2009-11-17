@@ -7,6 +7,29 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
 
   <mm-sre:form>
+
+    <div class="test">
+      <table>
+        <tr><td>Press +</td><td>New item</td></tr>
+        <tr><td>Change new title</td></tr>
+        <tr><td>Change another title</td></tr>
+        <tr><td>Press reload</td><td>Nothing should change</td></tr>
+        <tr><td>Press cancel</td><td>The new item should dissappear again, and edits be undone</td></tr>
+        <tr><td>Do it again</td><td></td></tr>
+        <tr><td>But now press submit</td><td></td></tr>
+        <tr><td>Press reload</td><td>Nothing should change, changes should still be there</td></tr>
+        <tr><td>Drag items to reorder</td><td></td></tr>
+        <tr><td>Press reload</td><td>Nothing should change</td></tr>
+        <tr><td>Press submit</td><td>Nothing should change</td></tr>
+
+        <tr><td>Delete item with both 'unlink' and with 'delete'</td><td></td></tr>
+        <tr><td>Cancel</td><td>Items should reappear </td></tr>
+        <tr><td>Delete item with both 'unlink' and with 'delete'</td><td></td></tr>
+        <tr><td>Submit</td><td>Items should be gone</td></tr>
+
+      </table>
+    </div>
+
     <h3><mm:field name="title" /></h3>
 
     <mm-sr:relatednodes
