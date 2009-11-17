@@ -14,6 +14,7 @@ import static org.mmbase.datatypes.Constants.*;
 import org.mmbase.bridge.util.*;
 import java.util.*;
 import org.mmbase.bridge.*;
+import org.mmbase.util.functions.*;
 
 /**
  * Straight-forward implementation of NodeManager based on a Map with DataType's.
@@ -30,6 +31,7 @@ public class MockNodeManager extends AbstractNodeManager  {
     protected final String parent;
     protected final MockCloud vcloud;
     protected final int oType;
+    protected final List<Function<?>> functions = new ArrayList<Function<?>>();
 
     public MockNodeManager(MockCloud cloud, NodeManagerDescription desc) {
         super(cloud);
@@ -48,6 +50,23 @@ public class MockNodeManager extends AbstractNodeManager  {
         // it should behave as a proper node
         values.put("number", desc.oType);
         values.put("name",   desc.name);
+
+
+        // It seems that any node manager needs to implement at least the following functions
+        // Perhaps we need to come up with something to make this reusable.
+        functions.add(new NodeFunction<Integer>("age", Parameter.emptyArray(), ReturnType.INTEGER) {
+                @Override
+                public Integer getFunctionValue(Node n, Parameters params) {
+                    // mock nodes probably all exists less then a day..
+                    return 0;
+                }
+            });
+        functions.add(new NodeFunction<String>("gui", GuiFunction.PARAMETERS, ReturnType.STRING) {
+                @Override
+                public String getFunctionValue(Node n, Parameters params) {
+                    return n.getStringValue("number");
+                }
+            });
     }
 
 
@@ -76,7 +95,6 @@ public class MockNodeManager extends AbstractNodeManager  {
     }
 
 
-
     @Override
     public NodeManager getParent() throws NotFoundException {
         if (parent == null) {
@@ -86,6 +104,19 @@ public class MockNodeManager extends AbstractNodeManager  {
         }
     }
 
+    @Override
+    public Collection<Function<?>>  getFunctions() {
+        return Collections.unmodifiableList(functions);
+    }
+
+    @Override
+    public String getContext() {
+        return "default";
+    }
+    @Override
+    public boolean mayCreateNode() {
+        return true;
+    }
 
 
 }
