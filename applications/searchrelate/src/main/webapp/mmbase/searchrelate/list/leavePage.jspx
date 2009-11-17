@@ -22,7 +22,7 @@
       </c:forEach>
       <c:forEach items="${requestids}" var="requestid">
         <seq>
-          <mm:log level="info">clearing ${requestid}</mm:log>
+          <mm:log level="debug">clearing ${requestid}</mm:log>
           <mm:remove from="session" referid="${requestid}_sequence" />
         </seq>
       </c:forEach>
