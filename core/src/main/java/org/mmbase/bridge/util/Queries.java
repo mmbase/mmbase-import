@@ -1266,13 +1266,19 @@ abstract public class Queries {
         } else {
             // compare the results
             try {
+                // make sure value and value2 have the same type:
+                value2 = Casting.toType(value.getClass(), value2);
+
                 result = ((Comparable<Object>)value).compareTo(value2);
-                log.debug("" + value + " ~ " + value2 + "  ->" + result);
+
+                if (log.isDebugEnabled()) {
+                    log.debug("" + value + " ~ " + value2 + "  ->" + result);
+                }
             } catch (ClassCastException cce) {
                 // This should not occur, and indicates very odd values are being sorted on (i.e. byte arrays).
                 // warn and ignore this sortorder
-                log.warn("Cannot compare values " + value +" and " + value2 + " in sortorder field " +
-                         sortOrder.getField().getFieldName() + " in step " + sortOrder.getField().getStep().getAlias());
+                log.warn("Cannot compare values " + value.getClass().getName() + " " + value +" and " + value2.getClass() + " " + value2 + " in sortorder field " +
+                         sortOrder.getField().getFieldName() + " in step " + sortOrder.getField().getStep().getAlias() + ": " + cce.getMessage(), cce);
                 result = 0;
             }
         }
