@@ -29,12 +29,14 @@ public class MockNode extends MapNode  {
 
     private final Map<String, Object> originalMap;
     private final MockCloudContext cloudContext;
+    private String context = "default";
 
     MockNode(Map<String, Object> map, MockCloudContext cc, NodeManager nm) {
         super(new HashMap<String, Object>(map), nm);
         originalMap = map;
         cloudContext = cc;
     }
+
     @Override
     public  void commit() {
         Collection<String> errors = validate();
@@ -54,6 +56,16 @@ public class MockNode extends MapNode  {
             throw new NotFoundException("No field '" + fieldName + "' in " + getNodeManager());
         }
         return super.getValueWithoutProcess(fieldName);
+    }
+
+
+    @Override
+    public String getContext() {
+        return context;
+    }
+    @Override
+    public void setContext(String c) {
+        context = c;
     }
 
     @Override
