@@ -206,38 +206,10 @@ public class MapNode<V> extends AbstractNode implements Node, Serializable {
         return BridgeCollections.EMPTY_STRINGLIST;
     }
 
-    @Override
-    public void createAlias(String aliasName) {
-        throw new UnsupportedOperationException("Map nodes have no aliases");
-    }
-
-    @Override
-    public void deleteAlias(String aliasName) {
-        throw new UnsupportedOperationException("Map nodes have no aliases");
-    }
 
     @Override
     public Relation createRelation(Node destinationNode, RelationManager relationManager) {
-        throw new UnsupportedOperationException("Map nodes have no relations");
-    }
-
-
-    @Override
-    public void setContext(String context) {
-        throw new UnsupportedOperationException("Map nodes have no security context");
-    }
-
-    // javadoc inherited (from Node)
-    @Override
-    public String getContext() {
-        throw new UnsupportedOperationException("Virtual nodes have no security context");
-    }
-
-
-    // javadoc inherited (from Node)
-    @Override
-    public StringList getPossibleContexts() {
-        return BridgeCollections.EMPTY_STRINGLIST;
+        throw new UnsupportedOperationException(this.getClass().getName() + "s  have no relations");
     }
 
     @Override
@@ -246,24 +218,10 @@ public class MapNode<V> extends AbstractNode implements Node, Serializable {
     }
 
     @Override
-    public boolean mayDelete() {
-        return false;
-    }
-
-    @Override
     public boolean mayChangeContext() {
-        return false;
+        return true;
     }
 
-    public Collection<Function<?>>  getFunctions() {
-        return  nodeManager.getFunctions();
-    }
-
-
-    @Override
-    protected Function getNodeFunction(String functionName) {
-        return nodeManager.getFunction(functionName);
-    }
 
     @Override
     public void setNodeManager(NodeManager nm) {
