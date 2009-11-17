@@ -10,7 +10,7 @@
 
   <mm:import externid="config"></mm:import>
 
-  <mm:form id="bla">
+  <mm:form name="bloe">
 
 
     <h3>Urls</h3>
