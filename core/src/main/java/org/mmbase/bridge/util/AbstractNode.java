@@ -701,20 +701,19 @@ public abstract class AbstractNode implements Node {
     }
 
     public void createAlias(String aliasName) {
-        throw new UnsupportedOperationException("Virtual nodes have no aliases");
+        throw new UnsupportedOperationException(this.getClass().getName() + "s have no aliases");
     }
 
     public void deleteAlias(String aliasName) {
-        throw new UnsupportedOperationException("Virtual nodes have no aliases");
+        throw new UnsupportedOperationException(this.getClass().getName() + "s  have no aliases");
     }
 
     public void setContext(String context) {
-        throw new UnsupportedOperationException("Virtual nodes have no security context");
+        throw new UnsupportedOperationException(this.getClass().getName() + "s have no security context");
     }
 
-    // javadoc inherited (from Node)
     public String getContext() {
-        throw new UnsupportedOperationException("Virtual nodes have no security context");
+        throw new UnsupportedOperationException(this.getClass().getName() + "s have no security context");
     }
 
     // javadoc inherited (from Node)
@@ -757,7 +756,8 @@ public abstract class AbstractNode implements Node {
 
     protected FieldValue createFunctionValue(final Object result) {
         return new AbstractFieldValue(this, getCloud()) {
-            @Override public Object get() {
+            @Override
+            public Object get() {
                 return result;
             }
         };
@@ -773,23 +773,77 @@ public abstract class AbstractNode implements Node {
         return createFunctionValue(function.getFunctionValue(params));
     }
 
-    protected Function<?> getNodeFunction(String functionName) {
-        return null;
+
+    /**
+     * Wraps {@link #getFunctions} in a Map
+     *
+     * @since MMBase-1.9.2
+     */
+    protected final Map<String, Function<?>>  getFunctionMap() {
+        return new AbstractMap<String, Function<?>>() {
+            @Override
+            public Set<Map.Entry<String, Function<?>>> entrySet() {
+                return new AbstractSet<Map.Entry<String, Function<?>>>() {
+                    @Override
+                    public int size() {
+                        return AbstractNode.this.getFunctions().size();
+                    }
+                    @Override
+                    public Iterator<Map.Entry<String, Function<?>>> iterator() {
+                        final Iterator<Function<?>> i = AbstractNode.this.getFunctions().iterator();
+                        return new Iterator<Map.Entry<String, Function<?>>>() {
+                            public boolean hasNext() {
+                                return i.hasNext();
+                            }
+                            public Map.Entry<String, Function<?>> next() {
+                                Function<?> n = i.next();
+                                return new org.mmbase.util.Entry<String, Function<?>>(n.getName(), n);
+                            }
+                            public void remove() {
+                                throw new UnsupportedOperationException();
+                            }
+                        };
+                    }
+
+                };
+            }
+        };
     }
 
-    public final Function<?> getFunction(String functionName) {
+    /**
+     * This default implementation is based on {@link #getNodeManager}.{@link org.mmbase.bridge.NodeManager#getFunctions}.
+     */
+    public Collection<Function<?>> getFunctions() {
+        return AbstractNode.this.getNodeManager().getFunctions();
+    }
+
+
+    /**
+     * Based on {@link getFunctions}.
+     */
+    protected Function<?> getNodeFunction(String functionName) {
+        Function<?> fun = getFunctionMap().get(functionName);
+        if (fun instanceof NodeFunction) {
+            return fun;
+        } else {
+            return null;
+        }
+    }
+
+    public Function<?> getFunction(String functionName) {
         Function<?> function = getNodeFunction(functionName);
         if (function == null) {
-            throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNumber() + " of type " + getNodeManager().getName() + "(known are " + getFunctions() + ")");
+            throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNumber() + " of type " + getNodeManager().getName() + "(known are " + getFunctionMap() + ")");
         }
         return new WrappedFunction(function) {
-                @Override public final Object getFunctionValue(Parameters params) {
-                    if (params == null) params = createParameters();
-                    params.setIfDefined(Parameter.NODE, AbstractNode.this);
-                    params.setIfDefined(Parameter.CLOUD, AbstractNode.this.getCloud());
-                    return AbstractNode.this.createFunctionValue(super.getFunctionValue(params)).get();
-                }
-            };
+            @Override
+            public final Object getFunctionValue(Parameters params) {
+                if (params == null) params = createParameters();
+                params.setIfDefined(Parameter.NODE, AbstractNode.this);
+                params.setIfDefined(Parameter.CLOUD, AbstractNode.this.getCloud());
+                return AbstractNode.this.createFunctionValue(super.getFunctionValue(params)).get();
+            }
+        };
     }
 
     public void setNodeManager(NodeManager nm) {
