@@ -147,7 +147,7 @@
             </mm:link>
           </li>
 
-          <li>
+          <li class="done">
             <mm:link page="mmform-constraints.jspx" referids="${referids}">
               <a href="${_}">constraints in mm:form</a>
             </mm:link>

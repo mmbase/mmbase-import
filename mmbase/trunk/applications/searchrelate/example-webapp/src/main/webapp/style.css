@@ -12,10 +12,10 @@ body.search .searchresult.implicit {
   display: block;
 }
 
-.ui-sortable>li {
+div.list .ui-sortable>li {
   border: dashed 1px green;
 }
-li {
+div.list li {
   border: solid 1px #aaa;
   margin-bottom: 2px;
   background-color: #eee;
@@ -154,4 +154,12 @@ form.searchform fieldset {
 
 .searchresult {
   font-size: 10%;
+}
+
+
+div.test {
+  float: right;
+  width: 30%;
+  background-color: #eeb;
+  border: solid 1px;
 }
