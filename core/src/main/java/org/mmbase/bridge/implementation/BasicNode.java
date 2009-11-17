@@ -598,16 +598,9 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * @since MMBase-1.8.5
      */
     private void deleteRelation(MMObjectNode relation) {
-        // first delete Relations to this this relation.
-        // SHOULD security not be checked first?
-        try {
-            for (MMObjectNode subRelation : BasicCloudContext.mmb.getInsRel().getRelationNodes(relation.getNumber(), false)) {
-                deleteRelation(subRelation);
-            }
-        } catch (SearchQueryException sqe) {
-            log.error(sqe);
-        }
-        cloud.remove(relation);
+        // leave deletion to cloud
+        // (the cloud may for example be a transaction and can be cancelled)
+        cloud.getNode(relation.getNumber()).delete(true);
     }
 
 
