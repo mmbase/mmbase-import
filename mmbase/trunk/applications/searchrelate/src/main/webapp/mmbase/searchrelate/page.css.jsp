@@ -34,7 +34,7 @@ input.searching
   border-right: solid 1px #000;
 }
 
-.searchresult table caption.emptysearch.pagingnotneeded  {
+.searchresult table caption.emptysearch.paging.notneeded  {
   display: none;
 }
 
