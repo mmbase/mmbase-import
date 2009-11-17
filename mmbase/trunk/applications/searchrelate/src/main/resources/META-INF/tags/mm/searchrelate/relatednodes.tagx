@@ -70,8 +70,13 @@
                            description="Jsp to call just before commit of the created node."
                            />
   <jsp:directive.attribute name="createposition"      type="java.lang.String"
-						   description="Position of create link, default is down"
+						   description="Position of create link. Either 'up' or 'down'. Default is down."
 						   />
+
+  <jsp:directive.attribute name="addposition"      type="java.lang.String"
+						   description="Where new items will be added to the list. Either 'up' or 'down'. Default is the value of the 'createposition' attribute."
+						   />
+
   <jsp:directive.attribute name="constraints"           fragment="true"
                            description="Will be called inside the relatednodescontainer, so you can add extra constraints. (Only works in mmbase ge 1.9)"
                            />
@@ -171,6 +176,7 @@
   <mm:import id="_role">${empty role and empty path ? 'posrel' : role}</mm:import><!-- role defaults to 'posrel' -->
   <mm:import id="_direction">${empty direction? 'UP' : direction}</mm:import><!-- defaults to UP -->
   <mm:import id="_createposition">${empty createposition? 'bottom' : createposition}</mm:import>
+  <mm:import id="_addposition">${empty addposition? _createposition : addposition}</mm:import>
 
 
   <mm:write request="org.mmbase.searchrelate.relatednodes" value="${rid}" />
@@ -208,8 +214,8 @@
   <mm:relatednodescontainer path="${path}" type="${empty path ? type : ''}" role="${_role}"
                             searchdirs="${searchdirs}"
                             id="query">
-    <mm:sortorder field="${_orderby}" direction="${_direction}" />
     <jsp:invoke fragment="constraints" />
+    <mm:sortorder field="${_orderby}" direction="${_direction}" />
     <mm:sortorder field="number" direction="UP" />
   </mm:relatednodescontainer>
 
@@ -223,6 +229,7 @@
     <mm:import from="parent" id="role"      externid="_role" />
     <mm:import from="parent" id="direction" externid="_direction" />
     <mm:import from="parent" id="createposition" externid="_createposition" />
+    <mm:import from="parent" id="addposition" externid="_addposition" />
     <mm:import from="parent" id="formtag"   externid="_formtag" />
     <mm:import from="parent" id="fields"    externid="_fields" />
     <mm:import from="parent" id="delete"    externid="_delete" />
