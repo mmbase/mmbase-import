@@ -615,5 +615,44 @@ public class TransactionTest extends BridgeTest {
     }
 
 
+    // MMB-1893
+    public void testDeleteNodeWitRelationsAndCancel() {
+        Cloud cloud = getCloud();
+
+        int urlCount0 = Queries.count(cloud.getNodeManager("urls").createQuery());
+        int relCount0 = Queries.count(cloud.getNodeManager("insrel").createQuery());
+
+
+        Node url = cloud.getNodeManager("urls").createNode();
+        url.commit();
+        Node news = cloud.getNode(newNode);
+        RelationManager rm = cloud.getRelationManager("urls", "news", "posrel");
+        Relation r = url.createRelation(news, rm);
+        r.commit();
+
+        int urlCount = Queries.count(cloud.getNodeManager("urls").createQuery());
+        int relCount = Queries.count(cloud.getNodeManager("insrel").createQuery());
+
+        assertEquals(urlCount0 + 1, urlCount);
+        assertEquals(relCount0 + 1, relCount);
+
+        Transaction t = cloud.getTransaction("deletewithrelationsandcancel");
+
+        Node turl = t.getNode(url.getNumber());
+        turl.delete(true);
+
+
+        t.cancel();
+
+        int urlCountAfter = Queries.count(cloud.getNodeManager("urls").createQuery());
+        assertEquals(urlCount, urlCountAfter);
+
+        int relCountAfter = Queries.count(cloud.getNodeManager("insrel").createQuery());
+        assertEquals(relCount, relCountAfter); // FAILS
+
+
+    }
+
+
 
 }
