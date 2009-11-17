@@ -165,9 +165,8 @@ function List(d) {
                    function(ev) {
                        var result = self.commit(0, true);
                        if (result != null) {
-                           ev.returnValue = '<fmt:message key="invalid" />';
-                           alert(result);
-                           return false;
+                           ev.returnValue = confirm(result); //'<fmt:message key="invalid" />';
+                           return ev.returnValue;
                        }
                        return result;
 
@@ -377,7 +376,7 @@ List.prototype.addItem = function(res, cleanOnFocus) {
     //r = document.importNode(res.responseXML.documentElement, true);
 
     var ol = list.find(null, "ol");
-    if (this.createposition == 'top') {
+    if (this.addposition == 'top') {
         ol.prepend(r);
         r = ol.find("li:first")[0];
     } else {
@@ -880,7 +879,7 @@ List.prototype.afterPost = function() {
         var self = this;
         if (needsSave) {
             this.loader();
-            this.log("Submitting order for " + this.rid + " " + params.originalOrder + "-> " + params.order );
+            //console.log("Submitting order for " + this.rid + " " + params.originalOrder + "-> " + params.order );
             $.ajax({ type: "POST",
                         async: false,
                         url: "${mm:link('/mmbase/searchrelate/list/submitOrder.jspx')}",
