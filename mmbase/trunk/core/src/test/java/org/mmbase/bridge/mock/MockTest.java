@@ -213,6 +213,15 @@ public class MockTest  {
         assertEquals(c, t.getNonTransactionalCloud());
     }
 
+    @Test
+    public void function() throws Exception {
+        MockCloudContext cc = MockCloudContext.getInstance();
+        Cloud c = cc.getCloud("mmbase");
+        NodeManager typedef = c.getNodeManager("typedef");
+        assertNotNull(typedef.getFunction("age"));
+        assertEquals(0, typedef.getFunctionValue("age", null).get());
+    }
+
 
 
 
