@@ -19,7 +19,7 @@
   <mm-sr:delete  />
 
 
-  <mm-sr:relatednodes
+  <mm-srt:relatednodes
       idvar="rid"
       role="related"
       type="images"
@@ -27,7 +27,7 @@
       create="false"
       fields="title,handle">
     <h3><span class="debug">${rid}</span>images</h3>
-  </mm-sr:relatednodes>
+  </mm-srt:relatednodes>
 
 
 
