@@ -648,7 +648,7 @@ public class TransactionTest extends BridgeTest {
         assertEquals(urlCount, urlCountAfter);
 
         int relCountAfter = Queries.count(cloud.getNodeManager("insrel").createQuery());
-        assertEquals(relCount, relCountAfter); // FAILS
+        assertEquals(relCount, relCountAfter); // MMB-1893
 
 
     }
