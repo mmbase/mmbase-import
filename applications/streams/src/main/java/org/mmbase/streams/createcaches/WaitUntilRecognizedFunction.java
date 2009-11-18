@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.streams;
+package org.mmbase.streams.createcaches;
 
 import org.mmbase.util.functions.*;
 import org.mmbase.bridge.*;
@@ -18,24 +18,24 @@ import org.mmbase.util.logging.*;
 
 /**
  *
- * @author Michiel Meeuwissen
+ * @author André van Toly
  * @version $Id: CreateCachesFunction.java 36715 2009-07-08 22:30:03Z michiel $
  */
 
-public class WaitUntilTranscodingFunction extends NodeFunction<Boolean> {
+public class WaitUntilRecognizedFunction extends NodeFunction<Boolean> {
 
-    private static final Logger LOG = Logging.getLoggerInstance(WaitUntilTranscodingFunction.class);
-    public WaitUntilTranscodingFunction() {
+    private static final Logger LOG = Logging.getLoggerInstance(WaitUntilRecognizedFunction.class);
+    public WaitUntilRecognizedFunction() {
         super("waitfor");
     }
 
 
     @Override
     protected Boolean getFunctionValue(final Node node, final Parameters parameters) {
-        CreateCachesProcessor.Job job = CreateCachesProcessor.getJob(node);
+        Job job = Processor.getJob(node);
         if (job != null) {
             try {
-                job.waitUntil(CreateCachesProcessor.Stage.TRANSCODER);
+                job.waitUntilAfter(Stage.RECOGNIZER);
             } catch (InterruptedException ie) {
                 return false;
             }
