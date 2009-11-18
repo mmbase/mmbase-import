@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 
-import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -21,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * @version $Id$
  * @since MMBase-1.9
  */
-public class GuiFunction extends NodeFunction<String> {
+public class GuiFunction extends org.mmbase.module.core.MMObjectNodeFunction<String> {
     private static final long serialVersionUID = 0L;
     private static final Logger log = Logging.getLoggerInstance(GuiFunction.class);
     public static final Parameter<?>[] PARAMETERS = {
@@ -52,7 +51,7 @@ public class GuiFunction extends NodeFunction<String> {
                 parameters.set("stringvalue", node.getStringValue(fieldName));
             }
         }
-        MMObjectNode n = (MMObjectNode) parameters.get(Parameter.CORENODE);
+        org.mmbase.module.core.MMObjectNode n = (org.mmbase.module.core.MMObjectNode) parameters.get(Parameter.CORENODE);
         return n.getBuilder().getGUIIndicator(n, parameters);
     }
 
