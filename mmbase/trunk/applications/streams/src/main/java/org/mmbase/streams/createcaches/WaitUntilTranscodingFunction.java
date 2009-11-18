@@ -11,9 +11,6 @@ package org.mmbase.streams.createcaches;
 
 import org.mmbase.util.functions.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.*;
-import org.mmbase.security.ActionRepository;
-import org.mmbase.datatypes.processors.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -23,6 +20,7 @@ import org.mmbase.util.logging.*;
  */
 
 public class WaitUntilTranscodingFunction extends NodeFunction<Boolean> {
+    private static final long serialVersionUID = 0L;
 
     private static final Logger LOG = Logging.getLoggerInstance(WaitUntilTranscodingFunction.class);
     public WaitUntilTranscodingFunction() {
