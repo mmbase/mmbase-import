@@ -210,7 +210,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
                     String k = identifier.transform((String) entry.getKey());
                     k = k.replaceAll("\\s", "");
                     sb.append(k);
-                    sb.append(" \"" + org.mmbase.util.transformers.Xml.XMLAttributeEscape("" + value, '"') + "\">\n");
+                    sb.append(" \"" + org.mmbase.util.transformers.Xml.XMLAttributeEscape("" + value, '"').replaceAll("%", "&#x25;") + "\">\n");
                 }
                 if (level < 3 && value != null && !os.contains(value) && ! value.getClass().getName().startsWith("java.lang")) { // recursion to acces also properties of this
                     appendEntities(sb, value, prefix + "." + entry.getKey(), level + 1, os);
@@ -236,7 +236,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
                                     sb.append(prefix);
                                     sb.append('.');
                                     camelAppend(sb, name.substring(3));
-                                    sb.append(" \"" + org.mmbase.util.transformers.Xml.XMLAttributeEscape("" + value, '"') + "\">\n");
+                                    sb.append(" \"" + org.mmbase.util.transformers.Xml.XMLAttributeEscape("" + value, '"').replaceAll("%", "&#x25;") + "\">\n");
                                 }
                             }
                             if (! rt.getName().startsWith("java.lang")) {
