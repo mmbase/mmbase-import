@@ -563,7 +563,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         /**
          * @since MMBase-1.8
          */
-        addFunction(new NodeFunction<String>("iconurl",
+        addFunction(new MMObjectNodeFunction<String>("iconurl",
                                      new Parameter[] {
                                          Parameter.REQUEST,
                                          new Parameter<String>("iconroot", String.class, "/mmbase/style/icons/"),
