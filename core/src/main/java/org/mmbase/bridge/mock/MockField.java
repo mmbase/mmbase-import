@@ -65,6 +65,14 @@ public class MockField extends DataTypeField  {
     public int getStoragePosition() {
         return storagePosition;
     }
+    @Override
+    public boolean isReadOnly() {
+        if (field == null) {
+            return storagePosition < 0;
+        } else {
+            return super.isReadOnly();
+        }
+    }
 
 
 
