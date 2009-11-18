@@ -1,4 +1,4 @@
-package org.mmbase.streams;
+package org.mmbase.streams.createcaches;
 
 import org.junit.*;
 import org.junit.runner.*;
@@ -96,7 +96,7 @@ public class CreateCachesTest {
 
     protected Cloud getCloud() {
         if (remoteCloud != null) {
-            remoteCloud.setProperty(CreateCachesProcessor.NOT, "no implicit processesing please");
+            remoteCloud.setProperty(Processor.NOT, "no implicit processesing please");
             //remoteCloud.setProperty(BinaryCommitProcessor.NOT, "no implicit processesing please");
             //remoteCloud.setProperty(org.mmbase.applications.media.FragmentTypeFixer.NOT, "no implicit processesing please");
         }
@@ -150,12 +150,12 @@ public class CreateCachesTest {
         return newSource;
     }
 
-    CreateCachesProcessor get(String config) {
+    Processor get(String config) {
         Cloud cloud = getCloud();
         assumeNotNull(cloud);
 
         NodeManager nm = cloud.getNodeManager("streamsources");
-        CreateCachesProcessor proc = new CreateCachesProcessor(config);
+        Processor proc = new Processor(config);
         File dir = new File(nm.getFunctionValue("fileServletDirectory", null).toString());
         proc.setDirectory(dir);
         return proc;
@@ -188,10 +188,10 @@ public class CreateCachesTest {
     @Test
     public void crazy() throws Exception  {
         for (int i = 0; i < 10; i++) {
-            CreateCachesProcessor proc = get("crazycreatecaches.xml");
+            Processor proc = get("crazycreatecaches.xml");
             Node source = getNode(proc.getDirectory());
-            CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
-            job.waitUntil(CreateCachesProcessor.Stage.READY);
+            Job job = proc.createCaches(source.getCloud(), source.getNumber());
+            job.waitUntil(Stage.READY);
             assertTrue("No node " + source.getNumber() + " in " + source.getCloud(), source.getCloud().hasNode(source.getNumber()));
             source = refresh(source);
         }
@@ -200,11 +200,11 @@ public class CreateCachesTest {
 
     @Test
     public void recognizerOnly() throws Exception  {
-        CreateCachesProcessor proc = get("dummycreatecaches_0.xml");
+        Processor proc = get("dummycreatecaches_0.xml");
         Node source = getNode(proc.getDirectory());
-        CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
+        Job job = proc.createCaches(source.getCloud(), source.getNumber());
 
-        job.waitUntil(CreateCachesProcessor.Stage.READY);
+        job.waitUntil(Stage.READY);
 
         assertTrue("No node " + source.getNumber() + " in " + source.getCloud(), source.getCloud().hasNode(source.getNumber()));
         source = refresh(source);
@@ -213,11 +213,11 @@ public class CreateCachesTest {
 
     @Test
     public  void simple() throws Exception {
-        CreateCachesProcessor proc = get("dummycreatecaches_1.xml");
+        Processor proc = get("dummycreatecaches_1.xml");
         Node source = getNode(proc.getDirectory());
-        CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
+        Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
-        job.waitUntil(CreateCachesProcessor.Stage.READY);
+        job.waitUntil(Stage.READY);
         assertTrue(source.getCloud().hasNode(source.getNumber()));
         source = refresh(source);
         checkSource(source, 2);
@@ -226,44 +226,44 @@ public class CreateCachesTest {
 
     @Test
     public  void twoSteps() throws Exception {
-        CreateCachesProcessor proc = get("dummycreatecaches_2.xml");
+        Processor proc = get("dummycreatecaches_2.xml");
         Node source = getNode(proc.getDirectory());
-        CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
+        Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
-        job.waitUntil(CreateCachesProcessor.Stage.READY);
+        job.waitUntil(Stage.READY);
         source = refresh(source);
         checkSource(source, 3);
     }
 
     @Test
     public  void twoStepsTwoResults() throws Exception {
-        CreateCachesProcessor proc = get("dummycreatecaches_3.xml");
+        Processor proc = get("dummycreatecaches_3.xml");
         Node source = getNode(proc.getDirectory());
-        CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
+        Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
-        job.waitUntil(CreateCachesProcessor.Stage.READY);
+        job.waitUntil(Stage.READY);
         source = refresh(source);
         checkSource(source, 4);
     }
 
     @Test
     public  void ignoreByMimeType() throws Exception {
-        CreateCachesProcessor proc = get("dummycreatecaches_4.xml");
+        Processor proc = get("dummycreatecaches_4.xml");
         Node source = getNode(proc.getDirectory());
-        CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
+        Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
-        job.waitUntil(CreateCachesProcessor.Stage.READY);
+        job.waitUntil(Stage.READY);
         source = refresh(source);
         checkSource(source, 1);
     }
 
     @Test
     public  void twoStepsTwoResultsIgnoreAudio() throws Exception {
-        CreateCachesProcessor proc = get("dummycreatecaches_5.xml");
+        Processor proc = get("dummycreatecaches_5.xml");
         Node source = getNode(proc.getDirectory());
-        CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
+        Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
-        job.waitUntil(CreateCachesProcessor.Stage.READY);
+        job.waitUntil(Stage.READY);
         source = refresh(source);
         checkSource(source, 4);
     }

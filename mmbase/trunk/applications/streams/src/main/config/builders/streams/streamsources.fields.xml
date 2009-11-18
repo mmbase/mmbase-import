@@ -28,7 +28,7 @@
         <class name="org.mmbase.datatypes.processors.BinaryCommitProcessor">
           <param name="setContentTypeIfNotRecognized">false</param>
         </class>
-        <class name="org.mmbase.streams.CreateCachesProcessor">
+        <class name="org.mmbase.streams.createcaches.Processor">
           <param name="configFile">streams/createcaches.xml</param>
         </class>
       </commitprocessor>

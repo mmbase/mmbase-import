@@ -59,7 +59,7 @@ public class MediaFragmentTest {
 
     protected Cloud getCloud() {
         if (remoteCloud != null) {
-            remoteCloud.setProperty(CreateCachesProcessor.NOT, "no implicit processesing please");
+            remoteCloud.setProperty(org.mmbase.streams.createcaches.Processor.NOT, "no implicit processesing please");
             //remoteCloud.setProperty(BinaryCommitProcessor.NOT, "no implicit processesing please");
             //remoteCloud.setProperty(org.mmbase.applications.media.FragmentTypeFixer.NOT, "no implicit processesing please");
         }
