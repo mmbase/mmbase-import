@@ -96,10 +96,13 @@ public class ResourceLoaderTest {
 
     @Test
     public void spaces() throws Exception {
-        assertNotNull(ResourceLoader.getConfigurationRoot().getDocument("directory with spaces/file with spaces.xml"));
+        assertNotNull(ResourceLoader.getConfigurationRoot().getDocument("directory with spaces/file with spaces.xml", false, null));
+        assertNotNull(ResourceLoader.getConfigurationRoot().getDocument("directory with spaces/file.xml", false, null));
         ResourceLoader child = ResourceLoader.getConfigurationRoot().getChildResourceLoader("directory with spaces");
+        assertNotNull(child.getDocument("file.xml", false, null));
+        System.out.println(child.getResource("file.xml"));
         Set<String> xmls = child.getResourcePaths(ResourceLoader.XML_PATTERN, true);
-        assertEquals(1, xmls.size()); // MMB-1894?
+        assertEquals("" + child, 2, xmls.size()); // MMB-1894?
         for (String x : xmls) {
             System.out.println(x);
         }
