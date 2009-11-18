@@ -14,26 +14,20 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.storage.search.*;
-import org.mmbase.security.UserContext;
-import org.mmbase.security.ActionRepository;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.util.*;
-import org.mmbase.util.xml.*;
 import org.mmbase.util.externalprocess.CommandExecutor;
-import org.mmbase.datatypes.processors.*;
 import org.mmbase.applications.media.State;
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.Codec;
 import org.mmbase.applications.media.MimeType;
 import org.mmbase.servlet.FileServlet;
-import org.mmbase.core.event.*;
 
 import java.util.*;
 import java.util.concurrent.*;
 import java.io.*;
 import java.net.*;
 import org.mmbase.util.logging.*;
-import org.w3c.dom.*;
 
 /**
  * A Job is associated with a 'source' node, and describes what is currently happening to create
@@ -292,7 +286,7 @@ public class Job implements Iterable<Result> {
      * Re-submit this job.
      */
 
-    public synchronized void submit(JobCallable jc) {
+    synchronized void submit(JobCallable jc) {
             LOG.info("Will submit " + jc);
             findResults();
             if (getCurrent() == null) {
