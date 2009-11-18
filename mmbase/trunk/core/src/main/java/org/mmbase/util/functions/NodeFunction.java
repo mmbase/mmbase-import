@@ -10,8 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 
 import java.util.*;
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.bridge.*;
 
 import org.mmbase.util.logging.Logger;
@@ -22,9 +20,12 @@ import org.mmbase.util.logging.Logging;
  * that it always has one implicit node argument. This node-argument needs not be mentioned in
  * the Parameter array of the constructor.
  *
+ * If you need to impelment this and like to use MMObjectNodes for the implementation (which would probably make the function unusable in RMMCI), then you could
+ * extend {@link org.mmbase.module.core.MMObjectNodeFunction}.
+ *
+ *
  * @author Michiel Meeuwissen
  * @version $Id$
- * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
  * @since MMBase-1.8
@@ -93,98 +94,15 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
         List<Parameter> defList = new ArrayList(Arrays.asList(def));
         if (! defList.contains(Parameter.NODE)) defList.add(Parameter.NODE);
         if (! defList.contains(Parameter.CLOUD)) defList.add(Parameter.CLOUD);
-        if (! defList.contains(Parameter.CORENODE)) defList.add(Parameter.CORENODE);
         return defList.toArray(Parameter.emptyArray());
     }
+
 
     /**
      * Returns a new instance of NodeInstanceFunction, which represents an actual Function.
      */
-    final public Function<R> newInstance(MMObjectNode node) {
+    final public Function<R> newInstance(Node node) {
         return new NodeInstanceFunction(node);
-    }
-
-    /**
-     * Implements the function on a certain node. Override this method <em>or</em> it's bridge
-     * counter-part {@link #getFunctionValue(org.mmbase.bridge.Node, Parameters)}.  Overriding the
-     * bridge version has two advantages. It's easier, and mmbase security will be honoured. That
-     * last thing is of course not necesary if you are not going to use other nodes.
-     *
-     * XXX: made final because it does not work well if you don't implement a bridge version
-     */
-    protected final R getFunctionValue(final MMObjectNode coreNode, final Parameters parameters) {
-        if (coreNode == null) throw new RuntimeException("No node argument given for " + this + "(" + parameters + ")!");
-        Node node = parameters.get(Parameter.NODE);
-        if (node == null) {
-            Cloud cloud   = parameters.get(Parameter.CLOUD);
-            if (cloud == null) {
-                // lets try this
-                try {
-                    cloud = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
-                } catch (org.mmbase.security.SecurityException se) {
-                    // perhaps class-security not implemented by security implementation.
-                    log.warn("" + se.getMessage());
-                    cloud = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase");
-                }
-                if (cloud == null) {
-                    throw new RuntimeException("No cloud argument given"  + this + "(" + parameters + ")!" + Logging.stackTrace());
-                }
-            }
-            if (coreNode instanceof org.mmbase.module.core.VirtualNode) {
-                node = new org.mmbase.bridge.implementation.VirtualNode((org.mmbase.module.core.VirtualNode) coreNode, cloud);
-                log.debug("Core node is virtual, taking bridge node " + node);
-            } else {
-                int number = coreNode.getNumber();
-                if (number == -1) {
-                    // must be in transaction or uncommited node
-                    String tmpNumber = coreNode.getStringValue(MMObjectBuilder.TMP_FIELD_NUMBER);
-                    if (cloud.hasNode(tmpNumber)) {
-                        node = cloud.getNode(tmpNumber);
-                        log.debug("Found transactional (?) node " + node + " from "  + cloud);
-                    } else {
-                        // last resort..., we're really desperate now.
-                        // This happens when calling gui() in transaction.
-                        // Perhaps we need something like a public new BasicNode(MMobjectNode, Cloud). Abusing VirtualNode for similar purpose now.
-                        org.mmbase.module.core.VirtualNode virtual = new org.mmbase.module.core.VirtualNode(coreNode.getBuilder());
-                        for (Map.Entry<String, Object> entry : coreNode.getValues().entrySet()) {
-                            virtual.storeValue(entry.getKey(), entry.getValue());
-                        }
-                        node = new org.mmbase.bridge.implementation.VirtualNode(virtual, cloud);
-                        log.debug("Found transaction (?) node " + node + ". Not in cloud " + cloud + " taking"  + node);
-                    }
-                } else {
-                    if (cloud.mayRead(number)) {
-                        node = cloud.getNode(number);
-                        log.debug("Node exists, taking " + node + " from " + cloud);
-                    } else {
-                        log.warn("Could not produce Bridge Node for '" + number + "', cannot execute node function.");
-                        return null;
-                    }
-                }
-            }
-            parameters.set(Parameter.NODE, node);
-        } else {
-            log.debug("node as param: " + node);
-        }
-
-        return getFunctionValue(node, parameters);
-
-    }
-
-    /**
-     * Utility method to convert a {@link org.mmbase.bridge.Node} to a a {@link org.mmbase.module.core.MMObjectNode}.
-     */
-    protected final MMObjectNode getCoreNode(final MMObjectBuilder builder, final Node node) {
-        if (node instanceof org.mmbase.bridge.implementation.VirtualNode) {
-            MMObjectNode n = ((org.mmbase.bridge.implementation.VirtualNode) node).getNodeRef();
-            log.debug("" + node + " -> " + n);
-            return n;
-        } else {
-            MMObjectNode n = builder.getNode(node.getNumber());
-            log.debug("" + node + " -> " + n);
-            return n;
-        }
-
     }
 
     /**
@@ -243,29 +161,33 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
         }
     }
 
+
     /**
      * This represents the function on one specific Node. This is instantiated when new Istance
      * if called on a NodeFunction.
      */
     private class NodeInstanceFunction extends WrappedFunction<R> {
 
-        protected MMObjectNode node;
+        protected Node node;
 
-        public NodeInstanceFunction(MMObjectNode node) {
+        public NodeInstanceFunction(Node node) {
             super(NodeFunction.this);
             this.node = node;
         }
-        //javadoc inherited
+        @Override
         public final R getFunctionValue(Parameters parameters) {
-            parameters.set(Parameter.CORENODE, node);
+            parameters.set(Parameter.NODE, node);
             return NodeFunction.this.getFunctionValue(node, parameters);
 
         }
 
+        @Override
         public String toString() {
             return NodeFunction.this.toString() + " for node " + node.getNumber();
         }
     }
+
+
 
 }
 
