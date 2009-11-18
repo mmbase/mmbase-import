@@ -16,7 +16,7 @@ Digraph "MMBase<%= nodemanager == null ? "" : " " + nodemanager %>" {
   rankdir=LR;
 
   <%
-      Map<String, Integer> set = new HashMap<String, Integer>();
+      Map<String, Integer> set = new TreeMap<String, Integer>();
       Set<RelationManager> rmset = new HashSet<RelationManager>();
       for (Object nm : nodemanager) {
          set.put((String) nm, new Integer(0));
