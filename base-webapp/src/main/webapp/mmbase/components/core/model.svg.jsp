@@ -62,7 +62,21 @@ Digraph "MMBase<%= nodemanager == null ? "" : " " + nodemanager %>" {
          } else {
             color = "";
          }
-         String u = url + "?nodemanager=" + nm + "&amp;maxdistance=" + maxdistance;
+         Set<String> newNodeManagers = new TreeSet<String>();
+         newNodeManagers.addAll(nodemanager);
+         if (newNodeManagers.contains(nm)) {
+            newNodeManagers.remove(nm);
+         } else {
+            newNodeManagers.add(nm);
+         }
+         StringBuilder nms = new StringBuilder();
+         for (String n : newNodeManagers) {
+            if (nms.length() > 0) {
+               nms.append(",");
+            }
+            nms.append(n);
+         }
+         String u = url + "?nodemanager=" + nms + "&amp;maxdistance=" + maxdistance;
          out.println(nm  + " [label=<" + nm + ">" + color + ",URL=\"" + u + "\"];");
       }
   %>
