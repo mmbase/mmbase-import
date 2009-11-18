@@ -1200,13 +1200,15 @@ public class ResourceLoader extends ClassLoader {
             URL u;
             try {
                 if (name.startsWith("file:")) {
-                    u = new URL(null, name, this);
+                    u = new URL(null, new URI(name).toURL().toString(), this);
                 } else {
                     File file = getFile(name);
                     if (file == null) return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
                     String fileUrl = file.toURI().toURL().toString();
                     u = new URL(null, fileUrl, this);
                 }
+            } catch (java.net.URISyntaxException use) {
+                throw new AssertionError(use.getMessage());
             } catch (MalformedURLException mfue) {
                 throw new AssertionError(mfue.getMessage());
             }

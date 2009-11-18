@@ -728,7 +728,7 @@ class ApplicationInstaller {
                 // if 'inactive' in the config/builder path, fail
                 String path = mmb.getBuilderPath(name, "");
                 if (path != null) {
-                    result.error("The builder '" + name + "' was already on our system, but inactive." +
+                    result.error("The builder '" + name + "' was already on our system, but inactive. " +
                                  "To install this application, make the builder '" + path + name + ".xml ' active");
                     continue;
                 }
