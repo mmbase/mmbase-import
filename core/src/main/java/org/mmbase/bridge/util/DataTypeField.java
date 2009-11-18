@@ -79,27 +79,33 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
         setLocalizedGUIName(dataType.getLocalizedGUIName());
     }
 
-    @Override public NodeManager getNodeManager() {
+    @Override
+    public NodeManager getNodeManager() {
         return nodeManager;
     }
 
-    @Override public int getSearchPosition() {
+    @Override
+    public int getSearchPosition() {
         return field == null ? -1 : field.getSearchPosition();
     }
 
-    @Override public int getListPosition() {
+    @Override
+    public int getListPosition() {
         return field == null ? -1 : field.getListPosition();
     }
 
-    @Override public int getEditPosition() {
+    @Override
+    public int getEditPosition() {
         return field == null ? 1 : field.getEditPosition();
     }
 
-    @Override public int getStoragePosition() {
+    @Override
+    public int getStoragePosition() {
         return field == null ? -1 : field.getStoragePosition();
     }
 
-    @Override public int getMaxLength() {
+    @Override
+    public int getMaxLength() {
         if (field == null) {
             if (dataType instanceof LengthDataType) {
                 long length = ((LengthDataType)dataType).getMaxLength();
@@ -116,11 +122,13 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
         }
     }
 
-    @Override public boolean isReadOnly() {
+    @Override
+    public boolean isReadOnly() {
         return field == null ? false : field.isReadOnly();
     }
 
-    @Override public String getGUIType() {
+    @Override
+    public String getGUIType() {
         return dataType.getName();
     }
     public Collection<String> validate(Object value) {
