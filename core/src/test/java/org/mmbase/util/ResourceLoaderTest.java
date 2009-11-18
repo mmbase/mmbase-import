@@ -95,16 +95,29 @@ public class ResourceLoaderTest {
 
 
     @Test
-    public void spaces() throws Exception {
+    public void spacesClassLoader() throws Exception {
         assertNotNull(ResourceLoader.getConfigurationRoot().getDocument("directory with spaces/file with spaces.xml", false, null));
         assertNotNull(ResourceLoader.getConfigurationRoot().getDocument("directory with spaces/file.xml", false, null));
         ResourceLoader child = ResourceLoader.getConfigurationRoot().getChildResourceLoader("directory with spaces");
         assertNotNull(child.getDocument("file.xml", false, null));
-        System.out.println(child.getResource("file.xml"));
         Set<String> xmls = child.getResourcePaths(ResourceLoader.XML_PATTERN, true);
-        assertEquals("" + child, 2, xmls.size()); // MMB-1894?
+        assertEquals("" + child, 2, xmls.size());
+    }
+
+
+    @Test
+    public void spacesFileLoader() throws Exception {
+        final String dir = "src/test/resources/org/mmbase/config/directory with spaces";
+        assertNotNull(ResourceLoader.getSystemRoot().getDocument(dir + "/file with spaces.xml", false, null));
+        assertNotNull(ResourceLoader.getSystemRoot().getDocument(dir + "/file.xml", false, null));
+
+        ResourceLoader child = ResourceLoader.getSystemRoot().getChildResourceLoader(dir);
+        Set<String> xmls = child.getResourcePaths(ResourceLoader.XML_PATTERN, true);
+        assertEquals("" + child, 2, xmls.size());
+        assertNotNull(child.getDocument("file.xml", false, null));
+        assertNotNull(child.getDocument("file with spaces.xml", false, null));
         for (String x : xmls) {
-            System.out.println(x);
+            assertNotNull(child.getDocument(x, false, null));
         }
 
 
