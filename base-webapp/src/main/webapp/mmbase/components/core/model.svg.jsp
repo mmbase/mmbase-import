@@ -4,37 +4,59 @@
      <mm:param name="command">dot</mm:param>
  </mm:escaper
 ><mm:content type="image/svg+xml" postprocessor="svg">
-<mm:import externid="nodemanager" jspvar="nodemanager" />
+<mm:import externid="nodemanager" jspvar="nodemanager" vartype="list" />
+<mm:import externid="maxdistance" jspvar="maxdistance" vartype="integer">2</mm:import>
 <mm:import id="baseurl" jspvar="url"><mm:url page="model.svg.jsp" /></mm:import>
 <mm:cloud jspvar="cloud">
 
 Digraph "MMBase<%= nodemanager == null ? "" : " " + nodemanager %>" {
   edge [fontsize=8.0];
-  node [fontsize=14.0];
+  node [fontsize=14.0,shape=box];
   nodesep=1;
   rankdir=LR;
 
   <%
-      Set<String> set = new HashSet<String>();
-      if (nodemanager != null) {
-        set.add(nodemanager);
-        out.println("root=" + nodemanager + ";");
+      Map<String, Integer> set = new HashMap<String, Integer>();
+      Set<RelationManager> rmset = new HashSet<RelationManager>();
+      for (Object nm : nodemanager) {
+         set.put((String) nm, new Integer(0));
       }
+      //out.println("root=" + nodemanager + ";");
       int size = -1;
-      while (size < set.size()) {
+      int distance = 1;
+      while (size < set.size() && distance <= maxdistance) {
          size = set.size();
+         Set<String> add = new HashSet<String>();
          for (RelationManager rm : cloud.getRelationManagers()) {
             try {
-            if (set.contains(rm.getSourceManager().getName()) || set.contains(rm.getDestinationManager().getName()) || nodemanager == null) {
-                set.add(rm.getSourceManager().getName());
-                set.add(rm.getDestinationManager().getName());
+            if (set.containsKey(rm.getSourceManager().getName()) || set.containsKey(rm.getDestinationManager().getName()) || nodemanager.size() == 0) {
+                add.add(rm.getSourceManager().getName());
+                add.add(rm.getDestinationManager().getName());
+                rmset.add(rm);
             }
             } catch (NotFoundException nfe) {
             }
          }
+         for (String a : add) {
+           if (! set.containsKey(a)) {
+              set.put(a, distance);
+           }
+         }
+         distance++;
+
       }
-      for (String nm : set) {
-         out.println(nm  + " [" + (nm.equals(nodemanager) ? "color=red,fontcolor=red," : "") + "URL=\"" + url + "?nodemanager=" + nm + "\"];");
+      for (Map.Entry<String, Integer> entry : set.entrySet()) {
+         String nm = entry.getKey();
+         int dist = entry.getValue();
+         String color ;
+         if (dist == 0) {
+            color = "color=green,fontcolor=green,";
+         } else if (dist == maxdistance) {
+            color = "color=lightgray,fontcolor=gray,";
+         } else {
+            color = "";
+         }
+         out.println(nm  + " [label=<" + nm + ">," + color + "URL=\"" + url + "?nodemanager=" + nm + "&maxdistance=" + maxdistance + "\"];");
       }
   %>
 
@@ -42,9 +64,9 @@ Digraph "MMBase<%= nodemanager == null ? "" : " " + nodemanager %>" {
   edge [style=dashed];
 
   <jsp:scriptlet>
-	for (RelationManager rm : cloud.getRelationManagers()) {
+	for (RelationManager rm : rmset) {
      try {
-     if (set.contains(rm.getSourceManager().getName()) || set.contains(rm.getDestinationManager().getName())) {
+     if (set.containsKey(rm.getSourceManager().getName()) || set.containsKey(rm.getDestinationManager().getName())) {
             out.print(rm.getSourceManager().getName() + "->" + rm.getDestinationManager().getName());
             String role = rm.getForwardRole();
             if (! "related".equals(role)) {
