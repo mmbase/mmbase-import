@@ -45,6 +45,9 @@ Also, when using <mm:constraint> the following property can be used to change th
 'casesensitive="true"' to set it case sensitive. This speeds up MySQL searching.
 
 
+org.mmbase.util.functions.NodeFunction#getCoreNode  was dropped. If you used it, now extend from
+org.mmbase.module.core/MMObjectNodeFunction. (MMB-1896)
+
 
 
 ============
