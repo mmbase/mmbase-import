@@ -12,6 +12,7 @@ package org.mmbase.util;
 
 import java.net.URL;
 import java.util.*;
+import java.io.*;
 
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -118,6 +119,11 @@ public class ResourceLoaderTest {
         assertNotNull(child.getDocument("file with spaces.xml", false, null));
         for (String x : xmls) {
             assertNotNull(child.getDocument(x, false, null));
+        }
+        List<URL> resources = child.getResourceList("file with spaces.xml");
+        assertEquals(2, resources.size());
+        for (URL u : resources) {
+            assertEquals(new File(u.toURI()).exists(), u.openConnection().getDoInput()); // MMB-1894
         }
 
 
