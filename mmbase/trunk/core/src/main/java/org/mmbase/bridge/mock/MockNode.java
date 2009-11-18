@@ -69,6 +69,16 @@ public class MockNode extends MapNode  {
     }
 
     @Override
+    public StringList getPossibleContexts() {
+        StringList sl = cloudContext.createStringList();
+        sl.add(context);
+        if (!sl.contains("default")) {
+            sl.add("default");
+        }
+        return sl;
+    }
+
+    @Override
     public String toString() {
         return getNodeManager().toString() + values;
     }
