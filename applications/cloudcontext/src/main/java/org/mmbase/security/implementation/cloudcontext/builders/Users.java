@@ -65,7 +65,7 @@ public class Users extends MMObjectBuilder {
             }
     };
 
-    protected Function<Rank> rankFunction = new NodeFunction<Rank>("rank", Parameter.emptyArray(), new ReturnType<Rank>(Rank.class, "Rank")) {
+    protected Function<Rank> rankFunction = new MMObjectNodeFunction<Rank>("rank", Parameter.emptyArray(), new ReturnType<Rank>(Rank.class, "Rank")) {
             {
                 setDescription("Returns the rank of an mmbaseusers node");
             }
