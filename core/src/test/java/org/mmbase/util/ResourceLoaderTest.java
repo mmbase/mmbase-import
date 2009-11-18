@@ -108,11 +108,14 @@ public class ResourceLoaderTest {
 
     @Test
     public void spacesFileLoader() throws Exception {
-        final String dir = "src/test/resources/org/mmbase/config/directory with spaces";
-        assertNotNull(ResourceLoader.getSystemRoot().getDocument(dir + "/file with spaces.xml", false, null));
-        assertNotNull(ResourceLoader.getSystemRoot().getDocument(dir + "/file.xml", false, null));
+        ResourceLoader fileLoader = new ResourceLoader();
+        fileLoader.roots.add(fileLoader.new FileURLStreamHandler(new File(System.getProperty("user.dir")), true));
 
-        ResourceLoader child = ResourceLoader.getSystemRoot().getChildResourceLoader(dir);
+        final String dir = "src/test/resources/org/mmbase/config/directory with spaces";
+        assertNotNull(fileLoader.getDocument(dir + "/file with spaces.xml", false, null));
+        assertNotNull(fileLoader.getDocument(dir + "/file.xml", false, null));
+
+        ResourceLoader child = fileLoader.getChildResourceLoader(dir);
         Set<String> xmls = child.getResourcePaths(ResourceLoader.XML_PATTERN, true);
         assertEquals("" + child, 2, xmls.size());
         assertNotNull(child.getDocument("file.xml", false, null));
@@ -121,7 +124,7 @@ public class ResourceLoaderTest {
             assertNotNull(child.getDocument(x, false, null));
         }
         List<URL> resources = child.getResourceList("file with spaces.xml");
-        assertEquals(2, resources.size());
+        assertEquals(1, resources.size());
         for (URL u : resources) {
             assertEquals(new File(u.toURI()).exists(), u.openConnection().getDoInput()); // MMB-1894
         }
