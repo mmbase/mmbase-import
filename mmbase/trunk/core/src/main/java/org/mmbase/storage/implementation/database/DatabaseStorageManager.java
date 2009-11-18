@@ -2616,7 +2616,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 }
 
             } catch(Exception e) {
-                throw new StorageException(e.getMessage());
+                throw new StorageException(e.getMessage(), e);
             } finally {
                 releaseActiveConnection();
              }
