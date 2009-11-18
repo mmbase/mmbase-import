@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.streams;
 
+import org.mmbase.streams.createcaches.Processor;
+
 import org.mmbase.util.functions.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
@@ -31,20 +33,20 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
     }
 
 
-    CreateCachesProcessor getCacheCreator(final Field url) {
+    Processor getCacheCreator(final Field url) {
         CommitProcessor commitProcessor = url.getDataType().getCommitProcessor();
         if (commitProcessor instanceof ChainedCommitProcessor) {
             ChainedCommitProcessor chain = (ChainedCommitProcessor) commitProcessor;
             LOG.info("Lookin in " + chain.getProcessors());
             for (CommitProcessor cp : chain.getProcessors()) {
-                if (cp instanceof CreateCachesProcessor) {
-                    return (CreateCachesProcessor) cp;
+                if (cp instanceof Processor) {
+                    return (Processor) cp;
                 }
             }
             return null;
         } else {
-            if (commitProcessor instanceof CreateCachesProcessor) {
-                return (CreateCachesProcessor) commitProcessor;
+            if (commitProcessor instanceof Processor) {
+                return (Processor) commitProcessor;
             } else {
                 return null;
             }
@@ -66,7 +68,7 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
             }
 
             {
-                final CreateCachesProcessor cc = getCacheCreator(url);
+                final Processor cc = getCacheCreator(url);
                 if (cc != null) {
                     LOG.info("Calling " + cc);
                     cc.createCaches(node.getCloud().getNonTransactionalCloud(), node.getNumber());
