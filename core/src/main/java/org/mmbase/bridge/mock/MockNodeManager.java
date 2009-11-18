@@ -12,6 +12,7 @@ package org.mmbase.bridge.mock;
 
 import static org.mmbase.datatypes.Constants.*;
 import org.mmbase.bridge.util.*;
+import org.mmbase.datatypes.DataType;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.functions.*;
@@ -32,6 +33,7 @@ public class MockNodeManager extends AbstractNodeManager  {
     protected final MockCloud vcloud;
     protected final int oType;
     protected final List<Function<?>> functions = new ArrayList<Function<?>>();
+    protected String context = "default";
 
     public MockNodeManager(MockCloud cloud, NodeManagerDescription desc) {
         super(cloud);
@@ -40,8 +42,8 @@ public class MockNodeManager extends AbstractNodeManager  {
         for (Map.Entry<String, Field> entry : desc.fields.entrySet()) {
             map.put(entry.getKey(), new MockField(this, entry.getValue()));
         }
-        map.put("_number", new DataTypeField("_number", this, DATATYPE_INTEGER));
-        map.put("_exists", new DataTypeField("_exists", this, DATATYPE_STRING));
+        map.put("_number", new SystemField("_number", this, DATATYPE_INTEGER));
+        map.put("_exists", new SystemField("_exists", this, DATATYPE_STRING));
         this.oType = desc.oType;
         String e = desc.reader != null ? desc.reader.getExtends() : null;
         if (e != null && e.length() == 0) e = null;
@@ -61,7 +63,9 @@ public class MockNodeManager extends AbstractNodeManager  {
                     return 0;
                 }
             });
-        functions.add(new NodeFunction<String>("gui", GuiFunction.PARAMETERS, ReturnType.STRING) {
+        functions.add(new NodeFunction<String>("gui",
+                                               GuiFunction.PARAMETERS, // TODO, that would introduce MMObjectNode dependency
+                                               ReturnType.STRING) {
                 @Override
                 public String getFunctionValue(Node n, Parameters params) {
                     return n.getStringValue("number");
@@ -111,11 +115,30 @@ public class MockNodeManager extends AbstractNodeManager  {
 
     @Override
     public String getContext() {
-        return "default";
+        return context;
     }
+    @Override
+    public void setContext(String c) {
+        context = c;
+    }
+
     @Override
     public boolean mayCreateNode() {
         return true;
+    }
+
+    protected class SystemField extends DataTypeField {
+        public SystemField(String name, NodeManager nm, DataType dt) {
+            super(name, nm, dt);
+        }
+        @Override
+        public boolean isReadOnly() {
+            return true;
+        }
+        @Override
+        public int getEditPosition() {
+            return -1;
+        }
     }
 
 
