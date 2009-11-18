@@ -39,6 +39,13 @@ public abstract class ObjectWrapper {
                     list.add(localToRMIObject(object));
                 }
                 retval = list;
+            } else if (o instanceof Map) {
+               Map<?,?> source = (Map<?,?>)o;
+               Map<Object, Object> map = new HashMap<Object, Object>();
+               for (Map.Entry<?, ?> entry : source.entrySet()) {
+                  map.put(entry.getKey(), localToRMIObject(entry.getValue()));
+               }
+               retval = map;
             }
         }
         return retval;
