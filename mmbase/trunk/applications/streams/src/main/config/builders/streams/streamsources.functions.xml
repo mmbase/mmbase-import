@@ -10,11 +10,11 @@
   </function>
 
   <function name="waitUntilRecognized">
-    <class>org.mmbase.streams.WaitUntilRecognizedFunction</class>
+    <class>org.mmbase.streams.createcaches.WaitUntilRecognizedFunction</class>
   </function>
-  
+
   <function name="waitUntilTranscoding">
-    <class>org.mmbase.streams.WaitUntilTranscodingFunction</class>
+    <class>org.mmbase.streams.createcaches.WaitUntilTranscodingFunction</class>
   </function>
 
   <function name="fileServletDirectory">
