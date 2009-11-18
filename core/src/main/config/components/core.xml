@@ -662,6 +662,7 @@
     <title xml:lang="en">Object model</title>
     <body jsp="model.jspx">
       <param name="nodemanager"     type="java.lang.String" />
+      <param name="maxdistance"     type="java.lang.Integer" />
     </body>
   </block>
 
