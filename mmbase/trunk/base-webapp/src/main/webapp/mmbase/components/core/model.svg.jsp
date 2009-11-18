@@ -24,15 +24,22 @@ Digraph "MMBase<%= nodemanager == null ? "" : " " + nodemanager %>" {
       //out.println("root=" + nodemanager + ";");
       int size = -1;
       int distance = 1;
-      while (size < set.size() && distance <= maxdistance) {
+      while (size < set.size()) {
          size = set.size();
          Set<String> add = new HashSet<String>();
          for (RelationManager rm : cloud.getRelationManagers()) {
             try {
-            if (set.containsKey(rm.getSourceManager().getName()) || set.containsKey(rm.getDestinationManager().getName()) || nodemanager.size() == 0) {
-                add.add(rm.getSourceManager().getName());
-                add.add(rm.getDestinationManager().getName());
-                rmset.add(rm);
+            if (distance > maxdistance) {
+               if (set.containsKey(rm.getSourceManager().getName()) && set.containsKey(rm.getDestinationManager().getName()) || nodemanager.size() == 0) {
+                  rmset.add(rm);
+               }
+            } else {
+               if (set.containsKey(rm.getSourceManager().getName()) || set.containsKey(rm.getDestinationManager().getName()) || nodemanager.size() == 0) {
+                  rmset.add(rm);
+                  add.add(rm.getSourceManager().getName());
+                  add.add(rm.getDestinationManager().getName());
+
+               }
             }
             } catch (NotFoundException nfe) {
             }
@@ -43,20 +50,20 @@ Digraph "MMBase<%= nodemanager == null ? "" : " " + nodemanager %>" {
            }
          }
          distance++;
-
       }
       for (Map.Entry<String, Integer> entry : set.entrySet()) {
          String nm = entry.getKey();
          int dist = entry.getValue();
          String color ;
          if (dist == 0) {
-            color = "color=green,fontcolor=green,";
+            color = ",color=green,fontcolor=green";
          } else if (dist == maxdistance) {
-            color = "color=lightgray,fontcolor=gray,";
+            color = ",color=lightgray,fontcolor=gray";
          } else {
             color = "";
          }
-         out.println(nm  + " [label=<" + nm + ">," + color + "URL=\"" + url + "?nodemanager=" + nm + "&maxdistance=" + maxdistance + "\"];");
+         String u = url + "?nodemanager=" + nm + "&amp;maxdistance=" + maxdistance;
+         out.println(nm  + " [label=<" + nm + ">" + color + ",URL=\"" + u + "\"];");
       }
   %>
 
