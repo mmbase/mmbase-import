@@ -21,13 +21,13 @@ import javax.servlet.ServletRequest;
  * legacy -  referred to as 'builder'.</p>
  *
  * <p>It contains all the field and attribute information, as well as GUI data for editors and
- * some information on derived and deriving types. It also contains some maintenance code - code
+ * some information on {@link #getDescendants derived} and {@link #getParent deriving} types. It also contains some maintenance code - code
  * to create new nodes, and code to query objects belonging to the same manager.</p>
  *
- * <p> Node types are normally maintained through use of config files (and not in the database), in so
+ * <p> Node types are normally maintained using config files (and not in the database), in so
  * called 'builder xmls'.</p>
  *
-  <p>* A NodeManager does however extend {@link Node}, because an entry for each node manager is stored
+  <p>A NodeManager does however extend {@link Node}, because an entry for each node manager is stored
  * in the 'typedef' NodeManager. The number {@link Node#getNumber} of the NodeManager is the 'otype'
  * field of the Nodes of that type.</p>
 
