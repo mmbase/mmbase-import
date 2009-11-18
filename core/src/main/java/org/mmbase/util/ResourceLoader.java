@@ -514,7 +514,7 @@ public class ResourceLoader extends ClassLoader {
     private final ResourceLoader parent;
 
 
-    private final List<PathURLStreamHandler> roots;
+    final List<PathURLStreamHandler> roots;
 
 
     /**
@@ -1162,7 +1162,9 @@ public class ResourceLoader extends ClassLoader {
         Enumeration<URL> getResources(final String name) throws IOException {
             return new Enumeration<URL>() {
                     private boolean hasMore = true;
-                    public boolean hasMoreElements() { return hasMore; };
+                    public boolean hasMoreElements() {
+                        return hasMore;
+                    };
                     public URL nextElement() {
                         hasMore = false;
                         return openConnection(name).getURL();
@@ -1196,7 +1198,7 @@ public class ResourceLoader extends ClassLoader {
         }
 
         @Override
-        public URLConnection openConnection(String name)  {
+        public URLConnection openConnection(final String name)  {
             URL u;
             try {
                 if (name.startsWith("file:")) {
@@ -1275,10 +1277,18 @@ public class ResourceLoader extends ClassLoader {
             return new File(fileName);
         }
         @Override
-        public String getName(URL u) {
+        public String getName(final URL u) {
             int l = (fileRoot + ResourceLoader.this.context.getPath()).length();
-            String path = u.getPath();
-            return l < path.length() ? path.substring(l) : path;
+            String path;
+            try {
+                path = new File(u.toURI()).getPath(); // toURI decently unescapes %20 and so on (solves MMB-1894)
+            } catch (URISyntaxException use) {
+                log.error(use);
+                path = u.getPath();
+            }
+            String r = l < path.length() ? path.substring(l) : path;
+            return r;
+
         }
 
         @Override
