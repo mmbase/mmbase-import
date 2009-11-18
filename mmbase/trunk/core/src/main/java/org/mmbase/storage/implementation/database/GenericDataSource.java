@@ -219,7 +219,7 @@ public final class GenericDataSource implements DataSource {
                 data = dataDir.toString();
 				    }
         }
-        String newUrl = url.replaceAll("\\$DATADIR", data + File.separator);
+        String newUrl = url.replace("$DATADIR", data + File.separator);
         if ((!basePathOk) && (! newUrl.equals(url))) {
             basePathOk = DatabaseStorageManagerFactory.checkBinaryFileBasePath(dataDir);
         }
