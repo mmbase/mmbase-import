@@ -109,6 +109,14 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
      */
     protected abstract R getFunctionValue(Node node, Parameters parameters);
 
+
+    /**
+     * Just a public wrapper around {@link #getFunctionValue(Node, Parameters)} (of which we don't want to loosen the scope, because it may be overriden protected).
+     */
+    public final R getFunctionValueForNode(Node node, Parameters parameters) {
+        return getFunctionValue(node, parameters);
+    }
+
     protected Node getNode(Parameters parameters) {
         if (! parameters.containsParameter(Parameter.NODE)) {
             throw new IllegalArgumentException("The function " + toString() + " requires a node argument");
@@ -125,6 +133,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
      * This one can be overriden if the same function must <em>also</em> be a builder function.
      */
     public  R getFunctionValue(Parameters parameters) {
+        log.debug("Getting for " + this + " " + parameters);
         return  getFunctionValue(getNode(parameters), parameters);
     }
 
