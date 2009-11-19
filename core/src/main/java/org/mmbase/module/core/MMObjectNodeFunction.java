@@ -132,6 +132,9 @@ public abstract class MMObjectNodeFunction<R> extends NodeFunction<R> {
      */
     protected final R getFunctionValue(final MMObjectNode coreNode, final Parameters parameters) {
         Node node = getNode(coreNode, parameters);
+        if (log.isDebugEnabled()) {
+            log.debug("Now calling on " + this + " " + parameters);
+        }
         return getFunctionValue(node, parameters);
     }
 
@@ -177,7 +180,10 @@ public abstract class MMObjectNodeFunction<R> extends NodeFunction<R> {
                 return ((MMObjectNodeFunction<Q>) wrappedFunction).getFunctionValue(node, parameters);
             } else {
                 Node n = MMObjectNodeFunction.getNode(node, parameters);
-                return ((NodeFunction<Q>) wrappedFunction).getFunctionValue(parameters);
+                if (log.isDebugEnabled()) {
+                    log.debug("Now calling on " + wrappedFunction.getClass() + " " + wrappedFunction + " " + parameters);
+                }
+                return ((NodeFunction<Q>) wrappedFunction).getFunctionValueForNode(n, parameters);
             }
 
         }
