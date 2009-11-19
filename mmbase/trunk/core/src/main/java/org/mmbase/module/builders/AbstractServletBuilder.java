@@ -74,18 +74,18 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     protected boolean usesBridgeServlet = false;
 
 
-    private static final int FILENAME_ADD = 1;
-    private static final int FILENAME_DONTADD = 0;
-    private static final int FILENAME_IFSENSIBLE = -1;
-    private static final int FILENAME_CHECKSETTING = -2;
+    private enum FileName {
+        ADD,
+        DONTADD,
+        IFSENSIBLE,
+        CHECKSETTING;
+    }
     /**
-     * -2: check init, based on existance of filename field.
-     * -1: based on existance of filename field
-     * 0 : no
-     * 1 : yes
+
+
      * @since MMBase-1.7.4
      */
-    protected int addsFileName = FILENAME_CHECKSETTING;
+    private FileName addsFileName = FileName.CHECKSETTING;
 
 
     /**
@@ -383,7 +383,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * @since MMBase-1.8
      */
     protected boolean addFileName(MMObjectNode node, String servlet) {
-        if (addsFileName == FILENAME_CHECKSETTING) {
+        if (addsFileName == FileName.CHECKSETTING) {
             javax.servlet.ServletContext sx = MMBaseContext.getServletContext();
             if (sx != null) {
                 String res = sx.getInitParameter("mmbase.servlet." + getAssociation() + ".addfilename");
@@ -391,20 +391,20 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 res = res.toLowerCase();
                 log.trace("res " + res);
                 if ("no".equals(res) || "false".equals(res)) {
-                    addsFileName = FILENAME_DONTADD;
+                    addsFileName = FileName.DONTADD;
                 } else if ("yes".equals(res) || "true".equals(res)) {
-                    addsFileName = FILENAME_ADD;
+                    addsFileName = FileName.ADD;
                 } else {
                     log.debug("Found " + res + " for mmbase.servlet." + getAssociation() + ".addfilename");
-                    addsFileName = FILENAME_IFSENSIBLE;
+                    addsFileName = FileName.IFSENSIBLE;
                 }
             }
         }
         log.debug("addsFileName " + addsFileName);
 
         String fileName = hasField(FIELD_FILENAME) ? node.getStringValue(FIELD_FILENAME) : "";
-        return  addsFileName == FILENAME_ADD ||
-            ( addsFileName == FILENAME_IFSENSIBLE && (!servlet.endsWith("?")) &&  (! "".equals(fileName)));
+        return  addsFileName == FileName.ADD ||
+            ( addsFileName == FileName.IFSENSIBLE && (!servlet.endsWith("?")) &&  (! "".equals(fileName)));
 
     }
 
@@ -488,13 +488,16 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                             return servlet;
                         }
 
-                        @Override public String getFunctionValue(Node node, Parameters a) {
+                        @Override
+                        public String getFunctionValue(Node node, Parameters a) {
+                            log.info("DAMN " + node + " " + a);
                             // verify if the object is stored externally (in which case
                             // its url has been filled in)
                             // if so, return the url of the external source
                             if (AbstractServletBuilder.this.externalUrlField != null ) {
                                 String url = node.getStringValue(externalUrlField);
                                 if (url != null && !url.equals("")) {
+                                    log.debug("Found url from exernal field " + url);
                                     return url;
                                 }
                             }
@@ -502,8 +505,11 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
                             String session = getSession(a, node.getNumber());
                             String argument = (String) a.get("argument");
-                            // argument representint the node-number
+                            // argument representing the node-number
 
+                            if (log.isDebugEnabled()) {
+                                log.debug("Using parmaeters " + a.toMap());
+                            }
                             if (argument == null) {
                                 String fieldName   = (String) a.get("field");
                                 if (fieldName == null || "".equals(fieldName)) {
@@ -514,7 +520,10 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                                     }
                                     argument = node.getStringValue(fieldName);
                                 }
+                            } else {
+                                log.debug("Argument was explicitely '" + argument + "'");
                             }
+
                             MMObjectNode mmnode = node.getNumber() > 0 ?
                                 AbstractServletBuilder.this.getNode(node.getNumber()) :
                                 new MMObjectNode(AbstractServletBuilder.this, new org.mmbase.bridge.util.NodeMap(node));
@@ -545,13 +554,15 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
                         }
 
-                        @Override public String getFunctionValue(Parameters a) {
+                        @Override
+                        public String getFunctionValue(Parameters a) {
                             return getServletPath(a).toString();
                         }
                     });
 
         addFunction(new NodeFunction<String>("url", new Parameter[] { Parameter.REQUEST, Parameter.CLOUD }) {
-                @Override public String getFunctionValue(Node node, Parameters a) {
+                @Override
+                public String getFunctionValue(Node node, Parameters a) {
                     Function spFunction = node.getFunction("servletpath");
                     Parameters p = spFunction.createParameters();
                     p.setAll(a);
@@ -573,6 +584,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                         {
                             setDescription("Returns an URL for an icon for this blob");
                         }
+                        @Override
                         public String getFunctionValue(Node n, Parameters parameters) {
                             String mimeType = AbstractServletBuilder.this.getMimeType(getCoreNode(AbstractServletBuilder.this, n));
                             ResourceLoader webRoot = ResourceLoader.getWebRoot();
@@ -636,8 +648,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             } else {
                 return info.get(args.get(0));
             }
-        } else if (function.equals("servletpath")) {
-
         } else if (function.equals("servletpathof")) {
             // you should not need this very often, only when you want to serve a node with the 'wrong' servlet this can come in handy.
             return getServletPathWithAssociation((String) args.get(0), MMBaseContext.getHtmlRootUrlPath());
