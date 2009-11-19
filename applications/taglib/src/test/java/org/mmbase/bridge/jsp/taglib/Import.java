@@ -43,6 +43,19 @@ public  class Import {
         i.doStartTag();
         i.doEndTag();
     }
+    public static void jspvar(PageContext pageContext, ContextReferrerTag context, String key, String value, String type, boolean reset) throws Exception {
+        WriteTag i = new WriteTag();
+        i.setPageContext(pageContext);
+        i.setParent(context);
+        i.setId(key);
+        i.setJspvar(key);
+        i.setVartype(type);
+        i.setReset(reset);
+        i.setWrite("false"); // getOut not supported in MockPageContext
+        i.setValue(value);
+        i.doStartTag();
+        i.doEndTag();
+    }
 
 
 }
