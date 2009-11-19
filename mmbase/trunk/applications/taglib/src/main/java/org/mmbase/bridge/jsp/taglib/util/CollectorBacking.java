@@ -67,6 +67,15 @@ public  class CollectorBacking extends BasicBacking {
         return super.put(key, value, r);
     }
 
+    @Override
+    public void setJspVar(PageContext pc, String jspvar, int vartype, Object value) {
+        if (jspvar == null) return;
+        if (value == null) return;
+        myKeys.add(jspvar);
+        super.setJspVar(pc, jspvar, vartype, value);
+    }
+
+
 
 
 }
