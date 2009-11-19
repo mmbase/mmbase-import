@@ -53,6 +53,7 @@ public class NodeFunctionTest {
 
     @Test
     public void gui() {
+        assumeNotNull(remoteCloud);
         NodeManager images = remoteCloud.getNodeManager("images");
         Node image = images.getList(null).getNode(0);
         assertNotNull(image.getFunctionValue("gui", null).get());
