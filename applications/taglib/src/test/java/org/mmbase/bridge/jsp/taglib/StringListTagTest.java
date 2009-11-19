@@ -67,6 +67,8 @@ public  class StringListTagTest {
             fooValue = "bla" + (++index);
             Import.tag(pageContext, tag, "foo", fooValue, true);
 
+            Import.jspvar(pageContext, tag, "jspvarfoo", fooValue, "String", false);
+
             assertEquals("bla" + index, pageContext.getAttribute("foo"));
             assertEquals("bla" + index, context.getObject("foo"));
             it = tag.doAfterBody();
