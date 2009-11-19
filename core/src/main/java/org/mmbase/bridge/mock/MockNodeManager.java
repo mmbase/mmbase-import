@@ -64,7 +64,15 @@ public class MockNodeManager extends AbstractNodeManager  {
                 }
             });
         functions.add(new NodeFunction<String>("gui",
-                                               GuiFunction.PARAMETERS, // TODO, that would introduce MMObjectNode dependency
+                                               //GuiFunction.PARAMETERS, // TODO, that would introduce MMObjectNode dependency
+                                               new Parameter<?>[] {
+                                                   Parameter.FIELD,
+                                                       Parameter.LANGUAGE,
+                                                       new Parameter<String>("session", String.class),
+                                                       Parameter.RESPONSE,
+                                                       Parameter.REQUEST,
+                                                       Parameter.LOCALE,
+                                                       new Parameter<String>("stringvalue", String.class) },
                                                ReturnType.STRING) {
                 @Override
                 public String getFunctionValue(Node n, Parameters params) {
