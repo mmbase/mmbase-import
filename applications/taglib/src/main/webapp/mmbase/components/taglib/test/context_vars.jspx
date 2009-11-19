@@ -162,6 +162,7 @@
     <dt>d</dt><dd>Like (c), but only set once in the list</dd>
     <dt>e</dt><dd>Using not mm:import but mm:write</dd>
     <dt>f</dt><dd>Set in list, remove in list</dd>
+    <dt>g</dt><dd>Not set before list, set in list, using also jspvarattribute</dd>
   </dl>
 
   <mm:import id="ca">A</mm:import>
@@ -181,7 +182,7 @@
         </td>
         <td><mm:index />, <mm:index /></td>
       </tr>
-      <mm:import id="cb"><mm:write /></mm:import>
+      <mm:import id="cb" ><mm:write /></mm:import>
       <tr>
         <td>c b <mm:index /></td>
         <td><mm:write referid="cb" />, ${cb}</td>
@@ -226,6 +227,16 @@
           <jsp:text>, ${cf}</jsp:text>
         </td>
         <td><mm:index />, <mm:index />, an exception, </td>
+      </tr>
+      <tr>
+        <td>c g <mm:index /></td>
+        <td>
+          <c:catch var="e"><mm:import id="cg" jspvar="cg" ><mm:write /></mm:import></c:catch>
+          <jsp:text>${empty e ? '' : 'an exception'}</jsp:text>
+          <jsp:text><mm:write referid="cg" />, ${cg}</jsp:text>
+        </td>
+        <td><mm:index />, <mm:index /></td>
+        <td>${e}</td>
       </tr>
     </mm:stringlist>
     <tr><td>c a</td><td><c:catch><mm:write referid="ca" /></c:catch>, ${ca}</td><td>3, 3</td></tr>
