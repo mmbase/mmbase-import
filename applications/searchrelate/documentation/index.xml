@@ -196,8 +196,35 @@
   </section>
   <section id="search">
     <title>mm-sr:search</title>
-    <para>mm-sr:search is actually just a simplified version of mm-sr:relate (it only shows the 'search' part).
-    </para>
+    <para>mm-sr:search is actually just a simplified version of mm-sr:relate (it only shows the 'search' part).</para>
+    <para>This can be used to make very straigh-forward editors</para>
+    <programlisting format="linespecific"><![CDATA[
+    <mm:cloud
+       xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
+      <head>
+        ...
+        <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
+        <mm:link page="/mmbase/searchrelate/page.css.jsp">
+          <link rel="stylesheet" href="${_}" type="text/css" />
+        </mm:link>
+     </head>
+     <body>
+        <mm-sr:search type="pages" create="true" />
+
+        ..
+
+     </body>
+    ]]></programlisting>
+    <para>Using event binders, you can define what must happen if an item from such a seach result is clicked</para>
+    <programlisting format="linespecific"><![CDATA[
+    <script type="text/javascript">
+      $(document).bind("mmsrRelate", function (e, tr, relater) {
+         alert("Clicked on node " + relater.getNumber(tr));
+       });
+    </script>
+    ]]></programlisting>
+    <para>For example you could go edit the node or so</para>
   </section>
   <section id="relate">
     <title>mm-sr:relate</title>
