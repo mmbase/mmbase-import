@@ -2,7 +2,7 @@
 <%@ taglib prefix="form" tagdir="/WEB-INF/tags/vpro-wizards/form" %>
 <%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"  %>
+<%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0"  %>
 
 <form:wizard title="Plaats van herinnering" wizardfile="plaats" >
     <edit:path name="plaats" node="${nodenr}" session="../plaats/plaats.jsp?nodenr=${nodenr}"/>
