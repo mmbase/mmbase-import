@@ -97,7 +97,6 @@
   </block>
 
   <block name="test_upload"
-         classification="mmbase.streams"
          mimetype="text/html">
     <body jsp="test_upload.jspx" />
   </block>
