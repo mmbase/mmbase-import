@@ -39,7 +39,8 @@
          mimetype="text/html">
     <title xml:lang="en">Streams admin</title>
     <title xml:lang="nl">Streams admin</title>
-    <description xml:lang="en">Displays streams configuration</description>
+    <description xml:lang="en">Streams application configuration, present application and their caches</description>
+    <description xml:lang="nl">Configuratie van streams applicatie, huidige streams en caches</description>
     <body jsp="admin.jspx">
       <param name="trigger" />
       <param name="interrupt" />
@@ -50,6 +51,10 @@
   <block name="myfragments"
          classification="mmbase.examples:90 mmbase.streams"
          mimetype="text/html">
+    <title xml:lang="en">My fragments</title>
+    <title xml:lang="nl">Mijn fragmenten</title>
+    <description xml:lang="en">Streams of current users</description>
+    <description xml:lang="nl">Streams van huidige user</description>
     <body jsp="myfragments.jspx">
       <param name="trigger" />
       <param name="interrupt" />
@@ -93,6 +98,10 @@
          classification="mmbase.streams"
          mimetype="text/html">
     <xi:include href="http://www.mmbase.org/components/widgets.head.xml" />
+    <title xml:lang="en">Upload</title>
+    <title xml:lang="nl">Upload</title>
+    <description xml:lang="en">Upload a stream</description>
+    <description xml:lang="nl">Upload een stream</description>
     <body jsp="upload.jspx" />
   </block>
 
