@@ -94,6 +94,7 @@ public class CastingTest  {
         Cloud cloud = MockCloudContext.getInstance().getCloud("mmbase");
         Node news = cloud.getNodeManager("news").createNode();
         news.setStringValue("title", "foobar");
+        news.setDateValue("date", new Date(123000));
         news.commit();
 
         assertEquals(news, Casting.toNode(news.getNumber(), cloud));
@@ -105,6 +106,8 @@ public class CastingTest  {
 
         assertEquals(news.getNumber(), Casting.toType(Node.class, null,  news.getNumber()).getNumber());
         assertEquals(news.getNumber(), Casting.toType(Node.class, null, "" + news.getNumber()).getNumber());
+
+        assertEquals("123", ((Node) Casting.wrap(news, CopyCharTransformer.INSTANCE)).getValue("date").toString());
 
     }
 
