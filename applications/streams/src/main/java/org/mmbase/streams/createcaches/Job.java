@@ -279,7 +279,6 @@ public class Job implements Iterable<Result> {
      */
     public void submit(Cloud cloud, int n, ChainedLogger chain) {
         JobCallable callable = new JobCallable(this, cloud, chain, n);
-        callable.init();
         submit(callable);
     }
 
@@ -294,6 +293,7 @@ public class Job implements Iterable<Result> {
            LOG.info("Will submit " + jc);
            ThreadPools.jobsExecutor.execute(new Runnable() {
                    public void run() {
+                       jc.init();
                        synchronized(Job.this) {
                            findResults();
                            if (getCurrent() == null) {

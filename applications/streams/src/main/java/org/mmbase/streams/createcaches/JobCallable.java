@@ -23,6 +23,9 @@ import org.mmbase.util.logging.*;
  * This is the actual callable that can be submitted to the Executors.
  * It can actually be submitted multiple times. Until it is ready.
  *
+ * It will do that itself, if it detect that the {@link Stage} of the job would change.
+
+ *
  * This boils down to iterating the {@link Job}.
  * @author Michiel Meeuwissen
  */
@@ -48,9 +51,13 @@ class JobCallable implements Callable<Integer> {
         return thisJob;
     }
 
+
+    /**
+     * Init will wait until the associated source node does actually exist.
+     * It will then also create the related mediafragment.
+     */
     protected synchronized void init() {
         if (ntNode == null) {
-            thisJob.setThread(Thread.currentThread());
             if (ntCloud instanceof org.mmbase.bridge.implementation.BasicCloud) {
                 try {
                     synchronized(ntCloud) {
@@ -75,6 +82,7 @@ class JobCallable implements Callable<Integer> {
         }
     }
 
+
     void waitForNode() throws InterruptedException {
         synchronized(this) {
             while(thisJob.getNode() == null) {
@@ -86,6 +94,7 @@ class JobCallable implements Callable<Integer> {
 
     public Integer call() {
         init();
+        thisJob.setThread(Thread.currentThread());
         int resultCount = 0;
         try {
             Result result = thisJob.getCurrent();
