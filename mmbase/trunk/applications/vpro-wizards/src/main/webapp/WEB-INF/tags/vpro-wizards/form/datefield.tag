@@ -1,5 +1,5 @@
 <%@ tag body-content="empty"  %>
-<%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"  %>
+<%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0"  %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -79,7 +79,7 @@
                             <c:if test="${fn:contains(type, 'time')}">
                                 <input type="hidden" name="${_action}.time" value="${_time}">
                                 <input type="hidden" name="${_action}.timeFormat" value="${timeFormat}" />
-                            </c:if>                        
+                            </c:if>
                         </c:when>
                         <c:otherwise>
                             <%-- when edit is false, and create is false or _action is not of type create, this field is read only --%>

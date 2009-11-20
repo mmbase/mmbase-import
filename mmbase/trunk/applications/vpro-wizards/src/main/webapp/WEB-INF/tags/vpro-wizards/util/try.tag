@@ -5,6 +5,8 @@
     fragment. Use the setExceptionAs and setMessgeAs to declare the variable names under which
     the exception class and the exception message wil be stored.
 
+    What's wrong with c:catch?
+
 --%>
 <%@ attribute name="setExceptionAs" required="true" type="java.lang.String" rtexprvalue="false"%>
 <%@ attribute name="setMessageAs" required="true" type="java.lang.String" rtexprvalue="false"%>
