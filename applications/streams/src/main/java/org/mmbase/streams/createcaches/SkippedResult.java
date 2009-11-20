@@ -14,6 +14,10 @@ import org.mmbase.applications.media.MimeType;
 
 import java.net.*;
 
+/**
+ * This is a place holder for the result of a transcoder which is not to be done, because production
+ * of its source was skipped already, or because the source does not match the mime type.
+ */
 class SkippedResult extends Result {
     SkippedResult(JobDefinition def, URI in) {
         super(def, in);

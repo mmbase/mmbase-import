@@ -22,6 +22,9 @@ import org.mmbase.util.logging.*;
 /**
  * This is the actual callable that can be submitted to the Executors.
  * It can actually be submitted multiple times. Until it is ready.
+ *
+ * This boils down to iterating the {@link Job}.
+ * @author Michiel Meeuwissen
  */
 class JobCallable implements Callable<Integer> {
     private static final Logger LOG = Logging.getLoggerInstance(JobCallable.class);
@@ -37,17 +40,23 @@ class JobCallable implements Callable<Integer> {
         this.ntCloud = cloud;
         this.logger = l;
         this.node   = node;
-        init();
+        assert node > 0;
 
     }
-    protected void init() {
+
+    Job getJob() {
+        return thisJob;
+    }
+
+    protected synchronized void init() {
         if (ntNode == null) {
             thisJob.setThread(Thread.currentThread());
             if (ntCloud instanceof org.mmbase.bridge.implementation.BasicCloud) {
                 try {
                     synchronized(ntCloud) {
                         while (! ntCloud.hasNode(node)) {
-                            ntCloud.wait(200);
+                            ntCloud.wait(1000);
+                            LOG.info("Still no node " + node + "");
                         }
                     }
                 } catch (InterruptedException ie) {
@@ -59,14 +68,24 @@ class JobCallable implements Callable<Integer> {
             ntNode.getStringValue("title"); // This triggers RelatedField$Creator to create a mediafragment
             Node mediafragment = ntNode.getNodeValue("mediafragment");
             thisJob.setNode(ntNode);
+            notifyAll();
         }
         if (iterator == null) {
             iterator = thisJob.iterator();
         }
     }
 
-    public Integer call() {
+    void waitForNode() throws InterruptedException {
+        synchronized(this) {
+            while(thisJob.getNode() == null) {
+                wait();
+            }
+        }
+    }
 
+
+    public Integer call() {
+        init();
         int resultCount = 0;
         try {
             Result result = thisJob.getCurrent();
@@ -89,7 +108,10 @@ class JobCallable implements Callable<Integer> {
                 }
                 if (result != null && result.getStage() != current.getStage()) {
                     LOG.info("Will do next stage " + current.getStage() + " now (was " + result + "), first returning");
-                    thisJob.submit(this);
+                    try {
+                        thisJob.submit(this);
+                    } catch (Exception e) {
+                    }
                     return resultCount;
                 }
                 result = current;

@@ -13,6 +13,8 @@ package org.mmbase.streams.createcaches;
 
 /**
  * This enum can contain the 'stage' of the transcoding process
+ * @author Michiel Meeuwissen
+ * @version $Id$
  */
 public enum Stage {
     /**
