@@ -21,7 +21,10 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * Container for the result of a JobDefinition
+ * Container for the result of a JobDefinition This is the result of an actual transcoding. This means that it does have a 'destination' node {@link #getDestination()} and URI {@link #getOut()}.
+ *
+ * @author Michiel Meeuwissen
+ * @version $Id$
  */
 class TranscoderResult extends Result {
     private static final Logger LOG = Logging.getLoggerInstance(TranscoderResult.class);

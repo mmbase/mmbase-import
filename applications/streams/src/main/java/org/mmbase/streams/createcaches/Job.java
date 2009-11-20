@@ -279,27 +279,36 @@ public class Job implements Iterable<Result> {
      */
     public void submit(Cloud cloud, int n, ChainedLogger chain) {
         JobCallable callable = new JobCallable(this, cloud, chain, n);
+        callable.init();
         submit(callable);
     }
+
 
     /**
      * Re-submit this job.
      */
+    void submit(final JobCallable jc)  {
+       if (getStage() == Stage.READY) {
+           LOG.info("Will  not submit, because we're ready" + jc);
+       } else {
+           LOG.info("Will submit " + jc);
+           ThreadPools.jobsExecutor.execute(new Runnable() {
+                   public void run() {
+                       synchronized(Job.this) {
+                           findResults();
+                           if (getCurrent() == null) {
+                               iterator().next();
+                           }
+                           Stage s = getCurrent().getStage();
+                           LOG.info("to " + s);
+                           future =  processor.threadPools.get(s).submit(jc);
+                           Job.this.notifyAll();
+                       }
+                   }
+               });
+       }
+    }
 
-    synchronized void submit(JobCallable jc) {
-            LOG.info("Will submit " + jc);
-            findResults();
-            if (getCurrent() == null) {
-                iterator().next();
-            }
-            Stage s = getCurrent().getStage();
-            LOG.info("to " + s);
-            if (getStage() == Stage.READY) {
-            } else {
-                future =  processor.threadPools.get(s).submit(jc);
-                notifyAll();
-            }
-        }
     public Logger getLogger() {
         return logger;
     }
@@ -370,12 +379,12 @@ public class Job implements Iterable<Result> {
     }
 
     public synchronized void setThread(Thread t) {
-            thread = t;
-            notifyAll();
-            if (t != null) {
-                interrupted = t.isInterrupted();
-            }
-        }
+       thread = t;
+       notifyAll();
+       if (t != null) {
+           interrupted = t.isInterrupted();
+       }
+    }
 
     /**
      * The source Node on which this Job will run.
@@ -412,18 +421,17 @@ public class Job implements Iterable<Result> {
         return getStage().ordinal() >= s.ordinal();
     }
     synchronized public void ready() {
-            ready = true;
-            notifyAll();
-        }
+        ready = true;
+        notifyAll();
+    }
 
     public synchronized void waitUntil(Stage stage)
                                  throws InterruptedException {
-            LOG.info("Waiting for " + stage);
-            while (! reached(stage)) {
-                wait();
-            }
-
+        LOG.info("Waiting for " + stage);
+        while (! reached(stage)) {
+            wait();
         }
+    }
 
     public synchronized void waitUntilAfter(Stage stage) throws InterruptedException {
             while (getStage().ordinal() <= stage.ordinal()) {
