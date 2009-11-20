@@ -1,7 +1,7 @@
 <%@ taglib prefix="edit" tagdir="/WEB-INF/tags/vpro-wizards" %>
 <%@ taglib prefix="list" tagdir="/WEB-INF/tags/vpro-wizards/list" %>
 <%@ taglib prefix="form" tagdir="/WEB-INF/tags/vpro-wizards/form" %>
-<%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"%>
+<%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0"%>
 <list:wizard  title="Magazines" >
 
     <edit:path name="Magazines" session="mags" />
