@@ -1059,10 +1059,11 @@ public class MMBase extends ProcessorModule {
             return builder;
         }
 
+        BuilderReader parser = null;
         try {
             // register the loading of this builder
+            parser = getBuilderReader(ipath + builderName);
             loading.add(builderName);
-            BuilderReader parser = getBuilderReader(ipath + builderName);
             if (parser == null) {
                 log.warn("Not found " + ipath + builderName);
                 loading.remove(builderName);
@@ -1146,11 +1147,13 @@ public class MMBase extends ProcessorModule {
             }
         } catch (BuilderConfigurationException bcfe) {
             loading.remove(builderName);
-            log.error(bcfe.getMessage() + " " + bcfe.getMessage());
+            log.error((parser == null ? ipath + builderName : parser.getSystemId()) + ": " +
+                      bcfe.getMessage() + " " + bcfe.getMessage());
             return null;
         } catch (Throwable e) { // what kind of exceptions are these?
             loading.remove(builderName);
-            log.error(e.getClass() + " " + e.getMessage(), e);
+            log.error((parser == null ? ipath + builderName : parser.getSystemId()) + ": " +
+                      e.getClass() + " " + e.getMessage(), e);
             return null;
         }
         loading.remove(builderName);
