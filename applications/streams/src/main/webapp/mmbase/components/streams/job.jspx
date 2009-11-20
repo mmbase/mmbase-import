@@ -24,7 +24,7 @@
           <tr>
             <th>progress</th> <td> ${_.progress} </td> 
           </tr><tr>
-            <th>ready</th> <td> ${_.ready} </td> 
+            <th>stage</th> <td> ${_.stage} </td> 
           </tr><tr>
             <th>in</th> <td> ${_.current.in}  </td> 
           </tr><tr>
