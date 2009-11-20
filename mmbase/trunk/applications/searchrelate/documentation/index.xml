@@ -204,7 +204,6 @@
        xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
       <head>
         ...
-        <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
         <mm:link page="/mmbase/searchrelate/page.css.jsp">
           <link rel="stylesheet" href="${_}" type="text/css" />
         </mm:link>
