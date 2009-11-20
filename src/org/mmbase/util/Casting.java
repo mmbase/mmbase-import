@@ -306,10 +306,11 @@ public class Casting {
                             case org.mmbase.bridge.Field.TYPE_DATETIME: return wrap(getDateValue(fieldName), escaper);
                             case org.mmbase.bridge.Field.TYPE_XML:      return wrap(getXMLValue(fieldName), escaper);
                             case org.mmbase.bridge.Field.TYPE_UNKNOWN:  return wrap(super.getValue(fieldName), escaper);
-                            default: return escape(escaper, super.getStringValue(fieldName));
+                            default:
+                                return escape(escaper, Casting.toString(super.getValue(fieldName)));
                             }
                         } else {
-                            return escape(escaper, super.getStringValue(fieldName));
+                            return escape(escaper, Casting.toString(super.getValue(fieldName)));
                         }
                     }
                     public String toString() {
