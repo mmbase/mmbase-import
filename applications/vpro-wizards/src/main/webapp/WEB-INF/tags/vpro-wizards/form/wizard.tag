@@ -56,7 +56,7 @@
                 <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/javascript.js"></script>
                 <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/calendar.js" ></script>
                 <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/clock.js" ></script>
-                <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/ckeditor/ckeditor.js"></script>
+                <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/fckeditor/fckeditor.js"></script>
                     <jsp:invoke fragment="header"/>
               </head>
             <body>

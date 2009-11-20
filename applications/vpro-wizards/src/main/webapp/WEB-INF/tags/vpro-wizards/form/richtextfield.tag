@@ -41,7 +41,8 @@
 
 <script type="text/javascript">
     var oFCKeditor = new FCKeditor( 'field_${nodetype}_${field}' ) ;
-    oFCKeditor.BasePath = '${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/fckeditor/';
+    oFCKeditor.Config["CustomConfigurationsPath"] = "${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/fckeditor/fckconfig.js";
+    oFCKeditor.BasePath = '${pageContext.request.contextPath}/mmbase/fckeditor/';
     oFCKeditor.Config['ToolbarStartExpanded'] = true ;
     <%-- TODO deze check eruit halen --%>
     <c:choose>
