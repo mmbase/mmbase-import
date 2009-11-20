@@ -1,7 +1,6 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"%>
 <%@taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util"%>
 
 <%@ attribute name="title" description="the title of the page, also used by the related:view tag" %>
@@ -91,12 +90,12 @@
                         </a>
                     </div>
                 </c:if>
-    
+
                 <%--do the body, and catch an exception if there is one--%>
                 <div class="relatedview">
                     <jsp:doBody/>
                 </div>
-    
+
                 <script type="text/javascript">
                     //dummy implementation of this function. it is used in the form page, so the
                     //field tags extept it.

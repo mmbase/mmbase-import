@@ -1,7 +1,7 @@
 <%@ tag import="java.util.*, org.mmbase.applications.vprowizards.spring.util.*" body-content="empty" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"  %>
+<%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0"  %>
 
 <%@ attribute name="valuefield" required="true"  %>
 <%@ attribute name="labelfield" required="true"  %>

@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util" %>
-<%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"  %>
+<%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0"  %>
 <%@ attribute name="nodetype" required="true" %>
 <%@ attribute name="multipart" type="java.lang.Boolean" description="don't set this if you use a fielfield in the body. In that case it's the default" %>
 
@@ -48,7 +48,7 @@
     <c:choose>
         <c:when test="${authorized == 'true'}">
 		    <form method="post" ${enctype} action="${pageContext.request.contextPath}/wizard/post" id="formcontainer">
-		
+
 		        <%--set the default fields for this action in the form--%>
 		        <c:if test="${modifier == 'create'}">
 		            <input type="hidden" name="actions[${modifier}${action}][].id" value="new"/>
@@ -59,9 +59,9 @@
 		        <c:if test="${modifier == 'update'}">
 		            <input type="hidden" name="actions[${modifier}${action}][${nodenr}].nodenr" value="${nodenr}"/>
 		        </c:if>
-		
+
 		        <c:out value="${body}" escapeXml="false"/>
-		
+
 		        <c:set var="isedit" value="${requestScope.___editablefields}" />
 		            <div class="formButtons" id="formButtons">
 		                <util:flushname/>
@@ -106,5 +106,5 @@
 	           <c:otherwise>dit object te bewerken.</c:otherwise>
            </c:choose>
 	    </c:otherwise>
-    </c:choose>		    
+    </c:choose>
 </div>

@@ -1,6 +1,6 @@
 <%@ tag import="java.util.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
 <%@ attribute name="url" description="the url for the link in the path. this defaults to the current url with all parameters."  %>
@@ -45,7 +45,7 @@
         String name = (String)jspContext.getAttribute("_name");
         String url = (String)jspContext.getAttribute("url");
         String key = (String)jspContext.getAttribute("session");
-       
+
         //check if it is there yet.
         int addAt = -1;
         for(int i = 0; i < list.size(); i++){

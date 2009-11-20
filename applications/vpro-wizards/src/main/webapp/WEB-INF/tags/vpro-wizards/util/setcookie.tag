@@ -1,5 +1,5 @@
 <%@ tag body-content="empty"  %>
-<%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"%>
+<%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0"%>
 <%@ attribute name="name" required="true"  %>
 <%@ attribute name="value" required="true"  %>
 <%@ attribute name="path" description="default is the current location" %>

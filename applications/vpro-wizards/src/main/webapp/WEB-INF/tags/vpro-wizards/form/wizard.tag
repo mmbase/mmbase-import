@@ -1,4 +1,4 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util"%>
 
@@ -52,12 +52,12 @@
                  <script>
                     var contextPath='${pageContext.request.contextPath}';
                 </script>
+                <jsp:directive.include file="/mmbase/jquery/jquery.jspx" />
                 <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/javascript.js"></script>
                 <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/calendar.js" ></script>
                 <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/clock.js" ></script>
-                <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/fckeditor/fckeditor.js"></script>
-                <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/jquery/jquery.js"></script>
-                <jsp:invoke fragment="header"/>
+                <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/ckeditor/ckeditor.js"></script>
+                    <jsp:invoke fragment="header"/>
               </head>
             <body>
 
