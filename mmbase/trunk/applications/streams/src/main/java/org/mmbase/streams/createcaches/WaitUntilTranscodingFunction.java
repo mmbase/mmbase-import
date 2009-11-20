@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: CreateCachesFunction.java 36715 2009-07-08 22:30:03Z michiel $
+ * @version $Id$
  */
 
 public class WaitUntilTranscodingFunction extends NodeFunction<Boolean> {
