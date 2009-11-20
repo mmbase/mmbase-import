@@ -1,4 +1,4 @@
-<%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0" %>
+<%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util"%>
 <%@ tag body-content="empty"  %>
@@ -161,7 +161,7 @@
                                         <c:set var="_pos" ><mm:node number="${_relationnr}"><mm:field name="${sortfield}" /></mm:node></c:set>
                                     </c:when>
                                 </c:choose>
-                                
+
                                 <c:set var="urlup">
                                     <mm:url page="/wizard/post">
                                         <mm:param name="actions[sortRelation][1].sourceNodeNumber" value="${nodenr}" />
@@ -182,22 +182,22 @@
                                         <mm:param name="flushname" value="${flushname}" />
                                     </mm:url>
                                 </c:set>
-                                
+
                                 <mm:last inverse="true">
                                     <a style="text-decoration:none" href="${urldown}" class="movedown" onclick="return checkSearch(this);">
                                         <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/arrow_down.png" class="icon" border="0" />
                                     </a>
                                 </mm:last>
-                                
+
                                <mm:last>
                                    <%--placeholder to align te icons--%>
                                    <span style="float:left; width: 16px;">&nbsp;</span>
                                 </mm:last>
-                               
+
                                 <c:if test="${not empty _pos}">
                                     <span class="position" style="float:left"><c:if test="${_pos lt 10}">0</c:if>${_pos}</span>
                                 </c:if>
-                                
+
                                 <mm:first>
                                     <%--placeholder to align te icons--%>
                                    <span style="float:left; width: 18px;">&nbsp;</span>
@@ -207,8 +207,8 @@
                                         <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/arrow_up.png" class="icon" border="0" />
                                     </a>
                                 </mm:first>
-                                
-                               
+
+
 
                             </c:if>
                         </div>
@@ -217,7 +217,7 @@
                         <div class="icons">
                             <c:remove var="maydelete" />
                             <mm:node number="${_relationnr}"> <mm:maydelete><c:set var="maydelete" value="true"/></mm:maydelete> </mm:node>
-                                
+
                             <c:remove var="mayharddelete" />
                             <mm:node number="${_nodenr}"> <mm:maydelete><c:set var="mayharddelete" value="true"/></mm:maydelete> </mm:node>
 
@@ -230,7 +230,7 @@
                                     </a>
                                 </mm:link>
                             </c:if>
-                            
+
                              <c:if test="${harddelete && not empty mayharddelete}">
                                 <mm:link page="/wizard/post">
                                     <mm:param name="actions[deleteNode][1].number" value="${_nodenr}" />
@@ -271,7 +271,7 @@
                         --%>
                         <c:choose>
                             <c:when test="${empty display}">
-                                
+
                                 <c:choose>
                                     <c:when test="${nodetype eq 'images'}">
                                         <util:image urlvar = "url" nodenr="${_nodenr}"/>

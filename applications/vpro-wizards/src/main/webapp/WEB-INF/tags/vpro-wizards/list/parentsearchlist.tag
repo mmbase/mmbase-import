@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util" %>
-<%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"%>
+<%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0"%>
 
 <%@ attribute name="numberofitems" %>
 <%@ attribute name="parentnodenr" %>

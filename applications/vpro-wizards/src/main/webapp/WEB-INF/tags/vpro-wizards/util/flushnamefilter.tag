@@ -1,5 +1,5 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"%>
+<%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0"%>
 <%--
     This tag is used to alter the flushname value(s), by replacing place holders with dynamic values.
     This is done in the list result, and the purpose is to be able to create cache identifiers with specific

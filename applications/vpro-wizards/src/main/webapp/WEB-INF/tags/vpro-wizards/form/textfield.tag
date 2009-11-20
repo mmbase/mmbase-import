@@ -1,5 +1,5 @@
 <%@ tag body-content="empty"  %>
-<%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"  %>
+<%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0"  %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 

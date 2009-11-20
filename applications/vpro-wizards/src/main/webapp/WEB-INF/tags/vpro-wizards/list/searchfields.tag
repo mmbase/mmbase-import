@@ -1,13 +1,13 @@
 <%--
     This tag shows search input fields and a search button. it also alows you to set
     min and max age for objects to find.
-    you can use the extrafields fragment attribute to add some custom fields 
+    you can use the extrafields fragment attribute to add some custom fields
     (outside the fields of the type you are searching for). For
     this you should use the list:field tag.
     These custom fields are not handled by default, but can be used together with the
     querysearchlist to create custom search constraints.
 --%>
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="list" tagdir="/WEB-INF/tags/vpro-wizards/list" %>
 <%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util" %>
@@ -48,7 +48,7 @@
     <form id="searchfieldform">
         <%--add the extra fields if there are any--%>
         <jsp:invoke fragment="extrafields"/>
-        
+
         <%--the input for the searchfields--%>
         <c:if test="${not empty fields}">
             <mm:fieldlist nodetype="${searchtype}" fields="${searchfields}">
@@ -58,7 +58,7 @@
                 </div>
             </mm:fieldlist>
         </c:if>
-        
+
         <%-- add the extra params--%>
         <c:forEach var="p" items="${___params}" >
             <input type="hidden" name="${p.key}" value="${p.value}" />

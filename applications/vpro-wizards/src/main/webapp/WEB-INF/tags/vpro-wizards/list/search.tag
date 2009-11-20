@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"%>
+<%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0"%>
 <%@taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util"%>
 
 <%@ attribute name="nodetype" description="the node type this search will show" %>

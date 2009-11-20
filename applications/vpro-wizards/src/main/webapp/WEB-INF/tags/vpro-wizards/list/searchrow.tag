@@ -1,4 +1,4 @@
-<%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"  %>
+<%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0"  %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util" %>
@@ -217,7 +217,7 @@
                                             <mm:url page="/wizard/post">
                                                 <mm:param name="actions[createRelation][${nodenrrow}].sourceNodeNumber" value="${parentnodenr}" />
                                                 <mm:param name="actions[createRelation][${nodenrrow}].destinationNodeNumber" value="${nodenrrow}" />
-                                                
+
                                                 <mm:param name="actions[createRelation][${nodenrrow}].role" value="${relationrole}" />
                                                 <mm:param name="actions[createRelation][${nodenrrow}].sortPosition" value="end" />
                                                 <c:if test="${not empty flushname}">

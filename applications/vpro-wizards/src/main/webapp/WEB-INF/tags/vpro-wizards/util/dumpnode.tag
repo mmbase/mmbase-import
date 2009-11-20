@@ -1,5 +1,5 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"%>
+<%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0"%>
 <%@ tag body-content="empty"  %>
 <%@ attribute name="nodenr" required="true"  %>
 <%@ attribute name="headerwidth"  %>
