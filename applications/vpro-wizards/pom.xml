@@ -100,14 +100,6 @@
   </dependencies>
 
   <build>
-    <resources>
-      <resource>
-        <directory>${basedir}/resources</directory>
-        <includes>
-          <include>**</include>
-        </includes>
-      </resource>
-    </resources>
     <plugins>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
