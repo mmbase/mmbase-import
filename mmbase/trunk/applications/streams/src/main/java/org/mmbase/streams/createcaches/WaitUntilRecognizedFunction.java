@@ -15,7 +15,7 @@ import org.mmbase.util.logging.*;
 
 /**
  *
- * @author André van Toly
+ * @author AndrŽ van Toly
  * @version $Id$
  */
 

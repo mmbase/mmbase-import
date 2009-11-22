@@ -17,7 +17,7 @@ import java.net.*;
 
 
 /**
- * When executing an actual {@link JobDefinition} the result is contain in an object like this.
+ * When executing an actual {@link JobDefinition} the result is contained in an object like this.
  * @author Michiel Meeuwissen
  * @version $Id$
  */

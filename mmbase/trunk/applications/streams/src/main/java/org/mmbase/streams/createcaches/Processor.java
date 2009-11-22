@@ -343,7 +343,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
     }
 
     /**
-     * Commit the mediastreamsources node and calls createCaches to create resulting streamscaches nodes
+     * Commits the mediastreamsources node, calls createCaches to create resulting streamscaches nodes
      * and start transcoding.
      */
     public void commit(final Node node, final Field field) {
