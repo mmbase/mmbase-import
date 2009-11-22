@@ -39,8 +39,8 @@ public class WaitUntilRecognizedFunction extends NodeFunction<Boolean> {
                 return false;
             }
         }
+        
         return true;
-
     }
 
 }

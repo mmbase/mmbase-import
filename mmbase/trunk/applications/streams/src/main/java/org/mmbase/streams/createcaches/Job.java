@@ -273,7 +273,6 @@ public class Job implements Iterable<Result> {
         };
     }
 
-
     /**
      * Start actually executing this Jobs.
      */
@@ -282,13 +281,12 @@ public class Job implements Iterable<Result> {
         submit(callable);
     }
 
-
     /**
      * Re-submit this job.
      */
     void submit(final JobCallable jc)  {
        if (getStage() == Stage.READY) {
-           LOG.info("Will  not submit, because we're ready" + jc);
+           LOG.info("Will not submit, because we're ready" + jc);
        } else {
            LOG.info("Will submit " + jc);
            ThreadPools.jobsExecutor.execute(new Runnable() {
@@ -301,7 +299,7 @@ public class Job implements Iterable<Result> {
                            }
                            Stage s = getCurrent().getStage();
                            LOG.info("to " + s);
-                           future =  processor.threadPools.get(s).submit(jc);
+                           future = processor.threadPools.get(s).submit(jc);
                            Job.this.notifyAll();
                        }
                    }
@@ -399,20 +397,19 @@ public class Job implements Iterable<Result> {
         findResults();
     }
     public synchronized void interrupt() {
-
-            Node cacheNode = current.getDestination();
-            if (cacheNode != null && node.getCloud().hasNode(cacheNode.getNumber())) {
-                cacheNode.setIntValue("state", State.INTERRUPTED.getValue());
-                cacheNode.commit();
-            }
-            interrupted = true;
-            if (thread != null) {
-                logger.info("Interrupting " + thread);
-                thread.interrupt();
-            } else {
-                logger.info("No Thread in " + this);
-            }
+        Node cacheNode = current.getDestination();
+        if (cacheNode != null && node.getCloud().hasNode(cacheNode.getNumber())) {
+            cacheNode.setIntValue("state", State.INTERRUPTED.getValue());
+            cacheNode.commit();
         }
+        interrupted = true;
+        if (thread != null) {
+            logger.info("Interrupting " + thread);
+            thread.interrupt();
+        } else {
+            logger.info("No Thread in " + this);
+        }
+    }
     public boolean isInterrupted() {
         return interrupted;
     }
@@ -434,17 +431,17 @@ public class Job implements Iterable<Result> {
     }
 
     public synchronized void waitUntilAfter(Stage stage) throws InterruptedException {
-            while (getStage().ordinal() <= stage.ordinal()) {
-                wait();
-            }
+        LOG.info("Waiting untill after " + stage);
+        while (getStage().ordinal() <= stage.ordinal()) {
+            wait();
         }
+    }
 
     public Stage getStage() {
         if (ready) return Stage.READY;
         Result res = getCurrent();
         return res == null ? Stage.UNSTARTED : res.getJobDefinition().getStage();
     }
-
 
     public String getProgress() {
         return "" + busy + "/" + results.size();

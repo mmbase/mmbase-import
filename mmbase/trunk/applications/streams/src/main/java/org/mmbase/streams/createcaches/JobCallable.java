@@ -111,6 +111,7 @@ class JobCallable implements Callable<Integer> {
                     LOG.info("Found " + current);
                     if (current.isReady()) {
                         thisJob.ready();
+                        LOG.info("1: returning resultCount: " + resultCount);
                         return resultCount;
                     }
 
@@ -121,6 +122,7 @@ class JobCallable implements Callable<Integer> {
                         thisJob.submit(this);
                     } catch (Exception e) {
                     }
+                    LOG.info("2: returning resultCount: " + resultCount);
                     return resultCount;
                 }
                 result = current;
@@ -176,6 +178,7 @@ class JobCallable implements Callable<Integer> {
             //thisJob.ready(); // notify waiters
             //runningJobs.remove(thisJob.getNode().getNumber());
         }
+        logger.info("3: returning resultCount: " + resultCount);
         return resultCount;
     }
 
