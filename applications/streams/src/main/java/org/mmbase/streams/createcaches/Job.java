@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
 /**
  * A Job is associated with a 'source' node, and describes what is currently happening to create
  * 'caches' nodes for it. Such a Job object is created everytime somebody create a new source
- * object, or explictely triggers the associated 'cache' objects to be (re)created.
+ * object, or explicitly triggers the associated 'cache' objects to be (re)created.
  *
  */
 public class Job implements Iterable<Result> {
@@ -230,6 +230,7 @@ public class Job implements Iterable<Result> {
                     for (; i < results.size(); i++) {
                         if (results.get(i) != null && ! results.get(i).isReady()) {
                             current = results.get(i);
+                            LOG.debug("not ready? c: " + current);
                             Job.this.notifyAll();
                             i++;
                             break;
@@ -266,7 +267,7 @@ public class Job implements Iterable<Result> {
                     }
                 }
                 busy++;
-                LOG.debug(" Returning at " + i + " " + current + " (" +current.isReady());
+                LOG.debug(" Returning at " + i + " " + current + " (" + current.isReady() + ")");
                 return current;
             }
 

@@ -21,12 +21,12 @@ import org.mmbase.util.logging.*;
 
 /**
  * This is the actual callable that can be submitted to the Executors.
- * It can actually be submitted multiple times. Until it is ready.
+ * It can be submitted multiple times. Until it is ready.
  *
- * It will do that itself, if it detect that the {@link Stage} of the job would change.
-
+ * It will do that itself, if it detects that the {@link Stage} of the job would change.
  *
  * This boils down to iterating the {@link Job}.
+ *
  * @author Michiel Meeuwissen
  */
 class JobCallable implements Callable<Integer> {
@@ -99,10 +99,12 @@ class JobCallable implements Callable<Integer> {
         try {
             Result result = thisJob.getCurrent();
             while (true) {
-                LOG.info("Executing " + thisJob);
+                LOG.info("Checking to execute " + thisJob);
                 Result current = thisJob.getCurrent();
                 if (current == null || current.isReady()) {
+                    LOG.info("current: " + current + " ready? " + current.isReady());
                     while (iterator.hasNext()) {
+                        LOG.info("next !");
                         iterator.next();
                     }
                     current = thisJob.getCurrent();
@@ -111,7 +113,6 @@ class JobCallable implements Callable<Integer> {
                     if (current.isReady()) {
                         thisJob.ready();
                         return resultCount;
-
                     }
 
                 }
