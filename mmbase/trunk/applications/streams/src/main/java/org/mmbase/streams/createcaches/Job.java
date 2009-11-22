@@ -214,7 +214,7 @@ public class Job implements Iterable<Result> {
         return new Iterator<Result>() {
             int i = 0;
             public boolean hasNext() {
-                for (int j = i  ; j < results.size(); j++) {
+                for (int j = i; j < results.size(); j++) {
                     if (results.get(j) != null && ! results.get(j).isReady()) {
                         LOG.debug("Found to do at " + j + " -> " + results.get(j));
                         return true;
