@@ -98,10 +98,10 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
         // fill the complete map, so we don't have to think about it any more later on.
         for (Stage s : Stage.values()) {
             if (s.ordinal() < Stage.TRANSCODER.ordinal()) {
-                threadPools.put(s, threadPools.get(Stage.TRANSCODER));
+                threadPools.put(s, threadPools.get(Stage.RECOGNIZER));
             }
             if (s.ordinal() > Stage.RECOGNIZER.ordinal()) {
-                threadPools.put(s, threadPools.get(Stage.RECOGNIZER));
+                threadPools.put(s, threadPools.get(Stage.TRANSCODER));
             }
         }
         for (Map.Entry<Stage, ThreadPoolExecutor> e : threadPools.entrySet()) {
@@ -273,7 +273,6 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
                 } else {
                     return "Could not cancel " + job;
                 }
-
             }
         } else {
             return "You may not cancel jobs";
@@ -306,7 +305,6 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
 
             return thisJob;
         }
-
     }
 
 
@@ -374,7 +372,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
         return clone;
     }
 
-   public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
     }
 
     public void writeExternal(ObjectOutput stream) throws IOException {
