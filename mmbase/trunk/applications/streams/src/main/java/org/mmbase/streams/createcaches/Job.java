@@ -230,7 +230,6 @@ public class Job implements Iterable<Result> {
                     for (; i < results.size(); i++) {
                         if (results.get(i) != null && ! results.get(i).isReady()) {
                             current = results.get(i);
-                            LOG.debug("not ready? c: " + current);
                             Job.this.notifyAll();
                             i++;
                             break;
