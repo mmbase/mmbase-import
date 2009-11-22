@@ -104,7 +104,7 @@ class JobCallable implements Callable<Integer> {
                 if (current == null || current.isReady()) {
                     LOG.info("current: " + current + " ready? " + current.isReady());
                     while (iterator.hasNext()) {
-                        LOG.info("next !");
+                        LOG.info("next !"); // BUG: not arriving here when there are still nodes to do
                         iterator.next();
                     }
                     current = thisJob.getCurrent();
