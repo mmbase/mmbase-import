@@ -662,7 +662,20 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                         log.error(mre);
                     }
                 } else {
-                    throw new IllegalArgumentException("no 'value' or 'basename' attribute on enumeration entry element");
+                    String javaConstants = entryElement.getAttribute("javaconstants");
+                    if (! javaConstants.equals("")) {
+                        try {
+                            Class constantsClass = Class.forName(javaConstants);
+                            for (Map.Entry<String, Object> entry : SortedBundle.getConstantsProvider(constantsClass).entrySet()) {
+                                add(null, entry.getKey(), (Serializable) entry.getValue());
+                            }
+                        } catch (Exception e) {
+                            log.error(e);
+                        }
+
+                    } else {
+                        throw new IllegalArgumentException("no 'value', 'basename' or 'javaconstants' attribute on enumeration entry element " + org.mmbase.util.xml.XMLWriter.write(entryElement));
+                    }
                 }
             }
             if (log.isDebugEnabled()) {

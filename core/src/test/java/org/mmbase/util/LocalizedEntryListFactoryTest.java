@@ -165,6 +165,22 @@ public class LocalizedEntryListFactoryTest {
     }
 
 
+    @Test
+    public void readEnum() throws org.xml.sax.SAXException, java.io.IOException {
+        LocalizedEntryListFactory fact = new LocalizedEntryListFactory();
+        String config =
+            "<enumeration>" +
+            "<entry " +
+            "       javaconstants='org.mmbase.framework.WindowState'" +
+            "       />" +
+            "</enumeration>";
+        Document doc = DocumentReader.getDocumentBuilder(false).parse(new InputSource(new StringReader(config)));
+        fact.fillFromXml(doc.getDocumentElement(), Integer.class);
+
+        assertEquals(3, fact.size());
+    }
+
+
 
     public static void main(String argv[]) {
         LocalizedEntryListFactory fact = new LocalizedEntryListFactory();
