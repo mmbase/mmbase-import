@@ -824,6 +824,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                         // full index ?
                         String fias = getInitParameter("fullindexatstartup");
                         if ("true".equals(fias)) {
+                            log.info("Configured to run a full index at startup, so doing that now");
                             scheduler.fullIndex();
                         }
                     } else {
