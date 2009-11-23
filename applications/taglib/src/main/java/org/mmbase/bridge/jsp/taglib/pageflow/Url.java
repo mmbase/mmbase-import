@@ -90,6 +90,9 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     }
 
 
+    /**
+     * Used e.g. by mm:form
+     */
     public Url(ContextReferrerTag t, CharSequence p, String a) throws JspTagException {
         tag = t;
         abs = a;
@@ -100,6 +103,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         frameworkParams = null;
         internal = false;
     }
+
 
     /**
      * @since MMBase-1.9.1
