@@ -1,6 +1,6 @@
 <%@ include file="page_base.jsp"
 %><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
-<mm:cloud  loginpage="login.jsp" sessionname="$config.session"  rank="$rank" uri="$config.uri">
+<mm:cloud  loginpage="login.jsp" sessionname="$config.session"  rank="$rank" uri="$config.uri" jspvar="cloud">
 <mm:context id="new_relation">
 
 <mm:import externid="node"               required="true" />
