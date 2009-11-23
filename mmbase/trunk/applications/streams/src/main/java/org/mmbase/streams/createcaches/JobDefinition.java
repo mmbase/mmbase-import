@@ -20,7 +20,9 @@ import java.io.*;
 /**
  * The description or definition of one 'transcoding' sub jobs that's doing the transcoding. This
  * combines a transcoder, with a mime type for which it must be valid, and a list of analyzers.
+ *
  * @author Michiel Meeuwissen
+ * @version $Id$
  */
 class JobDefinition implements Serializable {
     private static final long serialVersionUID = 0L;
