@@ -306,13 +306,13 @@ public class Images extends AbstractImages {
         } else {
             String number = node.getStringValue("_number");
             SerializableInputStream is = Casting.toSerializableInputStream(node.getInputStreamValue("handle"));
-            if (is.getName() != null) {
+            if (is.getFileName() != null) {
                 File thumb = createTemporaryFile(is, ImageCaches.GUI_IMAGETEMPLATE);
                 log.debug("Found for " + node.getNumber() + "(" + number + "): " + thumb);
                 String files = FileServlet.getBasePath("files").substring(1);
                 String root = MMBaseContext.getHtmlRootUrlPath();
                 String thumbUrl = root + files + "temporary_images/" + URLESCAPER.transform(thumb.getName());
-                String origUrl = root + files + "uploads/" + URLESCAPER.transform(is.getName()); // hmm, is this 'uploads' certain?
+                String origUrl = root + files + "uploads/" + URLESCAPER.transform(is.getFileName()); // hmm, is this 'uploads' certain?
                 return "<a class='mm_gui' href='" + origUrl + "'><img src='" + thumbUrl +"' /></a>";
             } else {
                 return "<span class='mm_gui'>--</span>";
