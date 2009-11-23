@@ -237,7 +237,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
         initWatcher();
     }
 
-    private static final Map<Integer, Job> runningJobs = Collections.synchronizedMap(new LinkedHashMap<Integer, Job>());
+    protected static final Map<Integer, Job> runningJobs = Collections.synchronizedMap(new LinkedHashMap<Integer, Job>());
 
     /* Jobs user with this context has started */
     public static Set<Job> myJobs(UserContext u) {
@@ -258,6 +258,17 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
     public static Job getJob(Node node) {
         return runningJobs.get(node.getNumber());
     }
+    
+    protected static boolean removeJob(Node node) {
+        Job job = runningJobs.get(node.getNumber());
+        boolean done = job.future.isDone();
+        if (done) {
+            runningJobs.remove(node.getNumber());
+        } else {
+            job.logger.info("This job has not completed yet.");
+        }
+        return done;
+    }
 
     public static String cancelJob(Node node) {
         if (node.getCloud().may(ActionRepository.getInstance().get("streams", "cancel_jobs"), null)) {
@@ -266,12 +277,18 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
                 return "No job for node #" + node.getNumber();
             } else {
                 job.interrupt();
+                String msg = "";
+                if (job.future.isDone()) {
+                    msg = "This job has already completed. ";
+                    job.logger.info(msg);
+                }
                 if (job.future.cancel(true)) {
-                    String message = "Canceled job for node #" + node.getNumber() + " (" + job.future + ")";
+                    String message = msg + "Canceled job for node #" + node.getNumber() + " (" + job.future + ")";
                     job.logger.info(message);
+                    removeJob(node);
                     return message;
                 } else {
-                    return "Could not cancel " + job;
+                    return msg + "Could not cancel " + job;
                 }
             }
         } else {
