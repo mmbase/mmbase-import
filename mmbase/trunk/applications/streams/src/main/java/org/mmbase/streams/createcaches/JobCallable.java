@@ -175,7 +175,7 @@ class JobCallable implements Callable<Integer> {
             throw e;
         } finally {
             logger.info("FINALLY " + resultCount);
-            //thisJob.ready(); // notify waiters
+            thisJob.ready(); // notify waiters
             //runningJobs.remove(thisJob.getNode().getNumber());
         }
         logger.info("3: returning resultCount: " + resultCount);
