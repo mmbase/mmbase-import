@@ -100,16 +100,28 @@ public class MediaFragmentTest {
 
         assertEquals("test test", newSource.getStringValue("title"));
         assertNotNull(newSource.getNodeValue("mediafragment"));
+        final int mediaFragment = newSource.getNodeValue("mediafragment").getNumber();
+
         assertEquals(fragmentsBefore + 1, Queries.count(getCloud().getNodeManager("mediafragments").createQuery()));
 
         newSource.setNodeManager(newSource.getCloud().getNodeManager("videostreamsources"));
         newSource.commit();
+        //newSource.commit(); // ADDING THIS FIXES THE FAIL!
 
         assertEquals("test test", newSource.getStringValue("title"));
+        //newSource.setStringValue("title", "test test test");
+        //newSource.commit();
+
         assertNotNull(newSource.getNodeValue("mediafragment"));
+        assertEquals(mediaFragment, newSource.getNodeValue("mediafragment").getNumber());
 
         assertEquals(fragmentsBefore + 1, Queries.count(getCloud().getNodeManager("mediafragments").createQuery()));
+        assertEquals("videofragments", newSource.getCloud().getNode(mediaFragment).getNodeManager().getName());
         assertEquals("videofragments", newSource.getNodeValue("mediafragment").getNodeManager().getName()); // FAILS!
+
+        assertEquals("test test", newSource.getNodeValue("mediafragment").getStringValue("title"));
+        assertEquals("test test", newSource.getStringValue("title"));
+        assertEquals("test test", newSource.getCloud().getNode(mediaFragment).getStringValue("title"));
 
 
     }
