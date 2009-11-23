@@ -53,6 +53,20 @@
     <param-value>false</param-value>
   </context-param>
 
+
+  <context-param>
+    <param-name>mmbase.taglib.url.makerelative</param-name>
+    <param-value>false</param-value>
+  </context-param>
+
+  <!--
+      MMB-1897
+  -->
+  <context-param>
+    <param-name>mmbase.taglib.url.excludeForEncoding</param-name>
+    <param-value>([.]ico$[.]jpg$|[.]gif$|[.]png$|[.]css$|[.]js$)</param-value>
+  </context-param>
+
   <!--
       To avoid accidental recursing mm:include (and extended tags) don't work below a certain level (defaults to 50).
   -->
