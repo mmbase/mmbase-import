@@ -55,15 +55,6 @@ public abstract class MMObjectNodeFunction<R> extends NodeFunction<R> {
     }
 
 
-    protected static Parameter[] getNodeParameterDef(Parameter... def) {
-        List<Parameter> defList = new ArrayList(Arrays.asList(def));
-        if (! defList.contains(Parameter.NODE)) defList.add(Parameter.NODE);
-        if (! defList.contains(Parameter.CLOUD)) defList.add(Parameter.CLOUD);
-        if (! defList.contains(Parameter.CORENODE)) defList.add(Parameter.CORENODE);
-        return defList.toArray(Parameter.emptyArray());
-    }
-
-
     protected static Node getNode(final MMObjectNode coreNode, final Parameters parameters) {
         if (coreNode == null) throw new RuntimeException("No node argument given for (" + parameters + ")!");
         Node node = parameters.get(Parameter.NODE);
@@ -183,6 +174,7 @@ public abstract class MMObjectNodeFunction<R> extends NodeFunction<R> {
                 if (log.isDebugEnabled()) {
                     log.debug("Now calling on " + wrappedFunction.getClass() + " " + wrappedFunction + " " + parameters);
                 }
+                parameters.set(Parameter.CORENODE, node); // hmm
                 return ((NodeFunction<Q>) wrappedFunction).getFunctionValueForNode(n, parameters);
             }
 
