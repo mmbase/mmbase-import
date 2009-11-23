@@ -169,13 +169,14 @@ class JobCallable implements Callable<Integer> {
             if (! thisJob.isInterrupted()) {
                 logger.info("READY " + thisJob + "(" + thisJob.getNode().getNodeManager().getName() + ":" + thisJob.getNode().getNumber() + ")");
                 //thisJob.getNode().commit();
+                thisJob.ready();
             }
         } catch (RuntimeException e) {
             logger.error(e.getMessage(), e);
             throw e;
         } finally {
             logger.info("FINALLY " + resultCount);
-            thisJob.ready(); // notify waiters
+            thisJob.notifyAll(); // notify waiters
             //runningJobs.remove(thisJob.getNode().getNumber());
         }
         logger.info("3: returning resultCount: " + resultCount);
