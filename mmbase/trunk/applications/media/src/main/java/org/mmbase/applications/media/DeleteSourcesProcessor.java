@@ -18,9 +18,10 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * This commit-processor is used on node of the type 'mediafragments', and is used to delete
- * associated 'streamsources' and 'images' when a 'mediafragments' is deleted.
- * Nodes of type 'streamssources' will be deleted by DeleteCachesProcessor.
+ * This commit-processor is used on nodes of the type 'mediafragments' and
+ * deletes associated 'mediasources' when a 'mediafragments' node is deleted.
+ * To a 'mediasources' belonging nodes of type 'streamsources' in Streams will be 
+ * deleted by org.mmbase.streams.DeleteCachesProcessor.
  *
  * @author André van Toly
  * @version $Id$
@@ -40,7 +41,8 @@ public class DeleteSourcesProcessor implements CommitProcessor {
             return;
         }
         if (node.getNumber() > 0) {
-            NodeList sources = SearchUtil.findRelatedNodeList(node, node.getNodeManager().getProperty("org.mmbase.media.cointaintype"), "related");
+            NodeList sources = SearchUtil.findRelatedNodeList(node, 
+                node.getNodeManager().getProperty("org.mmbase.media.cointaintype"), "related");
             LOG.info("Deleting " + sources.size() + " sources");
             for (Node src : sources) {
                 if (src.mayDelete()) {
