@@ -27,6 +27,9 @@
         <description xml:lang="nl">Een titel is verplicht en moet tenminste 2 karakters lang zijn</description>
       </minLength>
       <maxLength value="255" enforce="never" />
+      <deleteprocessor>
+        <class name="org.mmbase.media.DeleteSourcesProcessor">  </class>
+      </deleteprocessor>
     </datatype>
   </field>
 
