@@ -64,7 +64,7 @@
   -->
   <context-param>
     <param-name>mmbase.taglib.url.excludeForEncoding</param-name>
-    <param-value>([.]ico$[.]jpg$|[.]gif$|[.]png$|[.]css$|[.]js$)</param-value>
+    <param-value>.*\.(ico|jpg|gif|png|css|js)</param-value>
   </context-param>
 
   <!--
