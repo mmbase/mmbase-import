@@ -711,11 +711,11 @@ MMBaseValidator.prototype.valid = function(el) {
     }
 
     if (this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce)) {
-        if (value == "" || value == null) {
+        if (value === "" || value == null) { // === is essential because 0 == "" (0 converted to string evidentely is '' in javascript)
             return false;
         }
     } else {
-        if (value == "" || value == null) {
+        if (value === "" || value == null) {
             return true;
         }
     }
@@ -724,6 +724,7 @@ MMBaseValidator.prototype.valid = function(el) {
     if (! this.minMaxValid(el)) return false;
     if (! this.patternValid(el)) return false; // not perfect yet
     // @todo of course we can go a bit further here.
+
 
     // datetime validation is still broken. (those can have more fields and so on)
 
@@ -909,7 +910,7 @@ MMBaseValidator.prototype.validatePage = function(server) {
         var entry = els[i];
         this.validateElement(entry, server);
     }
-    return this.invalidElements == 0;
+    return this.invalidElements === 0;
 }
 
 MMBaseValidator.prototype.removeValidation = function(el) {
@@ -982,7 +983,7 @@ MMBaseValidator.prototype.addValidationForElements = function(els) {
         var valid = this.valid(entry);
         entry.prevValid = valid;
         this.elements.push(entry);
-        this.setClassName(this.valid(entry), entry);
+        this.setClassName(valid, entry);
         if (!valid) {
             this.invalidElements++;
         }
@@ -991,7 +992,7 @@ MMBaseValidator.prototype.addValidationForElements = function(els) {
         }
 
     }
-    if (els.length == 0) {
+    if (els.length === 0) {
         if (this.validateHook) {
             this.validateHook(this.invalidElements == 0);
         }
