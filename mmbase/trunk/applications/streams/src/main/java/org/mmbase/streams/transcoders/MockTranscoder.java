@@ -32,6 +32,7 @@ public class MockTranscoder extends AbstractTranscoder {
     protected String setting = "";
     protected int x = 100;
     protected int y = 100;
+    protected int delay = 0;
 
     private final Map<String, Object> props = new HashMap<String, Object>();
 
@@ -55,15 +56,20 @@ public class MockTranscoder extends AbstractTranscoder {
     public void setHeight(int y) {
         this.y = y;
     }
+    public void setDelay(int d) {
+        this.delay = d;
+    }
 
     protected void transcode(final Logger log) throws Exception {
         log.info("Copying " + in + " to " + out);
         File outFile = new File(out.getPath());
         outFile.getParentFile().mkdirs();
+        if (delay > 0) {
+            Thread.sleep(1000 * delay);
+        }
         if (empty ) {
             org.mmbase.util.IOUtil.copy(new ByteArrayInputStream(new byte[] { 0, 1 }), // nearly empty. If completely empty it would be considered failed
                                         new FileOutputStream(new File(out.getPath())));
-
         } else {
             org.mmbase.util.IOUtil.copy(new FileInputStream(new File(in.getPath())),
                                         new FileOutputStream(new File(out.getPath())));
