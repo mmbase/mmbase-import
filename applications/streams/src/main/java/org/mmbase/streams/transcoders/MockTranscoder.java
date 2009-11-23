@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @version $Id: InfiniteTranscoder.java 36518 2009-07-02 12:52:01Z michiel $
  */
-@Settings({"format", "setting"})
+@Settings({"format", "setting", "x", "y"})
 public class MockTranscoder extends AbstractTranscoder {
     private static final Logger LOG = Logging.getLoggerInstance(MockTranscoder.class);
     private int seq = 0;
