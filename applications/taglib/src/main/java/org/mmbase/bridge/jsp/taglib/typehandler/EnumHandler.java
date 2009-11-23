@@ -115,14 +115,16 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     }
 
 
-    @Override protected EnumHandler getEnumHandler(Node node, Field field) throws JspTagException {
+    @Override
+    protected EnumHandler getEnumHandler(Node node, Field field) throws JspTagException {
         return null;
     }
     public boolean isAvailable() {
         return available;
     }
 
-    @Override protected Object cast(Object value, Node node, Field field) {
+    @Override
+    protected Object cast(Object value, Node node, Field field) {
         if ("".equals(value)) return null;
         return field.getDataType().cast(value, node, field);
     }
@@ -162,7 +164,8 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     }
 
 
-    @Override public String htmlInput(final Node node, final Field field, final boolean search) throws JspTagException {
+    @Override
+    public String htmlInput(final Node node, final Field field, final boolean search) throws JspTagException {
         StringBuilder buffer = new StringBuilder();
         String fieldName = field.getName();
         buffer.append("<select class=\"" + getClasses(node, field) + "\" name=\"").append(prefix(fieldName)).append("\" ");
