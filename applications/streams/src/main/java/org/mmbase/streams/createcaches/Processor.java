@@ -35,9 +35,7 @@ import org.w3c.dom.*;
  * This commit-processor is used on nodes of type 'streamsources' and is used to initiate the
  * conversions to other formats which are saved in 'streamsourcescaches'. Its analogy is derived
  * from the conversion of 'images' in MMBase to their resulting 'icaches' nodes.
- * Several transcodings of media files can be configured with recognizers and transcoders. The
- * recognizer with id 'recognizer' can be configured before the transcodings start to look
- * if the sources contain the correct type (video, audio or image).
+ * Several transcodings of media files can be configured with recognizers and transcoders.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -258,7 +256,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
     public static Job getJob(Node node) {
         return runningJobs.get(node.getNumber());
     }
-    
+
     protected static boolean removeJob(Node node) {
         Job job = runningJobs.get(node.getNumber());
         boolean done = job.future.isDone();
@@ -315,9 +313,9 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
                 LOG.warn("This job is already running, node #" + node);
                 return null;
             }
+            assert node > 0;
             final Job thisJob = new Job(this, ntCloud, logger);
             runningJobs.put(node, thisJob);
-
             thisJob.submit(ntCloud, node, logger);
 
             return thisJob;
@@ -349,7 +347,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
                         }
                     }
                     @Override
-                        public String toString() {
+                    public String toString() {
                         return "Job canceled for " + node;
                     }
                 });

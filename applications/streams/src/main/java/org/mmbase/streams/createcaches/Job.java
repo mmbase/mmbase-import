@@ -31,9 +31,10 @@ import org.mmbase.util.logging.*;
 
 /**
  * A Job is associated with a 'source' node, and describes what is currently happening to create
- * 'caches' nodes for it. Such a Job object is created everytime somebody create a new source
+ * 'caches' nodes for it. Such a Job object is created everytime somebody creates a new source
  * object, or explicitly triggers the associated 'cache' objects to be (re)created.
- *
+
+ * @version $Id$
  */
 public class Job implements Iterable<Result> {
     private static final Logger LOG = Logging.getLoggerInstance(Job.class);
@@ -419,7 +420,7 @@ public class Job implements Iterable<Result> {
         LOG.info("Comparing for " + getStage() + ">=" + s);
         return getStage().ordinal() >= s.ordinal();
     }
-    
+
     synchronized public void ready() {
         if (isInterrupted()) {
             ready = true;
@@ -432,7 +433,7 @@ public class Job implements Iterable<Result> {
         } else {
             LOG.warn("This job has not completed yet.");
         }
-        ready = true;   // BUG: ?! not correct
+        ready = true;
     }
 
     public synchronized void waitUntil(Stage stage)
