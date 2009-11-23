@@ -94,6 +94,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
         List<Parameter> defList = new ArrayList(Arrays.asList(def));
         if (! defList.contains(Parameter.NODE)) defList.add(Parameter.NODE);
         if (! defList.contains(Parameter.CLOUD)) defList.add(Parameter.CLOUD);
+        if (! defList.contains(Parameter.CORENODE)) defList.add(Parameter.CORENODE); // I bit silly, but added for backwards compatibility
         return defList.toArray(Parameter.emptyArray());
     }
 
