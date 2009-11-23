@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import java.util.*;
+import java.util.regex.*;
 
 import org.mmbase.util.*;
 import org.mmbase.framework.*;
@@ -38,6 +39,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
     private static final Logger log           = Logging.getLoggerInstance(UrlTag.class);
 
     private static Boolean makeRelative       = null;
+    private static Pattern excludeForEncoding = null;
     protected Attribute  referids             = Attribute.NULL;
     protected Map<String, Object> extraParameters      = null;
     protected Map<String, Object> frameworkParameters  = null;
@@ -105,7 +107,19 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
      * @since MMBase-1.9
      */
     protected boolean encode() throws JspTagException {
-        return encode.getBoolean(this, true);
+        if (excludeForEncoding == null) {
+            String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.excludeForEncoding");
+            if (setting == null) {
+                setting = "([.]ico$[.]jpg$|[.]gif$|[.]png$|[.]css$|[.]js$)";
+                log.info("No setting 'mmbase.taglib.url.excludeForEncoding' found in web.xml. Taking it '" + setting + "'");
+            }
+            excludeForEncoding = Pattern.compile(setting);
+        }
+        boolean defaultEncode = true;
+        if (excludeForEncoding.matcher(getPage()).matches()) {
+            defaultEncode = false;
+        }
+        return encode.getBoolean(this, defaultEncode);
     }
     /**
      * @since MMBase-1.9
