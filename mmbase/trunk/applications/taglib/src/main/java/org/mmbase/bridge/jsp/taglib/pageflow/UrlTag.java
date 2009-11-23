@@ -110,7 +110,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
         if (excludeForEncoding == null) {
             String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.excludeForEncoding");
             if (setting == null) {
-                setting = "([.]ico$[.]jpg$|[.]gif$|[.]png$|[.]css$|[.]js$)";
+                setting = ".*\\.(ico|jpg|gif|png|css|js)";
                 log.info("No setting 'mmbase.taglib.url.excludeForEncoding' found in web.xml. Taking it '" + setting + "'");
             }
             excludeForEncoding = Pattern.compile(setting);
@@ -119,6 +119,10 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
         if (excludeForEncoding.matcher(getPage()).matches()) {
             defaultEncode = false;
         }
+        if (log.isDebugEnabled()) {
+            log.debug("Default encode for " + getPage() + " " + defaultEncode + " so " + encode.getBoolean(this, defaultEncode));
+        }
+
         return encode.getBoolean(this, defaultEncode);
     }
     /**
