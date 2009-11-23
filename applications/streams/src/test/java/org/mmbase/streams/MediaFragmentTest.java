@@ -8,6 +8,7 @@ import static org.junit.Assume.*;
 import java.util.*;
 import java.io.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.*;
 import org.mmbase.datatypes.DataType;
 import static org.mmbase.datatypes.Constants.*;
 import org.mmbase.datatypes.processors.*;
@@ -63,13 +64,13 @@ public class MediaFragmentTest {
             //remoteCloud.setProperty(BinaryCommitProcessor.NOT, "no implicit processesing please");
             //remoteCloud.setProperty(org.mmbase.applications.media.FragmentTypeFixer.NOT, "no implicit processesing please");
         }
+        assumeNotNull(remoteCloud);
         return remoteCloud;
     }
 
 
     Node newNode() {
         Cloud cloud = getCloud();
-        assumeNotNull(cloud);
         return newNode(cloud);
     }
 
@@ -89,6 +90,7 @@ public class MediaFragmentTest {
 
     @Test
     public void commitGetSetCommit() {
+        int fragmentsBefore = Queries.count(getCloud().getNodeManager("mediafragments").createQuery());
         Node newSource = newNode();
         newSource.commit();
         assertTrue(newSource.getNumber() > 0);
@@ -98,10 +100,22 @@ public class MediaFragmentTest {
 
         assertEquals("test test", newSource.getStringValue("title"));
         assertNotNull(newSource.getNodeValue("mediafragment"));
+        assertEquals(fragmentsBefore + 1, Queries.count(getCloud().getNodeManager("mediafragments").createQuery()));
+
+        newSource.setNodeManager(newSource.getCloud().getNodeManager("videostreamsources"));
+        newSource.commit();
+
+        assertEquals("test test", newSource.getStringValue("title"));
+        assertNotNull(newSource.getNodeValue("mediafragment"));
+        assertEquals("videofragments", newSource.getNodeValue("mediafragment").getNodeManager().getName()); // FAILS!
+
+        assertEquals(fragmentsBefore + 1, Queries.count(getCloud().getNodeManager("mediafragments").createQuery()));
+
     }
 
 
 
+    // making relations to non-existing nodes is failing
     //@Test
     public void commitSetCommitInTranaction() {
         Transaction t = getTransaction();
@@ -113,11 +127,14 @@ public class MediaFragmentTest {
 
     }
 
+    // making relations to non-existing nodes is failing
     //@Test
     public void commitSetCommit() {
+        int fragmentsBefore = Queries.count(getCloud().getNodeManager("mediafragments").createQuery());
         Node newSource = newNode();
         newSource.setStringValue("title", "test test");
         newSource.commit();
+        assertEquals(fragmentsBefore + 1, Queries.count(getCloud().getNodeManager("mediafragments").createQuery()));
         assertEquals("test test", newSource.getStringValue("title"));
 
     }
