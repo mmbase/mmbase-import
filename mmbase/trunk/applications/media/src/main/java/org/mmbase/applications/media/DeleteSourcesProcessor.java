@@ -48,18 +48,7 @@ public class DeleteSourcesProcessor implements CommitProcessor {
                 } else {
                     LOG.warn("May not delete " + src);
                 }
-            }
-            
-            NodeList images = SearchUtil.findRelatedNodeList(node, "images", "related");
-            LOG.info("Deleting " + images.size() + " sources");
-            for (Node img : images) {
-                if (img.mayDelete()) {
-                    img.delete(true);
-                } else {
-                    LOG.warn("May not delete " + img);
-                }
-            }
-            
+            }            
         }
     }
 
