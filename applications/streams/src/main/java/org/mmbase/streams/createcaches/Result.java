@@ -60,7 +60,6 @@ public abstract class Result {
      */
     public void ready() {
         ready = true;
-
     }
     public boolean isReady() {
         return ready;

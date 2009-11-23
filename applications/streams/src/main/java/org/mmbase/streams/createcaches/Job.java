@@ -49,6 +49,7 @@ public class Job implements Iterable<Result> {
     private final List<Result>        results = new ArrayList<Result>();
     private final long number = lastJobNumber++;
     private int busy = 0;
+    private int skipped = 0;
 
     Future<Integer> future;
 
@@ -120,6 +121,7 @@ public class Job implements Iterable<Result> {
                 if (! jd.getMimeType().matches(new MimeType(inNode.getStringValue("mimetype")))) {
                     LOG.info("SKIPPING " + jd);
                     results.set(i, new SkippedResult(jd, inURI));
+                    skipped++;
                     continue;
                 } else {
                     LOG.info("NOT SKIPPING " + jd);
@@ -417,9 +419,20 @@ public class Job implements Iterable<Result> {
         LOG.info("Comparing for " + getStage() + ">=" + s);
         return getStage().ordinal() >= s.ordinal();
     }
+    
     synchronized public void ready() {
-        ready = true;
+        if (isInterrupted()) {
+            ready = true;
+        }
         notifyAll();
+
+        if (future.isDone()) {
+            processor.runningJobs.remove(getNode().getNumber());
+            ready = true;
+        } else {
+            LOG.warn("This job has not completed yet.");
+        }
+        ready = true;   // BUG: ?! not correct
     }
 
     public synchronized void waitUntil(Stage stage)
@@ -444,7 +457,8 @@ public class Job implements Iterable<Result> {
     }
 
     public String getProgress() {
-        return "" + busy + "/" + results.size();
+        int done = busy + skipped;
+        return "" + done + "/" + results.size();
     }
     public int getBusy() {
         return busy;
