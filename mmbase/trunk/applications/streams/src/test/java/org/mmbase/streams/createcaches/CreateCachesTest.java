@@ -8,6 +8,7 @@ import static org.junit.Assume.*;
 import java.util.*;
 import java.io.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.datatypes.DataType;
 import static org.mmbase.datatypes.Constants.*;
 import org.mmbase.datatypes.processors.*;
@@ -100,6 +101,7 @@ public class CreateCachesTest {
             //remoteCloud.setProperty(BinaryCommitProcessor.NOT, "no implicit processesing please");
             //remoteCloud.setProperty(org.mmbase.applications.media.FragmentTypeFixer.NOT, "no implicit processesing please");
         }
+        assumeNotNull(remoteCloud);
         return remoteCloud;
     }
 
@@ -162,7 +164,6 @@ public class CreateCachesTest {
     }
 
     Node refresh(Node source) throws InterruptedException {
-        //Thread.sleep(100);
         return source.getCloud().getNode(source.getNumber());
 
     }
@@ -213,14 +214,17 @@ public class CreateCachesTest {
 
     @Test
     public  void simple() throws Exception {
+        int fragmentsBefore = Queries.count(getCloud().getNodeManager("mediafragments").createQuery());
         Processor proc = get("dummycreatecaches_1.xml");
         Node source = getNode(proc.getDirectory());
+        assertEquals(fragmentsBefore + 1, Queries.count(getCloud().getNodeManager("mediafragments").createQuery()));
         Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
         job.waitUntil(Stage.READY);
         assertTrue(source.getCloud().hasNode(source.getNumber()));
         source = refresh(source);
         checkSource(source, 2);
+        assertEquals(fragmentsBefore + 1, Queries.count(getCloud().getNodeManager("mediafragments").createQuery()));
     }
 
 
