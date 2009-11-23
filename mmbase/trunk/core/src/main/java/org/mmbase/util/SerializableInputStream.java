@@ -71,11 +71,17 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     /**
      * @since MMBase-1.9.2
      */
-    public SerializableInputStream(File tempFile) throws IOException {
+    public SerializableInputStream(File tempFile, String name) throws IOException {
         this.file  = tempFile;
         this.wrapped = new FileInputStream(tempFile);
         this.size = tempFile.length();
-        this.name = tempFile.getName();
+        this.name = name;
+    }
+    /**
+     * @since MMBase-1.9.2
+     */
+    public SerializableInputStream(File tempFile) throws IOException {
+        this(tempFile, tempFile.getName());
     }
 
     public SerializableInputStream(byte[] array) {
@@ -439,6 +445,17 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     }
     File getFile() {
         return file;
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public String getFileName() {
+        if (file != null) {
+            return file.getName();
+        } else {
+            return name;
+        }
     }
 
 }
