@@ -915,6 +915,7 @@ abstract public class Queries {
             // all fields are present of the node-step, so, we could use the number field simply.
             resultName = "number";
             NodeQuery nq = (NodeQuery) query;
+            //resultName = nq.getFields().get(0).getFieldName();
             count.addAggregatedField(nq.getNodeStep(), nq.getNodeManager().getField(resultName), type);
         } else {
             List<StepField> fields = query.getFields();
@@ -1026,7 +1027,9 @@ abstract public class Queries {
      * @return A new NodeQuery object
      */
     public static NodeQuery createNodeQuery(Node node) {
-        NodeManager nm = node.getNodeManager();
+        //NodeManager nm = node.getNodeManager();
+        NodeManager nm = node.getCloud().getNodeManager("object"); // This will always work, even if the nodemanager was changed (and not yet committed)
+
         NodeQuery query = node.getCloud().createNodeQuery(); // use the version which can accept more steps
         Step step       = query.addStep(nm);
         query.setNodeStep(step);
