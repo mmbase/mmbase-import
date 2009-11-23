@@ -107,9 +107,10 @@ public class MediaFragmentTest {
 
         assertEquals("test test", newSource.getStringValue("title"));
         assertNotNull(newSource.getNodeValue("mediafragment"));
-        assertEquals("videofragments", newSource.getNodeValue("mediafragment").getNodeManager().getName()); // FAILS!
 
         assertEquals(fragmentsBefore + 1, Queries.count(getCloud().getNodeManager("mediafragments").createQuery()));
+        assertEquals("videofragments", newSource.getNodeValue("mediafragment").getNodeManager().getName()); // FAILS!
+
 
     }
 
