@@ -28,6 +28,7 @@ import org.mmbase.util.logging.*;
  * This boils down to iterating the {@link Job}.
  *
  * @author Michiel Meeuwissen
+ * @version $Id$
  */
 class JobCallable implements Callable<Integer> {
     private static final Logger LOG = Logging.getLoggerInstance(JobCallable.class);
