@@ -349,15 +349,16 @@
   </table>
   <mm:import id="fb">foo</mm:import>
   <mm:import id="fd">bar</mm:import>
-  <mm:context>
-    <h2>(f) lists in context</h2>
-    <dl>
-      <dt>a</dt><dd>Repeatedly set in a list (${list}) in a context</dd>
-      <dt>b</dt><dd>Repeatedly set in a list (${list}) in a context, set outside context too</dd>
-      <dt>c</dt><dd>Repeatedly set in a nested list (${list} X ${list}) in a context</dd>
-      <dt>d</dt><dd>Repeatedly set in a nested list (${list} X ${list}) in a context, set outside context too</dd>
-    </dl>
-    <table>
+
+  <h2>(f) lists in context</h2>
+  <dl>
+    <dt>a</dt><dd>Repeatedly set in a list (${list}) in a context</dd>
+    <dt>b</dt><dd>Repeatedly set in a list (${list}) in a context, set outside context too</dd>
+    <dt>c</dt><dd>Repeatedly set in a nested list (${list} X ${list}) in a context</dd>
+    <dt>d</dt><dd>Repeatedly set in a nested list (${list} X ${list}) in a context, set outside context too</dd>
+  </dl>
+  <table>
+    <mm:context>
       <tr><th class="id">id</th><th>is</th><th>should be</th><th>remarks</th></tr>
       <mm:stringlist referid="list" id="l1">
         <tr>
@@ -389,8 +390,21 @@
           </tr>
         </mm:stringlist>
       </mm:stringlist>
-    </table>
-  </mm:context>
+    </mm:context>
+    <tr>
+      <td>f.</td>
+      <td>
+        <c:catch var="e">
+          <mm:write referid="fb" />,<mm:write referid="fd" />
+        </c:catch>
+        <jsp:text>${empty e ? "" : "an exception"}</jsp:text>
+      </td>
+      <td>foo,bar</td>
+      <td>${e}</td>
+    </tr>
+  </table>
+
+
   <hr />
   <mm:escape escape="links">$URL$</mm:escape>
 
