@@ -490,7 +490,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
                         @Override
                         public String getFunctionValue(Node node, Parameters a) {
-                            log.info("DAMN " + node + " " + a);
                             // verify if the object is stored externally (in which case
                             // its url has been filled in)
                             // if so, return the url of the external source
