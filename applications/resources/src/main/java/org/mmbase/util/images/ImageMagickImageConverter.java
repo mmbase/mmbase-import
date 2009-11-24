@@ -540,7 +540,9 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                     cmds.add(type);
                 }
                 cmds.add(cmd);
-
+                if (type.equals("crop")) {
+                  cmds.add("+repage");
+                }
             } else {
                 key = Imaging.getAlias(key);
                 if (key.equals("lowcontrast")) {
