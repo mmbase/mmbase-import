@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * A Job is associated with a 'source' node, and describes what is currently happening to create
  * 'caches' nodes for it. Such a Job object is created everytime somebody creates a new source
  * object, or explicitly triggers the associated 'cache' objects to be (re)created.
-
+ *
  * @version $Id$
  */
 public class Job implements Iterable<Result> {
