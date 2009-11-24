@@ -111,6 +111,7 @@ class JobCallable implements Callable<Integer> {
                     LOG.info("Found " + current);
                     if (current.isReady()) {
                         thisJob.ready();
+                        Processor.runningJobs.remove(thisJob.getNode().getNumber());
                         LOG.info("1: returning resultCount: " + resultCount);
                         return resultCount;
                     }
