@@ -84,6 +84,7 @@ public  class StringListTagTest {
 
     }
 
+
     @Test
     public void nested() throws Exception  {
         final PageContext pageContext = new MockPageContext();
@@ -135,6 +136,49 @@ public  class StringListTagTest {
         tag1.release();
         context.release();
 
+    }
+
+    @Test
+    public void inContext() throws Exception {
+        final PageContext pageContext = new MockPageContext();
+        ContextTag parent = new ContextTag();
+        parent.setPageContext(pageContext);
+        parent.doStartTag();
+        parent.setId("PARENT2");
+        Import.tag(pageContext, parent, "list", "A,B,C", "list");
+
+        Import.tag(pageContext, parent, "foo", "bar");
+
+        ContextTag context = new ContextTag();
+        context.setPageContext(pageContext);
+        parent.setId("CONTEXT2");
+        context.setParent(parent);
+        context.doStartTag();
+
+        StringListTag tag1 = new StringListTag();
+        tag1.setPageContext(pageContext);
+        tag1.setParent(context);
+        tag1.setId("tag1");
+        tag1.setReferid("list");
+
+
+        tag1.doStartTag();
+
+
+        tag1.doInitBody();
+        for (int i = 0; i < 3; i++) {
+            Import.tag(pageContext, tag1, "foo", "AAA" + i);
+            tag1.doAfterBody();
+        }
+        tag1.doEndTag();
+        context.doEndTag();
+
+        assertEquals("bar" ,  pageContext.getAttribute("foo"));
+        assertEquals("bar" ,  parent.getObject("foo"));
+
+        tag1.release();
+        context.release();
+        parent.release();
 
     }
 
