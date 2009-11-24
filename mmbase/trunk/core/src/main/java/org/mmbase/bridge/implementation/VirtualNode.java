@@ -68,7 +68,7 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
      * e.g. RMMCI, but I didn't feel like reimplementating Node completely..
      * See {@link org.mmbase.bridge.util.MapNode}, which <em>is</em> a complete reimplementation (with no core dependencies).
      */
-    public VirtualNode(Map<String, Object> values, Cloud cloud) {
+    public VirtualNode(Map<String, ?> values, Cloud cloud) {
         this(getVirtualNode(values), cloud);
     }
 
@@ -77,10 +77,10 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         return "BridgeVirtualNode " + noderef;
     }
 
-    protected static org.mmbase.module.core.VirtualNode getVirtualNode(Map<String, Object> values) {
+    protected static org.mmbase.module.core.VirtualNode getVirtualNode(Map<String, ?> values) {
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         org.mmbase.module.core.VirtualNode node = new  org.mmbase.module.core.VirtualNode(builder);
-        for (Map.Entry<String, Object> entry : values.entrySet()) {
+        for (Map.Entry<String, ?> entry : values.entrySet()) {
             String name = entry.getKey();
             Object value = entry.getValue();
             node.storeValue(name, value);
@@ -178,6 +178,7 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
             if (log.isDebugEnabled()) {
                 log.debug("" + fieldName + " --> " + Arrays.asList(parts));
             }
+            log.debug("" + fieldName + " --> " + Arrays.asList(parts), new Exception());
             MMObjectNode mmobjectNode = getNode().getNodeValue(parts[0] + ".number");
             if (mmobjectNode != null) {
                 try {
