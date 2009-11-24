@@ -28,32 +28,31 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * This render caches other renderers. If you need caching for a certain block, then you define
+ * This renderer caches other renderers. If you need caching for a certain block, then you define
  * another block with this class CachedRenderer, and refer the to-be-cached block. Like so:
- <pre><![CDATA[
-  <block name="statistics_uncached"
-         mimetype="text/html">
-    <body>
-       <class name="org.mmbase.framework.ResourceRenderer">
-         <param name="resource">documentation/mmstatistics.xml</param>
-         <param name="type">config</param>
-         <param name="xslt">xslt/docbook2block.xslt</param>
-      </class>
-    </body>
-  </block>
+ <pre>
+  &lt;block name="statistics_uncached"
+         mimetype="text/html"&gt;
+    &lt;body&gt;
+       &lt;class name="org.mmbase.framework.ResourceRenderer"&gt;
+         &lt;param name="resource"&gt;documentation/mmstatistics.xml&lt;/param&gt;
+         &lt;param name="type"&gt;config&lt;/param&gt;
+         &lt;param name="xslt"&gt;xslt/docbook2block.xslt&lt;/param&gt;
+      &lt;/class&gt;
+    &lt;/body&gt;
+  &lt;/block&gt;
 
-  <block name="statistics"
+  &lt;block name="statistics"
          classification="mmbase.documentation"
-         mimetype="text/html">
-    <body>
-      <class name="org.mmbase.framework.CachedRenderer">
-        <param name="wrapsBlock">statistics_uncached</param>
-        <param name="includeRenderTime">xml-comments</param>
-      </class>
-    </body>
-  </block>
-]]></pre>
- *
+         mimetype="text/html"&gt;
+    &lt;body&gt;
+      &lt;class name="org.mmbase.framework.CachedRenderer"&gt;
+        &lt;param name="wrapsBlock"&gt;statistics_uncached&lt;/param&gt;
+        &lt;param name="includeRenderTime"&gt;xml-comments&lt;/param&gt;
+      &lt;/class&gt;
+    &lt;/body&gt;
+  &lt;/block&gt;
+</pre> *
  * @author Michiel Meeuwissen
  * @version $Id$
  * @since MMBase-1.9.1
