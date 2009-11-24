@@ -54,15 +54,15 @@ public  class CollectorBacking extends BasicBacking {
         assert parent != null;
         if (reset || myKeys.contains(key)) {
             parent.reregister(key, value);
-            myKeys.add(key);
         } else {
             if (! parent.containsKey(key)) {
-                myKeys.add(key);
                 parent.register(key, value);
             } else {
                 parent.register(key, value);
             }
         }
+        myKeys.add(key);
+
         boolean r = reset || myKeys.contains(key);
         return super.put(key, value, r);
     }
