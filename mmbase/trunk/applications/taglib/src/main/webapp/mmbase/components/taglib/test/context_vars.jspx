@@ -362,7 +362,7 @@
       <tr><th class="id">id</th><th>is</th><th>should be</th><th>remarks</th></tr>
       <mm:stringlist referid="list" id="l1">
         <tr>
-          <td>f <mm:index /></td>
+          <td>f ab <mm:index /></td>
           <td>
             <c:catch var="e">
               <mm:import id="fa"><mm:index /></mm:import>
@@ -376,7 +376,7 @@
         </tr>
         <mm:stringlist referid="list" id="l2">
           <tr>
-            <td>f <mm:index list="l1" /><jsp:text> </jsp:text><mm:index list="l2" /></td>
+            <td>f cd <mm:index list="l1" /><jsp:text> </jsp:text><mm:index list="l2" /></td>
             <td>
               <c:catch var="e">
                 <mm:import id="fc"><mm:index /></mm:import>
@@ -392,7 +392,7 @@
       </mm:stringlist>
     </mm:context>
     <tr>
-      <td>f.</td>
+      <td>f bd</td>
       <td>
         <c:catch var="e">
           <mm:write referid="fb" />,<mm:write referid="fd" />
