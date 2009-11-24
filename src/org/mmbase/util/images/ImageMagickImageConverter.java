@@ -433,7 +433,6 @@ public class ImageMagickImageConverter implements ImageConverter {
                         type = "crop";
                         cmd = (x2 - x1) + "x" + (y2 - y1) + "+" + x1 + "+" + y1;
                     } catch (Exception e) {
-
                         log.error(e.toString());
                     }
                 } else if (type.equals("roll")) {
@@ -466,6 +465,9 @@ public class ImageMagickImageConverter implements ImageConverter {
                     cmds.add(type);
                 }
                 cmds.add(cmd);
+                if (type.equals("crop")) {
+                  cmds.add("+repage");
+                }
 
             } else {
                 key = Imaging.getAlias(key);
