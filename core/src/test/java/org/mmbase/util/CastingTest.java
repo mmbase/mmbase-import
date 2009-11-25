@@ -91,6 +91,7 @@ public class CastingTest  {
     @Test
     public void testString() {
         assertEquals("foo", Casting.toString(new String[] {"foo"}));
+        assertEquals("foo", Casting.toString(new Object[] {"foo"}));
         assertEquals("1", Casting.toString(1));
         assertEquals("1", Casting.toString(new Integer(1)));
 
@@ -103,11 +104,14 @@ public class CastingTest  {
         assertEquals("1", Casting.toString(list));
 
         assertEquals("foo,bar", Casting.toString(new String[] {"foo", "bar"}));
+        assertEquals("foo,bar", Casting.toString(new Object[] {"foo", "bar"}));
         list.clear(); list.add("foo"); list.add("bar");
         assertEquals("foo,bar", Casting.toString(list));
 
 
         assertEquals("1", Casting.toString(new Date(1000)));
+
+        assertEquals("", Casting.toString(new String[0]));
 
 
 
