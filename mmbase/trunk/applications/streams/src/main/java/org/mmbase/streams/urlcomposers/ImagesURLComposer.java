@@ -10,17 +10,20 @@ See http://www.MMBase.org/license
 
 package org.mmbase.streams.urlcomposers;
 
+import java.util.*;
 
 import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.module.builders.*;
+
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.MimeType;
 import org.mmbase.applications.media.State;
-import org.mmbase.applications.media.urlcomposers.*;
-import org.mmbase.streams.builders.ImageSources;
-import org.mmbase.module.builders.*;
+import org.mmbase.applications.media.urlcomposers.FragmentURLComposer;
+
 import org.mmbase.util.images.*;
-import java.util.*;
+import org.mmbase.util.logging.*;
+
+import org.mmbase.streams.builders.ImageSources;
 
 
 /**
@@ -64,11 +67,8 @@ public class ImagesURLComposer extends FragmentURLComposer {
         }
         MMObjectNode icacheNode = imageCaches.getCachedNode(source.getNumber(), template);
         if (icacheNode == null) {
-            icacheNode = imageCaches.getNewNode("default");
-            String ckey = Factory.getCKey(source.getNumber(), template).toString();
-            icacheNode.setValue("ckey", ckey);
-            icacheNode.setValue("id", source);
-            icacheNode.insert("imagesurlcomposer");
+            Images images = (Images) MMBase.getMMBase().getBuilder("images");
+            icacheNode = images.getCachedNode(source, template);
         }
         return imageCaches.getImageFormat(icacheNode);
     }
