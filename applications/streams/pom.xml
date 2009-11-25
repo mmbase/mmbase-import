@@ -19,6 +19,16 @@
     Support for maintenance of media files in MMBase itself. Uploading, transcoding, and serving.
   </description>
 
+  <licenses>
+    <license>
+      <name>GNU General Public License</name>
+      <url>http://www.gnu.org/licenses/gpl.txt</url>
+      <distribution>repo</distribution>
+      <comments>
+        The GNU General Public License is a free, copyleft license for software and other kinds of works.
+      </comments>
+    </license>
+  </licenses>
 
   <dependencies>
     <dependency>
