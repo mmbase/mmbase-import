@@ -93,17 +93,17 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
                 return ThreadPools.newThread(r, "TranscoderThread-" + Stage.RECOGNIZER + "-" + (transSeq++));
             }
             }));
-        // fill the complete map, so we don't have to think about it any more later on.
+
+        // register them too
+        ThreadPools.getThreadPools().put(Processor.class.getName() + "." + Stage.TRANSCODER, threadPools.get(Stage.TRANSCODER));
+        ThreadPools.getThreadPools().put(Processor.class.getName() + "." + Stage.RECOGNIZER, threadPools.get(Stage.RECOGNIZER));
+
+
+        // fill the rest of the map too, so we don't have to think about it any more later on.
         for (Stage s : Stage.values()) {
-            if (s.ordinal() < Stage.TRANSCODER.ordinal()) {
-                threadPools.put(s, threadPools.get(Stage.RECOGNIZER));
+            if (!threadPools.containsKey(s)) {
+                threadPools.put(s, ThreadPools.jobsExecutor);
             }
-            if (s.ordinal() > Stage.RECOGNIZER.ordinal()) {
-                threadPools.put(s, threadPools.get(Stage.TRANSCODER));
-            }
-        }
-        for (Map.Entry<Stage, ThreadPoolExecutor> e : threadPools.entrySet()) {
-            ThreadPools.getThreadPools().put(Processor.class.getName() + "." + e.getKey().toString(), e.getValue());
         }
 
         for (int i = 0; i < 6; i++) {
