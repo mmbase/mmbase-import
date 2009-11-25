@@ -1429,7 +1429,13 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 if (dataType instanceof org.mmbase.datatypes.BinaryDataType) {
                     returnValue = node.isNull(field) ? "" : "" + node.getSize(field) + " byte";
                 } else {
-                    returnValue = dataType.getEnumerationValue(locale, pars.get(Parameter.CLOUD), pars.get(Parameter.NODE), fdef, node.getStringValue(field));
+                    try {
+                        returnValue = dataType.getEnumerationValue(locale, pars.get(Parameter.CLOUD), pars.get(Parameter.NODE), fdef, node.getStringValue(field));
+                    } catch (Exception e) {
+                        returnValue = node.getStringValue(field);
+                        log.warn("For " + fdef + " (" + returnValue + ") " + e.getMessage(), e);
+
+                    }
                 }
             } else {
                 returnValue = null;
