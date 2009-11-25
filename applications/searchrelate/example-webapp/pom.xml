@@ -14,7 +14,8 @@
   <name>MMBase Example Search and Relate webapp</name>
 
   <properties>
-    <base.version>${mmbase.version.number}-servlet25${mmbase.version.postfix}</base.version>
+    <my.postfix>${mmbase.version.postfix}</my.postfix>
+    <base.version>${mmbase.version.number}${my.postfix}</base.version>
     <saxon.version>9.1.0.6</saxon.version>
   </properties>
 
@@ -29,6 +30,12 @@
         <version>6.1.19</version>
         <configuration>
           <jettyEnvXml>${basedir}/jetty-env.xml</jettyEnvXml>
+          <systemProperties>
+            <systemProperty>
+              <name>com.sun.management.jmxremote</name>
+              <value></value>
+            </systemProperty>
+          </systemProperties>
           <scanTargets>
             <scanTarget>src/main/config</scanTarget>
           </scanTargets>
@@ -105,6 +112,21 @@
 
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>servlet25</id>
+      <activation>
+        <property>
+          <name>servlet.version</name>
+          <value>2.5</value>
+        </property>
+      </activation>
+      <properties>
+        <my.postfix>-${my.version}</my.postfix>
+        <base.version>${mmbase.version.number}-servlet25${mmbase.version.postfix}</base.version>
+      </properties>
+    </profile>
+  </profiles>
 
 </project>
 
