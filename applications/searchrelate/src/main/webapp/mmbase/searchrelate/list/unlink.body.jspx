@@ -8,9 +8,11 @@
     <mm:node referid="n" id="n" commitonclose="false" />
     <try>${parameters.source} -${parameters.role} - ${n}</try>
     <mm:node id="source" referid="parameters.source" commitonclose="false">
-      <mm:listrelationscontainer type="object"
-                                 role="${parameters.role}"
-                                 id="ul">
+      <mm:listrelationscontainer
+          type="object"
+          searchdir="${parameters.searchdirs}"
+          role="${parameters.role}"
+          id="ul">
         <mm:constraint field="object.number" value="${n}" />
         <mm:maxnumber value="1" />
         <mm:size>
