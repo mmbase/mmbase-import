@@ -215,6 +215,23 @@ public class ImageMagickImageConverter implements ImageConverter {
     }
 
     /**
+     *  Test whether the current version of ImageMagick is at least a certain version.
+     *  @param major minimum major version number
+     *  @param minor minimum minor version number within the major version
+     *  @param patch minimum patch version number within the minor version
+     *  @return <code>true</code> if the version is equal to or later than major.minor.patch
+     *  @since MMBase1.8.7 (ported from 1.9.2)
+     */
+    public boolean isMinimumVersion(int major, int minor, int patch) {
+        return (imVersionMajor > major) ||
+               ((imVersionMajor == major) && 
+                ((imVersionMinor > minor) || 
+                  ((imVersionMinor == minor) && (imVersionPatch >= patch))
+                )
+               ); 
+    }
+
+    /**
      * This functions converts an image by the given parameters
      * @param input an array of <code>byte</code> which represents the original image
      * @param sourceFormat original image format
@@ -356,22 +373,7 @@ public class ImageMagickImageConverter implements ImageConverter {
                 } else if (type.equals("text")) {
                     int firstcomma = cmd.indexOf(',');
                     int secondcomma = cmd.indexOf(',', firstcomma + 1);
-                    if (imVersionMajor < 6) {
-                        type = "draw";
-                        try {
-                            File tempFile = File.createTempFile("mmbase_image_text_", null);
-                            tempFile.deleteOnExit();
-                            Encode encoder = new Encode("ESCAPE_SINGLE_QUOTE");
-                            String text = cmd.substring(secondcomma + 1);
-                            FileOutputStream tempFileOutputStream = new FileOutputStream(tempFile);
-                            tempFileOutputStream.write(encoder.decode(text.substring(1, text.length() - 1)).getBytes("UTF-8"));
-                            tempFileOutputStream.close();
-                            cmd = "text " + cmd.substring(0, secondcomma) + " '@" + tempFile.getPath() + "'";
-                        } catch (IOException e) {
-                            log.error("Could not create temporary file for text: " + e.toString());
-                            cmd = "text " + cmd.substring(0, secondcomma) + " 'Could not create temporary file for text.'";
-                        }
-                    } else {
+                    if (isMinimumVersion(6,0,0)) {
                         cmds.add("-encoding");
                         cmds.add("unicode");
                         cmds.add("-annotate");
@@ -391,6 +393,21 @@ public class ImageMagickImageConverter implements ImageConverter {
                             cmd =  cmd.substring(0, secondcomma) + " 'Could not create temporary file for text.'";
                         }
                         continue;
+                    } else {
+                        type = "draw";
+                        try {
+                            File tempFile = File.createTempFile("mmbase_image_text_", null);
+                            tempFile.deleteOnExit();
+                            Encode encoder = new Encode("ESCAPE_SINGLE_QUOTE");
+                            String text = cmd.substring(secondcomma + 1);
+                            FileOutputStream tempFileOutputStream = new FileOutputStream(tempFile);
+                            tempFileOutputStream.write(encoder.decode(text.substring(1, text.length() - 1)).getBytes("UTF-8"));
+                            tempFileOutputStream.close();
+                            cmd = "text " + cmd.substring(0, secondcomma) + " '@" + tempFile.getPath() + "'";
+                        } catch (IOException e) {
+                            log.error("Could not create temporary file for text: " + e.toString());
+                            cmd = "text " + cmd.substring(0, secondcomma) + " 'Could not create temporary file for text.'";
+                        }
                     }
                 } else if (type.equals("draw")) {
                     //try {
@@ -465,7 +482,7 @@ public class ImageMagickImageConverter implements ImageConverter {
                     cmds.add(type);
                 }
                 cmds.add(cmd);
-                if (type.equals("crop")) {
+                if (type.equals("crop") && (isMinimumVersion(6,0,5))) {
                   cmds.add("+repage");
                 }
 
@@ -526,10 +543,6 @@ public class ImageMagickImageConverter implements ImageConverter {
         log.debug("Modulate cmd after calculation: " + modCmd);
         return modCmd;
     }
-
-
-
-
 
     /**
      * Does the actual conversion.
