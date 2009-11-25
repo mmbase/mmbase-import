@@ -23,7 +23,7 @@
     <license>
       <name>GNU General Public License</name>
       <url>http://www.gnu.org/licenses/gpl.txt</url>
-      <distribution>repo</distribution>
+      <distribution>manual</distribution>
       <comments>
         The GNU General Public License is a free, copyleft license for software and other kinds of works.
       </comments>
