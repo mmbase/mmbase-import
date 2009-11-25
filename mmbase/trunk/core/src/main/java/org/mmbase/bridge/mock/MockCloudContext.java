@@ -67,6 +67,7 @@ public class MockCloudContext extends  AbstractCloudContext {
             type = t;
             values = v;
         }
+        @Override
         public String toString() {
             return type + ":" + values;
         }
@@ -160,6 +161,13 @@ public class MockCloudContext extends  AbstractCloudContext {
         map.put("number", number);
         //System.out.println("produced " + number + " " + map);
         return number;
+    }
+
+    synchronized void setNodeType(int node, String type) {
+        NodeDescription nd = nodes.get(node);
+        if (!nd.type.equals(type)) {
+            nodes.put(node, new NodeDescription(type, nd.values));
+        }
     }
 
     public Cloud getCloud(String name, org.mmbase.security.UserContext user) throws NotFoundException {

@@ -49,6 +49,7 @@ public class MockNode extends MapNode  {
             values.put("number", number);
         }
         originalMap.putAll(values);
+        cloudContext.setNodeType(getNumber(), getNodeManager().getName());
     }
     @Override
     public Object getValueWithoutProcess(String fieldName) {
@@ -77,6 +78,8 @@ public class MockNode extends MapNode  {
         }
         return sl;
     }
+
+
 
     @Override
     public String toString() {
