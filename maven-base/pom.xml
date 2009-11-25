@@ -638,6 +638,7 @@ See http://www.MMBase.org/license
              <buildNumberPropertyName>sources.version</buildNumberPropertyName>
              <timestampPropertyName>timestamp</timestampPropertyName>
              <timestampFormat>{0,date,yyyy-MM-dd'T'HH:mm}</timestampFormat>
+             <revisionOnScmFailure>UNKNOWN</revisionOnScmFailure>
              <doCheck>${buildnumber.doCheck}</doCheck>
              <doUpdate>false</doUpdate>
            </configuration>
