@@ -128,7 +128,8 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    @Override public void init() {
+    @Override
+    public void init() {
         try {
             String dtmp = System.getProperty("mmbase.kiosk");
             if (dtmp != null && dtmp.equals("yes")) {
@@ -162,7 +163,8 @@ public class MMAdmin extends ProcessorModule {
      * @param command the LIST command for which to retrieve the builder
      * @param params contains the attributes for the list
      */
-    @Override public MMObjectBuilder getListBuilder(String command, Map<String, ?> params) {
+    @Override
+    public MMObjectBuilder getListBuilder(String command, Map<String, ?> params) {
         return new VirtualBuilder(mmb);
     }
 
@@ -296,7 +298,8 @@ public class MMAdmin extends ProcessorModule {
      * Execute the commands provided in the form values
      * @javadoc
      */
-    @Override public boolean process(PageInfo sp, Hashtable<String,Object> cmds, Hashtable<String,Object> vars) {
+    @Override
+    public boolean process(PageInfo sp, Hashtable<String,Object> cmds, Hashtable<String,Object> vars) {
         String cmdline, token;
         for (Enumeration<String> h = cmds.keys(); h.hasMoreElements();) {
             cmdline = h.nextElement();
@@ -426,7 +429,8 @@ public class MMAdmin extends ProcessorModule {
      * Handle a $MOD command
      * @javadoc
      */
-    @Override public String replace(PageInfo sp, String cmds) {
+    @Override
+    public String replace(PageInfo sp, String cmds) {
         if (!checkUserLoggedOn(sp, cmds, false)) return "";
         StringTokenizer tok = new StringTokenizer(cmds, "-\n\r");
         if (tok.hasMoreTokens()) {
