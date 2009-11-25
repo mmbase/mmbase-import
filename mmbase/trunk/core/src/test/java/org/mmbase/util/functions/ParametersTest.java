@@ -187,7 +187,7 @@ public class ParametersTest {
     @Test
     public void autoCast() {
 
-        Parameters params = new Parameters(B, G);
+        Parameters params = new Parameters(A, B, G);
         params.set(B, 5); // OK
         params.set(G, new java.math.BigDecimal(5));
         try {
@@ -249,6 +249,16 @@ public class ParametersTest {
 
         }
         params.set("g", new String[] {"1.1"});
+
+        params.set("a", new String[0]);
+        params.validate();
+        params.set("a", new String[] {"foo"});
+        params.validate();
+        params.set("a", new Object[] {"foo"});
+        params.validate();
+
+
+
 
     }
 
