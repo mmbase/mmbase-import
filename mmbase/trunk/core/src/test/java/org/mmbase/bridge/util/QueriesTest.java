@@ -120,6 +120,51 @@ public class QueriesTest  {
         assertEquals("" + node.getNumber(), Queries.getSortOrderFieldValue(node, so).toString());
     }
 
+    @Test
+    public void createNodeQuery() {
+        Cloud cloud = getCloudContext().getCloud("mmbase");
+        Node node = cloud.getNodeManager("news").createNode();
+        node.setStringValue("title", "foo");
+        node.commit();
+
+        NodeQuery q = Queries.createNodeQuery(node);
+        assertEquals(1, q.getSteps().size());
+        assertEquals("news", q.getSteps().get(0).getTableName());
+        assertEquals(1, q.getSteps().get(0).getNodes().size());
+        assertTrue(q.getSteps().get(0).getNodes().contains(node.getNumber()));
+    }
+
+    @Test
+    public void createNodeQueryAfterSetNodeManager() {
+        Cloud cloud = getCloudContext().getCloud("mmbase");
+        Node node = cloud.getNodeManager("news").createNode();
+        node.setStringValue("title", "foo");
+        node.commit();
+
+        node.setNodeManager(cloud.getNodeManager("mags"));
+        assertEquals("mags", node.getNodeManager().getName());
+        {
+            NodeQuery q = Queries.createNodeQuery(node);
+            assertEquals(1, q.getSteps().size());
+            assertEquals("news", q.getSteps().get(0).getTableName());
+            assertEquals(1, q.getSteps().get(0).getNodes().size());
+            assertTrue(q.getSteps().get(0).getNodes().contains(node.getNumber()));
+        }
+        node.commit();
+        assertEquals("mags", node.getNodeManager().getName());
+        assertEquals("mags", cloud.getNode(node.getNumber()).getNodeManager().getName());
+
+        {
+            NodeQuery q = Queries.createNodeQuery(node);
+            assertEquals(1, q.getSteps().size());
+            assertEquals("mags", q.getSteps().get(0).getTableName());
+            assertEquals(1, q.getSteps().get(0).getNodes().size());
+            assertTrue(q.getSteps().get(0).getNodes().contains(node.getNumber()));
+        }
+
+
+    }
+
     // ================================================================================
     // Tests below this assume an RMMCI connection
     // ================================================================================
