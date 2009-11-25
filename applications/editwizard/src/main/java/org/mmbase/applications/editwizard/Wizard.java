@@ -313,7 +313,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                 node = nodes.item(0);
             } else {
                 if (objectNumber == null || objectNumber.equals("")) {
-                    log.warn("Checking security for objectNumber '" + objectNumber + "'  "); // + Logging.stackTrace(5));
+                    log.debug("Checking security for objectNumber '" + objectNumber + "'  "); // + Logging.stackTrace(5));
                     // MM: This happened to me when using sub-wizards (mmexamples)
                     // And this code made it work at least, but still wondering why it came here in the first place.
                     return true;
