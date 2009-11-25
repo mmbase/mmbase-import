@@ -1405,10 +1405,10 @@
             </td>
             <td>
               <span title="{$tooltip_search}" onClick="doSearch(this,'{../command[@name='add-item']/@cmd}','{$sessionkey}');">
+                <xsl:attribute name="relationOriginNode"><xsl:value-of select="../@number" /></xsl:attribute>
                 <xsl:for-each select="@*">
                   <xsl:copy/>
                 </xsl:for-each>
-                <xsl:attribute name="relationOriginNode"><xsl:value-of select="../@number" /></xsl:attribute>
                 <xsl:choose>
                   <xsl:when test="../action[@type='add']/relation/@role">
                     <xsl:attribute name="relationRole"><xsl:value-of select="../action[@type='add']/relation/@role" /></xsl:attribute>
