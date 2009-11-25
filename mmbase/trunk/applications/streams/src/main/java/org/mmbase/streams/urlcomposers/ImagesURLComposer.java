@@ -12,7 +12,6 @@ package org.mmbase.streams.urlcomposers;
 
 
 import org.mmbase.module.core.*;
-import org.mmbase.servlet.MMBaseServlet;
 import org.mmbase.util.logging.*;
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.MimeType;
@@ -54,8 +53,8 @@ public class ImagesURLComposer extends FragmentURLComposer {
     }
 
     ImageSources getBuilder() {
-        ImageSources imageCaches = (ImageSources) MMBase.getMMBase().getBuilder("imagesources");
-        return imageCaches;
+        ImageSources builder = (ImageSources) MMBase.getMMBase().getBuilder("imagesources");
+        return builder;
     }
     
     private String getImagetype() {
@@ -64,6 +63,13 @@ public class ImagesURLComposer extends FragmentURLComposer {
             throw new UnsupportedOperationException("The 'icaches' builder is not availabe");
         }
         MMObjectNode icacheNode = imageCaches.getCachedNode(source.getNumber(), template);
+        if (icacheNode == null) {
+            icacheNode = imageCaches.getNewNode("default");
+            String ckey = Factory.getCKey(source.getNumber(), template).toString();
+            icacheNode.setValue("ckey", ckey);
+            icacheNode.setValue("id", source);
+            icacheNode.insert("imagesurlcomposer");
+        }
         return imageCaches.getImageFormat(icacheNode);
     }
     
