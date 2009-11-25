@@ -88,6 +88,30 @@ public class CastingTest  {
     public void testBinary() {
 
     }
+    @Test
+    public void testString() {
+        assertEquals("foo", Casting.toString(new String[] {"foo"}));
+        assertEquals("1", Casting.toString(1));
+        assertEquals("1", Casting.toString(new Integer(1)));
+
+        List<Object> list = new ArrayList<Object>();
+        list.add("foo");
+        assertEquals("foo", Casting.toString(list));
+        list.clear(); list.add(1);
+        assertEquals("1", Casting.toString(list));
+        list.clear(); list.add(new Integer(1));
+        assertEquals("1", Casting.toString(list));
+
+        assertEquals("foo,bar", Casting.toString(new String[] {"foo", "bar"}));
+        list.clear(); list.add("foo"); list.add("bar");
+        assertEquals("foo,bar", Casting.toString(list));
+
+
+        assertEquals("1", Casting.toString(new Date(1000)));
+
+
+
+    }
 
     @Test
     public void node() {
