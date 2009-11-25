@@ -541,7 +541,9 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 }
                 cmds.add(cmd);
                 if (type.equals("crop")) {
-                  cmds.add("+repage");
+                    if (imVersionMajor > 6 || (imVersionMajor == 6 && (imVersionMinor > 0 || imVersionPatch > 4))) {
+                        cmds.add("+repage");
+                    }
                 }
             } else {
                 key = Imaging.getAlias(key);
