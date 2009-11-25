@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="forarearel" maintainer="submarine.nl" version="0" extends="insrel">
+
+
+  <names>
+    <singular xml:lang="en">ForAreaRel</singular>
+    <plural xml:lang="en">ForAreaRel</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">Relation between a forum and areas within that forum, a place holder at the moment for future relation fields</description>
+   </descriptions>
+
+  <fieldlist />
+
+
+</builder>

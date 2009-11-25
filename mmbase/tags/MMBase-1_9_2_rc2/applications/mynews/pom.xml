@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-application-parent</artifactId>
+    <version>1.9-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>mmbase-mynews</artifactId>
+  <name>MMBase MyNews</name>
+  <packaging>war</packaging>
+  <version>${mmbase.version}</version>
+
+  <description>
+    The MyNews application is one of the oldest MMBase examples that still exists. It shows you a very simple
+    approach to a news site, where you can see a list of news articles and click on one to view detail information.
+    In its simplicity it is a good example to see how the basic MMBase taglib works.
+  </description>
+
+</project>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+  <description>
+    Application context definition for "wizard" DispatcherServlet.
+	This is a configuration for the 'new' action code.
+  </description>
+    <bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="interceptors">
+            <list>
+				<!--  <ref bean="unicodeInterceptor"/> -->
+                <ref bean="redactieAuthenticationInterceptor" />
+                <!--
+                <ref bean="cacheInterceptor" />
+                -->
+                </list>
+        </property>
+        <property name="mappings">
+            <props>
+                <prop key="/post">wizardController</prop>
+            </props>
+        </property>
+    </bean>
+	
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <map>
+                <entry key="org.mmbase.applications.vprowizards.spring.AuthenticationException" value="login" />
+            </map>
+        </property>
+        <!-- 
+        <property name="defaultErrorView" value="general-error" />
+         -->
+    </bean>
+	
+    <bean name="redactieAuthenticationInterceptor" class="org.mmbase.applications.vprowizards.spring.AuthenticationInterceptor">
+        <property name="loginPage">
+            <value>login</value>
+        </property>
+    </bean>
+	
+    <!--The error page that is configured here is called when some error occured during the processing
+    of one of the actions. It is not called when an exception is thrown.
+    -->
+    <bean id="referrerViewResolver" class="org.mmbase.applications.vprowizards.spring.ReferrerResolver">
+        <property name="errorPage">
+            <value>error</value>
+        </property>
+    </bean>
+	
+    <bean id="basicCommandFactory" class="org.mmbase.applications.vprowizards.spring.BasicCommandFactory">
+        <property name="actionClasses">
+            <list>
+                <value> org.mmbase.applications.vprowizards.spring.action.CreateNodeAction </value>
+                <value> org.mmbase.applications.vprowizards.spring.action.UpdateNodeAction </value>
+                <value> org.mmbase.applications.vprowizards.spring.action.DeleteNodeAction </value>
+                <value> org.mmbase.applications.vprowizards.spring.action.CreateRelationAction </value>
+                <value> org.mmbase.applications.vprowizards.spring.action.SortRelationAction </value>
+                <value> org.mmbase.applications.vprowizards.spring.action.ToggleRelationAction </value>
+            </list>
+        </property>
+    </bean>
+	
+    <bean class="org.mmbase.applications.vprowizards.spring.SessionReadingCloudFactory" id="cloudFactory" />
+	
+    <bean id="wizardController" class="org.mmbase.applications.vprowizards.spring.WizardController">
+        <property name="cloudFactory">
+            <ref local="cloudFactory" />
+        </property>
+        <property name="viewResolver">
+            <ref local="referrerViewResolver" />
+        </property>
+        <property name="commandFactory">
+            <ref local="basicCommandFactory" />
+        </property>
+        <!-- 
+        	You could set a locale here, which we don't. the default is 'nl'.
+        	The locale is used for the localized (error) messages 
+        -->
+    </bean>
+	
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass">
+            <value>org.springframework.web.servlet.view.JstlView</value>
+        </property>
+        <property name="prefix">
+            <value>/mmbase/vpro-wizards/system/</value>
+        </property>
+        <property name="suffix">
+          <value>.jsp</value>
+        </property>
+    </bean>
+	
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- one of the properties available; the maximum file size in bytes -->
+        <property name="maxUploadSize">
+            <value>5000000</value>
+        </property>
+    </bean>
+    
+    
+    <!-- 
+        Uncomment this section if you want to use the cache flush mechanism
+    
+    <bean id="tokenizerCacheNameResolverFactory" class="org.mmbase.applications.vprowizards.spring.util.ClassInstanceFactory">
+        <property name="className" value="org.mmbase.applications.vprowizards.spring.cache.TokenizerCacheNameResolver"/>
+    </bean>
+    
+    <bean id="osCacheWrapper"
+        class="org.mmbase.applications.vprowizards.spring.cache.OSCacheWrapper" />
+
+    <bean id="handlerInterceptor"
+        class="org.mmbase.applications.vprowizards.spring.cache.BasicCacheHandlerInterceptor">
+        <property name="cacheWrapper" ref="osCacheWrapper" />
+        <property name="cacheNameResolverFactory" ref="tokenizerCacheNameResolverFactory"/>
+        <property name="modifiers">
+            <list>
+                <bean class="org.mmbase.applications.vprowizards.spring.cache.modifiers.TemplateCleanerModifier"/>
+            </list>
+        </property>
+    </bean>
+     -->
+</beans>

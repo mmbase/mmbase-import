@@ -1,0 +1,145 @@
+<div
+    class="mm_c c_lucene b_search ${requestScope.componentClassName}"
+    id="${requestScope.componentId}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+
+  <!-- This is a completely generic tool to search in a lucene index -->
+  <mm:import externid="max">100</mm:import>
+  <mm:import externid="offset">0</mm:import>
+  <mm:import externid="sortfields" />
+  <mm:import externid="value" />
+  <mm:import externid="fields">fulltext</mm:import>
+  <mm:import externid="extraconstraints" />
+  <mm:import externid="filter" />
+  <mm:import externid="count" />
+  <mm:import externid="index" />
+  <mm:import externid="analyzer" />
+  <mm:url id="back" write="false" page="/mmbase/style/images/back.png" />
+
+  <h1>Searching ${index}</h1>
+  <p>
+    current time in seconds since 1970: <jsp:expression>System.currentTimeMillis() / 1000</jsp:expression>,
+    current time: <mm:time time="now" format="yyyyMMddHHmmss" />
+  </p>
+  <p>
+    <mm:link page="admin"><a href="${_}" class="navigate"><img src="${back}" alt="back" /></a></mm:link>
+  </p>
+
+  <form method="post">
+    <mm:write referid="value" escape="text/html/attribute">
+      <input name="value" value="${_}" />
+    </mm:write>
+    <mm:write referid="index" escape="text/html/attribute">
+      <input type="hidden" name="index" value="${_}" />
+    </mm:write>
+    <input type="submit" />
+    <mm:write referid="fields" escape="text/html/attribute">
+      <jsp:text>fields: </jsp:text><input name="fields" value="${_}" />
+    </mm:write>
+    <select name="analyzer">
+      <mm:option value="" compare="${analyzer}">Default analyzer</mm:option>
+      <mm:option value="org.apache.lucene.analysis.KeywordAnalyzer" compare="${analyzer}">Keyword analyzer</mm:option>
+      <mm:option value="org.apache.lucene.analysis.StopAnalyzer" compare="${analyzer}">StopAnalyzer</mm:option>
+      <mm:option value="org.apache.lucene.analysis.SimpleAnalyzer" compare="${analyzer}">SimpleAnalyzer</mm:option>
+      <mm:option value="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" compare="${analyzer}">Standard Cleaning Analyzer (dutch)</mm:option>
+      <mm:option value="org.mmbase.module.lucene.analysis.en.StandardCleaningAnalyzer" compare="${analyzer}">Standard Cleaning Analyzer (english)</mm:option>
+    </select>
+    <br />
+    <mm:write referid="extraconstraints" escape="text/html/attribute">
+      <jsp:text>contraints: </jsp:text><input name="extraconstraints" value="${_}" />
+    </mm:write>
+    <mm:write referid="filter" escape="text/html/attribute">
+      <jsp:text>filter: </jsp:text><input name="filter" value="${_}" />
+    </mm:write>
+    <br />
+    <jsp:text>max: </jsp:text><input name="max" value="${max}" />
+    <jsp:text>offset: </jsp:text><input name="offset" value="${offset}" />
+    <mm:write referid="sortfields" escape="text/html/attribute">
+      <jsp:text>sort: </jsp:text><input name="sortfields" value="${_}" />
+    </mm:write>
+    <jsp:text>count: </jsp:text>
+    <mm:compare referid="count" value="on">
+      <input type="checkbox" name="count" checked="checked" />
+    </mm:compare>
+    <mm:compare referid="count" value="on" inverse="true">
+      <input type="checkbox" name="count" />
+    </mm:compare>
+
+  </form>
+
+  <mm:present referid="value" >
+    <c:catch var="toomanyclauses">
+      <table>
+
+        <mm:nodelistfunction module="lucene" name="search" referids="value,index,max,offset,extraconstraints,sortfields,fields,analyzer,filter">
+          <mm:first>
+            <tr>
+              <th>RELEVANCE</th>
+              <th>type</th>
+              <mm:fieldlist type="list">
+                <th><mm:fieldinfo type="name" /></th>
+              </mm:fieldlist>
+              <th>
+                <jsp:text>Search on '${value}'</jsp:text><br />
+                <mm:size />
+                <jsp:text> hits</jsp:text>
+                <mm:compare referid="count" value="on">
+                  <jsp:text> of total </jsp:text>
+                  <mm:function module="lucene" name="searchsize" referids="value,index,extraconstraints,fields,analyzer,filter" />
+                </mm:compare>
+              </th>
+            </tr>
+          </mm:first>
+          <tr>
+            <td>
+              <mm:field name="annotation:score" />
+            </td>
+            <td>
+              <mm:nodeinfo type="guinodemanager" />
+            </td>
+            <mm:fieldlist type="list">
+              <td>
+                <mm:hasfunction name="gui">
+                  <mm:fieldinfo type="guivalue" />
+                </mm:hasfunction>
+                <mm:hasfunction name="gui" inverse="true">
+                  <mm:fieldinfo type="value" />
+                </mm:hasfunction>
+              </td>
+            </mm:fieldlist>
+            <td>
+              <mm:hasfunction name="url">
+                <mm:function name="url" escape="text/html/attribute">
+                  link:
+                  <a href="${_}">
+                    <mm:hasfunction name="gui">
+                      <mm:function name="gui">
+                        <mm:isempty>
+                          here
+                        </mm:isempty>
+                        <mm:write escape="none" />
+                      </mm:function>
+                    </mm:hasfunction>
+                    <mm:hasfunction name="gui" inverse="true">
+                      ${_}
+                    </mm:hasfunction>
+                  </a>
+                </mm:function>
+              </mm:hasfunction>
+              <mm:hasfunction name="url" inverse="true">
+                <mm:hasfunction name="gui">
+                  <mm:function name="gui" escape="none" />
+                </mm:hasfunction>
+              </mm:hasfunction>
+            </td>
+          </tr>
+        </mm:nodelistfunction>
+      </table>
+    </c:catch>
+    ${toomanyclauses}
+  </mm:present>
+</div>

@@ -1,0 +1,168 @@
+<div
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    class="mm_c c_cloudcontent b_contexts ${requestScope.className}"
+    id="${requestScope.componentId}">
+
+  <jsp:output omit-xml-declaration="true" />
+
+  <mm:import externid="tab" vartype="integer" from="request">0</mm:import>
+  <mm:function set="cloudcontext" name="authorization" write="false">
+    <c:set var="queries" value="${_.contextProvider.contextQueries}"  />
+  </mm:function>
+  <c:set var="query" value="${queries[tab]}" />
+  <mm:import id="nodetype">${query.builder.tableName}</mm:import>
+
+
+  <mm:import id="fields" externid="user_fields">
+    <mm:property nodemanager="${nodetype}" name="security_editor_fields">
+      <mm:isempty>
+        <mm:fieldlist nodetype="${nodetype}" type="list">
+          <mm:fieldinfo type="name" /><mm:last inverse="true">,</mm:last>
+        </mm:fieldlist>
+      </mm:isempty>
+    </mm:property>
+  </mm:import>
+
+  <p class="action">
+    <mm:maycreate type="$nodetype">
+      <mm:link
+          referids="nodetype"
+          page="create_context">
+        <a href="${_}"><img src="${mm:link('/mmbase/style/images/create.png')}"  alt="+" title="create user"  /></a>
+      </mm:link>
+    </mm:maycreate>
+    <mm:maycreate type="$nodetype" inverse="true">
+      <fmt:message key="notallowedtocreatecontexts" />
+    </mm:maycreate>
+  </p>
+  <c:if test="${fn:length(queries) gt 1}">
+    <ol>
+      <c:forEach begin="0" end="${fn:length(queries) - 1}" var="t">
+        <li>
+          <mm:link>
+            <mm:param name="tab" value="${t}" />
+            <a href="${_}">
+              <mm:nodeinfo nodetype="${queries[t].builder.tableName}" type="guinodemanager" />
+            </a>
+          </mm:link>
+        </li>
+      </c:forEach>
+    </ol>
+  </c:if>
+  <mm:form>
+    <table>
+      <caption><mm:nodeinfo nodetype="$nodetype" type="guitype" /></caption>
+      <mm:fieldlist nodetype="$nodetype" fields="$fields">
+        <tr>
+          <td><mm:fieldinfo type="guiname" /></td>
+          <td><mm:fieldinfo type="searchinput" /></td>
+        </tr>
+      </mm:fieldlist>
+    </table>
+    <tr><td colspan="2"><input type="submit" value="search" name="search" /></td></tr>
+
+  </mm:form>
+
+  <mm:import externid="orderby" from="request">number</mm:import>
+  <mm:import externid="directions" from="request">${orderby eq 'number' ? 'DOWN' : 'UP'}</mm:import>
+  <mm:import externid="search" />
+
+  <table summary="Contexts">
+
+    <mm:listnodescontainer referid="query" id="q">
+      <mm:import externid="offset">0</mm:import>
+      <mm:present referid="search">
+        <mm:fieldlist nodetype="$nodetype" fields="$fields">
+          <mm:fieldinfo type="usesearchinput" />
+        </mm:fieldlist>
+      </mm:present>
+
+      <mm:size id="totalsize" write="false" />
+
+      <mm:offset value="$offset" />
+      <mm:maxnumber value="10" />
+
+      <tr>
+        <mm:fieldlist nodetype="$nodetype"  fields="$fields">
+          <th>
+            <mm:link referids="tab">
+              <mm:param name="orderby"><mm:fieldinfo type="name" /></mm:param>
+              <mm:fieldinfo type="name">
+                <mm:compare referid2="orderby">
+                  <c:choose>
+                    <c:when test="${orderby eq 'number' and directions eq 'DOWN'}">
+                      <mm:param name="directions">UP</mm:param>
+                    </c:when>
+                    <c:when test="${orderby ne 'number' and directions eq 'UP'}">
+                      <mm:param name="directions">DOWN</mm:param>
+                    </c:when>
+                  </c:choose>
+                </mm:compare>
+              </mm:fieldinfo>
+              <mm:fieldlist  nodetype="$nodetype" fields="$fields"><mm:fieldinfo type="reusesearchinput" /></mm:fieldlist>
+              <a title="order" href="${_}">
+                <mm:fieldinfo type="guiname" />
+              </a>
+            </mm:link>
+          </th>
+        </mm:fieldlist>
+        <th>
+          <mm:link
+              referids="search,tab">
+            <mm:compare referid="orderby" value="number">
+              <mm:write referid="directions">
+                <mm:compare value="UP">
+                  <mm:param name="directions">DOWN</mm:param>
+                </mm:compare>
+                <mm:compare value="DOWN">
+                  <mm:param name="directions">UP</mm:param>
+                </mm:compare>
+              </mm:write>
+            </mm:compare>
+            <mm:param name="orderby">number</mm:param>
+            <a title="order" href="${_}">*</a>
+          </mm:link>
+        </th>
+      </tr>
+      <mm:sortorder field="$orderby" direction="$directions" />
+      <mm:listnodes varStatus="status">
+        <tr id="object${_node}" class="${status.index % 2 eq 0 ? 'even' : 'odd'}">
+          <mm:fieldlist fields="$fields">
+            <td><mm:fieldinfo type="guivalue" /></td>
+          </mm:fieldlist>
+          <td class="commands">
+            <mm:maywrite>
+              <mm:link
+                  referids="_node@node"
+                  page="context">
+                <a href="${_}">
+                  <fmt:message key="update" />
+                  <img src="${mm:link('/mmbase/style/images/edit.png')}"
+                       alt="" title="" />
+                </a>
+              </mm:link>
+            </mm:maywrite>
+            <mm:maydelete>
+              <mm:link referids="_node@delete" page="contexts" process="true">
+                <a class="confirm post"
+                   href="${_}">
+                  <fmt:message key="delete" />
+                  <img src="${mm:link('/mmbase/style/images/delete.png')}"
+                       alt="X" title="" />
+                </a>
+              </mm:link>
+            </mm:maydelete>
+          </td>
+        </tr>
+      </mm:listnodes>
+
+      <jsp:directive.include file="pager.tr.jspx" />
+
+    </mm:listnodescontainer>
+  </table>
+</div>
+

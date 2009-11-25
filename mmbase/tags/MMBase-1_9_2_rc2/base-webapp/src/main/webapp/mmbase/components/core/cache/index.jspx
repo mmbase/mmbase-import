@@ -1,0 +1,268 @@
+<div
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    class="component mm_c ${requestScope['org.mmbase.componentClassName']}"
+    id="${requestScope['org.mmbase.componentId']}">
+  <jsp:directive.page import="org.mmbase.cache.*" />
+  <jsp:output omit-xml-declaration="true" />
+  <mm:cloud rank="administrator">
+
+    <mm:import externid="active" from="request" />
+    <mm:import externid="clear"  from="request" />
+    <mm:import externid="rs_active" from="request" />
+    <mm:import externid="rs_show"   from="request" />
+    <mm:import externid="clearregexp"   />
+    <mm:import externid="regexp"   />
+
+
+    <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+
+    <p>
+      <form>
+        <input type="submit" name="clearregexp" value="clear" />
+        <input name="regexp" value="${empty regexp ? '.*' : regexp}" />
+      </form>
+      <mm:present referid="clearregexp">
+        <mm:write referid="regexp" jspvar="regexp" vartype="String" write="false">
+          <jsp:scriptlet> CacheManager.getInstance().clear(regexp); </jsp:scriptlet>
+        </mm:write>
+        <p>Cleared by ${regexp}</p>
+      </mm:present>
+    </p>
+    <!-- activate or deactivate cache -->
+    <mm:present referid="active">
+      <mm:import externid="cache" />
+      <mm:write referid="active" jspvar="active" vartype="String" write="false">
+        <mm:write referid="cache" jspvar="cache" vartype="String" write="false">
+          <jsp:scriptlet> CacheManager.getCache(cache).setActive(active.equals("on") ? true : false); </jsp:scriptlet>
+        </mm:write>
+      </mm:write>
+      <div class="msg">The cache <em>${cache}</em> is turned ${active}.</div>
+    </mm:present>
+
+    <!-- clear cache -->
+    <mm:present referid="clear">
+      <mm:import externid="cache" />
+      <mm:write referid="cache" jspvar="cache" vartype="String" write="false">
+        <jsp:scriptlet> CacheManager.getCache(cache).clear(); </jsp:scriptlet>
+      </mm:write>
+      <div class="msg">The cache <em>${cache}</em> is cleared.</div>
+    </mm:present>
+
+    <!-- disable or enable release strategies -->
+    <mm:present referid="rs_active">
+      <mm:import externid="cache" />
+      <mm:write referid="rs_active" jspvar="active" vartype="String" write="false">
+        <mm:write referid="cache" jspvar="cache" vartype="String" write="false">
+          <jsp:scriptlet>
+            QueryResultCache qrc = (QueryResultCache) CacheManager.getCache(cache);
+            qrc.getReleaseStrategy().setEnabled(active.equals("on") ? true : false);
+          </jsp:scriptlet>
+        </mm:write>
+      </mm:write>
+      <div class="msg">The releasestrategies of cache <em>${cache}</em> are turned ${active}.</div>
+    </mm:present>
+
+    <table summary="MMBase caches, their statistics and actions that can be taken" cellspacing="0" cellpadding="3" border="0">
+      <caption>
+        ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
+      </caption>
+
+      <tr>
+        <th colspan="8"><h4>Query Caches</h4></th>
+        </tr><tr>
+        <td colspan="8">
+          Query caches are used to cache the result of different types of
+          queries. These caches have a plugin like system of for (sets of) rules that will decide if
+          a certain change in the cloud should invalidate a query from the cache.
+        </td>
+      </tr>
+
+      <mm:functioncontainer>
+        <mm:param name="type">org.mmbase.cache.QueryResultCache</mm:param>
+        <mm:listfunction set="caches" name="list" id="qc">
+          <mm:first>
+            <tr>
+              <th scope="col">Cache</th>
+              <th scope="col" class="center">Requests</th>
+              <th scope="col" class="center">Hits</th>
+              <th scope="col" class="center">Misses</th>
+              <th scope="col" class="center">Puts</th>
+              <th scope="col" class="center">Size</th>
+              <th scope="col" class="center">Performance</th>
+              <th scope="col" class="center">Action</th>
+            </tr>
+          </mm:first>
+          <tr>
+            <td> <strong>${qc.name}</strong> ${qc.description} </td>
+            <td class="center"> ${qc.hits + qc.misses} </td>
+            <td class="center"> ${qc.hits} </td>
+            <td class="center"> ${qc.misses} </td>
+            <td class="center"> ${qc.puts} </td>
+            <td class="center"> ${qc.size} / ${qc.maxSize} </td>
+            <td class="center"> <fmt:formatNumber value="${qc.ratio}" maxFractionDigits="2" type="percent" /> </td>
+            <td class="view">
+              <c:choose>
+                <c:when test="${qc.active}">
+                  <mm:link>
+                    <mm:param name="cache">${qc.name}</mm:param>
+                    <mm:param name="active">off</mm:param>
+                    <a href="${_}">turn off</a>
+                  </mm:link>
+                </c:when>
+                <c:otherwise>
+                  <mm:link>
+                    <mm:param name="cache">${qc.name}</mm:param>
+                    <mm:param name="active">on</mm:param>
+                    <a href="${_}">turn on</a>
+                  </mm:link>
+                </c:otherwise>
+                </c:choose> |
+                <mm:link>
+                  <mm:param name="cache">${qc.name}</mm:param>
+                  <mm:param name="clear">clear</mm:param>
+                  <a href="${_}">clear</a>
+                  </mm:link> |
+                  <mm:link page="showcache">
+                    <mm:param name="cache">${qc.name}</mm:param>
+                    <a href="${_}">show</a>
+                  </mm:link>
+            </td>
+            </tr><tr>
+            <td colspan="7">
+              Release strategies for this cache:
+              <c:forEach items="${qc.releaseStrategy.list}" var="rs">
+                <mm:link>
+                  <mm:param name="rs_show">${qc.name}</mm:param>
+                  <mm:param name="rs_name">${rs}</mm:param>
+                  <a href="${_}" title="${rs.description}">${rs.name}</a>
+                </mm:link>
+              </c:forEach>
+              <br />
+              Events Analyzed:   ${qc.releaseStrategy.totalEvaluated}
+              Queries preserved: ${qc.releaseStrategy.totalPreserved}
+              Queries flushed:   ${qc.releaseStrategy.totalEvaluated - qc.releaseStrategy.totalPreserved}
+
+              </td><td class="view">
+              <c:choose>
+                <c:when test="${qc.releaseStrategy.enabled}">
+                  <mm:link>
+                    <mm:param name="cache">${qc.name}</mm:param>
+                    <mm:param name="rs_active">off</mm:param>
+                    <a href="${_}">turn off</a>
+                  </mm:link>
+                </c:when>
+                <c:otherwise>
+                  <mm:link>
+                    <mm:param name="cache">${qc.name}</mm:param>
+                    <mm:param name="rs_active">on</mm:param>
+                    <a href="${_}">turn on</a>
+                  </mm:link>
+                </c:otherwise>
+              </c:choose>
+
+            </td>
+          </tr>
+          <mm:compare referid="rs_show" value="$qc.name">
+            <mm:import externid="rs_name" from="request" />
+            <tr>
+              <td colspan="8">
+                <c:forEach items="${qc.releaseStrategy.list}" var="rs">
+                  <c:if test="${rs eq rs_name}">
+
+                    <strong>${rs.name}</strong> ${rs.description}
+                    <table summary="specifics of the release strategy ${rs.name}" cellspacing="0" cellpadding="3" border="0">
+                      <tr>
+                        <th class="center">active</th>
+                        <th class="center">queries evaluated</th>
+                        <th class="center">queries preserved</th>
+                        <th class="center">evaluation time (millis)</th>
+                        <th class="center">avarage evaluation time (millis)</th>
+                        <th class="center">performance</th>
+                        </tr><tr>
+                        <td class="center"> ${rs.enabled} </td>
+                        <td class="center"> ${rs.totalEvaluated} </td>
+                        <td class="center"> ${rs.totalPreserved} </td>
+                        <td class="center"> ${rs.totalEvaluationTimeMillis} </td>
+                        <td class="center">
+                          <fmt:formatNumber value="${rs.totalEvaluationTimeMillis / rs.totalEvaluated}" maxFractionDigits="2" />
+                        </td>
+                        <td class="center">
+                          <fmt:formatNumber value="${rs.totalEvaluated / rs.totalPreserved}" maxFractionDigits="2" type="percent" />
+                        </td>
+                      </tr>
+                    </table>
+                  </c:if>
+                </c:forEach>
+              </td>
+            </tr>
+          </mm:compare>
+        </mm:listfunction>
+      </mm:functioncontainer>
+
+      <!-- other caches -->
+      <tr>
+        <td colspan="8"><br /> </td>
+        </tr><tr>
+        <th colspan="8"><h4>Other Caches</h4></th>
+        </tr><tr>
+        <td colspan="8">More general MMBase caches.</td>
+      </tr>
+      <mm:functioncontainer>
+        <mm:listfunction set="caches" name="list" remove="qc" id="c">
+          <mm:first>
+            <tr>
+              <th scope="col">Cache</th>
+              <th scope="col" class="center">Requests</th>
+              <th scope="col" class="center">Hits</th>
+              <th scope="col" class="center">Misses</th>
+              <th scope="col" class="center">Puts</th>
+              <th scope="col" class="center">Size</th>
+              <th scope="col" class="center">Performance</th>
+              <th scope="col" class="center">Action</th>
+            </tr>
+          </mm:first>
+          <tr>
+            <td> <strong>${c.name}</strong> ${c.description} </td>
+            <td class="center"> ${c.hits + c.misses} </td>
+            <td class="center"> ${c.hits} </td>
+            <td class="center"> ${c.misses} </td>
+            <td class="center"> ${c.puts} </td>
+            <td class="center"> ${c.size} / ${c.maxSize} </td>
+            <td class="center"> <fmt:formatNumber value="${c.ratio}" maxFractionDigits="2" type="percent" /> </td>
+            <td class="view">
+              <c:choose>
+                <c:when test="${c.active}">
+                  <mm:link>
+                    <mm:param name="cache">${c.name}</mm:param>
+                    <mm:param name="active">off</mm:param>
+                    <a href="${_}">turn off</a>
+                  </mm:link>
+                </c:when>
+                <c:otherwise>
+                  <mm:link>
+                    <mm:param name="cache">${c.name}</mm:param>
+                    <mm:param name="active">on</mm:param>
+                    <a href="${_}">turn on</a>
+                  </mm:link>
+                </c:otherwise>
+                </c:choose> |
+                <mm:link>
+                  <mm:param name="cache">${c.name}</mm:param>
+                  <mm:param name="clear">clear</mm:param>
+                  <a href="${_}">clear</a>
+                  </mm:link> |
+                  <mm:link page="showcache">
+                    <mm:param name="cache">${c.name}</mm:param>
+                    <a href="${_}">show</a>
+                  </mm:link>
+            </td>
+          </tr>
+        </mm:listfunction>
+      </mm:functioncontainer>
+    </table>
+
+  </mm:cloud>
+</div>

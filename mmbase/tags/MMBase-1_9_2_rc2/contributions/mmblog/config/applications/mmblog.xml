@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="mmblog" maintainer="mmcoder.nl" version="1" auto-deploy="true">
+
+  <requirements>
+  </requirements>
+
+  <neededbuilderlist>
+    <builder maintainer="mmcoder.nl" version="0">weblogs</builder>
+    <builder maintainer="mmcoder.nl" version="0">weblogentries</builder>
+    <builder maintainer="mmcoder.nl" version="0">weblogrel</builder>
+    <builder maintainer="mmcoder.nl" version="0">weblogthemerel</builder>
+    <builder maintainer="mmcoder.nl" version="0">weblogthemes</builder>
+  </neededbuilderlist>
+
+  <neededreldeflist>
+    <reldef source="weblogrel" target="weblogrel" direction="bidirectional" guisourcename="WebLogRel" guitargetname="WebLogRel" builder="weblogrel" />
+    <reldef source="weblogthemerel" target="weblogthemerel" direction="bidirectional" guisourcename="WebLogThemeRel" guitargetname="WebLogThemeRel" builder="weblogthemerel" />
+  </neededreldeflist>
+
+  <allowedrelationlist>
+    <relation from="weblogs" to="weblogentries" type="weblogrel" />
+  </allowedrelationlist>
+
+  <datasourcelist />
+
+  <relationsourcelist />
+
+  <contextsourcelist />
+
+  <description><![CDATA[Installs datamodel for the MMBlog ]]></description>
+
+  <install-notice><![CDATA[DataModel for mmblog created ]]></install-notice>
+
+</application>

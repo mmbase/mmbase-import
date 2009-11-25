@@ -1,0 +1,30 @@
+<jsp:root
+    version="2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <mm:hasnode number="$n">
+    <mm:node referid="n" id="n" />
+    <c:choose>
+      <c:when test="${parameters.autosubmit}">
+        <!-- Transactionless. Let's make sure the node is indeed related -->
+        <mm:node id="source" referid="parameters.source">
+          <mm:relatednodescontainer type="object">
+            <mm:constraint field="number" value="${n}" />
+            <mm:maxnumber value="1" />
+            <mm:relatednodes>
+              <jsp:text>Deleting ${_node}</jsp:text>
+              <mm:deletenode deleterelations="true" />
+            </mm:relatednodes>
+          </mm:relatednodescontainer>
+        </mm:node>
+      </c:when>
+      <c:otherwise>
+        <mm:node referid="n">
+          <mm:deletenode deleterelations="true" />
+        </mm:node>
+      </c:otherwise>
+    </c:choose>
+  </mm:hasnode>
+</jsp:root>

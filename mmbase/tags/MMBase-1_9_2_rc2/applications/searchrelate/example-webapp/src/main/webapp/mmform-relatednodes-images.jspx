@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<mm-sre:html
+    title="Images"
+    xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+
+  <mm-sre:form>
+
+    <mm:relatednodes type="news" max="1">
+
+      <mm-sr:relatednodes
+          fields="number,title,handle"
+          type="images"
+          role="posrel"
+          unlink="true"
+          delete="true"
+          search="true"
+          sortable="true"
+          max="3"
+          >
+      </mm-sr:relatednodes>
+    </mm:relatednodes>
+
+
+  </mm-sre:form>
+  <hr />
+  <mm:escape escape="links">$URL$</mm:escape>
+</mm-sre:html>
