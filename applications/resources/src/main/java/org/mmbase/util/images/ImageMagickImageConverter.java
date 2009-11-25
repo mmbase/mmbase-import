@@ -553,7 +553,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                     cmds.add(type);
                 }
                 cmds.add(cmd);
-                if (type.equals("crop") && (isMinimumVersion(6,0,4))) {
+                if (type.equals("crop") && (isMinimumVersion(6,0,5))) {
                     cmds.add("+repage");
                 }
             } else {
