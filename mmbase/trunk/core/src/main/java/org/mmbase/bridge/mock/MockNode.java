@@ -30,11 +30,13 @@ public class MockNode extends MapNode  {
     private final Map<String, Object> originalMap;
     private final MockCloudContext cloudContext;
     private String context = "default";
+    private boolean isNew;
 
-    MockNode(Map<String, Object> map, MockCloudContext cc, NodeManager nm) {
+    MockNode(Map<String, Object> map, MockCloudContext cc, NodeManager nm, boolean isNew) {
         super(new HashMap<String, Object>(map), nm);
         originalMap = map;
         cloudContext = cc;
+        this.isNew = isNew;
     }
 
     @Override
@@ -50,6 +52,7 @@ public class MockNode extends MapNode  {
         }
         originalMap.putAll(values);
         cloudContext.setNodeType(getNumber(), getNodeManager().getName());
+        isNew = false;
     }
     @Override
     public Object getValueWithoutProcess(String fieldName) {
@@ -78,6 +81,13 @@ public class MockNode extends MapNode  {
         }
         return sl;
     }
+
+    @Override
+    public boolean isNew() {
+        return isNew;
+    }
+
+
 
 
 

@@ -58,10 +58,10 @@ public class MockTransaction extends MockCloud implements Transaction {
 
 
     @Override
-    Node getNode(final Map<String, Object> m, final NodeManager nm) {
-        Node n = super.getNode(m, nm);
-        nodes.add(n);
-        return n;
+    Node getNode(final Map<String, Object> m, final NodeManager nm, boolean n) {
+        Node node = super.getNode(m, nm, n);
+        nodes.add(node);
+        return node;
     }
 
     @Override

@@ -35,21 +35,21 @@ public class MockCloud extends AbstractCloud {
     }
 
 
-    Node getNode(final Map<String, Object> m, final NodeManager nm) {
-        return new MockNode(m, cloudContext, nm);
+    Node getNode(final Map<String, Object> m, final NodeManager nm, boolean n) {
+        return new MockNode(m, cloudContext, nm, n);
     }
 
     @Override
     public Node getNode(int number) throws NotFoundException {
         MockCloudContext.NodeDescription nd = cloudContext.nodes.get(number);
         if (nd == null) {
-            throw new NotFoundException();
+            throw new NotFoundException("No node with number " + number + " found in " + this);
         }
         if (nd.type.equals("typedef")) {
             return  getNodeManager(org.mmbase.util.Casting.toString(nd.values.get("name")));
         } else {
             NodeManager nm = getNodeManager(nd.type);
-            return getNode(nd.values, nm);
+            return getNode(nd.values, nm, false);
         }
     }
 
@@ -125,7 +125,7 @@ public class MockCloud extends AbstractCloud {
                         if (nm.getName().equals("typedef")) {
                             return MockCloud.this.getNodeManager(Casting.toString(m.get("name")));
                         } else {
-                            return MockCloud.this.getNode(m, nm);
+                            return MockCloud.this.getNode(m, nm, false);
                         }
                     }
                 }

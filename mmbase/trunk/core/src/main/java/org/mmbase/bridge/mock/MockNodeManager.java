@@ -92,7 +92,7 @@ public class MockNodeManager extends AbstractNodeManager  {
     public Node createNode() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("otype", oType);
-        return vcloud.getNode(map, this);
+        return vcloud.getNode(map, this, true);
     }
 
 
