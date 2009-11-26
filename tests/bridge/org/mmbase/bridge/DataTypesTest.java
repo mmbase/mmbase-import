@@ -38,7 +38,16 @@ public class DataTypesTest extends BridgeTest {
         cases = casesCache.get(this.getClass());
         if (cases == null) {
             Cloud cloud = getCloud();
-            cases = ParameterizedDataTypesTest.getCases(cloud, getBinary());
+
+	    // it's driving me nuts. On james the following line simply refuses to compile, without any understandable cause:
+
+            //cases = org.mmbase.datatypes.ParameterizedDataTypesTest.getCases(cloud, getBinary());
+
+	    // doing it with reflection then, which does work, and I have lost enough time now because of this
+	    // damn stupid issue.
+	    Class damn = Class.forName("org.mmbase.datatypes.ParameterizedDataTypesTest");
+            cases = (Object[][]) damn.getMethod("getCases", Cloud.class, byte[].class).invoke(null, cloud, getBinary());
+
             casesCache.put(this.getClass(), cases);
         }
     }
