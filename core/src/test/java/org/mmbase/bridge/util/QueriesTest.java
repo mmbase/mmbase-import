@@ -125,13 +125,23 @@ public class QueriesTest  {
         Cloud cloud = getCloudContext().getCloud("mmbase");
         Node node = cloud.getNodeManager("news").createNode();
         node.setStringValue("title", "foo");
-        node.commit();
+        {
+            NodeQuery q = Queries.createNodeQuery(node);
+            assertEquals(1, q.getSteps().size());
+            assertEquals("news", q.getSteps().get(0).getTableName());
 
-        NodeQuery q = Queries.createNodeQuery(node);
-        assertEquals(1, q.getSteps().size());
-        assertEquals("news", q.getSteps().get(0).getTableName());
-        assertEquals(1, q.getSteps().get(0).getNodes().size());
-        assertTrue(q.getSteps().get(0).getNodes().contains(node.getNumber()));
+            // createNodeQuery on a new node will leave the query unconstraint
+            assertNull(q.getSteps().get(0).getNodes());
+        }
+        node.commit();
+        {
+            NodeQuery q = Queries.createNodeQuery(node);
+            assertEquals(1, q.getSteps().size());
+            assertEquals("news", q.getSteps().get(0).getTableName());
+            assertEquals(1, q.getSteps().get(0).getNodes().size());
+            assertTrue(q.getSteps().get(0).getNodes().contains(node.getNumber()));
+        }
+
     }
 
     @Test
