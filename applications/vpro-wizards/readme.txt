@@ -18,7 +18,7 @@ Deze zijn:
 het is heel makkelijk om je eigen specialistische commands toe te voegen (na de refactoring fase).
 
 Tevens is er een kleine mmbase applicatie waarmee je in de start pagina van de editor een
-sort desktop met links en notieties voor de redactie. Die is momenteel nog niet beschikbaar, maar wordt in 
+sort desktop met links en notieties voor de redactie. Die is momenteel nog niet beschikbaar, maar wordt in
 een later stadium toegevoegd.
 
 Er is een voorbeeld beheer omgeving die werkt met een van de standaard demo applicaties. Deze is te vinden op
@@ -51,7 +51,7 @@ Het zou goed kunnen dat dit systeem een goede vervanger zal blijken te zijn voor
 
 integratie pad
 ===================================
-De volgende stappen moeten worden gezet voor een volledige integratie van de 
+De volgende stappen moeten worden gezet voor een volledige integratie van de
 vpro-wizards in mmbase:
 
 status 		omschrijving
@@ -62,7 +62,7 @@ Y   		maak een test beheer omgeving die samen werkt met een van de demo applicat
 P   		refactor de java code.
 N   		Documentatie: gedeeltijk bestaande omzetten naar docbook, gedeeltelijk nieuw.
 P			Tool voor het generern van documentatie uit de tagfiles.
-N   		zorg dat de fck richtext editor wordt gedownlaod, en niet in de cvs zit.
+Y   		zorg dat de fck richtext editor wordt gedownlaod, en niet in de cvs zit.
 N			NekoHtml met xerces dependency: is er een vervanging?
 
 
@@ -74,7 +74,7 @@ Beperkingen:
 ==================================
 - form validatie bestaat nog niet.
 - datatypes worden nog niet ondersteund.
-- het is niet mogelijk om bij het aanmaken van objecten een minimum aantal relaties van (een) ander(e) object(en) af 
+- het is niet mogelijk om bij het aanmaken van objecten een minimum aantal relaties van (een) ander(e) object(en) af
 te dwingen.
 - het is nu nog niet mogelijk om je eigen command objecten toe te voegen (na de refactoring wel)
 
@@ -89,7 +89,7 @@ Issues:
 
 Wensen:
 ===================================
-- het zou mooi zijn als in de taglib de gui en de functionaliteit worden losgetrokken. dus tags voor alle 
+- het zou mooi zijn als in de taglib de gui en de functionaliteit worden losgetrokken. dus tags voor alle
 interface elementen die weer door de functionele tags worden gebruikt. dit zou het nog makkelijker maken om
 je eigen custom functionaliteit in de editors te integreren. dit is voor een klein gedeelte al gedaan.
 -wanneer je via form:view een nieuw object wilt aanmaken, en er is geen newwizard attribuut gezet,
