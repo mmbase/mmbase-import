@@ -195,27 +195,27 @@ public class ProcessorTest extends BridgeTest {
     }
 
     public void testGetProcessor() {
-        NodeManager nm = getCloud().getNodeManager("processors");
-        int countBefore = CountProcessor.count;
-        Node node = nm.createNode();
-        node.commit();
-        assertEquals(countBefore, CountProcessor.count);
-        node.getStringValue("get");
-        assertEquals(countBefore + 1, CountProcessor.count);
-        node.setStringValue("get", "aa");
-        {
-            String getValue = node.getStringValue("get");
-            assertEquals(countBefore + 2, CountProcessor.count);
-            assertEquals("AA", getValue);
+        if (getCloudContext().getUri().equals(ContextProvider.DEFAULT_CLOUD_CONTEXT_NAME)) { // only test on local
+            NodeManager nm = getCloud().getNodeManager("processors");
+            int countBefore = CountProcessor.count;
+            Node node = nm.createNode();
+            node.commit();
+            assertEquals(countBefore, CountProcessor.count);
+            node.getStringValue("get");
+            assertEquals(countBefore + 1, CountProcessor.count);
+            node.setStringValue("get", "aa");
+            {
+                String getValue = node.getStringValue("get");
+                assertEquals(countBefore + 2, CountProcessor.count);
+                assertEquals("AA", getValue);
+            }
+            node.commit();
+            {
+                String getValue = node.getStringValue("get");
+                assertEquals(countBefore + 3, CountProcessor.count);
+                assertEquals("AA", getValue);
+            }
         }
-        node.commit();
-        {
-            String getValue = node.getStringValue("get");
-            assertEquals(countBefore + 3, CountProcessor.count);
-            assertEquals("AA", getValue);
-        }
-
-
     }
     public void testGetProcessorInClusterNode() {
         if (getCloudContext().getUri().equals(ContextProvider.DEFAULT_CLOUD_CONTEXT_NAME)) { // only test on local
