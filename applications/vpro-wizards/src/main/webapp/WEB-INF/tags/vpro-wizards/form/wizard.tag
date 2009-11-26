@@ -52,7 +52,7 @@
                  <script>
                     var contextPath='${pageContext.request.contextPath}';
                 </script>
-                <jsp:directive.include file="/mmbase/jquery/jquery.jspx" />
+                <mm:include  page="/mmbase/jquery/jquery.jspx" />
                 <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/javascript.js"></script>
                 <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/calendar.js" ></script>
                 <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/clock.js" ></script>
