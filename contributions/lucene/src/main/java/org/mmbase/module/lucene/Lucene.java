@@ -152,6 +152,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     private final Map<String, Indexer>  indexerMap    = new ConcurrentHashMap<String, Indexer>();
     private final Map<String, Searcher> searcherMap   = new ConcurrentHashMap<String, Searcher>();
     private boolean readOnly = false;
+    private boolean incrementalUpdates = true;
     private String master; // If readonly, the machine name of the mmbase which is responsible for the index
 
     private long initialWaitTime = INITIAL_WAIT_TIME;
@@ -759,7 +760,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
                     factory = ContentExtractor.getInstance();
 
-
+                    String incrementalUpdatesSetting = getInitParameter("incrementalupdates");
+                    incrementalUpdates = "true".equals(incrementalUpdatesSetting);
+                    log.info("Setting incremental index updates to " + incrementalUpdates);
 
                     String readOnlySetting = getInitParameter("readonly");
                     while (readOnlySetting != null && readOnlySetting.startsWith("system:")) {
@@ -1134,65 +1137,71 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
 
     public void notify(NodeEvent event) {
-        if (log.isDebugEnabled()) {
-            log.debug("Received node event: " + event +  Logging.stackTrace(6));
-        }
-        if (scheduler != null) {
-            switch(event.getType()) {
-            case Event.TYPE_NEW:
-                org.mmbase.bridge.Node node = getCloud().getNode(event.getNodeNumber());
-                if (! node.isRelation()) {
-                    scheduler.newIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
+        if (incrementalUpdates) {
+            if (log.isDebugEnabled()) {
+                log.debug("Received node event: " + event +  Logging.stackTrace(6));
+            }
+            if (scheduler != null) {
+                switch(event.getType()) {
+                case Event.TYPE_NEW:
+                    org.mmbase.bridge.Node node = getCloud().getNode(event.getNodeNumber());
+                    if (! node.isRelation()) {
+                        scheduler.newIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
+                    }
+                    break;
+                case Event.TYPE_CHANGE:
+                    if (event.getChangedFields().size() > 0) {
+                        scheduler.updateIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
+                    } else {
+                        // I don't know why the event was issued in the first place, but don't make it
+                        // worse.
+                    }
+                    break;
+                case Event.TYPE_DELETE:
+                    scheduler.deleteIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
+                    break;
                 }
-                break;
-            case Event.TYPE_CHANGE:
-                if (event.getChangedFields().size() > 0) {
-                    scheduler.updateIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
-                } else {
-                    // I don't know why the event was issued in the first place, but don't make it
-                    // worse.
-                }
-                break;
-            case Event.TYPE_DELETE:
-                scheduler.deleteIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
-                break;
             }
         }
     }
     public void notify(RelationEvent event) {
-        if (log.isDebugEnabled()) {
-            log.debug("Received relation event: " + event + Logging.stackTrace(6));
-        }
-        if (scheduler != null) {
-            switch(event.getType()) {
-            case Event.TYPE_NEW:
-                //scheduler.newIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
-                if (!startNodes.contains("" + event.getRelationDestinationNumber())) {
-                    scheduler.updateIndex("" + event.getRelationDestinationNumber(), MMBaseIndexDefinition.class);
+        if (incrementalUpdates) {
+            if (log.isDebugEnabled()) {
+                log.debug("Received relation event: " + event + Logging.stackTrace(6));
+            }
+            if (scheduler != null) {
+                switch(event.getType()) {
+                case Event.TYPE_NEW:
+                    //scheduler.newIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
+                    if (!startNodes.contains("" + event.getRelationDestinationNumber())) {
+                        scheduler.updateIndex("" + event.getRelationDestinationNumber(), MMBaseIndexDefinition.class);
+                    }
+                    break;
+                case Event.TYPE_CHANGE:
+                case Event.TYPE_DELETE:
+                    if (!startNodes.contains("" + event.getRelationSourceNumber())) {
+                        scheduler.updateIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
+                    }
+                    if (!startNodes.contains("" + event.getRelationDestinationNumber())) {
+                        scheduler.updateIndex("" + event.getRelationDestinationNumber(), MMBaseIndexDefinition.class);
+                    }
+                    break;
                 }
-                break;
-            case Event.TYPE_CHANGE:
-            case Event.TYPE_DELETE:
-                if (!startNodes.contains("" + event.getRelationSourceNumber())) {
-                    scheduler.updateIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
-                }
-                if (!startNodes.contains("" + event.getRelationDestinationNumber())) {
-                    scheduler.updateIndex("" + event.getRelationDestinationNumber(), MMBaseIndexDefinition.class);
-                }
-                break;
             }
         }
     }
-    public void notify(IdEvent event) {
-        if (scheduler != null) {
-            switch(event.getType()) {
-            case Event.TYPE_DELETE:
-                scheduler.deleteIndex(event.getId(), JdbcIndexDefinition.class);
-                break;
-            default:
-                scheduler.updateIndex(event.getId(), JdbcIndexDefinition.class);
-                break;
 
+    public void notify(IdEvent event) {
+        if (incrementalUpdates) {
+            if (scheduler != null) {
+                switch(event.getType()) {
+                case Event.TYPE_DELETE:
+                    scheduler.deleteIndex(event.getId(), JdbcIndexDefinition.class);
+                    break;
+                default:
+                    scheduler.updateIndex(event.getId(), JdbcIndexDefinition.class);
+                    break;
+                }
             }
         }
     }
