@@ -260,6 +260,24 @@
       <class name="org.mmbase.datatypes.SecurityContextDataType" />
     </specialization>
 
+    <specialization id="components">
+      <description xml:lang="en">
+        The names of all available MMBase Framework Components
+      </description>
+      <required value="true"/>
+      <maxLength value="128"/>
+    </specialization>
+
+    <specialization id="windowstate">
+      <enumeration>
+        <entry value="MAXIMIIZED" />
+        <entry value="MINIMIZED"  />
+        <entry value="NORMAL"     />
+      </enumeration>
+    </specialization>
+
+
+
     <specialization id="security_context">
       <description xml:lang="en">
         Uses 'setContext' and 'getContext'. The idea is to use this type for a 'virtual' field.
