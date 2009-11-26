@@ -74,7 +74,7 @@
             <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/calendar.js" ></script>
             <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/clock.js" ></script>
             <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/fckeditor/fckeditor.js"></script>
-            <jsp:directive.include file="/mmbase/jquery/jquery.jspx" />
+            <mm:include page="/mmbase/jquery/jquery.jspx" />
             <jsp:invoke fragment="header"/>
         </head>
         <body class="related">
