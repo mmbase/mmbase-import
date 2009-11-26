@@ -164,7 +164,15 @@
 
 
   <listener>
+    <!--
+         Used by file servlet to detect which file can be deleted again
+         Sometimes files ar ecreate for a certain user only.
+    -->
     <listener-class>org.mmbase.servlet.FileServletSessionListener</listener-class>
+  </listener>
+
+  <listener>
+    <listener-class>org.mmbase.bridge.mock.MockSetup</listener-class>
   </listener>
 
 
