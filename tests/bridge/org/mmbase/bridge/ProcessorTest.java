@@ -218,34 +218,34 @@ public class ProcessorTest extends BridgeTest {
 
     }
     public void testGetProcessorInClusterNode() {
-        Cloud cloud = getCloud();
-        // set up some nodes
-        NodeManager nm = cloud.getNodeManager("processors");
-        NodeManager aa = cloud.getNodeManager("aa");
-        Node a = aa.createNode();
-        a.commit();
-        Node node = nm.createNode();
-        node.setStringValue("get", "bb");
-        node.commit();
-        RelationManager rm = cloud.getRelationManager("aa", "processors", "related");
-        Relation rel = rm.createRelation(a, node);
-        rel.commit();
+        if (getCloudContext().getUri().equals(ContextProvider.DEFAULT_CLOUD_CONTEXT_NAME)) { // only test on local
+            Cloud cloud = getCloud();
+            // set up some nodes
+            NodeManager nm = cloud.getNodeManager("processors");
+            NodeManager aa = cloud.getNodeManager("aa");
+            Node a = aa.createNode();
+            a.commit();
+            Node node = nm.createNode();
+            node.setStringValue("get", "bb");
+            node.commit();
+            RelationManager rm = cloud.getRelationManager("aa", "processors", "related");
+            Relation rel = rm.createRelation(a, node);
+            rel.commit();
 
-        // start actual testing
-        int countBefore = CountProcessor.count;
-        NodeList clusterNodes = cloud.getList(null, "aa,processors", "processors.get", null, null, null, null, false);
-        assertEquals(1, clusterNodes.size());
+            // start actual testing
+            int countBefore = CountProcessor.count;
+            NodeList clusterNodes = cloud.getList(null, "aa,processors", "processors.get", null, null, null, null, false);
+            assertEquals(1, clusterNodes.size());
 
-        Node clusterNode = clusterNodes.getNode(0);
+            Node clusterNode = clusterNodes.getNode(0);
 
-        String getValue = clusterNode.getStringValue("processors.get");
-        assertTrue(clusterNode.getNodeManager().hasField("processors.get"));
-        //MMB-1869
-        assertEquals(countBefore + 1, CountProcessor.count);
-        assertEquals("BB", getValue);
+            String getValue = clusterNode.getStringValue("processors.get");
+            assertTrue(clusterNode.getNodeManager().hasField("processors.get"));
+            //MMB-1869
+            assertEquals(countBefore + 1, CountProcessor.count);
+            assertEquals("BB", getValue);
 
-
-
+        }
 
 
     }
