@@ -1027,9 +1027,15 @@ abstract public class Queries {
      * @return A new NodeQuery object
      */
     public static NodeQuery createNodeQuery(Node node) {
-        NodeManager nm = node.getNodeManager();
-        //NodeManager nm = node.getCloud().getCloudContext().getCloud("mmbase", node.getCloud().getUser()).getNode(node.getNumber()).getNodeManager();
-        //NodeManager nm = node.getCloud().getNodeManager("object"); // This will always work, even if the nodemanager was changed (and not yet committed)
+        NodeManager nm;
+        if (! node.isNew()) {
+            // in case the nodemanager was _changed_ but not yet committed, the query will only work with the original node manager
+            // which we can obtain like so
+            nm = node.getCloud().getCloudContext().getCloud("mmbase", node.getCloud().getUser()).getNode(node.getNumber()).getNodeManager();
+
+        } else {
+            nm = node.getNodeManager();
+        }
 
         NodeQuery query = node.getCloud().createNodeQuery(); // use the version which can accept more steps
         Step step       = query.addStep(nm);
