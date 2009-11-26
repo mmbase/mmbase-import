@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <jsp:root
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
@@ -175,7 +176,7 @@
   <mm:import id="_item">${empty item ? '/mmbase/searchrelate/list/item.jspx' : item}</mm:import>
   <mm:import id="_role">${empty role and empty path ? 'posrel' : role}</mm:import><!-- role defaults to 'posrel' -->
   <mm:import id="_direction">${empty direction? 'UP' : direction}</mm:import><!-- defaults to UP -->
-  <mm:import id="_createposition">${empty createposition? 'bottom' : createposition}</mm:import>
+  <mm:import id="_createposition">${empty createposition ? 'bottom' : createposition}</mm:import>
   <mm:import id="_addposition">${empty addposition? _createposition : addposition}</mm:import>
 
 
@@ -365,7 +366,7 @@
       <c:if test="${_createposition eq 'top'}">
         <mm:write referid="creator" escape="none" />
         <span class="status">...</span>
-        <span class="errors"></span>
+        <span class="errors"><jsp:text></jsp:text></span>
         <mm:write referid="searcher" escape="none" />
       </c:if>
 
@@ -383,14 +384,13 @@
           <c:if test="${! empty e}">
             <mm:escape>${rid}:  ${e}</mm:escape>
           </c:if>
-
         </mm:relatednodes>
       </ol>
       <!-- ================================================================================ -->
       <c:if test="${_createposition eq 'bottom'}">
         <mm:write referid="creator" escape="none" />
         <span class="status">...</span>
-        <span class="errors"></span>
+        <span class="errors"><jsp:text></jsp:text></span>
         <mm:write referid="searcher" escape="none" />
       </c:if>
     </div>
