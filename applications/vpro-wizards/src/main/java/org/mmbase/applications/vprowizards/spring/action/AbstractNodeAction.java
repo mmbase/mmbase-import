@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
-*/ 
+*/
 package org.mmbase.applications.vprowizards.spring.action;
 
 import java.io.IOException;
@@ -29,9 +29,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * this is a template class for the 'real' node actions
- * 
+
+ * Is it more or less a redo of {@link org.mmbase.datatypes.handler.html}
+ *
  * @author ebunders
- * 
+ *
  */
 public abstract class AbstractNodeAction extends Action {
 
@@ -69,31 +71,31 @@ public abstract class AbstractNodeAction extends Action {
      * {@link #addCachFlushHint(CacheFlushHint)} to add hints
      * </ul>
      * When the id is set on this action, the node is added to the idmap.
-     * 
+     *
      * @throws
      * @throws XNIException
      */
     @Override
     public final void process(ResultContainer resultContainer) {
         this.resultContainer = resultContainer;
-    
+
         // get the node
         node = createNode(resultContainer.getTransaction(), resultContainer.getIdMap(), resultContainer.getRequest());
-    
+
         if (hasErrors()) {
             return;
         }
-    
+
         if (node == null && isNodeNullIllegal()) {
             throw new IllegalStateException(
                     "No node has been provided, and no error has been set. Either of these should happen*");
         }
-    
+
         // now check if no illegal fields are set for this node type
         if (node != null) {
             checkBasicFields();
         }
-    
+
         // no error and no overridden 'proceed' flag? Set the values and
         // call the post processing callback method.
         if (!hasErrors() && shouldProcess(node)) {
@@ -104,11 +106,11 @@ public abstract class AbstractNodeAction extends Action {
                     setHandlerField();
                 }
             }
-    
+
             if (resultContainer.hasFieldErrors()) {
                 return;
             }
-    
+
             if (node != null) {
                 if (getId() != null) {
                     resultContainer.getIdMap().put(getId(), node);
@@ -116,7 +118,7 @@ public abstract class AbstractNodeAction extends Action {
                 }
                 processNode(resultContainer.getTransaction());
             }
-            
+
             //now check for html fields, and filter them if need be.
             if(!StringUtils.isBlank(htmlFields)){
                 String[] htmlFieldArray = htmlFields.split("\\s*,\\s*");
@@ -139,7 +141,7 @@ public abstract class AbstractNodeAction extends Action {
                     }
                 }
             }
-    
+
             // even with a null node it can be necessary to create a cache flush hint
             // for instance when a node was deleted.
             createCacheFlushHints();
@@ -194,7 +196,7 @@ public abstract class AbstractNodeAction extends Action {
     /**
      * This template method determines if it is an error when the node is null. Override this for concrete actions that
      * actually don't need a node always.
-     * 
+     *
      * @return true by default.
      */
     protected boolean isNodeNullIllegal() {
@@ -204,7 +206,7 @@ public abstract class AbstractNodeAction extends Action {
     /**
      * this template method is called before any changes are made to the node to edit. if it returns false, no more
      * action will be taken. Use this if you want to use some kind of switch.
-     * 
+     *
      * @param node
      *            the current node.
      * @return true if there is no reason not to process this node
@@ -217,12 +219,12 @@ public abstract class AbstractNodeAction extends Action {
      * This template method is called to obtain the node for this action. it is the responsibility of the implementation
      * of this method to set a global error (using addGlobalError) when something goes wrong. In that case the action
      * stops.
-     * 
+     *
      * @param transaction
      *            the mmmbase transaction
      * @return the node this action should handle or null if an error occurs
      * @param request
-     * 
+     *
      */
     abstract protected Node createNode(Transaction transaction, Map<String, Node> idMap, HttpServletRequest request);
 
@@ -230,7 +232,7 @@ public abstract class AbstractNodeAction extends Action {
      * This template method is called after the values that have been injected in this action in the fields and
      * datefields collections, as well as the file field have been set on the node. The default implementation does
      * nothing
-     * 
+     *
      * @param node
      * @param resultContainer
      */
@@ -261,7 +263,7 @@ public abstract class AbstractNodeAction extends Action {
 
     /**
      * Creates a field error for this action
-     * 
+     *
      * @param field
      * @param key
      * @param placeholderValues
@@ -272,7 +274,7 @@ public abstract class AbstractNodeAction extends Action {
 
     /**
      * Create a field error for this action, using a key without place holder values
-     * 
+     *
      * @param field
      * @param key
      */
@@ -283,7 +285,7 @@ public abstract class AbstractNodeAction extends Action {
     /**
      * Creates a field error for this action, where there is some sort of error when setting the field. This version
      * does not take the (offending) field value but the error message. This method uses it's own error message key.
-     * 
+     *
      * @param field
      * @param message
      */
@@ -295,7 +297,7 @@ public abstract class AbstractNodeAction extends Action {
     /**
      * Creates a field error for this action, where the value set on some field is invalid. This method uses it's own
      * error message key.
-     * 
+     *
      * @param field
      * @param value
      */
@@ -306,7 +308,7 @@ public abstract class AbstractNodeAction extends Action {
 
     /**
      * Creates a global error for this action.
-     * 
+     *
      * @param key
      * @param placeholderValues
      */
@@ -316,7 +318,7 @@ public abstract class AbstractNodeAction extends Action {
 
     /**
      * Creates a global error for this action.
-     * 
+     *
      * @param key
      */
     protected final void addGlobalError(String key) {
@@ -330,13 +332,13 @@ public abstract class AbstractNodeAction extends Action {
     /**
      * This template method is called when the node to edit is changed. custom cachflush hints can be set here. This
      * class dous not know if the current node is updated or created, so it dousn't know what kind of events to create.
-     * 
+     *
      */
     protected abstract void createCacheFlushHints();
 
     /**
      * Check if a relation is possible from the given source to the given destination with the given relation manager.
-     * 
+     *
      * @param relationManager
      * @return
      */
@@ -361,7 +363,7 @@ public abstract class AbstractNodeAction extends Action {
 
     /**
      * can the current owner create a node of this type? set global error when fail.
-     * 
+     *
      * @param nodeManager
      * @return true when allowed.
      */
@@ -378,7 +380,7 @@ public abstract class AbstractNodeAction extends Action {
 
     /**
      * can the current owner create a node of this type? set global error when fail.
-     * 
+     *
      * @param nodeManager
      * @return true when allowed.
      */
@@ -395,7 +397,7 @@ public abstract class AbstractNodeAction extends Action {
 
     /**
      * can the current owner delete this node? set global error when fail.
-     * 
+     *
      * @param nodeManager
      * @return true when allowed.
      */
@@ -501,7 +503,7 @@ public abstract class AbstractNodeAction extends Action {
      * <li>you can only set one file for an action
      * <li>the field name (handle) is hardcoded.
      * <ul>
-     * 
+     *
      */
     private final void setHandlerField() {
         boolean changed = false;
@@ -556,7 +558,7 @@ public abstract class AbstractNodeAction extends Action {
     protected final void addNodeParam(String name){
         resultContainer.addParamToReturnURL(name, getNode());
     }
-    
+
     protected final void addParam(String name, String value){
         resultContainer.addParamToReturnURL(name, value);
     }
