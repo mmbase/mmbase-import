@@ -297,6 +297,12 @@
       <maxLength value="128"/>
     </specialization>
 
+    <specialization id="windowstate">
+      <enumeration>
+        <entry javaconstants="org.mmbase.framework.WindowState" />
+      </enumeration>
+    </specialization>
+
     <specialization id="nodemanagers">
       <description xml:lang="en">
         The names of all available MMBase NodeManagers
