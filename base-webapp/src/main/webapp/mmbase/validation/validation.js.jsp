@@ -16,6 +16,11 @@
 
 function MMBaseValidator(root) {
 
+    <mm:cloud jspvar="cloud">
+      this.uri = '<%=cloud.getCloudContext().getUri()%>';
+      this.cloud = '<%=cloud.getName()%>';
+    </mm:cloud>
+
     this.logEnabled   = false;
     this.traceEnabled = false;
 
@@ -34,11 +39,6 @@ function MMBaseValidator(root) {
     this.activeElement = null;
     this.checkAfter    = 600;
     this.logArea       = "logarea";
-    <mm:cloud jspvar="cloud">
-      this.uri = '<%=cloud.getCloudContext().getUri()%>';
-      this.cloud = '<%=cloud.getName()%>';
-    </mm:cloud>
-
 
 }
 
