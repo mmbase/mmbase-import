@@ -14,7 +14,7 @@
   <name>MMBase Example Search and Relate webapp</name>
 
   <properties>
-    <base.version>${mmbase.version.number}-servlet25${mmbase.version.postfix}</base.version>
+    <base.version>${mmbase.version.number}${mmbase.version.postfix}</base.version>
     <saxon.version>9.1.0.6</saxon.version>
   </properties>
 
