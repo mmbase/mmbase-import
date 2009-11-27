@@ -25,23 +25,23 @@ import org.mmbase.applications.vprowizards.spring.action.Action;
  *
  */
 public interface Command {
-	/**
-	 * 
-	 * @return the map that have all the Action instances mapped to arbitrary keys.
-	 * This method is used in the databinding process, The way actions are mapped is like this:
-	 * actions[<specific action mapping>]
-	 */
-	public Map<String, Map<String, Action>> getActions();
-	
-	/**
-	 * This method should process all the action objects after the data binding was done.
-	 * The class implementing this interface should make shure the actions are executed in
-	 * the proper order (i.e. node create actions first and so on).
-	 * The method is called after the data binding process is completed.
-	 * @param transaction an mmbase transaction in which all datamanipulation is done
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	public void processActions(HttpServletRequest request, HttpServletResponse response, ResultContainer resultContainer);
+    /**
+     * 
+     * @return the map that have all the Action instances mapped to arbitrary keys.
+     * This method is used in the databinding process, The way actions are mapped is like this:
+     * actions[<specific action mapping>]
+     */
+    public Map<String, Map<String, Action>> getActions();
+    
+    /**
+     * This method should process all the action objects after the data binding was done.
+     * The class implementing this interface should make shure the actions are executed in
+     * the proper order (i.e. node create actions first and so on).
+     * The method is called after the data binding process is completed.
+     * @param transaction an mmbase transaction in which all datamanipulation is done
+     * @param request
+     * @param response
+     * @return
+     */
+    public void processActions(HttpServletRequest request, HttpServletResponse response, ResultContainer resultContainer);
 }

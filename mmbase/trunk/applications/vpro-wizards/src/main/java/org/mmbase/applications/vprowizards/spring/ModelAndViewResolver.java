@@ -21,5 +21,5 @@ import org.springframework.web.servlet.ModelAndView;
  *
  */
 public interface ModelAndViewResolver {
-	public ModelAndView getModelAndView(HttpServletRequest request, ResultContainer resultContainer);
+    public ModelAndView getModelAndView(HttpServletRequest request, ResultContainer resultContainer);
 }

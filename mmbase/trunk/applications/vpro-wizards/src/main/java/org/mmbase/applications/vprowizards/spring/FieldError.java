@@ -17,22 +17,22 @@ import java.util.Locale;
  * @author Ernst Bunders
  */
 public class FieldError extends GlobalError {
-	private static final long serialVersionUID = 1L;
-	private String field;
-	public static final String MODEL_MAPPING_KEY="fieldErrors";
+    private static final long serialVersionUID = 1L;
+    private String field;
+    public static final String MODEL_MAPPING_KEY="fieldErrors";
 
-	public FieldError(String field, String messageKey, Locale locale) {
-		super(messageKey, locale);
-		this.field = field;
-	}
-	
-	public FieldError(String field, String messageKey, String[] properties, Locale locale) {
-		super(messageKey, properties, locale);
-		this.field = field;
-	}
+    public FieldError(String field, String messageKey, Locale locale) {
+        super(messageKey, locale);
+        this.field = field;
+    }
+    
+    public FieldError(String field, String messageKey, String[] properties, Locale locale) {
+        super(messageKey, properties, locale);
+        this.field = field;
+    }
 
-	public String getField() {
-		return field;
-	}
+    public String getField() {
+        return field;
+    }
 
 }
