@@ -25,14 +25,14 @@ import org.mmbase.bridge.Transaction;
  */
 public class SessionReadingCloudFactory implements CloudFactory {
 
-	public Transaction createTransaction(HttpServletRequest request) {
-		Cloud cloud = (Cloud) request.getSession().getAttribute("cloud_mmbase");
-		if(cloud != null){
-			return cloud.getTransaction("vpro-wizards-controller");
-		}
-		return null;
-	}
-	
+    public Transaction createTransaction(HttpServletRequest request) {
+        Cloud cloud = (Cloud) request.getSession().getAttribute("cloud_mmbase");
+        if(cloud != null){
+            return cloud.getTransaction("vpro-wizards-controller");
+        }
+        return null;
+    }
+    
 }
 
 

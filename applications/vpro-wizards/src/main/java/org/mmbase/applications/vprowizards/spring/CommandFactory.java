@@ -17,7 +17,7 @@ package org.mmbase.applications.vprowizards.spring;
  *
  */
 public interface CommandFactory {
-	
-	public Command getNewInstance();
-	
+    
+    public Command getNewInstance();
+    
 }

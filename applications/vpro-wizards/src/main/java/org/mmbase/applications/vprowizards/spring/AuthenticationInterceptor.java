@@ -23,48 +23,48 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  * @author Rob Vermeulen (VPRO)
  */
 public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
-	private static final Logger log = Logging.getLoggerInstance(AuthenticationInterceptor.class);
-	private String loginPage;
+    private static final Logger log = Logging.getLoggerInstance(AuthenticationInterceptor.class);
+    private String loginPage;
 
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object arg2) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object arg2) throws Exception {
 
-		boolean isAuthenticated = isAuthenticated(request);
-		if(isAuthenticated) {
-			return true;
-		}
+        boolean isAuthenticated = isAuthenticated(request);
+        if(isAuthenticated) {
+            return true;
+        }
 
-		if(log.isDebugEnabled()){
-			log.debug("not logged in. Throw AuthenticationException");
-		}
-//		response.sendRedirect(request.getContextPath() + loginPage);
-		throw new AuthenticationException();
-	}
+        if(log.isDebugEnabled()){
+            log.debug("not logged in. Throw AuthenticationException");
+        }
+//        response.sendRedirect(request.getContextPath() + loginPage);
+        throw new AuthenticationException();
+    }
 
-	/**
-	 * deze methode controleert of er een mmbase cloud sessie aanwezig is.
-	 * Als dat het geval is dan is er iemand ingelogd.
-	 */
-	private boolean isAuthenticated(HttpServletRequest request) {
-		HttpSession session = request.getSession(false);
+    /**
+     * deze methode controleert of er een mmbase cloud sessie aanwezig is.
+     * Als dat het geval is dan is er iemand ingelogd.
+     */
+    private boolean isAuthenticated(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
 
-		if(session != null && session.getAttribute("cloud_mmbase")!=null) {
-			if(log.isDebugEnabled()){
-				log.debug("Authenticated");
-			}
-			return true;
-		}
-		if(log.isDebugEnabled()){
-			log.debug("Not Authenticated");
-		}
+        if(session != null && session.getAttribute("cloud_mmbase")!=null) {
+            if(log.isDebugEnabled()){
+                log.debug("Authenticated");
+            }
+            return true;
+        }
+        if(log.isDebugEnabled()){
+            log.debug("Not Authenticated");
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public String getLoginPage() {
-		return loginPage;
-	}
+    public String getLoginPage() {
+        return loginPage;
+    }
 
-	public void setLoginPage(String loginPage) {
-		this.loginPage = loginPage;
-	}
+    public void setLoginPage(String loginPage) {
+        this.loginPage = loginPage;
+    }
 }

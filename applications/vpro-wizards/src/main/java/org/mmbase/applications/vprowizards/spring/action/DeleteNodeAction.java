@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
-*/ 
+*/
 package org.mmbase.applications.vprowizards.spring.action;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,38 +23,38 @@ import org.mmbase.util.logging.Logging;
  *
  */
 public class DeleteNodeAction extends Action {
-	private static final Logger log = Logging.getLoggerInstance(DeleteNodeAction.class);
-	
-	private String nodenr;
+    private static final Logger log = Logging.getLoggerInstance(DeleteNodeAction.class);
 
-	public String getNodenr() {
-		return nodenr;
-	}
+    private String nodenr;
 
-	public void setNodenr(String nodenr) {
-		this.nodenr = nodenr;
-	}
+    public String getNodenr() {
+        return nodenr;
+    }
 
-	@Override
-	public void process(ResultContainer resultContainer) {
-		if(StringUtils.isBlank(nodenr)){
-			//this can't really happen, becouse the only way of instantiating a delete node action, is by setting
-			//this property. there are no others!
-			resultContainer.getGlobalErrors().add(
-					new GlobalError(
-							"error.property.required", 
-							new String[]{"nodenr", this.getClass().getName()}, 
-							resultContainer.getLocale()
-					)
-			);
-		}else{
-			log.debug("deleting node with number "+nodenr);
-			try{
-				resultContainer.getTransaction().getNode(nodenr).delete(true);
-			}catch (NotFoundException e){
-				resultContainer.addGlobalError(new GlobalError("error.node.notfound", new String[]{""+nodenr}, resultContainer.getLocale()));
-			}
-		}
-	}
+    public void setNodenr(String nodenr) {
+        this.nodenr = nodenr;
+    }
+
+    @Override
+    public void process(ResultContainer resultContainer) {
+        if(StringUtils.isBlank(nodenr)){
+            //this can't really happen, becouse the only way of instantiating a delete node action, is by setting
+            //this property. there are no others!
+            resultContainer.getGlobalErrors().add(
+                    new GlobalError(
+                            "error.property.required",
+                            new String[]{"nodenr", this.getClass().getName()},
+                            resultContainer.getLocale()
+                    )
+            );
+        } else {
+            log.debug("deleting node with number " + nodenr);
+            try{
+                resultContainer.getTransaction().getNode(nodenr).delete(true);
+            }catch (NotFoundException e){
+                resultContainer.addGlobalError(new GlobalError("error.node.notfound", new String[]{""+nodenr}, resultContainer.getLocale()));
+            }
+        }
+    }
 
 }
