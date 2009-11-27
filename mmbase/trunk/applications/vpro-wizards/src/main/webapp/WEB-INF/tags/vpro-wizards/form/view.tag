@@ -116,7 +116,7 @@
                         </a>
                     </c:when>
                 <c:otherwise>
-                  <mm:link page="${relatedpage}.jsp?create=true&amp;${extra_params}" referids="nodenr,relationrole,searchdir,constraints">
+                  <mm:link page="${relatedpage}.jsp?create=true&amp;${extra_params}" referids="nodenr,relationrole,searchdir,constraints?">
                     <a href="${_}"
                        class="addButton">nieuw <img
                        src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new2.png"
@@ -134,7 +134,7 @@
                 --%>
                 <c:if test="${edit == true && empty openwizard}"><c:set var="editparam" value="&edit=true"/></c:if>
                 <c:if test="${not empty openwizard}"><c:set var="editparam" value="&openwizard=${openwizard}"/></c:if>
-                <mm:link page="${relatedpage}.jsp" referids="nodenr,relationrole,searchdir,constraints">
+                <mm:link page="${relatedpage}.jsp" referids="nodenr,relationrole,searchdir,constraints?">
                   <mm:param name="search">true</mm:param>
                   <a href="${_}${editparam}&${extra_params}" class="searchButton">
                     zoeken
@@ -262,7 +262,7 @@
                                             <c:when test="${edit}">
                                                 <c:remove var="editparam" />
                                                 <c:if test="${empty openwizard}"><c:set var="editparam" value="&edit=true" /></c:if>
-                                                <mm:link page="${relatedpage}.jsp" referids="nodenr,nodenr@parentnodenr,relationrole,searchdir,constraints,currentnode@editnodenr">
+                                                <mm:link page="${relatedpage}.jsp" referids="nodenr,nodenr@parentnodenr,relationrole,searchdir,constraints?,currentnode@editnodenr">
                                                   <a href="${_}${editparam}&${extra_params}" class="edit">
                                                     <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png" class="icon" border="0" alt="" title="Aanpassen"/>
                                                   </a>
