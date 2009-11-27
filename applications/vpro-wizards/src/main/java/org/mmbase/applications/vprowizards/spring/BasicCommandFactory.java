@@ -27,50 +27,50 @@ import org.mmbase.util.logging.Logging;
  */
 public class BasicCommandFactory implements CommandFactory {
 
-	private List<Class<? extends Action>> actionClasses = new ArrayList<Class<? extends Action>>();
-	private static final Logger log = Logging.getLoggerInstance(BasicCommandFactory.class);
-	private ActionMappingResolver nameResolver = new ClassBasedNameResolver();
+    private List<Class<? extends Action>> actionClasses = new ArrayList<Class<? extends Action>>();
+    private static final Logger log = Logging.getLoggerInstance(BasicCommandFactory.class);
+    private ActionMappingResolver nameResolver = new ClassBasedNameResolver();
 
 
-	/**
-	 * @throws RuntimeException
-	 *             when the commandClass field is null or something goes wrong with the instantiation process.
-	 */
-	public Command getNewInstance() {
-		BasicCommand command = new BasicCommand();
-		for(Class<? extends Action> action: actionClasses){
-			command.addAction(nameResolver.getName(action), action);
-		}
-		return command;
-	}
-	
-	/**
-	 * This method accepts a list of classes that implement {@link Action}
-	 * Only the classes that qualify are added.
-	 * @param actionClasses
-	 */
-	public void setActionClasses(List<Class<? extends Action>> actionClasses) {
-		for(Class<? extends Action> clazz: actionClasses){
-			this.actionClasses.add(clazz);
-			log.debug("Action class "+clazz+" added.");
-		}
-	}
-	
-	public List<Class<? extends Action>> getActionClasses() {
-		return actionClasses;
-	}
+    /**
+     * @throws RuntimeException
+     *             when the commandClass field is null or something goes wrong with the instantiation process.
+     */
+    public Command getNewInstance() {
+        BasicCommand command = new BasicCommand();
+        for(Class<? extends Action> action: actionClasses){
+            command.addAction(nameResolver.getName(action), action);
+        }
+        return command;
+    }
+    
+    /**
+     * This method accepts a list of classes that implement {@link Action}
+     * Only the classes that qualify are added.
+     * @param actionClasses
+     */
+    public void setActionClasses(List<Class<? extends Action>> actionClasses) {
+        for(Class<? extends Action> clazz: actionClasses){
+            this.actionClasses.add(clazz);
+            log.debug("Action class "+clazz+" added.");
+        }
+    }
+    
+    public List<Class<? extends Action>> getActionClasses() {
+        return actionClasses;
+    }
 
-	public ActionMappingResolver getNameResolver() {
-		return nameResolver;
-	}
+    public ActionMappingResolver getNameResolver() {
+        return nameResolver;
+    }
 
-	/**
-	 * You can insert your own mapping resolver for your actions. 
-	 * Default a ClassBasedNameResolver is used
-	 * @param actionMappingResolver
-	 */
-	public void setActionMappingResolver(ActionMappingResolver actionMappingResolver){
-		this.nameResolver = actionMappingResolver;
-	}
+    /**
+     * You can insert your own mapping resolver for your actions. 
+     * Default a ClassBasedNameResolver is used
+     * @param actionMappingResolver
+     */
+    public void setActionMappingResolver(ActionMappingResolver actionMappingResolver){
+        this.nameResolver = actionMappingResolver;
+    }
 
 }

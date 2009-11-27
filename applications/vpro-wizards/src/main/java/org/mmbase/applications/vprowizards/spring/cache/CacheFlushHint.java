@@ -23,19 +23,19 @@ public class CacheFlushHint {
     
 
     /**
-	 * For each request a cache flush hint of this type will be added. use it to do stuff you always want to do like
-	 * call your own cache flush logic that is not related to the different cache flush hint types.
-	 */
+     * For each request a cache flush hint of this type will be added. use it to do stuff you always want to do like
+     * call your own cache flush logic that is not related to the different cache flush hint types.
+     */
     public static final int TYPE_REQUEST = 0;
     /**
-	 * For each relation that was created or removed a hint of this type will be created. If one action causes multiple
-	 * relation mutations (like first delete a relation node, and then create a new one) only one hint is created.
-	 */
+     * For each relation that was created or removed a hint of this type will be created. If one action causes multiple
+     * relation mutations (like first delete a relation node, and then create a new one) only one hint is created.
+     */
     public static final int TYPE_RELATION = 1;
     
     /**
-	 * for every node that is created, deleted or updated, a hint of this type is created.
-	 */
+     * for every node that is created, deleted or updated, a hint of this type is created.
+     */
     public static final int TYPE_NODE = 2;
     
 
@@ -46,14 +46,14 @@ public class CacheFlushHint {
     private String nodeType = "";
 
     public String getNodeType() {
-		return nodeType;
-	}
+        return nodeType;
+    }
 
-	public void setNodeType(String nodeType) {
-		this.nodeType = nodeType;
-	}
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
 
-	public int getDestinationNodeNumber() {
+    public int getDestinationNodeNumber() {
         return destinationNodeNumber;
     }
 

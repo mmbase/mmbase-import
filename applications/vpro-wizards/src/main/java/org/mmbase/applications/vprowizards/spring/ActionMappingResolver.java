@@ -16,5 +16,5 @@ package org.mmbase.applications.vprowizards.spring;
  *
  */
 public interface ActionMappingResolver {
-	public String getName(Class clazz);
+    public String getName(Class clazz);
 }
