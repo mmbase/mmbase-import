@@ -7,7 +7,8 @@
 <%@ attribute name="field" description="what field to show. default is the gui function of the node. You can also use a fragment in the body to build the output for each node" %>
 <%@ attribute name="name"%>
 <%@ attribute name="relationrole"%>
-<%@ attribute name="constraints"%>
+<%@ attribute fragment="true" name="constraintsfragment" description="Constraints on the related query as a fragment. So you can use mm:constraint's in it." %>
+<%@ attribute name="constraints"  description="'legacy' constraints as a string %>
 <%@ attribute name="searchdir" description="this is the mmbase searchdir, the direction of the relation. default is 'destination'" %>
 
 <%@ attribute name="edit" type="java.lang.Boolean"%>
@@ -140,7 +141,9 @@
         <c:if test="${not empty nodenr}">
             <mm:node number="${nodenr}">
                 <%--path: ${relationrole},${nodetype}--%>
-                <mm:related path="${relationrole},${nodetype}" orderby="${orderby}" fields="${orderby}" constraints="${constraints}">
+                <mm:relatedcontainer path="${relationrole},${nodetype}"  fields="${orderby}">
+                  <jsp:invoke fragment="constraintsfragment" />
+                  <mm:related orderby="${orderby}"  constraints="${constraints}">
                     <c:set var="_nodenr" ><mm:field name="${nodetype}.number"/></c:set>
                     <c:set var="_relationnr" ><mm:field name="${relationrole}.number"/></c:set>
                     <mm:first>
@@ -311,12 +314,13 @@
                             <jsp:invoke fragment="display"/>
                         </c:otherwise>
                     </c:choose>
-                    </li>
-                    <mm:last>
-                        </ul>
-                    </mm:last>
-                </mm:related>
-            </mm:node>
+                  </li>
+                  <mm:last>
+                  </ul>
+                </mm:last>
+              </mm:related>
+            </mm:relatedcontainer>
+          </mm:node>
         </c:if>
     </mm:cloud>
     <%
