@@ -8,7 +8,7 @@
 <%@ attribute name="name"%>
 <%@ attribute name="relationrole"%>
 <%@ attribute fragment="true" name="constraintsfragment" description="Constraints on the related query as a fragment. So you can use mm:constraint's in it." %>
-<%@ attribute name="constraints"  description="'legacy' constraints as a string %>
+<%@ attribute name="constraints"  description="'legacy' constraints as a string" %>
 <%@ attribute name="searchdir" description="this is the mmbase searchdir, the direction of the relation. default is 'destination'" %>
 
 <%@ attribute name="edit" type="java.lang.Boolean"%>
@@ -116,10 +116,12 @@
                         </a>
                     </c:when>
                 <c:otherwise>
-                    <a href="${relatedpage}.jsp?nodenr=${nodenr}&amp;create=true&relationrole=${relationrole}&searchdir=${searchdir}&${extra_params}"
-                    class="addButton">nieuw <img
-                        src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new2.png"
-                        class="icon" border="0" alt=""></a>
+                  <mm:link page="${relatedpage}.jsp?create=true&amp;${extra_params}" referids="nodenr,relationrole,searchdir,constraints">
+                    <a href="${_}"
+                       class="addButton">nieuw <img
+                       src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new2.png"
+                       class="icon" border="0" alt=""></a>
+                  </mm:link>
                 </c:otherwise>
                 </c:choose>
             </c:if>
@@ -132,16 +134,20 @@
                 --%>
                 <c:if test="${edit == true && empty openwizard}"><c:set var="editparam" value="&edit=true"/></c:if>
                 <c:if test="${not empty openwizard}"><c:set var="editparam" value="&openwizard=${openwizard}"/></c:if>
-                <a href="${relatedpage}.jsp?nodenr=${nodenr}&search=true${editparam}&relationrole=${relationrole}&searchdir=${searchdir}&${extra_params}" class="searchButton">zoeken
-                    <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new2.png" class="icon" border="0" alt="">
-                </a>
+                <mm:link page="${relatedpage}.jsp" referids="nodenr,relationrole,searchdir,constraints">
+                  <mm:param name="search">true</mm:param>
+                  <a href="${_}${editparam}&${extra_params}" class="searchButton">
+                    zoeken
+                    <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new2.png" class="icon" border="0" alt="" />
+                  </a>
+                </mm:link>
             </c:if>
         </div>
 
         <c:if test="${not empty nodenr}">
             <mm:node number="${nodenr}">
                 <%--path: ${relationrole},${nodetype}--%>
-                <mm:relatedcontainer path="${relationrole},${nodetype}"  fields="${orderby}">
+                <mm:relatedcontainer path="${relationrole},${nodetype}"  fields="${orderby}" searchdirs="${searchdir}">
                   <jsp:invoke fragment="constraintsfragment" />
                   <mm:related orderby="${orderby}"  constraints="${constraints}">
                     <c:set var="_nodenr" ><mm:field name="${nodetype}.number"/></c:set>
@@ -249,16 +255,18 @@
                                 <mm:maywrite>
                                     <c:choose>
                                         <c:when test="${not empty openwizard}">
-                                            <a href="${openwizard}?nodenr=${_nodenr}&parentnodenr=${param.nodenr}&relationrole=${relationrole}&searchdir=${searchdir}${extra_params}">
+                                            <a href="${openwizard}?nodenr=${_nodenr}&parentnodenr=${param.nodenr}&relationrole=${relationrole}&searchdir=${searchdir}&constraints=${constraints}${extra_params}">
                                                 <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png" class="icon" border="0" alt="" title="Aanpassen"/>
                                             </a>
                                         </c:when>
                                             <c:when test="${edit}">
                                                 <c:remove var="editparam" />
                                                 <c:if test="${empty openwizard}"><c:set var="editparam" value="&edit=true" /></c:if>
-                                                <a href="${relatedpage}.jsp?nodenr=${nodenr}${editparam}&parentnodenr=${param.nodenr}&relationrole=${relationrole}&editnodenr=${currentnode.number}&searchdir=${searchdir}&${extra_params}" class="edit">
+                                                <mm:link page="${relatedpage}.jsp" referids="nodenr,nodenr@parentnodenr,relationrole,searchdir,constraints,currentnode@editnodenr">
+                                                  <a href="${_}${editparam}&${extra_params}" class="edit">
                                                     <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png" class="icon" border="0" alt="" title="Aanpassen"/>
-                                                </a>
+                                                  </a>
+                                                </mm:link>
                                             </c:when>
                                         <c:otherwise>
                                         </c:otherwise>
