@@ -431,7 +431,7 @@ abstract public class Queries {
             newConstraint = query.createConstraint(stepField, operator, (StepField)value);
         } else if (value instanceof Query) {
             if (operator != OPERATOR_IN) throw new BridgeException("Must use operator IN when comparing with query");
-            Query q = (Query) ((Query) value).clone(); // clone of java is a pretty stupid thing.
+            Query q = ((Query) value).clone(); // clone of java is a pretty stupid thing.
             q.removeImplicitFields();
             newConstraint = query.createConstraint(stepField, q);
         } else if (operator == OPERATOR_NULL || value == null) {
@@ -1334,10 +1334,12 @@ abstract public class Queries {
             return Queries.compare(node1, node2, query.getSortOrders());
         }
 
+        @Override
         public boolean equals(Object o) {
             return o != null && o.getClass().equals(QueryComparator.class) &&
                 ((QueryComparator) o).query.equals(query);
         }
+        @Override
         public int hashCode() {
             return query.hashCode();
         }
@@ -1361,8 +1363,15 @@ abstract public class Queries {
             result =  node2.getNumber() - node1.getNumber();
             return 0;
         }
+        @Override
         public boolean equals(Object o) {
             return o instanceof TransactionNodeComparator;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            return hash;
         }
     }
 
@@ -1634,7 +1643,7 @@ abstract public class Queries {
         Queries.addRelationFields(q, "posrel", "pos", "UP");
         Queries.reorderResult(q, nodeNumbers);
         </pre>
-     * If the values of 'pos' are equal to start with, they well be fixed to, and will have an increasing order.
+     * If the values of 'pos' are equal to start with, they will be fixed too, and will have an increasing order.
      * If all values are different already, values will simply be interchanged.
      *
      * A test-case for this is in QueriesTest#reorderResult.
@@ -1920,7 +1929,7 @@ abstract public class Queries {
 
     /**
      * This puts the node as 'startnode' in the query (propably a 'related nodes' query.
-     * If the node is uncommited yet, this cannot be don with the normal {@link Query#addNode} method.
+     * If the node is uncommited yet, this cannot be done with the normal {@link Query#addNode} method.
      * The information will be put in the query in another way then, so that at least {@link #getStartNode} will give the correct result.
 
      * If the Query object is changed such that it can contain uncommitted nodes, then this method can be made deprecated.
