@@ -77,7 +77,7 @@
       <param name="cancel" />
     </body>
   </block>
-  
+
   <block name="alljobs"
          classification="mmbase.streams"
          mimetype="text/html">
@@ -97,11 +97,11 @@
   <block name="upload"
          classification="mmbase.streams"
          mimetype="text/html">
-    <xi:include href="http://www.mmbase.org/components/widgets.head.xml" />
     <title xml:lang="en">Upload</title>
     <title xml:lang="nl">Upload</title>
     <description xml:lang="en">Upload a stream</description>
     <description xml:lang="nl">Upload een stream</description>
+    <xi:include href="http://www.mmbase.org/components/widgets.head.xml" />
     <body jsp="upload.jspx" />
   </block>
 
