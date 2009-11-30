@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -116,7 +116,7 @@ class JobCallable implements Callable<Integer> {
                 Result current = thisJob.getCurrent();
                 if (current == null || current.isReady()) {
                     if (iterator.hasNext()) {
-                        LOG.info("next !");
+                        LOG.debug("next !");
                         iterator.next();
                     }
                     current = thisJob.getCurrent();
@@ -131,7 +131,7 @@ class JobCallable implements Callable<Integer> {
 
                 }
                 if (result != null && result.getStage() != current.getStage()) {
-                    LOG.info("Will do next stage " + current.getStage() + " now (was " + result + "), first returning");
+                    LOG.service("Will do next stage " + current.getStage() + " now (was " + result + "), first returning");
                     try {
                         thisJob.submit(this);
                     } catch (Exception e) {
@@ -196,6 +196,11 @@ class JobCallable implements Callable<Integer> {
         }
         logger.info("3: returning resultCount: " + resultCount);
         return resultCount;
+    }
+
+    @Override
+    public String toString() {
+        return "JobCallable[" + thisJob + "]";
     }
 
 }
