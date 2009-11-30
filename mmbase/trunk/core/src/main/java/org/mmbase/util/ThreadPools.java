@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 import java.util.*;
+import java.lang.ref.WeakReference;
 import java.util.concurrent.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.UtilReader;
@@ -69,19 +70,15 @@ public abstract class ThreadPools {
      */
     public static final ExecutorService filterExecutor = Executors.newCachedThreadPool();
 
-    private static List<Thread> nameLess = new CopyOnWriteArrayList<Thread>();
+
+    private static List<WeakReference<Thread>> nameLess = new CopyOnWriteArrayList<WeakReference<Thread>>();
+
 
     public static Thread newThread(final Runnable r, final String id) {
-        boolean isUp = false;
-        try {
-            isUp = org.mmbase.bridge.ContextProvider.getResolvers().size() == 0 || org.mmbase.bridge.ContextProvider.getDefaultCloudContext().isUp();
-        } catch (Throwable  t) {
-            log.warn(t);
-            // never mind, can happen during testing
-        }
-
+        String mn = getMachineName();
+        log.service("Found mn " + mn + "(" + (mn == null) + ")");
         Thread t = new Thread(threadGroup, r,
-                              isUp ? getMachineName() + ":" + id : id) {
+                              (mn == null ? "" : mn) + ":" + id) {
                 /**
                  * Overrides run of Thread to catch and log all exceptions. Otherwise they go through to app-server.
                  */
@@ -97,7 +94,9 @@ public abstract class ThreadPools {
                 }
             };
         t.setDaemon(true);
-        if (! isUp) nameLess.add(t);
+        if (mn == null) {
+            nameLess.add(new WeakReference<Thread>(t));
+        }
         return t;
     }
 
@@ -126,13 +125,14 @@ public abstract class ThreadPools {
             protected void beforeExecute(Thread t, Runnable r) {
                 log.debug("Now executing " + r + " in thread " + t);
 
+
             }
         };
+
 
     private static String getMachineName() {
         String machineName;
         try {
-            org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
             machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
         } catch (org.mmbase.bridge.BridgeException be) {
             machineName = "localhost";
@@ -169,9 +169,14 @@ public abstract class ThreadPools {
         scheduler.schedule(new Runnable() {
                 public void run() {
                     String machineName = getMachineName();
-                    for (Thread t : nameLess) {
-                        t.setName(machineName + ":" + t.getName());
+                    for (WeakReference<Thread> tr : nameLess) {
+                        Thread t = tr.get();
+                        if (t != null) {
+                            log.info("Fixing name of " + t);
+                            t.setName(machineName + t.getName());
+                        }
                     }
+                    nameLess.clear();
                 }
             }, 60, TimeUnit.SECONDS);
     }
