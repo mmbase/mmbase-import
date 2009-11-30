@@ -82,7 +82,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
         if (! actualMimeType.getType().equals(type)) {
             MimeType newType = new MimeType(type, actualMimeType.getSubType());
             node.setStringValue("mimetype", newType.toString());
-            log.service("Fixed mime type for node #" + node.getNumber() + ": " + actualMimeType + "-> " + newType) ;
+            log.info("Fixed mime type for node #" + node.getNumber() + ": " + actualMimeType + "-> " + newType) ;
         } else {
             if (log.isDebugEnabled()) log.debug("MimeType " + actualMimeType + " is correct");
         }
@@ -94,7 +94,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
         fixMimeType("video", dest);
         if (cloud != null) {
             if (updateSource && (! source.getNodeManager().getName().equals(VIDEO))) {
-                log.service("This is video, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
+                log.info("This is video, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
                 source.setNodeManager(cloud.getNodeManager(VIDEO));
                 source.commit();
             }
@@ -117,7 +117,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
         fixMimeType("audio", dest);
         if (cloud != null) {
             if (updateSource && ! source.getNodeManager().getName().equals(AUDIO)) {
-                log.service("This is audio, now converting type. source: " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
+                log.info("This is audio, now converting type. source: " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
                 source.setNodeManager(cloud.getNodeManager(AUDIO));
                 source.commit();
             }
@@ -136,12 +136,11 @@ public final class AnalyzerUtils implements java.io.Serializable {
         Cloud cloud = source.getCloud();
         fixMimeType("image", source);
         if (cloud != null) { 
-            if (log.isDebugEnabled()) {
-                log.service("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""), new Exception());
-            }
+            //if (log.isDebugEnabled()) {
+                log.info("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""), new Exception());
+            //}
             if (updateSource && cloud.hasNodeManager(IMAGE) 
                     && ! source.getNodeManager().getName().equals(IMAGE)) {
-                log.debug("Setting nodemanager to: " + IMAGE);
                 source.setNodeManager(cloud.getNodeManager(IMAGE));
                 source.commit();
             }
@@ -259,7 +258,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
                     fragment.commit();
                     if (log.isDebugEnabled()) log.debug("Set mediafragment's field start: " + start);
                 } else {
-                    log.warn("mediafragment still null");
+                    //log.warn("mediafragment still null");
                 }
             }
             return true;
