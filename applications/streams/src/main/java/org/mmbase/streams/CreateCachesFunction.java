@@ -73,6 +73,7 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
 
             {
                 NodeList list = SearchUtil.findNodeList(node.getCloud(), node.getNodeManager().getProperty("org.mmbase.streams.cachestype"), "id", node.getNumber());
+                // BUG: when the streamsourcescaches are initially of the wrong type, they don't get deleted
                 for (Node cache : list) {
                     cache.delete(true);
                     LOG.service("Deleted " + cache.getNumber());
