@@ -172,8 +172,9 @@ public abstract class ThreadPools {
                     for (WeakReference<Thread> tr : nameLess) {
                         Thread t = tr.get();
                         if (t != null) {
-                            log.info("Fixing name of " + t);
+                            String stringBefore = "" + t;
                             t.setName(machineName + t.getName());
+                            log.debug("Fixed name of " + stringBefore + " -> " + t);
                         }
                     }
                     nameLess.clear();
