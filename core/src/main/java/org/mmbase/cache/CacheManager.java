@@ -156,7 +156,7 @@ public class CacheManager implements CacheManagerMBean {
     }
 
 
-    private static ThreadPoolExecutor cachePutter = new ThreadPoolExecutor(1, 1, 2 , TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
+    private static ThreadPoolExecutor cachePutter = new ThreadPoolExecutor(0, 1, 2 , TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
             public Thread newThread(Runnable r) {
                 return ThreadPools.newThread(r, "CachePutter");
             }
