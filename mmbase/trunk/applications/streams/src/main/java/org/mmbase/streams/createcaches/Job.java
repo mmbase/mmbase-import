@@ -429,7 +429,7 @@ public class Job implements Iterable<Result> {
         return interrupted;
     }
     public boolean reached(Stage s) {
-        LOG.info("Comparing for " + getStage() + ">=" + s);
+        LOG.debug("Comparing for " + getStage() + ">=" + s);
         return getStage().ordinal() >= s.ordinal();
     }
 
