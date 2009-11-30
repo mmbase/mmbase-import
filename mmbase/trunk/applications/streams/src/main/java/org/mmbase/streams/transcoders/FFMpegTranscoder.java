@@ -66,10 +66,8 @@ public class FFMpegTranscoder extends CommandTranscoder {
 
     public Codec getCodec() {
         if (vcodec != null) {
-            if (log.isDebugEnabled()) log.debug("vcodec: " + vcodec);
             return AnalyzerUtils.libtoCodec(vcodec);
         } else if (acodec != null) {
-            if (log.isDebugEnabled()) log.debug("acodec: " + acodec);
             return AnalyzerUtils.libtoCodec(acodec);
         } else {
             return null;
@@ -214,7 +212,6 @@ public class FFMpegTranscoder extends CommandTranscoder {
                 }
             };
 
-        log.debug("Returning " + w);
         return w;
     }
 
