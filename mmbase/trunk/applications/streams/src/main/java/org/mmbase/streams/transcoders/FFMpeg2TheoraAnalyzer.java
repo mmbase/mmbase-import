@@ -27,23 +27,18 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
 
-
 /**
  *
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-
 public class FFMpeg2TheoraAnalyzer implements Analyzer {
 
-
     private static final Logger LOG = Logging.getLoggerInstance(FFMpeg2TheoraAnalyzer.class);
-
 
     public int getMaxLines() {
         return Integer.MAX_VALUE;
     }
-
 
     private static final Pattern NORESIZE   = Pattern.compile("\\s*Resize: ([0-9]+)x([0-9]+).*");
     private static final Pattern RESIZE   = Pattern.compile("\\s*Resize: ([0-9]+)x([0-9]+) => ([0-9]+)x([0-9]+).*");
@@ -67,24 +62,19 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
         log.addLogger(logger);
     }
 
-
-
     public void analyze(String l, Node source, Node des) {
         synchronized(util) {
             Cloud cloud = source.getCloud();
             if (util.duration(l, source, des)) {
                 length = source.getLongValue("length");
-                log.info("Found length " + source);
                 return;
             }
     
             if (util.dimensions(l, source, des)) {
-                log.info("Found dimensions " + source);
                 return;
             }
     
             if (util.audio(l, source, des)) {
-                if (log.isDebugEnabled()) log.debug("Found audio (to set channels): " + l);
                 return;
             }
 
@@ -92,7 +82,7 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
                 Matcher m = RESIZE.matcher(l);
                 if (m.matches()) {
                     util.toVideo(source, des);
-                    log.info("Found " + m);
+                    log.debug("Found " + m);
                     source.setIntValue("width", Integer.parseInt(m.group(1)));
                     source.setIntValue("height", Integer.parseInt(m.group(2)));
                     source.commit();
@@ -103,7 +93,7 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
                 } else {
                     Matcher n = NORESIZE.matcher(l);
                     if (n.matches()) {
-                        log.info("Found " + m);
+                        log.debug("Found " + n);
                         util.toVideo(source, des);
                         source.setIntValue("width", Integer.parseInt(n.group(1)));
                         source.setIntValue("height", Integer.parseInt(n.group(2)));
@@ -132,7 +122,7 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
 
     public void ready(Node sourceNode, Node destNode) {
         synchronized(util) {
-            System.out.println("length: " + length + " prevPos " + prevPos);
+            //System.out.println("length: " + length + " prevPos " + prevPos);
             if (bits > 0 && length > 0) {
                 destNode.setIntValue("bitrate", (int) (bits / length));
             }
