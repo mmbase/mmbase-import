@@ -944,7 +944,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
      * @param o the object to compare it with
      * @return is equal
      */
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (o instanceof Cloud) {
             if (userContext != null) {
                 Cloud oc = (Cloud) o;
