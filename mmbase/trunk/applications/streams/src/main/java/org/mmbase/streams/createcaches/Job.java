@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -132,7 +132,7 @@ public class Job implements Iterable<Result> {
 
                 // mimetype: skip when no match
                 if (! jd.getMimeType().matches(new MimeType(inNode.getStringValue("mimetype")))) {
-                    LOG.info("SKIPPING " + jd);
+                    LOG.debug("SKIPPING " + jd);
                     results.set(i, new SkippedResult(jd, inURI));
                     skipped++;
                     continue;
@@ -273,7 +273,7 @@ public class Job implements Iterable<Result> {
                 Node destination = current.getDestination();
                 if (destination != null) {
                     try {
-                        LOG.debug("Setting " + destination.getNodeManager().getName() + " " + destination.getNumber() + " to BUSY " + i);
+                        LOG.debug("Setting " + destination.getNodeManager().getName() + " " + destination.getNumber() + " " + destination.getStringValue("id") + "/" + destination.getStringValue("key") + " to BUSY " + i);
                         destination.setIntValue("state", State.BUSY.getValue());
                         destination.commit();
                     } catch (Exception e) {
@@ -313,7 +313,7 @@ public class Job implements Iterable<Result> {
                                iterator().next();
                            }
                            Stage s = getCurrent().getStage();
-                           LOG.info("to " + s);
+                           LOG.service(jc.toString() + " to " + s);
                            future = processor.threadPools.get(s).submit(jc);
                            Job.this.notifyAll();
                        }
@@ -370,7 +370,7 @@ public class Job implements Iterable<Result> {
             newNode.setStringValue("key", key);
 
             newNode.commit();
-            LOG.info("CREATED " + src.getNumber() + " " + key);
+            LOG.info("CREATED " + newNode.getNumber() + " (" + src.getNumber() + "/" + key + ")");
 
             logger.service("Created new node for " + key + "(" + src.getNumber() + "): " + newNode.getNumber());
             return newNode;

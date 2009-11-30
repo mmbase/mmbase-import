@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -49,5 +49,10 @@ class SkippedResult extends Result {
     }
     public boolean isReady() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "SKIPPED[" + definition + "]";
     }
 }

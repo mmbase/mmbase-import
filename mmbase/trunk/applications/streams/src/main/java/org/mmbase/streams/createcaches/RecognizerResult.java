@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -59,5 +59,9 @@ class RecognizerResult extends Result {
             source.setStringValue("label", definition.getLabel());
         }
 
+    }
+    @Override
+    public String toString() {
+        return "RECOGINIZER " + source.getNumber() + "[" + definition + "]";
     }
 }
