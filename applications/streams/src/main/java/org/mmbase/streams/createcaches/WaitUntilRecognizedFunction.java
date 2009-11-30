@@ -2,7 +2,7 @@
 
 This file is part of the MMBase Streams application, 
 which is part of MMBase - an open source content management system.
-    Copyright (C) 2009 André van Toly, Michiel Meeuwissen
+    Copyright (C) 2009 Andr√© van Toly, Michiel Meeuwissen
 
 MMBase Streams is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,10 +27,9 @@ import org.mmbase.util.logging.*;
 
 /**
  *
- * @author André van Toly
+ * @author Andr√© van Toly
  * @version $Id$
  */
-
 public class WaitUntilRecognizedFunction extends NodeFunction<Boolean> {
 
     private static final long serialVersionUID = 0L;
