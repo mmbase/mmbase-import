@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -135,11 +135,11 @@ public final class AnalyzerUtils implements java.io.Serializable {
     public void toImage(Node source, Node dest) {
         Cloud cloud = source.getCloud();
         fixMimeType("image", source);
-        if (cloud != null) { 
-            //if (log.isDebugEnabled()) {
-                log.info("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""), new Exception());
-            //}
-            if (updateSource && cloud.hasNodeManager(IMAGE) 
+        if (cloud != null) {
+            if (log.isDebugEnabled()) {
+                log.debug("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
+            }
+            if (updateSource && cloud.hasNodeManager(IMAGE)
                     && ! source.getNodeManager().getName().equals(IMAGE)) {
                 source.setNodeManager(cloud.getNodeManager(IMAGE));
                 source.commit();
@@ -382,13 +382,13 @@ public final class AnalyzerUtils implements java.io.Serializable {
                 log.debug("   freq.: " + m.group(2));
                 log.debug("channels: " + m.group(3));
             }
-            
+
             String channels = m.group(3);
             int ch = org.mmbase.applications.media.builders.MediaSources.MONO;
             if (channels.equals("stereo") || channels.startsWith("2")) {
                 ch = org.mmbase.applications.media.builders.MediaSources.STEREO;
             }
-            
+
             if (source.getNodeManager().hasField("channels") && updateSource) {
                 if (source.getIntValue("channels") < 0) source.setIntValue("channels", ch);
                 if (source.getIntValue("codec") < 0) {
@@ -401,7 +401,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
                     dest.setIntValue("codec", libtoCodec(m.group(1)).toInt() );
                 }
             }
-            
+
             return true;
         } else {
             return false;
@@ -415,7 +415,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
         if (str.equals("mpeg1video")) str = "mpeg";
         if (str.equals("mpeg2video")) str = "mpeg2";
         if (str.startsWith("lib")) str = str.substring(3, str.length());
-        
+
         return Codec.get(str);
     }
 
