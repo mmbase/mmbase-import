@@ -50,7 +50,7 @@ public class CacheManager implements CacheManagerMBean {
         // singleton
     }
 
-    private static String getMachineName(boolean assertUp) {
+    private static  String getMachineName(boolean assertUp) {
         String machineName;
         try {
             if (assertUp) {
@@ -73,15 +73,20 @@ public class CacheManager implements CacheManagerMBean {
             instance = new CacheManager();
             ThreadPools.jobsExecutor.execute(new Runnable() {
                     public void run() {
+
                         ObjectName on;
                         final Hashtable<String, String> props = new Hashtable<String, String>();
 
                         try {
                             props.put("type", "Caches");
-                            String machineName = getMachineName(true);
+                            try {
+                                String machineName = getMachineName(true);
 
-                            if (machineName != null) {
-                                props.put("type", machineName);
+                                if (machineName != null) {
+                                    props.put("type", machineName);
+                                }
+                            } catch (Throwable t) {
+                                log.error(t.getMessage(), t);
                             }
                             on = new ObjectName("org.mmbase", props);
                         } catch (MalformedObjectNameException mfone) {
@@ -91,6 +96,7 @@ public class CacheManager implements CacheManagerMBean {
                         try {
                             MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
                             mbs.registerMBean(instance, on);
+                            log.info("Registered " + on);
                         } catch (JMException jmo) {
                             log.warn("" + on + " " + jmo.getClass() + " " + jmo.getMessage());
                         } catch (Throwable t) {
