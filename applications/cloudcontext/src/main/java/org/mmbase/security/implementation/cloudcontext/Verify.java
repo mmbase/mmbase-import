@@ -51,7 +51,8 @@ public class Verify extends Authorization {
     }
 
 
-    @Override public void create(UserContext userContext, int nodeId) {
+    @Override
+    public void create(UserContext userContext, int nodeId) {
         User user = (User) userContext;
         // odd, getOwnerField is called in BasicNodeManager yet, so I wonder when this is called.
         setContext(userContext, nodeId, user.getOwnerField());
@@ -71,7 +72,8 @@ public class Verify extends Authorization {
         return getContextProvider().mayDo((User) userContext, getNode(nodeId, true), operation);
     }
 
-    @Override public boolean check(UserContext userContext, int nodeId, int sourceNodeId, int destinationNodeId, Operation operation) {
+    @Override
+    public boolean check(UserContext userContext, int nodeId, int sourceNodeId, int destinationNodeId, Operation operation) {
         // admin bypasses security system
         if (userContext.getRank().getInt() >= Rank.ADMIN_INT) {
             return true;
@@ -81,7 +83,8 @@ public class Verify extends Authorization {
 
 
 
-    @Override public String getContext(UserContext userContext, int nodeId) throws org.mmbase.security.SecurityException {
+    @Override
+    public String getContext(UserContext userContext, int nodeId) throws org.mmbase.security.SecurityException {
         // userContext ignored
         MMObjectNode contextNode = getContextNode(nodeId, true);
         if (contextNode == null) {
@@ -93,15 +96,18 @@ public class Verify extends Authorization {
         return getContextProvider().getContextName(contextNode);
     }
 
-    @Override public void setContext(UserContext user, int nodeId, String context) throws org.mmbase.security.SecurityException {
+    @Override
+    public void setContext(UserContext user, int nodeId, String context) throws org.mmbase.security.SecurityException {
         getContextProvider().setContext((User) user, getNode(nodeId, true), context);
     }
 
-    @Override public Set<String> getPossibleContexts(UserContext userContext, int nodeId)  throws org.mmbase.security.SecurityException {
+    @Override
+    public Set<String> getPossibleContexts(UserContext userContext, int nodeId)  throws org.mmbase.security.SecurityException {
         return getContextProvider().getPossibleContexts((User) userContext, getNode(nodeId, true));
     }
 
-    @Override public Set<String> getPossibleContexts(UserContext userContext) throws org.mmbase.security.SecurityException {
+    @Override
+    public Set<String> getPossibleContexts(UserContext userContext) throws org.mmbase.security.SecurityException {
         return getContextProvider().getPossibleContexts((User) userContext);
     }
 
@@ -111,7 +117,8 @@ public class Verify extends Authorization {
 
     }
 
-    @Override public boolean check(UserContext user, Action ac, Parameters parameters) {
+    @Override
+    public boolean check(UserContext user, Action ac, Parameters parameters) {
         return Actions.getBuilder().check((User) user, ac, parameters);
     }
 
