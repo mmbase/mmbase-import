@@ -117,7 +117,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
                 threadPools.put(s, ThreadPools.jobsExecutor);
             }
         }
-
+        // default configuration, 6 executors.
         for (int i = 0; i < 6; i++) {
             executors.add(new CommandExecutor.Method());
         }
