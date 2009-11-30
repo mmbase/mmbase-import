@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * Base transcoder for others.
- * 
+ *
  * @author Michiel Meeuwissen
  * @version $Id$
  */
@@ -119,7 +119,7 @@ public abstract class AbstractTranscoder implements Transcoder {
      * instance with {@link #getInstance}. This makes for a key which is, like the icaches 'ckey'
      * key unique and parseable.
      *
-     * The implemetation depends on {@link Settings} annotations to be set on the classes.
+     * The implementation depends on {@link Settings} annotations to be set on the classes.
      */
     public final String getKey() {
         StringBuilder buf = new StringBuilder();
@@ -133,7 +133,9 @@ public abstract class AbstractTranscoder implements Transcoder {
         buf.append(" ");
         boolean appendedSetting = false;
         Settings settings = getClass().getAnnotation(Settings.class);
-        if (settings == null) throw new RuntimeException("Class " + getClass() + " is not annotated with " + Settings.class);
+        if (settings == null) {
+            throw new RuntimeException("Class " + getClass() + " is not annotated with " + Settings.class);
+        }
         for (String setting : settings.value()) {
             Object value = null;
 
@@ -183,7 +185,7 @@ public abstract class AbstractTranscoder implements Transcoder {
     protected abstract void transcode(final Logger log) throws Exception;
 
 
-
+    @Override
     public String toString() {
         return getKey();
     }
