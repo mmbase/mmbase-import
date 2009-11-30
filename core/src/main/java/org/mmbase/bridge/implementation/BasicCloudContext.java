@@ -257,9 +257,13 @@ public abstract class BasicCloudContext implements CloudContext {
                 if (Thread.currentThread().isInterrupted()) {
                     return this;
                 }
-                check();
+                try {
+                    check();
+                    log.debug("Sleeping 10 secs");
+                } catch (NotFoundException nfe) {
+                    log.service(nfe.getMessage() + ". Waiting 10 secs.");
+                }
                 Thread.sleep(10000);
-                log.debug("Sleeping another 10 secs");
             } catch (InterruptedException e) {
                 return this;
             }
