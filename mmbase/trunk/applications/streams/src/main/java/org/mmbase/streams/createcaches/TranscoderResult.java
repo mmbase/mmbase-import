@@ -48,7 +48,6 @@ class TranscoderResult extends Result {
         assert out != null;
         this.dest = dest;
         this.out = out;
-        LOG.info("Setting " + dest.getNumber() + " to request");
         dest.setIntValue("state",  State.REQUEST.getValue());
         dest.commit();
         this.directory = directory;
@@ -65,7 +64,6 @@ class TranscoderResult extends Result {
     public void ready() {
         super.ready();
         if (dest != null) {
-            LOG.service("Setting " + dest.getNumber() + " to done");
             File outFile = new File(directory, dest.getStringValue("url").replace("/", File.separator));
             dest.setLongValue("filesize", outFile.length());
             if (outFile.length() > 1) {     // @TODO: there should maybe be other ways to detect if a transcoding failed
