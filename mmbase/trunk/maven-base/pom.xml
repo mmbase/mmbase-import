@@ -11,11 +11,11 @@ See http://www.MMBase.org/license
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<parent>
-		<groupId>org.mmbase</groupId>
-		<artifactId>mmbase-cms</artifactId>
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-cms</artifactId>
     <version>1.9-SNAPSHOT</version>
-	</parent>
+  </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.mmbase</groupId>
@@ -33,12 +33,12 @@ See http://www.MMBase.org/license
 
 
     <!-- MMBase 2.0?
-         -->
+    -->
     <!--
-    <servlet.version>2.5</servlet.version>
-    <jsp.version>2.1</jsp.version>
-    <jsp.groupId>javax.servlet.jsp</jsp.groupId>
-    <jstl.version>1.2</jstl.version>
+        <servlet.version>2.5</servlet.version>
+        <jsp.version>2.1</jsp.version>
+        <jsp.groupId>javax.servlet.jsp</jsp.groupId>
+        <jstl.version>1.2</jstl.version>
     -->
 
 
@@ -69,67 +69,67 @@ See http://www.MMBase.org/license
 
   <build>
     <defaultGoal>install</defaultGoal>
-		<resources>
-			<resource>
-				<directory>${basedir}/src/main/java</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-			<resource>
-				<directory>${basedir}/src/main/resources</directory>
-				<includes>
-					<include>**/*</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>${basedir}/src/main/resources-filtered</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>${basedir}/src/main/config</directory>
-				<targetPath>org/mmbase/config</targetPath>
-				<includes>
-					<include>**/*</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>${basedir}/target/generated/src/main/resources</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>src/test/java</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</testResource>
-			<testResource>
-				<directory>src/test/resources</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-			</testResource>
-			<testResource>
-				<directory>src/test/java</directory>
-				<includes>
-					<include>**/*.xml</include>
-				</includes>
-				<filtering>true</filtering>
-			</testResource>
-			<testResource>
-				<directory>target/generated/src/test/resources</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-			</testResource>
-		</testResources>
+    <resources>
+      <resource>
+        <directory>${basedir}/src/main/java</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${basedir}/src/main/resources-filtered</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+        <filtering>true</filtering>
+      </resource>
+      <resource>
+        <directory>${basedir}/src/main/config</directory>
+        <targetPath>org/mmbase/config</targetPath>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${basedir}/target/generated/src/main/resources</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>src/test/java</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </testResource>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+      </testResource>
+      <testResource>
+        <directory>src/test/java</directory>
+        <includes>
+          <include>**/*.xml</include>
+        </includes>
+        <filtering>true</filtering>
+      </testResource>
+      <testResource>
+        <directory>target/generated/src/test/resources</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+      </testResource>
+    </testResources>
 
     <pluginManagement>
       <plugins>
@@ -256,6 +256,7 @@ See http://www.MMBase.org/license
             <quiet>false</quiet>
             <bottom>MMBase.org</bottom>
             <quiet>true</quiet>
+            <show>package</show>
             <links>
               <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
               <link>http://java.sun.com/javaee/5/docs/api/</link>
@@ -305,34 +306,34 @@ See http://www.MMBase.org/license
         </configuration>
       </plugin>
       <plugin>
-       <groupId>org.apache.maven.plugins</groupId>
-       <artifactId>maven-jar-plugin</artifactId>
-       <configuration>
-         <archive>
-           <manifest>
-             <addClasspath>true</addClasspath>
-           </manifest>
-           <manifestEntries>
-             <ExtensionName>${pom.groupId}:${pom.artifactId}</ExtensionName>
-             <ExtensionName>${pom.groupId}:${pom.artifactId}</ExtensionName>
-             <url>${pom.url}</url>
-           </manifestEntries>
-           <manifestSections>
-             <manifestSection>
-               <name>org/mmbase</name>
-               <manifestEntries>
-                 <Vendor>MMBase Community</Vendor>
-                 <Comment>MMBase  ${project.name} (${project.artifactId}).</Comment>
-                 <Version>${project.version}.${timestamp}</Version>
-                 <SCM-Revision>${sources.version}</SCM-Revision>
-                 <Distribution>${project.version}</Distribution>
-                 <Build-Date>${timestamp}</Build-Date>
-                 <Description>${pom.description}</Description>
-               </manifestEntries>
-             </manifestSection>
-           </manifestSections>
-         </archive>
-       </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+            </manifest>
+            <manifestEntries>
+              <ExtensionName>${pom.groupId}:${pom.artifactId}</ExtensionName>
+              <ExtensionName>${pom.groupId}:${pom.artifactId}</ExtensionName>
+              <url>${pom.url}</url>
+            </manifestEntries>
+            <manifestSections>
+              <manifestSection>
+                <name>org/mmbase</name>
+                <manifestEntries>
+                  <Vendor>MMBase Community</Vendor>
+                  <Comment>MMBase  ${project.name} (${project.artifactId}).</Comment>
+                  <Version>${project.version}.${timestamp}</Version>
+                  <SCM-Revision>${sources.version}</SCM-Revision>
+                  <Distribution>${project.version}</Distribution>
+                  <Build-Date>${timestamp}</Build-Date>
+                  <Description>${pom.description}</Description>
+                </manifestEntries>
+              </manifestSection>
+            </manifestSections>
+          </archive>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -529,18 +530,18 @@ See http://www.MMBase.org/license
             <artifactId>maven-enforcer-plugin</artifactId>
             <executions>
               <execution>
-              <id>enforce-no-snapshots</id>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <configuration>
-                <rules>
-                  <requireReleaseVersion>
-                    <message>No Snapshots Allowed!</message>
-                  </requireReleaseVersion>
-                </rules>
-                <fail>true</fail>
-              </configuration>
+                <id>enforce-no-snapshots</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <requireReleaseVersion>
+                      <message>No Snapshots Allowed!</message>
+                    </requireReleaseVersion>
+                  </rules>
+                  <fail>true</fail>
+                </configuration>
               </execution>
             </executions>
           </plugin>
@@ -570,24 +571,23 @@ See http://www.MMBase.org/license
           <!-- This is broken.
                It will fail the complete build on:
                ERROR: Could not resolve order in ObjectWrapperHelper
-
                Completely ridiculous.
 
-                for now disable the whole thing
+               for now disable the whole thing
           -->
           <!--
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
+              <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <executions>
               <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
+              <id>attach-javadocs</id>
+              <goals>
+              <goal>jar</goal>
+              </goals>
               </execution>
-            </executions>
-          </plugin>
+              </executions>
+              </plugin>
           -->
         </plugins>
       </build>
@@ -622,38 +622,38 @@ See http://www.MMBase.org/license
         <maven.war.useDefaultExcludes>false</maven.war.useDefaultExcludes>
       </properties>
     </profile>
-   <profile>
-     <id>buildnumber</id>
-     <activation>
-       <os>
-         <family>!Windows</family> <!-- sigh, it simply won't work -->
-       </os>
-     </activation>
-     <build>
-       <plugins>
-         <plugin>
-           <groupId>org.codehaus.mojo</groupId>
-           <artifactId>buildnumber-maven-plugin</artifactId>
-           <configuration>
-             <buildNumberPropertyName>sources.version</buildNumberPropertyName>
-             <timestampPropertyName>timestamp</timestampPropertyName>
-             <timestampFormat>{0,date,yyyy-MM-dd'T'HH:mm}</timestampFormat>
-             <revisionOnScmFailure>UNKNOWN</revisionOnScmFailure>
-             <doCheck>${buildnumber.doCheck}</doCheck>
-             <doUpdate>false</doUpdate>
-           </configuration>
-           <executions>
-             <execution>
-               <phase>validate</phase>
-               <goals>
-                 <goal>create</goal>
-               </goals>
-             </execution>
-           </executions>
-         </plugin>
-       </plugins>
-     </build>
-   </profile>
+    <profile>
+      <id>buildnumber</id>
+      <activation>
+        <os>
+          <family>!Windows</family> <!-- sigh, it simply won't work -->
+        </os>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>buildnumber-maven-plugin</artifactId>
+            <configuration>
+              <buildNumberPropertyName>sources.version</buildNumberPropertyName>
+              <timestampPropertyName>timestamp</timestampPropertyName>
+              <timestampFormat>{0,date,yyyy-MM-dd'T'HH:mm}</timestampFormat>
+              <revisionOnScmFailure>UNKNOWN</revisionOnScmFailure>
+              <doCheck>${buildnumber.doCheck}</doCheck>
+              <doUpdate>false</doUpdate>
+            </configuration>
+            <executions>
+              <execution>
+                <phase>validate</phase>
+                <goals>
+                  <goal>create</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
 
 
   </profiles>
