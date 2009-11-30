@@ -450,14 +450,14 @@ public class Job implements Iterable<Result> {
 
     public synchronized void waitUntil(Stage stage)
                                  throws InterruptedException {
-        LOG.info("Waiting for " + stage);
+        LOG.service("Waiting for " + stage);
         while (! reached(stage)) {
             wait();
         }
     }
 
     public synchronized void waitUntilAfter(Stage stage) throws InterruptedException {
-        LOG.info("Waiting untill after " + stage);
+        LOG.service("Waiting untill after " + stage);
         while (getStage().ordinal() <= stage.ordinal()) {
             wait();
         }

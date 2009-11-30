@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -214,7 +214,7 @@ public class CreateCachesTest {
             Node source = getNode(proc.getDirectory());
             Job job = proc.createCaches(source.getCloud(), source.getNumber());
             job.waitUntil(Stage.READY);
-            assertTrue("No node " + source.getNumber() + " in " + source.getCloud(), source.getCloud().hasNode(source.getNumber()));
+            assertTrue("During test " + i +". No node " + source.getNumber() + " in " + source.getCloud(), source.getCloud().hasNode(source.getNumber()));
             source = refresh(source);
         }
     }
