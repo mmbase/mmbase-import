@@ -62,6 +62,6 @@ class RecognizerResult extends Result {
     }
     @Override
     public String toString() {
-        return "RECOGINIZER " + source.getNumber() + "[" + definition + "]";
+        return "RECOGNIZER " + source.getNumber() + "[" + definition + "]";
     }
 }
