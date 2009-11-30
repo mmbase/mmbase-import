@@ -126,6 +126,8 @@ public class MediaFragmentTest {
         assertEquals(fragmentsBefore + 1, Queries.count(getCloud().getNodeManager("mediafragments").createQuery()));
 
         newSource.setNodeManager(newSource.getCloud().getNodeManager("videostreamsources"));
+
+        assertNotNull(newSource.getNodeValue("mediafragment"));
         newSource.commit();
         //newSource.commit(); // ADDING THIS FIXES THE FAIL!
 

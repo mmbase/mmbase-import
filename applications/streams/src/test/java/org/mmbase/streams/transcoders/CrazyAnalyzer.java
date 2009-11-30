@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -41,6 +41,7 @@ public class CrazyAnalyzer extends MockAnalyzer {
 
     int busy = 0;
     int count = 0;
+    int errors = 0;
 
     @Override
     public void analyze(String l, final Node source, final Node des) {
@@ -48,12 +49,17 @@ public class CrazyAnalyzer extends MockAnalyzer {
         ThreadPools.jobsExecutor.execute(new Runnable() {
                 public void run() {
                     count++;
-                    if (count % 2 == 0  ) {
-                        System.out.print("V");
-                        util.toVideo(source, des);
-                    } else {
-                        System.out.print("A");
-                        util.toAudio(source, des);
+                    try {
+                        if (count % 2 == 0  ) {
+                            System.out.print("V");
+                            util.toVideo(source, des);
+                        } else {
+                            System.out.print("A");
+                            util.toAudio(source, des);
+                        }
+                    } catch (Throwable t) {
+                        errors++;
+                        System.out.println(t);
                     }
                     synchronized(CrazyAnalyzer.this) {
                         busy--;
@@ -77,5 +83,11 @@ public class CrazyAnalyzer extends MockAnalyzer {
         }
         super.ready(sourceNode, destNode);
         assert sourceNode.getCloud().hasNode(sourceNode.getNumber());
+        assert errors == 0;
+    }
+
+    @Override
+    public String toString() {
+        return "CRAZYANALYZER";
     }
 }
