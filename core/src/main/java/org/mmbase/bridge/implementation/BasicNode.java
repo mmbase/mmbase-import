@@ -200,7 +200,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
     public void setNodeManager(NodeManager nm) {
-        cloud.check(Operation.WRITE, getNode().getNumber());
+        checkWrite();
         cloud.check(Operation.CREATE, nm.getNumber());
 
         noderef.setBuilder(BasicCloudContext.mmb.getBuilder(nm.getName()));
@@ -1049,7 +1049,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         return new BasicFunctionValue(getCloud(), result);
     }
 
-      /*
+    /*
     public Object getOldValue(String fieldName) {
         return getNode().getOldValues().get(fieldName);
     }
