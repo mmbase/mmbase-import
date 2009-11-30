@@ -26,7 +26,6 @@ import org.mmbase.util.logging.*;
 public class BasicLegacyConstraint extends BasicConstraint implements LegacyConstraint, java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** Logger instance. */
     private static final Logger log = Logging.getLoggerInstance(BasicLegacyConstraint.class);
 
     /** The constraint. */
