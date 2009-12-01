@@ -158,6 +158,8 @@ class JobCallable implements Callable<Integer> {
                     for (AnalyzerLogger al : analyzerLoggers) {
                         al.getAnalyzer().ready(thisJob.getNode(), result.getDestination());
                     }
+                    
+                    
                     resultCount++;
                     result.ready();
                     logger.info("RESULT " + thisJob + "(" + thisJob.getNode().getNodeManager().getName() + ":" + thisJob.getNode().getNumber() + "):" + result);
