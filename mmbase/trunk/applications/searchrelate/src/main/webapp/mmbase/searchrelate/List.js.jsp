@@ -5,7 +5,7 @@
 <mm:content type="text/javascript" expires="0">
 
 /**
- * This javascript binds to a div.list.
+ * This javascript binds to a div.list. It happens on document.ready on every div.list in the document. You can also call {@link #init} manually, e.g. after an AJAX load.
  *
  * This div is supposed to contain an <ol> with <a class="delete" />, and a <a class="create" />
  *
@@ -27,15 +27,7 @@
 
 
 $(document).ready(function() {
-    var l = List; // hoping to make IE a bit faster
-    $(document).find("div.list").each(function() {
-        if (this.list == null) {
-            this.list = new l(this);
-        }
-    });
-    $(document).find("div.list:last").each(function() {
-        l.seq = $(this).find("input[name = 'seq']")[0].value;
-    });
+        List.prototype.init(document);
 });
 
 
@@ -198,6 +190,20 @@ function List(d) {
 
 }
 
+/**
+ * Initializes every div.list in the given element to be a List
+ */
+List.prototype.init = function(el) {
+    var l = List; // hoping to make IE a bit faster
+    $(el).find("div.list").each(function() {
+        if (this.list == null) {
+            this.list = new l(this);
+        }
+    });
+    $(el).find("div.list:last").each(function() {
+        l.seq = $(this).find("input[name = 'seq']")[0].value;
+    });
+}
 
 List.prototype.wasResetSequence = false;
 List.prototype.instances = {};
@@ -616,7 +622,7 @@ List.prototype.upload = function(fileid) {
 }
 
 /**
- * @param stale Number of millisecond the content may be aut of date. Defaults to 5 s. But on unload it is set to 0.
+ * @param stale Number of millisecond the content may be out of date. Defaults to 5 s. But on unload it is set to 0.
  */
 List.prototype.commit = function(stale, leavePage) {
     var result;
