@@ -108,16 +108,16 @@ public class Job implements Iterable<Result> {
                     assert f.exists() : "No such file " + f;
                     
                     int w = 0;
-                    while (!f.exists() && w < 15) {
-                        LOG.warn("No such file '" + f + "' waiting 2 sec...");
+                    while (!f.exists() && !f.isFile() && w < 30) {
+                        LOG.service("Checking if file exists '" + f + "'. Waiting 5 sec. to be sure filesystem is ready (" + w + ")");
                         try {
-                            getThread().sleep(2000);
+                            getThread().sleep(5000);
                             w++;
-                        } catch (java.lang.InterruptedException ie) {
-                            LOG.error(ie);
+                        } catch (InterruptedException ie) {
+                            LOG.info("Interrupted" + ie);
                         }
                     }
-                    if (!f.exists()) LOG.error("NO FILE! '" + f + "', but continuing anyway.");
+                    if (!f.exists() && !f.isFile()) LOG.error("NO FILE! '" + f + "', but continuing anyway.");
                     inURI = f.toURI();
                     inNode = node;
                 } else {
