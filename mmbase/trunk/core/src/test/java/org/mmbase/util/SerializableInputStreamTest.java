@@ -54,6 +54,16 @@ public class SerializableInputStreamTest  {
         os.close();
         return new SerializableInputStream(di);
     }
+
+    protected SerializableInputStream getRandomInstance() throws IOException {
+        final int length = 10000;
+        return new SerializableInputStream(new RandomInputStream(length), length);
+    }
+    protected SerializableInputStream getNullInstance() throws IOException {
+        final int length = 10000;
+        return new SerializableInputStream(new NullInputStream(length), length);
+    }
+
     protected SerializableInputStream getDiskItemInstanceBig() throws IOException {
         DiskFileItem di = new DiskFileItem("file", "application/octet-stream", false, "foobar", 100, new File(System.getProperty("java.io.tmpdir")));
         OutputStream os = di.getOutputStream();
@@ -65,7 +75,7 @@ public class SerializableInputStreamTest  {
         return new SerializableInputStream(di);
     }
     protected File getTestFile() throws IOException {
-        File file = File.createTempFile(getClass().getName(), ".test");
+        File file = File.createTempFile(getClass().getName(), ".testfile");
         OutputStream os = new FileOutputStream(file);
         for (int i = 1; i < 10000; i++) {
             os.write( (i % 100) + 20);
@@ -93,8 +103,8 @@ public class SerializableInputStreamTest  {
         assertEquals(getByteArrayInstance(), getByteArrayInstance());
 
         SerializableInputStream i = getByteArrayInstance();
-        assertTrue(Arrays.equals(new byte[] { 0, 1, 2}, i.get()));
-        assertTrue(Arrays.equals(new byte[] { 0, 1, 2}, i.get()));
+        assertTrue(Arrays.equals(new byte[] {0, 1, 2}, i.get()));
+        assertTrue(Arrays.equals(new byte[] {0, 1, 2}, i.get()));
         assertTrue(Arrays.equals(i.get(), i.get()));
     }
 
@@ -117,7 +127,7 @@ public class SerializableInputStreamTest  {
     }
 
 
-    protected void testSerializableMany(SerializableInputStream l) throws IOException, java.lang.ClassNotFoundException {
+    protected void testSerializableMany(SerializableInputStream l, String id) throws IOException, java.lang.ClassNotFoundException {
         byte[] before = l.get();
         testSerializable(l);
         testSerializable(l);
@@ -128,7 +138,7 @@ public class SerializableInputStreamTest  {
         testSerializable(l);
         after = l.get();
         assertTrue("" + before.length + " " + after.length, Arrays.equals(before, after));
-        File f = File.createTempFile("foo", ".bar");
+        File f = File.createTempFile(getClass().getName() + "." + id + ".", ".many");
         l.moveTo(f);
         testSerializable(l);
         testSerializable(l);
@@ -148,32 +158,43 @@ public class SerializableInputStreamTest  {
     @Test
     public void testSerializableA() throws IOException, ClassNotFoundException {
         SerializableInputStream a = getByteArrayInstance();
-        testSerializableMany(a);
+        testSerializableMany(a, "A");
     }
     @Test
     public void testSerializableB() throws IOException, ClassNotFoundException {
         SerializableInputStream b = getInputStreamInstance();
-        testSerializableMany(b);
+        testSerializableMany(b, "B");
 
     }
     @Test
     public void testSerializableC() throws IOException, ClassNotFoundException {
         SerializableInputStream c = getDiskItemInstance();
-        testSerializableMany(c);
+        testSerializableMany(c, "C");
     }
     @Test
     public void testSerializableD() throws IOException, ClassNotFoundException {
         SerializableInputStream c = getDiskItemInstanceBig();
-        testSerializableMany(c);
+        testSerializableMany(c, "D");
     }
     @Test
     public void testSerializableE() throws IOException, ClassNotFoundException {
         SerializableInputStream c = getFileInstance();
-        testSerializableMany(c);
+        testSerializableMany(c, "E");
+    }
+
+    @Test
+    public void testSerializableF() throws IOException, ClassNotFoundException {
+        SerializableInputStream c = getRandomInstance();
+        testSerializableMany(c, "F");
+    }
+    @Test
+    public void testSerializableG() throws IOException, ClassNotFoundException {
+        SerializableInputStream c = getNullInstance();
+        testSerializableMany(c, "G");
     }
 
     public File testCopy(SerializableInputStream l) throws IOException {
-        File f = File.createTempFile("oof", ".bar");
+        File f = File.createTempFile(getClass().getName(), ".copy");
         IOUtil.copy(l, new FileOutputStream(f));
         //l.close();
         return f;
@@ -217,7 +238,7 @@ public class SerializableInputStreamTest  {
         SerializableInputStream is1 = getInputStreamInstance();
         SerializableInputStream is2 = new SerializableInputStream(is1);
         is1.finalize();
-        testSerializableMany(is2);
+        testSerializableMany(is2, "COPY");
 
     }
 
