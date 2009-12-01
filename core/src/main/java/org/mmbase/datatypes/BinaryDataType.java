@@ -12,6 +12,8 @@ package org.mmbase.datatypes;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.SerializableInputStream;
 import org.mmbase.bridge.*;
+import org.mmbase.util.*;
+import java.util.Collection;
 import java.io.InputStream;
 import java.util.regex.Pattern;
 import org.apache.commons.fileupload.FileItem;
@@ -64,6 +66,9 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
     @Override
     public long getLength(Object value) {
         if (value == null) return 0;
+        if (log.isDebugEnabled()) {
+            log.debug("Finding lenth for " + value);
+        }
         if (value instanceof byte[]) {
             byte[] bytes = (byte[]) value;
             if (log.isDebugEnabled()) {
@@ -89,6 +94,10 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
         }
     }
 
+    @Override
+    protected Collection<LocalizedString> validateRequired(Collection<LocalizedString> errors, Object castValue, Object value, Node  node, Field field) {
+        return requiredRestriction.validate(errors, castValue, node, field);
+    }
 
 
     /**
