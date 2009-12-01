@@ -342,7 +342,8 @@ public class StringDataType extends ComparableDataType<String> implements Length
         }
     }
 
-    @Override public StringDataType clone(String name) {
+    @Override
+    public StringDataType clone(String name) {
         StringDataType clone = (StringDataType) super.clone(name);
         return clone;
     }
