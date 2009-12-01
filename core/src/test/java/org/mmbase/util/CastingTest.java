@@ -165,4 +165,11 @@ public class CastingTest  {
     }
 
 
+    @Test
+    public void serializableInputStream() {
+        assertEquals(3, Casting.toSerializableInputStream("aaa").getSize());
+        assertEquals(1000, Casting.toSerializableInputStream(new NullInputStream(1000)).getSize());
+    }
+
+
 }
