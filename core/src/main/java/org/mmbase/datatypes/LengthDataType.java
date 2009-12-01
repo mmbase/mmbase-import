@@ -27,45 +27,45 @@ public interface LengthDataType<E> extends DataType<E> {
      * this datatype. There does not exist a generic interface for this, so the implementation
      * will cast to the expected type (String, byte[]..)
      */
-    public long getLength(Object value);
+    long getLength(Object value);
 
     /**
      * Returns the minimum length of values for this datatype.
      * @return the minimum length as an <code>int</code>, or 0 if there is no minimum length.
      */
-    public long getMinLength();
+    long getMinLength();
 
     /**
      * Returns the 'minLength' restriction, containing the value, errormessages, and fixed status of this attribute.
      * @return the restriction as a {@link DataType.Restriction}
      */
-    public DataType.Restriction<Long> getMinLengthRestriction();
+    DataType.Restriction<Long> getMinLengthRestriction();
 
     /**
      * Sets the minimum length of binary values for this datatype.
      * @param value the minimum length as an <code>long</code>, or 0 if there is no minimum length.
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is finished
      */
-    public void setMinLength(long value);
+    void setMinLength(long value);
 
     /**
      * Returns the maximum length of values for this datatype.
      * @return the maximum length as an <code>long</code>, or a very very big value
      * (<code>Long.MAX_VALUE</code>) if there is no maximum length.
      */
-    public long getMaxLength();
+    long getMaxLength();
 
     /**
      * Returns the 'maxLength' restriction, containing the value, errormessages, and fixed status of this attribute.
      * @return the restriction as a {@link DataType.Restriction}
      */
-    public DataType.Restriction<Long> getMaxLengthRestriction();
+    DataType.Restriction<Long> getMaxLengthRestriction();
 
     /**
      * Sets the maximum length of values for this datatype.
      * @param value see {@link #getMaxLength}
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is finished
      */
-    public void setMaxLength(long value);
+    void setMaxLength(long value);
 
 }
