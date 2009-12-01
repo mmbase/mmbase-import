@@ -1089,7 +1089,11 @@ public class MMBase extends ProcessorModule {
                     } else {
                         newclass = MMObjectBuilder.class;
                     }
-                    log.error(cnfe.toString() + " (for '" + parser.getClassName() + "' of builder '" + ipath + builderName + "')  Falling back to " + newclass.getName(), cnfe);
+                    if (log.isDebugEnabled()) {
+                        log.error(cnfe.toString() + " (for '" + parser.getClassName() + "' of builder '" + ipath + builderName + "')  Falling back to " + newclass.getName(), cnfe);
+                    } else {
+                        log.error(cnfe.toString() + " (for '" + parser.getClassName() + "' of builder '" + ipath + builderName + "')  Falling back to " + newclass.getName());
+                    }
                 } catch (NoClassDefFoundError ncdfe) {
                     MMObjectBuilder p = parser.getParentBuilder();
                     if(p != null) {
