@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * Container for the result of a JobDefinition This is the result of an actual transcoding. 
+ * Container for the result of a JobDefinition This is the result of an actual transcoding.
  * This means that it does have a 'destination' node {@link #getDestination()} and URI {@link #getOut()}.
  *
  * @author Michiel Meeuwissen
@@ -69,7 +69,7 @@ class TranscoderResult extends Result {
             if (outFile.length() > 1) {     // @TODO: there should maybe be other ways to detect if a transcoding failed
                 dest.setIntValue("state", State.DONE.getValue());
             } else {
-                LOG.warn("Filesize < 1, setting " + dest.getNumber() + " to failed");
+                LOG.warn("Filesize of " + outFile + " < 1, setting " + dest.getNumber() + " to failed");
                 dest.setIntValue("state", State.FAILED.getValue());
             }
             if (definition.getLabel() != null && dest.getNodeManager().hasField("label")) {
