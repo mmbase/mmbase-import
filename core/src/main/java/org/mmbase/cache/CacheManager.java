@@ -96,7 +96,7 @@ public class CacheManager implements CacheManagerMBean {
                         try {
                             MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
                             mbs.registerMBean(instance, on);
-                            log.info("Registered " + on);
+                            log.service("Registered " + on);
                         } catch (JMException jmo) {
                             log.warn("" + on + " " + jmo.getClass() + " " + jmo.getMessage());
                         } catch (Throwable t) {
