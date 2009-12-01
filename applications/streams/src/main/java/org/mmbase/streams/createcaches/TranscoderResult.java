@@ -66,7 +66,7 @@ class TranscoderResult extends Result {
         if (dest != null) {
             File outFile = new File(directory, dest.getStringValue("url").replace("/", File.separator));
             dest.setLongValue("filesize", outFile.length());
-            if (outFile.length() > 1) {     // @TODO: there should maybe be other ways to detect if a transcoding failed
+            if (outFile.length() >= 1) {     // @TODO: there should maybe be other ways to detect if a transcoding failed
                 dest.setIntValue("state", State.DONE.getValue());
             } else {
                 LOG.warn("Filesize of " + outFile + " < 1, setting " + dest.getNumber() + " to failed");
