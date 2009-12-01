@@ -106,6 +106,17 @@ public class Job implements Iterable<Result> {
                     assert url.length() > 0;
                     File f = new File(processor.getDirectory(), url);
                     assert f.exists() : "No such file " + f;
+                    
+                    if (!f.exists()) {
+                        LOG.warn("No such file '" + f + "' waiting 10 sec....");
+                        try {
+                            getThread().sleep(10000);
+                        } catch (java.lang.InterruptedException ie) {
+                        
+                        }
+                        if (!f.exists()) LOG.error("NO FILE!");
+                    }
+                    
                     inURI = f.toURI();
                     inNode = node;
                 } else {
@@ -342,7 +353,7 @@ public class Job implements Iterable<Result> {
      * exists in the cloud or otherwise will create one.
      *
      * @param src   source node to create stream from
-     * @param key   representation of the way the stream was created from its source
+     * @param key   representation of the way the stream was created from its source, f.e. trancoding parameters
      * @return cached stream node
      */
     protected Node getCacheNode(Node src, final String key) {
@@ -365,7 +376,7 @@ public class Job implements Iterable<Result> {
             }
 
             final NodeManager caches = src.getCloud().getNodeManager(src.getNodeManager().getProperty("org.mmbase.streams.cachestype"));
-            Node newNode =  caches.createNode();
+            Node newNode = caches.createNode();
             newNode.setNodeValue("id", src);
             newNode.setStringValue("key", key);
 
