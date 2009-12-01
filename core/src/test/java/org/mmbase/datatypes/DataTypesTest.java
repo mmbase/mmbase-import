@@ -15,8 +15,7 @@ import java.util.*;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.mock.*;
-import org.mmbase.util.LocalizedString;
-import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.*;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.xml.XMLWriter;
 
@@ -34,7 +33,6 @@ import static org.junit.Assert.*;
  * @version $Id$
  */
 public class DataTypesTest  {
-
     @BeforeClass
     public static void setUp() throws Exception {
         LocalizedString.setDefault(new Locale("da"));
@@ -428,7 +426,17 @@ public class DataTypesTest  {
         assertEquals(aa.getNumber(), typedefDataType.cast(aa, null, null).getNumber());
     }
 
-
+    @Test
+    public void restrictedBinary() {
+        DataType restrictedBinary = DataTypes.getDataType("restricted_binary");
+        assertNotNull(restrictedBinary);
+        assertTrue(restrictedBinary instanceof BinaryDataType);
+        assertEquals(0, restrictedBinary.validate(new byte[] { 0, 1, 2, }, null, null).size());
+        assertEquals(1, restrictedBinary.validate(null, null, null).size());
+        assertFalse(restrictedBinary.validate(new byte[0], null, null).size() == 0);
+        assertFalse(restrictedBinary.validate(new NullInputStream(201), null, null).size() == 0);
+        assertTrue(restrictedBinary.validate(new NullInputStream(199), null, null).size() == 0);
+    }
 
 
 
