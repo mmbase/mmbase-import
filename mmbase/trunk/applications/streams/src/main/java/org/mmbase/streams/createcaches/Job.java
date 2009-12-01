@@ -98,15 +98,18 @@ public class Job implements Iterable<Result> {
             if (results.get(i) == null) {
                 JobDefinition jd = entry.getValue();
                 URI inURI;
-                Node inNode;
+                Node inNode; // inNode (input stream) to be used
 
-                // inNode (input stream) to be used
                 if (jd.getInId() == null) {
                     String url = node.getStringValue("url");
+                    if (url.length() < 0) LOG.error("No value for field url: " + url);
                     assert url.length() > 0;
                     File f = new File(processor.getDirectory(), url);
+                    LOG.info("New file: " + f);
                     assert f.exists() : "No such file " + f;
                     
+                    /* 
+                    // this does not happen?
                     int w = 0;
                     while (!f.exists() && !f.isFile() && w < 30) {
                         LOG.service("Checking if file exists '" + f + "'. Waiting 5 sec. to be sure filesystem is ready (" + w + ")");
@@ -117,7 +120,9 @@ public class Job implements Iterable<Result> {
                             LOG.info("Interrupted" + ie);
                         }
                     }
+                    */
                     if (!f.exists() && !f.isFile()) LOG.error("NO FILE! '" + f + "', but continuing anyway.");
+                    
                     inURI = f.toURI();
                     inNode = node;
                 } else {
@@ -180,6 +185,7 @@ public class Job implements Iterable<Result> {
 
                     File inFile  = new File(processor.getDirectory(), Job.this.node.getStringValue("url").replace("/", File.separator));
 
+
                     StringBuilder buf = new StringBuilder();
                     org.mmbase.storage.implementation.database.DatabaseStorageManager.appendDirectory(buf, Job.this.node.getNumber(), "/");
                     buf.append("/");
@@ -188,17 +194,39 @@ public class Job implements Iterable<Result> {
                     if (outFileName.startsWith("/")) {
                         outFileName = outFileName.substring(1);
                     }
+                    if (outFileName == null && outFileName.length() < 1) {
+                        LOG.error("NO outFileName '" + outFileName + "'");
+                    }
                     assert outFileName != null;
                     assert outFileName.length() > 0;
                     dest.setStringValue("url", outFileName);
 
                     dest.commit();
 
+                    String destFileName = dest.getStringValue("url");
+                    if (destFileName == null && destFileName.length() < 1) {
+                        LOG.error("NO destFileName '" + destFileName + "'");
+                    }
+                    
+                    assert destFileName != null;
+                    assert destFileName.length() > 0;
+                    
+                    int w = 0;
+                    while (destFileName == null && destFileName.length() < 1 && w < 10) {
+                        LOG.service("Checking for destFileName '" + destFileName + "'. Waiting 5 sec. to be sure the node is commited (" + w + ")");
+                        try {
+                            getThread().sleep(5000);
+                            w++;
+                        } catch (InterruptedException ie) {
+                            LOG.info("Interrupted" + ie);
+                        }
+                        destFileName = dest.getStringValue("url");
+                    }
+                    
+                    File outFile = new File(processor.getDirectory(), destFileName);
 
-                    String destFile = dest.getStringValue("url");
-                    assert destFile != null;
-                    assert destFile.length() > 0;
-                    File outFile = new File(processor.getDirectory(), destFile);
+                    // does not happen?
+                    if (!outFile.exists() && !outFile.isFile()) LOG.error("NO FILE! '" + outFile + "', but continuing anyway.");
 
                     if (FileServlet.getInstance() != null) {
                         File inMeta = FileServlet.getInstance().getMetaFile(inFile);
