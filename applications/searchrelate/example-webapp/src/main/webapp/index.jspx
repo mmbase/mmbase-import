@@ -164,6 +164,12 @@
               <a href="${_}">S&amp;amp;R and tinyMCE</a>
             </mm:link>
           </li>
+
+          <li class="done">
+            <mm:link page="ajax.jspx" referids="${referids}">
+              <a href="${_}">Loaded with javascript</a>
+            </mm:link>
+          </li>
         </ul>
 
         <h3>TODO</h3>

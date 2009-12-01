@@ -13,22 +13,24 @@ $().ready(function() {
         {   // default 'implicit' search results are not shown,
             // except on the 'search' example page itself
             if (! $("body").hasClass("search")) {
-                MMBaseSearcher.prototype.implicitsAreHidden();
+                if (typeof MMBaseSearcher == "function") {
+                    MMBaseSearcher.prototype.implicitsAreHidden();
+                }
             }
         }
 
 
         {  // Setup tinymcy on the example page for that.
             if ($("body").hasClass("tinymce")) {
-            
-                
+
+
                 var tinyMceConfiguration = {
                     theme : "simple",
                     content_css: "style.css",
                     entity_encoding : "raw", /* needed when XHTML */
                     setup : List.prototype.setupTinyMCE
                 }
-                
+
                 // bind tinymce to news bodies already displayed:
                 $(".mm_validate.mm_nm_news.mm_f_body").each(function() {
                         List.prototype.tinymce(this, tinyMceConfiguration);
@@ -39,7 +41,7 @@ $().ready(function() {
                                 List.prototype.tinymce(this, tinyMceConfiguration);
                             });
                     });
-                
+
             }
         }
 
