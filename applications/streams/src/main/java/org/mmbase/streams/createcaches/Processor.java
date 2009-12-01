@@ -314,7 +314,8 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
     /**
      * Creates and submits a job transcoding everything as configured for one source object, this
      * produces all new 'streamssourcescaches' as configured in createcaches.xml.
-     * @param node      source stream
+     * @param ntCloud   a non transactional cloud
+     * @param node      node number of a source stream
      * @param logger    a logger that keeps track
      * @return job trans coding a source stream in (an)other stream(s)
      */
@@ -338,7 +339,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
     /**
      * Creates caches nodes when not existing by creating a transcoding Job
      * @param ntCloud   a non transactional cloud
-     * @param int       node number
+     * @param int       node number of a source node
      * @return Job recognizing and/or transcoding the source stream
      */
     public Job createCaches(final Cloud ntCloud, final int node) {
