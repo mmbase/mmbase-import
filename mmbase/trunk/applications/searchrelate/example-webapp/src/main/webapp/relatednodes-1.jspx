@@ -25,6 +25,7 @@
     <h3><mm:field name="title" /></h3>
     <mm-sr:relatednodes
         type="news"
+        searchdirs="destination"
         unlink="true"
         max="${max}"
         sortable="true"
