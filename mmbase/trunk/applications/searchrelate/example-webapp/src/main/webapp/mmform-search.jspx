@@ -10,11 +10,13 @@
 
   <mm:import externid="config"></mm:import>
 
+  <mm:import externid="nodemanager">urls</mm:import>
+
   <mm:form name="bloe">
 
 
-    <h3>Urls</h3>
-    <mm-sr:search type="urls" implicit="false" create="true" />
+    <h3><mm:nodeinfo nodetype="${nodemanager}" type="guinodemanager" /></h3>
+    <mm-sr:search type="${nodemanager}" implicit="false" create="true" />
 
   </mm:form>
   <mm:escape escape="links">$URL$</mm:escape>
