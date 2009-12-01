@@ -65,7 +65,6 @@ class TranscoderResult extends Result {
         super.ready();
         if (dest != null) {
             File outFile = new File(directory, dest.getStringValue("url").replace("/", File.separator));
-            LOG.debug("Looking at: " + outFile);
             int count = 0;
             while ((!outFile.exists() || outFile.length() <1) && count < 20) {
                 LOG.service("Result ready, but file " + outFile + (outFile.exists() ? " is too small" : " doesn't exists") + ".  Waiting 10 sec. to be sure filesystem is ready (" + count + ")");
