@@ -158,8 +158,6 @@ class JobCallable implements Callable<Integer> {
                     for (AnalyzerLogger al : analyzerLoggers) {
                         al.getAnalyzer().ready(thisJob.getNode(), result.getDestination());
                     }
-                    logger.debug("Analyzer ready, waiting 10 sec. to be sure filesystem is ready.....");
-                    thisJob.getThread().sleep(10000);
                     resultCount++;
                     result.ready();
                     logger.info("RESULT " + thisJob + "(" + thisJob.getNode().getNodeManager().getName() + ":" + thisJob.getNode().getNumber() + "):" + result);
