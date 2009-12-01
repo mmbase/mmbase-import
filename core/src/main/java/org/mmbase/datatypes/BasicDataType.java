@@ -555,6 +555,9 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             errors = typeRestriction.addError(errors, value, node, field);
             castValue = value;
         }
+        if (log.isDebugEnabled()) {
+            log.debug("Validating  cast value" + castValue);
+        }
         //System.out.println("" + value + " -> " + castValue + " (" + errors);
 
         if (errors.size() > 0) {
@@ -571,7 +574,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             return errors; // null is valid, unless required.
         }
         if (testEnum) {
-            errors = enumerationRestriction.validate(errors, value, node, field);
+            errors = enumerationRestriction.validate(errors, castValue, node, field);
         }
         errors = uniqueRestriction.validate(errors, castValue, node, field);
         errors = validateCastValue(errors, castValue, value, node, field);
@@ -1325,6 +1328,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             if(!isRequired()) return true;
             return v != null;
         }
+
     }
 
     // UNIQUE
