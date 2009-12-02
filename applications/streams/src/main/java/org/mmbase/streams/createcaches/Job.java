@@ -108,11 +108,10 @@ public class Job implements Iterable<Result> {
                     LOG.info("New file: " + f);
                     assert f.exists() : "No such file " + f;
                     
-                    /* 
-                    // this does not happen?
+                    // make sure there is an in file to use
                     int w = 0;
                     while (!f.exists() && !f.isFile() && w < 30) {
-                        LOG.service("Checking if file exists '" + f + "'. Waiting 5 sec. to be sure filesystem is ready (" + w + ")");
+                        LOG.service("Checking if (in)file exists '" + f + "'. Waiting 5 sec. to be sure filesystem is ready (" + w + ")");
                         try {
                             getThread().sleep(5000);
                             w++;
@@ -120,8 +119,7 @@ public class Job implements Iterable<Result> {
                             LOG.info("Interrupted" + ie);
                         }
                     }
-                    */
-                    if (!f.exists() && !f.isFile()) LOG.error("NO FILE! '" + f + "', but continuing anyway.");
+                    if (!f.exists() && !f.isFile()) LOG.error("NO INFILE! '" + f + "', but continuing anyway.");
                     
                     inURI = f.toURI();
                     inNode = node;
@@ -194,9 +192,8 @@ public class Job implements Iterable<Result> {
                     if (outFileName.startsWith("/")) {
                         outFileName = outFileName.substring(1);
                     }
-                    if (outFileName == null && outFileName.length() < 1) {
-                        LOG.error("NO outFileName '" + outFileName + "'");
-                    }
+                    
+                    LOG.info("outFileName: '" + outFileName + "'");
                     assert outFileName != null;
                     assert outFileName.length() > 0;
                     dest.setStringValue("url", outFileName);
@@ -204,29 +201,12 @@ public class Job implements Iterable<Result> {
                     dest.commit();
 
                     String destFileName = dest.getStringValue("url");
-                    if (destFileName == null && destFileName.length() < 1) {
-                        LOG.error("NO destFileName '" + destFileName + "'");
-                    }
-                    
+                    if (destFileName.length() < 0) LOG.error("No value for field url: " + destFileName);
+                    LOG.info("destFileName: '" + destFileName + "'");
                     assert destFileName != null;
                     assert destFileName.length() > 0;
                     
-                    int w = 0;
-                    while (destFileName == null && destFileName.length() < 1 && w < 10) {
-                        LOG.service("Checking for destFileName '" + destFileName + "'. Waiting 5 sec. to be sure the node is commited (" + w + ")");
-                        try {
-                            getThread().sleep(5000);
-                            w++;
-                        } catch (InterruptedException ie) {
-                            LOG.info("Interrupted" + ie);
-                        }
-                        destFileName = dest.getStringValue("url");
-                    }
-                    
                     File outFile = new File(processor.getDirectory(), destFileName);
-
-                    // does not happen?
-                    if (!outFile.exists() && !outFile.isFile()) LOG.error("NO FILE! '" + outFile + "', but continuing anyway.");
 
                     if (FileServlet.getInstance() != null) {
                         File inMeta = FileServlet.getInstance().getMetaFile(inFile);
