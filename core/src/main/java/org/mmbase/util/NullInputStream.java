@@ -23,9 +23,17 @@ import java.util.Arrays;
  */
 public class NullInputStream extends MockInputStream {
 
+    /**
+     * This input stream produces a given number of zeros.
+     * @param l How long this input stream will be
+     */
     public NullInputStream(int l) {
         super(l);
     }
+
+    /**
+     * Produces an immense amount of zeros
+     */
     public NullInputStream() {
         this(Integer.MAX_VALUE);
     }

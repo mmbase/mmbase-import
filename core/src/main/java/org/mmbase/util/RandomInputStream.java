@@ -23,9 +23,18 @@ import java.util.Random;
 public class RandomInputStream extends MockInputStream {
 
     private final Random generator = new Random();
+
+    /**
+     * This input stream produces a given number of random number.
+     * @param l How long this input stream will be
+     */
     public RandomInputStream(int l) {
         super(l);
     }
+
+    /**
+     * Produces an immense amount of randomness
+     */
     public RandomInputStream() {
         this(Integer.MAX_VALUE);
     }
