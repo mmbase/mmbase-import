@@ -41,16 +41,20 @@ public class DeleteSourcesProcessor implements CommitProcessor {
             return;
         }
         if (node.getNumber() > 0) {
-            NodeList sources = SearchUtil.findRelatedNodeList(node, 
-                node.getNodeManager().getProperty("org.mmbase.media.cointaintype"), "related");
-            LOG.info("Deleting " + sources.size() + " sources");
-            for (Node src : sources) {
-                if (src.mayDelete()) {
-                    src.delete(true);
-                } else {
-                    LOG.warn("May not delete " + src);
+            String nodemanager = node.getNodeManager().getProperty("org.mmbase.media.containedtype");
+            
+            if (nodemanager != null && !"".equals(nodemanager)) {
+                
+                NodeList sources = SearchUtil.findRelatedNodeList(node, nodemanager, "related");
+                LOG.info("Deleting " + sources.size() + " sources.");
+                for (Node src : sources) {
+                    if (src.mayDelete()) {
+                        src.delete(true);
+                    } else {
+                        LOG.warn("May not delete " + src);
+                    }
                 }
-            }            
+            }
         }
     }
 

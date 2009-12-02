@@ -492,16 +492,16 @@ public class MediaSources extends MMObjectBuilder {
     }
 
     /**
-     * The commit can be used to automaticly fill unfilled fields. For
+     * The commit can be used to automatically fill unfilled fields. For
      * example the format can well be guessed by the URL.
      * (todo: which of commit,insert must be overriden?)
      */
-
     @Override
     public synchronized boolean commit(MMObjectNode node) {
         checkFields(node);
         return super.commit(node);
     }
+    
     @Override
     public synchronized int insert(String owner, MMObjectNode node) {
         checkFields(node);
