@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
-*/ 
+*/
 package org.mmbase.applications.vprowizards.spring;
 
 import java.util.Locale;
@@ -23,6 +23,9 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
+/**
+ * @javadoc
+ */
 public class WizardController implements Controller {
 
     private static final Logger log = Logging.getLoggerInstance(WizardController.class);
@@ -39,29 +42,29 @@ public class WizardController implements Controller {
      * requests.
      */
     private ModelAndViewResolver viewResolver;
-    
+
     private Locale locale;
-    
+
     public WizardController(){
         setLocale(new Locale("nl"));/*default*/
     }
-    
-    
+
+
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet.http.HttpServletRequest,
      *      javax.servlet.http.HttpServletResponse)
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        
+
         // TODO: this should not happen this way
         request.setCharacterEncoding("UTF-8");
 
         Command command = commandFactory.getNewInstance();
         Transaction transaction = cloudFactory.createTransaction(request);
-        
+
         if(log.isDebugEnabled()){
             log.debug("*********************************");
             log.debug("Processing new request with transaction ["+transaction.getName()+"]");
@@ -79,11 +82,11 @@ public class WizardController implements Controller {
         if (resultContainer.hasGlobalErrors() || resultContainer.hasFieldErrors()) {
             log.debug("Errors found, transaction not committed.");
             transaction.cancel();
-            
+
         } else {
             log.debug("No errors found. Commit transaction ["+transaction.getName()+"] and put the cache flush hints on the request.");
             resultContainer.getTransaction().commit();
-            
+
 
             // create the request type cache flush hint
             // TODO: maybe this type of cache flush hint is totally useless. do
