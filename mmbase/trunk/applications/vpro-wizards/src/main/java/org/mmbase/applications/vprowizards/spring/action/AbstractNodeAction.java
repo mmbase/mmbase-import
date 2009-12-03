@@ -343,6 +343,9 @@ public abstract class AbstractNodeAction extends Action {
      */
     protected final boolean checkTypeRel(RelationManager relationManager, Node sourceNode, Node destinationNode) {
         NodeManager typerelManager = relationManager.getCloud().getNodeManager("typerel");
+        /// WTF
+        // This does not consider inheritance, nor directionality.
+
         String constraints = String.format("snumber=%s AND dnumber=%s AND rnumber=%s", ""
                 + sourceNode.getNodeManager().getNumber(), "" + destinationNode.getNodeManager().getNumber(), ""
                 + relationManager.getNumber());
