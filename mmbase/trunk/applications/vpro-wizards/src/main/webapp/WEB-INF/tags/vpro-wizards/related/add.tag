@@ -3,6 +3,7 @@
 <%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util" %>
 
 <%@ attribute name="relationrole" %>
+<%@ attribute name="relationValues"  %>
 <%@ attribute name="multipart" type="java.lang.Boolean" description="don't set this if you use a fielfield in the body. In that case it's the default"  %>
 <%@ attribute name="sortfield" description="this is the field in the relation that a sorting value will be inserted in. (like posrel.pos, although for posrel this field is set by default)"  %>
 <%@ attribute name="sortposition" description="[begin|end] where to insert the new relation in the sorted list of existing relations (between given source and new node). defaults to 'end'"  %>
@@ -41,7 +42,7 @@
         <c:set var="enctype"><c:if test="${multipart == true || not empty requestScope.filefield}">enctype="multipart/form-data"</c:if></c:set>
         <c:remove var="requestScope.filefield" />
         <form action="${pageContext.request.contextPath}/wizard/post" method="post" id="formcontainer" ${enctype}>
-            <related:createrelation referDestination="new" source="${param.nodenr}" role="${relationrole}" sortfield="${sortfield}" sortposition="${sortposition}"/>
+            <related:createrelation referDestination="new" source="${param.nodenr}" role="${relationrole}" sortfield="${sortfield}" sortposition="${sortposition}" relationValues="${relationValues}" />
             <util:flushname/>
             <c:if test="${not empty flushname}">
                 <input type="hidden" name="flushname" value="${flushname}" />

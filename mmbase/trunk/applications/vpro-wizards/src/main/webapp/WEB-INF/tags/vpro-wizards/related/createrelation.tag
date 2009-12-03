@@ -10,6 +10,7 @@
 <%@ attribute name="referDestination" %>
 <%@ attribute name="destination" %>
 <%@ attribute name="role" %>
+<%@ attribute name="relationValues"  %>
 <%@ attribute name="sortfield" description="this is the field in the relation that a sorting value will be inserted in. (like posrel.pos, although for posrel this field is set by default)"  %>
 <%@ attribute name="sortposition" description="[begin|end] where to insert the new relation in the sorted list of existing relations (between given source and destination). defaults to 'end'"  %>
 
@@ -30,4 +31,7 @@
 </c:if>
 <c:if test="${not empty role}">
     <input type="hidden" name="actions[createRelation][${relationid}].role" value="${role}" />
+</c:if>
+<c:if test="${not empty constraints}">
+    <input type="hidden" name="actions[createRelation][${relationid}].relationValues" value="${relationValues}" />
 </c:if>
