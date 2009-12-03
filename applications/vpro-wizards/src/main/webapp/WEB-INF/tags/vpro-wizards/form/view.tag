@@ -232,7 +232,7 @@
 
                             <c:if test="${delete && not empty maydelete}">
                                 <mm:link page="/wizard/post">
-                                    <mm:param name="actions[deleteNode][1].number" value="${_relationnr}" />
+                                    <mm:param name="actions[deleteNode][1].nodenr" value="${_relationnr}" />
                                     <mm:param name="flushname" value="${flushname}" />
                                     <a href="${_}" class="delete"  onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt loskoppelen?')">
                                         <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/unlink.png" class="icon" border="0" alt="" title="Koppel los"/>
@@ -242,7 +242,7 @@
 
                              <c:if test="${harddelete && not empty mayharddelete}">
                                 <mm:link page="/wizard/post">
-                                    <mm:param name="actions[deleteNode][1].number" value="${_nodenr}" />
+                                    <mm:param name="actions[deleteNode][1].nodenr" value="${_nodenr}" />
                                     <mm:param name="flushname" value="${flushname}" />
                                     <a href="${_}" class="delete"  onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt verwijderen? (kan niet hersteld worden)')">
                                         <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/delete.png" class="icon" border="0" alt="" title="Verwijder"/>

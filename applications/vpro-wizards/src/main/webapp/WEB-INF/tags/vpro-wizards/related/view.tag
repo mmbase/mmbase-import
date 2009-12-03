@@ -7,6 +7,7 @@
 <%@ attribute name="nodetype" description="is used by the related:view tag "  %>
 <%@ attribute name="edit" type="java.lang.Boolean" %>
 <%@ attribute name="delete" type="java.lang.Boolean" %>
+<%@ attribute name="constraints"  description="'legacy' constraints as a string" %>
 <%@ attribute name="confirmdelete" type="java.lang.Boolean" description="wether you must confirm deleting nodes. default is true"%>
 <%@ attribute name="sortable" type="java.lang.Boolean" %>
 <%@ attribute name="multipart" type="java.lang.Boolean"  description="don't set this if you use a fielfield in the body. In that case it's the default" %>
@@ -63,7 +64,7 @@
         <mm:log>test related:view relationrole:${relationrole}, nodetype:${nodetype}, orderby: ${orderby}</mm:log>
         <c:if test="${not empty nodenr}">
             <mm:node number="${nodenr}">
-                <mm:related  path="${relationrole},${nodetype}" orderby="${orderby}" fields="${orderby}">
+                <mm:related  path="${relationrole},${nodetype}" orderby="${orderby}" fields="${orderby}" constraints="${constraints}">
                     <mm:first>
                         <ul>
                     </mm:first>
@@ -175,7 +176,7 @@
                                     <c:if test="${delete && not empty maydelete}">
                                         <c:set var="url" >
                                             <mm:url page="/wizard/post">
-                                                <mm:param name="actions[deleteNode][1].number" value="${_relationnr}"/>
+                                                <mm:param name="actions[deleteNode][1].nodenr" value="${_relationnr}"/>
                                                 <mm:param name="flushname" value="${flushname}" />
                                             </mm:url>
                                         </c:set>
