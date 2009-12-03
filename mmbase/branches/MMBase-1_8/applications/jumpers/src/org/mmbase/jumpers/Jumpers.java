@@ -22,7 +22,6 @@ import org.mmbase.module.core.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.jumpers.*;
-import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 
@@ -72,13 +71,12 @@ public class Jumpers extends MMObjectBuilder {
         };
     {
         jumpCache.putCache();
-        addFunction(new AbstractFunction("jump", new Parameter[] { new Parameter("key", String.class, true) }, ReturnType.STRING ) {
-                public String  getFunctionValue(Parameters parameters) {
+        addFunction(new AbstractFunction("jump", new Parameter[] {new Parameter("key", String.class, true) }, ReturnType.STRING) {
+                public String getFunctionValue(Parameters parameters) {
                     String key = parameters.getString("key");
                     return getJump(key);
                 }
             });
-
     }
 
     /**
