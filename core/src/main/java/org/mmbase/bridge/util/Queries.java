@@ -1028,7 +1028,7 @@ abstract public class Queries {
      */
     public static NodeQuery createNodeQuery(Node node) {
         NodeManager nm;
-        if (! node.isNew()) {
+        if (! node.isNew() && node.getNumber() >= 0) {
             // in case the nodemanager was _changed_ but not yet committed, the query will only work with the original node manager
             // which we can obtain like so
             nm = node.getCloud().getCloudContext().getCloud("mmbase", node.getCloud().getUser()).getNode(node.getNumber()).getNodeManager();
