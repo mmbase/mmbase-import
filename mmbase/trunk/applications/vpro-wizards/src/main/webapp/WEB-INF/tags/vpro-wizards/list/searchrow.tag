@@ -120,12 +120,12 @@
                         <mm:node number="${nodenrrow}"><mm:maydelete><c:set var="maydelete" value="true"/></mm:maydelete></mm:node>
                         <c:if test="${not empty maydelete}">
                             <c:set var="url" >
-                                    <mm:url page="/wizard/post">
-                                        <mm:param name="actions[deleteNode][1].number" value="${nodenrrow}" />
-                                        <c:if test="${not empty flushname}">
-                                            <mm:param name="flushname" value="${flushname}" />
-                                        </c:if>
-                                </mm:url>
+                              <mm:url page="/wizard/post">
+                                <mm:param name="actions[deleteNode][1].nodenr" value="${nodenrrow}" />
+                                <c:if test="${not empty flushname}">
+                                  <mm:param name="flushname" value="${flushname}" />
+                                </c:if>
+                              </mm:url>
                             </c:set>
                             <a class="delete" href="${url}" onClick="return doConfirm(true, 'Weet je zeker dat je dit wilt verwijderen? Deze actie is niet ongedaan te maken.')">
                                 <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/delete.png" class="icon" border="0" alt="" title="Verwijder">
@@ -176,7 +176,7 @@
                                     <c:if test="${not empty maydelete}">
                                         <c:set var="url" >
                                             <mm:url page="/wizard/post">
-                                                <mm:param name="actions[deleteNode][1].number" value="${link}"/>
+                                                <mm:param name="actions[deleteNode][1].nodenr" value="${link}"/>
                                                 <c:if test="${not empty flushname}">
                                                     <mm:param name="flushname" value="${flushname}" />
                                                 </c:if>
