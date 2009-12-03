@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
-*/ 
+*/
 package org.mmbase.applications.vprowizards.spring;
 
 import javax.servlet.http.*;
@@ -21,11 +21,13 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  * niet ingelogd dan krijgt hij een inlogpagina.
  *
  * @author Rob Vermeulen (VPRO)
+ * @javadoc (should be translated)
  */
 public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
     private static final Logger log = Logging.getLoggerInstance(AuthenticationInterceptor.class);
     private String loginPage;
 
+    @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object arg2) throws Exception {
 
         boolean isAuthenticated = isAuthenticated(request);
