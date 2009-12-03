@@ -335,33 +335,6 @@ public abstract class AbstractNodeAction extends Action {
      */
     protected abstract void createCacheFlushHints();
 
-    /**
-     * Check if a relation is possible from the given source to the given destination with the given relation manager.
-     *
-     * @param relationManager
-     * @return
-     */
-    protected final boolean checkTypeRel(RelationManager relationManager, Node sourceNode, Node destinationNode) {
-        NodeManager typerelManager = relationManager.getCloud().getNodeManager("typerel");
-        /// WTF
-        // This does not consider inheritance, nor directionality.
-
-        String constraints = String.format("snumber=%s AND dnumber=%s AND rnumber=%s", ""
-                + sourceNode.getNodeManager().getNumber(), "" + destinationNode.getNodeManager().getNumber(), ""
-                + relationManager.getNumber());
-        NodeList nl = typerelManager.getList(constraints, null, null);
-        if (nl.size() == 0) {
-            log.warn(String.format(
-                    "could not find typerel record with these constraints: '%s', where snumber type is %s"
-                            + " and dnumber type is %s and rnumber type is %s", constraints, sourceNode
-                            .getNodeManager().getName(), destinationNode.getNodeManager().getName(), relationManager
-                            .getName()));
-            addGlobalError("error.create.relation.typerel", new String[] { sourceNode.getNodeManager().getName(),
-                    destinationNode.getNodeManager().getName(), relationManager.getName() });
-            return false;
-        }
-        return true;
-    }
 
     /**
      * can the current owner create a node of this type? set global error when fail.

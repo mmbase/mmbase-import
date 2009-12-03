@@ -55,8 +55,7 @@ public abstract class AbstractRelationAction extends AbstractNodeAction {
                 if (resolveSourceAndDestination(transaction, idMap)) {
                     log.debug("source and destination successfully resolved");
                     // create the relation node.
-                    if (mayCreate(relationManager)
-                        && checkTypeRel(relationManager, sourceNode, destinationNode)) {
+                    if (mayCreate(relationManager)) {
                         //all preliminary checks ok.
                         //call the callback method
                         return createRelation(transaction, idMap, request);
