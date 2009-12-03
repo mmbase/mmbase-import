@@ -199,13 +199,12 @@ public class Job implements Iterable<Result> {
 
                     dest.commit();
                     
-                    
 
                     String destFileName = dest.getStringValue("url");
                     
                     // XXX: Sometimes a commit fails (partly), doing it and checking it again  */
                     int w = 0;
-                    do {
+                    while (destFileName.length() < 1 && w < 10) {
                         LOG.warn("No value for field url: '" + destFileName + "' in #" + dest.getNumber() + ", committing it again and trying again in 5 sec. (" + w + ")");
                         
                         if (c == null || c == Codec.UNKNOWN) {
@@ -223,9 +222,9 @@ public class Job implements Iterable<Result> {
                         } catch (InterruptedException ie) {
                             LOG.info("Interrupted" + ie);
                         }
-                        destFileName = dest.getStringValue("url");
                         
-                    } while (destFileName.length() < 1 && w < 10);
+                        destFileName = dest.getStringValue("url");
+                    }
                     
                     if (destFileName.length() < 1) {
                         LOG.error("Still empty destFileName: '" + destFileName + "' of #" + dest.getNumber());
