@@ -50,7 +50,7 @@ public class CreateRelationAction extends AbstractRelationAction {
     }
 
     @Override
-    protected Node doCreateNode(Transaction transaction, Map<String, Node> idMap, HttpServletRequest request) {
+    protected Node createRelation(Transaction transaction, Map<String, Node> idMap, HttpServletRequest request) {
         //preconditions
         if(!SORT_POSITION_BEGIN.equals(sortPosition) && !SORT_POSITION_END.equals(sortPosition)){
             addGlobalError("error.field.value", new String[]{"sortPosition", sortPosition} );
@@ -63,6 +63,9 @@ public class CreateRelationAction extends AbstractRelationAction {
 
         if (!hasErrors()) {
             Relation rel = relationManager.createRelation(sourceNode, destinationNode);
+            for (Map.Entry<String, Object> entry : getRelationValues().entrySet()) {
+                rel.setValue(entry.getKey(), entry.getValue());
+            }
             return rel;
         }
         return null;
@@ -117,7 +120,7 @@ public class CreateRelationAction extends AbstractRelationAction {
                 position = (sortPosition.equals("begin") ? position - 1 : position + 1);
             }
 
-            return new Integer(position);
+            return Integer.valueOf(position);
         } catch (RuntimeException e) {
             addGlobalError("error.unexpected", new String[] { e.getMessage() });
             log.error("something went wrong running a query to find out the position of a new relation. query: ["

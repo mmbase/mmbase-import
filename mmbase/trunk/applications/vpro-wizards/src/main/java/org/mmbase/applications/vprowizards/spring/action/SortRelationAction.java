@@ -57,7 +57,7 @@ public class SortRelationAction extends AbstractRelationAction {
      * and exists between the source and destination node.
      */
     @Override
-    protected Node doCreateNode(Transaction transaction, Map<String, Node> idMap, HttpServletRequest request) {
+    protected Node createRelation(Transaction transaction, Map<String, Node> idMap, HttpServletRequest request) {
         //preconditions
         if (!DIRECTION_UP.equals(direction) && !DIRECTION_DOWN.equals(direction)){
             addGlobalError("error.property.illegal.sortdirection", new String[]{direction, this.getClass().getName(), DIRECTION_UP, DIRECTION_DOWN});
