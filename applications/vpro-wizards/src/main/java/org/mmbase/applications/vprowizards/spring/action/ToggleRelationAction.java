@@ -39,7 +39,7 @@ public class ToggleRelationAction extends CreateRelationAction {
 
     private String relate;
     private boolean isNodeCreated = false;
-    private List<Integer> nodesDelted = new ArrayList<Integer>();
+    private final List<Integer> nodesDeleted = new ArrayList<Integer>();
 
     public String getRelate() {
         return relate;
@@ -55,7 +55,7 @@ public class ToggleRelationAction extends CreateRelationAction {
     }
 
     @Override
-    protected Node doCreateNode(Transaction transaction, Map<String, Node> idMap, HttpServletRequest request) {
+    protected Node createRelation(Transaction transaction, Map<String, Node> idMap, HttpServletRequest request) {
         // if relate is not empty and there is not a relation between source and destination yet, create it.
         //        NodeList nl = sourceNode.getRelatedNodes(destinationNode.getNodeManager(), role, null);
         RelationList rl = sourceNode.getRelations(role, destinationNode.getNodeManager(), "destination");
@@ -69,7 +69,7 @@ public class ToggleRelationAction extends CreateRelationAction {
                 // we must undo the relation
                 log.debug("create is false: we delete the node");
                 for (int i = 0; i < rl.size(); i++) {
-                    nodesDelted.add(rl.getRelation(i).getNumber());
+                    nodesDeleted.add(rl.getRelation(i).getNumber());
                     rl.getRelation(i).delete(true);
                 }
             }
@@ -80,7 +80,7 @@ public class ToggleRelationAction extends CreateRelationAction {
             if (!StringUtils.isBlank(relate) && "true".equals(relate.toLowerCase())) {
                 // we must create a relation
                 log.debug("create is true: we must create the relation");
-                Node newRelation = super.doCreateNode(transaction, idMap, request);
+                Node newRelation = super.createRelation(transaction, idMap, request);
                 if (!hasErrors()) {
                     isNodeCreated = true;
                     return newRelation;
@@ -101,7 +101,7 @@ public class ToggleRelationAction extends CreateRelationAction {
             super.createCacheFlushHints();
         } else {
             // perhaps one or more relations are deleted
-            for (int nodenr : nodesDelted) {
+            for (int nodenr : nodesDeleted) {
                 CacheFlushHint hint = new CacheFlushHint(CacheFlushHint.TYPE_RELATION);
                 hint.setDestinationNodeNumber(destinationNode.getNumber());
                 hint.setSourceNodeNumber(sourceNode.getNumber());
