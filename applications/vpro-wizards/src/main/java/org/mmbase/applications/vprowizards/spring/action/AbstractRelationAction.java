@@ -9,12 +9,15 @@
 */
 package org.mmbase.applications.vprowizards.spring.action;
 
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.legacy.ConstraintParser;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -34,6 +37,7 @@ public abstract class AbstractRelationAction extends AbstractNodeAction {
     protected String destinationNodeRef;
     protected String role;
     protected RelationManager relationManager;
+    protected String relationValues;
 
     /**
      * This template method implementation handles all the preconditions for relation actions. When
@@ -55,7 +59,7 @@ public abstract class AbstractRelationAction extends AbstractNodeAction {
                         && checkTypeRel(relationManager, sourceNode, destinationNode)) {
                         //all preliminary checks ok.
                         //call the callback method
-                        return doCreateNode(transaction, idMap, request);
+                        return createRelation(transaction, idMap, request);
                     } else {
                         return null;
                     }
@@ -78,7 +82,7 @@ public abstract class AbstractRelationAction extends AbstractNodeAction {
      * @param request
      * @return
      */
-    protected abstract Node doCreateNode(Transaction transaction, Map<String, Node> idMap, HttpServletRequest request);
+    protected abstract Node createRelation(Transaction transaction, Map<String, Node> idMap, HttpServletRequest request);
 
 
     /**
@@ -170,6 +174,59 @@ public abstract class AbstractRelationAction extends AbstractNodeAction {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    /**
+     * Sets the values which must be set in the relation. This must be done in the syntax of a legacy constraint.
+     */
+    public void setRelationValues(String s) {
+        this.relationValues = s;
+    }
+
+
+    protected void putValues(Step relationStep, Constraint constraint, Map<String, Object> values) {
+        if (constraint instanceof CompositeConstraint) {
+            CompositeConstraint cc = (CompositeConstraint) constraint;
+            if (cc.getLogicalOperator() == CompositeConstraint.LOGICAL_AND) {
+                for (Constraint c : cc.getChilds()) {
+                    putValues(relationStep, c, values);
+                }
+            } else {
+                if (cc.getChilds().size() > 0) {
+                    Constraint c = cc.getChilds().get(0);
+                    putValues(relationStep, c, values);
+                }
+            }
+        } else if (constraint instanceof FieldValueConstraint) {
+            FieldValueConstraint fvc = (FieldValueConstraint) constraint;
+            if (! fvc.getField().getStep().equals(relationStep)) {
+                return;
+            }
+            if (fvc.getOperator() != FieldCompareConstraint.EQUAL) {
+                throw new UnsupportedOperationException();
+            }
+            values.put(fvc.getField().getFieldName(), fvc.getValue());
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    /**
+     * TODO. This functionality may be moved to Queries
+     */
+    protected Map<String, Object> getRelationValues() {
+        Map<String, Object> result = new HashMap<String, Object>();
+        if (relationValues != null && relationValues.length() > 0) {
+
+            NodeQuery nq = Queries.createRelatedNodesQuery(sourceNode, destinationNode.getNodeManager(), getRole(), null);
+            Step lastStep = (Step) nq.getSteps().get(nq.getSteps().size() -1 );
+            nq.addNode(lastStep, destinationNode);
+            ConstraintParser parser = new ConstraintParser(nq);
+            Constraint constraint = parser.toConstraint(relationValues);
+            putValues((Step) nq.getSteps().get(1), constraint, result);
+        }
+        return result;
+
     }
 
 }

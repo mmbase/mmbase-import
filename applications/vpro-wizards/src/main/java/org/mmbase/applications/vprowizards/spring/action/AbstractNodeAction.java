@@ -87,8 +87,7 @@ public abstract class AbstractNodeAction extends Action {
         }
 
         if (node == null && isNodeNullIllegal()) {
-            throw new IllegalStateException(
-                    "No node has been provided, and no error has been set. Either of these should happen*");
+            throw new IllegalStateException("No node has been provided, and no error has been set. Either of these should happen*");
         }
 
         // now check if no illegal fields are set for this node type
