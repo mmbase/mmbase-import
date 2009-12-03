@@ -179,10 +179,9 @@ public class Job implements Iterable<Result> {
                     } else {
                         dest.setIntValue("codec", c.toInt());
                     }
-                    dest.setNodeValue("id", Job.this.node);
+                    //dest.setNodeValue("id", Job.this.node);
 
                     File inFile  = new File(processor.getDirectory(), Job.this.node.getStringValue("url").replace("/", File.separator));
-
 
                     StringBuilder buf = new StringBuilder();
                     org.mmbase.storage.implementation.database.DatabaseStorageManager.appendDirectory(buf, Job.this.node.getNumber(), "/");
@@ -199,10 +198,40 @@ public class Job implements Iterable<Result> {
                     dest.setStringValue("url", outFileName);
 
                     dest.commit();
+                    
+                    
 
                     String destFileName = dest.getStringValue("url");
-                    if (destFileName.length() < 0) LOG.error("No value for field url: " + destFileName);
-                    LOG.info("destFileName: '" + destFileName + "'");
+                    
+                    // XXX: Sometimes a commit fails (partly), doing it and checking it again  */
+                    int w = 0;
+                    do {
+                        LOG.warn("No value for field url: '" + destFileName + "' in #" + dest.getNumber() + ", committing it again and trying again in 5 sec. (" + w + ")");
+                        
+                        if (c == null || c == Codec.UNKNOWN) {
+                            dest.setValue("codec", null);
+                        } else {
+                            dest.setIntValue("codec", c.toInt());
+                        }
+                        dest.setIntValue("format", f.toInt());
+                        dest.setStringValue("url", outFileName);
+                        dest.commit();
+                        
+                        try {
+                            getThread().sleep(5000);
+                            w++;
+                        } catch (InterruptedException ie) {
+                            LOG.info("Interrupted" + ie);
+                        }
+                        destFileName = dest.getStringValue("url");
+                        
+                    } while (destFileName.length() < 1 && w < 10);
+                    
+                    if (destFileName.length() < 1) {
+                        LOG.error("Still empty destFileName: '" + destFileName + "' of #" + dest.getNumber());
+                    } else {
+                        LOG.info("destFileName: '" + destFileName + "'");
+                    }
                     assert destFileName != null;
                     assert destFileName.length() > 0;
                     
