@@ -9,6 +9,7 @@
 <%@ attribute name="confirmdelete" type="java.lang.Boolean" description="wether you must confirm deleting nodes. default is true"%>
 <%@ attribute name="harddelete" type="java.lang.Boolean" description="wether you can delete nodes in the list (when you are authorized). defautls to false."%>
 <%@ attribute name="fields" required="true" description="the fields to show"%>
+<%@ attribute name="constraints" description="Constraints on the the relation objects"%>
 <%--
 <%@ attribute name="parenttype" description="when this is not empty, the $nodenr (attribute on list:wizard or list:searchlist) is taken as parent for nodes in the list, if it is set, the first node of given type that is related to a node in the list is taken as parent, so it translates into :'has any connections to..'. Don't quite see the use of it..." %>
 --%>
@@ -159,7 +160,7 @@
                         <c:remove var="link"/>
                         <mm:list path="${_path}"
                                 searchdir="${searchdir}"
-                                constraints="${parentnodetype}.number=${parentnodenr} and ${searchtype}.number=${nodenrrow}"
+                                constraints="${parentnodetype}.number=${parentnodenr} and ${searchtype}.number=${nodenrrow} ${empty constraints ? '' : 'AND'} ${constraints}"
                                 fields="${relationrole}.number" >
                             <c:set var="link" scope="request"><mm:field name="${relationrole}.number" /></c:set>
                             <mm:log>node ${nodenrrow} has a relation to parent ${parentnodenr}</mm:log>
@@ -220,6 +221,7 @@
 
                                                 <mm:param name="actions[createRelation][${nodenrrow}].role" value="${relationrole}" />
                                                 <mm:param name="actions[createRelation][${nodenrrow}].sortPosition" value="end" />
+                                                <mm:param name="actions[createRelation][${nodenrrow}].relationValues" value="${constraints}" />
                                                 <c:if test="${not empty flushname}">
                                                     <mm:param name="flushname" value="${flushname}" />
                                                 </c:if>

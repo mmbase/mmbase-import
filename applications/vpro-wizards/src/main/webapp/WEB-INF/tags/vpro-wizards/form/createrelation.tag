@@ -21,7 +21,7 @@
 <%@ attribute name="referDestination" description="points to an id of a node in the current request"%>
 <%@ attribute name="destination"  description="a node number or alias"%>
 <%@ attribute name="role" description="the relation role" required="true" %>
-
+<%@ attribute name="relationValues"  %>
 
 
 <c:if test="${empty relationid}"><c:set var="relationid" scope="request" value="200"/></c:if>
@@ -57,6 +57,10 @@
     <c:if test="${not empty role}">
         <input type="hidden" name="actions[createRelation][${relationid}].role" value="${role}" />
     </c:if>
+    <c:if test="${not empty constraints}">
+      <input type="hidden" name="actions[createRelation][${relationid}].relationValues" value="${relationValues}" />
+    </c:if>
+
 
     <%-- do the body--%>
     <jsp:doBody/>
