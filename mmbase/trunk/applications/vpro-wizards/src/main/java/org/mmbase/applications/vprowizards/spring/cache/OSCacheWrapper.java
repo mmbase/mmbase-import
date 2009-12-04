@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
-*/ 
+*/
 package org.mmbase.applications.vprowizards.spring.cache;
 
 import org.mmbase.module.core.MMBaseContext;
@@ -15,7 +15,7 @@ import com.opensymphony.oscache.base.Cache;
 import com.opensymphony.oscache.web.ServletCacheAdministrator;
 
 /**
- * this wraps an oscahe instance.
+ * this wraps an oscache instance.
  * @author ebunders
  *
  */

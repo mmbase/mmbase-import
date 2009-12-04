@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
-*/ 
+*/
 package org.mmbase.applications.vprowizards.spring.cache;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class BasicCacheHandlerInterceptor extends CacheHandlerInterceptor {
 
     private static Logger log = Logging.getLoggerInstance(BasicCacheHandlerInterceptor.class);
     private List<Modifier> modifiers = new ArrayList<Modifier>();
-    
+
 //    private Class<? extends CacheNameResolver> cachNameResolverClass;
     private ClassInstanceFactory<CacheNameResolver> cacheNameResolverFactory;
     private CacheWrapper cacheWrapper = null;
@@ -94,8 +94,8 @@ public class BasicCacheHandlerInterceptor extends CacheHandlerInterceptor {
 
     }
 
-    
-    
+
+
     public void setCacheWrapper(CacheWrapper cacheWrapper) {
         this.cacheWrapper = cacheWrapper;
     }
@@ -104,11 +104,11 @@ public class BasicCacheHandlerInterceptor extends CacheHandlerInterceptor {
     public CacheWrapper getCacheWrapper() {
         return cacheWrapper;
     }
-    
+
     public void addModifier(Modifier modifier) {
         modifiers.add(modifier);
     }
-    
+
     public void setModifiers(List<Modifier> modifiers) {
         this.modifiers.addAll(modifiers);
     }
@@ -133,14 +133,14 @@ public class BasicCacheHandlerInterceptor extends CacheHandlerInterceptor {
      * flush the given cache groups.
      * @param request
      * @param flushnames a comma separated list of cache groups.
-     * @param request 
+     * @param request
      */
     private void flushForNames(List<String> flushnames) {
         for(String name: flushnames) {
             cacheWrapper.flushForName(applyModifiers(name));
         }
     }
-    
+
     private String applyModifiers(String input){
         for(Modifier modifier: modifiers){
             input = modifier.modify(input);
@@ -152,7 +152,7 @@ public class BasicCacheHandlerInterceptor extends CacheHandlerInterceptor {
      * apply all the modifiers to a list of strings.
      * All the cache names that are resolved will be put through all the registered modifiers
      * before they are returned.
-     * 
+     *
      * @param items
      * @return
      */
