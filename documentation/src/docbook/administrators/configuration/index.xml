@@ -563,7 +563,7 @@
     (pre-1.7) database layer of MMBase. If you intend to use the new Storage
     layer (recommended), you can remove this directory. For configuration of
     the new Storage Layer, see the <olink
-    targetdoc="storage">storage documentation</olink>.</para>
+    targetdoc="backenddevelopers-storage-index">storage documentation</olink>.</para>
 
     <para>Even when you use the old database layer, in an actual installation
     all but one of these files can be removed. It must correspond to the
@@ -647,8 +647,9 @@
       left to the application server, and jdbc.xml remains unused.
     </para>
     <para>
-      See  also the <ulink url="../backenddevelopers/storage/index.html">storage
-    documentation</ulink> for details.</para>
+      See  also the
+      <olink targetdoc="administrators-configuration-index">
+        storage documentation</olink> for details.</para>
   </section>
 
   <section id="logging">
