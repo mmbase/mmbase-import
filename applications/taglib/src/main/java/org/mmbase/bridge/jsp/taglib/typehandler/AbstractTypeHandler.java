@@ -134,7 +134,8 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     protected String getClasses(Node node, Field field) {
         StringBuilder buf = new StringBuilder("mm_validate ");
-        for (String styleClass : field.getDataType().getStyleClasses()) {
+        DataType dt = field.getDataType();
+        for (String styleClass : dt.getStyleClasses()) {
             buf.append(styleClass).append(' ');
         }
         if (field instanceof org.mmbase.bridge.util.DataTypeField) {
@@ -149,6 +150,10 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (node != null) {
             buf.append(" mm_n_");
             buf.append(node.getNumber());
+            if (dt instanceof org.mmbase.datatypes.LengthDataType) {
+                buf.append(" mm_length_");
+                buf.append(node.getSize(field.getName()));
+            }
         }
         return buf.toString();
     }
@@ -214,7 +219,9 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             log.debug("No value found in context for " + fieldName);
             if (node != null) {
                 value = node.isNull(fieldName) ? null : getValue(node, fieldName);
-                log.debug("Value for " + fieldName + " found in node " + value);
+                if (log.isDebugEnabled()) {
+                    log.debug("Value for " + fieldName + " found in node " + value);
+                }
             } else if (useDefault) {
                 value = field.getDataType().getDefaultValue(tag.getLocale(), tag.getCloudVar(), field);
                 log.debug("No Node, defaultvalue found in field " + value);
