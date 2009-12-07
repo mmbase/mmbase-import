@@ -15,6 +15,9 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.LocalizedString;
 import org.w3c.dom.Element;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
  * A LengthDataType is a datatype that defines a length for its values ({@link #getLength(Object)}) ,
@@ -26,6 +29,8 @@ import org.w3c.dom.Element;
  * @since MMBase-1.8
  */
 abstract public class AbstractLengthDataType<E> extends BasicDataType<E> implements LengthDataType<E> {
+
+    private static final Logger log = Logging.getLoggerInstance(AbstractLengthDataType.class);
 
     protected MinRestriction minLengthRestriction = new MinRestriction(this, 0);
     protected MaxRestriction maxLengthRestriction = new MaxRestriction(this, Long.MAX_VALUE);
@@ -128,6 +133,9 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
     @Override
     protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value,  Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value,  node, field);
+        if (log.isDebugEnabled()) {
+            log.debug("Validating with " + maxLengthRestriction + " " + castValue);
+        }
         errors = maxLengthRestriction.validate(errors, castValue, node, field);
         return errors;
     }
@@ -144,17 +152,17 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
     protected StringBuilder toStringBuilder() {
         StringBuilder buf = super.toStringBuilder();
         if (getMinLength() > 0) {
-            buf.append("minLength:" + getMinLength() + " ");
+            buf.append(" minLength:" + getMinLength() + " ");
         }
         if (getMaxLength() < Long.MAX_VALUE) {
-            buf.append("maxLength:" + getMaxLength() + " ");
+            buf.append(" maxLength:" + getMaxLength() + " ");
         }
         return buf;
     }
 
     protected static class MinRestriction extends StaticAbstractRestriction<Long> {
         private static final long serialVersionUID = 4115513188533000959L;
-        
+
         MinRestriction(BasicDataType<?> dt, MinRestriction source) {
             super(dt, source);
             setEnforceStrength(DataType.ENFORCE_ONCHANGE);
@@ -188,6 +196,7 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
             if (v == null) return true; // depends on 'required'
             long max = Casting.toLong(getValue());
             long length = ((LengthDataType) parent).getLength(v);
+            log.debug("comparing " + length + " <= " + max);
             return length <= max;
         }
     }
