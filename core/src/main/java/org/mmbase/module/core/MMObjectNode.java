@@ -173,6 +173,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         newContext = node.newContext;
         values.putAll(node.getValues());
         values.putAll(node.getOldValues());
+        sizes.putAll(node.sizes);
     }
 
     /**
@@ -1034,7 +1035,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                 }
             } else {
                 v = (byte[]) blobs.get(key);
-                log.debug("Found in blob cache " + fieldName);
+                log.debug("Found in " + v.length + " bytes in blob cache for field " + fieldName );
+                assert v.length == getSize(fieldName);
             }
             return v == null ? null : new ByteArrayInputStream(v);
         } else {
