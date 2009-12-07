@@ -73,7 +73,7 @@ public class BinaryHandler extends HtmlHandler {
         } else {
             SerializableInputStream sis = Casting.toSerializableInputStream(value);
             if ("".equals(sis.getName())) {
-                // notching changed.
+                // nothing changed.
             } else {
                 if (useSpecificSetter) {
                     node.setInputStreamValue(fieldName, sis, sis.getSize());
