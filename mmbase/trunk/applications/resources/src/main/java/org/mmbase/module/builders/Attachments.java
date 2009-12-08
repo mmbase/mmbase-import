@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
+import java.io.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,6 +19,7 @@ import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.magicfile.MagicFile;
+import org.mmbase.servlet.FileServlet;
 
 /**
  * This builder can be used for 'attachments' builders. That is
@@ -32,6 +34,8 @@ public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);
 
     public static final String FIELD_SIZE       = "size";
+    private static final org.mmbase.util.transformers.UrlEscaper URLESCAPER= new org.mmbase.util.transformers.UrlEscaper();
+    private static final org.mmbase.util.transformers.Xml XMLESCAPER= new org.mmbase.util.transformers.Xml();
 
     protected String getAssociation() {
         return "attachments";
@@ -39,11 +43,39 @@ public class Attachments extends AbstractServletBuilder {
     protected String getDefaultPath() {
         return "/attachment.db";
     }
+    /**
+     * @since MMBase-1.9.2
+     */
+    protected String getGuiForNewAttachment(MMObjectNode node) throws IOException  {
+        FileServlet instance = FileServlet.getInstance();
+        if (instance == null) {
+            return "<span class='mm_gui nofileservlet'>NO FILE SERVLET</span>";
+        } else {
+            String number = node.getStringValue("_number");
+            SerializableInputStream is = Casting.toSerializableInputStream(node.getInputStreamValue("handle"));
+            if (is.getFileName() != null) {
+                String files = FileServlet.getBasePath("files").substring(1);
+                String root = MMBaseContext.getHtmlRootUrlPath();
+                String origUrl = root + files + "uploads/" + URLESCAPER.transform(is.getFileName()); // hmm, is this 'uploads' certain?
+                return "<a class='mm_gui' href='" + XMLESCAPER.transform(origUrl) + "' onclick=\"window.open(this.href); return false;\">[" + XMLESCAPER.transform(is.getName()) + "]</a>";
+            } else {
+                return "<span class='mm_gui'>--</span>";
+            }
+        }
+    }
 
     protected String getSGUIIndicator(MMObjectNode node, Parameters a) {
         String field = a.getString("field");
         if (field.equals("handle") || field.equals("")) {
-            int num  = node.getIntValue("number");
+            int num = node.getNumber();
+            if (num < 0 || node.getChanged().contains("handle")) {
+                try {
+                    return getGuiForNewAttachment(node);
+                } catch (IOException ioe) {
+                    return ioe.getMessage();
+                }
+            }
+
             //int size = node.getIntValue("size");
 
             String fileName = getFileName(node, new StringBuilder()).toString();
@@ -52,7 +84,7 @@ public class Attachments extends AbstractServletBuilder {
             if (fileName == null || fileName.equals("")) {
                 title = "[*]";
             } else {
-                title = "[" + fileName + "]";
+                title = "[" + XMLESCAPER.transform(fileName) + "]";
             }
 
             if (/*size == -1  || */ num == -1) { // check on size seems sensible, but size was often not filled
