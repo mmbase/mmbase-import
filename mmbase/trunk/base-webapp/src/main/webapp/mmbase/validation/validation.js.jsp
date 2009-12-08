@@ -1,6 +1,6 @@
 // -*- mode: javascript; -*-
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"  %>
-<mm:content type="text/javascript" expires="300">
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><mm:content type="text/javascript" expires="300">
 /**
  * See test.jspx for example usage.
 
@@ -16,13 +16,13 @@
 
 function MMBaseValidator(root) {
 
+    this.logEnabled   = false;
+    this.traceEnabled = false;
+
     <mm:cloud jspvar="cloud">
       this.uri = '<%=cloud.getCloudContext().getUri()%>';
       this.cloud = '<%=cloud.getName()%>';
     </mm:cloud>
-
-    this.logEnabled   = false;
-    this.traceEnabled = false;
 
     this.invalidElements = 0;
     //this.changedElements  = 0;
@@ -32,13 +32,14 @@ function MMBaseValidator(root) {
     this.setup();
     this.lang          = null;
     this.sessionName   = null;
+    this.activeElement = null;
+    this.checkAfter    = 600;
+    this.logArea       = "logarea";
     this.id = MMBaseValidator.validators.push(this);
     if (MMBaseValidator.validators.length == 1) {
         setTimeout(MMBaseValidator.watcher, 500);
     }
-    this.activeElement = null;
-    this.checkAfter    = 600;
-    this.logArea       = "logarea";
+
 
 }
 
@@ -60,6 +61,7 @@ MMBaseValidator.watcher = function() {
                 }
                 if (new Date(validator.checkAfter + el.lastChange.getTime()) < now) {
                     validator.validateElement(validator.activeElement, true, true);
+                } else {
                 }
             }
         }
@@ -194,48 +196,109 @@ MMBaseValidator.prototype.isRequired = function(el) {
     return el.mm_isrequired;
 }
 
+MMBaseValidator.prototype.warnedUpload = false;
+
+MMBaseValidator.prototype.showWarning = function(e) {
+    if (! MMBaseValidator.prototype.warnedUpload) {
+        var warning = $("<div style='background-color: yellow; color: black; position: absolute; right: 0; top: 0; z-index: 2000;'>I'm sorry, your browser cannot determin the size of the upload. Please use e.g. FireFox, Safari or Chromium. Please DO NOT USE Internet Explorer. That is an unuseable, crappy, sorry excuse for a browser. (" + e + ")</div>");
+        $("body").append(warning);
+        MMBaseValidator.prototype.warnedUpload = true;
+        setTimeout(function() {
+                warning.hide("slow");
+            }, 3000);
+    }
+
+}
+
+MMBaseValidator.prototype.getLength = function(el) {
+    var length;
+    if (el.type === "file") {
+        if (el.value === "") {
+            this.getDataTypeKey(el); // set also mm_length
+            length = el.mm_initial_length;
+        } else {
+            if (el.files == null) {
+                try {
+                    // We can always try.
+                    // According to
+                    // http://msdn.microsoft.com/en-us/library/z9ty6h50%28VS.85%29.aspx
+                    // this should work.
+                    // I have never seen that it actually does.
+                    // IE sucks too much.
+                    var oas = new ActiveXObject("Scripting.FileSystemObject");
+                    var file = oas.getFile(el.value);
+                    length = file.length;
+                } catch (e) {
+                    // Out of luck, both el.files  and the silly activexobject are not working.
+                    this.showWarning(e);
+                    length = null;
+                }
+            } else {
+                // most other browsers simply support the following (Note the incredible ease and simplicity, compared to the horrible shit of IE).
+                if (el.files.length > 0) {
+                    length = el.files.item(0).fileSize;
+                } else {
+                    length = 0;
+                }
+            }
+        }
+    } else {
+        var value = this.getValue(el);
+        if (value == null) {
+            length = 0;
+        } else {
+            length = value.length;
+        }
+    }
+    return length;
+}
+
 /**
  * Whether the value in the form element obeys the restrictions on length (minLength, maxLength, length)
  */
 MMBaseValidator.prototype.lengthValid = function(el) {
-    if (! this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce) && this.getValue(el).length == 0) return true;
+    var length = this.getLength(el);
+    if (! this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce) && length == 0) {
+        return true;
+    }
     var xml = this.getDataTypeXml(el);
 
     if (el.mm_minLength_set == null) {
         var ml =  this.find(xml, 'datatype minLength')[0];
         if (ml != null) {
-            el.mm_minLength = ml.getAttribute("value");
+            el.mm_minLength = parseInt(ml.getAttribute("value"));
             el.mm_minLength_enforce = ml.getAttribute("enforce");
         }
         el.mm_minLength_set = true;
     }
-    if (el.mm_minLength != null && el.value != null && el.value.length < el.mm_minLength) {
+
+    if (el.mm_minLength != null && length < el.mm_minLength) {
         return false;
     }
 
     if (el.mm_maxLength_set == null) {
         var ml =  this.find(xml, 'datatype maxLength')[0];
         if (ml != null) {
-            el.mm_maxLength = ml.getAttribute("value");
+            el.mm_maxLength = parseInt(ml.getAttribute("value"));
             el.mm_maxLength_enforce = ml.getAttribute("enforce");
         }
         el.mm_maxLength_set = true;
     }
 
-    if (el.mm_maxLength != null && el.value != null && el.value.length > el.mm_maxLength) {
+    if (el.mm_maxLength != null && length > el.mm_maxLength) {
         return false;
     }
 
     if (el.mm_length_set == null) {
         var l =  this.find(xml, 'datatype length')[0];
         if (l != null) {
-            el.mm_length = l.getAttribute("value");
+            el.mm_length = parseInt(l.getAttribute("value"));
             el.mm_length_enforce = l.getAttribute("enforce");
         }
         el.mm_length_set = true;
     }
 
-    if (el.mm_length != null && el.value.length != el.mm_length) {
+    if (el.mm_length != null && length != el.mm_length) {
         return false;
     }
     return true;
@@ -244,6 +307,8 @@ MMBaseValidator.prototype.lengthValid = function(el) {
 // much much, too simple
 MMBaseValidator.prototype.javaScriptPattern = function(javaPattern) {
     try {
+
+        // This code tries to translate a java regexp to a javascript regexp.
         var flags = "";
         if (javaPattern.indexOf("(?i)") == 0) {
             flags += "i";
@@ -286,7 +351,9 @@ MMBaseValidator.prototype.hasJavaClass = function(el, javaClass) {
     var pattern = new RegExp(javaClass);
     var xml = this.getDataTypeXml(el);
     var javaClassElement = this.find(xml, 'datatype class')[0];
-    if (! javaClassElement) return false;
+    if (! javaClassElement) {
+        return false;
+    }
     var name = javaClassElement.getAttribute("name");
     if (pattern.test(name)) {
         return true;
@@ -335,7 +402,7 @@ MMBaseValidator.prototype.isDateTime = function(el) {
 MMBaseValidator.prototype.isBinary = function(el) {
     if (el.mm_isbinary != null) return el.mm_isbinary;
     el.mm_isbinary = this.hasJavaClass(el, "org\.mmbase\.datatypes\.BinaryDataType");
-    return el.isbinary;
+    return el.mm_isbinary;
 }
 MMBaseValidator.prototype.isCheckEquality = function(el) {
     if (el.mm_ischeckequality != null) return el.mm_ischeckequality;
@@ -355,7 +422,7 @@ MMBaseValidator.prototype.FLOAT   = /^[+-]?(\d+|\d+\.\d*|\d*\.\d+)(e[+-]?\d+|)$/
 
 MMBaseValidator.prototype.typeValid = function(el) {
     var value = this.getValue(el);
-    if (value == "" || value == null) return true;
+    if (value === "" || value == null) return true;
 
     if (this.isInteger(el)) {
         if (! this.INTEGER.test(el.value)) return false;
@@ -379,7 +446,7 @@ MMBaseValidator.prototype.getValueAttribute = function(numeric, el) {
     if (! eval == "") value = eval;
 
     if (numeric) {
-        if (value == "") return null;
+        if (value === "") return null;
         return parseFloat(value);
     } else {
         return value;
@@ -527,6 +594,8 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
                 result.nodeManager = className.substring(6);
             } else if (className.indexOf("mm_n_") == 0) {
                 result.node = className.substring(5);
+            } else if (className.indexOf("mm_length_") == 0) {
+                el.mm_initial_length = parseInt(className.substring(10));
             }
 
         }
@@ -647,7 +716,7 @@ MMBaseValidator.prototype.getValue = function(el) {
         }
         var value = $(el).val();
         if( this.isNumeric(el)) {
-            if (value == "") {
+            if (value === "") {
             } else {
                 value = parseFloat(value);
             }
@@ -703,15 +772,12 @@ MMBaseValidator.prototype.valid = function(el) {
         this.log("Unsupported element " + el);
         return true; // not yet supported
     }
-    if (this.isBinary(el)) {
-        return true; // not yet supported
-    }
     if (this.isCheckEquality(el)) {
         return true; // not yet supported
     }
 
     if (this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce)) {
-        if (value === "" || value == null) { // === is essential because 0 == "" (0 converted to string evidentely is '' in javascript)
+        if (this.getLength(el) <= 0 && (value === "" || value == null)) {
             return false;
         }
     } else {
@@ -725,7 +791,6 @@ MMBaseValidator.prototype.valid = function(el) {
     if (! this.patternValid(el)) return false; // not perfect yet
     // @todo of course we can go a bit further here.
 
-
     // datetime validation is still broken. (those can have more fields and so on)
 
     // enumerations: but must of the time those would have given dropdowns and such, so it's hardly
@@ -736,44 +801,43 @@ MMBaseValidator.prototype.valid = function(el) {
     return true;
 }
 
+
+
 /**
- * Determins whether a form element contains a valid value, according to the server.
- * Returns an XML containing the reasons why it would not be valid.
- * @todo make asynchronous.
+ * Validation of binaries is a bit more complex, so we do it seperately here.
  */
-MMBaseValidator.prototype.serverValidation = function(el) {
-    if (el == null) {
-        return;
+MMBaseValidator.prototype.binaryServerValidation = function(el) {
+    var key = this.getDataTypeKey(el);
+    var value = this.getValue(el);
+
+    var validationUrl = '<mm:url page="/mmbase/validation/binaryValid.jspx" />?';
+    var self = this;
+    var params = this.getDataTypeArguments(key);
+    if (this.lang != null) params.lang = this.lang;
+    if (this.sessionName != null) params.sessionname = this.sessionName;
+    if (key.node != null && key.node > 0) {
+        params.node = key.node;
     }
-    try {
-        if (this.isBinary(el)) {
-            el.serverValidated = true;
-            return $("<result valid='true' class='implicit_binary' />")[0];
+    params.fieldname = $(el).attr("name");
+    params.changed = this.isChanged(el);
+    params.length = this.getLength(el);
+    if (params.length == null) {
+        delete params.length;
+    }
+    var needsAmp = false;
+    for (var p in params) {
+        if (needsAmp) {
+            validationUrl += "&";
         }
-        if (this.isCheckEquality(el)) { // Not yet supported
-            el.serverValidated = true;
-            return $("<result valid='true' class='implicit_checkequality' />")[0];
-        }
-
-        var key = this.getDataTypeKey(el);
-        var value = this.getValue(el);
-
-        var validationUrl = '<mm:url page="/mmbase/validation/valid.jspx" />';
-        this.getDataTypeArguments(key) +
-            (this.lang != null ? "&lang=" + this.lang : "") +
-            (this.sessionName != null ? "&sessionname=" + this.sessionName : "") +
-            "&value=" + value +
-            (key.node != null && key.node > 0 ? ("&node=" + key.node) : "") +
-            "&changed=" + this.isChanged(el);
-        var params = this.getDataTypeArguments(key);
-        if (this.lang != null) params.lang = this.lang;
-        if (this.sessionName != null) params.sessionname = this.sessionName;
-        params.value = value;
-        if (key.node != null && key.node > 0) params.node = key.node;
-        params.changed = this.isChanged(el);
+        validationUrl += p + "=" + params[p];
+        needsAmp = true;
+        //form.append('<input type="hidden" name="' + p + '" value="' + params[p] + '" />');
+    }
+    if (params.length != null) {
         var result;
-        $.ajax({async: false, url: validationUrl, type: "GET", dataType: "xml", data: params,
-	            complete: function(res, status){
+        $.ajax({async: true, url: validationUrl, type: "GET", dataType: "xml", data: params,
+                    complete: function(res, status){
+                    var result;
                     if (status == "success") {
                         el.serverValidated = true;
                         result = res.responseXML;
@@ -782,9 +846,86 @@ MMBaseValidator.prototype.serverValidation = function(el) {
                         el.serverValidated = true;
                         result = $("<result valid='true' />")[0];
                     }
+                    self.showServerErrors(el, result);
                 }
             });
-        return result;
+    } else {
+        if (typeof($.fn.ajaxSubmit) == "undefined") {
+
+            if (this.valid(el)) {
+                this.showServerErrors(el, $("<result valid='true' class='implicit_binary' />")[0]);
+            } else {
+                this.showServerErrors(el, $("<result valid='false' class='implicit_binary' />")[0]);
+            }
+            return;
+        }
+        // It seems that the upload is done always in this case.
+        // Probably this is not the way.
+        // Leaving it, because I thing it's the only thing which may work in IE.
+
+        var form = $('<form style="display: inline;" method="POST"  enctype="multipart/form-data"></form>');
+        var clone = $(el).clone();
+        $(el).after(form);
+        form.append(el);
+
+        form.ajaxSubmit({
+                dataType: 'xml',
+                url: validationUrl,
+                success: function(xml, textStatus) {
+                    self.showServerErrors(el, xml);
+                    form.before(el);
+                    form.remove();
+                }
+            });
+    }
+}
+
+/**
+ * Determins whether a form element contains a valid value, according to the server.
+ * Returns an XML containing the reasons why it would not be valid.
+ */
+MMBaseValidator.prototype.serverValidation = function(el) {
+    if (el == null) {
+        return;
+    }
+    try {
+        if (this.isBinary(el)) {
+            this.binaryServerValidation(el);
+            el.serverValidated = true;
+            return;
+        }
+        if (this.isCheckEquality(el)) { // Not yet supported
+            el.serverValidated = true;
+            this.showServerErrors(el, $("<result valid='true' class='implicit_checkequality' />")[0]);
+            return;
+        }
+
+        var self = this;
+        var key = this.getDataTypeKey(el);
+        var value = this.getValue(el);
+
+        var validationUrl = '<mm:url page="/mmbase/validation/valid.jspx" />';
+        var params = this.getDataTypeArguments(key);
+        if (this.lang != null) params.lang = this.lang;
+        if (this.sessionName != null) params.sessionname = this.sessionName;
+        params.value = value;
+        if (key.node != null && key.node > 0) params.node = key.node;
+        params.changed = this.isChanged(el);
+        var result;
+        $.ajax({async: true, url: validationUrl, type: "GET", dataType: "xml", data: params,
+	            complete: function(res, status){
+                    var result;
+                    if (status == "success") {
+                        el.serverValidated = true;
+                        result = res.responseXML;
+                        //console.log("" + res);
+                    } else {
+                        el.serverValidated = true;
+                        result = $("<result valid='true' />")[0];
+                    }
+                    self.showServerErrors(el, result);
+                }
+            });
     } catch (ex) {
         this.log(ex);
         throw ex;
@@ -796,7 +937,7 @@ MMBaseValidator.prototype.serverValidation = function(el) {
  */
 MMBaseValidator.prototype.validResult = function(xml) {
     try {
-        if (xml.documentElement) {
+        if (xml.documentElement != null) {
             return "true" == xml.documentElement.getAttribute("valid");
         } else {
             return "true" == "" + $(xml).attr("valid");
@@ -842,48 +983,31 @@ MMBaseValidator.prototype.serverValidate = function(event) {
     this.validate(event, true);
 }
 
+MMBaseValidator.prototype.showServerErrors = function(element, serverXml, id) {
+    var valid = this.validResult(serverXml);
+    if (id == null) id = element.id;
+    if (id != null) {
+        var errorDiv = document.getElementById("mm_check_" + id.substring(3));
+        if (errorDiv != null) {
+            errorDiv.className = valid ? "mm_check_noerror mm_check_updated" : "mm_check_error mm_check_updated";
+            if (errorDiv) {
+                $(errorDiv).empty();
+                var errors = serverXml.documentElement ? serverXml.documentElement.childNodes : [];
+                this.log("errors for " + element.id + " " +  serverXml + " " + errors.length);
 
-MMBaseValidator.prototype.validateElement = function(element, server) {
-    //console.log("validating " + element + " " + server);
-    var valid;
-    if (server) {
-        var prevValue = element.prevValue;
-        var curValue  = "" + this.getValue(element);
-        if (curValue == prevValue) {
-            server = false;
-            element.serverValidated = true;
-            // already validated, so nothing to do.
-            return;
+
+                for (var  i = 0; i < errors.length; i++) {
+                    var span = document.createElement("span");
+                    span.innerHTML = $(errors[i]).text();
+                    errorDiv.appendChild(span);
+                }
+            }
         }
-        element.prevValue = "" + curValue;
     }
+    this.updateValidity(element, valid);
+}
 
-    this.activeElement = element;
-    if (server) {
-
-        var serverXml = this.serverValidation(element);
-        valid = this.validResult(serverXml);
-        if (element.id) {
-            var errorDiv = document.getElementById("mm_check_" + element.id.substring(3));
-	        if (errorDiv != null) {
-                    errorDiv.className = valid ? "mm_check_noerror mm_check_updated" : "mm_check_error mm_check_updated";
-                    if (errorDiv) {
-                        $(errorDiv).empty();
-                        var errors = serverXml.documentElement ? serverXml.documentElement.childNodes : [];
-                        this.log("errors for " + element.id + " " +  serverXml + " " + errors.length);
-
-
-                        for (var  i = 0; i < errors.length; i++) {
-                            var span = document.createElement("span");
-                            span.innerHTML = errors[i].childNodes[0].nodeValue; // IE does not support textContent
-                            errorDiv.appendChild(span);
-                        }
-                    }
-	        }
-        }
-    } else {
-        valid = this.valid(element);
-    }
+MMBaseValidator.prototype.updateValidity = function(element, valid) {
     if (valid != element.prevValid) {
         if (valid) {
             this.invalidElements--;
@@ -900,6 +1024,32 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
     return valid;
 }
 
+MMBaseValidator.prototype.validateElement = function(element, server) {
+    var valid;
+    if (server) {
+        var prevValue = element.prevValue;
+        var curValue  = "" + this.getValue(element);
+        if (curValue == prevValue) {
+            server = false;
+            element.serverValidated = true;
+            // already validated, so nothing to do.
+            return;
+        }
+        element.prevValue = "" + curValue;
+    }
+
+    this.activeElement = element;
+    if (server) {
+        this.serverValidation(element);
+        return null; // don't know yet.
+    } else {
+        valid = this.valid(element);
+        this.updateValidity(element, valid);
+        return valid;
+    }
+
+}
+
 /**
  * Validates al mm_validate form entries which were marked for validation with addValidation.
  */
@@ -910,7 +1060,7 @@ MMBaseValidator.prototype.validatePage = function(server) {
         var entry = els[i];
         this.validateElement(entry, server);
     }
-    return this.invalidElements === 0;
+    return this.invalidElements == 0;
 }
 
 MMBaseValidator.prototype.removeValidation = function(el) {
@@ -965,10 +1115,14 @@ MMBaseValidator.prototype.addValidationForElements = function(els) {
             // FireFox calls this when the user does a right-click paste
             //$(entry).bind("input", function(ev) { self.validate(ev); }); // Firefox sends a 'paste' event now too.
             break;
+
         case "radio":
         case "checkbox":
             $(entry).bind("click", function(ev) { self.lastChange(ev); self.validate(ev); });
             $(entry).bind("blur",   function(ev) { self.serverValidate(ev); });
+            break;
+        case "file":
+            $(entry).bind("change", function(ev) { self.setLastChange(ev); self.validate(ev); });
             break;
         case "select-one":
         case "select-multiple":
