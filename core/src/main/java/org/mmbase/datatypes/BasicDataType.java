@@ -556,7 +556,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             castValue = value;
         }
         if (log.isDebugEnabled()) {
-            log.debug("Validating  cast value" + castValue);
+            log.debug("Validating cast value " + castValue);
         }
         //System.out.println("" + value + " -> " + castValue + " (" + errors);
 
@@ -571,6 +571,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         errors = validateCastValueOrNull(errors, castValue, value, node, field);
 
         if (castValue == null) {
+            log.debug("cast value is null");
             return errors; // null is valid, unless required.
         }
         if (testEnum) {
@@ -1220,10 +1221,15 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                     return res;
                 }
             }
-            if ((! enforce(v, node, field)) ||  valid(v, node, field)) {
-                // no new error to add.
+            boolean enforce = enforce(v, node, field);
+            if (! enforce) {
+                log.debug("Ignoring " + v + " because not currently enforced by " + this);
+                return errors;
+            } else if (valid(v, node, field)) {
+                log.debug("Valid " + v + " for " + this);
                 return errors;
             } else {
+                log.debug("Invalid  " + v + " for " + this);
                 return addError(errors, v, node, field);
             }
         }
