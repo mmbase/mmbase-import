@@ -14,6 +14,8 @@ import java.util.*;
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.transformers.UrlEscaper;
+import org.mmbase.util.transformers.Xml;
 import org.mmbase.util.images.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
@@ -258,8 +260,6 @@ public class Images extends AbstractImages {
         }
     }
 
-    private static final org.mmbase.util.transformers.UrlEscaper URLESCAPER= new org.mmbase.util.transformers.UrlEscaper();
-
     static Map<File, Dimension> dimensions = new java.util.concurrent.ConcurrentHashMap();
     static Timer deleter = new Timer(true);
 
@@ -301,22 +301,22 @@ public class Images extends AbstractImages {
      */
     protected String getGuiForNewImage(MMObjectNode node, String alt, Parameters args) throws IOException  {
         FileServlet instance = FileServlet.getInstance();
-        if (instance == null) {
-            return "<span class='mm_gui nofileservlet'>NO FILE SERVLET</span>";
-        } else {
-            String number = node.getStringValue("_number");
-            SerializableInputStream is = Casting.toSerializableInputStream(node.getInputStreamValue("handle"));
-            if (is.getFileName() != null) {
+        String number = node.getStringValue("_number");
+        SerializableInputStream is = Casting.toSerializableInputStream(node.getInputStreamValue("handle"));
+        if (is.getFileName() != null) {
+            if (instance == null) {
+                return "<span class='mm_gui nofileservlet'>NO FILE SERVLET</span>";
+            } else {
                 File thumb = createTemporaryFile(is, ImageCaches.GUI_IMAGETEMPLATE);
                 log.debug("Found for " + node.getNumber() + "(" + number + "): " + thumb);
                 String files = FileServlet.getBasePath("files").substring(1);
                 String root = MMBaseContext.getHtmlRootUrlPath();
-                String thumbUrl = root + files + "temporary_images/" + URLESCAPER.transform(thumb.getName());
-                String origUrl = root + files + "uploads/" + URLESCAPER.transform(is.getFileName()); // hmm, is this 'uploads' certain?
-                return "<a class='mm_gui' href='" + origUrl + "'><img src='" + thumbUrl +"' /></a>";
-            } else {
-                return "<span class='mm_gui'>--</span>";
+                String thumbUrl = root + files + "temporary_images/" + UrlEscaper.INSTANCE.transform(thumb.getName());
+                String origUrl = root + files + "uploads/" + UrlEscaper.INSTANCE.transform(is.getFileName()); // hmm, is this 'uploads' certain?
+                return "<a class='mm_gui' href='" + Xml.ATTRIBUTES.transform(origUrl) + "'><img src='" + Xml.ATTRIBUTES.transform(thumbUrl) +"' /></a>";
             }
+        } else {
+            return "<span class='mm_gui'>--</span>";
         }
     }
     /**
@@ -361,7 +361,7 @@ public class Images extends AbstractImages {
         String imageThumb;
         if (urlConvert) {
             icache = null;
-            imageThumb = servlet.toString() + node.getNumber() + "+" + URLESCAPER.transform(template);
+            imageThumb = servlet.toString() + node.getNumber() + "+" + UrlEscaper.INSTANCE.transform(template);
         } else {
             icache = getCachedNode(node, template);
             if (icache == null) {
@@ -436,7 +436,7 @@ public class Images extends AbstractImages {
             "<a href=\"" + image + "\" class=\"mm_gui\" onclick=\"window.open(this.href); return false;\"><img src=\"" + imageThumb + "\" " +
             heightAndWidth +
             "border=\"0\" alt=\"" +
-            org.mmbase.util.transformers.Xml.XMLAttributeEscape(alt, '\"') +
+            Xml.XMLAttributeEscape(alt, '\"') +
             "\"" + title + " /></a>";
     }
 
