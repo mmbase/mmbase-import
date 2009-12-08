@@ -1,0 +1,31 @@
+<jsp:root
+    version="1.2"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+  <mm:import externid="a" >A</mm:import>
+  <mm:import externid="b" >B</mm:import>
+
+  <div
+      class="test mm_c c_test b_urls ${requestScope['org.mmbase.componentClassName']}"
+      id="${requestScope['org.mmbase.componentId']}">
+
+    <mm:import id="seq" vartype="integer">${empty requestScope.suburls_sequence ? 1 : requestScope.suburls_sequence + 1}</mm:import>
+
+    <mm:write request="suburls_sequence" referid="seq" />
+    <h1>Sub-urls ${seq}</h1>
+    <mm:import id="url">/mmbase/test/test/urls?1.${seq}:a=AA</mm:import>
+    <mm:link absolute="context" page="suburls" write="false">
+      <mm:param name="a">AA</mm:param>
+      <p>
+        <c:choose>
+          <c:when test="${_ eq url}">ok (${_})</c:when>
+          <c:otherwise>NOT OK ${_} != ${url}</c:otherwise>
+        </c:choose>
+      </p>
+    </mm:link>
+  </div>
+</jsp:root>

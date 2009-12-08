@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<framework
+    class="org.mmbase.framework.basic.BasicFramework"
+    xmlns="http://www.mmbase.org/xmlns/framework"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/framework
+                        http://www.mmbase.org/xmlns/framework.xsd">
+  <!--
+      version: $Id: framework.xml 35123 2009-05-12 21:20:03Z michiel $
+  -->
+  <description xml:lang="en">
+    This is the BasicFramework, change my settings in 'config/framework.xml'.
+  </description>
+
+  <urlconverter class="org.mmbase.framework.basic.MMBaseUrlConverter">
+    <description xml:lang="en">
+      The MMBase urlconverter handles about pretty URL's in /mmbase.
+    </description>
+    <param name="directory">mmbase</param>
+    <param name="renderJsp">/mmbase/admin/index.jsp</param> <!-- you can also do index_simple.jsp when debugging -->
+  </urlconverter>
+
+  <urlconverter class="org.mmbase.mynews.MyNewsUrlConverter">
+    <description xml:lang="en">
+      The MMBase urlconverter handles about pretty URL's in /magazine.
+    </description>
+    <param name="directory">magazine</param>
+    <param name="useTitle">true</param>
+    <param name="dateDepth">2</param>
+  </urlconverter>
+
+
+
+</framework>

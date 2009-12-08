@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry including="**/*.java" kind="src" path="core/src/main/java"/>
+	<classpathentry kind="src" path="core/src/main/javacc"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/cloudcontext/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/cloudsecurity/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/clustering/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/commandserver/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/crontab/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/dove/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/editwizard/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/email/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/jumpers/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/largeobjects/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/media/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/notifications/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/oscache-cache/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/resources/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/richtext/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/scan/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/streams/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/taglib/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/vwms/src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" path="applications/xmlimporter/src/main/java"/>
+
+	<classpathentry kind="var" path="M2_REPO/commons-fileupload/commons-fileupload/1.2.1/commons-fileupload-1.2.1.jar" sourcepath="M2_REPO/commons-fileupload/commons-fileupload/1.2.1/commons-fileupload-1.2.1-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/commons-io/commons-io/1.3.2/commons-io-1.3.2.jar" sourcepath="M2_REPO/commons-io/commons-io/1.3.2/commons-io-1.3.2-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" sourcepath="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/javax/media/jai-core/1.1.3/jai-core-1.1.3.jar"/>
+	<classpathentry kind="var" path="M2_REPO/javax/media/jai_codec/1.1.3/jai_codec-1.1.3.jar"/>
+	<classpathentry kind="var" path="M2_REPO/javax/media/jmf/2.1.1e/jmf-2.1.1e.jar"/>
+	<classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.1.1/activation-1.1.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/javax/servlet/jsp-api/2.0/jsp-api-2.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/javax/servlet/jstl/1.1.2/jstl-1.1.2.jar" sourcepath="M2_REPO/javax/servlet/jstl/1.1.2/jstl-1.1.2-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/javax/mail/mail/1.4.1/mail-1.4.1.jar" sourcepath="M2_REPO/javax/mail/mail/1.4.1/mail-1.4.1-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar" sourcepath="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/jgroups/jgroups-all/2.2.7/jgroups-all-2.2.7.jar"/>
+	<classpathentry kind="var" path="M2_REPO/javax/jms/jms/1.1/jms-1.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/junit/junit/4.4/junit-4.4.jar" sourcepath="M2_REPO/junit/junit/4.4/junit-4.4-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.14/log4j-1.2.14.jar" sourcepath="M2_REPO/log4j/log4j/1.2.14/log4j-1.2.14-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/net/sf/fmj/fmj-nojmf/2009-04-16/fmj-nojmf-2009-04-16.jar"/>
+	<classpathentry kind="var" path="M2_REPO/opensymphony/oscache/2.4/oscache-2.4.jar" sourcepath="M2_REPO/opensymphony/oscache/2.4/oscache-2.4-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/postgresql/postgresql/8.3-604.jdbc3/postgresql-8.3-604.jdbc3.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
+

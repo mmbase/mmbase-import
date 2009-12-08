@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="clustering"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+  <description xml:lang="en">Clustering component</description>
+  <description xml:lang="nl">Clustering component</description>
+
+  <block name="clustering"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <title xml:lang="en">Clustering</title>
+    <title xml:lang="nl">Clustering</title>
+    <description xml:lang="en">
+      Tool to monitor cluster messages that are send back and forth between different 
+      MMBase instances. With the clustering application you can configure several 
+      MMBase instances to run on the same database, this tool will make sure caches 
+      on all sides are up-to-date.
+    </description>
+    <description xml:lang="nl">
+      Clustering is een instrument dat cluster berichten heen en weer stuurt tussen
+      verschillende MMBase installaties. Hiermee is het mogelijk om verschillende MMBase
+      instanties op één database te draaien, clustering zorgt ervoor dat de caches
+      up-to-date blijven in alle instanties.
+    </description>
+    <body jsp="index.jspx">
+      <param name="active" type="String" />
+    </body>
+  </block>
+
+</component>

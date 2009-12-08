@@ -1,0 +1,313 @@
+<?xml version="1.0"?>
+<xsd:schema
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:dt="http://www.mmbase.org/xmlns/datatypes"
+    targetNamespace="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified"
+    version="1.0"
+    >
+
+  <xsd:import
+      namespace="http://www.w3.org/XML/1998/namespace"
+      schemaLocation="http://www.w3.org/2001/03/xml.xsd"
+      />
+
+  <xsd:import
+      namespace="http://www.mmbase.org/xmlns/datatypes"
+      schemaLocation="http://www.mmbase.org/xmlns/datatypes.xsd"
+      />
+
+  <xsd:element name="builder">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="status" minOccurs="0" />
+        <xsd:element ref="class" minOccurs="0" />
+        <xsd:element ref="searchage" minOccurs="0" />
+        <xsd:element ref="names" minOccurs="0" />
+        <xsd:element ref="descriptions" minOccurs="0" />
+        <xsd:element ref="properties" minOccurs="0" />
+        <xsd:element ref="dt:datatypes"  minOccurs="0" />
+        <xsd:element ref="fieldlist" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="indexlist" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="functionlist" minOccurs="0" maxOccurs="unbounded"  />
+      </xsd:sequence>
+      <xsd:attribute name="name"       type="xsd:string" use="required" />
+      <xsd:attribute name="maintainer" type="xsd:string" />
+      <xsd:attribute name="version"    type="xsd:string" />
+      <xsd:attribute name="extends"    type="xsd:string" />
+      <xsd:attribute name="defaultcontextintypedef"    type="xsd:string" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="status" />
+  <xsd:element name="class" />
+  <xsd:element name="searchage" />
+
+  <xsd:element name="names">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="singular" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="plural"   minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="singular">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute ref="xml:lang" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="plural">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute ref="xml:lang" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="descriptions">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="description">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute ref="xml:lang" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="properties">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="property" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="property">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute name="name" type="xsd:string" use="required" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+
+  <xsd:element name="fieldlist">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="field" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <!-- you may want to xinclude fieldlists, xincludes may add xml:base attributes -->
+      <xsd:attribute ref="xml:base" />
+      <xsd:attribute name="id" type="xsd:ID"/>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="field">
+    <xsd:complexType>
+      <xsd:all>
+        <xsd:element ref="descriptions" minOccurs="0" />
+        <xsd:element ref="gui"          minOccurs="0" />
+        <xsd:element ref="editor"       minOccurs="0" />
+        <xsd:element ref="dt:datatype"     minOccurs="0" />
+        <xsd:element ref="db"     minOccurs="0" />
+      </xsd:all>
+      <xsd:attribute name="name" type="xsd:string" />
+      <xsd:attribute name="state">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="persistent" />
+            <xsd:enumeration value="virtual" />
+            <xsd:enumeration value="system" />
+            <xsd:enumeration value="systemvirtual" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:attribute>
+      <xsd:attribute name="readonly">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="true" />
+            <xsd:enumeration value="false" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:attribute>
+      <!-- you may want to xinclude a field, xincludes may add xml:base attributes -->
+      <xsd:attribute ref="xml:base" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="gui">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="guiname" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="guiname">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute ref="xml:lang" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="editor">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="positions" minOccurs="0" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="positions">
+    <xsd:complexType>
+      <xsd:all>
+        <xsd:element ref="input"  minOccurs="0" />
+        <xsd:element ref="list"   minOccurs="0" />
+        <xsd:element ref="search" minOccurs="0" />
+      </xsd:all>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="input" />
+  <xsd:element name="list" />
+  <xsd:element name="search" />
+
+
+  <xsd:element name="db">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="name" minOccurs="0" />
+        <xsd:element ref="type" minOccurs="0" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="name" />
+
+  <xsd:element name="type">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute name="state">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="persistent" />
+                <xsd:enumeration value="virtual" />
+                <xsd:enumeration value="system" />
+                <xsd:enumeration value="systemvirtual" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+          <xsd:attribute name="size" type="xsd:string" />
+          <xsd:attribute name="notnull">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="true" />
+                <xsd:enumeration value="false" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+          <xsd:attribute name="unique">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="true" />
+                <xsd:enumeration value="false" />
+                <xsd:enumeration value="implied" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+          <xsd:attribute name="required">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="true" />
+                <xsd:enumeration value="false" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+          <xsd:attribute name="readonly">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="true" />
+                <xsd:enumeration value="false" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+          <xsd:attribute name="key">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="true" />
+                <xsd:enumeration value="false" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="indexlist">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="index" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:attribute ref="xml:base" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="index">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="indexfield" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string" use="required" />
+      <xsd:attribute name="unique">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="true" />
+            <xsd:enumeration value="false" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:attribute>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="indexfield">
+    <xsd:complexType>
+      <xsd:attribute name="name" type="xsd:string" use="required" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="functionlist">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="function" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:attribute ref="xml:base" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="function">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="class" />
+      </xsd:sequence>
+      <xsd:attribute ref="xml:base" />
+      <xsd:attribute name="name" type="xsd:string" />
+      <xsd:attribute name="key" type="xsd:string" />
+    </xsd:complexType>
+  </xsd:element>
+
+</xsd:schema>
+
+

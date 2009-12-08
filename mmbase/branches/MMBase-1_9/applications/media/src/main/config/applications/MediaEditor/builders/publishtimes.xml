@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder extends="object" maintainer="mmbase.org" name="publishtimes" version="0">
+
+  <status>active</status>
+
+  <classfile>Dummy</classfile>
+
+  <searchage>14</searchage>
+  <names>
+    <!-- singles per language as defined by ISO 639 -->
+    <singular xml:lang="en">Time</singular>
+    <singular xml:lang="nl">Tijd</singular>
+    <singular xml:lang="eo">Tempo</singular>
+    <!-- multiple per language as defined by ISO 639 -->
+    <plural xml:lang="en">Times</plural>
+    <plural xml:lang="nl">Tijden</plural>
+    <plural xml:lang="eo">Tempoj</plural>
+  </names>
+
+  <!-- <descriptions>
+    small description of the builder for human reading
+  -->
+  <descriptions>
+    <!-- descriptions per language as defined by ISO 639  -->
+    <description xml:lang="en">Times used to publish or unpublish objects</description>
+    <description xml:lang="nl">Tijden voor het wel of niet publiceren van objecten</description>
+  </descriptions>
+
+  <!-- <fieldlist>
+  defines the different fields in this object, be carefull the order is important
+    once defined keep them in the same order.
+    If you use number and owner (the 2 default fields, please check the docs for this)
+  -->
+  <fieldlist>
+    <!-- POS 4 : <field> 'create'  -->
+    <field>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="en">Created on</guiname>
+        <guiname xml:lang="nl">Aangemaakt op</guiname>
+        <guitype>eventtime</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>1</input>
+          <!-- position in list area of the editor -->
+          <list>1</list>
+          <!-- position in search area of the editor -->
+          <search>1</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name xml:lang="en">create</name>
+        <!-- MMBase datatype and demands on it -->
+        <type key="false" notnull="false" state="persistent">LONG</type>
+      </db>
+    </field>
+    <!-- POS 4 : <field> 'start'  -->
+    <field>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="en">Publish on</guiname>
+        <guiname xml:lang="nl">Publiceer op</guiname>
+        <guitype>eventtime</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>2</input>
+          <!-- position in list area of the editor -->
+          <list>2</list>
+          <!-- position in search area of the editor -->
+          <search>2</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name xml:lang="en">begin</name>
+        <!-- MMBase datatype and demands on it -->
+        <type key="false" notnull="false" state="persistent">LONG</type>
+      </db>
+    </field>
+
+    <!-- POS 5 : <field> 'stop'  -->
+    <field>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="en">Publish till</guiname>
+        <guiname xml:lang="nl">Publiceer tot</guiname>
+        <guitype>eventtime</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>3</input>
+          <!-- position in list area of the editor -->
+          <list>3</list>
+          <!-- position in search area of the editor -->
+          <search>3</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name xml:lang="en">end</name>
+        <!-- MMBase datatype and demands on it -->
+        <type key="false" notnull="false" state="persistent">LONG</type>
+      </db>
+    </field>
+
+  </fieldlist>
+
+</builder>

@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<mm-sre:html
+    xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+
+  <mm:import id="max">6</mm:import>
+  <div class="test">
+    <table>
+      <tr><td>Press +</td><td>New item</td></tr>
+      <tr><td>Change new title</td></tr>
+      <tr><td>Press reload</td><td>Nothing should change</td></tr>
+      <tr><td>Press X</td><td>Item should disappear</td></tr>
+      <tr><td>Press reload</td><td>Nothing should change</td></tr>
+      <tr><td>Press search, +, until ${max} items</td><td>Should not go any further.</td></tr>
+      <tr><td>Press reload</td><td>Nothing should change</td></tr>
+      <tr><td>Drag items to reorder</td><td></td></tr>
+      <tr><td>Press reload</td><td>Nothing should change</td></tr>
+
+    </table>
+  </div>
+
+  <mm:node number="default.mags">
+    <h3><mm:field name="title" /></h3>
+    <mm-sr:relatednodes
+        type="news"
+        searchdirs="destination"
+        unlink="true"
+        max="${max}"
+        sortable="true"
+        config="mysearch"
+        search="true"
+        />
+  </mm:node>
+  <hr />
+  <mm:escape escape="links">$URL$</mm:escape>
+
+</mm-sre:html>

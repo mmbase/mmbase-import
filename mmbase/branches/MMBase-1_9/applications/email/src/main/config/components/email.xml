@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="email"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+  <description xml:lang="en">Email component</description>
+  <description xml:lang="nl">E-mail component</description>
+
+  <setting name="nodemanager">
+    <datatype base="nodemanagers"  xmlns="http://www.mmbase.org/xmlns/datatypes" >
+      <default value="email, emails" />
+      <required value="true" />
+    </datatype>
+  </setting>
+
+  <block name="email"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <title xml:lang="en">Email</title>
+    <title xml:lang="nl">E-mail</title>
+    <description xml:lang="en">
+      Tool to monitor the email application. Like emails that are scheduled and/or send.
+    </description>
+    <description xml:lang="nl">
+      Tool om de e-mail applicatie te monitoren. Zoals e-mails die klaargezet zijn ('scheduled') voor
+      verzending en/of al zijn verzonden.
+    </description>
+    <body jsp="index.jspx">
+    </body>
+  </block>
+
+  <block name="emailqueue"
+         mimetype="text/html">
+    <title xml:lang="en">Email queue</title>
+    <title xml:lang="nl">E-mail queue</title>
+    <description xml:lang="en">E-mail queue</description>
+    <description xml:lang="nl">E-mail queue</description>
+    <body jsp="/mmbase/admin/tools/email/emailqueue.jsp">
+    </body>
+  </block>
+
+  <block
+      classification="mmbase.examples"
+      name="emailexamples" mimetype="text/html">
+    <body>
+      <class name="org.mmbase.framework.IFrameRenderer">
+        <param name="url">/mmexamples/email/index.jspx</param>
+      </class>
+    </body>
+  </block>
+
+  <block name="email-documentation"
+         classification="mmbase.documentation"
+         mimetype="text/html">
+    <title xml:lang="en">Email</title>
+    <title xml:lang="nl">Email</title>
+    <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
+    <body>
+      <class name="org.mmbase.framework.DocumentationRenderer">
+        <param name="docbook">email.xml</param>
+        <param name="module">applications/email/documentation</param>
+        <param name="includeRenderTime">xml-comments</param>
+      </class>
+    </body>
+  </block>
+
+</component>

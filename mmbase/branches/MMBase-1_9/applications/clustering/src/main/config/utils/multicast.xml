@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
+<util>
+  <!--
+      What is Multicast?
+
+      Multicast is essentially the ability to send one IP packet to multiple receivers. Multicast is often used
+      for audio and video conferencing systems. You often hear about the Mbone in reference to Multicast. The Mbone
+      is essentially a ``virtual backbone'' which exists in the Internet itself. If you want to send and/or receive
+      Multicast, you need to be ``on the Mbone.''
+
+      Things to remember:
+      1 Multicast tunnels/configurations/infrastructure are often unstable. You may lose multicast connectivity
+      but still have unicast connectivity.
+      2 Multicast does not reduce the number of ICP replies being sent around. It does reduce the number of ICP
+      queries sent, but not the number of replies.
+    -->
+  <properties>
+    <!-- Use a thread (from a thread-pool) for every incoming message. -->
+    <property name="spawnthreads">true</property>
+    <!--
+	name="multicasthost" mmbase nodes in a cluster use multicast to talk to
+	eachother this defines what 'channel' we are talking to its now set
+	to the default local network so unless you know what you are doing
+	leave it to ALL-SYSTEMS.MCAST.NET else use a multicat IP address like this
+	<property name="multicasthost">224.0.0.1</property>
+	-->
+    <property name="multicasthost"></property><!-- ALL-SYSTEMS.MCAST.NET -->
+    <!--
+	name="multicastport" on what port does this multicast talking between servers
+	take place, This can be set to any port but check if something else on
+	your network is allready using multicast when you have problems.
+      -->
+    <property name="multicastport">16080</property>
+    <!--
+	name="multicastTTL" The Multicast TTL determines how ``far'' your ICP queries will go.
+	In the Mbone, there is a certain TTL threshold defined for each network interface or tunnel.
+	A multicast packet's TTL must be larger than the defined TTL for that packet to be forwarded
+	across that link. For example, the mrouted manual page recommends:
+	32   for links that separate sites within an organization.
+	64   for links that separate communities or organizations, and are
+        attached to the Internet MBONE.
+	128  for links that separate continents on the MBONE.
+	A good way to determine the TTL you need is to run mtrace and look at the last line. It will
+	show you the minimum TTL required to reach the other host. Mtrace can be downloaded from
+	Xerox PARC FTP site (ftp://parcftp.xerox.com/pub/net-research/ipmulti/)
+	If you set you TTL too high, then your ICP messages may travel ``too far'' and will be subject
+	to eavesdropping by others. If you're only using multicast on your LAN, as we suggest, then your
+	TTL will be quite small, for example ttl=4.
+      -->
+    <property name="multicastTTL">1</property>
+    <!--
+	name="dpsize"  Datapacket receive size 64*1024
+      -->
+    <property name="dpsize">65536</property>
+
+  </properties>
+</util>
