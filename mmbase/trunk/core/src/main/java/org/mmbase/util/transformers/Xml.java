@@ -29,6 +29,8 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
     public final static int ESCAPE_ATTRIBUTE_HTML = 5;
 
 
+    public static final Xml INSTANCE = new Xml();
+    public static final Xml ATTRIBUTES = new Xml(ESCAPE_ATTRIBUTE);
 
     public Xml() {
         super(ESCAPE);
