@@ -16,8 +16,8 @@ import org.mmbase.util.SerializableInputStream;
 import org.mmbase.util.magicfile.MagicFile;
 
 /**
- * Used as 'commitprocessor' on the 'binaries'. This automaticly fills associated 'filename' and
- * 'filesize' fields.
+ * Used as 'commitprocessor' on the 'binaries'. This automaticly fills associated 'filename',
+ * 'filesize' and 'mimetype' fields.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -119,7 +119,7 @@ public class BinaryCommitProcessor implements CommitProcessor {
                     log.debug("Skipping filesize. Filesize changed: " +  node.isChanged(filesizeField) + " filesize is null: " + node.isNull(filesizeField));
                 }
             } else {
-                log.debug("Skipping filesize (no such field '" + filesizeField + "'");
+                log.debug("Skipping filesize (no such field '" + filesizeField + "')");
             }
 
             Object value = node.getObjectValue(field.getName());
@@ -147,6 +147,8 @@ public class BinaryCommitProcessor implements CommitProcessor {
                     log.debug("No ct found for " + value);
                 }
             }
+        } else {
+            log.debug("Field " + field + " not changed");
         }
 
     }
