@@ -53,6 +53,9 @@ import org.mmbase.util.logging.Logging;
     &lt;/body&gt;
   &lt;/block&gt;
 </pre> *
+ * Caching can be based on an 'expires' property. If that is not specified, caching will happen according the HTTP specifications on the URI returned by {@link Renderer#getUri}.
+ *
+ *
  * @author Michiel Meeuwissen
  * @version $Id$
  * @since MMBase-1.9.1
@@ -300,7 +303,8 @@ public class CachedRenderer extends WrappedRenderer {
 
     }
 
-    @Override public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
+    @Override
+    public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
         File cacheFile = getCacheFile(blockParameters, hints);
 
         try {
@@ -314,11 +318,15 @@ public class CachedRenderer extends WrappedRenderer {
             } else {
                 // use last modified or etag.
                 URI uri = getWraps().getUri(blockParameters, hints);
-                if (uri == null) throw new FrameworkException("" + getWraps() + " did not return an URI, and cannot be cached using getLastModified");
+                if (uri == null) {
+                    throw new FrameworkException("" + getWraps() + " did not return an URI, and cannot be cached using getLastModified");
+                }
                 URLConnection connection =  uri.toURL().openConnection();
                 connection.setConnectTimeout(timeout);
                 String cacheControlHeader = connection.getHeaderField("Cache-Control");
-                if (cacheControlHeader == null) cacheControlHeader = "";
+                if (cacheControlHeader == null) {
+                    cacheControlHeader = "";
+                }
                 List<String> cacheControl = Arrays.asList(cacheControlHeader.toLowerCase().split("\\s*,\\s*"));
                 if (cacheControl.contains("no-cache") || cacheControl.contains("no-store")) {
                     log.warn("The response for " + uri + " cannot be implicitely cached (Because of Cache-Control: " + cacheControl + ") Use the 'expires' parameter on " + this + " to override this, because it will _not_ be cached now.");
@@ -402,7 +410,8 @@ public class CachedRenderer extends WrappedRenderer {
     }
 
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "cached " + wrapped;
     }
 
