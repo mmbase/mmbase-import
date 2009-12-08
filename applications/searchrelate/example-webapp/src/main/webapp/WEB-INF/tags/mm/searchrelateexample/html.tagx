@@ -29,6 +29,7 @@
 
   <mm:import externid="ct" />
   <mm:import externid="debug" />
+  <mm:import externid="type" />
 
   <mm:content
       type="${empty ct ? 'application/xhtml+xml' : ct}"
@@ -85,13 +86,13 @@
 
         <hr />
         <c:if test="${cancel}">
-          <mm:link referids="ct?,debug?,config?">
+          <mm:link referids="ct?,debug?,config?,type?">
             <mm:param name="cancel"></mm:param>
             <a href="${_}">cancel</a>
           </mm:link>
           <jsp:text> | </jsp:text>
         </c:if>
-        <mm:link referids="ct?,debug?,config?">
+        <mm:link referids="ct?,debug?,config?,type?">
           <a href="${_}">reload</a>
         </mm:link>
         <jsp:text> | </jsp:text>
