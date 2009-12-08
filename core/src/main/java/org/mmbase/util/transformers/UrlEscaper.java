@@ -66,6 +66,11 @@ public class UrlEscaper extends ReaderTransformer{
      */
     private static final int HEX_ESCAPE = (int) '%';
 
+    /**
+     * @since MMBase-1.9.2
+     */
+    private static final UrlEscaper INSTANCE = new UrlEscaper();
+
 
     /**
      * Escape a url.
