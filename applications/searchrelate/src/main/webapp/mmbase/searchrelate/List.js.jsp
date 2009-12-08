@@ -640,7 +640,7 @@ List.prototype.commit = function(stale, leavePage) {
     if(this.needsCommit() && ! List.prototype.leftPage) {
         this.find(null, "input").each(function() {
                 if (this.type == 'file') {
-                    if ($(this).val().length > 0) {
+                    if ($(this).val().length > 0 && ! $(this).hasClass("invalid")) {
                         //console.log("Uploading " + this.id);
                         self.upload(this.id);
                     }
@@ -699,7 +699,7 @@ List.prototype.commit = function(stale, leavePage) {
                 result = "not stale";
             }
         } else {
-            result = "not valid";
+            result = "not valid (" + reason + ")";
         }
     } else {
         result = null;
