@@ -1,0 +1,52 @@
+<mm:content
+    expires="0"
+    language="${empty param.lang ? client : param.lang}"
+    type="application/xml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:x="http://java.sun.com/jsp/jstl/xml"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
+  <!--
+      Validates a certain value for a certain datatype.
+
+      @todo: accept also node argument
+
+      $Id: valid.jspx 39309 2009-10-26 10:16:42Z michiel $
+      author: Michiel Meeuwissen
+  -->
+  <jsp:directive.page
+      import="org.mmbase.datatypes.*,org.mmbase.util.*,org.mmbase.bridge.util.*,org.mmbase.datatypes.handlers.html.MultiPart"
+       />
+  <jsp:directive.include file="get.datatype.jspxf" />
+  <mm:import externid="fieldname" jspvar="fieldname" />
+  <mm:import externid="length" jspvar="length" vartype="integer" />
+  <mm:cloud uri="${param.uri}" name="${param.name}"><!-- cloud to provide locale -->
+    <jsp:scriptlet>
+      Object value;
+      if (length == null) {
+         //probably using the horrible 'browser' from redmond
+         //MultiPart.MMultipartRequest multipart = MultiPart.getMultipartRequest((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse());
+         length = request.getContentLength() - 224/* it's too much, we need to guess the size of the headers, about 224 */;
+      }
+      value = new SerializableInputStream(new NullInputStream(length), length);
+      Collection&lt;LocalizedString&gt; errors = dataType == null ? new ArrayList&lt;LocalizedString&gt;() : dataType.validate(value, node == null ? null : new ChangedNode(node, field.getName()), field);
+      pageContext.setAttribute("errors", errors);
+      pageContext.setAttribute("node", node);
+      pageContext.setAttribute("field", field);
+    </jsp:scriptlet>
+    <result node="${empty node ? '' : node.number}"
+          field="${empty field ? '' : field.name}"
+          length="${length}"
+          valid="${fn:length(errors) == 0}">
+      <jsp:scriptlet>
+        for (LocalizedString s : errors) {
+        pageContext.setAttribute("xmllang", LocalizedString.getXmlLang(locale));
+      </jsp:scriptlet>
+      <error xml:lang="${xmllang}"><jsp:expression>s.get(locale)</jsp:expression></error>
+      <jsp:scriptlet>
+        }
+      </jsp:scriptlet>
+    </result>
+  </mm:cloud>
+</mm:content>
