@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.transformers.UrlEscaper;
+import org.mmbase.util.transformers.Xml;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.magicfile.MagicFile;
@@ -34,8 +36,7 @@ public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);
 
     public static final String FIELD_SIZE       = "size";
-    private static final org.mmbase.util.transformers.UrlEscaper URLESCAPER= new org.mmbase.util.transformers.UrlEscaper();
-    private static final org.mmbase.util.transformers.Xml XMLESCAPER= new org.mmbase.util.transformers.Xml();
+
 
     protected String getAssociation() {
         return "attachments";
@@ -48,19 +49,19 @@ public class Attachments extends AbstractServletBuilder {
      */
     protected String getGuiForNewAttachment(MMObjectNode node) throws IOException  {
         FileServlet instance = FileServlet.getInstance();
-        if (instance == null) {
-            return "<span class='mm_gui nofileservlet'>NO FILE SERVLET</span>";
-        } else {
-            String number = node.getStringValue("_number");
-            SerializableInputStream is = Casting.toSerializableInputStream(node.getInputStreamValue("handle"));
-            if (is.getFileName() != null) {
+        String number = node.getStringValue("_number");
+        SerializableInputStream is = Casting.toSerializableInputStream(node.getInputStreamValue("handle"));
+        if (is.getFileName() != null) {
+            if (instance == null) {
+                return "<span class='mm_gui nofileservlet'>NO FILE SERVLET</span>";
+            } else {
                 String files = FileServlet.getBasePath("files").substring(1);
                 String root = MMBaseContext.getHtmlRootUrlPath();
-                String origUrl = root + files + "uploads/" + URLESCAPER.transform(is.getFileName()); // hmm, is this 'uploads' certain?
-                return "<a class='mm_gui' href='" + XMLESCAPER.transform(origUrl) + "' onclick=\"window.open(this.href); return false;\">[" + XMLESCAPER.transform(is.getName()) + "]</a>";
-            } else {
-                return "<span class='mm_gui'>--</span>";
+                String origUrl = root + files + "uploads/" + UrlEscaper.INSTANCE.transform(is.getFileName()); // hmm, is this 'uploads' certain?
+                return "<a class='mm_gui' href='" + Xml.ATTRIBUTES.transform(origUrl) + "' onclick=\"window.open(this.href); return false;\">[" + Xml.INSTANCE.transform(is.getName()) + "]</a>";
             }
+        } else {
+            return "<span class='mm_gui'>--</span>";
         }
     }
 
@@ -84,7 +85,7 @@ public class Attachments extends AbstractServletBuilder {
             if (fileName == null || fileName.equals("")) {
                 title = "[*]";
             } else {
-                title = "[" + XMLESCAPER.transform(fileName) + "]";
+                title = "[" + Xml.INSTANCE.transform(fileName) + "]";
             }
 
             if (/*size == -1  || */ num == -1) { // check on size seems sensible, but size was often not filled
