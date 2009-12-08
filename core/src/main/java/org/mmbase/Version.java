@@ -65,7 +65,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static int getMajor() {
-        return 1;
+        return 2;
     }
     /**
      * Returns the minor version number of this MMBase.
@@ -73,7 +73,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static int getMinor() {
-        return 9;
+        return 0;
     }
 
     /**
@@ -82,7 +82,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static int getPatchLevel() {
-        return 2;
+        return 0;
     }
 
     /**
