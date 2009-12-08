@@ -184,18 +184,23 @@ public class ImageCaches extends AbstractImages {
             String template = Imaging.parseCKey(ckey).template;
             List<String> params     = Imaging.parseTemplate(template);
             MMObjectNode image = originalImage(node);
-            ImagesInterface images = (ImagesInterface) image.getBuilder();
-            // make sure the bytes don't come from the cache (e.g. multi-cast change!, new conversion could be triggered, but image-node not yet invalidated!)
-            image.getBuilder().clearBlobCache(image.getNumber());
-            java.io.InputStream bytes = images.getBinary(image);
-            if (log.isDebugEnabled()) {
-                log.debug("Found bytes " + bytes);
+            if (handleEmpty(image)) {
+                // The original node is empty!
+                return true;
+            } else {
+                ImagesInterface images = (ImagesInterface) image.getBuilder();
+                // make sure the bytes don't come from the cache (e.g. multi-cast change!, new conversion could be triggered, but image-node not yet invalidated!)
+                image.getBuilder().clearBlobCache(image.getNumber());
+                java.io.InputStream bytes = images.getBinary(image);
+                if (log.isDebugEnabled()) {
+                    log.debug("Found  bytes " + bytes);
+                }
+                String format = images.getImageFormat(image);
+                // This triggers conversion, or waits for it to be ready.
+                ImageConversionRequest req = Factory.getImageConversionRequest(bytes, format, new NodeReceiver(node), params);
+                req.waitForConversion();
+                return true;
             }
-            String format = images.getImageFormat(image);
-            // This triggers conversion, or waits for it to be ready.
-            ImageConversionRequest req = Factory.getImageConversionRequest(bytes, format, new NodeReceiver(node), params);
-            req.waitForConversion();
-            return true;
         } else {
             log.debug("no");
             return false;
