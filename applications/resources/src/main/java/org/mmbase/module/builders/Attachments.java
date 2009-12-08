@@ -83,7 +83,7 @@ public class Attachments extends AbstractServletBuilder {
                 } else {
                     url = servlet.toString();
                 }
-                return "<a href=\"" + url + "\" onclick=\"window.open(this.href);return false;\" >" + title + "</a>";
+                return "<a class='mm_gui' href=\"" + url + "\" onclick=\"window.open(this.href);return false;\" >" + title + "</a>";
             }
         }
         return super.getSuperGUIIndicator(field, node);
