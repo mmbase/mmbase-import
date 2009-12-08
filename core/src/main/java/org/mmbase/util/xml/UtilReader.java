@@ -147,7 +147,7 @@ public class UtilReader {
      * @since MMBase-1.8
      */
     public UtilReader(String resourceName, final Runnable onChange) {
-        this(resourceName, new ResourceWatcher() {
+        this(resourceName, new ResourceWatcher(ResourceLoader.getConfigurationRoot(), false) {
                 public void onChange(String name) {
                     onChange.run();
                 }
@@ -157,7 +157,9 @@ public class UtilReader {
 
     @Override
     public void finalize() {
-        if (watcher != null) watcher.exit();
+        if (watcher != null) {
+            watcher.exit();
+        }
     }
 
     /**
@@ -215,7 +217,7 @@ public class UtilReader {
             }
             if (is != null) {
                 log.debug("Reading " + url);
-                DocumentReader reader = new DocumentReader(is, UtilReader.class);
+                DocumentReader reader = new DocumentReader(is, false, true, UtilReader.class);
                 Element e = reader.getElementByPath("util.properties");
                 if (e != null) {
                     for (Element p : DocumentReader.getChildElements(e, "property")) {
