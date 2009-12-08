@@ -60,7 +60,8 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
         dateDepth = d;
     }
 
-    @Override public int getDefaultWeight() {
+    @Override
+    public int getDefaultWeight() {
         int q = super.getDefaultWeight();
         return Math.max(q, q + 1000);
     }
@@ -73,7 +74,8 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
      * How many elements of the 'date' are produces depends on the 'date depth', and can be 0, 1, 2
      * or 3.
      */
-    @Override protected void getNiceDirectoryUrl(StringBuilder b,
+    @Override
+    protected void getNiceDirectoryUrl(StringBuilder b,
                                                  Block block,
                                                  Parameters parameters,
                                                  Parameters frameworkParameters,  boolean action) throws FrameworkException {
@@ -111,7 +113,8 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
     /**
      * Translates the result of {@link #getNiceUrl} back to an actual JSP which can render the block
      */
-    @Override public Url getFilteredInternalDirectoryUrl(List<String>  path, Map<String, ?> params, Parameters frameworkParameters) throws FrameworkException {
+    @Override
+    public Url getFilteredInternalDirectoryUrl(List<String>  path, Map<String, ?> params, Parameters frameworkParameters) throws FrameworkException {
         StringBuilder result = new StringBuilder("/mmbase/framework/render.jspx?component=mynews");
         if (path.size() == 0) {
             result.append("&block=magazine");
