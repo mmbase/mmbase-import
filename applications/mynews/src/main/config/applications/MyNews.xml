@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="MyNews" maintainer="mmbase.org" version="2" auto-deploy="true">
+<application name="MyNews" maintainer="mmbase.org" version="3" auto-deploy="true">
   <requirements>
     <requires name="Resources" maintainer="mmbase.org" />
   </requirements>
@@ -12,6 +12,7 @@
     <builder maintainer="mmbase.org" version="1">people</builder>
     <builder maintainer="mmbase.org" version="1">attachments</builder>
     <builder maintainer="mmbase.org" version="1">images</builder>
+    <builder maintainer="mmbase.org" version="1">flashobjects</builder>
     <builder maintainer="mmbase.org" version="1">posrel</builder>
     <builder maintainer="mmbase.org" version="1">insrel</builder>
     <!-- builder maintainer="mmbase.org" version="1">mmevents</builder-->
@@ -33,6 +34,7 @@
     <relation from="news"   to="news"     type="sorted" />
     <relation from="news"   to="images"   type="posrel" />
     <relation from="news"   to="attachments"  type="posrel" />
+    <relation from="news"   to="flashobjects"  type="posrel" />
     <!-- relation from="news"   to="mmevents" type="related" /-->
     <relation from="news"   to="people"   type="related" />
     <relation from="people" to="images"   type="related" />
