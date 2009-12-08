@@ -69,7 +69,7 @@ public class UrlEscaper extends ReaderTransformer{
     /**
      * @since MMBase-1.9.2
      */
-    private static final UrlEscaper INSTANCE = new UrlEscaper();
+    public static final UrlEscaper INSTANCE = new UrlEscaper();
 
 
     /**
