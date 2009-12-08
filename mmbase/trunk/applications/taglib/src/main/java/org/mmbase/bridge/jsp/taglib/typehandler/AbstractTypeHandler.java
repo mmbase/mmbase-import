@@ -132,7 +132,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     /**
      * @since MMBase-1.8
      */
-    protected String getClasses(Node node, Field field) {
+    protected String getClasses(Node node, Field field) throws JspTagException {
         StringBuilder buf = new StringBuilder("mm_validate ");
         DataType dt = field.getDataType();
         for (String styleClass : dt.getStyleClasses()) {
@@ -152,7 +152,12 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             buf.append(node.getNumber());
             if (dt instanceof org.mmbase.datatypes.LengthDataType) {
                 buf.append(" mm_length_");
-                buf.append(node.getSize(field.getName()));
+                Object value  = getFieldValue(node, field);
+                if (value != null) {
+                    buf.append(((org.mmbase.datatypes.LengthDataType) dt).getLength(value));
+                } else {
+                    buf.append(node.getSize(field.getName()));
+                }
             }
         }
         return buf.toString();
@@ -210,7 +215,10 @@ public abstract class AbstractTypeHandler implements TypeHandler {
 
 
     /**
-     * Returns the field value to be used in the page.
+     * Returns the field value to be used in the page. This is either the values returned by {@link
+     * #getFieldValue(Node, Field)}, or if that returns <code>null</code>, it returns the current
+     * value in the node, or if there is no node specified, the default value specified by the
+     * datatype.
      */
     protected Object getFieldValue(Node node, Field field, boolean useDefault) throws JspTagException {
         Object value = getFieldValue(node, field);
