@@ -29,7 +29,10 @@
   <xsl:variable name="BodyOnLoad">doOnLoad_ew(); start_validator();</xsl:variable>
 
   <xsl:template name="javascript-html">
-    <script type="text/javascript" src="../tinymce/jscripts/tiny_mce/tiny_mce.js">
+    <script type="text/javascript" src="../../../jquery/jquery.js">
+      <xsl:comment>help IE</xsl:comment>
+    </script>
+    <script type="text/javascript" src="../../../tiny_mce/tiny_mce.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
     <script type="text/javascript">
