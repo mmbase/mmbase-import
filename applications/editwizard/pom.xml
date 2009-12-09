@@ -45,6 +45,15 @@
       <version>0.96beta2</version>
       <type>zip</type>
     </dependency>
+
+    <dependency>
+      <groupId>org.mmbase.tinymce</groupId>
+      <artifactId>tinymce-jquery</artifactId>
+      <version>3.2.7-1</version>
+      <type>war</type>
+    </dependency>
+
+
     -->
   </dependencies>
 
