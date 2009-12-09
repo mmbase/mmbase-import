@@ -6,11 +6,13 @@
   <!--
     wizard_tinymce.xsl
 
-    To use the tinymce html editor, place it in the xsl directory of the application calling the wizard.
-
-    You need to download tinymce, and unpack the entire directory in the wizard templates directory (this
-    creates a tinymce directory).
-    If you have the source, you can use the editwizard build script to download and extract tinymce ('ant tinymce').
+    To use the tinymce html editor, include in your dependencies:
+    <dependency>
+      <groupId>org.mmbase.tinymce</groupId>
+      <artifactId>tinymce-jquery</artifactId>
+      <version>3.2.7-1</version>
+      <type>war</type>
+    </dependency>
 
     @author Pierre van Rooden
     @version $Id: wizard_tinymce.xsl,v 1.7 2007-03-29 12:31:56 pierre Exp $
@@ -29,7 +31,10 @@
   <xsl:variable name="BodyOnLoad">doOnLoad_ew(); start_validator();</xsl:variable>
 
   <xsl:template name="javascript-html">
-    <script type="text/javascript" src="../tinymce/jscripts/tiny_mce/tiny_mce.js">
+    <script type="text/javascript" src="../../../jquery/jquery.js">
+      <xsl:comment>help IE</xsl:comment>
+    </script>
+    <script type="text/javascript" src="../../../tiny_mce/tiny_mce.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
     <script type="text/javascript">
