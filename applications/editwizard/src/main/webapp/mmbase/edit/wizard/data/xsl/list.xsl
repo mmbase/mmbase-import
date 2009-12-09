@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.52 2008-10-14 12:51:19 michiel Exp $
+    @version $Id$
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
