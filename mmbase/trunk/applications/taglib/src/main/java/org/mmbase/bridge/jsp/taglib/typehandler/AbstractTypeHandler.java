@@ -154,7 +154,12 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                 buf.append(" mm_length_");
                 Object value  = getFieldValue(node, field);
                 if (value != null) {
-                    buf.append(((org.mmbase.datatypes.LengthDataType) dt).getLength(value));
+                    try {
+                        buf.append(((org.mmbase.datatypes.LengthDataType) dt).getLength(value));
+                    } catch (Exception e) {
+                        log.warn(e.getMessage(), e);
+                        buf.append(node.getSize(field.getName()));
+                    }
                 } else {
                     buf.append(node.getSize(field.getName()));
                 }
