@@ -27,7 +27,7 @@ public class XmlDataType extends AbstractLengthDataType<org.w3c.dom.Document> {
     public long getLength(Object value) {
         // TODO, depends on storage layer
         // this is how Storage would serialize it:
-        return org.mmbase.util.xml.XMLWriter.write((org.w3c.dom.Document) value, false, true).length();
+        return org.mmbase.util.xml.XMLWriter.write(org.mmbase.util.Casting.toXML(value), false, true).length();
     }
 
     /**
