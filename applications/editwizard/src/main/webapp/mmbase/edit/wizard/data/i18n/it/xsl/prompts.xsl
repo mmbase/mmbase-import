@@ -8,7 +8,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.10 2007-11-23 10:07:41 michiel Exp $
+  @version $Id$
 -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->

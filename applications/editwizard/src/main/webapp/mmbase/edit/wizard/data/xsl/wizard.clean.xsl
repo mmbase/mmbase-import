@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.193 2009-02-11 20:44:05 nklasens Exp $
+    @version $Id$
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
