@@ -11,7 +11,7 @@
   <description xml:lang="en">Webmail component</description>
 
   <block name="home" 
-        classification="mmbase.email:90"
+        classification="mmbase.email:80"
         mimetype="text/html">
     <title xml:lang="en">Webmail home</title>
     <title xml:lang="nl">Webmail home</title>
