@@ -53,12 +53,6 @@
     <param-value>false</param-value>
   </context-param>
 
-
-  <context-param>
-    <param-name>mmbase.taglib.url.makerelative</param-name>
-    <param-value>false</param-value>
-  </context-param>
-
   <!--
       MMB-1897
   -->
