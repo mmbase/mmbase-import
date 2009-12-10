@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <component
     name="lucene"
+    defaultblock="admin"
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xi="http://www.w3.org/2001/XInclude"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -11,11 +12,17 @@
   <description xml:lang="en">MMBase lucene</description>
 
   <block
-      classification="mmbase.admin"
+      classification="mmbase.lucene:10"
       name="admin"
       mimetype="text/html" >
-    <title xml:lang="en">Lucene indexing</title>
-    <title xml:lang="nl">Lucene-indexering</title>
+    <title xml:lang="en">Lucene indexes</title>
+    <title xml:lang="nl">Lucene indexen</title>
+    <description xml:lang="en">
+      Tool to manage the Lucene application and indexes. 
+    </description>
+    <description xml:lang="nl">
+      Tool om de Lucene applicatie en indexes te beheren.
+    </description>
     <body jsp="index.jspx">
       <param name="fullindex" />
       <param name="interrupt" />
@@ -27,6 +34,7 @@
   </block>
 
   <block
+      classification="mmbase.lucene:20"
       name="search"
       mimetype="text/html" >
     <title xml:lang="en">Lucene search</title>
@@ -37,7 +45,7 @@
   </block>
 
   <block
-      classification="mmbase.documentation"
+      classification="mmbase.documentation mmbase.lucene:30"
       name="documentation"
       mimetype="text/html" >
     <title xml:lang="en">Lucene documentation</title>

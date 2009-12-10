@@ -6,7 +6,7 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/luceneindex http://www.mmbase.org/xmlns/luceneindex.xsd">
 
   <index name="mynews_magazine">
-    <description xml:lang="en">Lucene index for the Example 'my news'</description>
+    <description xml:lang="en">Lucene index for the 'MyNews' example (mags,news).</description>
     <analyzer class="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" />
     <list startnodes="default.mags,nondefault.mags" path="mags,news" element="news" searchdirs="destination">
       <mmsq:field name="news.title"        />
@@ -17,6 +17,7 @@
   </index>
 
   <index name="mynews_news">
+    <description xml:lang="en">Lucene index for the 'MyNews' example with just the articles (news).</description>
     <analyzer class="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" />
     <list  path="news" element="news">
       <mmsq:field name="title"        />

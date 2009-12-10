@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component
     name="streams"
+    defaultblock="admin"
     version="1"
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -14,16 +15,16 @@
 
   <dependency component="media" version="1" />
 
-  <action name="cancel_jobs" rank="administrator">
+  <action name="cancel_jobs" rank="project manager">
     <description xml:lang="en">Whether you may cancel jobs</description>
   </action>
 
-  <action name="retrigger_jobs" rank="administrator">
+  <action name="retrigger_jobs" rank="project manager">
     <description xml:lang="en">Whether you may cancel jobs</description>
   </action>
 
   <block name="recent"
-         classification="mmbase.examples:90 mmbase.streams"
+         classification="mmbase.streams"
          mimetype="text/html">
     <title xml:lang="en">Recent </title>
     <title xml:lang="nl">Recente resources</title>
@@ -35,7 +36,7 @@
   </block>
 
   <block name="admin"
-         classification="mmbase.examples:90 mmbase.streams"
+         classification="mmbase.streams"
          mimetype="text/html">
     <title xml:lang="en">Streams admin</title>
     <title xml:lang="nl">Streams admin</title>
@@ -49,7 +50,7 @@
   </block>
 
   <block name="myfragments"
-         classification="mmbase.examples:90 mmbase.streams"
+         classification="mmbase.streams"
          mimetype="text/html">
     <title xml:lang="en">My fragments</title>
     <title xml:lang="nl">Mijn fragmenten</title>
@@ -63,7 +64,7 @@
   </block>
 
   <block name="myjobs"
-         classification="mmbase.examples:90 mmbase.streams"
+         classification="mmbase.streams"
          mimetype="text/html">
     <title xml:lang="en">My jobs</title>
     <title xml:lang="nl">Mijn jobs</title>
