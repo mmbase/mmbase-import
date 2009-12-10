@@ -8,11 +8,11 @@
 
   <searchage>31</searchage>
   <names>
-    <singular xml:lang="en">Streams: Video source</singular>
-    <singular xml:lang="nl">Streams: Videobron</singular>
+    <singular xml:lang="en">Streamsource: Video</singular>
+    <singular xml:lang="nl">Streamsource: Video</singular>
 
-    <plural xml:lang="en">Streams: Video sources</plural>
-    <plural xml:lang="nl">Streams: Videobronnen</plural>
+    <plural xml:lang="en">Streamsources: Video</plural>
+    <plural xml:lang="nl">Streamsources: Video</plural>
   </names>
 
   <properties>

@@ -7,6 +7,10 @@
     name="streamsourcescaches" maintainer="mmbase.org" version="1" extends="mediasources">
 
   <names>
+    <singular xml:lang="en">Streamcache</singular>
+    <singular xml:lang="nl">Streamcache</singular>
+    <plural xml:lang="en">Streamcaches</plural>
+    <plural xml:lang="nl">Streamcaches</plural>
   </names>
 
 
