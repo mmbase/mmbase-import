@@ -1,6 +1,6 @@
 <%@page import="org.mmbase.util.Casting,org.mmbase.util.functions.*,java.util.*" %><%@ include file="page_base.jsp"
 %><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
-<mm:cloud loginpage="login.jsp" sessionname="$config.session" rank="$rank" uri="$config.uri">
+<mm:cloud loginpage="login.jsp" sessionname="$config.session" rank="$rank" uri="$config.uri" jspvar="cloud">
 <mm:write referid="style" escape="none" />
 <title>View functions</title>
 </head>
