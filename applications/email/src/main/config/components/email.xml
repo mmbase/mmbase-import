@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component
     name="email"
+    defaultblock="email"
     xmlns:xi="http://www.w3.org/2001/XInclude"
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -16,7 +17,7 @@
   </setting>
 
   <block name="email"
-         classification="mmbase.tools"
+         classification="mmbase.email"
          mimetype="text/html">
     <title xml:lang="en">Email</title>
     <title xml:lang="nl">E-mail</title>
@@ -32,18 +33,27 @@
   </block>
 
   <block name="emailqueue"
+         classification="mmbase.email:20"
          mimetype="text/html">
     <title xml:lang="en">Email queue</title>
     <title xml:lang="nl">E-mail queue</title>
-    <description xml:lang="en">E-mail queue</description>
+    <description xml:lang="en">Email queue</description>
     <description xml:lang="nl">E-mail queue</description>
+    <description xml:lang="en">
+      E-mail messages in queue.
+    </description>
+    <description xml:lang="nl">
+      E-mail berichten in de queue.
+    </description>
     <body jsp="/mmbase/admin/tools/email/emailqueue.jsp">
     </body>
   </block>
 
   <block
-      classification="mmbase.examples"
+      classification="mmbase.email:50 mmbase.examples"
       name="emailexamples" mimetype="text/html">
+    <title xml:lang="en">Email examples</title>
+    <title xml:lang="nl">E-mail voorbeelden</title>
     <body>
       <class name="org.mmbase.framework.IFrameRenderer">
         <param name="url">/mmexamples/email/index.jspx</param>
@@ -52,10 +62,10 @@
   </block>
 
   <block name="email-documentation"
-         classification="mmbase.documentation"
+         classification="mmbase.email:50 mmbase.documentation"
          mimetype="text/html">
     <title xml:lang="en">Email</title>
-    <title xml:lang="nl">Email</title>
+    <title xml:lang="nl">E-mail</title>
     <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
     <body>
       <class name="org.mmbase.framework.DocumentationRenderer">

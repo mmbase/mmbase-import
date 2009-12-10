@@ -290,7 +290,7 @@
   </block>
 
   <block name="contextproviders"
-         classification="mmbase.admin"
+         classification="mmbase.tools"
          mimetype="text/html">
     <title xml:lang="en">MMCI context providers</title>
     <title xml:lang="nl">MMCI Context-Providers</title>
@@ -401,7 +401,9 @@
   <block name="request"
          classification="mmbase.tools"
          mimetype="text/html">
-    <description xml:lang="en">Shows the request headers as issued by the client</description>
+    <title xml:lang="en">Request</title>
+    <title xml:lang="nl">Request</title>
+    <description xml:lang="en">Shows the request headers as issued by the client.</description>
     <body jsp="request.jspx">
 
     </body>
@@ -426,6 +428,8 @@
          mimetype="text/html">
     <title xml:lang="en">Monitoring</title>
     <title xml:lang="nl">Monitoring</title>
+    <description xml:lang="en">A tool to monitor MMBase with MRTG.</description>
+    <description xml:lang="nl">Monitor MMBase met MRTG.</description>
     <body jsp="mrtg.jspx" />
   </block>
 
@@ -433,20 +437,20 @@
          classification="mmbase.tools"
          mimetype="text/html">
     <title xml:lang="en">Entities</title>
-    <description xml:lang="en">A tool to view all 'mmbase entities' which are avaiable in config-files.</description>
+    <description xml:lang="en">A tool to view all 'mmbase entities' which are available in config-files.</description>
     <body jsp="/mmbase/admin/entities.div.jspx" />
   </block>
 
   <block name="components"
-         classification="mmbase.admin,mmbase.components:10"
+         classification="mmbase.tools"
          mimetype="text/html">
     <title xml:lang="en">Components</title>
     <title xml:lang="nl">Componenten</title>
     <description xml:lang="en">
-      Shows an overview of all available components in the current MMBase.
+      Shows an overview of all available framework components in the current MMBase.
     </description>
     <description xml:lang="nl">
-      Een overzicht van alle beschikbare componenten in deze MMBase installatie.
+      Een overzicht van alle beschikbare framework componenten in deze MMBase installatie.
     </description>
     <body jsp="components/list.jspx">
       <param name="component" type="String" />
@@ -455,7 +459,6 @@
   </block>
 
   <block name="component-block-tree"
-         classification="mmbase.components:20"
          mimetype="text/html">
     <title xml:lang="en">Components tree</title>
     <title xml:lang="nl">Componentenboom</title>
@@ -473,9 +476,9 @@
   </block>
 
   <block name="components-documentation"
-         classification="mmbase.components:30"
+         classification="mmbase.documentation"
          mimetype="text/html">
-    <title>Documentation</title>
+    <title>Components</title>
     <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
     <body>
       <class name="org.mmbase.framework.DocumentationRenderer">
@@ -488,7 +491,9 @@
   <block name="login"
          classification=""
          mimetype="text/html">
-    <description xml:lang="en">Generic mmbase login box</description>
+    <title>Login</title>
+    <description xml:lang="en">Generic login box for MMBase</description>
+    <description xml:lang="nl">Generiek login formulier voor MMBase</description>
     <body jsp="login.jspx">
     </body>
   </block>
@@ -624,7 +629,7 @@
   </block>
 
   <block name="apidoc"
-         classification="mmbase.documentation"
+         classification="mmbase.documentation:20"
          mimetype="text/html">
     <title xml:lang="nl">Java API-documentatie</title>
     <title xml:lang="en">Java API documentation</title>

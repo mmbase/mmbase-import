@@ -7,18 +7,17 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
 
 
-
   <description xml:lang="nl">MMBase crontab</description>
   <description xml:lang="en">MMBase crontab</description>
 
   <block
-      classification="mmbase.admin"
+      classification="mmbase.tools"
       name="crontab"
-
       mimetype="text/html" >
     <title xml:lang="en">Crontab scheduling</title>
     <title xml:lang="nl">Crontab-tijdschema</title>
-    <description xml:lang="en">Administrates the mmbase crontab</description>
+    <description xml:lang="en">Administrates MMBase crontabs: automatic, scheduled tasks.</description>
+    <description xml:lang="en">Beheer van MMBase crontabs: automatische, geplande taken.</description>
     <body jsp="index.jspx">
       <param name="kick" />
       <param name="interrupt" />
