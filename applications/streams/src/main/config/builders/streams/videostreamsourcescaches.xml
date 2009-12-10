@@ -8,11 +8,10 @@
 
   <searchage>31</searchage>
   <names>
-    <singular xml:lang="en">Streams: Video source cache</singular>
-    <singular xml:lang="nl">Streams: Videobron cache</singular>
-
-    <plural xml:lang="en">Streams: Video sources caches</plural>
-    <plural xml:lang="nl">Streams: Videobroncaches</plural>
+    <singular xml:lang="en">Streamcaches: Video</singular>
+    <singular xml:lang="nl">Streamcache: Video</singular>
+    <plural xml:lang="en">Streamscaches: Video</plural>
+    <plural xml:lang="nl">Streamscaches: Video</plural>
   </names>
 
   <xi:include href="streamsourcescaches.fields.xml" />

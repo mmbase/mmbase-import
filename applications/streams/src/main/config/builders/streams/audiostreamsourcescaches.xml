@@ -7,8 +7,11 @@
     name="audiostreamsourcescaches" maintainer="mmbase.org" version="1" extends="audiosources">
 
   <names>
+    <singular xml:lang="en">Streamcache: Audio</singular>
+    <singular xml:lang="nl">Streamcache: Audio</singular>
+    <plural xml:lang="en">Streamcaches: Audio</plural>
+    <plural xml:lang="nl">Streamcaches: Audio</plural>
   </names>
-
 
   <descriptions>
   </descriptions>
