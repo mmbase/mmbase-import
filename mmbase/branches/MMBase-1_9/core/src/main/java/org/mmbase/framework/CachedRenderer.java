@@ -274,10 +274,10 @@ public class CachedRenderer extends WrappedRenderer {
             log.debug(to);
             w.write("<div class='mm_c stale'>");
             if (f.exists()) {
-                w.write("<h1>What you see is stale. A new version is being rendered. Please try again later.</h1>");
+                w.write("<div class=\"msg\">What you see is stale. A new version is being rendered. Please try again later.</div>");
                 renderFile(f, w);
             } else {
-                w.write("<h1>Rendering took too long. This job is still running. Please try again later.</h1>");
+                w.write("<div class=\"msg\">Rendering took too long. This job is still running. Please try again later.</div>");
             }
             w.write("</div>");
             e = null;
