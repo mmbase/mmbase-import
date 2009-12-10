@@ -7,15 +7,21 @@
   <class name="org.mmbase.framework.BasicComponent">
 
   </class>
-  <description xml:lang="nl">WebEmail component</description>
-  <description xml:lang="en">WebEmail component</description>
+  <description xml:lang="nl">Webmail component</description>
+  <description xml:lang="en">Webmail component</description>
 
-  <block name="home" mimetype="text/html">
+  <block name="home" 
+        classification="mmbase.email:90"
+        mimetype="text/html">
+    <title xml:lang="en">Webmail home</title>
+    <title xml:lang="nl">Webmail home</title>
     <head jsp="head.jspx" />
     <body jsp="index.jspx" />
   </block>
 
   <block name="new" mimetype="text/html">
+    <title xml:lang="en">New</title>
+    <title xml:lang="nl">Nieuw</title>
     <body jsp="new.jspx" />
     <process jsp="new.send.jspx" />
   </block>
