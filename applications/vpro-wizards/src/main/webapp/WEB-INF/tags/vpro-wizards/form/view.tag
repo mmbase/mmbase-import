@@ -110,10 +110,11 @@
             <c:if test="${create}">
                 <c:choose>
                     <c:when test="${not empty newwizard}">
-                        <c:set var="newwizardparam" ><c:if test="${not empty relationrole}">&relationrole=${relationrole}</c:if></c:set>
-                        <a href="${newwizard}?parentnodenr=${nodenr}${newwizardparam}&${extra_params}" class="addButton">nieuw
-                            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new.png" class="icon" border="0" title="Nieuw">
+                      <mm:link page="${newwizard}" referids="nodenr@parentnodenr,relationrole,searchdir,constraints?">
+                        <a href="${_}&${extra_params}" class="addButton">nieuw
+                         <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new.png" class="icon" border="0" title="Nieuw" />
                         </a>
+                      </mm:link>
                     </c:when>
                 <c:otherwise>
                   <mm:link page="${relatedpage}.jsp?create=true&amp;${extra_params}" referids="nodenr,relationrole,searchdir,constraints?">
