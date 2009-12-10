@@ -8,11 +8,10 @@
 
   <searchage>31</searchage>
   <names>
-    <singular xml:lang="en">Streams: Audio source</singular>
-    <singular xml:lang="nl">Streams: Audiobron</singular>
-
-    <plural xml:lang="en">Streams: Audio sources</plural>
-    <plural xml:lang="nl">Streams: Audiobronnen</plural>
+    <singular xml:lang="en">Streamsource: Audio</singular>
+    <singular xml:lang="nl">Streamsource: Audio</singular>
+    <plural xml:lang="en">Streamsources: Audio</plural>
+    <plural xml:lang="nl">Streamsources: Audio</plural>
   </names>
 
   <properties>

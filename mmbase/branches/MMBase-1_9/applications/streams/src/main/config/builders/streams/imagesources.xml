@@ -10,6 +10,10 @@
   <class>org.mmbase.streams.builders.ImageSources</class>
 
   <names>
+    <singular xml:lang="en">Imagesource</singular>
+    <singular xml:lang="nl">Afbeeldingsbron</singular>
+    <plural xml:lang="en">Imagesources</plural>
+    <plural xml:lang="nl">Afbeeldingsbronnen</plural>
   </names>
 
   <descriptions>
