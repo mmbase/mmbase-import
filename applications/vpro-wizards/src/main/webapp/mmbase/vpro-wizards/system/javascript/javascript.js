@@ -128,3 +128,9 @@ function getleft(obj) {
     } while (obj = obj.offsetParent);
     return left;
 }
+
+$(function() {
+        $(".mm_validate").change(function() {
+                disableRelated();
+            });
+    });
