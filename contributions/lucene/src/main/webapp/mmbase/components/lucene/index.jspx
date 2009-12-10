@@ -12,7 +12,7 @@
              id="machines"
              vartype="list" from="parameters,cookie"><jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getMachineName()</jsp:expression></mm:import>
   <mm:write cookie="org.mmbase.lucene.admin.machines" value="${machines}" />
-  <h1>Lucene admin page for ${machines}</h1>
+  <h3>Lucene admin page for ${machines}</h3>
   <p>
     <em><mm:time format="yyyy-MM-dd HH:mm:ss" time="now" /></em>
     Configuration was read at <mm:function module="lucene" name="config"><mm:time format="yyyy-MM-dd HH:mm:ss"/></mm:function>.
@@ -31,7 +31,7 @@
   <mm:import id="durationformat">H'h' m'min' ss's'</mm:import>
 
   <mm:function name="readOnly" module="lucene" id="readOnly" write="false" />
-  <table summary="Lucene indices">
+  <table summary="Lucene indices" border="0" cellspacing="0" cellpadding="3">
     <col />
     <col />
     <col class="numeric" />
@@ -42,19 +42,19 @@
     <col />
     <col />
     <tr>
-      <th rowspan="${readOnly ? '1' : '2'}">name</th>
-      <th rowspan="${readOnly ? '1' : '2'}">description</th>
+      <th rowspan="${readOnly ? '1' : '2'}">Name</th>
+      <th rowspan="${readOnly ? '1' : '2'}">Description</th>
       <th colspan="2" rowspan="1"># of entries in index</th>
-      <th rowspan="${readOnly ? '1' : '2'}">last full index (duration)</th>
-      <th rowspan="${readOnly ? '1' : '2'}">recent errors</th>
-      <th rowspan="${readOnly ? '1' : '2'}">results</th>
-      <th rowspan="${readOnly ? '1' : '2'}">search</th>
-      <th rowspan="${readOnly ? '1' : '2'}">full index</th>
+      <th rowspan="${readOnly ? '1' : '2'}">Last full index (duration)</th>
+      <th rowspan="${readOnly ? '1' : '2'}">Recent errors</th>
+      <th rowspan="${readOnly ? '1' : '2'}">Results</th>
+      <th rowspan="${readOnly ? '1' : '2'}">Search</th>
+      <th rowspan="${readOnly ? '1' : '2'}">Full index</th>
     </tr>
     <mm:booleanfunction name="readOnly" module="lucene" inverse="true">
       <tr>
-        <th>in use</th>
-        <th>full index copy</th>
+        <th>Index in use</th>
+        <th>Copy of index</th>
       </tr>
       <mm:import externid="clear" />
       <mm:present referid="clear">
@@ -145,7 +145,7 @@
             <mm:functioncontainer>
               <mm:param name="max" value="5" />
               <mm:listfunction referids="index" module="lucene" name="errors">
-                <p><mm:write /></p>
+                <div class="err"><mm:write /></div>
               </mm:listfunction>
             </mm:functioncontainer>
           </td>
@@ -177,38 +177,44 @@
         <jsp:text>${exception1}</jsp:text><![CDATA[</td></tr>]]>
       </c:if>
     </mm:listfunction>
-    <tr>
-      <td colspan="4"><jsp:text> </jsp:text></td>
-      <td>
-        <c:if test="${! empty total}">
+    <c:if test="${! empty total}">
+      <tr>
+        <th colspan="4">
           <jsp:text>total:  </jsp:text>
+        </th>
+        <td>
           <mm:write referid="total">
             <mm:time timezone="utc" format="${durationformat}" />
           </mm:write>
-        </c:if>
-      </td>
-    </tr>
+        </td>
+        <td colspan="4"><jsp:text> </jsp:text></td>
+      </tr>
+    </c:if>
   </table>
-  <hr />
+
   <mm:import externid="fullindex" />
   <mm:present referid="fullindex">
-    <jsp:text>Triggering full index for ${fullindex} for ${machines}.</jsp:text>
-    <mm:voidfunction module="lucene" name="fullIndex" referids="fullindex@index,machines" />
+    <p class="msg">
+      <jsp:text>Triggering full index for ${fullindex} for ${machines}.</jsp:text>
+      <mm:voidfunction module="lucene" name="fullIndex" referids="fullindex@index,machines" />
+    </p>
   </mm:present>
   <mm:import externid="delete" />
   <mm:present referid="delete">
-    <jsp:text>Removing assignment ${delete}</jsp:text>
-    <mm:voidfunction module="lucene" name="unassign" referids="delete@id" />
+    <p class="msg">
+      <jsp:text>Removing assignment ${delete}</jsp:text>
+      <mm:voidfunction module="lucene" name="unassign" referids="delete@id" />
+    </p>
   </mm:present>
   <mm:import externid="interrupt" />
   <mm:present referid="interrupt">
-    <mm:function module="lucene" name="interrupt"/>
+    <p class="msg"><mm:function module="lucene" name="interrupt" /></p>
   </mm:present>
   <mm:import externid="reload" />
   <mm:present referid="reload">
-    <mm:function module="lucene" name="reload"/>
+    <p class="msg"><mm:function module="lucene" name="reload" /></p>
   </mm:present>
-  <table summary="Misc. options">
+  <table border="0" cellspacing="0" cellpadding="3" summary="Misc. options">
     <tr>
       <th>Status</th>
       <td>
@@ -228,7 +234,6 @@
             <td>
               <form>
                 <select multiple="multiple" name="org.mmbase.lucene.admin.machines">
-
                   <mm:listnodes>
                     <mm:option value="${_node.name}" compareset="${machines}">
                       <mm:field name="name" />
@@ -257,7 +262,7 @@
             <mm:last inverse="true">, </mm:last>
           </c:catch>
           <c:if test="${! empty exception2}">
-            <jsp:text>EXCEPTIONL ${exception1}</jsp:text>
+            <div class="err"><jsp:text>EXCEPTIONL ${exception1}</jsp:text></div>
           </c:if>
         </mm:listfunction>
         <mm:notpresent referid="notempty">

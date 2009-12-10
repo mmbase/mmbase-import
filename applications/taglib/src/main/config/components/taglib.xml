@@ -112,15 +112,14 @@
 
   <block name="taglib_examples" mimetype="text/html"
          classification="mmbase.examples">
+    <title xml:lang="en">Taglib examples</title>
+    <title xml:lang="nl">Taglib voorbeelden</title>
     <body>
       <class name="org.mmbase.framework.IFrameRenderer">
         <param name="url">/mmexamples/taglib/index.jsp</param>
       </class>
     </body>
   </block>
-
-
-
 
   <block name="taglib-documentation"
          classification="mmbase.documentation"
