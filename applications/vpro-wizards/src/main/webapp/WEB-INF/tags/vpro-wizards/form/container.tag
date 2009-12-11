@@ -13,6 +13,7 @@
     on the action for the creation of this node.
 --%>
 
+<mm:cloud method="asis">
 <%-- set the default fields --%>
 <c:set var="action" scope="request">Node</c:set>
 <c:set var="authorized" value="false" scope="request"/>
@@ -108,3 +109,4 @@
 	    </c:otherwise>
     </c:choose>
 </div>
+</mm:cloud>
