@@ -75,7 +75,6 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
             String s = preCast.toString();
             Locale l = cloud != null ? cloud.getLocale() : Locale.getDefault();
             NumberFormat nf = NumberFormat.getNumberInstance(l);
-
             try {
                 nf.setGroupingUsed(false); // we never want to parse e.g. "1.2" to "12". It simply
                                            // makes no sense, and hard to make backwards compatible
@@ -101,9 +100,11 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
                 }
                 return number;
             } catch (NumberFormatException nfe) {
-                log.debug("For "  + nf + " " + nfe.getMessage());
+                System.out.println("For "  + preCast + " " + nfe.getMessage());
+                throw new CastException(nfe);//"Not a number: '" + s + "'");
+
             }
-            return Casting.toDecimal(s);
+
         } else if (preCast instanceof Float) {
             if (((Float) preCast).isInfinite()) {
                 // not supported by decimal
@@ -128,7 +129,6 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
     protected Object castToValidate(Object value, Node node, Field field) throws CastException {
         if (value == null) return null;
         Object preCast = preCast(value, node, field); // resolves enumerations
-
         Object cs = castString(preCast, getCloud(getCloud(node, field)));
         if (log.isDebugEnabled()) {
             log.debug("" + this + " precast " + value + " -> " + preCast + " -> " + cs);
