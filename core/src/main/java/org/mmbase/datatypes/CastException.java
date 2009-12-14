@@ -61,7 +61,7 @@ public class CastException extends Exception {
      */
     public CastException(String mes, Collection<LocalizedString> errors) {
         super(mes);
-        errors.addAll(errors);
+        this.errors.addAll(errors);
     }
 
     /**
@@ -69,7 +69,19 @@ public class CastException extends Exception {
      */
     public CastException(Collection<LocalizedString> mes, Throwable cause) {
         super(mes.toString(), cause);
-        errors.addAll(mes);
+        this.errors.addAll(mes);
+    }
+
+    /**
+     * @since MMBase-2.0
+     */
+    public Collection<LocalizedString> getErrors() {
+        return errors;
+    }
+
+    @Override
+    public String toString() {
+        return getMessage() + (errors.size() >  0 ? errors : "");
     }
 
 
