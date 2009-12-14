@@ -61,7 +61,7 @@ public class CastException extends Exception {
      */
     public CastException(String mes, Collection<LocalizedString> errors) {
         super(mes);
-        errors.addAll(errors);
+        this.errors.addAll(errors);
     }
 
     /**
