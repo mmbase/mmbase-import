@@ -76,7 +76,7 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
     static final int ENFORCE_ONCREATE = 1000;
 
     /**
-     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that ta
+     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the
      * restriction on a value must be enforced only on validation of the value. This means that it
      * has no influence of the validity of the <em>node</em>.
      * @todo No difference made between always/change/create for this. We could also add
@@ -144,6 +144,22 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
      * @return casted object of Class of this DataType
      */
     public C cast(Object value, Node node, Field field);
+
+    /**
+     * Tries to 'cast' an object for use with this parameter. E.g. if value is a String, but this
+     * parameter is of type Integer, then the string can be parsed to Integer.  This method may thow
+     * {@link CastException} if such casting is not feasible. E.g. most strings cannot be reasonably
+     * casted to numbers. The method {@link #cast} will return <code>-1</code>. This one will trow exception.
+     *
+     *
+     * @param value The value to be filled in a value with this DataType.
+     * @param node  Sometimes a node might be needed.
+     * @param field Sometimes a (or 'the') field might be needed.
+     * @return casted object of Class of this DataType
+     * @throws ClassException
+     * @since MMBase-2.0
+     */
+    public C castOrException(Object value, final Node node, final Field field) throws CastException;
 
     /**
      * Before actually 'cast' an object to the right type, it may undergo some conversion by the
