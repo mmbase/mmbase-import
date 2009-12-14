@@ -88,6 +88,7 @@ function List(d) {
     this.defaultStale = 1000;
 
     this.valid = true;
+    this.reason = "";
     this.validator = typeof(MMBaseValidator) != "undefined" ?  new MMBaseValidator() : null;
     if (this.validator != null) {
         this.validator.lang = "${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}";
@@ -219,8 +220,8 @@ List.prototype.wasResetSequence = false;
 List.prototype.instances = {};
 
 List.prototype.triggerValidateHook = function() {
-    var reason = "";
     var self = this;
+    self.reason = "";
     var valid = true;
     if (self.form != null) {
         for (var rid in self.form.valids) {
