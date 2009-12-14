@@ -71,10 +71,12 @@ public class  ContextCollector extends StandaloneContextContainer {
      */
     public final void doAfterBody(boolean iteratesAgain) throws JspTagException {
         if (iteratesAgain) {
-            for (Map.Entry<String, Object> e : backing.entrySet()) {
-                if (((CollectorBacking) backing).myKeys.contains(e.getKey())) {
-                    //parent.unRegister(e.getKey());
-                    unregister.put(e.getKey(), e.getValue());
+            synchronized(backing.getOriginalMap()) {
+                for (Map.Entry<String, Object> e : backing.entrySet()) {
+                    if (((CollectorBacking) backing).myKeys.contains(e.getKey())) {
+                        //parent.unRegister(e.getKey());
+                        unregister.put(e.getKey(), e.getValue());
+                    }
                 }
             }
             //

@@ -454,6 +454,16 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
         return getBacking().containsOwnKey(key);
     }
 
+    @Override
+    public Object remove(Object key) {
+        return getBacking().remove(key);
+    }
+    @Override
+    public void clear() {
+        getBacking().clear();
+    }
+
+
     /**
      * @since MMBase-1.7 (here)
      */
