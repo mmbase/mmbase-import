@@ -511,8 +511,16 @@ public class CacheManager implements CacheManagerMBean {
         public String getName() { return cache.getName(); }
         public String getDescription() { return cache.getDescription(); }
         public int getMaxEntrySize() { return cache.getMaxEntrySize(); }
-        public Set<Map.Entry<K, V>> getEntrySet() { return new HashSet<Map.Entry<K, V>>(cache.entrySet()); }
-        public Set<K> getKeySet() { return new HashSet<K>(cache.keySet()); }
+        public Set<Map.Entry<K, V>> getEntrySet() {
+            synchronized (cache.getLock()) {
+                return new HashSet<Map.Entry<K, V>>(cache.entrySet());
+            }
+        }
+        public Set<K> getKeySet() {
+            synchronized (cache.getLock()) {
+                return new HashSet<K>(cache.keySet());
+            }
+        }
         public long getHits() { return cache.getHits(); }
         public long  getMisses() { return cache.getMisses(); }
         public long getPuts() { return cache.getPuts(); }
@@ -536,12 +544,7 @@ public class CacheManager implements CacheManagerMBean {
                         }
                         public Iterator<Map.Entry<K, Integer>> iterator() {
                             return new Iterator<Map.Entry<K, Integer>>() {
-                                private Iterator<K> iterator;
-                                {
-                                    synchronized(cache.getLock()) {
-                                        iterator = new HashSet<K>(cache.keySet()).iterator();
-                                    }
-                                }
+                                private Iterator<K> iterator = Bean.this.getKeySet().iterator();
                                 public boolean hasNext() {
                                     return iterator.hasNext();
                                 }
