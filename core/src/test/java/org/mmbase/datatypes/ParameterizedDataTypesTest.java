@@ -39,6 +39,7 @@ public class ParameterizedDataTypesTest  {
         try {
             CLOUD_CONTEXT.addCore();
             CLOUD_CONTEXT.addNodeManagers(ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders/tests"));
+            MockCloudContext.getInstance().addCore();
         } catch (java.io.IOException ioe) {
             throw new RuntimeException(ioe);
         }
