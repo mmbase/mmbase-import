@@ -31,10 +31,11 @@ public class ParametersTest {
     private static final Parameter<String> C = new Parameter<String>("c", String.class, "C");
     private static final Parameter<String> D = new Parameter<String>("d", String.class, "D");
     private static final Parameter<String> E = new Parameter<String>("e", String.class, "E");
-    private static final Parameter<String> F = new Parameter<String>("f", String.class, "F");
+    private static final Parameter<String> COLORS = new Parameter<String>("color", DataTypes.getDataType("colors"));
 
     private static final Parameter G = new Parameter("g", DataTypes.getDataType("currency_enforcescale"));
 
+    private static final Parameter<String>  PA = new PatternParameter<String>(Pattern.compile("pa+"), String.class);
     private static final Parameter<Integer> PB = new PatternParameter<Integer>(Pattern.compile("b+"), Integer.class);
     private static final Parameter<Integer> PC = new PatternParameter<Integer>(Pattern.compile("c+"), Integer.class);
     private static final Parameter<String> PD = new PatternParameter<String>(Pattern.compile("d+"), DataTypes.getDataType("colors"));
@@ -184,10 +185,12 @@ public class ParametersTest {
 
     }
 
+
+
     @Test
     public void autoCast() {
 
-        Parameters params = new Parameters(A, B, G);
+        Parameters params = new Parameters(A, B, G, COLORS);
         params.set(B, 5); // OK
         params.set(G, new java.math.BigDecimal(5));
         try {
@@ -202,7 +205,6 @@ public class ParametersTest {
         } catch (IllegalArgumentException ia) {
             // ok this is expected
         }
-
         params.setAutoCasting(true);
         params.set("b", "5");
         params.set("g", "5");
@@ -242,6 +244,7 @@ public class ParametersTest {
 
         try {
             params.set("g", "7.123456789");
+            params.check();
             fail("Should have given IllegalArgumentException since '7.123456789' has too many digits");
         } catch (IllegalArgumentException ia) {
             // ok this is expected
@@ -251,14 +254,48 @@ public class ParametersTest {
         params.set("g", new String[] {"1.1"});
 
         params.set("a", new String[0]);
-        params.validate();
+        params.check();
         params.set("a", new String[] {"foo"});
-        params.validate();
+        params.check();
         params.set("a", new Object[] {"foo"});
-        params.validate();
+        params.check();
 
 
+        params.set("color", new String[] {"green"});
+        params.check();
+        params.set("color", new Object[] {"green"});
+        params.check();
 
+        params.set("color", new Object[] {"not a color"});
+        assertTrue(params.validate().size() > 0);
+
+    }
+
+    @Test
+    public void autoCastPatterns() {
+        Parameters params = new Parameters(PA, PD);
+        params.setAutoCasting(true);
+
+        params.set("pa", new String[0]);
+        params.check();
+        params.set("pa", new String[] {"foo"});
+        params.check();
+        params.set("pa", new Object[] {"foo"});
+        params.check();
+
+
+        params.set("dd", new String[] {"green"});
+        params.check();
+        params.set("dd", new Object[] {"green"});
+        params.check();
+
+        params.set("dd", new Object[] {"not a color"});
+        try {
+            params.check();
+            fail("Should have been illegal");
+        } catch (IllegalArgumentException ia) {
+            //
+        }
 
     }
 
