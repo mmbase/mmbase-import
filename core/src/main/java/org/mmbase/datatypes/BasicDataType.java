@@ -262,7 +262,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     public void checkType(Object value) {
         if (!isCorrectType(value)) {
             // customize this?
-            throw new IllegalArgumentException("DataType of '" + value + "' for '" + getName() + "' must be of type " + classType + " (but is " + (value == null ? value : value.getClass()) + ")");
+            throw new IllegalArgumentException("DataType of '" + Casting.toString(value) + "' for '" + getName() + "' must be of type " + classType + " (but is " + (value == null ? value : value.getClass()) + ")");
         }
     }
 
@@ -306,6 +306,19 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * Override {@link #cast(Object, Cloud, Node, Field)}
      */
     public final C cast(Object value, final Node node, final Field field) {
+        try {
+            return castOrException(value, node, field);
+        } catch (CastException ce) {
+            log.service(ce.getMessage(), ce);
+            Cloud cloud = getCloud(getCloud(node, field));
+            return Casting.toType(classType, cloud, preCast(value, cloud, node, field));
+        }
+    }
+
+    /**
+     * @since MMBase-2.0
+     */
+    public final C castOrException(Object value, final Node node, final Field field) throws CastException {
         if (origin != null && (! origin.getClass().isAssignableFrom(getClass()))) {
             // if inherited from incompatible type, then first try to cast in the way of origin.
             // e.g. if origin is Date, but actual type is integer, then casting of 'today' works now.
@@ -313,12 +326,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         }
         if (value == null) return null;
         Cloud cloud = getCloud(getCloud(node, field));
-        try {
-            return cast(value, cloud, node, field);
-        } catch (CastException ce) {
-            log.service(ce.getMessage(), ce);
-            return Casting.toType(classType, cloud, preCast(value, cloud, node, field));
-        }
+        return cast(value, cloud, node, field);
     }
 
     /**
