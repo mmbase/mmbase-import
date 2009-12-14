@@ -145,7 +145,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
 
     @Override
     public Set<Map.Entry<String, Object>> entrySet() {
-        System.out.println("" + Logging.stackTrace());
+        //System.out.println("" + Logging.stackTrace());
         return new AbstractSet<Map.Entry<String, Object>>() {
             public int size() {
                 return b.size();
