@@ -58,7 +58,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
      */
     public BasicBacking(PageContext pc, boolean ignoreEL) {
         pageContext = pc;
-        b = new HashMap<String, Object>();
+        b = Collections.synchronizedMap(new HashMap<String, Object>()); // The context can be put in the session, and then (e.g. when using ajax, can be access concurrently)
         isELIgnored = ignoreEL || pageContext == null || "true".equals(pc.getServletContext().getInitParameter(ContextTag.ISELIGNORED_PARAM));
         if (log.isDebugEnabled()) {
             log.debug("Pushing page Context " + pc + " --> " + isELIgnored);
@@ -98,7 +98,9 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
             log.debug("EL ignored");
             return; // never mind
         } else {
-            log.debug("Pushing page context " + b);
+            if (log.isDebugEnabled()) {
+                log.debug("Pushing page context " + b);
+            }
         }
 
         originalPageContextValues = (Map<String, Object>) pageContext.getAttribute(PAGECONTEXT_KEY + uniqueNumber);
@@ -107,8 +109,10 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
             pageContext.setAttribute(PAGECONTEXT_KEY + uniqueNumber, originalPageContextValues);
         }
         if (pageContext != null && ! pageContext.equals(origPageContext)) {
-            for (Map.Entry<String, Object> entry : b.entrySet()) {
-                mirrorPut(entry.getKey(), entry.getValue());
+            synchronized(b) {
+                for (Map.Entry<String, Object> entry : b.entrySet()) {
+                    mirrorPut(entry.getKey(), entry.getValue());
+                }
             }
         }
     }
@@ -140,52 +144,53 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     }
 
     @Override
-   public Set<Map.Entry<String, Object>> entrySet() {
+    public Set<Map.Entry<String, Object>> entrySet() {
+        System.out.println("" + Logging.stackTrace());
         return new AbstractSet<Map.Entry<String, Object>>() {
-                public int size() {
-                    return b.size();
-                }
-                public Iterator<Map.Entry<String, Object>> iterator() {
-                    return new Iterator<Map.Entry<String, Object>>() {
-                        Iterator<Map.Entry<String, Object>> i = b.entrySet().iterator();
-                        Map.Entry<String, Object> last = null;
-                        public boolean hasNext() {
-                            return i.hasNext();
-                        }
-                        public Map.Entry<String, Object> next() {
-                            last = new Map.Entry<String, Object>() {
-                                final Map.Entry<String, Object> wrapped = i.next();
-                                public final String getKey() {
-                                    return wrapped.getKey();
-                                }
-                                public final Object getValue() {
-                                    return wrapped.getValue();
-                                }
-
-                                public final Object setValue(Object v) {
-                                    BasicBacking.this.mirrorPut(wrapped.getKey(), v);
-                                    return wrapped.setValue(v);
-                                }
-                                @Override
-                                public String toString() {
-                                    return getKey() + "=" + getValue();
-                                }
-
-                            };
-                            return last;
-                        }
-                        public void remove() {
-                            i.remove();
-                            if (! isELIgnored) {
-                                String key = last.getKey();
-                                if (! originalPageContextValues.containsKey(key)) {
-                                    originalPageContextValues.put(key, pageContext.getAttribute(key, SCOPE));
-                                }
-                                pageContext.removeAttribute(key, SCOPE);
+            public int size() {
+                return b.size();
+            }
+            public Iterator<Map.Entry<String, Object>> iterator() {
+                return new Iterator<Map.Entry<String, Object>>() {
+                    Iterator<Map.Entry<String, Object>> i = b.entrySet().iterator();
+                    Map.Entry<String, Object> last = null;
+                    public boolean hasNext() {
+                        return i.hasNext();
+                    }
+                    public Map.Entry<String, Object> next() {
+                        last = new Map.Entry<String, Object>() {
+                            final Map.Entry<String, Object> wrapped = i.next();
+                            public final String getKey() {
+                                return wrapped.getKey();
                             }
+                            public final Object getValue() {
+                                return wrapped.getValue();
+                            }
+
+                            public final Object setValue(Object v) {
+                                BasicBacking.this.mirrorPut(wrapped.getKey(), v);
+                                return wrapped.setValue(v);
+                            }
+                            @Override
+                            public String toString() {
+                                return getKey() + "=" + getValue();
+                            }
+
+                        };
+                        return last;
+                    }
+                    public void remove() {
+                        i.remove();
+                        if (! isELIgnored) {
+                            String key = last.getKey();
+                            if (! originalPageContextValues.containsKey(key)) {
+                                originalPageContextValues.put(key, pageContext.getAttribute(key, SCOPE));
+                            }
+                            pageContext.removeAttribute(key, SCOPE);
                         }
-                    };
-                }
+                    }
+                };
+            }
         };
     }
 
@@ -242,6 +247,22 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     @Override
     public Object get(Object key) {
         return b.get(key);
+    }
+
+    // Override for efficiency and synchronization
+    @Override
+    public Object remove(Object key) {
+        return b.remove(key);
+    }
+
+    @Override
+    public void clear() {
+        b.clear();
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        return b.containsKey(key);
     }
 
     public Object getOriginal(String key) {
