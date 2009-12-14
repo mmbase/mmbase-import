@@ -173,6 +173,7 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
             setEnforceStrength(DataType.ENFORCE_ONCHANGE);
         }
 
+        @Override
         protected boolean simpleValid(Object v, Node node, Field field) {
             if (v == null) return true; // depends on 'required'
             long min = Casting.toLong(getValue());
@@ -192,8 +193,12 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
             setEnforceStrength(DataType.ENFORCE_ONCHANGE);
         }
 
+        @Override
         protected boolean simpleValid(Object v, Node node, Field field) {
-            if (v == null) return true; // depends on 'required'
+            log.debug("Validation " + v);
+            if (v == null) {
+                return true; // depends on 'required'
+            }
             long max = Casting.toLong(getValue());
             long length = ((LengthDataType) parent).getLength(v);
             log.debug("comparing " + length + " <= " + max);
