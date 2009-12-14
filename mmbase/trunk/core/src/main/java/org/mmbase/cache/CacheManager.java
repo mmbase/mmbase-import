@@ -511,7 +511,11 @@ public class CacheManager implements CacheManagerMBean {
         public String getName() { return cache.getName(); }
         public String getDescription() { return cache.getDescription(); }
         public int getMaxEntrySize() { return cache.getMaxEntrySize(); }
-        public Set<Map.Entry<K, V>> getEntrySet() { return new HashSet<Map.Entry<K, V>>(cache.entrySet()); }
+        public Set<Map.Entry<K, V>> getEntrySet() {
+            synchronized (cache.getLock()) {
+                return new HashSet<Map.Entry<K, V>>(cache.entrySet());
+            }
+        }
         public Set<K> getKeySet() { return new HashSet<K>(cache.keySet()); }
         public long getHits() { return cache.getHits(); }
         public long  getMisses() { return cache.getMisses(); }
