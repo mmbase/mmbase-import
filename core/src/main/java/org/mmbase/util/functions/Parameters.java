@@ -323,7 +323,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
                     Object castValue = a.autoCast(value);
                     value = castValue;
                 } catch (org.mmbase.datatypes.CastException ce) {
-                    throw new IllegalArgumentException(ce);
+                    throw new IllegalArgumentException(ce.toString(), ce);
                 }
             }
             a.checkType(value);
@@ -386,6 +386,18 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
             }
         }
         return errors;
+    }
+
+    /**
+     * @since MMBase-2.0
+     * @throws IllegalArgumentException if one or more of the the current values are not valid.
+     * @see #validate
+     */
+    public void check() {
+        Collection<LocalizedString> errors = validate();
+        if (errors.size() > 0) {
+            throw new IllegalArgumentException("" + errors);
+        }
     }
 
     /**
@@ -487,6 +499,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
                             value = a.autoCast(value);
                         } catch (org.mmbase.datatypes.CastException ce) {
                             log.debug("" + ce.getMessage());
+                            //System.out.println(ce.getMessage() + " " + Logging.stackTrace(ce) + " " + ce.getErrors());
                         }
                     }
                     a.checkType(value);
