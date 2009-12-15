@@ -93,6 +93,7 @@
 <p>
 <input class="submit"  id="okbutton" type ="submit" name="ok" value="<%=m.getString("ok")%>" />
 <input class="submit"  id="savebutton" type ="submit" name="save" value="save" />
+<input class="submit"  id="saveanyway" type ="submit" name="save" value="force" />
 <input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
 <mm:maydelete>
    <!-- input class="submit"   type ="submit" name="delete" value="<%=m.getString("delete")%>" /-->
