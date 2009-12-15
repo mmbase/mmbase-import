@@ -15,6 +15,9 @@
 <mm:import externid="cancel" />
 
 <!-- first, check validity -->
+<mm:import externid="save" />
+
+<mm:compare referid="save" value="force" inverse="true">
 <mm:notpresent referid="delete">
 <mm:notpresent referid="deleterelations">
   <mm:notpresent referid="cancel">
@@ -48,6 +51,8 @@
   </mm:notpresent>
 </mm:notpresent>
 </mm:notpresent>
+</mm:compare>
+
 <mm:notpresent referid="invalid">
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
@@ -61,8 +66,11 @@
 <title><%=m.getString("commit_node.commit")%></title>
 <mm:import externid="new" />
 <mm:import externid="ok" />
-<mm:import externid="save" />
-<mm:present referid="save"><mm:notpresent referid="invalid"><mm:import id="ok" reset="true" /></mm:notpresent></mm:present>
+
+
+<mm:present referid="save">
+  <mm:notpresent referid="invalid"><mm:import id="ok" reset="true" /></mm:notpresent>
+</mm:present>
 <mm:url id="redirectTo" write="false"  page="<%=peek(urlStack)%>"><% if (urlStack.size() > 1) { %><mm:param name="nopush" value="url" /><% } %></mm:url>
 
 
@@ -154,8 +162,8 @@
 <a href="<mm:url referid="redirectTo" />">
 <%= m.getString("commit_node.redirect")%></a>
 
-
 <mm:redirect referid="redirectTo" />
+
 <%@ include file="foot.jsp"  %>
 
 </mm:notpresent>
