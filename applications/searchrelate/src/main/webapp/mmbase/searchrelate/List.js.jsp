@@ -98,21 +98,21 @@ function List(d) {
 
         // Bind the event handler on document, so we don't have to bind on creation of new items and so on.
         $(document).bind("mmValidate", function(ev, validator, valid) {
-            var element = ev.target;
-            // only do something if the event is on _our_ mm_validate's.
-            if ($(element).closest("div.list").filter(function() {
-                        return this.id == self.div.id;}).length > 0) {
-                self.valid = validator.invalidElements == 0;
-                if (element.lastChange != null && element.lastChange.getTime() > self.lastChange.getTime()) {
-                    self.lastChange = element.lastChange;
-                }
-                if (self.form != null) {
-                    self.form.valids[self.rid] = valid;
-                    self.triggerValidateHook();
+                var element = ev.target;
+                // only do something if the event is on _our_ mm_validate's.
+                if ($(element).closest("div.list").filter(function() {
+                            return this.id == self.div.id;}).length > 0) {
+                    self.valid = validator.invalidElements == 0;
+                    if (element.lastChange != null && element.lastChange.getTime() > self.lastChange.getTime()) {
+                        self.lastChange = element.lastChange;
+                    }
+                    if (self.form != null) {
+                        self.form.valids[self.rid] = self.valid;
+                        self.triggerValidateHook();
+                    }
                 }
             }
-        }
-			);
+            );
         this.validator.validatePage(false);
     }
 
@@ -227,16 +227,16 @@ List.prototype.triggerValidateHook = function() {
         for (var rid in self.form.valids) {
             if (! self.form.valids[rid] ) {
                 valid = false;
-                reason += rid;
+                self.reason += rid;
             }
         }
     }
     if (this.cursize < this.min) {
-        reason += " list too short";
+        self.reason += " list too short";
         valid = false;
     }
     if (this.cursize > this.max) {
-        reason += " list too long";
+        self.reason += " list too long";
         valid = false;
     }
     if (valid) {
@@ -245,7 +245,7 @@ List.prototype.triggerValidateHook = function() {
         $(this.div).addClass("invalid");
     }
     if (this.form != null) {
-        $(this.form).trigger("mmsrValidateHook", [self, valid, reason, self.form]);
+        $(this.form).trigger("mmsrValidateHook", [self, valid, self.reason, self.form]);
     } else {
         // console.log("No form");
         //console.log(this);
@@ -383,7 +383,9 @@ List.prototype.bindCreate = function(a) {
     });
 }
 
-
+/**
+ * Adds an item to the list
+ */
 List.prototype.addItem = function(res, cleanOnFocus) {
     var list = this;
     //console.log(res.responseText);
@@ -412,6 +414,9 @@ List.prototype.addItem = function(res, cleanOnFocus) {
 
     if (list.validator != null) {
         list.validator.addValidation(r);
+        $(r).find("input.mm_validate").each(function() {
+                list.validator.validateElement(this);
+            });
     }
     list.find("delete", "a", r).each(function() {
             list.bindDelete(this);
@@ -700,7 +705,7 @@ List.prototype.commit = function(stale, leavePage) {
                 result = "not stale";
             }
         } else {
-            result = "not valid (" + reason + ")";
+            result = "not valid (" + self.reason + ")";
         }
     } else {
         result = null;
