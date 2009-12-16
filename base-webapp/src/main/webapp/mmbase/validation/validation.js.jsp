@@ -846,7 +846,7 @@ MMBaseValidator.prototype.binaryServerValidation = function(el) {
                         el.serverValidated = true;
                         result = $("<result valid='true' />")[0];
                     }
-                    self.showServerErrors(el, result);
+                    self.showServerErrors(el, result, el.initialId);
                 }
             });
     } else {
@@ -1101,6 +1101,8 @@ MMBaseValidator.prototype.addValidationForElements = function(els) {
         if (entry.type == "textarea") {
             entry.value = entry.value.replace(/^\s+|\s+$/g, "");
         }
+        // Store the original ID, especially for binaries, because jquery-upload may temporary change it sometimes, which would make the error div unfindable
+        entry.initialId = $(entry).attr("id");
 	var self = this;
         // switch stolen from editwizards, not all cases are actually supported already here.
         switch(entry.type) {
