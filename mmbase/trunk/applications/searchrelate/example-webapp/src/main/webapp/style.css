@@ -163,3 +163,18 @@ div.test {
   background-color: #eeb;
   border: solid 1px;
 }
+
+
+input.invalid {
+  color: #a00;
+  background-color: #fab;
+}
+
+
+div.mm_check_error {
+  float: right;
+  top: 0px;
+  right: 0px;
+  font-weight: bold;
+  color: red;
+}
