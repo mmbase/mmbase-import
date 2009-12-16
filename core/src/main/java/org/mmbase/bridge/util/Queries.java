@@ -1689,7 +1689,10 @@ abstract public class Queries {
 
         if (! orderStep.equals(nodeStep)) {
             Field f = t.getNodeManager(orderStep.getTableName()).getField("number");
-            clone.addField(orderStep, f);
+            StepField sf = clone.createStepField(orderStep, f);
+            if (! clone.getFields().contains(sf)) {
+                clone.addField(orderStep, f);
+            }
         }
 
         List<Integer> desiredOrderCopy = new ArrayList<Integer>(desiredOrder);
