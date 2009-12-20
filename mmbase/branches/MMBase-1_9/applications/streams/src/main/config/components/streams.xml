@@ -15,11 +15,11 @@
 
   <dependency component="media" version="1" />
 
-  <action name="cancel_jobs" rank="project manager">
+  <action name="cancel_jobs" rank="administrator">
     <description xml:lang="en">Whether you may cancel jobs</description>
   </action>
 
-  <action name="retrigger_jobs" rank="project manager">
+  <action name="retrigger_jobs" rank="administrator">
     <description xml:lang="en">Whether you may cancel jobs</description>
   </action>
 
