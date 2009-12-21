@@ -118,7 +118,7 @@ public class KeywordsProcessor implements Processor, NodeEventListener {
                             Node n = ni.nextNode();
                             String keywords = n.getStringValue(field);
                             i++;
-                            if (i % 1000 == 0) {
+                            if (i % 1000 == 0 && log.isDebugEnabled()) {
                                 log.service("Found keywords " + getKeywords(repository));
                             }
                             if (! "".equals(keywords)) {
