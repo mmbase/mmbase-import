@@ -17,8 +17,8 @@ import org.mmbase.bridge.util.*;
 /**
  * MockNodes belong to a {@link MockCloud}. They represent {@linkplain
  * MockCloudContext#NodeDescription data} in memory of a {@link MockCloudContext}. An even simpler
- * Node mocker is {@link MapNode}. This one ia a bit more sophisticated because it does actually
- * implements {@link #commit} too.
+ * Node mocker is {@link MapNode}. This one is a bit more sophisticated because it does actually
+ * implement methods {@link #commit} and {@link #isNew} too.
  *
  * @author  Michiel Meeuwissen
  * @version $Id$
@@ -86,9 +86,6 @@ public class MockNode extends MapNode  {
     public boolean isNew() {
         return isNew;
     }
-
-
-
 
 
     @Override
