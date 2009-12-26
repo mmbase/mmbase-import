@@ -135,6 +135,11 @@ public class MockNodeManager extends AbstractNodeManager  {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return super.toString() + " of " + vcloud;
+    }
+
     protected class SystemField extends DataTypeField {
         public SystemField(String name, NodeManager nm, DataType dt) {
             super(name, nm, dt);

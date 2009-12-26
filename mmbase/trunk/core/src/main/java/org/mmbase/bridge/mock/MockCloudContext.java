@@ -184,7 +184,7 @@ public class MockCloudContext extends  AbstractCloudContext {
 
     @Override
     public String toString() {
-        return getUri() + "#" + hashCode() + "(" + nodes.size() + " nodes)";
+        return getUri() + "#" + hashCode() + "(" + nodes.size() + " nodes, nodemanagers: " + nodeManagers.keySet() + ")";
     }
 
     public static class MockResolver extends ContextProvider.Resolver {

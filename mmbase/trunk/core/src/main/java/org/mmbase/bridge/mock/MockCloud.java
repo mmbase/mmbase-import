@@ -71,7 +71,7 @@ public class MockCloud extends AbstractCloud {
     public NodeManager getNodeManager(String name) throws NotFoundException {
         NodeManagerDescription d = cloudContext.nodeManagers.get(name);
         if (d == null) {
-            throw new NotFoundException("No such node manager '" + name + "'");
+            throw new NotFoundException("No such node manager '" + name + "' in " + cloudContext);
         }
         return new MockNodeManager(this, d);
     }
@@ -151,7 +151,7 @@ public class MockCloud extends AbstractCloud {
 
     @Override
     public String toString() {
-        return "MockCloud:" + getName() + "@" + cloudContext;
+        return "MockCloud:" + getName() + "#" + hashCode() + "@" + cloudContext;
     }
 
 }
