@@ -120,11 +120,11 @@ public interface RelationStep extends Step {
      * @see Step#equals
      */
     @Override
-    public boolean equals(Object obj);
+    boolean equals(Object obj);
 
     // javadoc is inherited
     @Override
-    public int hashCode();
+    int hashCode();
 
     /**
      * Returns a string representation of this RelationStep.
@@ -148,6 +148,6 @@ public interface RelationStep extends Step {
      * @return A string representation of this RelationStep.
      */
     @Override
-    public String toString();
+    String toString();
 
 }
