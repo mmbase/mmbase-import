@@ -357,7 +357,11 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      * @exception If no reasonable cast is possbible.
      */
     protected C autoCast(Object value) throws CastException {
-        return dataType.castOrException(value, null, null);
+        try {
+            return dataType.castOrException(value, null, null);
+        } catch (IllegalArgumentException iae) {
+            throw new CastException(iae);
+        }
     }
 
     /**
