@@ -525,7 +525,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                                                    getBuilder().getTableName() + "' are " + getBuilder().getFieldNames());
             } else {
                 log.warn("Tried to use non-existing field '" + fieldName + "' of node '" + getNumber() + "' from " + getBuilder().getTableName());
-                log.warn(Logging.applicationStacktrace());
+                if (log.isDebugEnabled()) {
+                    log.debug(new Exception());
+                } else {
+                    log.warn(Logging.applicationStacktrace());
+
+                }
                 return false;
             }
         }
