@@ -76,7 +76,6 @@ public interface UrlConverter extends Serializable {
 
     /**
      * See {@link org.mmbase.framework.Framework#getInternalUrl(String, Map, Parameters)}.
-     * But it can also return <code>null</code> which mean, 'I don't know'.
      * @param path The page (e.g. image/css) provided by the component to create an URL for
      * @param params Extra parameters for that path
      * @param frameworkParameters The parameters that are required by the framework, such as the
