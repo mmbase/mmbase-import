@@ -1723,29 +1723,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @deprecated use executeFunction(node, function, list)
      */
     protected List<String> getFunctionParameters(String fields) {
-        int commapos =  0;
-        int nested =  0;
-        List<String> v = new ArrayList<String>();
-        int i;
-        if (log.isDebugEnabled()) log.debug("Fields=" + fields);
-        for(i = 0; i<fields.length(); i++) {
-            if ((fields.charAt(i)==',') || (fields.charAt(i)==';')){
-                if(nested==0) {
-                    v.add(fields.substring(commapos,i).trim());
-                    commapos=i+1;
-                }
-            }
-            if (fields.charAt(i)=='(') {
-                nested++;
-            }
-            if (fields.charAt(i)==')') {
-                nested--;
-            }
-        }
-        if (i>0) {
-            v.add(fields.substring(commapos).trim());
-        }
-        return v;
+        return org.mmbase.util.functions.Utils.parse(fields);
     }
 
     /**
