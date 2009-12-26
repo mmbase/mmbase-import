@@ -198,7 +198,7 @@ public class BasicStepField implements StepField, SizeMeasurable, java.io.Serial
         return field.getType();
     }
 
-    // javadoc is inherited
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof StepField) {
             StepField f = (StepField) obj;
@@ -210,7 +210,7 @@ public class BasicStepField implements StepField, SizeMeasurable, java.io.Serial
         }
     }
 
-    // javadoc is inherited
+    @Override
     public int hashCode() {
         return (getStep().getAlias() == null?
             47 * getStep().getTableName().hashCode():
@@ -271,7 +271,7 @@ public class BasicStepField implements StepField, SizeMeasurable, java.io.Serial
     }
 
 
-    // javadoc is inherited
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         Step step = getStep();
