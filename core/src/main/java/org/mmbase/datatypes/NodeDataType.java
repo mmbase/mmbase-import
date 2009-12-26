@@ -61,7 +61,7 @@ public class NodeDataType extends BasicDataType<Node> {
         if (preCast instanceof Node) {
             return preCast;
         }  else {
-            Object res = Casting.toType(Node.class, getCloud(node, field), preCast);
+            Node res = Casting.toNode(preCast, getCloud(node, field));
             if (res == null) {
                 if (Casting.toString(value).equals("-1")) {
                     return null;
