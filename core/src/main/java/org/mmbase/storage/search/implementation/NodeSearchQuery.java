@@ -104,6 +104,9 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery, ja
      *         persistent field of the associated nodetype.
      */
     public BasicStepField getField(Field field) {
+        if (field == null) {
+            throw new NullPointerException("No field given");
+        }
         if (! field.getNodeManager().getName().equals(builder)) {
             throw new IllegalArgumentException();
         }
