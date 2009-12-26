@@ -422,7 +422,12 @@ public class Casting {
                 }
                 @Override
                 public String toString() {
-                    return escape(escaper, "" + node.getNumber());
+                    int number = node.getNumber();
+                    if (number != -1) {
+                        return escape(escaper, "" + number);
+                    } else {
+                        return escape(escaper, node.getStringValue("_number"));
+                    }
                 }
             };
         } else if (o instanceof Date) {
@@ -643,7 +648,7 @@ public class Casting {
                 SerializableInputStream is = (SerializableInputStream) obj;
                 return is.get();
             } catch (IOException ioe) {
-                log.error(ioe);
+                log.error(ioe.getMessage(), ioe);
                 return new byte[0];
             }
         } else if (obj instanceof InputStream) {
@@ -653,9 +658,11 @@ public class Casting {
             try {
                 IOUtil.copy(in, out);
             } catch (IOException ioe) {
-                log.error(ioe);
+                log.error(ioe.getMessage(), ioe);
             } finally {
-                try { in.close(); } catch (IOException ioe) {}
+                try {
+                    in.close();
+                } catch (IOException ioe) {}
             }
             return out.toByteArray();
         } else {
@@ -1175,12 +1182,11 @@ public class Casting {
             return doc;
         } catch (org.xml.sax.SAXException se) {
             if (log.isDebugEnabled()) {
-                log.debug("[sax] not well formed xml: " + se.toString() + "(" + se.getMessage() + ")\n" + Logging.stackTrace(se));
+                log.debug("[sax] not well formed xml: " + se.toString() + "(" + se.getMessage() + ")",  se);
             }
             return convertStringToXML("<p>" + Encode.encode("ESCAPE_XML", value) + "</p>"); // Should _always_ be sax-compliant.
         } catch (IOException ioe) {
-            String msg = "[io] not well formed xml: " + ioe.toString() + "\n" + Logging.stackTrace(ioe);
-            throw new IllegalArgumentException(msg);
+            throw new IllegalArgumentException("[io] not well formed xml: " + ioe.getMessage(), ioe);
         }
     }
 
