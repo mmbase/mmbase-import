@@ -67,12 +67,14 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
         return domain;
     }
 
-    @Override public int getDefaultWeight() {
+    @Override
+    public int getDefaultWeight() {
         int q = super.getDefaultWeight();
         return Math.max(q, q + 1000);
     }
 
-    @Override protected final Url getNiceUrl(Block block,
+    @Override
+    protected final Url getNiceUrl(Block block,
                                                 Parameters parameters,
                                                 Parameters frameworkParameters,  boolean action) throws FrameworkException {
         StringBuilder b = new StringBuilder(directory);
@@ -117,7 +119,8 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
 
 
 
-    @Override final public Url getFilteredInternalUrl(String pa, Map<String, ?> params, Parameters frameworkParameters) throws FrameworkException {
+    @Override
+    final public Url getFilteredInternalUrl(String pa, Map<String, ?> params, Parameters frameworkParameters) throws FrameworkException {
         HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
 
         if (! domain.matcher(request.getLocalName()).matches()) {
