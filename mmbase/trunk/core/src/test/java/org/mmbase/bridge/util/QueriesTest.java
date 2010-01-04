@@ -21,7 +21,7 @@ import static org.junit.Assume.*;
 
 
 /**
- *
+   *
  * @author Michiel Meeuwissen
  * @version $Id$
  */
@@ -175,9 +175,26 @@ public class QueriesTest  {
 
     }
 
+
     // ================================================================================
     // Tests below this assume an RMMCI connection
     // ================================================================================
+
+    @Test
+    public void addToResult() {
+        //Cloud cloud = getCloudContext().getCloud("mmbase");
+        assumeNotNull(remoteCloud);
+        Cloud cloud = remoteCloud;
+        Node node = cloud.getNodeManager("news").createNode();
+        node.setStringValue("title", "foo");
+        node.commit();
+        //NodeQuery q = Queries.createRelatedNodesQuery(node, otherNodeManager, role, direction);
+        NodeQuery  q = Queries.createRelatedNodesQuery(node, cloud.getNodeManager("news"), "posrel", "destination");
+        StepField pos = q.createStepField(q.getSteps().get(1), "pos");
+        Constraint c = q.createConstraint(pos, new Integer(1));
+        System.out.println("Query " + q.toSql());
+    }
+
 
 
     @Test
@@ -289,7 +306,7 @@ public class QueriesTest  {
         NodeList relatedNodes =  Queries.getRelatedNodes(node, cloud.getNodeManager("news"), "posrel", "destination", "pos", "DOWN");
 
 
-        // implemetnation based on NodeQuery
+        // implementation based on NodeQuery
         NodeQuery q = Queries.createRelatedNodesQuery(node, cloud.getNodeManager("news"), "posrel", "destination");
         Queries.addSortOrders(q, "posrel.pos,number", "DOWN");
         List<Node> relatedNodes2 = Queries.getRelatedNodesInTransaction(node, q); // outside a transaction it works too
@@ -344,6 +361,55 @@ public class QueriesTest  {
         }
         // TODO test-case for relating a node to the source node of a different type. Should not appear in the result.
         // It doesn't now, btw. but it used to be a bug..
+
+
+    }
+
+    @Test
+    public void getRelationNodes() {
+        assumeNotNull(remoteCloud);
+        Cloud cloud = remoteCloud;
+        Node node = cloud.getNode("default.mags");
+        // implementation based on NodeQuery
+        NodeQuery q = Queries.createRelationNodesQuery(node, cloud.getNodeManager("news"), "posrel", "destination");
+        Queries.addSortOrders(q, "pos,number", "DOWN");
+
+        // must basic implementation used by e.g. mm:relatednodes
+        NodeList relatedNodes = q.getNodeManager().getList(q);
+
+
+        List<Node> relatedNodes2 = Queries.getRelatedNodesInTransaction(node, q); // outside a transaction it works too
+
+        System.out.println(toString(relatedNodes, null) + " =? " + toString(relatedNodes2, null));
+        assertListEqual(relatedNodes, null, relatedNodes2, (String) null);
+
+        int sizeBefore = relatedNodes2.size();
+
+        // Now for the really insteresting stuff.
+        {
+            // Adding a node
+
+            Transaction t = cloud.getTransaction("relationnodes1");
+            Node magNode = t.getNode("default.mags");
+            Node newNode = t.getNodeManager("news").createNode();
+            newNode.setStringValue("title", "Test node of " + QueriesTest.class.getName());
+
+            Node newRelation = Queries.addToResult(q, newNode).get(0);
+
+            //
+            List<Node> relatedNodesInTransaction = Queries.getRelatedNodesInTransaction(magNode, q);
+
+            assertEquals(sizeBefore + 1, relatedNodesInTransaction.size());
+
+            assertTrue(relatedNodesInTransaction.contains(newRelation)); // It should be the relation
+            assertFalse(relatedNodesInTransaction.contains(newNode)); // Not the related node
+
+
+            // order of posrel was DOWN, so this newNode should even be the first one in this list:
+
+            assertEquals(newRelation, relatedNodesInTransaction.get(0));
+            t.cancel();
+        }
 
 
     }
