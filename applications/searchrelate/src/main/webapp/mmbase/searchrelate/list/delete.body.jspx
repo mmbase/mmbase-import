@@ -9,11 +9,11 @@
     <c:choose>
       <c:when test="${parameters.autosubmit}">
         <!-- Transactionless. Let's make sure the node is indeed related -->
-        <mm:node id="source" referid="parameters.source">
+        <mm:node id="source" referid="parameters.source" commitonclose="false">
           <mm:relatednodescontainer type="object">
             <mm:constraint field="number" value="${n}" />
             <mm:maxnumber value="1" />
-            <mm:relatednodes>
+            <mm:relatednodes commitonclose="false">
               <jsp:text>Deleting ${_node}</jsp:text>
               <mm:deletenode deleterelations="true" />
             </mm:relatednodes>
@@ -21,7 +21,8 @@
         </mm:node>
       </c:when>
       <c:otherwise>
-        <mm:node referid="n">
+        <mm:node referid="n" commitonclose="false">
+          <span>deleting ${_node}</span>
           <mm:deletenode deleterelations="true" />
         </mm:node>
       </c:otherwise>
