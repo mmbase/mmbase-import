@@ -20,7 +20,7 @@
             <notfound>${parameters.source} -${parameters.role}- ${n}</notfound>
           </c:if>
         </mm:size>
-        <mm:listrelations>
+        <mm:listrelations usetransaction="true">
           <jsp:text>Deleting <mm:nodeinfo type="gui" /></jsp:text>
           <mm:deletenode />
         </mm:listrelations>
