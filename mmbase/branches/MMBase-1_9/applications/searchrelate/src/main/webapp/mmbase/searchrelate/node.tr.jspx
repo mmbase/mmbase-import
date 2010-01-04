@@ -16,6 +16,7 @@
         <mm:nodeinfo type="nodemanager" id="nodemanager" write="false" />
         <tr class="click ${(! empty status and status.index % 2 eq 0) ? 'even' : 'odd'} ${nodemanager}">
           <td class="node number"><mm:field name="number" /></td>
+          <td class="node guitype"><mm:nodeinfo type="guitype" /></td>
           <c:choose>
             <c:when test="${!empty fields}">
               <mm:fieldlist fields="$fields" varStatus="field">

@@ -66,6 +66,8 @@
               <c:choose>
                 <c:when test="${!empty flds}">
                   <th class="node number" scope="col">#</th>
+                  <th class="node guitype" scope="col"><fmt:message key="nodetype"  /></th>
+                  <th class="node gui" scope="col"></th>
                   <mm:fieldlist nodetype="${query.nodeManager.name}" fields="$flds" varStatus="field">
                     <th class="fields ${field.current.name}" scope="col"><mm:fieldinfo type="guiname" /></th>
                     <mm:last><mm:index write="false" id="colcount" /></mm:last>
@@ -73,7 +75,7 @@
                 </c:when>
                 <c:otherwise>
                   <th class="node number" scope="col">#</th>
-                  <th class="node" scope="col"> </th>
+                  <th class="node guitype" scope="col"><fmt:message key="nodetype"  /></th>
                     <mm:fieldlist nodetype="${query.nodeManager.name}" type="list" varStatus="field">
                       <th class="fields ${field.current.name}" scope="col"><mm:fieldinfo type="guiname" /></th>
                       <mm:last><mm:index write="false" id="colcount" /></mm:last>
@@ -86,7 +88,7 @@
           <!--  PAGING -->
           <tfoot class="paging ${size gt pagesize ? 'needed' : 'notneeded'}">
             <tr>
-              <td colspan="${colcount + 3}">
+              <td colspan="${colcount + 4}">
                 <mm:previousbatches maxtotal="${maxpages}" indexoffset="1">
                   <mm:first>
                     <c:if test="${offset != 0}">

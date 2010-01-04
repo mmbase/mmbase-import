@@ -126,6 +126,10 @@ input.searching
   display: none;
 }
 
+.mm_related .searchable .node.guitype {
+  display: none;
+}
+
 
 .failed {
  background-color: red;
