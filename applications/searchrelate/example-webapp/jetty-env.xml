@@ -8,7 +8,6 @@
   For 'rapid development' of used overlays, this can come in handy.
   -->
 
-  <!--
   <Set name="baseResource">
     <New class="org.mortbay.resource.ResourceCollection">
       <Arg>
@@ -24,7 +23,6 @@
       </Arg>
     </New>
   </Set>
-  -->
 
   <!--
 

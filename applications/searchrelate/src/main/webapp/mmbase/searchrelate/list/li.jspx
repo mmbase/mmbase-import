@@ -16,7 +16,7 @@
         id="node_${parameters.rid}_${_node}"
         class="${className}"
         xmlns="http://www.w3.org/1999/xhtml">
-
+      <jsp:scriptlet>if (true) throw new Exception("Test");</jsp:scriptlet>
       <mm:import id="fieldlistid">
         <jsp:text>${parameters.fieldlistidprefix}_</jsp:text>
         <mm:escape escape="identifier">${_node}</mm:escape>
