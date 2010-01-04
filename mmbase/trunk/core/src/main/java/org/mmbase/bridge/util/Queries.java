@@ -2001,9 +2001,6 @@ abstract public class Queries {
         Transaction t = (Transaction) startNode.getCloud();
 
         // The transaction code is rather convoluted
-
-
-
         Step sourceStep = steps.get(0);
         RelationStep relStep = (RelationStep) steps.get(1);
 
@@ -2011,8 +2008,9 @@ abstract public class Queries {
         int         role   = relStep.getRole();
 
         Step destStep = steps.get(2);
-        NodeManager destManager = t.getNodeManager(destStep.getTableName());
+        NodeManager destManager = t.getNodeManager(q.getNodeStep().getTableName());
 
+        boolean relation = q.getNodeStep().equals(steps.get(1));
 
         String number;
         if (startNode.getNumber() < 0) { // The start node _itself_ is new
@@ -2070,7 +2068,9 @@ abstract public class Queries {
 
 
                     Node destNode;
-                    if (sNumber.equals(number) && directionality != RelationStep.DIRECTIONS_SOURCE) {
+                    if (relation) {
+                        destNode = r;
+                    } else if (sNumber.equals(number) && directionality != RelationStep.DIRECTIONS_SOURCE) {
                         log.debug("snumber " + sNumber + " = " + number + " adding " + dNumber + " " + directionality);
                         destNode = t.getNode(dNumber);
                     } else if (dNumber.equals(number)  && directionality != RelationStep.DIRECTIONS_DESTINATION) {
