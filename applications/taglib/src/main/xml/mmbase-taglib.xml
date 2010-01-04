@@ -5825,6 +5825,13 @@ like the parameter list or the session (where ever it is available) --&gt;
       <see tag="list" attribute="directions" />
       <since>MMBase-1.8</since>
     </attribute>
+    <attribute>
+      <name>usetransaction</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.9.2</since>
+      <see tag="relatednodes" attribute="usetransaction" />
+    </attribute>
     <example>
 &lt;mm:listnodes type="news"&gt;
     &lt;mm:field name="title" /&gt;
