@@ -6,7 +6,7 @@
     >
   <jsp:output omit-xml-declaration="true" />
   <li>
-    <mm:import externid="n"       required="true" commitonclose="false" />
+    <mm:import externid="n"       required="true" />
     <jsp:directive.include file="parameters.jspf" />
     <mm:cloud method="asis">
       <c:choose>

@@ -5,7 +5,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
   <mm:hasnode number="$n">
-    <mm:node referid="n" id="n" />
+    <mm:node referid="n" id="n" commitonclose="false" />
     <c:choose>
       <c:when test="${parameters.autosubmit}">
         <!-- Transactionless. Let's make sure the node is indeed related -->
