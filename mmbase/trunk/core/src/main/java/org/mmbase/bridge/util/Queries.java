@@ -1854,6 +1854,9 @@ abstract public class Queries {
     }
 
 
+    /**
+     * Given a 'relation' node
+     */
     protected static Node clusterNode(Relation relation, String relationAlias, Node node) {
         Map<String, Object> values = new HashMap<String, Object>();
         values.putAll(new NodeMap(node));
@@ -2091,7 +2094,11 @@ abstract public class Queries {
                         continue;
                     }
 
-                    newNodes.add(0, Queries.clusterNode(r, relStep.getAlias(), destNode));
+                    if (relation) {
+                        newNodes.add(0, Queries.clusterNode(r, destStep.getAlias(), destNode));
+                    } else {
+                        newNodes.add(0, Queries.clusterNode(r, relStep.getAlias(), destNode));
+                    }
 
                 } else {
                     log.debug("" + n + " is not a relation");
@@ -2116,9 +2123,10 @@ abstract public class Queries {
         // make the nodes 'normal' again (there are odd 'MapNodes' used now)
         for (int i = 0; i < newNodes.size(); i++) {
             Node n = newNodes.get(i);
-            String nn = n.getStringValue(destStep.getAlias() + ".number");
+            String numberField = clone.getNodeStep().getAlias() + ".number";
+            String nn = n.getStringValue(numberField);
             if (nn.length() == 0) nn = n.getStringValue("_number");
-            assert t.hasNode(nn) : "Node: " + n.getClass() + n;
+            assert t.hasNode(nn) : "Node: " + n.getClass() + n + " used number: " + nn + " from " + numberField;
             newNodes.set(i, t.getNode(nn));
         }
 
