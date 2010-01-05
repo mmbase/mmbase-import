@@ -22,6 +22,7 @@ import org.mmbase.util.Casting;
 import org.mmbase.util.functions.*;
 import org.mmbase.framework.*;
 import org.mmbase.framework.basic.State;
+import org.mmbase.framework.basic.BasicFramework;
 import org.mmbase.framework.basic.BasicUrlConverter;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -154,6 +155,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
 
 
     private static final Pattern EXTERNAL = Pattern.compile("[a-z]{2,}:.*");
+
     /**
      * Returns the URL as a String, always without the application context. Never <code>null</code>
      */
@@ -173,7 +175,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
             }
             return result;
         }
-        if (page != null || page.length() > 0) {
+        if (page != null && page.length() > 0) {
             if (EXTERNAL.matcher(page).matches()) {
                 result = getLegacy(escapeamp);
                 if (escapeamp) {
@@ -186,7 +188,6 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         }
 
         Framework framework = Framework.getInstance();
-
 
         Parameters frameworkParameters;
 
@@ -208,7 +209,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         }
 
 
-        if (page != null || page.length() > 0) {
+        if (page != null && page.length() > 0) {
             String curBlock = frameworkParameters.get(Framework.BLOCK);
             if (page.equals(curBlock)) {
                 frameworkParameters.setIfDefined(Framework.BLOCK, null);
@@ -230,11 +231,9 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
             }
             result = framework.getInternalUrl(page.toString(), params, frameworkParameters);
             if (result == null) {
-                result = framework.getUrl(page.toString(), params, frameworkParameters, false);
-
-                // I think this happens a lot for mm:includes. Actually I think the issue is that
-                // getInternalUrl for framework/urlconverter's is not implementated at all.
-
+                // Shouldn't this happen in the framework instead ?
+                BasicUrlConverter converter = new BasicUrlConverter((BasicFramework)framework);
+                result = converter.getInternalUrl(page.toString(), params, frameworkParameters).getUrl();
                 log.debug("No internal url gotten from framework for, falled back to " + result);
             } else  {
                 log.debug("Internal url gotten from framework " + result);
@@ -283,8 +282,8 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         HttpServletRequest req = (HttpServletRequest) tag.getPageContext().getRequest();
 
         if (abs.equals("true")) {
-            if (ABSOLUTE_URLS.matcher(page).matches()) {
-                show.append(page);
+            if (ABSOLUTE_URLS.matcher(p).matches()) {
+                show.append(p);
                 return true;
             } else {
                 String scheme = req.getScheme();
