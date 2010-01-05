@@ -1,18 +1,12 @@
-<?xml version="1.0" ?>
 <html
     xmlns="http://www.w3.org/1999/xhtml"
     xml:lang="en"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:mm-sre="http://www.mmbase.org/tags/mm/searchrelateexample"
-    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
-    xmlns:mm-sr-t="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+
   <jsp:directive.tag
-      example="See /mmexamples/searchrelate"
-      description="
-                   " />
+      example="See /mmexamples/searchrelate" />
 
 
   <jsp:directive.attribute name="title"        type="java.lang.String"
