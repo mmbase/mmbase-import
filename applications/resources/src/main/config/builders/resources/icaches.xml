@@ -96,7 +96,7 @@
       </datatype>
     </field>
 
-    <field name="handle">
+    <field name="handle" state="system">
       <descriptions>
         <description xml:lang="en">The cached image</description>
         <description xml:lang="nl">De gecachede afbeelding</description>
@@ -113,9 +113,10 @@
           <list>1</list><search>-1</search>
         </positions>
       </editor>
-      <db>
-        <type state="system" size="16777215" notnull="false" key="false">BINARY</type>
-      </db>
+      <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" enforce="never" />
+        <maxLength value="16777215" enforce="never" />
+      </datatype>
     </field>
 
     <field name="itype">
