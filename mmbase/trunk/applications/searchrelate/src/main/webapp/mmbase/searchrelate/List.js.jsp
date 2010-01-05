@@ -100,13 +100,12 @@ function List(d) {
     this.defaultStale = 1000;
 
     // Every list maintains it's own validator.
-    this.validator = typeof(MMBaseValidator) != "undefined" ?  new MMBaseValidator() : null;
+    this.validator = typeof(MMBaseValidator) != "undefined" ?  new MMBaseValidator(null, this.rid + "/" + new Date().getTime()) : null;
 
     if (this.validator != null) {
         this.validator.lang = "${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}";
         this.validator.prefetchNodeManager(this.type);
-        this.validator.setup(this.div);
-        var validator = this.validator;
+        this.validator.addValidationForElements(this.find("mm_validate"));
 
         // Bind the event handler on document, so we don't have to bind on creation of new items and so on.
         $(document).bind("mmValidate", function(ev, validator, valid) {
@@ -252,34 +251,40 @@ List.prototype.instances = {};
  */
 List.prototype.triggerValidateHook = function() {
     var self = this;
+    var totalReason = "";
+    var totalValid = true;
     self.reason = "";
     self.valid = true;
     if (self.form != null) {
         for (var rid in self.form.valids) {
             if (! self.form.valids[rid] ) {
-                self.valid = false;
-                self.reason += rid;
+                totalReason += rid;
+                totalValid = false;
+                if (self.rid == rid) {
+                    self.valid = false;
+                }
             }
         }
     }
     if (this.cursize < this.min) {
         self.reason += " list too short";
         self.valid = false;
+        totalValid = false;
     }
     if (this.cursize > this.max) {
         self.reason += " list too long";
         self.valid = false;
+        totalValid = false;
     }
+    totalReason += self.reason;
     if (self.valid) {
-        $(this.div).removeClass("invalid");
+        $(self.div).removeClass("invalid");
     } else {
-        $(this.div).addClass("invalid");
+        $(self.div).addClass("invalid");
     }
     if (this.form != null) {
-        $(this.form).trigger("mmsrValidateHook", [self, self.valid, self.reason, self.form]);
+        $(this.form).trigger("mmsrValidateHook", [self, totalValid, totalReason, self.form]);
     } else {
-        // console.log("No form");
-        //console.log(this);
     }
 }
 
