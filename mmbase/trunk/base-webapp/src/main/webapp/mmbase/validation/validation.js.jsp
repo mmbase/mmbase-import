@@ -9,12 +9,14 @@
  *                              then call validator.setup(el).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.61 2009-04-28 14:44:06 michiel Exp $
+ * @version $Id$
  */
 
 
 
-function MMBaseValidator(root) {
+function MMBaseValidator(root, id) {
+
+    this.uniqueId     = id == null ? new Date().getTime() : id;
 
     this.logEnabled   = false;
     this.traceEnabled = false;
@@ -23,13 +25,15 @@ function MMBaseValidator(root) {
       this.uri = '<%=cloud.getCloudContext().getUri()%>';
       this.cloud = '<%=cloud.getName()%>';
     </mm:cloud>
-
     this.invalidElements = 0;
     //this.changedElements  = 0;
     this.elements        = [];
-    this.validateHook;
+
+    this.validateHook; // deprecated
+
     this.root = root;
     this.setup();
+
     this.lang          = null;
     this.sessionName   = null;
     this.activeElement = null;
@@ -43,10 +47,12 @@ function MMBaseValidator(root) {
 
 }
 
-MMBaseValidator.dataTypeCache   = {};
-MMBaseValidator.validators = [];
+// Caches
+MMBaseValidator.dataTypeCache          = {};
 MMBaseValidator.prefetchedNodeManagers = {};
 
+// All instances
+MMBaseValidator.validators = [];
 
 
 MMBaseValidator.watcher = function() {
@@ -75,7 +81,9 @@ MMBaseValidator.watcher = function() {
 MMBaseValidator.prototype.setup = function(el) {
     if (el != null) {
         this.root = el;
-        if (this.root == window) this.root = this.root.document;
+        if (this.root == window) {
+            this.root = this.root.document;
+        }
     }
     if (this.root != null) {
         var self = this;
@@ -1051,7 +1059,8 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
 }
 
 /**
- * Validates al mm_validate form entries which were marked for validation with addValidation.
+ * Validates al mm_validate form entries which were marked for
+ * validation with addValidation int this validator.
  */
 MMBaseValidator.prototype.validatePage = function(server) {
     this.log("Validating page " + server);
@@ -1063,19 +1072,33 @@ MMBaseValidator.prototype.validatePage = function(server) {
     return this.invalidElements == 0;
 }
 
+MMBaseValidator.prototype.hasElement = function(el) {
+    var els = this.elements;
+    for (var  i = 0; i < els.length; i++) {
+        var e = els[i];
+        if (el.initialId == e.initialId) {
+            return true;
+        }
+    }
+    return false;
+
+}
+
 MMBaseValidator.prototype.removeValidation = function(el) {
     if (el == null) {
         el = document.documentElement;
     }
     var self = this;
-    var els = $(el).find(".mm_validate *").each(function() {
+    var els = $(el).find(".mm_validate").each(function() {
 	var entry = this;
-	if ($.inArray(entry, self.elements)) {
-	    if (! entry.prevValid) self.invalidElements--;
+	if (self.hasElement(entry)) {
+	    if (! entry.prevValid) {
+                self.invalidElements--;
+            }
 	    $(entry).unbind();
 	    var newElements = [];
 	    $(self.elements).each(function() {
-		if (this != entry) {
+		if (this.initialalId != entry.initialId) {
 		    newElements.push(this);
 		}
 	    });
