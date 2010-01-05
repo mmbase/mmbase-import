@@ -1,7 +1,8 @@
 // -*- mode: javascript; -*-
-<%@page contentType="text/javascript; charset=UTF-8" %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
+<%@page contentType="text/javascript; charset=UTF-8"
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"
+%><fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
 <mm:content type="text/javascript" expires="0">
 
 /**
@@ -27,8 +28,9 @@
 
 
 $(document).ready(function() {
-        List.prototype.init(document, false);
+    List.prototype.init(document, false);
 });
+
 
 
 
@@ -36,15 +38,15 @@ $(document).ready(function() {
 function List(d) {
     this.div = d;
     var self = this;
+    this.callBack = null; // called on delete and create (deprecated)
 
-    this.callBack = null; // called on delete and create
-
-
+    // Collect some configuration which was supplied to mm-sr:relatednodes (and communicated using hidden form entries).
     var listinfos       = this.find("listinfo");
-
+    // Genericly set all of them:
     $(listinfos).find("input[type=hidden]").each(function() {
             self[this.name] = $(this).val();
         });
+    // but:
     // fix integers
     this.max        = parseInt(this.max);
     this.cursize    = parseInt(this.cursize);
@@ -53,6 +55,16 @@ function List(d) {
     this.autosubmit = this.autosubmit == 'true';
     this.search     = this.search     == 'true';
 
+
+
+    // Whether every user input is currently valid (whith respect of both the list's length and  MMBaseValidator information).
+    this.valid = true;
+    // The reason(s) why it would not be valid.
+    this.reason = "";
+
+    // If this used in an mm:form, then maintain also a 'valids' member in that.
+    // valids is a map rid->valid (this corresponds to the validation status of the MMBaseValidator only).
+    // The form itself may contains _more_ List instances.
     if (this.formtag.length > 0 || this.parentformtag.length > 0) {
         this.form = $(this.div).parents("form")[0];
         this.form.valids = {};
@@ -87,9 +99,9 @@ function List(d) {
 
     this.defaultStale = 1000;
 
-    this.valid = true;
-    this.reason = "";
+    // Every list maintains it's own validator.
     this.validator = typeof(MMBaseValidator) != "undefined" ?  new MMBaseValidator() : null;
+
     if (this.validator != null) {
         this.validator.lang = "${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}";
         this.validator.prefetchNodeManager(this.type);
@@ -102,22 +114,22 @@ function List(d) {
                 // only do something if the event is on _our_ mm_validate's.
                 if ($(element).closest("div.list").filter(function() {
                             return this.id == self.div.id;}).length > 0) {
-                    self.valid = validator.invalidElements == 0;
                     if (element.lastChange != null && element.lastChange.getTime() > self.lastChange.getTime()) {
                         self.lastChange = element.lastChange;
                     }
-                    if (self.form != null) {
-                        self.form.valids[self.rid] = self.valid;
-                        self.triggerValidateHook();
-                    }
+                    self.setValidInForm();
+                    self.triggerValidateHook();
                 }
             }
             );
         this.validator.validatePage(false);
     }
 
+    // If a searcher was requested for this list, then set that up too.
     if (this.search) {
 
+        // i.e, we bind to the 'mmsrRelate' event to put the selected
+        // tr in the list as a new item.
         this.find("mm_related", "div").bind("mmsrRelate", function (e, relate, relater) {
                 self.relate(e, relate, relater);
                 relater.repository.searcher.dec();
@@ -126,34 +138,38 @@ function List(d) {
             });
     }
 
-
+    // Whether at this moment a save is performed.
     this.saving = false;
 
+    // Regulary automaticly save changes (note that saving is not the same as committing if we use mm:form).
     $.timer(1000, function(timer) {
             if (List.prototype.leftPage) {
                 timer.stop();
             } else {
                 self.commit();
             }
-
         });
 
-
+    // Set up the create button
     this.find("create", "a").each(function() {
             self.bindCreate(this);
     });
 
+    // And the delete and unlink buttons.
     this.find("delete", "a").each(function() {
             self.bindDelete(this);
     });
 
+    // It may be the case that the current list is already too short or too long.
     this.checkForSize();
 
+    // Whether the submit buttons was used.
     this.submitted = false;
     $(this.form).submit(function() {
             self.submitted = true;
         });
 
+    // Before the page is left, we need to save. Arrange that here.
     $(window).bind("beforeunload",
                    function(ev) {
                        var result = self.commit(0, true);
@@ -172,22 +188,32 @@ function List(d) {
                 self.validator.validateElement(this);
             }
         });
+
+    // experimental:
     this.setTabIndices();
-    $(this.div).trigger("mmsrRelatedNodesReady", [self]);
 
     this.logEnabled = false;
 
+    // Currently running uploads
     this.uploading = {};
     this.uploadingSize = 0;
 
+    // Whether the user already left the page (this is during the short time between that, and handling the consequences
+    // for that)
     this.leftPage = false;
 
+    // Store this instance in the static map for that.
     List.prototype.instances[this.rid] = this;
+
 
     if ($(this.div).hasClass("POST")) {
         $(this.div).trigger("mmsrRelatedNodesPost", [self]);
         this.afterPost();
     }
+
+    // Notify that we are ready with initialization.
+    $(this.div).trigger("mmsrRelatedNodesReady", [self]);
+
 
 }
 
@@ -216,36 +242,41 @@ List.prototype.init = function(el, initSearchers) {
     });
 }
 
-List.prototype.wasResetSequence = false;
+/**
+ * All List instances are collected staticly
+ */
 List.prototype.instances = {};
 
+/**
+ * Recalculates this.valid and calls mmsrValidateHook on the form (if there is a form)
+ */
 List.prototype.triggerValidateHook = function() {
     var self = this;
     self.reason = "";
-    var valid = true;
+    self.valid = true;
     if (self.form != null) {
         for (var rid in self.form.valids) {
             if (! self.form.valids[rid] ) {
-                valid = false;
+                self.valid = false;
                 self.reason += rid;
             }
         }
     }
     if (this.cursize < this.min) {
         self.reason += " list too short";
-        valid = false;
+        self.valid = false;
     }
     if (this.cursize > this.max) {
         self.reason += " list too long";
-        valid = false;
+        self.valid = false;
     }
-    if (valid) {
+    if (self.valid) {
         $(this.div).removeClass("invalid");
     } else {
         $(this.div).addClass("invalid");
     }
     if (this.form != null) {
-        $(this.form).trigger("mmsrValidateHook", [self, valid, self.reason, self.form]);
+        $(this.form).trigger("mmsrValidateHook", [self, self.valid, self.reason, self.form]);
     } else {
         // console.log("No form");
         //console.log(this);
@@ -268,7 +299,7 @@ List.prototype.log = function(msg) {
 
 
 
-// I'd say it should be possbile with jquery.
+// I'd say it should be possbile with jquery (See next method for current implementation)
 List.prototype._find = function(clazz, elname, parent) {
     if (elname == null) elname = "";
     if (parent == null) parent = this.div;
@@ -357,6 +388,7 @@ List.prototype.setTabIndices = function() {
     });
 }
 
+
 List.prototype.bindCreate = function(a) {
     a.list = this;
     $(a).click(function(ev) {
@@ -371,7 +403,6 @@ List.prototype.bindCreate = function(a) {
                             a.list.addItem(res);
                         } else {
                             alert(status + " with " + url);
-
                         }
                     } catch (ex) {
                         alert(ex);
@@ -384,7 +415,7 @@ List.prototype.bindCreate = function(a) {
 }
 
 /**
- * Adds an item to the list
+ * Adds an item to the list. This item can be found using a searcher, or created using the create button.
  */
 List.prototype.addItem = function(res, cleanOnFocus) {
     var list = this;
@@ -413,14 +444,19 @@ List.prototype.addItem = function(res, cleanOnFocus) {
     }
 
     if (list.validator != null) {
+        // This new item should also be validated
         list.validator.addValidation(r);
         $(r).find("input.mm_validate").each(function() {
                 list.validator.validateElement(this);
             });
     }
+
+    // The new item can also be deleted again.
     list.find("delete", "a", r).each(function() {
             list.bindDelete(this);
         });
+
+    // Arrange sub-lists in this new item.
     $(r).find("div.list").each(function() {
             var div = this;
             if (div.list == null) {
@@ -429,12 +465,13 @@ List.prototype.addItem = function(res, cleanOnFocus) {
         });
 
     this.incSize();
+
     if (this.sortable) {
         this.saveOrder(this.getOrder());
     }
-    list.executeCallBack("create", r); // I think this may be deprecated. Custom events are nicer
 
-    $(list.div).trigger("mmsrCreated", [r]);
+    list.executeCallBack("create", r); // I think this may be deprecated. Custom events are nicer
+    $(list.div).trigger("mmsrCreated", [r]); // like this.
 }
 
 List.prototype.incSize = function() {
@@ -448,8 +485,11 @@ List.prototype.decSize = function() {
 }
 
 
+/**
+ * i18n implementation for dynamic messages. That is, sometimes a message in a resource bundle has parameters which we
+ * would like to provide using variables from javascript. We do an ajax call for that here, and return the i18ned text.
+ */
 List.prototype.getMessage = function(key, p) {
-
     var result;
     var params = {};
     params.key = key;
@@ -468,6 +508,24 @@ List.prototype.getMessage = function(key, p) {
     return $(result);
 }
 
+
+List.prototype.sizeValid = function() {
+    return this.cursize <= this.max && this.cursize >= this.min;
+}
+
+List.prototype.setValidInForm = function() {
+    if (this.form != null) {
+        var validationValid = this.validator.invalidElements == 0;
+        this.form.valids[this.rid] = validationValid;
+    }
+}
+
+/**
+ * Arrange some stuff after the change of list changed.
+ * - show/hide buttons (e.g. the create button is hidden if the list reached the maximum size)
+ * - Update error messages about that ('list too long')
+ * - mark
+ */
 List.prototype.checkForSize = function() {
     $(this.find("listinfo")).find("input[name=cursize]").val(this.cursize);
     var createVisible = this.cursize < this.max;
@@ -486,6 +544,7 @@ List.prototype.checkForSize = function() {
                 $(this).hide();
             }
         });
+
     this.find("errors", "span").each(function() {
             var span = $(this);
             span.empty();
@@ -497,9 +556,16 @@ List.prototype.checkForSize = function() {
             }
         });
     this.triggerValidateHook();
+
 }
 
 
+/**
+ * What must happend if a user clicks a delete button
+ * - optionally confirm that
+ * - Use the associated href to do an ajax call (unlink.jspx or delete.jspx)
+ * - remove validation hooks from the removed item
+ */
 List.prototype.bindDelete = function(a) {
     a.list = this;
     $(a).click(function(ev) {
@@ -520,12 +586,15 @@ List.prototype.bindDelete = function(a) {
                                 if (a.list.validator != null) {
                                     a.list.validator.removeValidation(li);
                                 }
+                                a.list.decSize();
                                 var ol = $(a).parents("ol")[0];
                                 if (ol != null) { // seems to happen in IE sometimes?
                                     ol.removeChild(li);
                                 }
-                                a.list.decSize();
+
                                 a.list.executeCallBack("delete", li);
+                                a.list.setValidInForm();
+                                a.list.triggerValidateHook();
                             } else {
                                 alert(status + " " + res);
                             }
@@ -574,6 +643,9 @@ List.prototype.getListParameters = function() {
     params.rid          = this.rid;
     return params;
 }
+
+// UPLOAD related functionality.
+// This should perhaps be migrated to a standalone javascript class, because it seems usefull also on other places
 
 List.prototype.uploadProgress = function(fileid) {
     if (this.uploading[fileid]) {
@@ -728,7 +800,10 @@ List.prototype.commit = function(stale, leavePage) {
     return result;
 }
 
-
+/**
+ * All registered 'rid's as a comma seperated list, probably for use as an url parameter.
+ * 'rid' is the 'requestid' followed with a sequence number for every list.
+ */
 List.prototype.getRids = function() {
     var rids = "";
     for (r in List.prototype.instances) {
@@ -739,6 +814,13 @@ List.prototype.getRids = function() {
     }
     return rids;
 }
+
+
+/**
+ * All registered 'requestids's as a comma seperated list, probably for use as an url parameter.  This may well be a
+ * list of one entry, but seperate requests (e.g. with the 'create' button), may add to this.
+ * 'requestid's  are used as a base for 'rid's.
+ */
 List.prototype.getRequestIds = function() {
     var map = {};
     for (r in List.prototype.instances) {
@@ -838,17 +920,24 @@ List.prototype.relate = function(event, relate, relater) {
 
             }
         });
-
 }
 
+
+/**
+ * Given a nodenumber, returns the used 'li' (in this list) to represent it
+ */
 List.prototype.getLiForNode = function(nodenumber) {
     try {
         return $("#node_" + this.rid + "_" + nodenumber);
     } catch (ex) {
-        console.log(ex);
+        this.log(ex);
     }
 }
 
+
+/**
+ * Given a li, returns the node number which is represented in it.
+ */
 List.prototype.getNodeForLi  = function(li) {
     var id = $(li).attr("id");
     if (id != null) {
@@ -859,6 +948,11 @@ List.prototype.getNodeForLi  = function(li) {
 
 }
 
+/**
+ * The 'original' position of an item in a list - so the position before the user made any changes - is stored in a css
+ * class origPos-<positon>.
+ * This method reads, parses and returns that.
+ */
 List.prototype.getOriginalPosition  = function(li) {
     var classes = $(li).attr("class").split(' ');
     for (var i in classes) {
@@ -867,6 +961,7 @@ List.prototype.getOriginalPosition  = function(li) {
             return parseInt(cl.substring("origPos-".length));
         }
     }
+    // No original position found? That's an error.
     alert(li);
 }
 
@@ -921,7 +1016,7 @@ List.prototype.afterPost = function() {
 
 /**
  * The method is meant to be used in the 'setup' configuration handler ot tinyMCE.
- * It keeps track of the 'active' editor. The can be null.
+ * It keeps track of the 'active' editor. Which can be null.
  * All other editors are shown as plain HTML in a div.
  */
 List.prototype.setupTinyMCE = function(ed) {
