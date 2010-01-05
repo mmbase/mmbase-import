@@ -9,7 +9,7 @@
     <mm:import id="max">6</mm:import>
     <mm:node number="default.mags">
       <h3><mm:field name="title" /></h3>
-      <mm-srt:relatednodes
+      <mm-sr:relatednodes
           type="news"
           searchdirs="destination"
           unlink="true"
