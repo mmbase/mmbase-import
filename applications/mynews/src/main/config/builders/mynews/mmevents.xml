@@ -5,6 +5,7 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
                         http://www.mmbase.org/xmlns/builder.xsd"
     name="mmevents" maintainer="mmbase.org" version="0" extends="object">
+  <status>inactive</status>
   <class>MMEvents</class>
   <searchage>14</searchage>
   <names>

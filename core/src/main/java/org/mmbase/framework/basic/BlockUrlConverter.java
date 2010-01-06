@@ -15,7 +15,7 @@ import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
 /**
- * A block url converter is an url converter which encoded in the URL precisely one block. Most
+ * A block url converter is an url converter which encodes in the URL precisely one block. Most
  * URLConverters would probably be like this, and can extend from this.
  *
  * @author Michiel Meeuwissen
@@ -299,7 +299,7 @@ public abstract class BlockUrlConverter implements UrlConverter {
 
     /**
      * When implementing this method you can assume that you don't have to return
-     * <code>null</code>. IOW it is certain that the current URL is 'nice' according to this URL
+     * <code>Url.NOT</code>. IOW it is certain that the current URL is 'nice' according to this URL
      * Converter.
     */
     protected  abstract Url getFilteredInternalUrl(String path, Map<String, ?> params, Parameters frameworkParameters) throws FrameworkException;
