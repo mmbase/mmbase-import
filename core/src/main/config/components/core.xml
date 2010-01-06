@@ -437,7 +437,9 @@
          classification="mmbase.tools"
          mimetype="text/html">
     <title xml:lang="en">Entities</title>
-    <description xml:lang="en">A tool to view all 'mmbase entities' which are available in config-files.</description>
+    <title xml:lang="nl">Entities</title>
+    <description xml:lang="en">A tool to view all 'mmbase entities' which are available in configuration files.</description>
+    <description xml:lang="nl">Een overzicht van alle 'mmbase entities' die beschikbaar zijn in verschillende configuratiebestanden.</description>
     <body jsp="/mmbase/admin/entities.div.jspx" />
   </block>
 
