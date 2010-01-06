@@ -226,22 +226,35 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
 
     private void fixValues(final Map<String, Object> map, MMObjectBuilder bul) {
-        Map<String, Object> cloneValues = new HashMap<String, Object>();
-        cloneValues.putAll(map);
+        synchronized(map) {
 
-        map.clear();
-        if (getBuilder().getDescendants().contains(bul)) {
-            for (Map.Entry<String, Object> entry : cloneValues.entrySet()) {
-                map.put(entry.getKey(), entry.getValue());
+            Set<String> targetFields     = bul.getFieldNames();
+
+            Set<String> commonFields = new HashSet<String>(getBuilder().getFieldNames());
+            commonFields.retainAll(targetFields);
+
+            {   // Determin the fields that are not present in the target builder
+                Set<String> droppedFields = new HashSet<String>(getBuilder().getFieldNames());
+                droppedFields.removeAll(commonFields);
+
+                // and drop those from the map
+                for (String dropField : droppedFields) {
+                    map.remove(dropField);
+                }
             }
-        } else {
-            for (CoreField field : builder.getFields()) {
-                if (bul.hasField(field.getName())) {
-                    map.put(field.getName(), cloneValues.get(field.getName()));
+            {   // Determin the fields that are not present in the original builder
+                Set<String> newFields = new HashSet<String>(bul.getFieldNames());
+                newFields.removeAll(commonFields);
+
+                // And set those to null.
+                // TODO, we should perhaps not set them to null, but to their default value if there is one.
+                for (String newField : newFields) {
+                    map.put(newField, null);
                 }
             }
         }
     }
+
     /**
      * @since MMBase-1.9.1
      */
@@ -525,7 +538,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                                                    getBuilder().getTableName() + "' are " + getBuilder().getFieldNames());
             } else {
                 log.warn("Tried to use non-existing field '" + fieldName + "' of node '" + getNumber() + "' from " + getBuilder().getTableName());
-                log.warn(Logging.applicationStacktrace());
+                if (log.isDebugEnabled()) {
+                    log.debug("Stacktrace", new Exception());
+                } else {
+                    log.warn(Logging.applicationStacktrace());
+
+                }
                 return false;
             }
         }
