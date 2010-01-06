@@ -226,19 +226,24 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
 
     private void fixValues(final Map<String, Object> map, MMObjectBuilder bul) {
-        Map<String, Object> cloneValues = new HashMap<String, Object>();
-        cloneValues.putAll(map);
+        synchronized(map) {
 
-        map.clear();
-        if (getBuilder().getDescendants().contains(bul)) {
-            for (Map.Entry<String, Object> entry : cloneValues.entrySet()) {
-                map.put(entry.getKey(), entry.getValue());
+            Set<String> targetFields     = bul.getFieldNames();
+
+            Set<String> commonFields = new HashSet<String>(getBuilder().getFieldNames());
+            commonFields.retainAll(targetFields);
+
+            Set<String> droppedFields = new HashSet<String>(getBuilder().getFieldNames());
+            droppedFields.removeAll(commonFields);
+
+            Set<String> newFields = new HashSet<String>(bul.getFieldNames());
+            newFields.removeAll(commonFields);
+
+            for (String dropField : droppedFields) {
+                map.remove(dropField);
             }
-        } else {
-            for (CoreField field : builder.getFields()) {
-                if (bul.hasField(field.getName())) {
-                    map.put(field.getName(), cloneValues.get(field.getName()));
-                }
+            for (String newField : newFields) {
+                map.put(newField, null);
             }
         }
     }
@@ -295,6 +300,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return <code>true</code> if the commit was succesfull, <code>false</code> is it failed
      */
     public boolean commit() {
+        assert values.get("number") != null;
         boolean success = parent.commit(this);
         if (success) {
             isNew = false; // perhaps it is always already false (otherwise insert is called, I think), but no matter, now it certainly isn't new!
@@ -360,6 +366,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @since MMBase-1.7
      */
     public boolean commit(UserContext user) {
+        assert values.get("number") != null;
         boolean success = parent.safeCommit(this);
         if (success) {
             MMBaseCop mmbaseCop = parent.getMMBase().getMMBaseCop();
@@ -482,23 +489,25 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     String defaultToString() {
         StringBuilder result = new StringBuilder();
         try {
-            Set<Map.Entry<String, Object>> entrySet = values.entrySet();
             synchronized(values) {
-                Iterator<Map.Entry<String, Object>> i = entrySet.iterator();
-                while (i.hasNext()) {
-                    Map.Entry<String, Object> entry = i.next();
+                for (Map.Entry<String, Object> entry : values.entrySet()) {
                     String key = entry.getKey();
-                    String value = "" + entry.getValue();  // XXX:should be retrieveValue ?
-                    if (result.length() == 0) {
-                        result.append(key).append("='").append(value).append("'");
+                    if (result.length() > 0) {
+                        result.append(", ");
+                    }
+                    result.append(key);
+                    Object value = entry.getValue();
+                    if (value == null) {
+                        result.append(" is null");
                     } else {
-                        result.append(",").append(key).append("='").append(value).append("'");
+                        result.append("='").append(value.toString()).append("'");
                     }
                 }
             }
         } catch(Throwable e) {
             result.append(values); // simpler version...
         }
+        result.append(' ');
         result.append(super.toString());
         if (oldBuilder != null) {
             result.append(" (to be converted from " + oldBuilder.getTableName() + " to " + builder.getTableName() + ")");
