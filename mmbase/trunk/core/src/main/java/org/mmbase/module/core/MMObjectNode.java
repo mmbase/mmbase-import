@@ -233,17 +233,24 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             Set<String> commonFields = new HashSet<String>(getBuilder().getFieldNames());
             commonFields.retainAll(targetFields);
 
-            Set<String> droppedFields = new HashSet<String>(getBuilder().getFieldNames());
-            droppedFields.removeAll(commonFields);
+            {   // Determin the fields that are not present in the target builder
+                Set<String> droppedFields = new HashSet<String>(getBuilder().getFieldNames());
+                droppedFields.removeAll(commonFields);
 
-            Set<String> newFields = new HashSet<String>(bul.getFieldNames());
-            newFields.removeAll(commonFields);
-
-            for (String dropField : droppedFields) {
-                map.remove(dropField);
+                // and drop those from the map
+                for (String dropField : droppedFields) {
+                    map.remove(dropField);
+                }
             }
-            for (String newField : newFields) {
-                map.put(newField, null);
+            {   // Determin the fields that are not present in the original builder
+                Set<String> newFields = new HashSet<String>(bul.getFieldNames());
+                newFields.removeAll(commonFields);
+
+                // And set those to null.
+                // TODO, we should perhaps not set them to null, but to their default value if there is one.
+                for (String newField : newFields) {
+                    map.put(newField, null);
+                }
             }
         }
     }
