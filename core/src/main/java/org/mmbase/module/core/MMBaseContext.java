@@ -225,6 +225,14 @@ public class MMBaseContext {
         log.info("total memory      : " + rt.totalMemory() / (1024 * 1024) + " MiB");
         log.info("free memory       : " + rt.freeMemory() / (1024 * 1024) + " MiB");
         log.service("system locale     : " + Locale.getDefault());
+        {
+            boolean assertsEnabled = false;
+            assert assertsEnabled = true; // Intentional side effect!!!
+            if (assertsEnabled) {
+                log.info("Assertions are enabled");
+            }
+        }
+
         try {
             Locale locale = org.mmbase.util.LocalizedString.getLocale(org.mmbase.module.Module.getInitParameter("mmbaseroot", "language"));
             log.info("MMBase locale     : " + locale);
