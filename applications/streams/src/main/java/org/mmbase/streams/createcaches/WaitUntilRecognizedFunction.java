@@ -50,7 +50,7 @@ public class WaitUntilRecognizedFunction extends NodeFunction<Boolean> {
                 return false;
             }
         }
-        
+        LOG.service("Recognized node: " + node);
         return true;
     }
 

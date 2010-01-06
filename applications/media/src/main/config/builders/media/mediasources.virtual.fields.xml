@@ -47,7 +47,7 @@
       <guiname xml:lang="nl">Lengte</guiname>
       <guiname xml:lang="en">Length</guiname>
     </gui>
-    <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+    <datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes" >
       <setprocessor>
         <class name="org.mmbase.datatypes.processors.RelatedField$Setter">
           <param name="type">mediafragments</param>

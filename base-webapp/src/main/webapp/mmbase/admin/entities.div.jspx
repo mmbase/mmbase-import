@@ -8,10 +8,10 @@
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.page import="org.mmbase.framework.*,java.util.*,java.io.*" />
   <mm:content type="application/xhtml+xml" language="en_US" expires="0" postprocessor="none">
-    <h1>Entities review page</h1>
+    <h3>Entities review page</h3>
     <mm:cloud>
       <p>${mm:string(requestScope["org.mmbase.framework.renderer"].block.description)}</p>
-      <p>Available entities:</p>
+      <p>The available entities in MMBase:</p>
       <ul>
         <jsp:scriptlet>
           BufferedReader r  = new BufferedReader(new org.mmbase.util.XMLEntityResolver().resolveEntity(null, "http://www.mmbase.org/mmentities.ent").getCharacterStream());
