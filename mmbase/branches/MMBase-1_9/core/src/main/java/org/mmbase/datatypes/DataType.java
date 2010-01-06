@@ -76,7 +76,7 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
     static final int ENFORCE_ONCREATE = 1000;
 
     /**
-     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that ta
+     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the
      * restriction on a value must be enforced only on validation of the value. This means that it
      * has no influence of the validity of the <em>node</em>.
      * @todo No difference made between always/change/create for this. We could also add
