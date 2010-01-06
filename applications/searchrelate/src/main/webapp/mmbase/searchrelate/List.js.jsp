@@ -282,8 +282,6 @@ List.prototype.triggerValidateHook = function() {
     } else {
         $(self.div).addClass("invalid");
     }
-    console.log(totalValid);
-    console.log(this.form.valids);
     if (this.form != null) {
         $(this.form).trigger("mmsrValidateHook", [self, totalValid, totalReason, self.form]);
     } else {
