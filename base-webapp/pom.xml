@@ -22,7 +22,7 @@
   </properties>
 
   <description>
-    This is a minimalistic war containing the essentials for an MMBase web applications. 
+    This is a minimalistic war containing the essentials for an MMBase web applications.
     This can be used as initial war overlay for your own project.
   </description>
 
@@ -77,12 +77,6 @@
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-      <version>1.8.0.7</version>
     </dependency>
 
   </dependencies>
