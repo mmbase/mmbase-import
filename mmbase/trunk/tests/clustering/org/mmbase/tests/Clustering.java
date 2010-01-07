@@ -62,16 +62,21 @@ public class Clustering extends BridgeTest {
     }
 
     public void fieldEquals(Node n1, Node n2) {
-        FieldIterator fi = n1.getNodeManager().getFields(NodeManager.ORDER_CREATE).fieldIterator();
-        while (fi.hasNext()) {
-            Field f = fi.nextField();
+        for (Field f : n1.getNodeManager().getFields(NodeManager.ORDER_CREATE)) {
             if (f.getName().equals("number")) {
                 // sigh, 'number' is a NODE field...
+                assertEquals(n1.getNumber(), n2.getNumber());
+            } else if (f.getName().equals("otype")) {
+                // 'otype' is a NODE field too
                 assertEquals(n1.getNumber(), n2.getNumber());
             } else {
                 Object value1 = n1.getValue(f.getName());
                 Object value2 = n2.getValue(f.getName());
-                assertTrue("" + value1 + " != " + value2 + " (value of " + n1.getNumber() + "/" + f.getName() + ")", value1 == null ? value2 == null : value1.equals(value2));
+                assertTrue("" +
+                           (value1 == null ? "" : value1.getClass().getName()) + value1 +
+                           " != " +
+                           (value2 == null ? "" : value2.getClass().getName()) + value2 +
+                           " (value of " + n1.getNumber() + "/" + f.getName() + ")", value1 == null ? value2 == null : value1.equals(value2));
             }
         }
     }
