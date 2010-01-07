@@ -273,7 +273,6 @@ div#aboutthisredbox { display: none; }
 {
 	border: 1px solid #002828;
 	background-color: #e0f0e0;
-	width: 75%;
 	text-align: center;
 }
 
@@ -289,7 +288,6 @@ div.msg
 {
 	border: 1px #900 solid;
 	background-color: #fff9f9;
-	width: 75%;
 	text-align: center;
 }
 
