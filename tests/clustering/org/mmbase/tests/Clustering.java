@@ -30,8 +30,8 @@ public class Clustering extends BridgeTest {
     protected static Node     nodea1;
     public void setUp() {
         if (cloud1 == null) {
-            cloud1 =   getRemoteCloud("rmi://127.0.0.1:1221/remotecontext");
-            cloud2 =   getRemoteCloud("rmi://127.0.0.1:1222/remotecontext");
+            cloud1 =   getRemoteCloud("rmi://127.0.0.1:1111/remotecontext_test1");
+            cloud2 =   getRemoteCloud("rmi://127.0.0.1:1111/remotecontext_test2");
 
             NodeManager aa2 = cloud2.getNodeManager("aa");
             NodeManager aa1 = cloud1.getNodeManager("aa");
@@ -51,7 +51,7 @@ public class Clustering extends BridgeTest {
 
 
     /**
-     * It's no hard requirement that changes are visibility immediately on the other side. So, sometimes wait a bit, to be
+     * It's no hard requirement that changes are visible immediately on the other side. So, sometimes wait a bit, to be
      * on the safe side.
      */
     protected void allowLatency() {
