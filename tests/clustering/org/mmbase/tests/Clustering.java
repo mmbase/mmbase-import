@@ -267,7 +267,9 @@ public class Clustering extends BridgeTest {
         List related2 = nodea2.getRelatedNodes();
         assertTrue("relatednodes " + related1 + " != " + related2, related1.size() == related2.size());
 
+        assertEquals(1, cloud1.getNode(zNode1.getNumber()).countRelatedNodes("object"));
         assertEquals(1, cloud1.getNode(zNode1.getNumber()).getRelatedNodes().size());
+        assertEquals(1, cloud2.getNode(zNode1.getNumber()).countRelatedNodes("object"));
         assertEquals(1, cloud2.getNode(zNode1.getNumber()).getRelatedNodes().size()); // FAILS
 
     }
