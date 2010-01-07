@@ -75,6 +75,12 @@
         <version>4.0.0</version>
       </plugin>
       -->
+      <dependency>
+        <groupId>hsqldb</groupId>
+        <artifactId>hsqldb</artifactId>
+        <version>1.8.0.7</version>
+      </dependency>
+
 
     </plugins>
   </build>
@@ -95,7 +101,7 @@
       <version>${base.version}</version>
       <type>war</type>
     </dependency>
-<!-- 
+<!--
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase</artifactId>
