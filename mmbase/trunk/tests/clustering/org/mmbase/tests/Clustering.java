@@ -61,7 +61,7 @@ public class Clustering extends BridgeTest {
         }
     }
 
-    public void fieldEquals(Node n1, Node n2) {
+    protected void fieldEquals(Node n1, Node n2) {
         for (Field f : n1.getNodeManager().getFields(NodeManager.ORDER_CREATE)) {
             if (f.getName().equals("number")) {
                 // sigh, 'number' is a NODE field...
@@ -82,8 +82,10 @@ public class Clustering extends BridgeTest {
     }
 
     public void testCreateNode() {
+        // a node was created in cloud1. It must be available in cloud2.
         assertTrue(cloud2.hasNode(nodea1.getNumber()));
         Node nodea2 = cloud2.getNode(nodea1.getNumber());
+        // and also be the same
         fieldEquals(nodea1, nodea2);
     }
 
@@ -93,8 +95,12 @@ public class Clustering extends BridgeTest {
 
         NodeManager aa2 = cloud2.getNodeManager("aa");
         NodeList aa2list2 = aa2.getList(null, null, null); // should not give error, but may be size 0, because still in cache
+
+        assertTrue(aa2list2.size() == 0 || aa2list2.size() == 1);
+
         allowLatency();
-        aa2list2 = aa2.getList(null, null, null); // should also be size 1!
+
+        aa2list2 = aa2.getList(null, null, null); // should also be size 1 now!
         assertTrue("List before create was not size 0", aa2list.size() == 0); // was determined before the createNode, should still be 0.
 
         assertTrue("Check wether node-list got invalidated failed " +  aa2list2.size()  + " != " + aa2list.size() + " + 1", aa2list2.size() == aa2list.size() + 1);
@@ -128,57 +134,79 @@ public class Clustering extends BridgeTest {
         return (RelationManager) newTypeRel;
     }
 
+
+    // 	 MMB-1128
     public void testCreateTypeRel() {
         // create new typerel, and see if that has influence on cloud 2.
         RelationManager rm = createTypeRel(cloud1, "posrel", "bb", "aa");
-
-        // query for local cloud
         NodeManager bb1 = cloud1.getNodeManager("bb");
-        NodeQuery nq1 = Queries.createRelatedNodesQuery(cloud1.getNode(nodea1.getNumber()), bb1, null, "both");
-        NodeList related1 = bb1.getList(nq1);
-        assertTrue("Locale list is null!", related1 != null);
-        assertTrue("Locale list is not empty.",related1.size() == 0);
-
-        // query for remote cloud
         NodeManager bb2 = cloud2.getNodeManager("bb");
-        NodeQuery nq2 = Queries.createRelatedNodesQuery(cloud2.getNode(nodea1.getNumber()), bb2, null, "both");
-        NodeList related2 = bb2.getList(nq2);
-        assertTrue("Remote list is null!", related2 != null);
-        assertTrue("Locale list is not empty.", related2.size() == 0);
 
-        // create node and relation
-        Node bbnode1 = bb1.createNode();
-        bbnode1.commit();
-        Relation r1 = bbnode1.createRelation(nodea1, rm);
-        r1.commit();
+        {
+            // query for local cloud
+            NodeQuery nq1 = Queries.createRelatedNodesQuery(cloud1.getNode(nodea1.getNumber()), bb1, null, "both");
+            NodeList related1 = bb1.getList(nq1);
+            assertTrue("Locale list is null!", related1 != null);
+            assertTrue("Locale list is not empty.",related1.size() == 0);
+        }
 
-        // re-query local cloud
-        related1 = bb1.getList(nq1);
-        assertTrue("Created a relation, but local related list size is not 1, but " + related1.size() +
-                   ".\nUsed query: " + nq1, related1.size() == 1); // local
-        // re-query remote cloud
-        allowLatency();
-        related2 = bb2.getList(nq2);
-        assertTrue("Created a relation, but remote related list size is not 1, but " + related2.size() +
-                   ".\nUsed query: " + nq2, related2.size() == 1); // remote
+        {
+            // query for remote cloud
+            NodeQuery nq2 = Queries.createRelatedNodesQuery(cloud2.getNode(nodea1.getNumber()), bb2, null, "both");
+            NodeList related2 = bb2.getList(nq2);
+            assertTrue("Remote list is null!", related2 != null);
+            assertTrue("Locale list is not empty.", related2.size() == 0);
+        }
+
+        Relation r1;
+        {
+            // create node and relation
+            Node bbnode1 = bb1.createNode();
+            bbnode1.commit();
+            r1 = bbnode1.createRelation(nodea1, rm);
+            r1.commit();
+        }
+        {
+            // re-query local cloud
+            NodeQuery nq1 = Queries.createRelatedNodesQuery(cloud1.getNode(nodea1.getNumber()), bb1, null, "both");
+            NodeList related1 = bb1.getList(nq1);
+            assertTrue("Created a relation, but local related list size is not 1, but " + related1.size() +
+                       ".\nUsed query: " + nq1, related1.size() == 1); // local
+        }
+        {
+
+
+            // re-query remote cloud
+            allowLatency();
+            NodeQuery nq2 = Queries.createRelatedNodesQuery(cloud2.getNode(nodea1.getNumber()), bb2, null, "both");
+            NodeList related2 = bb2.getList(nq2);
+            assertTrue("Created a relation, but remote related list size is not 1, but " + related2.size() +
+                       ".\nUsed query: " + nq2, related2.size() == 1); // remote
+        }
 
         // drop the relation again
         r1.delete();
 
-        // re-query local cloud
-        related1 = bb1.getList(nq1);
-        assertTrue("Deleted a relation, but local related list size is not 0, but " + related1.size() +
-                   ".\nUsed query: " + nq1, related1.size() == 0); // local
-        // re-query remote cloud
-        allowLatency();
-        related2 = bb2.getList(nq2);
-        assertTrue("Deleted a relation, but remote related list size is not 0, but " + related2.size() +
-                   ".\nUsed query: " + nq2, related2.size() == 0); // remote
+        {
+            // re-query local cloud
+            NodeQuery nq1 = Queries.createRelatedNodesQuery(cloud1.getNode(nodea1.getNumber()), bb1, null, "both");
+            NodeList related1 = bb1.getList(nq1);
+            assertTrue("Deleted a relation, but local related list size is not 0, but " + related1.size() +
+                       ".\nUsed query: " + nq1, related1.size() == 0); // local
+        }
+        {
+            // re-query remote cloud
+            allowLatency();
+            NodeQuery nq2 = Queries.createRelatedNodesQuery(cloud2.getNode(nodea1.getNumber()), bb2, null, "both");
+            NodeList related2 = bb2.getList(nq2);
+            assertTrue("Deleted a relation, but remote related list size is not 0, but " + related2.size() +
+                       ".\nUsed query: " + nq2, related2.size() == 0); // remote
+        }
     }
 
     public void testInstallBuilder() {
 
-        // create a builder only in of the clouds (1).
+        // create a builder only in one of the clouds (1).
         NodeManager typedef = cloud1.getNodeManager("typedef");
         Node zz = typedef.createNode();
         zz.setStringValue("name", "zz");
@@ -224,18 +252,23 @@ public class Clustering extends BridgeTest {
         Relation r1 = nodea1.createRelation(zNode1, rm); r1.commit();
         Relation r2 = nodea1.createRelation(zNode2, rm); r2.commit();
 
+        assertEquals(1, zNode1.getRelatedNodes().size());
+
+        assertTrue(cloud2.hasNode(nodea1.getNumber()));
+
         allowLatency();
 
-        if(cloud2.hasNode(nodea1.getNumber())) {
-            // now ask the number of related nodes from nodea1;
-            Node nodea2 = cloud2.getNode(nodea1.getNumber());
+        assertTrue(cloud2.hasNode(nodea1.getNumber()));
 
-            List related1 = nodea1.getRelatedNodes();
-            List related2 = nodea2.getRelatedNodes();
-            assertTrue("relatednodes " + related1 + " != " + related2, related1.size() == related2.size());
-        } else {
-            fail("Node " + nodea1 + " is not contained by cloud 2");
-        }
+        // now ask the number of related nodes from nodea1;
+        Node nodea2 = cloud2.getNode(nodea1.getNumber());
+
+        List related1 = nodea1.getRelatedNodes();
+        List related2 = nodea2.getRelatedNodes();
+        assertTrue("relatednodes " + related1 + " != " + related2, related1.size() == related2.size());
+
+        assertEquals(1, cloud1.getNode(zNode1.getNumber()).getRelatedNodes().size());
+        assertEquals(1, cloud2.getNode(zNode1.getNumber()).getRelatedNodes().size()); // FAILS
 
     }
 
