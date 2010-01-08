@@ -108,7 +108,7 @@ public class FFMpegAnalyzer implements Analyzer {
 
     public void ready(Node sourceNode, Node destNode) {
         synchronized(util) {
-            log.service("Ready() " + sourceNode + (destNode == null ? "" : (" -> " + destNode.getNumber())));
+            log.service("Ready() " + sourceNode + (destNode == null ? "" : (" -> " + destNode.getNumber())) + ", canbe: " + canbe);
 
             if (canbe.equals(AnalyzerUtils.IMAGE) 
                             && (sourceNode.isNull("bitrate") || sourceNode.getIntValue("bitrate") <= 0)) {
