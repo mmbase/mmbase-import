@@ -17,6 +17,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.core.util.Fields;
+import org.mmbase.cache.*;
 import org.mmbase.storage.search.implementation.BasicRelationStep;
 import org.mmbase.storage.search.RelationStep;
 
@@ -525,6 +526,14 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             } else {
                 //something else changed in a typerel node? reread the complete typeRelNodes Set
                 readCache();
+            }
+            // also, clear all query-caches, because result may change by this. See MMB-348
+            Iterator i = CacheManager.getMap().values().iterator();
+            while (i.hasNext()) {
+                Cache qc = (Cache) i.next();
+                if (qc instanceof QueryResultCache) {
+                    qc.clear();
+                }
             }
         }
         super.notify(event);
