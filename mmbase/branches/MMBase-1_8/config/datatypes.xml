@@ -264,13 +264,15 @@
       <description xml:lang="en">
         The names of all available MMBase Framework Components
       </description>
+      <pattern value="\A\s*[^\n\r]*?\s*\z" />
       <required value="true"/>
       <maxLength value="128"/>
     </specialization>
 
     <specialization id="windowstate">
+      <required value="true"/>
       <enumeration>
-        <entry value="MAXIMIIZED" />
+        <entry value="MAXIMIZED" />
         <entry value="MINIMIZED"  />
         <entry value="NORMAL"     />
       </enumeration>
