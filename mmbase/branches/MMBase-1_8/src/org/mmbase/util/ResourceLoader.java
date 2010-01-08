@@ -1686,16 +1686,24 @@ public class ResourceLoader extends ClassLoader {
             }
             ) {
             protected Map.Entry getEntry(org.mmbase.util.xml.DocumentReader reader, String key, String value) {
-                String u = reader.getDocument().getDocumentURI();
-                String[] parts = u.split("!", 2);
-                log.info(u + "-> " + Arrays.asList(parts));
-                if (parts.length == 2) {
-                    if (key.startsWith("!")) {
-                        key = "\\A" + ReplacingLocalizedString.makeLiteral(parts[0]) + key + "\\z"; // should escape '.' and so one.
+                try {
+                    java.lang.reflect.Method m = reader.getDocument().getClass().getMethod("getDocumentURI", null);
+                    if (m != null) {
+                        String u = (String) m.invoke(reader.getDocument(), null);
+                        String[] parts = u.split("!", 2);
+                        log.info(u + "-> " + Arrays.asList(parts));
+                        if (parts.length == 2) {
+                            if (key.startsWith("!")) {
+                                key = "\\A" + ReplacingLocalizedString.makeLiteral(parts[0]) + key + "\\z"; // should escape '.' and so one.
+                            }
+                        }
                     }
+                } catch (Exception e) {
+                    log.debug(e);
                 }
                 return new Entry(key, value);
             }
+
         }.getMaps();
 
     private static final Map classWeights = new ConcurrentHashMap();

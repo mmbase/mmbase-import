@@ -849,17 +849,17 @@ public class Casting {
             return (BigDecimal) i;
         } else if (i instanceof CharSequence) {
             try {
-                return new BigDecimal("" + i).stripTrailingZeros();
+                return new BigDecimal("" + i);
             } catch (NumberFormatException nfe) {
                 if(i instanceof String){
                     String s = ((String)i).toLowerCase();
                     if (s.equals("true") || s.equals("yes")) {
-                        return BigDecimal.ONE;
+                        return new BigDecimal(1);
                     } else if(s.equals("false") || s.equals("no")) {
-                        return BigDecimal.ZERO;
+                        return new BigDecimal(0);
                     }
                 }
-                return BigDecimal.ONE.negate();
+                return new BigDecimal(-1);
             }
         } else if (i instanceof Long) {
             return new BigDecimal(((Long) i).longValue());
@@ -870,7 +870,7 @@ public class Casting {
         } else if (i instanceof Float) {
             return new BigDecimal(((Float) i).floatValue());
         } else {
-            return new BigDecimal(toDouble(i)).stripTrailingZeros();
+            return new BigDecimal(toDouble(i));
         }
     }
 
