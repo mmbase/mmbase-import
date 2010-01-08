@@ -44,12 +44,12 @@ public class NodeEvent extends Event {
     private static final Map<String, Object> EMPTY = Collections.unmodifiableMap(new HashMap<String, Object>());
 
     /**
-    *@param machineName (MMBase) name of the server
-    *@param builderName name of builder of node event is about
-    *@param oldValues map with fields and their values that have been changed by the event. This may be <code>null</code>
-    *@param newValues map with new values of changed fields
-    *@param eventType the type of event
-    **/
+     *@param machineName (MMBase) name of the server
+     *@param builderName name of builder of node event is about
+     *@param oldValues map with fields and their values that have been changed by the event. This may be <code>null</code>
+     *@param newValues map with new values of changed fields
+     *@param eventType the type of event
+     **/
     public NodeEvent(String machineName, String builderName, int nodeNumber, final Map<String, Object> oldValues, final Map<String, Object> newValues, int eventType ){
         super(machineName, eventType);
         this.builderName = builderName;
