@@ -1,0 +1,49 @@
+<!--
+    JavaCC part of MMBase build.
+    Used by both ant- and maven-builds.
+-->
+
+<project name="JavaCC" default="javacc" basedir=".">
+
+
+  <property name="source.dir"               location="." />
+  <property name="build.dir"                value="${source.dir}/build" />
+  <property name="download.dir"             value="${build.dir}/download" />
+  <property name="expand.dir"               value="${download.dir}/expanded" />
+  <property name="source-src.dir"           value="${source.dir}/src"/>
+  <property name="generated-source-src.dir" value="${build.dir}/src"/>
+
+  <property file="build.properties.default"/>
+
+  <import file="download.xml" />
+
+  <target name="init" />
+
+
+  <target name="javacc.install">
+    <antcall target="downloadgz">
+      <param name="sourcefile" value="${javacc.loc}"/>
+      <param name="destfile" value="${javacc.dest}"/>
+      <param name="expandedfile" value="${javacc.dir}"/>
+    </antcall>
+  </target>
+
+  <target name="javacc" depends="javacc.install">
+    <mkdir dir="${generated-source-src.dir}/org/mmbase/util/dateparser"/>
+    <mkdir dir="${generated-source-src.dir}/org/mmbase/util/transformers"/>
+    <echo message="SOURCE: ${generated-source-src.dir}" />
+
+    <javacc
+        target="${source-src.dir}/org/mmbase/util/dateparser/DateParser.jj"
+        outputdirectory="${generated-source-src.dir}/org/mmbase/util/dateparser"
+        javacchome="${javacc.dir}"
+        />
+    <javacc
+        target="${source-src.dir}/org/mmbase/util/transformers/ListParser.jj"
+        outputdirectory="${generated-source-src.dir}/org/mmbase/util/transformers"
+        javacchome="${javacc.dir}"
+        />
+  </target>
+
+
+</project>

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<project name="commandserver" default="jar" basedir=".">
+  <property name="project.name"      value="commandserver" />
+  <property name="project.package"   value="org/mmbase/util/" />
+  <property name="project.main.class"   value="org/mmbase/util/CommandServer" />
+  <property name="project.comment"   value="The MMBase CommandServer implementation" />
+  <property name="optimize"       value="on" />
+  <property name="debug"          value="off" />
+  <property name="deprecation"    value="on" />
+
+  <property name="java.source.version" value="1.5" />
+
+  <import file="../buildbase-include.xml" />
+
+</project>

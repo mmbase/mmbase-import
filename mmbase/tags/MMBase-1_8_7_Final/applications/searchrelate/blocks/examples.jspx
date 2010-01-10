@@ -1,0 +1,45 @@
+<mm:content
+    type="application/xhtml+xml" language="client"
+    expires="0" postprocessor="none" jspvar="locale"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:directive.page buffer="200kb" />
+  <jsp:output omit-xml-declaration="true" />
+  <!--
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+  -->
+  <div
+      class="mm_c c_searchrelate b_examples ${requestScope.componentClassName}"
+      id="${requestScope.componentId}">
+
+    <jsp:directive.include file="/mmbase/validation/javascript.jspxf" /> <!-- for jquery -->
+    <h1>${title}</h1>
+    <mm:cloud rank="basic user">
+
+      <mm:import externid="mag">default.mags</mm:import>
+
+      <mm:hasnode number="$mag" inverse="true">
+        <p>
+          You need to have the MyNews application installed.
+        </p>
+      </mm:hasnode>
+      <mm:hasnode number="$mag">
+        <mm:node number="$mag">
+          <h1>Using node ${_node}</h1>
+          <mm-sr:relatednodes type="news" orderby="posrel.pos"
+                              item="/mmexamples/searchrelate/news.jspx"
+                              role="posrel" />
+
+          <!--
+          <mm-sr:tabs
+              directory="/mmexamples/searchrelate/"
+              path="example1,example2,example3,example4,example5,relatednodes" />
+          -->
+        </mm:node>
+      </mm:hasnode>
+    </mm:cloud>
+  </div>
+</mm:content>
