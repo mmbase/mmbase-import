@@ -1613,7 +1613,10 @@ public class ResourceLoader extends ClassLoader {
         private  Set getPaths(final Set results, final Pattern pattern,  final String recursive, final boolean directories) {
             if (servletContext != null) {
                 try {
-                    final String currentRoot  = root + (root.equals("/") ? "" : "/") + ResourceLoader.this.context.getPath();
+                    final String path = ResourceLoader.this.context.getPath();
+                    final String currentRoot  =
+                        root + (root.equals("/") ? "" : "/") +
+                        (path.startsWith("/") ? path.substring(1) : path);
                     final String resourcePath = currentRoot + (recursive == null ? "" : recursive);
                     final Collection c = servletContext.getResourcePaths(resourcePath);
 
