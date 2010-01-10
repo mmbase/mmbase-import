@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<project xmlns:ant="jelly:ant"
+         xmlns:artifact="artifact"
+         >
+
+  <preGoal name="mmbase-module:webapp">
+    <attainGoal name="kupu" />
+  </preGoal>
+
+  <goal name="kupu">
+
+    <ant:ant dir="${basedir}" antfile="build.xml" target="kupu">
+      <ant:property name="build.dir" value="target" />
+      <ant:property name="project.build.dir" location="target/mmbase-richtext/lib" />
+    </ant:ant>
+
+    <artifact:install
+        artifact="${maven.build.dir}/mmbase-richtext/lib/kupu-i18n.jar"
+        artifactIdOverride="kupu-i18n"
+        type="jar"
+        project="${pom}"/>
+
+    <artifact:install
+        artifact="${maven.build.dir}/mmbase-richtext/lib/mmbase-kupu-i18n.jar"
+        artifactIdOverride="mmbase-kupu-i18n"
+        type="jar"
+        project="${pom}"/>
+
+    <copy todir="${maven.build.dir}/mmbase-richtext/lib/">
+      <fileset dir="${maven.repo.local}/xalan/jars/">
+        <include name="xalan-2.7.1.jar" />
+      </fileset>
+    </copy>
+
+
+
+  </goal>
+
+
+</project>

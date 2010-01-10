@@ -2,7 +2,7 @@
 <!DOCTYPE contextconfig PUBLIC "-//MMBase//DTD context config 1.2//EN" "http://www.mmbase.org/dtd/securitycontextconfig_1_2.dtd">
 <contextconfig>
   <global>
-    <allowed operation="read" />
+    <allowed operation="read" />    
   </global>
 
   <loginmodules>
@@ -13,7 +13,7 @@
 
   <accounts>
     <user name="anonymous" context="default" />
-    <user name="admin" context="default"><identify type="name/password" rank="administrator">admin2k</identify></user>
+    <user name="admin" context="admin"><identify type="name/password" rank="administrator">admin2k</identify></user>
     <user name="foo" context="default" ><identify type="name/password" rank="basic user">bar</identify></user>
   </accounts>
 
@@ -52,8 +52,6 @@
       <possible context="default"  />
       <possible context="imagesmodule"  />
       <possible context="system"  />
-      <possible context="non_default"  />
-      <possible context="everyones"  />
     </context>
     <context name="default">
       <operation type="create">        <grant group="users" />        </operation>
@@ -64,8 +62,6 @@
       <operation type="change context"><grant group="administrators" /></operation>
       <possible context="admin"  />
       <possible context="default"  />
-      <possible context="non_default"  />
-      <possible context="everyones"  />
     </context>
     <context name="system">
       <operation type="create">        <grant group="users" />        </operation>
@@ -76,7 +72,6 @@
       <operation type="change context"><grant group="administrators" /></operation>
       <possible context="admin"  />
       <possible context="system"  />
-      <possible context="everyones"  />
     </context>
     <context name="imagesmodule">
       <operation type="read">          <grant group="everyone" />     </operation>
@@ -95,26 +90,6 @@
       <operation type="change context"><grant group="administrators" /></operation>
       <possible context="admin"  />
       <possible context="import"  />
-    </context>
-    <context name="non_default">
-      <operation type="read">          <grant group="everyone" />     </operation>
-      <operation type="write"/>
-      <operation type="link"/>
-      <operation type="delete">        <grant group="administrators" />        </operation>
-      <operation type="change context"><grant group="administrators" /></operation>
-      <possible context="admin"  />
-      <possible context="import"  />
-      <possible context="everyones"  />
-    </context>
-
-    <context name="everyones">
-      <operation type="read">          <grant group="everyone" />     </operation>
-      <operation type="write">          <grant group="everyone" />     </operation>
-      <operation type="delete">        <grant group="everyone" />        </operation>
-      <operation type="change context"><grant group="everyone" /></operation>
-      <possible context="admin"  />
-      <possible context="import"  />
-      <possible context="default"  />
     </context>
   </contexts>
 </contextconfig>

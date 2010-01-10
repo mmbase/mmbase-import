@@ -18,8 +18,6 @@
     </mm:compare>
 </mm:notpresent>
 
-
-
 <%-- imports when request is not multipart post --%>
 <mm:present referid="selectedavatar">
   <mm:import externid="addavatar"/>

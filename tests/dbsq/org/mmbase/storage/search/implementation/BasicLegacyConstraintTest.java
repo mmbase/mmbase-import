@@ -6,7 +6,7 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.3 $
  */
 public class BasicLegacyConstraintTest extends TestCase {
     
@@ -51,7 +51,8 @@ public class BasicLegacyConstraintTest extends TestCase {
         } catch (IllegalArgumentException e) {}
         
         BasicLegacyConstraint instance = new BasicLegacyConstraint("xxx");
-        for (String constraint : TEST_CONSTRAINTS) {
+        for (int i = 0; i < TEST_CONSTRAINTS.length; i++) {
+            String constraint = TEST_CONSTRAINTS[i];
             BasicLegacyConstraint result = instance.setConstraint(constraint);
             assertTrue(instance.getConstraint().equals(constraint));
             assertTrue(result == instance);

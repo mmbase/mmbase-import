@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import java.util.*;
+import org.mmbase.util.*;
 import org.mmbase.tests.*;
 import org.mmbase.core.event.*;
 
@@ -30,7 +31,7 @@ public class EventsTest extends BridgeTest {
 
         // register a event listener here.
         AllEventListener listener = new AllEventListener() {
-                List<Event> events = new ArrayList<Event>();
+                List events = new ArrayList();
                 public void notify(Event e) {
                     events.add(e);
                 }

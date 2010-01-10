@@ -1,20 +1,14 @@
 /*
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
 The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/licensemichiel@sepio:~/mmbase/head/example-webapp/target/example/WEB-INF/config$ ls
-datatypes.xml  functions  security
+See http://www.MMBase.org/license
 
 */
 package org.mmbase.tests;
-import junit.framework.*;
-import java.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.CloudThreadLocal;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 
 /**
  * Test-case running via the bridge. This base class takes care of
@@ -23,89 +17,42 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  */
 public abstract class BridgeTest extends MMBaseTest {
-    protected static final Logger log = Logging.getLoggerInstance(BridgeTest.class);
+
     public BridgeTest() {
         super();
     }
     public BridgeTest(String name) {
         super(name);
     }
-    static boolean ensuredDeployed = false;
 
     int tryCount = 0;
 
-    protected CloudContext getCloudContext() {
-        CloudContext cc = null;
-        while(cc == null) {
+    protected Cloud getCloud() {
+        Cloud c = null;
+        while(c == null) {
+            CloudContext cc = null;
             try {
                 cc = ContextProvider.getDefaultCloudContext();
+                c = cc.getCloud("mmbase", "class", null);
                 break;
             } catch (BridgeException be) {
                 if (cc instanceof LocalContext) {
                     throw be;
                 }
-                if (tryCount < 19) {
-                    log.info(be.getMessage() + ".  Perhaps mmbase not yet running, retrying in 5 seconds (" + tryCount + ")");
-                } else {
-                    log.warn(be.getMessage() + ".  Perhaps mmbase not yet running, retrying in 5 seconds (" + tryCount + ")", be);
-                }
+                System.out.println(be.getMessage() + ". LOCAL. Perhaps mmbase not yet running, retrying in 5 seconds (" + tryCount + ")");
                 try {
                     tryCount ++;
                     Thread.sleep(5000);
                 } catch (Exception ie) {
                     return null;
                 }
-                if (tryCount > 20) {
+                if (tryCount > 25) {
                     throw be;
                 }
-            } catch (Throwable e) {
-                log.fatal(e.getMessage(), e);
-                Throwable c = e.getCause();
-                while (c != null) {
-                    log.error("CAUSE:" + c.getMessage(), c);
-                    c = c.getCause();
-                }
-                return null;
             }
         }
-        return cc;
-    }
-
-    protected Cloud getCloud(String userName) {
-        try {
-            CloudThreadLocal.unbind();
-            Map<String, Object> loginInfo = new HashMap<String, Object>();
-            loginInfo.put("username", userName);
-            Cloud c = getCloudContext().getCloud("mmbase", "class", loginInfo);
-            ensureDeployed(c);
-            CloudThreadLocal.bind(c);
-            return c;
-        } catch (Throwable e) {
-            System.err.println(e.getMessage());
-            System.err.println(Logging.stackTrace(e));
-            Throwable c = e.getCause();
-            while (c != null) {
-                log.error("CAUSE:" + c.getMessage(), c);
-                c = c.getCause();
-            }
-            System.exit(1);
-            return null;
-        }
-    }
-    protected Cloud getCloud() {
-        return getCloud("admin");
-    }
-
-    /**
-     * can be used to override getCloud
-     */
-    protected Cloud getTransaction() {
-        Cloud cloud = getCloudContext().getCloud("mmbase", "class", null);
-        ensureDeployed(cloud);
-        Cloud transaction = cloud.createTransaction(getClass().getName());
-        CloudThreadLocal.unbind();
-        CloudThreadLocal.bind(transaction);
-        return transaction;
+        ensureDeployed(c, "local cloud");
+        return c;
     }
 
     protected Cloud getRemoteCloud() {
@@ -116,12 +63,10 @@ public abstract class BridgeTest extends MMBaseTest {
         Cloud c = null;
         while(c == null) {
             try {
-                Map<String, Object> loginInfo = new HashMap<String, Object>();
-                loginInfo.put("rank", "administrator");
-                c =   ContextProvider.getCloudContext(uri).getCloud("mmbase", "class", loginInfo);
+                c =   ContextProvider.getCloudContext(uri).getCloud("mmbase", "class", null);
                 break;
             } catch (BridgeException be) {
-                System.out.println(be.getMessage() + ". " + uri + ". Perhaps mmbase '" + uri + "' not yet running, retrying in 5 seconds (" + tryCount + ") " + be.getMessage());
+                System.out.println(be.getMessage() + ". " + uri + ". Perhaps mmbase '" + uri + "' not yet running, retrying in 5 seconds (" + tryCount + ")");
                 try {
                     tryCount ++;
                     Thread.sleep(5000);
@@ -129,35 +74,20 @@ public abstract class BridgeTest extends MMBaseTest {
                     return null;
                 }
                 if (tryCount > 25) throw be;
-            } catch (Throwable t) {
-                System.out.println(t.getMessage());
             }
         }
-        ensureDeployed(c);
+        ensureDeployed(c, uri);
         return c;
 
     }
 
-    static public Test SHUTDOWN = new BridgeTest() {
-            public int countTestCases() {
-                return 0;
-            }
-            public void run(TestResult tr) {
-                System.out.println("Shutting down (bridge)");
-                getCloud().shutdown();
-            }
-        };
-
-    protected void ensureDeployed(Cloud cloud) {
-        if (ensuredDeployed) return;
-        String uri = cloud.getCloudContext().getUri();
+    protected void ensureDeployed(Cloud cloud, String uri) {
         while(true) {
             // make sure basic app is deployed
             if (cloud.hasRelationManager("bb", "cc", "posrel") &&
                 cloud.hasRelationManager("aa", "bb", "related") &&
                 cloud.hasRelationManager("bb", "aa", "related")
                 ) {
-                ensuredDeployed = true;
                 return;
             }
             if (!cloud.hasRelationManager("bb", "cc", "posrel")) {

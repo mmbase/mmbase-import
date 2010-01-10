@@ -1,0 +1,18 @@
+This is stuff which can be quite madding. What to do to get it working. Pick your combination.
+
+JDK version    Application server    Action                                                           According to  Remarks
+-------------------------------------------------------------------------------------------------------------------------
+1.5, 1.4       Tomcat  5.5           Do nothing.                                                      MM
+1.4            Tomcat  5.0           Move *.renametojar to [tomcat-dir]/common/endorsed/*.jar ?       MM
+1.5            Tomcat  5.0           Do nothing?                                                      MM
+1.5            Orion   2.0.6         Remove crimson.jar/xerces.jar from orion's home dir              MM            Orion does not support web-app 2.4.
+1.5            Resin   3.0.15        Do nothing.                                                      MM
+               etc..
+
+
+Some applications like context-security, editwizards need xalan's xpath. The xalan.renametojar can
+be renamed.
+
+MMBase release team
+
+$Id: XERCES.README.txt,v 1.5 2006-04-18 15:01:56 michiel Exp $

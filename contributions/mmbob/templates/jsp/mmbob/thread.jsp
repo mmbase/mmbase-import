@@ -91,8 +91,7 @@
                     <mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
                     <mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
                     <mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
-                    <mm:import id="active_firstname"><mm:field name="active_firstname" /></mm:import>
-                    <mm:import id="active_lastname"><mm:field name="active_lastname" /></mm:import>
+                    <mm:import id="active_identifier"><mm:field name="active_identifier" /></mm:import>
                     <mm:include page="path.jsp?type=postthread" referids="logoutmodetype,posterid,forumid,active_nick" />
                 </mm:nodefunction>
 
@@ -130,8 +129,13 @@
                                 <b> <mm:write referid="mlg.Pages"/> (<mm:field name="pagecount" id="pagecount" />) <mm:field name="navline" /> </b>
                             </td>
                             <td align="right">
-                                <a href="<mm:field name="emailonchange"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">threademailon</mm:param></mm:url>">Email : <mm:write referid="mlg.off" /></a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">threademailoff</mm:param></mm:url>">Email : <mm:write referid="mlg.on" /></a></mm:compare></mm:field> |
-                                <a href="<mm:field name="bookmarked"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedon</mm:param></mm:url>">Bookmarked : <mm:write referid="mlg.off" /></a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedoff</mm:param></mm:url>">Bookmarked : <mm:write referid="mlg.on" /></a></mm:compare></mm:field> | <a href="<mm:url page="bookmarked.jsp" referids="forumid" />">Bookmarked</a> | <a href="<mm:url page="search.jsp" referids="forumid,postareaid,postthreadid" />"><mm:write referid="mlg.Search" /></a>&nbsp;
+                                <%-- only show email notification and bookmarked to non-guests--%>
+                                <c:if test="${posterid != '-1'}">
+                                    <a href="<mm:field name="emailonchange"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">threademailon</mm:param></mm:url>">Email : <mm:write referid="mlg.off" /></a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">threademailoff</mm:param></mm:url>">Email : <mm:write referid="mlg.on" /></a></mm:compare></mm:field>
+                                    | <a href="<mm:field name="bookmarked"><mm:compare value="false"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedon</mm:param></mm:url>">Bookmarked : <mm:write referid="mlg.off" /></a></mm:compare><mm:compare value="true"><mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid"><mm:param name="action">bookmarkedoff</mm:param></mm:url>">Bookmarked : <mm:write referid="mlg.on" /></a></mm:compare></mm:field> |
+                                    <a href="<mm:url page="bookmarked.jsp" referids="forumid" />">Bookmarked</a> |
+                                </c:if>
+                                <a href="<mm:url page="search.jsp" referids="forumid,postareaid,postthreadid" />"><mm:write referid="mlg.Search" /></a>&nbsp;
                             </td>
                         </tr>
                     </table>
@@ -155,9 +159,11 @@
                             </td>
 
                             <%--  show all the buttons for possible actions--%>
+                            <%--  TODO: buttons are shown double if user is poster and administrator. create a function that will decide for each actions if it should be offered.--%>
                             <td class="${gp.tdvar}" align="right">
                                 <mm:import id="toid" reset="true"><mm:field name="posterid" /></mm:import>
                                 <mm:import id="postingid" reset="true"><mm:field name="id" /></mm:import>
+                                <%--
                                 <mm:compare referid="guestwritemodetype" value="open">
                                     <mm:compare referid="privatemessagesenabled" value="true">
                                         <mm:link page="newprivatemessage.jsp" referids="forumid,postareaid,postthreadid,postingid,toid" >
@@ -175,47 +181,97 @@
                                         </mm:compare>
                                     </mm:compare>
                                 </mm:compare>
-
-                                <c:if test="${gp.ismoderator == 'true' || (threadstate != 'pinnedclosed' && gp.isowner == 'true')}">
-                                    <mm:link page="editpost.jsp" referids="forumid,postareaid,postthreadid,postingid">
-                                        <a href="${_}"><img src="<mm:write referid="image_medit" />"  border="0" /></a>
-                                    </mm:link>
-
-                                    <mm:link page="removepost.jsp" referids="forumid,postareaid,postthreadid,postingid">
-                                        <a href="${_}"><img src="<mm:write referid="image_mdelete" />"  border="0" /></a>
+                                --%>
+                                <%--
+                                    you can notifie the moderators when:
+                                    1) private messages are enabled
+                                    2) the current user is not a guest
+                                    you can send a private message to the poster of a posting when
+                                    1) the posting was not posted by a guest
+                                --%>
+                                <c:if test="${posterid != '-1' && privatemessagesenabled == 'true'}">
+                                    <mm:field name="guest" >
+                                        <mm:compare value="true" inverse="true">
+                                            <mm:link page="newprivatemessage.jsp" referids="forumid,postareaid,postthreadid,postingid,toid" >
+                                                <a href="${_}"><img src="<mm:write referid="image_privatemsg" />"  border="0" /></a>
+                                            </mm:link>
+                                        </mm:compare>
+                                    </mm:field>
+                                    <mm:link page="newreportmessage.jsp" referids="forumid,postareaid,postthreadid,postingid" >
+                                        <a href="${_}"><img src="<mm:write referid="image_reportmsg" />"  border="0" /></a>
                                     </mm:link>
                                 </c:if>
+
+                                <c:if test="${(guestwritemodetype == 'open' || currentposter != '-1') && threadstate != 'closed' && threadstate != 'pinnedclosed'}">
+                                    <mm:link page="posting.jsp" referids="forumid,postareaid,postthreadid,posterid,pagesize,page,postingid" >
+                                        <a href="${_}"><img src="<mm:write referid="image_quotemsg" />"  border="0" /></a>
+                                    </mm:link>
+                                </c:if>
+
+                                <%--moderator buttons--%>
+                                <mm:field name="ismoderator">
+                                    <mm:compare value="true">
+                                        <mm:link page="editpost.jsp" referids="forumid,postareaid,postthreadid,postingid">
+                                            <a href="${_}"><img src="<mm:write referid="image_medit" />"  border="0" /></a>
+                                        </mm:link>
+
+                                        <mm:link page="removepost.jsp" referids="forumid,postareaid,postthreadid,postingid">
+                                            <a href="${_}"><img src="<mm:write referid="image_mdelete" />"  border="0" /></a>
+                                        </mm:link>
+                                    </mm:compare>
+                                </mm:field>
+
+                                <%--owner buttons--%>
+                                <mm:compare referid="threadstate" value="closed" inverse="true">
+                                    <mm:compare referid="threadstate" value="pinnedclosed" inverse="true">
+                                        <mm:field name="isowner">
+                                            <mm:compare value="true">
+                                                <mm:import id="postingid" reset="true"><mm:field name="id" /></mm:import>
+                                                <mm:link page="editpost.jsp" referids="forumid,postareaid,postthreadid,postingid">
+                                                    <a href="${_}"><img src="<mm:write referid="image_editmsg" />"  border="0" /></a>
+                                                </mm:link>
+
+                                                <mm:link page="removepost.jsp" referids="forumid,postareaid,postthreadid,postingid">
+                                                    <a href="${_}"><img src="<mm:write referid="image_mdelete" />" border="0" /></a>
+                                                </mm:link>
+                                            </mm:compare>
+                                        </mm:field>
+                                    </mm:compare>
+                                </mm:compare>
                             </td>
                         <%--  end show all the buttons for possible actions--%>
 
                         </tr>
                         <tr>
                             <%--  show all user information--%>
-                            <td class="${gp.tdvar}" valign="top" align="left" >
+                            <td class="${gp.tdvar}" valign="top" align="left">
                                 <p>
                                     <mm:field name="guest">
                                         <mm:compare value="true"><b><mm:field name="poster" /></b></mm:compare>
-                                        <mm:compare value="true" inverse="true">
-                                            <mm:link page="profile.jsp" referids="forumid,postareaid,postthreadid">
-                                                <mm:param name="posterid" value="${gp.posterid}" />
-                                                <mm:param name="type" value="poster_thread" />
-                                                    <b> <a href="${_}"><mm:field name="poster" /></b>
 
-                                                    <%--don't show the full name when it is empty--%>
-                                                    <mm:import id="fullname" reset="true"><mm:field name="firstname" /> <mm:field name="lastname" /></mm:import>
-                                                    <mm:write referid="fullname" >
-                                                        <mm:compare value=" " inverse="true"> (<mm:write/>)</mm:compare>
-                                                    </mm:write>
-                                                    <br />
-                                                    <mm:field name="avatar">
-                                                      <mm:compare value="-1" inverse="true">
-                                                        <mm:node number="${_}">
-                                                            <mm:image template="s(80x80)" ><img src="${_}" width="80" border="0"></mm:image>
-                                                        </mm:node>
-                                                      </mm:compare>
-                                                    </mm:field>
-                                                </a>
-                                            </mm:link>
+                                        <mm:compare value="true" inverse="true">
+                                            <%--only show link to the profile page when the postings poster allows it--%>
+
+                                            <p>test: posterid: ${posterid}</p>
+
+                                            <c:choose>
+                                                <c:when test="${gp.shareprofile == 'true' && posterid != '-1'}">
+                                                    <mm:link page="profile.jsp" referids="forumid">
+                                                        <mm:param name="posterid" value="${gp.posterid}" />
+                                                        <a href="${_}"><b>${gp.identifier}</b></a>
+                                                    </mm:link>
+                                                </c:when>
+                                                <c:otherwise> <b>${gp.identifier}</b></c:otherwise>
+                                            </c:choose>
+                                            <%--show the avatar--%>
+                                            <br />
+                                                <mm:field name="avatar">
+                                                  <mm:compare value="-1" inverse="true">
+                                                    <mm:node number="${_}">
+                                                        <mm:image template="s(80x80)" ><img src="${_}" width="80" border="0"></mm:image>
+                                                    </mm:node>
+                                                  </mm:compare>
+                                                </mm:field>
                                             <p />
 
                                             <mm:write referid="mlg.Level"/> : <mm:field name="levelgui" /><br /> <img src="<mm:field name="levelimage" />" /><br />
@@ -227,7 +283,7 @@
                                         </mm:compare>
                                     </mm:field>
                                     <br /><br />
-                                    </p> user info
+                                    </p>
                                 </td>
                                 <%--  endshow all user information--%>
 
@@ -326,14 +382,8 @@
 
                                                 <td>
                                                     <mm:compare referid="posterid" value="-1" inverse="true">
-                                                        <mm:write referid="active_nick" />
                                                         <input name="poster" type="hidden" value="${active_nick}" >
-
-                                                        <%--don't show the full name when it is empty--%>
-                                                        <mm:import id="fullname" reset="true"><mm:write referid="active_firstname" /> <mm:write referid="active_lastname" /></mm:import>
-                                                        <mm:write referid="fullname" >
-                                                            <mm:compare value=" " inverse="true"> (<mm:write referid="fullname"/>)</mm:compare>
-                                                        </mm:write>
+                                                        <mm:write referid="active_identifier" />
                                                     </mm:compare>
 
                                                     <mm:compare referid="posterid" value="-1">

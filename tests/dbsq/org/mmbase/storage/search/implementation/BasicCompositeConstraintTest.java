@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.3 $
  */
 public class BasicCompositeConstraintTest extends TestCase {
 
@@ -54,7 +54,7 @@ public class BasicCompositeConstraintTest extends TestCase {
             fail("Trying to add constraint as child to itself, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
 
-        List<Constraint> childs = instance.getChilds();
+        List childs = instance.getChilds();
         assertTrue(childs.size() == 0);
 
         Constraint constraint1 = new BasicConstraint();
@@ -85,7 +85,7 @@ public class BasicCompositeConstraintTest extends TestCase {
         // See:
         testAddChild();
 
-        List<Constraint> childs = instance.getChilds();
+        List childs = instance.getChilds();
         Constraint item = new BasicConstraint();
 
         // List returned must be unmodifiable.

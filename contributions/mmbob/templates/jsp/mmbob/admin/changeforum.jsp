@@ -43,10 +43,18 @@
 
             <mm:compare referid="isadministrator" value="true">
 
-                <%--  show the top menu--%>
+                <%--  show the  menu--%>
+                <%--  we only show the properties entry when there are properties--%>
+                <mm:booleanfunction set="mmbob" name="hasProperties" referids="forumid">
+                    <mm:import id="menu" vartype="List">info,layout,theme,login,rules,filter,properties</mm:import>
+                </mm:booleanfunction>
+
+                <mm:booleanfunction set="mmbob" name="hasProperties" referids="forumid" inverse="true">
+                    <mm:import id="menu" vartype="List">info,layout,theme,login,rules,filter</mm:import>
+                </mm:booleanfunction>
+
                 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 30px;" width="75%" align="center">
                     <tr>
-                        <mm:import id="menu" vartype="List">info,layout,theme,login,rules,filter</mm:import>
                         <mm:stringlist referid="menu" id="item">
                             <c:choose> <c:when test="${sub == item}"><th align="center"/></c:when> <c:otherwise><td align="center"/></c:otherwise> </c:choose>
                             <mm:link page="changeforum.jsp" referids="forumid">
@@ -58,7 +66,7 @@
 
                     </tr>
                 </table>
-                <%--  end show the top menu--%>
+                <%--  end show the  menu--%>
 
                 <%--  forum info--%>
                 <mm:compare referid="sub" value="info">
@@ -340,13 +348,15 @@
                                                 <th>AvatarUpload</th>
                                                 <td colspan="2" align="left">
                                                     <select name="avatarsuploadenabled">
-                                                        <mm:import id="options" reset="true" vartype="List">true,false,default</mm:import>
+                                                        <mm:import id="options" reset="true" vartype="List">on:true,off:false,default:</mm:import>
                                                         <mm:import id="currentvalue" reset="true"><mm:field name="avatarsuploadenabled"/></mm:import>
                                                         <mm:remove referid="option"/>
 
                                                         <mm:stringlist referid="options" id="option">
-                                                                <c:set var="selected"><c:if test="${option == currentvalue}">selected</c:if></c:set>
-                                                                <option ${selected}>${option}</option>
+                                                            <c:set var="label">${fn:split(option, ':')[0]}</c:set>
+                                                            <c:set var="value">${fn:split(option, ':')[1]}</c:set>
+                                                                <c:set var="selected"><c:if test="${value == currentvalue}">selected</c:if></c:set>
+                                                                <option ${selected} value="${value}">${label}</option>
                                                         </mm:stringlist>
                                                     </select>
                                                 </td>
@@ -369,8 +379,10 @@
                                                         <mm:remove referid="option"/>
 
                                                         <mm:stringlist referid="options" id="option">
-                                                                <c:set var="selected"><c:if test="${option == currentvalue}">selected</c:if></c:set>
-                                                                <option ${selected}>${option}</option>
+                                                            <c:set var="label">${fn:split(option, ':')[0]}</c:set>
+                                                            <c:set var="value">${fn:split(option, ':')[1]}</c:set>
+                                                            <c:set var="selected"><c:if test="${value == currentvalue}">selected</c:if></c:set>
+                                                            <option ${selected} value="${value}">${label}</option>
                                                         </mm:stringlist>
                                                     </select>
                                                 </td>
@@ -511,6 +523,63 @@
                     </table>
                 </mm:compare>
                 <%--  end word filter--%>
+
+                <%--  properties --%>
+                <mm:compare referid="sub" value="properties">
+                    <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 25px;" width="55%" align="center">
+                        <tr>
+                            <th width="20%">${mlg.Name}</th>
+                            <th width="70%">${mlg.Value}</th>
+                            <th width="10%">&nbsp;</th>
+                        </tr>
+
+
+                        <mm:nodelistfunction set="mmbob" name="getForumProperties" referids="forumid" id="property">
+                            <mm:first>
+                                <tr>
+                                    <td colspan="3" ><h4 style="text-align: center;">Forum properties</h4></td>
+                                </tr>
+                            </mm:first>
+                            <mm:link page="changeforum.jsp" referids="forumid,sub">
+                                <form action="${_}" method="post">
+                                    <input type="hidden" name="action" value="changeforumproperty" />
+                                    <input type="hidden" name="propertyname" value="${property.name}" />
+                                    <input type="hidden" name="admincheck" value="true" />
+                                    <tr>
+                                        <td>${property.name}</td>
+                                        <td><input type="text" style="width: 98%"  name="propertyvalue" value="${property.value}"/></td>
+                                        <td><input type="submit" value="${mlg.Save}" /></td>
+                                    </tr>
+                                </form>
+                            </mm:link>
+                        </mm:nodelistfunction>
+
+                        <mm:remove referid="property"/>
+                        <mm:nodelistfunction set="mmbob" name="getGlobalProperties" id="property">
+                            <mm:first>
+                                <tr>
+                                    <td colspan="3"><h4 style="text-align: center;">Global properties</h4></td>
+                                </tr><tr>
+                                    <td colspan="3">${mlg.warning_changeglobalproperties}</td>
+                                </tr>
+                            </mm:first>
+                            <mm:link page="changeforum.jsp" referids="forumid,sub">
+                                <form action="${_}" method="post">
+                                    <input type="hidden" name="action" value="changeglobalproperty" />
+                                    <input type="hidden" name="propertyname" value="${property.name}" />
+                                    <input type="hidden" name="admincheck" value="true" />
+                                    <tr>
+                                        <td>${property.name}</td>
+                                        <td><input type="text" style="width: 98%"  name="propertyvalue" value="${property.value}"/></td>
+                                        <td><input type="submit" value="${mlg.Save}" /></td>
+                                    </tr>
+                                </form>
+                            </mm:link>
+                        </mm:nodelistfunction>
+                    </table>
+                </mm:compare>
+
+                <%--  end properties --%>
 
             </mm:compare>
             <%--  end 'isadministrator'--%>

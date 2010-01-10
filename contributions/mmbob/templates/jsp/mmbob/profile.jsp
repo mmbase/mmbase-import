@@ -1,4 +1,9 @@
-<%--  view and edit user profile information--%>
+<%--
+    view and edit user profile information.
+    the editable version of the page is the top part of the template.
+    the viewable version is all the way in the bottom
+
+--%>
 <%--TODO: field isadministrator is not set anywhere (adminmode always false)--%>
 <%@ include file="jspbase.jsp" %>
 <mm:cloud>
@@ -11,7 +16,6 @@
         <mm:import externid="profile">personal</mm:import>
         <mm:import id="feedbackdefault"></mm:import>
         <mm:write session="feedback_message" referid="feedbackdefault"/>
-
         <%-- login part --%>
         <%@ include file="getposterid.jsp" %>
         <%@ include file="thememanager/loadvars.jsp" %>
@@ -49,7 +53,7 @@
                     </div>
 
                     <div class="bodypart">
-                        <mm:include page="path.jsp?type=${empty param.type ? pathtype : param.type}" referids="logoutmodetype,forumid,posterid,active_nick" />
+                        <mm:include page="path.jsp?type=$pathtype" referids="logoutmodetype,forumid,posterid,active_nick" />
 
                         <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
                             <tr>
@@ -161,7 +165,7 @@
                                                             <%-- feedback messages--%>
                                                             <div class="row">
                                                                 <span class="feedback">
-                                                                    <mm:import externid="feedback_message" from="session" id="feedback"/>
+                                                                    <mm:import externid="feedback_message" from="request" id="feedback"/>
                                                                     <mm:compare referid="feedback" value="true">
                                                                         <font color="red"><b>** <mm:write referid="mlg.ProfileUpdated"/> **</b></font>
                                                                     </mm:compare>
@@ -179,11 +183,39 @@
                                                                 </span>
                                                             </div>
 
-                                                            <%-- nickname --%>
+                                                            <%-- account --%>
                                                             <div class="row">
                                                                  <input type="hidden" name="action" value="editposter" />
                                                                  <span class="label"><mm:write referid="mlg.Account"/></span>
-                                                                 <span class="formw"><mm:field name="nick" /></span>
+                                                                 <span class="formw"><mm:field name="account" /></span>
+                                                            </div>
+
+                                                            <%--showname--%>
+                                                            <div class="row">
+                                                                <span class="label"><mm:write referid="mlg.ShowFullName"/></span>
+                                                                <span class="formw">
+                                                                    <select name="newshowfullname">
+                                                                        <c:remove var="trueselected"/><c:remove var="falseselected"/>
+                                                                        <c:if test="${pinfo.showfullname == 'true'}"><c:set var="trueselected" value="selected" /></c:if>
+                                                                        <c:if test="${pinfo.showfullname == 'false'}"><c:set var="falseselected" value="selected" /></c:if>
+                                                                        <option value="true" ${trueselected}><mm:write referid="mlg.Yes"/></option>
+                                                                        <option value="false" ${falseselected}><mm:write referid="mlg.No"/></option>
+                                                                    </select>
+                                                                </span>
+                                                            </div>
+
+                                                            <%--shareprofile--%>
+                                                            <div class="row">
+                                                                <span class="label"><mm:write referid="mlg.ShareProfile"/></span>
+                                                                <span class="formw">
+                                                                    <select name="newshareprofile">
+                                                                        <c:remove var="trueselected"/><c:remove var="falseselected"/>
+                                                                        <c:if test="${pinfo.shareprofile == 'true'}"><c:set var="trueselected" value="selected" /></c:if>
+                                                                        <c:if test="${pinfo.shareprofile == 'false'}"><c:set var="falseselected" value="selected" /></c:if>
+                                                                        <option value="true" ${trueselected}><mm:write referid="mlg.Yes"/></option>
+                                                                        <option value="false" ${falseselected}><mm:write referid="mlg.No"/></option>
+                                                                    </select>
+                                                                </span>
                                                             </div>
 
                                                             <%--  login system http--%>
@@ -218,55 +250,6 @@
                                                                     </span>
                                                                 </div>
 
-                                                                <%--  now show the profileEntryDef fields--%>
-                                                                <%--
-                                                                    <mm:compare value="string"><input name="<mm:field name="name" />" type="text" size="25" value="<mm:field name="value" />"/></mm:compare>
-                                                                    <mm:compare value="field"><textarea rows="7" cols="25" name="<mm:field name="name" />"><mm:field name="value" /></textarea></mm:compare>
-                                                                    <mm:compare value="date"><mm:import id="bname"><mm:field name="name" /></mm:import><mm:import id="bvalue"><mm:field name="value" /></mm:import><mm:include page="bdate.jsp" referids="bname,bvalue" /></mm:compare>
-                                                                --%>
-                                                                <mm:import id="guipos" reset="true">0</mm:import>
-                                                                <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid,guipos" id="field">
-                                                                    <div class="row">
-                                                                        <span class="label"><mm:field name="guiname" /></span>
-                                                                        <span class="formw">
-                                                                            <mm:field name="edit">
-                                                                                <mm:compare value="true">
-                                                                                    <c:choose>
-                                                                                        <c:when test="${field.type == 'string'}"> <input name="${field.name}" type="text" size="25" value="${field.value}"/></c:when>
-                                                                                        <c:when test="${field.type == 'field'}"><textarea rows="7" cols="25" name="${field.name}">${field.value}</textarea></c:when>
-                                                                                        <c:when test="${field.type == 'date'}">
-                                                                                            <mm:include page="bdate.jsp">
-                                                                                                <mm:param name="bname" value="${field.name}"  />
-                                                                                                <mm:param name="bvalue" value="${field.value}" />
-                                                                                            </mm:include>
-                                                                                        </c:when>
-                                                                                    </c:choose>
-                                                                                </mm:compare>
-                                                                                <mm:compare value="false">${field.value}</mm:compare>
-                                                                            </mm:field>
-                                                                        </span>
-                                                                    </div>
-                                                                </mm:nodelistfunction>
-
-                                                                <%--  now show gender, new password, confirm new passwod--%>
-                                                                <div class="row">
-                                                                    <span class="label"><mm:write referid="mlg.Gender"/></span>
-                                                                    <span class="formw">
-                                                                        <mm:field name="gender">
-                                                                            <select name="newgender">
-                                                                                <mm:compare value="male">
-                                                                                    <option value="male"><mm:write referid="mlg.Male"/></option>
-                                                                                    <option value="female"><mm:write referid="mlg.Female"/></option>
-                                                                                </mm:compare>
-                                                                                <mm:compare value="male" inverse="true">
-                                                                                    <option value="female"><mm:write referid="mlg.Female"/></option>
-                                                                                    <option value="male"><mm:write referid="mlg.Male"/></option>
-                                                                                </mm:compare>
-                                                                            </select>
-                                                                        </mm:field>
-                                                                  </span>
-                                                                </div>
-
                                                                 <div class="row">
                                                                     <span class="label"><mm:write referid="mlg.NewPassword"/></span>
                                                                     <span class="formw">
@@ -285,73 +268,44 @@
 
 
 
+
+
                                                             <%--  login system entree--%>
                                                             <mm:compare referid="loginsystemtype" value="entree">
-
-                                                                <%--  start with the profile values--%>
-                                                                <mm:import id="guipos" reset="true">0</mm:import>
-                                                                <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid,guipos" id="pvalues">
-                                                                    <div class="row">
-                                                                        <span class="label"><mm:field name="guiname" /></span>
-                                                                        <span class="formw">
-                                                                            <mm:field name="edit">
-                                                                                <mm:compare value="true">
-                                                                                <%--
-                                                                                    <mm:field name="type">
-                                                                                        <mm:compare value="string"><input name="${pvalues.name}" type="text" size="25" value="${pvalues.value}"/></mm:compare>
-                                                                                        <mm:compare value="field"><textarea rows="7" cols="25" name="${pvalues.name}"><mm:field name="value" /></textarea></mm:compare>
-                                                                                        <mm:compare value="date">
-                                                                                            <mm:import id="bname"><mm:field name="name" /></mm:import>
-                                                                                            <mm:import id="bvalue"><mm:field name="value" /></mm:import>
-                                                                                            <mm:include page="bdate.jsp" referids="bname,bvalue" />
-                                                                                        </mm:compare>
-                                                                                    </mm:field>
-                                                                                    --%>
-                                                                                    <c:choose>
-                                                                                        <c:when test="${pvalues.type == 'string'}"> <input name="${pvalues.name}" type="text" size="25" value="${pvalues.value}"/></c:when>
-                                                                                        <c:when test="${pvalues.type == 'field'}"><textarea rows="7" cols="25" name="${pvalues.name}">${pvalues.value}</textarea></c:when>
-                                                                                        <c:when test="${pvalues.type == 'date'}">
-                                                                                            <mm:include page="bdate.jsp">
-                                                                                                <mm:param name="bname" value="${pvalues.name}"  />
-                                                                                                <mm:param name="bvalue" value="${pvalues.value}" />
-                                                                                            </mm:include>
-                                                                                        </c:when>
-                                                                                    </c:choose>
-                                                                                </mm:compare>
-                                                                                <mm:compare value="false">${pvalues.value}</mm:compare>
-                                                                            </mm:field>
-                                                                        </span>
-                                                                    </div>
-                                                                </mm:nodelistfunction>
-
                                                                 <%--  now show the default fields, but you can't edit them here.--%>
                                                                 <div class="row">
                                                                     <span class="label"><mm:write referid="mlg.Firstname"/></span>
                                                                     <span class="formw">
-                                                                        <mm:field name="firstname" /> (entree)
+                                                                        <mm:field name="firstname" />
                                                                     </span>
                                                                 </div>
 
                                                                 <div class="row">
                                                                     <span class="label"><mm:write referid="mlg.Lastname"/></span>
                                                                     <span class="formw">
-                                                                        <mm:field name="lastname" /> (entree)
+                                                                        <mm:field name="lastname" />
                                                                     </span>
                                                                 </div>
 
                                                                 <div class="row">
                                                                     <span class="label"><mm:write referid="mlg.Email"/></span>
                                                                     <span class="formw">
-                                                                        <mm:field name="email" /> (entree)
+                                                                        <mm:field name="email" />
                                                                 </span>
                                                                 </div>
 
-                                                                <div class="row">
+                                                                <mm:write referid="entree" >
+                                                                    <input name="newpassword" type="hidden" value="${_}" />
+                                                                    <input name="newconfirmpassword" type="hidden" value="${_}" />
+                                                                </mm:write>
+                                                            </mm:compare>
+                                                            <%--  end login system entree--%>
+
+
+
+                                                            <div class="row">
                                                                     <span class="label"><mm:write referid="mlg.Location"/></span>
                                                                     <span class="formw">
-                                                                        <%--
-                                                                        <input name="newlocation" type="text" size="25" value="<mm:field name="location" />"/>
-                                                                        --%>
                                                                         <input name="newlocation" type="text" size="25" value="${pinfo.location}"/>
                                                                     </span>
                                                                 </div>
@@ -374,12 +328,55 @@
                                                                     </span>
                                                                 </div>
 
-                                                                <mm:write referid="entree" >
-                                                                    <input name="newpassword" type="hidden" value="${_}" />
-                                                                    <input name="newconfirmpassword" type="hidden" value="${_}" />
-                                                                </mm:write>
-                                                            </mm:compare>
-                                                            <%--  end login system entree--%>
+
+
+                                                            <%--  now show the profileEntryDef fields--%>
+                                                                <mm:import id="guipos" reset="true">0</mm:import>
+                                                                <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid,guipos" id="field">
+                                                                    <div class="row">
+                                                                        <span class="label"><mm:field name="guiname" /><c:if test="${field.required}">*</c:if></span>
+                                                                        <span class="formw">
+                                                                        <%--
+                                                                            <p>test: changeable=${field.changeable} :: edit=${field.edit} :: required=${field.required}</p>
+                                                                        --%>
+                                                                            <c:choose>
+                                                                                <c:when test="${field.edit && (empty field.value || field.changeable == 'true')}">
+                                                                                    <c:choose>
+                                                                                        <c:when test="${field.type == 'string'}"> <input name="${field.name}" type="text" size="25" value="${field.value}"/></c:when>
+                                                                                        <c:when test="${field.type == 'field'}"><textarea rows="7" cols="25" name="${field.name}">${field.value}</textarea></c:when>
+                                                                                        <c:when test="${field.type == 'date'}">
+                                                                                            <mm:include page="bdate.jsp">
+                                                                                                <mm:param name="bname" value="${field.name}"  />
+                                                                                                <mm:param name="bvalue" value="${field.value}" />
+                                                                                            </mm:include>
+                                                                                        </c:when>
+                                                                                    </c:choose>
+                                                                                </c:when>
+                                                                                <c:otherwise> ${field.value}  </c:otherwise>
+                                                                            </c:choose>
+                                                                            <%--
+                                                                            This makes no sense, for twoo reasons:
+                                                                            1) you have to press commit first before the errors show up. the profile should know if it's current state is illegal and where the errors are.
+                                                                            2) there are no consequences to an illegal field. you can still update other fields and use the forum.
+                                                                            The profile should have a 'state', and illegal profiles should be blocked till they are legal again. The only accesible page for an illegal profile is the profile page.
+
+                                                                            <c:if test="${not empty profileFeedback[field.name]}">
+                                                                                <span>
+                                                                                    <b style="color: red;">
+                                                                                    <c:set var="msg" value="${profileFeedback[field.name]}" />
+                                                                                        <c:if test="${msg == 'requiredbutempty'}">
+                                                                                            <mm:write referid="mlg.Required"/>
+                                                                                        </c:if>
+
+                                                                                    </b>
+                                                                                </span>
+                                                                            </c:if>
+                                                                            --%>
+                                                                        </span>
+                                                                    </div>
+                                                                </mm:nodelistfunction>
+
+
 
                                                             <%-- TODO: not yet implemented
                                                               <div class="row">
@@ -615,37 +612,148 @@
                             <%-- end own profile (editable)--%>
 
                             <%-- other profile (non-editable) --%>
+                            <%--only show this when shareproflie == 'true' for the poster this profile belongs to--%>
+                            <mm:nodefunction name="getPosterInfo" set="mmbob" referids="forumid,profileid@posterid">
+                                <c:set var="shareprofile" ><mm:field name="shareprofile" /></c:set>
+                            </mm:nodefunction>
                             <mm:compare referid="profileid" referid2="posterid" inverse="true">
-                                <div id="tabs">
-                                    <ul>
-                                        <mm:remove referid="selected"/>
-                                        <c:if test="${profile == 'personal'}"><mm:import id="selected" reset="true">class="selected"</mm:import></c:if>
-                                        <li ${selected}>
-                                            <mm:link page="profile.jsp" referids="forumid,profileid@posterid">
-                                                <mm:present referid="postareaid">
-                                                    <mm:param name="postareaid" value="$postareaid" />
-                                                </mm:present>
-                                                <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
-                                                <mm:param name="profile" value="personal" />
-                                                <a href="${_}"><mm:write referid="mlg.personal"/></a>
-                                            </mm:link>
-                                        </li>
+                                <c:if test="${shareprofile == 'true'}">
+                                    <div id="tabs">
+                                        <ul>
+                                            <mm:remove referid="selected"/>
+                                            <c:if test="${profile == 'personal'}"><mm:import id="selected" reset="true">class="selected"</mm:import></c:if>
+                                            <li ${selected}>
+                                                <mm:link page="profile.jsp" referids="forumid,profileid@posterid">
+                                                    <mm:present referid="postareaid">
+                                                        <mm:param name="postareaid" value="$postareaid" />
+                                                    </mm:present>
+                                                    <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
+                                                    <mm:param name="profile" value="personal" />
+                                                    <a href="${_}"><mm:write referid="mlg.personal"/></a>
+                                                </mm:link>
+                                            </li>
+
+                                            <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
+                                                <mm:field name="contactinfoenabled">
+                                                    <mm:compare value="true">
+                                                        <mm:remove referid="selected"/>
+                                                        <c:if test="${profile == 'contact'}"><mm:import id="selected" reset="true">class="selected"</mm:import></c:if>
+                                                        <li ${selected} >
+                                                            <mm:link page="profile.jsp" referids="forumid,profileid@posterid">
+                                                                <mm:present referid="postareaid">
+                                                                    <mm:param name="postareaid" value="$postareaid" />
+                                                                </mm:present>
+                                                                <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
+                                                                <mm:param name="profile" value="contact" />
+                                                                <a href="${_}"><mm:write referid="mlg.contact"/></a>
+                                                            </mm:link>
+                                                        </li>
+                                                    </mm:compare>
+                                                </mm:field>
+                                            </mm:nodefunction>
+
+                                            <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
+                                                <mm:field name="avatarsdisabled">
+                                                    <mm:compare value="false">
+                                                        <mm:remove referid="selected"/>
+                                                        <c:if test="${profile == 'avatar'}"><mm:import id="selected" reset="true">class="selected"</mm:import></c:if>
+                                                        <li ${selected} >
+                                                            <mm:link page="profile.jsp" referids="forumid,profileid@posterid">
+                                                                <mm:present referid="postareaid">
+                                                                    <mm:param name="postareaid" value="$postareaid" />
+                                                                </mm:present>
+                                                                <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
+                                                                <mm:param name="profile" value="avatar" />
+                                                                <a href="${_}"><mm:write referid="mlg.avatar"/></a>
+                                                            </mm:link>
+                                                        </li>
+                                                    </mm:compare>
+                                                </mm:field>
+                                            </mm:nodefunction>
+                                        </ul>
+                                    </div><!--end div 'tabs'-->
+
+                                    <div id="profile">
+                                        <mm:compare value="personal" referid="profile">
+
+                                            <mm:node number="$profileid">
+                                                <mm:functioncontainer>
+                                                <mm:field name="account"><mm:param name="posterid" value="$_" /></mm:field>
+                                                    <mm:nodefunction set="mmbob" name="getPosterInfo" referids="forumid">
+                                                        <div class="row">
+                                                            <span class="label"><mm:write referid="mlg.Account"/></span>
+                                                            <span class="formw"><mm:field name="nick" /></span>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <span class="label"><mm:write referid="mlg.Firstname"/></span>
+                                                            <span class="formw"><mm:field name="firstname" /></span>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <span class="label"><mm:write referid="mlg.Lastname"/></span>
+                                                            <span class="formw"><mm:field name="lastname" /></span>
+                                                        </div>
+
+                                                        <%-- TODO: gebruiker moet zelf kiezen of email getoond wordt of niet, voor nu default niet
+                                                        <div class="row">
+                                                        <span class="label"><mm:write referid="mlg.Email"/></span>
+                                                        <span class="formw"><mm:field name="email" /></span>
+                                                        </div>--%>
+                                                        <div class="row">
+                                                            <span class="label"><mm:write referid="mlg.Location"/></span>
+                                                            <span class="formw"><mm:field name="location" /></span>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <span class="label"><mm:write referid="mlg.Gender"/></span>
+                                                            <span class="formw">
+                                                                <mm:field name="gender">
+                                                                    <mm:compare value="male"><mm:write referid="mlg.Male"/></mm:compare>
+                                                                    <mm:compare value="female"><mm:write referid="mlg.Female"/></mm:compare>
+                                                                </mm:field>
+                                                            </span>
+                                                        </div>
+
+                                                        <%-- TODO: not yet implemented
+                                                        <div class="row">
+                                                        <span class="label"><mm:write referid="mlg.Level"/></span>
+                                                        <span class="formw">level123</span>
+                                                        </div>--%>
+
+                                                        <div class="row">
+                                                            <span class="label"><mm:write referid="mlg.Messages"/></span>
+                                                            <span class="formw"><mm:field name="accountpostcount" /></span>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <span class="label"><mm:write referid="mlg.Member_since"/></span>
+                                                            <span class="formw">
+                                                                <mm:field name="firstlogin"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field>
+                                                            </span>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <span class="label"><mm:write referid="mlg.Last_visit"/></span>
+                                                            <span class="formw">
+                                                                <mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field>
+                                                            </span>
+                                                        </div>
+                                                    </mm:nodefunction>
+                                                </mm:functioncontainer>
+                                            </mm:node>
+                                        </mm:compare>
 
                                         <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
                                             <mm:field name="contactinfoenabled">
                                                 <mm:compare value="true">
-                                                    <mm:remove referid="selected"/>
-                                                    <c:if test="${profile == 'contact'}"><mm:import id="selected" reset="true">class="selected"</mm:import></c:if>
-                                                    <li ${selected} >
-                                                        <mm:link page="profile.jsp" referids="forumid,profileid@posterid">
-                                                            <mm:present referid="postareaid">
-                                                                <mm:param name="postareaid" value="$postareaid" />
-                                                            </mm:present>
-                                                            <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
-                                                            <mm:param name="profile" value="contact" />
-                                                            <a href="${_}"><mm:write referid="mlg.contact"/></a>
-                                                        </mm:link>
-                                                    </li>
+                                                    <mm:compare value="contact" referid="profile">
+                                                        <mm:nodelistfunction set="mmbob" name="getRemoteHosts" referids="forumid,profileid@posterid">
+                                                            <mm:compare referid="adminmode" value="true">
+                                                                host : <mm:field name="host" /> lastchange : <mm:field name="lastupdatetime"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field> updatecount : <mm:field name="updatecount" /><br />
+                                                            </mm:compare>
+                                                        </mm:nodelistfunction>
+                                                    </mm:compare>
                                                 </mm:compare>
                                             </mm:field>
                                         </mm:nodefunction>
@@ -653,140 +761,35 @@
                                         <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
                                             <mm:field name="avatarsdisabled">
                                                 <mm:compare value="false">
-                                                    <mm:remove referid="selected"/>
-                                                    <c:if test="${profile == 'avatar'}"><mm:import id="selected" reset="true">class="selected"</mm:import></c:if>
-                                                    <li ${selected} >
-                                                        <mm:link page="profile.jsp" referids="forumid,profileid@posterid">
-                                                            <mm:present referid="postareaid">
-                                                                <mm:param name="postareaid" value="$postareaid" />
-                                                            </mm:present>
-                                                            <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
-                                                            <mm:param name="profile" value="avatar" />
-                                                            <a href="${_}"><mm:write referid="mlg.avatar"/></a>
-                                                        </mm:link>
-                                                    </li>
+                                                    <mm:compare value="avatar" referid="profile">
+                                                        <mm:node number="$profileid">
+                                                            <mm:functioncontainer>
+                                                            <mm:field name="account"><mm:param name="posterid" value="$_" /></mm:field>
+                                                                <mm:nodefunction set="mmbob" name="getPosterInfo" referids="forumid">
+                                                                    <div class="row">
+                                                                    <span class="label"><mm:write referid="mlg.Avatar"/></span>
+                                                                        <span class="formw">
+                                                                            <mm:field name="avatar">
+                                                                                <mm:compare value="-1" inverse="true">
+                                                                                    <mm:node number="$_">
+                                                                                        <mm:image template="s(80x80)"> <img src="${_}" width="80" border="0"></mm:image>
+                                                                                    </mm:node>
+                                                                                </mm:compare>
+                                                                            </mm:field>
+                                                                        </span>
+                                                                    </div>
+                                                                </mm:nodefunction>
+                                                            </mm:functioncontainer>
+                                                        </mm:node>
+                                                    </mm:compare>
                                                 </mm:compare>
+
                                             </mm:field>
                                         </mm:nodefunction>
-                                    </ul>
-                                </div><!--end div 'tabs'-->
 
-                                <div id="profile">
-                                    <mm:compare value="personal" referid="profile">
-
-                                        <mm:node number="$profileid">
-                                            <mm:functioncontainer>
-                                            <mm:field name="account"><mm:param name="posterid" value="$_" /></mm:field>
-                                                <mm:nodefunction set="mmbob" name="getPosterInfo" referids="forumid">
-                                                    <div class="row">
-                                                        <span class="label"><mm:write referid="mlg.Account"/></span>
-                                                        <span class="formw"><mm:field name="nick" /></span>
-                                                    </div>
-
-                                                    <div class="row">
-                                                        <span class="label"><mm:write referid="mlg.Firstname"/></span>
-                                                        <span class="formw"><mm:field name="firstname" /></span>
-                                                    </div>
-
-                                                    <div class="row">
-                                                        <span class="label"><mm:write referid="mlg.Lastname"/></span>
-                                                        <span class="formw"><mm:field name="lastname" /></span>
-                                                    </div>
-
-                                                    <%-- TODO: gebruiker moet zelf kiezen of email getoond wordt of niet, voor nu default niet
-                                                    <div class="row">
-                                                    <span class="label"><mm:write referid="mlg.Email"/></span>
-                                                    <span class="formw"><mm:field name="email" /></span>
-                                                    </div>--%>
-                                                    <div class="row">
-                                                        <span class="label"><mm:write referid="mlg.Location"/></span>
-                                                        <span class="formw"><mm:field name="location" /></span>
-                                                    </div>
-
-                                                    <div class="row">
-                                                        <span class="label"><mm:write referid="mlg.Gender"/></span>
-                                                        <span class="formw">
-                                                            <mm:field name="gender">
-                                                                <mm:compare value="male"><mm:write referid="mlg.Male"/></mm:compare>
-                                                                <mm:compare value="female"><mm:write referid="mlg.Female"/></mm:compare>
-                                                            </mm:field>
-                                                        </span>
-                                                    </div>
-
-                                                    <%-- TODO: not yet implemented
-                                                    <div class="row">
-                                                    <span class="label"><mm:write referid="mlg.Level"/></span>
-                                                    <span class="formw">level123</span>
-                                                    </div>--%>
-
-                                                    <div class="row">
-                                                        <span class="label"><mm:write referid="mlg.Messages"/></span>
-                                                        <span class="formw"><mm:field name="accountpostcount" /></span>
-                                                    </div>
-
-                                                    <div class="row">
-                                                        <span class="label"><mm:write referid="mlg.Member_since"/></span>
-                                                        <span class="formw">
-                                                            <mm:field name="firstlogin"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field>
-                                                        </span>
-                                                    </div>
-
-                                                    <div class="row">
-                                                        <span class="label"><mm:write referid="mlg.Last_visit"/></span>
-                                                        <span class="formw">
-                                                            <mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field>
-                                                        </span>
-                                                    </div>
-                                                </mm:nodefunction>
-                                            </mm:functioncontainer>
-                                        </mm:node>
-                                    </mm:compare>
-
-                                    <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
-                                        <mm:field name="contactinfoenabled">
-                                            <mm:compare value="true">
-                                                <mm:compare value="contact" referid="profile">
-                                                    <mm:nodelistfunction set="mmbob" name="getRemoteHosts" referids="forumid,profileid@posterid">
-                                                        <mm:compare referid="adminmode" value="true">
-                                                            host : <mm:field name="host" /> lastchange : <mm:field name="lastupdatetime"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field> updatecount : <mm:field name="updatecount" /><br />
-                                                        </mm:compare>
-                                                    </mm:nodelistfunction>
-                                                </mm:compare>
-                                            </mm:compare>
-                                        </mm:field>
-                                    </mm:nodefunction>
-
-                                    <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
-                                        <mm:field name="avatarsdisabled">
-                                            <mm:compare value="false">
-                                                <mm:compare value="avatar" referid="profile">
-                                                    <mm:node number="$profileid">
-                                                        <mm:functioncontainer>
-                                                        <mm:field name="account"><mm:param name="posterid" value="$_" /></mm:field>
-                                                            <mm:nodefunction set="mmbob" name="getPosterInfo" referids="forumid">
-                                                                <div class="row">
-                                                                <span class="label"><mm:write referid="mlg.Avatar"/></span>
-                                                                    <span class="formw">
-                                                                        <mm:field name="avatar">
-                                                                            <mm:compare value="-1" inverse="true">
-                                                                                <mm:node number="$_">
-                                                                                    <mm:image template="s(80x80)"> <img src="${_}" width="80" border="0"></mm:image>
-                                                                                </mm:node>
-                                                                            </mm:compare>
-                                                                        </mm:field>
-                                                                    </span>
-                                                                </div>
-                                                            </mm:nodefunction>
-                                                        </mm:functioncontainer>
-                                                    </mm:node>
-                                                </mm:compare>
-                                            </mm:compare>
-
-                                        </mm:field>
-                                    </mm:nodefunction>
-
-                                    <div class="spacer">&nbsp;</div>
-                                </div> <!--end div 'profile'-->
+                                        <div class="spacer">&nbsp;</div>
+                                    </div> <!--end div 'profile'-->
+                                </c:if>
                             </mm:compare>
                             <%-- end other profile (non-editable) --%>
                         </div> <!--end div id: profileb-->

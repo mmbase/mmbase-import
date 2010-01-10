@@ -9,7 +9,7 @@
    <!--
 
     @author   Michiel Meeuwissen
-    @version  $Id$ 
+    @version  $Id: entrancepage.jsp,v 1.20.4.1 2009-01-04 12:58:17 nklasens Exp $ 
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
 <head>

@@ -1,0 +1,1382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"  [
+  <!ENTITY rf-origin  SYSTEM "reference/origin.sgm">
+  <!ENTITY rf-pos  SYSTEM "reference/pos.sgm">
+  <!ENTITY rf-action  SYSTEM "reference/action.sgm">
+  <!ENTITY rf-action-add  SYSTEM "reference/action-add.sgm">
+  <!ENTITY rf-action-create  SYSTEM "reference/action-create.sgm">
+  <!ENTITY rf-action-delete  SYSTEM "reference/action-delete.sgm">
+  <!ENTITY rf-action-load  SYSTEM "reference/action-load.sgm">
+  <!ENTITY rf-form-schema  SYSTEM "reference/form-schema.sgm">
+  <!ENTITY rf-item  SYSTEM "reference/item.sgm">
+  <!ENTITY rf-list  SYSTEM "reference/list.sgm">
+  <!ENTITY rf-object  SYSTEM "reference/object.sgm">
+  <!ENTITY rf-step  SYSTEM "reference/step.sgm">
+  <!ENTITY rf-steps  SYSTEM "reference/steps.sgm">
+  <!ENTITY rf-wizard-schema  SYSTEM "reference/wizard-schema.sgm">
+] >
+<article class="specification">
+  <articleinfo>
+    <title>MMBase Editwizard Reference Manual</title>
+    <date>2002-09-02</date>
+    <edition>$Id: editwizard-reference.xml,v 1.6 2006-06-21 05:51:34 michiel Exp $</edition>
+    <authorgroup>
+      <author>
+        <firstname>Kars</firstname>
+        <surname>Veling</surname>
+        <affiliation>
+          <orgname>Q42</orgname>
+        </affiliation>
+      </author>
+      <author>
+        <firstname>Henk</firstname>
+        <surname>Hangyi</surname>
+        <affiliation>
+          <orgname>MMatch</orgname>
+        </affiliation>
+      </author>
+      <author>
+        <firstname>Pierre</firstname>
+        <surname>van Rooden</surname>
+        <affiliation>
+          <orgname>Publieke Omroep</orgname>
+        </affiliation>
+      </author>
+    </authorgroup>
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+    <releaseinfo>Version 1.0 is released with MMBase 1.6.</releaseinfo>
+  </articleinfo>
+  <section id="introduction">
+    <title>Introduction</title>
+    <para>This reference describes the syntax of the wizards and how to access them using a browser.</para>
+  </section>
+  <section id="calling">
+    <title>Calling the Wizard Pages</title>
+    <para>This reference describes the wizard pages and how to call them from a html or jsp page.</para>
+    <section id="calling_general">
+      <title>General - wizard definition schemas</title>
+      <para>The editwizards need a xml file with a definition of the wizard to operate.			By default, those are found in the subdirectory /editwizard/data/, but it is possible to place your definitions, as well as the wizard stylesheets (which define layout) elsewhere.</para>
+      <para>When the wizards search for a requested file (a wizard xsl stylesheet or a wizard xml schema), they look for the referenced file in the following order:
+      </para>
+      <variablelist>
+        <varlistentry>
+          <term>The referrer page directory</term>
+          <listitem>
+            <para>You call the editwizard scripts (list.jsp and wizard.jsp) from a page located in another directory than the editwizard home directory. If you do, the wizards keep a reference to the calling page, the 'referrer'. When a xml or xsl file is requested, the wizard first checks whether the file can be found in the directory of the referrer page.</para>
+            <para>Example: if the file requested is data/my_wizard.xml, and the referencing page is /myeditors/index.jsp, the system first checks for the file /myeditors/data/my_wizard.xml.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>The editwizard home directory</term>
+          <listitem>
+            <para>The editwizard home is the directory that contains the editwizard basic stylesheets, data library, and jsp pages. It is one directory lower than the location of the list.jsp and  wizard.jsp files. In the standard distribution, this location is /mmapps/editwizard/ (the list.jsp and wizard.jsp are located in /mmapps/editwizard/jsp/), but you can place the wizards wherever you like.
+            </para>
+            <para>Example: if the file requested is data/my_wizard.xml, and the editwizard home is in mmapps/editwizard/, the system checks for the file /mmapps/editwizard/data/my_wizard.xml.
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
+    <section id="list.jsp">
+      <title>list.jsp</title>
+      <para>To run a wizard, you'll need to call either list.jsp or wizard.jsp. These scripts are located in the jsp subdirectory of the editwizard home directory. In the standard distribution, this is mmapps/editwizard/jsp/.</para>
+      <para>List.jsp starts with running a search query on MMBase to create a list of items to search from. It shows a list of all found nodes and allows you to select one of these items to edit, to remove an item, or to add a new item. The actual options given depend on the security settings (if you are allowed to do this by MMBase), and the possibilities offered by the wizard. Note that the list.jsp does NOT run an editwizard itself, it is just a 'starter'. It eventually calls wizard.jsp (see below) to actually edit or create an item.</para>
+      <para>You need to specify a number of parameters to tell the list.jsp what wizard should be used, and what nodes and fields should be shown in the list.</para>
+      <para>In addition, by specifying the searchfields parameter, you can let the wizards generate a searchbox, allowing you to narrow the list of nodes to edit.</para>
+      <variablelist>
+        <title>The following parameters MUST be specified (list.jsp does not work if you do not specify them):</title>
+        <varlistentry>
+          <term>wizard</term>
+          <listitem>
+            <para>The wizard to use. This is a relative reference to the xml schema file. Do not specify the ".xml" prefix.</para>
+            <programlisting format="linespecific">wizard=data/simple.xml</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>nodepath</term>
+          <listitem>
+            <para>The nodepath defines the object types to list. This can be one object type, or a comma-separated list of types, which are treated as a relation chain, like in path attribute of the taglib's &lt;mm:list&gt; tag.
+            The last objecttype listed is the object that is used as the objecttype to edit in the wizard.</para>
+            <programlisting format="linespecific">nodepath=people or nodepath=people,news</programlisting>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <variablelist>
+        <title>The following parameters MAY be specified:</title>
+        <varlistentry>
+          <term>fields</term>
+          <listitem>
+            <para>The fields to show in the list. If you query only one nodetype (see nodepath), you can use simple field names. Otherwise, you need to preface the fieldnames with the name of the objecttype they belong to.
+            If the first field listed is a number field, the objecttype of that field is used as the objecttype to edit in the wizard (instead of the last object type in the nodepath list). This parameter is similar to the fields attribute of the taglib's &lt;mm:list&gt; tag.</para>
+            <note><para>In 1.6.3 and lower, field is mandatory. In 1.6.4 and up, if fields is not specified, the wizard uses the default 'list' fields specified by MMBase.</para></note>
+            <programlisting format="linespecific">fields=news.title,people.firstname,people.lastname</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>templates</term>
+          <listitem>
+            <para>The directory where the xsl templates can be found. Use this to specify an alternate directory for xsl templates.</para>
+            <programlisting format="linespecific">templates=data/my_xsl</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>main</term>
+          <listitem>
+            <para>The name of the main node type in a node path. The main node type designates the element in a list that you want to edit. By default, the wizard takes the last name in a node path as the main node type.</para>
+            <para>For instance, in the node path 'mags,news,publishtimes', the main node type recognized automatically will be 'publishtimes' - but it is more likely that we desire to edit the news element in this list. In this case, you can point out to the wizard to use the 'news' element of the list instead.</para>
+            <note><para>Available from MMBase 1.6.4 and up. Prior to 1.6.4, you can designate the main node type by adding the number field of that node type to the fields parameter (i.e: 'news.number,news.title,publishtimes.date').
+            This method still works in 1.6.4, but is discouraged as it is confusing.
+            </para></note>
+            <programlisting format="linespecific">main=news</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>sessionkey</term>
+          <listitem>
+            <para>A key that identifies the 'session' of this wizard. Normally, you cannot run two separate editwizards concurrently from the same browser. If you want to allow this for your users for some reason, you can provide a 'sessionkey' to identify separate sessions: a wizard with one sessionkey runs independent from those who use a different one.
+            The default session key is 'editwizard'. Note that allowing more wizards to be opened from one browser consumes more resources and is therefor not recommended.</para>
+            <programlisting format="linespecific">sessionkey=my_key</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>context</term>
+          <listitem>
+            <para>The security context to assign to new objects and relations created by the editwizard. By default, objects are created using a default context defined by the security system (often depending on the logged on user). By explicitly specifying this default context. Not that specifying a context different from the default may result in objects that, once created, cannot be changed by the user due to security restrictions. A user needs to be able to change the context on objects he creates, or the parameter cause security errors.</para>
+            <programlisting format="linespecific">context=default</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>maxsize</term>
+          <listitem>
+            <para>The maximum size of a file to upload. The default maximum size for files is 4MB.</para>
+            <programlisting format="linespecific">maxsize=8000000</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>orderby</term>
+          <listitem>
+            <para>A list of fieldnames used to order the returning list. This parameter is similar to the orderby attribute of the taglib's &lt;mm:list&gt; tag.</para>
+            <programlisting format="linespecific">orderby=people.lastname,news.title</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>directions</term>
+          <listitem>
+            <para>A list of one or more UP/DOWN keywords. Each keyword determines whether the order of a matching field specified in the orderby parameter is ascending (UP) or descending (DOWN). This parameter is similar to the directions attribute of the taglib's &lt;mm:list&gt; tag.</para>
+            <programlisting format="linespecific">directions=UP</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>searchdirs</term>
+          <listitem>
+            <para>The direction in which relations between nodemanagers should be followed. This parameter is similar to the searchdirs attribute of the taglib's &lt;mm:listcontainer&gt; tag. It can be a list, in which case the first is for use between the first and second nodemanager, the second is for use between second and third nodemanager. If there are more steps in the nodemanager path then searchdirs, then the searchdir will default to the previous searchdir in the 'searchdirs' list.</para>
+            <note><para>Available from MMBase 1.7.0 and up. In MMBase 1.6.4 and up, only the 'searchdir' parameter was available and only one searchdir could be specified, valid for all steps of the nodepath.</para></note>
+            <programlisting format="linespecific">searchdirs=source,destination</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>constraints</term>
+          <listitem>
+            <para>A SQL-like constraint, used to filter the list. If you use fieldnames in a constraint, surround it with brackets ([]). This allows MMBase to recognize the fields and optimize the query. This parameter is similar to the constraints attribute of the taglib's &lt;mm:list&gt; tag.</para>
+            <programlisting format="linespecific">constraints=[news.title] like '%Brasil%'</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>distinct</term>
+          <listitem>
+            <para>If true, double entries in a list are returned only once.</para>
+            <programlisting format="linespecific">distinct=true</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>language</term>
+          <listitem>
+            <para>The preferred language for display. The language is specified by the ISO standardized 2-letter lowercase languagecode. The effects are dependent on whether alterenate langauge elemenst are availabel for the specified language. If not, the default language settings are used instead.</para>
+            <programlisting format="linespecific">language=nl</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>pagelength</term>
+          <listitem>
+            <para>The maximum number of entries shown on one list page. Default value is 50.</para>
+            <programlisting format="linespecific">pagelength=50</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>maxpagecount</term>
+          <listitem>
+            <para>The maximum number of pages available to browse through. Default value is 10.</para>
+            <programlisting format="linespecific">maxpagecount=10</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>start</term>
+          <listitem>
+            <para>The number of the item in the list where to start listing.
+              This value is used to skip to a certain page when browsing a large list.
+              Default is 0.</para>
+            <programlisting format="linespecific">start=0</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>age</term>
+          <listitem>
+            <para>The maximum age (in days) of the objects to list. Default is no age restriction.</para>
+            <programlisting format="linespecific">age=31</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>searchfields</term>
+          <listitem>
+            <para>The field(s) on which to make a search, using the value specified in the search parameter and the type of comparison specified in the search type.</para>
+            <para>You can specify more than one field (separated by commas). if you do, a search matches if one or more of the specified fields matches.</para>
+            <note><para>If the search parameter (see below) is set to AUTO, specifying this parameter will create a searchbox at the top of the list, allowing you to enter the value to search for. If a search box is forced by the search parameter but the searchfields are not specified, the default is to search on the fields being displayed (specified in the fields parameter)</para></note>
+            <programlisting format="linespecific">searchfields=news.title,news.subtitle</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>realsearchfield</term>
+          <listitem>
+            <para>The actual field on which to search. Normally, searches are done on the fields mentioned in the searchfields parameter (used to create the search box in  a list page). Sometimes, you want to search on a field other than those listed in searchfield (such as 'number' or 'owner'). In that case, use this parameter to specify the field.
+            </para>
+            <note><para>This parameter is set by the system when a user submits a search- you will hardly ever use it yourself. If you want to add additional constraints, use the 'constraints' parameter. If you specify a constraints parameter, that constraint is combined in further searches with the search parameters given by a user. If you use realsearchfield to specify a constraint, that information is only valid for the first search - it will be replaced when a user submits his search.</para></note>
+            <note><para>Available from MMBase 1.6.4 and up</para></note>
+            <programlisting format="linespecific">realsearchfield=news.title,news.subtitle</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>searchvalue</term>
+          <listitem>
+            <para>The term or value to search for. This is only valid if you also specify the searchfields parameter.</para>
+            <programlisting format="linespecific">searchvalue=Brasil</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>searchtype</term>
+          <listitem>
+            <para>Determines what type of search is used to filter on the searchfields, using the specified search value.  This is only valid if you also specify the searchfields parameter.</para>
+            <para>Allowed values are 'string', 'like', 'equalto', 'greaterthan', 'lessthan', 'notgreaterthan', and 'notlessthan'. use 'string' to compare the search value to the field using an exact match. Use 'like' to make a pattern search using the specified searchvalue. Use the other values to compare the field to numeric values or dates. I.e. using 'greaterthan' selects all fields whose (numeric) value is greater than the specified (numeric) value.
+            </para>
+            <programlisting format="linespecific">searchtype=like</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>search</term>
+          <listitem>
+            <para>The search parameter specified when the list should show a search box, and whether searching is mandatory. There are four possible values:</para>
+            <para><emphasis>no</emphasis> turns searching off. If other parameters such as searchfields and searchvalue are given, the search is performed using those parameters but a searchbox is not displayed.</para>
+            <para><emphasis>yes</emphasis> turns searching on, displaying a searchbox on top of the list, using defaults for parameters such as searchfields, if these are not specified.</para>
+            <para><emphasis>force</emphasis> is like YES, but searching (and showing a resultlist) is not performed until a searchvalue is specified. If no searchvalue is given, only the searchbox is displayed - no results are shown.</para>
+            <para><emphasis>auto</emphasis> makes searching dependent on the presence of the searchfields parameter. If the searchfields parameter is given, a searchbox is shown. Otherwise, it is not. AUTO is the default value</para>
+            <note><para>Available from MMBase 1.6.4 and up</para></note>
+            <programlisting format="linespecific">search=yes</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>origin</term>
+          <listitem>
+            <para>A node alias or number, which will be passed to the underlying editwizard. the value can then be referenced in the editwizard schema using the {$origin} variable.
+            This can be used to create relations to nodes whose 'origin' is determined outside the wizard (i.e. in a complex search or determined through user preferences).
+            </para>
+            <programlisting format="linespecific">origin=my_start_node</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>title</term>
+          <listitem>
+            <para>An optional title to use by the list. In general, you should specify this in the editwizard schema.</para>
+            <programlisting format="linespecific">title=News of The Week</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>proceed</term>
+          <listitem>
+            <para>System parameter, see the description at the wizard.jsp reference page for more info</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>replace</term>
+          <listitem>
+            <para>System parameter, see the description at the wizard.jsp reference page for more info</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>remove</term>
+          <listitem>
+            <para>System parameter, see the description at the wizard.jsp reference page for more info</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <example>
+        <title>How to use list.jsp to list objects</title>
+        <programlisting format="linespecific">list.jsp?wizard=practice/people&amp;nodepath=people&amp;fields=firstname,lastname</programlisting>
+        <programlisting format="linespecific">list.jsp?wizard=practice/simple&amp;startnodes=1&amp;nodepath=people,news&amp;fields=news.title,people.firstname,people.lastname</programlisting>
+      </example>
+    </section>
+    <section id="wizard.jsp">
+      <title>wizard.jsp</title>
+      <para>You can use wizard.jsp to directly start a wizard. Like list.jsp, you will need to supply the correct parameters in order to let the wizard run correctly. If you call the wizard.jsp page, a wizard will be loaded and started. The proper html will be rendered and shown in the browser. The syntax of wizard.jsp to create a new object looks like this:</para>
+      <programlisting format="linespecific">wizard.jsp?wizard=practice/simple&amp;objectnumber=new</programlisting>
+      <para>To create a wizard and use an existing mmbase object as source:</para>
+      <programlisting format="linespecific">wizard.jsp?wizard=practice/simple&amp;objectnumber=[objectnumber]</programlisting>
+      <variablelist>
+        <title>The following parameters MUST be specified (wizard.jsp does not work if you do not specify them):</title>
+        <varlistentry>
+          <term>wizard</term>
+          <listitem>
+            <para>The wizard to use. This is a relative reference to the xml schema file. Do not specify the ".xml" prefix.</para>
+            <programlisting format="linespecific">wizard=data/simple.xml</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>objectnumber</term>
+          <listitem>
+            <para>The number or alias of the object to edit. The object must exist. You can also supply the keyword 'new', which creates a new object instead of editing an existing one.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <variablelist>
+        <title>The following parameters MAY be specified:</title>
+        <varlistentry>
+          <term>templates</term>
+          <listitem>
+            <para>The directory where the xsl templates can be found. Use this to specify an alternate directory for xsl templates.</para>
+            <programlisting format="linespecific">templates=data/my_xsl</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>sessionkey</term>
+          <listitem>
+            <para>A key that identifies the 'session' of this wizard. Normally, you cannot run two separate editwizards concurrently from the same browser. If you want to allow this for your users for some reason, you can provide a 'sessionkey' to identify separate sessions: a wizard with one sessionkey runs independent from those who use a different one.
+            The default session key is 'editwizard'. Note that allowing more wizards to be opened from one browser consumes more resources and is therefor not recommended.</para>
+            <programlisting format="linespecific">sessionkey=my_key</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>context</term>
+          <listitem>
+            <para>The security context to assign to new objects and relations created by the editwizard. By default, objects are created using a default context defined by the security system (often depending on the logged on user). By explicitly specifying this default context. Not that specifying a context different from the default may result in objects that, once created, cannot be changed by the user due to security restrictions. A user needs to be able to change the context on objects he creates, or the parameter cause security errors.</para>
+            <programlisting format="linespecific">context=default</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>language</term>
+          <listitem>
+            <para>The preferred language for display. The language is specified by the ISO standardized 2-letter lowercase languagecode. The effects are dependent on whether alterenate langauge elemenst are availabel for the specified language. If not, the default language settings are used instead.</para>
+            <programlisting format="linespecific">language=nl</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>debug</term>
+          <listitem>
+            <para>If debug=true, the wizard will place additional information in the wizard page that allows for debugging of the application. This includes a link to a debug page that allows you to view the loaded object data and the wizard schema. This link specifies parameters such as sessionkey and popupid as required.</para>
+            <programlisting format="linespecific">debug=true</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>maxsize</term>
+          <listitem>
+            <para>The maximum size of a file to upload. The default maximum size for files is 4MB.</para>
+            <programlisting format="linespecific">maxsize=8000000</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>origin</term>
+          <listitem>
+            <para>A node alias or number. This value can be referenced in the editwizard schema using the {$origin} variable. This can be used to create relations to nodes whose 'origin' is determined outside the wizard (i.e. in a complex search or determined through user preferences).
+            </para>
+            <programlisting format="linespecific">origin=my_start_node</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>popupid</term>
+          <listitem>
+            <para>This parameter is passed by the system, you never pass it yourself. It is used to identify a 'popup' wizard. A popup wizard is a sub-wizard for the main wizard that, unlike an 'inline' sub-wizard, opens in a separate browser window. Because of this, it needs to separately maintain its status (identified by the popupid). Once the task of a popup wizard ends, it's window is closed, and the parent wizard is refreshed.</para>
+            <note><para>You never pass this parameter by hand. They are provided by the &lt;command name="startwizard"&gt; and &lt;field ftype="startwizard"&gt; tags in a wizard schema. However, you might need to pass the parameter in links if you override xsl stylesheets, and if you want to use the debug.jsp page to view a popup wizard's debug data, you need to know the value of this parameter.
+            </para></note>
+            <programlisting format="linespecific">popupid=my_id</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>proceed</term>
+          <listitem>
+            <para>This is a parameter passed by the system. It is used to indicate that the current wizard is still being processed, and therefor its data (stored in the user's session) should be kept an re-used by this call. Omitting this parameter (or passing it with the value false) causes all processed data to be removed, and replaced by a new wizard.</para>
+            <note><para>You never pass this parameter by hand, but you might need to pass it in links in overriding xsl stylesheets.</para></note>
+            <programlisting format="linespecific">popupid=my_id</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>replace</term>
+          <listitem>
+            <para>System parameter</para>
+            <note><para>You never pass this parameter by hand. It is used to by the wizard to pass state information.</para></note>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>remove</term>
+          <listitem>
+            <para>System parameter</para>
+            <note><para>You never pass this parameter by hand. It is used to by the wizard to pass state information.</para></note>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <example>
+        <title>How to use wizard.jsp to start an editwizard</title>
+        <programlisting format="linespecific">wizard.jsp?wizard=practice/simple&amp;objectnumber=184</programlisting>
+        <programlisting format="linespecific">wizard.jsp?wizard=practice/simple&amp;objectnumber=new</programlisting>
+      </example>
+    </section>
+    <section id="debug.jsp">
+      <title>debug.jsp</title>
+      <para>When you are debugging your wizard code, it can be useful to know what data is read and parsed by the wizard. The debug.jsp page gives access to three xml trees that are used by the current running wizard.</para>
+      <para>The data tree shows the xml that contains the data used by the wizard, including any changes made by the user. It can be useful to see if data is loaded (or changed) as expected. It can also be useful to determine xpaths when you plan to use these in your wizard: if you use an xpath in your wizard xml file, it access the data xml.</para>
+      <para>The wizard lists the fully expanded wizard schema file (including any inclusions and extensions). Note that this xml also contains some additional navigational information related to the current form, and does not fully follow the wizard dtd.</para>
+      <para>The wizard-schema combines the data and wizard xmlks into one xml tree. This tree is what is passed to the xsl-transformers, and is used to create the form that is sent to the end-user. Use this form to see if data loaded is actually used, and if you want to override the default xsl files.</para>
+      <variablelist>
+        <title>The following parameters MAY be specified:</title>
+        <varlistentry>
+          <term>sessionkey</term>
+          <listitem>
+            <para>A key that identifies the 'session' of this wizard. See the wizard.jsp for more information.</para>
+            <programlisting format="linespecific">sessionkey=my_key</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>popupid</term>
+          <listitem>
+            <para>Specify this parameter to view a popup wizard's debug data (instead of the data displayed by the main wizard). See the popupid of the wizard.jsp for more info.
+            </para>
+            <programlisting format="linespecific">popupid=my_id</programlisting>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
+  </section>
+  <section id="basicconcepts">
+    <title>Basic Concepts</title>
+    <para>TODO</para>
+    <section id="objectstructures">
+      <title>Object structures (Dove)</title>
+      <para>TODO</para>
+    </section>
+    <section id="xpathexpressions">
+      <title>XPath Expressions and Wizard variables</title>
+      <para>TODO</para>
+    </section>
+    <section id="including">
+      <title>Including xml fragments</title>
+      <para>TODO</para>
+    </section>
+    <section id="extending">
+      <title>Extending using xml fragments</title>
+      <para>TODO</para>
+    </section>
+  </section>
+  <section id="syntaxreference">
+    <title>Syntax Reference</title>
+<!-- variables -->
+&rf-origin;
+&rf-pos;
+<!-- tags -->
+&rf-action;
+&rf-action-add;
+&rf-action-create;
+&rf-action-delete;
+&rf-action-load;
+&rf-form-schema;
+&rf-item;
+&rf-list;
+&rf-object;
+&rf-step;
+&rf-steps;
+&rf-wizard-schema;
+
+    </section>
+    <section id="syntax">
+      <title>Syntax reference</title>
+      <variablelist>
+        <title>object (inside action type="create")</title>
+        <varlistentry>
+          <term>Syntax</term>
+          <listitem>
+            <para>&lt;object type="[buildername]" /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Usage</term>
+          <listitem>
+            <para>Inside a create-action, you can place an object-node to define what should be created within mmbase if the create-action is performed. With this node, you can define what object should be created, what values should be placed in what fields, and you can define possible new relations that should be created.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed attributes</term>
+          <listitem>
+            <para>type="[buildername]"</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible attributes</term>
+          <listitem>
+            <para>See needed attributes.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed childnodes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible childnodes</term>
+          <listitem>
+            <para>&lt;relation /&gt; If a relation node is placed inside an objectnode, a relation is created relating the object defined by the &lt;object /&gt; node and some other object (eg.: another to-be created object or an existing one.)</para>
+            <para>&lt;field /&gt; In the field nodes inside the object nodes, the user can define the defaultvalues of the designated fields. Eg.: &lt;field name="firstname"&gt;Enter your firstname&lt;/field&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible parents</term>
+          <listitem>
+            <para>&lt;action type="create" /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Example</term>
+          <listitem>
+            <programlisting format="linespecific"><![CDATA[
+<object type="news">
+  <relation destination="13234" role="related" />
+  <relation role="posrel">
+    <field name="pos">42</field>
+    <object type="images">
+      <field name="title">new image</field>
+    </object>
+  </relation>
+</object>
+            ]]></programlisting>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <variablelist>
+        <title>relation (inside action type="create")</title>
+        <varlistentry>
+          <term>Syntax</term>
+          <listitem>
+            <para>&lt;relation /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Usage</term>
+          <listitem>
+            <para>Usually, the relation is placed inside an object-node (inside a create-action), or it will be placed directly inside a create-action. With this node, the user can make relations between two newly created objects, or, create a relation between one newly created object and an already existing object.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed attributes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible attributes</term>
+          <listitem>
+            <para>destinationtype="[buildername]" This attribute is not used anymore. Forget it I'd say.</para>
+            <para>destination="[objectnumber or alias]" Use this attribute to point the relation to an already existing object in the mmbase cloud.</para>
+            <para>role="[relationname]" Use this attribute to define what kind of relation should be created. If omitted, the default InsRel relation is used. Best practice is to always define the role, eg.: "related" or "posrel" etc.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed childnodes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible childnodes</term>
+          <listitem>
+            <para>&lt;object /&gt; (see also: object)</para>
+            <para>&lt;field /&gt; Default values of fields of a relation itself can be set also. Eg.: &lt;field name="pos"&gt;-1&lt;/field&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible parents</term>
+          <listitem>
+            <para>&lt;action type="create" /&gt;</para>
+            <para>&lt;object /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Example</term>
+          <listitem>
+            <para>(See also: the &lt;action type="create" /&gt; example and the &lt;object /&gt; example.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <variablelist>
+        <title>field (general)</title>
+        <varlistentry>
+          <term>Syntax</term>
+          <listitem>
+            <para>&lt;field /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Usage</term>
+          <listitem>
+            <para>Field nodes define what form-elements will be placed in the wizard. This fieldnodes in the xml are an important part of the wizard's definition. For detailed information on what fieldtypes need what kind of settings, see the other fielddefinitions in the reference. Note: the field nodes that can be placed inside a relation or object node have different syntax! (See also: &lt;object type="create" /&gt;)</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed attributes</term>
+          <listitem>
+            <para>name="[fieldname]" fdatapath, ftype, dttype, dtrequired, dtminlength, dtmaxlength are automatically retrieved from mmbase. Overriding is always possible, however.</para>
+            <para>or (advanced users:) fdatapath="[xpath]" and ftype="[fieldtype]"</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible attributes</term>
+          <listitem>
+            <para>ftype="[fieldtype]" (line|text|enum|date|int)</para>
+            <para>dttype="[datatype]" (string|int|date|datetime|time|html)</para>
+            <para>dtminlength="[minlength]"</para>
+            <para>dtmaxlength="[maxlength]"</para>
+            <para>dtrequired="[true|false]"</para>
+            <para>rows="[rowcount]"</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed childnodes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible childnodes</term>
+          <listitem>
+            <para>&lt;prompt /&gt; For every field, a prompt-text can be given. If defined, the prompt text will be visible in front of the field in the wizard.</para>
+            <para>&lt;description /&gt; For every field, a description can be given. If defined, the description will be shown "onmouseover". If the user move the mouse over the field, the description will be shown in a hint.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible parents</term>
+          <listitem>
+            <para>&lt;form-schema /&gt;</para>
+            <para>&lt;item /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Example</term>
+          <listitem>
+            <programlisting format="linespecific"><![CDATA[
+<form-schema id="step1">
+  <title>Example form</title>
+  <field name="title" dtminlength="1" ftype="line">
+    <prompt>News Title</prompt>
+    <description>You can enter the news-title here</description>
+  </field>
+</form-schema>
+            ]]></programlisting>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <variablelist>
+        <title>field ftype="line"</title>
+        <varlistentry>
+          <term>Syntax</term>
+          <listitem>
+            <para>&lt;field ftype="line" /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Usage</term>
+          <listitem>
+            <para>A line-field will show a single-line inputfield in the wizard. Use them for simple text entry.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed attributes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible attributes</term>
+          <listitem>
+            <para>dttype="string"</para>
+            <para>dttype="int"</para>
+            <para>dtminlength="[minlength]"</para>
+            <para>dtmaxlength="[maxlength]"</para>
+            <para>dtrequired="[true|false]"</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed childnodes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible childnodes</term>
+          <listitem>
+            <para>see field (general)</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible parents</term>
+          <listitem>
+            <para>see field (general)</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Example</term>
+          <listitem>
+            <programlisting format="linespecific"><![CDATA[
+<field name="title" dtminlength="1">
+  <prompt>Title</prompt>
+</field>
+            ]]></programlisting>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <variablelist>
+        <title>field ftype="int"</title>
+        <varlistentry>
+          <term>Syntax</term>
+          <listitem>
+            <para>&lt;field ftype="int" /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Usage</term>
+          <listitem>
+            <para>Use this field for number editing</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed attributes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible attributes</term>
+          <listitem>
+            <para>dtmin="[minvalue]"</para>
+            <para>dtmax="[maxvalue]"</para>
+            <para>dtrequired="[true|false]"</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed childnodes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible childnodes</term>
+          <listitem>
+            <para>see field (general)</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible parents</term>
+          <listitem>
+            <para>see field (general)</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Example</term>
+          <listitem>
+            <programlisting format="linespecific"><![CDATA[
+<field name="score" dtmin="100" dtmax="5000" dtrequired="true"> <
+  <prompt>Enter position</prompt>
+  <description>Enter value between 100 and 5000 please.</description>
+</field>
+            ]]></programlisting>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <variablelist>
+        <title>field ftype="date"</title>
+        <varlistentry>
+          <term>Syntax</term>
+          <listitem>
+            <para>&lt;field ftype="date" /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Usage</term>
+          <listitem>
+            <para>Use this field to edit date, date-time, or time fields.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed attributes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible attributes</term>
+          <listitem>
+            <para>dtmin="[mindate]"</para>
+            <para>dtmax="[mindate]"</para>
+            <para>dttype="[date|datetime|time]"</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed childnodes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible childnodes</term>
+          <listitem>
+            <para>see field (general)</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible parents</term>
+          <listitem>
+            <para>see field (general)</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Example</term>
+          <listitem>
+            <programlisting format="linespecific"><![CDATA[
+<field name="start" dttype="date">
+  <prompt>Startdate</prompt>
+</field>
+            ]]></programlisting>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <variablelist>
+        <title>field ftype="upload"</title>
+        <varlistentry>
+          <term>Syntax</term>
+          <listitem>
+            <para>&lt;field ftype="upload" /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Usage</term>
+          <listitem>
+            <para>Use this field to process uploads. Note: Make sure that you use this field in the right context: Usually, this field will store it's binary-value in a mmbase field named 'handle'. See the upload example for more info.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed attributes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible attributes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed childnodes</term>
+          <listitem>
+            <para>see field (general)</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible childnodes</term>
+          <listitem>
+            <para>see field (general)</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible parents</term>
+          <listitem>
+            <para>see field (general)</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Example</term>
+          <listitem>
+            <programlisting format="linespecific"><![CDATA[
+<wizard-schema>
+  <title>Image Upload</title>
+  <action type="create">
+    <object type="images" />
+  </action>
+  <action type="load">
+    <field name="title" />
+    <field name="description" />
+  </action>
+  <form-schema id="step1">
+    <title>Image upload</title>
+    <field name="title">
+      <prompt>Title</prompt>
+    </field>
+    <field name="description" ftype="text" rows="8">
+      <prompt>Description</prompt>
+    </field>
+    <field name="handle" ftype="image" dttype="binary">
+      <prompt>upload</prompt>
+    </field>
+  </form-schema>
+</wizard-schema>
+            ]]></programlisting>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <variablelist>
+        <title>field ftype="startwizard"</title>
+        <varlistentry>
+          <term>Syntax</term>
+          <listitem>
+            <para>&lt;field ftype="startwizard"&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Usage</term>
+          <listitem>
+            <para>Use this field to start one wizard, from inside another wizard.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed attributes</term>
+          <listitem>
+            <para>objectnumber="{object/@number}"</para>
+            <para>wizardname="[ name of the wizard ]"</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible attributes</term>
+          <listitem>
+            <para>inline="[true|false]" an inline startwizard will replace the current wizard to create the new object and come back when ready, a not-inline startwizard will pop-up a window to create the new object .</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed childnodes</term>
+          <listitem>
+            <para>None.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible childnodes</term>
+          <listitem>
+            <para>None.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible parents</term>
+          <listitem>
+            <para>&lt;item /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Example</term>
+          <listitem>
+            <programlisting format="linespecific">&lt;command name="startwizard" inline="false" wizardname="tasks/myurls" objectnumber="new"/> &lt;command name="startwizard" inline="true" wizardname="tasks/myurls" objectnumber="new"/></programlisting>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <variablelist>
+        <title>field ftype="data"</title>
+        <varlistentry>
+          <term>Syntax</term>
+          <listitem>
+            <para>&lt;field ftype="data" /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Usage</term>
+          <listitem>
+            <para>Use this field to show values, but don't make it editable. In other words: use this to make a read-only field.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed attributes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible attributes</term>
+          <listitem>
+            <para>see field (general)</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed childnodes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible childnodes</term>
+          <listitem>
+            <para>see field (general)</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible parents</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Example</term>
+          <listitem>
+            <programlisting format="linespecific"><![CDATA[
+<field name="firstname" ftype="data">
+ <prompt>Your firstname is:</prompt>
+</field>
+            ]]></programlisting>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <variablelist>
+        <title>field ftype="enum"</title>
+        <varlistentry>
+          <term>Syntax</term>
+          <listitem>
+            <para>&lt;field ftype="enum" /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Usage</term>
+          <listitem>
+            <para>Use this field to make a "dropdown" inputfield. (In HTML-terms: a selectbox).</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed attributes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible attributes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed childnodes</term>
+          <listitem>
+            <para>&lt;optionlist /&gt; Use this node to define the possible options for the field. (see also: optionlist)</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible childnodes</term>
+          <listitem>
+            <para>see field (general)</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible parents</term>
+          <listitem>
+            <para>see field (general)</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Example</term>
+          <listitem>
+          First define an optionlist... (outside 'form-schema' see 'optionlist')
+            <programlisting format="linespecific"><![CDATA[
+<lists>
+  <optionlist name="articletypes">
+	<option id="1">News</option>
+	<option id="2">Interview</option>
+	<option id="3">Information</option>
+  </optionlist>
+</lists>
+            ]]></programlisting>
+			...and then use it like this.
+            <programlisting format="linespecific"><![CDATA[
+<field name="type" ftype="enum">
+  <prompt>Articletype</prompt>
+  <optionlist select="articletypes"/>
+</field>
+            ]]></programlisting>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <variablelist>
+        <title>lists</title>
+        <varlistentry>
+          <term>Syntax</term>
+          <listitem>
+            <para>&lt;lists /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Usage</term>
+          <listitem>
+            <para>Use this node to define optionlists in a wizard.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed attributes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible attributes</term>
+          <listitem>
+            <para>None.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed childnodes</term>
+          <listitem>
+            <para>&lt;optionlist /&gt; (see also:optionlist)</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible childnodes</term>
+          <listitem>
+            <para>See needed childnodes</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible parents</term>
+          <listitem>
+            <para>&lt;wizard-schema /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Example</term>
+          <listitem>
+            <programlisting format="linespecific"><![CDATA[
+<lists>
+  <optionlist name="priorities">
+    <option id="1">Low</option>
+    <option id="2">High</option>
+  </optionlist>
+</lists>
+            ]]></programlisting>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <variablelist>
+        <title>optionlist</title>
+        <varlistentry>
+          <term>Syntax</term>
+          <listitem>
+            <para>&lt;optionlist /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Usage</term>
+          <listitem>
+            <para>Use this node to define an optionlist. It can be either a static list of options, or a list filled using an MMBase query.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed attributes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible attributes</term>
+          <listitem>
+            <para>name="[optionlistname]" This optional attribute can be used if an optionlist is defined in a &lt;lists /&gt; node. To reference to the defined optionlist, you will need the optionlistname. Eg.: &lt;optionlist select="earlier_defined_optionlist" /&gt;</para>
+            <para>optionid="field[@name='fieldname']" This optional attribute can be used if an underlying 'query' node is present. Of all matching nodes, the field with name given in 'optionid' will be used as the 'id' part of the option.</para>
+            <para>optioncontent="field[@name='fieldname']" This optional attribute can be used if an underlying 'query' node is present. Of all matching nodes, the field with name given in 'optioncontent' will be used as the content part of the option.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed childnodes</term>
+          <listitem>
+            <para>&lt;option id="[optionid]"&gt;[optionvalue_to_be_shown_in_wizard]&lt;/option&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible childnodes</term>
+          <listitem>
+            <para>&lt;query&gt; This childnode can be used instead of &lt;option&gt; childnodes to fill the optionlist with options. The query has three attributes: optional 'where' and 'orderby' clauses and a required 'xpath' clause. The xpath can have the following syntax:
+                          <itemizedlist>
+                            <listitem>
+                              <para>/*@buildername, in this case a nodequery will be performed.</para>
+                            </listitem>
+                            <listitem>
+                              <para>/*@buildername,otherbuildername,..., in this case a multilevel query will be performed. When doing a multilevel query, there must be a &lt;object&gt; childnode with two &lt;field&gt; childnodes for the 'optionid' and 'optioncontent' arguments of the optionlist.</para>
+                            </listitem>
+                          </itemizedlist>
+                        </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible parents</term>
+          <listitem>
+            <para>&lt;wizard-schema /&gt;</para>
+            <para>&lt;field ftype="enum" /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Example</term>
+                    <listitem>
+                        <programlisting format="linespecific"><![CDATA[
+<optionlist name="role"
+            optionid="field[@name='role.role']"
+            optioncontent="field[@name='role.name']">
+    <query xpath="/*@companies,roles" where="company.number = {$origin}">
+        <object>
+            <field name="role.role" />
+            <field name="role.name" />
+        </object>
+    </query>
+</optionlist>]]></programlisting>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <variablelist>
+        <title>command (name="search")</title>
+        <varlistentry>
+          <term>Syntax</term>
+          <listitem>
+            <para>&lt;command name="search" /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Usage</term>
+          <listitem>
+            <para>Use this command inside a list node to define how a user can search for objects and add them to a list.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Attributes (general)</term>
+          <listitem>
+            <para>See for detailed information how to use nodepath, startnodes, fields, constraints, orderby the documentation of the MMBase taglib.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed attributes</term>
+          <listitem>
+            <para>name="search"</para>
+            <para>nodepath="[buildername_to_start_with]"</para>
+            <para>fields="[fieldnames of fields to show]"</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible attributes</term>
+          <listitem>
+            <para>startnodes="[objectnumber]"</para>
+            <para>age="[default age to show in search-field]" use -1 to set it to "any age", use 1,7,31,365 for day, week, month, year ages.</para>
+            <para>constraints="[mmbase where part]"</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed childnodes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible childnodes</term>
+          <listitem>
+            <para>&lt;prompt /&gt; Place the text to be shown in front of the searchfield here.</para>
+            <para>&lt;search-filter /&gt; Defines what extra searchfields should be shown and used in the query. See also: search-filter.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible parents</term>
+          <listitem>
+            <para>&lt;list /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Example</term>
+          <listitem>
+            <programlisting format="linespecific"><![CDATA[
+<list destination="people" minoccurs="0" maxoccurs="*">
+  <command name="search" nodepath="people" fields="firstname,lastname" orderby="lastname" age="-1">
+    <prompt>#Search command prompt</prompt>
+    <search-filter>
+      <name>firstname contains</name>
+      <search-fields>firstname</search-fields>
+    </search-filter>
+    <search-filter>
+      <name>lastname contains</name>
+      <search-fields>lastname</search-fields>
+    </search-filter>
+  </command>
+  <item>
+    <field name="firstname" >
+      <prompt>Field prompt</prompt>
+      <description>Field Description</description>
+    </field>
+  </item>
+  <action type="create">
+    <relation destinationtype="people" role="related" />
+  </action>
+</list>
+            ]]></programlisting>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <variablelist>
+        <title>search-filter</title>
+        <varlistentry>
+          <term>Syntax</term>
+          <listitem>
+            <para>&lt;search-filter /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Usage</term>
+          <listitem>
+            <para>Use the searchfilter to allow the user to fire a free-text query from the wizard. See the command name="search" example.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed attributes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible attributes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Needed childnodes</term>
+          <listitem>
+            <para>&lt;name /&gt;</para>
+            <para>&lt;search-fields /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible childnodes</term>
+          <listitem>
+            <para>None</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Possible parents</term>
+          <listitem>
+            <para>&lt;command name="search" /&gt;</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Example</term>
+          <listitem>
+            <programlisting format="linespecific"><![CDATA[
+<search-filter>
+  <name>Naam bevat</name>
+  <search-fields>name</search-fields>
+</search-filter>
+            ]]></programlisting>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+  </section>
+</article>
+

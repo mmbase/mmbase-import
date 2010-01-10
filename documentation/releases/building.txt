@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.9.0 - Building
+                     MMBase 1.8.0 - Building
 ===================================================================  
   
 This is the source distribution of the MMBase project. It includes the
@@ -9,7 +9,7 @@ building.txt                This file
 installation.txt            Instructions for installing MMBase
 readme.txt                  General info about the MMBase distro
 release-notes.txt           Releasenotes for this distro (contains
-                            changes/bugfixes/known issues)
+                            changes/bugfixes/know issues)
 upgrade.txt                 Instructions for upgrading existing MMBase
                             installations
 build.properties            Build properties for ant, you may
@@ -68,7 +68,7 @@ tests/                      Automated testcases
 
 In order build MMBase into your own webapplication, you must do the following:
 
-1. Download and install a Java Development Kit (j2sdk-1.5.x or newer)
+1. Download and install a Java Development Kit (j2sdk-1.4.x or newer)
 
 2. Download and install the Ant Binary Distribution (Ant 1.5 is required)
 

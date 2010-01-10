@@ -11,7 +11,10 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import org.mmbase.tests.*;
+import java.text.*;
 import java.util.*;
+import org.w3c.dom.Document;
+
 import org.mmbase.util.*;
 import org.mmbase.datatypes.*;
 
@@ -31,7 +34,7 @@ public class ErroneousFilledNodeTest extends BridgeTest {
                 new Object[] {"integerstring", // integer in db. getValue returns an Integer
                               new Object[] {
                                  new Integer(1232), 
-                                 new Entry<String, Integer>("1234", new Integer(1234))
+                                 new Entry("1234", new Integer(1234))
                               },
                               new Object[] {
                                   "abac" 
@@ -39,20 +42,20 @@ public class ErroneousFilledNodeTest extends BridgeTest {
                 },
                 new Object[] {"stringinteger", // string in db. getValue returns a String
                               new Object[] { 
-                                  new Entry<Integer, String>(new Integer(1232), "1232"),
+                                  new Entry(new Integer(1232), "1232"),
                                   "1234"},
                               new Object[] {
                                   "abac"
                               }
                 },
                 new Object[] {"floatdouble",  // float in db
-                              new Object[] {new Float(1232), new Entry<String, Float>("1234", new Float(1234))},
+                              new Object[] {new Float(1232), new Entry("1234", new Float(1234))},
                               new Object[] {
                                   "abac"
                               }
                 },
                 new Object[] {"doublefloat",  // double in db
-                              new Object[] {new Double(1232), new Entry<String, Double>("1234", new Double(1234))},
+                              new Object[] {new Double(1232), new Entry("1234", new Double(1234))},
                               new Object[] {
                                   "abac"
                               }
@@ -88,11 +91,12 @@ public class ErroneousFilledNodeTest extends BridgeTest {
         Cloud cloud = getCloud();
         NodeManager nm = cloud.getNodeManager(getNodeManager());
         List errors = new ArrayList();
-        for (Object element : cases) {
-            Object[] kase = (Object[]) element;
+        for (int i = 0 ; i < cases.length; i++) {
+            Object[] kase = (Object[]) cases[i];
             String fieldName = (String) kase[0];
             Object[] validValues = (Object[]) kase[1];
-            for (Object value : validValues) {
+            for (int j = 0; j < validValues.length; j++) {
+                Object value = validValues[j];
                 Object inValue;
                 Object outValue;
                 if (value instanceof Entry) {
@@ -114,7 +118,8 @@ public class ErroneousFilledNodeTest extends BridgeTest {
                 }
             }
             Object[] invalidValues = (Object[]) kase[2];
-            for (Object invalidValue : invalidValues) {
+            for (int k= 0; k < invalidValues.length; k++) {
+                Object invalidValue = invalidValues[k];
                 try {
                     Node newNode = nm.createNode();
                     newNode.setObjectValue(fieldName, invalidValue);

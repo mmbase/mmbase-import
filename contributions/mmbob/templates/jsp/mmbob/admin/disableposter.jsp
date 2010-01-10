@@ -41,38 +41,48 @@
     </th>
   </tr>
 
-  <form action="<mm:url page="profiles.jsp">
-                    <mm:param name="forumid" value="$forumid" />
-                                        <mm:param name="disableposterid" value="$disableposterid"/>
-                    <mm:param name="admincheck" value="true" />
-                </mm:url>" method="post">
-  <tr>
-    <td colspan="2" align="center">
-      <mm:write referid="mlg.Disable" /> <mm:write referid="mlg.member"/> : <mm:node number="$disableposterid"><mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)</mm:node>
-    </td>
-  </tr>
 
-  <tr>
-    <td colspan="2" align="center"><mm:write referid="mlg.Are_you_sure" />?</td>
-  </tr>
+    <tr>
+        <td colspan="2" align="center">
+            <mm:write referid="mlg.Disable" /> <mm:write referid="mlg.member"/> :
+            <mm:nodefunction set="mmbob" name="getPosterInfo" referids="forumid,disableposterid@posterid">
+                <mm:field name="identifier" />
+            </mm:nodefunction>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" align="center"><mm:write referid="mlg.Are_you_sure" />?</td>
+    </tr>
+    <tr>
+        <%--
+        <td align="center" ></td>
+        --%>
+        <td align="center" >
+            <mm:link page="${header.referer}">
+                <mm:param name="forumid" value="$forumid" />
+                <mm:param name="disableposterid" value="$disableposterid"/>
+                <mm:param name="admincheck" value="true" />
+                <form action="${_}" method="post" id="form_disable">
+                    <input type="hidden" name="admincheck" value="true">
+                    <input type="hidden" name="action" value="disableposter">
+                    <mm:write referid="mlg.Disable" >
+                        <input type="submit" value="${_}">
+                    </mm:write>
+                </form>
+            </mm:link>
+        </td>
 
-  <input type="hidden" name="admincheck" value="true">
-  <input type="hidden" name="action" value="disableposter">
-
-
-  <tr>
-    <td align="center" ><input type="submit" value="<mm:write referid="mlg.Disable" />"> </td>
-    <td align="center">
-      </form>
-      <form action="<mm:url page="profiles.jsp">
-    <mm:param name="forumid" value="$forumid" />
-    </mm:url>"
-    method="post">
-      <p />
-      <input type="submit" value="<mm:write referid="mlg.Cancel" />">
-      </form>
-    </td>
-  </tr>
+        <td align="center">
+            <mm:link page="${header.referer}">
+                <mm:param name="forumid" value="$forumid" />
+                <form action="${_}" method="post">
+                    <mm:write referid="mlg.Cancel" >
+                        <input type="submit" value="${_}">
+                    </mm:write>
+                </form>
+            </mm:link>
+        </td>
+    </tr>
 </table>
 </div>
 

@@ -62,14 +62,14 @@
   <form action="<mm:url page="removemoderator.jsp" referids="forumid,postareaid" />" method="post">
     <tr><th align="left" width="25%"><mm:write referid="mlg.Current_moderators" /></th><td colspan="2" align="left">
           <mm:nodelistfunction set="mmbob" name="getModerators" referids="forumid,postareaid">
-            <mm:field name="nick" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
+            <mm:field name="identifier" /><br />
           </mm:nodelistfunction>
     <p />
     </td></tr>
     <tr><th align="left"><mm:write referid="mlg.Possible_moderators" /></th><td colspan="2" align="left">
           <select name="remmoderator">
-          <mm:nodelistfunction set="mmbob" name="getModerators" referids="forumid,postareaid">
-                <option value="<mm:field name="id" />"><mm:field name="nick" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
+          <mm:nodelistfunction set="mmbob" name="getModerators" referids="forumid,postareaid" id="mds">
+                <option value="${mds.posterid}">${mds.identifier}</option>
           </mm:nodelistfunction>
         </select>
     </td></tr>

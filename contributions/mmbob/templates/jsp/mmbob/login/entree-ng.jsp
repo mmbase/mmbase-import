@@ -1,4 +1,7 @@
 <%@ include file="../jspbase.jsp" %>
+<%@ page import='org.mmbase.applications.profilesconnector.*' %>
+<%@ page import='nl.kennisnet.entreeng.gec.*' %>
+<%@ page import='nl.kennisnet.entreeng.gec.attributes.*' %>
 <mm:cloud>
     <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
         <mm:import externid="forumid" jspvar="forumid" />
@@ -7,10 +10,6 @@
 
         <!-- login part -->
         <%@ include file="../getposterid.jsp" %>
-
-        <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
-            <mm:import id="hasnick"><mm:field name="hasnick" /></mm:import>
-        </mm:nodefunction>
 
         <mm:locale language="$lang">
             <%@ include file="../loadtranslations.jsp" %>
@@ -31,12 +30,12 @@
                     </div>
 
                     <div class="body">
-                        <%@ page import='nl.kennisnet.entreeng.gec.*' %>
-                        <%@ page import='nl.kennisnet.entreeng.gec.attributes.*' %>
                         <% Persoon persoon = EntreeNGRequestHelper.getPersoonFromRequest(request);
                             String EntreeID = persoon.getEntreeID();
                             String gebruikersnaam = persoon.getGebruikersnaam();
                             if (EntreeID==null && gebruikersnaam!=null) EntreeID=gebruikersnaam;
+
+
 
                          %>
                         <mm:import id="entree" reset="true"><%=EntreeID%></mm:import>
@@ -51,6 +50,7 @@
 
                         <%--  entree id found--%>
                             <mm:compare referid="entree" value="null" inverse="true">
+
                                 <mm:import id="ea"><mm:write referid="entree" /></mm:import>
                                 <mm:nodefunction set="mmbob" name="getPosterPassword" referids="forumid,ea@account" id="ppasswd">
                                     <mm:field name="failed">
@@ -82,12 +82,29 @@
                                                             </td>
                                                         </tr>
 
-                                                        <mm:compare referid="hasnick" value="true">
-                                                            <tr>
-                                                                <th width="150" >Nick</th>
-                                                                <td> <input name="newnick" value="" style="width: 100%" /> </td>
-                                                            </tr>
-                                                        </mm:compare>
+                                                        <%--try to find the nick from the profile--%>
+                                                        <%
+                                                            String posterID = request.getHeader("aad_nummer");
+                                                            ProfilesConnector connector = new ProfilesConnector();
+                                                            String nick = connector.getValue(EntreeID,"187388721:BS:nickname");
+                                                        %>
+                                                        <c:set var="nick"><%=nick%></c:set>
+
+                                                        <tr>
+                                                            <th width="150" >Nick <c:if test="${empty nick || nick=='null'}">*</c:if></th>
+                                                            <td>
+                                                                <c:choose>
+                                                                    <c:when test="${empty nick || nick=='null'}">
+                                                                        <input type="text"   name="newnick" value="" style="width: 100%" />
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        ${nick}
+                                                                            <input type="hidden" name="newnick" value="${nick}" style="width: 100%" />
+
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </td>
+                                                        </tr>
 
                                                         <tr>
                                                             <th><mm:write referid="mlg.Firstname"/></th>

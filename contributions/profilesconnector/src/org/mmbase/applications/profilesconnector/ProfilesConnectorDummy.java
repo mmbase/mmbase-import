@@ -33,12 +33,12 @@ public class ProfilesConnectorDummy implements ExternalProfileInterface {
 					String veldid = tok.nextToken();
 					log.info("GET DienstId="+dienstid+" entreeid="+entreeid+" type="+type+" veldid="+veldid);
 					try {
-					int dienstidint = Integer.parseInt(dienstid);
-					int veldidint = Integer.parseInt(veldid);
+					int d = Integer.parseInt(dienstid);
+					int i = Integer.parseInt(veldid);
 					if (type.equals("GS")) {
-						return getGSField(dienstidint,entreeid,veldidint); 
+						return getGSField(d,entreeid,i); 
 					} else {
-						return getBSField(dienstidint,entreeid,veldid); 
+						return getBSField(d,entreeid,i); 
 					}
 					} catch (Exception e) {}
 				}
@@ -58,12 +58,12 @@ public class ProfilesConnectorDummy implements ExternalProfileInterface {
 					String veldid = tok.nextToken();
 					log.info("SET DienstId="+dienstid+" entreeid="+entreeid+" type="+type+" veldid="+veldid);
 					try {
-					int dienstidInt = Integer.parseInt(dienstid);
-					int veldidint = Integer.parseInt(veldid);
+					int d = Integer.parseInt(dienstid);
+					int i = Integer.parseInt(veldid);
 					if (type.equals("GS")) {
-						return setGSField(dienstidInt,entreeid,veldidint,value); 
+						return setGSField(d,entreeid,i,value); 
 					} else {
-						return setBSField(dienstidInt,entreeid,veldid,value); 
+						return setBSField(d,entreeid,i,value); 
 					}
 					} catch (Exception e) {}
 				}
@@ -76,77 +76,45 @@ public class ProfilesConnectorDummy implements ExternalProfileInterface {
 
 	// dummy routines
 	private String getGSField(int dienstID, String entreeID, int veldID) {
-        String value = null;
-        if (entreeID.equals("daniel")) {
-            switch (veldID) {
-            case 1:
-                value = danielmsn;
-                break;
-            case 2:
-                value = danielyahoo;
-                break;
-            case 3:
-                value = danielicq;
-                break;
-            }
-        } else if (entreeID.equals("admin")) {
-            switch (veldID) {
-            case 1:
-                value = adminmsn;
-                break;
-            case 2:
-                value = adminyahoo;
-                break;
-            case 3:
-                value = adminicq;
-                break;
-            }
-        }
-        log.info("value obtained from remote profile for field: "+veldID+": "+value);
-        return value;
-    }
+		if (entreeID.equals("daniel")) {
+		      switch (veldID) {
+		        case 1:  return danielmsn;
+            		case 2:  return danielyahoo;
+            		case 3:  return danielicq;
+		      }
+		} else if (entreeID.equals("admin")) {
+		      switch (veldID) {
+		        case 1:  return adminmsn;
+            		case 2:  return adminyahoo; 
+            		case 3:  return adminicq; 
+		      }
+		}
+		return null;
+	}
 
 
 	private boolean setGSField(int dienstID, String entreeID, int veldID,String value) {
 		if (entreeID.equals("daniel")) {
-            switch (veldID) {
-            case 1:
-                danielmsn = value;
-                break;
-            case 2:
-                danielyahoo = value;
-                break;
-            case 3:
-                danielicq = value;
-                break;
-            }
-        } else if (entreeID.equals("admin")) {
-            switch (veldID) {
-            case 1:
-                adminmsn = value;
-                break;
-            case 2:
-                adminyahoo = value;
-                break;
-            case 3:
-                adminicq = value;
-                break;
-            }
-        }
-        log.info("value set into profiel entry field "+veldID+": "+value);
+		      switch (veldID) {
+		        case 1:  danielmsn =  value; break;
+            		case 2:  danielyahoo = value; break;
+            		case 3:  danielicq = value; break;
+		      }
+		} else if (entreeID.equals("admin")) {
+		      switch (veldID) {
+		        case 1:  adminmsn =  value; break;
+            		case 2:  adminyahoo = value; break;
+            		case 3:  adminicq = value; break;
+		      }
+		}
 		return true;
 	}
 
-	private String getBSField(int dienstID, String entreeID, String veldID) {
+	private String getBSField(int dienstID, String entreeID, int veldID) {
 		return null;
 	}
 
-	private boolean setBSField(int dienstID, String entreeID, String veldID,String value) {
-        if(veldID.equals("nickname")){
-            if(value.equals("inuse")){
-                return false;
-            }
-        }
-		return true;
+	private boolean setBSField(int dienstID, String entreeID, int veldID,String value) {
+		return false;
 	}
 }

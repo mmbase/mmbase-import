@@ -43,11 +43,12 @@
 
   </th></tr>
 
-    <tr><th align="left" width="200"><mm:write referid="mlg.Current_administrators" /></th><td colspan="2" align="left">
+    <tr>
+        <th align="left" width="200"><mm:write referid="mlg.Current_administrators" /></th><td colspan="2" align="left">
           <mm:nodelistfunction set="mmbob" name="getAdministrators" referids="forumid">
-            <mm:field name="nick" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
+            <mm:field name="idenitier" />
           </mm:nodelistfunction>
-    <p />
+        <p />
     </td></tr>
     <tr><th align="left"><mm:write referid="mlg.Possible_administrators" /></th><td align="left" colspan="2">
           <mm:import externid="searchkey">*</mm:import>
@@ -55,10 +56,10 @@
             search <input name="searchkey" size="20" value="<mm:write referid="searchkey" />" />
           </form>
           <form action="<mm:url page="newadministrator.jsp"><mm:param name="forumid" value="$forumid" /><mm:param name="admincheck" value="true" /></mm:url>" method="post">
-          <select name="newadministrator">
-          <mm:nodelistfunction set="mmbob" name="getNonAdministrators" referids="forumid,searchkey">
-                <option value="<mm:field name="id" />"><mm:field name="nick" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
-          </mm:nodelistfunction>
+              <select name="newadministrator">
+                  <mm:nodelistfunction set="mmbob" name="getNonAdministrators" referids="forumid,searchkey" id="na">
+                        <option value="${na.posterid}">${na.identifier}</option>
+                  </mm:nodelistfunction>
         </select>
     </td></tr>
     <input type="hidden" name="admincheck" value="true">
