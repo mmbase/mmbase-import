@@ -9,7 +9,7 @@ $Id$
 
 
 - Make a tag or branch
-   svn cp -m "Tagged 1.9.1"  https://scm.mmbase.org/mmbase/trunk  https://scm.mmbase.org/mmbase/tags/MMBase-1_9_1_Final
+   svn cp -m "Tagged 1.9.1"  https://scm.mmbase.org/mmbase/branches/MMBase-1_9  https://scm.mmbase.org/mmbase/tags/MMBase-1_9_1_Final
 
 - Check it out
   svn co  https://scm.mmbase.org/mmbase/tags/MMBase-1_9_1_Final
@@ -19,7 +19,7 @@ $Id$
   - pom.xml
     Change <mmbase.version.number> and <mmbase.version.postfix> to the right numbers.
     Such as 1.9.2 and -20091104
-    
+
   - Fix the other poms:
    for i in `find . -name pom.xml` ; do cat $i | sed s/1.9-SNAPSHOT/1.9.1/g > $i.new ; mv $i.new $i   ; done
 
