@@ -84,17 +84,17 @@ public class MMBaseEntry implements IndexEntry {
 
         log.debug("Adding standard keys");
         // always add the 'element' number first, because that ensures that document.get("number") returns 'the' node
-        String id = getIdentifier();
-
-        Set<String> result = new HashSet<String>();
+        final String id = getIdentifier();
+        boolean elementAdded = false;
         if (! Arrays.asList(document.getValues("number")).contains(id)) {
             document.add(new Field("number",   id,  Field.Store.YES, Field.Index.NOT_ANALYZED));
-        } else {
-            result.add(null);
+            elementAdded = true;
         }
+        final Set<String> result = new HashSet<String>();
+
         if (multiLevel) {
             document.add(new Field("builder", elementManager.getName(),    Field.Store.YES, Field.Index.NOT_ANALYZED)); // keyword
-            log.debug("added builder as " + elementManager.getName());
+            log.debug("added builder as " + elementManager.getName() + " now checking " + node.getNodeManager().getFields());
             for (org.mmbase.bridge.Field field : node.getNodeManager().getFields()) {
                 if (field.getName().indexOf(".") >= 0 ) {
                     continue;
@@ -103,13 +103,14 @@ public class MMBaseEntry implements IndexEntry {
 		try {
 	            Node subNode = node.getNodeValue(field.getName());
                     String number = "" + subNode.getNumber();
-                    if (Arrays.asList(document.getValues("number")).contains(number)) {
-                        log.debug("Ignoring " + field.getName() + " because already indexed for this document");
-                        // ignore
-                    } else {
+                    if ((elementAdded && number.equals(id)) ||
+                        (!Arrays.asList(document.getValues("number")).contains(number))) {
                         document.add(new Field("number",  "" + subNode.getNumber(), Field.Store.YES, Field.Index.NOT_ANALYZED)); // keyword
                         document.add(new Field("owner",  subNode.getStringValue("owner"), Field.Store.YES, Field.Index.NOT_ANALYZED));
                         result.add(field.getName());
+                    } else {
+                        log.debug("Ignoring " + field.getName() + " because already indexed for this document");
+                        // ignore
                     }
 		} catch (Exception e) {
 		    log.warn("Failed to load " + field.getName() + "from " + node + " as a node value, continuing...");
@@ -121,6 +122,7 @@ public class MMBaseEntry implements IndexEntry {
             document.add(new Field("owner",  node.getStringValue("owner"), Field.Store.YES, Field.Index.NOT_ANALYZED));
             result.add(null);
         }
+
         return result;
 
     }
