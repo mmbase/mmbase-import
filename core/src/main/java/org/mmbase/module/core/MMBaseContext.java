@@ -32,6 +32,7 @@ import org.mmbase.util.logging.Logging;
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
     private static boolean initialized = false;
+    private static boolean shutdown = false;
     static boolean htmlRootInitialized = false;
     private static ServletContext sx;
     private static String userDir;
@@ -445,4 +446,20 @@ public class MMBaseContext {
     public static String getMachineName() {
         return MMBase.machineName;
     }
+
+    /**
+     * @since MMBase-2.0
+     */
+    public static void shutdown() {
+        shutdown = true;
+    }
+
+    /**
+     * @since MMBase-2.0
+     */
+    public static boolean isShutdown() {
+        return shutdown;
+    }
+
+
 }
