@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE eventmanager PUBLIC "-//MMBase//DTD eventmanager config 1.0//EN" "http://www.mmbase.org/dtd/eventmanager_1_0.dtd">
+<!--
+	This config file allows you to configure what event brokers will be loaded
+	when mmbase starts up. For more information on event brokers read the apidoc 
+	for org.mmbase.core.event.EventBroker.
+
+-->
+<eventmanager>
+	<brokers>
+
+		<broker class="org.mmbase.core.event.NodeEventBroker"/>
+
+		<broker class="org.mmbase.core.event.WeakNodeEventBroker"/>
+
+		<broker class="org.mmbase.core.event.RelationEventBroker"/>
+		<broker class="org.mmbase.core.event.IdEventBroker"/>
+		<broker class="org.mmbase.core.event.AllEventBroker"/>		
+	</brokers>
+</eventmanager>

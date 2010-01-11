@@ -1,0 +1,93 @@
+<!--
+  Reuseable generic login-page.
+-->
+<div
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    class="component ${requestScope['org.mmbase.componentClassName']}"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    id="${requestScope['org.mmbase.componentId']}">
+  <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.page import="org.mmbase.security.AuthenticationData,org.mmbase.bridge.*,org.mmbase.util.functions.*,java.util.*,org.mmbase.datatypes.*" />
+
+  <mm:cloud method="loginpage">
+  <mm:import from="request" externid="language">en</mm:import>
+  <mm:import from="request" externid="country"></mm:import>
+  <mm:import from="request" externid="sessionname">cloud_mmbase</mm:import>
+
+  <mm:content type="text/html" language="$language" country="$country" expires="0" jspvar="locale">
+    <fmt:bundle basename="org.mmbase.security.resources.parameters">
+      <mm:import from="request"  externid="reason">please</mm:import>
+      <mm:import from="request" externid="exactreason" />
+      <mm:import from="request" externid="usernames" />
+      <mm:import from="request" externid="referrer">.</mm:import>
+      <mm:compare referid="reason" value="failed">
+        <p class="failed">
+          <fmt:message key="failed" /> <mm:write referid="exactreason"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:write>.
+        </p>
+      </mm:compare>
+      <mm:compare referid="reason" value="rank">
+        <p class="failed">
+          <fmt:message key="failed_rank" />
+        </p>
+      </mm:compare>
+      <mm:voidfunction id="cloudcontext" set="utils" name="cloudcontext" />
+      <table>
+        <jsp:scriptlet>
+          AuthenticationData authentication = ContextProvider.getDefaultCloudContext().getAuthentication();
+          String[] authenticationTypes = authentication.getTypes(authentication.getDefaultMethod(request.getProtocol()));
+        </jsp:scriptlet>
+        <mm:import externid="authenticate" jspvar="currentType" vartype="string" ><jsp:expression>authenticationTypes[0]</jsp:expression></mm:import>
+        <form method="post" action="${referrer}" >
+          <jsp:scriptlet>
+            Parameter[] params = authentication.createParameters(currentType).getDefinition();
+            for (int j = 0; j &lt; params.length ; j++) {
+            Parameter param = params[j];
+            Class type = param.getTypeAsClass();
+            if (type.isAssignableFrom(String.class) &amp;&amp; param.isRequired()) {
+            pageContext.setAttribute("parameter", param, PageContext.PAGE_SCOPE);
+          </jsp:scriptlet>
+          <tr>
+            <td>
+              .. ${parameter} ..
+              ... ${parameter.localizedGUIName} ...
+              <mm:write value="parameter.getLocalizedDescription().get(locale)"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:write>
+            </td>
+            <td>
+              <input type="${parameter.dataType}" name="${parameter.name}" />
+            </td>
+          </tr>
+          <jsp:scriptlet>
+            }
+            }
+          </jsp:scriptlet>
+          <input type="hidden" name="usernames" values="${usernames}" />
+          <tr>
+            <td />
+            <td>
+              <input type="hidden" name="command" value="login" />
+              <fmt:message var="prompt" key="login" />
+              <input type="submit" name="__submit" value="${prompt}" />
+            </td>
+          </tr>
+        </form>
+        <tr>
+          <td><fmt:message key="authenticate" />:</td>
+          <td>
+            <form method="post" name="auth">
+              <select name="authenticate" onChange="document.forms['auth'].submit();">
+                <c:forEach items="${authenticationTypes}" var="type">
+                  <option value="${type}">${type}</option>
+                </c:forEach>
+                <input type="hidden" name="referrer" value="${referrer}" />
+                <input type="hidden" name="usernames" values="${usernames}" />
+              </select>
+            </form>
+          </td>
+        </tr>
+      </table>
+    </fmt:bundle>
+  </mm:content>
+  </mm:cloud>
+</div>

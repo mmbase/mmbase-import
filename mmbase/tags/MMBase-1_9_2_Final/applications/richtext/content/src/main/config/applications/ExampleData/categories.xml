@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<categories exportsource="mmbase://www.mmbase.org/richtext" timestamp="20050921221010">
+ 
+  <node number="1000" owner="admin" alias="my.rich.magazine">
+    <!-- Will only serve as 'entry' of the site -->
+    <title>Rich Magazine</title>
+    <lastmodifiedby></lastmodifiedby>
+		<intro></intro>
+    <begin>2002-12-31T23:00:07Z</begin>
+    <end>2099-12-31T23:00:00Z</end>
+    <subtitle></subtitle>
+    <body>This category is invisible.</body>
+    <lastmodified></lastmodified>
+  </node>
+  
+	<node number="1001" owner="admin">
+    <!-- will relate N news articles -->
+    <title>Home</title>
+    <lastmodifiedby></lastmodifiedby>
+    <intro></intro>
+    <begin>2002-12-31T23:00:07Z</begin>
+    <end>2099-12-31T23:00:00Z</end>
+    <subtitle></subtitle>
+    <body>This category will contain related news.</body>
+    <lastmodified></lastmodified>
+  </node>
+  
+  <node number="1002" owner="admin">
+    <!-- will relate one tree of 'segments' (documentation?) -->
+    <title>MMBase</title>
+    <lastmodifiedby></lastmodifiedby>
+    <intro></intro>
+    <begin>2002-12-31T23:00:07Z</begin>
+    <end>2099-12-31T23:00:00Z</end>
+    <subtitle></subtitle>
+    <body>This category will contain a related tree of 'segments'
+    </body>
+    <lastmodified></lastmodified>
+  </node>
+
+  <node number="1003" owner="admin">
+    <title>Search</title>
+    <lastmodifiedby></lastmodifiedby>
+    <intro></intro>
+    <begin>2002-12-31T23:00:07Z</begin>
+    <end>2099-12-31T23:00:00Z</end>
+    <subtitle></subtitle>
+    <body>&lt;p/&gt;</body>
+    <lastmodified></lastmodified>
+  </node>
+
+  <node number="1010" owner="admin">
+    <title>Submenu</title>
+    <lastmodifiedby></lastmodifiedby>
+    <intro></intro>
+    <begin>2002-12-31T23:00:07Z</begin>
+    <end>2099-12-31T23:00:00Z</end>
+    <subtitle></subtitle>
+    <body>
+      Just an example of a submenu. It has no specified template. The default is simply showing this text.
+    </body>
+    <lastmodified></lastmodified>
+  </node>
+
+  
+
+</categories>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="x"
+    defaultblock="index"
+    version="9"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component
+                        http://www.mmbase.org/xmlns/component.xsd">
+  <description xml:lang="en">Generic editors</description>
+
+  <block name="index"
+         classification="mmbase.edit unfinished"
+         mimetype="text/html">
+    <description xml:lang="en">Search page</description>
+    <head>
+      <class name="org.mmbase.framework.StringRenderer">
+        <param name="string"><![CDATA[
+        <link rel="stylesheet"
+              href="{REQUEST.getContextPath}/mmbase/components/x/style.css.jspx"
+              type="text/css" />
+        <script type="text/javascript"
+              src="{REQUEST.getContextPath}/mmbase/components/x/index.js"> </script>
+              ]]></param>
+      </class>
+    </head>
+    <body jsp="index.jspx">
+      <param name="pagesize" />
+      <param name="node" />
+      <param name="offset" />
+      <param name="nodemanager" />
+      <param name="ok" />
+      <param name="back" />
+      <param regex="form_.*" />
+    </body>
+  </block>
+
+  <block name="change"
+         classification="unfinished"
+         mimetype="text/html">
+    <description xml:lang="en">Change node page</description>
+    <head>
+      <class name="org.mmbase.framework.StringRenderer">
+        <param name="string"><![CDATA[
+        <link rel="stylesheet"
+              href="{REQUEST.getContextPath}/mmbase/components/x/style.css.jspx"
+              type="text/css" />]]></param>
+      </class>
+    </head>
+    <xi:include href="http://www.mmbase.org/components/validation.head.xml" />
+
+    <body jsp="change.jspx">
+      <param name="node" />
+      <param name="nodemanager" />
+      <param name="pagesize" />
+    </body>
+  </block>
+
+  <block name="create"
+         classification="unfinished"
+         mimetype="text/html">
+    <description xml:lang="en">Create node page</description>
+    <head>
+      <class name="org.mmbase.framework.StringRenderer">
+        <param name="string"><![CDATA[
+        <link rel="stylesheet"
+              href="{REQUEST.getContextPath}/mmbase/components/x/style.css.jspx"
+              type="text/css" />]]></param>
+      </class>
+    </head>
+    <xi:include href="http://www.mmbase.org/components/validation.head.xml" />
+    <body jsp="create.jspx">
+      <param name="nodemanager" />
+      <param name="pagesize" />
+    </body>
+  </block>
+
+</component>
