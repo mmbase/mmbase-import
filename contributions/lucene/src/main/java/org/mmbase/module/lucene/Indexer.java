@@ -124,6 +124,8 @@ public class Indexer {
         this.index = index;
         this.lucenePath = path;
         this.path =  path + File.separator + index;
+        boolean needfullindex = false;
+
         if (! readOnly) {
             try {
                 File d = new File(this.path);
@@ -139,9 +141,9 @@ public class Indexer {
                         log.warn("" + this.path + " is not a directory !");
                     }
                 } else {
-                    log.info("The directory " + this.path + " does not exist!");
+                    log.info("The directory " + this.path + " does not exist! Full index probably never run.");
                     d.mkdirs();
-                    fullIndex();
+                    needfullindex = true;   // full index after complete init
                 }
             } catch (IOException ioe) {
                 addError(ioe.getMessage());
@@ -151,6 +153,9 @@ public class Indexer {
                 log.warn(se.getMessage(), se);
             }
         }
+        if (queries == null) {
+            throw new IllegalArgumentException("Queries cannot be null");
+        }
         this.queries = queries;
         if (analyzer == null) {
             this.analyzer = new StandardAnalyzer();
@@ -158,6 +163,10 @@ public class Indexer {
             this.analyzer = analyzer;
         }
         description = new LocalizedString(index);
+        
+        if (needfullindex) {
+            this.fullIndex();
+        }
     }
 
     protected Directory getDirectory() throws IOException {
@@ -643,7 +652,7 @@ public class Indexer {
 
     @Override
     public String toString() {
-        return getName() + queries;
+        return getName() + " " + queries;
     }
 
 
