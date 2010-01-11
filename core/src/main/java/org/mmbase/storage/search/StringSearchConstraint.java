@@ -76,13 +76,13 @@ import java.util.*;
 public interface StringSearchConstraint extends FieldConstraint {
 
     /** Search type for <em>word oriented</em> search. */
-    public final static int SEARCH_TYPE_WORD_ORIENTED = 1;
+    final static int SEARCH_TYPE_WORD_ORIENTED = 1;
 
     /** Search type for <em>phrase oriented</em> search. */
-    public final static int SEARCH_TYPE_PHRASE_ORIENTED = 2;
+    final static int SEARCH_TYPE_PHRASE_ORIENTED = 2;
 
     /** Search type for <em>proximity oriented</em> search. */
-    public final static int SEARCH_TYPE_PROXIMITY_ORIENTED = 3;
+    final static int SEARCH_TYPE_PROXIMITY_ORIENTED = 3;
 
     /**
      * Search type descriptions corresponding to the search type values:
@@ -176,6 +176,7 @@ public interface StringSearchConstraint extends FieldConstraint {
      *
      * @return A string representation of this FieldValueConstraint.
      */
-    public String toString();
+    @Override
+    String toString();
 
 }
