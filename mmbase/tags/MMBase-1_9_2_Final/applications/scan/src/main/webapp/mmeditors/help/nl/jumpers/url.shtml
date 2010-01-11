@@ -1,6 +1,0 @@
-
-Vul de url in waar de JUMPER naar moet springen of wijzig een bestaande.
-<P>
-Url's van JUMPERS die verwijzen naar pagina's op www.vpro.nl hoeven <B>niet</B> te beginnen met 'http://www.vpro.nl' maar kunnen ingegeven worden vanaf de '/' (slash). Bijvoorbeeld: /data/3voor12/index.shtml
-<P>
-Alleen url's buiten www.vpro.nl beginnen met 'http://...' enz.
