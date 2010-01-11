@@ -108,17 +108,15 @@ public class FFMpegAnalyzer implements Analyzer {
 
     public void ready(Node sourceNode, Node destNode) {
         synchronized(util) {
-            log.service("Ready() " + sourceNode.getNumber() + (destNode == null ? "" : (" -> " + destNode.getNumber())));
+            log.service("Ready() " + sourceNode + (destNode == null ? "" : (" -> " + destNode.getNumber())) + ", canbe: " + canbe);
 
-            if (canbe.equals(AnalyzerUtils.IMAGE) && (sourceNode.isNull("bitrate") || sourceNode.getIntValue("bitrate") <= 0)) {
+            if (canbe.equals(AnalyzerUtils.IMAGE) 
+                            && (sourceNode.isNull("bitrate") || sourceNode.getIntValue("bitrate") <= 0)) {
                 log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an image " + sourceNode);
                 util.toImage(sourceNode, destNode);     // is already done (above) ?
 
-            } else if (canbe.equals(AnalyzerUtils.AUDIO) && !sourceNode.getNodeManager().hasField("width") ) {
-                log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is audio " + sourceNode);
-                util.toAudio(sourceNode, destNode);
-
-            } else if (canbe.equals(AnalyzerUtils.AUDIO) && sourceNode.isNull("width")) {
+            } else if (canbe.equals(AnalyzerUtils.AUDIO) 
+                            && ( !sourceNode.getNodeManager().hasField("width") || sourceNode.isNull("width") )) {
                 log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is audio " + sourceNode);
                 util.toAudio(sourceNode, destNode);
 
