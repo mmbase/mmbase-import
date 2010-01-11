@@ -30,7 +30,6 @@
         <mm:node number="$mag">
           <h1>Using node ${_node}</h1>
           <mm-sr:relatednodes type="news" orderby="posrel.pos"
-                              item="/mmexamples/searchrelate/news.jspx"
                               role="posrel" />
 
           <!--
