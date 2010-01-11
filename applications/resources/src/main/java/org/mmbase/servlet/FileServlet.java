@@ -312,6 +312,7 @@ public class FileServlet extends BridgeServlet {
 
 
     /**
+     * @TODO Ranges stuff can be generalized to also work e.g. with images and attachments.
      * @since MMBase-2.0
      */
     protected static interface Range {
