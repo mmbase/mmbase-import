@@ -11,16 +11,14 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 /**
- * This interface represents a relation constraint (or contex, if you like).
- * More specifically, it represents a relation manager (itself a node manager) as it applies between bnode belonging to
- * two other node managers.
- * Some of the information here is retrieved from the NodeManager used to build the catual relation node
- * (the data as described in the xml builder config file). This NodeManager is also referred to as the parent.
- * Other data is retrieved from a special (hidden) object that decsribes what relations apply between two nodes.
- * (formerly known as the TypeRel builder).
- * This includes direction and cardinality, and the NodeManagers of nodes itself. These fields cannot be changed
- * except through the use of an administration module.
- * This interface is therefore not a real mmbase 'object' in itself - it exists of two objects joined together.
+ * This interface represents a relation constraint.  More specifically, it represents a relation manager (itself a node
+ * manager) as it applies between a node belonging to two other node managers.  Some of the information here is
+ * retrieved from the NodeManager used to build the catual relation node (the data as described in the xml builder
+ * config file). This NodeManager is also referred to as the parent.  Other data is retrieved from a special (hidden)
+ * object that decsribes what relations apply between two nodes.  (formerly known as the TypeRel builder).  This
+ * includes direction and cardinality, and the NodeManagers of nodes itself. These fields cannot be changed except
+ * through the use of an administration module.  This interface is therefore not a real mmbase 'object' in itself - it
+ * exists of two objects joined together.
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
@@ -89,7 +87,7 @@ public interface RelationManager extends NodeManager {
 
     /**
      * This method from Node is redeclared here to prevent an ambiguous invocation of method.
-     * reson: the the method in the base class (Node) is more specific than the one in the RelationManager
+     * reason: the the method in the base class (Node) is more specific than the one in the RelationManager
      * (RelationManager extends Node).
      * @param sourceNode source node of the relation
      * @param relationManager relation manager of the relation
