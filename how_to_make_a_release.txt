@@ -30,10 +30,11 @@ $Id$
 
  - Build following dirs first with -N
    maven-base
+   maven-base/applications
    maven
    maven/maven-mmbase-plugin
    applications
-   contributions/lucene
+   /
 
  - Then:
    mvn -P'deploy,!development,!servlet25' clean deploy
