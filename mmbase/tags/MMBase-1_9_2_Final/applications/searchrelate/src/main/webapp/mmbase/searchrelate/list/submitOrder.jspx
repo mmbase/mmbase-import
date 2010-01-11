@@ -1,0 +1,61 @@
+<mm:cloud
+    method="asis"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <mm:content expires="0">
+
+    <jsp:output omit-xml-declaration="true" />
+
+    <jsp:directive.page import="java.util.*,org.mmbase.*" />
+    <jsp:directive.include file="parameters.jspf" />
+    <!--
+        <mm:import externid="order"     from="parameters" vartype="list" required="true" jspvar="order" />
+    -->
+    <mm:import externid="originalOrder" from="parameters" vartype="list" required="true" jspvar="origOrder" />
+
+    <!--
+        Because there can be new nodes, which received a new number after commit, the node number is not useable.
+        We use the 'original position' here.
+    -->
+    <div class="saveresult" id="${parameters.rid}">
+      <c:choose>
+        <c:when test="${parameters.source_was_new}">
+          <source>
+            <!-- Fix  The damn query hacks again (See RelatedNodesContainerTag) -->
+            <mm:node referid="parameters.source" jspvar="source" commitonclose="false">
+              <jsp:scriptlet>
+                org.mmbase.bridge.util.Queries.setStartNode(query, source);
+              </jsp:scriptlet>
+            </mm:node>
+            <mm:escape>${parameters._number} / ${parameters.source}</mm:escape>
+          </source>
+        </c:when>
+        <c:otherwise>
+          <source><mm:escape escape="text/xml">${parameters.source}</mm:escape></source>
+        </c:otherwise>
+      </c:choose>
+      <query><mm:escape escape="text/xml">${parameters.query.sql}</mm:escape></query>
+      <jsp:scriptlet>
+        // convert parameters to a list of integers
+        List&lt;Integer&gt; iorigOrder = new ArrayList&lt;Integer&gt;();
+        for (Object o : origOrder) {
+          iorigOrder.add(org.mmbase.util.Casting.toInt(o));
+        }
+        List&lt;Integer&gt; iorder = new ArrayList&lt;Integer&gt;(origOrder); // the only reason for the copy is that it has the right length already then
+      </jsp:scriptlet>
+      <mm:relatednodescontainer clone="parameters.query">
+        <mm:sortorder field="number"  />
+        <mm:relatednodes usetransaction="false" jspvar="n" commitonclose="false">
+          <mm:index offset="0" jspvar="i">
+            <change number="${_}"><jsp:expression>n.getNumber()</jsp:expression> -&gt; <jsp:expression>iorder.set(iorigOrder.indexOf(i), n.getNumber())</jsp:expression></change>
+          </mm:index>
+        </mm:relatednodes>
+      </mm:relatednodescontainer>
+      <mm:log>Sorting ${origOrder} <jsp:expression>iorigOrder</jsp:expression> to <jsp:expression>iorder</jsp:expression></mm:log>
+      <changes><jsp:expression>iorder</jsp:expression> <jsp:expression>org.mmbase.bridge.util.Queries.reorderResult(query, iorder)</jsp:expression></changes>
+    </div>
+  </mm:content>
+</mm:cloud>

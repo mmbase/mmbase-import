@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE storage PUBLIC "-//MMBase//DTD storage config 1.0//EN" "http://www.mmbase.org/dtd/storage_1_0.dtd" >
+<storage>
+  <!--
+      Support for the H2 database
+      http://www.h2database.com/
+
+      H2 is similar to hsqldb. Actually this file is a copy of hsqldb.xml
+
+
+  -->
+  <storagemanagerfactory classname="org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory" version="0.1" />
+
+  <!-- use the manager for relational databases -->
+  <storagemanager classname="org.mmbase.storage.implementation.database.ViewDatabaseStorageManager" version="0.1" />
+
+  <searchqueryhandler classname="org.mmbase.storage.search.implementation.database.HSqlSqlHandler" />
+
+  <attributes>
+    <!-- Automatically prefix reserved words with "m_" -->
+    <attribute name="default-storage-identifier-prefix">m</attribute>
+
+    <!-- HSQLdb expects table and field names to be uppercase -->
+    <attribute name="storage-identifier-case">upper</attribute>
+
+    <!-- This option can easily be removed -->
+    <!-- option name="database-stores-binary-as-file" -->
+
+    <!-- Not sure about this option, so turned it off -->
+    <option name="database-supports-blob" value="true" />
+
+    <!-- Does not support changing of fields -->
+    <scheme name="change-field-scheme" />
+
+    <!-- HSQLdb wants to have index declarations at the end of a CREATE TABLE statement  -->
+    <!--    -->
+    <scheme name="create-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
+		<scheme name="create-object-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
+
+    <!-- some alternatives, which you may want to use -->
+    <!-- This one creates an ASCII file for every table. This may be a very handy setting for debugging. -->
+    <!--
+    <scheme name="create-table-scheme">CREATE TEXT TABLE {1} ({2} {3} {5}); SET TABLE {1} SOURCE "{7}_{1}.txt;encoding=UTF-8"</scheme>
+    <scheme name="create-object-table-scheme">CREATE TEXT TABLE {1} ({2} {3} {5}); SET TABLE {1} SOURCE "{7}_{1}.txt;encoding=UTF-8"</scheme>
+    -->
+    <!-- This one is better if the tables get so big that you don't want them in memory entirely
+    -->
+    <!--
+		<scheme name="create-table-scheme">CREATE CACHED TABLE {1} ({2} {3} {5})</scheme>
+		<scheme name="create-object-table-scheme">CREATE CACHED TABLE {1} ({2} {3} {5})</scheme>
+    -->
+
+  </attributes>
+
+  <!-- HSQLdb type mappings -->
+  <type-mappings>
+    <type-mapping name="DOUBLE" type="DOUBLE" />
+    <type-mapping name="LONG" type="BIGINT" />
+    <type-mapping name="FLOAT" type="FLOAT" />
+    <type-mapping name="INTEGER" type="INTEGER" />
+    <type-mapping name="NODE" type="INTEGER" />
+    <type-mapping name="STRING" type="VARCHAR({0,number,########})" />
+    <type-mapping name="XML"    type="VARCHAR({0,number,########})" />
+    <type-mapping name="BINARY"  type="BINARY" />
+    <type-mapping name="DATETIME" type="DATETIME" />
+    <type-mapping name="BOOLEAN"  type="BIT" />
+    <type-mapping name="DECIMAL"  type="DECIMAL" />
+
+    <type-mapping name="LIST[FLOAT]"   type="OTHER" />
+    <type-mapping name="LIST[DOUBLE]"  type="OTHER" />
+    <type-mapping name="LIST[LONG]"    type="OTHER" />
+    <type-mapping name="LIST[INTEGER]" type="OTHER" />
+    <type-mapping name="LIST[NODE]"    type="OTHER" />
+    <type-mapping name="LIST[STRING]"  type="OTHER" />
+    <type-mapping name="LIST[XML]"     type="OTHER" />
+    <type-mapping name="LIST[DATETIME]" type="OTHER" />
+    <type-mapping name="LIST[BOOLEAN]"  type="OTHER" />
+  </type-mappings>
+
+  <!-- HSQLdb disallowed fields are retrieved from the database -->
+  <disallowed-fields />
+
+</storage>

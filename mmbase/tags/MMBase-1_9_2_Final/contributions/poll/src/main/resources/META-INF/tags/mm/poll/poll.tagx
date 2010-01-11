@@ -1,0 +1,32 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    version="2.0">
+  <jsp:directive.attribute name="poll"   required="true" type="org.mmbase.bridge.Node" />
+  <jsp:directive.attribute name="canvote"   fragment="true" />
+  
+  <mm:node referid="poll">
+    <mm:import id="thispoll" from="request,cookie" externid="poll${_node}">canvote</mm:import>
+    <mm:relatednodescontainer type="answer" role="posrel">
+      <mm:sortorder field="posrel.pos" />
+      <mm:size>
+        <mm:isgreaterthan value="0">
+          <mm:compare referid="thispoll" value="canvote">
+            <mm:write session="havethis${poll}" value="Hello World" />
+            <mm:write cookie="poll${poll}" value="canvote" />
+            <mm:relatednodes>
+              <jsp:invoke fragment="canvote" />
+            </mm:relatednodes>
+          </mm:compare>
+          <mm:compare referid="thispoll" value="canvote" inverse="true">
+            <mm:relatednodes>
+              <jsp:doBody />
+            </mm:relatednodes>
+          </mm:compare>
+        </mm:isgreaterthan>
+      </mm:size>
+    </mm:relatednodescontainer>
+  </mm:node>   
+</jsp:root>
+  

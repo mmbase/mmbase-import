@@ -1,0 +1,44 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    version="2.0">
+  <jsp:directive.tag
+      description="" />
+
+  <jsp:directive.attribute name="classification"    required="true" />
+  <jsp:directive.attribute name="styleClass"   />
+  <jsp:directive.attribute name="separator"         fragment="true" />
+  <jsp:directive.attribute name="beforefirst"       fragment="true" />
+  <jsp:directive.attribute name="afterlast"         fragment="true" />
+
+  <mm:hasfunction set="components" name="blockClassification">
+    <div class="mmbase_fw_blocks ${classification} ${styleClass}">
+      <mm:functioncontainer referids="classification@id">
+        <mm:listfunction set="components" name="blockClassification">
+          <mm:stringlist referid="_.blocks">
+
+            <mm:first>
+              <jsp:invoke fragment="beforefirst" />
+            </mm:first>
+            <jsp:doBody />
+
+            <mm:component name="${_.component.name}" block="${_.name}" />
+
+            <mm:last inverse="true">
+              <jsp:invoke fragment="separator" />
+            </mm:last>
+
+            <mm:last>
+              <jsp:invoke fragment="afterlast" />
+            </mm:last>
+
+          </mm:stringlist>
+
+        </mm:listfunction>
+      </mm:functioncontainer>
+
+    </div>
+  </mm:hasfunction>
+</jsp:root>

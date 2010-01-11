@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="postthreads" maintainer="submarine.nl" version="0" extends="object">
+
+
+  <names>
+    <singular xml:lang="en">Post Thread</singular>
+    <plural xml:lang="en">Post Threads</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">PostThread, one thread the main subject</description>
+  </descriptions>
+
+  <fieldlist>
+
+    <field name="subject">
+      <gui>
+        <guiname xml:lang="en">Subject</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type key="false" notnull="true" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="creator">
+      <gui>
+        <guiname xml:lang="en">creator</guiname>
+      </gui>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type key="false" notnull="false" size="64" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="mood">
+      <gui>
+        <guiname xml:lang="en">Mood</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>2</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <!-- an enumeration? -->
+      <db>
+        <type key="false" notnull="true" size="32" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="state">
+      <gui>
+        <guiname xml:lang="en">State</guiname>
+      </gui>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <!-- an enumeration? A String? -->
+      <db>
+        <type key="false" notnull="true" size="32" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="ttype"> <!-- why not 'type' ? -->
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <!-- an enumeration? A String? -->
+      <db>
+        <type key="false" notnull="true" size="32" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="createtime">
+      <gui>
+        <guiname xml:lang="en">createtime</guiname>
+      </gui>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <!-- base="created" ? -->
+    </field>
+
+    <field name="updatetime">
+      <gui>
+        <guiname xml:lang="en">updatetime</guiname>
+      </gui>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="edittime">
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="viewcount">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="postcount">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="postthreadcount">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="c_lastposter"> <!-- c_ ? -->
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type key="false" notnull="false" size="64" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="c_lastpostsubject">
+      <gui>
+        <guiname xml:lang="en">lastpostsubject</guiname>
+      </gui>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+
+
+    <field name="c_lastposttime">
+      <gui>
+        <guiname xml:lang="en">lastposttime</guiname>
+      </gui>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <!-- why are following fields postfixed with number?, it are nodes. -->
+
+    <field name="lastpostnumber">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="lastposternumber">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+  </fieldlist>
+</builder>

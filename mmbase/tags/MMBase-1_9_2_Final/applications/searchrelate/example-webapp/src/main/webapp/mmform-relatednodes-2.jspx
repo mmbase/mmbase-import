@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<mm-sre:html
+    title="Basic mm:form"
+    xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+
+  <mm-sre:form>
+    <h3><mm:field name="title" /></h3>
+
+    <mm:listnodes type="news" max="1">
+
+      <mm-sr:relatednodes
+          idvar="rid2"
+          type="images"
+          search="true"
+          fields="title,handle">
+        <h4><span class="debug">${rid2}: </span>images</h4>
+      </mm-sr:relatednodes>
+
+      <mm-sr:relatednodes
+          idvar="rid"
+          type="urls"
+          role="posrel"
+          unlink="true"
+          delete="true"
+          fields="url"
+          search="true"
+          sortable="true"
+          >
+        <h4><span class="debug">${rid}: </span>urls</h4>
+      </mm-sr:relatednodes>
+
+
+
+    </mm:listnodes>
+
+
+  </mm-sre:form>
+
+  <hr />
+  <mm:escape escape="links">$URL$</mm:escape>
+</mm-sre:html>

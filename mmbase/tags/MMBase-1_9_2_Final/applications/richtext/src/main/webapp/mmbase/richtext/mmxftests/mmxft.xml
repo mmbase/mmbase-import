@@ -1,0 +1,192 @@
+<objects xmlns="http://www.mmbase.org/xmlns/objects" cloud="mmbase">
+<object ancestors=" texts content object " id="7132" otype="46" type="news">
+<unfilledField name="number"/>
+<unfilledField name="otype"/>
+<unfilledField name="owner"/>
+<unfilledField name="begin"/>
+<unfilledField name="end"/>
+<unfilledField name="lastmodifiedby"/>
+<unfilledField name="lastmodified"/>
+<unfilledField name="created"/>
+<unfilledField name="title"/>
+<unfilledField name="subtitle"/>
+<unfilledField name="intro"/>
+<field format="xml" name="body">
+<mmxf xmlns="http://www.mmbase.org/xmlns/mmxf" version="1.1">
+<p>
+<a id="_1161070892"/>
+</p>
+<p>
+<a id="_1161070893"/>
+</p>
+<p>
+<a id="_1161070894"/>
+</p>
+<p>
+<a id="_1161070895"/>
+</p>
+<p>This intuiging film portraits the 2006 Nobel Peace Price winner Mohammed Yunus, Yunus is the man behind the microfinance theory, he also founded the Grameenbank.</p>
+<p>In this film Yunus gives a unique insight in his ideas and shows us how his system works.</p>
+<p>50´ Director: Bregtje van der Haak</p>
+</mmxf>
+</field>
+<relation object="7148" related="7145" role="idrel" type="source"/>
+<relation object="7144" related="7143" role="idrel" type="source"/>
+<relation object="7142" related="7141" role="idrel" type="source"/>
+<relation object="7140" related="7139" role="idrel" type="source"/>
+</object>
+<object ancestors=" texts content object " id="7145" otype="79" type="blocks">
+<field format="object" name="number">7145</field>
+<field format="object" name="otype">79</field>
+<field format="string" name="owner">npbsales</field>
+<field format="datetime" name="begin">2006-10-18 16:20:47</field>
+<field format="datetime" name="end">2106-10-18 00:00:00</field>
+<field format="string" name="lastmodifiedby">sales</field>
+<field format="datetime" name="lastmodified">2006-10-23 15:45:48</field>
+<field format="datetime" name="created">2006-10-24 12:58:14</field>
+<field format="string" name="title">Block created for node 7132</field>
+<field format="string" name="subtitle"/>
+<field format="string" name="intro"/>
+<field format="xml" name="body">
+<mmxf xmlns="http://www.mmbase.org/xmlns/mmxf" version="1.1">
+<p>
+<a id="_1161070896"/>
+</p>
+</mmxf>
+</field>
+<relation object="7148" related="7132" role="idrel" type="destination"/>
+<relation object="7147" related="7146" role="idrel" type="source"/>
+</object>
+<object ancestors=" insrel object " id="7148" otype="9" type="idrel">
+<field format="object" name="number">7148</field>
+<field format="object" name="otype">9</field>
+<field format="string" name="owner">npbsales</field>
+<field format="object" name="snumber">7132</field>
+<field format="object" name="dnumber">7145</field>
+<field format="object" name="rnumber">320</field>
+<field format="numeric" name="dir">2</field>
+<field format="string" name="id">_1161070895</field>
+<field format="string" name="destinationid"/>
+<field format="string" name="class">div div div div div div div div div div</field>
+</object>
+<object ancestors=" texts content object " id="7143" otype="79" type="blocks">
+<field format="object" name="number">7143</field>
+<field format="object" name="otype">79</field>
+<field format="string" name="owner">npbsales</field>
+<field format="datetime" name="begin">2006-10-18 16:20:47</field>
+<field format="datetime" name="end">2106-10-18 00:00:00</field>
+<field format="string" name="lastmodifiedby">sales</field>
+<field format="datetime" name="lastmodified">2006-10-23 15:45:47</field>
+<field format="datetime" name="created">2006-10-24 12:58:14</field>
+<field format="string" name="title">Block created for node 7132</field>
+<field format="string" name="subtitle"/>
+<field format="string" name="intro"/>
+<field format="xml" name="body">
+<mmxf xmlns="http://www.mmbase.org/xmlns/mmxf" version="1.1"/>
+</field>
+<relation object="7144" related="7132" role="idrel" type="destination"/>
+</object>
+<object ancestors=" insrel object " id="7144" otype="9" type="idrel">
+<field format="object" name="number">7144</field>
+<field format="object" name="otype">9</field>
+<field format="string" name="owner">npbsales</field>
+<field format="object" name="snumber">7132</field>
+<field format="object" name="dnumber">7143</field>
+<field format="object" name="rnumber">320</field>
+<field format="numeric" name="dir">2</field>
+<field format="string" name="id">_1161070894</field>
+<field format="string" name="destinationid"/>
+<field format="string" name="class">div div div div div div div div div div OutlookMessageHeader</field>
+</object>
+<object ancestors=" texts content object " id="7141" otype="79" type="blocks">
+<field format="object" name="number">7141</field>
+<field format="object" name="otype">79</field>
+<field format="string" name="owner">npbsales</field>
+<field format="datetime" name="begin">2006-10-18 16:20:47</field>
+<field format="datetime" name="end">2106-10-18 00:00:00</field>
+<field format="string" name="lastmodifiedby">sales</field>
+<field format="datetime" name="lastmodified">2006-10-23 15:45:47</field>
+<field format="datetime" name="created">2006-10-24 12:58:14</field>
+<field format="string" name="title">Block created for node 7132</field>
+<field format="string" name="subtitle"/>
+<field format="string" name="intro"/>
+<field format="xml" name="body">
+<mmxf xmlns="http://www.mmbase.org/xmlns/mmxf" version="1.1">
+<p> </p>
+</mmxf>
+</field>
+<relation object="7142" related="7132" role="idrel" type="destination"/>
+</object>
+<object ancestors=" insrel object " id="7142" otype="9" type="idrel">
+<field format="object" name="number">7142</field>
+<field format="object" name="otype">9</field>
+<field format="string" name="owner">npbsales</field>
+<field format="object" name="snumber">7132</field>
+<field format="object" name="dnumber">7141</field>
+<field format="object" name="rnumber">320</field>
+<field format="numeric" name="dir">2</field>
+<field format="string" name="id">_1161070893</field>
+<field format="string" name="destinationid"/>
+<field format="string" name="class">div div div div div div div div div div OutlookMessageHeader</field>
+</object>
+<object ancestors=" texts content object " id="7139" otype="79" type="blocks">
+<field format="object" name="number">7139</field>
+<field format="object" name="otype">79</field>
+<field format="string" name="owner">npbsales</field>
+<field format="datetime" name="begin">2006-10-18 16:20:47</field>
+<field format="datetime" name="end">2106-10-18 00:00:00</field>
+<field format="string" name="lastmodifiedby">sales</field>
+<field format="datetime" name="lastmodified">2006-10-23 15:45:47</field>
+<field format="datetime" name="created">2006-10-24 12:58:14</field>
+<field format="string" name="title">Block created for node 7132</field>
+<field format="string" name="subtitle"/>
+<field format="string" name="intro"/>
+<field format="xml" name="body">
+<mmxf xmlns="http://www.mmbase.org/xmlns/mmxf" version="1.1"/>
+</field>
+<relation object="7140" related="7132" role="idrel" type="destination"/>
+</object>
+<object ancestors=" insrel object " id="7140" otype="9" type="idrel">
+<field format="object" name="number">7140</field>
+<field format="object" name="otype">9</field>
+<field format="string" name="owner">npbsales</field>
+<field format="object" name="snumber">7132</field>
+<field format="object" name="dnumber">7139</field>
+<field format="object" name="rnumber">320</field>
+<field format="numeric" name="dir">2</field>
+<field format="string" name="id">_1161070892</field>
+<field format="string" name="destinationid"/>
+<field format="string" name="class">div div div div div div div div div div OutlookMessageHeader</field>
+</object>
+<object ancestors=" texts content object " id="7146" otype="79" type="blocks">
+<field format="object" name="number">7146</field>
+<field format="object" name="otype">79</field>
+<field format="string" name="owner">npbsales</field>
+<field format="datetime" name="begin">2006-10-18 16:20:47</field>
+<field format="datetime" name="end">2106-10-18 00:00:00</field>
+<field format="string" name="lastmodifiedby">sales</field>
+<field format="datetime" name="lastmodified">2006-10-23 15:45:47</field>
+<field format="datetime" name="created">2006-10-24 12:58:14</field>
+<field format="string" name="title">Block created for node 7145</field>
+<field format="string" name="subtitle"/>
+<field format="string" name="intro"/>
+<field format="xml" name="body">
+<mmxf xmlns="http://www.mmbase.org/xmlns/mmxf" version="1.1">
+<p> </p>
+</mmxf>
+</field>
+<relation object="7147" related="7145" role="idrel" type="destination"/>
+</object>
+<object ancestors=" insrel object " id="7147" otype="9" type="idrel">
+<field format="object" name="number">7147</field>
+<field format="object" name="otype">9</field>
+<field format="string" name="owner">npbsales</field>
+<field format="object" name="snumber">7145</field>
+<field format="object" name="dnumber">7146</field>
+<field format="object" name="rnumber">320</field>
+<field format="numeric" name="dir">2</field>
+<field format="string" name="id">_1161070896</field>
+<field format="string" name="destinationid"/>
+<field format="string" name="class">div div div div div div div div div div div</field>
+</object>
+</objects>

@@ -1,0 +1,100 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    version="2.0"
+    >
+  <!--
+      Like HTML option tag, but it is handyer to deal with the selected attribute.
+      @author Michiel Meeuwissen
+      @since MMBase-1.8.5
+  -->
+  <jsp:directive.tag
+      display-name="HTML option tag"
+      body-content="scriptless"
+      example="&lt;mm:option value='a' compare='${a}' /&gt;" />
+
+  <jsp:directive.attribute name="value"   required="true"  />
+  <jsp:directive.attribute name="compare" />
+  <jsp:directive.attribute name="compareset" type="java.util.Collection" />
+  <jsp:directive.attribute name="referid" />
+
+  <!-- other attribute are simply copied -->
+  <jsp:directive.attribute name="selected" />
+  <jsp:directive.attribute name="disabled" />
+  <jsp:directive.attribute name="label" />
+  <jsp:directive.attribute name="id" />
+  <jsp:directive.attribute name="title" />
+  <jsp:directive.attribute name="styleClass" />
+  <jsp:directive.attribute name="style" />
+  <jsp:directive.attribute name="dir" />
+  <jsp:directive.attribute name="lang" />
+  <jsp:directive.attribute name="xmllang" />
+  <jsp:directive.attribute name="tabindex" />
+  <jsp:directive.attribute name="onchange" />
+  <jsp:directive.attribute name="onclick" />
+
+
+  <c:if test="! empty referid">
+    <mm:write id="compare" referid="${referid}" write="false" />
+  </c:if>
+
+
+  <!-- optionally setting attributes, is actually most conveniently done using XSLT -->
+  <mm:formatter escape="none">
+    <option><jsp:doBody /></option>
+    <mm:xslt xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+      <xsl:template match="option">
+        <option value="${value}">
+          <c:if test="${! empty selected and (selected eq true  or selected eq 'true' or selected eq 'selected') }">
+            <xsl:attribute name="selected">${selected}</xsl:attribute>
+          </c:if>
+          <c:if test="${empty selected and value eq compare}">
+            <xsl:attribute name="selected">selected</xsl:attribute>
+          </c:if>
+          <c:if test="${empty selected and (! empty compareset) and mm:contains(compareset, value)}">
+            <xsl:attribute name="selected">selected</xsl:attribute>
+          </c:if>
+          <c:if test="${! empty disabled}">
+            <xsl:attribute name="disabled">${disabled}</xsl:attribute>
+          </c:if>
+          <c:if test="${! empty label}">
+            <xsl:attribute name="label">${label}</xsl:attribute>
+          </c:if>
+          <c:if test="${! empty id}">
+            <xsl:attribute name="id">${id}</xsl:attribute>
+          </c:if>
+          <c:if test="${! empty title}">
+            <xsl:attribute name="title">${title}</xsl:attribute>
+          </c:if>
+          <c:if test="${! empty styleClass}">
+            <xsl:attribute name="class">${styleClass}</xsl:attribute>
+          </c:if>
+          <c:if test="${! empty style}">
+            <xsl:attribute name="style">${style}</xsl:attribute>
+          </c:if>
+          <c:if test="${! empty dir}">
+            <xsl:attribute name="dir">${dir}</xsl:attribute>
+          </c:if>
+          <c:if test="${! empty lang}">
+            <xsl:attribute name="lang">${lang}</xsl:attribute>
+          </c:if>
+          <c:if test="${! empty xmllang}">
+            <xsl:attribute name="xml:lang">${xmllang}</xsl:attribute>
+          </c:if>
+          <c:if test="${! empty tabindex}">
+            <xsl:attribute name="tabindex">${tabindex}</xsl:attribute>
+          </c:if>
+          <c:if test="${! empty onchange}">
+            <xsl:attribute name="onchange">${onchange}</xsl:attribute>
+          </c:if>
+          <c:if test="${! empty onclick}">
+            <xsl:attribute name="onclick">${onclick}</xsl:attribute>
+          </c:if>
+          <xsl:apply-templates select="*|text()" />
+        </option>
+      </xsl:template>
+    </mm:xslt>
+  </mm:formatter>
+
+</jsp:root>
