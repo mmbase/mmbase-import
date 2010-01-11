@@ -120,26 +120,25 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Collection for temporary nodes,
      * Used by the Temporarynodemanager when working with transactions
      * The default size is 1024.
-     * @duplicate use Cache object instead
      * @scope protected
      */
-    public static Map<String, MMObjectNode> temporaryNodes = new Hashtable<String, MMObjectNode>(TEMPNODE_DEFAULT_SIZE);
+    static Map<String, MMObjectNode> temporaryNodes = new Hashtable<String, MMObjectNode>(TEMPNODE_DEFAULT_SIZE);
 
     /**
      * Default output when no data is available to determine a node's GUI description
      */
-  public static final String GUI_INDICATOR = "no info";
+    public static final String GUI_INDICATOR = "no info";
 
-  /**
+    /**
      * The cache for all blobs.
      * @since 1.8.0
      */
-  protected static final BlobCache genericBlobCache = new BlobCache(200) {
-      @Override
-      public String getName() {
-        return "GenericBlobCache";
-      }
-  };
+    protected static final BlobCache genericBlobCache = new BlobCache(200) {
+            @Override
+            public String getName() {
+                return "GenericBlobCache";
+            }
+        };
 
     static {
         genericBlobCache.putCache();
@@ -681,6 +680,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             assert node.getIntValue("otype") > 0;
             mmb.getStorageManager().setNodeType(node, node.getBuilder());
         }
+        assert (node.getValue("number") != null) && (node.getValue("number") instanceof Integer);
+        assert (node.values.get("number") != null) && (node.values.get("number") instanceof Integer);
+        assert 1 > 0;
         mmb.getStorageManager().change(node);
         return true;
     }
@@ -1049,8 +1051,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 nodeCache.remove(node.getNumber());
             }
             assert node.getIntValue("otype") > 0;
-            assert node.getNumber() > 0;
             res = node.commit();
+            assert node.getNumber() > 0;
         } finally {
             synchronized(nodeCache) {
                 cacheLocked--;
@@ -1427,6 +1429,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 // test if the value can be derived from the enumerationlist of a datatype
                 DataType dataType = fdef.getDataType();
                 if (dataType instanceof org.mmbase.datatypes.BinaryDataType) {
+                    log.debug("Getting from " + node + " size for field " + field);
                     returnValue = node.isNull(field) ? "" : "" + node.getSize(field) + " byte";
                 } else {
                     try {

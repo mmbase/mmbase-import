@@ -504,8 +504,6 @@ public class MMAdmin extends ProcessorModule {
                 return ("" + (NodeCache.getCache().getRatio() * 100));
             } else if (cmd.equals("NODECACHESIZE")) {
                 return ("" + (NodeCache.getCache().maxSize()));
-            } else if (cmd.equals("TEMPORARYNODECACHESIZE")) {
-                return ("" + (MMObjectBuilder.temporaryNodes.size()));
             } else if (cmd.equals("RELATIONCACHEHITS")) {
                 return ("" + RelationsCache.getCache().getHits());
             } else if (cmd.equals("RELATIONCACHEMISSES")) {
