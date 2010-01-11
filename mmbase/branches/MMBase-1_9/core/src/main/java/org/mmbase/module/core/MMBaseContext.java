@@ -266,8 +266,8 @@ public class MMBaseContext {
             if (htmlRoot == null) {
                 htmlRoot = sx.getRealPath("");
             }
-            if (htmlRoot == null){
-                log.error("Parameter mmbase.htmlroot not set.");
+            if (htmlRoot == null) {
+                log.service("Parameter mmbase.htmlroot not set.");
             } else {
                 if (userDir != null && !new File(htmlRoot).isAbsolute()) {
                     htmlRoot = userDir + File.separator + htmlRoot;
