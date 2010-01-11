@@ -1072,7 +1072,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                                     "builder".equals(childName) || // backward comp. old finalist lucene
                                     "table".equals(childName)) { // comp. finalist lucene
                                     IndexDefinition id = createIndexDefinition(childElement, allIndexedFieldsSet, storeText, mergeText, null, analyzer);
-                                    if (id == null) continue;
+                                    if (id == null) {
+                                        continue;
+                                    }
                                     id.setId(indexName + "_" + (++lists));
                                     queries.add(id);
                                     log.service("Added mmbase index definition " + id);

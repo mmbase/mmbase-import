@@ -107,9 +107,9 @@ public class MMBaseEntry implements IndexEntry {
 
 
     public void index(Document document) {
-        Map<String, Object> data = new HashMap<String, Object>();
+        final Map<String, Object> data = new HashMap<String, Object>();
         if (log.isTraceEnabled()) {
-            log.trace("Indexing " + getIdentifier() + "(" + node.getNodeManager().getName() + ")");
+            log.trace("Indexing " + getIdentifier() + " (" + node.getNodeManager().getName() + ")");
         }
         storeData(data);
         addStandardKeys(document);
