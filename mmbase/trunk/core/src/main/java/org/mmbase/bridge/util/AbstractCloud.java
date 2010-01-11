@@ -116,11 +116,15 @@ public abstract class AbstractCloud implements Cloud {
         throw new NotFoundException();
     }
 
+
     /**
      * On default we don't associated number id's with node managers
      */
     public RelationManager getRelationManager(int relationManagerId) throws NotFoundException {
         throw new NotFoundException();
+    }
+    public RelationManager getRelationManager(String roleName) throws NotFoundException {
+        throw new UnsupportedOperationException();
     }
 
     public RelationManager getRelationManager(String sourceManagerName, String destinationManagerName, String roleName) throws NotFoundException {
@@ -132,20 +136,26 @@ public abstract class AbstractCloud implements Cloud {
         throw new UnsupportedOperationException();
     }
 
-    public boolean hasRelationManager(String sourceManagerName, String destinationManagerName, String roleName) {
+    public final boolean hasRelationManager(String sourceManagerName, String destinationManagerName, String roleName) {
         return hasRelationManager(getNodeManager(sourceManagerName), getNodeManager(destinationManagerName), roleName);
     }
 
     public boolean hasRelationManager(NodeManager sourceManager, NodeManager destinationManager, String roleName) {
-        return false;
+        try {
+            getRelationManager(sourceManager, destinationManager, roleName);
+            return true;
+        } catch (NotFoundException nfe) {
+            return false;
+        }
     }
 
     public boolean hasRole(String roleName) {
-        return false;
-    }
-
-    public RelationManager getRelationManager(String roleName) throws NotFoundException {
-        throw new UnsupportedOperationException();
+        try {
+            getRelationManager(roleName);
+            return true;
+        } catch (NotFoundException nfe) {
+            return false;
+        }
     }
 
     public boolean hasRelationManager(String roleName) {
