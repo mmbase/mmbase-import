@@ -36,7 +36,7 @@ public class MockCloud extends AbstractCloud {
 
 
     Node getNode(final Map<String, Object> m, final NodeManager nm, boolean n) {
-        return new MockNode(m, cloudContext, nm, n);
+        return new MockNode(m, this, nm, n);
     }
 
     @Override
@@ -76,25 +76,6 @@ public class MockCloud extends AbstractCloud {
         return new MockNodeManager(this, d);
     }
 
-
-    @Override
-    public boolean hasNodeManager(String name) {
-        return cloudContext.nodeManagers.containsKey(name);
-    }
-
-    @Override
-    public boolean hasRole(String roleName) {
-        return roleName.equals("related") || roleName.equals("posrel");
-    }
-
-    @Override
-    public boolean hasRelationManager(String roleName) {
-        return roleName.equals("related") || roleName.equals("posrel");
-    }
-    @Override
-    public boolean hasRelationManager(NodeManager sourceManager, NodeManager destinationManager, String roleName) {
-        return hasRelationManager(roleName);
-    }
 
     @Override
     public MockCloudContext getCloudContext() {
@@ -153,6 +134,20 @@ public class MockCloud extends AbstractCloud {
     public String toString() {
         return "MockCloud:" + getName() + "#" + hashCode() + "@" + cloudContext;
     }
+
+    @Override
+    public RelationManager getRelationManager(NodeManager sourceManager, NodeManager destinationManager, String roleName) throws NotFoundException {
+        return new MockRelationManager(this, roleName, sourceManager.getName(), destinationManager.getName());
+    }
+
+
+    @Override
+    public RelationManager getRelationManager(String roleName) throws NotFoundException {
+        return new MockRelationManager(this, roleName, "object", "object");
+    }
+
+
+
 
 }
 

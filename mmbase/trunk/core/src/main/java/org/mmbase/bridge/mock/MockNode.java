@@ -28,14 +28,14 @@ import org.mmbase.bridge.util.*;
 public class MockNode extends MapNode  {
 
     private final Map<String, Object> originalMap;
-    private final MockCloudContext cloudContext;
+    protected final MockCloud cloud;
     private String context = "default";
     private boolean isNew;
 
-    MockNode(Map<String, Object> map, MockCloudContext cc, NodeManager nm, boolean isNew) {
+    MockNode(Map<String, Object> map, MockCloud cloud, NodeManager nm, boolean isNew) {
         super(new HashMap<String, Object>(map), nm);
         originalMap = map;
-        cloudContext = cc;
+        this.cloud = cloud;
         this.isNew = isNew;
     }
 
@@ -47,11 +47,11 @@ public class MockNode extends MapNode  {
         }
         if (! originalMap.containsKey("number")) {
             // This is a new node, so generate a number first
-            int number = cloudContext.addNode(getNodeManager().getName(), values);
+            int number = cloud.getCloudContext().addNode(getNodeManager().getName(), values);
             values.put("number", number);
         }
         originalMap.putAll(values);
-        cloudContext.setNodeType(getNumber(), getNodeManager().getName());
+        cloud.getCloudContext().setNodeType(getNumber(), getNodeManager().getName());
         isNew = false;
     }
     @Override
@@ -74,7 +74,7 @@ public class MockNode extends MapNode  {
 
     @Override
     public StringList getPossibleContexts() {
-        StringList sl = cloudContext.createStringList();
+        StringList sl = cloud.getCloudContext().createStringList();
         sl.add(context);
         if (!sl.contains("default")) {
             sl.add("default");
