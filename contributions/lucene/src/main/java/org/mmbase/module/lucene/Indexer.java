@@ -151,6 +151,9 @@ public class Indexer {
                 log.warn(se.getMessage(), se);
             }
         }
+        if (queries == null) {
+            throw new IllegalArgumentException("Queries cannot be null");
+        }
         this.queries = queries;
         if (analyzer == null) {
             this.analyzer = new StandardAnalyzer();
@@ -643,7 +646,7 @@ public class Indexer {
 
     @Override
     public String toString() {
-        return getName() + queries;
+        return getName() + " " + queries;
     }
 
 
