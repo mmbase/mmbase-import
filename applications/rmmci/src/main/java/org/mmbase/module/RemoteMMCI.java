@@ -1,12 +1,12 @@
 /*
 
-  This software is OSI Certified Open Source Software.
-  OSI Certified is a certification mark of the Open Source Initiative.
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
 
-  The license (Mozilla version 1.0) can be read at the MMBase site.
-  See http://www.MMBase.org/license
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
 
-*/
+ */
 package org.mmbase.module;
 
 import java.lang.reflect.Constructor;
@@ -146,7 +146,7 @@ public class RemoteMMCI extends Module {
                 log.warn("Module RemoteMMCI MOT running and failed to bind " + bindName + ")");
             }
         } catch (RemoteException rex) {
-            log.fatal("RMI Registry not started because of exception :" + rex.getMessage(), rex);
+            log.fatal("RMI Registry not started because of exception {" + rex.getMessage() + Logging.stackTrace(rex) + "}");
         }
     }
 
@@ -158,11 +158,11 @@ public class RemoteMMCI extends Module {
              * no registry is running on the remote host. Therefore, a subsequent method invocation
              * to a remote registry returned as a result of this method may fail.
              */
-            reg = java.rmi.registry.LocateRegistry.getRegistry(host, registryPort);
+             reg = java.rmi.registry.LocateRegistry.getRegistry(host, registryPort);
             //try if the registry is running
-            reg.list();
-            //if no RemoteException is thrown we are probabely ok
-            log.debug("using an existing RMI registry");
+             reg.list();
+             //if no RemoteException is thrown we are probabely ok
+             log.debug("using an existing RMI registry");
         } catch (RemoteException rex) {
             /*
              * Binding a stub to a local registry should be enough to keep it
@@ -190,10 +190,10 @@ public class RemoteMMCI extends Module {
             registry = java.rmi.registry.LocateRegistry.createRegistry(registryPort);
             log.debug("creating a new RMI registry");
             if (registry != null) {
-                reg = java.rmi.registry.LocateRegistry.getRegistry(host, registryPort);
+               reg = java.rmi.registry.LocateRegistry.getRegistry(host, registryPort);
             }
             else {
-                log.fatal("RMI Registry not created.");
+               log.fatal("RMI Registry not created.");
             }
         }
         return reg;
@@ -213,15 +213,15 @@ public class RemoteMMCI extends Module {
 
     public String[] getListOfNames(String host, int registryPort) {
         try {
-            Registry reg = getRegistry(host, registryPort);
-            if (reg != null) {
-                return reg.list();
-            }
+           Registry reg = getRegistry(host, registryPort);
+           if (reg != null) {
+              return reg.list();
+           }
         } catch (java.rmi.RemoteException rex) {
-            log.fatal("RMI Registry not started because of exception {" + rex.getMessage() + "}");
+           log.fatal("RMI Registry not started because of exception {" + rex.getMessage() + "}");
         }
         return new String[0];
-    }
+     }
 
 
     /**
@@ -270,40 +270,40 @@ public class RemoteMMCI extends Module {
 
     public boolean test(String host, int registryPort, String bindName) {
         try {
-            String uri = "rmi://" + host + ":" + registryPort + "/" + bindName;
-            Object remoteCloudContext = Naming.lookup(uri);
-            if (remoteCloudContext != null) {
-                log.debug("RMI lookup ok");
-                try {
+           String uri = "rmi://" + host + ":" + registryPort + "/" + bindName;
+           Object remoteCloudContext = Naming.lookup(uri);
+           if (remoteCloudContext != null) {
+              log.debug("RMI lookup ok");
+              try {
                     Class<?> clazz = Class.forName("org.mmbase.bridge.remote.proxy.RemoteCloudContext_Proxy");
                     Constructor<?> constr =  clazz.getConstructor(new Class [] { Class.forName("org.mmbase.bridge.remote.RemoteCloudContext") });
                     CloudContext cloudContext = (CloudContext) constr.newInstance(new Object[] { remoteCloudContext } );
 
                     cloudContext.getCloud("mmbase");
                     log.debug("RMI cloud object found");
-                } catch (Exception e){
-                    log.warn("RMI cloud object failure: " + e.getMessage(), e);
-                    return false;
-                }
-            }
-            else {
-                log.warn("RMI lookup failed " + bindName);
-                return false;
-            }
+              } catch (Exception e){
+                 log.warn("RMI cloud object failure");
+                 log.warn(Logging.stackTrace(e));
+                 return false;
+              }
+           }
+           else {
+              log.warn("RMI lookup failed " + bindName);
+              return false;
+           }
         } catch (AccessException e) {
-            log.warn(e.getMessage(), e);
+           log.warn(Logging.stackTrace(e));
         } catch (RemoteException e) {
-            log.warn(e.getMessage(), e);
-            return false;
+           log.warn(Logging.stackTrace(e));
+           return false;
         } catch (NotBoundException e) {
-            log.warn(e.getMessage(), e);
-            return false;
+           log.warn(Logging.stackTrace(e));
+           return false;
         } catch (MalformedURLException e) {
-            log.warn(e.getMessage(), e);
-            return false;
+           log.warn(Logging.stackTrace(e));
         }
         return true;
-    }
+     }
 
     public void resetBind(String host, int registryPort, String bindName) throws RemoteException, AccessException {
         Registry reg = getRegistry(host, registryPort);
@@ -319,20 +319,20 @@ public class RemoteMMCI extends Module {
         register(reg, bindName);
     }
 
-    private void startChecker(RemoteMMCI remoteMMCI) {
+     private void startChecker(RemoteMMCI remoteMMCI) {
         String checkConnection  = getInitParameter("checkconnection");
         if (checkConnection != null && !checkConnection.equals("")){
-            log.info("RemoteMMCI will check connection every " + checkConnection + " ms");
+           log.info("RemoteMMCI will check connection every " + checkConnection + " ms");
 
-            RemoteChecker runnable = new RemoteChecker(remoteMMCI, Integer.parseInt(checkConnection));
+           RemoteChecker runnable = new RemoteChecker(remoteMMCI, Integer.parseInt(checkConnection));
 
-            Thread checker = new Thread(runnable, "RMICloudChecker");
-            checker.setDaemon(true);
-            checker.start();
+           Thread checker = new Thread(runnable, "RMICloudChecker");
+           checker.setDaemon(true);
+           checker.start();
         }
     }
 
-    static class RemoteChecker implements Runnable {
+     static class RemoteChecker implements Runnable {
 
         int interval = 60 * 1000;
         RemoteMMCI remoteMMCI = null;

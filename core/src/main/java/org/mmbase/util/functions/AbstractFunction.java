@@ -103,14 +103,6 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
      }
 
     /**
-     * @since MMBase-1.9
-     */
-    public final R getFunctionValueWithArgs(Object... parameters) {
-        return getFunctionValue(new Parameters(parameterDefinition, parameters));
-     }
-
-
-    /**
      * For documentational  purposes a function object needs a description too.
      */
     public void setDescription(String description)   {

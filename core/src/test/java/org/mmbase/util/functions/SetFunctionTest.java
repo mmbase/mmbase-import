@@ -95,8 +95,9 @@ public class SetFunctionTest {
         {
             Node typedef = cloud.getNodeManager("typedef").getList(null).getNode(0);
             params.set("A", "" + typedef.getNumber());
+
             Collection<LocalizedString> errors = params.validate();
-            assertEquals("" + errors, 0, errors.size());
+            assertEquals(0, params.validate().size());
             assertEquals("aa" + typedef.getNumber(), function.getFunctionValue(params));
         }
         {
@@ -106,7 +107,6 @@ public class SetFunctionTest {
 
             try {
                 params.set("A", "" + news.getNumber());
-                params.check();
                 fail("Node " + news + " should not have been valid for " + DataTypes.getDataType("typedef"));
             } catch (IllegalArgumentException  iae) {
                 //ok

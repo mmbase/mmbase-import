@@ -14,8 +14,6 @@ import org.mmbase.datatypes.util.xml.*;
 import java.util.*;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.mock.*;
 import org.mmbase.util.*;
 import org.mmbase.util.xml.DocumentReader;
@@ -398,9 +396,7 @@ public class DataTypesTest  {
     @Test
     public void typedef() throws Exception {
         NodeDataType typedefDataType = (NodeDataType) DataTypes.getDataType("typedef");
-        Cloud cloud = MockCloudContext.getInstance().getCloud("mmbase");
-        CloudThreadLocal.bind(cloud);
-        org.mmbase.bridge.Node typedef =  cloud.getNodeManager("typedef").getList(null).getNode(0); // a valid node
+        org.mmbase.bridge.Node typedef =  MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("typedef").getList(null).getNode(0); // a valid node
 
         assertEquals(typedef, typedefDataType.castToValidate(typedef, null, null));
         assertEquals(typedef.getNumber(), ((org.mmbase.bridge.Node) typedefDataType.castToValidate(typedef.getNumber(), null, null)).getNumber());
@@ -428,7 +424,6 @@ public class DataTypesTest  {
         assertEquals(typedef.getNumber(), typedefDataType.cast(typedef, null, null).getNumber());
 
         assertEquals(aa.getNumber(), typedefDataType.cast(aa, null, null).getNumber());
-        CloudThreadLocal.unbind();
     }
 
     @Test

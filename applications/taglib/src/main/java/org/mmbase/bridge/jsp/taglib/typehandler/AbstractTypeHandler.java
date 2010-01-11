@@ -157,7 +157,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                     try {
                         buf.append(((org.mmbase.datatypes.LengthDataType) dt).getLength(value));
                     } catch (Exception e) {
-                        log.warn(e.getMessage(), e);
+                        log.warn(e.getMessage());
                         buf.append(node.getSize(field.getName()));
                     }
                 } else {

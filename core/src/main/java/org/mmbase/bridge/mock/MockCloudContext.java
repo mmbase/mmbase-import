@@ -73,36 +73,6 @@ public class MockCloudContext extends  AbstractCloudContext {
         }
     }
 
-    public static class Role {
-        public final String name;
-        public final String nodeManager;
-        public final int number;
-        public Role(String r, String nm, int n) {
-            name = r;
-            nodeManager = nm;
-            number = n;
-        }
-        @Override
-        public String toString() {
-            return name + " (" + nodeManager + ")";
-        }
-    }
-
-    public static class AllowedRelation {
-        public final String role;
-        public final String sourceType;
-        public final String destType;
-        public AllowedRelation(String r, String s, String d) {
-            role = r;
-            sourceType = s;
-            destType = d;
-        }
-        @Override
-        public String toString() {
-            return sourceType + "-" + role + "->" + destType;
-        }
-    }
-
 
     private int lastNodeNumber = 0;
     private final Authentication authentication = new NoAuthentication();
@@ -110,8 +80,7 @@ public class MockCloudContext extends  AbstractCloudContext {
 
     final Map<Integer, NodeDescription>  nodes                      = Collections.synchronizedMap(new LinkedHashMap<Integer, NodeDescription>());
     public final Map<String,  NodeManagerDescription> nodeManagers  = Collections.synchronizedMap(new LinkedHashMap<String, NodeManagerDescription>());
-    final Map<String, Role> roles                                   = Collections.synchronizedMap(new LinkedHashMap<String, Role>());
-    final Map<String, AllowedRelation> allowed                      = Collections.synchronizedMap(new LinkedHashMap<String, AllowedRelation>());
+
 
     public Map<Integer, NodeDescription>  getNodes() {
         return nodes;
@@ -125,7 +94,6 @@ public class MockCloudContext extends  AbstractCloudContext {
         nodes.clear();
         nodeManagers.clear();
         lastNodeNumber = 0;
-
     }
 
     /**
@@ -147,75 +115,6 @@ public class MockCloudContext extends  AbstractCloudContext {
         map.put("name", name);
         return addNode("typedef", map);
     }
-
-    protected int getRelDefNode(String name, String nodeManager) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("name", name);
-        map.put("builder", nodeManagers.get(nodeManager).oType);
-        return addNode("reldef", map);
-    }
-
-    protected int getTypeRelNode(int snumber, int dnumber, int rnumber) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("snumber", snumber);
-        map.put("dnumber", dnumber);
-        map.put("rnumber", rnumber);
-        return addNode("typerel", map);
-    }
-
-
-    String getNodeManagerForRole(String r) {
-        Role role = roles.get(r);
-        if (role == null) {
-            throw new NotFoundException("No such role '" + r + "'");
-        }
-        return role.nodeManager;
-    }
-
-    String getRole(int rnumber) {
-        for (Role r : roles.values()) {
-            if (r.number == rnumber) {
-                return r.name;
-            }
-        }
-        throw new NotFoundException("No such role '" + rnumber + "'");
-    }
-
-
-    protected void addRole(String r, String builder) {
-        if (roles.containsKey(r)) {
-        } else {
-            if (builder == null) {
-                builder = "insrel";
-            }
-            Role role = new Role(r, builder, getRelDefNode(r, builder));
-            roles.put(r, role);
-        }
-    }
-
-    protected void addAllowedRelation(String r, String source, String dest) {
-        Role rnumber = roles.get(r);
-        if (rnumber == null) {
-            throw new IllegalStateException();
-        }
-        NodeManagerDescription s = nodeManagers.get(source);
-        if (s == null) {
-            throw new IllegalStateException();
-        }
-
-        NodeManagerDescription d = nodeManagers.get(dest);
-        if (d == null) {
-            throw new IllegalStateException();
-        }
-        int typerel = getTypeRelNode(s.oType, d.oType, rnumber.number);
-        allowed.put(r, new AllowedRelation(r, source, dest));
-    }
-
-    public void addCoreModel() {
-        addRole("related", "insrel");
-        addAllowedRelation("related", "object", "object");
-    }
-
 
     public void addNodeManager(String name, Map<String, DataType> map) {
         Map<String, Field> m = new HashMap<String, Field>();
@@ -285,7 +184,7 @@ public class MockCloudContext extends  AbstractCloudContext {
 
     @Override
     public String toString() {
-        return getUri() + "#" + hashCode() + "(" + nodes.size() + " nodes, nodemanagers: " + nodeManagers.keySet() + ", roles: " + roles.keySet() + ")";
+        return getUri() + "#" + hashCode() + "(" + nodes.size() + " nodes)";
     }
 
     public static class MockResolver extends ContextProvider.Resolver {

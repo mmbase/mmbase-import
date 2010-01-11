@@ -19,19 +19,16 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * <p>
  * One or more functions based on a Java-bean. Every setter method of the bean corresponds with one
  * parameter.  The default value of the parameter can be defined with the getter method (which will
- * be called immediately after instantiation of such a Class). So the setters/getters define  {@link
- * Parameter}s. More specific {@link org.mmbase.datatypes.DataType}s can be attributes to such
- * parameters using the {@link Type} annotation.
- * </p><p>
+ * be called immediately after instantiation of such a Class).
+ *
  * All other methods (with no arguments) of the class correspond to the functions. So, you can
  * implement more bean-functions in the same class, as long as they have the same parameters.
- * </p><p>
+ *
  * A BeanFunction can be aquired via {@link FunctionFactory#getFunction(Class, String)} (which
  * delegates to a static method in this class).
- * </p>
+ *
  * @author Michiel Meeuwissen
  * @version $Id$
  * @see org.mmbase.util.functions.MethodFunction

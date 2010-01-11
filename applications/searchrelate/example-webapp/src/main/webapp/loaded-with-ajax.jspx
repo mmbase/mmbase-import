@@ -17,7 +17,6 @@
           sortable="true"
           config="mysearch"
           search="true"
-          load="false"
           />
     </mm:node>
   </mm:cloud>

@@ -692,7 +692,7 @@ List.prototype.upload = function(fileid) {
                     try {
                         var fileItem = $("#" + fileid);
                         fileItem.val(null);
-                        fileItem.prevAll(".mm_gui").remove();
+                        fileItem.prev(".mm_gui").remove();
                         var created = $(data).find("div.fieldgui .mm_gui");
                         fileItem.before(created);
                     } catch (e) {

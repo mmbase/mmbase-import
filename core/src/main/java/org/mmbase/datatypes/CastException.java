@@ -69,19 +69,7 @@ public class CastException extends Exception {
      */
     public CastException(Collection<LocalizedString> mes, Throwable cause) {
         super(mes.toString(), cause);
-        this.errors.addAll(mes);
-    }
-
-    /**
-     * @since MMBase-2.0
-     */
-    public Collection<LocalizedString> getErrors() {
-        return errors;
-    }
-
-    @Override
-    public String toString() {
-        return getMessage() + (errors.size() >  0 ? errors : "");
+        errors.addAll(mes);
     }
 
 

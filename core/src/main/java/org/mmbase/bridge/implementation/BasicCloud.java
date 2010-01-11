@@ -358,15 +358,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         }
     }
 
-    public RelationManager getRelationManager(String roleName) throws NotFoundException {
-        int r = BasicCloudContext.mmb.getRelDef().getNumberByName(roleName);
-        if (r == -1) {
-            throw new NotFoundException("Role '" + roleName + "' does not exist.");
-        }
-        return getRelationManager(r);
-    }
-
-
     public RelationManagerList getRelationManagers() {
         List<MMObjectNode> v = BasicCloudContext.mmb.getTypeRel().getNodes();
         return new BasicRelationManagerList(v, this);
@@ -434,6 +425,14 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         if (r == -1) return false;
         return BasicCloudContext.mmb.getTypeRel().contains(source.getNumber(), destination.getNumber(), r);
         // return getRelationManager(source.getNumber(), destination.getNumber(), r) != null;
+    }
+
+    public RelationManager getRelationManager(String roleName) throws NotFoundException {
+        int r = BasicCloudContext.mmb.getRelDef().getNumberByName(roleName);
+        if (r == -1) {
+            throw new NotFoundException("Role '" + roleName + "' does not exist.");
+        }
+        return getRelationManager(r);
     }
 
     public RelationManagerList getRelationManagers(String sourceManagerName, String destinationManagerName, String roleName) throws NotFoundException {

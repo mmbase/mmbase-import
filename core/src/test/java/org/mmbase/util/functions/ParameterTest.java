@@ -53,8 +53,12 @@ public class ParameterTest {
         Parameter<String> param = new Parameter<String>("a", DataTypes.getDataType("colors"));
 
         param.checkType("just a string"); // it _is_ of the correct type
-        param.autoCast("a2"); // and can also be casted.
-        
+
+        try {
+            param.autoCast("a2"); // it cannot be casted though
+            fail();
+        } catch (CastException ie) {
+        }
         assertEquals("red", param.autoCast("red"));
     }
 
@@ -70,7 +74,12 @@ public class ParameterTest {
         param.checkType(news); // it _is_ of the correct type (namely a node)
 
         param.autoCast(typedef);
-        assertTrue(param.getDataType().validate(news, null, null).size() > 0);
+        try {
+            param.autoCast(news);
+            fail("Node " + news + " should not have been valid for " + DataTypes.getDataType("typedef"));
+        } catch(CastException ce) {
+            // but it cannot be casted.
+        }
     }
 
 }

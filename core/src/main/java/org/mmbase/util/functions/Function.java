@@ -53,13 +53,6 @@ public interface Function<R> {
     public R getFunctionValueWithList(List<?> parameters);
 
     /**
-     * A 'varargs' version of {@link getFunctionValueWithList}.
-     * @since MMBase-2.0
-     */
-    public R getFunctionValueWithArgs(Object... parameters);
-
-
-    /**
      * For documentational  purposes a function object needs a description too.
      */
     public void setDescription(String description);

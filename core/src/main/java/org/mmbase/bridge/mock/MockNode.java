@@ -17,8 +17,8 @@ import org.mmbase.bridge.util.*;
 /**
  * MockNodes belong to a {@link MockCloud}. They represent {@linkplain
  * MockCloudContext#NodeDescription data} in memory of a {@link MockCloudContext}. An even simpler
- * Node mocker is {@link MapNode}. This one is a bit more sophisticated because it does actually
- * implement methods {@link #commit} and {@link #isNew} too.
+ * Node mocker is {@link MapNode}. This one ia a bit more sophisticated because it does actually
+ * implements {@link #commit} too.
  *
  * @author  Michiel Meeuwissen
  * @version $Id$
@@ -28,14 +28,14 @@ import org.mmbase.bridge.util.*;
 public class MockNode extends MapNode  {
 
     private final Map<String, Object> originalMap;
-    protected final MockCloud cloud;
+    private final MockCloudContext cloudContext;
     private String context = "default";
     private boolean isNew;
 
-    MockNode(Map<String, Object> map, MockCloud cloud, NodeManager nm, boolean isNew) {
+    MockNode(Map<String, Object> map, MockCloudContext cc, NodeManager nm, boolean isNew) {
         super(new HashMap<String, Object>(map), nm);
         originalMap = map;
-        this.cloud = cloud;
+        cloudContext = cc;
         this.isNew = isNew;
     }
 
@@ -47,11 +47,11 @@ public class MockNode extends MapNode  {
         }
         if (! originalMap.containsKey("number")) {
             // This is a new node, so generate a number first
-            int number = cloud.getCloudContext().addNode(getNodeManager().getName(), values);
+            int number = cloudContext.addNode(getNodeManager().getName(), values);
             values.put("number", number);
         }
         originalMap.putAll(values);
-        cloud.getCloudContext().setNodeType(getNumber(), getNodeManager().getName());
+        cloudContext.setNodeType(getNumber(), getNodeManager().getName());
         isNew = false;
     }
     @Override
@@ -74,7 +74,7 @@ public class MockNode extends MapNode  {
 
     @Override
     public StringList getPossibleContexts() {
-        StringList sl = cloud.getCloudContext().createStringList();
+        StringList sl = cloudContext.createStringList();
         sl.add(context);
         if (!sl.contains("default")) {
             sl.add("default");
@@ -86,6 +86,9 @@ public class MockNode extends MapNode  {
     public boolean isNew() {
         return isNew;
     }
+
+
+
 
 
     @Override

@@ -1,4 +1,3 @@
-<?xml version="1.0" ?>
 <builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -23,6 +22,7 @@
     <plural xml:lang="it">Immagini</plural>
   </names>
 
+
   <descriptions>
     <description xml:lang="en">Images</description>
     <description xml:lang="fr">Images</description>
@@ -31,7 +31,10 @@
     <description xml:lang="it">Immagini</description>
   </descriptions>
 
+
+
   <properties>
+
      <!-- convert using JAI http://java.sun.com/products/java-media/jai/index.html
     NOTE: not all features provided by ImageMagic are implemented in the JAI converter -->
     <!-- <property name="ImageConvertClass">org.mmbase.util.images.JAIImageConverter</property> -->
@@ -267,7 +270,7 @@
         If you use this field, then you ensure that no duplicate images can be uploaded.
     -->
     <!--
-    <field name="checksum" state="system">
+    <field>
       <descriptions>
         <description xml:lang="en">Checksum of byte array, which allows for uniqueness checking</description>
         <description xml:lang="nl">Checksum van de bytes, hiermee kan men controleren of een afbeelding al bestaat</description>
@@ -276,10 +279,11 @@
         <guiname xml:lang="en">Checksum</guiname>
         <guiname xml:lang="nl">Checksum</guiname>
       </gui>
-      <datatype base="checksum" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <unique value="true" />
-        <maxLength value="255" enforce="never"/>
-      </datatype>
+      <datatype base="checksum" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>checksum</name>
+        <type state="system" size="255" unique="true" notnull="false" key="false">STRING</type>
+      </db>
     </field>
     -->
 

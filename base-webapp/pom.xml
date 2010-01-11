@@ -1,4 +1,4 @@
- <?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-parent</artifactId>
-    <version>2.0-SNAPSHOT</version>
+    <version>1.9-SNAPSHOT</version>
     <relativePath>../maven-base/pom.xml</relativePath>
   </parent>
 
@@ -22,11 +22,8 @@
   </properties>
 
   <description>
-    This is a minimalistic war containing the essentials for an MMBase web applications.  This can be used as initial
-    war overlay for your own project.
-
-    It will run on its own, but only if a jdbc/MMBase datasource is provided (for hsql,
-    otherwise also override the mmbaseroot/database property).
+    This is a minimalistic war containing the essentials for an MMBase web applications.
+    This can be used as initial war overlay for your own project.
   </description>
 
   <build>
@@ -82,7 +79,7 @@
       <artifactId>log4j</artifactId>
     </dependency>
 
-    </dependencies>
+  </dependencies>
 
 
   <profiles>
@@ -119,7 +116,7 @@
           <plugin>
             <groupId>org.mmbase.maven</groupId>
             <artifactId>maven-mmbase-plugin</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <version>1.9-SNAPSHOT</version>
             <executions>
               <execution>
                 <id>installsvnsr</id>

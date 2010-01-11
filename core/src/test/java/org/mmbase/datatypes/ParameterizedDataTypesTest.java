@@ -39,8 +39,7 @@ public class ParameterizedDataTypesTest  {
         try {
             CLOUD_CONTEXT.addCore();
             CLOUD_CONTEXT.addNodeManagers(ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders/tests"));
-
-            MockCloudContext.getInstance().addCore(); // avoids the frightening warning otherwised caused by the line REMARK1
+            MockCloudContext.getInstance().addCore();
         } catch (java.io.IOException ioe) {
             throw new RuntimeException(ioe);
         }
@@ -255,7 +254,7 @@ public class ParameterizedDataTypesTest  {
             Cloud cloud = getCloud();
             NodeManager nodeManager = cloud.getNodeManager("datatypes");
             Field field = nodeManager.getField(fieldName);
-            field.getDataType().validate(value); // REMARK1 should not give errors
+            field.getDataType().validate(value); // should not give errors
             Collection<LocalizedString> errors = field.getDataType().validate(value, null, field);
 
             if (valid) {

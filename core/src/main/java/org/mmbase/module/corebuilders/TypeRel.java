@@ -147,7 +147,7 @@ public class TypeRel extends MMObjectBuilder {
 
         boolean bidirectional = (!InsRel.usesdir) || (reldefNode.getIntValue("dir") > 1);
 
-        INHERITANCE: if (buildersInitialized) { // handle inheritance, which is
+        inheritance: if (buildersInitialized) { // handle inheritance, which is
             // not possible during
             // initialization of MMBase.
 
@@ -167,13 +167,13 @@ public class TypeRel extends MMObjectBuilder {
                     log.info("The source of relation type " + typeRel
                              + " is not an active builder. Cannot follow descendants.");
                 }
-                break INHERITANCE;
+                break inheritance;
             }
 
             if (destinationBuilder == null) {
                 log.warn("The destination of relation type " + typeRel
                          + " is not an active builder. Cannot follow descendants.");
-                break INHERITANCE;
+                break inheritance;
             }
 
             int rnumber = typeRel.getIntValue("rnumber");
@@ -207,7 +207,9 @@ public class TypeRel extends MMObjectBuilder {
             added.add(typeRel); // replaces the ones added in the 'inheritance'
             // loop (so now not any more Virtual)
         }
-        for (MMObjectNode node : added) {
+        Iterator<MMObjectNode> i = added.iterator();
+        while (i.hasNext()) {
+            MMObjectNode node = i.next();
             if (! node.isVirtual()) {
                 // make sure 'real' nodes replace virtual nodes. (real and virtual nodes are equal, so will not be added to set otherwise)
                 // This is especially essential whey you use STRICT in contains
@@ -528,7 +530,6 @@ public class TypeRel extends MMObjectBuilder {
 
             } else {
                 //something else changed in a typerel node? reread the complete typeRelNodes Set
-                log.service("Received '" + event + "' which is about typrels. Now re-reading the entire cache");
                 readCache();
             }
             // also, clear all query-caches, because result may change by this. See MMB-348
