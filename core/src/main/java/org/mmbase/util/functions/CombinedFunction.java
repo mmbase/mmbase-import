@@ -120,7 +120,7 @@ public class CombinedFunction<R> implements Function<R> {
         params.setAll(parameters);
         return getFunctionValue(params);
     }
-    public R getFunctionValue(Object... parameters) {
+    public R getFunctionValueWithArgs(Object... parameters) {
         Parameters params = createParameters();
         params.setAll(parameters);
         return getFunctionValue(params);
