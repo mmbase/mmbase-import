@@ -13,11 +13,11 @@
   <artifactId>example-webapp</artifactId>
   <packaging>war</packaging>
   <name>MMBase Example webapp</name>
-  <version>${base.version}</version>
+  <version>${mmbase.version}</version>
 
   <properties>
     <my.postfix>${mmbase.version.postfix}</my.postfix>
-    <base.version>${mmbase.version.number}${my.postfix}</base.version>
+
     <jdbcUrl>jdbc:hsqldb:file:data/mmbase</jdbcUrl>
     <!-- E.g. use
          -DjdbcUrl=jdbc:hsqldb:hsql://localhost/testb
@@ -73,7 +73,7 @@
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>base-webapp</artifactId>
-      <version>${base.version}</version>
+      <version>${mmbase.version}</version>
       <type>war</type>
     </dependency>
 
