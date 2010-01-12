@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
 
-    public MMObjectNode relDefNode;
+    MMObjectNode relDefNode;
     private MMObjectNode typeRelNode;
 
     /**
