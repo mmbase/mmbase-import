@@ -14,8 +14,9 @@
   <name>MMBase Example Search and Relate webapp</name>
 
   <properties>
-    <my.postfix>${mmbase.version.postfix}</my.postfix>
-    <base.version>${mmbase.version.number}${my.postfix}</base.version>
+    <!--
+    <mmbase.version.number>1.9</mmbase.version.number>
+    -->
     <saxon.version>9.1.0.6</saxon.version>
   </properties>
 
@@ -66,13 +67,6 @@
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>base-webapp</artifactId>
-      <version>${base.version}</version>
-      <type>war</type>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-searchrelate</artifactId>
       <version>${mmbase.version}</version>
       <type>war</type>
     </dependency>
@@ -80,7 +74,14 @@
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-searchrelate</artifactId>
-      <version>${mmbase.version}</version>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-searchrelate</artifactId>
+      <version>${project.version}</version>
       <classifier>examples</classifier>
       <type>war</type>
     </dependency>
@@ -110,19 +111,7 @@
   </dependencies>
 
   <profiles>
-    <profile>
-      <id>servlet25</id>
-      <activation>
-        <property>
-          <name>servlet.version</name>
-          <value>2.5</value>
-        </property>
-      </activation>
-      <properties>
-        <my.postfix>-${my.version}</my.postfix>
-        <base.version>${mmbase.version.number}-servlet25${mmbase.version.postfix}</base.version>
-      </properties>
-    </profile>
+
   </profiles>
 
 </project>
