@@ -25,22 +25,10 @@ See http://www.MMBase.org/license
 
   <properties>
 
-    <servlet.version>2.4</servlet.version>
-    <jsp.version>2.0</jsp.version>
-    <jsp.groupId>javax.servlet</jsp.groupId>
-    <jstl.version>1.1.2</jstl.version>
-    <taglib-standard.version>1.1.2</taglib-standard.version>
-
-
-    <!-- MMBase 2.0?
-    -->
-    <!--
-        <servlet.version>2.5</servlet.version>
-        <jsp.version>2.1</jsp.version>
-        <jsp.groupId>javax.servlet.jsp</jsp.groupId>
-        <jstl.version>1.2</jstl.version>
-    -->
-
+    <servlet.version>2.5</servlet.version>
+    <jsp.version>2.1</jsp.version>
+    <jsp.groupId>javax.servlet.jsp</jsp.groupId>
+    <jstl.version>1.2</jstl.version>
 
     <log4j.version>1.2.14</log4j.version>
 
@@ -621,29 +609,6 @@ See http://www.MMBase.org/license
       </build>
     </profile>
 
-    <profile>
-      <id>servlet24</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-    </profile>
-
-    <profile>
-      <id>servlet25</id>
-      <activation>
-        <property>
-          <name>servlet.version</name>
-          <value>2.5</value>
-        </property>
-      </activation>
-      <properties>
-        <servlet.version>2.5</servlet.version>
-        <jsp.version>2.1</jsp.version>
-        <jsp.groupId>javax.servlet.jsp</jsp.groupId>
-        <jstl.version>1.2</jstl.version>
-      </properties>
-
-    </profile>
     <profile>
       <id>development</id>
       <properties>
