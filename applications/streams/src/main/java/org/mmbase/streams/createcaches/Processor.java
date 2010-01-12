@@ -378,9 +378,9 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
             return;
         }
         if (node.getNumber() > 0) {
+            LOG.debug("url: " + node.getStringValue("url"));
             if (node.isChanged(field.getName())) {
                 LOG.service("For node " + node.getNumber() + ", the field '" + field.getName() + "' is changed " + node.getChanged() + ". That means that we must schedule create caches");
-                LOG.service("url: " + node.getStringValue("url"));
                 
                 final Cloud ntCloud = node.getCloud().getNonTransactionalCloud();
                 final int nodeNumber = node.getNumber();
