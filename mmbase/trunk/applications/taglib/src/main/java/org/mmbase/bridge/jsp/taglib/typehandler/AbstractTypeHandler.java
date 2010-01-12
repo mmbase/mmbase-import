@@ -164,6 +164,20 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                     buf.append(node.getSize(field.getName()));
                 }
             }
+            if (dt instanceof org.mmbase.datatypes.BinaryDataType) {
+                buf.append(" mm_mimetype_");
+                Object value  = getFieldValue(node, field, false);
+                if (value != null) {
+                    try {
+                        buf.append(((org.mmbase.datatypes.BinaryDataType) dt).getMimeType(value, node, field));
+                    } catch (Exception e) {
+                        log.warn(e.getMessage(), e);
+                    }
+                } else {
+                    buf.append("NULL");
+                }
+
+            }
         }
         return buf.toString();
     }
