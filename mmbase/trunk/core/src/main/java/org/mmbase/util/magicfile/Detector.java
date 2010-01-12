@@ -343,6 +343,7 @@ public class Detector {
      * Test whether a long matches
      */
     protected boolean testLong(byte[] lithmus, int endian) {
+        if (lithmus.length < 4) return false;
         log.debug("testing " + label[endian] + " long for " + rawinput);
         long found = 0;
         try {
