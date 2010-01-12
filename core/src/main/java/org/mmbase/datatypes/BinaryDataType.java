@@ -31,7 +31,7 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
 
     private static final long serialVersionUID = 1L;
 
-    protected Pattern validMimeTypes = Pattern.compile(".*");
+    protected MimeTypeRestriction mimeTypeRestriction = new MimeTypeRestriction(Pattern.compile(".*"));
 
     /**
      * Constructor for binary field.
@@ -56,12 +56,14 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
     }
 
     @Override
-    protected void inheritProperties(BasicDataType origin) {
-        super.inheritProperties(origin);
+    protected void cloneRestrictions(BasicDataType origin) {
+        super.cloneRestrictions(origin);
         if (origin instanceof BinaryDataType) {
-            validMimeTypes = ((BinaryDataType) origin).validMimeTypes;
+            BinaryDataType dataType = (BinaryDataType)origin;
+            mimeTypeRestriction = new MimeTypeRestriction(dataType.mimeTypeRestriction);
         }
     }
+
 
     @Override
     public long getLength(Object value) {
@@ -94,6 +96,25 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
         }
     }
 
+    /**
+     * @since MMBase-2.0
+     */
+    public MimeType getMimeType(Object value, Node node, Field field) {
+        if (value instanceof byte[]) {
+            byte[] array = (byte[]) value;
+            return new MimeType(org.mmbase.util.magicfile.MagicFile.getInstance().getMimeType(array));
+        } else if (value instanceof FileItem) {
+            FileItem fi = (FileItem) value;
+            return new MimeType(fi.getContentType());
+        } else if (value instanceof SerializableInputStream) {
+            SerializableInputStream sis = (SerializableInputStream) value;
+            return new MimeType(sis.getContentType());
+        } else {
+            return new MimeType("*/*");
+            //throw new RuntimeException("Value " + value + " of " + getName() + " is not a byte array but" + (value == null ? "null" : value.getClass().getName()));
+        }
+    }
+
     @Override
     protected Collection<LocalizedString> validateRequired(Collection<LocalizedString> errors, Object castValue, Object value, Node  node, Field field) {
         return requiredRestriction.validate(errors, castValue, node, field);
@@ -105,11 +126,35 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
      * DataType. This is not yet available as a Restriction, only as a property.
      */
     public Pattern getValidMimeTypes() {
-        return validMimeTypes;
+        return mimeTypeRestriction.getValue();
     }
 
     public void setValidMimeTypes(Pattern pattern) {
-        validMimeTypes = pattern;
+        mimeTypeRestriction.setValue(pattern);
     }
+
+    /**
+     * @since MMBase-2.0
+     */
+    protected class MimeTypeRestriction extends AbstractRestriction<Pattern> {
+        private static final long serialVersionUID = 0L;
+
+        MimeTypeRestriction(MimeTypeRestriction source) {
+            super(source);
+        }
+        MimeTypeRestriction(Pattern p) {
+            super("mimetype", p);
+        }
+        @Override
+        protected boolean simpleValid(Object v, Node node, Field field) {
+            MimeType s = BinaryDataType.this.getMimeType(v, node, field);
+            boolean res = value == null || s == null ? true : value.matcher(s.toString()).matches();
+            if (log.isDebugEnabled()) {
+                log.debug("VALIDATING " + v + "->" + s + " with " + getValue() + " -> " + res);
+            }
+            return res;
+        }
+    }
+
 
 }
