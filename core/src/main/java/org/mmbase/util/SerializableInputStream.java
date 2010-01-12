@@ -55,7 +55,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     private long fileMark = 0;
     private boolean tempFile = true;
     private String name;
-    private String contentType = MimeType.OCTETSTREAM.toString();
+    private String contentType = null;
     private transient InputStream wrapped;
     private boolean used = false;
 
@@ -96,6 +96,9 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         this.size = tempFile.length();
         this.name = name;
         this.contentType = MagicFile.getInstance().getMimeType(tempFile);
+        if (MagicFile.FAILED.equals(this.contentType)) {
+            this.contentType = null;
+        }
     }
     /**
      * @since MMBase-1.9.2
@@ -111,6 +114,9 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         if (array.length > 0) {
             try {
                 this.contentType = MagicFile.getInstance().getMimeType(array);
+                if (MagicFile.FAILED.equals(this.contentType)) {
+                    this.contentType = null;
+                }
             } catch (Exception e) {
             }
         }
