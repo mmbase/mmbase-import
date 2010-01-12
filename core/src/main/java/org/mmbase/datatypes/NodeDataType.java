@@ -61,14 +61,18 @@ public class NodeDataType extends BasicDataType<Node> {
         if (preCast instanceof Node) {
             return preCast;
         }  else {
-            Node res = Casting.toNode(preCast, getCloud(node, field));
-            if (res == null) {
-                if (Casting.toString(value).equals("-1")) {
-                    return null;
+            try {
+                Node res = Casting.toNode(preCast, getCloud(node, field));
+                if (res == null) {
+                    if (Casting.toString(value).equals("-1")) {
+                        return null;
+                    }
+                    throw new CastException("No such node " + preCast);
+                } else {
+                    return res;
                 }
-                throw new CastException("No such node " + preCast);
-            } else {
-                return res;
+            } catch (NotFoundException nfe) {
+                throw new CastException(nfe);
             }
         }
     }
