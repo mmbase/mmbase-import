@@ -98,5 +98,5 @@ public interface AggregatedField extends StepField {
      * @return A string representation of this AggregatedField.
      */
     @Override
-    public String toString();
+    String toString();
 }
