@@ -368,7 +368,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         try {
             QueryParts query = readQuery(req, null);
             Node node = getServedNode(query, getNode(query));
-            if (node != null) { // && node.getNodeManager().hasField(lastModifiedField)) {
+            if (node != null && node.getNodeManager().hasField(lastModifiedField)) {
                 return node.getDateValue(lastModifiedField).getTime();
             } else {
                 return -1;
