@@ -431,18 +431,6 @@ public class DataTypesTest  {
         CloudThreadLocal.unbind();
     }
 
-    @Test
-    public void restrictedBinary() {
-        DataType restrictedBinary = DataTypes.getDataType("restricted_binary");
-        assertNotNull(restrictedBinary);
-        assertTrue(restrictedBinary instanceof BinaryDataType);
-        assertEquals(0, restrictedBinary.validate(new byte[] { 0, 1, 2, }, null, null).size());
-        assertEquals(1, restrictedBinary.validate(null, null, null).size());
-        assertFalse(restrictedBinary.validate(new byte[0], null, null).size() == 0);
-        assertFalse(restrictedBinary.validate(new NullInputStream(201), null, null).size() == 0);
-        assertTrue(restrictedBinary.validate(new NullInputStream(199), null, null).size() == 0);
-    }
-
 
 
 }
