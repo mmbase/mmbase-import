@@ -160,8 +160,12 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
         }
         @Override
         protected boolean simpleValid(Object v, Node node, Field field) {
+            if (value == null || value.pattern().equals(".*")) {
+                // avoid depending on mime type, no need, because no restriction applies
+                return true;
+            }
             MimeType s = BinaryDataType.this.getMimeType(v, node, field);
-            boolean res = value == null || s == null ? true : value.matcher(s.toString()).matches();
+            boolean res = s == null ? false : value.matcher(s.toString()).matches();
             if (log.isDebugEnabled()) {
                 log.debug("VALIDATING " + v + "->" + s + " with " + getValue() + " -> " + res);
             }
