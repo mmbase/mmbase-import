@@ -2055,9 +2055,13 @@ abstract public class Queries {
                 String tempNumber = n.getStringValue("_number");
                 if (n instanceof Relation) {
                     Relation r = (Relation) n;
-                    log.debug("Considering" + r);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Considering" + r);
+                    }
                     if (r.getIntValue("rnumber") != role) {
-                        log.debug("Role of " + r + "  is not " + role);
+                        if (log.isDebugEnabled()) {
+                            log.debug("Role of " + r + "  is not " + role);
+                        }
                         continue;
                     }
 
@@ -2101,11 +2105,15 @@ abstract public class Queries {
                     }
 
                 } else {
-                    log.debug("" + n + " is not a relation");
+                    if (log.isDebugEnabled()) {
+                        log.debug("" + n + " is not a relation");
+                    }
 
                 }
             } else {
-                log.debug("" + n + " is deleted or not new");
+                if (log.isDebugEnabled()) {
+                    log.debug("" + n + " is deleted or not new");
+                }
             }
         }
 
