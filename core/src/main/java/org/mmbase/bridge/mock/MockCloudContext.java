@@ -151,7 +151,11 @@ public class MockCloudContext extends  AbstractCloudContext {
     protected int getRelDefNode(String name, String nodeManager) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("name", name);
-        map.put("builder", nodeManagers.get(nodeManager).oType);
+        NodeManagerDescription nd = nodeManagers.get(nodeManager);
+        if (nd == null) {
+            throw new IllegalStateException("No such builder '" + nodeManager + "'");
+        }
+        map.put("builder", nd.oType);
         return addNode("reldef", map);
     }
 
