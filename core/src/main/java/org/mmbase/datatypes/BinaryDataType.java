@@ -45,7 +45,7 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
 
     @Override
     protected String castToPresent(Object value, Node node, Field field) {
-        return "BINARY";
+        return getMimeType(value, node, field) + " " + getLength(value) + " byte";
     }
 
 
