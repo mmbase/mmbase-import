@@ -152,8 +152,13 @@ public class ParameterizedDataTypesTest  {
                           new Object[] {new Double(Double.POSITIVE_INFINITY), "bla bla"
                           }},
             new Object[] {"handle",
-                          new Object[] {binary, null},
+                          new Object[] {null, binary},
                           new Object[] {new byte[] {1, 2}}
+            },
+            new Object[] {"image",
+                          new Object[] {null},
+                          new Object[] { binary, new byte[] {1, 2}
+                          }
             },
             new Object[] {"boolean",
                           new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0), null},
@@ -273,7 +278,9 @@ public class ParameterizedDataTypesTest  {
 
     @Override
     public String toString() {
-        return fieldName + ":" + value + "(" + (valid ? "valid" : "invalid") + ")";
+        return fieldName + ":" + value +
+            (value instanceof byte[] ? (" (" + ((byte[]) value).length + " bytes)") : "") +
+            " (" + (valid ? "valid" : "invalid") + ")";
     }
 
 

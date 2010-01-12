@@ -41,9 +41,11 @@ public class BinaryDataTypeTest  {
 
     @Test
     public void getMimeType() {
-        BinaryDataType dt = (BinaryDataType) DataTypes.getDataType("restricted_binary");
+        BinaryDataType dt = (BinaryDataType) DataTypes.getDataType("binary");
 
-        assertEquals(new MimeType(MimeType.STAR, MimeType.STAR), dt.getMimeType(null, null, null));
+        assertTrue(new MimeType(MimeType.STAR, MimeType.STAR).matches(dt.getMimeType(null, null, null)));
+        assertEquals(MimeType.OCTETSTREAM, dt.getMimeType(null, null, null));
+
 
         assertTrue(new MimeType("image", MimeType.STAR).matches(dt.getMimeType(GIF, null, null)));
         assertEquals(new MimeType("image", "gif"), dt.getMimeType(GIF, null, null));
@@ -53,6 +55,11 @@ public class BinaryDataTypeTest  {
 
         assertTrue(new MimeType("image", MimeType.STAR).matches(dt.getMimeType(new ByteArrayInputStream(GIF), null, null)));
         assertEquals(new MimeType("image", "gif"), dt.getMimeType(new ByteArrayInputStream(GIF), null, null)); //FAILS
+
+        assertEquals(MimeType.OCTETSTREAM, dt.getMimeType(new byte[] {0, 1, 2}, null, null));
+        assertEquals(MimeType.OCTETSTREAM, dt.getMimeType(new byte[] {1, 2, 3, 4}, null, null));
+        assertEquals(MimeType.OCTETSTREAM, dt.getMimeType(new byte[0], null, null));
+        assertEquals(MimeType.OCTETSTREAM, dt.getMimeType(new NullInputStream(100), null, null));
 
     }
 
@@ -66,6 +73,17 @@ public class BinaryDataTypeTest  {
         assertFalse(restrictedBinary.validate(new byte[0], null, null).size() == 0);
         assertFalse(restrictedBinary.validate(new NullInputStream(201), null, null).size() == 0);
         assertTrue(restrictedBinary.validate(new NullInputStream(199), null, null).size() == 0);
+    }
+
+
+    @Test
+    public void mimeTypeRestrictedBinary() {
+        BinaryDataType restrictedBinary = (BinaryDataType) DataTypes.getDataType("mimetype_restricted_binary");
+        assertNotNull(restrictedBinary);
+
+        assertFalse(restrictedBinary.mimeTypeRestriction.simpleValid(new byte[] { 0, 1, 2, }, null, null));
+        assertEquals(1, restrictedBinary.castAndValidate(new byte[] { 0, 1, 2}, null, null).size());
+
     }
 
 
