@@ -115,7 +115,7 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
         } else {
             mt = Casting.toSerializableInputStream(value).getContentType();
         }
-        if (mt.equals(MagicFile.FAILED)) {
+        if (mt == null || mt.equals(MagicFile.FAILED)) {
             return MimeType.OCTETSTREAM;
         } else {
             return new MimeType(mt);
