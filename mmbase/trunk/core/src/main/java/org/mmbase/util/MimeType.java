@@ -22,6 +22,7 @@ public class MimeType implements java.io.Serializable {
 
     public static final String STAR = "*";
     public static final MimeType ANY = new MimeType(STAR, STAR);
+    public static final MimeType OCTETSTREAM = new MimeType("application", "octet-stream");
 
     private final String type;
     private final String subType;
