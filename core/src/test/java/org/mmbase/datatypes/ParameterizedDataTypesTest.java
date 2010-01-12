@@ -40,6 +40,7 @@ public class ParameterizedDataTypesTest  {
             CLOUD_CONTEXT.addCore();
             CLOUD_CONTEXT.addNodeManagers(ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders/tests"));
 
+            System.out.println("Using for test " + CLOUD_CONTEXT);
             MockCloudContext.getInstance().addCore(); // avoids the frightening warning otherwised caused by the line REMARK1
         } catch (java.io.IOException ioe) {
             throw new RuntimeException(ioe);
@@ -57,8 +58,8 @@ public class ParameterizedDataTypesTest  {
     }
 
     /**
-     * All test-cases from his class are defined here.
-     * Note that this method is also called from the 'integration tests" from tests/bridge, adn the same tests are performed on an actual running mmbase (so no mocking).
+     * All test-cases from this class are defined here.
+     * Note that this method is also called from the 'integration tests" from tests/bridge, where the same tests are performed on an actual running mmbase (so no mocking).
      */
 
     public static Object[][] getCases(Cloud cloud, byte[] binary) throws Exception {
@@ -174,8 +175,12 @@ public class ParameterizedDataTypesTest  {
                           new Object[] {"1", "100", new Integer(10), new Integer(-1), "-1" , null},
                           new Object[] { "asjdlkf"}},
             new Object[] {"node",
-                          new Object[] {node1, node2, "" + node1.getNumber(), new Integer(node1.getNumber()), new Integer(node2.getNumber()),  new Integer(-1), null, ""},
-                          new Object[] {"asjdlkf", new Integer(-2), new Integer(-100)}}
+                          new Object[] {node1 , node2,
+                                        "" + node1.getNumber(), new Integer(node1.getNumber()), new Integer(node2.getNumber()),  new Integer(-1), null, ""
+                },
+                          new Object[] {"asjdlkf", new Integer(-2), new Integer(-100)
+                          }
+            }
             ,
             new Object[] {"typedef",
                           new Object[] {node1, new Integer(node1.getNumber()),  null, ""},
@@ -186,12 +191,14 @@ public class ParameterizedDataTypesTest  {
                           new Object[] {"", "asjdlkf", node1}}
             ,
             new Object[] {"decimal",
-                          new Object[] {"22222222222222222222222222222222222.111111111111111111111111111111"/*35.30*/, "1", new Integer(100),
+                          new Object[] {"22222222222222222222222222222222222.111111111111111111111111111111" , //35.30
+                                        "1", new Integer(100),
                                         new BigDecimal("22222222222222222222222222222222222.1234")},
                           new Object[] {"333333333333333333333333333333333333", "asjdlkf"}}
             ,
             new Object[] {"currency",
-                          new Object[] {"222222222222222.11111"/*15.5*/, "1", new Integer(100),
+                          new Object[] {"222222222222222.11111", //15.5
+                                        "1", new Integer(100),
                                         new BigDecimal("1.123456789"), "12345.1111111111"},
                           new Object[] {"3333333333333333", "asjdlkf"}}
             /*
@@ -251,22 +258,16 @@ public class ParameterizedDataTypesTest  {
 
     @Test
     public void testCheckValid() {
-        try {
-            Cloud cloud = getCloud();
-            NodeManager nodeManager = cloud.getNodeManager("datatypes");
-            Field field = nodeManager.getField(fieldName);
-            field.getDataType().validate(value); // REMARK1 should not give errors
-            Collection<LocalizedString> errors = field.getDataType().validate(value, null, field);
+        Cloud cloud = getCloud();
+        NodeManager nodeManager = cloud.getNodeManager("datatypes");
+        Field field = nodeManager.getField(fieldName);
+        field.getDataType().validate(value); // REMARK1 should not give errors
+        Collection<LocalizedString> errors = field.getDataType().validate(value, null, field);
 
-            if (valid) {
-                assertEquals(toString() + " is valid, but: " + errors, 0, errors.size());
-            } else {
-                assertTrue(toString() + " is not valid, but no error", errors.size() > 0);
-            }
-        } catch (AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            throw new RuntimeException(toString() + ":" + t.getMessage(), t);
+        if (valid) {
+            assertEquals(toString() + " is valid, but: " + errors, 0, errors.size());
+        } else {
+            assertTrue(toString() + " is not valid, but no error", errors.size() > 0);
         }
     }
 
