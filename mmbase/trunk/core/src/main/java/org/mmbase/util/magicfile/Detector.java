@@ -298,6 +298,7 @@ public class Detector {
      * Test whether a short matches
      */
     protected boolean testShort(byte[] lithmus, int endian) {
+        if (lithmus.length < offset + 1) return false;
         log.debug("testing " + label[endian] + " short for " + rawinput);
         int found = 0;
         if (endian == BIG_ENDIAN) {
