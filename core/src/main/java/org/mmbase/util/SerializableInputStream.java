@@ -88,6 +88,12 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         wrapped = new ByteArrayInputStream(array);
         this.size = array.length;
         this.name = null;
+        if (array.length > 0) {
+            try {
+                this.contentType = org.mmbase.util.magicfile.MagicFile.getInstance().getMimeType(array);
+            } catch (Exception e) {
+            }
+        }
     }
 
     public SerializableInputStream(FileItem fi) throws IOException {
@@ -156,6 +162,12 @@ public class SerializableInputStream  extends InputStream implements Serializabl
 
     public String getContentType() {
         return contentType;
+    }
+    /**
+     * @since MMBase-2.0
+     */
+    public void setContentType(String ct) {
+        contentType = ct;
     }
     public synchronized byte[] get() throws IOException {
         if (wrapped == null) {
