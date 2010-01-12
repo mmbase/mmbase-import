@@ -1022,7 +1022,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (value == null) {
             checkFieldExistance(fieldName);
             log.debug("NULL on " + fieldName + " " + this, new Exception());
-            return new ByteArrayInputStream(new byte[0]);
+            return new SerializableInputStream(new byte[0]);
         } else {
             if (log.isTraceEnabled()) {
                 log.trace("Found " + value);
@@ -1070,10 +1070,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                     setSize(fieldName, v.length);
                 }
             }
-            return v == null ? null : new ByteArrayInputStream(v);
+            return v == null ? null : new SerializableInputStream(v);
         } else {
             if (value instanceof byte[]) {
-                return new ByteArrayInputStream((byte[]) value);
+                return new SerializableInputStream((byte[]) value);
             } else {
                 // probably not a byte-array field, do something.
                 // this behavior is undefined!, don't depend on it.
