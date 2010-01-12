@@ -111,6 +111,8 @@ public class MediaFragmentTest {
 
     @Test
     public void commitGetSetCommit() {
+        for (int i = 0; i < 100; i++) {
+            if (i % 10 == 0) System.out.print(".");
         int fragmentsBefore = Queries.count(getCloud().getNodeManager("mediafragments").createQuery());
         Node newSource = newNode();
         newSource.commit();
@@ -145,7 +147,7 @@ public class MediaFragmentTest {
         assertEquals("test test", newSource.getNodeValue("mediafragment").getStringValue("title"));
         assertEquals("test test", newSource.getStringValue("title"));
         assertEquals("test test", newSource.getCloud().getNode(mediaFragment).getStringValue("title"));
-
+        }
 
     }
 
