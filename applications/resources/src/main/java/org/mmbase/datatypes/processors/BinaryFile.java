@@ -20,7 +20,7 @@ import org.mmbase.servlet.FileServlet;
 
 
 /**
- * This class constains Setter and Getter method for 'binary' file fields. In such field you can set
+ * This class constains Setter and Getter method for 'binary' file fields. In such fields you can set
  * a FileItem, and it is stored as a file, using the FileServlet to produce an URL. The (string)
  * field itself only contains a file name.
  *
@@ -170,7 +170,7 @@ public class BinaryFile {
     }
 
     /**
-     * A bit of a hack, used if the file was originally saved in a transaction, and hence as a
+     * A bit of a hack, used if the file was originally saved in a transaction, and hence has a
      * negative number prefix. If possible this processor corrects that.
      */
     public static class StringGetter implements Processor {
@@ -187,24 +187,33 @@ public class BinaryFile {
                 File to = getFile(node, field, parts[1]);
                 if (! to.getParentFile().exists()) {
                     if (! (to.getParentFile().mkdirs())) {
-                    log.warn("Could not make directories " + to.getParentFile());
+                        log.warn("Could not make directories " + to.getParentFile());
                     }
                 }
                 log.debug("Fixing file");
-                if (file.renameTo(to)) {
-                    fileName = to.toString().substring(dir.toString().length() + 1);
-                    log.debug("Setting file name to " + fileName);
-                    node.setValueWithoutProcess(field.getName(), fileName);
-                    log.debug("Chached " + node.getChanged() + " " + node.getCloud());
-                    node.commit();
-                    File meta = FileServlet.getInstance().getMetaFile(file);
-                    if (meta.exists()) {
-                        File toMeta = FileServlet.getInstance().getMetaFile(to);
-                        toMeta.getParentFile().mkdirs();
-                        meta.renameTo(toMeta);
+                synchronized(StringGetter.class) { // making sure only one at the time is busy doing this.
+                    boolean renamed = false;
+                    if (! file.exists() && to.exists()) {
+                        log.service("Tried to rename " + file + " to " +to + " but it seems that that already happend");
+                        renamed = true;
+                    } else if (file.renameTo(to)) {
+                        renamed = true;
+                    } else {
+                        log.warn("Could not rename " + file + " to " + to);
                     }
-                } else {
-                    log.warn("Could not rename " + file + " to " + to);
+                    if (renamed) {
+                        fileName = to.toString().substring(dir.toString().length() + 1);
+                        log.debug("Setting file name to " + fileName);
+                        node.setValueWithoutProcess(field.getName(), fileName);
+                        log.debug("Chached " + node.getChanged() + " " + node.getCloud());
+                        node.commit();
+                        File meta = FileServlet.getInstance().getMetaFile(file);
+                        if (meta.exists()) {
+                            File toMeta = FileServlet.getInstance().getMetaFile(to);
+                            toMeta.getParentFile().mkdirs();
+                            meta.renameTo(toMeta);
+                        }
+                    }
                 }
             }
 
