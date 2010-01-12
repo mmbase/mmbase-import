@@ -373,11 +373,6 @@ See http://www.MMBase.org/license
         <artifactId>jstl</artifactId>
         <version>${jstl.version}</version>
       </dependency>
-      <dependency>
-        <groupId>taglibs</groupId>
-        <artifactId>standard</artifactId>
-        <version>${taglib-standard.version}</version>
-      </dependency>
 
       <dependency>
         <groupId>log4j</groupId>
