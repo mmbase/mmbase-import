@@ -13,6 +13,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.SerializableInputStream;
 import org.mmbase.bridge.*;
 import org.mmbase.util.*;
+import org.mmbase.util.magicfile.MagicFile;
 import java.util.Collection;
 import java.io.InputStream;
 import java.util.regex.Pattern;
@@ -100,18 +101,24 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
      * @since MMBase-2.0
      */
     public MimeType getMimeType(Object value, Node node, Field field) {
+        if (value == null) return MimeType.OCTETSTREAM;
+        String mt;
         if (value instanceof byte[]) {
             byte[] array = (byte[]) value;
-            return new MimeType(org.mmbase.util.magicfile.MagicFile.getInstance().getMimeType(array));
+            mt = org.mmbase.util.magicfile.MagicFile.getInstance().getMimeType(array);
         } else if (value instanceof FileItem) {
             FileItem fi = (FileItem) value;
-            return new MimeType(fi.getContentType());
+            mt = fi.getContentType();
         } else if (value instanceof SerializableInputStream) {
             SerializableInputStream sis = (SerializableInputStream) value;
-            return new MimeType(sis.getContentType());
+            mt = sis.getContentType();
         } else {
-            return new MimeType("*/*");
-            //throw new RuntimeException("Value " + value + " of " + getName() + " is not a byte array but" + (value == null ? "null" : value.getClass().getName()));
+            mt = Casting.toSerializableInputStream(value).getContentType();
+        }
+        if (mt.equals(MagicFile.FAILED)) {
+            return MimeType.OCTETSTREAM;
+        } else {
+            return new MimeType(mt);
         }
     }
 
@@ -120,6 +127,12 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
         return requiredRestriction.validate(errors, castValue, node, field);
     }
 
+    @Override
+    protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {
+        errors = super.validateCastValue(errors, castValue, value,  node, field);
+        errors = mimeTypeRestriction.validate(errors, castValue, node, field);
+        return errors;
+    }
 
     /**
      * Returns a regular expression which describes wich mime-types are valid for blobs with this
