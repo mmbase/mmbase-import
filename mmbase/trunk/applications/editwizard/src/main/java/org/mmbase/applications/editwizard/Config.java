@@ -52,6 +52,7 @@ public class Config implements java.io.Serializable {
 
     public static final String CONFIG_FILE = "editwizard.xml";
 
+    public static String extraDataDir = null;
     public static String wizardStyleSheet = "xsl/wizard.xsl";
     public static String listStyleSheet = "xsl/list.xsl";
     public static String searchlistStyleSheet = "xsl/searchlist.xsl";
@@ -85,6 +86,11 @@ public class Config implements java.io.Serializable {
         if (tmp != null && !tmp.equals("")) {
             searchlistStyleSheet = tmp;
             log.service("Editwizard default searchlist style sheet "    + searchlistStyleSheet);
+        }
+        tmp = (String) configuration.get("extraDataDir");
+        if (tmp != null && !tmp.equals("")) {
+            extraDataDir = tmp;
+            log.service("Editwizard extra data dir "    + extraDataDir);
         }
         tmp = (String) configuration.get("maxUploadSize");
         if (tmp != null && !tmp.equals("")) {
@@ -691,9 +697,6 @@ public class Config implements java.io.Serializable {
                 // capture direct reference of http:// and https:// referers
                 int protocolPos= config.backPage.indexOf(PROTOCOL);
 
-
-
-
                 if (protocolPos >= 0 ) { // given absolutely
                     String path = new URL(config.backPage).getPath();
                     ref = new URL(getResource(path.substring(request.getContextPath().length())), ".");
@@ -729,7 +732,6 @@ public class Config implements java.io.Serializable {
                    xsl must be searched (if they cannot be found in the referring dir).
                 */
                 config.templates = request.getParameter("templates");
-
                 if (config.templates != null) {
                     URL templatesDir = getResource(config.templates);
                     if (templatesDir == null) {
@@ -749,6 +751,9 @@ public class Config implements java.io.Serializable {
                  * and also for 'library' editors.
                  */
 
+                if (extraDataDir != null) {
+                    extraDirs.add("extra:", getResource(extraDataDir));
+                }
                 URL jspFileDir = new URL(getResource(request.getServletPath()), "."); // the directory of this jsp (list, wizard)
                 URL basedir    = new URL(jspFileDir, "../data/");                      // ew default data/xsls is in ../data then
 
