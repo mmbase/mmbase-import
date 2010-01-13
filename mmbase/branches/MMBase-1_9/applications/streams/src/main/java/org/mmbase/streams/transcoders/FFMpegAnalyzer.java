@@ -46,16 +46,11 @@ import static org.mmbase.streams.transcoders.AnalyzerUtils.*;
 
 public class FFMpegAnalyzer implements Analyzer {
 
-
     private static final Logger LOG = Logging.getLoggerInstance(FFMpegAnalyzer.class);
-
+    
     private final ChainedLogger log = new ChainedLogger(LOG);
-
     private final AnalyzerUtils util = new AnalyzerUtils(log);
-
-
     private List<Throwable> errors = new ArrayList<Throwable>();
-
 
     public void setUpdateSource(boolean b) {
         util.setUpdateSource(b);
@@ -94,6 +89,9 @@ public class FFMpegAnalyzer implements Analyzer {
             }
 
             if (util.dimensions(l, source, des)) {
+                if (! canbe.equals(AnalyzerUtils.IMAGE)) {    /* no image2 seen yet, so it can be video */
+                    canbe = AnalyzerUtils.VIDEO;
+                }
                 return;
             }
 
@@ -108,7 +106,7 @@ public class FFMpegAnalyzer implements Analyzer {
 
     public void ready(Node sourceNode, Node destNode) {
         synchronized(util) {
-            log.service("Ready() " + sourceNode + (destNode == null ? "" : (" -> " + destNode.getNumber())) + ", canbe: " + canbe);
+            log.service("Ready() " + sourceNode + (destNode == null ? "" : (" -> " + destNode.getNumber())) + " = canbe: " + canbe);
 
             if (canbe.equals(AnalyzerUtils.IMAGE) 
                             && (sourceNode.isNull("bitrate") || sourceNode.getIntValue("bitrate") <= 0)) {
