@@ -210,7 +210,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     public void notify(AssignmentEvents.Event event) {
         log.info("Received " + event);
-        if (event.getMachines().contains(MMBase.getMMBase().getMachineName())) {
+        if (event.getMachines().contains(MMBaseContext.getMachineName())) {
             switch(event.getType()) {
             case AssignmentEvents.FULL: {
                     String index = event.getIndex();
@@ -247,7 +247,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 } break;
             }
         } else {
-            log.info("Event " + event + " ignored");
+            log.info("Event " + event + " ignored, for machines: " + event.getMachines() + " but this machine: " + MMBaseContext.getMachineName() );
         }
     }
 
