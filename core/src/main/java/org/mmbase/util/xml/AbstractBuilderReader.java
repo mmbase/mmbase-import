@@ -152,88 +152,34 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
             }
         }
 
-        // add and replace names and descriptions, identified by xml:lang
-        mergeElementLists(doc, overrides, "names", "singular", "xml:lang", true);
-        mergeElementLists(doc, overrides, "names", "plural", "xml:lang", true);
-        mergeElementLists(doc, overrides, "descriptions", "description", "xml:lang", true);
+        for (String list : new String[] {"names", "descriptions", "properties"}) {
+            // if these are found, simply all sub-elements must be added.
 
-        // add and replace properties, identified by name
-        mergeElementLists(doc, overrides, "properties", "property", "name", true);
-
-        // add and merge fields, functions, and indices, identified by name
-        // (or replace them if the override attribute is set to replace)
-        mergeElementLists(doc, overrides, "fieldlist", "field", "name", false);
-        mergeElementLists(doc, overrides, "functionlist", "function", "name", false);
-        mergeElementLists(doc, overrides, "indexlist", "index", "name", false);
-
-    }
-
-    /**
-     * Copy a list of elements, identified by an attribute, from overrides to doc.
-     * Replace or merge those elements if they already exist in doc under that attribute.
-     * Merging an element means either adding or replacing the sub tags of that element.
-     * @param doc The receiving builder xml document. This one will be changed.
-     * @param overrides The builder xml document that provided overriding information. This one will only
-     * be read.
-     * @param list The tagname of list element(s) containign the items
-     * @param item The tagname of the list item element
-     * @param attr The attribute identifying the item (i.e. "name" or "xml:lang")
-     * @param replace if <code>true</code>, the item is entirely replaced. If <code>false</code>, it is merged.
-     * @since MMBase-1.9
-     */
-    protected static void mergeElementLists(Document doc, Document overrides, String list, String item, String attr, boolean replace) {
-        Element docListEl = getElementByPath(doc.getDocumentElement(), "builder." + list);
-        for (Element listEl : getChildElements(overrides.getDocumentElement(), list)) {
-            for (Element el : getChildElements(listEl, item)) {
-                if (docListEl == null) {
-                    docListEl = doc.createElement(list);
-                    doc.getDocumentElement().appendChild(docListEl);
-                }
-                Element newEl = (Element) doc.importNode(el, true);
-                String name = newEl.getAttribute(attr);
-                // determine if an item should be replaced or merged
-                boolean replaceItem = replace;
-                String replaceAttr = newEl.getAttribute("override");
-                if (replaceAttr != null) {
-                    replaceItem = replaceAttr.equals("replace");
-                }
-                Element docEl = null;
-                if (name != null && !(name.equals(""))) {
-                    for(Element orgListEl : getChildElements(doc.getDocumentElement(), list)) {
-                        for(Element orgEl : getChildElements(docListEl, item)) {
-                            if (name.equals(orgEl.getAttribute(attr))) {
-                                docListEl = orgListEl;
-                                docEl = orgEl;
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (docEl != null) {
-                    if (replaceItem) { // replace an item
-                        docListEl.replaceChild(newEl, docEl);
-                    } else { // merge an item (iow add and or replace subtags)
-                        // merge attributes
-                        NamedNodeMap attributes = newEl.getAttributes();
-                        for (int i = 0; i < attributes.getLength(); i++) {
-                            Attr attribute = (Attr) (attributes.item(i).cloneNode(true));
-                            docEl.setAttributeNode(attribute);
-                        }
-                        // merge element tags
-                        for (Element newFel : getChildElements(newEl)) {
-                            Element docFel = getElementByPath(docEl, "field." + newFel.getLocalName());
-                            if (docFel != null) {
-                                docEl.replaceChild(newFel,docFel);
-                            } else {
-                                docEl.appendChild(newFel);
-                            }
-                        }
-                    }
-                } else {
-                    docListEl.appendChild(newEl);
+            List<Element> elementList = getChildElements(doc.getDocumentElement(), list);
+            Element element;
+            if (elementList.size() == 0) {
+                element = doc.createElement(list);
+                doc.getDocumentElement().appendChild(element);
+            } else {
+                element = elementList.get(elementList.size() - 1);
+            }
+            for (Element overridesList : getChildElements(overrides.getDocumentElement(), list)) {
+                for (Element e : getChildElements(overridesList, "*")) {
+                    Element newE = (Element) doc.importNode(e, true);
+                    element.appendChild(newE);
                 }
             }
         }
+
+        for (String list : new String[] {"fieldlist", "functionlist", "indexlist"}) {
+            // if these are found, they simply must be added too.
+
+            for(Element el : getChildElements(overrides.getDocumentElement(), list)) {
+                Element newEl = (Element) doc.importNode(el, true);
+                doc.getDocumentElement().appendChild(newEl);
+            }
+        }
+
     }
 
     /**
@@ -813,8 +759,6 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
     public String toString() {
         return super.toString() + ":" + getSystemId();
     }
-
-
 
 
 }
