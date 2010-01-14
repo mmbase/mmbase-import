@@ -376,9 +376,9 @@ public class TypeRel extends MMObjectBuilder {
      */
     public String getGUIIndicator(MMObjectNode node) {
         try {
-            String source = mmb.getTypeDef().getValue(node.getIntValue("snumber"));
+            String source      = mmb.getTypeDef().getValue(node.getIntValue("snumber"));
             String destination = mmb.getTypeDef().getValue(node.getIntValue("dnumber"));
-            MMObjectNode role = mmb.getRelDef().getNode(node.getIntValue("rnumber"));
+            MMObjectNode role  = mmb.getRelDef().getNode(node.getIntValue("rnumber"));
             return source + "->" + destination + " (" + (role != null ? role.getGUIIndicator() : "???") + ")";
         } catch (Exception e) {
             log.warn(e);
@@ -647,12 +647,16 @@ public class TypeRel extends MMObjectBuilder {
             String sourceName = mmb.getTypeDef().getValue(snumber);
             String destName = mmb.getTypeDef().getValue(dnumber);
 
-            if (sourceName == null) sourceName = "unknown builder '" + snumber + "'";
-            if (destName == null) destName = "unknown builder '" + dnumber + "'";
+            if (sourceName == null) {
+                sourceName = "unknown builder '" + snumber + "'";
+            }
+            if (destName == null) {
+                destName = "unknown builder '" + dnumber + "'";
+            }
 
             // unfilled should only happen during creation of the node.
-            String source = snumber > -1 ? sourceName : "[unfilled]";
-            String destination = dnumber > -1 ? destName : "[unfilled]";
+            String source = snumber > -1 ? (sourceName + "(" + snumber + ")") : "[unfilled]";
+            String destination = dnumber > -1 ? (destName + "(" + dnumber + ")") : "[unfilled]";
             MMObjectNode role = rnumber > -1 ? mmb.getRelDef().getNode(rnumber) : null;
             return source + "->" + destination + " (" + (role != null ? role.getStringValue("sname") : "???") + ") " + (isVirtual() ? "(virtual)" : "");
         } catch (Exception e) {
@@ -830,8 +834,11 @@ public class TypeRel extends MMObjectBuilder {
             int sourceMax = role <= 0 ? (source <= 0  ? 0 : source + 1) : source; // i.e. source, destination, 0
             int destinationMax = (source <= 0 && role <= 0) ? destination + 1 : destination; // i.e. 0, destination, 0
 
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(sourceMin, destinationMin, roleMin),
-                                                            new VirtualTypeRelNode(sourceMax, destinationMax, roleMax)));
+            final VirtualTypeRelNode fromTypeRelNode = new VirtualTypeRelNode(sourceMin, destinationMin, roleMin);
+            final VirtualTypeRelNode toTypeRelNode =   new VirtualTypeRelNode(sourceMax, destinationMax, roleMax);
+
+            final SortedSet allowed = subSet(fromTypeRelNode, toTypeRelNode);
+            return Collections.unmodifiableSortedSet(allowed);
         }
 
     }
@@ -868,7 +875,7 @@ public class TypeRel extends MMObjectBuilder {
         }
 
         public String toString() {
-            return "V:" + getValue("snumber") + "->" + getValue("rnumber") + "(" + getValue("rnumber") + ")";
+            return "V:" + getValue("snumber") + "->" + getValue("dnumber") + "(" + getValue("rnumber") + ")";
         }
     }
 
