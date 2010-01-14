@@ -702,7 +702,7 @@ public class ClusterBuilder extends VirtualBuilder {
         clusterQueries.addRelationDirections(query, searchDirs, roles);
     }
 
-    private class ClusterQueriesImpl extends ClusterQueries {
+    class ClusterQueriesImpl extends ClusterQueries {
 
         public ClusterQueriesImpl() {
         }
@@ -754,6 +754,10 @@ public class ClusterBuilder extends VirtualBuilder {
 
         protected boolean optimizeRelationStep(RelationStep relationStep, int sourceType, int destType, int role, int searchDir) {
             return mmb.getTypeRel().optimizeRelationStep((BasicRelationStep) relationStep, sourceType, destType, role, searchDir);
+        }
+        // just changing scope for test-cases
+        protected String getUniqueTableAlias(String tableAlias, Set<String> tableAliases, Collection<String> originalAliases) {
+            return super.getUniqueTableAlias(tableAlias, tableAliases, originalAliases);
         }
 
         @Override
