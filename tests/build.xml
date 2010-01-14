@@ -130,7 +130,6 @@
       </fileset>
     </path>
 
-    <echo  message="${run.rmmci.client}" />
 
   </target>
 
