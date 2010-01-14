@@ -254,6 +254,7 @@ public class Clustering extends BridgeTest {
         Relation r2 = nodea1.createRelation(zNode2, rm); r2.commit();
 
         assertEquals(1, zNode1.getRelatedNodes().size());
+        assertEquals(1, zNode1.getRelations().size());
 
         assertTrue(cloud2.hasNode(nodea1.getNumber()));
 
@@ -274,7 +275,10 @@ public class Clustering extends BridgeTest {
         assertEquals(1, cloud2.getNode(zNode1.getNumber()).countRelatedNodes("object"));
 
         NodeList relatedNodes2 = cloud2.getNode(zNode1.getNumber()).getRelatedNodes();
-        assertEquals(1, relatedNodes2.size()); // FAILS
+        assertEquals(1, relatedNodes2.size());
+
+        RelationList relationNodes2 = cloud2.getNode(zNode1.getNumber()).getRelations();
+        assertEquals(1, relationNodes2.size());
 
     }
 
