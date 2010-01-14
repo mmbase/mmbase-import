@@ -208,10 +208,25 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     }
     @Override
     public String toString() {
+        String source;
+        try {
+            source = (typeRelNode != null ? getSourceManager().getName() : "???");
+        } catch (NotFoundException nfe) {
+            TypeDef typedef = BasicCloudContext.mmb.getTypeDef();
+            source = typedef.getValue(typeRelNode.getIntValue("snumber")) + "(inactive)";
+        }
+        String destination;
+        try {
+            destination = (typeRelNode != null ? getDestinationManager().getName() : "???");
+        } catch (NotFoundException nfe) {
+            TypeDef typedef = BasicCloudContext.mmb.getTypeDef();
+            destination = typedef.getValue(typeRelNode.getIntValue("dnumber")) + "(inactive)";
+        }
+
         return "RelationManager " +
-            (typeRelNode != null ? getSourceManager().getName() : "???") +
+            source +
             " -" + (relDefNode != null ? getForwardRole() : "???") + "-> " +
-            (typeRelNode != null ? getDestinationManager().getName() : "???") +
+            destination +
             " ( " + getNode().getNumber() + ")";
     }
 }
