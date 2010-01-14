@@ -76,6 +76,7 @@
           <include>org/mmbase/util/ThreadPools*</include>
           <include>org/mmbase/util/IOUtil*</include>
           <include>org/mmbase/util/SizeOf*</include>
+          <include>org/mmbase/util/MimeType*</include>
 
           <include>org/mmbase/util/ChainedList*.class</include>            <!-- Used by Mock -->
           <include>org/mmbase/util/LinkMap*.class</include>            <!-- Used by Mock -->
