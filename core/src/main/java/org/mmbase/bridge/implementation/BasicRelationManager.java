@@ -227,6 +227,6 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
             source +
             " -" + (relDefNode != null ? getForwardRole() : "???") + "-> " +
             destination +
-            " ( " + getNode().getNumber() + ")";
+            " (" + getNode().getNumber() + ")";
     }
 }
