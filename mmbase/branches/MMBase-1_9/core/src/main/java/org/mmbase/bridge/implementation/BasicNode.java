@@ -681,7 +681,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
 
     @Override
-    public RelationList getRelations(String role, String otherNodeManager) throws NotFoundException {
+    public RelationList getRelations(final String role, String otherNodeManager) throws NotFoundException {
         if (isNew()) {
             // new nodes have no relations
             return BridgeCollections.EMPTY_RELATIONLIST;
@@ -690,27 +690,32 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if ("".equals(otherNodeManager)) {
             otherNodeManager = null;
         }
-        NodeManager otherManager = otherNodeManager == null ? cloud.getNodeManager("object") : cloud.getNodeManager(otherNodeManager);
+        final NodeManager otherManager = otherNodeManager == null ? cloud.getNodeManager("object") : cloud.getNodeManager(otherNodeManager);
 
-        TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
+        final int nodeManagerNumber = getIntValue("otype"); // see #getRelatedNodes
+
+        final TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
         RelationList r1 = BridgeCollections.EMPTY_RELATIONLIST;
         RelationList r2 = BridgeCollections.EMPTY_RELATIONLIST;
         if (role == null) {
-            int allowedOtherNumber = "object".equals(otherManager.getName()) ? 0 : otherManager.getNumber();
-            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), allowedOtherNumber, 0,
-                    RelationStep.DIRECTIONS_DESTINATION).isEmpty())
+            final int allowedOtherNumber = "object".equals(otherManager.getName()) ? 0 : otherManager.getNumber();
+            if (!typeRel.getAllowedRelations(nodeManagerNumber, allowedOtherNumber, 0,
+                                             RelationStep.DIRECTIONS_DESTINATION).isEmpty()) {
                 r1 = getRelations(role, otherManager, "destination");
-            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), allowedOtherNumber, 0,
-                    RelationStep.DIRECTIONS_SOURCE).isEmpty())
+            }
+            if (!typeRel.getAllowedRelations(nodeManagerNumber, allowedOtherNumber, 0,
+                                             RelationStep.DIRECTIONS_SOURCE).isEmpty()) {
                 r2 = getRelations(role, otherManager, "source");
-        }
-        else {
-            RelDef relDef = BasicCloudContext.mmb.getRelDef();
+            }
+        } else {
+            final RelDef relDef = BasicCloudContext.mmb.getRelDef();
             int rnumber = relDef.getNumberByName(role);
-            if (typeRel.contains(nodeManager.getNumber(), otherManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
+            if (typeRel.contains(nodeManagerNumber, otherManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS)) {
                 r1 = getRelations(role, otherManager, "destination");
-            if (typeRel.contains(otherManager.getNumber(), nodeManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
+            }
+            if (typeRel.contains(otherManager.getNumber(), nodeManagerNumber, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS)) {
                 r2 = getRelations(role, otherManager, "source");
+            }
         }
 
 
@@ -829,22 +834,30 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * @return List of related nodes
      * @since MMBase-1.8.2
      */
-    protected NodeList getRelatedNodes(NodeManager otherManager, String role) {
+    protected NodeList getRelatedNodes(final NodeManager otherManager, final String role) {
 
         NodeList l1 = BridgeCollections.EMPTY_NODELIST;
         NodeList l2 = BridgeCollections.EMPTY_NODELIST;
+        final TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
+        final int allowedOtherNumber = otherManager == null || "object".equals(otherManager.getName()) ? 0 : otherManager.getNumber();
 
-        TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
+        final int nodeManagerNumber = getIntValue("otype"); // This is preferred above nodeManager.getNumber because
+                                                            // otype also works if the nodemanager is 'inactive' on this
+                                                            // side. (MMB-1128?)
+
+
         if (role == null) {
-            int allowedOtherNumber = otherManager == null || "object".equals(otherManager.getName()) ? 0 : otherManager.getNumber();
-            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), allowedOtherNumber, 0,
+
+            if (!typeRel.getAllowedRelations(nodeManagerNumber, allowedOtherNumber, 0,
                     RelationStep.DIRECTIONS_DESTINATION).isEmpty())
+
                 l1 = getRelatedNodes(otherManager, role, "destination");
-            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), allowedOtherNumber, 0,
+            if (!typeRel.getAllowedRelations(nodeManagerNumber, allowedOtherNumber, 0,
                     RelationStep.DIRECTIONS_SOURCE).isEmpty())
                 l2 = getRelatedNodes(otherManager, role, "source");
         }
         else {
+            log.debug("role " + role);
             RelDef relDef = BasicCloudContext.mmb.getRelDef();
             int rnumber = relDef.getNumberByName(role);
             if (typeRel.contains(nodeManager.getNumber(), otherManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
@@ -881,7 +894,9 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             // new nodes have no relations
             return org.mmbase.bridge.util.BridgeCollections.EMPTY_NODELIST;
         }
-        if (searchDir == null) searchDir = "BOTH";
+        if (searchDir == null) {
+            searchDir = "BOTH";
+        }
         if ("BOTH".equalsIgnoreCase(searchDir)) {
             return getRelatedNodes(otherManager, role);
         }
@@ -891,7 +906,9 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
     @Override
     public int countRelatedNodes(String type) {
-        if (isNew()) return 0;
+        if (isNew()) {
+            return 0;
+        }
         return getNode().getRelationCount(type);
     }
 
