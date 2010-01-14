@@ -107,8 +107,8 @@ public class TypeRel extends MMObjectBuilder {
      */
     private void readCache(boolean buildersInitialized) {
         log.debug("Reading in typerels");
-        typeRelNodes = new TypeRelSet();
-        parentTypeRelNodes = new TypeRelSet();
+        typeRelNodes        = new TypeRelSet();
+        parentTypeRelNodes  = new TypeRelSet();
         inverseTypeRelNodes = new InverseTypeRelSet();
 
         TypeDef typeDef = mmb.getTypeDef();
@@ -127,37 +127,45 @@ public class TypeRel extends MMObjectBuilder {
      * disregarded
      * @since MMBase-1.6.2
      */
-    protected TypeRelSet addCacheEntry(MMObjectNode typeRel, boolean buildersInitialized) {
+    protected TypeRelSet addCacheEntry(final MMObjectNode typeRel, final boolean buildersInitialized) {
 
-        if (typeRel == null) throw new IllegalArgumentException("typeRel cannot be null");
+        if (typeRel == null) {
+            throw new IllegalArgumentException("typeRel cannot be null");
+        }
 
-        TypeRelSet added = new TypeRelSet(); // store temporary, which will enable nice logging of what happened
+        final TypeRelSet added = new TypeRelSet(); // store temporary, which will enable nice logging of what happened
 
         // Start to add the actual definition, this is then afterwards again,
         // except if one of the builders could not be found
         added.add(typeRel);
 
-        if (mmb == null) throw new IllegalStateException("mmb is null");
-        RelDef reldef = mmb.getRelDef();
-        if (reldef == null) throw new IllegalStateException("No reldef found");
+        if (mmb == null) {
+            throw new IllegalStateException("mmb is null");
+        }
 
-        MMObjectNode reldefNode = reldef.getNode(typeRel.getIntValue("rnumber"));
-        if (reldefNode == null) { throw new RuntimeException("Could not find reldef-node for rnumber= "
-            + typeRel.getIntValue("rnumber")); }
+        final RelDef reldef = mmb.getRelDef();
+        if (reldef == null) {
+            throw new IllegalStateException("No reldef found");
+        }
 
-        boolean bidirectional = (!InsRel.usesdir) || (reldefNode.getIntValue("dir") > 1);
+        final MMObjectNode reldefNode = reldef.getNode(typeRel.getIntValue("rnumber"));
+        if (reldefNode == null) {
+            throw new RuntimeException("Could not find reldef-node for rnumber= " + typeRel.getIntValue("rnumber"));
+        }
+
+        final boolean bidirectional = (!InsRel.usesdir) || (reldefNode.getIntValue("dir") > 1);
 
         INHERITANCE: if (buildersInitialized) { // handle inheritance, which is
             // not possible during
             // initialization of MMBase.
 
-            TypeDef typeDef = mmb.getTypeDef();
+            final TypeDef typeDef = mmb.getTypeDef();
 
-            String sourceBuilderName = typeDef.getValue(typeRel.getIntValue("snumber"));
-            MMObjectBuilder sourceBuilder = sourceBuilderName != null ? mmb.getBuilder(sourceBuilderName) : null;
+            final String sourceBuilderName = typeDef.getValue(typeRel.getIntValue("snumber"));
+            final MMObjectBuilder sourceBuilder = sourceBuilderName != null ? mmb.getBuilder(sourceBuilderName) : null;
 
-            String destinationBuilderName = typeDef.getValue(typeRel.getIntValue("dnumber"));
-            MMObjectBuilder destinationBuilder = destinationBuilderName != null ? mmb.getBuilder(destinationBuilderName) : null;
+            final String destinationBuilderName = typeDef.getValue(typeRel.getIntValue("dnumber"));
+            final MMObjectBuilder destinationBuilder = destinationBuilderName != null ? mmb.getBuilder(destinationBuilderName) : null;
 
             if (sourceBuilder == null) {
                 if (destinationBuilder == null) {
@@ -176,12 +184,12 @@ public class TypeRel extends MMObjectBuilder {
                 break INHERITANCE;
             }
 
-            int rnumber = typeRel.getIntValue("rnumber");
+            final int rnumber = typeRel.getIntValue("rnumber");
 
-            List<MMObjectBuilder> sources = new ArrayList<MMObjectBuilder>(sourceBuilder.getDescendants());
+            final List<MMObjectBuilder> sources = new ArrayList<MMObjectBuilder>(sourceBuilder.getDescendants());
             sources.add(sourceBuilder);
 
-            List<MMObjectBuilder> destinations = new ArrayList<MMObjectBuilder>(destinationBuilder.getDescendants());
+            final List<MMObjectBuilder> destinations = new ArrayList<MMObjectBuilder>(destinationBuilder.getDescendants());
             destinations.add(destinationBuilder);
 
             for (MMObjectBuilder s : sources) {
@@ -207,6 +215,8 @@ public class TypeRel extends MMObjectBuilder {
             added.add(typeRel); // replaces the ones added in the 'inheritance'
             // loop (so now not any more Virtual)
         }
+
+
         for (MMObjectNode node : added) {
             if (! node.isVirtual()) {
                 // make sure 'real' nodes replace virtual nodes. (real and virtual nodes are equal, so will not be added to set otherwise)
