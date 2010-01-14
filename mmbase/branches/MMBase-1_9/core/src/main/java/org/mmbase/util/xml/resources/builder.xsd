@@ -137,6 +137,14 @@
           </xsd:restriction>
         </xsd:simpleType>
       </xsd:attribute>
+      <xsd:attribute name="override">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="replace" />
+            <xsd:enumeration value="merge" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:attribute>
       <xsd:attribute name="readonly">
         <xsd:simpleType>
           <xsd:restriction base="xsd:string">
@@ -267,12 +275,21 @@
       <xsd:attribute ref="xml:base" />
     </xsd:complexType>
   </xsd:element>
+
   <xsd:element name="index">
     <xsd:complexType>
       <xsd:sequence>
         <xsd:element ref="indexfield" maxOccurs="unbounded" />
       </xsd:sequence>
       <xsd:attribute name="name" type="xsd:string" use="required" />
+      <xsd:attribute name="override">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="replace" />
+            <xsd:enumeration value="merge" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:attribute>
       <xsd:attribute name="unique">
         <xsd:simpleType>
           <xsd:restriction base="xsd:string">
@@ -283,6 +300,7 @@
       </xsd:attribute>
     </xsd:complexType>
   </xsd:element>
+
   <xsd:element name="indexfield">
     <xsd:complexType>
       <xsd:attribute name="name" type="xsd:string" use="required" />
@@ -297,6 +315,7 @@
       <xsd:attribute ref="xml:base" />
     </xsd:complexType>
   </xsd:element>
+
   <xsd:element name="function">
     <xsd:complexType>
       <xsd:sequence>
@@ -305,8 +324,17 @@
       <xsd:attribute ref="xml:base" />
       <xsd:attribute name="name" type="xsd:string" />
       <xsd:attribute name="key" type="xsd:string" />
+      <xsd:attribute name="override">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="replace" />
+            <xsd:enumeration value="merge" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:attribute>
     </xsd:complexType>
   </xsd:element>
 
-
 </xsd:schema>
+
+
