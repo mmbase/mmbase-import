@@ -166,6 +166,8 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
         mergeElementLists(doc, overrides, "functionlist", "function", "name", false);
         mergeElementLists(doc, overrides, "indexlist", "index", "name", false);
 
+        // log.trace("MERGED XML: " + XMLWriter.write(doc.getDocumentElement()));
+
     }
 
     /**
@@ -184,11 +186,10 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
     protected static void mergeElementLists(Document doc, Document overrides, String list, String item, String attr, boolean replace) {
         Element docListEl = getElementByPath(doc.getDocumentElement(), "builder." + list);
         for (Element listEl : getChildElements(overrides.getDocumentElement(), list)) {
-            for (Element el : getChildElements(listEl, item)) {
-                if (docListEl == null) {
-                    docListEl = doc.createElement(list);
-                    doc.getDocumentElement().appendChild(docListEl);
-                }
+            if (docListEl == null) {
+                docListEl = (Element) doc.importNode(listEl, true);
+                doc.getDocumentElement().appendChild(docListEl);
+            } else for (Element el : getChildElements(listEl, item)) {
                 Element newEl = (Element) doc.importNode(el, true);
                 String name = newEl.getAttribute(attr);
                 // determine if an item should be replaced or merged
@@ -221,7 +222,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
                         }
                         // merge element tags
                         for (Element newFel : getChildElements(newEl)) {
-                            Element docFel = getElementByPath(docEl, "field." + newFel.getLocalName());
+                            Element docFel = getElementByPath(docEl, item + "." + newFel.getLocalName());
                             if (docFel != null) {
                                 docEl.replaceChild(newFel,docFel);
                             } else {
@@ -253,7 +254,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
     protected abstract boolean resolveInheritance();
 
     /**
-     * Detremines if inheritance is resolved.
+     * Determines if inheritance is resolved.
      * This method returns true if a call to resolveInheritance succeeded.
      * it returns false if resolveInheritance failed (returned false or threw an exception)
      *
