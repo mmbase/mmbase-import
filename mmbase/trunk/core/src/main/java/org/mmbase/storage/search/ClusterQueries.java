@@ -368,8 +368,7 @@ public abstract class ClusterQueries {
      * @return The resulting table alias.
      * @since MMBase-1.7
      */
-    // package access!
-    String getUniqueTableAlias(String tableAlias, Set<String> tableAliases, Collection<String> originalAliases) {
+    protected String getUniqueTableAlias(String tableAlias, Set<String> tableAliases, Collection<String> originalAliases) {
 
         // If provided alias is not unique, try alternatives,
         // skipping alternatives that are already in originalAliases.
