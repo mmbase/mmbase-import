@@ -43,6 +43,7 @@ public class Clustering extends BridgeTest {
             NodeQuery nq = Queries.createRelatedNodesQuery(cloud2.getNode(nodea1.getNumber()), bb2, "related", "both");
             bb2related = bb2.getList(nq);
 
+
             NodeManager object2 = cloud2.getNodeManager("object");
             NodeQuery nq2 = Queries.createRelatedNodesQuery(cloud2.getNode(nodea1.getNumber()), object2, null, null);
             object2.getList(nq2); // just to put it in some cache or so..
@@ -269,8 +270,11 @@ public class Clustering extends BridgeTest {
 
         assertEquals(1, cloud1.getNode(zNode1.getNumber()).countRelatedNodes("object"));
         assertEquals(1, cloud1.getNode(zNode1.getNumber()).getRelatedNodes().size());
+
         assertEquals(1, cloud2.getNode(zNode1.getNumber()).countRelatedNodes("object"));
-        assertEquals(1, cloud2.getNode(zNode1.getNumber()).getRelatedNodes().size()); // FAILS
+
+        NodeList relatedNodes2 = cloud2.getNode(zNode1.getNumber()).getRelatedNodes();
+        assertEquals(1, relatedNodes2.size()); // FAILS
 
     }
 
