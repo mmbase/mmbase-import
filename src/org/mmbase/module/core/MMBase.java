@@ -335,7 +335,7 @@ public class MMBase extends ProcessorModule {
             if (pos != -1) {
                 machineNameParam =
                     machineNameParam.substring(0, pos) +
-                    machineName + machineNameParam.substring(pos + 7);
+                    host + machineNameParam.substring(pos + 7);
             }
             // you may also try to incorporate the username in the machine name
             pos = machineNameParam.indexOf("${USER}");
