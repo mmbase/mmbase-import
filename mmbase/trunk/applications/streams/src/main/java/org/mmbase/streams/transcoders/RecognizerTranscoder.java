@@ -21,15 +21,12 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.transcoders;
 
-import org.mmbase.applications.media.*;
-import java.net.*;
-import java.lang.reflect.*;
-import java.io.*;
-import java.util.*;
-import org.mmbase.util.externalprocess.*;
-import org.mmbase.util.WriterOutputStream;
+import java.net.URI;
 
-import org.mmbase.util.logging.*;
+import org.mmbase.applications.media.Codec;
+import org.mmbase.applications.media.Format;
+import org.mmbase.util.MimeType;
+import org.mmbase.util.logging.Logger;
 
 
 /**

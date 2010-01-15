@@ -21,13 +21,14 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.transcoders;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.mmbase.applications.media.Codec;
-import org.mmbase.applications.media.MimeType;
 import org.mmbase.applications.media.State;
-import java.util.*;
-import java.util.regex.*;
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.util.MimeType;
 import org.mmbase.util.logging.*;
 
 /**

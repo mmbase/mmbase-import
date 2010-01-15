@@ -9,9 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.media;
 
-import org.mmbase.util.logging.*;
-import org.mmbase.bridge.*;
-
 
 /**
  *
@@ -19,7 +16,7 @@ import org.mmbase.bridge.*;
  */
 
 public class MimeType implements java.io.Serializable {
-    private static long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
 
     public static final String STAR = "*";
     public static final MimeType ANY = new MimeType(STAR, STAR);
