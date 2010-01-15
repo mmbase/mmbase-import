@@ -21,10 +21,10 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.createcaches;
 
-import org.mmbase.bridge.Node;
-import org.mmbase.applications.media.MimeType;
+import java.net.URI;
 
-import java.net.*;
+import org.mmbase.bridge.Node;
+import org.mmbase.util.MimeType;
 
 /**
  * This is a place holder for the result of a transcoder which is not to be done, because production

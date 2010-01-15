@@ -28,7 +28,7 @@
       </minLength>
       <maxLength value="255" enforce="never" />
       <deleteprocessor>
-        <class name="org.mmbase.media.DeleteSourcesProcessor">  </class>
+        <class name="org.mmbase.applications.media.DeleteSourcesProcessor">  </class>
       </deleteprocessor>
     </datatype>
   </field>

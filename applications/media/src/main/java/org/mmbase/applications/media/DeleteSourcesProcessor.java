@@ -7,14 +7,13 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.media;
+package org.mmbase.applications.media;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.storage.search.*;
-import org.mmbase.bridge.util.Queries;
-import org.mmbase.datatypes.processors.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.datatypes.processors.CommitProcessor;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 
 /**
