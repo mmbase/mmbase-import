@@ -682,6 +682,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
 
         if ("".equals(otherNodeManager)) otherNodeManager = null;
+
+        final int nodeManagerNumber = getIntValue("otype"); // see #getRelatedNodes
         NodeManager otherManager = otherNodeManager == null ? cloud.getNodeManager("object") : cloud.getNodeManager(otherNodeManager);
 
         TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
@@ -689,19 +691,19 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         RelationList r2 = BridgeCollections.EMPTY_RELATIONLIST;
         if (role == null) {
             int allowedOtherNumber = "object".equals(otherManager.getName()) ? 0 : otherManager.getNumber();
-            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), allowedOtherNumber, 0,
+            if (!typeRel.getAllowedRelations(nodeManagerNumber, allowedOtherNumber, 0,
                     RelationStep.DIRECTIONS_DESTINATION).isEmpty())
                 r1 = getRelations(role, otherManager, "destination");
-            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), allowedOtherNumber, 0,
+            if (!typeRel.getAllowedRelations(nodeManagerNumber, allowedOtherNumber, 0,
                     RelationStep.DIRECTIONS_SOURCE).isEmpty())
                 r2 = getRelations(role, otherManager, "source");
         }
         else {
             RelDef relDef = BasicCloudContext.mmb.getRelDef();
             int rnumber = relDef.getNumberByName(role);
-            if (typeRel.contains(nodeManager.getNumber(), otherManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
+            if (typeRel.contains(nodeManagerNumber, otherManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
                 r1 = getRelations(role, otherManager, "destination");
-            if (typeRel.contains(otherManager.getNumber(), nodeManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
+            if (typeRel.contains(otherManager.getNumber(), nodeManagerNumber, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
                 r2 = getRelations(role, otherManager, "source");
         }
 
@@ -819,21 +821,22 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         NodeList l2 = BridgeCollections.EMPTY_NODELIST;
 
         TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
+        final int nodeManagerNumber = getIntValue("otype"); // see #getRelatedNodes
         if (role == null) {
             int allowedOtherNumber = otherManager == null || "object".equals(otherManager.getName()) ? 0 : otherManager.getNumber();
-            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), allowedOtherNumber, 0,
+            if (!typeRel.getAllowedRelations(nodeManagerNumber, allowedOtherNumber, 0,
                     RelationStep.DIRECTIONS_DESTINATION).isEmpty())
                 l1 = getRelatedNodes(otherManager, role, "destination");
-            if (!typeRel.getAllowedRelations(nodeManager.getNumber(), allowedOtherNumber, 0,
+            if (!typeRel.getAllowedRelations(nodeManagerNumber, allowedOtherNumber, 0,
                     RelationStep.DIRECTIONS_SOURCE).isEmpty())
                 l2 = getRelatedNodes(otherManager, role, "source");
         }
         else {
             RelDef relDef = BasicCloudContext.mmb.getRelDef();
             int rnumber = relDef.getNumberByName(role);
-            if (typeRel.contains(nodeManager.getNumber(), otherManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
+            if (typeRel.contains(nodeManagerNumber, otherManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
                 l1 = getRelatedNodes(otherManager, role, "destination");
-            if (typeRel.contains(otherManager.getNumber(), nodeManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
+            if (typeRel.contains(otherManager.getNumber(), nodeManagerNumber, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
                 l2 = getRelatedNodes(otherManager, role, "source");
         }
         if (l2.size() == 0) {
