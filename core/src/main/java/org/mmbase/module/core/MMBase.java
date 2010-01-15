@@ -350,7 +350,7 @@ public class MMBase extends ProcessorModule {
             if (pos != -1) {
                 machineNameParam =
                     machineNameParam.substring(0, pos) +
-                    machineName + machineNameParam.substring(pos + 7);
+                    host + machineNameParam.substring(pos + 7);
             }
             // you may also try to incorporate the username in the machine name
             pos = machineNameParam.indexOf("${USER}");
@@ -376,7 +376,7 @@ public class MMBase extends ProcessorModule {
             machineName = localHost + MMBaseContext.getHtmlRootUrlPath();
 
         }
-        log.service("MMBase machine name used for clustering: '" + machineName + "'");
+        log.info("MMBase machine name used for clustering: '" + machineName + "'");
         Logging.setMachineName(machineName);
         org.mmbase.util.xml.EntityResolver.clearMMEntities(false);
 
