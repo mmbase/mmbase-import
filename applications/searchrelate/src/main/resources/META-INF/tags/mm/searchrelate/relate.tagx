@@ -92,7 +92,7 @@
   <mm:write session="mm_related_${sid}_repository" referid="repository" />
   <mm:write session="mm_related_${sid}_current"    referid="current" />
   <mm:write session="mm_related_${sid}_extracreate"  value="${extracreate}" />
-  <c:if test="${seq eq 0 and (empty load or ! load)}">
+  <c:if test="${seq eq 0 and (empty load ? true : load)}">
     <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
     <mm:include page="/mmbase/jquery/jquery.jspx" />
     <script type="text/javascript" src="${mm:link('/mmbase/jquery/jquery.form.js')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>

@@ -281,7 +281,7 @@
 
   <mm:import from="request" id="javascript_loaded" externid="mm_list_javascript" />
 
-  <c:if test="${empty parent and ((empty javascript_loaded and empty load) or load)}">
+  <c:if test="${empty parent and ((empty javascript_loaded and empty load) or load) and load ne 'false'}">
     <mm:include page="/mmbase/jquery/ajaxfileupload.jspx" />
     <c:choose>
       <c:when test="${sortable}">
@@ -338,12 +338,12 @@
           <mm:cloud>
             <c:choose>
               <c:when test="${empty searchRepository}">
-                <mm-sr:search type="${query.nodeManager.name}" load="${empty load or load}" implicit="${empty implicitSearch ? settings['implicitRepository'] : implicitSearch}">
+                <mm-sr:search type="${query.nodeManager.name}" load="${empty load ? true : load}" implicit="${empty implicitSearch ? settings['implicitRepository'] : implicitSearch}">
                   <mm:constraint field="number" operator="IN" inverse="true" referid="related" />
                 </mm-sr:search>
               </c:when>
               <c:otherwise>
-                <mm-sr:relate repository="${searchRepository}" load="${empty load or load}">
+                <mm-sr:relate repository="${searchRepository}" load="${empty load ? true : load}">
                   <mm:constraint field="number" operator="IN" inverse="true" referid="related" />
                 </mm-sr:relate>
               </c:otherwise>
