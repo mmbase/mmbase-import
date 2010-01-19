@@ -53,7 +53,7 @@ MMBaseValidator.prefetchedNodeManagers = {};
 
 // All instances
 MMBaseValidator.validators = [];
-
+MMBaseValidator.hasJavaClassesCache = [];
 
 MMBaseValidator.watcher = function() {
     for (var i = 0; i < MMBaseValidator.validators.length; i++) {
@@ -356,25 +356,34 @@ MMBaseValidator.prototype.patternValid = function(el) {
 }
 
 MMBaseValidator.prototype.hasJavaClass = function(el, javaClass) {
-    var pattern = new RegExp(javaClass);
-    var xml = this.getDataTypeXml(el);
-    var javaClassElement = this.find(xml, 'datatype class')[0];
-    if (! javaClassElement) {
-        return false;
-    }
-    var name = javaClassElement.getAttribute("name");
-    if (pattern.test(name)) {
-        return true;
-    }
-    var ex = javaClassElement.getAttribute("extends");
-    var javaClasses = ex.split(",");
-    for (i = 0; i < javaClasses.length; i++) {
-        if (pattern.test(javaClasses[i])) {
+    var key = this.getDataTypeKey(el) + ":" + javaClass;
+    if (MMBaseValidator.hasJavaClassesCache[key] == null) {
+        var pattern = new RegExp(javaClass);
+        var xml = this.getDataTypeXml(el);
+        var javaClassElement = this.find(xml, 'datatype class')[0];
+        if (! javaClassElement) {
+            MMBaseValidator.hasJavaClassesCache[key] = false;
+            return false;
+        }
+        var name = javaClassElement.getAttribute("name");
+        if (pattern.test(name)) {
+            MMBaseValidator.hasJavaClassesCache[key] = true;
             return true;
         }
+        var ex = javaClassElement.getAttribute("extends");
+        var javaClasses = ex.split(",");
+        for (i = 0; i < javaClasses.length; i++) {
+            if (pattern.test(javaClasses[i])) {
+                MMBaseValidator.hasJavaClassesCache[key] = true;
+                return true;
+            }
+        }
+        MMBaseValidator.hasJavaClassesCache[key] = false;
+        return false;
+    } else {
+        return MMBaseValidator.hasJavaClassesCache[key];
+
     }
-    //this.log("" + el + " is not numeric");
-    return false;
 }
 
 /**
