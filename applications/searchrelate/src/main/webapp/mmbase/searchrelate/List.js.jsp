@@ -336,7 +336,10 @@ List.prototype.find = function(clazz, elname, parent) {
             var c = t.nextSibling;
             while (c == null) {
                 t = t.parentNode;
-                if (t == parent) { c = null; break; }
+                if (t == parent) {
+                    c = null;
+                    break;
+                }
                 c = t.nextSibling;
             }
             t = c;
