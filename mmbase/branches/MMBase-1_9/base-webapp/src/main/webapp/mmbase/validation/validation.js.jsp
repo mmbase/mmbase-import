@@ -1042,6 +1042,7 @@ MMBaseValidator.prototype.updateValidity = function(element, valid) {
 }
 
 MMBaseValidator.prototype.validateElement = function(element, server) {
+    //this.log("Validating element " + server);
     var valid;
     if (server) {
         var prevValue = element.prevValue;
@@ -1072,8 +1073,8 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
  * validation with addValidation int this validator.
  */
 MMBaseValidator.prototype.validatePage = function(server) {
-    this.log("Validating page " + server);
     var els = this.elements;
+    this.log("Validating page " + server + " (" + els.length + " elements)");
     for (var  i = 0; i < els.length; i++) {
         var entry = els[i];
         this.validateElement(entry, server);
@@ -1164,7 +1165,7 @@ MMBaseValidator.prototype.addValidationForElements = function(els) {
             $(entry).bind("change", function(ev) { self.setLastChange(ev); self.validate(ev); });
             $(entry).bind("blur",   function(ev) { self.serverValidate(ev); });
         }
-
+        entry.serverValidated = true; // It starts out server-validated
         entry.originalValue = this.getValue(entry);
         var valid = this.valid(entry);
         entry.prevValid = valid;
