@@ -113,7 +113,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     public void setFields(String f) throws JspTagException {
         fields = getAttribute(f);
     }
-    protected List<String> getFields() throws JspTagException {
+    protected List<String> getFieldNames() throws JspTagException {
         return fields.getList(this);
     }
 
@@ -233,7 +233,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             if (! "".equals(type.getString(this))) {
                 returnList = nodeManager.getFields(getType());
                 if (fields != Attribute.NULL) {
-                    for (String fieldName : getFields()) {
+                    for (String fieldName : getFieldNames()) {
                         returnList.add(nodeManager.getField(fieldName));
                     }
                 }
@@ -242,10 +242,12 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
                 returnList = nodeManager.getFields();
                 if (fields != Attribute.NULL) {
                     returnList.clear();
-                    for (String fieldName : getFields()) {
+                    for (String fieldName : getFieldNames()) {
                         if (fieldName.endsWith("?")) {
-                            fieldName = fieldName.substring(0,fieldName.length()-1);
-                            if (!nodeManager.hasField(fieldName)) continue;
+                            fieldName = fieldName.substring(0, fieldName.length() - 1);
+                            if (!nodeManager.hasField(fieldName)) {
+                                continue;
+                            }
                         }
                         returnList.add(nodeManager.getField(fieldName));
                     }
