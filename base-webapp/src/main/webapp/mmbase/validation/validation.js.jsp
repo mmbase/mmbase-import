@@ -361,7 +361,7 @@ MMBaseValidator.prototype.patternValid = function(el) {
 }
 
 MMBaseValidator.prototype.hasJavaClass = function(el, javaClass) {
-    var key = this.getDataTypeKey(el) + ":" + javaClass;
+    var key = this.getDataTypeKey(el).string() + ":" + javaClass;
     if (MMBaseValidator.hasJavaClassesCache[key] == null) {
         var pattern = new RegExp(javaClass);
         var xml = this.getDataTypeXml(el);
