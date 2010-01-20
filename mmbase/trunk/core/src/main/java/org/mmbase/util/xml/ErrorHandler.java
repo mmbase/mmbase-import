@@ -102,7 +102,7 @@ public class ErrorHandler implements org.xml.sax.ErrorHandler {
         messages.append(message + "\n");
         fatal = true;
         if(logMessages) {
-            log.fatal(message);
+            log.fatal(message, ex);
         }
         if(exceptionLevel<=FATAL_ERROR) {
             throw ex;
