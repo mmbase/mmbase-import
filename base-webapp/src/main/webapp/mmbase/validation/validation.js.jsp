@@ -155,14 +155,14 @@ MMBaseValidator.prototype.enforce = function(el, enf) {
 
 MMBaseValidator.prototype.isChanged = function(el) {
     if (el != null) {
-	    return this.getValue(el) != el.originalValue;
+        return this.getValue(el) != el.originalValue;
     } else {
-	    var els = this.elements;
-	    for (var  i = 0; i < els.length; i++) {
+        var els = this.elements;
+        for (var  i = 0; i < els.length; i++) {
             var entry = els[i];
-	        if (this.isChanged(entry)) return true;
-	    }
-	    return false;
+            if (this.isChanged(entry)) return true;
+        }
+        return false;
     }
 }
 
@@ -257,7 +257,7 @@ MMBaseValidator.prototype.getLength = function(el) {
         } else {
             length = value.length;
         }
-    }
+       }
     return length;
 }
 
@@ -793,13 +793,16 @@ MMBaseValidator.prototype.valid = function(el) {
         return true; // not yet supported
     }
 
-    if (this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce) && ! this.isString(el)) {
-        if (this.getLength(el) <= 0 && (value === "" || value == null)) {
-            return false;
-        }
-    } else {
-        if (value === "" || value == null) {
-            return true;
+    if (! this.isString(el)) { // For Strings, you cannot enter 'null'. The empty stirng is interpreted as "" in
+                               // stead. So skip the 'required' checks.
+        if (this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce)) {
+            if (this.getLength(el) <= 0 && (value === "" || value == null)) {
+                return false;
+            }
+        } else {
+            if (value === "" || value == null) {
+                return true;
+            }
         }
     }
     if (! this.typeValid(el)) return false;
