@@ -8,7 +8,6 @@
     <dependencySet>
       <includes>
         <include>org.mmbase:mmbase:jar</include>
-        <include>javax.servlet:servlet-api</include>
       </includes>
       <unpack>true</unpack>
       <scope>provided</scope>
@@ -77,6 +76,9 @@
           <include>org/mmbase/util/IOUtil*</include>
           <include>org/mmbase/util/SizeOf*</include>
           <include>org/mmbase/util/MimeType*</include>
+          <include>org/mmbase/util/magicfile/*</include>
+          <include>org/mmbase/util/magicfile/resources/*</include>
+          <include>org/mmbase/config/magic.xml</include>
 
           <include>org/mmbase/util/ChainedList*.class</include>            <!-- Used by Mock -->
           <include>org/mmbase/util/LinkMap*.class</include>            <!-- Used by Mock -->
