@@ -194,7 +194,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      * This may take a while.
      * This function can be called through the function framework.
      */
-    //protected Function<Void> fullIndexFunction = new AbstractFunction<Void>("fullIndex", INDEX) {
     protected Function<Void> fullIndexFunction = new AbstractFunction<Void>("fullIndex", new Parameter[] {INDEX, MACHINES}, ReturnType.VOID) {
         private static final long serialVersionUID = 0L;
         public Void getFunctionValue(Parameters arguments) {
@@ -213,38 +212,40 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         if (event.getMachines().contains(MMBaseContext.getMachineName())) {
             switch(event.getType()) {
             case AssignmentEvents.FULL: {
-                    String index = event.getIndex();
-                    if (scheduler == null) throw new RuntimeException("Read only");
-                    if (index == null || "".equals(index)) {
-                        scheduler.fullIndex();
-                    } else {
-                        scheduler.fullIndex(index);
-                    }
-                } break;
+                String index = event.getIndex();
+                if (scheduler == null) throw new RuntimeException("Read only");
+                if (index == null || "".equals(index)) {
+                    scheduler.fullIndex();
+                } else {
+                    scheduler.fullIndex(index);
+                }
+            } break;
             case AssignmentEvents.UPDATE:
                 throw new UnsupportedOperationException();
             case AssignmentEvents.DELETE: {
-                    if (scheduler == null) throw new RuntimeException("Read only");
-                    if(!readOnly){
-                        String index      = event.getIndex();
-                        String identifier = event.getIdentifier();
-                        Class<? extends IndexDefinition>  klass      = event.getClassFilter();
-                        if(index == null || "".equals(index)){
-                            scheduler.deleteIndex(identifier, klass);
-                        } else {
-                            scheduler.deleteIndex(identifier, index);
-                        }
+                if (scheduler == null) {
+                    throw new RuntimeException("Read only");
+                }
+                if(!readOnly){
+                    String index      = event.getIndex();
+                    String identifier = event.getIdentifier();
+                    Class<? extends IndexDefinition>  klass      = event.getClassFilter();
+                    if(index == null || "".equals(index)){
+                        scheduler.deleteIndex(identifier, klass);
+                    } else {
+                        scheduler.deleteIndex(identifier, index);
                     }
-                } break;
+                }
+            } break;
             case AssignmentEvents.CLEAR: {
-                    if (readOnly) {
-                        throw new IllegalStateException("This lucene is readonly");
-                    }
-                    String index = event.getIndex();
-                    Indexer indexer = indexerMap.get(index);
-                    boolean copy = event.getCopy();
-                    indexer.clear(copy);
-                } break;
+                if (readOnly) {
+                    throw new IllegalStateException("This lucene is readonly");
+                }
+                String index = event.getIndex();
+                Indexer indexer = indexerMap.get(index);
+                boolean copy = event.getCopy();
+                indexer.clear(copy);
+            } break;
             }
         } else {
             log.info("Event " + event + " ignored, for machines: " + event.getMachines() + " but this machine: " + MMBaseContext.getMachineName() );
@@ -282,7 +283,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      * This function can be called through the function framework.
      * It (re)loads the index for a specific item (identified by 'identifier' parameter).
      */
-    //protected Function<Void> updateIndexFunction = new AbstractFunction<Void>("updateIndex", new Parameter(IDENTIFIER, true),  CLASS) {
     protected Function<Void> updateIndexFunction = new AbstractFunction<Void>("updateIndex",
             new Parameter<?>[]{new Parameter<String>(IDENTIFIER, true), CLASS},
             ReturnType.VOID) {
@@ -305,7 +305,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     /**
      * This function returns the status of the scheduler. For possible values see: Lucene.Scheduler
      */
-    //protected Function<Integer> statusFunction = new AbstractFunction<Integer>("status") {
     protected Function<Integer> statusFunction = new AbstractFunction<Integer>("status", Parameter.EMPTY, ReturnType.INTEGER) {
         private static final long serialVersionUID = 0L;
         public Integer getFunctionValue(Parameters arguments) {
@@ -315,7 +314,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     {
         addFunction(statusFunction);
     }
-    //protected Function<String> statusDescriptionFunction = new AbstractFunction<String>("statusdescription", Parameter.LOCALE) {
     protected Function<String> statusDescriptionFunction = new AbstractFunction<String>("statusdescription", new Parameter<?>[] {Parameter.LOCALE, new Parameter<Boolean>("assignment",  Boolean.class, Boolean.TRUE)}, ReturnType.STRING) {
         private static final long serialVersionUID = 0L;
         public String getFunctionValue(Parameters arguments) {
@@ -365,7 +363,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     protected Function <Void> waitFunction = new AbstractFunction<Void> ("wait", Parameter.EMPTY, ReturnType.VOID) {
         private static final long serialVersionUID = 0L;
             public Void getFunctionValue(Parameters arguments) {
-                scheduler.waitForReady();
+                if (scheduler == null) {
+                    log.warn("No scheduler");
+                } else {
+                    scheduler.waitForReady();
+                }
                 return null;
 
             }
@@ -376,7 +378,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
 
 
-    //protected Function<Boolean> readOnlyFunction = new AbstractFunction<Boolean>("readOnly"){
     protected Function<Boolean> readOnlyFunction = new AbstractFunction <Boolean>("readOnly", Parameter.EMPTY, ReturnType.BOOLEAN) {
         private static final long serialVersionUID = 0L;
         public Boolean getFunctionValue(Parameters arguments) {
@@ -429,7 +430,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      * This function starts a search fro a given string.
      * This function can be called through the function framework.
      */
-    //protected Function<org.mmbase.bridge.NodeList> searchFunction = new AbstractFunction("search", VALUE, INDEX, FIELDS, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER) {
     protected Function<org.mmbase.bridge.NodeList> searchFunction = new AbstractFunction<org.mmbase.bridge.NodeList>("search", new Parameter<?>[] {VALUE, INDEX, FIELDS, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER, ONFAIL}, ReturnType.NODELIST) {
         private static final long serialVersionUID = 0L;
             public org.mmbase.bridge.NodeList getFunctionValue(Parameters arguments) {
@@ -606,7 +606,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
 
 
-    //protected Function<Date> lastFullIndexFunction = new AbstractFunction<Date>("last", INDEX) {
     protected Function<Date> lastFullIndexFunction = new AbstractFunction<Date>("last", new Parameter<?>[] {INDEX}, new ReturnType<Date>(Date.class, "")) {
         private static final long serialVersionUID = 0L;
         public Date getFunctionValue(Parameters arguments) {
@@ -635,7 +634,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         addFunction(lastFullIndexFunction);
         addFunction(lastFullIndexDurationFunction);
 
-        //addFunction(new AbstractFunction<Indexer>("default") {
         addFunction(new AbstractFunction<Indexer>("default", Parameter.EMPTY, new ReturnType<Indexer>(Indexer.class, "")) {
             private static final long serialVersionUID = 0L;
             public Indexer getFunctionValue(Parameters arguments) {
@@ -692,7 +690,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         ThreadPools.jobsExecutor.execute(new Runnable() {
                 public void run() {
 
-                    // Make sure that everthing is well initalized, otherise the binary file base
+                    // Make sure that everthing is well initalized, otherwise the binary file base
                     // path may still be empty.
                     org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
 
@@ -925,9 +923,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             if (!readOnly) {
                 MMBase mmb = MMBase.getMMBase();
                 // register. Unfortunately this can currently only be done through the core
-                //for (Step step : queryDefinition.query.getSteps() ) {
-                for (Iterator i = queryDefinition.query.getSteps().iterator(); i.hasNext();) {
-                    Step step = (Step) i.next();
+                for (Step step : queryDefinition.query.getSteps() ) {
                     MMObjectBuilder builder = mmb.getBuilder(step.getTableName());
                     log.debug("Observing for builder " + builder.getTableName() + " for  '" + queryDefinition + "'");
                     builder.addEventListener(this);
