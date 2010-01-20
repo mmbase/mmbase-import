@@ -257,7 +257,7 @@ MMBaseValidator.prototype.getLength = function(el) {
         } else {
             length = value.length;
         }
-    }
+       }
     return length;
 }
 
@@ -838,13 +838,16 @@ MMBaseValidator.prototype.valid = function(el) {
         return true; // not yet supported
     }
 
-    if (this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce) && ! this.isString(el)) {
-        if (this.getLength(el) <= 0 && (value === "" || value == null)) {
-            return false;
-        }
-    } else {
-        if (value === "" || value == null) {
-            return true;
+    if (! this.isString(el)) { // For Strings, you cannot enter 'null'. The empty stirng is interpreted as "" in
+                               // stead. So skip the 'required' checks.
+        if (this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce)) {
+            if (this.getLength(el) <= 0 && (value === "" || value == null)) {
+                return false;
+            }
+        } else {
+            if (value === "" || value == null) {
+                return true;
+            }
         }
     }
     if (! this.typeValid(el)) return false;
