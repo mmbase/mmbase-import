@@ -72,14 +72,19 @@ function List(d) {
 
     if (this.sortable) {
         if (! this.autosubmit) {
+            //console.log("Found order " + this.rid + " '" + this.order + "'");
             if (this.order != "") {
                 var o = this.order.split(",");
                 for (node in o) {
                     var nodeli = self.getLiForNode(o[node]);
-                    var ol = $(this.div).find("ol")[0];
-                    if (nodeli.length > 0) {
-                        $(nodeli[0]).addClass("pos-" + node);
-                        ol.appendChild(nodeli[0]);
+                    if (nodeli != null) {
+                        var ol = $(this.div).find("ol")[0];
+                        if (nodeli.length > 0) {
+                            $(nodeli[0]).addClass("pos-" + node);
+                            ol.appendChild(nodeli[0]);
+                        } else {
+                            //console.log("No li for node " + o[node]);
+                        }
                     }
                 }
             }
@@ -896,6 +901,7 @@ List.prototype.getOrder = function(ol) {
     params.order = order;
     var self = this;
     this.loader();
+    //console.log("Saving order for " + self.rid);
     $.ajax({ type: "POST",
                 async: true,
                 url: "${mm:link('/mmbase/searchrelate/list/order.jspx')}",
@@ -975,6 +981,7 @@ List.prototype.getOriginalPosition  = function(li) {
 
 List.prototype.afterPost = function() {
     this.log("posted!" + this.order);
+    //console.log("posted!" + this.rid + " " + this.order);
     if (this.sortable) {
         // Submit the new order seperately
         var order = "";
@@ -991,6 +998,7 @@ List.prototype.afterPost = function() {
                 var nodeNumber = self.getNodeForLi(this);
 		order += nodeNumber;
                 if (nodeNumber[0] === "-") {
+                    // contained new nodes
                     needsSave = true;
                 }
                 var originalPos =  self.getOriginalPosition(this);
@@ -1017,7 +1025,7 @@ List.prototype.afterPost = function() {
                 }
                 });
         } else {
-            //console.log("No need to save order for " + order + " " + originalOrder);
+            //console.log("No need to save order for " + self.rid + " " + order + " " + originalOrder);
         }
     }
 }
