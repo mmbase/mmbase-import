@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.Node;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
@@ -52,7 +53,17 @@ public class HasFieldTag extends NodeReferrerTag implements Condition {
     public int doStartTag() throws JspException {
         super.doStartTag();
         String nm = nodeManagerAtt.getString(this);
-        NodeManager nodeManager = "".equals(nm) ? getNode().getNodeManager() : getCloudVar().getNodeManager(nm);
+        NodeManager nodeManager;
+        if ("".equals(nm)) {
+            Node n = getNode();
+            if (n == null) {
+                // Very odd, getNode itself should have thrown an exception, or not have returned null.
+                throw new IllegalStateException("Found node is null");
+            }
+            nodeManager = n.getNodeManager();
+        } else {
+            nodeManager = getCloudVar().getNodeManager(nm);
+        }
         if (nodeManager.hasField(name.getString(this)) != getInverse()) {
             return EVAL_BODY;
         } else {
