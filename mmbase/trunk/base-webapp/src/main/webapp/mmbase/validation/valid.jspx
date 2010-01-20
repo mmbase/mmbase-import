@@ -21,7 +21,7 @@
   <mm:import externid="value" required="true" vartype="string" jspvar="value"/>
   <mm:cloud uri="${param.uri}" name="${param.name}"><!-- cloud to provide locale -->
   <jsp:scriptlet>
-    if ("".equals(value)) {
+    if ("".equals(value) &amp;&amp; (! (dataType instanceof StringDataType))) {
       value = null;
     }
     if (node != null) {
