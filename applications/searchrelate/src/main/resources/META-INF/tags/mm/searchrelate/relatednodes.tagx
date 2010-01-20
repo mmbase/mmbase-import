@@ -255,9 +255,7 @@
 
     <mm:import id="autosubmit">${! empty parent ? parentparameters.autosubmit : empty _formtag}</mm:import>
 
-    <mm:import id="order">
-      <mm:property name="${rid}_order" />
-    </mm:import>
+    <mm:import from="session" id="order" externid="${rid}_order" />
 
     <mm:import id="language">${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}</mm:import>
     <mm:import id="referrer"><mm:url absolute="context" /></mm:import>
