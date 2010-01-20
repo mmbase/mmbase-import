@@ -793,7 +793,7 @@ MMBaseValidator.prototype.valid = function(el) {
         return true; // not yet supported
     }
 
-    if (this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce)) {
+    if (this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce) && ! this.isString(el)) {
         if (this.getLength(el) <= 0 && (value === "" || value == null)) {
             return false;
         }
