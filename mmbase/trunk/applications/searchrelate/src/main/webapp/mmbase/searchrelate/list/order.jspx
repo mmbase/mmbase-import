@@ -9,6 +9,9 @@
   <jsp:directive.include file="parameters.jspf" />
   <mm:content expires="0">
     <div class="saveresult" id="${parameters.rid}">
+      <autosubmit>${parameters.autosubmit}</autosubmit>
+      <cloud>${parameters.query.cloud}</cloud>
+      <form>${parameters.formtag}</form>
       <query><mm:escape escape="text/xml">${parameters.query.sql}</mm:escape></query>
       <c:choose>
         <c:when test="${parameters.autosubmit}">
@@ -26,11 +29,12 @@
           <mm:import externid="order" required="true" jspvar="order" vartype="string" />
           <!-- do it later, there is little point, it won't work any way in a transaction -->
           <mm:form name="${parameters.formtag}">
-            <mm:setproperty name="${rid}_order" valueid="order" />
+            <mm:write session="${rid}_order" referid="order" />
             <jsp:text>${rid}_order: ${order}</jsp:text>
           </mm:form>
         </c:otherwise>
       </c:choose>
+      <properties>${parameters.query.cloud.properties}</properties>
     </div>
   </mm:content>
 </mm:cloud>
