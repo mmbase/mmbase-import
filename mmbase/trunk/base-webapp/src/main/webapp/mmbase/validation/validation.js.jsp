@@ -322,9 +322,10 @@ MMBaseValidator.prototype.lengthValid = function(el) {
         }
         el.mm_minLength_set = true;
     }
-
-    if (el.mm_minLength != null && length < el.mm_minLength) {
-        return false;
+    if (this.enforce(el, el.mm_minLength_enforce)) {
+        if (el.mm_minLength != null && length < el.mm_minLength) {
+            return false;
+        }
     }
 
     if (el.mm_maxLength_set == null) {
@@ -336,8 +337,10 @@ MMBaseValidator.prototype.lengthValid = function(el) {
         el.mm_maxLength_set = true;
     }
 
-    if (el.mm_maxLength != null && length > el.mm_maxLength) {
-        return false;
+    if (this.enforce(el, el.mm_maxLength_enforce)) {
+        if (el.mm_maxLength != null && length > el.mm_maxLength) {
+            return false;
+        }
     }
 
     if (el.mm_length_set == null) {
@@ -349,8 +352,10 @@ MMBaseValidator.prototype.lengthValid = function(el) {
         el.mm_length_set = true;
     }
 
-    if (el.mm_length != null && length != el.mm_length) {
-        return false;
+    if (this.enforce(el, el.mm_length_enforce)) {
+        if (el.mm_length != null && length != el.mm_length) {
+            return false;
+        }
     }
     return true;
 }
