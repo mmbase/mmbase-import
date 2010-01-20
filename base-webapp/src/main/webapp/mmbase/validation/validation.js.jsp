@@ -392,7 +392,13 @@ MMBaseValidator.prototype.patternValid = function(el) {
     if (this.isString(el)) {
         var xml = this.getDataTypeXml(el);
         if (el.mm_pattern == null) {
-            var javaPattern = this.find(xml, 'datatype pattern')[0].getAttribute("value");
+            var javaPatternXml = this.find(xml, 'datatype pattern')[0];
+            if (javaPatternXml == null) {
+                alert("No pattern found for " + $(el).attr("id"));
+                return true;
+            }
+
+            var javaPattern = javaPatternXml.getAttribute("value");
             el.mm_pattern = this.javaScriptPattern(javaPattern);
             if (el.mm_pattern == null) return true;
             this.trace("pattern : " + el.mm_pattern + " " + el.value);
@@ -404,7 +410,7 @@ MMBaseValidator.prototype.patternValid = function(el) {
 }
 
 MMBaseValidator.prototype.hasJavaClass = function(el, javaClass) {
-    var key = this.getDataTypeKey(el) + ":" + javaClass;
+    var key = this.getDataTypeKey(el).string() + ":" + javaClass;
     if (MMBaseValidator.hasJavaClassesCache[key] == null) {
         var pattern = new RegExp(javaClass);
         var xml = this.getDataTypeXml(el);
@@ -454,7 +460,9 @@ MMBaseValidator.prototype.isFloat = function(el) {
     return el.mm_isfloat;
 }
 MMBaseValidator.prototype.isString = function(el) {
-    if (el.mm_isstring != null) return el.mm_isstring;
+    if (el.mm_isstring != null) {
+        return el.mm_isstring;
+    }
     el.mm_isstring =  this.hasJavaClass(el, "org\.mmbase\.datatypes\.StringDataType");
     return el.mm_isstring;
 }
@@ -1212,8 +1220,6 @@ MMBaseValidator.prototype.addValidationForElements = function(els) {
             break;
         case "file":
             $(entry).bind("change", function(ev) {
-                    console.log("changed");
-                    console.log(entry);
                     self.setLastChange(ev); self.validate(ev);
                 });
             break;
