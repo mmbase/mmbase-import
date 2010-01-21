@@ -357,77 +357,13 @@ public class ResourceLoader extends ClassLoader {
             configRootNeedsInit = false;
             configRoot.roots.clear();
 
-            //adds a resource that can load from nodes
-            configRoot.roots.add(new NodeURLStreamHandler(configRoot, Type.CONFIG.ordinal()));
-
-            // mmbase.config settings
-            String configPath = null;
-            if (servletContext != null) {
-                configPath = servletContext.getInitParameter("mmbase.config");
-                log.debug("found the mmbase config path parameter using the mmbase.config servlet context parameter");
-            }
-            if (configPath == null) {
-                try {
-                    configPath = System.getProperty("mmbase.config");
-                } catch (SecurityException se) {
-                    log.info(se.getMessage());
-                }
-                if (configPath != null) {
-                    log.debug("found the mmbase.config path parameter using the mmbase.config system property");
-                }
-            } else {
-                try {
-                    if (System.getProperty("mmbase.config") != null){
-                        //if the configPath at this point was not null and the mmbase.config system property is defined
-                        //this deserves a warning message since the setting is masked
-                        log.warn("mmbase.config system property is masked by mmbase.config servlet context parameter");
-                    }
-                } catch (SecurityException se) {
-                    log.debug(se.getMessage());
-                }
-            }
-
-
-            try {
-                configRoot.roots.add(new ApplicationContextFileURLStreamHandler(configRoot));
-            } catch (NoClassDefFoundError t) {
-                // Never mind, we may be in RMMCI
-            }
-
-            if (configPath != null) {
-                if (servletContext != null) {
-                    // take into account that configpath can start at webrootdir
-                    if (configPath.startsWith("$WEBROOT")) {
-                        configPath = servletContext.getRealPath(configPath.substring(8));
-                    }
-                }
-                log.debug("Adding " + configPath);
-                configRoot.roots.add(new FileURLStreamHandler(configRoot, new File(configPath), true));
-            }
-
-            if (servletContext != null) {
-                String s = servletContext.getRealPath(RESOURCE_ROOT);
-                if (s != null) {
-                    PathURLStreamHandler h = new FileURLStreamHandler(configRoot, new File(s), true);
-                    if (! configRoot.roots.contains(h)) {
-                        configRoot.roots.add(h);
-                    }
-                } else {
-                    configRoot.roots.add(new ServletResourceURLStreamHandler(configRoot, RESOURCE_ROOT));
-                }
-            }
-
-            if (servletContext != null) {
-                String s = servletContext.getRealPath("/WEB-INF/classes" + CLASSLOADER_ROOT); // prefer opening as a files.
-                if (s != null) {
-                    configRoot.roots.add(new FileURLStreamHandler(configRoot, new File(s), false));
-                }
-            }
-
-            configRoot.roots.add(new ClassLoaderURLStreamHandler(configRoot, CLASSLOADER_ROOT));
-
-            //last fall back: fully qualified class-name
-            configRoot.roots.add(new ClassLoaderURLStreamHandler(configRoot, "/"));
+            configRoot.roots.addAll(Arrays.asList(new NodeURLStreamHandlerFactory().createURLStreamHandler(configRoot, Type.CONFIG)));
+            configRoot.roots.addAll(Arrays.asList(new ApplicationContextFileURLStreamHandlerFactory().createURLStreamHandler(configRoot, Type.CONFIG)));
+            configRoot.roots.addAll(Arrays.asList(new MMBaseConfigSettingFileURLStreamHandlerFactory().createURLStreamHandler(configRoot, Type.CONFIG)));
+            configRoot.roots.addAll(Arrays.asList(new ConfigServletResourceURLStreamHandlerFactory().createURLStreamHandler(configRoot, Type.CONFIG)));
+            configRoot.roots.addAll(Arrays.asList(new ClassesFileURLStreamHandlerFactory().createURLStreamHandler(configRoot, Type.CONFIG)));
+            configRoot.roots.addAll(Arrays.asList(new ConfigClassLoaderURLStreamHandlerFactory().createURLStreamHandler(configRoot, Type.CONFIG)));
+            configRoot.roots.addAll(Arrays.asList(new FullyClassifiedClassLoaderURLStreamHandlerFactory().createURLStreamHandler(configRoot, Type.CONFIG)));
 
         }
         return configRoot;
@@ -499,6 +435,13 @@ public class ResourceLoader extends ClassLoader {
      */
     public static synchronized ResourceLoader getWebDirectory(HttpServletRequest request) {
         return  ResourceLoader.getWebRoot().getChildResourceLoader(request.getServletPath()).getParentResourceLoader();
+    }
+
+    /**
+     * @since MMBase-2.0
+     */
+    public static ServletContext getServletContext() {
+        return servletContext;
     }
 
     /**
@@ -1142,11 +1085,20 @@ public class ResourceLoader extends ClassLoader {
 
 
     /**
+     * @since MMBase-2.0
+     */
+    public static abstract class URLStreamHandlerFactory {
+        public abstract PathURLStreamHandler[] createURLStreamHandler(ResourceLoader parent, Type type);
+    }
+
+    /**
      * Extension URLStreamHandler, used for the 'sub' Handlers, entries of 'roots' in ResourceLoader are of this type.
      */
-    static abstract class PathURLStreamHandler extends URLStreamHandler { //implements Comparable<PathURLStreamHandler> {
+    static abstract class PathURLStreamHandler extends URLStreamHandler implements Comparable<PathURLStreamHandler> {
 
         protected final ResourceLoader parent;
+
+        protected final int weight = 0;
 
         PathURLStreamHandler(ResourceLoader p) {
             this.parent = p;
@@ -1190,11 +1142,79 @@ public class ResourceLoader extends ClassLoader {
         }
 
         abstract Set<String> getPaths(Set<String> results, Pattern pattern,  boolean recursive,  boolean directories);
+
+        public int compareTo(PathURLStreamHandler o) {
+            return o.weight - weight;
+        }
     }
 
 
     // ================================================================================
     // Files
+    /**
+     * @since MMBase-2.0
+     */
+    protected static class MMBaseConfigSettingFileURLStreamHandlerFactory extends URLStreamHandlerFactory {
+        public PathURLStreamHandler[] createURLStreamHandler(ResourceLoader parent, Type type) {
+            String configPath = null;
+            ServletContext servletContext = ResourceLoader.getServletContext();
+            if (servletContext != null) {
+                configPath = servletContext.getInitParameter("mmbase.config");
+                log.debug("found the mmbase config path parameter using the mmbase.config servlet context parameter");
+            }
+
+            if (configPath == null) {
+                try {
+                    configPath = System.getProperty("mmbase.config");
+                } catch (SecurityException se) {
+                    log.info(se.getMessage());
+                }
+                if (configPath != null) {
+                    log.debug("found the mmbase.config path parameter using the mmbase.config system property");
+                }
+            } else {
+                try {
+                    if (System.getProperty("mmbase.config") != null){
+                        //if the configPath at this point was not null and the mmbase.config system property is defined
+                        //this deserves a warning message since the setting is masked
+                        log.warn("mmbase.config system property is masked by mmbase.config servlet context parameter");
+                    }
+                } catch (SecurityException se) {
+                    log.debug(se.getMessage());
+                }
+            }
+
+
+
+            if (configPath != null) {
+                if (parent.servletContext != null) {
+                    // take into account that configpath can start at webrootdir
+                    if (configPath.startsWith("$WEBROOT")) {
+                        configPath = parent.servletContext.getRealPath(configPath.substring(8));
+                    }
+                }
+                log.debug("Adding " + configPath);
+                return new PathURLStreamHandler[] {new FileURLStreamHandler(configRoot, new File(configPath), true)};
+            }
+            return new PathURLStreamHandler[0];
+        }
+    }
+
+    /**
+     * @since MMBase-2.0
+     */
+    protected static class ClassesFileURLStreamHandlerFactory extends URLStreamHandlerFactory {
+        public PathURLStreamHandler[] createURLStreamHandler(ResourceLoader parent, Type type) {
+            if (ResourceLoader.servletContext != null) {
+                String s = servletContext.getRealPath("/WEB-INF/classes" + CLASSLOADER_ROOT); // prefer opening as a files.
+                if (s != null) {
+                    return new PathURLStreamHandler[] { new FileURLStreamHandler(parent, new File(s), false)};
+                }
+            }
+            return new PathURLStreamHandler[0];
+        }
+    }
+
 
     protected static abstract class  AbstractFileURLStreamHandler extends PathURLStreamHandler {
         protected final boolean writeable;
@@ -1433,6 +1453,16 @@ public class ResourceLoader extends ClassLoader {
     // ================================================================================
     // ApplicationContext
 
+
+    /**
+     * @since MMBase-2.0
+     */
+    protected static class ApplicationContextFileURLStreamHandlerFactory extends URLStreamHandlerFactory {
+        public PathURLStreamHandler[] createURLStreamHandler(ResourceLoader parent, Type type) {
+            return new PathURLStreamHandler[] {new ApplicationContextFileURLStreamHandler(parent)};
+        }
+    }
+
     /**
      * @since MMBase-1.9
      */
@@ -1534,6 +1564,14 @@ public class ResourceLoader extends ClassLoader {
     // Nodes
 
 
+    /**
+     * @since MMBase-2.0
+     */
+    protected static class NodeURLStreamHandlerFactory extends URLStreamHandlerFactory {
+        public PathURLStreamHandler[] createURLStreamHandler(ResourceLoader root, Type type) {
+            return new PathURLStreamHandler[] {new NodeURLStreamHandler(configRoot, type.ordinal())};
+        }
+    }
     /**
      * URLStreamHandler for NodeConnections.
      */
@@ -1761,6 +1799,21 @@ public class ResourceLoader extends ClassLoader {
     // ================================================================================
     // ServletContext
 
+    protected static class ConfigServletResourceURLStreamHandlerFactory extends URLStreamHandlerFactory  {
+        public PathURLStreamHandler[] createURLStreamHandler(ResourceLoader parent, Type type) {
+            if (ResourceLoader.servletContext != null) {
+                String s = ResourceLoader.servletContext.getRealPath(RESOURCE_ROOT);
+                if (s != null) {
+                    return new PathURLStreamHandler[] {new FileURLStreamHandler(parent, new File(s), true)};
+                } else {
+                    return new PathURLStreamHandler[] {new ServletResourceURLStreamHandler(parent, RESOURCE_ROOT)};
+                }
+            }
+            return new PathURLStreamHandler[0];
+        }
+    }
+
+
     /**
      * If running in a servlet 2.3 environment the ServletResourceURLStreamHandler is not fully
      * functional. A warning about that is logged, but only once.
@@ -1960,7 +2013,7 @@ public class ResourceLoader extends ClassLoader {
     }
 
 
-    private static Comparator<URL> urlComparator;
+        private static Comparator<URL> urlComparator;
     private static Comparator<URL> getUrlComparator() {
         if (urlComparator == null) {
             urlComparator = new Comparator<URL>() {
@@ -2004,7 +2057,22 @@ public class ResourceLoader extends ClassLoader {
         return urlComparator;
     }
 
-
+    /**
+     * @since MMBase-2.0
+     */
+    protected static class ConfigClassLoaderURLStreamHandlerFactory extends URLStreamHandlerFactory {
+        public PathURLStreamHandler[] createURLStreamHandler(ResourceLoader parent, Type type) {
+            return new PathURLStreamHandler[] {new ClassLoaderURLStreamHandler(parent, CLASSLOADER_ROOT)};
+        }
+    }
+    /**
+     * @since MMBase-2.0
+     */
+    protected static class FullyClassifiedClassLoaderURLStreamHandlerFactory extends URLStreamHandlerFactory {
+        public PathURLStreamHandler[] createURLStreamHandler(ResourceLoader parent, Type type) {
+            return new PathURLStreamHandler[] { new ClassLoaderURLStreamHandler(parent, "/")};
+        }
+    }
 
     protected static class ClassLoaderURLStreamHandler extends PathURLStreamHandler {
         private final String root;
