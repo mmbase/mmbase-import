@@ -1095,33 +1095,19 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         try {
             return executeUpdate(query, node, fields);
         } catch (SQLException sqe) {
-            while (true) {
-                Statement s = null;
-                ResultSet rs = null;
-                try {
-                    s = activeConnection.createStatement();
-                    rs = s.executeQuery("SELECT 1 FROM " + factory.getMMBase().getBuilder("object").getFullTableName() + " WHERE 1 = 0"); // if this goes wrong too it can't be the query
-                } catch (SQLException isqe) {
-                    // so, connection must be broken.
-                    log.service("Found broken connection, closing it");
-                    if (activeConnection instanceof org.mmbase.module.database.MultiConnection) {
-                        ((org.mmbase.module.database.MultiConnection) activeConnection).realclose();
-                    } else {
-                        activeConnection.close();
-                    }
-                    getActiveConnection();
-                    if (activeConnection.isClosed()) {
-                        // don't know if that can happen, but if it happens, this would perhaps avoid an infinite loop (and exception will get thrown in stead)
-                        break;
-                    }
-                    continue;
-                 } finally {
-                     if (s != null) s.close();
-                     if (rs != null) rs.close();
-                 }
-                break;
+            if (! inTransaction && ! activeConnection.isValid(0)) {
+                // so, connection must be broken.
+                log.service("Found broken connection, closing it");
+                if (activeConnection instanceof org.mmbase.module.database.MultiConnection) {
+                    ((org.mmbase.module.database.MultiConnection) activeConnection).realclose();
+                } else {
+                    activeConnection.close();
+                }
+                getActiveConnection();
+                return executeUpdate(query, node, fields);
+            } else {
+                throw sqe;
             }
-            return executeUpdate(query, node, fields);
         }
     }
 
