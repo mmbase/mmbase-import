@@ -209,9 +209,9 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      * @return Whether a Node as found to map.
      */
     protected synchronized boolean mapNodeNumber(String resource) {
-        Node node = resourceLoader.getResourceNode(resource);
+        Integer node = resourceLoader.getResourceNode(resource);
         if (node != null) {
-            nodeNumberToResourceName.put(node.getNumber(), resource);
+            nodeNumberToResourceName.put(node, resource);
             return true;
         } else {
             return false;
@@ -238,9 +238,9 @@ public abstract class ResourceWatcher implements NodeEventListener  {
                 break;
             }
             default: {
-                Node node = ResourceLoader.getResourceBuilder().getCloud().getNode(number);
+                Node node = NodeURLStreamHandlerFactory.getResourceBuilder().getCloud().getNode(number);
                 int contextPrefix = resourceLoader.getContext().getPath().length() - 1;
-                String name = node.getStringValue(ResourceLoader.RESOURCENAME_FIELD);
+                String name = node.getStringValue(NodeURLStreamHandlerFactory.RESOURCENAME_FIELD);
                 if (name.length() > contextPrefix && getResources().contains(name.substring(contextPrefix))) {
                     log.service("Resource " + name + " changed (node added or changed)");
                     nodeNumberToResourceName.put(number, name);
@@ -345,7 +345,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
                 fw.exit();
                 i.remove();
             }
-            if (ResourceLoader.getResourceBuilder() != null) {
+            if (NodeURLStreamHandlerFactory.getResourceBuilder() != null) {
                 EventManager.getInstance().removeEventListener(this);
             }
             running = false;
