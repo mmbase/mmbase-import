@@ -44,27 +44,27 @@ public class ResourceLoaderTest {
     public void getMMBaseRootModule() throws java.io.IOException {
         URL url = ResourceLoader.getConfigurationRoot().getResource("modules/mmbaseroot.xml");
         assertNotNull("did not find mmbaseroot.xml", url);
-        assertTrue("non existing resource should openable for input", url.openConnection().getDoInput());
+        assertTrue("existing resource should be openable for input", url.openConnection().getDoInput());
     }
 
     @Test
     public void getPropertiesBuilder() throws java.io.IOException {
         URL url = ResourceLoader.getConfigurationRoot().getResource("builders/properties.xml");
         assertNotNull("did not find properties.xml", url);
-        assertTrue("non existing resource should openable for input", url.openConnection().getDoInput());
+        assertTrue("existing resource should be openable for input" + url, url.openConnection().getDoInput());
     }
     @Test
     public void getPropertiesBuilder2() throws java.io.IOException {
         URL url = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders").getResource("properties.xml");
         assertNotNull("did not find properties.xml", url);
-        assertTrue("non existing resource should openable for input", url.openConnection().getDoInput());
+        assertTrue("existing resource should openable for input", url.openConnection().getDoInput());
     }
 
     @Test
     public void getPropertiesBuilder3() throws java.io.IOException {
         URL url = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders").getResource("/properties.xml");
         assertNotNull("did not find /properties.xml", url);
-        assertTrue("non existing resource should openable for input", url.openConnection().getDoInput());
+        assertTrue("existing resource should openable for input", url.openConnection().getDoInput());
         System.out.println(url);
     }
 
