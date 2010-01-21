@@ -484,7 +484,9 @@ public class ResourceLoader extends ClassLoader {
         this.context = cl.findResource(context + "/");
         roots   = new ArrayList<PathURLStreamHandler>();
         for (PathURLStreamHandler o : cl.roots) {
-        // hmm, don't like this code, but don't know how else to copy the inner object.
+            // hmm, don't like this code, but don't know how else to copy the inner object.
+            roots.add(o.createSubHandler(this));
+            /*
             if (o instanceof FileURLStreamHandler) {
                 roots.add(new FileURLStreamHandler(this, (FileURLStreamHandler) o));
             } else if (o instanceof ApplicationContextFileURLStreamHandler) {
@@ -498,6 +500,7 @@ public class ResourceLoader extends ClassLoader {
             } else {
                 assert false;
             }
+            */
         }
         parent  = cl;
     }
@@ -1103,6 +1106,9 @@ public class ResourceLoader extends ClassLoader {
         PathURLStreamHandler(ResourceLoader p) {
             this.parent = p;
         }
+
+        abstract PathURLStreamHandler createSubHandler(ResourceLoader parent);
+
         /**
          * We need an openConnection by name only, and public.
          */
@@ -1282,9 +1288,8 @@ public class ResourceLoader extends ClassLoader {
             fileRoot = root;
 
         }
-        FileURLStreamHandler(ResourceLoader parent, FileURLStreamHandler f) {
-            super(parent, f.writeable);
-            fileRoot  = f.fileRoot;
+        public FileURLStreamHandler createSubHandler(ResourceLoader parent) {
+            return new FileURLStreamHandler(parent, fileRoot, writeable);
         }
 
         @Override
@@ -1490,6 +1495,9 @@ public class ResourceLoader extends ClassLoader {
                 FILES = new HashMap<String, String>();
             }
         }
+        public ApplicationContextFileURLStreamHandler createSubHandler(ResourceLoader parent) {
+            return new ApplicationContextFileURLStreamHandler(parent);
+        }
 
         protected File getFileFromString(String s) {
             if (s == null) {
@@ -1581,9 +1589,8 @@ public class ResourceLoader extends ClassLoader {
             super(parent);
             this.type    = type;
         }
-        NodeURLStreamHandler(ResourceLoader parent, NodeURLStreamHandler nf) {
-            super(parent);
-            this.type = nf.type;
+        public NodeURLStreamHandler createSubHandler(ResourceLoader parent) {
+            return new NodeURLStreamHandler(parent, type);
         }
 
         @Override
@@ -1829,9 +1836,8 @@ public class ResourceLoader extends ClassLoader {
             super(parent);
             root = r;
         }
-        ServletResourceURLStreamHandler(ResourceLoader parent, ServletResourceURLStreamHandler f) {
-            super(parent);
-            root = f.root;
+        public ServletResourceURLStreamHandler createSubHandler(ResourceLoader parent) {
+            return new ServletResourceURLStreamHandler(parent, root);
         }
 
 
@@ -2085,9 +2091,8 @@ public class ResourceLoader extends ClassLoader {
             super(parent);
             root = r;
         }
-        ClassLoaderURLStreamHandler(ResourceLoader parent, ClassLoaderURLStreamHandler f) {
-            super(parent);
-            root = f.root;
+        public ClassLoaderURLStreamHandler createSubHandler(ResourceLoader parent) {
+            return new ClassLoaderURLStreamHandler(parent, root);
         }
 
 
@@ -2278,6 +2283,9 @@ public class ResourceLoader extends ClassLoader {
     private static class NotAvailableUrlStreamHandler extends PathURLStreamHandler {
         NotAvailableUrlStreamHandler(ResourceLoader parent) {
             super(parent);
+        }
+        public NotAvailableUrlStreamHandler createSubHandler(ResourceLoader parent) {
+            return new NotAvailableUrlStreamHandler(parent);
         }
 
         @Override
