@@ -109,7 +109,7 @@ public class ResourceLoaderTest {
     @Test
     public void spacesFileLoader() throws Exception {
         ResourceLoader fileLoader = new ResourceLoader();
-        fileLoader.roots.add(fileLoader.new FileURLStreamHandler(new File(System.getProperty("user.dir")), true));
+        fileLoader.roots.add(new ResourceLoader.FileURLStreamHandler(fileLoader, new File(System.getProperty("user.dir")), true));
 
         final String dir = "src/test/resources/org/mmbase/config/directory with spaces";
         assertNotNull(fileLoader.getDocument(dir + "/file with spaces.xml", false, null));
