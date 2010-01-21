@@ -264,9 +264,9 @@
       <description xml:lang="en">
         The names of all available MMBase Framework Components
       </description>
-      <pattern value="\A\s*[^\n\r]*?\s*\z" />
       <required value="true"/>
       <maxLength value="128"/>
+      <pattern value="\A\s*[^\n\r]*?\s*\z" />
     </specialization>
 
     <specialization id="windowstate">
