@@ -255,7 +255,6 @@ public class DatabaseStorageManager implements StorageManager {
         if (!inTransaction) {
             throw new StorageException("No transaction started.");
         } else {
-            inTransaction = false;
             if (factory.supportsTransactions()) {
                 if (activeConnection == null) {
                     throw new StorageException("No active connection");
@@ -263,13 +262,13 @@ public class DatabaseStorageManager implements StorageManager {
 
                 try {
                     activeConnection.commit();
-                } catch (SQLException se) {
-                    throw new StorageException(se);
-                } finally {
                     releaseActiveConnection();
                     factory.getChangeManager().commit(changes);
+                } catch (SQLException se) {
+                    throw new StorageException(se);
                 }
             }
+            inTransaction = false;
         }
     }
 
@@ -788,7 +787,7 @@ public class DatabaseStorageManager implements StorageManager {
                     return;
                 }
             }
-            
+
             log.service("Storing " + field + " for " + node.getNumber() + " in " + binaryFile);
             InputStream in = node.getInputStreamValue(fieldName);
             OutputStream out = new FileOutputStream(binaryFile);
@@ -978,35 +977,42 @@ public class DatabaseStorageManager implements StorageManager {
         try {
             executeUpdate(query, node, fields);
         } catch (SQLException sqe) {
-            log.error("Failed to update", sqe);
-            while (true) {
-                Statement s = null;
-                ResultSet rs = null;
+            if (! inTransaction) {
+                while (true) {
+                    Statement s = null;
+                    ResultSet rs = null;
+                    try {
+                        s = activeConnection.createStatement();
+                        rs = s.executeQuery("SELECT 1 FROM " + factory.getMMBase().getBuilder("object").getFullTableName() + " WHERE 1 = 0"); // if this goes wrong too it can't be the query
+                    } catch (SQLException isqe) {
+                        // so, perhaps the connection is broken.
+                        log.service("Found broken connection ('" + isqe.getClass() + " " + isqe.getMessage() + "'), closing it");
+                        if (activeConnection instanceof org.mmbase.module.database.MultiConnection) {
+                            ((org.mmbase.module.database.MultiConnection) activeConnection).realclose();
+                        } else {
+                            activeConnection.close();
+                        }
+                        getActiveConnection();
+                        if (activeConnection.isClosed()) {
+                            // don't know if that can happen, but if it happens, this would perhaps avoid an infinite loop (and exception will get thrown in stead)
+                            break;
+                        }
+                        continue;
+                    } finally {
+                        if (s != null) s.close();
+                        if (rs != null) rs.close();
+                    }
+                    break;
+                }
                 try {
-                    s = activeConnection.createStatement();
-                    rs = s.executeQuery("SELECT 1 FROM " + factory.getMMBase().getBuilder("object").getFullTableName() + " WHERE 1 = 0"); // if this goes wrong too it can't be the query
-                } catch (SQLException isqe) {
-                    // so, connection must be broken.
-                    log.service("Found broken connection, closing it");
-                    if (activeConnection instanceof org.mmbase.module.database.MultiConnection) {
-                        ((org.mmbase.module.database.MultiConnection) activeConnection).realclose();
-                    } else {
-                        activeConnection.close();
-                    }
-                    getActiveConnection();
-                    if (activeConnection.isClosed()) {
-                        // don't know if that can happen, but if it happens, this would perhaps avoid an infinite loop (and exception will get thrown in stead)
-                        break;
-                    }
-                    continue;
-                 } finally {
-                     if (s != null) s.close();
-                     if (rs != null) rs.close();
-                 }
-                break;
+                    log.info("Second try update with new connection");
+                    executeUpdate(query, node, fields);
+                } catch (Exception e) {
+                    throw sqe;
+                }
+            } else {
+                throw sqe;
             }
-            log.info("Second try update with new connection");
-            executeUpdate(query, node, fields);
         }
     }
 
