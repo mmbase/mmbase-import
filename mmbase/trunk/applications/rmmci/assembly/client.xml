@@ -42,6 +42,7 @@
           <include>org/mmbase/util/logging/**</include>                  <!-- every class use, and it's no real burden to have it -->
           <include>org/mmbase/util/ResourceLoader*.class</include>       <!-- well... -->
           <include>org/mmbase/util/ResourceWatcher*.class</include>      <!--  -->
+          <include>org/mmbase/util/NodeURLStreamHandlerFactory*.class</include>      <!--  -->
           <include>org/mmbase/util/LocalizedString.class</include>         <!-- returned by bridge -->
           <include>org/mmbase/util/LocaleCollator*</include>         <!-- returned by bridge -->
           <include>org/mmbase/util/ReadonlyLocalizedString.class</include>
