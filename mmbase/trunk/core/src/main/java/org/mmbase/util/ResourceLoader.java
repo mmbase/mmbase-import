@@ -169,11 +169,6 @@ public class ResourceLoader extends ClassLoader {
         public abstract ResourceLoader get();
     }
 
-
-    // This should perhaps be a member (too) to allow for better authorisation support.
-    static String resourceBuilder = null;
-
-
     /**
      * The URLStreamHandler for 'mm' URL's.
      */
@@ -230,29 +225,8 @@ public class ResourceLoader extends ClassLoader {
         // reset both roots, they will be redetermined using servletContext.
         configRootNeedsInit = true;
         webRootNeedsInit    = true;
-        ResourceWatcher.reinitWatchers();
     }
 
-    /**
-     * Sets the MMBase builder which must be used for resource.
-     * The builder must have an URL and a HANDLE field.
-     * This method can be called only once.
-     * @param b An String (this may be <code>null</code> if no such builder available)
-     * @throws RuntimeException if builder was set already.
-     */
-    public static void setResourceBuilder(String b) {
-        if (ResourceWatcher.resourceWatchers == null) {
-            throw new RuntimeException("A resource builder was set already: " + resourceBuilder);
-        }
-        resourceBuilder = b;
-        // must be informed to existing ResourceWatchers.
-        ResourceWatcher.setResourceBuilder(); // this will also set ResourceWatcher.resourceWatchers to null.
-        if (b != null) {
-            log.info("The resources builder '" + b  + "' is available.");
-        } else {
-            log.debug("No resources builder");
-        }
-    }
 
 
     /**
@@ -446,21 +420,6 @@ public class ResourceLoader extends ClassLoader {
         for (PathURLStreamHandler o : cl.roots) {
             // hmm, don't like this code, but don't know how else to copy the inner object.
             roots.add(o.createSubHandler(this));
-            /*
-            if (o instanceof FileURLStreamHandler) {
-                roots.add(new FileURLStreamHandler(this, (FileURLStreamHandler) o));
-            } else if (o instanceof ApplicationContextFileURLStreamHandler) {
-                roots.add(new ApplicationContextFileURLStreamHandler(this));
-            } else if (o instanceof NodeURLStreamHandler) {
-                roots.add(new NodeURLStreamHandler(this, (NodeURLStreamHandler) o));
-            } else if (o instanceof ServletResourceURLStreamHandler) {
-                roots.add(new ServletResourceURLStreamHandler(this, (ServletResourceURLStreamHandler) o));
-            } else if (o instanceof ClassLoaderURLStreamHandler) {
-                roots.add(new ClassLoaderURLStreamHandler(this, (ClassLoaderURLStreamHandler) o));
-            } else {
-                assert false;
-            }
-            */
         }
         parent  = cl;
     }
@@ -545,6 +504,7 @@ public class ResourceLoader extends ClassLoader {
      */
     public List<URL> getResourceList(final String name) {
         try {
+            List<URL> r = Collections.list(getResources(name));
             return Collections.list(getResources(name));
         } catch (IOException io) {
             log.warn(io);
@@ -1745,7 +1705,7 @@ public class ResourceLoader extends ClassLoader {
     }
 
 
-        private static Comparator<URL> urlComparator;
+    private static Comparator<URL> urlComparator;
     private static Comparator<URL> getUrlComparator() {
         if (urlComparator == null) {
             urlComparator = new Comparator<URL>() {
@@ -1858,7 +1818,7 @@ public class ResourceLoader extends ClassLoader {
                 URL n = e.nextElement();
                 result.add(n);
             }
-            return result;
+             return result;
         }
 
         @Override

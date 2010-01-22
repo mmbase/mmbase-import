@@ -34,18 +34,32 @@ import org.mmbase.bridge.*;
 public abstract class ResourceWatcher implements NodeEventListener  {
     private static final Logger log = Logging.getLoggerInstance(ResourceWatcher.class);
 
+
+    // This should perhaps be a member (too) to allow for better authorisation support.
+    static String resourceBuilder = null;
+
+
     /**
      * All instantiated ResourceWatchers.
      */
     static final Map<ResourceWatcher, Object> resourceWatchers = Collections.synchronizedMap(new WeakHashMap<ResourceWatcher, Object>());
 
     /**
+     * Sets the MMBase builder which must be used for resource.
+     * The builder must have an URL and a HANDLE field.
+     * This method can be called only once.
      * Considers all resource-watchers. Perhaps onChange must be called, because there is a node for this resource available now.
+     * @param b An String (this may be <code>null</code> if no such builder available)
+     * @throws RuntimeException if builder was set already.
      */
-    static void setResourceBuilder() {
+    public static void setResourceBuilder(String builder) {
+        if (resourceWatchers == null) {
+            throw new RuntimeException("A resource builder was set already: " + resourceBuilder);
+        }
+        resourceBuilder = builder;
         synchronized(resourceWatchers) {
             for (ResourceWatcher rw : resourceWatchers.keySet()) {
-                if (ResourceLoader.resourceBuilder != null) {
+                if (resourceBuilder != null) {
 
                     if (rw.running) {
                         EventManager.getInstance().addEventListener(rw);
@@ -60,14 +74,19 @@ public abstract class ResourceWatcher implements NodeEventListener  {
                 }
             }
             reinitWatchers();
+        }
 
+        if (builder != null) {
+            log.info("The resources builder '" + builder  + "' is available.");
+        } else {
+            log.debug("No resources builder");
         }
     }
 
     /**
      * @since MMBase-1.9.2
      */
-    static void reinitWatchers() {
+    public static void reinitWatchers() {
         synchronized(resourceWatchers) {
             for (ResourceWatcher rw : resourceWatchers.keySet()) {
                 log.debug("Reinitting watcher " + rw);
