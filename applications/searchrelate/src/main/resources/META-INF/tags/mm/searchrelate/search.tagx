@@ -39,5 +39,5 @@
     <mm:sortorder field="number" direction="down" />
   </mm:listnodescontainer>
   <jsp:directive.include file="/mmbase/searchrelate/settings.jspf" />
-  <mm-sr:relate repository="${repository}" load="${load}" implicitRepository="${empty implicit ? settings['implicitRepository'] : implicit}" create="${create}" />
+  <mm-sr:relate repository="${repository}" load="${empty load ? true : load}" implicitRepository="${empty implicit ? settings['implicitRepository'] : implicit}" create="${create}" />
 </jsp:root>
