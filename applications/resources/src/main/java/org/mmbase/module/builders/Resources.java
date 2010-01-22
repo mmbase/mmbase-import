@@ -32,8 +32,8 @@ public class Resources extends Attachments {
      */
     @Override
     public Object getValue(MMObjectNode node, String field) {
-        if (field.equals(ResourceLoader.FILENAME_FIELD)) {
-            String s = node.getStringValue(ResourceLoader.RESOURCENAME_FIELD);
+        if (field.equals(NodeURLStreamHandlerFactory.FILENAME_FIELD)) {
+            String s = node.getStringValue(NodeURLStreamHandlerFactory.RESOURCENAME_FIELD);
             int i = s.lastIndexOf("/");
             if (i > 0) {
                 return s.substring(i + 1);
