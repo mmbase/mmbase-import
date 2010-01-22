@@ -1,0 +1,69 @@
+als je een lijst gaat maken wil je een volledige query op kunne geven.
+in de lijst moet je het volgende weten:
+- het type wat je wilt tonen
+- de editor die je wilt openen voor dit type
+- wat is het nummer van de parent node?
+- wat is het type van de parent node?
+- wat is het type van de relatie tussen de parent en de te tonen nodes.
+- wat is het nummer van de relatie tussen de parent en de te tonen nodes.
+
+structure:
+
+<search>
+    <add/>
+    <searchfields/>
+    <searchlist>
+        <searchrow/>
+    </searchlist>
+</search>
+
+search tag:
+============
+Sets some environment stuff for a search.
+--------------
+attributes:
+-wizardfile (with what wizard to open the edited nodes)
+-type (the type to show)
+---------------
+puts vars in request:
+searchtype = type
+typeguiname = the guiname of the builder
+wizardfile
+
+
+searchfields tag:
+===================
+Creates the search box.
+------------------
+attributes:
+- fields (the fields to search on. they should be in the nodetype we want to show)
+- defaultminage
+- defaultmaxage
+
+
+parentsearchlist tag:
+======================
+This is a version of searchlist that allowes you to give a parent node number and role type between the parent
+and the search type.
+-----------------
+attributes:
+-numberofitems
+-parentnodenr
+-relationrole
+-showsearchall [on|off]
+-orderby
+-direction
+
+
+searchrow tag:
+==================
+Shows the result rows. Here you can configure what fields to show, and what actions can be done.
+------------
+attributes:
+-fields (what fields to show: they must be of the type of the node you want to show)
+-relate
+-edit
+-delete
+-harddelete
+-confirmdelete
+

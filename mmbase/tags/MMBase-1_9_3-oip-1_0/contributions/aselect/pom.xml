@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-application-parent</artifactId>
+    <version>1.9-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>mmbase-aselect</artifactId>
+  <name>MMBase ASelect</name>
+  <version>${mmbase.version}</version>
+  <!--
+  <version>1.0</version>
+  -->
+  <packaging>war</packaging>
+
+  <description>
+    The A-Select Authentication System (in short A-Select) is an open source innovative system for
+    authentication of users in a Web environment. A-Select is a framework where users can be
+    authenticated by several means with Authentication Service Providers (AuthSP's).  Several
+    AuthSP's have been implemented already and are used in pilot projects. Among them, very strong
+    AuthSP's like ABN AMRO Internet Banking, Rabobank Internet banking and SURFkey Bank/SMS (former
+    Niegefoon/Mob@c) are in use in pilot projects. But also more commonly used AuthSP's are
+    implemented like Radius and LDAP. A-Select will constantly be extended with more (new) AuthSP's.
+
+    This is an implementation to use it to login into MMBase. It extends from 'cloud context
+    security, which does the authorization part.
+  </description>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>org.aselect</groupId>
+      <artifactId>aselect-system</artifactId>
+      <version>1.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-cloudcontext</artifactId>
+      <version>${mmbase.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-cloudcontext</artifactId>
+      <version>${mmbase.version}</version>
+      <classifier>classes</classifier>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+    <repository>
+      <id>snapshots</id>
+      <url>http://www.mmbase.org/snapshots</url>
+    </repository>
+  </repositories>
+
+</project>

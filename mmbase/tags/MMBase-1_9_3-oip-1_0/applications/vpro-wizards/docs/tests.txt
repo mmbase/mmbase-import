@@ -1,0 +1,23 @@
+wat moet er getest worden aan de vpro wizards code?
+Er zijn twee 'modules' die afzonderlijk getest moeten worden.
+
+CACHE FLUSHING
+-------------------
+- FlushNameTEmplateBean
+Deze class moet getest worden op het injecteren van nodenummers in templates, en 
+ook op het verwijderen van templates uit cache flush names. De manier waarop je via een query het juiste nodenummer kunt opvragen kan niet goed worden getest zonder mmbase.
+
+- PrefixSuffixModifier
+
+- TokenizerCacheNameResolver
+Test het in tokens opknippen van input strings.
+Test of de juiste dingen ook fout gaan.
+
+- TokenizerCachNameResolverFactory
+Test of de juiste namespaces zijn gedefinieerd, en of de prefex/postfix en FlushNameTemplateBean Modifiers zijn geinstalleerd.
+
+- BasicCacheHandlerInterceptor
+Worden de juiste handlings aangemaakt voor de cache flush hints? Worden uiteindelijk de juiste caches geflushed op basis van die cacheflush hints?
+
+SPRING ACTIONS
+-------------------

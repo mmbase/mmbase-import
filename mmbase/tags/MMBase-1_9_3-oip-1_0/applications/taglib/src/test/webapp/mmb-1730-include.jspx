@@ -1,0 +1,14 @@
+<mm:content
+    type="application/xhtml+xml"
+    postprocessor="none"
+    language="client" expires="0"  jspvar="locale"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:context id="a" scope="request">
+    <mm:write referid="c" />
+    <mm:context referid="b" />
+  </mm:context>
+</mm:content>

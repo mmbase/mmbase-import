@@ -1,0 +1,19 @@
+<head
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:directive.page session="false" />
+  <!--
+      Generic head for all pages in this directory.
+      $Id$
+  -->
+  <jsp:output omit-xml-declaration="true" />
+  <title>Simple editors in JSPX / MMBase Taglib 2.0 - ${_node}</title>   
+  <mm:link page="style.css.jspx">
+    <link rel="stylesheet" href="${_}" type="text/css" />
+  </mm:link>
+  <mm:link page="/mmbase/style/images/favicon.ico">
+    <link rel="icon" href="${_}" type="image/x-icon" />
+    <link rel="shortcut icon" href="${_}" type="image/x-icon" />
+  </mm:link>
+</head>

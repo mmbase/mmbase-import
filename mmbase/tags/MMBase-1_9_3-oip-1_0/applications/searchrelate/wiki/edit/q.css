@@ -1,0 +1,90 @@
+body, html {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+}
+
+h1.error {
+  color: red;
+  background-color: yellow;
+  z-index: 100;
+  position: absolute;
+  top: 0;
+}
+
+div#title {
+  top: 0px;
+  height: 30px;
+  width: 100%;
+  background-color: #ffa;
+}
+div#commit {
+  position: absolute;
+  bottom: 0px;
+  height: 30px;
+  width: 100%;
+  background-color: #ffa;
+}
+
+div#main {
+  position: absolute;
+  left: 0px;
+  top: 30px;
+}
+div#relations {
+  position: absolute;
+  right: 0px;
+  top: 30px;
+  background-color: #bbb;
+}
+
+div#relations ul  {
+  list-style-type: none;
+  padding-left: 1ex;
+  margin-top: 0px;
+}
+
+div#relations ul li {
+  margin: 0;
+}
+div#relations ul li a.toggle {
+  background-color: #ddd;
+  display: block;
+  border-bottom: 1px solid black;
+  width: 100%;
+  margin: 0;
+}
+
+div#preview {
+  background-color: #eee;
+  width: 20%;
+  height: 30%;
+  z-index: 100;
+  overflow: auto;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+div#preview > h1 {
+  margin: 0 0 0 0;
+  font-size: 10pt;
+  border-bottom: solid black 1px;
+  background-color: blue;
+  color: white;
+}
+div#preview > a {
+  float: right;
+}
+
+
+.mm_related {
+  width: 100%;
+  background-color: #eee;
+}
+.mm_related table {
+  width: 100%;
+  background-color: #fff;
+}
+.mm_related .fields {
+  display: none;
+}
+

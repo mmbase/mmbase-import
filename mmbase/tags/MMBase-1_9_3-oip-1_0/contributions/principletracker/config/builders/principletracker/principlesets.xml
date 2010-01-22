@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="principlesets" maintainer="mmcoder.nl" version="0" extends="object">
+
+  <names>
+    <singular xml:lang="en">PrincipleSet</singular>
+    <plural xml:lang="en">PrincipleSets</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">All principles related to a product or project for example MMBase</description>
+  </descriptions>
+
+  <fieldlist>
+    <field name="name">
+      <descriptions>
+        <description xml:lang="en">Name</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Name</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type notnull="true" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="description">
+      <descriptions>
+        <description xml:lang="en">Description of the topic</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Description</guiname>
+      </gui>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type notnull="false" size="64000" state="persistent">STRING</type>
+      </db>
+    </field>
+
+</fieldlist>
+
+</builder>

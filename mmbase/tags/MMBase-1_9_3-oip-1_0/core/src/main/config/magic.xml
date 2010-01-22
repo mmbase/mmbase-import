@@ -1,0 +1,3256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE magic PUBLIC "-//MMBase//DTD magic config 1.0//EN" "http://www.mmbase.org/dtd/magic_1_0.dtd">
+<magic>
+  <info>
+    <version>0.1</version>
+    <author>cjr@dds.nl</author>
+    <description>Conversion of the UNIX 'magic' file with added mime types and extensions.</description>
+  </info>
+  <detectorlist>
+    <detector>
+      <mimetype>image/jpeg</mimetype>
+      <extension>jpg</extension>
+      <designation>JPEG image data</designation>
+      <test offset="0" type="beshort" comparator="=">0xffd8</test>
+      <childlist>
+        <detector>
+          <mimetype>image/jpeg</mimetype>
+          <extension>jpg</extension>
+          <designation>\b, JFIF standard</designation>
+          <test offset="6" type="string" comparator="=">JFIF</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>image/jpeg</mimetype>
+      <extension>jpg</extension>
+      <designation>JPEG image data, HSI proprietary</designation>
+      <test offset="0" type="string" comparator="=">hsi1</test>
+    </detector>
+    <detector>
+      <mimetype>image/pjpeg</mimetype>
+      <extension>jpg</extension>
+      <designation>JPEG image data</designation>
+    </detector>
+    <detector>
+      <mimetype>video/mpeg</mimetype>
+      <extension>mpg</extension>
+      <designation>MPEG video stream data</designation>
+      <test offset="0" type="belong" comparator="=">0x1b3</test>
+    </detector>
+    <detector>
+      <mimetype>video/mpeg</mimetype>
+      <extension>mpg</extension>
+      <designation>MPEG system stream data</designation>
+      <test offset="0" type="belong" comparator="=">0x1ba</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>MP</designation>
+      <test offset="0" type="beshort" comparator="&amp;">0xfff0</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b</designation>
+          <test offset="1" type="byte" comparator="=">0x8</test>
+          <childlist>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b3</designation>
+              <test offset="1" type="byte" comparator="&amp;">0x2</test>
+              <childlist>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b,  32 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0x10</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b,  40 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0x20</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b,  48 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0x30</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b,  56 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0x40</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b,  64 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0x50</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b,  80 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0x60</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b,  96 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0x70</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, 112 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0x80</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, 128 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0x90</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, 160 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0xa0</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, 192 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0xb0</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, 224 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0xc0</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, 256 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0xd0</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, 320 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0xe0</test>
+                </detector>
+              </childlist>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b2</designation>
+              <test offset="1" type="byte" comparator="&amp;">0x4</test>
+              <childlist>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b,  32 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0x10</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b,  48 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0x20</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b,  56 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0x30</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b,  64 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0x40</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b,  80 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0x50</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b,  96 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0x60</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, 112 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0x70</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, 128 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0x80</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, 160 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0x90</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, 192 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0xa0</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, 224 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0xb0</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, 256 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0xc0</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, 320 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0xd0</test>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, 384 kBits</designation>
+                  <test offset="2" type="byte" comparator="=">0xe0</test>
+                </detector>
+              </childlist>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, 44.1 kHz</designation>
+              <test offset="2" type="byte" comparator="=">0x0</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, 48 kHz</designation>
+              <test offset="2" type="byte" comparator="=">0x4</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, 32 kHz</designation>
+              <test offset="2" type="byte" comparator="=">0x8</test>
+            </detector>
+          </childlist>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b</designation>
+          <test offset="1" type="byte" comparator="=">0x0</test>
+          <childlist>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b3</designation>
+              <test offset="1" type="byte" comparator="&amp;">0x2</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b2</designation>
+              <test offset="1" type="byte" comparator="&amp;">0x4</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b,   8 kBits</designation>
+              <test offset="2" type="byte" comparator="=">0x10</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b,  16 kBits</designation>
+              <test offset="2" type="byte" comparator="=">0x20</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b,  24 kBits</designation>
+              <test offset="2" type="byte" comparator="=">0x30</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b,  32 kBits</designation>
+              <test offset="2" type="byte" comparator="=">0x40</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b,  40 kBits</designation>
+              <test offset="2" type="byte" comparator="=">0x50</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b,  48 kBits</designation>
+              <test offset="2" type="byte" comparator="=">0x60</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b,  56 kBits</designation>
+              <test offset="2" type="byte" comparator="=">0x70</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b,  64 kBits</designation>
+              <test offset="2" type="byte" comparator="=">0x80</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b,  80 kBits</designation>
+              <test offset="2" type="byte" comparator="=">0x90</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b,  96 kBits</designation>
+              <test offset="2" type="byte" comparator="=">0xa0</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, 112 kBits</designation>
+              <test offset="2" type="byte" comparator="=">0xb0</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, 128 kBits</designation>
+              <test offset="2" type="byte" comparator="=">0xc0</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, 144 kBits</designation>
+              <test offset="2" type="byte" comparator="=">0xd0</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, 160 kBits</designation>
+              <test offset="2" type="byte" comparator="=">0xe0</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, 22.05 kHz</designation>
+              <test offset="2" type="byte" comparator="=">0x0</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, 24 kHz</designation>
+              <test offset="2" type="byte" comparator="=">0x4</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, 16 kHz</designation>
+              <test offset="2" type="byte" comparator="=">0x8</test>
+            </detector>
+          </childlist>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, Stereo</designation>
+          <test offset="3" type="byte" comparator="=">0x0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, JStereo</designation>
+          <test offset="3" type="byte" comparator="=">0x40</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, Dual-Ch</designation>
+          <test offset="3" type="byte" comparator="=">0x80</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, Mono</designation>
+          <test offset="3" type="byte" comparator="=">0xc0</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>FLI file</designation>
+      <test offset="4" type="leshort" comparator="=">0xaf11</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>- %d frames,</designation>
+          <test offset="6" type="leshort" comparator="=">x</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>width=%d pixels,</designation>
+          <test offset="8" type="leshort" comparator="=">x</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>height=%d pixels,</designation>
+          <test offset="10" type="leshort" comparator="=">x</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>depth=%d,</designation>
+          <test offset="12" type="leshort" comparator="=">x</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>ticks/frame=%d</designation>
+          <test offset="16" type="leshort" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>FLC file</designation>
+      <test offset="4" type="leshort" comparator="=">0xaf12</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>- %d frames</designation>
+          <test offset="6" type="leshort" comparator="=">x</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>width=%d pixels,</designation>
+          <test offset="8" type="leshort" comparator="=">x</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>height=%d pixels,</designation>
+          <test offset="10" type="leshort" comparator="=">x</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>depth=%d,</designation>
+          <test offset="12" type="leshort" comparator="=">x</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>ticks/frame=%d</designation>
+          <test offset="16" type="leshort" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>Silicon Graphics movie file</designation>
+      <test offset="0" type="string" comparator="=">MOVI</test>
+    </detector>
+    <detector>
+      <mimetype>video/quicktime</mimetype>
+      <extension>mov</extension>
+      <designation>Apple QuickTime movie file (moov)</designation>
+      <test offset="4" type="string" comparator="=">moov</test>
+    </detector>
+    <detector>
+      <mimetype>video/quicktime</mimetype>
+      <extension>mov</extension>
+      <designation>Apple QuickTime movie file (mdat)</designation>
+      <test offset="4" type="string" comparator="=">mdat</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>Applixware</designation>
+      <test offset="0" type="string" comparator="=">*BEGIN</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Words Document</designation>
+          <test offset="7" type="string" comparator="=">WORDS</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Graphic</designation>
+          <test offset="7" type="string" comparator="=">GRAPHICS</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Bitmap</designation>
+          <test offset="7" type="string" comparator="=">RASTER</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Spreadsheet</designation>
+          <test offset="7" type="string" comparator="=">SPREADSHEETS</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Macro</designation>
+          <test offset="7" type="string" comparator="=">MACRO</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Builder Object</designation>
+          <test offset="7" type="string" comparator="=">BUILDER</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>application/x-tar</mimetype>
+      <extension>tar</extension>
+      <designation>POSIX tar archive</designation>
+      <test offset="257" type="string" comparator="=">ustar\000</test>
+    </detector>
+    <detector>
+      <mimetype>application/x-tar</mimetype>
+      <extension>tar</extension>
+      <designation>tar archive</designation>
+      <test offset="257" type="string" comparator="=">ustar  \000GNU</test>
+    </detector>
+    <detector>
+      <mimetype>application/zip</mimetype>
+      <extension>zip</extension>
+      <designation>archive data</designation>
+      <test offset="0" type="string" comparator="=">PK\003\004Zip</test>
+      <childlist>
+        <detector>
+          <mimetype>application/zip</mimetype>
+          <extension>zip</extension>
+          <designation>\b, at least v0.9 to extract</designation>
+          <test offset="4" type="byte" comparator="=">0x9</test>
+        </detector>
+        <detector>
+          <mimetype>application/zip</mimetype>
+          <extension>zip</extension>
+          <designation>\b, at least v1.0 to extract</designation>
+          <test offset="4" type="byte" comparator="=">0xa</test>
+        </detector>
+        <detector>
+          <mimetype>application/zip</mimetype>
+          <extension>zip</extension>
+          <designation>\b, at least v1.1 to extract</designation>
+          <test offset="4" type="byte" comparator="=">0xb</test>
+        </detector>
+        <detector>
+          <mimetype>application/zip</mimetype>
+          <extension>zip</extension>
+          <designation>\b, at least v2.0 to extract</designation>
+          <test offset="4" type="byte" comparator="=">0x14</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>mid</extension>
+      <designation>Standard MIDI data</designation>
+      <test offset="0" type="string" comparator="=">MThd</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>(format %d)</designation>
+          <test offset="9" type="byte" comparator="&gt;">0x0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>using %d tracks</designation>
+          <test offset="11" type="byte" comparator="&gt;">0x1</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>Creative Music (CMF) data</designation>
+      <test offset="0" type="string" comparator="=">CTMF</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>SoundBlaster instrument data</designation>
+      <test offset="0" type="string" comparator="=">SBI</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>Creative Labs voice data</designation>
+      <test offset="0" type="string" comparator="=">Creative Voice File</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation></designation>
+          <test offset="19" type="byte" comparator="=">0x1a</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>- version %d</designation>
+          <test offset="23" type="byte" comparator="&gt;">0x0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b.%d</designation>
+          <test offset="22" type="byte" comparator="&gt;">0x0</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>mod</extension>
+      <designation>Extended MOD sound data,</designation>
+      <test offset="0" type="string" comparator="=">EMOD</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>version %d</designation>
+          <test offset="4" type="byte" comparator="=">x</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b.%d,</designation>
+          <test offset="4" type="byte" comparator="=">x</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>%d instruments</designation>
+          <test offset="45" type="byte" comparator="=">x</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>(module)</designation>
+          <test offset="83" type="byte" comparator="=">0x0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>(song)</designation>
+          <test offset="83" type="byte" comparator="=">0x1</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>realaudio sound file</designation>
+      <test offset="0" type="belong" comparator="=">0x2e7261fd</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>file        </designation>
+      <test offset="0" type="string" comparator="=">.RMF\000\000\000realmedia</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>data</designation>
+      <test offset="0" type="string" comparator="=">\037\235compress'd</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>block compressed</designation>
+          <test offset="2" type="byte" comparator="&gt;">0x0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>%d bits</designation>
+          <test offset="2" type="byte" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>application/x-gzip</mimetype>
+      <extension>gz</extension>
+      <designation>gzip compressed data</designation>
+      <test offset="0" type="string" comparator="=">\037\213</test>
+      <childlist>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>\b, reserved method,</designation>
+          <test offset="2" type="byte" comparator="&lt;">0x8</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>\b, deflated,</designation>
+          <test offset="2" type="byte" comparator="=">0x8</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>ASCII,</designation>
+          <test offset="3" type="byte" comparator="&amp;">0x1</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>continuation,</designation>
+          <test offset="3" type="byte" comparator="&amp;">0x2</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>extra field,</designation>
+          <test offset="3" type="byte" comparator="&amp;">0x4</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>original filename,</designation>
+          <test offset="3" type="byte" comparator="&amp;">0x8</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>comment,</designation>
+          <test offset="3" type="byte" comparator="&amp;">0x10</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>encrypted,</designation>
+          <test offset="3" type="byte" comparator="&amp;">0x20</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>last modified: %s,</designation>
+          <test offset="4" type="ledate" comparator="=">x</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>max compression,</designation>
+          <test offset="8" type="byte" comparator="=">0x2</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>max speed,</designation>
+          <test offset="8" type="byte" comparator="=">0x4</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>os: MS-DOS</designation>
+          <test offset="9" type="byte" comparator="=">0x0</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>os: Amiga</designation>
+          <test offset="9" type="byte" comparator="=">0x1</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>os: VMS</designation>
+          <test offset="9" type="byte" comparator="=">0x2</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>os: Unix</designation>
+          <test offset="9" type="byte" comparator="=">0x3</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>os: Atari</designation>
+          <test offset="9" type="byte" comparator="=">0x5</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>os: OS/2</designation>
+          <test offset="9" type="byte" comparator="=">0x6</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>os: MacOS</designation>
+          <test offset="9" type="byte" comparator="=">0x7</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>os: Tops/20</designation>
+          <test offset="9" type="byte" comparator="=">0xa</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-gzip</mimetype>
+          <extension>gz</extension>
+          <designation>os: Win/32</designation>
+          <test offset="9" type="byte" comparator="=">0xb</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>application/x-bzip2</mimetype>
+      <extension>bz2</extension>
+      <designation>bzip2 compressed data</designation>
+      <test offset="0" type="string" comparator="=">BZh</test>
+      <childlist>
+        <detector>
+          <mimetype>application/x-bzip2</mimetype>
+          <extension>bz2</extension>
+          <designation>\b, block size = %c00k</designation>
+          <test offset="3" type="byte" comparator="&gt;">0x2f</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>application/x-shockwave-flash</mimetype>
+      <extension>swf</extension>
+      <designation>Macromedia Flash data,</designation>
+      <test offset="0" type="string" comparator="=">FWS</test>
+      <childlist>
+        <detector>
+          <mimetype>application/x-shockwave-flash</mimetype>
+          <extension>swf</extension>
+          <designation>version %d</designation>
+          <test offset="3" type="byte" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>application/postscript</mimetype>
+      <extension>ps</extension>
+      <designation>application/postscript</designation>
+      <test offset="0" type="string" comparator="=">%!</test>
+    </detector>
+    <detector>
+      <mimetype>application/postscript</mimetype>
+      <extension></extension>
+      <designation>application/postscript</designation>
+      <test offset="0" type="string" comparator="=">\004!</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>PostScript Type 1 font text</designation>
+      <test offset="0" type="string" comparator="=">%!PS-AdobeFont-1.0</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>(%s)</designation>
+          <test offset="20" type="string" comparator="&gt;">\000</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>PostScript Type 1 font program data</designation>
+      <test offset="6" type="string" comparator="=">%!PS-AdobeFont-1.0</test>
+    </detector>
+    <detector>
+      <mimetype>application/vnd.framemaker</mimetype>
+      <extension>???</extension>
+      <designation>FrameMaker document</designation>
+      <test offset="0" type="string" comparator="=">&lt;MakerFile</test>
+      <childlist>
+        <detector>
+          <mimetype>application/vnd.framemaker</mimetype>
+          <extension>???</extension>
+          <designation>(5.5</designation>
+          <test offset="11" type="string" comparator="=">5.5</test>
+        </detector>
+        <detector>
+          <mimetype>application/vnd.framemaker</mimetype>
+          <extension>???</extension>
+          <designation>(5.0</designation>
+          <test offset="11" type="string" comparator="=">5.0</test>
+        </detector>
+        <detector>
+          <mimetype>application/vnd.framemaker</mimetype>
+          <extension>???</extension>
+          <designation>(4.0</designation>
+          <test offset="11" type="string" comparator="=">4.0</test>
+        </detector>
+        <detector>
+          <mimetype>application/vnd.framemaker</mimetype>
+          <extension>???</extension>
+          <designation>(3.0</designation>
+          <test offset="11" type="string" comparator="=">3.0</test>
+        </detector>
+        <detector>
+          <mimetype>application/vnd.framemaker</mimetype>
+          <extension>???</extension>
+          <designation>(2.0</designation>
+          <test offset="11" type="string" comparator="=">2.0</test>
+        </detector>
+        <detector>
+          <mimetype>application/vnd.framemaker</mimetype>
+          <extension>???</extension>
+          <designation>(1.0</designation>
+          <test offset="11" type="string" comparator="=">1.0</test>
+        </detector>
+        <detector>
+          <mimetype>application/vnd.framemaker</mimetype>
+          <extension>???</extension>
+          <designation>%c)</designation>
+          <test offset="14" type="byte" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>FrameMaker MIF (ASCII) file</designation>
+      <test offset="0" type="string" comparator="=">&lt;MIFFile</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>(4.0)</designation>
+          <test offset="9" type="string" comparator="=">4.0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>(3.0)</designation>
+          <test offset="9" type="string" comparator="=">3.0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>(2.0)</designation>
+          <test offset="9" type="string" comparator="=">2.0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>(1.x)</designation>
+          <test offset="9" type="string" comparator="=">1.0</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>FrameMaker Dictionary text</designation>
+      <test offset="0" type="string" comparator="=">&lt;MakerDictionary</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>(3.0)</designation>
+          <test offset="17" type="string" comparator="=">3.0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>(2.0)</designation>
+          <test offset="17" type="string" comparator="=">2.0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>(1.x)</designation>
+          <test offset="17" type="string" comparator="=">1.0</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>FrameMaker Font file</designation>
+      <test offset="0" type="string" comparator="=">&lt;MakerScreenFont</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>(%s)</designation>
+          <test offset="17" type="string" comparator="=">1.01</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>FrameMaker MML file</designation>
+      <test offset="0" type="string" comparator="=">&lt;MML</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>FrameMaker Book file</designation>
+      <test offset="0" type="string" comparator="=">&lt;BookFile</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>(3.0</designation>
+          <test offset="10" type="string" comparator="=">3.0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>(2.0</designation>
+          <test offset="10" type="string" comparator="=">2.0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>(1.0</designation>
+          <test offset="10" type="string" comparator="=">1.0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>%c)</designation>
+          <test offset="13" type="byte" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>Intermediate Print File	FrameMaker IPL file</designation>
+      <test offset="0" type="string" comparator="=">&lt;Maker</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>GIMP gradient data</designation>
+      <test offset="0" type="string" comparator="=">GIMP Gradient</test>
+    </detector>
+    <detector>
+      <mimetype>images/xcf</mimetype>
+      <extension>xcf</extension>
+      <designation>GIMP XCF image data,</designation>
+      <test offset="0" type="string" comparator="=">gimp xcf file</test>
+      <childlist>
+        <detector>
+          <mimetype>images/xcf</mimetype>
+          <extension>xcf</extension>
+          <designation>%ld x</designation>
+          <test offset="14" type="belong" comparator="=">x</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>%ld,</designation>
+          <test offset="18" type="belong" comparator="=">x</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>RGB Color</designation>
+          <test offset="22" type="belong" comparator="=">0x0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Greyscale</designation>
+          <test offset="22" type="belong" comparator="=">0x1</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Indexed Color</designation>
+          <test offset="22" type="belong" comparator="=">0x2</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>GIMP pattern data,</designation>
+      <test offset="20" type="string" comparator="=">GPAT</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>%s</designation>
+          <test offset="24" type="string" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>GIMP brush data</designation>
+      <test offset="20" type="string" comparator="=">GIMP</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>PBM image text</designation>
+      <test offset="0" type="string" comparator="=">P1</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>PGM image text</designation>
+      <test offset="0" type="string" comparator="=">P2</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>PPM image text</designation>
+      <test offset="0" type="string" comparator="=">P3</test>
+    </detector>
+    <detector>
+      <mimetype>image/x-portable-bitmap</mimetype>
+      <extension>pbm</extension>
+      <designation>PBM "rawbits" image data</designation>
+      <test offset="0" type="string" comparator="=">P4</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>PGM "rawbits" image data</designation>
+      <test offset="0" type="string" comparator="=">P5</test>
+    </detector>
+    <detector>
+      <mimetype>image/x-portable-graymap</mimetype>
+      <extension>???</extension>
+      <designation>PPM "rawbits" image data</designation>
+      <test offset="0" type="string" comparator="=">P6</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>NIFF image data</designation>
+      <test offset="0" type="string" comparator="=">IIN1</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>image data, big-endian</designation>
+      <test offset="0" type="string" comparator="=">MM\000*TIFF</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>image data, little-endian</designation>
+      <test offset="0" type="string" comparator="=">II*\000TIFF</test>
+    </detector>
+    <detector>
+      <mimetype>image/png</mimetype>
+      <extension>png</extension>
+      <designation>PNG image data,</designation>
+      <test offset="0" type="string" comparator="=">\211NG</test>
+      <childlist>
+        <detector>
+          <mimetype>image/png</mimetype>
+          <extension>png</extension>
+          <designation>CORRUPTED,</designation>
+          <test offset="4" type="belong" comparator="=">0xd0a1a0a</test>
+        </detector>
+        <detector>
+          <mimetype>image/png</mimetype>
+          <extension>png</extension>
+          <designation></designation>
+          <test offset="4" type="belong" comparator="=">0xd0a1a0a</test>
+          <childlist>
+            <detector>
+              <mimetype>image/png</mimetype>
+              <extension>png</extension>
+              <designation>%ld x</designation>
+              <test offset="16" type="belong" comparator="=">x</test>
+            </detector>
+            <detector>
+              <mimetype>image/png</mimetype>
+              <extension>png</extension>
+              <designation>%ld,</designation>
+              <test offset="20" type="belong" comparator="=">x</test>
+            </detector>
+            <detector>
+              <mimetype>image/png</mimetype>
+              <extension>png</extension>
+              <designation>%d-bit</designation>
+              <test offset="24" type="byte" comparator="=">x</test>
+            </detector>
+            <detector>
+              <mimetype>image/png</mimetype>
+              <extension>png</extension>
+              <designation>grayscale,</designation>
+              <test offset="25" type="byte" comparator="=">0x0</test>
+            </detector>
+            <detector>
+              <mimetype>image/png</mimetype>
+              <extension>png</extension>
+              <designation>\b/color RGB,</designation>
+              <test offset="25" type="byte" comparator="=">0x2</test>
+            </detector>
+            <detector>
+              <mimetype>image/png</mimetype>
+              <extension>png</extension>
+              <designation>colormap,</designation>
+              <test offset="25" type="byte" comparator="=">0x3</test>
+            </detector>
+            <detector>
+              <mimetype>image/png</mimetype>
+              <extension>png</extension>
+              <designation>gray+alpha,</designation>
+              <test offset="25" type="byte" comparator="=">0x4</test>
+            </detector>
+            <detector>
+              <mimetype>image/png</mimetype>
+              <extension>png</extension>
+              <designation>\b/color RGBA,</designation>
+              <test offset="25" type="byte" comparator="=">0x6</test>
+            </detector>
+            <detector>
+              <mimetype>image/png</mimetype>
+              <extension>png</extension>
+              <designation>non-interlaced</designation>
+              <test offset="28" type="byte" comparator="=">0x0</test>
+            </detector>
+            <detector>
+              <mimetype>image/png</mimetype>
+              <extension>png</extension>
+              <designation>interlaced</designation>
+              <test offset="28" type="byte" comparator="=">0x1</test>
+            </detector>
+          </childlist>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>image/png</mimetype>
+      <extension>png</extension>
+      <designation>PNG image data, CORRUPTED</designation>
+      <test offset="1" type="string" comparator="=">PNG</test>
+    </detector>
+    <detector>
+      <mimetype>image/gif</mimetype>
+      <extension>gif</extension>
+      <designation>GIF image data</designation>
+      <test offset="0" type="string" comparator="=">GIF8</test>
+      <childlist>
+        <detector>
+          <mimetype>image/gif</mimetype>
+          <extension>gif</extension>
+          <designation>\b, version 8%s,</designation>
+          <test offset="4" type="string" comparator="=">7a</test>
+        </detector>
+        <detector>
+          <mimetype>image/gif</mimetype>
+          <extension>gif</extension>
+          <designation>\b, version 8%s,</designation>
+          <test offset="4" type="string" comparator="=">9a</test>
+        </detector>
+        <detector>
+          <mimetype>image/gif</mimetype>
+          <extension>gif</extension>
+          <designation>%hd x</designation>
+          <test offset="6" type="leshort" comparator="&gt;">0x0</test>
+        </detector>
+        <detector>
+          <mimetype>image/gif</mimetype>
+          <extension>gif</extension>
+          <designation>%hd,</designation>
+          <test offset="8" type="leshort" comparator="&gt;">0x0</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>window manager raster image data</designation>
+      <test offset="0" type="string" comparator="=">\361\000@\273CMU</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>%d x</designation>
+          <test offset="4" type="lelong" comparator="&gt;">0x0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>%d,</designation>
+          <test offset="8" type="lelong" comparator="&gt;">0x0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>%d-bit</designation>
+          <test offset="12" type="lelong" comparator="&gt;">0x0</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>application/x-miff</mimetype>
+      <extension>miff</extension>
+      <designation>MIFF image data</designation>
+      <test offset="0" type="string" comparator="=">id=ImageMagick</test>
+    </detector>
+    <detector>
+      <mimetype>image/g3fax</mimetype>
+      <extension>fax</extension>
+      <designation>group 3 fax data</designation>
+      <test offset="1" type="string" comparator="=">PC Research, Inc</test>
+      <childlist>
+        <detector>
+          <mimetype>image/g3fax</mimetype>
+          <extension>fax</extension>
+          <designation>\b, normal resolution (204x98 DPI)</designation>
+          <test offset="29" type="byte" comparator="=">0x0</test>
+        </detector>
+        <detector>
+          <mimetype>image/g3fax</mimetype>
+          <extension>fax</extension>
+          <designation>\b, fine resolution (204x196 DPI)</designation>
+          <test offset="29" type="byte" comparator="=">0x1</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>PC icon data</designation>
+      <test offset="0" type="string" comparator="=">IC</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>PC pointer image data</designation>
+      <test offset="0" type="string" comparator="=">PI</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>PC color icon data</designation>
+      <test offset="0" type="string" comparator="=">CI</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>PC color pointer image data</designation>
+      <test offset="0" type="string" comparator="=">CP</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>X pixmap image text</designation>
+      <test offset="0" type="string" comparator="=">/* XPM */</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>iff image data</designation>
+      <test offset="0" type="string" comparator="=">Imagefile version-</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>%s</designation>
+          <test offset="10" type="string" comparator="&gt;">\000</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>Kodak Photo CD image pack file</designation>
+      <test offset="2048" type="string" comparator="=">PCD_IPI</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>Kodak Photo CD overview pack file</designation>
+      <test offset="0" type="string" comparator="=">PCD_OPA</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>%s</designation>
+      <test offset="1536" type="string" comparator="=">Visio (TM) Drawing</test>
+    </detector>
+    <detector>
+      <mimetype>application/java</mimetype>
+      <extension>class</extension>
+      <designation>compiled Java class data,</designation>
+      <test offset="0" type="belong" comparator="=">0xcafebabe</test>
+      <childlist>
+        <detector>
+          <mimetype>application/java</mimetype>
+          <extension>class</extension>
+          <designation>version %d.</designation>
+          <test offset="6" type="beshort" comparator="=">x</test>
+        </detector>
+        <detector>
+          <mimetype>application/java</mimetype>
+          <extension>class</extension>
+          <designation>\b%d</designation>
+          <test offset="4" type="beshort" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>Java serialization data</designation>
+      <test offset="0" type="beshort" comparator="=">0xaced</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, version %d</designation>
+          <test offset="2" type="beshort" comparator="&gt;">0x4</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>application/mac-binhex40</mimetype>
+      <extension>???</extension>
+      <designation>BinHex binary text</designation>
+      <test offset="11" type="string" comparator="=">must be converted with BinHex</test>
+      <childlist>
+        <detector>
+          <mimetype>application/mac-binhex40</mimetype>
+          <extension>???</extension>
+          <designation>\b, version %.3s</designation>
+          <test offset="41" type="string" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>StuffIt Archive (data)</designation>
+      <test offset="0" type="string" comparator="=">SIT!</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>: %s</designation>
+          <test offset="2" type="string" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>StuffIt Archive (rsrc + data)</designation>
+      <test offset="65" type="string" comparator="=">SIT!</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>: %s</designation>
+          <test offset="2" type="string" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>StuffIt Deluxe (data)</designation>
+      <test offset="0" type="string" comparator="=">SITD</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>: %s</designation>
+          <test offset="2" type="string" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>StuffIt Deluxe (rsrc + data)</designation>
+      <test offset="65" type="string" comparator="=">SITD</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>: %s</designation>
+          <test offset="2" type="string" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>StuffIt Deluxe Segment (data)</designation>
+      <test offset="0" type="string" comparator="=">Seg</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>: %s</designation>
+          <test offset="2" type="string" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>StuffIt Deluxe Segment (rsrc + data)</designation>
+      <test offset="65" type="string" comparator="=">Seg</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>: %s</designation>
+          <test offset="2" type="string" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>application/pdf</mimetype>
+      <extension>pdf</extension>
+      <designation>Macintosh PDF File (data)</designation>
+      <test offset="0" type="string" comparator="=">PDF</test>
+      <childlist>
+        <detector>
+          <mimetype>application/pdf</mimetype>
+          <extension>pdf</extension>
+          <designation>: %s</designation>
+          <test offset="2" type="string" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>application/pdf</mimetype>
+      <extension>pdf</extension>
+      <designation>Macintosh PDF File(rsrc + data)</designation>
+      <test offset="65" type="string" comparator="=">PDF</test>
+      <childlist>
+        <detector>
+          <mimetype>application/pdf</mimetype>
+          <extension>pdf</extension>
+          <designation>: %s</designation>
+          <test offset="2" type="string" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>MIME entity text</designation>
+      <test offset="0" type="string" comparator="=">MIME-Version:</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation></designation>
+      <test offset="0" type="string" comparator="=">Content-Type:</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>%s</designation>
+          <test offset="14" type="string" comparator="&gt;">\000</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation></designation>
+      <test offset="0" type="string" comparator="=">Content-Type</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>%s</designation>
+          <test offset="13" type="string" comparator="&gt;">\000</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>bat</extension>
+      <designation>MS-DOS batch file text</designation>
+      <test offset="0" type="string" comparator="=">@echo off</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>Windows PE</designation>
+      <test offset="128" type="string" comparator="=">PE\000\000MS</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>32-bit</designation>
+          <test offset="150" type="leshort" comparator="&gt;">0x0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>unknown processor</designation>
+          <test offset="132" type="leshort" comparator="=">0x0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Intel 80386</designation>
+          <test offset="132" type="leshort" comparator="=">0x14c</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>MIPS R4000</designation>
+          <test offset="132" type="leshort" comparator="=">0x166</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Alpha</designation>
+          <test offset="132" type="leshort" comparator="=">0x184</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Motorola 68000</designation>
+          <test offset="132" type="leshort" comparator="=">0x268</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>PowerPC</designation>
+          <test offset="132" type="leshort" comparator="=">0x1f0</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>PA-RISC</designation>
+          <test offset="132" type="leshort" comparator="=">0x290</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation></designation>
+          <test offset="148" type="leshort" comparator="&gt;">0x1b</test>
+          <childlist>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>unknown subsystem</designation>
+              <test offset="220" type="leshort" comparator="=">0x0</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>native</designation>
+              <test offset="220" type="leshort" comparator="=">0x1</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>GUI</designation>
+              <test offset="220" type="leshort" comparator="=">0x2</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>console</designation>
+              <test offset="220" type="leshort" comparator="=">0x3</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>POSIX</designation>
+              <test offset="220" type="leshort" comparator="=">0x7</test>
+            </detector>
+          </childlist>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>executable</designation>
+          <test offset="150" type="leshort" comparator="=">0x0</test>
+          <childlist>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>not relocatable</designation>
+              <test offset="150" type="leshort" comparator="&gt;">0x0</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>system file</designation>
+              <test offset="150" type="leshort" comparator="&gt;">0x0</test>
+            </detector>
+          </childlist>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>DLL</designation>
+          <test offset="150" type="leshort" comparator="&gt;">0x0</test>
+          <childlist>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>not relocatable</designation>
+              <test offset="150" type="leshort" comparator="&gt;">0x0</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>system file</designation>
+              <test offset="150" type="leshort" comparator="&gt;">0x0</test>
+            </detector>
+          </childlist>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>MS Windows COFF Intel 80386 object file</designation>
+      <test offset="0" type="leshort" comparator="=">0x14c</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>exe</extension>
+      <designation>MS-DOS executable (EXE)</designation>
+      <test offset="0" type="string" comparator="=">MZ</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, OS/2 or MS Windows</designation>
+          <test offset="24" type="string" comparator="=">@</test>
+          <childlist>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, %s</designation>
+              <test offset="231" type="string" comparator="=">LH/2 Self-Extract</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, %s</designation>
+              <test offset="233" type="string" comparator="=">PKSFX2</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, %s</designation>
+              <test offset="122" type="string" comparator="=">Windows self-extracting ZIP</test>
+            </detector>
+          </childlist>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>ARJ SFX</designation>
+          <test offset="28" type="string" comparator="=">RJSX\377\377b,</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>diet compressed</designation>
+          <test offset="28" type="string" comparator="=">diet\371\234b,</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, PKSFX</designation>
+          <test offset="30" type="string" comparator="=">Copyright 1989-1990 PKWARE Inc.</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, %.6s compressed</designation>
+          <test offset="30" type="string" comparator="=">PKLITE Copr.</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, %.15s</designation>
+          <test offset="36" type="string" comparator="=">LHa's SFX</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, %.15s</designation>
+          <test offset="36" type="string" comparator="=">LHA's SFX</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, LHa SFX archive v2.13S</designation>
+          <test offset="1638" type="string" comparator="=">-lh5-</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, RAR self-extracting archive</designation>
+          <test offset="7195" type="string" comparator="=">Rar!</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>PKZIP SFX archive v1.1</designation>
+          <test offset="11696" type="string" comparator="=">PK\003\004b,</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>PKZIP SFX archive v1.93a</designation>
+          <test offset="13297" type="string" comparator="=">PK\003\004b,</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>PKZIP2 SFX archive v1.09</designation>
+          <test offset="15588" type="string" comparator="=">PK\003\004b,</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>PKZIP SFX archive v2.04g</designation>
+          <test offset="15770" type="string" comparator="=">PK\003\004b,</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>PKZIP2 SFX archive v1.02</designation>
+          <test offset="28374" type="string" comparator="=">PK\003\004b,</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Info-ZIP SFX archive v5.12</designation>
+          <test offset="25115" type="string" comparator="=">PK\003\004b,</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Info-ZIP SFX archive v5.12 w/decryption</designation>
+          <test offset="26331" type="string" comparator="=">PK\003\004b,</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Info-ZIP SFX archive v5.12</designation>
+          <test offset="47031" type="string" comparator="=">PK\003\004b,</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Info-ZIP SFX archive v5.12 w/decryption</designation>
+          <test offset="49845" type="string" comparator="=">PK\003\004b,</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Info-ZIP NT SFX archive v5.12 w/decryption</designation>
+          <test offset="69120" type="string" comparator="=">PK\003\004b,</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>CODEC archive v3.21</designation>
+          <test offset="49801" type="string" comparator="=">y\377\200\377v\377b,</test>
+          <childlist>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, 1 file</designation>
+              <test offset="49824" type="leshort" comparator="=">0x1</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, %u files</designation>
+              <test offset="49824" type="leshort" comparator="&gt;">0x1</test>
+            </detector>
+          </childlist>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>MS-DOS executable (built-in)</designation>
+      <test offset="0" type="string" comparator="=">LZ</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>Windows NT Registry file</designation>
+      <test offset="0" type="string" comparator="=">regf</test>
+    </detector>
+    <detector>
+      <mimetype>application/msword</mimetype>
+      <extension>doc</extension>
+      <designation>%s</designation>
+      <test offset="2080" type="string" comparator="=">Microsoft Word 6.0 Document</test>
+    </detector>
+    <detector>
+      <mimetype>application/msword</mimetype>
+      <extension>doc</extension>
+      <designation>Spanish Microsoft Word 6 document data</designation>
+      <test offset="2080" type="string" comparator="=">Documento Microsoft Word 6</test>
+    </detector>
+    <detector>
+      <mimetype>application/msword</mimetype>
+      <extension>doc</extension>
+      <designation>Microsoft Word document data</designation>
+      <test offset="2112" type="string" comparator="=">MSWordDoc</test>
+    </detector>
+    <detector>
+      <mimetype>application/msword</mimetype>
+      <extension>doc</extension>
+      <designation>Microsoft Word Document</designation>
+      <test offset="0" type="belong" comparator="=">0x31be0000</test>
+    </detector>
+    <detector>
+      <mimetype>application/msword</mimetype>
+      <extension>doc</extension>
+      <designation>Microsoft Word 6.0 Document</designation>
+      <test offset="0" type="string" comparator="=">PO^Q`</test>
+    </detector>
+    <detector>
+      <mimetype>application/msword</mimetype>
+      <extension>doc</extension>
+      <designation>Microsoft Office Document</designation>
+      <test offset="0" type="string" comparator="=">\376\067\000\043</test>
+    </detector>
+    <detector>
+      <mimetype>application/msword</mimetype>
+      <extension>doc</extension>
+      <designation>Microsoft Office Document</designation>
+      <test offset="0" type="string" comparator="=">\320\317\021\340\241\261</test>
+    </detector>
+    <detector>
+      <mimetype>application/msword</mimetype>
+      <extension>doc</extension>
+      <designation>Microsoft Office Document</designation>
+      <test offset="0" type="string" comparator="=">\333\245\000\000\000</test>
+    </detector>
+    <detector>
+      <mimetype>application/vnd.ms-excel</mimetype>
+      <extension>xls</extension>
+      <designation>Microsoft Excel 5.0 Worksheet</designation>
+      <test offset="2080" type="string" comparator="=">Microsoft Excel 5.0 Worksheet</test>
+    </detector>
+    <detector>
+      <mimetype>application/vnd.ms-excel</mimetype>
+      <extension>xls</extension>
+      <designation>Microsoft Excel 5.0 Worksheet</designation>
+      <test offset="2114" type="string" comparator="=">Biff5</test>
+    </detector>
+    <detector>
+      <mimetype>application/vnd.ms-excel</mimetype>
+      <extension>xls</extension>
+      <designation>Microsoft Excel Worksheet</designation>
+    </detector>
+    <detector>
+      <mimetype>application/vnd.ms-powerpoint</mimetype>
+      <extension>ppt</extension>
+      <designation>Microsoft Powerpoint Document</designation>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>Lotus 1-2-3</designation>
+      <test offset="0" type="belong" comparator="=">0x1a00</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>wk3 document data</designation>
+          <test offset="4" type="belong" comparator="=">0x100400</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>wk4 document data</designation>
+          <test offset="4" type="belong" comparator="=">0x2100400</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>fm3 or fmb document data</designation>
+          <test offset="4" type="belong" comparator="=">0x7800100</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>fm3 or fmb document data</designation>
+          <test offset="4" type="belong" comparator="=">0x7800000</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>Lotus 1-2-3</designation>
+      <test offset="0" type="belong" comparator="=">0x200</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>wk1 document data</designation>
+          <test offset="4" type="belong" comparator="=">0x6040600</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>fmt document data</designation>
+          <test offset="4" type="belong" comparator="=">0x6800200</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>WordPerfect document</designation>
+      <test offset="1" type="string" comparator="=">WPC</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>MS Windows Help Data</designation>
+      <test offset="0" type="string" comparator="=">?_\003\000</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>"compact bitmap" format (Poskanzer)</designation>
+      <test offset="0" type="short" comparator="="></test>
+    </detector>
+    <detector>
+      <mimetype>application/pdf</mimetype>
+      <extension>pdf</extension>
+      <designation>PDF document</designation>
+      <test offset="0" type="string" comparator="=">%PDF-</test>
+      <childlist>
+        <detector>
+          <mimetype>application/pdf</mimetype>
+          <extension>pdf</extension>
+          <designation>\b, version %c</designation>
+          <test offset="5" type="byte" comparator="=">x</test>
+        </detector>
+        <detector>
+          <mimetype>application/pdf</mimetype>
+          <extension>pdf</extension>
+          <designation>\b.%c</designation>
+          <test offset="7" type="byte" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>eps</extension>
+      <designation>DOS EPS Binary File</designation>
+      <test offset="0" type="belong" comparator="=">0xc5d0d3c6</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Postscript starts at byte %d</designation>
+          <test offset="4" type="long" comparator="&gt;"></test>
+          <childlist>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>length %d</designation>
+              <test offset="8" type="long" comparator="&gt;"></test>
+              <childlist>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>Metafile starts at byte %d</designation>
+                  <test offset="12" type="long" comparator="&gt;"></test>
+                  <childlist>
+                    <detector>
+                      <mimetype>???</mimetype>
+                      <extension>???</extension>
+                      <designation>length %d</designation>
+                      <test offset="16" type="long" comparator="&gt;"></test>
+                    </detector>
+                  </childlist>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>TIFF starts at byte %d</designation>
+                  <test offset="20" type="long" comparator="&gt;"></test>
+                  <childlist>
+                    <detector>
+                      <mimetype>???</mimetype>
+                      <extension>???</extension>
+                      <designation>length %d</designation>
+                      <test offset="24" type="long" comparator="&gt;"></test>
+                    </detector>
+                  </childlist>
+                </detector>
+              </childlist>
+            </detector>
+          </childlist>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>PPD file</designation>
+      <test offset="0" type="string" comparator="=">*PPD-Adobe:</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, ve</designation>
+          <test offset="13" type="string" comparator="=">x</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>RIFF (little-endian) data</designation>
+      <test offset="0" type="string" comparator="=">RIFF</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, palette</designation>
+          <test offset="8" type="string" comparator="=">PAL</test>
+          <childlist>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, version %d</designation>
+              <test offset="16" type="leshort" comparator="=">x</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, %d entries</designation>
+              <test offset="18" type="leshort" comparator="=">x</test>
+            </detector>
+          </childlist>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, device-independent bitmap</designation>
+          <test offset="8" type="string" comparator="=">RDIB</test>
+          <childlist>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation></designation>
+              <test offset="16" type="string" comparator="=">BM</test>
+              <childlist>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, OS/2 1.x format</designation>
+                  <test offset="30" type="leshort" comparator="=">0xc</test>
+                  <childlist>
+                    <detector>
+                      <mimetype>???</mimetype>
+                      <extension>???</extension>
+                      <designation>\b, %d x</designation>
+                      <test offset="34" type="leshort" comparator="=">x</test>
+                    </detector>
+                    <detector>
+                      <mimetype>???</mimetype>
+                      <extension>???</extension>
+                      <designation>%d</designation>
+                      <test offset="36" type="leshort" comparator="=">x</test>
+                    </detector>
+                  </childlist>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, OS/2 2.x format</designation>
+                  <test offset="30" type="leshort" comparator="=">0x40</test>
+                  <childlist>
+                    <detector>
+                      <mimetype>???</mimetype>
+                      <extension>???</extension>
+                      <designation>\b, %d x</designation>
+                      <test offset="34" type="leshort" comparator="=">x</test>
+                    </detector>
+                    <detector>
+                      <mimetype>???</mimetype>
+                      <extension>???</extension>
+                      <designation>%d</designation>
+                      <test offset="36" type="leshort" comparator="=">x</test>
+                    </detector>
+                  </childlist>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, Windows 3.x format</designation>
+                  <test offset="30" type="leshort" comparator="=">0x28</test>
+                  <childlist>
+                    <detector>
+                      <mimetype>???</mimetype>
+                      <extension>???</extension>
+                      <designation>\b, %d x</designation>
+                      <test offset="34" type="lelong" comparator="=">x</test>
+                    </detector>
+                    <detector>
+                      <mimetype>???</mimetype>
+                      <extension>???</extension>
+                      <designation>%d x</designation>
+                      <test offset="38" type="lelong" comparator="=">x</test>
+                    </detector>
+                    <detector>
+                      <mimetype>???</mimetype>
+                      <extension>???</extension>
+                      <designation>%d</designation>
+                      <test offset="44" type="leshort" comparator="=">x</test>
+                    </detector>
+                  </childlist>
+                </detector>
+              </childlist>
+            </detector>
+          </childlist>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, MIDI</designation>
+          <test offset="8" type="string" comparator="=">RMID</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, multimedia movie</designation>
+          <test offset="8" type="string" comparator="=">RMMP</test>
+        </detector>
+        <detector>
+          <mimetype>application/x-wav</mimetype>
+          <extension>wav</extension>
+          <designation>\b, WAVE audio</designation>
+          <test offset="8" type="string" comparator="=">WAVE</test>
+          <childlist>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, Microsoft PCM</designation>
+              <test offset="20" type="leshort" comparator="=">0x1</test>
+              <childlist>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, %d bit</designation>
+                  <test offset="34" type="leshort" comparator="&gt;">0x0</test>
+                </detector>
+              </childlist>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, mono</designation>
+              <test offset="22" type="leshort" comparator="=">0x1</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, stereo</designation>
+              <test offset="22" type="leshort" comparator="=">0x2</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, %d channels</designation>
+              <test offset="22" type="leshort" comparator="&gt;">0x2</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>%d Hz</designation>
+              <test offset="24" type="lelong" comparator="&gt;">0x0</test>
+            </detector>
+          </childlist>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, AVI</designation>
+          <test offset="8" type="string" comparator="=">AVI </test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, animated cursor</designation>
+          <test offset="8" type="string" comparator="=">ACON</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>RIFF (big-endian) data</designation>
+      <test offset="0" type="string" comparator="=">RIFX</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, palette</designation>
+          <test offset="8" type="string" comparator="=">PAL</test>
+          <childlist>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, version %d</designation>
+              <test offset="16" type="beshort" comparator="=">x</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, %d entries</designation>
+              <test offset="18" type="beshort" comparator="=">x</test>
+            </detector>
+          </childlist>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, device-independent bitmap</designation>
+          <test offset="8" type="string" comparator="=">RDIB</test>
+          <childlist>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation></designation>
+              <test offset="16" type="string" comparator="=">BM</test>
+              <childlist>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, OS/2 1.x format</designation>
+                  <test offset="30" type="beshort" comparator="=">0xc</test>
+                  <childlist>
+                    <detector>
+                      <mimetype>???</mimetype>
+                      <extension>???</extension>
+                      <designation>\b, %d x</designation>
+                      <test offset="34" type="beshort" comparator="=">x</test>
+                    </detector>
+                    <detector>
+                      <mimetype>???</mimetype>
+                      <extension>???</extension>
+                      <designation>%d</designation>
+                      <test offset="36" type="beshort" comparator="=">x</test>
+                    </detector>
+                  </childlist>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, OS/2 2.x format</designation>
+                  <test offset="30" type="beshort" comparator="=">0x40</test>
+                  <childlist>
+                    <detector>
+                      <mimetype>???</mimetype>
+                      <extension>???</extension>
+                      <designation>\b, %d x</designation>
+                      <test offset="34" type="beshort" comparator="=">x</test>
+                    </detector>
+                    <detector>
+                      <mimetype>???</mimetype>
+                      <extension>???</extension>
+                      <designation>%d</designation>
+                      <test offset="36" type="beshort" comparator="=">x</test>
+                    </detector>
+                  </childlist>
+                </detector>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, Windows 3.x format</designation>
+                  <test offset="30" type="beshort" comparator="=">0x28</test>
+                  <childlist>
+                    <detector>
+                      <mimetype>???</mimetype>
+                      <extension>???</extension>
+                      <designation>\b, %d x</designation>
+                      <test offset="34" type="belong" comparator="=">x</test>
+                    </detector>
+                    <detector>
+                      <mimetype>???</mimetype>
+                      <extension>???</extension>
+                      <designation>%d x</designation>
+                      <test offset="38" type="belong" comparator="=">x</test>
+                    </detector>
+                    <detector>
+                      <mimetype>???</mimetype>
+                      <extension>???</extension>
+                      <designation>%d</designation>
+                      <test offset="44" type="beshort" comparator="=">x</test>
+                    </detector>
+                  </childlist>
+                </detector>
+              </childlist>
+            </detector>
+          </childlist>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, MIDI</designation>
+          <test offset="8" type="string" comparator="=">RMID</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, multimedia movie</designation>
+          <test offset="8" type="string" comparator="=">RMMP</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, WAVE audio</designation>
+          <test offset="8" type="string" comparator="=">WAVE</test>
+          <childlist>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, Microsoft PCM</designation>
+              <test offset="20" type="leshort" comparator="=">0x1</test>
+              <childlist>
+                <detector>
+                  <mimetype>???</mimetype>
+                  <extension>???</extension>
+                  <designation>\b, %d bit</designation>
+                  <test offset="34" type="leshort" comparator="&gt;">0x0</test>
+                </detector>
+              </childlist>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, mono</designation>
+              <test offset="22" type="beshort" comparator="=">0x1</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, stereo</designation>
+              <test offset="22" type="beshort" comparator="=">0x2</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>\b, %d channels</designation>
+              <test offset="22" type="beshort" comparator="&gt;">0x2</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>%d Hz</designation>
+              <test offset="24" type="belong" comparator="&gt;">0x0</test>
+            </detector>
+          </childlist>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, AVI</designation>
+          <test offset="8" type="string" comparator="=">AVI </test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, animated cursor</designation>
+          <test offset="8" type="string" comparator="=">ACON</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>\b, Notation Interchange File Format</designation>
+          <test offset="8" type="string" comparator="=">NIFF</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation></designation>
+      <test offset="0" type="beshort" comparator="=">0xedab</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>RPM</designation>
+          <test offset="2" type="beshort" comparator="=">0xeedb</test>
+          <childlist>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>v%d</designation>
+              <test offset="4" type="byte" comparator="=">x</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>bin</designation>
+              <test offset="6" type="beshort" comparator="=">0x0</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>src</designation>
+              <test offset="6" type="beshort" comparator="=">0x1</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>i386</designation>
+              <test offset="8" type="beshort" comparator="=">0x1</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>Alpha</designation>
+              <test offset="8" type="beshort" comparator="=">0x2</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>Sparc</designation>
+              <test offset="8" type="beshort" comparator="=">0x3</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>MIPS</designation>
+              <test offset="8" type="beshort" comparator="=">0x4</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>PowerPC</designation>
+              <test offset="8" type="beshort" comparator="=">0x5</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>68000</designation>
+              <test offset="8" type="beshort" comparator="=">0x6</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>SGI</designation>
+              <test offset="8" type="beshort" comparator="=">0x7</test>
+            </detector>
+            <detector>
+              <mimetype>???</mimetype>
+              <extension>???</extension>
+              <designation>%s</designation>
+              <test offset="10" type="string" comparator="=">x</test>
+            </detector>
+          </childlist>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>application/rtf</mimetype>
+      <extension>rtf</extension>
+      <designation>Rich Text Format data,</designation>
+      <test offset="0" type="string" comparator="=">{\rtf</test>
+      <childlist>
+        <detector>
+          <mimetype>application/rtf</mimetype>
+          <extension>rtf</extension>
+          <designation>version %c,</designation>
+          <test offset="5" type="byte" comparator="=">x</test>
+        </detector>
+        <detector>
+          <mimetype>application/rtf</mimetype>
+          <extension>rtf</extension>
+          <designation>ANSI</designation>
+          <test offset="6" type="string" comparator="=">\ansi</test>
+        </detector>
+        <detector>
+          <mimetype>application/rtf</mimetype>
+          <extension>rtf</extension>
+          <designation>Apple Macintosh</designation>
+          <test offset="6" type="string" comparator="=">\mac</test>
+        </detector>
+        <detector>
+          <mimetype>application/rtf</mimetype>
+          <extension>rtf</extension>
+          <designation>IBM PC, code page 437</designation>
+          <test offset="6" type="string" comparator="=">\pc</test>
+        </detector>
+        <detector>
+          <mimetype>application/rtf</mimetype>
+          <extension>rtf</extension>
+          <designation>IBM PS/2, code page 850</designation>
+          <test offset="6" type="string" comparator="=">\pca</test>
+        </detector>
+      </childlist>
+    </detector>
+    <detector>
+      <mimetype>text/html</mimetype>
+      <extension>html</extension>
+      <designation>HTML document text</designation>
+      <test offset="0" type="string" comparator="=">&lt;!DOCTYPE HTML</test>
+    </detector>
+    <detector>
+      <mimetype>text/html</mimetype>
+      <extension>html</extension>
+      <designation>HTML document text</designation>
+      <test offset="0" type="string" comparator="=">&lt;!doctype html</test>
+    </detector>
+    <detector>
+      <mimetype>text/html</mimetype>
+      <extension>html</extension>
+      <designation>HTML document text</designation>
+      <test offset="0" type="string" comparator="=">&lt;HEAD</test>
+    </detector>
+    <detector>
+      <mimetype>text/html</mimetype>
+      <extension>html</extension>
+      <designation>HTML document text</designation>
+      <test offset="0" type="string" comparator="=">&lt;head</test>
+    </detector>
+    <detector>
+      <mimetype>text/html</mimetype>
+      <extension>html</extension>
+      <designation>HTML document text</designation>
+      <test offset="0" type="string" comparator="=">&lt;TITLE</test>
+    </detector>
+    <detector>
+      <mimetype>text/html</mimetype>
+      <extension>html</extension>
+      <designation>HTML document text</designation>
+      <test offset="0" type="string" comparator="=">&lt;title</test>
+    </detector>
+    <detector>
+      <mimetype>text/html</mimetype>
+      <extension>html</extension>
+      <designation>HTML document text</designation>
+      <test offset="0" type="string" comparator="=">&lt;html</test>
+    </detector>
+    <detector>
+      <mimetype>text/html</mimetype>
+      <extension>html</extension>
+      <designation>HTML document text</designation>
+      <test offset="0" type="string" comparator="=">&lt;HTML</test>
+    </detector>
+    <detector>
+      <mimetype>text/xml</mimetype>
+      <extension>xml</extension>
+      <designation>XML file</designation>
+      <test offset="0" type="string" comparator="=">&lt;?xml </test>
+    </detector>
+    <detector>
+      <mimetype>text/sgml</mimetype>
+      <extension>sgml</extension>
+      <designation>exported SGML document text</designation>
+      <test offset="0" type="string" comparator="=">&lt;!DOCTYPE</test>
+    </detector>
+    <detector>
+      <mimetype>text/sgml</mimetype>
+      <extension>sgml</extension>
+      <designation>exported SGML document text</designation>
+      <test offset="0" type="string" comparator="=">&lt;!doctype</test>
+    </detector>
+    <detector>
+      <mimetype>text/sgml</mimetype>
+      <extension>sgml</extension>
+      <designation>exported SGML subdocument text</designation>
+      <test offset="0" type="string" comparator="=">&lt;!SUBDOC</test>
+    </detector>
+    <detector>
+      <mimetype>text/sgml</mimetype>
+      <extension>sgml</extension>
+      <designation>exported SGML subdocument text</designation>
+      <test offset="0" type="string" comparator="=">&lt;!subdoc</test>
+    </detector>
+    <detector>
+      <mimetype>text/sgml</mimetype>
+      <extension>sgml</extension>
+      <designation>exported SGML document text</designation>
+      <test offset="0" type="string" comparator="=">&lt;!--</test>
+    </detector>
+    <detector>
+      <mimetype>???</mimetype>
+      <extension>???</extension>
+      <designation>(Corel/WP)</designation>
+      <test offset="1" type="string" comparator="=">WPC</test>
+      <childlist>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect macro</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect help file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect keyboard file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect document</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect dictionary</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect thesaurus</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect block</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect rectangular block</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect column block</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect printer data</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect printer data</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect driver resource data</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect hyphenation code</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect hyphenation data</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect macro resource data</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect hyphenation lex</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect wordlist</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect equation resource data</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect spell rules</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect dictionary rules</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect spell rules (Microlytics)</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect settings file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect 4.2 document</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect dialog file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect button bar</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Shell macro</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Shell definition</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Notebook macro</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Notebook help file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Notebook keyboard file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Notebook definition</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Calculator help file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Calendar help file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Calendar data file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Editor macro</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Editor help file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Editor keyboard file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Editor macro resource file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Macro editor macro</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Macro editor help file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Macro editor keyboard file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>PlanPerfect macro</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>PlanPerfect help file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>PlanPerfect keyboard file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>PlanPerfect worksheet</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>PlanPerfect printer definition</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>PlanPerfect graphic definition</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>PlanPerfect data</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>PlanPerfect temporary printer</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>PlanPerfect macro resource data</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Mail</designation>
+          <test offset="8" type="byte" comparator="=">0xb</test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>help file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>distribution list</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>out box</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>in box</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>users archived mailbox</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>archived message database</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>archived attachments</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Printer temporary file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Scheduler help file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Scheduler in file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Scheduler out file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>GroupWise settings file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>GroupWise directory services</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>GroupWise settings file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Terminal resource data</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Terminal resource data</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Terminal resource data</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>GUI loadable text</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>graphics resource data</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>printer settings file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>port definition file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>print queue parameters</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>compressed file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Network service msg file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Network service msg file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>Async gateway login msg</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>GroupWise message file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>GroupWise admin domain database</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>GroupWise admin host database</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>GroupWise admin remote host database</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>GroupWise admin ADS deferment data file</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>IntelliTAG (SGML) compiled DTD</designation>
+          <test offset="8" type="short" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect graphic image (1.0)</designation>
+          <test offset="8" type="long" comparator="="></test>
+        </detector>
+        <detector>
+          <mimetype>???</mimetype>
+          <extension>???</extension>
+          <designation>WordPerfect graphic image (2.0)</designation>
+          <test offset="8" type="long" comparator="="></test>
+        </detector>
+      </childlist>
+    </detector>
+  </detectorlist>
+</magic>

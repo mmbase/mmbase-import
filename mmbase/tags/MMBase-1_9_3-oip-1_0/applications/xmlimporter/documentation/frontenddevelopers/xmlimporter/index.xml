@@ -1,0 +1,405 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<article>
+	<articleinfo>
+		<title>XML Importer overview (a.k.a. TCP 2.0)</title>
+		<date>2001-12-24</date>
+		<edition>$Id$</edition>
+		<authorgroup>
+			<author>
+				<firstname>Rob</firstname>
+				<surname>van Maris</surname>
+				<affiliation>
+					<orgname>Finalist IT Group</orgname>
+				</affiliation>
+			</author>
+		</authorgroup>
+		<legalnotice>
+			<para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+			<para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+		</legalnotice>
+	</articleinfo>
+
+	<section>
+		<title>Introduction</title>
+
+		<para>The goal of the XML importer is to extend MMBase with powerful new XML import facilities, facilitating bulk import of data from different sources (e.g. third parties). </para>
+
+		<para>This document gives an overview of the XML Importer that is brought to the open source distribution of MMBase. The XML Importer is largely based on an implementation that is build and tested for the VPRO. </para>
+
+		<para>Before the XML Importer project, one way to bulk import data in an efficient way, was by means of XML-defined transactions, using the vocabulary defined by the Temporary Cloud Project (TCP). While these semantics are sufficient to populate empty MMBase tables with new objects, they are very limited in other situations. </para>
+</section>
+<section>
+		<title>Import scenario's supported by TCP semantics</title>
+		<para>There are two TCP scenarios supported by MMBase through TCP semantics. The simplest scenario for bulk data input is adding new object graphs:</para>
+		<itemizedlist>
+			 <listitem>Create a transaction context.</listitem>
+			 <listitem>Create new objects within the transaction context.</listitem>
+			 <listitem>Create new relations between these objects.</listitem>
+			 <listitem>Commit the transaction.</listitem>
+		</itemizedlist>
+		 <para>As a result the new objects and relations are added to MMBase. If similar objects were already present in MMBase, this would result in duplicates.</para>
+
+		<para>To demonstrate how this translates to TCP-semantics, the following example adds two new objects (type "movie" and "person") with one relation ("director"): </para>
+
+		<programlisting format="linespecific"><![CDATA[
+<transactions>
+	<create>
+		<createobject id ="m1" type="movies">
+			<setfield name="title">psycho</setfield>
+			<setfield name="year">1960</setfield>
+		</createobject>
+
+		<createObject id="p1" type="persons">
+			<setField name="firstname">Alfred</setField>
+			<setField name="lastname">Hitchcock</setField>
+		</createobject>
+
+		<createRelation type="director" source="m1" destination="p1"/>
+	</create>
+</transactions>
+		]]></programlisting>
+
+		<para>The second and slightly more advanced TCP scenario adds new object graphs, involving existing MMBase objects as well:</para>
+
+		<itemizedlist>
+			 <listitem>Create a transaction context.</listitem>
+			 <listitem>Create new objects within the transaction context.</listitem>
+			 <listitem>Access existing MMBase objects, this creates copies within the context.</listitem>
+			 <listitem>Create new relations between the objects.</listitem>
+			 <listitem>Commit the transaction.</listitem>
+		</itemizedlist>
+
+		<para>This results in both new objects and new relations, involving both new and existing objects. </para>
+
+		<para>Disadvantage of the latter scenario is, the MMBase objects involved have to be explicitly identified by their MMBase-id. Because of this, we cannot define such a transaction without prior inspection of existing MMBase objects.</para>
+		<para>This example demonstrates how an existing MMBase object can be accessed within a transaction, to set its fields to new values:</para>
+
+		<programlisting format="linespecific"><![CDATA[
+<accessObject id="p1" mmbaseId="12345">
+	<setField name="firstname">Alfred</setField>
+	<setField name="lastname">Hitchcock</setField>
+</accessObject>
+		]]></programlisting>
+
+</section>
+<section>
+		<title>TCP 2.0: a new sophisticated import scenario: Find and Merge</title>
+		<para>XML Importer introduces a more sophisticated scenario that:</para>
+		<itemizedlist>
+			 <listitem>presents a number of objects and relations that should be present in MMBase without previous knowledge of which actual objects and relations are already present in MMBase.</listitem>
+			 <listitem>uses object (sub) graphs instead of the mmbaseId.</listitem>
+		</itemizedlist>
+
+		<para>Formally speaking: we present MMBase with the object (sub)graphs that we want to be in MMBase. This approach focuses on the desired result, instead of detailing the steps to be taken. It shifts the burden of detailing all the steps to the side of MMBase. </para>
+		<para>In order to see how to accomplish this, let's look at an example. We want to add the same objects ("persons" and "movies") and relation ("director") as in the previous examples, but following the proposed scenario, that avoids duplicates by taking into account the objects already present in MMBase. </para>
+
+		<orderedlist>
+			 <listitem>Create transaction context.</listitem>
+			 <listitem>Create the objects within the transaction context (further called "input objects").</listitem>
+			 <listitem>Create the relation between these objects.</listitem>
+			 <listitem>Look for a "movies" object in MMBase that is similar to the input movies object. If such an object is found, access it within the context (further called "access object"), and have it replace the original input object. The MMBase object then becomes the new destination of the relation.</listitem>
+			 <listitem>Look for a "persons" object in MMBase that is similar to the input person. If such an object is found, access it within the context, end have it replace the original input object. The MMBase object then becomes the new source of the relation.</listitem>
+			 <listitem>Look for a similar relation in MMBase. If such an object is found, delete the original input relation.</listitem>
+			 <listitem>Commit the transaction.</listitem>
+		</orderedlist>
+
+		<para>This transaction will result in both objects and the relation to be present in MMBase, regardless of what was present before the transaction, and without duplicates being created. This is the behavior we are looking for.</para>
+
+</section>
+<section>
+		<title>Find and Merge scenario details</title>
+		<para>Note that these steps as presented in the previous paragraph are actually very straight forward, and can easily be formalized to cover the general case of many objects and relations. Also note that the results depend on a notion of object similarity, so let's look into what we really mean by that (having avoided using the word "equality").</para>
+
+		<section>
+			<title>Object similarity</title>
+			<para>The notion of two MMBase objects, candidate or present, being considered "similar" is not as straightforward as may seem.</para>
+			<para>A definition might be to consider them similar if all their fields are equal. But in practice, this definition might be not restrictive enough in some cases, while being too restrictive in others. For instance, we can think of situations where it is only acceptable to consider objects equal if the objects they have relationships with, are also equal (i.e. movies should not only have the same title, but also the same director).</para>
+			<para>On the other hand, data-entry by hand into textfields may introduce all kind of minor errors, resulting in objects having different fields, while meant to represent the same object. In this case object similarity may translate into "similar enough" - using fuzzy-logic comparison. Clearly, if we want to bulk import data, while at the same time relying heavily on a concept of object similarity, we must be able to specify our own criteria of how to find a similar object. </para>
+		</section>
+
+		<section>
+			<title>Merging objects</title>
+			<para>In our example we replace our input object by the object already present in MMBase. This is not always desirable. For example the input object may contain a person's birthdate, while this field is empty in the MMBase object. In that case we might want the birthdate value to be copied to the existing MMBase object as well. Generalizing this approach we could say that we create a new object based on two objects that are both replaced by it - we will refer to this as "merging" objects. For objects to be merged, we have to specify how the fields and relations of the resulting object are set, based on the original objects/relations. Note that we may choose to drop relations that involved one of the original objects. </para>
+		</section>
+
+		<section>
+			<title>Unreferenced objects</title>
+			<para>Since relations can be dropped when objects are merged, input objects may lose all their relations with other objects. Some types of objects are only of interest because the relations they have with other objects. We have to be able to specify that we don't want these object added to MMBase when they have become "unreferenced", e.g. not related to other objects.</para>
+		</section>
+
+		<section>
+			<title>Feedback</title>
+			<para>Processing of a transaction may fail because for an input object more than one similar object is found or an error occurs XXX the import is stopped XXX but this will not stop the whole import. The current transaction is canceled. The Importer continues with the next transaction. All transactions without duplicates or errors are committed to MMBase.</para>
+			<para>If for an input object more than one similar object is found the following happens. The complete transaction is appended to a report file.
+In the next stage duplicates_transactions.XML is processed. The user has to be consulted to decide which merge result is preferred.</para>
+			<para>Example. If there was an input object A and two similar objects were found (B and C). The following is presented to the user user on screen (probably a jsp page): the original input object (A) and for every similar object the merge result. Thus (A+B) and (A+C). The user has to select which merge result is preferred. Processing of this corrected transaction can continue in a next processing cycle.</para>
+			<para>All other kind of errors, e.g. syntax error (XML not according to dtd) or object field not found or object not found. For all these errors the transaction processing is canceled an entry is written to a report file and the full transaction is written to a file (e.g. error_transactions.XML). XXX the import is stopped XXX The user can consult the report-file afterward to review the transactions that went wrong. The report-file will contain all information necessary to correct the problems and give these transactions a second try. </para>
+		</section>
+
+</section>
+<section>
+		<title>Extensions to the TCP-semantics: TCP 2.0</title>
+		<para>To implement the Find and Merge scenario extension of the TCP-semantics is necessary. These extended semantics allow us to instruct the Transaction Handler to carry out the tasks.</para>
+
+		<section>
+			<title>new object operator: mergeObjects (objectType)</title>
+			<para>For all input objects within the transaction context of the type specified by objectType, perform the following actions:</para>
+			<orderedlist>
+				<listitem>Look for similar objects in MMBase and elsewhere in the transaction context (see similarObjectFinder).</listitem>
+				<listitem>If a similar object is found, access that object, and merge it with the input object (see objectMerger). This may affect the relations of the objects as well.</listitem>
+				<listitem>For all relations of the merged object, check whether it duplicates a relation already in MMBase. In that case, drop the relation from the transaction context. (Note: relations are considered to be duplicates if both are at least of the same type and reference the same (candidate or existing) MMBase objects, see ObjectMerger).</listitem>
+				<listitem>For all relations that are dropped, check whether this causes an input object to become unreferenced. In that case drop the input object from the transaction context if required by the user.</listitem>
+			</orderedlist>
+		</section>
+
+		<section>
+			<title>objectFinder</title>
+			<para>A class that implements the SimilarObjectFinder interface (see below), this provides methods to search both the persistent cloud and the transaction for similar objects.</para>
+			<para>objectFinder parameters - parameters to be passed to the SimilarObjectFinder instance (support for parameterized implementations of similarObjectFinder).</para>
+		</section>
+
+		<section>
+			<title>objectMerger</title>
+			<para>A class that implements the ObjectMerger interface (see below), this provides methods to merge two objects. Also it determines which relations of the merged objects are retained and which are dropped.</para>
+			<para>objectMerger parameters - parameters to be passed to the objectMerger instance (support for parameterized implementations of ObjectMerger).</para>
+		</section>
+
+		<section>
+			<title>new parameter for createObject: disposeWhenNotReferenced</title>
+			<para>This sets whether a new object is to be dropped when it becomes unreferenced.</para>
+		</section>
+
+		<section>
+			<title>new parameter for transactions: reportFile</title>
+			<para>Specifies a file to use to report transactions that failed.</para>
+		</section>
+
+		<section>
+			<title>SimilarObjectFinder interface</title>
+			<para>methods:</para>
+			<itemizedlist>
+
+				<listitem>
+					<programlisting format="linespecific">void init(java.util.HashMap params)</programlisting>
+					<para>Initialize this instance.</para>
+				</listitem>
+
+				<listitem>
+					<programlisting format="linespecific">java.util.List findSimilarObject(Transaction transaction, TmpObject tmpObj)</programlisting>
+					<para>Searches for similar object.</para>
+				</listitem>
+
+			</itemizedlist>
+		</section>
+
+		<section>
+			<title>ObjectMerger interface</title>
+			<para>methods:</para>
+			<itemizedlist>
+
+				<listitem>
+					<programlisting format="linespecific">boolean areDuplicates(TmpObject relation1, TmpObject relation2)</programlisting>
+					<para>Tests if two relations should be considered duplicates, indicating that one of them must be disposed of.</para>
+				</listitem>
+
+				<listitem>
+					<programlisting format="linespecific">void init(java.util.HashMap params)</programlisting>
+					<para>Initialize this instance.</para>
+				</listitem>
+
+				<listitem>
+					<programlisting format="linespecific">boolean isAllowedToAdd(TmpObject tmpObj)</programlisting>
+					<para>Tests if this object should be added to the persistent cloud when not present already.</para>
+				</listitem>
+
+				<listitem>
+					<programlisting format="linespecific">void mergeField(TmpObject tmpObj1, TmpObject tmpObj2, java.lang.String name)</programlisting>
+					<para>Merges a field.</para>
+				</listitem>
+
+				<listitem>
+					<programlisting format="linespecific">void mergeRelations(TmpObject tmpObj1, TmpObject tmpObj2, java.util.List relations1, java.util.List relations2)</programlisting>
+					<para>Merges relations.</para>
+				</listitem>
+
+				</itemizedlist>
+		</section>
+</section>
+<section>
+		<title>TransactionHandler enhancements (performance and usability)</title>
+		<para>Further enhancements that will make TCP functionality easier to use than it is now (due to its SCAN- heritage) </para>
+
+		<section>
+			<title>Performance</title>
+			<para>The current TransactionHandler uses a DOM-parser to parse the transactions from XML. TCP2.0 will replace this with a SAX-parser to improve performance and to reduce memory-usage, especially when importing large files (e.g. tens of MB).</para>
+		</section>
+
+		<section>
+			<title>Usability</title>
+			<para>The only way to use the current TransactionHandler is by including the transaction code in a SCAN- page. TCP2.0 will extend this with two mechanisms that enable the TransactionHandler to be accessed more directly.</para>
+
+			<itemizedlist>
+			 <listitem>XML-files: A method will be provided that reads and executes transactions directly from a valid XML-file.</listitem>
+			 <listitem>Programatically: TCP2.0 will be implemented in a number of classes/methods that mirror the syntax used in XML. These provide a new interface to TCP, giving direct access to its functionality without the need to translate these to XML first.</listitem>
+			</itemizedlist>
+			<para>This example performs the same actions as the first XML-example above:</para>
+			<programlisting format="linespecific"><![CDATA[
+transaction = Transaction.createTransaction(uti, null, false, 60);
+TmpObject m1 = transaction.createObject("m1", "movie", false);
+m1.setField("title", "Psycho"); m1.setField("year", "1960");
+TmpObject p1 = transaction.createObject("p1", "person", false);
+p1.setField("firstname", "Alfred"); p1.setField("lastname","Hitchcock");
+transaction.createRelation(null, "director", "m1", "m2");
+transaction.commit();
+			]]></programlisting>
+			<para>Without going into details of the interfaces, it is easily seen that it matches the XML- syntax very closely. In this way TCP2.0 provides a very easy to use interface for transactions.</para>
+		</section>
+
+</section>
+<section>
+		<title>TCP 2.0 Syntax</title>
+		<para>The complete syntax for the XML-compliant TCP2.0 transaction language is presented here. See also the Transactions.dtd. TCP2.0 is an extended version of the TCP. See TCP project for details.</para>
+		<para>The TCP 2.0 language is quite hierarchical. There is one 'Transactions context' within which can be more 'Transaction contexts', within which can be more 'Object contexts' or 'Object merge contexts'. Within an 'Object context' more fields can be defined. Within an 'Object merge context' more parameters can be defined.</para>
+		<para>(The names 'Transactions context' and 'Transaction contexts' might lead to some confusion. We are tied to those names because TCP 2.0 has to be backwards compatible with TCP.)</para>
+
+		<section>
+			<title>Transactions context</title>
+			<para>The TCP2.0 code might be embedded in some other code (SCAN.... or some other language). So first tag is to indicate that it is TCP2.0: the transactions tag.</para>
+			<programlisting format="linespecific"><![CDATA[
+<transactions [ exceptionPage="ex-page-def" ] [ key = "password" ] [ reportFile="report.txt" ]  />
+			]]></programlisting>
+			<para>Note, all symbols are part of the definition except "[" and "]" which denote optional elements.</para>
+			<para>The parameter exceptionPage specifies a (s)html page that is shown whenever an error occurs handling the transactions. This can either be a syntax error or it can be an error resulting from an erroneous operation. The key parameter is used to access servers that require a password for transactions. This facility gives extra security.</para>
+		</section>
+
+		<section>
+			<title>Transaction contexts</title>
+			<para>Within the 'Transactions context' one can specify zero or more 'Transaction contexts'. There are two 'Transaction contexts' in which no objects can be manipulated. These contexts only affect the transaction itself.</para>
+			<programlisting format="linespecific"><![CDATA[
+<commit id="id" />
+<delete id="id" />
+			]]></programlisting>
+			<para>For object manipulation there are two other 'Transaction contexts'.</para>
+			<programlisting format="linespecific"><![CDATA[
+<open id="id" [ commit="true"(default) / "false" ]  />
+			]]></programlisting>
+			<para>Within these two transaction context types, objects can be manipulated (TCP) and merged (TCP 2.0). For details see the next sections.</para>
+		</section>
+
+		<section>
+			<title>Object contexts</title>
+			<para>Within a 'Transaction context' one can specify zero or more 'Object contexts'. Although a relation might logically differ from an object, for MMBase a relation is just another object.</para>
+			<para>There are six different 'Object context' types. Two of them only affect the object as a whole (no fields can be manipulated).</para>
+			<programlisting format="linespecific"><![CDATA[
+<deleteObject id="id" />
+<markObjectDelete mmbaseId="mmbaseId" [ deleteRelations="true" / "false"(default) ] />
+			]]></programlisting>
+			<para>For object manipulation (in fact: manipulation of the fields within the object) there are four other object context types.</para>
+			<programlisting format="linespecific"><![CDATA[
+<accessObject mmbaseId="mmbaseId" [ id ="id" ] />
+<createObject type="MMbase-type" [ id ="id" ]  />
+<openObject id ="id" />
+<createRelation type="MMbase-type" source="id" destination="id" [ id ="id" ] />
+			]]></programlisting>
+			<para>Within these four object context types, fields can be set for the object. This has the following syntax.</para>
+			<programlisting format="linespecific"><![CDATA[
+<setField name="name-of-field" [ url ="url" ] > field-value </setField>
+			]]></programlisting>
+		</section>
+
+		<section>
+			<title>Object Merge contexts</title>
+			<para>Within a 'Transaction context' one can specify zero or more 'Object Merge contexts'. In fact this is just another 'Object context'. There is only 1 type for 'Object Merge contexts'.</para>
+			<programlisting format="linespecific"><![CDATA[
+<mergeObject type="MMbase-type" />
+			]]></programlisting>
+			<para>Within an Object Merge context you have to specify one ObjectFinder and one ObjectMerger (in this exact order).</para>
+			<programlisting format="linespecific"><![CDATA[
+<objectFinder class="ObjectFinder class" />
+<objectMerger class="ObjectMerger class" />
+			]]></programlisting>
+			<para>Within both ObjectFinder and ObjectMerger parameters can be specified:</para>
+			<programlisting format="linespecific"><![CDATA[
+<param name="name-of-field" value="value-of-field" />
+			]]></programlisting>
+		</section>
+</section>
+<section>
+	<title>TCP 2.0 dtd</title>
+	<programlisting format="linespecific"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?> <!-- dec. 1st. 2001 -->
+
+<!ELEMENT transactions (create | open | commit | delete)* >
+<!ATTLIST transactions exceptionPage CDATA #IMPLIED>
+<!ATTLIST transactions reportFile CDATA #IMPLIED> <!-- TCP2.0 -->
+<!ATTLIST transactions key CDATA #IMPLIED>
+
+<!ELEMENT create ((createObject | createRelation | openObject | accessObject | deleteObject | markObjectDelete)*, mergeObject*, mergeObjects*) > <!-- TCP2.0 added mergeObjects* -->
+<!ATTLIST create id CDATA #IMPLIED>
+<!ATTLIST create commit (true | false) "true">
+<!ATTLIST create timeOut CDATA "60">
+
+<!ELEMENT open ((createObject | createRelation | openObject | accessObject | deleteObject | markObjectDelete)*, mergeObject*, mergeObjects*) > <!-- TCP2.0 added mergeObjects* -->
+<!ATTLIST open id CDATA #REQUIRED>
+<!ATTLIST open commit (true | false) "true">
+
+<!ELEMENT commit EMPTY >
+<!ATTLIST commit id CDATA #REQUIRED>
+
+<!ELEMENT delete EMPTY >
+<!ATTLIST delete id CDATA #REQUIRED>
+
+<!-- OBJECTS -->
+<!ELEMENT createObject (setField*)>
+<!ATTLIST createObject id CDATA #IMPLIED>
+<!ATTLIST createObject type CDATA #REQUIRED>
+<!ATTLIST createObject disposeWhenNotReferenced (true | false) "false"> <!-- TCP2.0 -->
+
+<!ELEMENT createRelation (setField*)>
+<!ATTLIST createRelation id CDATA #IMPLIED>
+<!ATTLIST createRelation type CDATA #REQUIRED>
+<!ATTLIST createRelation source CDATA #REQUIRED>
+<!ATTLIST createRelation destination CDATA #REQUIRED>
+
+<!ELEMENT openObject (setField*)>
+<!ATTLIST openObject id CDATA #REQUIRED>
+
+<!ELEMENT deleteObject EMPTY >
+<!ATTLIST deleteObject id CDATA #REQUIRED>
+
+<!ELEMENT accessObject (setField*)>
+<!ATTLIST accessObject mmbaseId CDATA #REQUIRED>
+<!ATTLIST accessObject id CDATA  #IMPLIED>
+
+<!ELEMENT markObjectDelete EMPTY >
+<!ATTLIST markObjectDelete mmbaseId CDATA #REQUIRED>
+<!ATTLIST markObjectDelete deleteRelations (true | false) "false">
+
+<!ELEMENT mergeObject (objectMerger) > <!-- TCP2.0 -->
+<!ATTLIST mergeObject from CDATA #REQUIRED>
+<!ATTLIST mergeObject to CDATA #REQUIRED>
+
+<!ELEMENT mergeObjects (objectMatcher, objectMerger) > <!-- TCP2.0 -->
+<!ATTLIST mergeObjects type CDATA #REQUIRED > <!-- TCP2.0 -->
+
+<!ELEMENT objectMatcher (param*) > <!-- TCP2.0 -->
+<!ATTLIST objectMatcher class CDATA "org.mmbase.module.tcp.match.NodeMatcher" > <!-- TCP2.0 -->
+
+<!ELEMENT objectMerger (param*) > <!-- TCP2.0 -->
+<!ATTLIST objectMerger class CDATA "org.mmbase.module.tcp" > <!-- TCP2.0 -->
+
+<!-- FIELDS -->
+<!ELEMENT setField (#PCDATA) >
+<!ATTLIST setField name CDATA #REQUIRED>
+<!ATTLIST setField url CDATA #IMPLIED>
+
+<!-- PARAMETERS --> <!-- TCP2.0 -->
+<!ELEMENT param EMPTY> <!-- TCP2.0 -->
+<!ATTLIST param name CDATA #REQUIRED> <!-- TCP2.0 -->
+<!ATTLIST param value CDATA #REQUIRED> <!-- TCP2.0 -->
+	]]></programlisting>
+</section>
+
+</article>

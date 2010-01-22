@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="sites" maintainer="mmbase.org" version="0" extends="object">
+
+  <names>
+    <singular xml:lang="en">Site</singular>
+    <plural xml:lang="en">Sites</plural>
+  </names>
+
+  <fieldlist>
+    <field name="title">
+      <gui>
+        <guiname xml:lang="en">Title</guiname>
+        <guiname xml:lang="nl">Titel</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type notnull="true" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="selectkey">
+      <gui>
+        <guiname xml:lang="en">SelectKey</guiname>
+      </gui>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type notnull="false" size="256" state="persistent">STRING</type>
+      </db>
+    </field>
+
+  </fieldlist>
+
+</builder>

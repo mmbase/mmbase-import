@@ -1,0 +1,48 @@
+<%-- use the input from the searchfields form--%>
+<c:if test="${not empty searchfields}">
+    <mm:fieldlist nodetype="${searchtype}" fields="${searchfields}">
+        <mm:fieldinfo type="usesearchinput" />
+    </mm:fieldlist>
+</c:if>
+
+<c:if test="${not empty orderby}">
+    <mm:sortorder field="${orderby}" direction="${direction}"/>
+</c:if>
+
+<mm:ageconstraint minage="${_minage}" maxage="${_maxage}"/>
+
+<c:if test="${not empty constraintfield && not empty constraintvalue && not empty constraintoperator}">
+    <mm:constraint field="${constraintfield}" value="${constraintvalue}" operator="${constraintoperator}"/>
+</c:if>
+<mm:size id="maxsize" write="false"/>
+<mm:maxnumber value="${numberofitems}"/>
+<mm:offset value="${param.offset}" />
+
+<%@ include file="paging.tagf" %>
+<table cellspacing="0" cellpadding="0" border="0" class="list">
+    <!--make the searchrow tag create the header of the result table-->
+    <c:set var="mode" value="header" scope="request" />
+    <jsp:doBody />
+
+    <!--now do the table body-->
+    <c:set var="mode" value="row" scope="request"/>
+    <tbody>
+        <mm:listnodes>
+            <c:set var="nodenrrow" scope="request"><mm:field name="number"/></c:set>
+            <mm:log>** in de lijst: ${nodenrrow}</mm:log>
+            <c:set var="index" scope="request"><mm:index/></c:set>
+            <mm:last inverse="true"><c:set var="last" scope="request" value="false" /></mm:last>
+            <mm:last><c:set var="last" scope="request" value="true" /></mm:last>
+            <jsp:doBody />
+        </mm:listnodes>
+    </tbody>
+</table>
+<c:set var="skippaginginfo" scope="request">true</c:set>
+
+<%@ include file="paging.tagf" %>
+
+<mm:size>
+    <mm:compare value="0">
+        <p>Er zijn geen zoekresultaten gevonden.</p>
+    </mm:compare>
+</mm:size>
