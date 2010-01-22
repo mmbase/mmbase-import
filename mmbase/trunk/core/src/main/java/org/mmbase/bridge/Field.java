@@ -65,37 +65,42 @@ public interface Field extends Descriptor, Comparable<Field> {
     public final static int TYPE_DECIMAL      = 13;
 
 
-    /** MMBase base type identifier for data types whose type is unknown */
+    /**
+     * MMBase base type identifier for data types whose type is unknown
+     */
     public final static int TYPE_UNKNOWN = -1;
 
 
     /**
-     * A field's state is 'virtual' if it is not persistent in storage. The value of such a field may be implicitely
+     * A field's {@link #getState state} is 'virtual' if it is not persistent in storage. The value of such a field may be implicitely
      * calculated from the values of other fields. This can e.g. be done with {@link Processor}'s which are associated
      * with the {@link #getDataType DataType} of this field.
      */
     public final static int STATE_VIRTUAL    = 0;
 
     /**
-     * A field's state is 'persistent' if it is persistent in storage. Most normal fields are this.
+     * A field's {@link #getState state is} 'persistent' if it is persistent in storage. Most normal fields are this.
      */
     public final static int STATE_PERSISTENT = 2;
 
     /**
-     * A field's state is 'system' if it is persistent in storage, but probably not editable by users. It is used to
-     * (automaticly) indicate special properties of a Node, like its number, owner and type.
+     * A field's {@link #getState state} is 'system' if it is persistent in storage, but probably not editable by users (The default value
+     * of {@link #isReadonly} is true). It is used to
+     * (automaticly) adminstrate special properties of a Node, like its number, owner and type (these fields are
+     * available always), but also e.g. 'created' and 'lastmodified' fields can be marked as 'system' fields.
      */
     public final static int STATE_SYSTEM     = 3;
 
     /**
-     * A field's state is 'system virtual' if it is not persistent in storage, nor editable by users.
+     * A field's {@link #getState state} is 'system virtual' if it is not persistent in storage, and probably used for administration
+     * purposes only. In other words the field is both {@link #STATE_SYSTEM} and {@link #STATE_VIRTUAL}.
      * @see #STATE_VIRTUAL
      * @see #STATE_SYSTEM
      */
     public final static int STATE_SYSTEM_VIRTUAL = 4;
 
     /**
-     * The field's state when it is not (yet) known.
+     * The field's {@link #getState state} when it is not (yet) known.
      */
     public final static int STATE_UNKNOWN    = -1;
 
@@ -108,7 +113,7 @@ public interface Field extends Descriptor, Comparable<Field> {
     public NodeManager getNodeManager();
 
     /**
-     * Returns this field's state identifier ({@link #STATE_VIRTUAL},{@link #STATE_PERSISTENT},{@link #STATE_SYSTEM} or
+     * Returns this field's state identifier ({@link #STATE_VIRTUAL}, {@link #STATE_PERSISTENT}, {@link #STATE_SYSTEM} or
      * {@link #STATE_SYSTEM_VIRTUAL}, in errorneous sitations it may return {@link #STATE_UNKNOWN})
      * @see #isReadOnly();
      * @return  an <code>int</code> which identifies the state of this field
