@@ -10,7 +10,7 @@
     <td colspan="2">
       <mm:field id="defaultcontext" name="defaultcontext" write="false" />
       <mm:field id="usertocheck"    name="number"         write="false" />
-      <mm:node number="$defaultcontext">
+      <mm:node number="${defaultcontext}" notfound="skip">
         <mm:functioncontainer>
           <mm:param name="operation"    value="write" />
           <mm:param name="usertocheck"  value="$usertocheck" />
