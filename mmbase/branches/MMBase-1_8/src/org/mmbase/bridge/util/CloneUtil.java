@@ -163,13 +163,18 @@ public class CloneUtil {
         if (sourceRelation instanceof Relation) {
             Relation localRel = (Relation) sourceRelation;
             relationManager = localRel.getRelationManager();
-        }
-        else {
+            if (relationManager == null) {
+                throw new NotFoundException("Node " + localRel + " has no relationmanager");
+          }
+        } else {
             Node relationTypeNode = sourceRelation.getNodeValue("rnumber");
             String relName = relationTypeNode.getStringValue("sname");
             relationManager = sourceRelation.getCloud().getRelationManager(sourceNode.getNodeManager().getName(),
                                                destNode.getNodeManager().getName(),
                                                relName);
+            if (relationManager == null) {
+                throw new NotFoundException("No such relation manager " + sourceNode.getNodeManager().getName() + " -" + relName + "-> " + destNode.getNodeManager().getName());
+            }
         }
         Relation newRelation = relationManager.createRelation(sourceNode, destNode);
 
