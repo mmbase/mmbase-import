@@ -53,10 +53,10 @@ If you don't have access to repository, or don't want all the hassle, it should 
     svn co -r 40000 https://scm.mmbase.org/mmbase/branches/MMBase-1_9  mymmbase
 
 - Then, build using the 'my.version' option:
-   (cd mmbase ; mvn -P'deploy,mmapplications_subset1,fastinstall' -Dmaven.test.skip=true -Dservlet.version=2.5   -Dmy.version=MyMMBaseBasedOnRevision40000  clean install)
+   (cd mymmbase ; mvn -P'deploy,mmapplications_subset1,fastinstall' -Dmaven.test.skip=true -Dservlet.version=2.5   -Dmy.version=MyMMBaseBasedOnRevision40000  clean install)
 
 - You may also deploy it to your own repository:
-   (cd mmbase ; mvn -P'deploy,mmapplications_subset1,fastinstall' -Dmaven.test.skip=true -Dservlet.version=2.5
+   (cd mymmbase ; mvn -P'deploy,mmapplications_subset1,fastinstall' -Dmaven.test.skip=true -Dservlet.version=2.5
    -Dmy.version=MyMMBaseBasedOnRevision40000    -Dmy.repository.id=myrepo  -Dmy.repository.url=scp://myserver/myrepol
    clean deploy)
 
