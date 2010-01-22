@@ -97,6 +97,8 @@ public class MMBaseContext {
             initOutputfile(outputFile);
 
             ResourceLoader.init(sx);
+            org.mmbase.util.ResourceWatcher.reinitWatchers();
+
 
             // Init logging.
             initLogging();
