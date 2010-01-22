@@ -57,7 +57,7 @@
     <c:if test="${not empty role}">
         <input type="hidden" name="actions[createRelation][${relationid}].role" value="${role}" />
     </c:if>
-    <c:if test="${not empty relationValues}">
+    <c:if test="${not empty constraints}">
       <input type="hidden" name="actions[createRelation][${relationid}].relationValues" value="${relationValues}" />
     </c:if>
 

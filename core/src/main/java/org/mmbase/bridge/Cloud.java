@@ -255,15 +255,6 @@ public interface Cloud {
     /**
      * Returns the specified relation manager.
      *
-     * @param roleName               name of the role
-     * @return                       the requested relation manager
-     * @throws NotFoundException     if the specified relation manager could not be found
-     */
-    public RelationManager getRelationManager(String roleName) throws NotFoundException;
-
-    /**
-     * Returns the specified relation manager.
-     *
      * @param sourceManagerName      name of the node manager of the source node
      * @param destinationManagerName name of the node manager of the destination node
      * @param roleName               name of the role
@@ -318,6 +309,15 @@ public interface Cloud {
      */
     public boolean hasRole(String roleName);
 
+
+    /**
+     * Returns the specified relation manager.
+     *
+     * @param roleName               name of the role
+     * @return                       the requested relation manager
+     * @throws NotFoundException     if the specified relation manager could not be found
+     */
+    public RelationManager getRelationManager(String roleName) throws NotFoundException;
 
     /**
      * Returns whether the specified relation manager exists.

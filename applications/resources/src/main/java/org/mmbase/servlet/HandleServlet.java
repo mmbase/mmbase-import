@@ -299,7 +299,7 @@ public class HandleServlet extends BridgeServlet {
             if (size >= 0) {
                 res.setContentLength(size);
             } else {
-                log.warn("Size of handles not stored in " + manager);
+                log.warn("Size of handles for #" + node.getNumber() + " not stored in " + manager);
             }
             log.debug("Serving node " + node.getNumber() + " with bytes " + size);
         } else {

@@ -13,7 +13,6 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.SerializableInputStream;
 import org.mmbase.bridge.*;
 import org.mmbase.util.*;
-import org.mmbase.util.magicfile.MagicFile;
 import java.util.Collection;
 import java.io.InputStream;
 import java.util.regex.Pattern;
@@ -32,7 +31,7 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
 
     private static final long serialVersionUID = 1L;
 
-    protected MimeTypeRestriction mimeTypeRestriction = new MimeTypeRestriction(Pattern.compile(".*"));
+    protected Pattern validMimeTypes = Pattern.compile(".*");
 
     /**
      * Constructor for binary field.
@@ -45,7 +44,7 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
 
     @Override
     protected String castToPresent(Object value, Node node, Field field) {
-        return getMimeType(value, node, field) + " " + getLength(value) + " byte";
+        return "BINARY";
     }
 
 
@@ -57,14 +56,12 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
     }
 
     @Override
-    protected void cloneRestrictions(BasicDataType origin) {
-        super.cloneRestrictions(origin);
+    protected void inheritProperties(BasicDataType origin) {
+        super.inheritProperties(origin);
         if (origin instanceof BinaryDataType) {
-            BinaryDataType dataType = (BinaryDataType)origin;
-            mimeTypeRestriction = new MimeTypeRestriction(dataType.mimeTypeRestriction);
+            validMimeTypes = ((BinaryDataType) origin).validMimeTypes;
         }
     }
-
 
     @Override
     public long getLength(Object value) {
@@ -97,81 +94,22 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
         }
     }
 
-    /**
-     * @since MMBase-2.0
-     */
-    public MimeType getMimeType(Object value, Node node, Field field) {
-        if (value == null) return MimeType.OCTETSTREAM;
-        String mt;
-        if (value instanceof byte[]) {
-            byte[] array = (byte[]) value;
-            mt = org.mmbase.util.magicfile.MagicFile.getInstance().getMimeType(array);
-        } else if (value instanceof FileItem) {
-            FileItem fi = (FileItem) value;
-            mt = fi.getContentType();
-        } else if (value instanceof SerializableInputStream) {
-            SerializableInputStream sis = (SerializableInputStream) value;
-            mt = sis.getContentType();
-        } else {
-            mt = Casting.toSerializableInputStream(value).getContentType();
-        }
-        if (mt == null || mt.equals(MagicFile.FAILED)) {
-            return MimeType.OCTETSTREAM;
-        } else {
-            return new MimeType(mt);
-        }
-    }
-
     @Override
     protected Collection<LocalizedString> validateRequired(Collection<LocalizedString> errors, Object castValue, Object value, Node  node, Field field) {
         return requiredRestriction.validate(errors, castValue, node, field);
     }
 
-    @Override
-    protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {
-        errors = super.validateCastValue(errors, castValue, value,  node, field);
-        errors = mimeTypeRestriction.validate(errors, castValue, node, field);
-        return errors;
-    }
 
     /**
      * Returns a regular expression which describes wich mime-types are valid for blobs with this
      * DataType. This is not yet available as a Restriction, only as a property.
      */
     public Pattern getValidMimeTypes() {
-        return mimeTypeRestriction.getValue();
+        return validMimeTypes;
     }
 
     public void setValidMimeTypes(Pattern pattern) {
-        mimeTypeRestriction.setValue(pattern);
+        validMimeTypes = pattern;
     }
-
-    /**
-     * @since MMBase-2.0
-     */
-    protected class MimeTypeRestriction extends AbstractRestriction<Pattern> {
-        private static final long serialVersionUID = 0L;
-
-        MimeTypeRestriction(MimeTypeRestriction source) {
-            super(source);
-        }
-        MimeTypeRestriction(Pattern p) {
-            super("mimetype", p);
-        }
-        @Override
-        protected boolean simpleValid(Object v, Node node, Field field) {
-            if (value == null || value.pattern().equals(".*")) {
-                // avoid depending on mime type, no need, because no restriction applies
-                return true;
-            }
-            MimeType s = BinaryDataType.this.getMimeType(v, node, field);
-            boolean res = s == null ? false : value.matcher(s.toString()).matches();
-            if (log.isDebugEnabled()) {
-                log.debug("VALIDATING " + v + "->" + s + " with " + getValue() + " -> " + res);
-            }
-            return res;
-        }
-    }
-
 
 }

@@ -254,6 +254,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             }
         }
     }
+
     /**
      * @since MMBase-1.9.1
      */
@@ -307,7 +308,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return <code>true</code> if the commit was succesfull, <code>false</code> is it failed
      */
     public boolean commit() {
-        assert values.get("number") != null;
         boolean success = parent.commit(this);
         if (success) {
             isNew = false; // perhaps it is always already false (otherwise insert is called, I think), but no matter, now it certainly isn't new!
@@ -373,7 +373,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @since MMBase-1.7
      */
     public boolean commit(UserContext user) {
-        assert values.get("number") != null;
         boolean success = parent.safeCommit(this);
         if (success) {
             MMBaseCop mmbaseCop = parent.getMMBase().getMMBaseCop();
@@ -496,25 +495,23 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     String defaultToString() {
         StringBuilder result = new StringBuilder();
         try {
+            Set<Map.Entry<String, Object>> entrySet = values.entrySet();
             synchronized(values) {
-                for (Map.Entry<String, Object> entry : values.entrySet()) {
+                Iterator<Map.Entry<String, Object>> i = entrySet.iterator();
+                while (i.hasNext()) {
+                    Map.Entry<String, Object> entry = i.next();
                     String key = entry.getKey();
-                    if (result.length() > 0) {
-                        result.append(", ");
-                    }
-                    result.append(key);
-                    Object value = entry.getValue();
-                    if (value == null) {
-                        result.append(" is null");
+                    String value = "" + entry.getValue();  // XXX:should be retrieveValue ?
+                    if (result.length() == 0) {
+                        result.append(key).append("='").append(value).append("'");
                     } else {
-                        result.append("='").append(value.toString()).append("'");
+                        result.append(",").append(key).append("='").append(value).append("'");
                     }
                 }
             }
         } catch(Throwable e) {
             result.append(values); // simpler version...
         }
-        result.append(' ');
         result.append(super.toString());
         if (oldBuilder != null) {
             result.append(" (to be converted from " + oldBuilder.getTableName() + " to " + builder.getTableName() + ")");
@@ -542,7 +539,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             } else {
                 log.warn("Tried to use non-existing field '" + fieldName + "' of node '" + getNumber() + "' from " + getBuilder().getTableName());
                 if (log.isDebugEnabled()) {
-                    log.debug(new Exception());
+                    log.debug("Stacktrace", new Exception());
                 } else {
                     log.warn(Logging.applicationStacktrace());
 
@@ -588,9 +585,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         }
         if (fieldValue != null && (fieldValue instanceof InputStream && (! (fieldValue instanceof Serializable)))) {
             fieldValue = new SerializableInputStream((InputStream) fieldValue, getSize(fieldName));
-        }
-        if (fieldValue instanceof Node) {
-            fieldValue = Integer.valueOf(((Node) fieldValue).getNumber());
         }
         fieldValue = checkSerializable(fieldName, fieldValue);
         if (checkFieldExistance(fieldName)) {
@@ -664,83 +658,81 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      *  @return <code>true</code> When the field was changed, false otherwise.
      */
     public boolean setValue(final String fieldName, Object fieldValue) {
-        synchronized(values) {
-            // check the value also when the parent thing is null
-            Object originalValue = values.get(fieldName);
+        // check the value also when the parent thing is null
+        Object originalValue = values.get(fieldName);
 
-            if (fieldValue != VALUE_SHORTED) {
-                // make sure this value remains not in the blob-cache.
-                BlobCache blobs = parent.getBlobCache(fieldName);
-                blobs.remove(blobs.getKey(getNumber(), fieldName));
-            }
-
-            if (fieldValue instanceof DynamicDate) {
-                // 'dynamic' values can of course not be stored in database, and that is not the intentention too, so
-                // store a static version
-                fieldValue = new Date(((Date) fieldValue).getTime());
-            }
-
-            if (log.isDebugEnabled()) {
-                String string;
-                if (fieldValue instanceof byte[]) {
-                    string = "byte array of size " + ((byte[])fieldValue).length;
-                } else {
-                    string = Casting.toString(fieldValue);
-                    if (string.length() > 200) string = string.substring(0, 200);
-                }
-                log.debug("Setting " + fieldName + " to " +  string);
-            }
-
-            boolean changed =
-                (! values.containsKey(fieldName)) ||
-                (originalValue == null ? fieldValue != null : ! Casting.equals(originalValue, fieldValue));
-            if (! changed) return false;
-
-            if (log.isDebugEnabled()) {
-                log.debug("" + fieldName + ":" + originalValue + " --> " + fieldValue);
-            }
-
-            //store the old value
-            storeOldValue(fieldName, originalValue);
-
-            // put the key/value in the value hashtable
-            storeValue(fieldName, fieldValue);
-            if (fieldValue instanceof byte[]) {
-                setSize(fieldName, ((byte[]) fieldValue).length);
-                log.debug("Setting length to " + ((byte[]) fieldValue).length);
-            } else if (fieldValue instanceof org.apache.commons.fileupload.FileItem) {
-                org.apache.commons.fileupload.FileItem fi = (org.apache.commons.fileupload.FileItem) fieldValue;
-                setSize(fieldName, fi.getSize());
-            } else if (fieldValue instanceof SerializableInputStream) {
-                SerializableInputStream si = (SerializableInputStream) fieldValue;
-                log.debug("Setting '" + fieldName + "' to " + si + " " + si.getSize());
-                setSize(fieldName, si.getSize());
-            }
-
-            // process the changed value (?)
-            if (parent != null) {
-                if(!parent.setValue(this, fieldName, originalValue)) {
-                    log.debug("setValue of parent returned false, no update needed...");
-                    return false;
-                }
-            } else {
-                log.error("parent was null for node with number" + getNumber());
-            }
-            setUpdate(fieldName);
-
-            if (fieldValue instanceof SerializableInputStream) {
-                // in case this is alled from a transaction, it must be possible to do it again on
-                // actual commit
-                try {
-                    SerializableInputStream si = (SerializableInputStream) fieldValue;
-                    si.reset();
-                } catch (IOException ioe) {
-                    log.error(ioe);
-                }
-            }
-            log.debug("" + sequence + getChanged());
-            return true;
+        if (fieldValue != VALUE_SHORTED) {
+            // make sure this value remains not in the blob-cache.
+            BlobCache blobs = parent.getBlobCache(fieldName);
+            blobs.remove(blobs.getKey(getNumber(), fieldName));
         }
+
+        if (fieldValue instanceof DynamicDate) {
+            // 'dynamic' values can of course not be stored in database, and that is not the intentention too, so
+            // store a static version
+            fieldValue = new Date(((Date) fieldValue).getTime());
+        }
+
+        if (log.isDebugEnabled()) {
+            String string;
+            if (fieldValue instanceof byte[]) {
+                string = "byte array of size " + ((byte[])fieldValue).length;
+            } else {
+                string = Casting.toString(fieldValue);
+                if (string.length() > 200) string = string.substring(0, 200);
+            }
+            log.debug("Setting " + fieldName + " to " +  string);
+        }
+
+        boolean changed =
+            (! values.containsKey(fieldName)) ||
+            (originalValue == null ? fieldValue != null : ! Casting.equals(originalValue, fieldValue));
+        if (! changed) return false;
+
+        if (log.isDebugEnabled()) {
+            log.debug("" + fieldName + ":" + originalValue + " --> " + fieldValue);
+        }
+
+        //store the old value
+        storeOldValue(fieldName, originalValue);
+
+        // put the key/value in the value hashtable
+        storeValue(fieldName, fieldValue);
+        if (fieldValue instanceof byte[]) {
+            setSize(fieldName, ((byte[]) fieldValue).length);
+            log.debug("Setting length to " + ((byte[]) fieldValue).length);
+        } else if (fieldValue instanceof org.apache.commons.fileupload.FileItem) {
+            org.apache.commons.fileupload.FileItem fi = (org.apache.commons.fileupload.FileItem) fieldValue;
+            setSize(fieldName, fi.getSize());
+        } else if (fieldValue instanceof SerializableInputStream) {
+            SerializableInputStream si = (SerializableInputStream) fieldValue;
+            log.debug("Setting '" + fieldName + "' to " + si + " " + si.getSize());
+            setSize(fieldName, si.getSize());
+        }
+
+        // process the changed value (?)
+        if (parent != null) {
+            if(!parent.setValue(this, fieldName, originalValue)) {
+                log.debug("setValue of parent returned false, no update needed...");
+                return false;
+            }
+        } else {
+            log.error("parent was null for node with number" + getNumber());
+        }
+        setUpdate(fieldName);
+
+        if (fieldValue instanceof SerializableInputStream) {
+            // in case this is alled from a transaction, it must be possible to do it again on
+            // actual commit
+            try {
+                SerializableInputStream si = (SerializableInputStream) fieldValue;
+                si.reset();
+            } catch (IOException ioe) {
+                log.error(ioe);
+            }
+        }
+        log.debug("" + sequence + getChanged());
+        return true;
     }
 
     /**
@@ -761,9 +753,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     public long getSize(String fieldName) {
         Long l = sizes.get(fieldName);
-        if (l != null)  {
-            return l;
-        }
+        if (l != null)  return l;
         Object value = values.get(fieldName);
         // Value is null so it does not occupy any space.
         if (value == null) {
@@ -1022,7 +1012,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (value == null) {
             checkFieldExistance(fieldName);
             log.debug("NULL on " + fieldName + " " + this, new Exception());
-            return new SerializableInputStream(new byte[0]);
+            return new ByteArrayInputStream(new byte[0]);
         } else {
             if (log.isTraceEnabled()) {
                 log.trace("Found " + value);
@@ -1063,17 +1053,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                 }
             } else {
                 v = (byte[]) blobs.get(key);
-                log.debug("Found in " + v.length + " bytes in blob cache for field " + fieldName + " (expected  " + getSize(fieldName) + " )");
-                //assert v.length == getSize(fieldName) : ("" + fieldName + ":" + v.length + " " + sizes);
-                if (v.length != getSize(fieldName)) {
-                    log.warn("Found incorrect size in " + sizes + "(" + fieldName + " should be " + v.length + "). Correcting now.");
-                    setSize(fieldName, v.length);
-                }
+                log.debug("Found in " + v.length + " bytes in blob cache for field " + fieldName );
+                assert v.length == getSize(fieldName);
             }
-            return v == null ? null : new SerializableInputStream(v);
+            return v == null ? null : new ByteArrayInputStream(v);
         } else {
             if (value instanceof byte[]) {
-                return new SerializableInputStream((byte[]) value);
+                return new ByteArrayInputStream((byte[]) value);
             } else {
                 // probably not a byte-array field, do something.
                 // this behavior is undefined!, don't depend on it.

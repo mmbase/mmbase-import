@@ -21,10 +21,10 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.createcaches;
 
-import java.net.URI;
-
 import org.mmbase.bridge.Node;
-import org.mmbase.util.MimeType;
+import org.mmbase.applications.media.MimeType;
+
+import java.net.*;
 
 
 

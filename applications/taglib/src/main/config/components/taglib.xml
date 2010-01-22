@@ -158,12 +158,10 @@
     <body>
       <class name="org.mmbase.framework.ConnectionRenderer">
         <param name="url">http://scm.mmbase.org/view/*checkout*/mmbase/trunk/applications/taglib/src/main/xml/mmbase-taglib.xml</param>
-        <!--
         <param name="xslt">http://scm.mmbase.org/view/*checkout*/mmbase/trunk/applications/share/xslt/xml2block.xslt</param>
-
-        -->
-
+        <!--
         <param name="xslt">file:///home/michiel/mmbase/trunk/applications/share/xslt/xml2block.xslt</param>
+        -->
       </class>
     </body>
   </block>

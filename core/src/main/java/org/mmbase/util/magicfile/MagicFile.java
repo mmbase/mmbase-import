@@ -77,7 +77,7 @@ public class MagicFile {
      * @param file Location of file to be checked
      * @return Type of the file as determined by the magic file
      */
-    public String getMimeType(File file) throws IOException {
+    protected String getMimeType(File file) throws IOException {
         FileInputStream fir = null;
         try {
             fir = new FileInputStream(file);

@@ -265,15 +265,8 @@ public class FileServlet extends BridgeServlet {
         if (file.isDirectory()) {
             resp.setContentType("application/xhtml+xml"); // We hate IE anyways.
         } else {
-            resp.addHeader("Accept-Ranges", "bytes");
             resp.setContentType(getServletContext().getMimeType(file.getName()));
-            final ChainedRange range = getRange(req, file);
-            if (range != null) {
-                long length = range.getLength();
-                resp.setContentLength((int) length);
-            } else {
-                resp.setContentLength((int) file.length());
-            }
+            resp.setContentLength((int) file.length());
             if (metaFiles) {
                 for (Map.Entry<String, String> e : getMetaHeaders(file).entrySet()) {
                     resp.setHeader(e.getKey(), e.getValue());
@@ -310,149 +303,13 @@ public class FileServlet extends BridgeServlet {
         }
     }
 
-
-    /**
-     * @TODO Ranges stuff can be generalized to also work e.g. with images and attachments.
-     * @since MMBase-2.0
-     */
-    protected static interface Range {
-        /**
-         * If we are at byte number i, how many are available from here until we encounter one which isn't?
-         * @return A number of bytes which are available, <code>0</code> if there are not bytes available. A large number near <code>Long.MAX_VALUE</code> if there is no limit any more.
-         */
-        long available(long i);
-
-        /**
-         * If we are at byte number i, how many are not available from here until we encounter one which is?
-         * @return Some number of bytes or <code>0</code> if the next character is availabe. A large number near <code>Long.MAX_VALUE</code> if all subsequent chars are unavailable.
-         */
-        long notavailable(long i);
-    }
-
-    /**
-     * @since MMBase-2.0
-     */
-    protected static class FirstLastRange implements Range {
-        private final long first;
-        private final long last;
-        private final long max;
-        FirstLastRange(long f, long l, long m) {
-            first = f; last = Math.min(m, l);
-            max = m;
-        }
-        FirstLastRange(String parse, long max) {
-            String[] fl = parse.split("-", 2);
-            String firstString = fl[0].trim();
-            String lastString = fl[1].trim();
-            first = firstString.length() > 0 ? Long.parseLong(firstString) : 0L;
-            last  = Math.min(max, lastString.length() > 0 ? Long.parseLong(lastString) : Long.MAX_VALUE);
-            this.max = max;
-        }
-        public long available(long i) {
-            if (i < first) return 0;
-            if (i > last) return 0;
-            return last - i + 1;
-        }
-        public long notavailable(long i) {
-            if (i < first) return first - i;
-            if (i > last)  return max - last;
-            return 0;
-        }
-    }
-    /**
-     * @since MMBase-2.0
-     */
-    protected static class ChainedRange implements Range {
-        final List<Range> ranges = new ArrayList<Range>();
-        final long max;
-        ChainedRange(String s, long max) {
-            String[] array = s.split(",");
-            for (String r : array) {
-                ranges.add(new FirstLastRange(r, max));
-            }
-            this.max = max;
-        }
-
-        public long available(long i) {
-            long available = 0;
-            for (Range r : ranges) {
-                long a = r.available(i);
-                available += a;
-                i         += a;
-            }
-            return available;
-        }
-        public long notavailable(long i) {
-            long notavailable = max;
-            for (Range r : ranges) {
-                long na = r.notavailable(i);
-                if (na < notavailable) notavailable = na;
-            }
-            return notavailable;
-        }
-
-        public long getLength() {
-            long pos = 0;
-            long length = 0;
-            while (pos < max) {
-                long available = available(pos);
-                if (available > 0) {
-                    length += available;
-                }
-                //System.out.println(pos + "/" + max + " available " + available);
-                pos += available;
-                long notavailable = notavailable(pos);
-                pos += notavailable;
-
-            }
-            if (length > max) length = max;
-            return length;
-        }
-    }
-
-    /**
-     * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
-     * @since MMBase-2.0
-     */
-    protected ChainedRange getRange(HttpServletRequest req, File file) {
-        String range = req.getHeader("Range");
-        if (range != null) {
-            String r[] = range.split("=");
-            if (r.length == 2 && r[0].trim().toLowerCase().equals("bytes")) {
-                return new ChainedRange(r[1], file.length());
-            }
-        }
-        return null;
-
-    }
-
     protected void stream(HttpServletRequest req, HttpServletResponse resp, File file) throws IOException {
         BufferedOutputStream out = new BufferedOutputStream(resp.getOutputStream());
         BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
         byte[] buf = new byte[1024];
-
-        final ChainedRange range = getRange(req, file);
-        if (range != null) {
-            long pos = 0;
-            while (pos < range.max) {
-                long available = range.available(pos);
-                while(available > 0) {
-                    int b = in.read(buf, 0, (int) Math.min(available, 1024L));
-                    out.write(buf, 0, b);
-                    pos += b;
-                    available -= b;
-                }
-                long notavailable = range.notavailable(pos);
-                if (notavailable > 0) {
-                    in.skip(notavailable);
-                    pos += notavailable;
-                }
-            }
-        } else {
-            int b = 0;
-            while ((b = in.read(buf)) != -1) {
-                out.write(buf, 0, b);
-            }
+        int b = 0;
+        while ((b = in.read(buf)) != -1) {
+            out.write(buf, 0, b);
         }
         out.flush();
         in.close();
@@ -546,7 +403,7 @@ public class FileServlet extends BridgeServlet {
         }
         org.mmbase.bridge.Cloud cloud = getCloud(readQuery(req.getQueryString()));
         if (cloud.getUser().getRank() == org.mmbase.security.Rank.ANONYMOUS) {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Anonymous may not put files");
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "The file '" + req.getPathInfo() + "' already exists");
             return;
         }
         BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file));

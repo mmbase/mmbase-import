@@ -223,10 +223,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             MagicFile magic = MagicFile.getInstance();
             try {
                 if (extension == null) {
-                    log.debug("Getting mimetype (without help of extension)");
                     mimeType = magic.getMimeType(handle);
                 } else {
-                    log.debug("Getting mimetype (" + extension + ")");
                     mimeType = magic.getMimeType(handle, extension);
                 }
                 log.service("Found mime-type: " + mimeType);
@@ -237,8 +235,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 node.setValue(FIELD_MIMETYPE, mimeType);
             }
 
-        } else {
-            log.debug("Mimetype already set " + mimeType);
         }
         return mimeType;
     }
@@ -250,8 +246,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     protected void checkHandle(MMObjectNode node) {
         if (getField(FIELD_MIMETYPE) != null) {
             getMimeType(node);
-        } else {
-            log.debug("No mimetype field");
         }
 
     }

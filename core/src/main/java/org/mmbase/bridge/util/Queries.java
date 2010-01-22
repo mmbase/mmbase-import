@@ -13,6 +13,8 @@ import java.util.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.BasicQuery;
+import org.mmbase.module.core.ClusterBuilder;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.legacy.ConstraintParser;
 import org.mmbase.util.*;
@@ -35,7 +37,6 @@ abstract public class Queries {
     public static final int OPERATOR_NULL = 10001; // FieldIsNullConstraint
 
     private static final Logger log = Logging.getLoggerInstance(Queries.class);
-
 
     /**
      * Translates a string to a search direction constant. If the string is <code>null</code> then
@@ -63,7 +64,6 @@ abstract public class Queries {
             throw new BridgeException("'" + search + "' cannot be converted to a relation-step direction constant");
         }
     }
-
 
     /**
      * Creates a Query object using arguments for {@link Cloud#getList(String, String, String, String, String, String, String, boolean)}
@@ -133,9 +133,14 @@ abstract public class Queries {
 
 
         // create query object
+        //TODO: remove this code... classes under org.mmbase.bridge.util must not use the core
+
+        // getMultilevelSearchQuery must perhaps move to a utility container org.mmbase.storage.search.Queries or so.
+
+        ClusterBuilder clusterBuilder = MMBase.getMMBase().getClusterBuilder();
         int search = -1;
         if (searchDir != null) {
-            search = getRelationStepDirection(searchDir);
+            search = ClusterBuilder.getSearchDir(searchDir);
         }
 
         List<String> snodes   = StringSplitter.split(startNodes);
@@ -144,8 +149,10 @@ abstract public class Queries {
         List<String> orderVec = StringSplitter.split(orderby);
         List<String> d        = StringSplitter.split(directions);
         try {
-            Query query = new BasicQuery(cloud,
-                                         new BridgeClusterQueries(cloud).getMultiLevelSearchQuery(snodes, f, distinct ? "YES" : "NO", tables, constraints, orderVec, d, Collections.singletonList(search)));
+            // pitty that we can't use cloud.createQuery for this.
+            // but all essential methods are on ClusterBuilder
+            // XXX need casting here, something's wrong!!!
+            Query query = new BasicQuery(cloud, clusterBuilder.getMultiLevelSearchQuery(snodes, f, distinct ? "YES" : "NO", tables, constraints, orderVec, d, search));
             return query;
         } catch (IllegalArgumentException iae) {
             throw new BridgeException(iae.getMessage() + ". (arguments: startNodes='" + startNodes + "', path='" + nodePath + "', fields='" + fields + "', constraints='" + constraints + "' orderby='" + orderby + "', directions='" + directions + "', searchdir='" + searchDir + "')" , iae);
@@ -1682,10 +1689,7 @@ abstract public class Queries {
 
         if (! orderStep.equals(nodeStep)) {
             Field f = t.getNodeManager(orderStep.getTableName()).getField("number");
-            StepField sf = clone.createStepField(orderStep, f);
-            if (! clone.getFields().contains(sf)) {
-                clone.addField(orderStep, f);
-            }
+            clone.addField(orderStep, f);
         }
 
         List<Integer> desiredOrderCopy = new ArrayList<Integer>(desiredOrder);
@@ -2045,15 +2049,12 @@ abstract public class Queries {
         // The following code finds the newly made relations for this query, and adds them to the result
         for (Node n : t.getNodes()) {
             if (n.getNumber() < 0 && ! n.getStringValue("_exists").equals("nolonger")) { // NEW and not DELETED again
+                String tempNumber = n.getStringValue("_number");
                 if (n instanceof Relation) {
                     Relation r = (Relation) n;
-                    if (log.isDebugEnabled()) {
-                        log.debug("Considering" + r);
-                    }
+                    log.debug("Considering" + r);
                     if (r.getIntValue("rnumber") != role) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("Role of " + r + "  is not " + role);
-                        }
+                        log.debug("Role of " + r + "  is not " + role);
                         continue;
                     }
 
@@ -2097,15 +2098,11 @@ abstract public class Queries {
                     }
 
                 } else {
-                    if (log.isDebugEnabled()) {
-                        log.debug("" + n + " is not a relation");
-                    }
+                    log.debug("" + n + " is not a relation");
 
                 }
             } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("" + n + " is deleted or not new");
-                }
+                log.debug("" + n + " is deleted or not new");
             }
         }
 

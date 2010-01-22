@@ -262,7 +262,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     public void checkType(Object value) {
         if (!isCorrectType(value)) {
             // customize this?
-            throw new IllegalArgumentException("DataType of '" + Casting.toString(value) + "' for '" + getName() + "' must be of type " + classType + " (but is " + (value == null ? value : value.getClass()) + ")");
+            throw new IllegalArgumentException("DataType of '" + value + "' for '" + getName() + "' must be of type " + classType + " (but is " + (value == null ? value : value.getClass()) + ")");
         }
     }
 
@@ -274,11 +274,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      */
     public final <D> D preCast(D value, Node node, Field field) {
         //public final Object preCast(Object value, Node node, Field field) {
-        try {
-            return preCast(value, getCloud(node, field), node, field);
-        } catch (Exception e) {
-            return value;
-        }
+        return preCast(value, getCloud(node, field), node, field);
     }
 
     /**
@@ -297,7 +293,6 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     protected <D> D preCast(D value, Cloud cloud, Node node, Field field) {
         if (value == null) return null;
         D preCast =  enumerationRestriction.preCast(value, cloud);
-        //System.out.println("Enumeration casted " + value + " to " + preCast);
         return preCast;
     }
 
@@ -311,29 +306,19 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * Override {@link #cast(Object, Cloud, Node, Field)}
      */
     public final C cast(Object value, final Node node, final Field field) {
-        try {
-            return castOrException(value, node, field);
-        } catch (CastException ce) {
-            log.service(ce.getMessage(), ce);
-            Cloud cloud = getCloud(getCloud(node, field));
-            return Casting.toType(classType, cloud, preCast(value, cloud, node, field));
-        }
-    }
-
-    /**
-     * @since MMBase-2.0
-     */
-    public final C castOrException(Object value, final Node node, final Field field) throws CastException {
         if (origin != null && (! origin.getClass().isAssignableFrom(getClass()))) {
             // if inherited from incompatible type, then first try to cast in the way of origin.
             // e.g. if origin is Date, but actual type is integer, then casting of 'today' works now.
             value = origin.cast(value, node, field);
         }
-        if (value == null) {
-            return null;
-        }
+        if (value == null) return null;
         Cloud cloud = getCloud(getCloud(node, field));
-        return cast(value, cloud, node, field);
+        try {
+            return cast(value, cloud, node, field);
+        } catch (CastException ce) {
+            log.service(ce.getMessage(), ce);
+            return Casting.toType(classType, cloud, preCast(value, cloud, node, field));
+        }
     }
 
     /**
@@ -359,15 +344,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                 // Corefield does not support getNodeManager
             }
         }
-        Cloud cloud = org.mmbase.bridge.util.CloudThreadLocal.currentCloud();
-        if (cloud != null) {
-            return cloud;
-        }
-        try {
-            return ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
-        } catch (NotFoundException nfe) {
-            return null;
-        }
+        return null;
     }
 
     private static Cloud classCloud = null;
@@ -577,11 +554,6 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             log.debug(ce);
             errors = typeRestriction.addError(errors, value, node, field);
             castValue = value;
-        } catch (IllegalArgumentException iae) {
-            log.debug(iae);
-            errors = typeRestriction.addError(errors, value, node, field);
-            castValue = value;
-
         }
         if (log.isDebugEnabled()) {
             log.debug("Validating cast value " + castValue);
@@ -1495,19 +1467,10 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
          * @see BasicDataType#preCast
          */
         protected <D> D preCast(D v, Cloud cloud) {
-            if (getValue() == null) {
-                return v;
-            }
+            if (getValue() == null) return v;
             try {
-                if (v == null) {
-                    return null;
-                }
-                Object res;
-                if (!value.isEmpty()) {
-                    res = value.castKey(v, cloud);
-                } else {
-                    res = v;
-                }
+                if (v == null) return null;
+                Object res = value.castKey(v, cloud);
                 // type may have changed (to some value wrapper). Undo that:
                 return (D) Casting.unWrap(res);
 

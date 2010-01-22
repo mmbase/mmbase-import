@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
 
-    MMObjectNode relDefNode;
+    public MMObjectNode relDefNode;
     private MMObjectNode typeRelNode;
 
     /**
@@ -208,25 +208,10 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     }
     @Override
     public String toString() {
-        String source;
-        try {
-            source = (typeRelNode != null ? getSourceManager().getName() : "???");
-        } catch (NotFoundException nfe) {
-            TypeDef typedef = BasicCloudContext.mmb.getTypeDef();
-            source = typedef.getValue(typeRelNode.getIntValue("snumber")) + "(inactive)";
-        }
-        String destination;
-        try {
-            destination = (typeRelNode != null ? getDestinationManager().getName() : "???");
-        } catch (NotFoundException nfe) {
-            TypeDef typedef = BasicCloudContext.mmb.getTypeDef();
-            destination = typedef.getValue(typeRelNode.getIntValue("dnumber")) + "(inactive)";
-        }
-
         return "RelationManager " +
-            source +
+            (typeRelNode != null ? getSourceManager().getName() : "???") +
             " -" + (relDefNode != null ? getForwardRole() : "???") + "-> " +
-            destination +
-            " (" + getNode().getNumber() + ")";
+            (typeRelNode != null ? getDestinationManager().getName() : "???") +
+            " ( " + getNode().getNumber() + ")";
     }
 }

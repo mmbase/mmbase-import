@@ -21,23 +21,25 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.createcaches;
 
-import java.io.*;
+import org.mmbase.streams.transcoders.*;
+import org.mmbase.streams.createcaches.*;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.Node;
+import org.mmbase.security.UserContext;
+import org.mmbase.security.ActionRepository;
+import org.mmbase.util.*;
+import org.mmbase.util.xml.*;
+import org.mmbase.util.externalprocess.CommandExecutor;
+import org.mmbase.datatypes.processors.*;
+import org.mmbase.applications.media.MimeType;
+import org.mmbase.servlet.FileServlet;
+import org.mmbase.core.event.*;
+
 import java.util.*;
 import java.util.concurrent.*;
-
-import org.mmbase.bridge.*;
-import org.mmbase.core.event.*;
-import org.mmbase.datatypes.processors.CommitProcessor;
-import org.mmbase.security.ActionRepository;
-import org.mmbase.security.UserContext;
-import org.mmbase.servlet.FileServlet;
-import org.mmbase.streams.transcoders.*;
-import org.mmbase.util.*;
-import org.mmbase.util.externalprocess.CommandExecutor;
+import java.io.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.xml.*;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.w3c.dom.*;
 
 
 
@@ -376,9 +378,10 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
             return;
         }
         if (node.getNumber() > 0) {
+            LOG.debug("url: " + node.getStringValue("url"));
             if (node.isChanged(field.getName())) {
                 LOG.service("For node " + node.getNumber() + ", the field '" + field.getName() + "' is changed " + node.getChanged() + ". That means that we must schedule create caches");
-
+                
                 final Cloud ntCloud = node.getCloud().getNonTransactionalCloud();
                 final int nodeNumber = node.getNumber();
                 createCaches(ntCloud, nodeNumber);

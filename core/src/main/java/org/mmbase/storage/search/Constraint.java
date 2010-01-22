@@ -18,10 +18,11 @@ package org.mmbase.storage.search;
  * @version $Id$
  * @since MMBase-1.7
  */
-public interface Constraint { //extends java.io.Serializable {
+public interface Constraint {
     /**
-     * <p>Tests if the condition must be inverted.</p>
-     * <p>This corresponds to the use of NOT in a WHERE-clause in SQL SELECT-syntax.</p>
+     * Tests if the condition must be inverted.
+     * <p>
+     * This corresponds to the use of NOT in a WHERE-clause in SQL SELECT-syntax.
      */
     boolean isInverse();
 
@@ -42,6 +43,7 @@ public interface Constraint { //extends java.io.Serializable {
     @Override
     boolean equals(Object obj);
 
+    // javadoc is inherited
     @Override
     int hashCode();
 

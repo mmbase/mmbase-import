@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-parent</artifactId>
-    <version>2.0-SNAPSHOT</version>
+    <version>1.9-SNAPSHOT</version>
     <relativePath>../maven-base/pom.xml</relativePath>
   </parent>
 
@@ -22,11 +22,8 @@
   </properties>
 
   <description>
-    This is a minimalistic war containing the essentials for an MMBase web applications.  This can be used as initial
-    war overlay for your own project.
-
-    It will run on its own, but only if a jdbc/MMBase datasource is provided (for hsql,
-    otherwise also override the mmbaseroot/database property).
+    This is a minimalistic war containing the essentials for an MMBase web applications.
+    This can be used as initial war overlay for your own project.
   </description>
 
   <build>
@@ -63,13 +60,18 @@
     <dependency>
       <groupId>org.mmbase.jquery</groupId>
       <artifactId>jquery-form</artifactId>
-      <version>2.36</version>
+      <version>2.36-1</version>
       <type>war</type>
     </dependency>
 
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>taglibs</groupId>
+      <artifactId>standard</artifactId>
+      <scope>${standard.scope}</scope>
     </dependency>
 
     <dependency>
@@ -88,13 +90,33 @@
       </build>
     </profile>
     <profile>
+      <id>servlet25</id>
+      <activation>
+        <property>
+          <name>servlet.version</name>
+          <value>2.5</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>javax.servlet</groupId>
+          <artifactId>jstl</artifactId>
+          <version>1.2</version>
+        </dependency>
+      </dependencies>
+      <properties>
+        <base.version>${mmbase.version.number}-servlet25${mmbase.version.postfix}</base.version>
+        <standard.scope>provided</standard.scope>
+      </properties>
+    </profile>
+    <profile>
       <id>development</id>
       <build>
         <plugins>
           <plugin>
             <groupId>org.mmbase.maven</groupId>
             <artifactId>maven-mmbase-plugin</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <version>1.9-SNAPSHOT</version>
             <executions>
               <execution>
                 <id>installsvnsr</id>

@@ -4,7 +4,7 @@
   You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
 
   @author Nico Klasens
-  @version  $Id$
+  @version  $Id: exception.css,v 1.1 2003-12-19 11:09:43 nico Exp $
 */
 
 @import url("base.css");

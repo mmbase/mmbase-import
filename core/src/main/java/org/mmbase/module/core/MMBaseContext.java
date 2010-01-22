@@ -32,7 +32,6 @@ import org.mmbase.util.logging.Logging;
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
     private static boolean initialized = false;
-    private static boolean shutdown = false;
     static boolean htmlRootInitialized = false;
     private static ServletContext sx;
     private static String userDir;
@@ -97,8 +96,6 @@ public class MMBaseContext {
             initOutputfile(outputFile);
 
             ResourceLoader.init(sx);
-            org.mmbase.util.ResourceWatcher.reinitWatchers();
-
 
             // Init logging.
             initLogging();
@@ -228,14 +225,6 @@ public class MMBaseContext {
         log.info("total memory      : " + rt.totalMemory() / (1024 * 1024) + " MiB");
         log.info("free memory       : " + rt.freeMemory() / (1024 * 1024) + " MiB");
         log.service("system locale     : " + Locale.getDefault());
-        {
-            boolean assertsEnabled = false;
-            assert assertsEnabled = true; // Intentional side effect!!!
-            if (assertsEnabled) {
-                log.info("Assertions are enabled");
-            }
-        }
-
         try {
             Locale locale = org.mmbase.util.LocalizedString.getLocale(org.mmbase.module.Module.getInitParameter("mmbaseroot", "language"));
             log.info("MMBase locale     : " + locale);
@@ -277,7 +266,7 @@ public class MMBaseContext {
             if (htmlRoot == null) {
                 htmlRoot = sx.getRealPath("");
             }
-            if (htmlRoot == null){
+            if (htmlRoot == null) {
                 log.service("Parameter mmbase.htmlroot not set.");
             } else {
                 if (userDir != null && !new File(htmlRoot).isAbsolute()) {
@@ -448,20 +437,4 @@ public class MMBaseContext {
     public static String getMachineName() {
         return MMBase.machineName;
     }
-
-    /**
-     * @since MMBase-2.0
-     */
-    public static void shutdown() {
-        shutdown = true;
-    }
-
-    /**
-     * @since MMBase-2.0
-     */
-    public static boolean isShutdown() {
-        return shutdown;
-    }
-
-
 }

@@ -72,7 +72,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      */
     private final String account;
 
-    private boolean deleted = false;
 
 
     BasicNode(BasicCloud cloud) {
@@ -498,28 +497,22 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
         checkCommit();
 
-        if (! deleted) {
-            Object prev = getCloud().getProperty(CLOUD_COMMITNODE_KEY);
-            try {
-                getCloud().setProperty(CLOUD_COMMITNODE_KEY, Integer.valueOf(getNumber())); // Validation code wants to know that we are commiting right now.
-                Collection<String> errors = validate();
-                if (errors.size() > 0) {
-                    String mes = "node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString();
-                    if (! Casting.toBoolean(getCloud().getProperty(Cloud.PROP_IGNOREVALIDATION))) {
-                        noderef.cancel();
-                        throw new IllegalArgumentException(mes);
-                    }
+        Object prev = getCloud().getProperty(CLOUD_COMMITNODE_KEY);
+        try {
+            getCloud().setProperty(CLOUD_COMMITNODE_KEY, Integer.valueOf(getNumber())); // Validation code wants to know that we are commiting right now.
+            Collection<String> errors = validate();
+            if (errors.size() > 0) {
+                String mes = "node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString();
+                if (! Casting.toBoolean(getCloud().getProperty(Cloud.PROP_IGNOREVALIDATION))) {
+                    noderef.cancel();
+                    throw new IllegalArgumentException(mes);
                 }
-            } finally {
-                getCloud().setProperty(CLOUD_COMMITNODE_KEY, prev);
             }
-        } else {
-            log.debug("Skipping validation because the node was deleted already");
+        } finally {
+            getCloud().setProperty(CLOUD_COMMITNODE_KEY, prev);
         }
 
-
         cloud.processCommitProcessors(this);
-
         if (log.isDebugEnabled()) {
             log.debug("committing " + noderef.getChanged() + " " + noderef.getValues());
         }
@@ -590,7 +583,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         // the node does not exist anymore, so invalidate all references.
         temporaryNodeId = -1;
         invalidateNode();
-        deleted = true;
     }
 
     @Override
@@ -857,44 +849,21 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (role == null) {
 
             if (!typeRel.getAllowedRelations(nodeManagerNumber, allowedOtherNumber, 0,
-                                             RelationStep.DIRECTIONS_DESTINATION).isEmpty()) {
+                    RelationStep.DIRECTIONS_DESTINATION).isEmpty())
 
                 l1 = getRelatedNodes(otherManager, role, "destination");
-                if (log.isDebugEnabled()) {
-                    log.debug("l1 " + l1);
-                }
-            } else {
-                log.debug("l1 not allowed");
-            }
             if (!typeRel.getAllowedRelations(nodeManagerNumber, allowedOtherNumber, 0,
-                                             RelationStep.DIRECTIONS_SOURCE).isEmpty()) {
+                    RelationStep.DIRECTIONS_SOURCE).isEmpty())
                 l2 = getRelatedNodes(otherManager, role, "source");
-                if (log.isDebugEnabled()) {
-                    log.debug("l2 " + l2);
-                }
-            } else {
-                log.debug("l2 not allowed");
-            }
-        } else {
+        }
+        else {
             log.debug("role " + role);
             RelDef relDef = BasicCloudContext.mmb.getRelDef();
             int rnumber = relDef.getNumberByName(role);
-            if (typeRel.contains(nodeManagerNumber, allowedOtherNumber, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS)) {
+            if (typeRel.contains(nodeManager.getNumber(), otherManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
                 l1 = getRelatedNodes(otherManager, role, "destination");
-                if (log.isDebugEnabled()) {
-                    log.debug("l1 " + l1);
-                }
-            } else {
-                log.debug("l1 not allowed");
-            }
-            if (typeRel.contains(allowedOtherNumber, nodeManagerNumber, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS)) {
+            if (typeRel.contains(otherManager.getNumber(), nodeManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
                 l2 = getRelatedNodes(otherManager, role, "source");
-                if (log.isDebugEnabled()) {
-                    log.debug("l2 " + l2);
-                }
-            } else {
-                log.debug("l2 not allowed");
-            }
         }
         if (l2.size() == 0) {
             return l1;

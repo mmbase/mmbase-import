@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * A StorageConnector object is associated with a specific builder.
  * It provides methods for loading nodes from the cloud (using the search query classes),
- * either indivbidual nodes or nodelists.
+ * either individual nodes or nodelists.
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
@@ -581,7 +581,7 @@ public class StorageConnector {
             // maybe we got the wrong node typeback, if so
             // try to retrieve the correct node from the cache first
             int oType = builder.getNumber();
-            if(oType != -1 && oType != node.getOType()){
+            if (oType != -1 && oType != node.getOType()) {
                 // try to retrieve the correct node from the
                 // nodecache
                 MMObjectNode cachedNode = builder.getNodeFromCache(number);

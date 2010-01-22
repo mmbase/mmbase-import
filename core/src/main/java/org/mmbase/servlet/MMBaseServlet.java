@@ -616,16 +616,12 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
            servletInstanceCount--;
             if (servletInstanceCount == 0) {
-                MMBaseContext.shutdown();
                 try {
                     log.info("Unloaded servlet mappings");
                     associatedServlets.clear();
                     servletMappings.clear();
                     log.info("No MMBase servlets left; modules can be shut down");
-                    MMBase mmb = (MMBase) MMBase.getModule("mmbaseroot", false);
-                    if (mmb != null) {
-                        mmb.shutdown();
-                    }
+                    MMBase.getMMBase().shutdown();
                     Module.shutdownModules();
                 } catch (Throwable t) {
                     log.error(t.getMessage(), t);

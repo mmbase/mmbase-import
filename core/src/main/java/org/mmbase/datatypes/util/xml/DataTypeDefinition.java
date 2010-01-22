@@ -520,7 +520,7 @@ public class DataTypeDefinition {
                 sDataType.setPattern(value, locale);
                 return true;
             }
-        } else if (dataType instanceof BinaryDataType) {
+        } else if (dataType instanceof BinaryDataType) { // not really a condition yet.
             BinaryDataType sDataType = (BinaryDataType) dataType;
             if ("pattern".equals(localName)) {
                 String value = DataTypeXml.getAttribute(conditionElement, "value");

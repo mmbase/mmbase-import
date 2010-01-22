@@ -354,14 +354,16 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      * Tries to 'cast' an object for use with this parameter. E.g. if value is a String, but this
      * parameter is of type Integer, then the string can be parsed to Integer.
      * @param value The value to be filled in in this Parameter.
-     * @exception If no reasonable cast is possbible.
      */
     protected C autoCast(Object value) throws CastException {
-        try {
-            return dataType.castOrException(value, null, null);
-        } catch (IllegalArgumentException iae) {
-            throw new CastException(iae);
+        Collection<LocalizedString> errors = dataType.castAndValidate(value, null, null);
+
+        if (errors.size() == 0) {
+            return dataType.cast(value, null, null);
+        } else {
+            throw new CastException("" + this, errors);
         }
+
     }
 
     /**

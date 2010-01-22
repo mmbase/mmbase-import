@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-parent</artifactId>
-    <version>2.0-SNAPSHOT</version>
+    <version>1.9-SNAPSHOT</version>
   </parent>
 
   <artifactId>example-searchrelate-webapp</artifactId>
@@ -14,9 +14,8 @@
   <name>MMBase Example Search and Relate webapp</name>
 
   <properties>
-    <!--
-    <mmbase.version.number>1.9</mmbase.version.number>
-    -->
+    <my.postfix>${mmbase.version.postfix}</my.postfix>
+    <base.version>${mmbase.version.number}${my.postfix}</base.version>
     <saxon.version>9.1.0.6</saxon.version>
   </properties>
 
@@ -25,7 +24,10 @@
     <plugins>
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
+
+
+        <artifactId>maven-jetty-plugin</artifactId>
+        <version>6.1.19</version>
         <configuration>
           <jettyEnvXml>${basedir}/jetty-env.xml</jettyEnvXml>
           <systemProperties>
@@ -67,6 +69,13 @@
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>base-webapp</artifactId>
+      <version>${base.version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-searchrelate</artifactId>
       <version>${mmbase.version}</version>
       <type>war</type>
     </dependency>
@@ -74,14 +83,7 @@
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-searchrelate</artifactId>
-      <version>${project.version}</version>
-      <type>war</type>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-searchrelate</artifactId>
-      <version>${project.version}</version>
+      <version>${mmbase.version}</version>
       <classifier>examples</classifier>
       <type>war</type>
     </dependency>
@@ -111,7 +113,19 @@
   </dependencies>
 
   <profiles>
-
+    <profile>
+      <id>servlet25</id>
+      <activation>
+        <property>
+          <name>servlet.version</name>
+          <value>2.5</value>
+        </property>
+      </activation>
+      <properties>
+        <my.postfix>-${my.version}</my.postfix>
+        <base.version>${mmbase.version.number}-servlet25${mmbase.version.postfix}</base.version>
+      </properties>
+    </profile>
   </profiles>
 
 </project>

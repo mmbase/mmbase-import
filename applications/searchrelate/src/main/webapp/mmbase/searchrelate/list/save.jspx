@@ -26,7 +26,9 @@
         <mm:form name="${formtagid}" >
           <mm:import id="fieldlistid">${parameters.fieldlistidprefix}_<mm:escape escape="identifier">${_node}</mm:escape></mm:import>
           <mm:include page="${parameters.item}"
-                      referids="rid,fieldlistid" />
+                      referids="rid,fieldlistid">
+            <mm:param name="reload">true</mm:param>
+          </mm:include>
 
           <c:if test="${parameters.autosubmit}">
             <mm:valid>

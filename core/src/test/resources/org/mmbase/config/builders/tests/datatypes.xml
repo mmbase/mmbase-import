@@ -264,14 +264,6 @@
       </datatype>
     </field>
 
-    <field name="image">
-      <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <minLength value="3" />
-        <maxLength value="10000" />
-        <pattern  value="image/.*" />
-      </datatype>
-    </field>
-
     <field name="checksum">
       <datatype base="checksum" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <unique value="true" />

@@ -232,7 +232,7 @@ MMBaseValidator.prototype.getLength = function(el) {
                     // http://msdn.microsoft.com/en-us/library/z9ty6h50%28VS.85%29.aspx
                     // this should work.
                     // I have never seen that it actually does.
-                    // IE probably just sucks too much.
+                    // IE sucks too much.
                     var oas = new ActiveXObject("Scripting.FileSystemObject");
                     var file = oas.getFile(el.value);
                     length = file.length;
@@ -259,49 +259,6 @@ MMBaseValidator.prototype.getLength = function(el) {
         }
        }
     return length;
-}
-
-MMBaseValidator.prototype.getMimeType = function(el) {
-    var type;
-    if (el.type === "file") {
-        if (el.value === "") {
-            this.getDataTypeKey(el); // set also mm_length
-            type = el.mm_initial_mimetype
-        } else {
-            if (el.files == null) {
-                try {
-                    // We can always try.
-                    // According to
-                    // http://msdn.microsoft.com/en-us/library/z9ty6h50%28VS.85%29.aspx
-                    // this should work.
-                    // I have never seen that it actually does.
-                    // IE probably just sucks too much.
-                    var oas = new ActiveXObject("Scripting.FileSystemObject");
-                    var file = oas.getFile(el.value);
-                    type = file.type;
-                } catch (e) {
-                    // Out of luck, both el.files  and the silly activexobject are not working.
-                    this.showWarning(e);
-                    type = null;
-                }
-            } else {
-                // most other browsers simply support the following (Note the incredible ease and simplicity, compared to the horrible shit of IE).
-                if (el.files.length > 0) {
-                    type = el.files.item(0).type;
-                } else {
-                    type = "application/octet-stream";
-                }
-            }
-        }
-    } else {
-        var value = this.getValue(el);
-        if (value == null) {
-            type = null;
-        } else {
-            //
-        }
-    }
-    return type;
 }
 
 /**
@@ -392,13 +349,7 @@ MMBaseValidator.prototype.patternValid = function(el) {
     if (this.isString(el)) {
         var xml = this.getDataTypeXml(el);
         if (el.mm_pattern == null) {
-            var javaPatternXml = this.find(xml, 'datatype pattern')[0];
-            if (javaPatternXml == null) {
-                alert("No pattern found for " + $(el).attr("id"));
-                return true;
-            }
-
-            var javaPattern = javaPatternXml.getAttribute("value");
+            var javaPattern = this.find(xml, 'datatype pattern')[0].getAttribute("value");
             el.mm_pattern = this.javaScriptPattern(javaPattern);
             if (el.mm_pattern == null) return true;
             this.trace("pattern : " + el.mm_pattern + " " + el.value);
@@ -460,9 +411,7 @@ MMBaseValidator.prototype.isFloat = function(el) {
     return el.mm_isfloat;
 }
 MMBaseValidator.prototype.isString = function(el) {
-    if (el.mm_isstring != null) {
-        return el.mm_isstring;
-    }
+    if (el.mm_isstring != null) return el.mm_isstring;
     el.mm_isstring =  this.hasJavaClass(el, "org\.mmbase\.datatypes\.StringDataType");
     return el.mm_isstring;
 }
@@ -669,8 +618,6 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
                 result.node = className.substring(5);
             } else if (className.indexOf("mm_length_") == 0) {
                 el.mm_initial_length = parseInt(className.substring(10));
-            } else if (className.indexOf("mm_mimetype_") == 0) {
-                el.mm_initial_mimetype = className.substring(12);
             }
 
         }
@@ -899,7 +846,6 @@ MMBaseValidator.prototype.binaryServerValidation = function(el) {
     params.fieldname = $(el).attr("name");
     params.changed = this.isChanged(el);
     params.length = this.getLength(el);
-    params.type = this.getMimeType(el);
     if (params.length == null) {
         delete params.length;
     }
@@ -914,7 +860,7 @@ MMBaseValidator.prototype.binaryServerValidation = function(el) {
     }
     if (params.length != null) {
         var result;
-        $.ajax({async: true, url: validationUrl, type: "GET", dataType: "xml",
+        $.ajax({async: true, url: validationUrl, type: "GET", dataType: "xml", data: params,
                     complete: function(res, status){
                     var result;
                     if (status == "success") {
@@ -925,7 +871,7 @@ MMBaseValidator.prototype.binaryServerValidation = function(el) {
                         el.serverValidated = true;
                         result = $("<result valid='true' />")[0];
                     }
-                    self.showServerErrors(el, result, el.initialId);
+                    self.showServerErrors(el, result);
                 }
             });
     } else {
@@ -1196,8 +1142,6 @@ MMBaseValidator.prototype.addValidationForElements = function(els) {
         if (entry.type == "textarea") {
             entry.value = entry.value.replace(/^\s+|\s+$/g, "");
         }
-        // Store the original ID, especially for binaries, because jquery-upload may temporary change it sometimes, which would make the error div unfindable
-        entry.initialId = $(entry).attr("id");
 	var self = this;
         // switch stolen from editwizards, not all cases are actually supported already here.
         switch(entry.type) {
@@ -1219,9 +1163,7 @@ MMBaseValidator.prototype.addValidationForElements = function(els) {
             $(entry).bind("blur",   function(ev) { self.serverValidate(ev); });
             break;
         case "file":
-            $(entry).bind("change", function(ev) {
-                    self.setLastChange(ev); self.validate(ev);
-                });
+            $(entry).bind("change", function(ev) { self.setLastChange(ev); self.validate(ev); });
             break;
         case "select-one":
         case "select-multiple":

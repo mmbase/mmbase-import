@@ -21,12 +21,11 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.createcaches;
 
-import java.io.Serializable;
-import java.util.*;
+import org.mmbase.streams.transcoders.*;
+import org.mmbase.applications.media.MimeType;
 
-import org.mmbase.streams.transcoders.Analyzer;
-import org.mmbase.streams.transcoders.Transcoder;
-import org.mmbase.util.MimeType;
+import java.util.*;
+import java.io.*;
 
 
 /**

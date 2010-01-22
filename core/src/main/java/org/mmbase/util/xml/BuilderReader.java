@@ -105,7 +105,6 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
             for (String s :  loader.getResourcePaths(Pattern.compile(getName()+ "\\.xml"), true)) {
                 for (java.net.URL url : loader.getResourceList(s)) {
                     try {
-
                         if (! url.openConnection().getDoInput()) continue;
                         org.w3c.dom.Document doc = ResourceLoader.getDocument(url, true, BuilderReader.class);
                         if (! doc.getDocumentElement().getTagName().equals("builder")) {

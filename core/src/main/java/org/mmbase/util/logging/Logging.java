@@ -464,7 +464,7 @@ public class Logging {
                }
            } else {
                if (mmbaseClassesFound) {
-                   // show no mmbase method which invoked an mmbase method.
+                   // show none mmbase method which invoked an mmbase method.
                    buf.append("\n        at ").append(element);
                    appended++;
                    break;

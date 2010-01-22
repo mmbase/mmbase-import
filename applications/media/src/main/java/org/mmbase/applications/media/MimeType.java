@@ -7,12 +7,12 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.util;
+package org.mmbase.applications.media;
+
 
 /**
  *
  * @author Michiel Meeuwissen
- * @since MMBase-2.0
  */
 
 public class MimeType implements java.io.Serializable {
@@ -20,7 +20,6 @@ public class MimeType implements java.io.Serializable {
 
     public static final String STAR = "*";
     public static final MimeType ANY = new MimeType(STAR, STAR);
-    public static final MimeType OCTETSTREAM = new MimeType("application", "octet-stream");
 
     private final String type;
     private final String subType;
@@ -60,19 +59,5 @@ public class MimeType implements java.io.Serializable {
         return
             (type.equals(STAR) || mt.type.equals(STAR) || type.equals(mt.type)) &&
             (subType.equals(STAR) || mt.subType.equals(STAR) || subType.equals(mt.subType));
-    }
-    @Override
-    public int hashCode() {
-        return type.hashCode()  + 13 * subType.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof MimeType) {
-            MimeType m = (MimeType) o;
-            return m.type.equals(type) && m.subType.equals(subType);
-        } else {
-            return false;
-        }
     }
 }

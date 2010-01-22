@@ -5,12 +5,11 @@
      xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
-  <mm:content expires="0" type="text/html">
   <mm:cloud rank="administrator">
     <mm:import id="max">6</mm:import>
     <mm:node number="default.mags">
       <h3><mm:field name="title" /></h3>
-      <mm-srt:relatednodes
+      <mm-sr:relatednodes
           type="news"
           searchdirs="destination"
           unlink="true"
@@ -18,11 +17,9 @@
           sortable="true"
           config="mysearch"
           search="true"
-          load="false"
           />
     </mm:node>
   </mm:cloud>
-  </mm:content>
   <hr />
   <mm:escape escape="links">$URL$</mm:escape>
 

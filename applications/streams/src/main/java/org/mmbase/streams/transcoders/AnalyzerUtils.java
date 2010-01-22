@@ -21,14 +21,13 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.transcoders;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.mmbase.applications.media.Codec;
+import org.mmbase.applications.media.MimeType;
 import org.mmbase.applications.media.State;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.util.MimeType;
+import java.util.*;
+import java.util.regex.*;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -139,9 +138,9 @@ public final class AnalyzerUtils implements java.io.Serializable {
         if (cloud != null) {
             if (updateSource && cloud.hasNodeManager(IMAGE) 
                     && ! source.getNodeManager().getName().equals(IMAGE)) {
-            if (log.isDebugEnabled()) {
-                log.debug("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
-            }
+                if (log.isDebugEnabled()) {
+                    log.debug("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
+                }
                 source.setNodeManager(cloud.getNodeManager(IMAGE));
                 source.commit();
             }
@@ -224,14 +223,12 @@ public final class AnalyzerUtils implements java.io.Serializable {
     public boolean duration(String l, Node source, Node dest) {
         Matcher m = PATTERN_DURATION.matcher(l);
         if (m.matches()) {
-            //log.debug("### Duration match: " + l);
-
             Node fragment = source.getNodeValue("mediafragment");
-            // log.debug("mediafragment: " + source.getNodeValue("mediafragment"));
-
+            
             if (! source.getNodeManager().hasField("length")) {
                 toVideo(source, dest);
             }
+            
             if (log.isDebugEnabled()) log.debug("duration: " + m.group(1));
             long length = getLength(m.group(1));
             if (updateSource) {
@@ -258,8 +255,6 @@ public final class AnalyzerUtils implements java.io.Serializable {
                     fragment.setLongValue("start", start);
                     fragment.commit();
                     if (log.isDebugEnabled()) log.debug("Set mediafragment's field start: " + start);
-                } else {
-                    //log.warn("mediafragment still null");
                 }
             }
             return true;
@@ -307,7 +302,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
     public boolean image2(String l, Node source, Node dest) {
         Matcher m = IMAGE2_PATTERN.matcher(l);
         if (m.matches()) {
-            log.info("image2 match: " + l);
+            //log.info("image2 match: " + l);
             toImage(source, dest);
             return true;
         } else {
@@ -325,7 +320,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
     public boolean dimensions(String l, Node source, Node dest) {
         Matcher m = PATTERN_DIMENSIONS.matcher(l);
         if (m.matches()) {
-            //log.info("### Dimensions match: " + l);
+            //log.info("dimensions match: " + l);
 
             if (! source.getNodeManager().getName().equals(IMAGE)) {
                 toVideo(source, dest);

@@ -44,27 +44,27 @@ public class ResourceLoaderTest {
     public void getMMBaseRootModule() throws java.io.IOException {
         URL url = ResourceLoader.getConfigurationRoot().getResource("modules/mmbaseroot.xml");
         assertNotNull("did not find mmbaseroot.xml", url);
-        assertTrue("existing resource should be openable for input", url.openConnection().getDoInput());
+        assertTrue("non existing resource should openable for input", url.openConnection().getDoInput());
     }
 
     @Test
     public void getPropertiesBuilder() throws java.io.IOException {
         URL url = ResourceLoader.getConfigurationRoot().getResource("builders/properties.xml");
         assertNotNull("did not find properties.xml", url);
-        assertTrue("existing resource should be openable for input" + url, url.openConnection().getDoInput());
+        assertTrue("non existing resource should openable for input", url.openConnection().getDoInput());
     }
     @Test
     public void getPropertiesBuilder2() throws java.io.IOException {
         URL url = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders").getResource("properties.xml");
         assertNotNull("did not find properties.xml", url);
-        assertTrue("existing resource should openable for input", url.openConnection().getDoInput());
+        assertTrue("non existing resource should openable for input", url.openConnection().getDoInput());
     }
 
     @Test
     public void getPropertiesBuilder3() throws java.io.IOException {
         URL url = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders").getResource("/properties.xml");
         assertNotNull("did not find /properties.xml", url);
-        assertTrue("existing resource should openable for input", url.openConnection().getDoInput());
+        assertTrue("non existing resource should openable for input", url.openConnection().getDoInput());
         System.out.println(url);
     }
 
@@ -109,7 +109,7 @@ public class ResourceLoaderTest {
     @Test
     public void spacesFileLoader() throws Exception {
         ResourceLoader fileLoader = new ResourceLoader();
-        fileLoader.roots.add(new ResourceLoader.FileURLStreamHandler(fileLoader, new File(System.getProperty("user.dir")), true));
+        fileLoader.roots.add(fileLoader.new FileURLStreamHandler(new File(System.getProperty("user.dir")), true));
 
         final String dir = "src/test/resources/org/mmbase/config/directory with spaces";
         assertNotNull(fileLoader.getDocument(dir + "/file with spaces.xml", false, null));

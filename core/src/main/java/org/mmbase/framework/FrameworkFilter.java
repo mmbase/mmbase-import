@@ -219,7 +219,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                 }
                 try {
                     @SuppressWarnings("unchecked")
-                    String forwardUrl = fw.getInternalUrl(path, req.getParameterMap(), frameworkParameters);
+                        String forwardUrl = fw.getInternalUrl(path, req.getParameterMap(), frameworkParameters);
 
                     if (log.isDebugEnabled()) {
                         log.debug("Received '" + forwardUrl + "' from framework, forwarding. rp:" + req.getParameterMap() + " fwp:" + frameworkParameters);

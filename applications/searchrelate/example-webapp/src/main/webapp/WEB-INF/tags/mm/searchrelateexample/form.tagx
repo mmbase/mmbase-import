@@ -37,8 +37,6 @@
     </mm:present>
 
     <mm:import externid="cancel" />
-    <mm:import externid="type" />
-    <mm:import externid="config" />
 
     <mm:present referid="cancel">
       <mm:log level="info"> CANCELLING</mm:log>
@@ -56,7 +54,7 @@
 
     <input type="submit" name="submit" value="submit" />
     <jsp:text> | </jsp:text>
-    <mm:link referids="debug?,ct?,config?,type?">
+    <mm:link referids="debug?,ct?">
       <mm:param name="cancel"></mm:param>
       <a href="${_}">cancel</a>
     </mm:link>

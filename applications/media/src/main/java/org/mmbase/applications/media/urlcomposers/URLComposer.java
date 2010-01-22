@@ -10,14 +10,17 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.urlcomposers;
 
-import java.util.*;
-
-import org.mmbase.applications.media.*;
 import org.mmbase.applications.media.builders.MediaProviders;
+import org.mmbase.applications.media.builders.MediaSources;
+import org.mmbase.applications.media.MimeType;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.HashCodeUtil;
-import org.mmbase.util.MimeType;
+import org.mmbase.applications.media.Format;
+import org.mmbase.applications.media.Codec;
+import org.mmbase.applications.media.State;
 import org.mmbase.util.images.Dimension;
+
+import java.util.*;
 
 /**
  * URLComposer is a wrapper/container class around an URL. It contains besides the

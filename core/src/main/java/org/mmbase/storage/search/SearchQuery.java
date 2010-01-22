@@ -100,11 +100,11 @@ public interface SearchQuery extends Cacheable {
      * <code>false</code> otherwise.
      */
     @Override
-    boolean equals(Object obj);
+    public boolean equals(Object obj);
 
     // javadoc is inherited
     @Override
-    int hashCode();
+    public int hashCode();
 
     /**
      * Returns a string representation of this SearchQuery.
@@ -134,7 +134,7 @@ public interface SearchQuery extends Cacheable {
      * @return A string representation of this SearchQuery.
      */
     @Override
-    String toString();
+    public String toString();
 
 
     /**
