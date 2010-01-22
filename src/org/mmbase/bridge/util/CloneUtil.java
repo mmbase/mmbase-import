@@ -61,8 +61,7 @@ public class CloneUtil {
     public static Node cloneNode(Node localNode) {
        if (isRelation(localNode)) {
           return cloneRelation(localNode);
-       }
-       else {
+       } else {
          NodeManager localNodeManager = localNode.getNodeManager();
          NodeManager nodeManager = localNode.getCloud().getNodeManager(localNodeManager.getName());
          Node newNode = nodeManager.createNode();
@@ -210,12 +209,16 @@ public class CloneUtil {
        }
        while (ri.hasNext()) {
           Relation rel = ri.nextRelation();
-          if (rel.getSource().getNumber() == sourceNode.getNumber()) {
-              cloneRelation(rel, destNode, rel.getDestination());
-          } else {
-             if (rel.getDestination().getNumber() == sourceNode.getNumber()) {
-                 cloneRelation(rel, rel.getSource(), destNode);
-             }
+          try {
+              if (rel.getSource().getNumber() == sourceNode.getNumber()) {
+                  cloneRelation(rel, destNode, rel.getDestination());
+              } else {
+                  if (rel.getDestination().getNumber() == sourceNode.getNumber()) {
+                      cloneRelation(rel, rel.getSource(), destNode);
+                  }
+              }
+          } catch (NotFoundException nfe) {
+              log.warn(nfe.getMessage());
           }
        }
     }
@@ -235,12 +238,16 @@ public class CloneUtil {
         }
         while (ri.hasNext()) {
            Relation rel = ri.nextRelation();
-           if (rel.getSource().getNumber() == sourceNode.getNumber()) {
-               cloneRelation(rel, destNode, rel.getDestination());
-           } else {
-              if (rel.getDestination().getNumber() == sourceNode.getNumber()) {
-                  cloneRelation(rel, rel.getSource(), destNode);
-              }
+           try {
+               if (rel.getSource().getNumber() == sourceNode.getNumber()) {
+                   cloneRelation(rel, destNode, rel.getDestination());
+               } else {
+                   if (rel.getDestination().getNumber() == sourceNode.getNumber()) {
+                       cloneRelation(rel, rel.getSource(), destNode);
+                   }
+               }
+           } catch (NotFoundException nfe) {
+               log.warn(nfe.getMessage());
            }
         }
      }
