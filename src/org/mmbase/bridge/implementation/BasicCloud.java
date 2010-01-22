@@ -382,7 +382,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
 
             return new BasicRelationManager(typeRel, this);
         } else {
-            log.error("Relation " + sourceManagerId + "/" + destinationManagerId + "/" + roleId + " does not exist", new Exception());
+            log.service("Relation " + sourceManagerId + "/" + destinationManagerId + "/" + roleId + " does not exist");
             return null; // calling method throws exception
         }
     }
