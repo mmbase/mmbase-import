@@ -59,7 +59,6 @@ public interface Field extends Descriptor, Comparable<Field> {
      */
     public final static int TYPE_LIST      = 12;
 
-
     /**
      * @since MMBase-1.9.1
      */
@@ -70,17 +69,34 @@ public interface Field extends Descriptor, Comparable<Field> {
     public final static int TYPE_UNKNOWN = -1;
 
 
-    /** A field's state is 'virtual' if it is not persistent in storage. */
+    /**
+     * A field's state is 'virtual' if it is not persistent in storage. The value of such a field may be implicitely
+     * calculated from the values of other fields. This can e.g. be done with {@link Processor}'s which are associated
+     * with the {@link #getDataType DataType} of this field.
+     */
     public final static int STATE_VIRTUAL    = 0;
-    /** A field's state is 'persistent' if it is persistent in storage, and editable. */
+
+    /**
+     * A field's state is 'persistent' if it is persistent in storage. Most normal fields are this.
+     */
     public final static int STATE_PERSISTENT = 2;
-    /** A field's state is 'system' if it is persistent in storage, but not editable by users. */
+
+    /**
+     * A field's state is 'system' if it is persistent in storage, but probably not editable by users. It is used to
+     * (automaticly) indicate special properties of a Node, like its number, owner and type.
+     */
     public final static int STATE_SYSTEM     = 3;
-    /** A field's state is 'system virtual' if it is not persistent in storage, nor editable by users.
-     *  @todo reserved but not used yet
+
+    /**
+     * A field's state is 'system virtual' if it is not persistent in storage, nor editable by users.
+     * @see #STATE_VIRTUAL
+     * @see #STATE_SYSTEM
      */
     public final static int STATE_SYSTEM_VIRTUAL = 4;
-    /** The field's state when it is not (yet) known. */
+
+    /**
+     * The field's state when it is not (yet) known.
+     */
     public final static int STATE_UNKNOWN    = -1;
 
 
@@ -92,8 +108,9 @@ public interface Field extends Descriptor, Comparable<Field> {
     public NodeManager getNodeManager();
 
     /**
-     * Returns this field's state identifier (virtual, persistent, system, systemvirtual).
-     *
+     * Returns this field's state identifier ({@link #STATE_VIRTUAL},{@link #STATE_PERSISTENT},{@link #STATE_SYSTEM} or
+     * {@link #STATE_SYSTEM_VIRTUAL}, in errorneous sitations it may return {@link #STATE_UNKNOWN})
+     * @see #isReadOnly();
      * @return  an <code>int</code> which identifies the state of this field
      */
     public int getState();
