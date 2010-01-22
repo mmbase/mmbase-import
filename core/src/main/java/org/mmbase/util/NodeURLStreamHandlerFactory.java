@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @since MMBase-2.0
  * @author Michiel Meeuwissen
  */
-class NodeURLStreamHandlerFactory extends ResourceLoader.URLStreamHandlerFactory {
+public class NodeURLStreamHandlerFactory extends ResourceLoader.URLStreamHandlerFactory {
 
     private static Logger log = Logging.getLoggerInstance(NodeURLStreamHandlerFactory.class);
     // these should perhaps be configurable:
@@ -62,10 +62,10 @@ class NodeURLStreamHandlerFactory extends ResourceLoader.URLStreamHandlerFactory
      * @since MMBase-1.9.2
      */
     static NodeManager getResourceBuilder() {
-        if (ResourceLoader.resourceBuilder == null) return null;
+        if (ResourceWatcher.resourceBuilder == null) return null;
         if (resourceNodeManager == null) {
             Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
-            resourceNodeManager = cloud.getNodeManager(ResourceLoader.resourceBuilder);
+            resourceNodeManager = cloud.getNodeManager(ResourceWatcher.resourceBuilder);
         }
         return resourceNodeManager;
     }
@@ -228,7 +228,7 @@ class NodeURLStreamHandlerFactory extends ResourceLoader.URLStreamHandlerFactory
             getResourceNode();
             return
                 (node != null && node.mayWrite()) ||
-                (ResourceLoader.resourceBuilder != null && ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null).getNodeManager(ResourceLoader.resourceBuilder).mayCreateNode());
+                (ResourceWatcher.resourceBuilder != null && ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null).getNodeManager(ResourceWatcher.resourceBuilder).mayCreateNode());
         }
 
         @Override
@@ -243,10 +243,10 @@ class NodeURLStreamHandlerFactory extends ResourceLoader.URLStreamHandlerFactory
         @Override
         public OutputStream getOutputStream() throws IOException {
             if (getResourceNode() == null) {
-                if (ResourceLoader.resourceBuilder == null) return null;
+                if (ResourceWatcher.resourceBuilder == null) return null;
 
                 Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
-                NodeManager nm = cloud.getNodeManager(ResourceLoader.resourceBuilder);
+                NodeManager nm = cloud.getNodeManager(ResourceWatcher.resourceBuilder);
                 node = nm.createNode();
                 node.setContext(DEFAULT_CONTEXT);
                 String resourceName = (parent.getContext().getPath() + name).substring(1);

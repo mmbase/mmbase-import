@@ -409,9 +409,9 @@ public class MMBase extends ProcessorModule {
 
         MMObjectBuilder resources = getBuilder("resources");
         if (resources != null && resources.getClass().getName().equals("org.mmbase.module.builders.Resources")) {
-            ResourceLoader.setResourceBuilder("resources");
+            org.mmbase.util.ResourceWatcher.setResourceBuilder("resources");
         } else {
-            ResourceLoader.setResourceBuilder(null);
+            org.mmbase.util.ResourceWatcher.setResourceBuilder(null);
         }
 
         EventManager.getInstance().addEventListener(org.mmbase.cache.NodeCache.getCache());
