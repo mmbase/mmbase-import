@@ -79,13 +79,13 @@ public interface Field extends Descriptor, Comparable<Field> {
     public final static int STATE_VIRTUAL    = 0;
 
     /**
-     * A field's {@link #getState state is} 'persistent' if it is persistent in storage. Most normal fields are this.
+     * A field's {@link #getState state} is 'persistent' if it is persistent in storage. Most normal fields are this.
      */
     public final static int STATE_PERSISTENT = 2;
 
     /**
      * A field's {@link #getState state} is 'system' if it is persistent in storage, but probably not editable by users (The default value
-     * of {@link #isReadonly} is true). It is used to
+     * of {@link #isReadOnly} is true). It is used to
      * (automaticly) adminstrate special properties of a Node, like its number, owner and type (these fields are
      * available always), but also e.g. 'created' and 'lastmodified' fields can be marked as 'system' fields.
      */
