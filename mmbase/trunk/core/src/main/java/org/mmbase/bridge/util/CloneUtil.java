@@ -71,7 +71,8 @@ public class CloneUtil {
                 if (field.getState() == Field.STATE_PERSISTENT) {
                     if (!(fieldName.equals("owner") || fieldName.equals("number") ||
                           fieldName.equals("otype") ||
-                          (fieldName.indexOf("_") == 0))) {
+                          (fieldName.indexOf("_") == 0))) { // I think these fields's state are SYSTEM, so hence this
+                                                            // check is superfloous.
                         cloneNodeField(localNode, newNode, field);
                     }
                 }
