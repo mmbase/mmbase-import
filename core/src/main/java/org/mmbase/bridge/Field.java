@@ -73,7 +73,7 @@ public interface Field extends Descriptor, Comparable<Field> {
 
     /**
      * A field's {@link #getState state} is 'virtual' if it is not persistent in storage. The value of such a field may be implicitely
-     * calculated from the values of other fields. This can e.g. be done with {@link Processor}'s which are associated
+     * calculated from the values of other fields. This can e.g. be done with {@link org.mmbase.datatypes.processors.Processor}'s which are associated
      * with the {@link #getDataType DataType} of this field.
      */
     public final static int STATE_VIRTUAL    = 0;
