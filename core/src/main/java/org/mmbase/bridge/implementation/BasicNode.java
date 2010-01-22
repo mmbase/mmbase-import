@@ -15,7 +15,6 @@ import java.util.*;
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
-import org.mmbase.cache.CachePolicy;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
