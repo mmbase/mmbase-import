@@ -58,16 +58,14 @@ public class CloneUtil {
      * @return the newly created node in the other cloud
      */
     public static Node cloneNode(Node localNode) {
-        if (isRelation(localNode)) {
+        if (localNode.isRelation()) {
             return cloneRelation(localNode);
         } else {
             NodeManager localNodeManager = localNode.getNodeManager();
             NodeManager nodeManager = localNode.getCloud().getNodeManager(localNodeManager.getName());
             Node newNode = nodeManager.createNode();
 
-            FieldIterator fields = localNodeManager.getFields().fieldIterator();
-            while (fields.hasNext()) {
-                Field field = fields.nextField();
+            for (Field field : localNodeManager.getFields()) {
                 String fieldName = field.getName();
 
                 if (field.getState() == Field.STATE_PERSISTENT) {
@@ -174,9 +172,7 @@ public class CloneUtil {
         }
         Relation newRelation = relationManager.createRelation(sourceNode, destNode);
 
-        FieldIterator fields = sourceRelation.getNodeManager().getFields().fieldIterator();
-        while (fields.hasNext()) {
-            Field field = fields.nextField();
+        for (Field field : sourceRelation.getNodeManager().getFields()) {
             String fieldName = field.getName();
 
             if (field.getState() == Field.STATE_PERSISTENT) {
@@ -200,12 +196,7 @@ public class CloneUtil {
      * @param destNode destination node
      */
     public static void cloneRelations(Node sourceNode, Node destNode) {
-        RelationIterator ri = sourceNode.getRelations().relationIterator();
-        if (ri.hasNext()) {
-            log.debug("the local node has relations");
-        }
-        while (ri.hasNext()) {
-            Relation rel = ri.nextRelation();
+        for (Relation rel : sourceNode.getRelations()) {
             if (rel.getSource().getNumber() == sourceNode.getNumber()) {
                 cloneRelation(rel, destNode, rel.getDestination());
             } else {
@@ -225,12 +216,7 @@ public class CloneUtil {
      * @param managerName manager of the other nodes which the relations are replicated for.
      */
     public static void cloneRelations(Node sourceNode, Node destNode, String relationName, String managerName) {
-        RelationIterator ri = sourceNode.getRelations(relationName, managerName).relationIterator();
-        if (ri.hasNext()) {
-            log.debug("the local node has relations");
-        }
-        while (ri.hasNext()) {
-            Relation rel = ri.nextRelation();
+        for (Relation rel : sourceNode.getRelations(relationName, managerName)) {
             if (rel.getSource().getNumber() == sourceNode.getNumber()) {
                 cloneRelation(rel, destNode, rel.getDestination());
             } else {
@@ -248,36 +234,11 @@ public class CloneUtil {
      * @param destNode destination/remote node
      */
     public static void cloneAliasses(Node localNode, Node destNode) {
-        StringList list = localNode.getAliases();
-        for (int x = 0; x < list.size(); x++) {
-            destNode.createAlias(list.getString(x));
+        for (String a : localNode.getAliases()) {
+            destNode.createAlias(a);
         }
     }
 
-    /**
-     * quick test to see if node is a relation by testing fieldnames
-     * @param node Possible relation
-     * @return <code>true</code> when relation fields present
-     */
-    protected static boolean isRelation(Node node) {
-        FieldIterator fi = node.getNodeManager().getFields().fieldIterator();
-        int count = 0;
-
-        while (fi.hasNext()) {
-            String name = fi.nextField().getName();
-
-            if (name.equals("rnumber") || name.equals("snumber") ||
-                name.equals("dnumber")) {
-                count++;
-            }
-        }
-
-        if (count == 3) {
-            return true;
-        }
-
-        return false;
-    }
 
 }
 
