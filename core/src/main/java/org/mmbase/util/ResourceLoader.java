@@ -291,14 +291,52 @@ public class ResourceLoader extends ClassLoader {
             configRootNeedsInit = false;
             configRoot.roots.clear();
 
-            configRoot.roots.addAll(Arrays.asList(new NodeURLStreamHandlerFactory().createURLStreamHandler(configRoot, Type.CONFIG)));
-            configRoot.roots.addAll(Arrays.asList(new ApplicationContextFileURLStreamHandlerFactory().createURLStreamHandler(configRoot, Type.CONFIG)));
-            configRoot.roots.addAll(Arrays.asList(new MMBaseConfigSettingFileURLStreamHandlerFactory().createURLStreamHandler(configRoot, Type.CONFIG)));
-            configRoot.roots.addAll(Arrays.asList(new ConfigServletResourceURLStreamHandlerFactory().createURLStreamHandler(configRoot, Type.CONFIG)));
-            configRoot.roots.addAll(Arrays.asList(new ClassesFileURLStreamHandlerFactory().createURLStreamHandler(configRoot, Type.CONFIG)));
-            configRoot.roots.addAll(Arrays.asList(new ConfigClassLoaderURLStreamHandlerFactory().createURLStreamHandler(configRoot, Type.CONFIG)));
-            configRoot.roots.addAll(Arrays.asList(new FullyClassifiedClassLoaderURLStreamHandlerFactory().createURLStreamHandler(configRoot, Type.CONFIG)));
+            try {
+                final String name = "org/mmbase/config/utils/resourceloader_" + Type.CONFIG;
+                final List<URL> urls = Collections.list(ResourceLoader.class.getClassLoader().getResources(name));
+                log.service("Configuration root not yet defined. Using '" + name + "' (" + urls + ") to do that.");
 
+                for (URL url : urls) {
+                    InputStream inputStream = url.openStream();
+                    if (inputStream != null) {
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                        int weight = 0;
+                        while (true) {
+                            String line = reader.readLine();
+                            if (line == null) break;
+                            if (line.startsWith("#")) continue; // support for comments
+                            line = line.trim();
+                            String[] parts = line.split(":");
+                            String className;
+                            if (parts.length == 2) {
+                                className = parts[1];
+                                weight = Integer.parseInt(parts[0]);
+                            } else {
+                                className = parts[0];
+                            }
+                            try {
+                                Class<URLStreamHandlerFactory> clazz = (Class<URLStreamHandlerFactory>) Class.forName(className);
+                                URLStreamHandlerFactory fact = clazz.newInstance();
+                                PathURLStreamHandler[] handlers = fact.createURLStreamHandler(configRoot, Type.CONFIG);
+                                for (PathURLStreamHandler handler : handlers) {
+                                    handler.setWeight(weight);
+                                    configRoot.roots.add(handler);
+                                    weight++;
+                                }
+
+                            } catch (Exception e) {
+                                log.error(url + ":" + line + ":" + e.getClass().getName() + ":" + e.getMessage());
+                            }
+                        }
+                        reader.close();
+
+                    }
+                }
+            } catch (IOException ioe) {
+                log.error(ioe.getMessage(), ioe);
+            }
+            Collections.sort(configRoot.roots);
+            //System.out.println("CONFIG: " + configRoot.roots);
         }
         return configRoot;
     }
@@ -1017,7 +1055,7 @@ public class ResourceLoader extends ClassLoader {
 
         protected final ResourceLoader parent;
 
-        protected final int weight = 0;
+        protected int weight = 0;
 
         PathURLStreamHandler(ResourceLoader p) {
             this.parent = p;
@@ -1065,14 +1103,25 @@ public class ResourceLoader extends ClassLoader {
 
         abstract Set<String> getPaths(Set<String> results, Pattern pattern,  boolean recursive,  boolean directories);
 
+        /**
+         * @MMBase-2.0
+         */
+        public void setWeight(int w) {
+            weight = w;
+        }
+
         public int compareTo(PathURLStreamHandler o) {
-            return o.weight - weight;
+            return weight - o.weight;
         }
         /**
          * @since MBase-2.0
          */
         public Integer getResourceNode(String name) {
             return null;
+        }
+        @Override
+        public String toString() {
+            return "" + weight + ":" + super.toString();
         }
     }
 
