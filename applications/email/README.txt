@@ -1,52 +1,54 @@
-Email application allows you to send emails from mmbase, it can be used in several ways and can mail to one several or groups of users. It also allows more complex mails that as multipart mail's and dynamicly generated mails.
+The email application allows you to send email from MMBase. It can be used in several ways: send mail from a form, mail a groups of users, use it as smtp mail etc. Refer to the documentation and examples.
 
-web-app = the web-app you installed mmbase-webapp in for example tomcat/webapps/ROOT or tomcat/webapps/mmbase-webbapp for tomcat
 
-How to install:
+INSTALLATION
+------------
 
-- build the applications with : ant email (from the applications dir)
+- Build the application: 
+    mvn clean install (from this directory)
 
-- copy build/mmbase-email.jar to your web-app/WEB-INF/lib/
+- Copy the resulting jar to the your web-app's '/WEB-INF/lib/' directory.
 
-- make sure your application server has access to mail.jar and activation.jar
-  for example by placing them (for tomcat) in commons/endorced.
+- Make sure your application server has access to 'mail.jar' and 'activation.jar'. In the case of Tomcat: by placing them in 'commons/endorced' (version 5) or 'lib' (version 6). 
 
-copy examples/* to our web-app/emailexamples/ (for example)
+- Copy the email 'examples' directory to your web-app if it isn't already in 'mmbase/examples' or 'mmexamples'.
 
-setup your mailhosts in your application server for example
-in tomcat do (in this example its the ROOT app) inside the <Engine><Host> tag:
 
-        <!-- Tomcat Root Context -->
-          <Context path="" docBase="ROOT" debug="0">
+CONFIGURATION
+-------------
+Setup your mail host in your application server. For example for Tomcat you can specify the following inside a context:
 
-      <!-- You should use the following with Tomcat 5.5 and up  (active) -->
-	  <Resource name="mail/Session" auth="Container" type="javax.mail.Session" mail.smtp.host="smtp.xs4all.nl" /> 
-      <!-- end of Tomcat 5.5 -->
+a. For Tomcat (versions 5.5 and up) for example the ROOT webapp:
+    
+    <Context path="" docBase="ROOT" debug="0">
+      <!-- there is probably more stuff here... -->
+      
+      <Resource name="mail/Session" auth="Container" type="javax.mail.Session"
+          mail.smtp.host="smtp.xs4all.nl" /> 
+    </Context>
+    
+b. For older versions of Tomcat (< 5.5)
 
-      <!-- for older then 5.5.0 tomcats (inactive)
-          <Resource name="mail/Session" auth="Container" type="javax.mail.Session"/>
-            <ResourceParams name="mail/Session">
-            <parameter>
-              <name>mail.smtp.host</name>
-              <value>smtp.xs4all.nl</value>
-            </parameter>
-          </ResourceParams> 
-      -->
-          <ResourceLink name="linkToGlobalResource"
-                    global="simpleValue"
-                    type="java.lang.Integer"/>
-        </Context>
+    <Context path="" docBase="ROOT" debug="0">
+      <Resource name="mail/Session" auth="Container" type="javax.mail.Session"/>
+        <ResourceParams name="mail/Session">
+          <parameter>
+            <name>mail.smtp.host</name>
+            <value>smtp.xs4all.nl</value>
+          </parameter>
+        </ResourceParams> 
+        <ResourceLink name="linkToGlobalResource"
+          global="simpleValue"
+          type="java.lang.Integer"/>
+    </Context>
 
-restart your application server or webapp.
+Restart your application server or webapp. You should now see something like :
 
-You should now see something like :
+    INFO    mmbase.applications.email.SendMail - Module SendMail started (datasource = mail/Session -> {mail.transport.protocol=smtp, scope=Shareable, auth=Container, mail.smtp.host=smtp.xs4all.nl})
 
-INFO    mmbase.applications.email.SendMail - Module SendMail started (datasource = mail/Session -> {mail.transport.protocol=smtp, scope=Shareable, auth=Container, mail.smtp.host=smtp.xs4all.nl})
+Try out the examples!
 
-Now you can use the examples found you installed !!
-
-**** DON'T FORGET TO CHANGE THE TO AND FROM IN EACH EXAMPLE***
-
-at best i will get more mail, but probably your isp will block
+**** DON'T FORGET TO CHANGE THE TO AND FROM IN EACH EXAMPLE ***
+At best I will get more mail, but probably your ISP will block
 your mail.
  
