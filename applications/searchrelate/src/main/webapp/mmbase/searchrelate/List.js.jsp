@@ -56,7 +56,6 @@ function List(d) {
     this.search     = this.search     == 'true';
 
 
-
     // Whether every user input is currently valid (whith respect of both the list's length and  MMBaseValidator information).
     this.valid = true;
     // The reason(s) why it would not be valid.
@@ -70,16 +69,26 @@ function List(d) {
         this.form.valids = {};
     }
 
+    this.uploader              = new MMUploader();
+    this.uploader.uid          = this.rid;
+    this.uploader.statusElement = this.find("status", "span")[0];
+    this.uploader.transaction   = this.formtag;
+
     if (this.sortable) {
         if (! this.autosubmit) {
+            //console.log("Found order " + this.rid + " '" + this.order + "'");
             if (this.order != "") {
                 var o = this.order.split(",");
                 for (node in o) {
                     var nodeli = self.getLiForNode(o[node]);
-                    var ol = $(this.div).find("ol")[0];
-                    if (nodeli.length > 0) {
-                        $(nodeli[0]).addClass("pos-" + node);
-                        ol.appendChild(nodeli[0]);
+                    if (nodeli != null) {
+                        var ol = $(this.div).find("ol")[0];
+                        if (nodeli.length > 0) {
+                            $(nodeli[0]).addClass("pos-" + node);
+                            ol.appendChild(nodeli[0]);
+                        } else {
+                            //console.log("No li for node " + o[node]);
+                        }
                     }
                 }
             }
@@ -91,7 +100,6 @@ function List(d) {
                 }
             });
     }
-
 
 
     this.lastCommit = new Date(); // now
@@ -154,8 +162,11 @@ function List(d) {
             self.bindCreate(this);
     });
 
+    //console.log("Init " + this.rid);
+
     // And the delete and unlink buttons.
     this.find("delete", "a").each(function() {
+            //console.log("Found");
             self.bindDelete(this);
     });
 
@@ -193,9 +204,6 @@ function List(d) {
 
     this.logEnabled = false;
 
-    // Currently running uploads
-    this.uploading = {};
-    this.uploadingSize = 0;
 
     // Whether the user already left the page (this is during the short time between that, and handling the consequences
     // for that)
@@ -208,11 +216,13 @@ function List(d) {
     if ($(this.div).hasClass("POST")) {
         $(this.div).trigger("mmsrRelatedNodesPost", [self]);
         this.afterPost();
+        //console.log("POSTED");
+    } else {
+        //console.log("not posted");
     }
 
     // Notify that we are ready with initialization.
     $(this.div).trigger("mmsrRelatedNodesReady", [self]);
-
 
 }
 
@@ -649,70 +659,6 @@ List.prototype.getListParameters = function() {
     return params;
 }
 
-// UPLOAD related functionality.
-// This should perhaps be migrated to a standalone javascript class, because it seems usefull also on other places
-
-List.prototype.uploadProgress = function(fileid) {
-    if (this.uploading[fileid]) {
-        this.find("status", "span").load("${mm:link('/mmbase/upload/progress.jspx')}");
-    }
-}
-
-List.prototype.upload = function(fileid) {
-    var self = this;
-    if (self.uploading[fileid]) {
-        // uploading already
-        return;
-    }
-    self.uploading[fileid] = true;
-    self.uploadingSize++;
-    var fileItem = $("#" + fileid);
-    var li = fileItem.parents("li");
-    var node = self.getNodeForLi(li);
-    var progress = function() {
-        self.uploadProgress(fileid);
-        if (self.uploading[fileid]) {
-            setTimeout(progress, 1000);
-        }
-    };
-    progress();
-    $.ajaxFileUpload ({
-            url: "${mm:link('/mmbase/searchrelate/list/upload.jspx')}" + "?rid=" + self.rid + "&name=" + fileItem.attr("name") + "&n=" + node,
-            secureuri: false,
-            fileElementId: fileid,
-            dataType: 'xml',
-            success: function (data, status) {
-                if(typeof(data.error) != 'undefined') {
-                    if(data.error != '') {
-                        alert(data.error);
-                    } else {
-                        alert(data.msg);
-                    }
-                } else {
-                    try {
-                        var fileItem = $("#" + fileid);
-                        fileItem.val(null);
-                        fileItem.prevAll(".mm_gui").remove();
-                        var created = $(data).find("div.fieldgui .mm_gui");
-                        fileItem.before(created);
-                    } catch (e) {
-                        alert(e);
-                    }
-
-                }
-                delete self.uploading[fileid];
-                self.uploadingSize--;
-                self.status('<fmt:message key="uploaded" />', true);
-            },
-            error: function (data, status, e) {
-                alert(e);
-                delete self.uploading[fileid];
-                self.uploadingSize--;
-            }
-        }
-        )
-    return false;
-}
 
 /**
  * @param stale Number of millisecond the content may be out of date. Defaults to 5 s. But on unload it is set to 0.
@@ -725,7 +671,7 @@ List.prototype.commit = function(stale, leavePage) {
                 if (this.type == 'file') {
                     if ($(this).val().length > 0 && ! $(this).hasClass("invalid")) {
                         //console.log("Uploading " + this.id);
-                        self.upload(this.id);
+                        self.uploader.upload(this.id);
                     }
                 }
             });
@@ -893,6 +839,7 @@ List.prototype.getOrder = function(ol) {
     params.order = order;
     var self = this;
     this.loader();
+    //console.log("Saving order for " + self.rid);
     $.ajax({ type: "POST",
                 async: true,
                 url: "${mm:link('/mmbase/searchrelate/list/order.jspx')}",
@@ -972,6 +919,7 @@ List.prototype.getOriginalPosition  = function(li) {
 
 List.prototype.afterPost = function() {
     this.log("posted!" + this.order);
+    //console.log("posted!" + this.rid + " " + this.order);
     if (this.sortable) {
         // Submit the new order seperately
         var order = "";
@@ -988,6 +936,7 @@ List.prototype.afterPost = function() {
                 var nodeNumber = self.getNodeForLi(this);
 		order += nodeNumber;
                 if (nodeNumber[0] === "-") {
+                    // contained new nodes
                     needsSave = true;
                 }
                 var originalPos =  self.getOriginalPosition(this);
@@ -1014,7 +963,7 @@ List.prototype.afterPost = function() {
                 }
                 });
         } else {
-            //console.log("No need to save order for " + order + " " + originalOrder);
+            //console.log("No need to save order for " + self.rid + " " + order + " " + originalOrder);
         }
     }
 }
