@@ -9,9 +9,9 @@ INSTALLATION
 
 - Copy the resulting jar to the your web-app's '/WEB-INF/lib/' directory.
 
-- Make sure your application server has access to 'mail.jar' and 'activation.jar'. In the case of Tomcat: by placing them in 'commons/endorced' (version 5) or 'lib' (version 6). 
+- Make sure your application server has access to 'mail.jar' and 'activation.jar'. In the case of Tomcat: by placing them in 'commons/endorced' (version 5) or 'lib' (version 6), or your webapp's 'WEB-INF/lib' directory. You can download them at: http://java.sun.com/products/javamail/
 
-- Copy the email 'examples' directory to your web-app if it isn't already in 'mmbase/examples' or 'mmexamples'.
+- If you would like to try out the examples copy the 'examples' directory to your web-app, if it isn't already installed in 'mmbase/examples' or 'mmexamples'.
 
 
 CONFIGURATION
