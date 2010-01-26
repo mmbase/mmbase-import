@@ -103,6 +103,7 @@
           <include>org/mmbase/config/functions/**</include>                  <!-- Used in test cases .. -->
           <include>org/mmbase/config/datatypes.xml</include>                  <!-- Used in test cases .. -->
           <include>org/mmbase/config/builders/core/**</include>                  <!-- Used in Mock/test cases .. -->
+          <include>org/mmbase/config/utils/resourceloader**</include>                 
 
 
           <include>org/mmbase/framework/**</include>                  <!-- Used in taglib .. -->
