@@ -79,8 +79,9 @@ When you want to place a configuration file then you have several options, wich 
   </li>
 </ol>
  * <p>
+1685
  *   Resources which do not reside in the MMBase configuration repository, can also be handled. Those can be resolved relatively to the web root, using {@link #getWebRoot()}.
- * </p>
+12390 * </p>
  *
  * <p>Resources can  programmaticly created or changed by the use of {@link #createResourceAsStream}, or something like {@link #getWriter}.</p>
  *
@@ -306,11 +307,13 @@ public class ResourceLoader extends ClassLoader {
                             if (line == null) break;
                             if (line.startsWith("#")) continue; // support for comments
                             line = line.trim();
-                            String[] parts = line.split(":");
+                            String[] parts = line.split(":", 2);
                             String className;
                             if (parts.length == 2) {
                                 className = parts[1];
-                                weight = Integer.parseInt(parts[0]);
+                                if (parts[0].length() > 0) {
+                                    weight = Integer.parseInt(parts[0]);
+                                }
                             } else {
                                 className = parts[0];
                             }
