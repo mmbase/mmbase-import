@@ -1042,7 +1042,22 @@ public class BasicSqlHandler implements SqlHandler {
 
         // Test for at least 1 child.
         if (childs.isEmpty()) {
-            throw new IllegalStateException("Composite constraint has no child (at least 1 child is required).");
+            if ((compositeConstraint.getLogicalOperator() == CompositeConstraint.LOGICAL_AND && ! compositeConstraint.isInverse())
+                || (compositeConstraint.getLogicalOperator() == CompositeConstraint.LOGICAL_OR &&  compositeConstraint.isInverse())
+                ) {
+                // An empty AND constraint is the same as no constraint at all
+                // An empty inverse OR constraint too
+                sb.append("(1 = 1)");
+                return;
+            }
+            if ((compositeConstraint.getLogicalOperator() == CompositeConstraint.LOGICAL_OR && ! compositeConstraint.isInverse())
+                || (compositeConstraint.getLogicalOperator() == CompositeConstraint.LOGICAL_AND && compositeConstraint.isInverse())) {
+                // OR means 'at least one'. So if no childs, it's always false.
+                // AND means 'all', so inverse ALL is always false, because if there are none, they are all always true.
+                sb.append("(1 = 0)");
+                return;
+
+            }
         }
 
         boolean hasMultipleChilds = childs.size() > 1;
