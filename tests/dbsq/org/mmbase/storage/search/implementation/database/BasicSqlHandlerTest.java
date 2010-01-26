@@ -1439,12 +1439,10 @@ public class BasicSqlHandlerTest extends TestCase {
         BasicCompositeConstraint compositeConstraint =
         new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
 
-        try {
-            // Empty composite constraint, should throw IllegalStateException.
-            instance.appendCompositeConstraintToSql(sb, compositeConstraint,
-            query, false, false, instance);
-            fail("Empty composite constraint, should throw IllegalStateException.");
-        } catch (IllegalStateException e) {}
+        // Empty composite constraint
+        instance.appendCompositeConstraintToSql(sb, compositeConstraint,
+                                                query, false, false, instance);
+        assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("(1 = 1)"));
 
         sb.setLength(0);
         compositeConstraint.addChild(constraint2); // Add first child constraint.
