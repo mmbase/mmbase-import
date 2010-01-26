@@ -9141,6 +9141,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>id</name>
       <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
       <name>nodemanager</name>
