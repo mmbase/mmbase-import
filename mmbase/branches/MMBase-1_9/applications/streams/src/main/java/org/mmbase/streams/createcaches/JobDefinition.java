@@ -35,7 +35,7 @@ import java.io.*;
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-class JobDefinition implements Serializable {
+public class JobDefinition implements Serializable {
     private static final long serialVersionUID = 0L;
     final Transcoder transcoder;
     final List<Analyzer> analyzers;
