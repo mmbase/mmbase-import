@@ -583,6 +583,9 @@ public class Users extends MMObjectBuilder implements UserProvider {
             rankCache.remove(Integer.valueOf(number));
 
             MMObjectNode node = getNode(number);
+            if (node == null) {
+                return true;
+            }
             Map users = new HashMap();
             synchronized(userCache.getLock()) {
                 Iterator i = userCache.entrySet().iterator();
