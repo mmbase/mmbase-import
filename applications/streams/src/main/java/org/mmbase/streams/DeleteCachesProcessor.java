@@ -55,7 +55,7 @@ public class DeleteCachesProcessor implements CommitProcessor {
             NodeQuery q = caches.createQuery();
             Queries.addConstraint(q, Queries.createConstraint(q, "id", FieldCompareConstraint.EQUAL, node));
             for (Node cache : caches.getList(q)) {
-                LOG.info("deleting streamsourcescaches #" + cache.getNumber());
+                LOG.service("deleting streamsourcescaches #" + cache.getNumber());
                 if (cache.mayDelete()) {
                     cache.delete(true);
                 } else {
