@@ -502,20 +502,24 @@ public class DocumentReader  {
      * @return Leaf element of the path
      */
     public static Element getElementByPath(Element e, String path) {
-        StringTokenizer st = new StringTokenizer(path,".");
+        StringTokenizer st = new StringTokenizer(path, ".");
         if (!st.hasMoreTokens()) {
             // faulty path
             log.error("No tokens in path");
             return null;
         } else {
+            if (e == null) {
+                throw new NullPointerException("Cannot follow path on element which is NULL");
+            }
             String root = st.nextToken();
-            if (e.getLocalName().equals("error")) {
-                // path should start with document root element
+            final String localName = e.getLocalName();
+
+            if ("error".equals(localName)) { // WTF?
                 log.error("Error occurred : (" + getElementValue(e) + ")");
                 return null;
-            } else if (!e.getLocalName().equals(root)) {
+            } else if (! root.equals(localName)) {
                 // path should start with document root element
-                log.error("path [" + path + "] with root (" + root + ") doesn't start with root element (" + e.getLocalName() + "): incorrect xml file" +
+                log.error("path [" + path + "] with root (" + root + ") doesn't start with root element (" + localName + "): incorrect xml file" +
                           "(" + e.getOwnerDocument().getDocumentURI() + ")");
                 return null;
             }
@@ -524,10 +528,14 @@ public class DocumentReader  {
                 String tag = st.nextToken();
                 NodeList nl = e.getChildNodes();
                 for(int i = 0; i < nl.getLength(); i++) {
-                    if (! (nl.item(i) instanceof Element)) continue;
+                    if (! (nl.item(i) instanceof Element)) {
+                        continue;
+                    }
                     e = (Element) nl.item(i);
                     String tagName = e.getLocalName();
-                    if (tagName == null || tagName.equals(tag) || "*".equals(tag)) continue OUTER;
+                    if (tagName == null || tagName.equals(tag) || "*".equals(tag)) {
+                        continue OUTER;
+                    }
                 }
                 // Handle error!
                 return null;
