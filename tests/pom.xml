@@ -205,6 +205,11 @@ See http://www.MMBase.org/license
        <artifactId>log4j</artifactId>
        <version>1.2.14</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant-apache-log4j</artifactId>
+      <version>1.7.1</version>
+    </dependency>
 
   </dependencies>
 
