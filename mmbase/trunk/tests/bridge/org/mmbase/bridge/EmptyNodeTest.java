@@ -32,6 +32,7 @@ public class EmptyNodeTest extends NodeTest {
             node = cloud.getNodeManager("aa").createNode();
             node.commit();
         } catch (Throwable e) {
+            log.error(e.getMessage(), e);
             Throwable c = e.getCause();
             while (c != null) {
                 log.error("CAUSE:" + c.getMessage(), c);
