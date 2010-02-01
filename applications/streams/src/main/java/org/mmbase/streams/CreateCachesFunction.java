@@ -26,6 +26,7 @@ import org.mmbase.streams.createcaches.Processor;
 import org.mmbase.util.functions.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
+import org.mmbase.storage.search.FieldCompareConstraint;
 import org.mmbase.security.ActionRepository;
 import org.mmbase.datatypes.processors.*;
 import org.mmbase.util.logging.*;
@@ -41,7 +42,8 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
 
     private static final Logger LOG = Logging.getLoggerInstance(CreateCachesFunction.class);
     public CreateCachesFunction() {
-        super("createcaches");
+        //super("createcaches");
+        super("createcaches", new Parameter<Boolean>("retrigger_jobs", Boolean.class, Boolean.FALSE));
     }
 
 
@@ -49,7 +51,7 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
         CommitProcessor commitProcessor = url.getDataType().getCommitProcessor();
         if (commitProcessor instanceof ChainedCommitProcessor) {
             ChainedCommitProcessor chain = (ChainedCommitProcessor) commitProcessor;
-            LOG.info("Lookin in " + chain.getProcessors());
+            LOG.service("Lookin in " + chain.getProcessors());
             for (CommitProcessor cp : chain.getProcessors()) {
                 if (cp instanceof Processor) {
                     return (Processor) cp;
@@ -67,23 +69,32 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
 
     @Override
     protected Boolean getFunctionValue(final Node node, final Parameters parameters) {
-        if (node.getNumber() > 0 && node.getCloud().may(ActionRepository.getInstance().get("streams", "retrigger_jobs"), null)) {
+        if (node.getNumber() > 0 
+                && node.getCloud().may(ActionRepository.getInstance().get("streams", "retrigger_jobs"), null)) {
             LOG.info("Recreating caches for " + node.getNumber());
             final Field url = node.getNodeManager().getField("url");
 
             {
-                NodeList list = SearchUtil.findNodeList(node.getCloud(), node.getNodeManager().getProperty("org.mmbase.streams.cachestype"), "id", node.getNumber());
-                // BUG: when the streamsourcescaches are initially of the wrong type, they don't get deleted
+                String cachestype = node.getNodeManager().getProperty("org.mmbase.streams.cachestype");
+                NodeList list = SearchUtil.findNodeList(node.getCloud(), cachestype, "id", node.getNumber());
+                
+                if (list.size() < 1 && cachestype.startsWith("video")) {
+                    // when the streamsourcescaches are initially of the wrong type, they don't get deleted
+                    list = SearchUtil.findNodeList(node.getCloud(), "audiostreamsourcescaches", "id", node.getNumber());
+                } else if (list.size() < 1 && cachestype.startsWith("audio")) {
+                    list = SearchUtil.findNodeList(node.getCloud(), "videostreamsourcescaches", "id", node.getNumber());
+                }
+                
                 for (Node cache : list) {
                     cache.delete(true);
-                    LOG.service("Deleted " + cache.getNumber());
+                    LOG.service("deleted streamsourcescaches #" + cache.getNumber());
                 }
             }
 
             {
                 final Processor cc = getCacheCreator(url);
                 if (cc != null) {
-                    LOG.info("Calling " + cc);
+                    LOG.service("Calling " + cc);
                     cc.createCaches(node.getCloud().getNonTransactionalCloud(), node.getNumber());
                     return true;
                 } else {
