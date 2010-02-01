@@ -205,7 +205,9 @@ public class OAlias extends MMObjectBuilder {
             if (ctype.equals("c") || ctype.equals("n")) {
                 // should remove aliasses referencing this number from numberCache here
                 MMObjectNode node = getNode(number);
-                numberCache.put(node.getStringValue("name"), node.getIntegerValue("destination"));
+                if (node != null) {
+                    numberCache.put(node.getStringValue("name"), node.getIntegerValue("destination"));
+                }
             } else if (ctype.equals("d")) {
                 Integer n = Integer.valueOf(number);
                 Iterator<Map.Entry<String,Integer>> i = numberCache.entrySet().iterator();
