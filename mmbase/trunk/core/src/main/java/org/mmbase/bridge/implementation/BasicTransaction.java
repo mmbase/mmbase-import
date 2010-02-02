@@ -195,8 +195,8 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                     log.debug("Commit transaction '" + transactionName + "' with " + getCoreNodes().size() + " nodes");
                 }
 
-
                 BasicCloudContext.transactionManager.commit(userContext, transactionName);
+
 
 
             } catch (TransactionManagerException e) {
@@ -207,6 +207,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         }
 
         committed = true;
+        notifyAll();
         return true;
     }
 
@@ -249,8 +250,10 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(getAccount(), id);
             // store new temporary node in transaction
             add(currentObjectContext);
-            node.setNode(BasicCloudContext.tmpObjectManager.getNode(getAccount(), id));
+            MMObjectNode newNodeRef = BasicCloudContext.tmpObjectManager.getNode(getAccount(), id);
+            node.setNode(newNodeRef);
             //  check nodetype afterwards?
+            node.temporaryNodeId = node.getNumber();
 
             if (! nodes.containsKey(node.getStringValue("_number"))) {
                 nodes.put(node.getStringValue("_number"), node);
@@ -422,7 +425,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     @Override
     public String toString() {
         UserContext uc = getUser();
-        return  "BasicTransaction " + count +  "'" + getName() + "' of " + (uc != null ? uc.getIdentifier() : "NO USER YET") + " @" + Integer.toHexString(hashCode());
+        return  "BasicTransaction " + count +  "'" + getName() + "' " + " @" + Integer.toHexString(hashCode()) + " of " + parentCloud;
     }
 
     @Override
@@ -476,15 +479,29 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     @Override
     public Node getNode(String nodeNumber) throws NotFoundException {
         if (nodeNumber == null) {
-            return super.getNode(nodeNumber);
+            throw new NotFoundException();
         }
         String[] na  = nodeNumber.split("_");
         if (na.length > 1) {
             if (super.hasNode(na[na.length -1])) {
-                return super.getNode(na[na.length - 1]);
+                nodeNumber = na[na.length - 1];
             }
         }
-        return super.getNode(nodeNumber);
+
+        MMObjectNode node;
+        try {
+            node = BasicCloudContext.tmpObjectManager.getNode(getAccount(), nodeNumber);
+        } catch (RuntimeException e) {
+            throw new NotFoundException("Something went wrong while getting node with number '" + nodeNumber + "': " + e.getMessage() + " by cloud with account " + getAccount(), e);
+        }
+
+        BasicNode n = makeNode(node, nodeNumber);
+        add(n);
+        return n;
+    }
+
+    @Override
+    protected synchronized void afterCommit(BasicNode n) {
     }
 }
 
