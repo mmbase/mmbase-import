@@ -18,8 +18,9 @@
   <!-- When using template attribute, you may want to specifiy the fill color to. Defaults to black -->
   <jsp:directive.attribute name="fill"     type="java.lang.String" />
 
+  <jsp:directive.attribute name="background" type="java.lang.String" />
+
   <!-- If the key is stated explicitely, no new key is generated, but this given one is shown. -->
-  
   <jsp:directive.attribute name="key"      type="java.lang.String" />
   <jsp:declaration>
     static final byte[] gifBytes = new byte[]{
@@ -57,6 +58,7 @@
     </mm:write>
   </c:if>
   <mm:import jspvar="fillColor" from="this" externid="fill">000000</mm:import>
+  <mm:import jspvar="backgroundColor" from="this" externid="background">white</mm:import>
   <jsp:scriptlet>
     String base = "temporary_images";
   </jsp:scriptlet>
@@ -81,9 +83,26 @@
    session.setAttribute("captchafilename", file + file.getName());
    FileReceiver receiver = new FileReceiver(file);
    //white pixel
+
+   List&lt;String&gt; commands = new ArrayList&lt;String&gt;();
+   if (backgroundColor != null &amp;&amp; !backgroundColor.equals("white") &amp;&amp; !backgroundColor.equals("#fff")) {
+     if ("transparent".equals(backgroundColor)) {
+       commands.add("transparent(white)");
+     } else {
+       commands.add("fill(" + backgroundColor + ")");
+       commands.add("draw(color 0,0 reset)");
+      }
+   }
+   commands.add("gravity(west)");
+   commands.add("s(80x22!)");
+   commands.add("fill(" + fillColor + ")");
+   commands.add("pointsize(20)");
+   commands.add("text(0,0,\'" + captchaKey + "')");
+   commands.add("f(png)");
+   commands.add("swirl(30)");
    ImageConversionRequest req =
-   Factory.getImageConversionRequest(input, "gif", receiver,
-   "gravity(west)", "s(80x22!)", "fill(" + fillColor + ")", "pointsize(20)", "draw(text 10x10 \'" + captchaKey + "')", "f(png)", "swirl(10)");
+   Factory.getImageConversionRequest(input, "gif", receiver, commands);
+
    // should also be possible to use 'text', but that is broken with newer image-magicks.
 
    req.waitForConversion();
