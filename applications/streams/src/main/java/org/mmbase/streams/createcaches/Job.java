@@ -245,6 +245,8 @@ public class Job implements Iterable<Result> {
                     if (outFile.exists()) { 
                         if (outFile.delete()) {
                             LOG.service("Former version of file '" + outFile + "' deleted");
+                        } else {
+                            LOG.error("Could not remove former version of file '" + outFile + "'");
                         }
                     }
 
