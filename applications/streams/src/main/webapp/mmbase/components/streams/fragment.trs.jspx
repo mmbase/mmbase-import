@@ -28,24 +28,26 @@
         </td>
         <c:choose>
           <c:when test="${_.main}">
-            <td colspan="2">
+            <td />
+            <td>
               <mm:function set="streams" name="getJob" referids="_node@node">
-                JOB: ${_.class}
+                JOB: ${_.class}<br />
               </mm:function>
               <mm:function set="streams" name="runningJobs">
                 JOB: ${_.class}
               </mm:function>
+            </td><td>
               <mm:node number="${_.source.number}">
                 <c:set var="triggervalue" value="${fragment}:${_node}" />
                 <c:choose>
                   <c:when test="${trigger eq triggervalue}">
                     <mm:log> CALLING TRIGGER FOR ${trigger}</mm:log>
-                    <mm:voidfunction name="trigger" />
+                    <mm:voidfunction name="triggerCaches" />
                     <jsp:text>Triggered conversion</jsp:text>
                   </c:when>
                   <c:otherwise>
                     <mm:link referids="triggervalue@trigger">
-                      <a href="${_}">Trigger</a>
+                      <a href="${_}">Trigger all</a>
                     </mm:link>
                   </c:otherwise>
                 </c:choose>
@@ -64,16 +66,43 @@
             </td>
           </c:when>
           <c:otherwise>
-            <mm:node number="${_.source.number}" notfound="skip">
+            <mm:node number="${_.source.number}" notfound="skip" id="cache">
               <td>
+                <mm:hasfield name="label">
+                  <mm:field name="label" /><br />
+                </mm:hasfield>
                 <mm:hasfield name="id">
                   <mm:field name="id" />
                 </mm:hasfield>
               </td>
               <td>
-                <mm:hasfield name="id">
+                <mm:hasfield name="key">
                   <mm:field name="key" />
                 </mm:hasfield>
+              </td>
+            
+              <td>
+                
+                <mm:hasfield name="id">
+                
+                  <c:set var="recachevalue" value="${fragment}:${cache}" />
+                  <c:choose>
+                    <c:when test="${recache eq recachevalue}">
+                      <mm:field name="id">
+                        <mm:node number="$_">
+                          <mm:booleanfunction name="triggerRecache" referids="cache@recache" />
+                        </mm:node>
+                      </mm:field>
+                    </c:when>
+                    <c:otherwise>
+                      <mm:link referids="recachevalue@recache">
+                        <a href="${_}">Retrigger cache</a>
+                      </mm:link>
+                    </c:otherwise>
+                  </c:choose>
+                
+                </mm:hasfield>
+                
               </td>
             </mm:node>
           </c:otherwise>

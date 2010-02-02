@@ -42,12 +42,11 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
 
     private static final Logger LOG = Logging.getLoggerInstance(CreateCachesFunction.class);
     public CreateCachesFunction() {
-        //super("createcaches");
-        super("createcaches", new Parameter<Boolean>("retrigger_jobs", Boolean.class, Boolean.FALSE));
+        super("createcaches");
     }
 
 
-    Processor getCacheCreator(final Field url) {
+    protected static Processor getCacheCreator(final Field url) {
         CommitProcessor commitProcessor = url.getDataType().getCommitProcessor();
         if (commitProcessor instanceof ChainedCommitProcessor) {
             ChainedCommitProcessor chain = (ChainedCommitProcessor) commitProcessor;

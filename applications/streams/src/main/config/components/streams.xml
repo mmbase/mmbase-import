@@ -45,6 +45,7 @@
     <body jsp="admin.jspx">
       <param name="trigger" />
       <param name="interrupt" />
+      <param name="recache" />
       <param name="page"  type="java.lang.Integer" />
     </body>
   </block>
@@ -59,6 +60,7 @@
     <body jsp="myfragments.jspx">
       <param name="trigger" />
       <param name="interrupt" />
+      <param name="recache" />
       <param name="page"  type="java.lang.Integer" />
     </body>
   </block>
