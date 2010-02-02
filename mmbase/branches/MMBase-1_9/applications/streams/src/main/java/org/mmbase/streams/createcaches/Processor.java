@@ -22,7 +22,6 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 package org.mmbase.streams.createcaches;
 
 import org.mmbase.streams.transcoders.*;
-import org.mmbase.streams.createcaches.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.security.UserContext;
@@ -67,9 +66,9 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
     }
 
     /**
+     * List with the configured JobDefinitions.
      */
     protected final Map<String, JobDefinition> list = Collections.synchronizedMap(new LinkedHashMap<String, JobDefinition>());
-
 
     String[] cacheManagers = new String[] {"streamsourcescaches", "videostreamsourcescaches", "audiostreamsourcescaches"};
 
@@ -218,7 +217,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
                         executors.clear();
                         executors.addAll(newExecutors);
                     }
-                    LOG.service("Reading of configuration file " + resource + " successfull. Transcoders now " + list + ". Executors " + executors + ". Max simultaneous transcoders: " + totals);
+                    LOG.service("Reading of configuration file " + resource + " successfull. JobDefinitions now " + list + ". Executors " + executors + ". Max simultaneous transcoders: " + totals);
                 } catch (Exception e)  {
                     LOG.error(e.getClass() + " " + e.getMessage() + " In " + resource + " Transcoders now " + list + " (not changed)", e);
                 }
@@ -319,15 +318,15 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
      * @param logger    a logger that keeps track
      * @return job trans coding a source stream in (an)other stream(s)
      */
-    private Job createJob(final Cloud ntCloud, final int node, final ChainedLogger logger) {
+    private Job createJob(final Cloud ntCloud, final int node, final Map<String, JobDefinition> jdlist, final ChainedLogger logger) {
         synchronized(runningJobs) {
             Job job = runningJobs.get(node);
             if (job != null) {  // already running?
-                LOG.warn("This job is already running, node #" + node);
+                LOG.warn("There is already a job running for node #" + node);
                 return null;
             }
             assert node > 0;
-            final Job thisJob = new Job(this, ntCloud, logger);
+            final Job thisJob = new Job(this, jdlist, ntCloud, logger);
             runningJobs.put(node, thisJob);
             thisJob.submit(ntCloud, node, logger);
 
@@ -335,18 +334,22 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
         }
     }
 
+    public Job createCaches(final Cloud ntCloud, final int node) {
+        return createCaches(ntCloud, node, this.list);
+    }
 
     /**
-     * Creates caches nodes when not existing by creating a transcoding Job
+     * Creates caches nodes when not existing (or recreate) by making a transcoding Job
      * @param ntCloud   a non transactional cloud
      * @param int       node number of a source node
+     * @param jdlist    jobdefinitions
      * @return Job recognizing and/or transcoding the source stream
      */
-    public Job createCaches(final Cloud ntCloud, final int node) {
+    public Job createCaches(final Cloud ntCloud, final int node, final Map<String, JobDefinition> jdlist) {
         final ChainedLogger logger = new ChainedLogger(LOG);
-        final Job thisJob = createJob(ntCloud, node, logger);
+        final Job thisJob = createJob(ntCloud, node, jdlist, logger);
 
-        LOG.info("Triggering caches for " + list + "  -> " + thisJob);
+        LOG.info("Triggering caches for " + jdlist + "  -> " + thisJob);
         if (thisJob != null) {
             // If the node happens to be deleted before the future with cache creations is ready, cancel the future
             EventManager.getInstance().addEventListener(new WeakNodeEventListener() {
