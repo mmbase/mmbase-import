@@ -58,6 +58,10 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     protected MMObjectNode noderef;
 
     /**
+     */
+    protected MMObjectNode originalNoderef;
+
+    /**
      * Temporary node ID.
      * This is necessary since there is otherwise no sure (and quick) way to determine
      * whether a node is in 'edit' mode (i.e. has a temporary node).
@@ -187,6 +191,9 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     protected void setNode(MMObjectNode n) {
         if (n == null) {
             throw new IllegalArgumentException("Passed Node is null");
+        }
+        if (originalNoderef != null) {
+            originalNoderef = noderef;
         }
         noderef = n;
     }
@@ -489,7 +496,12 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
 
-
+    /**
+     * {@inheritDoc}
+     *
+     * This implementation checks  create rights, then validates the values, then
+     * processes the 'commit processors' and then calls {@link BasicCloud#afterCommit(BasicNode)}
+     */
     @Override
     public void commit() {
         if (isNew()) {
@@ -515,24 +527,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         cloud.processCommitProcessors(this);
         if (log.isDebugEnabled()) {
             log.debug("committing " + noderef.getChanged() + " " + noderef.getValues());
-        }
-        // ignore commit in transaction (transaction commits)
-        if (!(cloud instanceof Transaction)) { // sigh sigh sigh.
-            log.debug("not in a transaction so actually committing now");
-            MMObjectNode node = getNode();
-            //assert isNew() == node.getNumber() < 0 : "" + isNew() + " " + node.getNumber() + " " + node;
-            if (isNew()) {
-                log.debug("new");
-                node.insert(cloud.getUser());
-                // cloud.createSecurityInfo(getNumber());
-            } else {
-                log.debug("not new");
-                node.commit(cloud.getUser());
-                //cloud.updateSecurityInfo(getNumber());
-            }
-            // remove the temporary node
-            BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
-            temporaryNodeId = -1;
         }
         cloud.afterCommit(this);
     }
@@ -1043,6 +1037,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             if (!(cloud instanceof Transaction)) {
                 // cancel the modifications...
                 cancel();
+                // TODO: WE NEED A DECENT locking, change-tracking mechanism.
             }
         }
     }
