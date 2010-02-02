@@ -176,18 +176,13 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     }
 
     public Node getNode(String nodeNumber) throws NotFoundException {
-        MMObjectNode node;
-        try {
-            node = BasicCloudContext.tmpObjectManager.getNode(getAccount(), nodeNumber);
-        } catch (RuntimeException e) {
-            throw new NotFoundException("Something went wrong while getting node with number '" + nodeNumber + "': " + e.getMessage() + " by cloud with account " + getAccount(), e);
-        }
-
+        MMObjectBuilder bul = BasicCloudContext.mmb.getBuilder("object");
+        MMObjectNode node = bul.getNode(nodeNumber);
         if (node == null) {
             throw new NotFoundException("Node with number '" + nodeNumber + "' does not exist.");
         } else {
+            BasicCloudContext.tmpObjectManager.deleteTmpNode(getAccount(), "" + node.getNumber());
             BasicNode n = makeNode(node, nodeNumber);
-            add(n);
             return n;
         }
     }
@@ -1023,10 +1018,24 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     }
 
     /**
-     * Ignored by basic cloud. See {@link BasicTransaction#add(String)}.
+     * Marks the given node as 'being edited'. This means that a copy
+     * must be made which is going to contain the changes until the
+     * node (or the transaction) is committed.
      */
     int  add(BasicNode node) {
-        return node.getNumber();
+        int number = node.getNumber();
+        if (node.temporaryNodeId == -1) {
+
+            String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(getAccount(), "" + number, "" + number);
+            MMObjectNode newNodeRef = BasicCloudContext.tmpObjectManager.getNode(getAccount(), "" + number);
+            node.setNode(newNodeRef);
+            //System.out.println("Creating temporary object for cloud :" + newNodeRef);
+            node.temporaryNodeId = number;
+            if (node.noderef != newNodeRef) {
+                log.info("Created new noderef for " + node + " " + newNodeRef);
+            }
+        }
+        return number;
     }
 
 
@@ -1066,7 +1075,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     /**
      */
     void deleteNewNode(int temporaryNodeId, MMObjectNode node) {
-        BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
+        BasicCloudContext.tmpObjectManager.deleteTmpNode(getAccount(), "" + temporaryNodeId);
     }
 
     /**
@@ -1075,7 +1084,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     void deleteNode(int temporaryNodeId, MMObjectNode node) {
         // remove the node
         if (temporaryNodeId != -1) {
-            BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
+            BasicCloudContext.tmpObjectManager.deleteTmpNode(getAccount(), "" + temporaryNodeId);
         }
         remove(node);
     }
@@ -1193,8 +1202,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     }
 
     /**
-     * This method is called after a commit of a certain node is ready. It calls notifyAll now.
-     * This makes it easy to wait for a node to really exist (finished committing)
+     * This method is called after a {@BasicNode#commit} of a certain
+     * node.  If we are not in a transaction this
+     * performing the actual commit procedure (using the temporary object
+     * manager), and calls {@link #notifyAll()}.
+     * This last thing makes it easy to wait for a node to really exist (finished committing)
      * <pre>
                 synchronized(ntCloud) {
                     while (! ntCloud.hasNode(node)) {
@@ -1202,10 +1214,38 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
                     }
                 }
      </pre>
+     * Committing in a transaction goes a bit different, because the
+     * actual committing only happens in the
+     * {@BasicTransaction#commit}, this method will be mostly empty
+     * for BasicTransaction.
      *
      * @since MMBase-1.9.2
      */
-    protected synchronized void afterCommit(BasicNode node) {
+    protected synchronized void afterCommit(BasicNode n) {
+        log.debug("not in a transaction so actually committing now");
+        MMObjectNode node = n.getNode();
+        //assert isNew() == node.getNumber() < 0 : "" + isNew() + " " + node.getNumber() + " " + node;
+        if (n.isNew()) {
+            log.debug("new");
+            node.insert(getUser());
+            // cloud.createSecurityInfo(getNumber());
+        } else {
+            log.debug("not new");
+            node.commit(getUser());
+            //cloud.updateSecurityInfo(getNumber());
+        }
+        // remove the temporary node
+        BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + n.temporaryNodeId);
+        n.temporaryNodeId = -1;
+        if (n.originalNoderef != null) {
+            for (Map.Entry<String, Object> e : n.noderef.getValues().entrySet()) {
+                n.originalNoderef.storeValue(e.getKey(), e.getValue());
+            }
+            n.noderef = n.originalNoderef;
+            n.originalNoderef = null;
+        }
+
+        log.debug("Notifying");
         notifyAll();
     }
 
