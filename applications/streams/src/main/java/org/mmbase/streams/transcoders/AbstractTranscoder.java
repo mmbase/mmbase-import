@@ -60,9 +60,13 @@ public abstract class AbstractTranscoder implements Transcoder {
             } catch (ClassNotFoundException cnfe) {
                 clazz  = Class.forName(PACKAGE + idWithClass[1]);
             }
-            Constructor constructor = clazz.getConstructor(String.class);
-
-            trans = (Transcoder) constructor.newInstance(idWithClass[0]);
+            
+            if (!"".equals(idWithClass[0])) {
+                Constructor constructor = clazz.getConstructor(String.class);
+                trans = (Transcoder) constructor.newInstance(idWithClass[0]);
+            } else {
+                trans = (Transcoder) clazz.newInstance();
+            }
         }
         {
             String[] props = split[1].split(", ");
