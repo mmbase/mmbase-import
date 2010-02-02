@@ -136,29 +136,48 @@ public class TransactionTest extends BridgeTest {
     //Test for http://www.mmbase.org/jira/browse/MMB-1621
     public void testGetValue() {
         Cloud cloud = getCloud();
+
         String value = cloud.getNode(newNode).getStringValue("title");
+        assertFalse("zzzzz".equals(value));
 
         Transaction t = cloud.getTransaction("bar4");
+        System.out.println("Transaction now " + t);
         Node node = t.getNode(newNode);
         assertEquals(1, t.getNodes().size());
         node.setStringValue("title", "zzzzz");
+        assertEquals("zzzzz", node.getStringValue("title"));
         node.commit(); // committing inside transaction
 
+
+        assertEquals("zzzzz", node.getStringValue("title"));
         assertEquals(value, cloud.getNode(newNode).getStringValue("title"));
 
         t.commit();
         assertEquals("zzzzz", cloud.getNode(newNode).getStringValue("title"));
 
     }
+
     public void testReuseTransaction() {
         Cloud cloud = getCloud();
-        Transaction t = cloud.getTransaction("bar4");
-        assertEquals(0, t.getNodes().size());
-        Node node = t.getNode(newNode);
-        assertEquals(1, t.getNodes().size());
-        node.setStringValue("title", "wwwwww");
-        node.commit();
-        t.cancel();
+        {
+            Node node = cloud.getNode(newNode);
+            node.setStringValue("title", "zzyyxx");
+            node.commit();
+            assertEquals("zzyyxx", cloud.getNode(newNode).getStringValue("title"));
+        }
+        {
+            Transaction t = cloud.getTransaction("bar4");
+            assertEquals(0, t.getNodes().size());
+            Node node = t.getNode(newNode);
+            assertEquals("zzyyxx", node.getStringValue("title"));
+            assertEquals(1, t.getNodes().size());
+            node.setStringValue("title", "wwwwww");
+            node.commit();
+            assertEquals("wwwwww", node.getStringValue("title"));
+            t.cancel();
+            assertEquals("zzyyxx", cloud.getNode(newNode).getStringValue("title"));
+        }
+        assertEquals("zzyyxx", cloud.getNode(newNode).getStringValue("title"));
 
     }
 
@@ -691,7 +710,6 @@ public class TransactionTest extends BridgeTest {
 
 
     }
-
 
 
 }
