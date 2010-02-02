@@ -29,7 +29,7 @@ import java.io.*;
 
 
 /**
- * The description or definition of one 'transcoding' sub jobs that's doing the transcoding. This
+ * The description or definition of one 'transcoding' sub job that's doing the transcoding. This
  * combines a transcoder, with a mime type for which it must be valid, and a list of analyzers.
  *
  * @author Michiel Meeuwissen
@@ -48,7 +48,7 @@ public class JobDefinition implements Serializable {
     final Stage stage;
 
     /**
-     * Creates an JobDefinition template (used in the configuration container).
+     * Creates a JobDefinition template (used in the configuration container).
      */
     public JobDefinition(String id, String inId, String label, Transcoder t, MimeType mt, Stage s) {
         assert id != null;
