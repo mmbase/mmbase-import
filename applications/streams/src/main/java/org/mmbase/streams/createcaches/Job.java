@@ -153,7 +153,6 @@ public class Job implements Iterable<Result> {
                 }
 
                 // mimetype: skip when there is no match between current jd and inNode
-                LOG.debug("mt jd : " + jd.getMimeType() + " mt inNode: " + inNode.getStringValue("mimetype") );
                 if (! jd.getMimeType().matches(new MimeType(inNode.getStringValue("mimetype")))) {
                     LOG.debug("SKIPPING " + jd);
                     results.set(i, new SkippedResult(jd, inURI));
@@ -167,7 +166,7 @@ public class Job implements Iterable<Result> {
                
                 if (jd.transcoder.getKey() != null) {  // not a recognizer (it has a transcoder key)
                     LOG.info(jd.getMimeType());
-                    LOG.info("" + inNode);
+                    LOG.info("inNode: " + inNode);
                     Node dest = getCacheNode(inNode, jd.transcoder.getKey());   // gets node (and creates when yet not present)
                     if (dest == null) {
                         LOG.warn("Could not create cache node from " + node.getNodeManager().getName() + " " + node.getNumber() + " for " + jd.transcoder.getKey());
@@ -243,6 +242,11 @@ public class Job implements Iterable<Result> {
                     assert destFileName.length() > 0;
                     
                     File outFile = new File(processor.getDirectory(), destFileName);
+                    if (outFile.exists()) { 
+                        if (outFile.delete()) {
+                            LOG.service("Former version of file '" + outFile + "' deleted");
+                        }
+                    }
 
                     if (FileServlet.getInstance() != null) {
                         File inMeta = FileServlet.getInstance().getMetaFile(inFile);
