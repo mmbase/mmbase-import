@@ -17,6 +17,7 @@
   </descriptions>
 
   <properties>
+    <property name="org.mmbase.streams.cachestype">audiostreamsourcescaches</property>
   </properties>
 
   <xi:include href="streamsourcescaches.fields.xml" />
