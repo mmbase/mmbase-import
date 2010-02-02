@@ -24,8 +24,8 @@
 
   <field name="id">
     <descriptions>
-      <description xml:lang="en">Reference to the original stream</description>
-      <description xml:lang="nl">Referentie naar de originel stream</description>
+      <description xml:lang="en">Reference to the original this cache was transcoded from.</description>
+      <description xml:lang="nl">Referentie naar het origineele waarvan deze cache getranscodeerd is.</description>
     </descriptions>
     <gui>
       <guiname xml:lang="en">ID</guiname>
@@ -39,9 +39,11 @@
     </editor>
     <datatype base="nodenumber" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <required value="true" enforce="never" />
-      <enumeration enforce="never"> <!-- enforcing is very bad for performance -->
+      <!-- <enumeration enforce="never"> --> <!-- enforcing is very bad for performance -->
+<!-- 
         <query type="mediasources" xmlns="http://www.mmbase.org/xmlns/searchquery" />
       </enumeration>
+ -->
     </datatype>
   </field>
 
