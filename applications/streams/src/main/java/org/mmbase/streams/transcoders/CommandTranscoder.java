@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * A trancoder base on an external command, like <code>ffmpeg</code> or <code>ffmpeg2theora</code>
+ * A transcoder based on an external command, like <code>ffmpeg</code> or <code>ffmpeg2theora</code>.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
