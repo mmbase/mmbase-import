@@ -280,7 +280,9 @@ public class TransactionManager {
      */
     private void commitNode(Object user, MMObjectNode node, NodeState state) {
 
-        log.debug("Committing " + node + " " + state);
+        if (log.isDebugEnabled()) {
+            log.debug("Committing " + node + " " + state);
+        }
         if (state.exists == Exists.YES) {
             if (! state.changed) return;
             // Commit also if not changed, because the node may have been deleted or changed by
