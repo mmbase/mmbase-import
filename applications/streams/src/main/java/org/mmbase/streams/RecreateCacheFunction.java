@@ -67,8 +67,14 @@ public class RecreateCacheFunction extends NodeFunction<Boolean> {
             LOG.info("Recreating cache #" + recache.getNumber() + " for node #" + node.getNumber());
             final Field url = node.getNodeManager().getField("url");
             
-            String key       = recache.getStringValue("key");
+            String in = null;
+            Node inNode = recache.getNodeValue("id");
+            if (inNode.getNumber() != node.getNumber()) {
+                in = "" + inNode.getNumber();
+            }
+            String id        = "recache";
             String mimetype  = recache.getStringValue("mimetype");
+            String key       = recache.getStringValue("key");
             Transcoder transcoder = null;
             try {
                 transcoder = AbstractTranscoder.getInstance(key);
@@ -83,16 +89,7 @@ public class RecreateCacheFunction extends NodeFunction<Boolean> {
                 return false;
             }
             
-            String in = null;
-            Node inNode = recache.getNodeValue("id");
-            if (inNode.getNumber() != node.getNumber()) {
-                in = "" + inNode.getNumber();
-            }
-            String id = "recache";
-            
-            // JobDefinition def = new JobDefinition(id, in, label, transcoder, mimeType, stage);
             JobDefinition jd = new JobDefinition(id, in, null, transcoder, new MimeType(mimetype), Stage.TRANSCODER);
-            
             Map<String, JobDefinition> jdlist = new LinkedHashMap<String, JobDefinition>();
             jdlist.put(id, jd);
         
@@ -102,7 +99,7 @@ public class RecreateCacheFunction extends NodeFunction<Boolean> {
                 if (cc != null) {
                     LOG.service("Calling " + cc);
                     cc.createCaches(node.getCloud().getNonTransactionalCloud(), node.getNumber(), jdlist);
-                    //cc.createSingleCache(node.getCloud().getNonTransactionalCloud(), node.getNumber(), jd);
+                    
                     return true;
                 } else {
                     LOG.error("No CreateCacheProcessor in " + url);

@@ -111,7 +111,7 @@ public class Job implements Iterable<Result> {
                     if (url.length() < 0) LOG.error("No value for field url: " + url);
                     assert url.length() > 0;
                     File f = new File(processor.getDirectory(), url);
-                    LOG.info("New file: " + f);
+                    LOG.service("New (in)file: " + f);
                     assert f.exists() : "No such file " + f;
                     
                     // make sure there is an in file to use
@@ -131,23 +131,50 @@ public class Job implements Iterable<Result> {
                     inNode = node;
                 
                 } else {    // using a previously cached node
-                    if (! jobdefs.containsKey(jd.getInId())) {
-                        LOG.warn("Configuration error, no such job definition with id '" + jd.getInId());
-                        continue;
+                    String inId = jd.getInId();
+                    
+                    if (! jobdefs.containsKey(inId) && node.getCloud().hasNode(inId)) {
+                        // use an existing cache node
+                        LOG.service("Using cache #" + inId + " as input");
+                        
+                        inNode = node.getCloud().getNode(inId);
+                        String url = inNode.getStringValue("url");
+                        if (url.length() < 0) {
+                            LOG.error("No value for field url: " + url);
+                            break;
+                        }
+
+                        File f = new File(processor.getDirectory(), url);
+                        LOG.service("Using (in)file: " + f);
+                        
+                        if (!f.exists() && !f.isFile()) {
+                            LOG.error("NO INFILE! '" + f );
+                            break;
+                        }
+                        
+                        inURI = f.toURI();
+                        
+                    } else {    // use inId from config
+                        if (! jobdefs.containsKey(inId)) {
+                            LOG.warn("Configuration error, no such job definition with id '" + inId);
+                            continue;
+                        }
+                        Result prevResult = lookup.get(inId);
+                        if (prevResult == null || ! prevResult.isReady()) {
+                            // no result possible yet.
+                            continue;
+                        }
+                        inURI = prevResult.getOut();
+                        inNode = prevResult.getDestination();
+                    
                     }
-                    Result prevResult = lookup.get(jd.getInId());
-                    if (prevResult == null || ! prevResult.isReady()) {
-                        // no result possible yet.
-                        continue;
-                    }
-                    inURI = prevResult.getOut();
-                    inNode = prevResult.getDestination();
+                    
                     if (inNode == null) {
                         inNode = node;
                     }
 
-                    if (prevResult.isReady() && inNode.getIntValue("state") == State.FAILED.getValue()) {
-                        LOG.warn("BREAK, transcoding of inNode failed " + inNode);
+                    if (inNode.getIntValue("state") > State.SOURCE.getValue()) {
+                        LOG.warn("BREAK, transcoding of inNode failed, it is removed, interrupted or unsupported #" + inNode);
                         break;
                     }
                 }
@@ -159,14 +186,14 @@ public class Job implements Iterable<Result> {
                     skipped++;
                     continue;
                 } else {
-                    LOG.info("NOT SKIPPING " + jd);
+                    LOG.service("NOT SKIPPING " + jd);
                 }
 
                 assert inURI != null;
                
                 if (jd.transcoder.getKey() != null) {  // not a recognizer (it has a transcoder key)
-                    LOG.info(jd.getMimeType());
-                    LOG.info("inNode: " + inNode);
+                    LOG.service(jd.getMimeType());
+                    LOG.service("inNode: " + inNode);
                     Node dest = getCacheNode(inNode, jd.transcoder.getKey());   // gets node (and creates when yet not present)
                     if (dest == null) {
                         LOG.warn("Could not create cache node from " + node.getNodeManager().getName() + " " + node.getNumber() + " for " + jd.transcoder.getKey());
@@ -199,7 +226,7 @@ public class Job implements Iterable<Result> {
                         outFileName = outFileName.substring(1);
                     }
                     
-                    LOG.info("outFileName: '" + outFileName + "'");
+                    LOG.service("outFileName: '" + outFileName + "'");
                     assert outFileName != null;
                     assert outFileName.length() > 0;
                     dest.setStringValue("url", outFileName);
@@ -236,7 +263,7 @@ public class Job implements Iterable<Result> {
                     if (destFileName.length() < 1) {
                         LOG.error("Still empty destFileName: '" + destFileName + "' of #" + dest.getNumber());
                     } else {
-                        LOG.info("destFileName: '" + destFileName + "'");
+                        LOG.service("destFileName: '" + destFileName + "'");
                     }
                     assert destFileName != null;
                     assert destFileName.length() > 0;
@@ -271,7 +298,7 @@ public class Job implements Iterable<Result> {
                     URI outURI = outFile.toURI();
                     Result result = new TranscoderResult(processor.getDirectory(), jd, dest, inURI, outURI);
 
-                    LOG.info("Added result to results list with key: " + dest.getStringValue("key"));
+                    LOG.service("Added result to results list with key: " + dest.getStringValue("key"));
                     results.set(i, result);
                     lookup.put(jd.getId(), result);
                 } else {
@@ -363,9 +390,9 @@ public class Job implements Iterable<Result> {
      */
     void submit(final JobCallable jc)  {
        if (getStage() == Stage.READY) {
-           LOG.info("Will not submit, because we're ready" + jc);
+           LOG.service("Will not submit, because we're ready " + jc);
        } else {
-           LOG.info("Will submit " + jc);
+           LOG.service("Will submit " + jc);
            ThreadPools.jobsExecutor.execute(new Runnable() {
                    public void run() {
                        jc.init();
@@ -432,7 +459,7 @@ public class Job implements Iterable<Result> {
             newNode.setStringValue("key", key);
 
             newNode.commit();
-            LOG.info("CREATED " + newNode.getNumber() + " (" + src.getNumber() + "/" + key + ")");
+            LOG.service("CREATED " + newNode.getNumber() + " (" + src.getNumber() + "/" + key + ")");
 
             logger.service("Created new node for " + key + "(" + src.getNumber() + "): " + newNode.getNumber());
             return newNode;
@@ -481,10 +508,10 @@ public class Job implements Iterable<Result> {
         }
         interrupted = true;
         if (thread != null) {
-            logger.info("Interrupting " + thread);
+            logger.service("Interrupting " + thread);
             thread.interrupt();
         } else {
-            logger.info("No Thread in " + this);
+            logger.service("No Thread in " + this);
         }
     }
     public boolean isInterrupted() {
