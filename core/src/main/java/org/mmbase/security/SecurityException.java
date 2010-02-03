@@ -9,14 +9,26 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
+import java.util.*;
+import java.text.*;
+import org.mmbase.util.*;
+
+
 /**
  * Thrown by the security classes to indicate a security violation/malfunction.
- * 
+ *
  * @author Eduard Witteveen
  * @version $Id$
  */
 public class SecurityException extends java.lang.SecurityException {
     private static final long serialVersionUID = -175749957183734250L;
+
+
+    private String bundle;
+    private String key;
+    private Object[] args;
+
+    private LocalizedString localizedMessage;
 
     //javadoc is inherited
     public SecurityException() {
@@ -38,6 +50,38 @@ public class SecurityException extends java.lang.SecurityException {
     public SecurityException(String message, Throwable cause) {
         super(message);
         initCause(cause);
+    }
+
+    /**
+     * @since MMBase-1.9.3
+     */
+    public SecurityException(String bundle, String key, Object... arguments) {
+        super(MessageFormat.format(ResourceBundle.getBundle(bundle, Locale.getDefault()).getString(key), arguments));
+        this.bundle = bundle;
+        this.key = key;
+        this.args = arguments;
+    }
+
+    /**
+     * @since MMBase-1.9.3
+     */
+    public SecurityException(LocalizedString message) {
+        super(message.get(null));
+    }
+
+
+
+    /**
+     * @since MMBase-1.9.3
+     */
+    public String getMessage(Locale locale) {
+        if (localizedMessage != null) {
+            return localizedMessage.get(locale);
+        } else if (bundle != null) {
+            return MessageFormat.format(ResourceBundle.getBundle(bundle, locale).getString(key), args);
+        } else {
+            return getMessage();
+        }
     }
 
 }
