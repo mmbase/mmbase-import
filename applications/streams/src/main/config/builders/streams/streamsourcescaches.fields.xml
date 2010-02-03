@@ -7,6 +7,21 @@
     >
 
   <field name="state" state="system">
+    <descriptions>
+      <description xml:lang="en">State of the transcoded file</description>
+      <description xml:lang="nl">Status van het getranscodeerde bestand.</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="en">State</guiname>
+      <guiname xml:lang="nl">Status</guiname>
+    </gui>
+    <editor>
+      <positions>
+        <list>9</list>
+        <input>3</input>
+        <search>3</search>
+      </positions>
+    </editor>
     <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
       <default value="REQUEST" />
       <enumeration enforce="onchange">
@@ -18,6 +33,20 @@
   </field>
 
   <field name="key">
+    <descriptions>
+      <description xml:lang="en">Transcoding settings used: transcoder and parameters.</description>
+      <description xml:lang="nl">Instellingen van de transcodering: transcorder en parameters.</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="en">Key</guiname>
+      <guiname xml:lang="nl">Sleutel</guiname>
+    </gui>
+    <editor>
+      <positions>
+        <input>8</input>
+        <search>8</search>
+      </positions>
+    </editor>
     <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
   </field>
 
@@ -35,24 +64,55 @@
       <guiname xml:lang="it">ID</guiname>
     </gui>
     <editor>
-      <positions><list>3</list></positions>
+      <positions>
+        <list>9</list>
+        <input>9</input>
+        <search>9</search>
+      </positions>
     </editor>
     <datatype base="nodenumber" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <required value="true" enforce="never" />
-      <!-- <enumeration enforce="never"> --> <!-- enforcing is very bad for performance -->
-<!-- 
+      <enumeration enforce="never"> <!-- enforcing is very bad for performance -->
         <query type="mediasources" xmlns="http://www.mmbase.org/xmlns/searchquery" />
       </enumeration>
- -->
     </datatype>
   </field>
 
   <field name="mimetype" state="system">
+    <descriptions>
+      <description xml:lang="en">Internet media type, two-part identifier for the file format</description>
+      <description xml:lang="nl">Internet media type, een tweedelig kenmerk voor het bestandsformaat.</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="en">MIME type</guiname>
+      <guiname xml:lang="nl">MIME type</guiname>
+    </gui>
+    <editor>
+      <positions>
+        <list>3</list>
+        <input>3</input>
+        <search>3</search>
+      </positions>
+    </editor>
     <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
   </field>
 
 
   <field name="url" readonly="true">
+    <descriptions>
+      <description xml:lang="en">Location of the file</description>
+      <description xml:lang="nl">Locatie van het bestand</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="en">URL</guiname>
+      <guiname xml:lang="nl">URL</guiname>
+    </gui>
+    <editor>
+      <positions>
+        <input>3</input>
+        <search>3</search>
+      </positions>
+    </editor>
     <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <getprocessor type="binary">
         <class name="org.mmbase.datatypes.processors.BinaryFile$Getter" />
