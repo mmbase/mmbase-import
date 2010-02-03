@@ -119,10 +119,13 @@ public class ReplacingLocalizedString extends WrappedLocalizedString {
      * Utility method for second argument of replaceAll
      */
     public static String makeLiteral(String s) {
-        if (s == null) return null;
+        if (s == null) {
+            return null;
+        }
         // sometimes, implementing java looks rather idiotic, but honestely, this is correct!
-        s =  s.replaceAll("\\\\", "\\\\\\\\");
-        s =  s.replaceAll("\\.", "\\\\.");
+        s =  s.replaceAll("\\\\",  "\\\\\\\\");
+        s =  s.replaceAll("\\.",   "\\\\.");
+        s =  s.replaceAll("\\+",     "\\\\+");
         return s.replaceAll("\\$", "\\\\\\$");
     }
 
