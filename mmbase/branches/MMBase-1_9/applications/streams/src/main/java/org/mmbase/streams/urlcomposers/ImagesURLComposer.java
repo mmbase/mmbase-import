@@ -22,20 +22,19 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.urlcomposers;
 
-import java.util.*;
-
-import org.mmbase.module.core.*;
-import org.mmbase.module.builders.*;
-
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.MimeType;
 import org.mmbase.applications.media.State;
 import org.mmbase.applications.media.urlcomposers.FragmentURLComposer;
-
-import org.mmbase.util.images.*;
-import org.mmbase.util.logging.*;
-
+import org.mmbase.module.builders.ImageCaches;
+import org.mmbase.module.builders.Images;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.streams.builders.ImageSources;
+import org.mmbase.util.images.Dimension;
+import org.mmbase.util.images.Factory;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 
 /**
