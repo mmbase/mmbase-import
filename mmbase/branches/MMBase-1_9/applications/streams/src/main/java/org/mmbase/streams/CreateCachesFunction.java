@@ -26,7 +26,6 @@ import org.mmbase.streams.createcaches.Processor;
 import org.mmbase.util.functions.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
-import org.mmbase.storage.search.FieldCompareConstraint;
 import org.mmbase.security.ActionRepository;
 import org.mmbase.datatypes.processors.*;
 import org.mmbase.util.logging.*;
@@ -70,18 +69,21 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
     protected Boolean getFunctionValue(final Node node, final Parameters parameters) {
         if (node.getNumber() > 0 
                 && node.getCloud().may(ActionRepository.getInstance().get("streams", "retrigger_jobs"), null)) {
-            LOG.info("Recreating caches for " + node.getNumber());
+            LOG.info("Recreating caches for #" + node.getNumber());
             final Field url = node.getNodeManager().getField("url");
 
             {
+                Node mediafragment = node.getNodeValue("mediafragment");
                 String cachestype = node.getNodeManager().getProperty("org.mmbase.streams.cachestype");
-                NodeList list = SearchUtil.findNodeList(node.getCloud(), cachestype, "id", node.getNumber());
+                NodeList list = SearchUtil.findRelatedNodeList(mediafragment, cachestype, "related"); 
                 
-                if (list.size() < 1 && cachestype.startsWith("video")) {
-                    // when the streamsourcescaches are initially of the wrong type, they don't get deleted
-                    list = SearchUtil.findNodeList(node.getCloud(), "audiostreamsourcescaches", "id", node.getNumber());
-                } else if (list.size() < 1 && cachestype.startsWith("audio")) {
-                    list = SearchUtil.findNodeList(node.getCloud(), "videostreamsourcescaches", "id", node.getNumber());
+                // when the streamsourcescaches are initially of the wrong type they don't get deleted, this helps a bit
+                if (list.size() < 1) {
+                    if (cachestype.startsWith("video")) {
+                        list = SearchUtil.findRelatedNodeList(mediafragment, "audiostreamsourcescaches", "related");
+                    } else if (cachestype.startsWith("audio")) {
+                        list = SearchUtil.findRelatedNodeList(mediafragment, "videostreamsourcescaches", "related");
+                    }
                 }
                 
                 for (Node cache : list) {
