@@ -8,11 +8,13 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
   <mm:cloud rank="basic user" jspvar="cloud">
+    
     <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
     <p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
 
     <mm:import from="request" externid="trigger" />
     <mm:import from="request" externid="interrupt" vartype="integer" />
+    <mm:import from="request" externid="recache" />
     <mm:import from="request" externid="page">0</mm:import>
 
     <mm:import id="pagesize" vartype="integer">50</mm:import>
@@ -22,25 +24,20 @@
         <caption>Configuration of creation of streamscaches</caption>
           <tr>
             <th>id</th>
-            <th>value</th>
+            <th>label</th>
+            <th>mimetype</th>
+            <th>transcoder</th>
           </tr>
         <c:forEach items="${status.current.dataType.commitProcessor.processors[2].configuration}" var="jobdef">
           <tr>
             <td>${jobdef.key}</td>
-            <td>${jobdef.value}</td>
-<!-- 
-            <td>${jobdef.value.transcoder}</td>
+            <td>${jobdef.value.label}</td>
             <td>${jobdef.value.mimeType}</td>
- -->
+            <td>${jobdef.value.transcoder}</td>
           </tr>
-<!--      <tr>
-            <td />
-            <td colspan="2">${jobdef.value.analyzers}</td>
-          </tr> -->
         </c:forEach>
       </table>
     </mm:fieldlist>
-
 
     <table summary="mediafragments">
       <caption>Recent mediafragments</caption>
