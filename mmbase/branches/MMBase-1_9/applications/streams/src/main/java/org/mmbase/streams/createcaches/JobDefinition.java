@@ -48,7 +48,15 @@ public class JobDefinition implements Serializable {
     final Stage stage;
 
     /**
-     * Creates a JobDefinition template (used in the configuration container).
+     * Creates a JobDefinition template as used in the configuration container or to kick-start
+     * a transcoding.
+     * @param id    identifier of this job, normally matches the one in configuration 
+     * @param inId  identifier of the job that is used as input, if no inId is found the 
+                    orginal source is used otherwise it should match with an existing cache
+     * @param label description for user purposes of the result
+     * @param t     transcoder to perform the job
+     * @param mt    mime type for which the jobdefinition is valid
+     * @param s     stage the jobdefinition applies to
      */
     public JobDefinition(String id, String inId, String label, Transcoder t, MimeType mt, Stage s) {
         assert id != null;
@@ -71,8 +79,7 @@ public class JobDefinition implements Serializable {
     public List<Analyzer> getAnalyzers() {
         return Collections.unmodifiableList(analyzers);
     }
-
-
+    
     public MimeType getMimeType() {
         return mimeType;
     }
@@ -93,4 +100,5 @@ public class JobDefinition implements Serializable {
     public String toString() {
         return "" + transcoder + " " + analyzers + (label == null ? "" : (" (" + label + ")"));
     }
+
 }
