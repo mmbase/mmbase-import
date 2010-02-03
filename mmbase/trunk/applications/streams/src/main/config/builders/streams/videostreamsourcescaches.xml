@@ -14,6 +14,10 @@
     <plural xml:lang="nl">Streamscaches: Video</plural>
   </names>
 
+  <properties>
+    <property name="org.mmbase.streams.cachestype">videostreamsourcescaches</property>
+  </properties>
+
   <xi:include href="streamsourcescaches.fields.xml" />
   <xi:include href="http://www.mmbase.org/builders/media/mediasources.virtual.fields.xml" />
   <xi:include href="streamsourcescaches.virtual.fields.xml" />

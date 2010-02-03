@@ -30,13 +30,13 @@ import org.mmbase.util.MimeType;
 
 
 /**
- * The description or definition of one 'transcoding' sub jobs that's doing the transcoding. This
- * combines a transcoder, with a mime type for which it must be valid, and a list of analyzers.
+ * The description or definition of one 'transcoding' sub job that's doing the transcoding. This
+ * combines a {@link Transcoder}, with a mime type for which it must be valid, and a list of analyzers.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-class JobDefinition implements Serializable {
+public class JobDefinition implements Serializable {
     private static final long serialVersionUID = 0L;
     final Transcoder transcoder;
     final List<Analyzer> analyzers;
@@ -49,7 +49,16 @@ class JobDefinition implements Serializable {
     final Stage stage;
 
     /**
-     * Creates an JobDefinition template (used in the configuration container).
+     * Creates a JobDefinition template as used in the configuration container or to kick-start
+     * a transcoding.
+     * @param id    identifier of this job, normally matches the one in configuration 
+     * @param inId  identifier of the jobdefinition or cache that is used as input. 
+                    If no inId is found the orginal source is used, otherwise it should match with
+                    a preceding jobdefinition id in config or a node number of an already existing cache.
+     * @param label description for user purposes of the result
+     * @param t     transcoder to perform the job
+     * @param mt    mime type for which the jobdefinition is valid
+     * @param s     stage the jobdefinition applies to
      */
     public JobDefinition(String id, String inId, String label, Transcoder t, MimeType mt, Stage s) {
         assert id != null;
@@ -73,7 +82,6 @@ class JobDefinition implements Serializable {
         return Collections.unmodifiableList(analyzers);
     }
 
-
     public MimeType getMimeType() {
         return mimeType;
     }
@@ -94,4 +102,5 @@ class JobDefinition implements Serializable {
     public String toString() {
         return "" + transcoder + " " + analyzers + (label == null ? "" : (" (" + label + ")"));
     }
+
 }

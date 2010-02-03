@@ -45,11 +45,11 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
     }
 
 
-    Processor getCacheCreator(final Field url) {
+    protected static Processor getCacheCreator(final Field url) {
         CommitProcessor commitProcessor = url.getDataType().getCommitProcessor();
         if (commitProcessor instanceof ChainedCommitProcessor) {
             ChainedCommitProcessor chain = (ChainedCommitProcessor) commitProcessor;
-            LOG.info("Lookin in " + chain.getProcessors());
+            LOG.service("Lookin in " + chain.getProcessors());
             for (CommitProcessor cp : chain.getProcessors()) {
                 if (cp instanceof Processor) {
                     return (Processor) cp;
@@ -67,23 +67,35 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
 
     @Override
     protected Boolean getFunctionValue(final Node node, final Parameters parameters) {
-        if (node.getNumber() > 0 && node.getCloud().may(ActionRepository.getInstance().get("streams", "retrigger_jobs"), null)) {
-            LOG.info("Recreating caches for " + node.getNumber());
+        if (node.getNumber() > 0 
+                && node.getCloud().may(ActionRepository.getInstance().get("streams", "retrigger_jobs"), null)) {
+            LOG.info("Recreating caches for #" + node.getNumber());
             final Field url = node.getNodeManager().getField("url");
 
             {
-                NodeList list = SearchUtil.findNodeList(node.getCloud(), node.getNodeManager().getProperty("org.mmbase.streams.cachestype"), "id", node.getNumber());
-                // BUG: when the streamsourcescaches are initially of the wrong type, they don't get deleted
+                Node mediafragment = node.getNodeValue("mediafragment");
+                String cachestype = node.getNodeManager().getProperty("org.mmbase.streams.cachestype");
+                NodeList list = SearchUtil.findRelatedNodeList(mediafragment, cachestype, "related"); 
+                
+                // when the streamsourcescaches are initially of the wrong type they don't get deleted, this helps a bit
+                if (list.size() < 1) {
+                    if (cachestype.startsWith("video")) {
+                        list = SearchUtil.findRelatedNodeList(mediafragment, "audiostreamsourcescaches", "related");
+                    } else if (cachestype.startsWith("audio")) {
+                        list = SearchUtil.findRelatedNodeList(mediafragment, "videostreamsourcescaches", "related");
+                    }
+                }
+                
                 for (Node cache : list) {
                     cache.delete(true);
-                    LOG.service("Deleted " + cache.getNumber());
+                    LOG.service("deleted streamsourcescaches #" + cache.getNumber());
                 }
             }
 
             {
                 final Processor cc = getCacheCreator(url);
                 if (cc != null) {
-                    LOG.info("Calling " + cc);
+                    LOG.service("Calling " + cc);
                     cc.createCaches(node.getCloud().getNonTransactionalCloud(), node.getNumber());
                     return true;
                 } else {
