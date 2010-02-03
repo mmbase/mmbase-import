@@ -9,9 +9,11 @@
  *  -  Widgets.instance.boxes(selector):  Makes select into a list of checkboxes (multiple) or radioboxes (single)
  *  -  Widgets.instance.twoMultiples(selector):  Splits up multiple selection into 2 boxes, the left one containing the selected values, the right one the optiosn which are not selected.
 
- *  -  Widgets.instance.labelsToInputs(selector):  Select a bunch of 'labels'. The text of the label will be put as value of the associated text-input, and removed on focus. The label itself will be hidden.
+ *  -  Widgets.instance.labelsToInputs(selector):  Select a bunch of 'labels'. The text of the label will be put as
+       value of the associated text-input, and removed on focus. The label itself will be hidden.
+
  *
- * @version $Id: Widgets.js,v 1.9 2008-12-30 17:54:06 michiel Exp $   BETA
+ * @version $Id$   BETA
  * @author Michiel Meeuwissen
 
  */
