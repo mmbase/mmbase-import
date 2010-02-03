@@ -53,6 +53,7 @@ public class Job implements Iterable<Result> {
     private Node mediaprovider;
     private Node mediafragment;
     final BufferedLogger logger;
+    private static Map<String, JobDefinition> jobdefs = new LinkedHashMap<String, JobDefinition>();
     private final Map<String, Result> lookup = new LinkedHashMap<String, Result>();
     private final List<Result>        results = new ArrayList<Result>();
     private final long number = lastJobNumber++;
@@ -69,16 +70,21 @@ public class Job implements Iterable<Result> {
     final Processor processor;
 
     public Job(Processor processor, Cloud cloud, ChainedLogger chain) {
+        this(processor, processor.list, cloud, chain);
+    }
+    
+    public Job(Processor processor, Map<String, JobDefinition> list, Cloud cloud, ChainedLogger chain) {
         user = cloud.getUser().getIdentifier();
         logger = new BufferedLogger();
         logger.setLevel(Level.DEBUG);
         logger.setMaxSize(100);
         logger.setMaxAge(60000);
         chain.addLogger(logger);
-        for (Map.Entry<String, JobDefinition> dum : processor.list.entrySet()) {
+        for (Map.Entry<String, JobDefinition> dum : list.entrySet()) {
             results.add(null);
         }
         this.processor = processor;
+        this.jobdefs = list;
     }
 
     /**
@@ -88,19 +94,19 @@ public class Job implements Iterable<Result> {
      */
     protected void findResults() {
         int i = -1;
-        for (Map.Entry<String, JobDefinition> entry : processor.list.entrySet()) {
+        for (Map.Entry<String, JobDefinition> entry : jobdefs.entrySet()) {
             i++;
             if (results.get(i) == null) {
                 JobDefinition jd = entry.getValue();
                 URI inURI;
                 Node inNode; // inNode (input stream) to be used
 
-                if (jd.getInId() == null) {
+                if (jd.getInId() == null) { // using the original source node
                     String url = node.getStringValue("url");
                     if (url.length() < 0) LOG.error("No value for field url: " + url);
                     assert url.length() > 0;
                     File f = new File(processor.getDirectory(), url);
-                    LOG.info("New file: " + f);
+                    LOG.service("New (in)file: " + f);
                     assert f.exists() : "No such file " + f;
                     
                     // make sure there is an in file to use
@@ -118,44 +124,72 @@ public class Job implements Iterable<Result> {
                     
                     inURI = f.toURI();
                     inNode = node;
-                } else {
-                    if (! processor.list.containsKey(jd.getInId())) {
-                        LOG.warn("Configuration error, no such job definition with id '" + jd.getInId());
+                
+                } else {    // using a previously cached node
+                    String inId = jd.getInId();
+                    
+                    if (! jobdefs.containsKey(inId) && node.getCloud().hasNode(inId)) {
+                        // use an existing cache node
+                        LOG.service("Using cache #" + inId + " as input");
+                        
+                        inNode = node.getCloud().getNode(inId);
+                        String url = inNode.getStringValue("url");
+                        if (url.length() < 0) {
+                            LOG.error("No value for field url: " + url);
+                            break;
+                        }
+
+                        File f = new File(processor.getDirectory(), url);
+                        LOG.service("Using (in)file: " + f);
+                        
+                        if (!f.exists() && !f.isFile()) {
+                            LOG.error("NO INFILE! '" + f );
+                            break;
+                        }
+                        
+                        inURI = f.toURI();
+                        
+                    } else {    // use inId from config
+                        if (! jobdefs.containsKey(inId)) {
+                            LOG.warn("Configuration error, no such job definition with id '" + inId);
                         continue;
                     }
-                    Result prevResult = lookup.get(jd.getInId());
+                        Result prevResult = lookup.get(inId);
                     if (prevResult == null || ! prevResult.isReady()) {
                         // no result possible yet.
                         continue;
                     }
                     inURI = prevResult.getOut();
                     inNode = prevResult.getDestination();
+                    
+                    }
+                    
                     if (inNode == null) {
                         inNode = node;
                     }
 
-                    if (prevResult.isReady() && inNode.getIntValue("state") == State.FAILED.getValue()) {
-                        LOG.warn("BREAK, transcoding of inNode failed " + inNode);
+                    if (inNode.getIntValue("state") > State.SOURCE.getValue()) {
+                        LOG.warn("BREAK, transcoding of inNode failed, it is removed, interrupted or unsupported #" + inNode);
                         break;
                     }
                 }
 
-                // mimetype: skip when no match
+                // mimetype: skip when there is no match between current jd and inNode
                 if (! jd.getMimeType().matches(new MimeType(inNode.getStringValue("mimetype")))) {
                     LOG.debug("SKIPPING " + jd);
                     results.set(i, new SkippedResult(jd, inURI));
                     skipped++;
                     continue;
                 } else {
-                    LOG.info("NOT SKIPPING " + jd);
+                    LOG.service("NOT SKIPPING " + jd);
                 }
 
                 assert inURI != null;
-                // not a recognizer (it has a transcoder key)
-                if (jd.transcoder.getKey() != null) {
-                    LOG.info(jd.getMimeType());
-                    LOG.info("" + inNode);
-                    Node dest = getCacheNode(jd.transcoder.getKey());   // gets node (and creates when yet not present)
+               
+                if (jd.transcoder.getKey() != null) {  // not a recognizer (it has a transcoder key)
+                    LOG.service(jd.getMimeType());
+                    LOG.service("inNode: " + inNode);
+                    Node dest = getCacheNode(inNode, jd.transcoder.getKey());   // gets node (and creates when yet not present)
                     if (dest == null) {
                         LOG.warn("Could not create cache node from " + node.getNodeManager().getName() + " " + node.getNumber() + " for " + jd.transcoder.getKey());
                         continue;
@@ -187,7 +221,7 @@ public class Job implements Iterable<Result> {
                         outFileName = outFileName.substring(1);
                     }
                     
-                    LOG.info("outFileName: '" + outFileName + "'");
+                    LOG.service("outFileName: '" + outFileName + "'");
                     assert outFileName != null;
                     assert outFileName.length() > 0;
                     dest.setStringValue("url", outFileName);
@@ -224,12 +258,19 @@ public class Job implements Iterable<Result> {
                     if (destFileName.length() < 1) {
                         LOG.error("Still empty destFileName: '" + destFileName + "' of #" + dest.getNumber());
                     } else {
-                        LOG.info("destFileName: '" + destFileName + "'");
+                        LOG.service("destFileName: '" + destFileName + "'");
                     }
                     assert destFileName != null;
                     assert destFileName.length() > 0;
                     
                     File outFile = new File(processor.getDirectory(), destFileName);
+                    if (outFile.exists()) { 
+                        if (outFile.delete()) {
+                            LOG.service("Former version of file '" + outFile + "' deleted");
+                        } else {
+                            LOG.error("Could not remove former version of file '" + outFile + "'");
+                        }
+                    }
 
                     if (FileServlet.getInstance() != null) {
                         File inMeta = FileServlet.getInstance().getMetaFile(inFile);
@@ -252,7 +293,7 @@ public class Job implements Iterable<Result> {
                     URI outURI = outFile.toURI();
                     Result result = new TranscoderResult(processor.getDirectory(), jd, dest, inURI, outURI);
 
-                    LOG.info("Added result to results list with key: " + dest.getStringValue("key"));
+                    LOG.service("Added result to results list with key: " + dest.getStringValue("key"));
                     results.set(i, result);
                     lookup.put(jd.getId(), result);
                 } else {
@@ -344,9 +385,9 @@ public class Job implements Iterable<Result> {
      */
     void submit(final JobCallable jc)  {
        if (getStage() == Stage.READY) {
-           LOG.info("Will not submit, because we're ready" + jc);
+           LOG.service("Will not submit, because we're ready " + jc);
        } else {
-           LOG.info("Will submit " + jc);
+           LOG.service("Will submit " + jc);
            ThreadPools.jobsExecutor.execute(new Runnable() {
                    public void run() {
                        jc.init();
@@ -384,9 +425,9 @@ public class Job implements Iterable<Result> {
      * see the builder property 'org.mmbase.streams.cachestype'. It first looks if it already
      * exists in the cloud or otherwise will create one.
      *
-     * @param src   source node to create stream from
-     * @param key   representation of the way the stream was created from its source, f.e. trancoding parameters
-     * @return cached stream node
+     * @param src   source node to create cache stream from, can be another cache
+     * @param key   representation of the way the stream was created from its source, f.e. transcoding parameters
+     * @return cache stream node, in builder specified in 'org.mmbase.streams.cachestype'.
      */
     protected Node getCacheNode(Node src, final String key) {
         String ct = src.getNodeManager().getProperty("org.mmbase.streams.cachestype");
@@ -413,7 +454,7 @@ public class Job implements Iterable<Result> {
             newNode.setStringValue("key", key);
 
             newNode.commit();
-            LOG.info("CREATED " + newNode.getNumber() + " (" + src.getNumber() + "/" + key + ")");
+            LOG.service("CREATED " + newNode.getNumber() + " (" + src.getNumber() + "/" + key + ")");
 
             logger.service("Created new node for " + key + "(" + src.getNumber() + "): " + newNode.getNumber());
             return newNode;
@@ -462,10 +503,10 @@ public class Job implements Iterable<Result> {
         }
         interrupted = true;
         if (thread != null) {
-            logger.info("Interrupting " + thread);
+            logger.service("Interrupting " + thread);
             thread.interrupt();
         } else {
-            logger.info("No Thread in " + this);
+            logger.service("No Thread in " + this);
         }
     }
     public boolean isInterrupted() {
