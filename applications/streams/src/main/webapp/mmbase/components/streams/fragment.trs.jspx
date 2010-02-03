@@ -7,109 +7,122 @@
 
   <mm:listnodes id="fragment">
     <tr>
-      <th colspan="100">
+      <th>
         <mm:nodeinfo type="nodemanager"/>
-        <jsp:text> </jsp:text>
+      </th><th>
         <mm:field name="number" />
-        <jsp:text>: </jsp:text>
+      </th><th colspan="4">
         <mm:nodeinfo type="gui" />
-      </th>
+      </th><th colspan="99" />
     </tr>
-    <mm:listfunction name="filteredurls" id="uc">
-      <tr>
-        <th>${_.source.builder.tableName} ${_.source.number}</th>
-        <td>
-          <jsp:text>${_.state}</jsp:text>
-          ${_.dimension}
-        </td>
-        <td>
-          <a href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a>
-          ${_.mimeType}
-        </td>
-        <c:choose>
-          <c:when test="${_.main}">
-            <td />
-            <td>
-              <mm:function set="streams" name="getJob" referids="_node@node">
-                JOB: ${_.class}<br />
-              </mm:function>
-              <mm:function set="streams" name="runningJobs">
-                JOB: ${_.class}
-              </mm:function>
-            </td><td>
-              <mm:node number="${_.source.number}">
-                <c:set var="triggervalue" value="${fragment}:${_node}" />
-                <c:choose>
-                  <c:when test="${trigger eq triggervalue}">
-                    <mm:log> CALLING TRIGGER FOR ${trigger}</mm:log>
-                    <mm:voidfunction name="triggerCaches" />
-                    <jsp:text>Triggered conversion</jsp:text>
-                  </c:when>
-                  <c:otherwise>
-                    <mm:link referids="triggervalue@trigger">
-                      <a href="${_}">Trigger all</a>
-                    </mm:link>
-                  </c:otherwise>
-                </c:choose>
-                <jsp:text>, </jsp:text>
-                <c:choose>
-                  <c:when test="${interrupt eq _node.number}">
-                    <mm:function set="streams" name="cancelJob" referids="interrupt@node" />
-                  </c:when>
-                  <c:otherwise>
-                    <mm:link referids="_node@interrupt">
-                      <a href="${_}">interrupt</a>
-                    </mm:link>
-                  </c:otherwise>
-                </c:choose>
-              </mm:node>
-            </td>
-          </c:when>
-          <c:otherwise>
-            <mm:node number="${_.source.number}" notfound="skip" id="cache">
-              <td>
-                <mm:hasfield name="label">
-                  <mm:field name="label" /><br />
-                </mm:hasfield>
-                <mm:hasfield name="id">
-                  <mm:field name="id" />
-                </mm:hasfield>
-              </td>
-              <td>
-                <mm:hasfield name="key">
-                  <mm:field name="key" />
-                </mm:hasfield>
-              </td>
-            
-              <td>
-                
-                <mm:hasfield name="id">
-                
-                  <c:set var="recachevalue" value="${fragment}:${cache}" />
-                  <c:choose>
-                    <c:when test="${recache eq recachevalue}">
-                      <mm:field name="id">
-                        <mm:node number="$_">
-                          <mm:booleanfunction name="triggerRecache" referids="cache@recache" />
-                        </mm:node>
-                      </mm:field>
-                    </c:when>
-                    <c:otherwise>
-                      <mm:link referids="recachevalue@recache">
-                        <a href="${_}">Retrigger cache</a>
-                      </mm:link>
-                    </c:otherwise>
-                  </c:choose>
-                
-                </mm:hasfield>
-                
-              </td>
+    <mm:listfunction name="filteredurls">
+      <c:if test="${_.main}">
+        <c:set var="source"  value="${_.source.number}" />
+        <tr>
+          <th>${_.source.builder.tableName}</th>
+          <td>${_.source.number}</td>
+          <td>
+            <jsp:text>${_.state}</jsp:text>
+            ${_.mimeType}
+            ${_.dimension}
+          </td>
+          <td>
+            <a href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a>
+          </td>
+          <td colspan="2">
+            <mm:function set="streams" name="getJob" referids="_node@node">
+              JOB: ${_.class}<br />  
+            </mm:function>
+            <mm:function set="streams" name="runningJobs">
+              JOB: ${_.class} 
+            </mm:function>
+          </td>
+          <td>
+            <mm:node number="${_.source.number}">
+              <c:set var="triggervalue" value="${fragment}:${_node}" />
+              <c:choose>
+                <c:when test="${trigger eq triggervalue}">
+                  <mm:log> CALLING TRIGGER FOR ${trigger}</mm:log>
+                  <mm:voidfunction name="triggerCaches" />
+                  <div class="msg">Triggered transcoding</div>
+                </c:when>
+                <c:otherwise>
+                  <mm:link referids="triggervalue@trigger">
+                    <a href="${_}">Trigger all</a>
+                  </mm:link>
+                </c:otherwise>
+              </c:choose>
+              <jsp:text>, </jsp:text>
+              <c:choose>
+                <c:when test="${interrupt eq _node.number}">
+                  <mm:function set="streams" name="cancelJob" referids="interrupt@node" />
+                </c:when>
+                <c:otherwise>
+                  <mm:link referids="_node@interrupt">
+                    <a href="${_}">interrupt</a>
+                  </mm:link>
+                </c:otherwise>
+              </c:choose>
             </mm:node>
-          </c:otherwise>
-        </c:choose>
-      </tr>
+          </td>
+        </tr>
+      </c:if>
     </mm:listfunction>
+    <mm:listfunction name="filteredurls">
+      <c:if test="${!_.main}">
+        <tr>
+          <th>${_.source.builder.tableName}</th>
+          <td>${_.source.number}</td>
+          <td>
+            <jsp:text>${_.state}</jsp:text>
+            ${_.mimeType}
+            ${_.dimension}
+          </td>
+          <td>
+            <a href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a>
+          </td>          
+          <mm:node number="${_.source.number}" notfound="skip" id="cache">
+            <td>
+              <mm:hasfield name="label">
+                <mm:field name="label" /><br />
+              </mm:hasfield>
+              <mm:hasfield name="id">
+                <mm:field name="id" />
+              </mm:hasfield>
+            </td>
+            <td>
+              <mm:hasfield name="key">
+                <mm:field name="key" />
+              </mm:hasfield>
+            </td>
+            <td>
+              <mm:hasfield name="id">
+                <c:set var="recachevalue" value="${fragment}:${cache}" />
+                <c:choose>
+                  <c:when test="${recache eq recachevalue}">
+                    <mm:field name="id">
+                      <mm:node number="${source}">
+                        <mm:booleanfunction name="triggerRecache" referids="cache@recache">
+                          <div class="msg">Triggered transcoding</div>
+                        </mm:booleanfunction>
+                      </mm:node>
+                    </mm:field>
+                  </c:when>
+                  <c:otherwise>
+                    <mm:link referids="recachevalue@recache">
+                      <a href="${_}">Retrigger cache</a>
+                    </mm:link>
+                  </c:otherwise>
+                </c:choose>
+              </mm:hasfield>
+            </td>
+          </mm:node>
+        </tr>
+      </c:if>
+    </mm:listfunction>
+  
   </mm:listnodes>
+  
   <tr cols="100">
     <mm:previousbatches id="pb">
       <mm:link>
@@ -126,7 +139,6 @@
         <a href="${_}"><mm:index /></a>
       </mm:link>
     </mm:nextbatches>
-
   </tr>
 
 </jsp:root>
