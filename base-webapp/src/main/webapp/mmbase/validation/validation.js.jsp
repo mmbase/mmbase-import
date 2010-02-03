@@ -1162,23 +1162,27 @@ MMBaseValidator.prototype.removeValidation = function(el) {
     }
     var self = this;
     var els = $(el).find(".mm_validate").each(function() {
-	var entry = this;
-	if (self.hasElement(entry)) {
-	    if (! entry.prevValid) {
-                self.invalidElements--;
-            }
-	    $(entry).unbind();
-	    var newElements = [];
-	    $(self.elements).each(function() {
-		if (this.initialalId != entry.initialId) {
+            self.removeValidationFromElement(this);
+        });
+}
+
+MMBaseValidator.prototype.removeValidationFromElement = function(el) {
+    var self = this;
+    if (self.hasElement(el)) {
+        if (! el.prevValid) {
+            self.invalidElements--;
+        }
+        $(el).unbind();
+        var newElements = [];
+        $(self.elements).each(function() {
+		if (this.initialalId != el.initialId) {
 		    newElements.push(this);
 		}
 	    });
-	    self.elements = newElements;
-	}
-    });
-
+        self.elements = newElements;
+    }
 }
+
 
 
 MMBaseValidator.prototype.setLastChange = function(event) {
