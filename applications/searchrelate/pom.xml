@@ -58,6 +58,21 @@
         </executions>
       </plugin>
       -->
+      <plugin>
+        <groupId>net.sourceforge.maven-taglib</groupId>
+        <artifactId>maven-taglib-plugin</artifactId>
+        <configuration>
+          <dontRecurseIntoSubdirs>true</dontRecurseIntoSubdirs>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>taglibdocjar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
   <dependencies>
@@ -67,20 +82,23 @@
       <version>1.7.2-1</version>
       <type>war</type>
     </dependency>
+
+    <!--
     <dependency>
       <groupId>org.mmbase.jquery</groupId>
       <artifactId>jquery-form</artifactId>
       <version>2.36</version>
       <type>war</type>
     </dependency>
-    <!--
+    -->
+
+    <!-- ajax file upload is easier if you want to just upload -->
     <dependency>
       <groupId>org.mmbase.jquery</groupId>
       <artifactId>ajaxfileupload</artifactId>
       <version>1.0-beta1</version>
       <type>war</type>
     </dependency>
-    -->
   </dependencies>
 
 </project>
