@@ -305,3 +305,82 @@ Widgets.prototype.twoMultiples = function(selector) {
 
     });
 };
+
+
+Widgets.prototype.labelsToInputs = function(selector, options) {
+    var emptyisuntouched = options && options['emptyisuntouched'];
+    //var ignornon         = options && options['emptyisuntouched'];
+    $(document).ready(function() {
+        $(selector).each(function() {
+            var labelText = $(this).text();
+            var labelFor = $(this).attr("for");
+            var input = $("#" + labelFor);
+            if (input.val() == "") {
+                if (input.attr("type") == 'password') {
+                    try {
+                        input.attr("type", "text");
+                    } catch (e) {
+                        // happens in text/html FF, never mind...
+                        var i = $("<input type='text' value='' id='" + input.attr("id") + " name='" + input.attr('name') + " class='" + input.attr("class") + "' />");
+                        input.before(i);
+                        input.hide();
+                        i[0].realInput = input;
+                        input = i;
+
+                    }
+                    input.addClass("password");
+                }
+                input.val(labelText);
+                input.addClass("untouched");
+                $(this).css("display", "none");
+                var focus = function() {
+                    // if entered for the first time, remove the label value
+                    if ($(this).hasClass("untouched")) {
+                        if (emptyisuntouched) {
+                            $(this).removeClass("untouched");
+                        }
+                        this.value = "";
+                        if ($(this).hasClass("password")) {
+                            try {
+                                $(this).attr("type", "password");
+                            } catch (e) {
+                                $(this.realInput).show().focus();
+                                $(this).hide();
+                                // happens in text/html FF, never mind...
+
+                            }
+                        }
+                    }
+                };
+                input.focus(focus);
+                input.select(focus);
+                input.blur(function() {
+                    // if leaving, the value is empty, and empty is equivalent to 'untouched', put the label back in.
+                    if ($(this).val() == "") {
+                        if (emptyisuntouched) {
+                            $(this).addClass("untouched");
+                        }
+                        if ($(this).hasClass("untouched")) {
+                            $(this).val(labelText);
+                            if ($(this).hasClass("password")) {
+                                try {
+                                    $(this).attr("type", "text");
+                                } catch (e) {
+                                    // happens in text/html FF, never mind...
+                                }
+                            }
+                        }
+                    }
+                });
+                if (! emptyisuntouched) {
+                    input.keyup(function() {
+                        $(this).removeClass("untouched");
+                    });
+                }
+            } else {
+                // value is not empty, so cant use it for the label
+            }
+
+        });
+    });
+}
