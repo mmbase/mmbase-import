@@ -119,7 +119,7 @@ public abstract class HtmlHandler  extends AbstractHandler<String> {
             }
             if (errors && ! field.isReadOnly()) {
                 StringBuilder show = new StringBuilder("<div id=\"");
-                show.append(request.getName(field));
+                show.append(prefixError(request, field));
                 show.append("\" class=\"mm_check_error\">");
                 Locale locale = request.getLocale();
                 for (LocalizedString error : col) {
