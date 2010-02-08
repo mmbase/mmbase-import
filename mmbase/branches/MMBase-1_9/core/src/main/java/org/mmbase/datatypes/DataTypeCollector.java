@@ -45,7 +45,7 @@ public final class DataTypeCollector {
     private List<DataTypeCollector> collectors = new CopyOnWriteArrayList<DataTypeCollector>();
 
     // the DataTypeCollector used to store datatypes accessible throughout the application
-    private static DataTypeCollector systemDataTypeCollector;
+    static DataTypeCollector systemDataTypeCollector;
 
     /**
      * Creates the DataTypeCollector used to store datatypes accessible throughout the application.
@@ -288,7 +288,6 @@ public final class DataTypeCollector {
         roots.clear();
         collectors.clear();
         signature = null;
-        systemDataTypeCollector = null;
 
     }
 
