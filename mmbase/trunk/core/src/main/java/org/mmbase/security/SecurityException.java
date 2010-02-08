@@ -67,6 +67,7 @@ public class SecurityException extends java.lang.SecurityException {
      */
     public SecurityException(LocalizedString message) {
         super(message.get(null));
+        localizedMessage = message;
     }
 
 
