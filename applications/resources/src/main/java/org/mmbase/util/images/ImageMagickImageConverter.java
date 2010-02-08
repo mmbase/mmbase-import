@@ -567,7 +567,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 if (type.equals("crop") && (isMinimumVersion(6,0,5))) {
                     // +repage is shortcut for -page +0+0
                     // (http://www.mail-archive.com/lilypond-devel@gnu.org/msg24065.html),
-                    // but works in graphicsmagick too.
+                    // but -page works in graphicsmagick too.
                     cmds.add("-page");
                     cmds.add("+0+0");
                 }
