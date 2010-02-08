@@ -92,6 +92,9 @@ public class DataTypes {
     public static synchronized void reinitialize() {
         initialized = false;
         dataTypeCollector.clear();
+        DataTypeCollector.systemDataTypeCollector = null;
+        DataTypeCollector.createSystemDataTypeCollector();
+
         initialize();
     }
 
