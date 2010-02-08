@@ -62,7 +62,8 @@ public class LanguageDataType extends StringDataType {
     }
 
 
-    @Override public Iterator<Map.Entry<String, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
+    @Override
+    public Iterator<Map.Entry<String, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
 
         final Iterator<Map.Entry<String, String>> superIterator = super.getEnumerationValues(locale, cloud, node, field);
         if (languageInSelf) {
