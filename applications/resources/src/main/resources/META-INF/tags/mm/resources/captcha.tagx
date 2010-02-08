@@ -19,16 +19,10 @@
   <jsp:directive.attribute name="fill"     type="java.lang.String" />
 
   <!-- If the key is stated explicitely, no new key is generated, but this given one is shown. -->
-  
+
   <jsp:directive.attribute name="key"      type="java.lang.String" />
   <jsp:declaration>
-    static final byte[] gifBytes = new byte[]{
-             0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00, 0x01, 0x00,
-             (byte)0x80, 0x00, 0x00, (byte)0xff, (byte)0xff, (byte)0xff,
-             0x00, 0x00, 0x00, 0x21, (byte)0xf9, 0x04, 0x00, 0x00, 0x00,
-             0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 0x00,
-             0x01, 0x00, 0x01, 0x00, 0x40, 0x02, 0x02, 0x44, 0x01, 0x00,
-             0x3b, 0x0a};
+
     static final String[] charset = {"3","4","5","6","7","8", "a","b","c","d","e","f","h","i","j","k","m","n","p","q","r","s","t","u","v","w","x","y"};    // 29 elements
     static final Random rand = new Random();
     static Timer deleter = new Timer(true);
