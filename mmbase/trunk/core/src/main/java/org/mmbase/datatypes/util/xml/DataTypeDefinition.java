@@ -93,7 +93,7 @@ public class DataTypeDefinition {
                                 dt.inherit(baseDataType);
                             }
                         } catch (Exception e) {
-                            log.error(e);
+                            log.error(e.getMessage(), e);
                         }
                     }
                     break;
