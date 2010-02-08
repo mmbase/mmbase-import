@@ -219,11 +219,11 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             String imOutput = getOutput("-version").toString();
             Matcher m = IM_VERSION_PATTERN.matcher(imOutput);
             if (m.matches()) {
-                String program = m.group(1);
+                String p = m.group(1);
                 imVersionMajor = Integer.parseInt(m.group(2));
                 imVersionMinor = Integer.parseInt(m.group(3));
                 imVersionPatch = Integer.parseInt(m.group(4));
-                if (program.indexOf("GraphicsMagick") >= 0) {
+                if (p.indexOf("GraphicsMagick") >= 0) {
                     log.service("Found GraphicsMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
                     imVersionMajor += 5; // I have no freaking idea
                     log.service("Supposing that that is equivalent to ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
