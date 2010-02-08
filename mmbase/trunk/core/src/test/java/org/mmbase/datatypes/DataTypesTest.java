@@ -432,9 +432,20 @@ public class DataTypesTest  {
     }
 
     @Test
+    public void lengthEnforce() throws DependencyException {
+        String xml = "<datatype base='string'><length value='6' enforce='always' /></datatype>";
+        DocumentReader reader = new DocumentReader(new InputSource(new java.io.StringReader(xml)), false, DataTypeReader.class);
+        StringDataType dt = (StringDataType) DataTypeReader.readDataType(reader.getDocument().getDocumentElement(), null, null).dataType.clone();
+        assertEquals(6, dt.getMinLength());
+        assertEquals(6, dt.getMaxLength());
+        assertEquals(DataType.ENFORCE_ALWAYS, dt.getMaxLengthRestriction().getEnforceStrength());
+    }
+
+
+
+    @Test
     public void reinitialize() {
         DataTypes.reinitialize();
     }
-
 
 }
