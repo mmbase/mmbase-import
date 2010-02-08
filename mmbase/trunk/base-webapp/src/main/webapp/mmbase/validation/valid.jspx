@@ -19,7 +19,7 @@
       session="false" />
   <jsp:directive.include file="get.datatype.jspxf" />
   <mm:import externid="value" required="true" vartype="string" jspvar="value"/>
-  <mm:cloud uri="${param.uri}" name="${param.name}"><!-- cloud to provide locale -->
+  <mm:cloud method="asis" sessionname="${param.sessionname}" uri="${param.uri}" name="${param.name}"><!-- cloud to provide locale -->
   <jsp:scriptlet>
     if ("".equals(value) &amp;&amp; (! (dataType instanceof StringDataType))) {
       value = null;
