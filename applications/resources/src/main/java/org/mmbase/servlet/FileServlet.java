@@ -324,12 +324,14 @@ public class FileServlet extends BridgeServlet {
 
         /**
          * If we are at byte number i, how many are not available from here until we encounter one which is?
-         * @return Some number of bytes or <code>0</code> if the next character is availabe. A large number near <code>Long.MAX_VALUE</code> if all subsequent chars are unavailable.
+         * @return Some number of bytes or <code>0</code> if the next character is availabe. A large number near <code>Long.MAX_VALUE</code> if all subsequent byes are unavailable.
          */
         long notavailable(long i);
     }
 
     /**
+     * Implementation of Range simply staticn the first and last chars which are available, perhaps with a maximum too.
+     * This only deals with <start>-<stop> entries in the Range specificiation.
      * @since MMBase-2.0
      */
     protected static class FirstLastRange implements Range {
@@ -360,6 +362,8 @@ public class FileServlet extends BridgeServlet {
         }
     }
     /**
+     * This implemtation of Range parses and combines a number of {@link FirstLastRange}s.
+     * So, this deals with the entire Range specification then.
      * @since MMBase-2.0
      */
     protected static class ChainedRange implements Range {
