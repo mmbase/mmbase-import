@@ -45,6 +45,10 @@
               <name>jdbcUrl</name>
               <value>${jdbcUrl}</value>
             </systemProperty>
+            <systemProperty>
+              <name>java.awt.headless</name>
+              <value>true</value>
+            </systemProperty>
           </systemProperties>
         </configuration>
       </plugin>
