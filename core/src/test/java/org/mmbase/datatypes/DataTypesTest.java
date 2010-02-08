@@ -431,6 +431,10 @@ public class DataTypesTest  {
         CloudThreadLocal.unbind();
     }
 
+    @Test
+    public void reinitialize() {
+        DataTypes.reinitialize();
+    }
 
 
 }
