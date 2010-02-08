@@ -165,7 +165,6 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
 
         MinRestriction(BasicDataType<?> dt, MinRestriction source) {
             super(dt, source);
-            setEnforceStrength(DataType.ENFORCE_ONCHANGE);
         }
 
         MinRestriction(BasicDataType<?> dt, long min) {
@@ -185,7 +184,6 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
         private static final long serialVersionUID = -6308264648535016037L;
         MaxRestriction(BasicDataType<?> dt, MaxRestriction source) {
             super(dt, source);
-            setEnforceStrength(DataType.ENFORCE_ONCHANGE);
         }
 
         MaxRestriction(BasicDataType<?> dt, long max) {
