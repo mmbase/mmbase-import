@@ -30,9 +30,11 @@ import org.mmbase.util.logging.*;
 public class ImageMagickImageConverter extends AbstractImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
 
-    static final Pattern IM_VERSION_PATTERN = Pattern.compile("(?is).*?\\s(\\d+)\\.(\\d+)\\.(\\d+)(-[0-9]+)?\\s.*");
+    static final Pattern IM_VERSION_PATTERN = Pattern.compile("(?is)(.*)\\s(\\d+)\\.(\\d+)\\.(\\d+)(-[0-9]+)?\\s.*");
     private static final Pattern IM_FORMAT_PATTERN  = Pattern.compile("(?is)\\s*([A-Z0-9]+)\\*?\\s+[A-Z0-9]*\\s*[r\\-]w[\\+\\-]\\s+.*");
 
+
+    private String program = "ImageMagick";
     private int imVersionMajor = 5;
     private int imVersionMinor = 5;
     private int imVersionPatch = 0;
@@ -217,10 +219,19 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             String imOutput = getOutput("-version").toString();
             Matcher m = IM_VERSION_PATTERN.matcher(imOutput);
             if (m.matches()) {
-                imVersionMajor = Integer.parseInt(m.group(1));
-                imVersionMinor = Integer.parseInt(m.group(2));
-                imVersionPatch = Integer.parseInt(m.group(3));
-                log.service("Found ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+                String program = m.group(1);
+                imVersionMajor = Integer.parseInt(m.group(2));
+                imVersionMinor = Integer.parseInt(m.group(3));
+                imVersionPatch = Integer.parseInt(m.group(4));
+                if (program.indexOf("GraphicsMagick") >= 0) {
+                    log.service("Found GraphicsMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+                    imVersionMajor += 5; // I have no freaking idea
+                    log.service("Supposing that that is equivalent to ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+                    program = "GraphicsMagick";
+                } else {
+                    log.service("Found ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+                }
+
             } else {
                 log.error( "converter from location " + converterPath + ", gave strange result: " + imOutput
                            + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'. (Doesn't match " + IM_VERSION_PATTERN + ")");
@@ -262,7 +273,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         } else {
             log.debug("ModulateScaleBase property not found, ignoring the modulateScaleBase.");
         }
-        log.info("Found ImageMagick supported formats " + validFormats + ". Using " + this);
+        log.info("Found " + program + " supported formats " + validFormats + ". Using " + this);
     }
 
     private static class ParseResult {
@@ -282,11 +293,11 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
      */
     public boolean isMinimumVersion(int major, int minor, int patch) {
         return (imVersionMajor > major) ||
-               ((imVersionMajor == major) && 
-                ((imVersionMinor > minor) || 
+               ((imVersionMajor == major) &&
+                ((imVersionMinor > minor) ||
                   ((imVersionMinor == minor) && (imVersionPatch >= patch))
                 )
-               ); 
+               );
     }
 
     /**
@@ -499,11 +510,11 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                         new File( org.mmbase.module.core.MMBaseContext.getConfigPath(),"fonts");
                         if (fontDir.isDirectory()) {
                             if (log.isDebugEnabled()) {
-                                log.debug("Using " + fontDir + " as working dir for conversion. A 'type.mgk' (see ImageMagick documentation) can be in this dir to define fonts");
+                                log.debug("Using " + fontDir + " as working dir for conversion. A 'type.mgk' (see " + program + " documentation) can be in this dir to define fonts");
                             }
                             result.cwd = fontDir;
                         } else {
-                            log.debug("Using named font without MMBase 'fonts' directory, using ImageMagick defaults only");
+                            log.debug("Using named font without MMBase 'fonts' directory, using " + program + " defaults only");
                         }
                     }
 
