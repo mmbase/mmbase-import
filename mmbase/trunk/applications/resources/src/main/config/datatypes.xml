@@ -35,6 +35,20 @@
         <class name="org.mmbase.datatypes.processors.BinaryFile$Delete" />
       </deleteprocessor>
     </specialization>
+
+
+    <specialization id="captcha">
+      <class name="org.mmbase.datatypes.CaptchaDataType" />
+      <handler
+          mimetype="text/html,application/xhtml+xml"
+          name="org.mmbase.datatypes.CaptchaDataType$Handler">
+        <param name="length">6</param>
+        <param name="swirl">30</param>
+        <param name="background">transparent</param>
+      </handler>
+      <required value="true" />
+      <length value="6" enforce="always" />
+    </specialization>
   </datatype>
 
 
