@@ -518,6 +518,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
         if (cloud.getCloudContext() instanceof LocalContext) {
             cloud.setProperty(Cloud.PROP_REQUEST, request);
+            cloud.setProperty(Cloud.PROP_RESPONSE, response);
         }
         cloud.setProperty(LocaleTag.TZ_KEY, getTimeZone());
 
