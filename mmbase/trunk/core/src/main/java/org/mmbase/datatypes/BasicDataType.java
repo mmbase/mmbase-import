@@ -968,15 +968,22 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         deleteProcessor = cp;
     }
 
+
     /**
      * {@inheritDoc}
      */
     public Processor getProcessor(int action) {
         Processor processor;
-        if (action == PROCESS_GET) {
+        switch(action) {
+        case PROCESS_GET: {
             processor =  getProcessors == null ? null : getProcessors[0];
-        } else {
+            break;
+        }
+        case PROCESS_SET: {
             processor =  setProcessors == null ? null : setProcessors[0];
+            break;
+        }
+        default: throw new IllegalArgumentException();
         }
         return processor == null ? CopyProcessor.getInstance() : processor;
     }
@@ -989,10 +996,10 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             return getProcessor(action);
         } else {
             Processor processor;
-            if (action == PROCESS_GET) {
-                processor =  getProcessors == null ? null : getProcessors[processingType];
-            } else {
-                processor =  setProcessors == null ? null : setProcessors[processingType];
+            switch(action) {
+            case PROCESS_GET: processor =  getProcessors == null ? null : getProcessors[processingType]; break;
+            case PROCESS_SET: processor =  setProcessors == null ? null : setProcessors[processingType]; break;
+            default: throw new IllegalArgumentException();
             }
             return processor == null ? getProcessor(action) : processor;
         }
@@ -1002,10 +1009,10 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         if (processingType == -1) {
             processingType = 0;
         }
-        if (action == PROCESS_GET) {
-            return getProcessors == null ? null : getProcessors[processingType];
-        } else {
-            return setProcessors == null ? null : setProcessors[processingType];
+        switch(action) {
+        case PROCESS_GET: return getProcessors == null ? null : getProcessors[processingType];
+        case PROCESS_SET: return setProcessors == null ? null : setProcessors[processingType];
+        default: throw new IllegalArgumentException();
         }
     }
 
@@ -1027,14 +1034,21 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         if (processingType == Field.TYPE_UNKNOWN) {
             processingType = 0;
         }
-        if (action == PROCESS_GET) {
+        switch (action) {
+        case PROCESS_GET: {
             if (getProcessors == null) getProcessors = newProcessorsArray();
             getProcessors[processingType] = processor;
-        } else {
+            break;
+        }
+        case PROCESS_SET: {
             if (setProcessors == null) setProcessors = newProcessorsArray();
             setProcessors[processingType] = processor;
+            break;
+        }
+        default: throw new IllegalArgumentException();
         }
     }
+
 
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
     public String[] getStyleClasses() {
