@@ -443,20 +443,21 @@ public class DataTypeDefinition {
                 long value = DataTypeXml.getLongValue(conditionElement);
                 bDataType.setMinLength(value);
                 setRestrictionData(bDataType.getMinLengthRestriction(), conditionElement);
-                return true;
             } else if ("maxLength".equals(localName)) {
                 long value = DataTypeXml.getLongValue(conditionElement);
                 bDataType.setMaxLength(value);
                 setRestrictionData(bDataType.getMaxLengthRestriction(), conditionElement);
-                return true;
             } else if ("length".equals(localName)) {
                 long value = DataTypeXml.getLongValue(conditionElement);
                 bDataType.setMinLength(value);
                 setRestrictionData(bDataType.getMinLengthRestriction(), conditionElement);
                 bDataType.setMaxLength(value);
                 setRestrictionData(bDataType.getMaxLengthRestriction(), conditionElement);
-                return true;
+            } else {
+                return false;
             }
+            return true;
+
         }
         return false;
     }
