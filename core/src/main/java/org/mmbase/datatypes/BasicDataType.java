@@ -73,6 +73,8 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     private Processor[]     getProcessors;
     private Processor[]     setProcessors;
 
+    private Processor defaultProcessor;
+
     private Map<String, Handler<?>> handlers = new ConcurrentHashMap<String, Handler<?>>();
 
     private Element xml = null;
@@ -126,6 +128,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         out.writeObject(setProcessors);
         out.writeObject(handlers);
         out.writeObject(restrictions);
+        out.writeObject(defaultProcessor);
     }
     // implementation of serializable
     @SuppressWarnings("unchecked")
@@ -151,6 +154,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         handlers              = (Map<String, Handler<?>>) in.readObject();
         restrictions          = (Collection<Restriction<?>>) in.readObject();
         unmodifiableRestrictions = Collections.unmodifiableCollection(restrictions);
+        defaultProcessor      = (Processor) in.readObject();
     }
 
     public String getBaseTypeIdentifier() {
@@ -181,6 +185,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         defaultValue    = origin.getDefaultValue();
 
         commitProcessor = (CommitProcessor) ( origin.commitProcessor instanceof PublicCloneable ? ((PublicCloneable) origin.commitProcessor).clone()  : origin.commitProcessor);
+        deleteProcessor = (CommitProcessor) ( origin.deleteProcessor instanceof PublicCloneable ? ((PublicCloneable) origin.deleteProcessor).clone()  : origin.deleteProcessor);
         if (origin.getProcessors == null) {
             getProcessors = null;
         } else {
@@ -191,6 +196,12 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         } else {
             setProcessors = origin.setProcessors.clone();
         }
+        if (origin.defaultProcessor == null) {
+            defaultProcessor = null;
+        } else {
+            defaultProcessor = origin.defaultProcessor;
+        }
+
         styleClasses = origin.styleClasses;
 
     }
@@ -397,16 +408,27 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      */
 
     public C getDefaultValue(Locale locale, Cloud cloud, Field field) {
-        if (defaultValue == null) return null;
-        C res =  cast(defaultValue, null, null);
-        if (res != null) return res;
-
-        try {
-            return cast(defaultValue, getCloud(cloud), null, null);
-        } catch (CastException ce) {
-            log.error(ce);
-            return Casting.toType(classType, cloud, preCast(defaultValue, cloud, null, field));
+        C res;
+        if (defaultValue != null) {
+            res =  cast(defaultValue, null, null);
+            if (res == null) {
+                try {
+                    res =  cast(defaultValue, getCloud(cloud), null, null);
+                } catch (CastException ce) {
+                    log.error(ce);
+                    res = Casting.toType(classType, cloud, preCast(defaultValue, cloud, null, field));
+                }
+            }
+        } else {
+            res = null;
         }
+        if (defaultProcessor != null) {
+            log.debug("Found " + defaultProcessor);
+            res = Casting.toType(classType, cloud, defaultProcessor.process(null, field, res));
+        } else {
+            //log.debug("No default processor found for " + this);
+        }
+        return res;
     }
 
 
@@ -620,6 +642,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         buf.append(getName() + " (" + getTypeAsClass() + (defaultValue != null ? ":" + defaultValue : "") + ")");
         buf.append(commitProcessor == null || EmptyCommitProcessor.getInstance() == commitProcessor ? "" : " commit: " + commitProcessor + "");
         buf.append(deleteProcessor == null || EmptyCommitProcessor.getInstance() == deleteProcessor ? "" : " delete: " + deleteProcessor + "");
+        buf.append(defaultProcessor == null || CopyProcessor.getInstance() == defaultProcessor ? "" : " default: " + defaultProcessor + "");
         if (getProcessors != null) {
             for (int i = 0; i < Fields.TYPE_MAXVALUE; i++) {
                 buf.append(getProcessors[i] == null ? "" : ("; get [" + Fields.typeToClass(i) + "]:" + getProcessors[i] + " "));
@@ -925,6 +948,12 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     }
 
 
+    public Processor getDefaultProcessor() {
+        return defaultProcessor == null ? CopyProcessor.getInstance() : defaultProcessor;
+    }
+    public void setDefaultProcessor(Processor dp) {
+        defaultProcessor = dp;
+    }
 
     public CommitProcessor getCommitProcessor() {
         return commitProcessor == null ? EmptyCommitProcessor.getInstance() : commitProcessor;
@@ -932,7 +961,6 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     public void setCommitProcessor(CommitProcessor cp) {
         commitProcessor = cp;
     }
-
     public CommitProcessor getDeleteProcessor() {
         return deleteProcessor == null ? EmptyCommitProcessor.getInstance() : deleteProcessor;
     }

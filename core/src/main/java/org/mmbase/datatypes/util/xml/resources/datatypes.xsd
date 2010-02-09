@@ -115,10 +115,11 @@
         </xsd:complexType>
       </xsd:element>
       <xsd:element ref="enumeration" maxOccurs="unbounded" minOccurs="0" />
+      <xsd:element name="defaultprocessor" type="SingleProcessor" maxOccurs="unbounded" minOccurs="0" />
       <xsd:element name="setprocessor"    type="Processor" maxOccurs="unbounded" minOccurs="0" />
       <xsd:element name="getprocessor"    type="Processor" maxOccurs="unbounded" minOccurs="0" />
-      <xsd:element name="commitprocessor" type="Processor" maxOccurs="unbounded" minOccurs="0" />
-      <xsd:element name="deleteprocessor" type="Processor" maxOccurs="unbounded" minOccurs="0" />
+      <xsd:element name="commitprocessor"  type="SingleProcessor" maxOccurs="unbounded" minOccurs="0" />
+      <xsd:element name="deleteprocessor"  type="SingleProcessor" maxOccurs="unbounded" minOccurs="0" />
 
       <xsd:element ref="specialization" maxOccurs="unbounded" minOccurs="0" />
 
@@ -212,6 +213,12 @@
       <xsd:element name="class" type="Class"  maxOccurs="unbounded" minOccurs="1" />
     </xsd:sequence>
     <xsd:attribute name="type" type="type_database" />
+  </xsd:complexType>
+
+  <xsd:complexType name="SingleProcessor">
+    <xsd:sequence>
+      <xsd:element name="class" type="Class"  maxOccurs="unbounded" minOccurs="1" />
+    </xsd:sequence>
   </xsd:complexType>
 
   <xsd:complexType name="Class">
