@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 
-abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
+abstract public class AbstractNodeListTag extends AbstractNodeProviderTag  implements ListProvider {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractNodeListTag.class);
 
@@ -159,8 +159,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
 
     protected static class NodesAndTrim {
-        boolean  needsTrim;
-        BridgeList<Node> nodeList;
+        boolean  needsTrim = true;
+        BridgeList<Node> nodeList = null;
     }
 
     protected final NodesAndTrim getNodesAndTrim(Query query) throws JspTagException {
@@ -172,6 +172,20 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      */
     protected NodeList getNodeList(Query query) throws JspTagException {
         Cloud cloud = query.getCloud();
+
+
+        if (query instanceof AbstractQueryWrapper) {
+            // This is to help RMMCI. ,it should not actually be needed.
+            /*
+              java.lang.ClassCastException: org.mmbase.bridge.util.NodeQueryWrapper cannot be cast to org.mmbase.bridge.remote.MappedObject
+              at org.mmbase.bridge.remote.proxy.RemoteNodeManager_Proxy.getList(RemoteNodeManager_Proxy.java:180)
+              at org.mmbase.bridge.jsp.taglib.AbstractNodeListTag.getNodeList(AbstractNodeListTag.java:195)
+
+             */
+            query = ((AbstractQueryWrapper) query).getQuery();
+        }
+
+
         // In case this query was created in a transaction, don't bother, and still work.
         boolean inTransaction;
         if (cloud instanceof Transaction) {
