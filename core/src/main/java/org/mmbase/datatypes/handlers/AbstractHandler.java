@@ -35,7 +35,7 @@ public abstract class AbstractHandler<C>  implements Handler<C> {
      * Puts a prefix 'mm_' before an id in form fields. To be used in ccs etc..
      */
     protected String id(String s) {
-        return "mm_" + s;
+        return "mm" + (s.startsWith("_") ? s : ("_" + s));
     }
 
 
