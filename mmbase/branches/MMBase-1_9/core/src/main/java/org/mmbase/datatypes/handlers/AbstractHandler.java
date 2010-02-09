@@ -128,7 +128,7 @@ public abstract class AbstractHandler<C>  implements Handler<C> {
 
     }
 
-    protected void setValue(Node node, String fieldName, Object value) {
+    protected void setValue(Request request, Node node, String fieldName, Object value) {
         node.setValue(fieldName, value);
     }
 
@@ -146,9 +146,9 @@ public abstract class AbstractHandler<C>  implements Handler<C> {
             return false;
         }  else {
             if ("".equals(fieldValue) && interpretEmptyAsNull(field)) {
-                setValue(node, fieldName,  null);
+                setValue(request, node, fieldName,  null);
             } else {
-                setValue(node, fieldName,  fieldValue);
+                setValue(request, node, fieldName,  fieldValue);
             }
             return true;
         }

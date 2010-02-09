@@ -25,8 +25,10 @@ public class JavaRequest extends  AbstractRequest {
 
     private Map<String, Object> values = new HashMap<String, Object>();
 
+    private boolean post = false;
 
-    public JavaRequest() {
+    public JavaRequest(boolean p) {
+        post = p;
     }
 
     public Object put(String f, Object v) {
@@ -49,6 +51,10 @@ public class JavaRequest extends  AbstractRequest {
 
     public Object getValue(Field field, String part) {
         return values.get(field.getName() + "_" + part);
+    }
+
+    public boolean isPost() {
+        return post;
     }
 
 

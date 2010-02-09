@@ -67,7 +67,7 @@ public class BinaryHandler extends HtmlHandler {
 
 
     @Override
-    protected void setValue(Node node, String fieldName, Object value) {
+    protected void setValue(Request request, Node node, String fieldName, Object value) {
         if (value == null) {
             node.setValue(fieldName, value);
         } else {
