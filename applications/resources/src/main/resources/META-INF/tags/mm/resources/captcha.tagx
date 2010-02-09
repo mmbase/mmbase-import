@@ -3,35 +3,47 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     version="2.0">
-  <jsp:directive.tag import="java.io.*,java.util.*,org.mmbase.util.images.*,org.mmbase.servlet.FileServlet" />
+  <jsp:directive.tag import="java.io.*,java.util.*,org.mmbase.datatypes.*"
+                     description="Image based implementation of Turing test ('captcha')"
+                     />
 
-  <!-- Length of key to  produce. The generated key will be stored in the session attribute
-       'captchakey'
-       The location of the generated image is in 'captchafilename'.
+
   -->
-  <jsp:directive.attribute name="length"   type="java.lang.Integer" />
+  <jsp:directive.attribute name="length"   type="java.lang.Integer"
+                           description="Length of key to  produce. The generated key will be stored in the session attribute   'captchakey'
+                                        The location of the generated image is in 'captchafilename'."
+                           />
 
-  <!-- If template attribute is used, current node is an image, and temlate is used to generate the
-       background of the captcha image. Defaults to a white back-ground. -->
-  <jsp:directive.attribute name="template" type="java.lang.String" />
+  <jsp:directive.attribute name="swirl"   type="java.lang.Integer"
+                           description="How much the image must be distorted. 0 is no distortion. Default is 30."
+                           />
 
-  <!-- When using template attribute, you may want to specifiy the fill color to. Defaults to black -->
-  <jsp:directive.attribute name="fill"     type="java.lang.String" />
+
+  <jsp:directive.attribute name="template" type="java.lang.String"
+                           description="If template attribute is used, current node is an image, and temlate is used to generate the
+                                        background of the captcha image. Defaults to a white back-ground. See also 'background' attribute."
+                           />
+
+  <jsp:directive.attribute name="fill"     type="java.lang.String"
+                           description="When using template attribute, you may want to specifiy the fill color to. Defaults to black."
+
+                           />
+
+  <jsp:directive.attribute name="background" type="java.lang.String"
+                           description="Background color to be used. Defaults to white. Use 'transparent' for a transparent image."
+                           />
+  <jsp:directive.attribute name="font" type="java.lang.String"
+                           description="Font file to use to produce the text. E.g. mm:fonts/arial.ttf (mm: is mean 'mmbase configuration directory')"
+                           />
 
   <!-- If the key is stated explicitely, no new key is generated, but this given one is shown. -->
-
   <jsp:directive.attribute name="key"      type="java.lang.String" />
-  <jsp:declaration>
-
-    static final String[] charset = {"3","4","5","6","7","8", "a","b","c","d","e","f","h","i","j","k","m","n","p","q","r","s","t","u","v","w","x","y"};    // 29 elements
-    static final Random rand = new Random();
-    static Timer deleter = new Timer(true);
-
-  </jsp:declaration>
   <jsp:scriptlet>
     InputStream input = null;
-    StringBuilder sb = new StringBuilder();
+    String text = null;;
     int length = 5;
+    int swirl = 30;
+    String font = null;
   </jsp:scriptlet>
   <c:if test="${! empty template}">
     <mm:node>
@@ -47,52 +59,36 @@
   </c:if>
   <c:if test="${! empty key}">
     <mm:write referid="key" jspvar="k" vartype="string" write="false">
-      <jsp:scriptlet>sb.append(k);</jsp:scriptlet>
+      <jsp:scriptlet>text = k;</jsp:scriptlet>
+    </mm:write>
+  </c:if>
+  <c:if test="${! empty font}">
+    <mm:write referid="font" jspvar="f" vartype="string" write="false">
+      <jsp:scriptlet>font = f;</jsp:scriptlet>
     </mm:write>
   </c:if>
   <mm:import jspvar="fillColor" from="this" externid="fill">000000</mm:import>
+  <mm:import jspvar="backgroundColor" from="this" externid="background">white</mm:import>
   <jsp:scriptlet>
-    String base = "temporary_images";
-  </jsp:scriptlet>
-  <mm:import id="baseUrl"><jsp:expression>org.mmbase.servlet.MMBaseServlet.getBasePath("files") + base</jsp:expression></mm:import>
-
-  <jsp:scriptlet>
-    if (input == null) {
-       input = new ByteArrayInputStream(gifBytes);
+    if (text == null) {
+       text = CaptchaDataType.createString(length);
     }
-    if (sb.length() == 0) {
-      for(int n = 0; n &lt; length; n++) {
-        sb = sb.append(charset[rand.nextInt(28)]);
-      }
-    }
-    final File directory =  FileServlet.getFile(base, response);
-    directory.mkdir();
-    final File file = File.createTempFile("captcha", ".png", directory);
-    file.deleteOnExit();
-    String captchaKey = sb.toString();
-   // captchaKey = " ";
-   session.setAttribute("captchakey", captchaKey);
-   session.setAttribute("captchafilename", file + file.getName());
-   FileReceiver receiver = new FileReceiver(file);
-   //white pixel
-   ImageConversionRequest req =
-   Factory.getImageConversionRequest(input, "gif", receiver,
-   "gravity(west)", "s(80x22!)", "fill(" + fillColor + ")", "pointsize(20)", "draw(text 10x10 \'" + captchaKey + "')", "f(png)", "swirl(10)");
-   // should also be possible to use 'text', but that is broken with newer image-magicks.
+    CaptchaDataType.CaptchaImage image = new CaptchaDataType.CaptchaImage(text);
+    image.swirl = swirl;
+    image.fillColor = fillColor;
+    image.background = backgroundColor;
+    image.font = font;
+    CaptchaDataType.createCaptchaImage(input, image);
 
-   req.waitForConversion();
-   deleter.schedule(new TimerTask() { public void run() {file.delete();} }, 60000);
-   Dimension dim = receiver.getDimension();
-   int width = dim.getWidth();
-   int height = dim.getHeight();
+    session.setAttribute("captchakey", image.text); // deprecated
+    session.setAttribute(CaptchaDataType.KEY, image.text);
+    jspContext.setAttribute("image", image);
+    session.setAttribute("captchafilename", image.file.getName());
   </jsp:scriptlet>
-  <mm:import id="filename"><jsp:expression>file.getName()</jsp:expression></mm:import>
-  <mm:import id="width" vartype="integer" ><jsp:expression>width</jsp:expression></mm:import>
-  <mm:import id="height" vartype="integer"><jsp:expression>height</jsp:expression></mm:import>
-  <mm:link page="${baseUrl}/${filename}">
+  <mm:link page="${image.path}">
     <c:choose>
-      <c:when test="${width > 0}">
-        <img src="${_}" alt="captcha" width="${width}" height="${height}" />
+      <c:when test="${image.width > 0}">
+        <img src="${_}" alt="captcha" width="${image.width}" height="${image.height}" />
       </c:when>
       <c:otherwise>
         <img src="${_}" alt="captcha" />
