@@ -121,7 +121,6 @@
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>7.0.0.pre5</version>
         <configuration>
           <!--
           <jettyEnvXml>${basedir}/jetty-env.xml</jettyEnvXml>
@@ -150,6 +149,22 @@
           </dependency>
         </dependencies>
         </plugin>
+
+      <plugin>
+        <groupId>net.sourceforge.maven-taglib</groupId>
+        <artifactId>maven-taglib-plugin</artifactId>
+        <configuration>
+          <dontRecurseIntoSubdirs>true</dontRecurseIntoSubdirs>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>taglibdocjar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 
