@@ -21,6 +21,7 @@
   <jsp:directive.attribute name="fill"     type="java.lang.String" />
 
   <jsp:directive.attribute name="background" type="java.lang.String" />
+  <jsp:directive.attribute name="font" type="java.lang.String" />
 
   <!-- If the key is stated explicitely, no new key is generated, but this given one is shown. -->
   <jsp:directive.attribute name="key"      type="java.lang.String" />
@@ -29,6 +30,7 @@
     String text = null;;
     int length = 5;
     int swirl = 30;
+    String font = null;
   </jsp:scriptlet>
   <c:if test="${! empty template}">
     <mm:node>
@@ -47,6 +49,11 @@
       <jsp:scriptlet>text = k;</jsp:scriptlet>
     </mm:write>
   </c:if>
+  <c:if test="${! empty font}">
+    <mm:write referid="font" jspvar="f" vartype="string" write="false">
+      <jsp:scriptlet>font = f;</jsp:scriptlet>
+    </mm:write>
+  </c:if>
   <mm:import jspvar="fillColor" from="this" externid="fill">000000</mm:import>
   <mm:import jspvar="backgroundColor" from="this" externid="background">white</mm:import>
   <jsp:scriptlet>
@@ -57,6 +64,7 @@
     image.swirl = swirl;
     image.fillColor = fillColor;
     image.background = backgroundColor;
+    image.font = font;
     CaptchaDataType.createCaptchaImage(input, image);
 
     session.setAttribute("captchakey", image.text); // deprecated
