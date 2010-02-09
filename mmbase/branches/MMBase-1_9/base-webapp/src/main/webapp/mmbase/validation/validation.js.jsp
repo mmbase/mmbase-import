@@ -66,8 +66,10 @@ MMBaseValidator.watcher = function() {
                     el.lastChange = new Date(0);
                 }
                 if (new Date(validator.checkAfter + el.lastChange.getTime()) < now) {
+                    el.serverValidated = true;
                     validator.validateElement(validator.activeElement, true, true);
                 } else {
+                    //console.log("not yet stale enough");
                 }
             }
         }
@@ -398,7 +400,12 @@ MMBaseValidator.prototype.hasJavaClass = function(el, javaClass) {
 MMBaseValidator.prototype.isNumeric = function(el) {
     if (el.mm_isnumeric != null) return el.mm_isnumeric;
     el.mm_isnumeric = this.hasJavaClass(el, "org\.mmbase\.datatypes\.NumberDataType");
-    return el.isnumeric;
+    return el.mm_isnumeric;
+}
+MMBaseValidator.prototype.isBoolean = function(el) {
+    if (el.mm_isboolean != null) return el.mm_isboolean;
+    el.mm_isboolean = this.hasJavaClass(el, "org\.mmbase\.datatypes\.BooleanDataType");
+    return el.mm_isboolean;
 }
 MMBaseValidator.prototype.isInteger = function(el) {
     if (el.mm_isinteger != null) return el.mm_isinteger;
@@ -741,6 +748,10 @@ MMBaseValidator.prototype.getValue = function(el) {
             if (value === "") {
             } else {
                 value = parseFloat(value);
+            }
+        } else if (this.isBoolean(el)) {
+            if ("checkbox" === el.type) {
+                value =  $(el).is(":checked");
             }
         }
         return value;
@@ -1159,7 +1170,7 @@ MMBaseValidator.prototype.addValidationForElements = function(els) {
 
         case "radio":
         case "checkbox":
-            $(entry).bind("click", function(ev) { self.lastChange(ev); self.validate(ev); });
+            $(entry).bind("click", function(ev) { self.setLastChange(ev); self.validate(ev); });
             $(entry).bind("blur",   function(ev) { self.serverValidate(ev); });
             break;
         case "file":
