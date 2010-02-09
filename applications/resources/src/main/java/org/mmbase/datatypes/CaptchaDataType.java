@@ -54,6 +54,7 @@ public class CaptchaDataType extends StringDataType {
         public String background = "white";
         public String fillColor = "black";
         public int swirl = 30;
+        public String font = null;
 
         public CaptchaImage(String text) {
             this.text = text;
@@ -108,11 +109,16 @@ public class CaptchaDataType extends StringDataType {
         }
         commands.add("gravity(west)");
         commands.add("s(80x22!)");
+        if (image.font != null) {
+            commands.add("font(" + image.font + ")");
+        }
         commands.add("fill(" + image.fillColor + ")");
         commands.add("pointsize(20)");
         commands.add("text(0,0,\'" + image.text + "')");
         commands.add("f(png)");
-        commands.add("swirl(" + image.swirl + ")");
+        if (image.swirl != 0) {
+            commands.add("swirl(" + image.swirl + ")");
+        }
         ImageConversionRequest req =
             Factory.getImageConversionRequest(input, "gif", receiver, commands);
 
@@ -179,6 +185,7 @@ public class CaptchaDataType extends StringDataType {
         private int length = 5;
         private int swirl = 30;
         private String background = "white";
+        private String font = null;
 
 
         public void setLength(int l) {
@@ -192,6 +199,10 @@ public class CaptchaDataType extends StringDataType {
             background = bg;
         }
 
+        public void setFont(String f) {
+            font = f;
+        }
+
         @Override
         public String input(Request request, Node node, Field field, boolean search)  {
             if (search) {
@@ -202,6 +213,7 @@ public class CaptchaDataType extends StringDataType {
                 CaptchaImage image = new CaptchaDataType.CaptchaImage(createString(length));
                 image.swirl = swirl;
                 image.background = background;
+                image.font = font;
                 StringBuilder show =  new StringBuilder();
                 try {
                     CaptchaDataType.createCaptchaImage(null, image);
