@@ -1166,12 +1166,19 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             this.value = v;
         }
 
+        /**
+         * @since MMBase-1.9.3
+         */
+        protected String getErrorDescriptionBundle() {
+            return DATATYPE_BUNDLE;
+        }
+
         public LocalizedString getErrorDescription() {
             if (errorDescription == null) {
                 // this is postponsed to first use, because otherwise 'getBaseTypeIdentifier' give correct value only after constructor of parent.
                 String key = parent.getBaseTypeIdentifier() + "." + name + ".error";
                 errorDescription = new LocalizedString(key);
-                errorDescription.setBundle(DATATYPE_BUNDLE);
+                errorDescription.setBundle(getErrorDescriptionBundle());
             }
             return errorDescription;
         }
