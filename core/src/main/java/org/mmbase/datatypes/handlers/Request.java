@@ -52,4 +52,6 @@ public interface Request {
      */
     <C> C setProperty(Parameter<C> name, C value);
     <C> C getProperty(Parameter<C> name);
+
+    boolean isPost();
 }

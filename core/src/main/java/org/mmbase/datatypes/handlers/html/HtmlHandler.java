@@ -95,9 +95,9 @@ public abstract class HtmlHandler  extends AbstractHandler<String> {
                             log.debug("Setting " + fieldName + " to " + (fieldValue == null ? "" : fieldValue.getClass().getName()) + " " + fieldValue);
                         }
                         if ("".equals(fieldValue) && interpretEmptyAsNull(field)) {
-                            setValue(node, fieldName,  null);
+                            setValue(request, node, fieldName,  null);
                         } else {
-                            setValue(node, fieldName,  fieldValue);
+                            setValue(request, node, fieldName,  fieldValue);
                         }
                     } catch (Throwable t) {
                         // may throw exception like 'You cannot change the field"
