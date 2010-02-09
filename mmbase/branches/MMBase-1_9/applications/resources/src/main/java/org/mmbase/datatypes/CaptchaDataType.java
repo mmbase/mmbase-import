@@ -32,6 +32,8 @@ public class CaptchaDataType extends StringDataType {
 
     public static final String KEY = CaptchaDataType.class.getName() + ".KEY";
 
+    public static final String CLEAR = CaptchaDataType.class.getName() + ".CLEAR";
+
     public static final String BASE = "temporary_images";
 
     protected CaptchaRestriction  captchaRestriction =  new CaptchaRestriction();
@@ -174,6 +176,9 @@ public class CaptchaDataType extends StringDataType {
                     return false;
                 }
                 LOG.debug("Found " + KEY + " is " + value + " (user provided  '" + v + "')");
+                if (cloud.getProperty(Node.CLOUD_COMMITNODE_KEY) == Integer.valueOf(node.getNumber())) {
+                    session.removeAttribute(KEY);
+                }
                 return mustbe.equalsIgnoreCase(Casting.toString(v));
             }
         }
@@ -204,20 +209,37 @@ public class CaptchaDataType extends StringDataType {
         }
 
         @Override
+        protected void setValue(Request request, Node node, String fieldName, Object value) {
+            super.setValue(request, node, fieldName, value);
+            if (request.isPost()) {
+                HttpServletRequest req = (HttpServletRequest) request.getCloud().getProperty(Cloud.PROP_REQUEST);
+                HttpSession session = req.getSession(true);
+                session.removeAttribute(CaptchaDataType.KEY);
+                LOG.debug("Set value now cleaning from session");
+            }
+        }
+
+        @Override
         public String input(Request request, Node node, Field field, boolean search)  {
             if (search) {
                 return super.input(request, node, field, search);
             } else {
                 HttpServletRequest req = (HttpServletRequest) request.getCloud().getProperty(Cloud.PROP_REQUEST);
                 HttpSession session = req.getSession(true);
-                CaptchaImage image = new CaptchaDataType.CaptchaImage(createString(length));
+                String t = (String) session.getAttribute(CaptchaDataType.KEY);
+                if (t == null ||  request.getCloud().getProperty(CLEAR) != null) {
+                    t = createString(length);
+                    session.setAttribute(CaptchaDataType.KEY, t);
+                    LOG.debug("Created key now setting in session");
+
+                }
+                CaptchaImage image = new CaptchaDataType.CaptchaImage(t);
                 image.swirl = swirl;
                 image.background = background;
                 image.font = font;
                 StringBuilder show =  new StringBuilder();
                 try {
                     CaptchaDataType.createCaptchaImage(null, image);
-                    session.setAttribute(CaptchaDataType.KEY, image.text);
                     show.append("<img src='");
                     show.append(req.getContextPath());
                     show.append(image.getPath());
