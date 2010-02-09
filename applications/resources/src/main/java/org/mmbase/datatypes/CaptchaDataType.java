@@ -152,7 +152,10 @@ public class CaptchaDataType extends StringDataType {
         CaptchaRestriction() {
             super("captcha", null);
         }
-
+        @Override
+        protected String getErrorDescriptionBundle() {
+            return "org.mmbase.datatypes.resources.resourcesdatatypes";
+        }
         @Override
         protected boolean simpleValid(final Object v, final Node node, final Field field) {
             Cloud cloud = CloudThreadLocal.currentCloud();
@@ -176,9 +179,6 @@ public class CaptchaDataType extends StringDataType {
                     return false;
                 }
                 LOG.debug("Found " + KEY + " is " + value + " (user provided  '" + v + "')");
-                if (cloud.getProperty(Node.CLOUD_COMMITNODE_KEY) == Integer.valueOf(node.getNumber())) {
-                    session.removeAttribute(KEY);
-                }
                 return mustbe.equalsIgnoreCase(Casting.toString(v));
             }
         }
