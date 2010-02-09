@@ -48,11 +48,18 @@ public interface Cloud {
 
 
     /**
-     * With the Cloud a ServletRequest can be associated and stored in the 'property.
+     * With the Cloud a ServletRequest can be associated and stored in a property with this name
      *
      * @since MMBase-1.9
      */
     public static final String PROP_REQUEST     = "request";
+
+    /**
+     * With the Cloud a ServletResponse can be associated and stored in a property with this name.
+     *
+     * @since MMBase-1.9.3
+     */
+    public static final String PROP_RESPONSE     = "response";
 
 
     /**
