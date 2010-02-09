@@ -135,6 +135,14 @@ public class DataTypeHandler implements TypeHandler {
                     return (C) tag.getPageContext().getAttribute(name.getName());
                 }
 
+                public boolean isPost() {
+                    try {
+                        return "POST".equals(((javax.servlet.http.HttpServletRequest) tag.getContextTag().getPageContext().getRequest()).getMethod());
+                    } catch (JspTagException te) {
+                        throw new RuntimeException(te);
+                    }
+                }
+
             };
 
     }
