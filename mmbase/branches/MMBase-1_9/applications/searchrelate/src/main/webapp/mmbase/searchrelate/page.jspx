@@ -66,8 +66,7 @@
               <c:choose>
                 <c:when test="${!empty flds}">
                   <th class="node number" scope="col">#</th>
-                  <th class="node guitype" scope="col"><fmt:message key="nodetype"  /></th>
-                  <th class="node gui" scope="col"></th>
+                  <th class="node guitype" scope="col"><fmt:message key="nodetype" /></th>
                   <mm:fieldlist nodetype="${query.nodeManager.name}" fields="$flds" varStatus="field">
                     <th class="fields ${field.current.name}" scope="col"><mm:fieldinfo type="guiname" /></th>
                     <mm:last><mm:index write="false" id="colcount" /></mm:last>
@@ -76,6 +75,7 @@
                 <c:otherwise>
                   <th class="node number" scope="col">#</th>
                   <th class="node guitype" scope="col"><fmt:message key="nodetype"  /></th>
+                  <th class="node gui" scope="col"></th>
                     <mm:fieldlist nodetype="${query.nodeManager.name}" type="list" varStatus="field">
                       <th class="fields ${field.current.name}" scope="col"><mm:fieldinfo type="guiname" /></th>
                       <mm:last><mm:index write="false" id="colcount" /></mm:last>
