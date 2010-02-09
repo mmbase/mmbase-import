@@ -169,7 +169,7 @@ public class DataTypeDefinition {
         return this;
     }
 
-    private static final java.util.regex.Pattern nonConditions   = java.util.regex.Pattern.compile("specialization|datatype|class|name|description|handler|styleClass|getprocessor|setprocessor|commitprocessor|deleteprocessor");
+    private static final java.util.regex.Pattern nonConditions   = java.util.regex.Pattern.compile("specialization|datatype|class|name|description|handler|styleClass|getprocessor|setprocessor|defaultprocessor|commitprocessor|deleteprocessor");
 
     /**
      * Configures the conditions of a datatype definition, using data from a DOM element
@@ -213,7 +213,11 @@ public class DataTypeDefinition {
                     for (String mimeType : childElement.getAttribute("mimetype").split(",")) {
                         try {
                             Handler handler = (Handler) Instantiator.getInstance(childElement);
-                            dataType.getHandlers().put(mimeType, handler);
+                            if (dataType.isFinished()) {
+                                log.error("The datatype " + dataType + " is finished already", new Exception());
+                            } else {
+                                dataType.getHandlers().put(mimeType, handler);
+                            }
                         } catch (Exception e) {
                             log.error("For mimetype " + mimeType + " " + e.getClass() + " " + e.getMessage(), e);
                         }
@@ -267,6 +271,8 @@ public class DataTypeDefinition {
                     addProcessor(DataType.PROCESS_GET, childElement, getters);
                 } else if ("setprocessor".equals(childTag) && ! childElement.getAttribute("type").equals("*")) {
                     addProcessor(DataType.PROCESS_SET, childElement, setters);
+                } else if ("defaultprocessor".equals(childTag)) {
+                    addDefaultProcessor(childElement);
                 } else if ("commitprocessor".equals(childTag)) {
                     addCommitProcessor(childElement);
                 } else if ("deleteprocessor".equals(childTag)) {
@@ -381,6 +387,14 @@ public class DataTypeDefinition {
         CommitProcessor oldProcessor = dataType.getDeleteProcessor();
         newProcessor = DataTypeXml.chainProcessors(oldProcessor, newProcessor);
         dataType.setDeleteProcessor(newProcessor);
+    }
+
+    protected void addDefaultProcessor(Element processorElement) {
+        Processor newProcessor = DataTypeXml.createProcessor(processorElement);
+        Processor oldProcessor = dataType.getDefaultProcessor();
+        newProcessor = DataTypeXml.chainProcessors(oldProcessor, newProcessor);
+        log.info("Setting default processor " + newProcessor);
+        dataType.setDefaultProcessor(newProcessor);
     }
 
     protected void setRestrictionData(DataType.Restriction restriction, Element element) {
