@@ -44,28 +44,28 @@ public class Cookies  {
         private static final long serialVersionUID = 1L;
 
         public Object process(Node node, Field field, Object value) {
-            LOG.info("Getting defaul gvalue for " + field);
+            LOG.debug("Getting default value for " + field);
             Cloud cloud = CloudThreadLocal.currentCloud();
             if (cloud == null) {
-                LOG.info("No cloud  using " + value);
+                LOG.debug("No cloud  using " + value);
                 return value;
             } else {
                 HttpServletRequest req = (HttpServletRequest) cloud.getProperty(Cloud.PROP_REQUEST);
                 if (req == null) {
-                    LOG.info("No request  using " + value);
+                    LOG.debug("No request  using " + value);
                     return value;
                 }
                 Cookie[] cookies = req.getCookies();
                 if (cookies != null) {
                     for (Cookie c : cookies) {
-                        LOG.info("Considering  " + c.getName());
+                        LOG.debug("Considering  " + c.getName());
                         if (c.getName().equals(cookie)) {
-                            LOG.info("Found!  " + c.getValue());
+                            LOG.debug("Found!  " + c.getValue());
                             return c.getValue();
                         }
                     }
                 }
-                LOG.info("Cookie not found  using " + value);
+                LOG.debug("Cookie not found  using " + value);
                 return value;
             }
         }
@@ -87,7 +87,7 @@ public class Cookies  {
                 if (res.isCommitted()) {
                     LOG.warn("Cannot set cookie " + c);
                 } else {
-                    LOG.service("Setting cookie " + c);
+                    LOG.debug("Setting cookie " + c);
                     res.addCookie(c);
                 }
                 return value;
