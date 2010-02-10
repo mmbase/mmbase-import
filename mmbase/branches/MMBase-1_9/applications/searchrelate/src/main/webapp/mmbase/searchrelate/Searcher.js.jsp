@@ -96,7 +96,7 @@ function MMBaseRelater(d, validator) {
 
 /**
  *  This Searcher.js.jsp is normally loaded implicetly by the first mm-sr:relate. Using the 'ready'
- *  function, you can do something immediately after the MMBaseRealter is ready. E.g. you can add a
+ *  function, you can do something immediately after the MMBaseRelater is ready. E.g. you can add a
  *  'relateCallBack' function.
  *  @todo I think jquery provides something with user defined events.
  */
@@ -577,7 +577,7 @@ MMBaseSearcher.prototype.getResultDiv = function() {
 }
 
 /**
- * This method is called if somebody clicks on a.search.
+ * This is called when clicking on a.search or a.navigate (when paging).
  * It depends on a jsp /mmbase/searchrelate/page.jspx to return the search results.
  * Feeded are a.o. 'id' 'offset' and 'search'.
  * The actual query is supposed to be on the user's session, and will be picked up in page.jspx.
@@ -665,7 +665,8 @@ MMBaseSearcher.prototype.search = function(val, offset, anchor) {
 
 /**
  * If you defined in your CSS that 'implicit' search results are not visible at all, then
- * you can call this method to bind events to change the texts on the search buttons accordingly (between 'search' and 'close').
+ * you can call this method to bind events to change the texts on the search buttons accordingly 
+ * (between 'search' and 'close').
  */
 MMBaseSearcher.prototype.implicitsAreHidden = function() {
     $(document).bind("mmsrPaged",
@@ -849,7 +850,6 @@ MMBaseSearcher.prototype.bindEvents = function() {
     }
     var self = this;
     this.logger.debug("binding to "+ $(this.div).find("a.navigate"));
-
 
     $(this.div).find("a.navigate").click(function(ev) {
         var anchor = ev.target;
