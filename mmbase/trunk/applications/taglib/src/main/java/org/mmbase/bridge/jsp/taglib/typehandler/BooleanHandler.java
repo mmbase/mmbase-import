@@ -98,6 +98,7 @@ public class BooleanHandler extends AbstractTypeHandler {
     protected Object cast(Object value, Node node, Field field) {
          if (value == null || "".equals(value)) return Boolean.FALSE;
          return  super.cast(value, node, field);
+    }
 
     @Override
     public Object getFieldValue(Node node, Field field) throws JspTagException {
