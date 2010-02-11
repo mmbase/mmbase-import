@@ -34,11 +34,11 @@
                            description="Like 'role' of mm:relatednodes, but defaults to 'posrel'"
                            />
   <jsp:directive.attribute name="orderby"     type="java.lang.String"
-                           description="Like orderby of mm:relatednodes, but default to &lt;role&gt;.pos"
+                           description="Like orderby of mm:relatednodes, but defaults to &amp;lt;role&amp;gt;.pos"
                            />
 
   <jsp:directive.attribute name="direction"     type="java.lang.String"
-                           description="Direction of orderby of  mm:relatednodes, but default to &lt;UP&gt;.pos"
+                           description="Direction of orderby of  mm:relatednodes, but default to &amp;lt;UP&amp;gt;.pos"
                            />
 
   <jsp:directive.attribute name="searchdirs"     type="java.lang.String"
@@ -50,7 +50,7 @@
                            />
 
   <jsp:directive.attribute name="fieldlistType"      type="java.lang.String"
-                           description="Like 'type' of mm:fieldlist. Default to 'list'."
+                           description="Like 'type' of mm:fieldlist. Defaults to 'list'."
 
                            />
 
