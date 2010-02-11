@@ -57,8 +57,8 @@
       those.
     </para>
     <para>After Installation this documentation and examples can be found in the MMBase admin pages /mmbase/admin</para>
-    <para>The taglib is available via the XML namespace <code>http://www.mmbase.org/mm/tags/searchrelate</code>
-    On this URL also the <ulink url="http://www.mmbase.org/mm/tags/searchrelate/">taglib's reference</ulink> can be found
+    <para>The taglib is available via the XML namespace <code>http://www.mmbase.org/tags/mm/searchrelate</code>
+    On this URL also the <ulink url="http://www.mmbase.org/tags/mm/searchrelate/">taglib's reference</ulink> can be found
     </para>
 
   </section>
