@@ -15,7 +15,7 @@
     if (uid.length() > 0) {
       uid = "." + uid;
     }
-    File f  = new File(dir, cloud.getUser().getIdentifier() + uid + "." + name + "." + is.getName());
+    File f  = new File(dir, cloud.getUser().getIdentifier() + uid + "." + n + "." + name + "." + is.getName());
     FileServlet.protectFile((HttpServletRequest) pageContext.getRequest(), f);
     OutputStream o = new FileOutputStream(f);
     org.mmbase.util.IOUtil.copy(is, o);

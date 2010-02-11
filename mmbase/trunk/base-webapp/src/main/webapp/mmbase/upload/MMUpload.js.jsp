@@ -12,6 +12,7 @@ function MMUploader() {
     this.statusElement = null;
     this.uid = "";
     this.transaction = null;
+    this.validator = null;
 }
 
 
@@ -44,11 +45,14 @@ MMUploader.prototype.uploadProgress = function(fileid) {
  * Given an input[type=file], returns the node number which is represented in it.
  */
 MMUploader.prototype.getNodeForInput  = function(input) {
-    var classes = $(input).attr("class").split(' ');
-    for (var i in classes) {
-        var cl = classes[i];
-        if (cl.indexOf("mm_n_") == 0) {
-            return cl.substring("mm_n_".length);
+    var classesString = $(input).attr("class");
+    if (classesString != null) {
+        var classes = classesString.split(' ');
+        for (var i in classes) {
+            var cl = classes[i];
+            if (cl.indexOf("mm_n_") == 0) {
+                return cl.substring("mm_n_".length);
+            }
         }
     }
     return null;
@@ -62,9 +66,22 @@ MMUploader.prototype.upload = function(fileid) {
         return;
     }
 
+    var fileItem = $("#" + fileid);
+    if (fileItem.length == 0) {
+        console.log("No fileitem " + fileid);
+        return;
+    }
+    if (fileItem[0].type != 'file') {
+        // not a fileitem
+        return;
+    }
+    if (fileItem.val().length == 0) {
+        // no file selected;
+        return;
+    }
+
     self.uploading[fileid] = true;
     self.uploadingSize++;
-    var fileItem = $("#" + fileid);
 
     // Remember event-handlers.
     var events = fileItem.data('events');
@@ -76,7 +93,12 @@ MMUploader.prototype.upload = function(fileid) {
             setTimeout(progress, 1000);
         }
     };
-    progress();
+    //progress();
+    if (self.validator != null) {
+        self.validator.removeValidationFromElement(fileItem[0]);
+    } else {
+        //console.log("Validator not set");
+    }
 
     $.ajaxFileUpload ({
             url: "${mm:link('/mmbase/upload/upload.jspx')}" + "?uid=" + self.uid + "&name=" + fileItem.attr("name") + "&n=" + node + "&transaction=" + self.transaction,
@@ -104,12 +126,17 @@ MMUploader.prototype.upload = function(fileid) {
                             name = "MMU_" + name;
                             $(fileItem).attr("name", name);
                         }
+
                         // Rebind  event handlers:
                         for (var event in events) {
                             for (var key in events[event]) {
                                 $(fileItem).bind(event, events[event][key]);
                             }
                         }
+                        if (self.validator != null) {
+                            self.validator.addValidationForElements(fileItem);
+                        }
+
 
                     } catch (e) {
                         alert(e);
