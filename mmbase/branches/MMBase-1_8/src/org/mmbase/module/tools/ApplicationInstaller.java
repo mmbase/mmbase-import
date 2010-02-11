@@ -457,6 +457,32 @@ public class ApplicationInstaller {
         return result.isSuccess();
     }
 
+    private int getSyncedNumber(MMObjectBuilder syncbul, String exportsource, MMObjectNode newNode, String field) throws SearchQueryException {
+        String s = newNode.getStringValue(field);
+        int number;
+        if (s.startsWith(":")) {
+            String nodeNumber = s.substring(1);
+            MMObjectNode otherNode = syncbul.getNode(nodeNumber);
+            if (otherNode == null) {
+                log.warn("No such node '" + nodeNumber + "'");
+                number = -1;
+            } else {
+                number = otherNode.getNumber();
+            }
+        } else {
+            number = newNode.getIntValue(field);
+            List snumberNodes = getSyncnodes(syncbul, exportsource, number);
+            if (!snumberNodes.isEmpty()) {
+                MMObjectNode n2 = (MMObjectNode)snumberNodes.get(0);
+                number = n2.getIntValue("localnumber");
+            } else {
+                number = -1;
+            }
+        }
+        newNode.setValue(field, number);
+        return number;
+    }
+
     private void installRelationSource(MMObjectBuilder syncbul, InsRel insRel, XMLRelationNodeReader nodereader, List nodeFieldNodes, ApplicationResult result) {
         String exportsource = nodereader.getExportSource();
         int timestamp = nodereader.getTimeStamp();
@@ -480,26 +506,9 @@ public class ApplicationInstaller {
                     // ye be warned.
 
                     // find snumber
-                    int snumber = newNode.getIntValue("snumber");
-                    List snumberNodes = getSyncnodes(syncbul, exportsource, snumber);
-                    if (!snumberNodes.isEmpty()) {
-                        MMObjectNode n2 = (MMObjectNode)snumberNodes.get(0);
-                        snumber = n2.getIntValue("localnumber");
-                    } else {
-                        snumber = -1;
-                    }
-                    newNode.setValue("snumber", snumber);
-
+                    int snumber = getSyncedNumber(syncbul, exportsource, newNode, "snumber");
                     // find dnumber
-                    int dnumber = newNode.getIntValue("dnumber");
-                    List dnumberNodes = getSyncnodes(syncbul, exportsource, dnumber);
-                    if (!dnumberNodes.isEmpty()) {
-                        MMObjectNode n2 = (MMObjectNode)dnumberNodes.get(0);
-                        dnumber = n2.getIntValue("localnumber");
-                    } else {
-                        dnumber = -1;
-                    }
-                    newNode.setValue("dnumber", dnumber);
+                    int dnumber = getSyncedNumber(syncbul, exportsource, newNode, "dnumber");
 
                     int localnumber = -1;
                     if (snumber != -1 && dnumber != -1) {
@@ -508,8 +517,7 @@ public class ApplicationInstaller {
                         if (relationAlreadyExists(insRel, newNode, snumber, dnumber)) {
                             log.warn("Application tries to add relation which already exists. " +
                                     "Skipping relation with exportnumber " + exportnumber);
-                        }
-                        else {
+                        } else {
                             localnumber = newNode.insert("import");
                             if (localnumber != -1) {
                                 createSyncnode(syncbul, exportsource, timestamp, exportnumber, localnumber);

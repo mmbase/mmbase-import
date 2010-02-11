@@ -64,13 +64,26 @@ public class XMLRelationNodeReader extends XMLNodeReader {
                         n4 = nm.getNamedItem("number");
                         int num = Integer.parseInt(n4.getNodeValue());
                         newNode.setValue("number", num);
-
-                        n4 = nm.getNamedItem("snumber");
-                        int rnum = Integer.parseInt(n4.getNodeValue());
-                        newNode.setValue("snumber", rnum);
-                        n4 = nm.getNamedItem("dnumber");
-                        int dnum = Integer.parseInt(n4.getNodeValue());
-                        newNode.setValue("dnumber", dnum);
+                        {
+                            n4 = nm.getNamedItem("snumber");
+                            String s = n4.getNodeValue();
+                            if (s.startsWith(":")) {
+                                newNode.setValue("snumber", s);
+                            } else {
+                                int snum = Integer.parseInt(n4.getNodeValue());
+                                newNode.setValue("snumber", snum);
+                            }
+                        }
+                        {
+                            n4 = nm.getNamedItem("dnumber");
+                            String s = n4.getNodeValue();
+                            if (s.startsWith(":")) {
+                                newNode.setValue("dnumber", s);
+                            } else {
+                                int dnum = Integer.parseInt(n4.getNodeValue());
+                                newNode.setValue("dnumber", dnum);
+                            }
+                        }
                         n4 = nm.getNamedItem("rtype");
                         String rname = n4.getNodeValue();
                         RelDef reldef = mmbase.getRelDef();
