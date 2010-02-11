@@ -170,6 +170,11 @@
               <a href="${_}">Loaded with javascript</a>
             </mm:link>
           </li>
+          <li>
+            <mm:link page="mmform-ajax.jspx" referids="${referids}">
+              <a href="${_}">Loaded with javascript in an mm:form</a>
+            </mm:link>
+          </li>
         </ul>
 
         <h3>TODO</h3>
