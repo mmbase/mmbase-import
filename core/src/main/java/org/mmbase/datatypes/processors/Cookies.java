@@ -22,7 +22,7 @@ import javax.servlet.http.*;
  * value, which can come in handy sometimes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionValueIfEmptyGetter.java 34900 2009-05-01 16:29:42Z michiel $
+ * @version $Id$
  * @since MMBase-1.9.3
  */
 
