@@ -266,7 +266,7 @@
       </description>
       <required value="true"/>
       <maxLength value="128"/>
-      <pattern value="\A\s*[^\n\r]*?\s*\z" />
+      <pattern value="\A[^\n\r]*\z" />
     </specialization>
 
     <specialization id="windowstate">
