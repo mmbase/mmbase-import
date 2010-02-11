@@ -527,8 +527,7 @@ class ApplicationInstaller {
                         if (relationAlreadyExists(insRel, newNode, snumber, dnumber)) {
                             log.warn("Application tries to add relation which already exists. " +
                                     "Skipping relation with exportnumber " + exportnumber);
-                        }
-                        else {
+                        } else {
                             localnumber = newNode.insert("import");
                             if (localnumber != -1) {
                                 createSyncnode(syncbul, exportsource, timestamp, exportnumber, localnumber);
