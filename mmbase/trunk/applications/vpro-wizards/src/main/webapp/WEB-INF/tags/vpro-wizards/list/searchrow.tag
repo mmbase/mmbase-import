@@ -216,8 +216,16 @@
                                     <c:if test="${not empty maycreate}">
                                         <c:set var="url" >
                                             <mm:url page="/wizard/post">
-                                                <mm:param name="actions[createRelation][${nodenrrow}].sourceNodeNumber" value="${parentnodenr}" />
-                                                <mm:param name="actions[createRelation][${nodenrrow}].destinationNodeNumber" value="${nodenrrow}" />
+                                              <c:choose>
+                                                <c:when test="${searchdir eq 'source'}">
+                                                  <mm:param name="actions[createRelation][${nodenrrow}].sourceNodeNumber" value="${nodenrrow}" />
+                                                  <mm:param name="actions[createRelation][${nodenrrow}].destinationNodeNumber" value="${parentnodenr}" />
+                                                </c:when>
+                                                <c:otherwise>
+                                                  <mm:param name="actions[createRelation][${nodenrrow}].sourceNodeNumber" value="${parentnodenr}" />
+                                                  <mm:param name="actions[createRelation][${nodenrrow}].destinationNodeNumber" value="${nodenrrow}" />
+                                                </c:otherwise>
+                                              </c:choose>
 
                                                 <mm:param name="actions[createRelation][${nodenrrow}].role" value="${relationrole}" />
                                                 <mm:param name="actions[createRelation][${nodenrrow}].sortPosition" value="end" />
