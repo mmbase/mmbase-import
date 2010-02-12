@@ -63,6 +63,7 @@ function MMBaseRelater(d, validator) {
     this.logger.debug(d);
     this.logger.debug("setting up current");
     this.current       = $(d).find(".mm_relate_current")[0];
+    this.instant       = $(d).hasClass("instant");  // instant action
     this.canUnrelate   = $(d).hasClass("can_unrelate");
     this.canEditrelations = $(d).hasClass("can_editrelations");
     if (this.current != null) {
@@ -96,7 +97,7 @@ function MMBaseRelater(d, validator) {
 
 /**
  *  This Searcher.js.jsp is normally loaded implicetly by the first mm-sr:relate. Using the 'ready'
- *  function, you can do something immediately after the MMBaseRealter is ready. E.g. you can add a
+ *  function, you can do something immediately after the MMBaseRelater is ready. E.g. you can add a
  *  'relateCallBack' function.
  *  @todo I think jquery provides something with user defined events.
  */
@@ -116,6 +117,7 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
     var relater = this;
     if ($(el).hasClass("searchable")) {
         var searcher =  new MMBaseSearcher(el, this, type, this.logger);
+        // search
         $(el).find("a.search").each(function() {
             var anchor = this;
             anchor.searcher = searcher;
@@ -124,7 +126,7 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
                     return this.searcher.search(document.getElementById(id), 0, anchor);
             });
         });
-
+        // search (submit)
         $(this.repository).find("form.searchform").each(function() {
             var form = this;
             form.searcher = searcher;
@@ -132,6 +134,7 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
                 return this.searcher.search(form, 0);
             });
         });
+        // create
         $(el).find("a.create").each(function() {
             var anchor = this;
             anchor.searcher = searcher;
@@ -139,13 +142,6 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
                 return this.searcher.create(anchor);
             });
         });
-        if (this.canUnrelate && this.current) {
-            $(this.current).find("tr.click").each(function() {
-                $(this).click(function(tr) {
-                    relater.unrelate(this);
-                    return false;
-                })});
-        }
     }
 }
 
@@ -158,8 +154,8 @@ MMBaseRelater.prototype.needsCommit = function() {
 
 
 /**
- * Commits made changes to MMBase. Depends on a jsp /mmbase/searchrelate/relate.jsp to do the actual work.
- * This jsp, in turn, depends on the query in the user's session which defined what precisely must happen.
+ * Commits makes changes to MMBase. Depends on a jsp /mmbase/searchrelate/relate.jsp to do the actual work.
+ * This jsp, in turn, depends on the query in the user's session which defines precisely what must happen.
  */
 MMBaseRelater.prototype.commit = function(ev) {
     var relatedNumbers   = this.getNumbers(this.related);
@@ -323,7 +319,6 @@ MMBaseRelater.prototype.relate = function(tr) {
 
         this.unrelated[number] = null;
 
-
         var currentList =  $(this.current).find("div.searchresult table tbody");
         this.logger.debug(currentList[0]);
         currentList.append(tr);
@@ -395,15 +390,15 @@ MMBaseRelater.prototype.unrelate = function(tr) {
 
     // Events
     $(tr).unbind();
-    var searcher = this;
+    var self = this;
     $(tr).click(function() {
-        searcher.relate(this)
+        self.relateIt(this)
     });
     $(this.div).trigger("mmsrUnrelate", [tr, this]);
 }
 
 /**
- * Saves a modified relations values.
+ * Does not create a relation but saves a modified one. 
  */
 MMBaseRelater.prototype.saverelation = function(ev) {
     ev.preventDefault();
@@ -577,7 +572,7 @@ MMBaseSearcher.prototype.getResultDiv = function() {
 }
 
 /**
- * This method is called if somebody clicks on a.search.
+ * This is called when clicking on a.search or a.navigate (when paging).
  * It depends on a jsp /mmbase/searchrelate/page.jspx to return the search results.
  * Feeded are a.o. 'id' 'offset' and 'search'.
  * The actual query is supposed to be on the user's session, and will be picked up in page.jspx.
@@ -665,7 +660,8 @@ MMBaseSearcher.prototype.search = function(val, offset, anchor) {
 
 /**
  * If you defined in your CSS that 'implicit' search results are not visible at all, then
- * you can call this method to bind events to change the texts on the search buttons accordingly (between 'search' and 'close').
+ * you can call this method to bind events to change the texts on the search buttons accordingly 
+ * (between 'search' and 'close').
  */
 MMBaseSearcher.prototype.implicitsAreHidden = function() {
     $(document).bind("mmsrPaged",
@@ -822,7 +818,6 @@ MMBaseSearcher.prototype.deleteNewlyRemoved = function(rep) {
 
 }
 
-
 MMBaseSearcher.prototype.filter = function(tr) {
     if (this.type == "repository" && this.relater != null) {
         var number = this.relater.getNumber(tr);
@@ -849,7 +844,6 @@ MMBaseSearcher.prototype.bindEvents = function() {
     }
     var self = this;
     this.logger.debug("binding to "+ $(this.div).find("a.navigate"));
-
 
     $(this.div).find("a.navigate").click(function(ev) {
         var anchor = ev.target;
