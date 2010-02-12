@@ -1,7 +1,8 @@
 <%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util"%>
-<%@ tag body-content="empty"  %>
+<%@ tag body-content="empty"  description="A description would be welcome"
+%>
 
 <%@ attribute name="nodetype" required="true"%>
 <%@ attribute name="field" description="what field to show. default is the gui function of the node. You can also use a fragment in the body to build the output for each node" %>
@@ -19,7 +20,7 @@
 <%@ attribute name="create" type="java.lang.Boolean"%>
 <%@ attribute name="sortable" type="java.lang.Boolean" description="When this is true arrows are shown to push the nodes up and down in the list." %>
 <%@ attribute name="sortfield" description="when you want to sort on non-posrel relations. it defaults to 'pos'"%>
-<%@ attribute name="newwizard" description="create a new object with a given wizard. If you dont give this a wizard name is created (assumed)."  %>
+<%@ attribute name="newwizard" description="create a new object with a given wizard. If you dont give this, a wizard name is created (assumed)."  %>
 <%@ attribute name="openwizard" %>
 <%@ attribute name="relatedpage" description="this value will override the generated url to the 'related' page. normally it is ${wizardfile}_$nodetype}. this forces you to put the reled page in the current dir, what prevents reuse."  %>
 
@@ -30,7 +31,7 @@
 
 
 <%--
-    show a summery of the relations of a certain type in the 'form' page. You can click on them to
+    show a summary of the relations of a certain type in the 'form' page. You can click on them to
     open the 'related' page
 --%>
 
