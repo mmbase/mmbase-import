@@ -23,7 +23,10 @@
                            description="An mmbase Query describing which list is considered to represent already 'related' nodes" />
 
   <jsp:directive.attribute name="submit"            type="java.lang.String"
-                           description="A jquery selector. The 'commit' action will be binded to the 'onclick' of the elements that match"  />
+                           description="A jquery selector. The 'commit' action will be binded to the 'onclick' of the elements that match."  />
+
+  <jsp:directive.attribute name="instant"           type="java.lang.Boolean"
+                           description="Relating or unrelating should happen inmediate after clicking an item or not. Defaults to both relating and unrelating true. When false confirmation is needed via submit." />
 
   <jsp:directive.attribute name="unrelate"          type="java.lang.Boolean"
                            description="Whether, or not, the tools should also allow deletion of relations" />
@@ -37,7 +40,7 @@
   <jsp:directive.attribute name="extracreate"           type="java.lang.String"
                            description="Jsp to be included in after the field list in the create jsp." />
 
-  <jsp:directive.attribute name="transaction "       type="java.lang.String"
+  <jsp:directive.attribute name="transaction"        type="java.lang.String"
                            description="The name of the mmbase transaction to be used" />
 
   <jsp:directive.attribute name="pagesize"           type="java.lang.Integer"
@@ -55,17 +58,14 @@
   <jsp:directive.attribute name="context"
                            description="The MMBase security context for new nodes (defaults to unset, which will normally result in nodes in the default context of the current user)" />
 
-
   <jsp:directive.attribute name="currentTitle"        fragment="true"
                            description="A piece of HTML that will be presented first in the 'current' div"/>
 
   <jsp:directive.attribute name="repositoryTitle"     fragment="true"
                            description="A piece of HTML that will be presented first in the 'repository' div"/>
 
-
   <jsp:directive.attribute name="forms"               type="java.lang.Boolean"
                            description="Whether to produce forms. Default to true, but since forms cannot be nested you may want to set this to false."/>
-
 
   <jsp:directive.attribute name="customizedir"        type="java.lang.String"
                            description="Enables the specification of the location of a directory with extra actions on nodes in the lists which will become visible in the td.action." />
@@ -114,8 +114,8 @@
   <script type="text/javascript">
     $(document).ready(function() {
     <c:if test="${! empty submit}">
-      <!-- if a submit id is given, commit the search/relate on click of that element -->
-         $("${submit}").click(function(el) {
+      <!-- if a submit attribute is given, commit the search/relate on click of that element -->
+         $("#mm_related_${sid} ${submit}").click(function(el) {
             return $("#mm_related_${sid}")[0].relater.commit(el); });</c:if>
       $("#mm_related_${sid}").each(function() {
       if (this.relater != null) {
@@ -137,7 +137,7 @@
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       basename="org.mmbase.searchrelate.resources.searchrelate">
     <div id="mm_related_${sid}"
-         class="mm_related ${empty unrelate or ! unrelate ? '' : 'can_unrelate'} ${empty relations or ! relations ? '' : 'can_editrelations'}  ${styleClass}">
+         class="mm_related ${empty unrelate or ! unrelate ? '' : 'can_unrelate'} ${empty relations or ! relations ? '' : 'can_editrelations'} ${empty instant or instant == true ? 'instant' : ''} ${styleClass}">
       <c:if test="${! empty transaction}">
         <span class="transactionname" style="display: none;">${transaction}</span>
       </c:if>
