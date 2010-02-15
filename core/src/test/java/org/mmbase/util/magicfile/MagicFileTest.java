@@ -8,6 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.util.magicfile;
+import org.mmbase.util.IOUtil;
 import java.util.*;
 import java.io.*;
 import org.junit.*;
@@ -50,6 +51,14 @@ public class MagicFileTest  {
     @Test
     public void test() throws IOException  {
         assertEquals(mimeType, MagicFile.getInstance().getMimeType(file));
+    }
+
+
+    @Test
+    public void noExtension() throws IOException  {
+        File tempFile = File.createTempFile(MagicFileTest.class.getName(), ".tmp");
+        IOUtil.copy(new FileInputStream(file), new FileOutputStream(tempFile));
+        assertEquals(mimeType, MagicFile.getInstance().getMimeType(tempFile));
     }
 
 
