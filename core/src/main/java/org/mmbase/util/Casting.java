@@ -15,13 +15,10 @@ import java.text.*;
 import java.io.*;
 import javax.xml.parsers.*;
 import java.math.BigDecimal;
+/*
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.Node;
-import org.mmbase.bridge.util.NodeWrapper;
-import org.mmbase.bridge.util.NodeMap;
-import org.mmbase.bridge.util.MapNode;
-import org.mmbase.datatypes.DataType;
-import org.mmbase.datatypes.DataTypes;
+*/
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.XMLWriter;
@@ -142,8 +139,7 @@ public class Casting {
     public static <C> C toType(Class<C> type, Object value) {
         return toType(type, null, value);
     }
-
-    private static Cloud anonymousCloud = null;
+    private static Caster helper = new BasicCaster();
 
     /**
      * Tries to 'cast' an object for use with the provided class. E.g. if value is a String, but the
@@ -157,10 +153,15 @@ public class Casting {
      * @since MMBase-1.8
      */
     @SuppressWarnings("unchecked")
-    public static <C> C toType(Class<C> type, Cloud cloud, Object value) {
+    public static <C> C toType(Class<C> type, Object cloud, Object value) {
         if (value != null && isType(type, value))  {
             return (C) value;
         } else {
+            try {
+                return helper.toType(type, cloud, value);
+            } catch (Caster.NotRecognized e) {
+                // never mind
+            }
             if (type.equals(Boolean.TYPE) || type.equals(Boolean.class)) {
                 return (C) Boolean.valueOf(toBoolean(value));
             } else if (type.equals(Byte.TYPE) || type.equals(Byte.class)) {
@@ -202,19 +203,6 @@ public class Casting {
                 return (C) toString(value);
             } else if (type.equals(Date.class)) {
                 return (C) toDate(value);
-            } else if (type.equals(Node.class)) {
-                try {
-                    if (cloud == null) {
-                        if (anonymousCloud == null || ! anonymousCloud.getUser().isValid()) {
-                            anonymousCloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
-                        }
-                        cloud = anonymousCloud;
-                    }
-                    return (C) toNode(value, cloud);
-                } catch (Exception e) {
-                    // suppose that that was because mmbase not running
-                    return (C) (value instanceof Node ? value : null);
-                }
             } else if (type.equals(Document.class)) {
                 return (C) toXML(value);
             } else if (type.equals(List.class)) {
@@ -239,10 +227,6 @@ public class Casting {
                 } catch (Exception e) {
                     throw new IllegalArgumentException(e);
                 }
-           } else if (type.equals(org.mmbase.datatypes.DataType.class)) {
-                return (C) toDataType(value);
-           } else if (type.equals(org.mmbase.security.Operation.class)) {
-                return (C) org.mmbase.security.Operation.getOperation(toString(value));
            } else if (type.equals(Locale.class)) {
                 if (value instanceof Locale) {
                     return (C) value;
@@ -388,48 +372,15 @@ public class Casting {
     public static Object wrap(final Object o, final CharTransformer escaper) {
         if (o == null) {
             return escape(escaper, "");
-        } else if (o instanceof Unwrappable) {
-            return o;
-        } else if (o instanceof Node) {
-            return new NodeMap((Node)o) {
+        }
+        try {
+            return helper.wrap(o, escaper);
+        } catch (Caster.NotRecognized e) {
+            // never mind
+        }
 
-                @Override
-                public Object getValue(String fieldName) {
-                    NodeManager nm = getNodeManager();
-                    if (nm.hasField(fieldName)) {
-                        switch (nm.getField(fieldName).getType()) {
-                        case org.mmbase.bridge.Field.TYPE_NODE:
-                            // I don't understand why, but the 'number' field is of type NODE,
-                            // which makes no sense whatsoever.
-                            if (!"number".equals(fieldName)) {
-                                return wrap(getNodeValue(fieldName), escaper);
-                            } else {
-                                return super.getStringValue(fieldName);
-                            }
-                        case org.mmbase.bridge.Field.TYPE_DATETIME:
-                            return wrap(getDateValue(fieldName), escaper);
-                        case org.mmbase.bridge.Field.TYPE_XML:
-                            return wrap(getXMLValue(fieldName), escaper);
-                        case org.mmbase.bridge.Field.TYPE_UNKNOWN:
-                            log.debug("NodeManager " + nm + " has field " + fieldName + " but it is of unknown type.");
-                            return wrap(super.getValueWithoutProcess(fieldName), escaper);
-                        default:
-                            return escape(escaper, Casting.toString(super.getValue(fieldName)));
-                        }
-                    } else {
-                        return escape(escaper, Casting.toString(super.getValue(fieldName)));
-                    }
-                }
-                @Override
-                public String toString() {
-                    int number = node.getNumber();
-                    if (number != -1) {
-                        return escape(escaper, "" + number);
-                    } else {
-                        return escape(escaper, node.getStringValue("_number"));
-                    }
-                }
-            };
+        if (o instanceof Caster.Unwrappable) {
+            return o;
         } else if (o instanceof Date) {
             return new java.util.Date(((Date)o).getTime()) {
                 private static final long serialVersionUID = 1L; // increase this if object chages.
@@ -443,8 +394,6 @@ public class Casting {
         } else if (o instanceof org.w3c.dom.Node) {
             // don't know how to wrap
             return escape(escaper, XMLWriter.write((org.w3c.dom.Node) o, false, true));
-        } else if (o instanceof org.mmbase.bridge.NodeList) {
-            return new NodeListWrapper((org.mmbase.bridge.NodeList) o, escaper);
         } else if (o instanceof List) {
             return new ListWrapper((List) o, escaper);
         } else if (o instanceof byte[]) {
@@ -468,7 +417,7 @@ public class Casting {
 
     }
 
-    private static String escape(CharTransformer escaper, CharSequence string) {
+    static String escape(CharTransformer escaper, CharSequence string) {
         if (escaper != null) {
             return escaper.transform(string.toString());
         } else {
@@ -480,11 +429,12 @@ public class Casting {
      * @since MMBase-1.8
      */
     public static Object unWrap(final Object o) {
-        if (o instanceof NodeWrapper) {
-            return ((NodeWrapper)o).getNode();
-        } else if (o instanceof NodeListWrapper) {
-            return ((NodeListWrapper)o).getCollection();
-        } else if (o instanceof ListWrapper) {
+        try {
+            return helper.unWrap(o);
+        } catch(Caster.NotRecognized e) {
+            // never mind
+        }
+        if (o instanceof ListWrapper) {
             return ((ListWrapper)o).getList();
         } else if (o instanceof StringWrapper) {
             return ((StringWrapper)o).getString();
@@ -538,7 +488,13 @@ public class Casting {
     public static Map toMap(Object o) {
         if (o == null) {
             return new HashMap();
-        } else if (o instanceof Map) {
+        }
+        try {
+            return helper.toMap(o);
+        } catch (Caster.NotRecognized e) {
+            //
+        }
+        if (o instanceof Map) {
             return (Map) o;
         } else if (o instanceof org.mmbase.util.functions.Parameters) {
             return ((org.mmbase.util.functions.Parameters) o).toMap();
@@ -555,8 +511,6 @@ public class Casting {
                 }
             }
             return result;
-        } else if (o instanceof Node) {
-            return new NodeMap((Node)o);
         } else {
             Map m = new HashMap();
             m.put(o, o);
@@ -697,36 +651,6 @@ public class Casting {
 
 
     /**
-     * Convert an object to an Node.
-     * If the value is Numeric, the method
-     * tries to obtain the mmbase object with that number.
-     * A <code>Map</code> returns a virtual <code>Node</code> representing the map, (a
-     * {@link MapNode}).
-     * All remaining situations return the node with the alias <code>i.toString()</code>, which can
-     * be <code>null</code> if no node which such an alias.
-     * @param i the object to convert
-     * @param cloud the Cloud to use for loading a node
-     * @return the value as a <code>Node</code>
-     * @since MMBase-1.7
-     */
-    public static Node toNode(Object i, Cloud cloud) {
-        Node res = null;
-        if (i instanceof Node) {
-            res = (Node)i;
-        } else if (i instanceof Number) {
-            int nodenumber = ((Number)i).intValue();
-            if (nodenumber != -1 && cloud.hasNode(nodenumber)) {
-                res = cloud.getNode(nodenumber);
-            }
-        } else if (i instanceof Map<?, ?>) {
-            res = new MapNode((Map)i, cloud);
-        } else if (i != null && !i.equals("")) {
-            res = cloud.getNode(toString(i));
-        }
-        return res;
-    }
-
-    /**
      * Convert an object to an <code>int</code>.
      * Boolean values return 0 for false, 1 for true.
      * String values are parsed to a number, if possible.
@@ -741,7 +665,13 @@ public class Casting {
         int res = def;
         if (i == null) {
             return def;
-        } else if (i instanceof Number) {
+        }
+        try {
+            return helper.toInt(i);
+        } catch (Caster.NotRecognized e) {
+            // never mind
+        }
+        if (i instanceof Number) {
             long l = ((Number)i).longValue();
             if (l > Integer.MAX_VALUE) {
                 res = Integer.MAX_VALUE;
@@ -750,8 +680,6 @@ public class Casting {
             } else {
                 res = (int) l;
             }
-        } else if (i instanceof Node) {
-            res = ((Node)i).getNumber();
         } else if (i instanceof Boolean) {
             res = ((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Date) {
@@ -871,6 +799,11 @@ public class Casting {
      */
     static public long toLong(Object i, long def) {
         long res = def;
+        try {
+            return helper.toLong(i);
+        } catch (Caster.NotRecognized e) {
+            // never mind
+        }
         if (i instanceof Boolean) {
             res = ((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Number) {
@@ -878,8 +811,6 @@ public class Casting {
         } else if (i instanceof Date) {
             res = ((Date)i).getTime();
             if (res !=- 1) res /= 1000;
-        } else if (i instanceof Node) {
-            res = ((Node)i).getNumber();
         } else if (i instanceof Object[]) {
             Object[] array = (Object[]) i;
             if (array.length == 0) return 0;
@@ -931,6 +862,10 @@ public class Casting {
      */
     static public float toFloat(Object i, float def) {
         float res = def;
+        try {
+            return helper.toFloat(i);
+        } catch (Caster.NotRecognized e) {
+        }
         if (i instanceof Boolean) {
             res = ((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Number) {
@@ -938,8 +873,6 @@ public class Casting {
         } else if (i instanceof Date) {
             res = ((Date)i).getTime();
             if (res!=-1) res = res / 1000;
-        } else if (i instanceof Node) {
-            res = ((Node)i).getNumber();
         } else if (i != null) {
             if(i instanceof String){
                 String s = ((String)i).toLowerCase();
@@ -981,6 +914,10 @@ public class Casting {
      */
     static public double toDouble(Object i, double def) {
         double res = def;
+        try {
+            return helper.toFloat(i);
+        } catch (Caster.NotRecognized e) {
+        }
         if (i instanceof Boolean) {
             res = ((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Number) {
@@ -988,8 +925,6 @@ public class Casting {
         } else if (i instanceof Date) {
             res = ((Date)i).getTime();
             if (res != -1) res = res / 1000;
-        } else if (i instanceof Node) {
-            res = ((Node)i).getNumber();
         } else if (i instanceof Object[]) {
             Object[] array = (Object[]) i;
             if (array.length == 0) return 0;
@@ -1056,18 +991,6 @@ public class Casting {
         } else {
             return new BigDecimal(toDouble(i)).stripTrailingZeros();
         }
-    }
-
-    /**
-     * @since MMBase-1.9.1
-     */
-    static public DataType<?> toDataType(Object o) {
-        if (o instanceof DataType<?>) {
-            return (DataType<?>) o;
-        } else {
-            return DataTypes.getDataType(toString(o));
-        }
-
     }
 
 
@@ -1232,37 +1155,6 @@ public class Casting {
     }
 
     /**
-     * @since MMBase-1.9
-     */
-    public static class NodeListWrapper extends org.mmbase.bridge.util.CollectionNodeList implements Unwrappable {
-        private final CharTransformer escaper;
-        NodeListWrapper(org.mmbase.bridge.NodeList list, CharTransformer e) {
-            super(list);
-            for (Map.Entry<Object, Object> entry : list.getProperties().entrySet()) {
-                setProperty(entry.getKey(), entry.getValue());
-            }
-            escaper = e;
-        }
-        public Node get(int index) {
-            return (Node) Casting.wrap(super.get(index), escaper);
-        }
-        public String toString() {
-            StringBuilder buf = new StringBuilder();
-            Iterator<Node> i = iterator();
-            boolean hasNext = i.hasNext();
-            while (hasNext) {
-                Casting.toStringBuilder(buf, i.next());
-                hasNext = i.hasNext();
-                if (hasNext) {
-                    buf.append(',');
-                }
-            }
-            return buf.toString();
-        }
-
-    }
-
-    /**
      * Wraps a String with an 'Escaper'.
      * @since MMBase-1.8
      */
@@ -1300,12 +1192,6 @@ public class Casting {
         }
     }
 
-    /**
-     * Clases implementing this will not be wrapped by {@link #wrap}, even if the e.g. are CharSequence.
-     * @since MMBase-1.9
-     */
-    public static interface Unwrappable {
-    }
 
     /**
      * @since MMBase-1.9
@@ -1324,7 +1210,7 @@ public class Casting {
      * A SerializableInputStream where the toString represents the (escaped) contents of the stream itself.
      * @since MMBase-1.9.2
      */
-    static class StringSerializableInputStream extends SerializableInputStream implements Unwrappable {
+    static class StringSerializableInputStream extends SerializableInputStream implements Caster.Unwrappable {
         private static final long serialVersionUID = 2L;
 
         CharTransformer escaper;
@@ -1351,6 +1237,14 @@ public class Casting {
                 throw new RuntimeException(ioe);
             }
         }
+    }
+
+    /**
+     * @since MMBase-2.0
+     */
+    public static void setHelper(Caster h) {
+        helper = h;
+        log.info("Casting helper: " + helper);
     }
 
     private Casting() {
