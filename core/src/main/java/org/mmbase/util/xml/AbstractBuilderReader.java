@@ -91,6 +91,12 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
     }
 
 
+    static {
+        registerPublicIDs();
+        registerSystemIDs();
+
+    }
+
     public static ResourceLoader getBuilderLoader() {
         return ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders");
     }
