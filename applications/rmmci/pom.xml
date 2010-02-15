@@ -27,6 +27,11 @@
             <version>${mmbase.version}</version>
           </dependency>
           <dependency>
+            <groupId>org.mmbase</groupId>
+            <artifactId>mmbase-utils</artifactId>
+            <version>${mmbase.version}</version>
+          </dependency>
+          <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>${servlet.version}</version>
