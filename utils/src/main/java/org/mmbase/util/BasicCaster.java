@@ -31,5 +31,8 @@ public class BasicCaster implements Caster {
     public double toDouble(Object i) throws NotRecognized {
         throw NotRecognized.INSTANCE;
     }
+    public String toString(Object o) throws NotRecognized {
+        throw NotRecognized.INSTANCE;
+    }
 
 }
