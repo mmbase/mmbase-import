@@ -12,6 +12,7 @@ package org.mmbase.util;
 
 import java.io.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.magicfile.MagicFile;
 import org.apache.commons.fileupload.FileItem;
 
 /**
@@ -54,7 +55,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     private long fileMark = 0;
     private boolean tempFile = true;
     private String name;
-    private String contentType;
+    private String contentType = null;
     private transient InputStream wrapped;
     private boolean used = false;
 
@@ -62,7 +63,9 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         this.wrapped = wrapped;
         this.size = s;
         this.name = null;
-        if (wrapped == null) throw new NullPointerException();
+        if (wrapped == null) {
+            throw new NullPointerException();
+        }
         if (wrapped.markSupported()) {
             wrapped.mark(Integer.MAX_VALUE);
         }
@@ -76,6 +79,13 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         this.wrapped = new FileInputStream(tempFile);
         this.size = tempFile.length();
         this.name = name;
+        if (tempFile.length() > 0) {
+            this.contentType = MagicFile.getInstance().getMimeType(tempFile);
+            if (MagicFile.FAILED.equals(this.contentType)) {
+                log.warn("Failed to determin type of " + tempFile);
+                this.contentType = null;
+            }
+        }
     }
     /**
      * @since MMBase-1.9.2
@@ -88,6 +98,17 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         wrapped = new ByteArrayInputStream(array);
         this.size = array.length;
         this.name = null;
+        if (array.length > 0) {
+            try {
+                this.contentType = MagicFile.getInstance().getMimeType(array);
+
+                if (MagicFile.FAILED.equals(this.contentType)) {
+                    log.warn("Failed to determin type of byte array");
+                    this.contentType = null;
+                }
+            } catch (Exception e) {
+            }
+        }
     }
 
     public SerializableInputStream(FileItem fi) throws IOException {
@@ -156,6 +177,12 @@ public class SerializableInputStream  extends InputStream implements Serializabl
 
     public String getContentType() {
         return contentType;
+    }
+    /**
+     * @since MMBase-1.9.3
+     */
+    public void setContentType(String ct) {
+        contentType = ct;
     }
     public synchronized byte[] get() throws IOException {
         if (wrapped == null) {
