@@ -874,6 +874,17 @@
         </detector>
       </childlist>
     </detector>
+
+    <detector>
+      <!--
+         reference:    http://www.garykessler.net/library/file_sigs.html
+
+      -->
+      <mimetype>application/x-shockwave-flash</mimetype>
+      <extension>swf</extension>
+      <designation>Macromedia Flash data</designation>
+      <test offset="0" type="string" comparator="=">CWS</test>
+    </detector>
     <detector>
       <mimetype>application/postscript</mimetype>
       <extension>ps</extension>
