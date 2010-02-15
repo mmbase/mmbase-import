@@ -98,7 +98,7 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
     }
 
     /**
-     * @since MMBase-2.0
+     * @since MMBase-1.9.3
      */
     public MimeType getMimeType(Object value, Node node, Field field) {
         if (value == null) return MimeType.OCTETSTREAM;
