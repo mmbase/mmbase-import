@@ -272,13 +272,6 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
     }
 
     /**
-     * @since MMBase-1.9
-     */
-    public static void clearMMEntities() {
-        ents = null;
-    }
-
-    /**
      * Takes the systemId and returns the local location of the dtd/xsd
      */
     public InputSource resolveEntity(final String publicId, final String systemId) {
