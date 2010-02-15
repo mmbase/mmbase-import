@@ -69,10 +69,6 @@ function List(d) {
         this.form.valids = {};
     }
 
-    this.uploader              = new MMUploader();
-    this.uploader.uid          = this.rid;
-    this.uploader.statusElement = this.find("status", "span")[0];
-    this.uploader.transaction   = this.formtag;
 
     if (this.sortable) {
         if (! this.autosubmit) {
@@ -110,7 +106,22 @@ function List(d) {
     // Every list maintains it's own validator.
     this.validator = typeof(MMBaseValidator) != "undefined" ?  new MMBaseValidator(null, this.rid + "/" + new Date().getTime()) : null;
 
+
+
     if (this.validator != null) {
+
+        // Set up the uploader (bound to mmValidate event)
+        if (typeof(MMUploader) != "undefined") {
+            this.uploader               = new MMUploader();
+            this.uploader.uid           = this.rid;
+            this.uploader.statusElement = this.find("status", "span")[0];
+            this.uploader.transaction   = this.formtag;
+            this.uploader.validator     = this.validator;
+        } else {
+            this.uploader = null;
+        }
+
+
         this.validator.lang = "${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}";
         this.validator.prefetchNodeManager(this.type);
         this.validator.addValidationForElements(this.find("mm_validate"));
@@ -118,14 +129,20 @@ function List(d) {
         // Bind the event handler on document, so we don't have to bind on creation of new items and so on.
         $(document).bind("mmValidate", function(ev, validator, valid) {
                 var element = ev.target;
-                // only do something if the event is on _our_ mm_validate's.
-                if ($(element).closest("div.list").filter(function() {
-                            return this.id == self.div.id;}).length > 0) {
+                if (self.isMyElement(element)) {
+
                     if (element.lastChange != null && element.lastChange.getTime() > self.lastChange.getTime()) {
                         self.lastChange = element.lastChange;
                     }
                     self.setValidInForm();
                     self.triggerValidateHook();
+                    self.commit();
+                    if (self.uploader != null) {
+                        if (element.type == 'file' && valid) {
+                            // start uploading the new file
+                            self.uploader.upload(element.id);
+                        }
+                    }
                 }
             }
             );
@@ -134,7 +151,6 @@ function List(d) {
 
     // If a searcher was requested for this list, then set that up too.
     if (this.search) {
-
         // i.e, we bind to the 'mmsrRelate' event to put the selected
         // tr in the list as a new item.
         this.find("mm_related", "div").bind("mmsrRelate", function (e, relate, relater) {
@@ -145,17 +161,21 @@ function List(d) {
             });
     }
 
+
+
     // Whether at this moment a save is performed.
     this.saving = false;
 
     // Regulary automaticly save changes (note that saving is not the same as committing if we use mm:form).
-    $.timer(1000, function(timer) {
-            if (List.prototype.leftPage) {
-                timer.stop();
-            } else {
-                self.commit();
-            }
-        });
+    if (this.validator != null) {
+        $.timer(1000, function(timer) {
+                if (List.prototype.leftPage) {
+                    timer.stop();
+                } else {
+                    self.commit();
+                }
+            });
+    }
 
     // Set up the create button
     this.find("create", "a").each(function() {
@@ -256,6 +276,14 @@ List.prototype.init = function(el, initSearchers) {
  */
 List.prototype.instances = {};
 
+
+List.prototype.isMyElement = function(element) {
+    var self = this;
+    // only do something if the event is on _our_ mm_validate's.
+    return $(element).closest("div.list").filter(function() {
+            return this.id == self.div.id;}).length > 0;
+
+}
 /**
  * Recalculates this.valid and calls mmsrValidateHook on the form (if there is a form)
  */
@@ -667,14 +695,6 @@ List.prototype.commit = function(stale, leavePage) {
     var result;
     var self = this;
     if(this.needsCommit() && ! List.prototype.leftPage) {
-        this.find(null, "input").each(function() {
-                if (this.type == 'file') {
-                    if ($(this).val().length > 0 && ! $(this).hasClass("invalid")) {
-                        //console.log("Uploading " + this.id);
-                        self.uploader.upload(this.id);
-                    }
-                }
-            });
 
         if (this.valid) {
             var now = new Date();
