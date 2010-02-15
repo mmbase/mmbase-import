@@ -28,7 +28,9 @@ public class MagicFileTest  {
     public static Collection<Object[]> data() {
         Object[][] files = {
             new Object[] {"flash1.swf", "application/x-shockwave-flash"},
-            new Object[] {"flash2.swf", "application/x-shockwave-flash"}
+            new Object[] {"flash2.swf", "application/x-shockwave-flash"},
+            new Object[] {"cx.png", "image/png"},
+            new Object[] {"dot.", MagicFile.FAILED}
         };
 
         File dir = new File("src" + File.separator + "test" + File.separator + "files");
