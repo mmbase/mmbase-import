@@ -29,6 +29,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.BuilderReader;
 import org.mmbase.util.xml.BuilderWriter;
+import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.functions.*;
 import org.xml.sax.SAXException;
 
@@ -249,6 +250,32 @@ public class MMBase extends ProcessorModule {
             log.service(e.getMessage());
         }
     }
+
+    /**
+     * @since MMBase-2.0
+     */
+    protected void setMMEntities(boolean logEnts) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            Set<Object> added = new HashSet<Object>();
+            EntityResolver.appendEntities(sb, org.mmbase.framework.Framework.getInstance(), "framework", 0, added);
+            EntityResolver.appendEntities(sb, org.mmbase.framework.ComponentRepository.getInstance(), "componentRepository", 0, added);
+
+            org.mmbase.module.Module  mmbase = org.mmbase.module.Module.getModule("mmbaseroot", false);
+            if (mmbase != null) {
+                EntityResolver.appendEntities(sb, mmbase, "mmbase", 0, added);
+            }
+        } catch (Throwable ie) {
+            log.warn(ie.getMessage());
+            EntityResolver.setMMEntities(sb.toString());
+        }
+        String ents = sb.toString();
+        if (logEnts) {
+            log.debug("Using entities\n" + ents);
+        }
+        EntityResolver.setMMEntities(ents);
+
+    }
     /**
      * Initalizes the MMBase module. Evaluates the parameters loaded from the configuration file.
      * Sets parameters (authorisation, language), loads the builders, and starts MultiCasting.
@@ -314,7 +341,7 @@ public class MMBase extends ProcessorModule {
         if (tmp != null && !tmp.equals("")) {
             encoding = tmp;
         }
-        org.mmbase.util.xml.EntityResolver.clearMMEntities(false);
+        setMMEntities(false);
 
         // default locale has to be known before initializing datatypes:
         DataTypes.initialize();
@@ -341,7 +368,7 @@ public class MMBase extends ProcessorModule {
             host = localHost;
         }
 
-        org.mmbase.util.xml.EntityResolver.clearMMEntities(false);
+        setMMEntities(false);
 
         String machineNameParam = getInitParameter("MACHINENAME");
         if (machineNameParam != null) {
@@ -378,7 +405,7 @@ public class MMBase extends ProcessorModule {
         }
         log.info("MMBase machine name used for clustering: '" + machineName + "'");
         Logging.setMachineName(machineName);
-        org.mmbase.util.xml.EntityResolver.clearMMEntities(false);
+        setMMEntities(false);
 
         log.service("Initializing  storage");
         initializeStorage();
@@ -403,7 +430,7 @@ public class MMBase extends ProcessorModule {
         }
 
         log.service("Initializing  builders:");
-        org.mmbase.util.xml.EntityResolver.clearMMEntities(false);
+        setMMEntities(false);
 
         initBuilders();
 
@@ -440,7 +467,7 @@ public class MMBase extends ProcessorModule {
             return;
         }
 
-        org.mmbase.util.xml.EntityResolver.clearMMEntities(false);
+        setMMEntities(false);
         // try to load security...
         try {
             mmbaseCop = new MMBaseCop();
@@ -450,7 +477,7 @@ public class MMBase extends ProcessorModule {
             log.error("MMBase will continue without security.");
             log.error("All future security invocations will fail.");
         }
-        org.mmbase.util.xml.EntityResolver.clearMMEntities(true);
+        setMMEntities(true);
         typeRel.readCache();
 
         // signal that MMBase is up and running
