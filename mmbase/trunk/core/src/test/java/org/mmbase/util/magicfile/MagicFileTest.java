@@ -27,8 +27,10 @@ public class MagicFileTest  {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         Object[][] files = {
+            // MMB-1935:
             new Object[] {"flash1.swf", "application/x-shockwave-flash"},
             new Object[] {"flash2.swf", "application/x-shockwave-flash"},
+
             new Object[] {"cx.png", "image/png"},
             new Object[] {"dot.", MagicFile.FAILED}
         };
