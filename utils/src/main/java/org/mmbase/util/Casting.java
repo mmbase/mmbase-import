@@ -347,12 +347,12 @@ public class Casting {
             o = ((SortedBundle.ValueWrapper) o).getKey();
         }
         Object s = wrap(o, null);
-        // TODO
-        /*
-        if (s instanceof org.mmbase.bridge.Query) {
-            s = ((org.mmbase.bridge.Query) s).toSql();
+
+        try {
+            s = helper.toString(s);
+        } catch (Caster.NotRecognized e) {
+            // never mind
         }
-        */
         writer.write(s.toString());
         return writer;
     }
@@ -380,7 +380,7 @@ public class Casting {
             // never mind
         }
 
-        if (o instanceof Caster.Unwrappable) {
+        if (o instanceof Unwrappable) {
             return o;
         } else if (o instanceof Date) {
             return new java.util.Date(((Date)o).getTime()) {
@@ -1209,7 +1209,7 @@ public class Casting {
      * A SerializableInputStream where the toString represents the (escaped) contents of the stream itself.
      * @since MMBase-1.9.2
      */
-    static class StringSerializableInputStream extends SerializableInputStream implements Caster.Unwrappable {
+    static class StringSerializableInputStream extends SerializableInputStream implements Unwrappable {
         private static final long serialVersionUID = 2L;
 
         CharTransformer escaper;
@@ -1236,6 +1236,14 @@ public class Casting {
                 throw new RuntimeException(ioe);
             }
         }
+    }
+
+
+    /**
+     * Clases implementing this will not be wrapped by {@link #wrap}, even if the e.g. are CharSequence.
+     * @since MMBase-1.9
+     */
+    public static interface Unwrappable {
     }
 
     /**

@@ -1,6 +1,7 @@
 package org.mmbase.util;
 import org.mmbase.util.transformers.CharTransformer;
 import java.util.*;
+import java.io.*;
 
 /**
  * @since MMBase-2.0
@@ -15,6 +16,7 @@ public interface Caster {
     long toLong(Object i) throws NotRecognized;
     float toFloat(Object i) throws NotRecognized;
     double toDouble(Object i) throws NotRecognized;
+    String toString(Object o) throws NotRecognized;
 
     public static class NotRecognized extends Exception {
         static NotRecognized INSTANCE = new NotRecognized();
@@ -23,11 +25,5 @@ public interface Caster {
 
     }
 
-    /**
-     * Clases implementing this will not be wrapped by {@link #wrap}, even if the e.g. are CharSequence.
-     * @since MMBase-1.9
-     */
-    public static interface Unwrappable {
-    }
 
 }
