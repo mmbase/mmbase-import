@@ -139,6 +139,13 @@ public class BridgeCaster implements Caster {
         }
     }
 
+    public String toString(Object s) throws NotRecognized {
+        if (s instanceof org.mmbase.bridge.Query) {
+            return ((org.mmbase.bridge.Query) s).toSql();
+        } else {
+            throw NotRecognized.INSTANCE;
+        }
+    }
 
     /**
      * Convert an object to an Node.
@@ -186,7 +193,7 @@ public class BridgeCaster implements Caster {
     /**
      * @since MMBase-1.9
      */
-    public static class NodeListWrapper extends org.mmbase.bridge.util.CollectionNodeList implements Unwrappable {
+    public static class NodeListWrapper extends org.mmbase.bridge.util.CollectionNodeList implements Casting.Unwrappable {
         private final CharTransformer escaper;
         NodeListWrapper(org.mmbase.bridge.NodeList list, CharTransformer e) {
             super(list);
