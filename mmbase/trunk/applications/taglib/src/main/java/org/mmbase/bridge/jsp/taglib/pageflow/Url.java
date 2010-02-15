@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
-import org.mmbase.util.Caster;
 import org.mmbase.util.Casting;
 import org.mmbase.util.functions.*;
 import org.mmbase.framework.*;
@@ -40,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @version $Id$;
  * @since MMBase-1.9
  */
-public class Url implements Comparable, CharSequence, Caster.Unwrappable {
+public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     private static final Logger log = Logging.getLoggerInstance(Url.class);
     private static  final Logger pageLog = Logging.getLoggerInstance(Logging.PAGE_CATEGORY);
 
