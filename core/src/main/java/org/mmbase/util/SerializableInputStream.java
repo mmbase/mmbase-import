@@ -95,9 +95,14 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         this.wrapped = new FileInputStream(tempFile);
         this.size = tempFile.length();
         this.name = name;
-        this.contentType = MagicFile.getInstance().getMimeType(tempFile);
-        if (MagicFile.FAILED.equals(this.contentType)) {
-            this.contentType = null;
+        if (tempFile.length() > 0) {
+            this.contentType = MagicFile.getInstance().getMimeType(tempFile);
+            if (MagicFile.FAILED.equals(this.contentType)) {
+                // TODO: try filename.
+
+                log.warn("Failed to determin type of " + tempFile);
+                this.contentType = null;
+            }
         }
     }
     /**
@@ -114,7 +119,9 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         if (array.length > 0) {
             try {
                 this.contentType = MagicFile.getInstance().getMimeType(array);
+
                 if (MagicFile.FAILED.equals(this.contentType)) {
+                    log.warn("Failed to determin type of byte array");
                     this.contentType = null;
                 }
             } catch (Exception e) {
