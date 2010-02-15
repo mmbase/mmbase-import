@@ -66,10 +66,8 @@ MMBaseValidator.watcher = function() {
                     el.lastChange = new Date(0);
                 }
                 if (new Date(validator.checkAfter + el.lastChange.getTime()) < now) {
-                    el.serverValidated = true;
                     validator.validateElement(validator.activeElement, true, true);
                 } else {
-                    //console.log("not yet stale enough");
                 }
             }
         }
@@ -234,7 +232,7 @@ MMBaseValidator.prototype.getLength = function(el) {
                     // http://msdn.microsoft.com/en-us/library/z9ty6h50%28VS.85%29.aspx
                     // this should work.
                     // I have never seen that it actually does.
-                    // IE sucks too much.
+                    // IE probably just sucks too much.
                     var oas = new ActiveXObject("Scripting.FileSystemObject");
                     var file = oas.getFile(el.value);
                     length = file.length;
@@ -261,6 +259,54 @@ MMBaseValidator.prototype.getLength = function(el) {
         }
        }
     return length;
+}
+
+/**
+ * Returns the mimetype as reported by the browser for the given file
+ * upload input.
+ * Probably won't work in IE.
+ */
+MMBaseValidator.prototype.getMimeType = function(el) {
+    var type;
+    if (el.type === "file") {
+        if (el.value === "") {
+            this.getDataTypeKey(el); // set also mm_length
+            type = el.mm_initial_mimetype
+        } else {
+            if (el.files == null) {
+                try {
+                    // We can always try.
+                    // According to
+                    // http://msdn.microsoft.com/en-us/library/z9ty6h50%28VS.85%29.aspx
+                    // this should work.
+                    // I have never seen that it actually does.
+                    // IE probably just sucks too much.
+                    var oas = new ActiveXObject("Scripting.FileSystemObject");
+                    var file = oas.getFile(el.value);
+                    type = file.type;
+                } catch (e) {
+                    // Out of luck, both el.files  and the silly activexobject are not working.
+                    this.showWarning(e);
+                    type = null;
+                }
+            } else {
+                // most other browsers simply support the following (Note the incredible ease and simplicity, compared to the horrible shit of IE).
+                if (el.files.length > 0) {
+                    type = el.files.item(0).type;
+                } else {
+                    type = "application/octet-stream";
+                }
+            }
+        }
+    } else {
+        var value = this.getValue(el);
+        if (value == null) {
+            type = null;
+        } else {
+            //
+        }
+    }
+    return type;
 }
 
 /**
@@ -351,7 +397,13 @@ MMBaseValidator.prototype.patternValid = function(el) {
     if (this.isString(el)) {
         var xml = this.getDataTypeXml(el);
         if (el.mm_pattern == null) {
-            var javaPattern = this.find(xml, 'datatype pattern')[0].getAttribute("value");
+            var javaPatternXml = this.find(xml, 'datatype pattern')[0];
+            if (javaPatternXml == null) {
+                alert("No pattern found for " + $(el).attr("id"));
+                return true;
+            }
+
+            var javaPattern = javaPatternXml.getAttribute("value");
             el.mm_pattern = this.javaScriptPattern(javaPattern);
             if (el.mm_pattern == null) return true;
             this.trace("pattern : " + el.mm_pattern + " " + el.value);
@@ -400,12 +452,7 @@ MMBaseValidator.prototype.hasJavaClass = function(el, javaClass) {
 MMBaseValidator.prototype.isNumeric = function(el) {
     if (el.mm_isnumeric != null) return el.mm_isnumeric;
     el.mm_isnumeric = this.hasJavaClass(el, "org\.mmbase\.datatypes\.NumberDataType");
-    return el.mm_isnumeric;
-}
-MMBaseValidator.prototype.isBoolean = function(el) {
-    if (el.mm_isboolean != null) return el.mm_isboolean;
-    el.mm_isboolean = this.hasJavaClass(el, "org\.mmbase\.datatypes\.BooleanDataType");
-    return el.mm_isboolean;
+    return el.isnumeric;
 }
 MMBaseValidator.prototype.isInteger = function(el) {
     if (el.mm_isinteger != null) return el.mm_isinteger;
@@ -418,7 +465,9 @@ MMBaseValidator.prototype.isFloat = function(el) {
     return el.mm_isfloat;
 }
 MMBaseValidator.prototype.isString = function(el) {
-    if (el.mm_isstring != null) return el.mm_isstring;
+    if (el.mm_isstring != null) {
+        return el.mm_isstring;
+    }
     el.mm_isstring =  this.hasJavaClass(el, "org\.mmbase\.datatypes\.StringDataType");
     return el.mm_isstring;
 }
@@ -625,6 +674,8 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
                 result.node = className.substring(5);
             } else if (className.indexOf("mm_length_") == 0) {
                 el.mm_initial_length = parseInt(className.substring(10));
+            } else if (className.indexOf("mm_mimetype_") == 0) {
+                el.mm_initial_mimetype = className.substring(12);
             }
 
         }
@@ -749,10 +800,6 @@ MMBaseValidator.prototype.getValue = function(el) {
             } else {
                 value = parseFloat(value);
             }
-        } else if (this.isBoolean(el)) {
-            if ("checkbox" === el.type) {
-                value =  $(el).is(":checked");
-            }
         }
         return value;
     }
@@ -849,14 +896,19 @@ MMBaseValidator.prototype.binaryServerValidation = function(el) {
     var validationUrl = '<mm:url page="/mmbase/validation/binaryValid.jspx" />?';
     var self = this;
     var params = this.getDataTypeArguments(key);
-    if (this.lang != null) params.lang = this.lang;
-    if (this.sessionName != null) params.sessionname = this.sessionName;
+    if (this.lang != null) {
+        params.lang = this.lang;
+    }
+    if (this.sessionName != null) {
+        params.sessionname = this.sessionName;
+    }
     if (key.node != null && key.node > 0) {
         params.node = key.node;
     }
     params.fieldname = $(el).attr("name");
     params.changed = this.isChanged(el);
     params.length = this.getLength(el);
+    params.type = this.getMimeType(el);
     if (params.length == null) {
         delete params.length;
     }
@@ -871,7 +923,7 @@ MMBaseValidator.prototype.binaryServerValidation = function(el) {
     }
     if (params.length != null) {
         var result;
-        $.ajax({async: true, url: validationUrl, type: "GET", dataType: "xml", data: params,
+        $.ajax({async: true, url: validationUrl, type: "GET", dataType: "xml",
                     complete: function(res, status){
                     var result;
                     if (status == "success") {
@@ -882,10 +934,14 @@ MMBaseValidator.prototype.binaryServerValidation = function(el) {
                         el.serverValidated = true;
                         result = $("<result valid='true' />")[0];
                     }
-                    self.showServerErrors(el, result);
+                    self.showServerErrors(el, result, el.initialId);
                 }
             });
     } else {
+        // jquery.form based upload
+        //
+        // TODO, probably won't work.
+        // An anyhow, uploading the entire thing just for validation is not such a good idea.
         if (typeof($.fn.ajaxSubmit) == "undefined") {
 
             if (this.valid(el)) {
@@ -1061,7 +1117,6 @@ MMBaseValidator.prototype.updateValidity = function(element, valid) {
 }
 
 MMBaseValidator.prototype.validateElement = function(element, server) {
-    //this.log("Validating element " + server);
     var valid;
     if (server) {
         var prevValue = element.prevValue;
@@ -1119,23 +1174,27 @@ MMBaseValidator.prototype.removeValidation = function(el) {
     }
     var self = this;
     var els = $(el).find(".mm_validate").each(function() {
-	var entry = this;
-	if (self.hasElement(entry)) {
-	    if (! entry.prevValid) {
-                self.invalidElements--;
-            }
-	    $(entry).unbind();
-	    var newElements = [];
-	    $(self.elements).each(function() {
-		if (this.initialalId != entry.initialId) {
+            self.removeValidationFromElement(this);
+        });
+}
+
+MMBaseValidator.prototype.removeValidationFromElement = function(el) {
+    var self = this;
+    if (self.hasElement(el)) {
+        if (! el.prevValid) {
+            self.invalidElements--;
+        }
+        $(el).unbind();
+        var newElements = [];
+        $(self.elements).each(function() {
+		if (this.initialalId != el.initialId) {
 		    newElements.push(this);
 		}
 	    });
-	    self.elements = newElements;
-	}
-    });
-
+        self.elements = newElements;
+    }
 }
+
 
 
 MMBaseValidator.prototype.setLastChange = function(event) {
@@ -1153,6 +1212,8 @@ MMBaseValidator.prototype.addValidationForElements = function(els) {
         if (entry.type == "textarea") {
             entry.value = entry.value.replace(/^\s+|\s+$/g, "");
         }
+        // Store the original ID, especially for binaries, because jquery-upload may temporary change it sometimes, which would make the error div unfindable
+        entry.initialId = $(entry).attr("id");
 	var self = this;
         // switch stolen from editwizards, not all cases are actually supported already here.
         switch(entry.type) {
@@ -1170,11 +1231,13 @@ MMBaseValidator.prototype.addValidationForElements = function(els) {
 
         case "radio":
         case "checkbox":
-            $(entry).bind("click", function(ev) { self.setLastChange(ev); self.validate(ev); });
+            $(entry).bind("click", function(ev) { self.lastChange(ev); self.validate(ev); });
             $(entry).bind("blur",   function(ev) { self.serverValidate(ev); });
             break;
         case "file":
-            $(entry).bind("change", function(ev) { self.setLastChange(ev); self.validate(ev); });
+            $(entry).bind("change", function(ev) {
+                    self.setLastChange(ev); self.serverValidate(ev);
+                });
             break;
         case "select-one":
         case "select-multiple":
