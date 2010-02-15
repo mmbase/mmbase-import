@@ -81,7 +81,15 @@ public class MagicFile {
         FileInputStream fir = null;
         try {
             fir = new FileInputStream(file);
-            return getMimeType(fir);
+            String result =  getMimeType(fir);
+            if (result == FAILED) {
+                String fileName = file.getName();
+                int i = fileName.lastIndexOf(".");
+                if (i > 0) {
+                    result = extensionToMimeType(fileName.substring(i + 1));
+                }
+            }
+            return result;
         } finally {
             if (fir != null) {
                 fir.close();
