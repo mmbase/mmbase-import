@@ -56,7 +56,6 @@ function List(d) {
     this.search     = this.search     == 'true';
 
 
-
     // Whether every user input is currently valid (whith respect of both the list's length and  MMBaseValidator information).
     this.valid = true;
     // The reason(s) why it would not be valid.
@@ -69,6 +68,7 @@ function List(d) {
         this.form = $(this.div).parents("form")[0];
         this.form.valids = {};
     }
+
 
     if (this.sortable) {
         if (! this.autosubmit) {
@@ -98,7 +98,6 @@ function List(d) {
     }
 
 
-
     this.lastCommit = new Date(); // now
     this.lastChange = new Date(0); // long time ago
 
@@ -107,7 +106,22 @@ function List(d) {
     // Every list maintains it's own validator.
     this.validator = typeof(MMBaseValidator) != "undefined" ?  new MMBaseValidator(null, this.rid + "/" + new Date().getTime()) : null;
 
+
+
     if (this.validator != null) {
+
+        // Set up the uploader (bound to mmValidate event)
+        if (typeof(MMUploader) != "undefined") {
+            this.uploader               = new MMUploader();
+            this.uploader.uid           = this.rid;
+            this.uploader.statusElement = this.find("status", "span")[0];
+            this.uploader.transaction   = this.formtag;
+            this.uploader.validator     = this.validator;
+        } else {
+            this.uploader = null;
+        }
+
+
         this.validator.lang = "${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}";
         this.validator.prefetchNodeManager(this.type);
         this.validator.addValidationForElements(this.find("mm_validate"));
@@ -115,14 +129,20 @@ function List(d) {
         // Bind the event handler on document, so we don't have to bind on creation of new items and so on.
         $(document).bind("mmValidate", function(ev, validator, valid) {
                 var element = ev.target;
-                // only do something if the event is on _our_ mm_validate's.
-                if ($(element).closest("div.list").filter(function() {
-                            return this.id == self.div.id;}).length > 0) {
+                if (self.isMyElement(element)) {
+
                     if (element.lastChange != null && element.lastChange.getTime() > self.lastChange.getTime()) {
                         self.lastChange = element.lastChange;
                     }
                     self.setValidInForm();
                     self.triggerValidateHook();
+                    self.commit();
+                    if (self.uploader != null) {
+                        if (element.type == 'file' && valid) {
+                            // start uploading the new file
+                            self.uploader.upload(element.id);
+                        }
+                    }
                 }
             }
             );
@@ -131,7 +151,6 @@ function List(d) {
 
     // If a searcher was requested for this list, then set that up too.
     if (this.search) {
-
         // i.e, we bind to the 'mmsrRelate' event to put the selected
         // tr in the list as a new item.
         this.find("mm_related", "div").bind("mmsrRelate", function (e, relate, relater) {
@@ -142,25 +161,32 @@ function List(d) {
             });
     }
 
+
+
     // Whether at this moment a save is performed.
     this.saving = false;
 
     // Regulary automaticly save changes (note that saving is not the same as committing if we use mm:form).
-    $.timer(1000, function(timer) {
-            if (List.prototype.leftPage) {
-                timer.stop();
-            } else {
-                self.commit();
-            }
-        });
+    if (this.validator != null) {
+        $.timer(1000, function(timer) {
+                if (List.prototype.leftPage) {
+                    timer.stop();
+                } else {
+                    self.commit();
+                }
+            });
+    }
 
     // Set up the create button
     this.find("create", "a").each(function() {
             self.bindCreate(this);
     });
 
+    //console.log("Init " + this.rid);
+
     // And the delete and unlink buttons.
     this.find("delete", "a").each(function() {
+            //console.log("Found");
             self.bindDelete(this);
     });
 
@@ -198,9 +224,6 @@ function List(d) {
 
     this.logEnabled = false;
 
-    // Currently running uploads
-    this.uploading = {};
-    this.uploadingSize = 0;
 
     // Whether the user already left the page (this is during the short time between that, and handling the consequences
     // for that)
@@ -213,11 +236,13 @@ function List(d) {
     if ($(this.div).hasClass("POST")) {
         $(this.div).trigger("mmsrRelatedNodesPost", [self]);
         this.afterPost();
+        //console.log("POSTED");
+    } else {
+        //console.log("not posted");
     }
 
     // Notify that we are ready with initialization.
     $(this.div).trigger("mmsrRelatedNodesReady", [self]);
-
 
 }
 
@@ -251,6 +276,14 @@ List.prototype.init = function(el, initSearchers) {
  */
 List.prototype.instances = {};
 
+
+List.prototype.isMyElement = function(element) {
+    var self = this;
+    // only do something if the event is on _our_ mm_validate's.
+    return $(element).closest("div.list").filter(function() {
+            return this.id == self.div.id;}).length > 0;
+
+}
 /**
  * Recalculates this.valid and calls mmsrValidateHook on the form (if there is a form)
  */
@@ -341,10 +374,7 @@ List.prototype.find = function(clazz, elname, parent) {
             var c = t.nextSibling;
             while (c == null) {
                 t = t.parentNode;
-                if (t == parent) {
-                    c = null;
-                    break;
-                }
+                if (t == parent) { c = null; break; }
                 c = t.nextSibling;
             }
             t = c;
@@ -657,70 +687,6 @@ List.prototype.getListParameters = function() {
     return params;
 }
 
-// UPLOAD related functionality.
-// This should perhaps be migrated to a standalone javascript class, because it seems usefull also on other places
-
-List.prototype.uploadProgress = function(fileid) {
-    if (this.uploading[fileid]) {
-        this.find("status", "span").load("${mm:link('/mmbase/upload/progress.jspx')}");
-    }
-}
-
-List.prototype.upload = function(fileid) {
-    var self = this;
-    if (self.uploading[fileid]) {
-        // uploading already
-        return;
-    }
-    self.uploading[fileid] = true;
-    self.uploadingSize++;
-    var fileItem = $("#" + fileid);
-    var li = fileItem.parents("li");
-    var node = self.getNodeForLi(li);
-    var progress = function() {
-        self.uploadProgress(fileid);
-        if (self.uploading[fileid]) {
-            setTimeout(progress, 1000);
-        }
-    };
-    progress();
-    $.ajaxFileUpload ({
-            url: "${mm:link('/mmbase/searchrelate/list/upload.jspx')}" + "?rid=" + self.rid + "&name=" + fileItem.attr("name") + "&n=" + node,
-            secureuri: false,
-            fileElementId: fileid,
-            dataType: 'xml',
-            success: function (data, status) {
-                if(typeof(data.error) != 'undefined') {
-                    if(data.error != '') {
-                        alert(data.error);
-                    } else {
-                        alert(data.msg);
-                    }
-                } else {
-                    try {
-                        var fileItem = $("#" + fileid);
-                        fileItem.val(null);
-                        fileItem.prev(".mm_gui").remove();
-                        var created = $(data).find("div.fieldgui .mm_gui");
-                        fileItem.before(created);
-                    } catch (e) {
-                        alert(e);
-                    }
-
-                }
-                delete self.uploading[fileid];
-                self.uploadingSize--;
-                self.status('<fmt:message key="uploaded" />', true);
-            },
-            error: function (data, status, e) {
-                alert(e);
-                delete self.uploading[fileid];
-                self.uploadingSize--;
-            }
-        }
-        )
-    return false;
-}
 
 /**
  * @param stale Number of millisecond the content may be out of date. Defaults to 5 s. But on unload it is set to 0.
@@ -729,14 +695,6 @@ List.prototype.commit = function(stale, leavePage) {
     var result;
     var self = this;
     if(this.needsCommit() && ! List.prototype.leftPage) {
-        this.find(null, "input").each(function() {
-                if (this.type == 'file') {
-                    if ($(this).val().length > 0 && ! $(this).hasClass("invalid")) {
-                        //console.log("Uploading " + this.id);
-                        self.upload(this.id);
-                    }
-                }
-            });
 
         if (this.valid) {
             var now = new Date();
