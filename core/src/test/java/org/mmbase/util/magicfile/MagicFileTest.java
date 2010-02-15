@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedStringTest.java 39343 2009-10-26 21:04:47Z michiel $
+ * @version $Id$
  */
 @RunWith(Parameterized.class)
 public class MagicFileTest  {
