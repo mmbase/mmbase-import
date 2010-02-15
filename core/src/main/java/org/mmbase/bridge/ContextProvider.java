@@ -14,8 +14,7 @@ import java.util.concurrent.*;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-import org.mmbase.util.ResourceLoader;
-import org.mmbase.util.LocalizedString;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 
@@ -101,6 +100,7 @@ public class ContextProvider {
                 log.error("During parsing of " + url + ": " + e.getMessage(), e);
             }
         }
+        Casting.setHelper(new BridgeCaster());
     }
 
     /**
