@@ -43,10 +43,13 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
      */
     protected static final Collection<Entry<Pattern, String>> regexps = new ArrayList<Entry<Pattern, String>>();
 
-    protected static abstract class PatternWatcher extends ResourceWatcher {
+    protected  class PatternWatcher extends ResourceWatcher {
         protected Collection<Entry<Pattern, String>> patterns;
         PatternWatcher(Collection<Entry<Pattern, String>> p) {
             patterns = p;
+        }
+        public void onChange(String file) {
+            RegexpReplacer.this.readPatterns(patterns);
         }
     }
 
@@ -95,11 +98,7 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
         UtilReader utilReader = utilReaders.get(this.getClass().getName());
         if (utilReader == null) {
             utilReader = new UtilReader(getConfigFile(),
-                                        new PatternWatcher(patterns) {
-                                            public void onChange(String file) {
-                                                readPatterns(patterns);
-                                            }
-                                        });
+                                        new PatternWatcher(patterns));
             utilReaders.put(this.getClass().getName(), utilReader);
         }
 
