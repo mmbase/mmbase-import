@@ -103,6 +103,8 @@ public class BridgeCaster implements Caster {
     public Map toMap(Object o) throws NotRecognized {
         if (o instanceof Node) {
             return new NodeMap((Node)o);
+        } else if (o instanceof org.mmbase.util.functions.Parameters) {
+            return ((org.mmbase.util.functions.Parameters) o).toMap();
         } else {
             throw NotRecognized.INSTANCE;
         }
