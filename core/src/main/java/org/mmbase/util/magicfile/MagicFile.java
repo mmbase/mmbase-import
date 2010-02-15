@@ -89,7 +89,6 @@ public class MagicFile {
                     String  extension = fileName.substring(i + 1);
                     if (extension.length() > 0) {
                         result = extensionToMimeType(fileName.substring(i + 1));
-                        System.out.println("From extension: " + extension + " -> " + result);
                     }
                 }
             }
