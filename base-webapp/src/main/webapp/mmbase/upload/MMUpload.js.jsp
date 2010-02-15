@@ -1,9 +1,18 @@
 // -*- mode: javascript; -*-
+/**
+ * Implicitely and temporary checks/uploads binaries.
+ * Based on ajax-fileupload
+ * (jquery-form is too hard to use, because it requires an entire
+ * form to be submitted).
+ */
+
 <%@page contentType="text/javascript; charset=UTF-8"
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"
 %><fmt:bundle basename="org.mmbase.resources.resources">
 <mm:content type="text/javascript" expires="0">
+
+
 
 function MMUploader() {
     // Currently running uploads
@@ -13,23 +22,23 @@ function MMUploader() {
     this.uid = "";
     this.transaction = null;
     this.validator = null;
+
 }
 
-
 MMUploader.prototype.status = function(message, fadeout) {
-    var el = this.statusElement;
-    if (el != null) {
-        if (el.originalTextContent == null) el.originalTextContent = el.textContent;
-        $(el).fadeTo("fast", 1);
-        $(el).empty();
-        $(el).append(message);
-        if (fadeout) {
-            var p = el;
-            $(el).fadeTo(4000, 0.1, function() {
-                    $(p).empty(); $(p).append(p.originalTextContent); }
-                );
-        }
+  var el = this.statusElement;
+  if (el != null) {
+    if (el.originalTextContent == null) el.originalTextContent = el.textContent;
+    $(el).fadeTo("fast", 1);
+    $(el).empty();
+    $(el).append(message);
+    if (fadeout) {
+      var p = el;
+      $(el).fadeTo(4000, 0.1, function() {
+          $(p).empty(); $(p).append(p.originalTextContent); }
+        );
     }
+  }
 }
 
 
@@ -68,8 +77,7 @@ MMUploader.prototype.upload = function(fileid) {
 
     var fileItem = $("#" + fileid);
     if (fileItem.length == 0) {
-        console.log("No fileitem " + fileid);
-        return;
+        throw "No fileitem " + fileid;
     }
     if (fileItem[0].type != 'file') {
         // not a fileitem
