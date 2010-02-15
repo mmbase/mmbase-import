@@ -26,25 +26,28 @@ import java.text.SimpleDateFormat;
 
 public class SimpleTimeStampImpl extends AbstractSimpleImpl implements Logger {
 
-    private static SimpleTimeStampImpl root = new SimpleTimeStampImpl();
+    private static SimpleTimeStampImpl root = new SimpleTimeStampImpl("");
     private static PrintStream ps = System.out;
 
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS ");
     private static Map<String, SimpleTimeStampImpl> loggers  = new ConcurrentHashMap<String, SimpleTimeStampImpl>();
 
-
-    private SimpleTimeStampImpl() {
-    }
+    private final String name;
 
     public static  SimpleTimeStampImpl getLoggerInstance(String name) {
         SimpleTimeStampImpl impl = loggers.get(name);
         if (impl == null) {
-            impl = new SimpleTimeStampImpl();
+            impl = new SimpleTimeStampImpl(name);
             impl.level = root.level;
             loggers.put(name, impl);
         }
         return impl;
     }
+
+    private SimpleTimeStampImpl(String n) {
+        name = n;
+    }
+
 
     /**
      * The configure method of this Logger implemenation.
