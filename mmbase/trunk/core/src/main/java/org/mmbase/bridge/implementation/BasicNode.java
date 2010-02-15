@@ -406,7 +406,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
         if (nodeManager.hasField(fieldName)) { // only if this is actually a field of this node-manager, otherewise it might be e.g. a request for an 'element' of a cluster node
             Field field = nodeManager.getField(fieldName);
-            result = Casting.toNode(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_NODE).process(this, field, result), getCloud());
+            result = BridgeCaster.toNode(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_NODE).process(this, field, result), getCloud());
         }
 
         return result;
