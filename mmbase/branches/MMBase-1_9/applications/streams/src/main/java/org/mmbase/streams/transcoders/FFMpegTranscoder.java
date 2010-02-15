@@ -33,7 +33,8 @@ import java.util.regex.*;
 
 
 /**
- *
+ * The transcoder that uses FFmpeg to transcode media.
+ * 
  * @author Michiel Meeuwissen
  * @version $Id$
  */
