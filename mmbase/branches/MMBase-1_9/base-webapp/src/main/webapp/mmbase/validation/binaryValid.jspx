@@ -19,17 +19,21 @@
       import="org.mmbase.datatypes.*,org.mmbase.util.*,org.mmbase.bridge.util.*,org.mmbase.datatypes.handlers.html.MultiPart"
        />
   <jsp:directive.include file="get.datatype.jspxf" />
-  <mm:import externid="fieldname" jspvar="fieldname" />
-  <mm:import externid="length" jspvar="length" vartype="integer" />
+  <mm:import externid="fieldname" jspvar="fieldname" required="true" />
+  <mm:import externid="length" jspvar="length" vartype="integer" required="true" />
+  <mm:import externid="type" jspvar="type" vartype="string" required="true" />
   <mm:cloud uri="${param.uri}" name="${param.name}"><!-- cloud to provide locale -->
     <jsp:scriptlet>
-      Object value;
+      SerializableInputStream value;
       if (length == null) {
          //probably using the horrible 'browser' from redmond
          //MultiPart.MMultipartRequest multipart = MultiPart.getMultipartRequest((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse());
          length = request.getContentLength() - 224/* it's too much, we need to guess the size of the headers, about 224 */;
       }
       value = new SerializableInputStream(new NullInputStream(length), length);
+      if (type.length() > 0) {
+        value.setContentType(type);
+      }
       Collection&lt;LocalizedString&gt; errors = dataType == null ? new ArrayList&lt;LocalizedString&gt;() : dataType.validate(value, node == null ? null : new ChangedNode(node, field.getName()), field);
       pageContext.setAttribute("errors", errors);
       pageContext.setAttribute("node", node);
@@ -38,6 +42,7 @@
     <result node="${empty node ? '' : node.number}"
           field="${empty field ? '' : field.name}"
           length="${length}"
+          type="${type}"
           valid="${fn:length(errors) == 0}">
       <jsp:scriptlet>
         for (LocalizedString s : errors) {
