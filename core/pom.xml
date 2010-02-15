@@ -41,20 +41,6 @@ See http://www.MMBase.org/license
 
   <build>
     <plugins>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>javacc-maven-plugin</artifactId>
-        <version>2.5</version>
-        <executions>
-          <execution>
-            <id>javacc</id>
-            <goals>
-              <goal>javacc</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
@@ -121,6 +107,13 @@ See http://www.MMBase.org/license
     </plugins>
   </build>
   <dependencies>
+
+
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-utils</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <!--
     <dependency>
