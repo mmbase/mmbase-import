@@ -32,7 +32,7 @@ public class ApplicationContextReader {
 
     /**
      * As {@link #getProperties(String)} but caching, so it may conserve some cpu cycles, and
-     * withouth throwing the exception
+     * without throwing the exception
      *
      * @since MMBase-1.8.7
      */
@@ -42,7 +42,7 @@ public class ApplicationContextReader {
             try {
                 m = getProperties(path);
             } catch (javax.naming.NameNotFoundException nfe) {
-                log.service(nfe);
+                log.service(nfe + ": " + path);
                 m =  Collections.emptyMap();
             } catch (javax.naming.NoInitialContextException nie) {
                 log.service(nie);
