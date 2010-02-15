@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.util.Casting;
+import org.mmbase.util.BridgeCaster;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -225,7 +225,7 @@ public class NodeListHelper implements ListProvider {
                     nodes.addAll((Collection<Node>) addObject);
                 } else {
                     cloud = getCloud(nodes, cloud);
-                    nodes.add(Casting.toNode(addObject, cloud));
+                    nodes.add(BridgeCaster.toNode(addObject, cloud));
                 }
             }
         }
@@ -236,7 +236,7 @@ public class NodeListHelper implements ListProvider {
                     nodes.retainAll((Collection<Node>) retainObject);
                 } else {
                     cloud = getCloud(nodes, cloud);
-                    nodes.retainAll(Collections.singletonList((Casting.toNode(retainObject, cloud))));
+                    nodes.retainAll(Collections.singletonList((BridgeCaster.toNode(retainObject, cloud))));
                 }
             }
         }
@@ -247,7 +247,7 @@ public class NodeListHelper implements ListProvider {
                     nodes.removeAll((Collection<Node>) removeObject);
                 } else {
                     cloud = getCloud(nodes, cloud);
-                    nodes.remove((Casting.toNode(removeObject, cloud)));
+                    nodes.remove((BridgeCaster.toNode(removeObject, cloud)));
                 }
             }
         }

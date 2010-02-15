@@ -18,7 +18,7 @@ import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Notfound;
-import org.mmbase.util.Casting;
+import org.mmbase.util.BridgeCaster;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -98,7 +98,7 @@ public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider
             default:
             }
         }
-        Node node = Casting.toNode(value, getCloudVar());
+        Node node = BridgeCaster.toNode(value, getCloudVar());
         setNodeVar(node);
         fillVars();
         return  EVAL_BODY;
