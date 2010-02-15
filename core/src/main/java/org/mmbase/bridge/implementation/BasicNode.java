@@ -514,10 +514,9 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             getCloud().setProperty(CLOUD_COMMITNODE_KEY, Integer.valueOf(getNumber())); // Validation code wants to know that we are commiting right now.
             Collection<String> errors = validate();
             if (errors.size() > 0) {
-                String mes = "node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString();
                 if (! Casting.toBoolean(getCloud().getProperty(Cloud.PROP_IGNOREVALIDATION))) {
                     noderef.cancel();
-                    throw new IllegalArgumentException(mes);
+                    throw new IllegalArgumentException("node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString());
                 }
             }
         } finally {
