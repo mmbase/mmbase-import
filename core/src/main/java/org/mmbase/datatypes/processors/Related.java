@@ -204,7 +204,7 @@ public class Related {
             log.debug("Found " + rl.size() + " existing relations");
             if (value != null) {
                 Cloud cloud = node.getCloud();
-                Node dest = Casting.toNode(value, cloud);
+                Node dest = BridgeCaster.toNode(value, cloud);
 
                 boolean related = false;
                 if (rl.size() == 1) {

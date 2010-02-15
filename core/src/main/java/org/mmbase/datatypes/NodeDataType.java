@@ -11,6 +11,7 @@ package org.mmbase.datatypes;
 
 import java.util.*;
 import org.mmbase.util.Casting;
+import org.mmbase.util.BridgeCaster;
 import org.mmbase.util.LocalizedString;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
@@ -62,7 +63,7 @@ public class NodeDataType extends BasicDataType<Node> {
             return preCast;
         }  else {
             try {
-                Node res = Casting.toNode(preCast, getCloud(node, field));
+                Node res = BridgeCaster.toNode(preCast, getCloud(node, field));
                 if (res == null) {
                     if (Casting.toString(value).equals("-1")) {
                         return null;
