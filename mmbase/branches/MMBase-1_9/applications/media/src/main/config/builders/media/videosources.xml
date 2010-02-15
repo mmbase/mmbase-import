@@ -33,7 +33,10 @@
         <guiname xml:lang="nl">FPS</guiname>
       </gui>
       <editor>
-        <positions><list>10</list></positions>
+        <positions>
+          <input>6</input>
+          <search>6</search>
+        </positions>
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <minInclusive value="0" />
@@ -52,7 +55,8 @@
       </gui>
       <editor>
         <positions>
-          <list>11</list>
+          <input>5</input>
+          <search>5</search>
         </positions>
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
@@ -71,7 +75,8 @@
       </gui>
       <editor>
         <positions>
-          <list>12</list>
+          <input>5</input>
+          <search>5</search>
         </positions>
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
