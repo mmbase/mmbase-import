@@ -113,13 +113,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
         // ask known (core) xml readers to register their public ids and dtds
         // the advantage of doing it this soon, is that the 1DTD are know as early as possible.
         org.mmbase.util.xml.DocumentReader.registerPublicIDs();
-        // TODO
-        //BuilderReader.registerPublicIDs();
-        //BuilderReader.registerSystemIDs();
-        //ApplicationReader.registerPublicIDs();
-        //ModuleReader.registerPublicIDs();
         org.mmbase.util.xml.UtilReader.registerPublicIDs();
-        //org.mmbase.bridge.util.xml.query.QueryReader.registerSystemIDs();
 
         registerSystemID("http://www.w3.org/2001/03/xml.xsd",       "xml.xsd", null);
         registerSystemID("http://www.w3.org/2001/03/XMLSchema.dtd", "XMLSchema.dtd", null);
@@ -197,7 +191,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
     /**
      * @since MMBase-1.9
      */
-    protected static void appendEntities(StringBuilder sb, Object o, String prefix, int level, Set<Object> os) {
+    public static void appendEntities(StringBuilder sb, Object o, String prefix, int level, Set<Object> os) {
         os.add(o);
         org.mmbase.util.transformers.Identifier identifier = new org.mmbase.util.transformers.Identifier();
         if (o instanceof Map) {
@@ -263,41 +257,25 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
         }
     }
     protected static String ents = null;
-    protected static boolean logEnts = true;
     /**
      * @since MMBase-1.9
      */
-    /* TODO
     protected static synchronized String getMMEntities() {
-        if (ents == null) {
-            StringBuilder sb = new StringBuilder();
-            try {
-                Set<Object> added = new HashSet<Object>();
-                appendEntities(sb, org.mmbase.framework.Framework.getInstance(), "framework", 0, added);
-                appendEntities(sb, org.mmbase.framework.ComponentRepository.getInstance(), "componentRepository", 0, added);
-
-                org.mmbase.module.Module  mmbase = org.mmbase.module.Module.getModule("mmbaseroot", false);
-                if (mmbase != null) {
-                    appendEntities(sb, mmbase, "mmbase", 0, added);
-                }
-            } catch (Throwable ie) {
-                log.warn(ie.getMessage());
-                return sb.toString();
-            }
-            ents = sb.toString();
-            if (logEnts) {
-                log.debug("Using entities\n" + ents);
-            }
-        }
         return ents;
     }
-    */
+
+    /**
+     * @since MMBase-2.0
+     */
+    public static synchronized void setMMEntities(String s) {
+        ents = s;
+    }
+
     /**
      * @since MMBase-1.9
      */
-    public static void clearMMEntities(boolean le) {
+    public static void clearMMEntities() {
         ents = null;
-        logEnts = le;
     }
 
     /**
@@ -314,11 +292,15 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
             log.debug("Reding mmbase entities for " + systemId + " " + publicId);
             //StringBuilder sb = new StringBuilder();
             //Class c = org.mmbase.framework.Framework.class;
-            String ents = ""; // getMMEntities();
-            if (log.isDebugEnabled()) {
-                log.debug("Using entities\n" + ents);
+            String ents = getMMEntities();
+            if (ents != null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Using entities\n" + ents);
+                }
+                definitionStream = new StringResource(ents).getStream();
+            } else {
+                definitionStream = null;
             }
-            definitionStream = new StringResource(ents).getStream();
         } else  if (publicId != null) {
             // first try with publicID or namespace
             Resource res = publicIDtoResource.get(publicId);
