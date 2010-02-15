@@ -48,6 +48,11 @@
       <artifactId>mmbase</artifactId>
       <version>${mmbase.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-utils</artifactId>
+      <version>${mmbase.version}</version>
+    </dependency>
 
     <!--
          admin pages, generic editors templates use mmbase taglib
@@ -60,6 +65,12 @@
       <type>war</type>
     </dependency>
 
+    <dependency>
+      <groupId>org.mmbase.jquery</groupId>
+      <artifactId>ajaxfileupload</artifactId>
+      <version>1.0-beta1</version>
+      <type>war</type>
+    </dependency>
     <dependency>
       <groupId>org.mmbase.jquery</groupId>
       <artifactId>jquery-form</artifactId>
