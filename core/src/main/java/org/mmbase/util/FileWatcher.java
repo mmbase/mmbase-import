@@ -89,19 +89,20 @@ public abstract class FileWatcher {
      * @since MMBase-1.9.2
      */
     static void scheduleFileWatcherRunner() {
-        if (future != null) {
-            future.cancel(true);
-        }
-        future = org.mmbase.util.ThreadPools.scheduler.scheduleAtFixedRate(fileWatchers, THREAD_DELAY, THREAD_DELAY, TimeUnit.MILLISECONDS);
-        org.mmbase.util.ThreadPools.identify(future, "File Watcher");
-    }
-
-    static {
         try {
-            scheduleFileWatcherRunner();
+            if (future != null) {
+                future.cancel(true);
+            }
+            future = org.mmbase.util.ThreadPools.scheduler.scheduleAtFixedRate(fileWatchers, THREAD_DELAY, THREAD_DELAY, TimeUnit.MILLISECONDS);
+            org.mmbase.util.ThreadPools.identify(future, "File Watcher");
         } catch (Throwable t) {
             log.error(t);
         }
+    }
+
+    static {
+
+        scheduleFileWatcherRunner();
     }
 
 
@@ -600,6 +601,7 @@ public abstract class FileWatcher {
      * @since MMBase-1.8
      */
     private class FileSet extends AbstractSet<File> {
+
         public int size() {
             return FileWatcher.this.files.size();
         }
