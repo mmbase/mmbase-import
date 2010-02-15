@@ -70,22 +70,6 @@ public class SerializableInputStream  extends InputStream implements Serializabl
             wrapped.mark(Integer.MAX_VALUE);
         }
     }
-    /**
-     * @since MMBase-2.0
-     */
-    /*
-    public SerializableInputStream(InputStream wrapped) {
-        if (wrapped instanceof ByteArrayInputStream) {
-            this.wrapped = wrapped;
-            this.size = (((ByteArrayInputStream) wrapped).toBytes()).length;
-            this.name = null;
-            wrapped.mark(Integer.MAX_VALUE);
-            this.contentType = MagicFile.getInstance().getMimeType(((ByteArrayInputStream) wrapped).getBytes());
-        } else {
-            throw new UnsupportedOperationException();
-        }
-    }
-    */
 
     /**
      * @since MMBase-1.9.2
@@ -195,7 +179,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         return contentType;
     }
     /**
-     * @since MMBase-2.0
+     * @since MMBase-1.9.3
      */
     public void setContentType(String ct) {
         contentType = ct;
