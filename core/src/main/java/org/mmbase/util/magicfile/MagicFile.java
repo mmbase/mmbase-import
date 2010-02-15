@@ -77,11 +77,22 @@ public class MagicFile {
      * @param file Location of file to be checked
      * @return Type of the file as determined by the magic file
      */
-    protected String getMimeType(File file) throws IOException {
+    public String getMimeType(File file) throws IOException {
         FileInputStream fir = null;
         try {
             fir = new FileInputStream(file);
-            return getMimeType(fir);
+            String result =  getMimeType(fir);
+            if (result == FAILED) {
+                String fileName = file.getName();
+                int i = fileName.lastIndexOf(".");
+                if (i > 0) {
+                    String  extension = fileName.substring(i + 1);
+                    if (extension.length() > 0) {
+                        result = extensionToMimeType(fileName.substring(i + 1));
+                    }
+                }
+            }
+            return result;
         } finally {
             if (fir != null) {
                 fir.close();
