@@ -3,8 +3,8 @@
 <util>
   <properties>
     <property name="jobs.maxsize">2000</property>
-    <property name="jobs.coresize">2</property>
-    <property name="jobs.keepAliveTime">20</property>
+    <property name="jobs.coresize">20</property>
+    <property name="jobs.keepAliveTime">30</property>
     <property name="scheduler.coresize">2</property>
   </properties>
 </util>
