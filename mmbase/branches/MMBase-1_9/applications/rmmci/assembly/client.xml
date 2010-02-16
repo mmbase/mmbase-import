@@ -76,6 +76,8 @@
           <include>org/mmbase/util/ThreadPools*</include>
           <include>org/mmbase/util/IOUtil*</include>
           <include>org/mmbase/util/SizeOf*</include>
+          <include>org/mmbase/util/magicfile/*</include>
+
 
           <include>org/mmbase/util/ChainedList*.class</include>            <!-- Used by Mock -->
           <include>org/mmbase/util/LinkMap*.class</include>            <!-- Used by Mock -->
@@ -99,6 +101,7 @@
           <include>org/mmbase/config/functions/**</include>                  <!-- Used in test cases .. -->
           <include>org/mmbase/config/datatypes.xml</include>                  <!-- Used in test cases .. -->
           <include>org/mmbase/config/builders/core/**</include>                  <!-- Used in Mock/test cases .. -->
+          <include>org/mmbase/config/magic.xml</include>
 
 
           <include>org/mmbase/framework/**</include>                  <!-- Used in taglib .. -->
