@@ -117,6 +117,21 @@ public class BridgeCaster implements Caster {
         }
     }
 
+
+    public boolean toBoolean(Object i) throws NotRecognized {
+        if (i instanceof Node) {
+            return true;
+        } else {
+            throw NotRecognized.INSTANCE;
+        }
+    }
+
+    public boolean isStringRepresentable(Class<?> type) {
+        return Node.class.isAssignableFrom(type);
+    }
+
+
+
     public long toLong(Object i) throws NotRecognized {
         if (i instanceof Node) {
             return ((Node)i).getNumber();
