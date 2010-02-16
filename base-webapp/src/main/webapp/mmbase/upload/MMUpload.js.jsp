@@ -1,9 +1,11 @@
-// -*- mode: js2-mode; -*-
 /**
  * Implicitely and temporary checks/uploads binaries.
  * Based on ajax-fileupload
  * (jquery-form is too hard to use, because it requires an entire
  * form to be submitted).
+ *  Useage:
+ *   Create an instance, and call it when the upload must happen.
+ *   - in the mmValidate event if you use validation, or otherwise in the the change event
  */
 /*
 <%@page contentType="text/javascript; charset=UTF-8"
@@ -162,7 +164,7 @@ MMUploader.prototype.upload = function(fileid) {
             }
         }
         );
-    return false;
+    return;
 }
 /*
 </mm:content></fmt:bundle>
