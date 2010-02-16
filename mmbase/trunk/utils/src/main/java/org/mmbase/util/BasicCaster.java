@@ -34,5 +34,13 @@ public class BasicCaster implements Caster {
     public String toString(Object o) throws NotRecognized {
         throw NotRecognized.INSTANCE;
     }
+    public boolean toBoolean(Object o) throws NotRecognized {
+        throw NotRecognized.INSTANCE;
+    }
+
+    public boolean isStringRepresentable(Class<?> type) {
+        return false;
+    }
+
 
 }

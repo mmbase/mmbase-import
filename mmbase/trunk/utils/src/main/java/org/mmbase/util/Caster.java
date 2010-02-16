@@ -16,7 +16,10 @@ public interface Caster {
     long toLong(Object i) throws NotRecognized;
     float toFloat(Object i) throws NotRecognized;
     double toDouble(Object i) throws NotRecognized;
+    boolean toBoolean(Object i) throws NotRecognized;
     String toString(Object o) throws NotRecognized;
+    boolean isStringRepresentable(Class<?> type);
+
 
     public static class NotRecognized extends Exception {
         static NotRecognized INSTANCE = new NotRecognized();

@@ -267,12 +267,12 @@ public class Casting {
      */
     public static boolean isStringRepresentable(Class<?> type) {
         return
+            helper.isStringRepresentable(type) ||
             CharSequence.class.isAssignableFrom(type) ||
             Number.class.isAssignableFrom(type) ||
             Boolean.TYPE.isAssignableFrom(type) ||
             Boolean.class.isAssignableFrom(type) ||
             Character.class.isAssignableFrom(type) ||
-            Node.class.isAssignableFrom(type) ||
             Document.class.isAssignableFrom(type) ||
             Collection.class.isAssignableFrom(type) ||
             Date.class.isAssignableFrom(type) ||
@@ -750,12 +750,15 @@ public class Casting {
     static public boolean toBoolean(Object b) {
         if (b == null) {
             return false;
-        } else if (b instanceof Boolean) {
+        }
+        try {
+            return helper.toBoolean(b);
+        } catch (Caster.NotRecognized e) {
+        }
+        if (b instanceof Boolean) {
             return ((Boolean)b).booleanValue();
         } else if (b instanceof Number) {
             return ((Number)b).doubleValue() > 0;
-        } else if (b instanceof Node) {
-            return true; // return true if a NODE is filled
         } else if (b instanceof Date) {
             return ((Date)b).getTime() != -1;
         } else if (b instanceof Document) {
@@ -1019,9 +1022,6 @@ public class Casting {
                 } else if (d instanceof Boolean) {
                     dateInSeconds = -1;
                 } else if (d instanceof Collection<?>) {
-                    // impossible
-                    dateInSeconds = -1;
-                } else if (d instanceof Node) {
                     // impossible
                     dateInSeconds = -1;
                 } else if (d != null) {

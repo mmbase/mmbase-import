@@ -13,7 +13,7 @@ package org.mmbase.util;
 import java.util.*;
 import java.lang.reflect.*;
 import java.text.Collator;
-//import org.mmbase.cache.Cache;
+import org.mmbase.cache.Cache;
 import org.mmbase.util.logging.*;
 
 /**
@@ -48,7 +48,6 @@ public class SortedBundle {
     public static final HashMap<String, Object> NO_CONSTANTSPROVIDER = null;
 
     // cache of maps.
-    /* TODO
     private static final Cache<String, SortedMap<?, String>> knownResources = new Cache<String, SortedMap<?, String>>(100) {
         @Override
         public String getName() {
@@ -59,15 +58,12 @@ public class SortedBundle {
             return "A cache for constant bundles, to avoid a lot of reflection.";
         }
     };
-    */
 
     static {
-        /*
         try {
             org.mmbase.cache.CacheManager.putCache(knownResources);
         } catch (Throwable t) {
         }
-        */
     }
 
     /**
