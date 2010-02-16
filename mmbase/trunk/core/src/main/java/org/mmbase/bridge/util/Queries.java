@@ -1468,9 +1468,13 @@ abstract public class Queries {
 
 
     /**
-     *
+     * Deletes the relations with a node from a queries resulting relations list. 
+     * If multiple relations to a node exist all get removed.
+     * 
      * @throws UnsupportedOperationException If it cannot be determined how the node should be related.
-     * @return Removed relations.
+     * @param q query from which resulting list the node should be removed from
+     * @param n node to remove
+     * @return Removed relation nodes
      * @since MMBase-1.8.6
      */
     public static NodeList removeFromResult(Query q, Node n) {
@@ -1486,6 +1490,8 @@ abstract public class Queries {
      *
      * @throws UnsupportedOperationException If it cannot be determined how the node is related.
      * @since MMBase-1.9.1
+     * @param q query that constructs the list 
+     * @param n node to which relations are related
      * @return The relation nodes
      * @throws NullPointerException if q or n is <code>null</code>
      */
