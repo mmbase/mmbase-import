@@ -92,9 +92,9 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
 
 
     static {
+        org.mmbase.bridge.util.xml.query.QueryReader.registerSystemIDs();
         registerPublicIDs();
         registerSystemIDs();
-
     }
 
     public static ResourceLoader getBuilderLoader() {
