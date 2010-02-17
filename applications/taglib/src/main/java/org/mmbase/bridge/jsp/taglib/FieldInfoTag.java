@@ -328,11 +328,14 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         Node          node = null;
         Field field;
         DataType dataType = getDataType();
+        String parentField = parentFieldId.getString(this);
         fieldProvider =
             "".equals(parentFieldId.getValue(this)) // field="" means explicitely don't use a field provider, so is not the same as omitting the attribue altogether
-            ? null : findFieldProvider(dataType == null);
+            ? null : findFieldProvider(dataType == null || parentField.length() > 0);
         if (fieldProvider == null) {
-            if (dataType == null) throw new JspTagException("No field provider found (" + parentFieldId + ") nor datatype specified");
+            if (dataType == null) {
+                throw new JspTagException("No field provider found (" + parentFieldId + ") nor datatype specified");
+            }
             final DataType dt = dataType;
             fieldProvider = new FieldProvider() {
                     private final Field f = new DataTypeField(getCloudVar(), dt);
