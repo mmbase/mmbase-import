@@ -1843,7 +1843,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             try {
                 s = activeConnection.prepareStatement(query);
                 int result = s.executeUpdate();
-                if (result != 1) {
+                if (result < 0) {
                     throw new StorageException("Deleting of " + node  + " from " + tablename + " " + query + ":" + result);
                 }
             } finally {
