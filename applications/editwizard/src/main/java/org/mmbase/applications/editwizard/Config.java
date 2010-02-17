@@ -61,17 +61,10 @@ public class Config implements java.io.Serializable {
     /**
      * @since MMBase-1.8.1
      */
-    private static final UtilReader reader = new UtilReader(CONFIG_FILE,
-                                                     new Runnable() {
-                                                         public void run() {
-                                                             readConfiguration(reader.getProperties());
-                                                         }
-                                                     });
-    static {
-        readConfiguration(reader.getProperties());
-    }
+    private static UtilReader reader = null;
 
     synchronized static void readConfiguration(Map configuration) {
+        log.info ("READ EDITWIZARD:" + configuration);
         String tmp = (String) configuration.get("wizardStyleSheet");
         if (tmp != null && !tmp.equals("")) {
             wizardStyleSheet = tmp;
@@ -120,7 +113,18 @@ public class Config implements java.io.Serializable {
      */
     protected Map<String, Object> attributes;
 
-
+    public Config() {
+        // create the reader when it is needed
+        // This prevents race conditions
+        if (reader == null) {
+            reader = new UtilReader(CONFIG_FILE, new Runnable() {
+                             public void run() {
+                             readConfiguration(reader.getProperties());
+                         }
+                     });
+            readConfiguration(reader.getProperties());
+        }
+    }
 
     //   public String context; (contained in attributes now)
 
@@ -177,7 +181,6 @@ public class Config implements java.io.Serializable {
             Map<String, Object> attributeMap = new HashMap<String, Object>(attributes);
             return attributeMap;
         }
-
     }
 
     static public class WizardConfig extends SubConfig {
