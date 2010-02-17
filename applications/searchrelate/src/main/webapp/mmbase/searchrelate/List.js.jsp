@@ -138,7 +138,7 @@ function List(d) {
                     self.triggerValidateHook();
                     self.commit();
                     if (self.uploader != null) {
-                        if (element.type == 'file' && valid) {
+                        if (valid) {
                             // start uploading the new file
                             self.uploader.upload(element.id);
                         }
