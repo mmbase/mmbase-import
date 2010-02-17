@@ -647,12 +647,11 @@ MMBaseSearcher.prototype.search = function(val, offset, anchor) {
         $(rep).empty();
         this.logger.debug("reusing " + offset);
         this.logger.debug(rep);
-        var self = this;
         $(rep).append($(result).find("> *"));
         this.addNewlyRelated(rep);
-        self.deleteNewlyRemoved(rep);
+        this.deleteNewlyRemoved(rep);
         this.bindEvents(rep);
-        $(self.relater.div).trigger("mmsrPaged", [status, self.relater, self, anchor]);
+        $(this.relater.div).trigger("mmsrPaged", [status, this.relater, this, anchor]);
     }
     return false;
 }
