@@ -23,13 +23,13 @@ package org.mmbase.streams.transcoders;
 
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.Codec;
-import org.mmbase.applications.media.MimeType;
 import java.net.*;
 import java.lang.reflect.*;
 import java.io.*;
 import java.util.*;
 import org.mmbase.util.externalprocess.*;
 import org.mmbase.util.WriterOutputStream;
+import org.mmbase.util.MimeType;
 
 import org.mmbase.util.logging.*;
 
@@ -49,7 +49,7 @@ public abstract class AbstractTranscoder implements Transcoder {
     public static Transcoder getInstance(String key) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException  {
         String[] split = key.split(" ", 2);
         Transcoder trans;
-        {
+        { // parse split[0] (a class name) to instantiate object
             String[] idWithClass = split[0].split(":", 2);
             if (idWithClass.length == 1) {
                 idWithClass = new String[] { "", split[0]};
@@ -60,7 +60,7 @@ public abstract class AbstractTranscoder implements Transcoder {
             } catch (ClassNotFoundException cnfe) {
                 clazz  = Class.forName(PACKAGE + idWithClass[1]);
             }
-            
+
             if (!"".equals(idWithClass[0])) {
                 Constructor constructor = clazz.getConstructor(String.class);
                 trans = (Transcoder) constructor.newInstance(idWithClass[0]);
@@ -68,7 +68,7 @@ public abstract class AbstractTranscoder implements Transcoder {
                 trans = (Transcoder) clazz.newInstance();
             }
         }
-        {
+        { // parse split[1] to set properties on it.
             String[] props = split[1].split(", ");
             for (String prop : props) {
                 String[] entry = prop.split("=", 2);

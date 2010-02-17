@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -24,7 +24,7 @@ package org.mmbase.streams.transcoders;
 import java.io.*;
 import java.net.URI;
 
-import org.mmbase.applications.media.MimeType;
+import org.mmbase.util.MimeType;
 
 import org.mmbase.util.WriterOutputStream;
 import org.mmbase.util.externalprocess.CommandExecutor;
@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * A recognizer that uses FFmpeg to analyze media.
- * 
+ *
  * @author Michiel Meeuwissen
  * @version $Id: FFMpegRecognizer.java 36518 2009-07-02 12:52:01Z michiel $
  */
