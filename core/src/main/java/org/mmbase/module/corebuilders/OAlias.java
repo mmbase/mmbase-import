@@ -118,10 +118,9 @@ public class OAlias extends MMObjectBuilder {
     }
 
     /**
-     * Obtain the aliases of a node. If a node has more aliases, it returns only one.
-     * Which one is not specified.
+     * Obtain the aliases of a node.
      * @param number the number of the node
-     * @return a List of the aliases of the node, or an emoty list if none exist
+     * @return a List of the aliases of the node, or an empty list if none exist
      * @see #getAlias
      */
     public List<String> getAliasList(int number) {
