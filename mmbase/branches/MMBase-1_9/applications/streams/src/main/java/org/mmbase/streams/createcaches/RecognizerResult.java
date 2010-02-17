@@ -24,7 +24,7 @@ package org.mmbase.streams.createcaches;
 import java.net.URI;
 
 import org.mmbase.bridge.Node;
-import org.mmbase.applications.media.MimeType;
+import org.mmbase.util.MimeType;
 
 
 /**

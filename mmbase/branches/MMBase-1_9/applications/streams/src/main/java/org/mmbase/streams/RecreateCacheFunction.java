@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -29,7 +29,7 @@ import org.mmbase.streams.createcaches.*;
 import org.mmbase.streams.createcaches.Processor;
 import org.mmbase.streams.transcoders.*;
 
-import org.mmbase.applications.media.MimeType;
+import org.mmbase.util.MimeType;
 import org.mmbase.util.functions.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
@@ -60,13 +60,13 @@ public class RecreateCacheFunction extends NodeFunction<Boolean> {
     @Override
     protected Boolean getFunctionValue(final Node node, final Parameters parameters) {
         LOG.debug("params: " + parameters);
-        if (node.getNumber() > 0 
+        if (node.getNumber() > 0
                 && node.getCloud().may(ActionRepository.getInstance().get("streams", "retrigger_jobs"), null)) {
-            
+
             Node recache = (Node) parameters.get("recache");
             LOG.info("Recreating cache #" + recache.getNumber() + " for node #" + node.getNumber());
             final Field url = node.getNodeManager().getField("url");
-            
+
             String in = null;
             Node inNode = recache.getNodeValue("id");
             if (inNode.getNumber() != node.getNumber()) {
@@ -88,18 +88,18 @@ public class RecreateCacheFunction extends NodeFunction<Boolean> {
                 LOG.error("Exception while trying to (re)transcode - " + e);
                 return false;
             }
-            
+
             JobDefinition jd = new JobDefinition(id, in, null, transcoder, new MimeType(mimetype), Stage.TRANSCODER);
             Map<String, JobDefinition> jdlist = new LinkedHashMap<String, JobDefinition>();
             jdlist.put(id, jd);
-        
+
             {
                 final Processor cc = CreateCachesFunction.getCacheCreator(url);
-                
+
                 if (cc != null) {
                     LOG.service("Calling " + cc);
                     cc.createCaches(node.getCloud().getNonTransactionalCloud(), node.getNumber(), jdlist);
-                    
+
                     return true;
                 } else {
                     LOG.error("No CreateCacheProcessor in " + url);

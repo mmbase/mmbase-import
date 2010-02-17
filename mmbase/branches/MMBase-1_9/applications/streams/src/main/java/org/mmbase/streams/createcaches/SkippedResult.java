@@ -24,7 +24,7 @@ package org.mmbase.streams.createcaches;
 import java.net.URI;
 
 import org.mmbase.bridge.Node;
-import org.mmbase.applications.media.MimeType;
+import org.mmbase.util.MimeType;
 
 /**
  * This is a place holder for the result of a transcoder which is not to be done, because production

@@ -25,10 +25,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.mmbase.applications.media.Codec;
-import org.mmbase.applications.media.MimeType;
 import org.mmbase.applications.media.State;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
+import org.mmbase.util.MimeType;
+
 
 import org.mmbase.util.logging.*;
 
@@ -138,7 +139,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
         Cloud cloud = source.getCloud();
         fixMimeType("image", source);
         if (cloud != null) {
-            if (updateSource && cloud.hasNodeManager(IMAGE) 
+            if (updateSource && cloud.hasNodeManager(IMAGE)
                     && ! source.getNodeManager().getName().equals(IMAGE)) {
                 if (log.isDebugEnabled()) {
                     log.debug("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
@@ -226,11 +227,11 @@ public final class AnalyzerUtils implements java.io.Serializable {
         Matcher m = PATTERN_DURATION.matcher(l);
         if (m.matches()) {
             Node fragment = source.getNodeValue("mediafragment");
-            
+
             if (! source.getNodeManager().hasField("length")) {
                 toVideo(source, dest);
             }
-            
+
             if (log.isDebugEnabled()) log.debug("duration: " + m.group(1));
             long length = getLength(m.group(1));
             if (updateSource) {

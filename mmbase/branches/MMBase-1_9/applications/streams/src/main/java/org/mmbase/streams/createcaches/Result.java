@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -24,7 +24,7 @@ package org.mmbase.streams.createcaches;
 import java.net.URI;
 
 import org.mmbase.bridge.Node;
-import org.mmbase.applications.media.MimeType;
+import org.mmbase.util.MimeType;
 
 
 /**

@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -32,7 +32,6 @@ import org.mmbase.security.ActionRepository;
 import org.mmbase.security.UserContext;
 import org.mmbase.servlet.FileServlet;
 import org.mmbase.streams.transcoders.*;
-import org.mmbase.applications.media.MimeType;
 import org.mmbase.util.*;
 import org.mmbase.util.externalprocess.CommandExecutor;
 import org.mmbase.util.logging.*;
@@ -385,7 +384,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
             LOG.debug("url: " + node.getStringValue("url"));
             if (node.isChanged(field.getName())) {
                 LOG.service("For node " + node.getNumber() + ", the field '" + field.getName() + "' is changed " + node.getChanged() + ". That means that we must schedule create caches");
-                
+
                 final Cloud ntCloud = node.getCloud().getNonTransactionalCloud();
                 final int nodeNumber = node.getNumber();
                 createCaches(ntCloud, nodeNumber);
