@@ -127,4 +127,11 @@ public final class Attributes {
      */
     public static final String TRIM_STRINGS = "trim-strings";
 
+
+    /**
+     * Default is <code>true</true>
+     * @since MMBase-1.9.2
+     */
+    public static final String SUPPORTS_FOREIGN_KEYS = "support-foreign-keys";
+
 }
