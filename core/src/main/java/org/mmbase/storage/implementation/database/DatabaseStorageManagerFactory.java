@@ -516,11 +516,32 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     protected Throwable getTraceException() {
         Throwable ex = new Throwable();
         List<StackTraceElement> result = new ArrayList<StackTraceElement>();
+        StackTraceElement removedHolder = null;
         for (StackTraceElement el : ex.getStackTrace()) {
-            if (el.getClassName().startsWith("org.mmbase.") &&
-                (! el.getClassName().startsWith("org.mmbase.storage.implementation.database"))) {
+            String fn = el.getFileName();
+            if (el.getClassName().startsWith("org.mmbase.storage.implementation.database") && removedHolder == null) {
+                // ignore those are we
+            } else if (el.getClassName().startsWith("org.mmbase.") ||
+                       (fn.endsWith("_jsp.java") || fn.endsWith("_jspx.java") || fn.endsWith("_tag.java") || fn.endsWith("_tagx.java"))
+                       ) {
+                if (removedHolder != null) {
+                    result.add(removedHolder);
+                }
                 result.add(el);
+                removedHolder = null;
+            } else {
+                if (removedHolder == null) {
+                    removedHolder = el;
+                } else {
+                    removedHolder = new StackTraceElement(removedHolder.getClassName() + "+",
+                                                          removedHolder.getMethodName() + "," + el.getMethodName(),
+                                                          removedHolder.getFileName() + ":" + removedHolder.getLineNumber() + "," + el.getFileName(),
+                                                          el.getLineNumber());
+                }
             }
+        }
+        if (removedHolder != null) {
+            result.add(removedHolder);
         }
 
         ex.setStackTrace(result.toArray(new StackTraceElement[result.size()]));
