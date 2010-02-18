@@ -184,6 +184,7 @@ public class DatabaseStorageManager implements StorageManager {
         return  verifyTables;
     }
 
+
     /**
      * Obtains an active connection, opening a new one if needed.
      * This method sets and then returns the {@link #activeConnection} member.
@@ -200,6 +201,7 @@ public class DatabaseStorageManager implements StorageManager {
             }
         }
         activeConnection = factory.getDataSource().getConnection();
+
         // set autocommit to true
         if (activeConnection != null) {
             activeConnection.setAutoCommit(true);
@@ -224,6 +226,8 @@ public class DatabaseStorageManager implements StorageManager {
                 log.error("Failure when closing connection: " + se.getMessage());
             }
             activeConnection = null;
+        } else {
+            log.debug("No connection to release "  + activeConnection + " " + inTransaction);
         }
     }
 
@@ -235,12 +239,15 @@ public class DatabaseStorageManager implements StorageManager {
             if (factory.supportsTransactions()) {
                 try {
                     getActiveConnection();
-                    if (activeConnection == null) return;
+                    if (activeConnection == null) {
+                        log.debug("No active connection got");
+                        return;
+                    }
                     activeConnection.setTransactionIsolation(transactionIsolation);
                     activeConnection.setAutoCommit(false);
                 } catch (SQLException se) {
-                    releaseActiveConnection();
                     inTransaction = false;
+                    releaseActiveConnection();
                     throw new StorageException(se);
                 }
             }
@@ -262,11 +269,15 @@ public class DatabaseStorageManager implements StorageManager {
 
                 try {
                     activeConnection.commit();
+                    inTransaction = false; // set this to false first, otherwise releaseActiveConnection does not release at all.
                     releaseActiveConnection();
                     factory.getChangeManager().commit(changes);
                 } catch (SQLException se) {
                     throw new StorageException(se);
                 }
+                log.debug("Commited");
+            } else {
+                log.debug("Transactions not supported");
             }
             inTransaction = false;
         }
@@ -277,16 +288,19 @@ public class DatabaseStorageManager implements StorageManager {
         if (!inTransaction) {
             throw new StorageException("No transaction started.");
         } else {
-            inTransaction = false;
             if (factory.supportsTransactions()) {
                 try {
                     activeConnection.rollback();
                 } catch (SQLException se) {
                     throw new StorageException(se);
                 } finally {
+                    inTransaction = false;
                     releaseActiveConnection();
                     changes.clear();
                 }
+                log.debug("Rolled back");
+            } else {
+                log.debug("Transactions not supported");
             }
             return factory.supportsTransactions();
         }
