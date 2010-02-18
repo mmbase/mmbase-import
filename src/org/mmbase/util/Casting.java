@@ -551,7 +551,7 @@ public class Casting {
         } else if (i instanceof Map) {
             res = new MapNode((Map)i, cloud);
         } else if (i != null && !i.equals("")) {
-            res = cloud.getNode(i.toString());
+            res = cloud.getNode(toString(i));
         }
         return res;
     }
