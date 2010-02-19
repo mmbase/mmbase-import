@@ -112,7 +112,7 @@ public class Authenticate extends CloudContextAuthentication {
      </table>
      */
     @Override
-    public User login(String type, Map<String, ?> map, Object[] parameters) throws SecurityException {
+    public UserContext login(String type, Map<String, ?> map, Object[] parameters) throws SecurityException {
         if (log.isTraceEnabled()) {
             log.trace("login-module: '" + type + "'");
         }
