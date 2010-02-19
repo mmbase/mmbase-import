@@ -27,7 +27,7 @@ See http://www.MMBase.org/license
   </parent>
 
   <artifactId>mmbase-utils</artifactId>
-  <name>MMBase Core</name>
+  <name>MMBase Utils</name>
 
   <version>${base.version}</version>
 
