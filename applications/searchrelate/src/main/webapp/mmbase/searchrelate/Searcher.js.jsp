@@ -313,7 +313,7 @@ MMBaseRelater.prototype.relate = function(tr) {
             return alert('<fmt:message key="relatemax" />'.replace('{0}', this.current.searcher.maxNumber));
         }
         // Set up data
-        if (typeof(this.unrelated[number]) == "undefined") {
+        if (typeof(this.related[number]) == "undefined") {
             this.related[number] = tr;
         }
 
@@ -367,7 +367,7 @@ MMBaseRelater.prototype.unrelate = function(tr) {
     this.logger.debug("+ relations: " + relationTrs.length);
 
     // Set up data
-    if (typeof(this.related[number]) == "undefined") {
+    if (typeof(this.unrelated[number]) == "undefined") {
         this.unrelated[number] = tr;
     }
     this.related[number] = null;
