@@ -142,7 +142,7 @@ MMBaseValidator.prototype.getNode = function(el) {
 }
 
 /**
- * Whether a restriction on a certain input element mus be enforced.
+ * Whether a restriction a certain input element mus be enforced.
  */
 MMBaseValidator.prototype.enforce = function(el, enf) {
     this.trace("Enforce " + enf);
@@ -1231,7 +1231,7 @@ MMBaseValidator.prototype.addValidationForElements = function(els) {
 
         case "radio":
         case "checkbox":
-            $(entry).bind("click", function(ev) { self.lastChange(ev); self.validate(ev); });
+            $(entry).bind("click", function(ev) { self.setLastChange(ev); self.validate(ev); });
             $(entry).bind("blur",   function(ev) { self.serverValidate(ev); });
             break;
         case "file":
