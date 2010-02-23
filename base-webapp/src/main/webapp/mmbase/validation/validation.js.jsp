@@ -1217,7 +1217,7 @@ MMBaseValidator.prototype.addValidationForElements = function(els) {
 
         case "radio":
         case "checkbox":
-            $(entry).bind("click", function(ev) { self.lastChange(ev); self.validate(ev); });
+            $(entry).bind("click", function(ev) { self.setLastChange(ev); self.validate(ev); });
             $(entry).bind("blur",   function(ev) { self.serverValidate(ev); });
             break;
         case "file":
