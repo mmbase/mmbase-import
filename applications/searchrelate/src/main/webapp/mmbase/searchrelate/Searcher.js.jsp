@@ -392,7 +392,7 @@ MMBaseRelater.prototype.unrelate = function(tr) {
     $(tr).unbind();
     var self = this;
     $(tr).click(function() {
-        self.relateIt(this)
+        self.relate(this)
     });
     $(this.div).trigger("mmsrUnrelate", [tr, this]);
 }
