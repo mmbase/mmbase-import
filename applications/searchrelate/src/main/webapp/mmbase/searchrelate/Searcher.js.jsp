@@ -313,7 +313,7 @@ MMBaseRelater.prototype.relate = function(tr) {
             return alert('<fmt:message key="relatemax" />'.replace('{0}', this.current.searcher.maxNumber));
         }
         // Set up data
-        if (typeof(this.unrelated[number]) == "undefined") {
+        if (typeof(this.related[number]) == "undefined") {
             this.related[number] = tr;
         }
 
@@ -367,7 +367,7 @@ MMBaseRelater.prototype.unrelate = function(tr) {
     this.logger.debug("+ relations: " + relationTrs.length);
 
     // Set up data
-    if (typeof(this.related[number]) == "undefined") {
+    if (typeof(this.unrelated[number]) == "undefined") {
         this.unrelated[number] = tr;
     }
     this.related[number] = null;
@@ -647,12 +647,11 @@ MMBaseSearcher.prototype.search = function(val, offset, anchor) {
         $(rep).empty();
         this.logger.debug("reusing " + offset);
         this.logger.debug(rep);
-        var self = this;
         $(rep).append($(result).find("> *"));
         this.addNewlyRelated(rep);
-        self.deleteNewlyRemoved(rep);
+        this.deleteNewlyRemoved(rep);
         this.bindEvents(rep);
-        $(self.relater.div).trigger("mmsrPaged", [status, self.relater, self, anchor]);
+        $(this.relater.div).trigger("mmsrPaged", [status, this.relater, this, anchor]);
     }
     return false;
 }
