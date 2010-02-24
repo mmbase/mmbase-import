@@ -23,10 +23,7 @@
                            description="An mmbase Query describing which list is considered to represent already 'related' nodes" />
 
   <jsp:directive.attribute name="submit"            type="java.lang.String"
-                           description="A jquery selector. The 'commit' action will be binded to the 'onclick' of the elements that match."  />
-
-  <jsp:directive.attribute name="instant"           type="java.lang.Boolean"
-                           description="Relating or unrelating should happen inmediate after clicking an item or not. Defaults to both relating and unrelating true. When false confirmation is needed via submit." />
+                           description="A jQuery selector, if relate/unrelate should happen inmediate (default is inmediate). The 'commit' action will be binded to the 'onclick' event of elements that match." />
 
   <jsp:directive.attribute name="unrelate"          type="java.lang.Boolean"
                            description="Whether, or not, the tools should also allow deletion of relations" />
@@ -113,8 +110,7 @@
   </script>
   <script type="text/javascript">
     $(document).ready(function() {
-    <c:if test="${! empty submit}">
-      <!-- if a submit attribute is given, commit the search/relate on click of that element -->
+    <c:if test="${! empty submit}"><!-- submit attribute given: commit search/relate on click of that element -->
          $("#mm_related_${sid} ${submit}").click(function(el) {
             return $("#mm_related_${sid}")[0].relater.commit(el); });</c:if>
       $("#mm_related_${sid}").each(function() {
@@ -126,7 +122,7 @@
     <c:if test="${! empty context}"> this.relater.setContext('${context}'); </c:if>
     this.relater.setSessionName('${mm:property('org.mmbase.cloud.sessionname')}');
     <c:if test="${! empty current}">
-      if (this.relater.current != null) this.relater.current.searcher.maxNumber = ${current.maxNumber};
+      if (this.relater.current != null) { this.relater.current.searcher.maxNumber = ${current.maxNumber}; }
     </c:if>
     }
       })
@@ -137,7 +133,7 @@
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       basename="org.mmbase.searchrelate.resources.searchrelate">
     <div id="mm_related_${sid}"
-         class="mm_related ${empty unrelate or ! unrelate ? '' : 'can_unrelate'} ${empty relations or ! relations ? '' : 'can_editrelations'} ${empty instant or instant == true ? 'instant' : ''} ${styleClass}">
+         class="mm_related ${empty unrelate or ! unrelate ? '' : 'can_unrelate'} ${empty relations or ! relations ? '' : 'can_editrelations'} ${!empty submit ? 'instant' : ''} ${styleClass}">
       <c:if test="${! empty transaction}">
         <span class="transactionname" style="display: none;">${transaction}</span>
       </c:if>
