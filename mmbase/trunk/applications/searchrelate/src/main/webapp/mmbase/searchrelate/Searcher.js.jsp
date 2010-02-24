@@ -145,6 +145,7 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
 }
 
 MMBaseRelater.prototype.bindCommit = function() {
+    var self = this;
     if (this.instant) {
         $(this.div).bind("mmsrRelate", function (e, tr, relater) {
             if (e) {
