@@ -31,9 +31,6 @@
   <jsp:directive.attribute name="unrelate"          type="java.lang.Boolean"
                            description="Whether, or not, the tools should also allow deletion of relations" />
   
-  <jsp:directive.attribute name="relate"            type="java.lang.Boolean"
-                           description="Whether, or not, the tools should allow inmediate creation of relations or whether a confirmation is needed. Defaults to true (no confirm)." />
-
   <jsp:directive.attribute name="relations"         type="java.lang.Boolean"
                            description="Whether, or not, the tools should show the relation values and display a small form to edit them" />
 
