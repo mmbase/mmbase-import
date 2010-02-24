@@ -91,6 +91,7 @@ function MMBaseRelater(d, validator) {
         fun(this);
     }
     this.sessionName = null;
+    this.bindCommit();
     var self = this;
     $(this.div).trigger("mmsrRelaterReady", [self]);
 }
@@ -110,8 +111,6 @@ MMBaseRelater.ready = function(fun) {
     }
     MMBaseRelater.readyFunctions[MMBaseRelater.readyFunctions.length] = fun;
 }
-
-
 
 MMBaseRelater.prototype.addSearcher = function(el, type) {
     var relater = this;
@@ -145,13 +144,26 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
     }
 }
 
+MMBaseRelater.prototype.bindCommit = function() {
+    if (this.instant) {
+        $(this.div).bind("mmsrRelate", function (e, tr, relater) {
+            if (e) {
+                self.commit(e);
+            }
+        });
+        $(this.div).bind("mmsrUnrelate", function (e, tr, relater) {
+            if (e) {
+                self.commit(e);
+            }
+        });
+    }
+}
 
 MMBaseRelater.prototype.needsCommit = function() {
     var relatedNumbers   = this.getNumbers(this.related);
     var unrelatedNumbers = this.getNumbers(this.unrelated);
     return relatedNumbers != "" || unrelatedNumbers != "";
 }
-
 
 /**
  * Commits makes changes to MMBase. Depends on a jsp /mmbase/searchrelate/relate.jsp to do the actual work.
