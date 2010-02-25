@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.logging;
 
+import java.util.*;
+
 /**
  * Base class for simple Logger implementations (no patterns and so
  * on).
@@ -18,6 +20,34 @@ package org.mmbase.util.logging;
  */
 
 abstract public class AbstractSimpleImpl  implements Logger {
+
+    private static ThreadLocal<Map<String, Object>> MDC_VALUES = new ThreadLocal<Map<String, Object>>() {
+        @Override
+        protected Map<String, Object> initialValue() {
+            Map<String, Object> o = new HashMap<String, Object>();
+            return o;
+        }
+
+    };
+
+    /**
+     * @since MMBase-2.0
+     */
+    public static MDC getMDC() {
+        return new MDC() {
+            public void put(String key, Object value) {
+                if (value != null) {
+                    MDC_VALUES.get().put(key, value);
+                } else {
+                    MDC_VALUES.get().remove(key);
+                }
+            }
+
+            public Object get(String key) {
+                return MDC_VALUES.get().get(key);
+            }
+        };
+    }
 
     /**
      * @since MMBase-1.8
