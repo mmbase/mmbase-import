@@ -305,8 +305,9 @@ public class ResourceLoader extends ClassLoader {
                         while (true) {
                             String line = reader.readLine();
                             if (line == null) break;
-                            if (line.startsWith("#")) continue; // support for comments
                             line = line.trim();
+                            if (line.startsWith("#")) continue; // support for comments
+                            if (line.length() == 0)   continue; // ignore empty lines too
                             String[] parts = line.split(":", 2);
                             String className;
                             if (parts.length == 2) {
