@@ -95,7 +95,7 @@ public class MMBase extends ProcessorModule {
      * Time in seconds, when mmbase was started.
      * @since MMBase-1.7
      */
-    public static final int startTime = (int) (System.currentTimeMillis() / 1000);
+    public static final int startTime = MMBaseContext.startTime;
 
     /**
      * Base name for the storage  to be accessed using this instance of MMBase.
@@ -140,13 +140,6 @@ public class MMBase extends ProcessorModule {
      */
     private boolean inDevelopment = false;
 
-    /**
-     * Name of the machine used in the mmbase cluster.
-     * it is used for the mmservers objects. Make sure that this is different
-     * for each node in your cluster. This is not the machines dns name
-     * (as defined by host as name or ip number).
-     */
-    static String machineName = null;
 
     /**
      * The host or ip number of the machine this module is
@@ -393,18 +386,18 @@ public class MMBase extends ProcessorModule {
                 machineNameParam = machineNameParam.substring(0, pos) + MMBaseContext.getHtmlRootUrlPath() + machineNameParam.substring(pos + 10);
             }
 
-            machineName = machineNameParam;
+            MMBaseContext.machineName = machineNameParam;
         } else {
             if (! MMBaseContext.htmlRootInitialized) {
                 log.warn("HTML root not yet known. MachineName will not be correct yet.");
             }
             // default machine name is the local host name plus context-path.
             // We suppose that that is sufficiently unique in most cases
-            machineName = localHost + MMBaseContext.getHtmlRootUrlPath();
+            MMBaseContext.machineName = localHost + MMBaseContext.getHtmlRootUrlPath();
 
         }
-        log.info("MMBase machine name used for clustering: '" + machineName + "'");
-        Logging.setMachineName(machineName);
+        log.info("MMBase machine name used for clustering: '" + MMBaseContext.machineName + "'");
+        Logging.setMachineName(MMBaseContext.machineName);
         setMMEntities(false);
 
         log.service("Initializing  storage");
@@ -655,7 +648,7 @@ public class MMBase extends ProcessorModule {
      * @return a <code>MMObjectBuilder</code> if found, <code>null</code> otherwise
      */
     public MMObjectBuilder getMMObject(String name) {
-        if (name == null) throw new RuntimeException("Cannot get builder with name 'NULL' in " + machineName);
+        if (name == null) throw new RuntimeException("Cannot get builder with name 'NULL' in " + MMBaseContext.machineName);
         MMObjectBuilder o = mmobjs != null ? mmobjs.get(name) : null;
         if (o == null) {
             log.trace("MMObject " + name + " could not be found"); // can happen...
@@ -803,7 +796,7 @@ public class MMBase extends ProcessorModule {
      * @return the machine name as a <code>String</code>. Or <code>null</code> if not yet determined.
      */
     public String getMachineName() {
-        return machineName;
+        return MMBaseContext.machineName;
     }
 
     /**
