@@ -42,6 +42,16 @@ public class MMBaseContext {
     private static boolean htmlRootUrlPathInitialized = false;
     private static String outputFile;
 
+    public static final int startTime = (int) (System.currentTimeMillis() / 1000);
+
+    /**
+     * Name of the machine used in the mmbase cluster.
+     * it is used for the mmservers objects. Make sure that this is different
+     * for each node in your cluster. This is not the machines dns name
+     * (as defined by host as name or ip number).
+     */
+    static String machineName = null;
+
     /**
      * Initialize MMBase using a <code>ServletContext</code>. This method will
      * check the servlet configuration for context parameters mmbase.outputfile
@@ -236,21 +246,15 @@ public class MMBaseContext {
             }
         }
 
-        try {
-            Locale locale = org.mmbase.util.LocalizedString.getLocale(org.mmbase.module.Module.getInitParameter("mmbaseroot", "language"));
-            log.info("MMBase locale     : " + locale);
-            org.mmbase.util.LocalizedString.setDefault(locale);
-        } catch (IOException ioe) {
-            log.error(ioe);
-        }
-        log.info("start time        : " + DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL).format(new Date(1000 * (long) MMBase.startTime)));
+        log.info("MMBase locale     : " + org.mmbase.util.LocalizedString.getDefault());
+        log.info("start time        : " + DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL).format(new Date(1000 * (long) startTime)));
     }
 
     /**
      * Initialize mmbase.htmlroot parameter. This method is only needed for
      * SCAN related servlets and should be called after the init(ServletContext)
      * method. If the mmbase.htmlroot parameter is not found in the servlet
-     * context or system properties this method will try to set it to the
+     * context or system prooperties this method will try to set it to the
      * root directory of the webapp.
      *
      * @throws ServletException  if mmbase.htmlroot is not set or is not a
@@ -446,7 +450,7 @@ public class MMBaseContext {
      * @return 'machine name' to identify this web app or <code>null</code> if not yet determined.
      */
     public static String getMachineName() {
-        return MMBase.machineName;
+        return machineName;
     }
 
     /**
