@@ -7,8 +7,9 @@
   <mm:content expires="0" type="application/xml">
     <mm:cloud method="asis">
 
-      <mm:import externid="fields" from="request,parameters" />
-      <mm:import externid="node" from="request,parameters" />
+      <mm:import externid="fields"   from="request,parameters" />
+      <mm:import externid="node"     from="request,parameters" />
+      <mm:import externid="relation" from="request,parameters" />
       <mm:import externid="id" from="request,parameters" />
       <mm:import from="session" externid="${id}" id="q" jspvar="q" vartype="org.mmbase.bridge.Query" />
 
@@ -26,21 +27,25 @@
           </c:otherwise>
         </c:choose>
         
-        <jsp:scriptlet>
-          NodeList rl = Queries.getRelations(q, n);
-          pageContext.setAttribute("rl", rl);
-        </jsp:scriptlet>
+        <c:if test="${empty relation}">
+          <jsp:scriptlet>
+            NodeList rl = Queries.getRelations(q, n);
+            pageContext.setAttribute("rl", rl);
+          </jsp:scriptlet>
+          <mm:listnodes referid="rl" id="rel">
+            <mm:import id="relation" reset="true">${rel}</mm:import>
+          </mm:listnodes>
+        </c:if>
       </mm:node>
       
-      <mm:listnodes referid="rl" id="relation">
+      <mm:node number="$relation">
         <mm:nodeinfo type="nodemanager" id="nodemanager" write="false" />
         <tr class="relation relation_${relation} node_${node} ${nodemanager}">
           <td colspan="${colcount + 3}">
             <mm:form styleClass="relation">
               <fieldset>
                 <legend>${nodemanager} relation</legend>
-                <input name="id"   type="hidden" value="${relation}" />
-                
+                <input name="id" type="hidden" value="${relation}" />
                 <mm:fieldlist type="edit" id="fields${relation}" varStatus="status">
                   <mm:maywrite><mm:import reset="true" id="formtype">input</mm:import></mm:maywrite>
                   <mm:maywrite inverse="true"><mm:import id="formtype">guivalue</mm:import></mm:maywrite>
@@ -53,7 +58,6 @@
                     <mm:fieldinfo type="$formtype" />
                   </div>
                 </mm:fieldlist>
-                
                 <mm:maywrite>
                   <div class="relationrow submit">
                     <input type="submit" name="changerel" value="Change" />
@@ -61,10 +65,10 @@
                 </mm:maywrite>
               </fieldset>
             </mm:form>
-
           </td>
-        </tr>
-      </mm:listnodes>
+        </tr>          
+      </mm:node>
+
     </mm:cloud>
   </mm:content>
 </jsp:root>
