@@ -90,11 +90,11 @@ public class MockCloud extends AbstractCloud {
         if (query.isAggregating()) {
             List<Map<String, Object>> aggregatedResult = aggregatedQueryHandler.getRecords(query);
             NodeManager tempNodemanager = new MapNodeManager(this, aggregatedResult.get(0));
-            return new AbstractNodeList(aggregatedResult, tempNodemanager);
+            return new SimpleNodeList(aggregatedResult, tempNodemanager);
         }  else if (query instanceof NodeQuery) {
             List<Map<String, Object>> result = nodeQueryHandler.getRecords(query);
             final NodeManager nm =  ((NodeQuery) query).getNodeManager();
-            return new AbstractNodeList(result, nm) {
+            return new SimpleNodeList(result, nm) {
                 @Override
                 protected Node convert(Object o) {
                     if (o == null) {
@@ -119,7 +119,7 @@ public class MockCloud extends AbstractCloud {
                         return Fields.getFieldTypes(query, this);
                     }
                 };
-            return new BasicNodeList(result, nm);
+            return new SimpleNodeList(result, nm);
 
         }
     }

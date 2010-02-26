@@ -25,20 +25,20 @@ import org.mmbase.util.logging.Logging;
  * @version $Id$
  * @author Nico Klasens
  */
-public abstract class AbstractNodeList<E extends Node> extends BasicList<E> {
+public abstract class AbstractNodeList<E extends Node> extends BasicList<E>  {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractNodeList.class);
 
     protected final Cloud cloud;
     protected final NodeManager nodeManager;
 
-    public AbstractNodeList() {
+    AbstractNodeList() {
         super();
         this.cloud = null;
         this.nodeManager = null;
     }
 
-    public AbstractNodeList(Collection c) {
+    AbstractNodeList(Collection c) {
         super(c);
         this.cloud = null;
         this.nodeManager = null;
@@ -69,6 +69,10 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E> {
 
         Node node = convertWithBridgeToNode(cloud, nodeManager, o);
         return (E) node;
+    }
+
+    public Node getNode(int index) {
+        return get(index);
     }
 
     /**
@@ -121,5 +125,7 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E> {
             return cloud.getNodeManager("object");
         }
     }
+
+
 
 }

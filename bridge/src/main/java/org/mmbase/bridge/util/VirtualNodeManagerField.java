@@ -6,7 +6,6 @@ import org.mmbase.bridge.*;
  */
 public class VirtualNodeManagerField extends FieldWrapper {
 
-    private static final boolean allowNonQueriedFields = true; // not yet configurable
 
     private final String name;
     private final NodeManager nodeManager;

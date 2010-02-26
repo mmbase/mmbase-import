@@ -20,6 +20,9 @@ import java.util.*;
  * @version $Id: Fields.java 37864 2009-08-15 11:32:01Z michiel $
  */
 public class Fields {
+    private static final boolean allowNonQueriedFields = true; // not yet configurable
+
+
     public final static int STATE_MINVALUE    = 0;
     public final static int STATE_MAXVALUE    = 3;
     private final static String[] STATES = {
