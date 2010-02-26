@@ -12,8 +12,9 @@
       @version $Id$
   -->
   <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.page import="org.mmbase.bridge.util.Queries,org.mmbase.bridge.NodeList" />
   <mm:import externid="id" from="parameters" required="true" />
-  <mm:import from="session" externid="${id}" id="query" required="true" />
+  <mm:import from="session" externid="${id}" id="query" jspvar="q" required="true" vartype="org.mmbase.bridge.Query" />
   <mm:content expires="0" type="application/xml" language="${query.cloud.locale}">
     <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
       <mm:import externid="search" from="parameters" />
@@ -66,7 +67,8 @@
               <c:choose>
                 <c:when test="${!empty flds}">
                   <th class="node number" scope="col">#</th>
-                  <th class="node guitype" scope="col"><fmt:message key="nodetype"  /></th>
+                  <th class="node relation" scope="col">relation</th>
+                  <th class="node guitype" scope="col"><fmt:message key="nodetype" /></th>
                   <mm:fieldlist nodetype="${query.nodeManager.name}" fields="$flds" varStatus="field">
                     <th class="fields ${field.current.name}" scope="col"><mm:fieldinfo type="guiname" /></th>
                     <mm:last><mm:index write="false" id="colcount" /></mm:last>
@@ -74,6 +76,7 @@
                 </c:when>
                 <c:otherwise>
                   <th class="node number" scope="col">#</th>
+                  <th class="node relation" scope="col">relation</th>
                   <th class="node guitype" scope="col"><fmt:message key="nodetype"  /></th>
                   <th class="node gui" scope="col"><jsp:text> </jsp:text></th>
                     <mm:fieldlist nodetype="${query.nodeManager.name}" type="list" varStatus="field">
@@ -88,7 +91,7 @@
           <!--  PAGING -->
           <tfoot class="paging ${size gt pagesize ? 'needed' : 'notneeded'}">
             <tr>
-              <td colspan="${colcount + 4}">
+              <td colspan="${colcount + 5}">
                 <mm:previousbatches maxtotal="${maxpages}" indexoffset="1">
                   <mm:first>
                     <c:if test="${offset != 0}">
@@ -121,13 +124,38 @@
           </tfoot>
           <!--  ACTUAL SEARCHRESULT -->
           <tbody>
+            
+            <mm:compare referid="id" regexp="\w*current">
+              <mm:import id="relations" vartype="List" />
+            </mm:compare>
+            
             <mm:listnodes varStatus="status" jspvar="n">
-              <mm:include page="node.tr.jspx" attributes="status,_node@node,customizedir?,flds@fields?,editrelations?" />
+              
+              <mm:compare referid="id" regexp="\w*current">
+                <jsp:scriptlet>
+                  NodeList rl = Queries.getRelations(q, n);
+                  pageContext.setAttribute("rl", rl);
+                </jsp:scriptlet>
+                <mm:isnotempty referid="rl">
+                  <c:set var="i" value="0" />
+                  <mm:listnodes referid="rl" id="r">
+                    <c:if test="${i lt 1 and ! mm:contains(relations, r)}">
+                      <mm:import id="relations" reset="true" vartype="List">${relations},${r}</mm:import>
+                      <c:set var="i" value="${i + 1}" />
+                      <mm:import id="relation" reset="true">${r}</mm:import>
+                    </c:if>
+                  </mm:listnodes>
+                </mm:isnotempty>
+              </mm:compare>
+              
+              <mm:include page="node.tr.jspx" attributes="status,_node@node,customizedir?,flds@fields?,editrelations?,relation?" />
+              
               <c:if test="${editrelations == true}">
                 <mm:compare referid="id" regexp="\w*current">
-                  <mm:include page="relations.tr.jspx" attributes="_node@node,query,customizedir?,flds@fields?" />
+                  <mm:include page="relations.tr.jspx" attributes="_node@node,query,customizedir?,flds@fields?,relation" />
                 </mm:compare>
               </c:if>
+              
             </mm:listnodes>
           </tbody>
         </table>
