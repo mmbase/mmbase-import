@@ -12,7 +12,7 @@
 Digraph "MMBase<%= nodemanager == null ? "" : " " + nodemanager %>" {
   edge [fontsize=8.0];
   node [fontsize=14.0,shape=box];
-  nodesep=1;
+  nodesep=0.7;
   rankdir=LR;
 
   <%
