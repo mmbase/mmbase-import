@@ -29,11 +29,8 @@ See http://www.MMBase.org/license
   <artifactId>mmbase-utils</artifactId>
   <name>MMBase Utils</name>
 
-  <version>${base.version}</version>
+  <version>${mmbase.version}</version>
 
-  <properties>
-    <base.version>${mmbase.version}</base.version>
-  </properties>
 
   <scm>
     <url>https://scm.mmbase.org/mmbase/trunk/utils/</url>
@@ -92,12 +89,6 @@ See http://www.MMBase.org/license
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-war-plugin</artifactId>
-        <configuration>
-          <failOnMissingWebXml>false</failOnMissingWebXml>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.mmbase.maven</groupId>
