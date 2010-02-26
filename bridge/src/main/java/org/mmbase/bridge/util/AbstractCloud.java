@@ -244,7 +244,7 @@ public abstract class AbstractCloud implements Cloud {
 
 
     public NodeList getList(Query query) {
-        return new AbstractNodeList(BridgeCollections.EMPTY_NODELIST, this);
+        return new SimpleNodeList(BridgeCollections.EMPTY_NODELIST, this);
     }
 
 
@@ -293,7 +293,7 @@ public abstract class AbstractCloud implements Cloud {
 
 
     public NodeList createNodeList() {
-        return new BasicNodeList(BridgeCollections.EMPTY_NODELIST, this);
+        return new SimpleNodeList(BridgeCollections.EMPTY_NODELIST, this);
     }
 
 
