@@ -126,7 +126,8 @@ input.searching
   display: none;
 }
 
-.mm_related .searchable .node.guitype {
+.mm_related .searchable .node.guitype,
+.mm_related .searchable .node.relation {
   display: none;
 }
 

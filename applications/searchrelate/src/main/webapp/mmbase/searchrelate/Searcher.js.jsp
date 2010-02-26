@@ -17,9 +17,10 @@
  * - mmsrUnrelate          (use   $("div.mm_related").bind("mmsrUnrelate", function (e, tr, relater) ) )
  * - mmsrPaged             (use   $("div.mm_related").bind("mmsrPaged", function (e, status, relater) ) )
  * - mmsrRelaterReady      (use   $("div.mm_related").bind("mmsrRelaterReady", function (e, relater) ) )
- * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater, relatedNumbers, unrelatedNumbers) ) )
+ * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater, relatedNumbers, unrelatedNumbers, deletedRelations) ) )
  *
  * @author Michiel Meeuwissen
+ * @author André van Toly
  * @version $Id$
  */
 
@@ -57,8 +58,9 @@ MMBaseLogger.prototype.debug = function (msg) {
  */
 function MMBaseRelater(d, validator) {
     this.div           = d;
-    this.related       = {};
-    this.unrelated     = {};
+    this.related       = {};    // related nodes
+    this.unrelated     = {};    // unrelated nodes
+    this.deleterels    = {};    // relations to delete
     this.logger        = new MMBaseLogger();
     this.logger.debug(d);
     this.logger.debug("setting up current");
@@ -91,7 +93,6 @@ function MMBaseRelater(d, validator) {
         fun(this);
     }
     this.sessionName = null;
-    this.bindCommit();
     var self = this;
     $(this.div).trigger("mmsrRelaterReady", [self]);
 }
@@ -102,7 +103,6 @@ function MMBaseRelater(d, validator) {
  *  'relateCallBack' function.
  *  @todo I think jquery provides something with user defined events.
  */
-
 MMBaseRelater.readyFunctions = [];
 
 MMBaseRelater.ready = function(fun) {
@@ -144,26 +144,11 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
     }
 }
 
-MMBaseRelater.prototype.bindCommit = function() {
-    var self = this;
-    if (this.instant) {
-        $(this.div).bind("mmsrRelate", function (e, tr, relater) {
-            if (e) {
-                self.commit(e);
-            }
-        });
-        $(this.div).bind("mmsrUnrelate", function (e, tr, relater) {
-            if (e) {
-                self.commit(e);
-            }
-        });
-    }
-}
-
 MMBaseRelater.prototype.needsCommit = function() {
     var relatedNumbers   = this.getNumbers(this.related);
     var unrelatedNumbers = this.getNumbers(this.unrelated);
-    return relatedNumbers != "" || unrelatedNumbers != "";
+    var deletedRelations =  this.getNumbers(this.deleterels);
+    return relatedNumbers != "" || unrelatedNumbers != "" || deletedRelations != "";
 }
 
 /**
@@ -173,8 +158,9 @@ MMBaseRelater.prototype.needsCommit = function() {
 MMBaseRelater.prototype.commit = function(ev) {
     var relatedNumbers   = this.getNumbers(this.related);
     var unrelatedNumbers = this.getNumbers(this.unrelated);
+    var deletedRelations = this.getNumbers(this.deleterels)
 
-    if (relatedNumbers != "" || unrelatedNumbers != "") {
+    if (relatedNumbers != "" || unrelatedNumbers != "" || deletedRelations != "") {
         var a = ev.target;
         $(a).addClass("submitting");
         $(a).removeClass("failed");
@@ -186,7 +172,11 @@ MMBaseRelater.prototype.commit = function(ev) {
 
         this.logger.debug("+ " + relatedNumbers);
         this.logger.debug("- " + unrelatedNumbers);
-        var params = {id: id, related: relatedNumbers, unrelated: unrelatedNumbers};
+        this.logger.debug("d " + deletedRelations);
+        if (!this.instant) {
+            this.commitSelections(id)
+        }
+        var params = {id: id, related: relatedNumbers, unrelated: unrelatedNumbers, deleted: deletedRelations};
         if (this.transaction != null) {
             params.transaction = this.transaction;
         }
@@ -211,8 +201,9 @@ MMBaseRelater.prototype.commit = function(ev) {
                         }
                         self.related = {};
                         self.unrelated = {};
+                        self.deleterels = {};
                         if (self.canEditrelations) self.bindSaverelation(this.div);
-                        $(self.div).trigger("mmsrCommitted", [a, status, self, relatedNumbers, unrelatedNumbers]);
+                        $(self.div).trigger("mmsrCommitted", [a, status, self, relatedNumbers, unrelatedNumbers, deletedRelations]);
                         return true;
                     } else {
                         $(a).addClass("failed");
@@ -220,7 +211,7 @@ MMBaseRelater.prototype.commit = function(ev) {
                         return false;
                     }
                 }
-               });
+            });
     } else {
         this.logger.debug("No changes, no need to commit");
         $(this.div).trigger("mmsrCommitted", [a, "nochanges", this]);
@@ -229,15 +220,42 @@ MMBaseRelater.prototype.commit = function(ev) {
 }
 
 /**
+ * Commits selected items after acknowledgment
+ */
+MMBaseRelater.prototype.commitSelections = function(id) {
+    var div = $('#' + id + ' div.mm_relate_current');
+    var self = this;
+    var done = false;
+        
+    // unrelate
+    $.each(self.deleterels, function(key, value) {
+        self.logger.debug("= unrelated: " + key);
+        self.unrelate(value);
+        self.deleterels[key] = null
+        done = true;
+    });
+
+    // relate
+    $.each(self.related, function(key, value) {
+        self.logger.debug("= related: " + key);
+        if (value != null) { self.relate(value); }
+        self.related[key] = null;
+        done = true
+    });
+    
+    if (done) {
+        self.logger.debug("done");
+    }
+}
+
+/**
  * Gets a the relation tr for a newly created relation in which the relation can be edited.
- *
  */
 MMBaseRelater.prototype.getNewRelationTr = function(nodenr) {
     var self = this;
     var url = "${mm:link('/mmbase/searchrelate/relations.tr.jspx')}";
     var queryid = this.repository.searcher.getQueryId();
     queryid = queryid.replace(/repository/i, "current");
-    self.logger.debug(url + ", id: " + queryid + ", node: " + nodenr +  ", fields: " + this.repository.searcher.fields);
 
     var params = {id: queryid, node: nodenr, fields: this.repository.searcher.fields};
     var result;
@@ -251,7 +269,6 @@ MMBaseRelater.prototype.getNewRelationTr = function(nodenr) {
             result = res.responseText;
         }
     });
-
     return result;
 }
 
@@ -268,7 +285,6 @@ MMBaseRelater.prototype.getNumbers = function(map) {
 
 MMBaseRelater.prototype.bindSaverelation = function(div) {
     var self = this;
-    self.logger.debug("unbinding and binding relation forms");
     $(div).find('form.relation').unbind('submit');
     $(div).find("form.relation").each(function() {
         $(this).submit(function(ev) {
@@ -281,18 +297,56 @@ MMBaseRelater.prototype.bindEvents = function(rep, type) {
     var self = this;
     if (type == "repository") {
         $(rep).find("tr.click").each(function() {
-            $(this).click(function() {
-                self.relate(this);
+            var nr = self.getNumber(this);
+            if (typeof(self.related[nr]) != "undefined") {
+                $(this).toggleClass('selected');
+                self.logger.debug("found selected");
+            }
+            
+            $(this).click(function(ev) {
+                if (self.instant) {
+                    self.relate(this);
+                    self.commit(ev);
+                } else {
+                    $(this).toggleClass('selected');
+                    if (typeof(self.related[nr]) == "undefined") {
+                        self.related[nr] = this;
+                        self.logger.debug("selected (relate): " + nr);
+                    } else {
+                        self.related[nr] = null;
+                        self.logger.debug("unselected (relate): " + nr);
+                    }
+                }
                 return false;
-            })});
+            })
+        });
     }
     if (type == "current") {
         $(rep).find("tr.click").each(function() {
-            if ($(this).hasClass("new") || (self != null && self.canUnrelate)) {
-                $(this).click(function() {
-                    self.unrelate(this);
+            var rel = self.getRelationNumber(this);
+            if (typeof(self.deleterels[rel]) != "undefined") {
+                self.logger.debug(self.deleterels[rel]);
+                self.logger.debug("found selected");
+                $(this).toggleClass('selected');
+            }
+            
+            if ($(this).hasClass("new") || (self != null && self.canUnrelate)) {    // TODO: hasClass new moet nog wat mee
+                $(this).click(function(ev) {
+                    if (self.instant) {
+                        self.unrelate(this);
+                        self.commit(ev);
+                    } else {
+                        $(this).toggleClass('selected');
+                        if (typeof(self.deleterels[rel]) == "undefined") {
+                            self.deleterels[rel] = this;
+                            self.logger.debug("selected (unrelate): " + rel);
+                        } else {
+                            self.deleterels[rel] = null;
+                            self.logger.debug("unselected (unrelate): " + rel);
+                        }
+                    }
                     return false;
-                })
+                });
             }
         });
 
@@ -300,19 +354,20 @@ MMBaseRelater.prototype.bindEvents = function(rep, type) {
     }
 }
 
-
 MMBaseRelater.prototype.resetTrClasses  = function() {
     if (this.current != null) {
         this.current.searcher.resetTrClasses();
     }
     this.repository.searcher.resetTrClasses();
-
 }
 
 MMBaseRelater.prototype.getNumber = function(tr) {
     return  $(tr).find("td.node.number").text();
 }
 
+MMBaseRelater.prototype.getRelationNumber = function(tr) {
+    return $(tr).find("td.node.relation").text();
+}
 
 /**
  * Moves a node from the 'unrelated' repository to the list of related nodes.
@@ -338,7 +393,8 @@ MMBaseRelater.prototype.relate = function(tr) {
 
         this.current.searcher.inc();
         this.repository.searcher.dec();
-
+        this.current.searcher.searchResults = {}; // empty search cache
+        
         // Classes
         if ($(tr).hasClass("removed")) {
             $(tr).removeClass("removed");
@@ -351,8 +407,19 @@ MMBaseRelater.prototype.relate = function(tr) {
         $(tr).unbind();
 
         var self = this;
-        $(tr).click(function() {
-            self.unrelate(this);
+        $(tr).click(function(ev) {
+            if (self.instant) {
+                self.unrelate(this);
+                self.commit(ev);
+            } else {
+                // TODO: need to have relation nr here (maybe reload data?)
+                $(this).toggleClass('selected');
+                if (typeof(self.unrelated[number]) == "undefined") {
+                    self.unrelated[number] = this;
+                } else {
+                    self.unrelated[number] = null;
+                }
+            }
         });
     }
     if (this.relateCallBack != null) {
@@ -373,15 +440,17 @@ MMBaseRelater.prototype.getRelationTrs = function(number) {
  */
 MMBaseRelater.prototype.unrelate = function(tr) {
     var number = this.getNumber(tr);
-    this.logger.debug("Unrelating " + number);
-
-    // relation tr's
+    var relnr = this.getRelationNumber(tr);
     var relationTrs = this.getRelationTrs(number);
-    this.logger.debug("+ relations: " + relationTrs.length);
+    this.logger.debug("Unrelating node #" + number + ", relation #" + relnr);
 
     // Set up data
-    if (typeof(this.unrelated[number]) == "undefined") {
-        this.unrelated[number] = tr;
+    if (typeof(this.unrelated[number]) == "undefined" && typeof(this.unrelated[relnr] == "undefined")) {
+        if (this.instant) {
+            this.unrelated[number] = tr;
+        } else {
+            this.unrelated[relnr] = tr;
+        }
     }
     this.related[number] = null;
 
@@ -392,6 +461,7 @@ MMBaseRelater.prototype.unrelate = function(tr) {
 
     this.current.searcher.dec();
     this.repository.searcher.inc();
+    this.current.searcher.searchResults = {};    // TODO: maybe reload in stead of empty cache?
 
     // Classes
     if ($(tr).hasClass("new")) {
@@ -404,8 +474,19 @@ MMBaseRelater.prototype.unrelate = function(tr) {
     // Events
     $(tr).unbind();
     var self = this;
-    $(tr).click(function() {
-        self.relate(this)
+    $(tr).click(function(ev) {
+        if (self.instant) {
+            self.relate(this);
+            self.commit(ev);
+        } else {
+            $(this).toggleClass('selected');
+            if (typeof(self.related[number]) == "undefined") {
+                self.related[number] = this;
+            } else {
+                self.related[number] = null;
+            }
+        }
+        return false;
     });
     $(this.div).trigger("mmsrUnrelate", [tr, this]);
 }
@@ -514,7 +595,6 @@ MMBaseRelater.prototype.setMaxPages = function(maxpages) {
 /*
  * ***********************************************************************************************************************
  */
-
 
 function MMBaseSearcher(d, r, type, logger) {
     this.div = d;
@@ -648,8 +728,10 @@ MMBaseSearcher.prototype.search = function(val, offset, anchor) {
                         //console.log($(result).find("*").length);
                         $(rep).append($(result).find("> *"));
                         self.searchResults["" + offset] = result;
-                        self.addNewlyRelated(rep);
-                        self.deleteNewlyRemoved(rep);
+                        if (self.relater.instant) {
+                            self.addNewlyRelated(rep);
+                            self.deleteNewlyRemoved(rep);
+                        }
                         self.bindEvents(rep);
                         $(self.relater.div).trigger("mmsrPaged", [status, self.relater, self, anchor]);
                     }
@@ -661,8 +743,10 @@ MMBaseSearcher.prototype.search = function(val, offset, anchor) {
         this.logger.debug("reusing " + offset);
         this.logger.debug(rep);
         $(rep).append($(result).find("> *"));
-        this.addNewlyRelated(rep);
-        this.deleteNewlyRemoved(rep);
+        if (this.relater.instant) {
+            this.addNewlyRelated(rep);
+            this.deleteNewlyRemoved(rep);
+        }
         this.bindEvents(rep);
         $(this.relater.div).trigger("mmsrPaged", [status, this.relater, this, anchor]);
     }
@@ -833,7 +917,7 @@ MMBaseSearcher.prototype.deleteNewlyRemoved = function(rep) {
 MMBaseSearcher.prototype.filter = function(tr) {
     if (this.type == "repository" && this.relater != null) {
         var number = this.relater.getNumber(tr);
-        return this.relater.related[number] != null; // if already related, don't show again
+        return this.relater.related[number] != null; // already related, don't show again
     } else {
         return false;
     }
@@ -855,8 +939,6 @@ MMBaseSearcher.prototype.bindEvents = function() {
         this.relater.bindEvents(this.div, this.type);
     }
     var self = this;
-    this.logger.debug("binding to "+ $(this.div).find("a.navigate"));
-
     $(this.div).find("a.navigate").click(function(ev) {
         var anchor = ev.target;
         self.logger.debug("navigating " + anchor);
@@ -869,9 +951,10 @@ MMBaseSearcher.prototype.bindEvents = function() {
 MMBaseSearcher.prototype.resetTrClasses = function() {
     this.logger.debug("Resetting tr's");
     $(this.div).find("div.searchresult table tbody tr.click").each(function(i) {
+        $(this).removeClass("selected");
         $(this).removeClass("odd");
         $(this).removeClass("even");
-        $(this).addClass(i % 2 == 0 ? "even" : "odd");
+        $(this).addClass(i % 2 == 0 ? "odd" : "even");
     });
 }
 
