@@ -101,7 +101,7 @@
                                 --%>
 
                                 <input type="hidden" name="actions[updateNode][${_nodenr}].nodeType" value="${nodetype}"/>
-                                <input type="hidden" name="actions[updateNode][${_nodenr}].number" value="${_nodenr}"/>
+                                <input type="hidden" name="actions[updateNode][${_nodenr}].nodenr" value="${_nodenr}"/>
 
                                 <%--toon de velden die geedit kunnen worden--%>
                                 <%--
