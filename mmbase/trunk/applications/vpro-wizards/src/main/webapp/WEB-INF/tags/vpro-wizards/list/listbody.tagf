@@ -5,7 +5,7 @@
     </mm:fieldlist>
 </c:if>
 
-<c:if test="${not empty requestScope.orderby}">
+<c:if test="${not empty orderby}">
     <mm:sortorder field="${orderby}" direction="${direction}"/>
 </c:if>
 
