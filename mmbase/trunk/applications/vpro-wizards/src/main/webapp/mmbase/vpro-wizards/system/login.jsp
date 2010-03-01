@@ -16,16 +16,16 @@
           <b>naam, wachtwoord combinatie is verkeerd :-(</b>
         </c:if>
         <form method="post" name="login" action="<mm:write referid="referrer"/>">
-        <div class="inputBlock">
-          <div class="fieldName">Naam</div>
-          <div class="fieldValue"><input type ="text" class="small" size="80" name="username" value="" /></div>
-        </div>
-        <div class="inputBlock">
-          <div class="fieldName">Wachtwoord</div>
-          <div class="fieldValue"><input type ="password" class="small" size="80" name="password" value="" /></div>
-        </div>
-        <div class="formButtons">
-          <input class="submit" type="submit" name="command" value="login">
+          <div class="inputBlock">
+            <div class="fieldName">Naam</div>
+            <div class="fieldValue"><input type ="text" class="small" size="80" name="username" value="" /></div>
+          </div>
+          <div class="inputBlock">
+            <div class="fieldName">Wachtwoord</div>
+            <div class="fieldValue"><input type ="password" class="small" size="80" name="password" value="" /></div>
+          </div>
+          <div class="formButtons">
+            <input class="submit" type="submit" name="command" value="login" />
           </div>
         </form>
       </div>
