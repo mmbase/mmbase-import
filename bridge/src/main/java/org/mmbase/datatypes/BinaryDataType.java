@@ -101,7 +101,9 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
      * @since MMBase-1.9.3
      */
     public MimeType getMimeType(Object value, Node node, Field field) {
-        if (value == null) return MimeType.OCTETSTREAM;
+        if (value == null) {
+            return MimeType.OCTETSTREAM;
+        }
         String mt;
         if (value instanceof byte[]) {
             byte[] array = (byte[]) value;
@@ -116,7 +118,7 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
             mt = Casting.toSerializableInputStream(value).getContentType();
         }
         if (mt == null || mt.equals(MagicFile.FAILED)) {
-            return MimeType.OCTETSTREAM;
+            return MimeType.UNDETERMINED;
         } else {
             return new MimeType(mt);
         }
@@ -147,7 +149,7 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
     }
 
     /**
-     * @since MMBase-2.0
+     * @since MMBase-1.9.3
      */
     protected class MimeTypeRestriction extends AbstractRestriction<Pattern> {
         private static final long serialVersionUID = 0L;
@@ -165,6 +167,10 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
                 return true;
             }
             MimeType s = BinaryDataType.this.getMimeType(v, node, field);
+            if (MimeType.UNDETERMINED.equals(s)) {
+                log.debug("The mime type could not be determined. Giving the benefit of the doubt.");
+                return true;
+            }
             boolean res = s == null ? false : value.matcher(s.toString()).matches();
             if (log.isDebugEnabled()) {
                 log.debug("VALIDATING " + v + "->" + s + " with " + getValue() + " -> " + res);
