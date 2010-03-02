@@ -15,7 +15,7 @@
   -->
   <div class="saveresult" id="${parameters.rid}">
     <mm:relatednodescontainer clone="parameters.query">
-      <mm:relatednodes usetransaction="true">
+      <mm:relatednodes usetransaction="true" commitonclose="false">
         <mm:import id="formtagid">
           <c:choose>
             <c:when test="${empty parameters.formtag}">node${_node}</c:when>
@@ -23,10 +23,12 @@
           </c:choose>
         </mm:import>
         <span>${formtagid}</span>
-        <mm:form name="${formtagid}" >
+        <mm:form name="${formtagid}" commitonclose="false">
           <mm:import id="fieldlistid">${parameters.fieldlistidprefix}_<mm:escape escape="identifier">${_node}</mm:escape></mm:import>
           <mm:include page="${parameters.item}"
-                      referids="rid,fieldlistid" />
+                      referids="rid,fieldlistid">
+            <mm:param name="reload">true</mm:param>
+          </mm:include>
 
           <c:if test="${parameters.autosubmit}">
             <mm:valid>
