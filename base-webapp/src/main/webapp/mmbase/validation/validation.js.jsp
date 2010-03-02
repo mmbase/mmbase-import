@@ -454,6 +454,12 @@ MMBaseValidator.prototype.isNumeric = function(el) {
     el.mm_isnumeric = this.hasJavaClass(el, "org\.mmbase\.datatypes\.NumberDataType");
     return el.isnumeric;
 }
+
+MMBaseValidator.prototype.isBoolean = function(el) {
+    if (el.mm_isboolean != null) return el.mm_isboolean;
+    el.mm_isboolean = this.hasJavaClass(el, "org\.mmbase\.datatypes\.BooleanDataType");
+    return el.isboolean;
+}
 MMBaseValidator.prototype.isInteger = function(el) {
     if (el.mm_isinteger != null) return el.mm_isinteger;
     el.mm_isinteger = this.hasJavaClass(el, "(org\.mmbase\.datatypes\.IntegerDataType|org\.mmbase\.datatypes\.LongDataType)");
@@ -795,10 +801,15 @@ MMBaseValidator.prototype.getValue = function(el) {
             return $(el).text();
         }
         var value = $(el).val();
+
         if( this.isNumeric(el)) {
             if (value === "") {
             } else {
                 value = parseFloat(value);
+            }
+        } else if (this.isBoolean(el)) {
+            if ("checkbox" === el.type) {
+                value =  $(el).is(":checked");
             }
         }
         return value;
@@ -1125,7 +1136,7 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
             server = false;
             element.serverValidated = true;
             // already validated, so nothing to do.
-            return;
+            return false;
         }
         element.prevValue = "" + curValue;
     }
@@ -1233,6 +1244,7 @@ MMBaseValidator.prototype.addValidationForElements = function(els) {
         case "checkbox":
             $(entry).bind("click", function(ev) { self.setLastChange(ev); self.validate(ev); });
             $(entry).bind("blur",   function(ev) { self.serverValidate(ev); });
+            $(entry).bind("change",   function(ev) { self.serverValidate(ev); });
             break;
         case "file":
             $(entry).bind("change", function(ev) {
