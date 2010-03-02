@@ -532,7 +532,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
     @Override
     public void cancel() {
-        checkCommit();
         // when in a transaction, let the transaction cancel
         if (cloud instanceof Transaction) {
             ((Transaction)cloud).cancel();
