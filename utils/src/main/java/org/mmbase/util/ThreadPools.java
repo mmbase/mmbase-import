@@ -132,20 +132,7 @@ public abstract class ThreadPools {
 
 
     private static String getMachineName() {
-        String machineName;
-        try {
-            // TODO
-            machineName = "localhost";
-            //machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
-            //} catch (org.mmbase.bridge.BridgeException be) {
-        } catch (RuntimeException be) {
-            machineName = "localhost";
-        } catch (NoClassDefFoundError cnfe) {
-            // happens if no MMBaseContext, because this is used with the
-            // rmmci-client jar.
-            machineName = "localhost";
-        }
-        return machineName;
+        return Logging.getMachineName();
     }
 
 

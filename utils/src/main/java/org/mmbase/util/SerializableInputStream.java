@@ -55,7 +55,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     private long fileMark = 0;
     private boolean tempFile = true;
     private String name;
-    private String contentType = null;
+    private MimeType contentType = null;
     private transient InputStream wrapped;
     private boolean used = false;
 
@@ -80,10 +80,13 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         this.size = tempFile.length();
         this.name = name;
         if (tempFile.length() > 0) {
-            this.contentType = MagicFile.getInstance().getMimeType(tempFile);
-            if (MagicFile.FAILED.equals(this.contentType)) {
+            String ct = MagicFile.getInstance().getMimeType(tempFile);
+            if (MagicFile.FAILED.equals(ct)) {
                 log.warn("Failed to determin type of " + tempFile);
-                this.contentType = null;
+                this.contentType = MimeType.UNDETERMINED;
+            } else {
+                this.contentType = new MimeType(ct);
+
             }
         }
     }
@@ -100,11 +103,13 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         this.name = null;
         if (array.length > 0) {
             try {
-                this.contentType = MagicFile.getInstance().getMimeType(array);
+                String ct = MagicFile.getInstance().getMimeType(array);
 
-                if (MagicFile.FAILED.equals(this.contentType)) {
+                if (MagicFile.FAILED.equals(ct)) {
                     log.warn("Failed to determin type of byte array");
-                    this.contentType = null;
+                    this.contentType = MimeType.UNDETERMINED;
+                } else {
+                    this.contentType = new MimeType(ct);
                 }
             } catch (Exception e) {
             }
@@ -114,7 +119,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     public SerializableInputStream(FileItem fi) throws IOException {
         this.size = fi.getSize();
         this.name = fi.getName();
-        this.contentType = fi.getContentType();
+        this.contentType = new MimeType(fi.getContentType());
         file = File.createTempFile(getClass().getName(), this.name);
         file.deleteOnExit();
         try {
@@ -176,12 +181,12 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     }
 
     public String getContentType() {
-        return contentType;
+        return contentType == null ? null : contentType.toString();
     }
     /**
      * @since MMBase-1.9.3
      */
-    public void setContentType(String ct) {
+    public void setContentType(MimeType ct) {
         contentType = ct;
     }
     public synchronized byte[] get() throws IOException {
@@ -268,7 +273,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         wrapped = new ByteArrayInputStream(b);
         size = b.length;
         name = (String) oin.readObject();
-        contentType = (String) oin.readObject();
+        contentType = (MimeType) oin.readObject();
     }
     private void readObject(java.io.ObjectInputStream oin) throws IOException, ClassNotFoundException {
         _readObject(oin);
