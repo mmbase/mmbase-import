@@ -28,13 +28,16 @@
       if (length == null) {
          //probably using the horrible 'browser' from redmond
          //MultiPart.MMultipartRequest multipart = MultiPart.getMultipartRequest((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse());
-         length = request.getContentLength() - 224/* it's too much, we need to guess the size of the headers, about 224 */;
+         length = request.getContentLength() - 224/* it's too much, we need to guess the size of the headers, which would be about 224 */;
       }
       value = new SerializableInputStream(new NullInputStream(length), length);
       if (type.length() > 0) {
-        value.setContentType(type);
+        value.setContentType(new MimeType(type));
       }
-      Collection&lt;LocalizedString&gt; errors = dataType == null ? new ArrayList&lt;LocalizedString&gt;() : dataType.validate(value, node == null ? null : new ChangedNode(node, field.getName()), field);
+      Collection&lt;LocalizedString&gt; errors = dataType == null ?
+                                                 new ArrayList&lt;LocalizedString&gt;() :
+                                                 dataType.validate(value,
+                                                                   node == null ? null : new ChangedNode(node, field.getName()), field);
       pageContext.setAttribute("errors", errors);
       pageContext.setAttribute("node", node);
       pageContext.setAttribute("field", field);
