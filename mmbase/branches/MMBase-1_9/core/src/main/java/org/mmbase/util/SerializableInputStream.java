@@ -181,7 +181,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     }
 
     public String getContentType() {
-        return contentType == null ? null : contentType.toString();
+        return contentType == null || MimeType.UNDETERMINED.equals(contentType) ? null : contentType.toString();
     }
     /**
      * @since MMBase-1.9.3
