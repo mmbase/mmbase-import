@@ -733,14 +733,28 @@ List.prototype.commit = function(stale, leavePage) {
                          async: leavePage == null ? true : !leavePage,
                          url: "${mm:link('/mmbase/searchrelate/list/save.jspx')}",
                          data: params,
-                            complete: function(req, textStatus) {
-                               self.status('<fmt:message key="saved" />', self.uploadingSize == 0);
-                               $(self.div).trigger("mmsrFinishedSave", [self]);
-                               if (textStatus != "success") {
-                                   result = textStatus;
-                               }
-                               self.saving = false;
-                        }
+                         complete: function(res, textStatus) {
+                             self.status('<fmt:message key="saved" />', self.uploadingSize == 0);
+                             $(self.div).trigger("mmsrFinishedSave", [self]);
+                             if (textStatus != "success") {
+                                 result = textStatus;
+                             }
+                             var r = $(res.responseText);
+                             r.find(".mm_check_error").each(function() {
+                                 var errorId = $(this).attr("id");
+                                 var errorDiv = $("#" + errorId);
+                                 if (errorDiv.length > 0) {
+                                     errorDiv.empty();
+                                     errorDiv.append($(this).find("*"));
+                                 }
+                                 if (self.validator != null) {
+                                     var elementId = "mm_" + errorId.substring(9);
+                                     var element = $("#" + elementId)[0];
+                                     self.validator.updateValidity(element, false);
+                                 }
+                             });
+                             self.saving = false;
+                         }
                        });
                 this.lastCommit = now;
             } else {
