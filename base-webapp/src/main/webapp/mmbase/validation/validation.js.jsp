@@ -265,6 +265,7 @@ MMBaseValidator.prototype.getLength = function(el) {
  * Returns the mimetype as reported by the browser for the given file
  * upload input.
  * Probably won't work in IE.
+ * If it can't be determined, this method returns the empty string.
  */
 MMBaseValidator.prototype.getMimeType = function(el) {
     var type;
@@ -287,14 +288,15 @@ MMBaseValidator.prototype.getMimeType = function(el) {
                 } catch (e) {
                     // Out of luck, both el.files  and the silly activexobject are not working.
                     this.showWarning(e);
-                    type = null;
+                    type = "";
                 }
             } else {
                 // most other browsers simply support the following (Note the incredible ease and simplicity, compared to the horrible shit of IE).
                 if (el.files.length > 0) {
                     type = el.files.item(0).type;
+                    //type = "";
                 } else {
-                    type = "application/octet-stream";
+                    type = "";
                 }
             }
         }
@@ -303,6 +305,7 @@ MMBaseValidator.prototype.getMimeType = function(el) {
         if (value == null) {
             type = null;
         } else {
+            type = "";
             //
         }
     }
