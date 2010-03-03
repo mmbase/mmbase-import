@@ -56,9 +56,16 @@ public class ResultBuilder extends VirtualBuilder {
      * @param mmbase MMBase instance.
      * @param query The search query that defines the search.
      */
-    public ResultBuilder(MMBase mmbase, SearchQuery query) {
+    public ResultBuilder(MMBase mmbase, SearchQuery q) {
         super(mmbase);
-        this.query = query;
+
+        // The ResultBuilder will be back referenced by nodes in the result of an aggregate query.
+        // And this result may be cached.
+        // We don't want to cache 'Wrapped' queries (e.g. bridge.BasicQuery, because they reference a Cloud).
+        while (q instanceof SearchQueryWrapper) {
+            q = ((SearchQueryWrapper)q).unwrap();
+        }
+        this.query = q;
 
         // Create fieldsByAlias map.
         for (StepField field : query.getFields()) {
