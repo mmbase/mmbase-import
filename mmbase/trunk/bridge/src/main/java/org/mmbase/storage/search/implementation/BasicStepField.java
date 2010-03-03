@@ -9,11 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation;
 
-import org.mmbase.bridge.Field;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.Fields;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.SizeMeasurable;
 import org.mmbase.util.SizeOf;
+import org.mmbase.util.logging.*;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Basic implementation.
@@ -24,6 +27,7 @@ import org.mmbase.util.SizeOf;
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField, SizeMeasurable, java.io.Serializable {
+    private static final Logger log = Logging.getLoggerInstance(BasicStepField.class);
 
     private static final long serialVersionUID = 1L;
 
@@ -121,6 +125,9 @@ public class BasicStepField implements StepField, SizeMeasurable, java.io.Serial
         }
     }
 
+    // Perhaps it is better to have something like this available in CloudContext itself.
+    // CloudContext#getAnonymousCloud or so.
+    private static final Map<CloudContext, Cloud> anonymousClouds = new ConcurrentHashMap<CloudContext, Cloud>();
     /**
      * Constructor.
      *
@@ -143,6 +150,20 @@ public class BasicStepField implements StepField, SizeMeasurable, java.io.Serial
                                                + " instead of step " +  step.getTableName() + ": "
                                                + field);
         }
+
+        if (field instanceof org.mmbase.bridge.implementation.BasicField) { // not so nice, but I can't come up with something better for now
+            // SearchQueries can be referenced in caches. We don't want to
+            // have references to user clouds there (Field is probably a BasicField then)
+            // So, we use a specialized anonymous cloud instance
+            CloudContext cloudContext = field.getNodeManager().getCloud().getCloudContext();
+            Cloud anonymousCloud = anonymousClouds.get(cloudContext);
+            if (anonymousCloud == null) {
+                anonymousCloud = cloudContext.getCloud("mmbase");
+                anonymousClouds.put(cloudContext, anonymousCloud);
+            }
+            NodeManager anonymousNodeManager = anonymousCloud.getNodeManager(field.getNodeManager().getName());
+            field = anonymousNodeManager.getField(field.getName());
+        }
         this.field = field;
     }
 
@@ -150,7 +171,7 @@ public class BasicStepField implements StepField, SizeMeasurable, java.io.Serial
      * @since MMBase-1.9.2
      */
     public void setUnmodifiable() {
-        modifiable = true;
+        modifiable = false;
     }
 
 

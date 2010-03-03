@@ -53,7 +53,7 @@ public class BasicConstraint implements Constraint, java.io.Serializable  {
 
     // javadoc is inherited
     public int getBasicSupportLevel() {
-        return SearchQueryHandler.SUPPORT_OPTIMAL;
+        return 3; // TODO SearchQueryHandler.SUPPORT_OPTIMAL;
     }
 
     // javadoc is inherited
