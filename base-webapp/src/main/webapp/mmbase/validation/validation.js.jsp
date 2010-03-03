@@ -294,8 +294,13 @@ MMBaseValidator.prototype.getMimeType = function(el) {
                 // most other browsers simply support the following (Note the incredible ease and simplicity, compared to the horrible shit of IE).
                 if (el.files.length > 0) {
                     type = el.files.item(0).type;
+                    if (type == null) {
+                        // This happens sometimes in some Windows, I don't understand that.
+                        type = "";
+                    }
                     //type = "";
                 } else {
+                    //alert("Did not recognize type of " + el.files);
                     type = "";
                 }
             }
