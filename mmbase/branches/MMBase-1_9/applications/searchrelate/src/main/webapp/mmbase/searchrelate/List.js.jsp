@@ -948,7 +948,7 @@ List.prototype.getOriginalPosition  = function(li) {
         }
     }
     // No original position found? That's an error.
-    alert(li);
+    throw("No original position found for " + $(li).text());
 }
 
 List.prototype.afterPost = function() {
