@@ -150,7 +150,7 @@
 
   <c:choose>
     <c:when test="${empty parent}">
-      <mm:import id="requestid">R<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape></mm:import>
+      <mm:import id="requestid">R<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape>${param.requestID}</mm:import>
       <mm:import from="request" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
     </c:when>
     <c:otherwise>
@@ -262,6 +262,7 @@
     <mm:import id="fieldlistidprefix">${rid}_N${mm:escape('identifier', _node)}</mm:import>
     <mm:import id="source_was_new">${_node.number lt 0}</mm:import>
     <mm:import id="_number">${_node._number}</mm:import>
+    <mm:import id="config">${requestScope['org.mmbase.searchrelate.config']}</mm:import>
   </mm:context>
 
   <mm:import from="session" id="parameters" externid="${rid}_context" />
