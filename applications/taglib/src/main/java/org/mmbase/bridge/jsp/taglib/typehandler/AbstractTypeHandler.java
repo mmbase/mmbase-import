@@ -68,25 +68,27 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             IntegerDataType idt = (IntegerDataType) dt;
             final int min = idt.getMin() + (idt.isMinInclusive() ? 0 : 1);
             final int max = idt.getMax() - (idt.isMaxInclusive() ? 0 : 1);
+
             if ((long) max - min < 200L) {
                 return new EnumHandler(tag, node, field) {
-                    int i = min;
                     @Override
                     protected Iterator<Entry<Integer, Integer>> getIterator(Node node, Field field) {
-                            return new Iterator<Entry<Integer, Integer>>() {
-                                    public boolean hasNext() {
-                                        return i <= max;
-                                    }
-                                    public Entry<Integer, Integer> next() {
-                                        Integer value = i++;
-                                        return new Entry<Integer, Integer>(value, value);
-                                    }
-                                    public void remove() {
-                                        throw new UnsupportedOperationException();
-                                    }
-                                };
-                        }
-                    };
+                        return new Iterator<Entry<Integer, Integer>>() {
+                            int i = min;
+                            public boolean hasNext() {
+                                return i <= max;
+                            }
+                            public Entry<Integer, Integer> next() {
+                                Integer value = i++;
+                                return new Entry<Integer, Integer>(value, value);
+                            }
+                            public void remove() {
+                                throw new UnsupportedOperationException();
+                            }
+                        };
+                    }
+                };
+
             }
         }
         if (dt instanceof LongDataType) {
@@ -95,23 +97,24 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             final long max = ldt.getMax() - (ldt.isMaxInclusive() ? 0 : 1);
             if ((double) max - min < 200.0) {
                 return new EnumHandler(tag, node, field) {
-                        long i = min;
+
                         @Override
                         protected Iterator<Entry<Long, Long>> getIterator(Node node, Field field) {
                             return new Iterator<Entry<Long, Long>>() {
-                                    public boolean hasNext() {
-                                        return i <= max;
-                                    }
-                                    public Entry<Long, Long> next() {
-                                        Long value = i++;
-                                        return new Entry<Long, Long>(value, value);
-                                    }
-                                    public void remove() {
-                                        throw new UnsupportedOperationException();
-                                    }
-                                };
+                                long i = min;
+                                public boolean hasNext() {
+                                    return i <= max;
+                                }
+                                public Entry<Long, Long> next() {
+                                    Long value = i++;
+                                    return new Entry<Long, Long>(value, value);
+                                }
+                                public void remove() {
+                                    throw new UnsupportedOperationException();
+                                }
+                            };
                         }
-                    };
+                };
             }
         }
 
