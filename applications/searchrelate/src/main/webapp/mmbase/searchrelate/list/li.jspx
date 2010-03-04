@@ -31,7 +31,10 @@
         </c:when>
         <c:otherwise>
           <mm:import id="formtagid">${parameters.rid}_node${_node}_<mm:time time="now" /></mm:import>
-          <mm:form name="${formtagid}" jspvar="form" commitonclose="false">
+          <!-- The actual formtag id is not so important, the transaction will be cancelled immediately
+               In autosubmit mode a new transaction is created in save.jspx (which _is_ submitted)
+          -->
+          <mm:form name="${formtagid}" commitonclose="false">
             <mm:include debug="html"
                         page="${parameters.item}"
                         referids="rid,fieldlistid">
