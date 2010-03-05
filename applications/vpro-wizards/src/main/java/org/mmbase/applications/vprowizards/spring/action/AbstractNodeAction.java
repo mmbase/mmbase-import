@@ -82,7 +82,10 @@ public abstract class AbstractNodeAction extends Action {
         // get the node
         node = createNode(resultContainer.getTransaction(), resultContainer.getIdMap(), resultContainer.getRequest());
 
+        log.debug("Processing " + node);
+
         if (hasErrors()) {
+            log.debug("Errors");
             return;
         }
 
@@ -101,12 +104,15 @@ public abstract class AbstractNodeAction extends Action {
             if (node != null) {
                 log.debug("setting the field values on the node");
                 setBasicFields();
-                if (node.getNodeManager().hasField("handle")) {
+                if (node.getNodeManager().hasField("handle")) { // WTF
                     setHandlerField();
                 }
+            } else {
+                log.debug("Node is null");
             }
 
             if (resultContainer.hasFieldErrors()) {
+                log.debug("Field errors");
                 return;
             }
 
@@ -116,10 +122,13 @@ public abstract class AbstractNodeAction extends Action {
                     log.debug("node [" + node + "] is registered under id " + getId());
                 }
                 processNode(resultContainer.getTransaction());
+            } else {
+                log.service("No node found ");
             }
 
-            //now check for html fields, and filter them if need be.
+
             if(!StringUtils.isBlank(htmlFields)){
+                log.debug("now check for html fields, and filter them if need be.");
                 String[] htmlFieldArray = htmlFields.split("\\s*,\\s*");
                 for(String fieldName : htmlFieldArray){
                     checkField(fieldName);
@@ -134,9 +143,7 @@ public abstract class AbstractNodeAction extends Action {
                         log.debug("HTML filtering field " + fieldName );
                         node.setStringValue(fieldName,HTMLFilterUtils.filter(node.getStringValue(fieldName)));
                     } catch (Exception e) {
-                        String msg = "Something went wrong filtering field "+fieldName+" with the HTML filter: "+e.getMessage();
-                        log.error(msg, e);
-                        throw new RuntimeException(msg, e);
+                        throw new RuntimeException( "Something went wrong filtering field " + fieldName + " with the HTML filter: "+e.getMessage(), e);
                     }
                 }
             }
@@ -163,6 +170,7 @@ public abstract class AbstractNodeAction extends Action {
     }
 
     public Map<String, String> getFields() {
+        log.debug("Returning fields " + fields);
         return fields;
     }
 
