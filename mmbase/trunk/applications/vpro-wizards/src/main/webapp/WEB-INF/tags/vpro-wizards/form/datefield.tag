@@ -21,7 +21,7 @@
 --%>
 <%@ include file="fieldinit.tagf" %>
 
-<c:set var="_action" value="actions[${modifier}${action}][${actionnr}].dateFields[${field}]" />
+<c:set var="_action" value="${modifier}${action}][${actionnr}].dateFields[${field}" />
 
 <c:if test="${empty timeFormat}"><c:set var="timeFormat" value="HH:mm" /></c:if>
 <c:if test="${empty dateFormat}"><c:set var="dateFormat" value="dd-MM-yyyy" /></c:if>
