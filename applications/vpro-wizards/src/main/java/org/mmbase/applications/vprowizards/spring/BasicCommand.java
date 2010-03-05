@@ -41,14 +41,14 @@ public class BasicCommand implements Command {
     public void processActions(HttpServletRequest request,
                                HttpServletResponse response, ResultContainer resultContainer) {
         //we only iterate over the actions until there is an error
-        actions:
+        ACTIONS:
         for(String actionMapping :  actions.keySet()){
             Map<String, Action> mappedActions = actions.get(actionMapping);
-            log.service(String.format("%s actions found for mapping '%s'", ""+mappedActions.size(), actionMapping));
+            log.service(mappedActions.size() + " actions found for mapping '" + actionMapping + "'");
             for (Action action: mappedActions.values()){
                 action.process(resultContainer);
                 if(resultContainer.hasGlobalErrors() || resultContainer.hasFieldErrors()){
-                    break actions;
+                    break ACTIONS;
                 }
             }
         }
