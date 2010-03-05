@@ -46,7 +46,7 @@ public class WizardController implements Controller {
     private Locale locale;
 
     public WizardController(){
-        setLocale(new Locale("nl"));/*default*/
+        setLocale(new Locale("nl"));/*default*/ // WTF WTF
     }
 
 
@@ -67,7 +67,7 @@ public class WizardController implements Controller {
 
         if(log.isDebugEnabled()){
             log.debug("*********************************");
-            log.debug("Processing new request with transaction ["+transaction.getName()+"]");
+            log.debug("Processing new request with transaction [" + transaction.getName() + "]");
             log.debug("*********************************");
         }
 
@@ -84,7 +84,7 @@ public class WizardController implements Controller {
             transaction.cancel();
 
         } else {
-            log.debug("No errors found. Commit transaction ["+transaction.getName()+"] and put the cache flush hints on the request.");
+            log.debug("No errors found. Commit transaction [" + transaction.getName() + "] and put the cache flush hints on the request.");
             resultContainer.getTransaction().commit();
 
 
