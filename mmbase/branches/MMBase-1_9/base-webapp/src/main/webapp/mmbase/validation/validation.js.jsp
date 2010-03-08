@@ -322,8 +322,8 @@ MMBaseValidator.prototype.getMimeType = function(el) {
  */
 MMBaseValidator.prototype.lengthValid = function(el) {
     var length = this.getLength(el);
-    if (! this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce) && length == 0) {
-        return true;
+    if (this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce) && length == 0) {
+        return false;
     }
     var xml = this.getDataTypeXml(el);
 
@@ -880,7 +880,7 @@ MMBaseValidator.prototype.valid = function(el) {
         return true; // not yet supported
     }
 
-    if (! this.isString(el)) { // For Strings, you cannot enter 'null'. The empty stirng is interpreted as "" in
+    if (! this.isString(el)) { // For Strings, you cannot enter 'null'. The empty string is interpreted as "" in
                                // stead. So skip the 'required' checks.
         if (this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce)) {
             if (this.getLength(el) <= 0 && (value === "" || value == null)) {
