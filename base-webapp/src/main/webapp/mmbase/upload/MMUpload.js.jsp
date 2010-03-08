@@ -36,12 +36,13 @@ MMUploader.prototype.status = function(message, fadeout) {
         $(el).append(message);
         if (fadeout) {
             var p = el;
-            $(el).fadeTo(4000, 0.1, function() {
+            $(el).fadeTo(4000, 0.1,
+                         function() {
                              $(p).empty(); $(p).append(p.originalTextContent); }
                         );
         }
   }
-}
+};
 
 
 MMUploader.prototype.uploadProgress = function(fileid) {
@@ -50,7 +51,7 @@ MMUploader.prototype.uploadProgress = function(fileid) {
             $(this.statusElement).load("${mm:link('/mmbase/upload/progress.jspx')}");
         }
     }
-}
+};
 
 /**
  * Given an input[type=file], returns the node number which is represented in it.
@@ -67,7 +68,7 @@ MMUploader.prototype.getNodeForInput  = function(input) {
         }
     }
     return null;
-}
+};
 
 
 MMUploader.prototype.upload = function(fileid) {
@@ -109,6 +110,14 @@ MMUploader.prototype.upload = function(fileid) {
     } else {
         //console.log("Validator not set");
     }
+    var classes = $(fileItem).attr("class").split(' ');
+    for (var i in classes) {
+        var clazz = classes[i];
+        if (clazz.indexOf("mm_length_") == 0) {
+            $(fileItem).removeClass(clazz);
+            break;
+        }
+    }
 
     $.ajaxFileUpload ({
             url: "${mm:link('/mmbase/upload/upload.jspx')}" + "?uid=" + self.uid + "&name=" + fileItem.attr("name") + "&n=" + node + "&transaction=" + self.transaction,
@@ -123,11 +132,15 @@ MMUploader.prototype.upload = function(fileid) {
                         alert(data.msg);
                     }
                 } else {
+                    console.log("UPLOADED");
                     try {
                         var fileItem = $("#" + fileid);
                         fileItem.val(null);
                         fileItem.prevAll(".mm_gui").remove();
                         fileItem.prevAll("input[type=hidden]").remove();
+
+                        var newLength = $(data).find("div.length").text();
+                        $(fileItem).addClass("mm_length_" + newLength);
 
                         var created = $(data).find("div.fieldgui .mm_gui, div.fieldgui input[type=hidden]");
                         fileItem.before(created);
@@ -136,6 +149,7 @@ MMUploader.prototype.upload = function(fileid) {
                             name = "MMU_" + name;
                             $(fileItem).attr("name", name);
                         }
+
 
                         // Rebind  event handlers:
                         for (var event in events) {
@@ -165,7 +179,7 @@ MMUploader.prototype.upload = function(fileid) {
         }
         );
     return;
-}
+};
 /*
 </mm:content></fmt:bundle>
 */

@@ -24,6 +24,7 @@
   </jsp:scriptlet>
   <mm:node number="${n}" commitonclose="false" jspvar="node">
     <jsp:scriptlet>node.setValue(field, new org.mmbase.util.SerializableInputStream(f, is.getName()));</jsp:scriptlet>
+    <div class="length"><jsp:expression>is.getSize()</jsp:expression></div>
     <div class="nodegui">
       <mm:nodeinfo type="gui" />
     </div>
