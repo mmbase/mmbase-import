@@ -105,7 +105,6 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
             for (String s :  loader.getResourcePaths(Pattern.compile(getName()+ "\\.xml"), true)) {
                 for (java.net.URL url : loader.getResourceList(s)) {
                     try {
-
                         if (! url.openConnection().getDoInput()) continue;
                         org.w3c.dom.Document doc = ResourceLoader.getDocument(url, true, BuilderReader.class);
                         if (! doc.getDocumentElement().getTagName().equals("builder")) {
@@ -217,7 +216,7 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
                 try {
                     if (def != null) {
                         def.rewrite();
-                        DataType dataType = decodeDataType(builder.getTableName(), collector, def.getName(), field, def.getType(), def.getListItemType(), false);
+                        DataType dataType = decodeDataType((builder != null ? builder.getTableName() : null), collector, def.getName(), field, def.getType(), def.getListItemType(), false);
                         if (dataType != null) {
                             def.setDataType(dataType); // replace datatype
                         }
@@ -497,7 +496,7 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
         }
 
         // datatype
-        DataType dataType = decodeDataType(builder.getTableName(), collector, fieldName, field, type, listItemType, true);
+        DataType dataType = decodeDataType((builder != null ? builder.getTableName() : null), collector, fieldName, field, type, listItemType, true);
 
         // determine type from datatype, if possible)
         if (type == Field.TYPE_UNKNOWN) {
