@@ -216,7 +216,7 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
                 try {
                     if (def != null) {
                         def.rewrite();
-                        DataType dataType = decodeDataType(builder.getTableName(), collector, def.getName(), field, def.getType(), def.getListItemType(), false);
+                        DataType dataType = decodeDataType((builder != null ? builder.getTableName() : null), collector, def.getName(), field, def.getType(), def.getListItemType(), false);
                         if (dataType != null) {
                             def.setDataType(dataType); // replace datatype
                         }
@@ -496,7 +496,7 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
         }
 
         // datatype
-        DataType dataType = decodeDataType(builder.getTableName(), collector, fieldName, field, type, listItemType, true);
+        DataType dataType = decodeDataType((builder != null ? builder.getTableName() : null), collector, fieldName, field, type, listItemType, true);
 
         // determine type from datatype, if possible)
         if (type == Field.TYPE_UNKNOWN) {
