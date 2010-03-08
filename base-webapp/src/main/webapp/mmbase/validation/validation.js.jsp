@@ -29,7 +29,7 @@ function MMBaseValidator(root, id) {
     //this.changedElements  = 0;
     this.elements        = [];
 
-    this.validateHook; // deprecated
+    this.validateHook    = null; // deprecated
 
     this.root = root;
     this.setup();
@@ -1189,6 +1189,26 @@ MMBaseValidator.prototype.hasElement = function(el) {
         }
     }
     return false;
+};
+
+MMBaseValidator.prototype.getElementsWithClass = function(className) {
+    var result = [];
+    var els = this.elements;
+    for (var  i = 0; i < els.length; i++) {
+        var e = els[i];
+        if ($(e).hasClass(className)) {
+            result[result.length] = e;
+        }
+    }
+    return result;
+};
+
+MMBaseValidator.prototype.getInvalidElements = function() {
+    return this.getElementsWithClass("invalid");
+};
+
+MMBaseValidator.prototype.getValidElements = function() {
+    return this.getElementsWithClass("valid");
 };
 
 MMBaseValidator.prototype.removeValidation = function(el) {
