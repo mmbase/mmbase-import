@@ -92,7 +92,6 @@
   <c:if test="${seq eq 0 and (empty load ? true : load)}">
     <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
     <mm:include page="/mmbase/jquery/jquery.jspx" />
-    <script type="text/javascript" src="${mm:link('/mmbase/jquery/jquery.form.js')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
     <mm:link page="/mmbase/searchrelate/Searcher.js.jsp">
       <mm:param name="locale">${repository.cloud.locale}</mm:param>
       <script type="text/javascript" src="${_}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
@@ -180,15 +179,15 @@
             <form class="searchform"
                   action="${mm:link('/mmbase/searchrelate/page.jspx')}"
                   method="post">
-            <fieldset>
-              <legend><fmt:message key="search" /></legend>
-              <input class="search" type="text" value="" />
-              <a href="#mm_related_${sid}_repository" class="search"><fmt:message key="search" /></a>
-              <c:if test="${! empty create and create}">
-                <jsp:text> </jsp:text>
-                <a href="#mm_related_${sid}_repository_create" class="create"><fmt:message key="create" /></a>
-              </c:if>
-            </fieldset>
+              <fieldset>
+                <legend><fmt:message key="search" /></legend>
+                <input class="search" type="text" value="" />
+                <a href="#mm_related_${sid}_repository" class="search"><fmt:message key="search" /></a>
+                <c:if test="${! empty create and create}">
+                  <jsp:text> </jsp:text>
+                  <a href="#mm_related_${sid}_repository_create" class="create"><fmt:message key="create" /></a>
+                </c:if>
+              </fieldset>
             </form>
           </c:when>
           <c:otherwise>

@@ -279,7 +279,7 @@
 
   <mm:import from="request" id="javascript_loaded" externid="mm_list_javascript" />
 
-  <mm:import id="_load">${empty parent and ((empty javascript_loaded and empty load) or load) and load ne 'false'}</mm:import>
+  <mm:import id="_load">${empty parent and ((empty javascript_loaded and empty load) or load) and load ne 'false' and param['org.mmbase.sr.relatednodes.load'] ne 'false'}</mm:import>
   <c:if test="${_load}">
     <c:choose>
       <c:when test="${sortable}">
@@ -291,6 +291,7 @@
     </c:choose>
     <script type="text/javascript" src="${mm:link('/mmbase/jquery/jquery.timer.js')}"><jsp:text>&lt;!-- IE sucks --&gt;</jsp:text></script>
     <!-- TODO time js is more generic, of course -->
+    <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/Toggle.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
     <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/List.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
     <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/Searcher.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
     <mm:write request="mm_list_javascript" value="yes" />
