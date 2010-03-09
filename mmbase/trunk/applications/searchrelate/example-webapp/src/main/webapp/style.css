@@ -178,3 +178,10 @@ div.mm_check_error {
   font-weight: bold;
   color: red;
 }
+
+a.toggle {
+  display:block;
+  width: 100%;
+  background-color: #fff;
+  border-bottom: solid 1px #999;
+}
