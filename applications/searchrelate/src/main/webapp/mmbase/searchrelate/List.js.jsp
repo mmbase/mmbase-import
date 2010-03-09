@@ -1,10 +1,10 @@
-// -*- mode: javascript; -*-
+/*
 <%@page contentType="text/javascript; charset=UTF-8"
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"
 %><fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
 <mm:content type="text/javascript" expires="0">
-
+ */
 /**
  * This javascript binds to a div.list. It happens on document.ready on every div.list in the document. You can also call {@link #init} manually, e.g. after an AJAX load.
  *
@@ -269,7 +269,7 @@ List.prototype.init = function(el, initSearchers) {
     $(el).find("div.list:last").each(function() {
         l.seq = $(this).find("input[name = 'seq']")[0].value;
     });
-}
+};
 
 /**
  * All List instances are collected staticly
@@ -283,7 +283,7 @@ List.prototype.isMyElement = function(element) {
     return $(element).closest("div.list").filter(function() {
             return this.id == self.div.id;}).length > 0;
 
-}
+};
 /**
  * Recalculates this.valid and calls mmsrValidateHook on the form (if there is a form)
  */
@@ -324,7 +324,7 @@ List.prototype.triggerValidateHook = function() {
         $(this.form).trigger("mmsrValidateHook", [self, totalValid, totalReason, self.form]);
     } else {
     }
-}
+};
 
 List.prototype.log = function(msg) {
     if (this.logEnabled) {
@@ -353,7 +353,7 @@ List.prototype._find = function(clazz, elname, parent) {
     } else {
         return $(parent).find("not(.list").find(elname + "." + clazz);
     }
-}
+};
 
 /**
  * This methods does not find anything in _nested_ lists.
@@ -410,7 +410,7 @@ List.prototype.find = function(clazz, elname, parent) {
         }
     }
     return $(result);
-}
+};
 
 
 
@@ -429,7 +429,7 @@ List.prototype.setTabIndices = function() {
         this.tabIndex = i;
         i++;
     });
-}
+};
 
 
 List.prototype.bindCreate = function(a) {
@@ -455,7 +455,7 @@ List.prototype.bindCreate = function(a) {
                });
         return false;
     });
-}
+};
 
 /**
  * Adds an item to the list. This item can be found using a searcher, or created using the create button.
@@ -515,17 +515,17 @@ List.prototype.addItem = function(res, cleanOnFocus) {
 
     list.executeCallBack("create", r); // I think this may be deprecated. Custom events are nicer
     $(list.div).trigger("mmsrCreated", [r]); // like this.
-}
+};
 
 List.prototype.incSize = function() {
     this.cursize++;
     this.checkForSize();
-}
+};
 
 List.prototype.decSize = function() {
     this.cursize--;
     this.checkForSize();
-}
+};
 
 
 /**
@@ -549,19 +549,19 @@ List.prototype.getMessage = function(key, p) {
                 }
         });
     return $(result);
-}
+};
 
 
 List.prototype.sizeValid = function() {
     return this.cursize <= this.max && this.cursize >= this.min;
-}
+};
 
 List.prototype.setValidInForm = function() {
     if (this.form != null) {
         var validationValid = this.validator.invalidElements == 0;
         this.form.valids[this.rid] = validationValid;
     }
-}
+};
 
 /**
  * Arrange some stuff after the change of list changed.
@@ -600,7 +600,7 @@ List.prototype.checkForSize = function() {
         });
     this.triggerValidateHook();
 
-}
+};
 
 
 /**
@@ -647,7 +647,7 @@ List.prototype.bindDelete = function(a) {
             return false;
         });
 
-}
+};
 
 List.prototype.executeCallBack = function(type, element) {
     if (this.callBack != null) {
@@ -655,13 +655,13 @@ List.prototype.executeCallBack = function(type, element) {
     } else {
     }
 
-}
+};
 
 
 List.prototype.needsCommit = function() {
     //console.log("lch " + this.lastChange + " lc: " + this.lastCommit);
     return this.lastCommit.getTime() < this.lastChange.getTime();
-}
+};
 
 List.prototype.status = function(message, fadeout) {
     this.find("status", "span").each(function() {
@@ -674,18 +674,18 @@ List.prototype.status = function(message, fadeout) {
             $(this).fadeTo(4000, 0.1, function() { $(p).empty(); $(p).append(p.originalTextContent); } );
         }
     });
-}
+};
 
 List.prototype.loader = function() {
     this.status("<img class='loader icon' src='${mm:link('/mmbase/style/ajax-loader.gif')}' />");
-}
+};
 
 
 List.prototype.getListParameters = function() {
     var params = {};
     params.rid          = this.rid;
     return params;
-}
+};
 
 
 /**
@@ -750,6 +750,7 @@ List.prototype.commit = function(stale, leavePage) {
                                  if (self.validator != null) {
                                      var elementId = "mm_" + errorId.substring(9);
                                      var element = $("#" + elementId)[0];
+                                     console.log("Upload was invalid");
                                      self.validator.updateValidity(element, false);
                                  }
                              });
@@ -783,7 +784,7 @@ List.prototype.commit = function(stale, leavePage) {
 
     }
     return result;
-}
+};
 
 /**
  * All registered 'rid's as a comma seperated list, probably for use as an url parameter.
@@ -798,7 +799,7 @@ List.prototype.getRids = function() {
         rids += r;
     }
     return rids;
-}
+};
 
 
 /**
@@ -820,7 +821,7 @@ List.prototype.getRequestIds = function() {
         requestids += r;
     }
     return requestids;
-}
+};
 
 List.prototype.allInstancesLeftPage = function() {
     for (r in List.prototype.instances) {
@@ -829,7 +830,7 @@ List.prototype.allInstancesLeftPage = function() {
         }
     }
     return true;
-}
+};
 
 List.prototype.leavePage = function() {
     $(self.div).trigger("mmsrLeavePage", [self]);
@@ -842,7 +843,7 @@ List.prototype.leavePage = function() {
         $.ajax({ type: "GET", async: false, data: params, url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
     }
     $(self.div).trigger("mmsrAfterLeavePage", [self]);
-}
+};
 
 
 
@@ -863,7 +864,7 @@ List.prototype.getOrder = function(ol) {
             order += self.getNodeForLi(this);
         });
     return order;
-}
+};
 
 
 
@@ -884,7 +885,7 @@ List.prototype.getOrder = function(ol) {
         });
 
     //console.log(order);
-}
+};
 
 List.prototype.relate = function(event, relate, relater) {
     var list = this;
@@ -906,7 +907,7 @@ List.prototype.relate = function(event, relate, relater) {
 
             }
         });
-}
+};
 
 
 /**
@@ -918,7 +919,7 @@ List.prototype.getLiForNode = function(nodenumber) {
     } catch (ex) {
         this.log(ex);
     }
-}
+};
 
 
 /**
@@ -932,7 +933,7 @@ List.prototype.getNodeForLi  = function(li) {
 	return null;
     }
 
-}
+};
 
 /**
  * The 'original' position of an item in a list - so the position before the user made any changes - is stored in a css
@@ -949,7 +950,7 @@ List.prototype.getOriginalPosition  = function(li) {
     }
     // No original position found? That's an error.
     throw("No original position found for " + $(li).text());
-}
+};
 
 List.prototype.afterPost = function() {
     this.log("posted!" + this.order);
@@ -1000,7 +1001,7 @@ List.prototype.afterPost = function() {
             //console.log("No need to save order for " + self.rid + " " + order + " " + originalOrder);
         }
     }
-}
+};
 
 /**
  * The method is meant to be used in the 'setup' configuration handler ot tinyMCE.
@@ -1024,7 +1025,7 @@ List.prototype.setupTinyMCE = function(ed) {
         prev.empty().append(textarea.val());
         prev.css("display", "inline-block");
 
-    }
+    };
     // called on entrance of an editor.
     // removes the possibly previous active editor, and set activeEditor
     var activate = function(ed) {
@@ -1034,7 +1035,7 @@ List.prototype.setupTinyMCE = function(ed) {
 
             activeEditor = ed;
         }
-    }
+    };
 
     // tinyMCE does not provide an actual blur event.
     // It is emulated by 'mousedown' on the entire page to detect blur
@@ -1058,7 +1059,7 @@ List.prototype.setupTinyMCE = function(ed) {
 	//This triggers MMBaseValidator
         $("#" + ed.editorId).trigger("paste");
     });
-}
+};
 
 /**
  * Binds the events to a text-area to make it editable via tinyMCE.
@@ -1079,6 +1080,8 @@ List.prototype.tinymce = function(el, tinyMceConfiguration) {
              self.tinymce(tinyMceConfiguration);
 
          });
- }
+ };
+/*
  </mm:content>
 </fmt:bundle>
+*/
