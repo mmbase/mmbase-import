@@ -750,7 +750,6 @@ List.prototype.commit = function(stale, leavePage) {
                                  if (self.validator != null) {
                                      var elementId = "mm_" + errorId.substring(9);
                                      var element = $("#" + elementId)[0];
-                                     console.log("Upload was invalid");
                                      self.validator.updateValidity(element, false);
                                  }
                              });
