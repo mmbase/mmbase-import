@@ -27,9 +27,11 @@
  */
 
 
-$(document).ready(function() {
-    List.prototype.init(document, false);
-});
+$(document).ready(
+    function() {
+        List.prototype.init(document, false);
+    }
+);
 
 
 
@@ -68,7 +70,6 @@ function List(d) {
         this.form = $(this.div).parents("form")[0];
         this.form.valids = {};
     }
-
 
     if (this.sortable) {
         if (! this.autosubmit) {
@@ -269,6 +270,8 @@ List.prototype.init = function(el, initSearchers) {
     $(el).find("div.list:last").each(function() {
         l.seq = $(this).find("input[name = 'seq']")[0].value;
     });
+
+
 };
 
 /**
