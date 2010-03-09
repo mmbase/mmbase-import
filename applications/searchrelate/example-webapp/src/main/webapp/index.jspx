@@ -170,9 +170,15 @@
               <a href="${_}">Loaded with javascript</a>
             </mm:link>
           </li>
-          <li>
+          <li class="done">
             <mm:link page="mmform-ajax.jspx" referids="${referids}">
               <a href="${_}">Loaded with javascript in an mm:form</a>
+            </mm:link>
+          </li>
+
+          <li>
+            <mm:link page="lazy.jspx" referids="${referids}">
+              <a href="${_}">Lazy loaded items</a>
             </mm:link>
           </li>
         </ul>
