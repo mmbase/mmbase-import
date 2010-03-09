@@ -45,16 +45,24 @@ public class BooleanHandler extends AbstractTypeHandler {
             return eh.htmlInput(node, field, search);
         } else {
             StringBuilder buffer = new StringBuilder();
-            buffer.append("<input type=\"checkbox\" class=\"");
+            buffeR.append("<input type=\"checkbox\" class=\"");
             buffer.append(getClasses(node, field));
             buffer.append("\" name=\"").append(prefix(field.getName())).append("\" ");
             buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");
             Object value = getFieldValue(node, field, ! search);
-            log.debug("Found " + value);
-            if (value.equals(Boolean.TRUE)) {
-                buffer.append("checked=\"checked\"");
+            if (value == null) {
+                log.debug("Found null");
+            } else {
+                log.debug("Found " + value.getClass() + " " + value);
+            }
+            if (Boolean.TRUE.equals(org.mmbase.util.Casting.toBoolean(value))) {
+              buffer.append("checked=\"checked\"");
             }
             buffer.append(" />");
+
+            // The following is needed because for a checkbox itself there is no distinction between 'not posted at all', and 'false'.
+            String hidden = prefix(field.getName()) + "_check";
+            buffer.append("<input type=\"hidden\" name=\"").append(hidden).append("\" value=\"yes\" />");
             return buffer.toString();
         }
 
@@ -100,13 +108,18 @@ public class BooleanHandler extends AbstractTypeHandler {
          return  super.cast(value, node, field);
     }
 
+
     @Override
     public Object getFieldValue(Node node, Field field) throws JspTagException {
         Object v = super.getFieldValue(node, field);
         EnumHandler eh = getEnumHandler(null, field);
         if (eh == null) {
             // check-boxes.
+          boolean posted = "yes".equals(tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()) + "_check"));
+          if (posted) {
             v = "on".equals(v);
+          }
+
         }
         return v;
     }
