@@ -45,7 +45,7 @@ public class BooleanHandler extends AbstractTypeHandler {
             return eh.htmlInput(node, field, search);
         } else {
             StringBuilder buffer = new StringBuilder();
-            buffeR.append("<input type=\"checkbox\" class=\"");
+            buffer.append("<input type=\"checkbox\" class=\"");
             buffer.append(getClasses(node, field));
             buffer.append("\" name=\"").append(prefix(field.getName())).append("\" ");
             buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");
