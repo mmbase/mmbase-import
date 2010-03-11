@@ -80,12 +80,12 @@ public class WizardController implements Controller {
         command.processActions(request, response, resultContainer);
 
         if (resultContainer.hasGlobalErrors() || resultContainer.hasFieldErrors()) {
-            log.debug("Errors found, transaction not committed.");
+            log.debug("Errors found, transaction not committed, but cancelled");
             transaction.cancel();
 
         } else {
             log.debug("No errors found. Commit transaction [" + transaction.getName() + "] and put the cache flush hints on the request.");
-            resultContainer.getTransaction().commit();
+            transaction.commit();
 
 
             // create the request type cache flush hint
