@@ -38,13 +38,15 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public abstract class AbstractNodeAction extends Action {
 
+    private static final org.mmbase.util.logging.Logger log = Logging.getLoggerInstance(AbstractNodeAction.class);
+
     private Map<String, String> fields = new HashMap<String, String>();
     // private Map<String, DateTime> dateFields = new HashMap<String, DateTime>();
-    private Map<String, DateTime> dateFields = MapUtils.lazyMap(new HashMap<String, DateTime>(), FactoryUtils
+    private  Map<String, DateTime> dateFields = MapUtils.lazyMap(new HashMap<String, DateTime>(), FactoryUtils
             .instantiateFactory(DateTime.class));
     private String id = null;
     private MultipartFile file = null;
-    private static org.mmbase.util.logging.Logger log = Logging.getLoggerInstance(AbstractNodeAction.class);
+
 
     /**
      *This property can contain a set of comma-separated fields that will be filtered by
@@ -301,6 +303,11 @@ public abstract class AbstractNodeAction extends Action {
         resultContainer.addFieldError(new FieldError(field, "error.field.message", new String[] { field, message },
                 getLocale()));
     }
+    protected final void addFieldErrorTypeMessage(String field, Throwable e) {
+        FieldError error = new FieldError(field, "error.field.message", new String[] { field, e.getMessage() }, getLocale());
+        error.initCause(e);
+        resultContainer.addFieldError(error);
+    }
 
     /**
      * Creates a field error for this action, where the value set on some field is invalid. This method uses it's own
@@ -462,7 +469,7 @@ public abstract class AbstractNodeAction extends Action {
                     setChanged();
                 }
             } catch (ParseException e) {
-                addFieldErrorTypeMessage(field, e.getMessage());
+                addFieldErrorTypeMessage(field, e);
             }
         }
 
@@ -534,7 +541,7 @@ public abstract class AbstractNodeAction extends Action {
 
             }
         } catch (IOException e) {
-            addFieldErrorTypeMessage("file", "" + e);
+            addFieldErrorTypeMessage("file", e);
         }
         if (changed) {
             setChanged();
