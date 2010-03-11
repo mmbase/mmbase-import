@@ -64,20 +64,25 @@ public class WizardController implements Controller {
 
         Command command = commandFactory.getNewInstance();
         Transaction transaction = cloudFactory.createTransaction(request);
-
-        if(log.isDebugEnabled()){
-            log.debug("*********************************");
-            log.debug("Processing new request with transaction [" + transaction.getName() + "]");
-            log.debug("*********************************");
-        }
-
-        // do the data binding
-        ServletRequestDataBinder binder = new ServletRequestDataBinder(command);
-        binder.bind(request);
-
-        // process all the actions.
         ResultContainer resultContainer = new ResultContainer(request, response, transaction, locale);
-        command.processActions(request, response, resultContainer);
+        try {
+            if(log.isDebugEnabled()){
+                log.debug("*********************************");
+                log.debug("Processing new request with transaction [" + transaction.getName() + "]");
+                log.debug("*********************************");
+            }
+
+            // do the data binding
+            ServletRequestDataBinder binder = new ServletRequestDataBinder(command);
+            binder.bind(request);
+
+            // process all the actions.
+
+            command.processActions(request, response, resultContainer);
+        } catch (Exception e) {
+            transaction.cancel();
+            throw e;
+        }
 
         if (resultContainer.hasGlobalErrors() || resultContainer.hasFieldErrors()) {
             log.debug("Errors found, transaction not committed, but cancelled");
@@ -98,8 +103,9 @@ public class WizardController implements Controller {
 
         }
 
-        // return the proper view.
+            // return the proper view.
         return viewResolver.getModelAndView(request, resultContainer);
+
 
     }
 
