@@ -78,6 +78,7 @@ public class Jumpers extends MMObjectBuilder {
                 public String getFunctionValue(Parameters parameters) {
                     String key = parameters.getString("key");
                     boolean reload = org.mmbase.util.Casting.toBoolean(parameters.get("reload"));
+                    log.debug("Calculating jumper " + reload);
                     return getJump(key, reload);
                 }
             });
@@ -404,8 +405,12 @@ public class Jumpers extends MMObjectBuilder {
                         if (node != null) {
                             log.debug("Found node " + ikey);
                             synchronized(this) {
-                                url = (String) jumpCache.get(key);
-                                log.debug("found from jumpcache '" + url + "'");
+                                if (! reload) {
+                                    url = (String) jumpCache.get(key);
+                                    log.debug("found from jumpcache '" + url + "'");
+                                } else {
+                                    log.debug("requested reload so jumpcache not consulted");
+                                }
                                 if (url == null) {
                                     log.debug("Applying " + strategy);
                                     url = strategy.calculate(node);
@@ -502,7 +507,7 @@ public class Jumpers extends MMObjectBuilder {
                     oldurl = node.getStringValue("url");
                     node.setValue("url",url);
                     node.commit();
-                    log.info("dbcache: put: update detected for number("+number+"): old("+oldurl+") -> new("+url+")");
+                    log.debug("dbcache: put: update detected for number("+number+"): old("+oldurl+") -> new("+url+")");
 
                  // and remove double
                  } else {
