@@ -12,11 +12,8 @@ package org.mmbase.applications.vprowizards.spring;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
- * TODO. A GlobalError describes an exceptional situation. It should be an Exception, and it should be thrown.
- * Errors are obscured now by lack of stack-traces, and the code is littered with try/catch-blocks.
  */
 
 public class GlobalError extends RuntimeException {
@@ -82,10 +79,6 @@ public class GlobalError extends RuntimeException {
 
     }
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
 
     private void initBundle(Locale locale) {
         if (locale == null) {
