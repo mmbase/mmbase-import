@@ -71,10 +71,14 @@ public class Jumpers extends MMObjectBuilder {
         };
     {
         jumpCache.putCache();
-        addFunction(new AbstractFunction("jump", new Parameter[] {new Parameter("key", String.class, true) }, ReturnType.STRING) {
+        addFunction(new AbstractFunction("jump", new Parameter[] {
+                    new Parameter("key", String.class, true),
+                    new Parameter("reload", Boolean.class, Boolean.FALSE)
+                }, ReturnType.STRING) {
                 public String getFunctionValue(Parameters parameters) {
                     String key = parameters.getString("key");
-                    return getJump(key);
+                    boolean reload = org.mmbase.util.Casting.toBoolean(parameters.get("reload"));
+                    return getJump(key, reload);
                 }
             });
     }
@@ -234,11 +238,11 @@ public class Jumpers extends MMObjectBuilder {
      * @return the found alternate url.
      */
     public String getJump(StringTokenizer tok) {
-        return getJump(tok,false);
+        return getJump(tok, false);
     }
     public String getJump(StringTokenizer tok, boolean reload) {
         String key = tok.nextToken();
-        return getJump(key,reload);
+        return getJump(key, reload);
     }
 
     public String getJump(String key){
@@ -392,7 +396,9 @@ public class Jumpers extends MMObjectBuilder {
             if (url == null) {
                 // no direct url call its builder
                 if (ikey >= 0) {
-                    url = jumperDatabaseCache_get(key);
+                    if (! reload) {
+                        url = jumperDatabaseCache_get(key);
+                    }
                     if (url == null) {
                         MMObjectNode node = getNode(ikey);
                         if (node != null) {
