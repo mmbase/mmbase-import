@@ -41,7 +41,7 @@ public class CreateNodeAction extends AbstractNodeAction {
     }
 
 
-    public final String getNodenType() {
+    public final String getNodeType() {
         return this.nodeType;
     }
 
