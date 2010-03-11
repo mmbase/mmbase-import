@@ -19,7 +19,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * Errors are obscured now by lack of stack-traces, and the code is littered with try/catch-blocks.
  */
 
-public class GlobalError {
+public class GlobalError extends RuntimeException {
 
     /**
      * This is the type of error that is created when something went wrong, and the transaction can not be committed in
@@ -37,6 +37,7 @@ public class GlobalError {
      *            the key of the error message in the resourceBundle with messages
      */
     public GlobalError(String messageKey, Locale locale) {
+        super(messageKey);
         this.messageKey = messageKey;
         initBundle(locale);
     }
@@ -48,9 +49,8 @@ public class GlobalError {
      * @param properties
      */
     public GlobalError(String messageKey, String[] properties, Locale locale) {
-        this.messageKey = messageKey;
+        this(messageKey, locale);
         this.properties = properties;
-        initBundle(locale);
     }
 
     public String getMessageKey() {
