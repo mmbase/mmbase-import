@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * this class is a bean for storing a date and a time.
  * They are separate becouse you may want to use different input fields in the
  * html form.
- * You can set the date formate for date and time separetely. default is: dd-MM-yyyy kk:mm:ss
+ * You can set the date formate for date and time separetely. default is: dd-MM-yyyy HH:mm:ss
  *
  */
 public class DateTime {
