@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
-*/ 
+*/
 package org.mmbase.applications.vprowizards.spring;
 
 import java.util.Locale;
@@ -14,12 +14,17 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+/**
+ * TODO. A GlobalError describes an exceptional situation. It should be an Exception, and it should be thrown.
+ * Errors are obscured now by lack of stack-traces, and the code is littered with try/catch-blocks.
+ */
+
 public class GlobalError {
 
     /**
      * This is the type of error that is created when something went wrong, and the transaction can not be committed in
      * the end. A global error is a kind of error that will return an error page, in stead of the referrer page.
-     * 
+     *
      * @author Ernst Bunders
      */
     private static ResourceBundle bundle = null;
@@ -38,7 +43,7 @@ public class GlobalError {
 
     /**
      * Use this constructor if the message is a template that contains certain placeholders to be replaced.
-     * 
+     *
      * @param messageKey
      * @param properties
      */

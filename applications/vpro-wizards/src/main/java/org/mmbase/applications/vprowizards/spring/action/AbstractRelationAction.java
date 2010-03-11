@@ -22,6 +22,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
+ * @javadoc
  * @author Ernst Bunders
  *
  */
@@ -129,7 +130,7 @@ public abstract class AbstractRelationAction extends AbstractNodeAction {
      * @return true when source and destination nodes are found
      */
     protected final boolean resolveSourceAndDestination(Transaction transaction, Map<String, Node> idMap) {
-        sourceNode = resolveNode("error.create.relation.nosource", sourceNodeRef, sourceNodeNumber, idMap, transaction);
+        sourceNode      = resolveNode("error.create.relation.nosource", sourceNodeRef, sourceNodeNumber, idMap, transaction);
         destinationNode = resolveNode("error.create.relation.nodestination", destinationNodeRef, destinationNodeNumber,
                                       idMap, transaction);
         return (sourceNode != null && destinationNode != null);

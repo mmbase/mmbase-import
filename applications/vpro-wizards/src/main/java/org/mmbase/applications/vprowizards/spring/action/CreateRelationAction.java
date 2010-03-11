@@ -122,6 +122,7 @@ public class CreateRelationAction extends AbstractRelationAction {
 
             return Integer.valueOf(position);
         } catch (RuntimeException e) {
+            // WTF Catching exceptions is evil.
             addGlobalError("error.unexpected", new String[] { e.getMessage() });
             log.error("something went wrong running a query to find out the position of a new relation. query: ["
                       + q.toString() + "]", e);
