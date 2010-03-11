@@ -26,16 +26,17 @@
 
 <div class="add">
   <c:url value="${wizardfile}.jsp" var="link">
-    <c:if test="${not empty relationrole}">
+    <c:if test="${not empty parentnodenr}">
       <c:param name="relationrole" value="${relationrole}" />
       <c:if test="${not empty searchdir}"><c:param name="searchdir" value="${searchdir}" /></c:if>
       <c:if test="${not empty searchdir}"><c:param name="parentnodenr" value="${parentnodenr}" /></c:if>
     </c:if>
   </c:url>
-  <a href="${link}&${extraparams}" class="addButton">
+  <a href="${link}${empty parentnodenr ? '?' : '&'}${extraparams}" class="addButton">
     <c:choose>
       <c:when test="${not empty text}"> ${text} </c:when>
-      <c:otherwise>nieuw(e) ${wizardfile}</c:otherwise> <!-- so much for i18n -->
+      <c:otherwise>nieuw(e) ${wizardfile}</c:otherwise> <%--so much for i18n --%>
     </c:choose>
-  <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new.png" class="icon" border="0" /></a>
+    <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new.png" class="icon" border="0" />
+  </a>
 </div>
