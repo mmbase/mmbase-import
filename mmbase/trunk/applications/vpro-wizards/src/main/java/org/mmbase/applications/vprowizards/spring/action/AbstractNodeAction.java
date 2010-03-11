@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
  * this is a template class for the 'real' node actions
 
  * Is it more or less a redo of {@link org.mmbase.datatypes.handler.html}
+ * @javadoc Why?
  *
  * @author ebunders
  *
@@ -315,6 +316,8 @@ public abstract class AbstractNodeAction extends Action {
 
     /**
      * Creates a global error for this action.
+
+     * This is an example of exception reimplementation. This should all be dropped and actual exceptions should be used.
      *
      * @param key
      * @param placeholderValues
