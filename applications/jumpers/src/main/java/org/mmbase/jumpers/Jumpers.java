@@ -178,6 +178,7 @@ public class Jumpers extends MMObjectBuilder {
             log.service("using " + strat);
             try {
                 JumperStrategy js = (JumperStrategy) Class.forName(strat).newInstance();
+                log.service("adding " + js.getClass() + " " + js);
                 strategy.add(js);
             } catch(java.lang.ClassNotFoundException e) {
                 log.error(e.getClass() + " " + strat + ": " + e.getMessage());
@@ -395,8 +396,11 @@ public class Jumpers extends MMObjectBuilder {
             if (url == null) {
                 // no direct url call its builder
                 if (ikey >= 0) {
+                    String cachedDatabaseUrl = null;
                     if (! reload) {
                         url = jumperDatabaseCache_get(key);
+                    } else {
+                        cachedDatabaseUrl = jumperDatabaseCache_get(key);
                     }
                     if (url == null) {
                         MMObjectNode node = getNode(ikey);
@@ -413,7 +417,9 @@ public class Jumpers extends MMObjectBuilder {
                                     log.debug("Applying " + strategy);
                                     url = strategy.calculate(node);
                                     if (url != null) {
-                                        jumperDatabaseCache_put(key, url);
+                                        if (! url.equals(cachedDatabaseUrl)) {
+                                            jumperDatabaseCache_put(key, url);
+                                        }
                                         jumpCache.put(key, url);
                                         log.debug("Found " + url);
                                         return url;
