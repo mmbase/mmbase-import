@@ -36,10 +36,11 @@ $(document).ready(
                                               }
                                           }
                                           var href = a.attr("href");
-                                          // var id = blockId.replace("-", "_");
                                           var lazypart = "${mm:link('/mmbase/searchrelate/list/lazy-part.jspx')}";
 
                                           var id = $(li).attr("id"); // TODO: find a nice, reproducable, unique id for this item, preferable without the node-number, because that
+                                          id = id.replace("-", "_"); // should be valid context identifier
+
                                           // changes after commit of a new node (:-()
                                           unloadedblock.load(lazypart,
                                                              {requestID: id,
