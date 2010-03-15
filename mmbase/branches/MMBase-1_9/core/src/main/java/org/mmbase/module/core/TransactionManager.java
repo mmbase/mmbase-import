@@ -11,6 +11,7 @@ package org.mmbase.module.core;
 
 import java.util.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.core.event.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -32,7 +33,7 @@ public class TransactionManager {
      * NO:   The node does not exists yet, but will be created on commit
      * YES:  The node already existed befor the transaction started.
      * NOLONGER: The node alreayd existed, but will be deleted by the transaction. Or, it was created and deleted in the transaction.
-     * UNDEFINED: Just a value used to indicte that the corresponding _exists field is not filled
+     * UNDEFINED: Just a value used to indicate that the corresponding _exists field is not filled
      */
     public static enum Exists {
         NO,
@@ -52,7 +53,7 @@ public class TransactionManager {
     private TemporaryNodeManager tmpNodeManager;
     private TransactionResolver transactionResolver;
 
-    protected Map<String, Collection<MMObjectNode>> transactions = new HashMap<String, Collection<MMObjectNode>>();
+    protected final Map<String, Collection<MMObjectNode>> transactions = new HashMap<String, Collection<MMObjectNode>>();
 
     public static TransactionManager instance;
 
@@ -126,6 +127,7 @@ public class TransactionManager {
             // That is a hack.
 
             transactions.put(transactionName, transactionNodes);
+            EventManager.getInstance().propagateEvent(new TransactionEvent.Create(transactionName));
             return transactionNodes;
         } else {
             throw new TransactionManagerException("Transaction " + transactionName + " already exists");
@@ -213,14 +215,41 @@ public class TransactionManager {
      * @todo Review this stuff..
      * @since MMBase-1.9
      */
-    public boolean resolve(String transactionName) throws TransactionManagerException {
+    public boolean resolve(final String transactionName) throws TransactionManagerException {
 
         // MM: I think we need an actual Transaction object! with e.g. a property 'resolved'.
 
         Collection<MMObjectNode> transaction = getTransaction(transactionName);
         if (transaction instanceof Vector) { // a bit of a trick to see if it is committed already
             try {
-                getTransactionResolver().resolve(transaction);
+                final Map<String, Integer> resolution = getTransactionResolver().resolve(transaction);
+                Map<Integer, Integer> integerResolution = new AbstractMap<Integer, Integer>() {
+                    public Set<Map.Entry<Integer, Integer>> entrySet() {
+                        return new AbstractSet<Map.Entry<Integer, Integer>>() {
+                            public int size() {
+                                return resolution.size();
+                            }
+                            public Iterator<Map.Entry<Integer, Integer>> iterator() {
+                                return new Iterator<Map.Entry<Integer, Integer>>() {
+                                    private final Iterator<Map.Entry<String, Integer>> i = resolution.entrySet().iterator();
+                                    public boolean hasNext() {
+                                        return i.hasNext();
+                                    }
+                                    public Map.Entry<Integer, Integer> next() {
+                                        Map.Entry<String, Integer> e = i.next();
+                                        return new org.mmbase.util.Entry<Integer, Integer>(Integer.parseInt(e.getKey().substring(transactionName.length() + 1)),
+                                                                                           e.getValue());
+
+                                    }
+                                    public void remove() {
+                                        throw new UnsupportedOperationException();
+                                    }
+                                };
+                            }
+                        };
+                    }
+                };
+                EventManager.getInstance().propagateEvent(new TransactionEvent.Resolve(transactionName, integerResolution));
             } catch (TransactionManagerException te) {
                 throw new TransactionManagerException("Can't resolve transaction " + transactionName + " (it has " + transaction.size() + " nodes)", te);
             }
@@ -236,9 +265,12 @@ public class TransactionManager {
         try {
             resolve(transactionName);
             transactions.put(transactionName, Collections.unmodifiableCollection(transaction)); // makes it recognizable, and also the transaction is unusable after that
+
             if (!performCommits(user, transaction)) {
                 throw new TransactionManagerException("Can't commit transaction " + transactionName);
             }
+
+            EventManager.getInstance().propagateEvent(new TransactionEvent.Commit(transactionName));
 
 
         } finally {
