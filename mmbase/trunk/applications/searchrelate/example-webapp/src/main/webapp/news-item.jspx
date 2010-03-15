@@ -15,31 +15,7 @@
     <mm:fieldinfo type="errors" />
   </mm:field>
 
-  <mm-sr:relatednodes
-      idvar="rid"
-      type="people"
-      role="related"
-      min="1"
-      search="true"
-      fields="number,firstname">
-    <h4><span class="debug">${rid} </span>authors</h4>
-  </mm-sr:relatednodes>
-
-  <mm-sr:relatednodes
-      idvar="rid"
-      type="urls"
-      search="true"
-      sortable="true"
-      fields="url">
-    <h4><span class="debug">${rid} </span>urls</h4>
-  </mm-sr:relatednodes>
-
-  <mm-sr:relatednodes
-      idvar="rid"
-      type="images"
-      search="true">
-    <h4><span class="debug">${rid} </span>images</h4>
-  </mm-sr:relatednodes>
+  <mm:include page="news-item-relations.jspx" />
 
   <mm-sr:unlink />
   <mm-sr:delete />

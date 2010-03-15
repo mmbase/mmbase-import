@@ -184,4 +184,5 @@ a.toggle {
   width: 100%;
   background-color: #fff;
   border-bottom: solid 1px #999;
+  cursor: pointer;
 }
