@@ -15,9 +15,8 @@
   <jsp:directive.attribute name="page" required="true" />
 
   <div class="unloaded">
-    <mm:link  page="${page}" referids="_node@node">
-      <mm:param name="formname">${requestScope['org.mmbase.bridge.jsp.taglib.form'].name}</mm:param>
-      <a href="${_}" class="lazyloading">
+    <mm:link  page="${page}" absolute="context">
+      <a href="${_}" class="lazyloading node_${_node}">
         <img class='loader icon' src="${mm:link('/mmbase/style/ajax-loader.gif')}" />
       </a>
     </mm:link>
