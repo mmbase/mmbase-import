@@ -149,7 +149,7 @@ class TransactionResolver {
      *
      * @throws TransactionManagerException if the transactiosn could not be successfully completely resolved.
     */
-    void resolve(final Collection<MMObjectNode> nodes) throws TransactionManagerException {
+    Map<String, Integer> resolve(final Collection<MMObjectNode> nodes) throws TransactionManagerException {
         final Map<String, Integer> numbers = new TreeMap<String, Integer>(); /* Temp key -> Real node number */
         final Map<MMObjectNode, Collection<String>> nnodes  = new TreeMap<MMObjectNode, Collection<String>>(COMP); /* MMObjectNode --> List of changed fields */
 
@@ -254,6 +254,7 @@ class TransactionResolver {
             check(nodes);
 
         }
+        return numbers;
     }
 }
 
