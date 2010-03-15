@@ -1,6 +1,5 @@
 /* <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <mm:content type="text/javascript">
-
  Heartbeat
 */
 
@@ -12,10 +11,11 @@ function HeartBeat() {
 
 HeartBeat.prototype.callBack = function() {
     var self = this;
+    var callBack = HeartBeat.prototype.callBack;
     $.get("${mm:link('/mmbase/searchrelate/heartbeat.jspx')}",
           function(data){
               self.wait = $(data).text() * 500;
-              setTimeout(self.callBack, self.wait);
+              setTimeout(callBack, self.wait);
         });
 };
 
