@@ -6,7 +6,6 @@
     xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
-
   <mm:field name="number" />
   <jsp:text>: </jsp:text>
 
@@ -16,9 +15,9 @@
   </mm:field>
 
 
-  <mm-srt:toggle>
-    <mm-srt:lazy page="news-item-relations.jspx" />
-  </mm-srt:toggle>
+  <mm-sr:toggle>
+    <mm-sr:lazy page="/news-item-relations.jspx" />
+  </mm-sr:toggle>
 
   <mm-sr:unlink />
   <mm-sr:delete />
