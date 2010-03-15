@@ -26,11 +26,17 @@
           <jsp:expression>org.mmbase.bridge.util.Queries.reorderResult(query, iorder)</jsp:expression>
         </c:when>
         <c:otherwise>
-          <mm:import externid="order" required="true" jspvar="order" vartype="string" />
+          <mm:import externid="order" required="true" jspvar="order" vartype="list" />
           <!-- do it later, there is little point, it won't work any way in a transaction -->
+          <mm:write session="${rid}_order" referid="order" />
+          <jsp:text>${rid}_order: ${order}</jsp:text>
+          <mm:write value="${rid}_order" jspvar="sessionKey" vartype="string">
+            <jsp:scriptlet>org.mmbase.searchrelate.SessionCleaner.getInstance(pageContext.getSession()).addKey(sessionKey);</jsp:scriptlet>
+          </mm:write>
           <mm:form name="${parameters.formtag}">
-            <mm:write session="${rid}_order" referid="order" />
-            <jsp:text>${rid}_order: ${order}</jsp:text>
+            <mm:write value="${requestScope['org.mmbase.transaction'].account}" jspvar="fn" vartype="string">
+              <jsp:scriptlet>org.mmbase.searchrelate.OrderSubmitter.getInstance(fn).setOrder(query, order);</jsp:scriptlet>
+            </mm:write>
           </mm:form>
         </c:otherwise>
       </c:choose>
