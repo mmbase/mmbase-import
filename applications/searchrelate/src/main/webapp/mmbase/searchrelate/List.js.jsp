@@ -987,7 +987,6 @@ List.prototype.afterPost = function() {
         var params = this.getListParameters();
         params.order = order;
         params.originalOrder = originalOrder;
-        var self = this;
         if (needsSave) {
             this.loader();
             //console.log("Submitting order for " + this.rid + " " + params.originalOrder + "-> " + params.order );
