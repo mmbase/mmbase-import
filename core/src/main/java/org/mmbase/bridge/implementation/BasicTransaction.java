@@ -100,7 +100,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     /**
      */
     @Override
-    String getAccount() {
+    public String getAccount() {
         // should be something different than for normal clouds, so use the transaction-name
         return transactionName;
     }
@@ -194,7 +194,8 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                 if (log.isDebugEnabled()) {
                     log.debug("Commit transaction '" + transactionName + "' with " + getCoreNodes().size() + " nodes");
                 }
-
+                committed = true; // In case something happens in a TransactionEvent, it should be clear that this transaction is already
+                                  // committed
                 BasicCloudContext.transactionManager.commit(userContext, transactionName);
 
 
@@ -205,7 +206,6 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                 throw new BridgeException(e.getMessage() + " for transaction with " + getNodes(), e);
             }
         }
-
         committed = true;
         notifyAll();
         return true;
