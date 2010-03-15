@@ -8,33 +8,28 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
 
-  <mm:node number="${param.node}">
-
-    <mm-sr:relatednodes
-        idvar="rid"
-        type="people"
-        role="related"
-        min="1"
-        search="true"
-        fields="number,firstname">
+  <mm-sr:relatednodes
+      idvar="rid"
+      type="people"
+      role="related"
+      min="1"
+      search="true"
+      fields="number,firstname">
       <h4><span class="debug">${rid} </span>authors</h4>
-    </mm-sr:relatednodes>
+      </mm-sr:relatednodes>
+  <mm-sr:relatednodes
+      idvar="rid"
+      type="urls"
+      search="true"
+      sortable="true"
+      fields="url">
+    <h4><span class="debug">${rid} </span>urls</h4>
+  </mm-sr:relatednodes>
 
-    <mm-sr:relatednodes
-        idvar="rid"
-        type="urls"
-        search="true"
-        sortable="true"
-        fields="url">
-      <h4><span class="debug">${rid} </span>urls</h4>
-    </mm-sr:relatednodes>
-
-    <mm-sr:relatednodes
-        idvar="rid"
-        type="images"
-        search="true">
-      <h4><span class="debug">${rid} </span>images</h4>
-    </mm-sr:relatednodes>
-
-  </mm:node>
+  <mm-sr:relatednodes
+      idvar="rid"
+      type="images"
+      search="true">
+    <h4><span class="debug">${rid} </span>images</h4>
+  </mm-sr:relatednodes>
 </div>
