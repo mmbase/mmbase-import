@@ -1,8 +1,9 @@
-// -*- mode: javascript; -*-
+/*
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <mm:content type="text/javascript" language="${param.locale}">
 <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
+*/
 /**
  * Generic mmbase search & relate tool. Javascript part.
  *
@@ -110,7 +111,7 @@ MMBaseRelater.ready = function(fun) {
         console.log("WARNING using deprecated function. This will be removed soon. Use mmsrRelate event in stead.");
     }
     MMBaseRelater.readyFunctions[MMBaseRelater.readyFunctions.length] = fun;
-}
+};
 
 MMBaseRelater.prototype.addSearcher = function(el, type) {
     var relater = this;
@@ -142,14 +143,14 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
             });
         });
     }
-}
+};
 
 MMBaseRelater.prototype.needsCommit = function() {
     var relatedNumbers   = this.getNumbers(this.related);
     var unrelatedNumbers = this.getNumbers(this.unrelated);
     var deletedRelations =  this.getNumbers(this.deleterels);
     return relatedNumbers != "" || unrelatedNumbers != "" || deletedRelations != "";
-}
+};
 
 /**
  * Commits makes changes to MMBase. Depends on a jsp /mmbase/searchrelate/relate.jsp to do the actual work.
@@ -158,7 +159,7 @@ MMBaseRelater.prototype.needsCommit = function() {
 MMBaseRelater.prototype.commit = function(ev) {
     var relatedNumbers   = this.getNumbers(this.related);
     var unrelatedNumbers = this.getNumbers(this.unrelated);
-    var deletedRelations = this.getNumbers(this.deleterels)
+    var deletedRelations = this.getNumbers(this.deleterels);
 
     if (relatedNumbers != "" || unrelatedNumbers != "" || deletedRelations != "") {
         var a = ev.target;
@@ -217,7 +218,7 @@ MMBaseRelater.prototype.commit = function(ev) {
         $(this.div).trigger("mmsrCommitted", [a, "nochanges", this]);
         $(a).addClass("succeeded");
     }
-}
+};
 
 /**
  * Commits selected items after acknowledgment
@@ -226,12 +227,12 @@ MMBaseRelater.prototype.commitSelections = function(id) {
     var div = $('#' + id + ' div.mm_relate_current');
     var self = this;
     var done = false;
-        
+
     // unrelate
     $.each(self.deleterels, function(key, value) {
         self.logger.debug("= unrelated: " + key);
         self.unrelate(value);
-        self.deleterels[key] = null
+        self.deleterels[key] = null;
         done = true;
     });
 
@@ -240,13 +241,13 @@ MMBaseRelater.prototype.commitSelections = function(id) {
         self.logger.debug("= related: " + key);
         if (value != null) { self.relate(value); }
         self.related[key] = null;
-        done = true
+        done = true;
     });
-    
+
     if (done) {
         self.logger.debug("done");
     }
-}
+};
 
 /**
  * Gets a the relation tr for a newly created relation in which the relation can be edited.
@@ -270,7 +271,7 @@ MMBaseRelater.prototype.getNewRelationTr = function(nodenr) {
         }
     });
     return result;
-}
+};
 
 MMBaseRelater.prototype.getNumbers = function(map) {
     var numbers = "";
@@ -281,7 +282,7 @@ MMBaseRelater.prototype.getNumbers = function(map) {
         }
     });
     return numbers;
-}
+};
 
 MMBaseRelater.prototype.bindSaverelation = function(div) {
     var self = this;
@@ -291,7 +292,7 @@ MMBaseRelater.prototype.bindSaverelation = function(div) {
             self.saverelation(ev);
         });
     });
-}
+};
 
 MMBaseRelater.prototype.bindEvents = function(rep, type) {
     var self = this;
@@ -302,7 +303,7 @@ MMBaseRelater.prototype.bindEvents = function(rep, type) {
                 $(this).toggleClass('selected');
                 self.logger.debug("found selected");
             }
-            
+
             $(this).click(function(ev) {
                 if (self.instant) {
                     self.relate(this);
@@ -318,7 +319,7 @@ MMBaseRelater.prototype.bindEvents = function(rep, type) {
                     }
                 }
                 return false;
-            })
+            });
         });
     }
     if (type == "current") {
@@ -329,7 +330,7 @@ MMBaseRelater.prototype.bindEvents = function(rep, type) {
                 self.logger.debug("found selected");
                 $(this).toggleClass('selected');
             }
-            
+
             if ($(this).hasClass("new") || (self != null && self.canUnrelate)) {    // TODO: hasClass new moet nog wat mee
                 $(this).click(function(ev) {
                     if (self.instant) {
@@ -352,22 +353,22 @@ MMBaseRelater.prototype.bindEvents = function(rep, type) {
 
         if (self.canEditrelations) self.bindSaverelation(rep);
     }
-}
+};
 
 MMBaseRelater.prototype.resetTrClasses  = function() {
     if (this.current != null) {
         this.current.searcher.resetTrClasses();
     }
     this.repository.searcher.resetTrClasses();
-}
+};
 
 MMBaseRelater.prototype.getNumber = function(tr) {
     return  $(tr).find("td.node.number").text();
-}
+};
 
 MMBaseRelater.prototype.getRelationNumber = function(tr) {
     return $(tr).find("td.node.relation").text();
-}
+};
 
 /**
  * Moves a node from the 'unrelated' repository to the list of related nodes.
@@ -394,7 +395,7 @@ MMBaseRelater.prototype.relate = function(tr) {
         this.current.searcher.inc();
         this.repository.searcher.dec();
         this.current.searcher.searchResults = {}; // empty search cache
-        
+
         // Classes
         if ($(tr).hasClass("removed")) {
             $(tr).removeClass("removed");
@@ -426,14 +427,14 @@ MMBaseRelater.prototype.relate = function(tr) {
         this.relateCallBack(tr);
     }
     $(this.div).trigger("mmsrRelate", [tr, this]);
-}
+};
 
 /**
  * Returns the relation tr('s) that belong to a node.
  */
 MMBaseRelater.prototype.getRelationTrs = function(number) {
     return $(this.div).find("tr.node_" + number);
-}
+};
 
 /**
  * Moves a node from the list of related nodes to the 'unrelated' repository.
@@ -489,10 +490,10 @@ MMBaseRelater.prototype.unrelate = function(tr) {
         return false;
     });
     $(this.div).trigger("mmsrUnrelate", [tr, this]);
-}
+};
 
 /**
- * Does not create a relation but saves a modified one. 
+ * Does not create a relation but saves a modified one.
  */
 MMBaseRelater.prototype.saverelation = function(ev) {
     ev.preventDefault();
@@ -533,7 +534,7 @@ MMBaseRelater.prototype.saverelation = function(ev) {
             }
         }
      });
-}
+};
 
 /**
  * Set mmbase context for new objects
@@ -545,7 +546,7 @@ MMBaseRelater.prototype.setContext = function(context) {
     if (this.repository != null) {
         this.repository.searcher.context = context;
     }
-}
+};
 
 MMBaseRelater.prototype.setSessionName = function(sessionName) {
     if (this.current != null) {
@@ -554,7 +555,7 @@ MMBaseRelater.prototype.setSessionName = function(sessionName) {
     if (this.repository != null) {
         this.repository.searcher.sessionName = sessionName;
     }
-}
+};
 
 MMBaseRelater.prototype.setFields = function(fields) {
     if (this.current != null) {
@@ -572,7 +573,7 @@ MMBaseRelater.prototype.setCustomizedir = function(customizedir) {
     if (this.repository != null) {
         this.repository.searcher.setCustomizedir(customizedir);
     }
-}
+};
 
 MMBaseRelater.prototype.setPageSize = function(pagesize) {
     if (this.current != null) {
@@ -581,7 +582,7 @@ MMBaseRelater.prototype.setPageSize = function(pagesize) {
     if (this.repository != null) {
         this.repository.searcher.setPageSize(pagesize);
     }
-}
+};
 
 MMBaseRelater.prototype.setMaxPages = function(maxpages) {
     if (this.current != null) {
@@ -590,7 +591,7 @@ MMBaseRelater.prototype.setMaxPages = function(maxpages) {
     if (this.repository != null) {
         this.repository.searcher.maxpages = maxpages;
     }
-}
+};
 
 /*
  * ***********************************************************************************************************************
@@ -617,12 +618,15 @@ function MMBaseSearcher(d, r, type, logger) {
     this.searchResults = {};
     this.bindEvents();
     // Arrange that pressing enter in the search-area works:
-    $(this.div).find("input.search").keypress(function(ev) {
+    $(this.div).find("input.search").keypress(
+        function(ev) {
             if (ev.which == 13) {
                 self.search(this.value, 0);
                 return false;
+            } else {
+                return true;
             }
-    });
+        });
     this.validator = this.relater.validator;
     this.searchUrl = $(this.div).find("form.searchform").attr("action");
     this.context   = "";
@@ -638,31 +642,31 @@ function MMBaseSearcher(d, r, type, logger) {
 
 MMBaseSearcher.prototype.setCustomizedir = function(customizedir) {
     this.customizedir = customizedir;
-}
+};
 
 MMBaseSearcher.prototype.setFields = function(fields) {
     this.fields = fields;
-}
+};
 
 MMBaseSearcher.prototype.setPageSize = function(pagesize) {
     this.pagesize = pagesize;
-}
+};
 
 MMBaseSearcher.prototype.getQueryId = function() {
     var searchAnchor = $(this.div).find("a.search")[0];
     var id = searchAnchor.href.substring(searchAnchor.href.indexOf("#") + 1);
     return id;
-}
+};
 
 MMBaseSearcher.prototype.getId = function() {
     var qid = this.getQueryId().substring("mm_related_".length);
     qid = qid.substring(0, qid.indexOf("_"));
     return qid;
-}
+};
 
 MMBaseSearcher.prototype.getResultDiv = function() {
-    return $(this.div).find("div.searchresult")[0]
-}
+    return $(this.div).find("div.searchresult")[0];
+};
 
 /**
  * This is called when clicking on a.search or a.navigate (when paging).
@@ -751,12 +755,12 @@ MMBaseSearcher.prototype.search = function(val, offset, anchor) {
         $(this.relater.div).trigger("mmsrPaged", [status, this.relater, this, anchor]);
     }
     return false;
-}
+};
 
 
 /**
  * If you defined in your CSS that 'implicit' search results are not visible at all, then
- * you can call this method to bind events to change the texts on the search buttons accordingly 
+ * you can call this method to bind events to change the texts on the search buttons accordingly
  * (between 'search' and 'close').
  */
 MMBaseSearcher.prototype.implicitsAreHidden = function() {
@@ -789,7 +793,7 @@ MMBaseSearcher.prototype.implicitsAreHidden = function() {
             }
 
         });
-}
+};
 
 
 MMBaseSearcher.prototype.totalSize = function(size) {
@@ -803,11 +807,11 @@ MMBaseSearcher.prototype.totalSize = function(size) {
         this.totalsize = size;
     }
     return this.totalsize;
-}
+};
 
 MMBaseSearcher.prototype.lastIndex = function(size) {
     var span = $(this.div).find("caption span.last")[0];
-    if (span == null) return;
+    if (span == null) return -1;
     if (size == null) {
         if (this.last == -1) {
             this.last = parseInt($(span).text());
@@ -817,18 +821,19 @@ MMBaseSearcher.prototype.lastIndex = function(size) {
         this.last = size;
     }
     return this.last;
-}
+};
 
 MMBaseSearcher.prototype.inc = function() {
     this.logger.debug("inc");
     this.totalSize(1 + this.totalSize());
     this.lastIndex(1 + this.lastIndex());
-}
+};
+
 MMBaseSearcher.prototype.dec = function() {
     this.logger.debug("dec");
     this.totalSize(-1 + this.totalSize());
     this.lastIndex(-1 + this.lastIndex());
-}
+};
 
 
 MMBaseSearcher.prototype.create = function () {
@@ -859,7 +864,7 @@ MMBaseSearcher.prototype.create = function () {
                     self.validator.validateHook = function(valid) {
                         if (valid) $(rep).find('input[type="submit"]').removeAttr("disabled");
                         else $(rep).find('input[type="submit"]').attr("disabled", "disabled");
-                    }
+                    };
                     var options = {
                         url: "${mm:link('/mmbase/searchrelate/create.jspx')}",
                         target:     null,
@@ -879,7 +884,7 @@ MMBaseSearcher.prototype.create = function () {
             }
            });
     $(rep).append($("<p>Creating</p>"));
-}
+};
 
 
 MMBaseSearcher.prototype.getTr = function(node) {
@@ -894,7 +899,7 @@ MMBaseSearcher.prototype.getTr = function(node) {
             }
            });
     return result;
-}
+};
 
 MMBaseSearcher.prototype.deleteNewlyRemoved = function(rep) {
     this.logger.debug("Deleting newly removed");
@@ -912,7 +917,7 @@ MMBaseSearcher.prototype.deleteNewlyRemoved = function(rep) {
         this.resetTrClasses();
     }
 
-}
+};
 
 MMBaseSearcher.prototype.filter = function(tr) {
     if (this.type == "repository" && this.relater != null) {
@@ -921,7 +926,7 @@ MMBaseSearcher.prototype.filter = function(tr) {
     } else {
         return false;
     }
-}
+};
 
 MMBaseSearcher.prototype.addNewlyRelated = function(rep) {
     if (this.relater != null && this.type == "current") {
@@ -932,7 +937,7 @@ MMBaseSearcher.prototype.addNewlyRelated = function(rep) {
             $(rep).find("table tbody").append(value);
         });
     }
-}
+};
 
 MMBaseSearcher.prototype.bindEvents = function() {
     if (this.relater != null) {
@@ -946,7 +951,7 @@ MMBaseSearcher.prototype.bindEvents = function() {
         var id = anchor.href.substring(anchor.href.indexOf("#") + 1, anchor.href.lastIndexOf("_"));
         return self.search(document.getElementById(id), anchor.name, anchor);
     });
-}
+};
 
 MMBaseSearcher.prototype.resetTrClasses = function() {
     this.logger.debug("Resetting tr's");
@@ -956,7 +961,9 @@ MMBaseSearcher.prototype.resetTrClasses = function() {
         $(this).removeClass("even");
         $(this).addClass(i % 2 == 0 ? "odd" : "even");
     });
-}
+};
 
+/*
 </fmt:bundle>
 </mm:content>
+*/
