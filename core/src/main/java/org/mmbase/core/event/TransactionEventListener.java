@@ -9,8 +9,8 @@ package org.mmbase.core.event;
 /**
  *
  * @author Michiel Meeuwissen
- * @since MMBase-1.8
- * @version $Id: TransactionEventListener.java 41369 2010-03-15 20:54:45Z michiel $
+ * @since MMBase-1.9.3
+ * @version $Id: TransactionEventListener.java 41419 2010-03-16 12:54:44Z michiel $
  */
 public interface TransactionEventListener extends EventListener {
     public void notify(TransactionEvent event);
