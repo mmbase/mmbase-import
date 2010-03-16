@@ -8,9 +8,9 @@
   <mm-sre:form>
 
     <mm:node number="default.mags">
-      <mm-sr:relatednodes
+      <mm-srt:relatednodes
           type="news" orderby="posrel.pos" sortable="true" role="posrel"
-          item="/lazy-news-item.jspx"
+          item="lazy-news-item.jspx"
           />
     </mm:node>
   </mm-sre:form>
