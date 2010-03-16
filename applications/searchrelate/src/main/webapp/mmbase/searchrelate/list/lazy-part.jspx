@@ -20,7 +20,7 @@
         <c:choose>
           <c:when test="${! parameters.autosubmit or ! empty parameters.formtag}">
             <mm:form name="${parameters.formtag}">
-              <mm:node number="${node}">
+              <mm:node number="${node}" commitonclose="false">
                 <mm:include debug="html"
                             page="${href}"
                             referids="rid">
