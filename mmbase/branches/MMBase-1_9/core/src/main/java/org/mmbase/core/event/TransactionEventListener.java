@@ -9,7 +9,7 @@ package org.mmbase.core.event;
 /**
  *
  * @author Michiel Meeuwissen
- * @since MMBase-1.8
+ * @since MMBase-1.9.3
  * @version $Id$
  */
 public interface TransactionEventListener extends EventListener {

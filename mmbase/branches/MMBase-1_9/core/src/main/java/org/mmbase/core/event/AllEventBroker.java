@@ -12,6 +12,7 @@ package org.mmbase.core.event;
  * A simple broker for AllEventListener. Primarily created for {@link
  * org.mmbase.clustering.ClusterManager}, which has to propagate all local events to the mmbase
  * cluster.
+ * It brokers every event which is not a {@link LocalEvent}
  *
  * @author Ernst Bunders
  * @since 1.8
@@ -29,7 +30,7 @@ public class AllEventBroker extends AbstractEventBroker {
     }
 
     public boolean canBrokerForEvent(Event event) {
-        return true;
+        return ! (event instanceof LocalEvent);
     }
 
     protected void notifyEventListener(Event event, EventListener listener) throws ClassCastException {
