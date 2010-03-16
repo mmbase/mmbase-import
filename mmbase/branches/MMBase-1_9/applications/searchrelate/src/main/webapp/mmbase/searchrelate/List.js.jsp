@@ -1,11 +1,10 @@
-/*
+/**
 <%@page contentType="text/javascript; charset=UTF-8"
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"
 %><fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
 <mm:content type="text/javascript" expires="0">
- */
-/**
+ *
  * This javascript binds to a div.list. It happens on document.ready on every div.list in the document. You can also call {@link #init} manually, e.g. after an AJAX load.
  *
  * This div is supposed to contain an <ol> with <a class="delete" />, and a <a class="create" />
@@ -27,9 +26,11 @@
  */
 
 
-$(document).ready(function() {
-    List.prototype.init(document, false);
-});
+$(document).ready(
+    function() {
+        List.prototype.init(document, false);
+    }
+);
 
 
 
@@ -68,7 +69,6 @@ function List(d) {
         this.form = $(this.div).parents("form")[0];
         this.form.valids = {};
     }
-
 
     if (this.sortable) {
         if (! this.autosubmit) {
@@ -235,7 +235,6 @@ function List(d) {
 
     if ($(this.div).hasClass("POST")) {
         $(this.div).trigger("mmsrRelatedNodesPost", [self]);
-        this.afterPost();
         //console.log("POSTED");
     } else {
         //console.log("not posted");
@@ -269,6 +268,8 @@ List.prototype.init = function(el, initSearchers) {
     $(el).find("div.list:last").each(function() {
         l.seq = $(this).find("input[name = 'seq']")[0].value;
     });
+
+
 };
 
 /**
@@ -320,10 +321,11 @@ List.prototype.triggerValidateHook = function() {
     } else {
         $(self.div).addClass("invalid");
     }
-    if (this.form != null) {
-        $(this.form).trigger("mmsrValidateHook", [self, totalValid, totalReason, self.form]);
+    if (self.form != null) {
+        $(self.form).trigger("mmsrValidateHook", [self, totalValid, totalReason, self.form]);
     } else {
     }
+    //    $(self.div).trigger("mmsrValidateHookDiv", [self, totalValid, totalReason, self.form]);
 };
 
 List.prototype.log = function(msg) {
@@ -951,56 +953,6 @@ List.prototype.getOriginalPosition  = function(li) {
     throw("No original position found for " + $(li).text());
 };
 
-List.prototype.afterPost = function() {
-    this.log("posted!" + this.order);
-    //console.log("posted!" + this.rid + " " + this.order);
-    if (this.sortable) {
-        // Submit the new order seperately
-        var order = "";
-        var originalOrder = "";
-        var self = this;
-        var expectedOriginal = 0;
-        var needsSave = false;
-        self.find("ui-sortable", "ol").each(function() {
-	    $(this).find(">li").each(function() {
-		if (order != "") {
-                    order += ",";
-                    originalOrder += ",";
-		}
-                var nodeNumber = self.getNodeForLi(this);
-		order += nodeNumber;
-                if (nodeNumber[0] === "-") {
-                    // contained new nodes
-                    needsSave = true;
-                }
-                var originalPos =  self.getOriginalPosition(this);
-                if (originalPos != expectedOriginal) {
-                    needsSave = true;
-                }
-		originalOrder += originalPos;
-                expectedOriginal++;
-	    });
-        });
-        var params = this.getListParameters();
-        params.order = order;
-        params.originalOrder = originalOrder;
-        var self = this;
-        if (needsSave) {
-            this.loader();
-            //console.log("Submitting order for " + this.rid + " " + params.originalOrder + "-> " + params.order );
-            $.ajax({ type: "POST",
-                        async: false,
-                        url: "${mm:link('/mmbase/searchrelate/list/submitOrder.jspx')}",
-                        data: params,
-                        complete: function(req, textStatus) {
-                        self.status('<fmt:message key="saved" />', true);
-                }
-                });
-        } else {
-            //console.log("No need to save order for " + self.rid + " " + order + " " + originalOrder);
-        }
-    }
-};
 
 /**
  * The method is meant to be used in the 'setup' configuration handler ot tinyMCE.
