@@ -321,10 +321,11 @@ List.prototype.triggerValidateHook = function() {
     } else {
         $(self.div).addClass("invalid");
     }
-    if (this.form != null) {
-        $(this.form).trigger("mmsrValidateHook", [self, totalValid, totalReason, self.form]);
+    if (self.form != null) {
+        $(self.form).trigger("mmsrValidateHook", [self, totalValid, totalReason, self.form]);
     } else {
     }
+    //    $(self.div).trigger("mmsrValidateHookDiv", [self, totalValid, totalReason, self.form]);
 };
 
 List.prototype.log = function(msg) {
