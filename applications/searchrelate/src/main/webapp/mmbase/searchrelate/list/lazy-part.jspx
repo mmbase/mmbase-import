@@ -10,7 +10,7 @@
   <mm:import externid="href" required="true" />
   <mm:import externid="node" required="true" />
   <mm:import externid="requestID" required="true" />
-  <mm:locale language="${parameters.language}">
+  <mm:content language="${parameters.language}" type="text/html" expires="0">
     <mm:cloud method="asis">
       <div
           xmlns="http://www.w3.org/1999/xhtml">
@@ -46,6 +46,6 @@
         </c:choose>
       </div>
     </mm:cloud>
-  </mm:locale>
+  </mm:content>
 
 </jsp:root>
