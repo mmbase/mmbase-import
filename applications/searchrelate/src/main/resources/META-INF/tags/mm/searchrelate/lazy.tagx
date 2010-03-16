@@ -11,7 +11,6 @@
   -->
 
   <jsp:directive.tag
-      example=""
       description="This tag is meant to be used as a child of mm-sr:toggle. Using the 'page'
                    attribute you specify what must be shown when the toggled block is expanded.
                    The point is that it is only loaded at the first time that happens. This may be useful
