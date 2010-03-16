@@ -10,6 +10,7 @@
   <mm:write request="org.mmbase.searchrelate.relatednodes" referid="parameters.rid" />
   <c:if test="${! empty parameters.config}">
     <mm:write  request="org.mmbase.searchrelate.config" value="${parameters.config}" />
+    <mm:write  request="org.mmbase.sr.relatednodes.load" value="false" />
   </c:if>
 
   <mm:import externid="destination" required="true" />
