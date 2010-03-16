@@ -104,8 +104,13 @@ public class Submitter implements TransactionEventListener {
             }
             if (e instanceof TransactionEvent.Commit) {
                 for (Map.Entry<NodeQuery, List<Integer>> entry : orders.entrySet()) {
-                    int changes = Queries.reorderResult(entry.getKey(), entry.getValue());
-                    LOG.service("Made " + changes + " changes for " + entry);
+                    try {
+                        int changes = Queries.reorderResult(entry.getKey(), entry.getValue());
+                        LOG.service("Made " + changes + " changes for " + entry);
+                    } catch (Exception ex) {
+                        LOG.error(ex.getMessage(), ex);
+                    }
+
                 }
             }
             if (e instanceof TransactionEvent.End) {
@@ -113,8 +118,12 @@ public class Submitter implements TransactionEventListener {
                 EventManager.getInstance().removeEventListener(this);
                 instances.remove(getTransactionName());
                 for (Runnable r : endCallBacks) {
-                    LOG.service("Calling " + r);
-                    r.run();
+                    try {
+                        LOG.service("Calling " + r);
+                        r.run();
+                    } catch (Exception ex) {
+                        LOG.error(ex.getMessage(), ex);
+                    }
                 }
             }
         } else {
