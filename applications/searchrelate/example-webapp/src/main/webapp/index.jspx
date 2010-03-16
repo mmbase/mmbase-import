@@ -170,11 +170,22 @@
               <a href="${_}">Loaded with javascript</a>
             </mm:link>
           </li>
+          <li class="done">
+            <mm:link page="mmform-ajax.jspx" referids="${referids}">
+              <a href="${_}">Loaded with javascript in an mm:form</a>
+            </mm:link>
+          </li>
+
+          <li class="done">
+            <mm:link page="lazy.jspx" referids="${referids}">
+              <a href="${_}">Lazy loaded items</a>
+            </mm:link>
+          </li>
         </ul>
 
         <h3>TODO</h3>
         <ul class="todo">
-          <li class="done">In transaction: Since <em>new</em> nodes are not yet in the query-result, they cannot be edited, and disapper on reload.</li>
+          <li class="done">In transaction: Since <em>new</em> nodes are not yet in the query-result, they cannot be edited, and disappear on reload.</li>
           <li class="done">In transaction: This is also valid, but inversely, for <em>deleted</em> nodes and relations. They still are in de query result.</li>
           <li class="done">'Sortable' is not yet saved.
           <ul>

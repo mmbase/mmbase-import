@@ -5,6 +5,7 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
+  <jsp:directive.page import="org.mmbase.searchrelate.*" />
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.include file="parameters.jspf" />
   <mm:content expires="0">
@@ -26,11 +27,17 @@
           <jsp:expression>org.mmbase.bridge.util.Queries.reorderResult(query, iorder)</jsp:expression>
         </c:when>
         <c:otherwise>
-          <mm:import externid="order" required="true" jspvar="order" vartype="string" />
+          <mm:import externid="order" required="true" jspvar="order" vartype="list" />
           <!-- do it later, there is little point, it won't work any way in a transaction -->
+          <mm:write session="${rid}_order" referid="order" />
+          <jsp:text>${rid}_order: ${order}</jsp:text>
           <mm:form name="${parameters.formtag}">
-            <mm:write session="${rid}_order" referid="order" />
-            <jsp:text>${rid}_order: ${order}</jsp:text>
+            <mm:write value="${requestScope['org.mmbase.transaction'].id}" jspvar="fn" vartype="string">
+              <jsp:scriptlet>
+                Submitter submitter = Submitter.getInstance(fn);
+                submitter.setOrder(query, order);
+              </jsp:scriptlet>
+            </mm:write>
           </mm:form>
         </c:otherwise>
       </c:choose>

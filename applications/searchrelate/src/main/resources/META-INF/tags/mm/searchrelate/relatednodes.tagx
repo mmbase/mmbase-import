@@ -19,7 +19,9 @@
                    If this tag is used outside an mm:form tag, then the user interface can be very minimalistic. Without any commit button or so. Everything is arranged using javascript.
                    If this tag _is_ used in an mm:form tag, then you a normal submit button must be added to commit the transaction.
                    In the mean time, though, the changes are changed in the transaction. (So a browser crash could preserve all work).
-                   " />
+                   "
+      import="org.mmbase.searchrelate.*"
+      />
 
 
   <jsp:directive.attribute name="type"        type="java.lang.String"
@@ -34,11 +36,11 @@
                            description="Like 'role' of mm:relatednodes, but defaults to 'posrel'"
                            />
   <jsp:directive.attribute name="orderby"     type="java.lang.String"
-                           description="Like orderby of mm:relatednodes, but default to &lt;role&gt;.pos"
+                           description="Like orderby of mm:relatednodes, but defaults to &amp;lt;role&amp;gt;.pos"
                            />
 
   <jsp:directive.attribute name="direction"     type="java.lang.String"
-                           description="Direction of orderby of  mm:relatednodes, but default to &lt;UP&gt;.pos"
+                           description="Direction of orderby of  mm:relatednodes, but default to &amp;lt;UP&amp;gt;.pos"
                            />
 
   <jsp:directive.attribute name="searchdirs"     type="java.lang.String"
@@ -50,7 +52,7 @@
                            />
 
   <jsp:directive.attribute name="fieldlistType"      type="java.lang.String"
-                           description="Like 'type' of mm:fieldlist. Default to 'list'."
+                           description="Like 'type' of mm:fieldlist. Defaults to 'list'."
 
                            />
 
@@ -140,7 +142,7 @@
   <mm:import id="previousParameters" from="request" externid="org.mmbase.sr.relatednodes.parameters" />
   <!-- this is set by parameters.jspf.
        TODO.
-       -The prefix should probably by org.mmbase.searchrelate.relatednodes
+       -The prefix should probably be org.mmbase.searchrelate.relatednodes
        -Is this not exactly the same as org.mmbase.searchrelate.relatednodes
        -->
 
@@ -149,7 +151,7 @@
              id="parent" />
 
   <c:choose>
-    <c:when test="${empty parent}">
+    <c:when test="${empty parent or ! empty param.requestID}">
       <mm:import id="requestid">R<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape>${param.requestID}</mm:import>
       <mm:import from="request" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
     </c:when>
@@ -164,7 +166,6 @@
 
   <mm:import id="rid">${requestid}_${seq}</mm:import>
 
-
   <!--
   <c:if test="${! empty item and ! empty delete}">
     <div class="WARNING">WARNING: It makes no sense to use both 'item' and 'delete' attributes. If you use item="", you should use mm-sr:delete in that jsp (or not)</div>
@@ -173,7 +174,12 @@
     <div class="WARNING">WARNING: It makes no sense to use both 'item' and 'unlink' attributes. If you use item="", you should use mm-sr:unlink in that jsp (or not)</div>
   </c:if>
   -->
-  <mm:import id="_item">${empty item ? '/mmbase/searchrelate/list/item.jspx' : item}</mm:import>
+  <mm:import id="_item">
+    <c:choose>
+      <c:when test="${empty item}">/mmbase/searchrelate/list/item.jspx</c:when>
+      <c:otherwise><mm:url absolute="context" page="${item}" /></c:otherwise>
+    </c:choose>
+  </mm:import>
   <mm:import id="_role">${empty role and empty path ? 'posrel' : role}</mm:import><!-- role defaults to 'posrel' -->
   <mm:import id="_direction">${empty direction? 'UP' : direction}</mm:import><!-- defaults to UP -->
   <mm:import id="_createposition">${empty createposition ? 'bottom' : createposition}</mm:import>
@@ -262,7 +268,6 @@
     <mm:import id="fieldlistidprefix">${rid}_N${mm:escape('identifier', _node)}</mm:import>
     <mm:import id="source_was_new">${_node.number lt 0}</mm:import>
     <mm:import id="_number">${_node._number}</mm:import>
-    <mm:import id="config">${requestScope['org.mmbase.searchrelate.config']}</mm:import>
   </mm:context>
 
   <mm:import from="session" id="parameters" externid="${rid}_context" />
@@ -280,10 +285,8 @@
 
   <mm:import from="request" id="javascript_loaded" externid="mm_list_javascript" />
 
-
-  <mm:import id="_load">${empty parent and ((empty javascript_loaded and empty load) or load) and load ne 'false'}</mm:import>
+  <mm:import id="_load">${empty parent and ((empty javascript_loaded and empty load) or load) and load ne 'false' and param['org.mmbase.sr.relatednodes.load'] ne 'false'}</mm:import>
   <c:if test="${_load}">
-    <mm:include page="/mmbase/jquery/ajaxfileupload.jspx" />
     <c:choose>
       <c:when test="${sortable}">
         <mm:include page="/mmbase/jquery/jquery-ui.jspx" />
@@ -294,6 +297,8 @@
     </c:choose>
     <script type="text/javascript" src="${mm:link('/mmbase/jquery/jquery.timer.js')}"><jsp:text>&lt;!-- IE sucks --&gt;</jsp:text></script>
     <!-- TODO time js is more generic, of course -->
+
+    <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/Toggle.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
     <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/List.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
     <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/Searcher.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
     <mm:write request="mm_list_javascript" value="yes" />
@@ -301,8 +306,18 @@
     <mm-sr:heartbeat />
   </c:if>
 
-
-
+  <c:if test="${! empty parameters.formtag}">
+    <mm:write value="${requestScope['org.mmbase.transaction'].id}" jspvar="fn" vartype="string">
+      <mm:write value="${rid}" jspvar="rid" vartype="string">
+        <jsp:scriptlet>
+          Submitter submitter = Submitter.getInstance(fn);
+          SessionCleaner cleaner   = SessionCleaner.getInstance(session);
+          submitter.addCallbackForEnd(cleaner);
+          cleaner.addKey(rid + "_order");
+        </jsp:scriptlet>
+      </mm:write>
+    </mm:write>
+  </c:if>
 
   <fmt:bundle
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
@@ -396,6 +411,6 @@
       </c:if>
     </div>
   </fmt:bundle>
-  <mm:write request="org.mmbase.searchrelate.relatednodes"  referid="parameters.parent" />
+  <mm:write request="org.mmbase.searchrelate.relatednodes" referid="parameters.parent" />
   <mm:write request="org.mmbase.sr.relatednodes.parameters" referid="previousParameters" />
 </jsp:root>
