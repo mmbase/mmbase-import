@@ -66,6 +66,11 @@ public class SessionCleaner implements Runnable {
             ((SessionCleaner) o).session.getId().equals(session.getId());
     }
 
+    @Override
+    public String toString() {
+        return "SessionCleaner:" + session.getId() + ":" + keys;
+    }
+
 
 }
 
