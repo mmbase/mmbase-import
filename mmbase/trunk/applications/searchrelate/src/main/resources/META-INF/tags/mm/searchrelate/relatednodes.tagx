@@ -152,7 +152,7 @@
 
   <c:choose>
     <c:when test="${empty parent or ! empty param.requestID}">
-      <mm:import id="requestid">R<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape>${mm:escape(param.requestID}</mm:import>
+      <mm:import id="requestid">R<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape>${param.requestID}</mm:import>
       <mm:import from="request" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
     </c:when>
     <c:otherwise>
