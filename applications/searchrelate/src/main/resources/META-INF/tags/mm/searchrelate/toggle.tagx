@@ -13,8 +13,8 @@
       example="See /mmexamples/searchrelate"
       description="" />
 
-  <a class="toggle toggle_on"><mm-sr:button type="toggle_on" alt="+" /></a>
-  <a class="toggle toggle_off" style="display: none;"><mm-sr:button type="toggle_off" alt="-" /></a>
+  <a class="toggle toggle_open"><mm-sr:button type="toggle_open" alt="+" /></a>
+  <a class="toggle toggle_close" style="display: none;"><mm-sr:button type="toggle_close" alt="-" /></a>
   <div class="toggle_body" style="display: none;">
     <jsp:doBody />
   </div>
