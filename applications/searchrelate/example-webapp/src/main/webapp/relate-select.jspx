@@ -8,8 +8,8 @@
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
 
-  <h2>mm-sr:relate</h2>
-  <p>Make changes to the 'current' list and press the button to submit the changes.</p>
+  <h2>mm-sr:relate with selection in the repository</h2>
+  <p>Make selections in the 'repository', then press the button to immediately submit those to 'current'.</p>
 
   <mm:node number="default.mags">
     <mm:relatednodescontainer type="news" id="current"  role="posrel">
@@ -38,6 +38,6 @@
     </form>
   </mm:node>
 
-  <mm:escape escape="links">$URL$</mm:escape>
+  <mm:escape escape="links">$URL: https://scm.mmbase.org/mmbase/branches/MMBase-1_9/applications/searchrelate/example-webapp/src/main/webapp/relate.jspx $</mm:escape>
 
 </mm-sre:html>
