@@ -19,7 +19,9 @@
                    If this tag is used outside an mm:form tag, then the user interface can be very minimalistic. Without any commit button or so. Everything is arranged using javascript.
                    If this tag _is_ used in an mm:form tag, then you a normal submit button must be added to commit the transaction.
                    In the mean time, though, the changes are changed in the transaction. (So a browser crash could preserve all work).
-                   " />
+                   "
+      import="org.mmbase.searchrelate.*"
+      />
 
 
   <jsp:directive.attribute name="type"        type="java.lang.String"
@@ -150,7 +152,7 @@
 
   <c:choose>
     <c:when test="${empty parent or ! empty param.requestID}">
-      <mm:import id="requestid">R<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape>${param.requestID}</mm:import>
+      <mm:import id="requestid">R<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape>${mm:escape(param.requestID}</mm:import>
       <mm:import from="request" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
     </c:when>
     <c:otherwise>
@@ -163,7 +165,6 @@
   <mm:write request="${requestid}_sequence" value="${seq + 1}" />
 
   <mm:import id="rid">${requestid}_${seq}</mm:import>
-
 
   <!--
   <c:if test="${! empty item and ! empty delete}">
@@ -300,7 +301,17 @@
     <mm-sr:heartbeat />
   </c:if>
 
-
+  <c:if test="${! empty parameters.formtag}">
+    <mm:write value="${requestScope['org.mmbase.transaction'].id}" jspvar="fn" vartype="string">
+      <mm:write value="${rid}" jspvar="rid" vartype="string">
+        <jsp:scriptlet>
+          Submitter submitter = Submitter.getInstance(fn);
+          SessionCleaner cleaner   = SessionCleaner.getInstance(pageContext.getSession());
+          submitter.addCallbackForEnd(cleaner);
+          cleaner.addKey(rid + "_order");
+        </jsp:scriptlet>
+      </mm:write>
+    </mm:write>
 
 
   <fmt:bundle
