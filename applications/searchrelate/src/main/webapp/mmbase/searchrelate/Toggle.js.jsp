@@ -16,7 +16,7 @@ $(document).ready(
                                $(li).trigger("mmsrToggle", [body]);
                            });
         $("div.list li").live("mmsrToggle",
-                              function(ev, div, b) {
+                              function(ev, div) {
                                   // arrange lazy loading
                                   var li = ev.target;
                                   var pdiv = $(li).closest("div.list");
