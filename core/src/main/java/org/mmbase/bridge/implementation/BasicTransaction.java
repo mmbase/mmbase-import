@@ -97,11 +97,19 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         }
     }
 
-    /**
-     */
+
     @Override
-    public String getAccount() {
+    String getAccount() {
         // should be something different than for normal clouds, so use the transaction-name
+        return transactionName;
+    }
+
+    /**
+     * Returns the unique ID used for this transaction. The {@link #getName transaction name} may not be unique, because different users,
+     * may have transactions with the same name.
+     * @since MMBase-1.9.3
+     */
+    public String getId() {
         return transactionName;
     }
 
