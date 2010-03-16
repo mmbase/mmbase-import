@@ -10,7 +10,10 @@
   <mm:import externid="href" required="true" />
   <mm:import externid="node" required="true" />
   <mm:import externid="requestID" required="true" />
-  <mm:content language="${parameters.language}" type="text/html" expires="0">
+  <c:if test="${! empty parameters.config}">
+    <mm:write  request="org.mmbase.searchrelate.config" value="${parameters.config}" />
+  </c:if>
+  <mm:locale language="${parameters.language}">
     <mm:cloud method="asis">
       <div
           xmlns="http://www.w3.org/1999/xhtml">
@@ -46,6 +49,6 @@
         </c:choose>
       </div>
     </mm:cloud>
-  </mm:content>
+  </mm:locale>
 
 </jsp:root>
