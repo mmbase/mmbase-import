@@ -236,7 +236,7 @@
             </mm:link>
           </li>
 
-          <li class="done">
+          <li>
             <mm:link page="relate.jspx" referids="${referids}">
               <a href="${_}">Basic mm-sr:relate useage</a>
             </mm:link>

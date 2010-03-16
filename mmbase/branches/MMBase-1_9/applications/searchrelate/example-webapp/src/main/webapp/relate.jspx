@@ -20,17 +20,20 @@
       <mm:sortorder field="number" direction="down" />
       <mm:constraint field="number" operator="IN" referid="related" inverse="true" />
     </mm:listnodescontainer>
-
-    <mm-sr:relate
-                current="${current}" repository="${repository}"
-                maxpages="10"
-                pagesize="5"
-                unrelate="true"
-                create="true"
-                extracreate="">
-      <jsp:attribute name="currentTitle"><b>News</b></jsp:attribute>
-      <jsp:attribute name="repositoryTitle"><b>Add other news</b></jsp:attribute>
-    </mm-sr:relate>
+    <form>
+      <mm-sr:relate
+          current="${current}" repository="${repository}"
+          maxpages="10"
+          pagesize="5"
+          unrelate="true"
+          create="true"
+          submit="#save"
+          extracreate="">
+        <jsp:attribute name="currentTitle"><b>News</b></jsp:attribute>
+        <jsp:attribute name="repositoryTitle"><b>Add other news</b></jsp:attribute>
+      </mm-sr:relate>
+      <input id="save" type="submit" value="Save" />
+    </form>
   </mm:node>
 
   <mm:escape escape="links">$URL: https://scm.mmbase.org/mmbase/branches/MMBase-1_9/applications/searchrelate/example-webapp/src/main/webapp/search.jspx $</mm:escape>
