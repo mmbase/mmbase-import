@@ -307,8 +307,8 @@
   </c:if>
 
   <c:if test="${! empty parameters.formtag}">
-    <mm:write value="${requestScope['org.mmbase.transaction'].id}" jspvar="fn" vartype="string">
-      <mm:write value="${rid}" jspvar="rid" vartype="string">
+    <mm:write value="${requestScope['org.mmbase.transaction'].id}" jspvar="fn" vartype="string" write="false">
+      <mm:write value="${rid}" jspvar="rid" vartype="string" write="false">
         <jsp:scriptlet>
           Submitter submitter = Submitter.getInstance(fn);
           SessionCleaner cleaner   = SessionCleaner.getInstance(session);
