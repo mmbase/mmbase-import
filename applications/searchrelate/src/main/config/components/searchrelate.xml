@@ -7,7 +7,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
 
-  <class name="org.mmbase.framework.BasicComponent" />
+  <class name="org.mmbase.searchrelate.SearchRelateComponent" />
 
   <dependency component="core" version="9" />
   <dependency component="taglib" version="2" />
