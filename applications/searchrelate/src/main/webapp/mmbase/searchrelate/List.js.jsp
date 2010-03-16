@@ -464,7 +464,6 @@ List.prototype.bindCreate = function(a) {
  */
 List.prototype.addItem = function(res, cleanOnFocus) {
     var list = this;
-    //console.log(res.responseText);
     var r = $(res.responseText);
     // This seems nicer, but it would give problems if the content types don't match
     // And anyway, it of course never works in IE.
@@ -473,10 +472,10 @@ List.prototype.addItem = function(res, cleanOnFocus) {
     var ol = list.find(null, "ol");
     if (this.addposition == 'top') {
         ol.prepend(r);
-        r = ol.find("li:first")[0];
+        r = ol.find(">li:first")[0];
     } else {
         ol.append(r);
-        r = ol.find("li:last")[0];
+        r = ol.find(">li:last")[0];
     }
     if (cleanOnFocus == null || cleanOnFocus) {
         // remove default value on focus
@@ -502,7 +501,8 @@ List.prototype.addItem = function(res, cleanOnFocus) {
         });
 
     // Arrange sub-lists in this new item.
-    $(r).find("div.list").each(function() {
+    $(r).find("div.list").each(
+        function() {
             var div = this;
             if (div.list == null) {
                 div.list = new List(div);
