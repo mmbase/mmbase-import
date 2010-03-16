@@ -259,6 +259,10 @@
     <mm:import from="parent" externid="parent" />
     <mm:import from="parent" externid="parentformtag" />
 
+    <c:if test="${! empty config}">
+      <mm:import id="config">${config}</mm:import>
+    </c:if>
+
     <mm:import id="autosubmit">${! empty parent ? parentparameters.autosubmit : empty _formtag}</mm:import>
 
     <mm:import from="session" id="order" externid="${rid}_order" />
@@ -300,7 +304,11 @@
 
     <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/Toggle.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
     <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/List.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
-    <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/Searcher.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
+    <mm:link page="/mmbase/searchrelate/Searcher.js.jsp">
+      <mm:param name="language">${parameters.language}</mm:param>
+      <script type="text/javascript" src="${_}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
+    </mm:link>
+
     <mm:write request="mm_list_javascript" value="yes" />
 
     <mm-sr:heartbeat />
@@ -354,12 +362,12 @@
           <mm:cloud>
             <c:choose>
               <c:when test="${empty searchRepository}">
-                <mm-sr:search type="${query.nodeManager.name}" load="${_load}" implicit="${empty implicitSearch ? settings['implicitRepository'] : implicitSearch}">
+                <mm-sr:search type="${query.nodeManager.name}" load="false" implicit="${empty implicitSearch ? settings['implicitRepository'] : implicitSearch}">
                   <mm:constraint field="number" operator="IN" inverse="true" referid="related" />
                 </mm-sr:search>
               </c:when>
               <c:otherwise>
-                <mm-sr:relate repository="${searchRepository}" load="${_load}">
+                <mm-sr:relate repository="${searchRepository}" load="false">
                   <mm:constraint field="number" operator="IN" inverse="true" referid="related" />
                 </mm-sr:relate>
               </c:otherwise>
