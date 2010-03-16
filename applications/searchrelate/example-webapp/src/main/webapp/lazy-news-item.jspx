@@ -16,7 +16,7 @@
 
 
   <mm-sr:toggle>
-    <mm-sr:lazy page="/news-item-relations.jspx" />
+    <mm-sr:lazy page="news-item-relations.jspx" />
   </mm-sr:toggle>
 
   <mm-sr:unlink />
