@@ -312,7 +312,7 @@
         </jsp:scriptlet>
       </mm:write>
     </mm:write>
-
+  </c:if>
 
   <fmt:bundle
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
