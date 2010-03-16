@@ -175,7 +175,7 @@ MMBaseRelater.prototype.commit = function(ev) {
         this.logger.debug("- " + unrelatedNumbers);
         this.logger.debug("d " + deletedRelations);
         if (!this.instant) {
-            this.commitSelections(id)
+            this.commitSelections(id);
         }
         var params = {id: id, related: relatedNumbers, unrelated: unrelatedNumbers, deleted: deletedRelations};
         if (this.transaction != null) {
