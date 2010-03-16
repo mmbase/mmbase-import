@@ -41,6 +41,7 @@
         fields="number,title"
         sortable="true"
         search="true"
+        max="5"
         >
       <h4 class="debug">${rid}</h4>
     </mm-sr:relatednodes>
