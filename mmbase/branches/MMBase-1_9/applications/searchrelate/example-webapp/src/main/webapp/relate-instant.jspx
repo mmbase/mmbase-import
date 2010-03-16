@@ -8,10 +8,11 @@
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
 
-  <h2>mm-sr:relate</h2>
-  <p>Make changes to the 'current' list and press the button to submit the changes.</p>
 
+  <h2>Instant relations</h2>
+  <p>If you do not use a submit attribute, the relations are made instantly, so you do not need a submit button at all.</p>
   <mm:node number="default.mags">
+
     <mm:relatednodescontainer type="news" id="current"  role="posrel">
       <mm:sortorder field="number" direction="down" />
       <mm:relatednodes id="related" />
@@ -24,20 +25,19 @@
     </mm:listnodescontainer>
     <form>
       <mm-sr:relate
-          current="${current}" repository="${repository}"
+          current="${current}"
+          repository="${repository}"
           maxpages="10"
           pagesize="5"
           unrelate="true"
           create="true"
-          submit="#save"
           extracreate="">
         <jsp:attribute name="currentTitle"><b>News</b></jsp:attribute>
         <jsp:attribute name="repositoryTitle"><b>Add other news</b></jsp:attribute>
       </mm-sr:relate>
-      <input id="save" type="submit" value="Save" />
     </form>
   </mm:node>
 
-  <mm:escape escape="links">$URL$</mm:escape>
+  <mm:escape escape="links">$URL: https://scm.mmbase.org/mmbase/branches/MMBase-1_9/applications/searchrelate/example-webapp/src/main/webapp/relate.jspx $</mm:escape>
 
 </mm-sre:html>

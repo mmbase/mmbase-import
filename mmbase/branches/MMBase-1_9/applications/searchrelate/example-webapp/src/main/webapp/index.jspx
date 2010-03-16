@@ -241,6 +241,19 @@
               <a href="${_}">Basic mm-sr:relate useage</a>
             </mm:link>
           </li>
+          <li class="done">
+            <mm:link page="relate-instant.jspx" referids="${referids}">
+              <a href="${_}">Basic mm-sr:relate useage without a submit button</a>
+            </mm:link>
+          </li>
+
+          <li>
+            <mm:link page="relate-select.jspx" referids="${referids}">
+              <a href="${_}">Basic mm-sr:relate useage with preselect</a>
+            </mm:link>
+          </li>
+
+
           <li>Make more test-cases for this tag</li>
         </ul>
         <hr />
