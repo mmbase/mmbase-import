@@ -333,6 +333,10 @@
 
     <div id="${rid}" class="list ${parameters.query.nodeManager.name} ${pageContext.request.method}">
 
+      <c:if test="${empty mm:property('org.mmbase.cloud.sessionname')}">
+        <jsp:text>WARNING: mm-sr:relatednodes tag does not work for clouds not in the session (<mm:cloudinfo type="rank" />/<mm:cloudinfo type="user" />). </jsp:text>
+      </c:if>
+
       <c:if test="${! empty idvar}">
         <mm:write request="${idvar}" referid="rid" />
         <jsp:doBody />
