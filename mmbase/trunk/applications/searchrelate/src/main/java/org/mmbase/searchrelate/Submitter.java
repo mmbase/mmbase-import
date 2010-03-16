@@ -17,35 +17,39 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * This is used by mm-sr:relatednodes to changes in order which were made in a transaction.
- * We do this afterwards because new nodes have negative numbers.
+ * This is used by mm-sr:relatednodes to execute some things after a transaction is committed.
+ *
+ * In the first place this was for changes in order which were made in a transaction.  We do this afterwards because to sort a query result,
+ * it is important that the query can be executed. Which is not possible when nodes are modified or new in a transaction.
+ *
+ *It will probably also be used to clean up other stuff from the session.
  *
  * @author  Michiel Meeuwissen
  * @version $Id$
  */
-public class OrderSubmitter implements TransactionEventListener {
-    private static final Logger LOG = Logging.getLoggerInstance(OrderSubmitter.class);
+public class Submitter implements TransactionEventListener {
+    private static final Logger LOG = Logging.getLoggerInstance(Submitter.class);
 
-    private static final Map<String, OrderSubmitter> instances = new ConcurrentHashMap<String, OrderSubmitter>();
+    private static final Map<String, Submitter> instances = new ConcurrentHashMap<String, Submitter>();
 
     private final String transactionName;
     private final Map<NodeQuery, List<Integer>> orders = new HashMap<NodeQuery, List<Integer>>();
     private final List<Runnable> endCallBacks = new ArrayList<Runnable>();
 
-    protected OrderSubmitter(String tn) {
+    protected Submitter(String tn) {
         transactionName = tn;
     }
 
-    public static OrderSubmitter getInstance(String name) {
+    public static Submitter getInstance(String name) {
         synchronized(instances) {
-            OrderSubmitter os = instances.get(name);
+            Submitter os = instances.get(name);
             if (os == null) {
-                os = new OrderSubmitter(name);
+                os = new Submitter(name);
                 instances.put(name, os);
                 EventManager.getInstance().addEventListener(os);
-                LOG.info("Listening " + os);
+                LOG.debug("Listening " + os);
             } else {
-                LOG.info("Already an instance of " + name + " in " + instances);
+                LOG.debug("Already an instance of " + name + " in " + instances);
             }
             return os;
         }
@@ -56,6 +60,12 @@ public class OrderSubmitter implements TransactionEventListener {
         return transactionName;
     }
 
+
+    /**
+     * Sets the new order for a certain nq, which must be committed after the transaction.
+     * @param order The list with node numbers. The node numbers may still be negative (from transaction).
+     *              The numbers may also be Strings.
+     */
     public void setOrder(NodeQuery nq, List order) {
 
         // making sure the arrays contaisn integer
@@ -66,7 +76,7 @@ public class OrderSubmitter implements TransactionEventListener {
         }
 
         orders.put(nq, integerOrder);
-        LOG.info("Orders " + orders);
+        LOG.debug("Orders " + orders);
     }
 
     public void addCallbackForEnd(Runnable r) {
@@ -79,7 +89,7 @@ public class OrderSubmitter implements TransactionEventListener {
 
     public void notify(TransactionEvent e) {
         if (e.getTransactionName().equals(transactionName)) {
-            LOG.info("" + e);
+            LOG.debug("" + e);
             if (e instanceof TransactionEvent.Resolve) {
                 TransactionEvent.Resolve resolve = (TransactionEvent.Resolve) e;
                 for (Map.Entry<NodeQuery, List<Integer>> entry : orders.entrySet()) {
@@ -89,30 +99,31 @@ public class OrderSubmitter implements TransactionEventListener {
                             entry.getValue().set(index, resolution.getValue());
                         }
                     }
-                    LOG.info("Resolved " + resolve.getResolution() + " order now" + entry.getValue());
+                    LOG.debug("Resolved " + resolve.getResolution() + " order now" + entry.getValue());
                 }
             }
             if (e instanceof TransactionEvent.Commit) {
                 for (Map.Entry<NodeQuery, List<Integer>> entry : orders.entrySet()) {
                     int changes = Queries.reorderResult(entry.getKey(), entry.getValue());
-                    LOG.info("Made " + changes + " changes for " + entry);
+                    LOG.service("Made " + changes + " changes for " + entry);
                 }
             }
             if (e instanceof TransactionEvent.End) {
-                LOG.info("Will remove " + this);
+                LOG.service("Will remove " + this);
                 EventManager.getInstance().removeEventListener(this);
                 instances.remove(getTransactionName());
                 for (Runnable r : endCallBacks) {
+                    LOG.service("Calling " + r);
                     r.run();
                 }
             }
         } else {
-            LOG.info("Ignoring " + e);
+            LOG.debug("Ignoring " + e);
         }
     }
     @Override
     public String toString() {
-        return "OrderSubmitter for " + transactionName;
+        return "Submitter for " + transactionName;
     }
 
     @Override
@@ -123,8 +134,8 @@ public class OrderSubmitter implements TransactionEventListener {
     public boolean equals(Object o) {
         return
             o != null &&
-            o instanceof OrderSubmitter &&
-            ((OrderSubmitter) o).getTransactionName().equals(transactionName);
+            o instanceof Submitter &&
+            ((Submitter) o).getTransactionName().equals(transactionName);
     }
 }
 
