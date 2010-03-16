@@ -40,6 +40,8 @@ public abstract class AbstractRelationAction extends AbstractNodeAction {
     protected RelationManager relationManager;
     protected String relationValues;
 
+    protected String searchDir;
+
     /**
      * This template method implementation handles all the preconditions for relation actions. When
      * these are met, a new template method is called, {@link this#doCreateNode(Transaction, Map, HttpServletRequest)}
@@ -174,6 +176,14 @@ public abstract class AbstractRelationAction extends AbstractNodeAction {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getSearchDir() {
+        return searchDir;
+    }
+
+    public void setSearchDir(String sd) {
+        this.searchDir = sd;
     }
 
     /**
