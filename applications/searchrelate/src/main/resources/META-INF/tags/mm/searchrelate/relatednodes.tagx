@@ -174,7 +174,12 @@
     <div class="WARNING">WARNING: It makes no sense to use both 'item' and 'unlink' attributes. If you use item="", you should use mm-sr:unlink in that jsp (or not)</div>
   </c:if>
   -->
-  <mm:import id="_item">${empty item ? '/mmbase/searchrelate/list/item.jspx' : item}</mm:import>
+  <mm:import id="_item">
+    <c:choose>
+      <c:when test="${empty item}">/mmbase/searchrelate/list/item.jspx</c:when>
+      <c:otherwise><mm:url absolute="context" page="${item}" /></c:otherwise>
+    </c:choose>
+  </mm:import>
   <mm:import id="_role">${empty role and empty path ? 'posrel' : role}</mm:import><!-- role defaults to 'posrel' -->
   <mm:import id="_direction">${empty direction? 'UP' : direction}</mm:import><!-- defaults to UP -->
   <mm:import id="_createposition">${empty createposition ? 'bottom' : createposition}</mm:import>
@@ -306,7 +311,7 @@
       <mm:write value="${rid}" jspvar="rid" vartype="string">
         <jsp:scriptlet>
           Submitter submitter = Submitter.getInstance(fn);
-          SessionCleaner cleaner   = SessionCleaner.getInstance(pageContext.getSession());
+          SessionCleaner cleaner   = SessionCleaner.getInstance(session);
           submitter.addCallbackForEnd(cleaner);
           cleaner.addKey(rid + "_order");
         </jsp:scriptlet>
