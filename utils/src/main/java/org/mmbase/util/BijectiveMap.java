@@ -13,7 +13,9 @@ import java.util.*;
  */
 
 
-public class BijectiveMap<K, V> extends AbstractMap<K, V> {
+public class BijectiveMap<K, V> extends AbstractMap<K, V> implements java.io.Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Map<K, V> backing;
     private final Map<V, K> inverse;
