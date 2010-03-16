@@ -32,10 +32,10 @@
           <mm:write session="${rid}_order" referid="order" />
           <jsp:text>${rid}_order: ${order}</jsp:text>
           <mm:form name="${parameters.formtag}">
-            <mm:write value="${requestScope['org.mmbase.transaction'].account}" jspvar="fn" vartype="string">
+            <mm:write value="${requestScope['org.mmbase.transaction'].id}" jspvar="fn" vartype="string">
               <mm:write value="${rid}_order" jspvar="sessionKey" vartype="string">
               <jsp:scriptlet>
-                OrderSubmitter submitter = OrderSubmitter.getInstance(fn);
+                Submitter submitter = Submitter.getInstance(fn);
                 submitter.setOrder(query, order);
                 SessionCleaner cleaner   = SessionCleaner.getInstance(pageContext.getSession());
                 submitter.addCallbackForEnd(cleaner);
