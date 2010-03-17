@@ -23,7 +23,7 @@
                            description="An mmbase Query describing which list is considered to represent already 'related' nodes" />
 
   <jsp:directive.attribute name="submit"            type="java.lang.String"
-                           description="A jQuery selector, if relate/unrelate should happen inmediate (default is inmediate). The 'commit' action will be binded to the 'onclick' event of elements that match." />
+                           description="Id of an element (typically a button) to submit and commit changes. Default it is, when no value is given it means that relate/unrelate happen immediately. The 'commit' action will be binded to the 'onclick' of the element." />
 
   <jsp:directive.attribute name="unrelate"          type="java.lang.Boolean"
                            description="Whether, or not, the tools should also allow deletion of relations" />
@@ -110,7 +110,7 @@
   <script type="text/javascript">
     $(document).ready(function() {
     <c:if test="${! empty submit}"><!-- submit attribute given: commit search/relate on click of that element -->
-         $("#mm_related_${sid} ${submit}").click(function(el) {
+      $("${submit}").click(function(el) {
             return $("#mm_related_${sid}")[0].relater.commit(el); });</c:if>
       $("#mm_related_${sid}").each(function() {
       if (this.relater != null) {
