@@ -101,17 +101,21 @@ input.searching
 }
 
 .searchresult tbody tr.selected.odd {
-  background-color: #f0f0e0;
+  background-color: #555;
+  color: #fff;
 }
 .searchresult tbody tr.selected.even {
-  background-color: #e8e8d8;
+  background-color: #333;
+  color: #fff;
 }
 
 .searchresult tbody tr.selected.odd:hover {
-  background-color: #e0f0e0;
+  background-color: #444;
+  color: #fff;
 }
 .searchresult tbody tr.selected.even:hover {
-  background-color: #d8e8d8;
+  background-color: #222;
+  color: #fff
 }
 
 .searchresult tbody tr.selected.odd.readonly:hover {
