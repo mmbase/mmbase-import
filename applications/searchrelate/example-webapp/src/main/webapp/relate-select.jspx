@@ -9,7 +9,10 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
 
   <h2>mm-sr:relate with selection in the repository</h2>
-  <p>Make selections in the 'repository', then press the button to immediately submit those to 'current'.</p>
+  <p>
+    Make selections in the 'repository', then press the button to submit those to 'current' 
+    and vise versa.
+  </p>
 
   <mm:node number="default.mags">
     <mm:relatednodescontainer type="news" id="current"  role="posrel">
