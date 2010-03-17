@@ -696,6 +696,10 @@ List.prototype.getListParameters = function() {
 List.prototype.commit = function(stale, leavePage) {
     var result;
     var self = this;
+    if (this.saving) {
+        // already saving right now
+        return;
+    }
     if(this.needsCommit() && ! List.prototype.leftPage) {
 
         if (this.valid) {
@@ -723,10 +727,6 @@ List.prototype.commit = function(stale, leavePage) {
                         params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = $(this).val();
                 });
 
-
-
-
-                var self = this;
                 this.loader();
                 $(self.div).trigger("mmsrStartSave", [self]);
                 result = null;
