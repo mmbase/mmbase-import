@@ -23,11 +23,17 @@
                            description="An mmbase Query describing which list is considered to represent already 'related' nodes" />
 
   <jsp:directive.attribute name="submit"            type="java.lang.String"
-                           description="Id of an element (typically a button) to submit and commit changes. Default it is, when no value is given it means that relate/unrelate happen immediately. The 'commit' action will be binded to the 'onclick' of the element." />
+                           description="Id of an element (typically a button) to submit and commit changes. Default it is, when no value is given it means that relate/unrelate happen immediately.
+                                        The 'commit' action will be binded to the 'onclick' of the element." />
+
+  <jsp:directive.attribute name="select"            type="java.lang.Boolean"
+                           description="If this is true (it defaults to false), then an extra button 'change' is added 'between' the current and repository lists.
+                                        Clicking on an item in one of the lists only selects it. Clicking on this change button then moves the selected items between the two lists.
+                                        " />
 
   <jsp:directive.attribute name="unrelate"          type="java.lang.Boolean"
                            description="Whether, or not, the tools should also allow deletion of relations" />
-  
+
   <jsp:directive.attribute name="relations"         type="java.lang.Boolean"
                            description="Whether, or not, the tools should show the relation values and display a small form to edit them" />
 
