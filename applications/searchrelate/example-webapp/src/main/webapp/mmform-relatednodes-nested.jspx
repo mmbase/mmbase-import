@@ -30,7 +30,7 @@
         idvar="rid"
         type="news"
         role="posrel"
-        item="/news-item.jspx"
+        item="news-item.jspx"
         delete="true"
         search="true"
         sortable="true"

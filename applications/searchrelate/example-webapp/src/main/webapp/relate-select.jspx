@@ -10,7 +10,7 @@
 
   <h2>mm-sr:relate with selection in the repository</h2>
   <p>
-    Make selections in the 'repository', then press the button to submit those to 'current' 
+    Make selections in the 'repository', then press the button to submit those to 'current'
     and vise versa.
   </p>
 
@@ -26,18 +26,17 @@
       <mm:sortorder field="number" direction="down" />
       <mm:constraint field="number" operator="IN" referid="related" inverse="true" />
     </mm:listnodescontainer>
-    <mm-sr:relate
+    <mm-srt:relate
         current="${current}" repository="${repository}"
         maxpages="10"
         pagesize="5"
         unrelate="true"
         create="true"
         select="true"
-        submit="#save"
-        extracreate="">
+        submit="#save">
       <jsp:attribute name="currentTitle"><b>News</b></jsp:attribute>
       <jsp:attribute name="repositoryTitle"><b>Add other news</b></jsp:attribute>
-    </mm-sr:relate>
+    </mm-srt:relate>
     <input type="submit" value="Save" id="save" />
   </mm:node>
 
