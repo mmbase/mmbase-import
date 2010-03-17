@@ -40,13 +40,10 @@
           create="true"
           submit="#save"
           extracreate="">
-        <jsp:attribute name="currentTitle"><strong>News</strong></jsp:attribute>
-        <jsp:attribute name="repositoryTitle">
-          <strong>Add other news</strong>
-          <input id="save" type="submit" value="Save" />
-        </jsp:attribute>
-        
+        <jsp:attribute name="currentTitle"><b>News</b></jsp:attribute>
+        <jsp:attribute name="repositoryTitle"><b>Add other news</b></jsp:attribute>
       </mm-sr:relate>
+      <input id="save" type="submit" value="Save" />
     </form>
   </mm:node>
 
