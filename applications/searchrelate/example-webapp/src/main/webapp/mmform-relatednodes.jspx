@@ -36,6 +36,7 @@
         idvar="rid"
         type="news"
         role="posrel"
+        max="5"
         unlink="true"
         delete="true"
         fields="number,title"
