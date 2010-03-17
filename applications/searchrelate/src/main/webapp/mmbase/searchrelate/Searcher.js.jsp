@@ -62,13 +62,23 @@ function MMBaseRelater(d, validator) {
     this.related       = {};    // related nodes
     this.unrelated     = {};    // unrelated nodes
     this.deleterels    = {};    // relations to delete
+
+
     this.logger        = new MMBaseLogger();
     this.logger.debug(d);
     this.logger.debug("setting up current");
     this.current       = $(d).find(".mm_relate_current")[0];
-    this.instant       = $(d).hasClass("instant");  // instant action
-    this.canUnrelate   = $(d).hasClass("can_unrelate");
+    this.instant       = $(d).hasClass("instant");  // instant action, no submit button needed
+    this.select        = $(d).hasClass("select");
+
+    if (this.select) {
+        this.selectedForRelate   = {};
+        this.selectedForUnrelate = {};
+    }
+
+    this.canUnrelate      = $(d).hasClass("can_unrelate");
     this.canEditrelations = $(d).hasClass("can_editrelations");
+
     if (this.current != null) {
         this.addSearcher(this.current, "current");
     } else {
@@ -95,7 +105,19 @@ function MMBaseRelater(d, validator) {
     }
     this.sessionName = null;
     var self = this;
+    if (this.select) {
+        $(this.div).find("a.move").click(
+            function(ev) {
+                self.moveSelections();
+                if (self.instant) {
+                    self.commit(this);
+                }
+            }
+        );
+    }
+
     $(this.div).trigger("mmsrRelaterReady", [self]);
+
 }
 
 /**
@@ -156,16 +178,16 @@ MMBaseRelater.prototype.needsCommit = function() {
  * Commits makes changes to MMBase. Depends on a jsp /mmbase/searchrelate/relate.jsp to do the actual work.
  * This jsp, in turn, depends on the query in the user's session which defines precisely what must happen.
  */
-MMBaseRelater.prototype.commit = function(ev) {
+MMBaseRelater.prototype.commit = function(button) {
     var relatedNumbers   = this.getNumbers(this.related);
     var unrelatedNumbers = this.getNumbers(this.unrelated);
     var deletedRelations = this.getNumbers(this.deleterels);
-
     if (relatedNumbers != "" || unrelatedNumbers != "" || deletedRelations != "") {
-        var a = ev.target;
-        $(a).addClass("submitting");
-        $(a).removeClass("failed");
-        $(a).removeClass("succeeded");
+        if (button != null) {
+            $(button).addClass("submitting");
+            $(button).removeClass("failed");
+            $(button).removeClass("succeeded");
+        }
 
         this.logger.debug("Commiting changed relations of " + this.div.id);
         var id = this.div.id;
@@ -174,15 +196,14 @@ MMBaseRelater.prototype.commit = function(ev) {
         this.logger.debug("+ " + relatedNumbers);
         this.logger.debug("- " + unrelatedNumbers);
         this.logger.debug("d " + deletedRelations);
-        if (!this.instant) {
-            this.commitSelections(id);
-        }
+
         var params = {id: id, related: relatedNumbers, unrelated: unrelatedNumbers, deleted: deletedRelations};
         if (this.transaction != null) {
             params.transaction = this.transaction;
         }
         var self = this;
-        $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
+        $.ajax({async: false,
+                url: url, type: "GET", dataType: "xml", data: params,
                 complete: function(res, status){
                     $(a).removeClass("submitting");
                     if (status == "success") {
@@ -213,6 +234,9 @@ MMBaseRelater.prototype.commit = function(ev) {
                     }
                 }
             });
+        // alert("hoi " + relatedNumbers + " " + unrelatedNumbers + " " + deletedRelations);
+        // return false;
+
     } else {
         this.logger.debug("No changes, no need to commit");
         $(this.div).trigger("mmsrCommitted", [a, "nochanges", this]);
@@ -223,26 +247,28 @@ MMBaseRelater.prototype.commit = function(ev) {
 /**
  * Commits selected items after acknowledgment
  */
-MMBaseRelater.prototype.commitSelections = function(id) {
-    var div = $('#' + id + ' div.mm_relate_current');
+MMBaseRelater.prototype.moveSelections = function() {
     var self = this;
     var done = false;
 
     // unrelate
-    $.each(self.deleterels, function(key, value) {
+    $.each(self.selectedForUnrelate, function(key, value) {
         self.logger.debug("= unrelated: " + key);
-        self.unrelate(value);
-        self.deleterels[key] = null;
+        self.unrelate(value, true);
         done = true;
     });
+    self.selectedForUnrelate = {};
 
     // relate
-    $.each(self.related, function(key, value) {
+    $.each(self.selectedForRelate, function(key, value) {
         self.logger.debug("= related: " + key);
-        if (value != null) { self.relate(value); }
-        self.related[key] = null;
+        if (value != null) {
+            self.relate(value);
+        }
         done = true;
     });
+    self.selectedForRelate = {};
+
 
     if (done) {
         self.logger.debug("done");
@@ -297,59 +323,68 @@ MMBaseRelater.prototype.bindSaverelation = function(div) {
 MMBaseRelater.prototype.bindEvents = function(rep, type) {
     var self = this;
     if (type == "repository") {
-        $(rep).find("tr.click").each(function() {
-            var nr = self.getNumber(this);
-            if (typeof(self.related[nr]) != "undefined") {
-                $(this).toggleClass('selected');
-                self.logger.debug("found selected");
-            }
-
-            $(this).click(function(ev) {
-                if (self.instant) {
-                    self.relate(this);
-                    self.commit(ev);
-                } else {
+        $(rep).find("tr.click").each(
+            function() {
+                var nr = self.getNumber(this);
+                if (typeof(self.related[nr]) != "undefined") {
                     $(this).toggleClass('selected');
-                    if (typeof(self.related[nr]) == "undefined") {
-                        self.related[nr] = this;
-                        self.logger.debug("selected (relate): " + nr);
-                    } else {
-                        self.related[nr] = null;
-                        self.logger.debug("unselected (relate): " + nr);
-                    }
+                    self.logger.debug("found selected");
                 }
-                return false;
+
+                $(this).click(
+                    function(ev) {
+                        if (self.select) {
+                            $(this).toggleClass('selected');
+                            if (typeof(self.selectedForRelate[nr]) == "undefined") {
+                                self.selectedForRelate[nr] = this;
+                                self.logger.debug("selected (relate): " + nr);
+                            } else {
+                                self.selectedForRelate[nr] = null;
+                                self.logger.debug("unselected (relate): " + nr);
+                            }
+                        } else {
+                            self.relate(this);
+                            if (self.instant) {
+                                self.commit();
+                            }
+                        }
+
+                        return false;
+                    });
             });
-        });
     }
     if (type == "current") {
-        $(rep).find("tr.click").each(function() {
-            var rel = self.getRelationNumber(this);
-            if (typeof(self.deleterels[rel]) != "undefined") {
-                self.logger.debug(self.deleterels[rel]);
-                self.logger.debug("found selected");
-                $(this).toggleClass('selected');
-            }
+        $(rep).find("tr.click").each(
+            function() {
+                var  rel = self.getRelationNumber(this);
+                if (typeof(self.deleterels[rel]) != "undefined") {
+                    self.logger.debug(self.deleterels[rel]);
+                    self.logger.debug("found selected");
+                    $(this).toggleClass('selected');
+                }
 
-            if ($(this).hasClass("new") || (self != null && self.canUnrelate)) {    // TODO: hasClass new moet nog wat mee
-                $(this).click(function(ev) {
-                    if (self.instant) {
-                        self.unrelate(this);
-                        self.commit(ev);
-                    } else {
-                        $(this).toggleClass('selected');
-                        if (typeof(self.deleterels[rel]) == "undefined") {
-                            self.deleterels[rel] = this;
-                            self.logger.debug("selected (unrelate): " + rel);
-                        } else {
-                            self.deleterels[rel] = null;
-                            self.logger.debug("unselected (unrelate): " + rel);
-                        }
-                    }
-                    return false;
-                });
-            }
-        });
+                if ($(this).hasClass("new") || (self != null && self.canUnrelate)) {    // TODO: hasClass new moet nog wat mee
+                    $(this).click(
+                        function(ev) {
+                            if (self.select) {
+                                $(this).toggleClass('selected');
+                                if (typeof(self.selectedForUnrelate[rel]) == "undefined") {
+                                    self.selectedForUnrelate[rel] = this;
+                                    self.logger.debug("selected (unrelate): " + rel);
+                                } else {
+                                    self.selectedForUnrelate[rel] = null;
+                                    self.logger.debug("unselected (unrelate): " + rel);
+                                }
+                            } else {
+                                self.unrelate(this);
+                                if (self.instant) {
+                                    self.commit();
+                                }
+                            }
+                            return false;
+                        });
+                }
+            });
 
         if (self.canEditrelations) self.bindSaverelation(rep);
     }
@@ -408,20 +443,24 @@ MMBaseRelater.prototype.relate = function(tr) {
         $(tr).unbind();
 
         var self = this;
-        $(tr).click(function(ev) {
-            if (self.instant) {
-                self.unrelate(this);
-                self.commit(ev);
-            } else {
-                // TODO: need to have relation nr here (maybe reload data?)
-                $(this).toggleClass('selected');
-                if (typeof(self.unrelated[number]) == "undefined") {
-                    self.unrelated[number] = this;
+        $(tr).click(
+            function(ev) {
+
+                if (self.select) {
+                    // TODO: need to have relation nr here (maybe reload data?)
+                    $(this).toggleClass('selected');
+                    if (typeof(self.selectedForUnrelate[number]) == "undefined") {
+                        self.selectedForUnrelate[number] = this;
+                    } else {
+                        self.selectedForUnrelate[number] = null;
+                    }
                 } else {
-                    self.unrelated[number] = null;
+                    self.unrelate(this);
+                    if (self.instant) {
+                        self.commit();
+                    }
                 }
-            }
-        });
+            });
     }
     if (this.relateCallBack != null) {
         this.relateCallBack(tr);
@@ -439,18 +478,18 @@ MMBaseRelater.prototype.getRelationTrs = function(number) {
 /**
  * Moves a node from the list of related nodes to the 'unrelated' repository.
  */
-MMBaseRelater.prototype.unrelate = function(tr) {
+MMBaseRelater.prototype.unrelate = function(tr, userelationnumber) {
     var number = this.getNumber(tr);
-    var relnr = this.getRelationNumber(tr);
+    var relnr  = this.getRelationNumber(tr);
     var relationTrs = this.getRelationTrs(number);
     this.logger.debug("Unrelating node #" + number + ", relation #" + relnr);
 
     // Set up data
     if (typeof(this.unrelated[number]) == "undefined" && typeof(this.unrelated[relnr] == "undefined")) {
-        if (this.instant) {
+        if (userelationnumber == null || ! userelationnumber) {
             this.unrelated[number] = tr;
         } else {
-            this.unrelated[relnr] = tr;
+            this.deleterels[relnr] = tr;
         }
     }
     this.related[number] = null;
@@ -475,20 +514,24 @@ MMBaseRelater.prototype.unrelate = function(tr) {
     // Events
     $(tr).unbind();
     var self = this;
-    $(tr).click(function(ev) {
-        if (self.instant) {
-            self.relate(this);
-            self.commit(ev);
-        } else {
-            $(this).toggleClass('selected');
-            if (typeof(self.related[number]) == "undefined") {
-                self.related[number] = this;
-            } else {
-                self.related[number] = null;
+    $(tr).click(
+        function(ev) {
+            if (self.select) {
+                $(this).toggleClass('selected');
+                if (typeof(self.related[number]) == "undefined") {
+                    self.selectedForRelate[number] = this;
+                } else {
+                    self.selectedForRelate[number] = null;
+                }
+            }  else {
+                self.relate(this);
+                if (self.instant) {
+                    self.commit();
+                }
             }
+            return false;
         }
-        return false;
-    });
+    );
     $(this.div).trigger("mmsrUnrelate", [tr, this]);
 };
 
@@ -593,8 +636,11 @@ MMBaseRelater.prototype.setMaxPages = function(maxpages) {
     }
 };
 
-/*
- * ***********************************************************************************************************************
+/**
+ * ********************************************************************************
+ * Follows the implementation of the Search part.
+ * This can also be used stand-alone, using mm-sr:search
+ * ********************************************************************************
  */
 
 function MMBaseSearcher(d, r, type, logger) {
@@ -862,8 +908,11 @@ MMBaseSearcher.prototype.create = function () {
                     }
                     $(rep).find('input[type="submit"]').attr("disabled", "disabled");
                     self.validator.validateHook = function(valid) {
-                        if (valid) $(rep).find('input[type="submit"]').removeAttr("disabled");
-                        else $(rep).find('input[type="submit"]').attr("disabled", "disabled");
+                        if (valid) {
+                            $(rep).find('input[type="submit"]').removeAttr("disabled");
+                        } else {
+                            $(rep).find('input[type="submit"]').attr("disabled", "disabled");
+                        }
                     };
                     var options = {
                         url: "${mm:link('/mmbase/searchrelate/create.jspx')}",
