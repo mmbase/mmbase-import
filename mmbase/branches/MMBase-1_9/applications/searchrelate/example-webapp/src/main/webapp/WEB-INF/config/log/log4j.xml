@@ -21,10 +21,6 @@
     <level class="&mmlevel;" value ="service" />
   </logger>
 
-  <logger name="org.mmbase.bridge.util.Queries" >
-    <level class="&mmlevel;" value ="debug" />
-  </logger>
-
   <logger name="STDERR">
     <level class="&mmlevel;" value ="fatal" />
   </logger>
