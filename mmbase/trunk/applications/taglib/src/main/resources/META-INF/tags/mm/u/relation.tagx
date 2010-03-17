@@ -15,6 +15,7 @@
 
     <mm:listrelationscontainer role="${role}" type="object" searchdir="${searchdir}" >
       <mm:addnode element="object" number="${to}" />
+      <mm:sortorder field="${empty role ? 'insrel' : ''}${role}.number" />
       <mm:listrelations>
         <mm:node id="thenode" />
       </mm:listrelations>
