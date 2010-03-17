@@ -252,6 +252,11 @@
               <a href="${_}">Basic mm-sr:relate useage with preselect</a>
             </mm:link>
           </li>
+          <li>
+            <mm:link page="relate-select-instant.jspx" referids="${referids}">
+              <a href="${_}">Basic mm-sr:relate useage with preselect and withoug a submit button</a>
+            </mm:link>
+          </li>
 
 
           <li>Make more test-cases for this tag</li>
