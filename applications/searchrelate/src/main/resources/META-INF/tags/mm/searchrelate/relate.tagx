@@ -138,7 +138,7 @@
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       basename="org.mmbase.searchrelate.resources.searchrelate">
     <div id="mm_related_${sid}"
-         class="mm_related ${empty unrelate or ! unrelate ? '' : 'can_unrelate'} ${empty relations or ! relations ? '' : 'can_editrelations'} ${empty submit ? 'instant' : ''} ${styleClass}">
+         class="mm_related ${empty unrelate or ! unrelate ? '' : 'can_unrelate'} ${empty relations or ! relations ? '' : 'can_editrelations'} ${empty submit ? 'instant' : ''} ${select ? 'select' : '' } ${styleClass}">
       <c:if test="${! empty transaction}">
         <span class="transactionname" style="display: none;">${transaction}</span>
       </c:if>
