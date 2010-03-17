@@ -10,7 +10,10 @@
 
 
   <h2>Instant relations</h2>
-  <p>If you do not use a submit attribute, the relations are made instantly, so you do not need a submit button at all.</p>
+  <p>
+    If you do not use a submit attribute, the relations are made instantly, so you do not need a 
+    submit button at all. Items are moved the minute you click them.
+  </p>
   <mm:node number="default.mags">
 
     <mm:relatednodescontainer type="news" id="current"  role="posrel">
