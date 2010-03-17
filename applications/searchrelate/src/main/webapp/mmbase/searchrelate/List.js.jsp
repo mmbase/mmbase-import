@@ -3,7 +3,7 @@
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"
 %><fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
-<mm:content type="text/javascript" expires="0">
+<mm:content type="text/javascript">
  *
  * This javascript binds to a div.list. It happens on document.ready on every div.list in the document. You can also call {@link #init} manually, e.g. after an AJAX load.
  *
@@ -696,6 +696,10 @@ List.prototype.getListParameters = function() {
 List.prototype.commit = function(stale, leavePage) {
     var result;
     var self = this;
+    if (this.saving) {
+        // already saving right now
+        return;
+    }
     if(this.needsCommit() && ! List.prototype.leftPage) {
 
         if (this.valid) {
@@ -723,10 +727,6 @@ List.prototype.commit = function(stale, leavePage) {
                         params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = $(this).val();
                 });
 
-
-
-
-                var self = this;
                 this.loader();
                 $(self.div).trigger("mmsrStartSave", [self]);
                 result = null;
