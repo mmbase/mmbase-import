@@ -202,6 +202,7 @@ function List(d) {
     // Before the page is left, we need to save. Arrange that here.
     $(window).bind("beforeunload",
                    function(ev) {
+                       List.prototype.leftPage = true;
                        var result = self.commit(0, true);
                        if (result != null) {
                            ev.returnValue = confirm(result); //'<fmt:message key="invalid" />';
@@ -696,11 +697,9 @@ List.prototype.getListParameters = function() {
 List.prototype.commit = function(stale, leavePage) {
     var result;
     var self = this;
-    if (this.saving) {
-        // already saving right now
-        return;
-    }
-    if(this.needsCommit() && ! List.prototype.leftPage) {
+    if(this.needsCommit() && (! List.prototype.leftPage || leavePage)) {
+        // if triggered unload prototype.leftPage is true, so normal commits are cancelled. But the last 'leavePage' (which will happen asynchronously)
+        // does proceed. This is because we want this last commit to delay actually leaving the page.
 
         if (this.valid) {
             var now = new Date();
