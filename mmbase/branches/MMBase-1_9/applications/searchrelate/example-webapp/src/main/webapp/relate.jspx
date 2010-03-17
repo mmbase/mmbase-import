@@ -11,9 +11,9 @@
   <h2>mm-sr:relate</h2>
   <p>
     The basic idea of mm-sr:relate is that 2 lists of nodes are presented. One list is the 'current'
-    list (e.g. all to a certain other related nodes of a certain type) and the other is the 
+    list (e.g. all to a certain other related nodes of a certain type) and the other is the
     'repository' (e.g. all nodes of a certain type). You edit the current list by moving items from
-    and to the repository. 
+    and to the repository.
   </p>
   <p>
     Make a selection in the 'current' or 'repository' list and press the button to submit the changes
@@ -32,7 +32,7 @@
       <mm:constraint field="number" operator="IN" referid="related" inverse="true" />
     </mm:listnodescontainer>
     <form>
-      <mm-sr:relate
+      <mm-srt:relate
           current="${current}" repository="${repository}"
           maxpages="10"
           pagesize="5"
@@ -42,7 +42,7 @@
           extracreate="">
         <jsp:attribute name="currentTitle"><b>News</b></jsp:attribute>
         <jsp:attribute name="repositoryTitle"><b>Add other news</b></jsp:attribute>
-      </mm-sr:relate>
+      </mm-srt:relate>
       <input id="save" type="submit" value="Save" />
     </form>
   </mm:node>

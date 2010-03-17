@@ -23,7 +23,7 @@
       <mm:sortorder field="number" direction="down" />
       <mm:constraint field="number" operator="IN" referid="related" inverse="true" />
     </mm:listnodescontainer>
-    <mm-sr:relate
+    <mm-srt:relate
         current="${current}" repository="${repository}"
         maxpages="10"
         pagesize="5"
@@ -33,7 +33,7 @@
         extracreate="">
       <jsp:attribute name="currentTitle"><b>News</b></jsp:attribute>
       <jsp:attribute name="repositoryTitle"><b>Add other news</b></jsp:attribute>
-    </mm-sr:relate>
+    </mm-srt:relate>
   </mm:node>
 
   <mm:escape escape="links">$URL$</mm:escape>
