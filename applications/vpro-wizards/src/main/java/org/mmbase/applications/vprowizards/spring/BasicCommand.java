@@ -42,10 +42,10 @@ public class BasicCommand implements Command {
                                HttpServletResponse response, ResultContainer resultContainer) {
         //we only iterate over the actions until there is an error
         ACTIONS:
-        for(String actionMapping :  actions.keySet()){
-            Map<String, Action> mappedActions = actions.get(actionMapping);
-            log.service(mappedActions.size() + " actions found for mapping '" + actionMapping + "'");
-            for (Action action: mappedActions.values()){
+        for(Map.Entry<String, Map<String, Action>> entry  : actions.entrySet()){
+            Map<String, Action> mappedActions = entry.getValue();
+            log.debug(mappedActions.size() + " actions found for mapping '" + entry.getKey() + "': " + mappedActions);
+            for (Action action: mappedActions.values()){ // Not entirely sure then where the key is good for then
                 action.process(resultContainer);
                 if(resultContainer.hasGlobalErrors() || resultContainer.hasFieldErrors()){
                     break ACTIONS;
