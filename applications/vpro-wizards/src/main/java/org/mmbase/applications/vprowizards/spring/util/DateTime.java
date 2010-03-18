@@ -77,6 +77,7 @@ public class DateTime {
     public void setDateFormat(String dateFormat) {
         this.dateFormat = dateFormat;
         sdf = new SimpleDateFormat(dateFormat  + timeFormat);
+        log.debug("date format: " + dateFormat + timeFormat);
     }
 
     /**
@@ -86,5 +87,6 @@ public class DateTime {
     public void setTimeFormat(String timeFormat) {
         this.timeFormat = timeFormat;
         sdf = new SimpleDateFormat(dateFormat  + timeFormat);
+        log.debug("date format: " + dateFormat + timeFormat);
     }
 }
