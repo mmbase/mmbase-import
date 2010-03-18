@@ -71,9 +71,11 @@ public class CreateRelationAction extends AbstractRelationAction {
             for (Map.Entry<String, Object> entry : getRelationValues().entrySet()) {
                 rel.setValue(entry.getKey(), entry.getValue());
             }
-            log.info("Created relation " + rel);
+            log.service("Created relation " + rel);
 
             return rel;
+        } else {
+            log.warn("Not creating relation, because already in error");
         }
         return null;
     }
