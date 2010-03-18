@@ -57,9 +57,13 @@
 
 
 <!ELEMENT afterdeployment (runnable*)>
-<!ELEMENT runnable EMPTY>
+<!ELEMENT runnable (param*)>
 <!ATTLIST runnable class CDATA #REQUIRED>
 <!ATTLIST runnable version CDATA #IMPLIED>
+
+<!ELEMENT param (#PCDATA)>
+<!ATTLIST param name CDATA #REQUIRED>
+
 
 <!ELEMENT description (#PCDATA)>
 <!ELEMENT install-notice (#PCDATA)>
