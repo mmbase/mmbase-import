@@ -257,6 +257,11 @@
               <a href="${_}">Basic mm-sr:relate useage with preselect and without a submit button</a>
             </mm:link>
           </li>
+          <li class="">
+            <mm:link page="relate-edit-relations.jspx" referids="${referids}">
+              <a href="${_}">Basic mm-sr:relate with the ability to edit relations</a>
+            </mm:link>
+          </li>
 
 
           <li>Make more test-cases for this tag</li>
