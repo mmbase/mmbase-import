@@ -113,14 +113,19 @@ public class CreateRelationAction extends AbstractRelationAction {
         }
         int position = 1;
 
-        Query q = null;
+        if (sourceNode.getNumber() < 0) {
+            // Won't work for new nodes
+            return position;
+        }
+
         // find the lowest or highest relation number
 
         // it is unlikely that the path matches duplicate builder names here, but who knows?
         PathBuilder pathBuilder = new PathBuilder(new String[] { sourceNode.getNodeManager().getName(),
                                                                  role,
                                                                  destinationNode.getNodeManager().getName() });
-        q = Queries.createQuery(transaction, sourceNode.getNumber() + "", pathBuilder.getPath(),
+
+        Query q = Queries.createQuery(transaction, sourceNode.getNumber() + "", pathBuilder.getPath(),
                                 pathBuilder.getStep(1) + "." + sortField,
                                 null, pathBuilder.getStep(1) + "." + sortField,
                                 (sortPosition.equals("begin") ? "up" : "down"), null, false);
