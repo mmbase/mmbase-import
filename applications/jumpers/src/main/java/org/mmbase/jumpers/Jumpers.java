@@ -71,15 +71,19 @@ public class Jumpers extends MMObjectBuilder {
         };
     {
         jumpCache.putCache();
-        addFunction(new AbstractFunction<String>("jump", new Parameter[] { new Parameter("key", String.class, true) }) {
-                @Override
-                public String  getFunctionValue(Parameters parameters) {
-                    String key = parameters.getString("key");
-                    boolean reload = org.mmbase.util.Casting.toBoolean(parameters.get("reload"));
-                    log.debug("Calculating jumper " + reload);
-                    return getJump(key, reload);
-                }
-            });
+        addFunction(new AbstractFunction<String>("jump",
+                                                 new Parameter[] {
+                                                     new Parameter<String>("key", String.class, true),
+                                                     new Parameter<Boolean>("reload", Boolean.class, Boolean.FALSE)
+                                                 }) {
+                        @Override
+                        public String  getFunctionValue(Parameters parameters) {
+                            String key = parameters.getString("key");
+                            boolean reload = org.mmbase.util.Casting.toBoolean(parameters.get("reload"));
+                            log.debug("Calculating jumper " + reload);
+                            return getJump(key, reload);
+                        }
+                    });
     }
 
     /**
