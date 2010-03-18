@@ -60,15 +60,17 @@ public class Jumpers extends MMObjectBuilder {
     /**
      * Cache for URL jumpers.
      */
-    protected Cache jumpCache = new  Cache/*<String,String>*/(DEFAULT_JUMP_CACHE_SIZE) {
-            public String getName() {
-                return "JumpersCache";
-            }
+    protected Cache<String, String> jumpCache = new  Cache<String, String>(DEFAULT_JUMP_CACHE_SIZE) {
+        @Override
+        public String getName() {
+            return "JumpersCache";
+        }
 
-            public String getDescription() {
-                return "Cache for Jumpers";
-            }
-        };
+        @Override
+        public String getDescription() {
+            return "Cache for Jumpers";
+        }
+    };
     {
         jumpCache.putCache();
         addFunction(new AbstractFunction<String>("jump",
@@ -108,6 +110,7 @@ public class Jumpers extends MMObjectBuilder {
      *
      * @return always <code>true</code>
      */
+    @Override
     public boolean init() {
         super.init();
 
@@ -201,6 +204,7 @@ public class Jumpers extends MMObjectBuilder {
     /**
      * @since MMBase-1.7.1
      */
+    @Override
     public String getGUIIndicator(MMObjectNode node, Parameters args) {
         String field = (String) args.get("field");
         if (field == null || field.equals("url")) {
@@ -561,6 +565,7 @@ public class Jumpers extends MMObjectBuilder {
      *
      * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
      */
+    @Override
     public void notify(final NodeEvent event) {
         if(getTableName().equals(event.getBuilderName())){
             if (log.isDebugEnabled()) {
@@ -604,6 +609,7 @@ public class Jumpers extends MMObjectBuilder {
         super.notify(event);
     }
 
+    @Override
     protected Object executeFunction(MMObjectNode node, String function, List arguments) {
         if (function.equals("gui")) {
             String rtn;
