@@ -179,9 +179,7 @@
           </mm:include>
         </div>
       </c:if>
-      <c:if test="${select}">
-        <a href="#move" class="move"><mm-sr:button type="move" alt="move" /></a>
-      </c:if>
+
       <div class="mm_relate_repository searchable">
         <jsp:invoke fragment="repositoryTitle" />
         <c:choose>
@@ -197,6 +195,10 @@
                   <jsp:text> </jsp:text>
                   <a href="#mm_related_${sid}_repository_create" class="create"><fmt:message key="create" /></a>
                 </c:if>
+                <c:if test="${select}">
+                  <jsp:text> </jsp:text>
+                  <a href="#move" class="move"><mm-sr:button type="move" alt="move" /></a>
+                </c:if>
               </fieldset>
             </form>
           </c:when>
@@ -207,6 +209,10 @@
               <jsp:text> </jsp:text>
               <a href="#mm_related_${sid}_repository_create" class="create"><fmt:message key="create" /></a>
             </c:if>
+            <c:if test="${select}">
+              <jsp:text> </jsp:text>
+              <a href="#move" class="move"><mm-sr:button type="move" alt="move" /></a>
+            </c:if>            
           </c:otherwise>
         </c:choose>
 
