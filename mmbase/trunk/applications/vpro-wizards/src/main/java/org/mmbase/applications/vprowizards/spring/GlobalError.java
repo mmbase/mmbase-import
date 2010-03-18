@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.vprowizards.spring;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -72,11 +71,11 @@ public class GlobalError extends RuntimeException {
             message = bundle.getString(messageKey);
             if (message == null || "".equals(message)) {
                 log.warn("no message declared in bundle for key '" + messageKey + "'");
-                return messageKey;
+                return messageKey + " " + Arrays.asList(properties);
             }
         } catch (java.util.MissingResourceException mre) {
             log.warn(mre);
-            return messageKey;
+            return messageKey + " " + Arrays.asList(properties);
         }
         int count = 0;
         if (properties != null) {
