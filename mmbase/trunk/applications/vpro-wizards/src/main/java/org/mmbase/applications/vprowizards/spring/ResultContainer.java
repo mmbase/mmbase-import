@@ -18,6 +18,7 @@ import org.mmbase.applications.vprowizards.spring.cache.CacheFlushHint;
 import org.mmbase.applications.vprowizards.spring.util.ParamValueResolver;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Transaction;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -34,9 +35,18 @@ import org.mmbase.util.logging.Logging;
 public class ResultContainer {
     private static final Logger log = Logging.getLoggerInstance(ResultContainer.class);
 
-    // MM I prefer to compile a version where the damn errors are actually throw, so that I can at least easily see which
+    // MM I prefer to run  a version where the damn errors are actually throw, so that I can at least easily see which
     // damn class causes it.
-    private final boolean THROW = false;
+    private static boolean THROW = false;
+    static {
+        THROW = "true".equals(Casting.toString(ApplicationContextReader.getCachedProperties("mmbase/vpro-wizards").get("throw")));
+        if (THROW) {
+            log.info("VPRO-wizards throws exceptions");
+        } else {
+            log.info("VPRO-wizards use 'global errors' (Use mmbase/vpro-wizards.throw application context property to set it to throw exceptions directly)");
+        }
+    }
+
     private final List<FieldError> fieldErrors = new ArrayList<FieldError>();
     private final List<GlobalError> globalErrors = new ArrayList<GlobalError>();
     private final List<CacheFlushHint> cacheFlushHints = new ArrayList<CacheFlushHint>();
@@ -86,7 +96,9 @@ public class ResultContainer {
     public void addParamToReturnURL(String name, final Node node){
         extraParams.put(name, new ParamValueResolver(){
             public String getValue() {
-                if (node.getNumber() < 0) throw new RuntimeException("Not a real number for node " + node + " (" + node.getCloud() + ")");
+                if (node.getNumber() < 0) {
+                    throw new RuntimeException("Not a real number for node " + node + " (" + node.getCloud() + ")");
+                }
                 return ""+node.getNumber();
             }
         });
