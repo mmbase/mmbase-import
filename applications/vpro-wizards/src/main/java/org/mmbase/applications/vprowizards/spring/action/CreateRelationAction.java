@@ -114,34 +114,26 @@ public class CreateRelationAction extends AbstractRelationAction {
         int position = 1;
 
         Query q = null;
-        try {
-            // find the lowest or highest relation number
+        // find the lowest or highest relation number
 
-            // it is unlikely that the path matches duplicate builder names here, but who knows?
-            PathBuilder pathBuilder = new PathBuilder(new String[] { sourceNode.getNodeManager().getName(),
-                                                                     role,
-                                                                     destinationNode.getNodeManager().getName() });
-            q = Queries.createQuery(transaction, sourceNode.getNumber() + "", pathBuilder.getPath(),
-                                    pathBuilder.getStep(1) + "." + sortField,
-                                    null, pathBuilder.getStep(1) + "." + sortField,
-                                    (sortPosition.equals("begin") ? "up" : "down"), null, false);
-            q.setMaxNumber(1);
-            NodeList nl = transaction.getList(q);
-            if (nl.size() > 0) {
-                position = nl.getNode(0).getIntValue(role + "." + sortField);
-                position = (sortPosition.equals("begin") ? position - 1 : position + 1);
-            } else {
-                log.warn("Query " + q + " didn't result anything");
-            }
-
-            return Integer.valueOf(position);
-        } catch (RuntimeException e) {
-            // WTF Catching exceptions is evil.
-            addGlobalError("error.unexpected", new String[] { e.getMessage() });
-            log.error("something went wrong running a query to find out the position of a new relation. query: ["
-                      + q.toString() + "]", e);
+        // it is unlikely that the path matches duplicate builder names here, but who knows?
+        PathBuilder pathBuilder = new PathBuilder(new String[] { sourceNode.getNodeManager().getName(),
+                                                                 role,
+                                                                 destinationNode.getNodeManager().getName() });
+        q = Queries.createQuery(transaction, sourceNode.getNumber() + "", pathBuilder.getPath(),
+                                pathBuilder.getStep(1) + "." + sortField,
+                                null, pathBuilder.getStep(1) + "." + sortField,
+                                (sortPosition.equals("begin") ? "up" : "down"), null, false);
+        q.setMaxNumber(1);
+        NodeList nl = transaction.getList(q);
+        if (nl.size() > 0) {
+            position = nl.getNode(0).getIntValue(role + "." + sortField);
+            position = (sortPosition.equals("begin") ? position - 1 : position + 1);
+        } else {
+            log.warn("Query " + q + " didn't result anything");
         }
-        return null;
+
+        return Integer.valueOf(position);
     }
 
     public String getSortPosition() {
