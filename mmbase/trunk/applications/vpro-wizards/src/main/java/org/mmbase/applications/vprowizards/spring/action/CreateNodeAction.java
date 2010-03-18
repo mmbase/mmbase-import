@@ -59,10 +59,12 @@ public class CreateNodeAction extends AbstractNodeAction {
             return null;
         } else {
             if(mayCreate(nodeManager)){
-                log.info(String.format("Creating new node of type '%s'", nodeManager.getName()));
+                log.service("Creating new node of type '" + nodeManager.getName() + "'");
                 return nodeManager.createNode();
+            }  else {
+                log.info("Not allowed to create a new node of type '" +  nodeManager.getName() + "'. " + transaction);
+                return null;
             }
-            return null;
         }
     }
 
