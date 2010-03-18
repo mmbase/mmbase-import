@@ -12,11 +12,14 @@ package org.mmbase.applications.vprowizards.spring;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  */
 
 public class GlobalError extends RuntimeException {
+    private static final Logger log = Logging.getLoggerInstance(GlobalError.class);
 
     /**
      * This is the type of error that is created when something went wrong, and the transaction can not be committed in
@@ -64,9 +67,16 @@ public class GlobalError extends RuntimeException {
      *             when the key was not found in the bundle
      */
     public String getMessage() {
-        String message = bundle.getString(messageKey);
-        if (message == null || "".equals(message)) {
-            throw new RuntimeException("no message declared in bundle for key '" + messageKey + "'");
+        String message;
+        try {
+            message = bundle.getString(messageKey);
+            if (message == null || "".equals(message)) {
+                log.warn("no message declared in bundle for key '" + messageKey + "'");
+                return messageKey;
+            }
+        } catch (java.util.MissingResourceException mre) {
+            log.warn(mre);
+            return messageKey;
         }
         int count = 0;
         if (properties != null) {
