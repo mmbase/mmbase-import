@@ -333,6 +333,12 @@ public abstract class AbstractNodeAction extends Action {
         resultContainer.addGlobalError(new GlobalError(key, placeholderValues, getLocale()));
     }
 
+    protected final void addGlobalError(String key, String[] placeholderValues, Throwable t) {
+        GlobalError ge = new GlobalError(key, placeholderValues, getLocale());
+        ge.initCause(t);
+        resultContainer.addGlobalError(ge);
+    }
+
     /**
      * Creates a global error for this action.
      *
