@@ -18,11 +18,10 @@ import org.mmbase.storage.search.legacy.QueryConvertor;
 import org.mmbase.util.logging.*;
 
 /**
- * This g
  *
  * @author michiel
  * @author Rob van Maris (ClusterBuilder)
- * @version $Id: $
+ * @version $Id$
  */
 public abstract class ClusterQueries {
 
@@ -490,6 +489,8 @@ public abstract class ClusterQueries {
     // package visibility!
     public void addSortOrders(BasicSearchQuery query, List<String> fieldNames, List<String> directions, Map<String, BasicStepField> fieldsByAlias) {
 
+        final QueryContext queryContext = org.mmbase.module.core.CoreQueryContext.INSTANCE;
+
         // Test if fieldnames are specified.
         if (fieldNames == null || fieldNames.size() == 0) {
             return;
@@ -509,7 +510,7 @@ public abstract class ClusterQueries {
             StepField field= fieldsByAlias.get(fieldName);
             if (field == null) {
                 // Field has not been added.
-                field= ConstraintParser.getField(fieldName, query.getSteps());
+                field = ConstraintParser.getField(queryContext, fieldName, query.getSteps());
             }
             if (field == null) {
                 throw new IllegalArgumentException("Invalid fieldname: \"" + fieldName + "\"");

@@ -10,10 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.legacy;
 
 import java.util.*;
-import org.mmbase.bridge.Field;
-import org.mmbase.core.CoreField;
-import org.mmbase.module.core.*;
-import org.mmbase.storage.StorageManagerFactory;
+import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.logging.*;
@@ -131,8 +128,7 @@ public class ConstraintParser {
      * @return Converted constraint
      * @since MMBase-1.8.1 (moved from org.mmbase.bridge.util.Queries)
      */
-    private static String convertClausePartToDBS(String constraints) {
-        StorageManagerFactory<?> factory = MMBase.getMMBase().getStorageManagerFactory();
+    private static String convertClausePartToDBS(QueryContext queryContext, String constraints) {
         StringBuilder result = new StringBuilder();
         int posa = constraints.indexOf('[');
         while (posa > -1) {
@@ -143,9 +139,10 @@ public class ConstraintParser {
                 String fieldName = constraints.substring(posa + 1, posb);
                 int posc = fieldName.indexOf('.');
                 if (posc == -1) {
-                    fieldName = factory != null ? factory.getStorageIdentifier(fieldName).toString() : fieldName;
+                    fieldName = queryContext.getStorageIdentifier(fieldName);
                 } else {
-                    fieldName = fieldName.substring(0, posc + 1) + (factory !=  null ? factory.getStorageIdentifier(fieldName.substring(posc + 1)) : fieldName.substring(posc + 1));
+                    fieldName = fieldName.substring(0, posc + 1) +
+                        queryContext.getStorageIdentifier(fieldName.substring(posc + 1));
                 }
                 result.append(constraints.substring(0, posa)).append(fieldName);
                 constraints = constraints.substring(posb + 1);
@@ -164,7 +161,7 @@ public class ConstraintParser {
      * @return converted constraint
      * @since MMBase-1.8.1 (moved from org.mmbase.bridge.util.Queries)
      */
-    public static String convertClauseToDBS(String constraints) {
+    public static String convertClauseToDBS(QueryContext queryContext, String constraints) {
         if (constraints.startsWith("MMNODE")) {
             //  wil probably not work
             // @todo check
@@ -194,14 +191,14 @@ public class ConstraintParser {
             String part = constraints.substring(0, quoteOpen);
 
             //append to the string buffer "part" the first part
-            result.append(convertClausePartToDBS(part));
+            result.append(convertClausePartToDBS(queryContext, part));
             result.append(constraints.substring(quoteOpen, quoteClose + 1));
 
             constraints = constraints.substring(quoteClose + 1);
             quoteOpen = constraints.indexOf('\'');
 
         }
-        result.append(convertClausePartToDBS(constraints));
+        result.append(convertClausePartToDBS(queryContext, constraints));
         return result.toString();
     }
 
@@ -394,8 +391,8 @@ public class ConstraintParser {
      * @return The field.
      */
 
-    public static StepField getField(String token, List<? extends Step> steps) {
-        return getField(token, (List<BasicStep>) steps, null);
+    public static StepField getField(QueryContext queryContext, String token, List<? extends Step> steps) {
+        return getField(queryContext, token, (List<BasicStep>) steps, null);
     }
     /**
      * Creates <code>StepField</code> corresponding to field indicated by
@@ -416,7 +413,7 @@ public class ConstraintParser {
      * @since MMBase-1.7.1
      */
 
-    static StepField getField(String token, List<BasicStep> steps, SearchQuery query) {
+    static StepField getField(QueryContext queryContext, String token, List<BasicStep> steps, SearchQuery query) {
         BasicStep step = null;
         int bracketOffset = (token.startsWith("[") && token.endsWith("]")) ? 1 : 0;
         int idx = token.indexOf('.');
@@ -436,7 +433,8 @@ public class ConstraintParser {
         } else {
             step = getStep(token.substring(bracketOffset, idx), steps);
         }
-        MMObjectBuilder builder = step.getBuilder();
+
+        String builder = step.getTableName();
         String  fieldName;
         if (idx == -1) {
             fieldName = token.substring(bracketOffset, token.length() - bracketOffset);
@@ -444,20 +442,20 @@ public class ConstraintParser {
             fieldName = token.substring(idx + 1, token.length() - bracketOffset);
         }
 
-        CoreField coreField = builder.getField(fieldName);
+        Field coreField = queryContext.getField(builder, fieldName);
         // maybe the field was already escaped with getAllowedField
         // otherwise it will definitely fail!
         if (coreField == null) {
-            String escapedFieldName = MMBase.getMMBase().getStorageManagerFactory().getStorageIdentifier(fieldName).toString();
+            String escapedFieldName = queryContext.getStorageIdentifier(fieldName);
             if (! escapedFieldName.equals(fieldName)) {
-                coreField = builder.getField(fieldName);
+                coreField = queryContext.getField(builder, fieldName);
                 if (coreField == null) {
-                    throw new IllegalArgumentException("Unknown field (of builder " + builder.getTableName() + "): \"" + escapedFieldName + "\"");
+                    throw new IllegalArgumentException("Unknown field (of builder " + builder + "): \"" + escapedFieldName + "\"");
                 }
             }
         }
         if (coreField == null) {
-            throw new IllegalArgumentException("Unknown field (of builder " + builder.getTableName() + "): \"" + fieldName + "\"");
+            throw new IllegalArgumentException("Unknown field (of builder " + builder + "): \"" + fieldName + "\"");
         }
         BasicStepField field = new BasicStepField(step, coreField);
         return field;
@@ -487,10 +485,12 @@ public class ConstraintParser {
         throw new IllegalArgumentException("Unknown table alias: \"" + alias + "\"");
     }
 
+    protected QueryContext queryContext = BRIDGE;
+
     /** Creates a new instance of ConstraintParser
      * @param query
      */
-    public ConstraintParser(SearchQuery query) {
+    protected ConstraintParser(SearchQuery query) {
         this.query = query;
         this.steps = query.getSteps();
     }
@@ -521,7 +521,7 @@ public class ConstraintParser {
                     + "\n     exception: " + e.getMessage()
                     + "\nFalling back to BasicLegacyConstraint...", e);
             }
-            String escapedSqlConstraint = convertClauseToDBS(sqlConstraint);
+            String escapedSqlConstraint = convertClauseToDBS(queryContext, sqlConstraint);
             if (! validConstraints(escapedSqlConstraint)) {
                 throw new IllegalArgumentException("Invalid constraints: " + sqlConstraint);
             }
@@ -547,7 +547,7 @@ public class ConstraintParser {
      */
     // package visibility!
     StepField getField(String token) {
-        return getField(token, (List<BasicStep>) steps, query);
+        return getField(queryContext, token, (List<BasicStep>) steps, query);
     }
 
     /**
@@ -1075,4 +1075,9 @@ public class ConstraintParser {
 
         return result;
     }
+
+
+
+    protected static final QueryContext BRIDGE = new QueryContext.Bridge(org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase"));
+
 }
