@@ -648,13 +648,15 @@ MMBaseValidator.prototype.valid = function(el) {
     if (this.isCheckEquality(el)) {
         return true; // not yet supported
     }
-
-    if (this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce)) {
-        if (value == "") {
-            return false;
+    if (! this.isString(el)) { // For Strings, you cannot enter 'null'. The empty string is interpreted as "" in
+                               // stead. So skip the 'required' checks.
+        if (this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce)) {
+            if (value == "") {
+                return false;
+            }
+        } else {
+            if (value == "") return true;
         }
-    } else {
-        if (value == "") return true;
     }
     if (! this.typeValid(el)) return false;
     if (! this.lengthValid(el)) return false;
