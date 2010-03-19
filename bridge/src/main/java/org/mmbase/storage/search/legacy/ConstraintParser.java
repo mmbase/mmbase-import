@@ -486,7 +486,9 @@ public class ConstraintParser {
     }
 
 
-    /** Creates a new instance of ConstraintParser
+    protected final QueryContext queryContext;
+    /**
+     * Creates a new instance of ConstraintParser
      * @param query
      */
     public ConstraintParser(QueryContext queryContext, SearchQuery query) {
