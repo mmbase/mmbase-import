@@ -121,7 +121,7 @@ abstract public class Queries {
             searchDir = encoder.encode(searchDir);
         }
         if (constraints != null) {
-            constraints = ConstraintParser.convertClauseToDBS(constraints);
+            constraints = ConstraintParser.convertClauseToDBS(new QueryContext.Bridge(cloud), constraints);
             if (! ConstraintParser.validConstraints(constraints)) {
                 throw new BridgeException("invalid constraints:" + constraints);
             }
@@ -167,7 +167,7 @@ abstract public class Queries {
         }
 
         // (Try to) parse constraints string to Constraint object.
-        Constraint newConstraint = new ConstraintParser(query).toConstraint(constraints);
+        Constraint newConstraint = new ConstraintParser(new QueryContext.Bridge(query.getCloud()), query).toConstraint(constraints);
         addConstraint(query, newConstraint);
         return newConstraint;
     }
@@ -1468,9 +1468,9 @@ abstract public class Queries {
 
 
     /**
-     * Deletes the relations with a node from a queries resulting relations list. 
+     * Deletes the relations with a node from a queries resulting relations list.
      * If multiple relations to a node exist all get removed.
-     * 
+     *
      * @throws UnsupportedOperationException If it cannot be determined how the node should be related.
      * @param q query from which resulting list the node should be removed from
      * @param n node to remove
@@ -1490,7 +1490,7 @@ abstract public class Queries {
      *
      * @throws UnsupportedOperationException If it cannot be determined how the node is related.
      * @since MMBase-1.9.1
-     * @param q query that constructs the list 
+     * @param q query that constructs the list
      * @param n node to which relations are related
      * @return The relation nodes
      * @throws NullPointerException if q or n is <code>null</code>
