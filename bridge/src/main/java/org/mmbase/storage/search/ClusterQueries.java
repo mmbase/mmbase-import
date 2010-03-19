@@ -12,15 +12,11 @@ package org.mmbase.storage.search;
 import java.util.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.storage.search.legacy.ConstraintParser;
-import org.mmbase.storage.search.legacy.QueryConvertor;
 
 import org.mmbase.util.logging.*;
 
 /**
- * This g
  *
- * @author michiel
  * @author Rob van Maris (ClusterBuilder)
  * @version $Id: $
  */
@@ -110,7 +106,7 @@ public abstract class ClusterQueries {
     protected String getTableName(String table) {
         int end = table.length() ;
         if (end == 0) throw new IllegalArgumentException("Table name too short '" + table + "'");
-        while (Character.isDigit(table.charAt(end -1))) {
+        while (Character.isDigit(table.charAt(end - 1))) {
             --end;
         }
         return table.substring(0, end );
@@ -232,12 +228,13 @@ public abstract class ClusterQueries {
 
         addRelationDirections(query, searchDirs, roles);
 
-        // Add constraints.
-        // QueryConverter supports the old formats for backward compatibility.
-        QueryConvertor.setConstraint(query, where);
+        setConstraint(query, where);
 
         return query;
     }
+
+    protected abstract void setConstraint(BasicSearchQuery query, String where);
+
 
     protected abstract boolean isRelation(String builder);
 
@@ -509,7 +506,7 @@ public abstract class ClusterQueries {
             StepField field= fieldsByAlias.get(fieldName);
             if (field == null) {
                 // Field has not been added.
-                field = ConstraintParser.getField(fieldName, query.getSteps());
+                field = getField(fieldName, query);
             }
             if (field == null) {
                 throw new IllegalArgumentException("Invalid fieldname: \"" + fieldName + "\"");
@@ -532,6 +529,8 @@ public abstract class ClusterQueries {
             }
         }
     }
+
+    protected abstract StepField getField(String fieldName, BasicSearchQuery query);
 
     protected abstract String getBuilder(int nodeNumber);
     protected abstract String getParentBuilder(String builder);
