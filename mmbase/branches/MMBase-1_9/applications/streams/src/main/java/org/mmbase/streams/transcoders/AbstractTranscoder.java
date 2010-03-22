@@ -125,7 +125,7 @@ public abstract class AbstractTranscoder implements Transcoder {
      *
      * The implementation depends on {@link Settings} annotations to be set on the classes.
      */
-    public final String getKey() {
+    public String getKey() {
         StringBuilder buf = new StringBuilder();
         {
             String cn = getClass().getName();
