@@ -36,8 +36,8 @@ import org.mmbase.util.logging.*;
 
 /**
  * This transcoder uses the command <code>ffmpeg2theora</code>. Possible parameters to be set in 
- * 'createcaches.xml' are: videoQuality, keyInt, height and width. 
- * Other can be added but will be at the end of the commands parameters.
+ * 'createcaches.xml' are: videoQuality (--videoquality), keyInt (--keyint), height (-y) and width (-x). 
+ * Others can be added but will be at the end of the commands parameters.
  *
  * @author Michiel Meeuwissen
  * @version $Id$

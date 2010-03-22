@@ -34,8 +34,11 @@ import java.util.regex.*;
 
 /**
  * The transcoder that uses <code>ffmpeg</code> to transcode media. Possible parameters to be set in 
- * 'createcaches.xml' are: format, acodec, vcodec, vpre, aq, ab, b, async, r, ac, width, height. 
- * Other can be added as extra parameters but will be at the end of the commands parameters.
+ * 'createcaches.xml' are: format, acodec (-acodec), vcodec (-vcodec), vpre (-vpre), aq (-aq), 
+ * ab (-ab), bitrate or b (-b), async (-async), framesPerSecond or r (-r), audioChannels or ac (-ac), 
+ * width and height (combined to -s). 
+ * Others can be added as extra parameters but will be at the end of the commands parameters. See the
+ * documentation for FFmpeg for more information.
  * 
  * @author Michiel Meeuwissen
  * @version $Id$
