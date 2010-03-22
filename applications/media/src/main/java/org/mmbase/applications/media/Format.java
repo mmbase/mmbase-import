@@ -69,6 +69,7 @@ public enum Format {
 
     M4A(60),
     M4V(61),
+    TS(62),
     GGP(70),
     H264(71),
     FLASH(80),
