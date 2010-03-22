@@ -205,6 +205,7 @@ public class QueriesTest  {
         NodeQuery q = Queries.createRelatedNodesQuery(node, cloud.getNodeManager("news"), "posrel", "destination");
         String before = q.toSql();
         List<SortOrder> sos = Queries.addSortOrders(q, "posrel.pos,number", "UP");
+        Queries.sortUniquely(q);
         assertEquals(q.toSql() + sos, 2, sos.size());
         assertEquals("" + node.getNumber(), Queries.getSortOrderFieldValue(node, sos.get(1)).toString());
 
@@ -292,7 +293,7 @@ public class QueriesTest  {
             if (pref1 != null) n1 = n1.getNodeValue(pref1 + ".number");
             if (pref2 != null) n2 = n2.getNodeValue(pref2 + ".number");
 
-            assertEquals(n1, n2);
+            assertEquals(n1.getNumber(), n2.getNumber());
         }
     }
 
@@ -308,7 +309,8 @@ public class QueriesTest  {
 
         // implementation based on NodeQuery
         NodeQuery q = Queries.createRelatedNodesQuery(node, cloud.getNodeManager("news"), "posrel", "destination");
-        Queries.addSortOrders(q, "posrel.pos,number", "DOWN");
+        Queries.addSortOrders(q, "posrel.pos", "DOWN");
+        Queries.sortUniquely(q);
         List<Node> relatedNodes2 = Queries.getRelatedNodesInTransaction(node, q); // outside a transaction it works too
 
         System.out.println(toString(relatedNodes, "news") + " =? " + toString(relatedNodes2, null));
