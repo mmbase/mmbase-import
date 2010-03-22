@@ -268,10 +268,16 @@
     <mm:import from="session" id="order" externid="${rid}_order" />
 
     <mm:import id="language">${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}</mm:import>
-    <mm:import id="referrer"><mm:url absolute="context" /></mm:import>
+    <mm:import id="referrer">
+      <c:choose>
+        <c:when test="${! empty parent}"><jsp:text>${parentparameters.referrer}</jsp:text></c:when>
+        <c:otherwise><mm:url absolute="context" /></c:otherwise>
+      </c:choose>
+    </mm:import>
     <mm:import id="fieldlistidprefix">${rid}_N${mm:escape('identifier', _node)}</mm:import>
     <mm:import id="source_was_new">${_node.number lt 0}</mm:import>
     <mm:import id="_number">${_node._number}</mm:import>
+
   </mm:context>
 
   <mm:import from="session" id="parameters" externid="${rid}_context" />
