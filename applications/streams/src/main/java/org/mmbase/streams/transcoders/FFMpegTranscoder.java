@@ -33,7 +33,9 @@ import java.util.regex.*;
 
 
 /**
- * The transcoder that uses FFmpeg to transcode media.
+ * The transcoder that uses <code>ffmpeg</code> to transcode media. Possible parameters to be set in 
+ * 'createcaches.xml' are: format, acodec, vcodec, vpre, aq, ab, b, async, r, ac, width, height. 
+ * Other can be added as extra parameters but will be at the end of the commands parameters.
  * 
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -192,9 +194,10 @@ public class FFMpegTranscoder extends CommandTranscoder {
             args.add("-s");
             args.add(width + "x" + height);
         }
-
-        args.add(outFile.toString());
+        
         args.add("-y"); // overwrite
+        
+        args.add(outFile.toString());
 
         return args.toArray(new String[args.size()]);
     }

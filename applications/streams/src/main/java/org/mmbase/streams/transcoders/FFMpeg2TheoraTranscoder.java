@@ -35,7 +35,9 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * A trancoder base on an external command, like <code>ffmpeg</code> or <code>ffmpeg2theora</code>
+ * This transcoder uses the command <code>ffmpeg2theora</code>. Possible parameters to be set in 
+ * 'createcaches.xml' are: videoQuality, keyInt, height and width. 
+ * Other can be added but will be at the end of the commands parameters.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -102,8 +104,7 @@ public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
         if (height != null) {
             args.add("-y"); args.add("" + height);
         }
-
-
+        
         args.add(inFile.toString());
 
         return args.toArray(new String[args.size()]);
