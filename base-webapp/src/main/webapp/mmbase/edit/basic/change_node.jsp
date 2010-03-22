@@ -45,7 +45,13 @@
      by the way, it is not necessary to indicate that
      enctype="multipart/form-data", this will be automatic if there is
      a input type="file". But lynx will also work like this (except for images) --%>
-   <form name="change" enctype="multipart/form-data" method="post" action='<mm:url referids="this_node@node_number" page="commit_node.jsp?pop=1" ><mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param></mm:url>'>
+   <form name="change" enctype="multipart/form-data" method="post" action='<mm:url page="commit_node.jsp" />'>
+     <input type="hidden" name="node_number" value="${this_node}" />
+     <mm:nodeinfo type="nodemanager">
+       <input type="hidden" name="node_type" value="${_}" />
+     </mm:nodeinfo>
+     <input type="hidden" name="pop" value="1" />
+
   <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
   <tr><th colspan="3">
 
