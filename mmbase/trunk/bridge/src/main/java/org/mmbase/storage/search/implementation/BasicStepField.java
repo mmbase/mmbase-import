@@ -135,36 +135,36 @@ public class BasicStepField implements StepField, SizeMeasurable, java.io.Serial
      * @param field The associated field.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public BasicStepField(Step step, Field field) {
+    public BasicStepField(Step step, Field f) {
         if (step == null) {
             throw new IllegalArgumentException("Invalid step value: " + step);
         }
         this.step = step;
 
-        if (field == null) {
-            throw new IllegalArgumentException("Invalid field value: " + field + " for " + step);
+        if (f == null) {
+            throw new IllegalArgumentException("Invalid field value: " + f + " for " + step);
         }
         // Check field belongs to step
-        if (!step.getTableName().equals(field.getNodeManager().getName())) {
-            throw new IllegalArgumentException("Invalid field value, belongs to step " + field.getNodeManager().getName()
+        if (!step.getTableName().equals(f.getNodeManager().getName())) {
+            throw new IllegalArgumentException("Invalid field value, belongs to step " + f.getNodeManager().getName()
                                                + " instead of step " +  step.getTableName() + ": "
-                                               + field);
+                                               + f);
         }
 
-        if (field instanceof org.mmbase.bridge.implementation.BasicField) { // not so nice, but I can't come up with something better for now
+        if (f instanceof org.mmbase.bridge.implementation.BasicField) { // not so nice, but I can't come up with something better for now
             // SearchQueries can be referenced in caches. We don't want to
             // have references to user clouds there (Field is probably a BasicField then)
             // So, we use a specialized anonymous cloud instance
-            CloudContext cloudContext = field.getNodeManager().getCloud().getCloudContext();
+            CloudContext cloudContext = f.getNodeManager().getCloud().getCloudContext();
             Cloud anonymousCloud = anonymousClouds.get(cloudContext);
             if (anonymousCloud == null) {
                 anonymousCloud = cloudContext.getCloud("mmbase");
                 anonymousClouds.put(cloudContext, anonymousCloud);
             }
-            NodeManager anonymousNodeManager = anonymousCloud.getNodeManager(field.getNodeManager().getName());
-            field = anonymousNodeManager.getField(field.getName());
+            NodeManager anonymousNodeManager = anonymousCloud.getNodeManager(f.getNodeManager().getName());
+            f = anonymousNodeManager.getField(f.getName());
         }
-        this.field = field;
+        this.field = f;
     }
 
     /**
