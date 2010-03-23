@@ -71,7 +71,6 @@ public enum Format {
     M4V(61),
     TS(62),
     GGP(70),
-    H264(71),
     FLASH(80),
     FLV(81),
     /* image formats */
