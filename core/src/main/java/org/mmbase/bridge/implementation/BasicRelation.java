@@ -95,6 +95,7 @@ public class BasicRelation extends BasicNode implements Relation {
     }
 
     public void setSource(Node node) {
+        checkWrite();
         if (node.getCloud() != cloud) {
             throw new BridgeException("Source and relation are not in the same transaction or from different clouds.");
         }
@@ -104,13 +105,15 @@ public class BasicRelation extends BasicNode implements Relation {
             // set a temporary field, transactionmanager resolves this
             getNode().setValue("_snumber", node.getValue(MMObjectBuilder.TMP_FIELD_NUMBER));
         } else {
-            getNode().setValue("snumber",source);
+            getNode().setValue("snumber", source);
+            assert source == node.getNumber();
         }
         snum = node.getNumber();
         sourceNodeType = node.getIntValue("otype");
     }
 
     public void setDestination(Node node) {
+        checkWrite();
         if (node.getCloud() != cloud) {
             throw new BridgeException("Destination and relation are not in the same transaction or from different clouds.");
         }
@@ -234,8 +237,11 @@ public class BasicRelation extends BasicNode implements Relation {
                 }
             }
         }
+        //assert snum == getNode().getIntValue("snumber");
+        //log.debug("COMMITTING relation with snumber " + snum + " -> " + dnum + " (" + getNode() + ")");
         super.commit();
         if (!(cloud instanceof Transaction)) {
+            //assert snum == getNode().getIntValue("snumber");
             snum = getNode().getIntValue("snumber");
             dnum = getNode().getIntValue("dnumber");
         }
