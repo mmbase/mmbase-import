@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  */
 public class SessionCleaner implements Runnable {
     private static final Logger LOG = Logging.getLoggerInstance(SessionCleaner.class);
-    private static final String KEY = SessionCleaner.class.getName() + ".KEY";
+    private static final String KEY = SessionCleaner.class.getName();
 
     private final HttpSession session;
     private final Set<String> keys = new HashSet<String>();
