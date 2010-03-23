@@ -124,7 +124,7 @@ function MMBaseRelater(d, validator) {
  *  This Searcher.js.jsp is normally loaded implicetly by the first mm-sr:relate. Using the 'ready'
  *  function, you can do something immediately after the MMBaseRelater is ready. E.g. you can add a
  *  'relateCallBack' function.
- *  @todo I think jquery provides something with user defined events.
+ *  @deprecated
  */
 MMBaseRelater.readyFunctions = [];
 
