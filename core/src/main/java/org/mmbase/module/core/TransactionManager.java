@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.util.*;
+import org.mmbase.util.BijectiveMap;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.core.event.*;
 
@@ -208,6 +209,7 @@ public class TransactionManager {
         if (log.isDebugEnabled()) {
             log.debug("Removed transaction (after cancel) " + transactionName + "\n" + transaction);
         }
+        EventManager.getInstance().propagateEvent(new TransactionEvent.Cancel(transactionName));
         return transactionName;
     }
 
@@ -223,32 +225,12 @@ public class TransactionManager {
         if (transaction instanceof Vector) { // a bit of a trick to see if it is committed already
             try {
                 final Map<String, Integer> resolution = getTransactionResolver().resolve(transaction);
-                Map<Integer, Integer> integerResolution = new AbstractMap<Integer, Integer>() {
-                    public Set<Map.Entry<Integer, Integer>> entrySet() {
-                        return new AbstractSet<Map.Entry<Integer, Integer>>() {
-                            public int size() {
-                                return resolution.size();
-                            }
-                            public Iterator<Map.Entry<Integer, Integer>> iterator() {
-                                return new Iterator<Map.Entry<Integer, Integer>>() {
-                                    private final Iterator<Map.Entry<String, Integer>> i = resolution.entrySet().iterator();
-                                    public boolean hasNext() {
-                                        return i.hasNext();
-                                    }
-                                    public Map.Entry<Integer, Integer> next() {
-                                        Map.Entry<String, Integer> e = i.next();
-                                        return new org.mmbase.util.Entry<Integer, Integer>(Integer.parseInt(e.getKey().substring(transactionName.length() + 1)),
-                                                                                           e.getValue());
 
-                                    }
-                                    public void remove() {
-                                        throw new UnsupportedOperationException();
-                                    }
-                                };
-                            }
-                        };
-                    }
-                };
+                // as resolution, but where the keys are integers (so not  prefixed with the transaction name)
+                BijectiveMap<Integer, Integer> integerResolution = new BijectiveMap<Integer, Integer>();
+                for (Map.Entry<String, Integer> e : resolution.entrySet()) {
+                    integerResolution.put(Integer.parseInt(e.getKey().substring(transactionName.length() + 1)), e.getValue());
+                }
                 EventManager.getInstance().propagateEvent(new TransactionEvent.Resolve(transactionName, integerResolution));
             } catch (TransactionManagerException te) {
                 throw new TransactionManagerException("Can't resolve transaction " + transactionName + " (it has " + transaction.size() + " nodes)", te);
