@@ -93,7 +93,7 @@ public class BasicStepField implements StepField, SizeMeasurable, java.io.Serial
         }
 
         if (!ok) {
-            throw new IllegalArgumentException("Invalid value for " + org.mmbase.core.util.Fields.getTypeDescription(type) + " field: "
+            throw new IllegalArgumentException("Invalid value for " + org.mmbase.core.util.Fields.getTypeDescription(type) + " " + field.getFieldName() + " field: "
                                                + value + ", of type " + value.getClass().getName());
         }
     }
@@ -134,38 +134,38 @@ public class BasicStepField implements StepField, SizeMeasurable, java.io.Serial
      * @param field The associated field.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public BasicStepField(Step step, Field field) {
+    public BasicStepField(Step step, Field f) {
         if (step == null) {
             throw new IllegalArgumentException("Invalid step value: " + step);
         }
         this.step = step;
 
-        if (field == null) {
-            throw new IllegalArgumentException("Invalid field value: " + field + " for " + step);
+        if (f == null) {
+            throw new IllegalArgumentException("Invalid field value: " + f + " for " + step);
         }
         // Check field belongs to step
-        if (!step.getTableName().equals(field.getNodeManager().getName())) {
-            throw new IllegalArgumentException("Invalid field value, belongs to step " + field.getNodeManager().getName()
+        if (!step.getTableName().equals(f.getNodeManager().getName())) {
+            throw new IllegalArgumentException("Invalid field value, belongs to step " + f.getNodeManager().getName()
                                                + " instead of step " +  step.getTableName() + ": "
-                                               + field);
+                                               + f);
         }
 
-        if (field instanceof org.mmbase.bridge.implementation.BasicField) { // not so nice, but I can't come up with something better for now
+        if (f instanceof org.mmbase.bridge.implementation.BasicField) { // not so nice, but I can't come up with something better for now
             // SearchQueries can be referenced in caches. We don't want to
             // have references to user clouds there (Field is probably a BasicField then)
             // So, we use a specialized anonymous cloud instance
-            CloudContext cloudContext = field.getNodeManager().getCloud().getCloudContext();
+            CloudContext cloudContext = f.getNodeManager().getCloud().getCloudContext();
             Cloud anonymousCloud = anonymousClouds.get(cloudContext);
             if (anonymousCloud == null) {
                 anonymousCloud = cloudContext.getCloud("mmbase");
                 anonymousClouds.put(cloudContext, anonymousCloud);
             }
-            NodeManager anonymousNodeManager = anonymousCloud.getNodeManager(field.getNodeManager().getName());
-            Field origField = field;
-            field = anonymousNodeManager.getField(field.getName());
-            //log.service("Using " + field + " rather then " + origField + ". AnonymousClouds : " + anonymousClouds + ". Cause ", new Exception());
+            NodeManager anonymousNodeManager = anonymousCloud.getNodeManager(f.getNodeManager().getName());
+            Field origField = f;
+            f = anonymousNodeManager.getField(f.getName());
+            //log.service("Using " + f.hashCode() + " (of " + Integer.toHexString(anonymousCloud.hashCode()) + ") rather then " + origField.hashCode() + " (of " + Integer.toHexString(f.getNodeManager().getCloud().hashCode())  + "). AnonymousClouds : " + anonymousClouds, new Exception());
         }
-        this.field = field;
+        this.field = f;
     }
 
     /**
