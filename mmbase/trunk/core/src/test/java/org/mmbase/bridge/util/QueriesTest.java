@@ -131,7 +131,8 @@ public class QueriesTest  {
             assertEquals("news", q.getSteps().get(0).getTableName());
 
             // createNodeQuery on a new node will leave the query unconstraint
-            assertNull(q.getSteps().get(0).getNodes());
+            assertEquals(1, q.getSteps().get(0).getNodes().size());
+            assertTrue(q.getSteps().get(0).getNodes().contains(node.getNumber()));
         }
         node.commit();
         {
