@@ -1140,6 +1140,7 @@ abstract public class Queries {
     public static NodeList getRelatedNodes(Node node, NodeManager otherNodeManager, String role, String direction, String relationFields, String sortOrders) {
         NodeQuery q = Queries.createRelatedNodesQuery(node, otherNodeManager, role, direction);
         Queries.addRelationFields(q, role, relationFields, sortOrders);
+        sortUniquely(q);
         return q.getCloud().getList(q);
     }
 
@@ -1997,6 +1998,7 @@ abstract public class Queries {
 
         NodeQuery clone = (NodeQuery) q.clone();
         Queries.addSortedFields(clone);
+        Queries.sortUniquely(clone);
 
         Transaction t = (Transaction) startNode.getCloud();
 
