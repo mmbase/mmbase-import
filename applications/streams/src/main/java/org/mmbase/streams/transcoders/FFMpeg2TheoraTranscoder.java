@@ -42,18 +42,15 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-@Settings({"videoQuality",  "keyInt", "height", "width"})
+@Settings({"videoQuality", "keyInt", "height", "width"})
 public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
 
-
     private static final Logger log = Logging.getLoggerInstance(FFMpeg2TheoraTranscoder.class);
-
 
     public FFMpeg2TheoraTranscoder() {
         format = Format.OGV;
         codec  = Codec.THEORA;
     }
-
 
     int videoQuality = 5;
     int keyInt = 64;
