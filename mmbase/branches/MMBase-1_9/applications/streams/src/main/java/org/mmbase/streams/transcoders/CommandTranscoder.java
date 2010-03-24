@@ -45,8 +45,7 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
 
     private String path = org.mmbase.util.ApplicationContextReader.getCachedProperties(getClass().getName()).get("path");
 
-    // TODO
-    private Map<String, String> moreOptions = new HashMap<String, String>();
+    private Map<String, String> moreOptions = new LinkedHashMap<String, String>();
 
     public CommandTranscoder() {
         LOG.service("" + getClass().getName() + " path:" + path);
