@@ -25,12 +25,14 @@ import java.io.*;
 import java.net.URI;
 
 import org.mmbase.util.MimeType;
+
 import org.mmbase.util.WriterOutputStream;
 import org.mmbase.util.externalprocess.CommandExecutor;
 import org.mmbase.util.logging.*;
 
 
 /**
+ * A recognizer that uses FFmpeg to analyze media.
  *
  * @author Michiel Meeuwissen
  * @version $Id: FFMpegRecognizer.java 36518 2009-07-02 12:52:01Z michiel $
