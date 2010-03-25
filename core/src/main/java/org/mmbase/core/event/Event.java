@@ -7,6 +7,7 @@
 package org.mmbase.core.event;
 
 import java.io.Serializable;
+import java.util.*;
 
 import org.mmbase.module.core.MMBaseContext;
 
@@ -28,6 +29,7 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
 
     protected int eventType = TYPE_UNSPECIFIED;
     protected String machine;
+    private   UUID machineId;
 
     /**
      * Every event originates from a certain machine, which is identified by a String.
@@ -37,7 +39,7 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
         return machine;
     }
     public boolean isLocal() {
-        return MMBaseContext.getMachineName().equals(machine);
+        return machineId != null ? EventManager.getUUID().equals(machineId) : EventManager.getMachineName().equals(machine);
     }
 
 
@@ -55,9 +57,10 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
      */
     public Event(String machine, int type) {
         this.machine =  machine == null ?
-            MMBaseContext.getMachineName() :
+            EventManager.getMachineName() :
             machine;
         this.eventType    = type;
+        this.machineId    = EventManager.getUUID();
     }
 
     public Event(String machine) {
@@ -68,7 +71,7 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
      * @since MMBase-1.8.4
      */
     public Event() {
-        this(MMBaseContext.getMachineName());
+        this(null);
     }
 
     public Event clone(){
