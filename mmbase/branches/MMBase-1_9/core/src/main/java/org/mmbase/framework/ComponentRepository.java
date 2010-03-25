@@ -68,6 +68,13 @@ public class ComponentRepository {
         return repository;
     }
 
+
+    /**
+     * @since MMBase-1.9.3
+     */
+    public static class Ready extends org.mmbase.core.event.SystemEvent {
+    }
+
     static {
         synchronized(repository) {
             ResourceWatcher rw = new ResourceWatcher() {
@@ -284,10 +291,12 @@ public class ComponentRepository {
                 log.error("Not all components satisfied their dependencies");
             }
             log.info("Found the following components " + getComponents());
+
         } finally {
             isConfigured = true;
             configuringThread = null;
             notifyAll();
+            org.mmbase.core.event.EventManager.getInstance().propagateEvent(new Ready(), true);
         }
     }
 
