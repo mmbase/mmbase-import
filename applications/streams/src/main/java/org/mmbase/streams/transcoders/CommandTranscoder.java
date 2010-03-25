@@ -45,8 +45,7 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
 
     private String path = org.mmbase.util.ApplicationContextReader.getCachedProperties(getClass().getName()).get("path");
 
-    // TODO
-    private Map<String, String> moreOptions = new HashMap<String, String>();
+    private Map<String, String> moreOptions = new LinkedHashMap<String, String>();
 
     public CommandTranscoder() {
         LOG.service("" + getClass().getName() + " path:" + path);
@@ -79,6 +78,28 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
         return new LoggerWriter(log, Level.ERROR);
     }
 
+    /**
+     * Overrides the generation of a key in {@link AbstractTranscoder} to add extra transcoding 
+     * parameters that were not set by {@link Settings} annotations on the transcoders.
+     */
+    public final String getKey() {
+        StringBuilder key = new StringBuilder( super.getKey() );
+        boolean appendedSetting = false;
+        if (key.indexOf(", ") > 0) {
+            appendedSetting = true;
+        }
+        
+        for (Map.Entry<String, String> e : moreOptions.entrySet()) {
+            if (appendedSetting) {
+                key.append(", ");
+            }
+            key.append(e.getKey()).append("=").append(e.getValue());
+            appendedSetting = true;
+        }
+        
+        return key.toString();
+    }
+    
     protected void transcode(final Logger log) throws Exception {
         OutputStream outStream = new WriterOutputStream(getOutputWriter(log), System.getProperty("file.encoding"));
         OutputStream errStream = new WriterOutputStream(getErrorWriter(log), System.getProperty("file.encoding"));
@@ -91,23 +112,29 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
             p += File.separator;
         }
 
-        if (LOG.isServiceEnabled()) {
-            LOG.service("Calling (" + method + ") " + p + getCommand() + " " + Arrays.asList(getArguments()));
+        List<String> args = new ArrayList<String>( Arrays.asList(getArguments()) );
+        List<String> extra = new ArrayList<String>();
+        for (Map.Entry<String, String> e : moreOptions.entrySet()) {
+            extra.add(e.getKey());
+            extra.add(e.getValue());
         }
-
-        // TODO Add support for 'moreOptions'
-        // Here, but also in getKey.
-
-        CommandExecutor.execute(outStream, errStream, method, p + getCommand(), getArguments());
+        int pos = args.size() - 2; // last argument is outfile
+        if (pos > -1) {
+            if (!extra.isEmpty()) args.addAll(pos, extra); 
+        } else {
+            LOG.error("Not enough arguments, need at least in- and outfile.");
+        }
+        if (LOG.isServiceEnabled()) {
+            LOG.service("Calling (" + method + ") " + p + getCommand() + " " + args);
+        }
+        CommandExecutor.execute(outStream, errStream, method, p + getCommand(), args.toArray(new String[args.size()]));
         outStream.close();
         errStream.close();
     }
 
-
     public CommandTranscoder clone() {
         return  (CommandTranscoder) super.clone();
     }
-
 
 
 }

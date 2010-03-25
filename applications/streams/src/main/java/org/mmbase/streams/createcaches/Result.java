@@ -27,7 +27,6 @@ import org.mmbase.bridge.Node;
 import org.mmbase.util.MimeType;
 
 
-
 /**
  * When executing an actual {@link JobDefinition} the result is contained in an object like this.
  * @author Michiel Meeuwissen

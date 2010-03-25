@@ -21,14 +21,17 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.transcoders;
 
-import java.lang.reflect.*;
-import java.net.URI;
-
-import org.mmbase.applications.media.Codec;
 import org.mmbase.applications.media.Format;
+import org.mmbase.applications.media.Codec;
+import java.net.*;
+import java.lang.reflect.*;
+import java.io.*;
+import java.util.*;
+import org.mmbase.util.externalprocess.*;
+import org.mmbase.util.WriterOutputStream;
 import org.mmbase.util.MimeType;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+
+import org.mmbase.util.logging.*;
 
 
 /**
@@ -46,7 +49,7 @@ public abstract class AbstractTranscoder implements Transcoder {
     public static Transcoder getInstance(String key) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException  {
         String[] split = key.split(" ", 2);
         Transcoder trans;
-        {
+        { // parse split[0] (a class name) to instantiate object
             String[] idWithClass = split[0].split(":", 2);
             if (idWithClass.length == 1) {
                 idWithClass = new String[] { "", split[0]};
@@ -65,7 +68,7 @@ public abstract class AbstractTranscoder implements Transcoder {
                 trans = (Transcoder) clazz.newInstance();
             }
         }
-        {
+        { // parse split[1] to set properties on it.
             String[] props = split[1].split(", ");
             for (String prop : props) {
                 String[] entry = prop.split("=", 2);
@@ -122,7 +125,7 @@ public abstract class AbstractTranscoder implements Transcoder {
      *
      * The implementation depends on {@link Settings} annotations to be set on the classes.
      */
-    public final String getKey() {
+    public String getKey() {
         StringBuilder buf = new StringBuilder();
         {
             String cn = getClass().getName();
@@ -171,7 +174,7 @@ public abstract class AbstractTranscoder implements Transcoder {
         return buf.toString();
     }
 
-    public final void transcode(final URI in, final URI out, final Logger log) throws Exception {
+    public void transcode(final URI in, final URI out, final Logger log) throws Exception {
         if (in == null) throw new IllegalArgumentException(toString());
         if (out == null) throw new IllegalArgumentException(toString());
         this.in = in;
