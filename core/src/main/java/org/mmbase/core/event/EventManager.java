@@ -30,9 +30,12 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @since   MMBase-1.8
  * @version $Id$
  */
-public class EventManager {
+public class EventManager { //implements SystemEventListener {
 
     private static final Logger log = Logging.getLoggerInstance(EventManager.class);
+
+    private static final UUID INSTANCEID = UUID.randomUUID();
+    private static String machineName = "localhost";
 
     public static final String PUBLIC_ID_EVENTMANAGER = "-//MMBase//DTD eventmanager config 1.0//EN";
     public static final String DTD_EVENTMANAGER = "eventmanager_1_0.dtd";
@@ -60,6 +63,19 @@ public class EventManager {
      */
     public static EventManager getInstance() {
         return eventManager;
+    }
+
+    /**
+     * @since MMBase-2.0
+     */
+    public static UUID getUUID() {
+        return INSTANCEID;
+    }
+    /**
+     * @since MMBase-2.0
+     */
+    public static String getMachineName() {
+        return machineName;
     }
 
 
@@ -190,27 +206,47 @@ public class EventManager {
         }
         long startTime = System.nanoTime();
         for (EventBroker broker :  eventBrokers) {
-            if (broker.canBrokerForEvent(event)) {
-                broker.notifyForEvent(event);
-                if (log.isDebugEnabled()) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("event from '" + event.getMachine() + "': " + event + " has been accepted by broker " + broker);
-                    } else {
-                        log.debug("event from '" + event.getMachine() + "' has been accepted by broker " + broker);
+            try {
+                if (broker.canBrokerForEvent(event)) {
+                    broker.notifyForEvent(event);
+                    if (log.isDebugEnabled()) {
+                        if (log.isTraceEnabled()) {
+                            log.trace("event from '" + event.getMachine() + "': " + event + " has been accepted by broker " + broker);
+                        } else {
+                            log.debug("event from '" + event.getMachine() + "' has been accepted by broker " + broker);
+                        }
+                    }
+                } else {
+                    if (log.isDebugEnabled()) {
+                        if (log.isTraceEnabled()) {
+                            log.trace("event from '" + event.getMachine() + "': " + event + " has been rejected by broker " + broker);
+                        } else {
+                            log.debug("event from '" + event.getMachine() + "' has been rejected by broker " + broker);
+                        }
                     }
                 }
-            } else {
-                if (log.isDebugEnabled()) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("event from '" + event.getMachine() + "': " + event + " has been rejected by broker " + broker);
-                    } else {
-                        log.debug("event from '" + event.getMachine() + "' has been rejected by broker " + broker);
-                    }
-                }
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
             }
         }
         numberOfPropagatedEvents++;
         duration += (System.nanoTime() - startTime);
+    }
+
+    /**
+     * Like {@link #propagateEvent} but with an extra argument 'asynchronous'.
+     * @param asynchronous If true, execute the propagation in a different thread, and don't let this thread wait for the result.
+     */
+    public void propagateEvent(final Event event, boolean asynchronous) {
+        if (asynchronous) {
+            ThreadPools.jobsExecutor.execute(new Runnable() {
+                    public void run() {
+                        propagateEvent(event);
+                    }
+                });
+        } else {
+            propagateEvent(event);
+        }
     }
 
     /**
