@@ -43,12 +43,17 @@
           met de extensie van het bronbestand.
         </description>
       </descriptions>
-
       <gui>
         <guiname xml:lang="en">Format</guiname>
         <guiname xml:lang="nl">Formaat</guiname>
       </gui>
-      <editor><positions><list>1</list></positions></editor>
+      <editor>
+        <positions>
+          <list>1</list>
+          <input>1</input>
+          <search>1</search>
+        </positions>
+      </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <enumeration>
           <entry
@@ -76,6 +81,12 @@
         <guiname xml:lang="en">Codec</guiname>
         <guiname xml:lang="nl">Codec</guiname>
       </gui>
+      <editor>
+        <positions>
+          <input>2</input>
+          <search>2</search>
+        </positions>
+      </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="UNKNOWN" />
         <enumeration>
@@ -85,7 +96,6 @@
         </enumeration>
       </datatype>
     </field>
-
 
     <field name="bitrate">
       <descriptions>
@@ -100,6 +110,12 @@
         <guiname xml:lang="en">Bitrate</guiname>
         <guiname xml:lang="nl">Bitrate</guiname>
       </gui>
+      <editor>
+        <positions>
+          <input>4</input>
+          <search>4</search>
+        </positions>
+      </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <required value="false" />
         <minExclusive value="0" />
@@ -115,6 +131,12 @@
         <guiname xml:lang="en">Channels</guiname>
         <guiname xml:lang="nl">Kanalen</guiname>
       </gui>
+      <editor>
+        <positions>
+          <input>5</input>
+          <search>5</search>
+        </positions>
+      </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <enumeration>
           <entry basename="org.mmbase.applications.media.builders.resources.channels" />
@@ -137,7 +159,13 @@
         <guiname xml:lang="en">Url</guiname>
         <guiname xml:lang="nl">Url</guiname>
       </gui>
-      <editor><positions><list>7</list></positions></editor>
+      <editor>
+        <positions>
+          <list>3</list>
+          <input>3</input>
+          <search>3</search>
+        </positions>
+      </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <required value="true" />
         <maxLength value="255" />
@@ -157,7 +185,13 @@
         <guiname xml:lang="en">State</guiname>
         <guiname xml:lang="nl">Status</guiname>
       </gui>
-      <editor><positions><list>8</list></positions></editor>
+      <editor>
+        <positions>
+          <list>5</list>
+          <input>5</input>
+          <search>5</search>
+        </positions>
+      </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="UNDEFINED" />
         <enumeration enforce="onchange">
@@ -180,7 +214,9 @@
       </gui>
       <editor>
         <positions>
-          <list>9</list>
+          <list>4</list>
+          <input>4</input>
+          <search>4</search>
         </positions>
       </editor>
       <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes" />
