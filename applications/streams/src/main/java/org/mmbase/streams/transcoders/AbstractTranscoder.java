@@ -174,7 +174,7 @@ public abstract class AbstractTranscoder implements Transcoder {
         return buf.toString();
     }
 
-    public final void transcode(final URI in, final URI out, final Logger log) throws Exception {
+    public void transcode(final URI in, final URI out, final Logger log) throws Exception {
         if (in == null) throw new IllegalArgumentException(toString());
         if (out == null) throw new IllegalArgumentException(toString());
         this.in = in;
