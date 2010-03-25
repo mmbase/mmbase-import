@@ -26,8 +26,8 @@ public class ParameterTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        DataTypes.initialize();
         MockCloudContext.getInstance().addCore();
+        DataTypes.initialize();
         MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
         MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("tests"));
     }
@@ -54,7 +54,7 @@ public class ParameterTest {
 
         param.checkType("just a string"); // it _is_ of the correct type
         param.autoCast("a2"); // and can also be casted.
-        
+
         assertEquals("red", param.autoCast("red"));
     }
 
