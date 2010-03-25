@@ -178,6 +178,8 @@ public class LocalizedEntryListFactoryTest {
         fact.fillFromXml(doc.getDocumentElement(), Integer.class);
 
         assertEquals(3, fact.size());
+        assertEquals(3, fact.size(null));
+
     }
 
 
