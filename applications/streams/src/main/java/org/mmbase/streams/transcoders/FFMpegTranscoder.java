@@ -33,15 +33,23 @@ import java.util.regex.*;
 
 
 /**
+ * The transcoder that uses <code>ffmpeg</code> to transcode media. Possible parameters to be set in 
+ * 'createcaches.xml' are: format, forceFormat (-f), acodec (-acodec), vcodec (-vcodec), 
+ * vpre (-vpre), aq (-aq), ab (-ab), bitrate or b (-b), async (-async), framesPerSecond or 
+ * r (-r), audioChannels or ac (-ac), 
+ * width and height (combined to -s). 
+ * Others can be added as extra parameters but will be at the end of the commands parameters. See the
+ * documentation for FFmpeg for more information.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-@Settings({"format", "acodec", "vcodec", "vpre", "aq", "ab", "b", "async", "r", "ac", "width", "height"})
+@Settings({"format", "forceFormat", "acodec", "vcodec", "vpre", "aq", "ab", "b", "async", "r", "ac", "width", "height"})
 public class FFMpegTranscoder extends CommandTranscoder {
 
     private static final Logger log = Logging.getLoggerInstance(FFMpegTranscoder.class);
 
+    String forceFormat = null;
     String acodec = null;
     String vcodec = null;
     String vpre = null;
@@ -54,6 +62,10 @@ public class FFMpegTranscoder extends CommandTranscoder {
 
     Integer width = null;
     Integer height = null;
+
+    public void setForceFormat(String f) {
+        forceFormat = f;
+    }
 
     /* Audio codec to use -acodec */
     public void setAcodec(String a) {
@@ -155,25 +167,14 @@ public class FFMpegTranscoder extends CommandTranscoder {
         args.add("-i");
         args.add(inFile.toString());
 
-        if (acodec != null) {
-            args.add("-acodec");
-            args.add(acodec);
+        if (forceFormat != null) {
+            args.add("-f");
+            args.add(forceFormat);
         }
+        // video
         if (vcodec != null) {
             args.add("-vcodec");
             args.add(vcodec);
-        }
-        if (vpre != null) {
-            args.add("-vpre");
-            args.add(vpre);
-        }
-        if (aq != null) {
-            args.add("-aq");
-            args.add(aq);
-        }
-        if (ab != null) {
-            args.add("-ab");
-            args.add(ab);
         }
         if (b != null) {
             args.add("-b");
@@ -183,17 +184,39 @@ public class FFMpegTranscoder extends CommandTranscoder {
             args.add("-r");
             args.add(r);
         }
-        if (ac != null) {
-            args.add("-ac");
-            args.add(ac);
+        if (vpre != null) {
+            args.add("-vpre");
+            args.add(vpre);
         }
         if (width != null && height != null) {
             args.add("-s");
             args.add(width + "x" + height);
         }
+        // audio
+        if (acodec != null) {
+            args.add("-acodec");
+            args.add(acodec);
+        }
+        if (aq != null) {
+            args.add("-aq");
+            args.add(aq);
+        }
+        if (ab != null) {
+            args.add("-ab");
+            args.add(ab);
+        }
+        if (ac != null) {
+            args.add("-ac");
+            args.add(ac);
+        }
+
+        if (async != null) {
+            args.add("-async");
+            args.add(async);
+        }
+        args.add("-y"); // overwrite
 
         args.add(outFile.toString());
-        args.add("-y"); // overwrite
 
         return args.toArray(new String[args.size()]);
     }

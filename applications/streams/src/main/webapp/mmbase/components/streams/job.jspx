@@ -47,7 +47,7 @@
       <div class="log">
         <h4>Job ${_.number} log</h4>
         <pre>
-          <jsp:text>${_.logger.debugList}</jsp:text>
+          <jsp:text>${mm:escape('text/xml', _.logger.debugList)}</jsp:text>
         </pre>
       </div>
       

@@ -116,7 +116,7 @@ class JobCallable implements Callable<Integer> {
                 Result current = thisJob.getCurrent();
                 if (current == null || current.isReady()) {
                     if (iterator.hasNext()) {
-                        LOG.debug("next !");
+                        //LOG.debug("next !");
                         iterator.next();
                     }
                     current = thisJob.getCurrent();
@@ -125,7 +125,7 @@ class JobCallable implements Callable<Integer> {
                     if (current.isReady()) {
                         thisJob.ready();
                         Processor.runningJobs.remove(thisJob.getNode().getNumber());
-                        LOG.info("1: returning resultCount: " + resultCount);
+                        //LOG.info("1: returning resultCount: " + resultCount);
                         return resultCount;
                     }
 
@@ -136,7 +136,7 @@ class JobCallable implements Callable<Integer> {
                         thisJob.submit(this);
                     } catch (Exception e) {
                     }
-                    LOG.info("2: returning resultCount: " + resultCount);
+                    //LOG.info("2: returning resultCount: " + resultCount);
                     return resultCount;
                 }
                 result = current;
@@ -151,18 +151,18 @@ class JobCallable implements Callable<Integer> {
                     analyzerLoggers.add(al);
                     logger.addLogger(al);
                 }
+                
                 assert in != null;
-
                 try {
                     jd.transcoder.transcode(in, out, logger);
                     for (AnalyzerLogger al : analyzerLoggers) {
                         al.getAnalyzer().ready(thisJob.getNode(), result.getDestination());
                     }
                     
-                    
                     resultCount++;
                     result.ready();
                     logger.info("RESULT " + thisJob + "(" + thisJob.getNode().getNodeManager().getName() + ":" + thisJob.getNode().getNumber() + "):" + result);
+                    
                     if (thisJob.isInterrupted() || Thread.currentThread().isInterrupted()){
                         logger.info("Interrupted");
                         break;
@@ -196,7 +196,7 @@ class JobCallable implements Callable<Integer> {
             logger.info("FINALLY " + resultCount);
             thisJob.notifyAll(); // notify waiters
         }
-        logger.info("3: returning resultCount: " + resultCount);
+        //logger.info("3: returning resultCount: " + resultCount);
         return resultCount;
     }
 
