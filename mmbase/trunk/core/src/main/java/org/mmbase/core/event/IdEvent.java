@@ -21,7 +21,7 @@ public class IdEvent extends Event  {
 
     private static final long serialVersionUID = 1L;
 
-    private String id;
+    private final String id;
 
 
     public IdEvent(String machineName, int type, String id) {
