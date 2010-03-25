@@ -190,27 +190,47 @@ public class EventManager {
         }
         long startTime = System.nanoTime();
         for (EventBroker broker :  eventBrokers) {
-            if (broker.canBrokerForEvent(event)) {
-                broker.notifyForEvent(event);
-                if (log.isDebugEnabled()) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("event from '" + event.getMachine() + "': " + event + " has been accepted by broker " + broker);
-                    } else {
-                        log.debug("event from '" + event.getMachine() + "' has been accepted by broker " + broker);
+            try {
+                if (broker.canBrokerForEvent(event)) {
+                    broker.notifyForEvent(event);
+                    if (log.isDebugEnabled()) {
+                        if (log.isTraceEnabled()) {
+                            log.trace("event from '" + event.getMachine() + "': " + event + " has been accepted by broker " + broker);
+                        } else {
+                            log.debug("event from '" + event.getMachine() + "' has been accepted by broker " + broker);
+                        }
+                    }
+                } else {
+                    if (log.isDebugEnabled()) {
+                        if (log.isTraceEnabled()) {
+                            log.trace("event from '" + event.getMachine() + "': " + event + " has been rejected by broker " + broker);
+                        } else {
+                            log.debug("event from '" + event.getMachine() + "' has been rejected by broker " + broker);
+                        }
                     }
                 }
-            } else {
-                if (log.isDebugEnabled()) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("event from '" + event.getMachine() + "': " + event + " has been rejected by broker " + broker);
-                    } else {
-                        log.debug("event from '" + event.getMachine() + "' has been rejected by broker " + broker);
-                    }
-                }
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
             }
         }
         numberOfPropagatedEvents++;
         duration += (System.nanoTime() - startTime);
+    }
+
+    /**
+     * Like {@link #propagateEvent} but with an extra argument 'asynchronous'.
+     * @param asynchronous If true, execute the propagation in a different thread, and don't let this thread wait for the result.
+     */
+    public void propagateEvent(final Event event, boolean asynchronous) {
+        if (asynchronous) {
+            ThreadPools.jobsExecutor.execute(new Runnable() {
+                    public void run() {
+                        propagateEvent(event);
+                    }
+                });
+        } else {
+            propagateEvent(event);
+        }
     }
 
     /**
