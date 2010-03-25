@@ -483,7 +483,10 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                     } catch (Exception e) {
                         log.warn(e.getMessage(), e);
                     }
+                } else if (o instanceof Map.Entry) {
+                    // already in size();
                 } else {
+                    log.service("Unanticipated entry " + o.getClass() + " " + o);
                     queriesSize++;
                 }
             }
