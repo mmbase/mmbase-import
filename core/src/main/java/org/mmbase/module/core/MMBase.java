@@ -476,6 +476,7 @@ public class MMBase extends ProcessorModule {
         // signal that MMBase is up and running
         mmbaseState = STATE_UP;
         log.info("MMBase is up and running");
+        EventManager.getInstance().propagateEvent(new SystemEvent.Up(), true);
         //notifyAll();
         //}
     }
