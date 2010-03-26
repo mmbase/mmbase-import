@@ -10,7 +10,15 @@
 
   <table summary="my fragments">
     <caption><mm:cloudinfo type="user" id="currentuser" /></caption>
-    <mm:listnodescontainer type="mediafragments">
+      <tr>
+        <th>#</th>
+        <th>title or url</th>
+        <th>mimetype</th>
+        <th>size</th>
+        <th>sourcenode, builder</th>
+        <th>action</th>
+      </tr>
+      <mm:listnodescontainer type="mediafragments">
       <mm:constraint field="owner" value="${requestScope['org.mmbase.cloud'].user.ownerField}" />
       <mm:maxnumber value="100" />
       <jsp:directive.include file="fragment.trs.jspx" />
