@@ -172,27 +172,32 @@
                                         <c:set var="_pos" ><mm:node number="${_relationnr}"><mm:field name="${sortfield}" /></mm:node></c:set>
                                     </c:when>
                                 </c:choose>
-
-                                <c:set var="urlup">
-                                    <mm:url page="/wizard/post">
+                                <mm:node number="${_relationnr}">
+                                  <c:set var="urlup">
+                                    <mm:maywrite>
+                                      <mm:url page="/wizard/post">
                                         <mm:param name="actions[sortRelation][1].sourceNodeNumber" value="${nodenr}" />
                                         <mm:param name="actions[sortRelation][1].destinationNodeNumber" value="${_nodenr}" />
                                         <mm:param name="actions[sortRelation][1].direction" value="up" />
                                         <mm:param name="actions[sortRelation][1].role" value="${relationrole}" />
                                         <mm:param name="actions[sortRelation][1].sortField" value="${sortfield}" />
                                         <mm:param name="flushname" value="${flushname}" />
-                                    </mm:url>
-                                </c:set>
-                                <c:set var="urldown">
-                                    <mm:url page="/wizard/post">
+                                      </mm:url>
+                                    </mm:maywrite>
+                                  </c:set>
+                                  <c:set var="urldown">
+                                    <mm:maywrite>
+                                      <mm:url page="/wizard/post">
                                         <mm:param name="actions[sortRelation][1].sourceNodeNumber" value="${nodenr}" />
                                         <mm:param name="actions[sortRelation][1].destinationNodeNumber" value="${_nodenr}" />
                                         <mm:param name="actions[sortRelation][1].direction" value="down" />
                                         <mm:param name="actions[sortRelation][1].role" value="${relationrole}" />
                                         <mm:param name="actions[sortRelation][1].sortField" value="${sortfield}" />
                                         <mm:param name="flushname" value="${flushname}" />
-                                    </mm:url>
-                                </c:set>
+                                      </mm:url>
+                                    </mm:maywrite>
+                                  </c:set>
+                                </mm:node>
 
                                 <mm:last inverse="true">
                                     <a style="text-decoration:none" href="${urldown}" class="movedown" onclick="return checkSearch(this);">
