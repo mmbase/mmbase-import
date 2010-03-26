@@ -23,6 +23,7 @@ package org.mmbase.streams.transcoders;
 
 import java.net.URI;
 
+import org.mmbase.bridge.Node;
 import org.mmbase.applications.media.Codec;
 import org.mmbase.applications.media.Format;
 import org.mmbase.util.MimeType;
@@ -53,6 +54,10 @@ public class RecognizerTranscoder implements Transcoder {
 
     protected MimeType  mimeType = MimeType.ANY;
 
+    public void init(Node d) {
+        throw new UnsupportedOperationException();
+    }
+    
     public void setFormat(String f) {
         throw new UnsupportedOperationException();
     }
