@@ -470,7 +470,7 @@ public abstract class AbstractNodeAction extends Action {
             }
         }
 
-        if (securityContext != null) {
+        if (securityContext != null && securityContext.length() > 0) {
             node.setContext(securityContext);
         }
 
