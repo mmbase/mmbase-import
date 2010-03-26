@@ -41,6 +41,14 @@
 
     <table summary="mediafragments">
       <caption>Recent mediafragments</caption>
+      <tr>
+        <th>#</th>
+        <th>title or url</th>
+        <th>mimetype</th>
+        <th>size</th>
+        <th>sourcenode, builder</th>
+        <th>action</th>
+      </tr>
       <mm:listnodescontainer type="${type}">
         <mm:sortorder field="number" direction="down" />
         <mm:offset value="${page * pagesize}" />
