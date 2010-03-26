@@ -41,6 +41,8 @@ public abstract class AbstractNodeAction extends Action {
     private static final org.mmbase.util.logging.Logger log = Logging.getLoggerInstance(AbstractNodeAction.class);
 
     private Map<String, String> fields = new HashMap<String, String>();
+
+    protected String securityContext = null;
     // private Map<String, DateTime> dateFields = new HashMap<String, DateTime>();
     private  Map<String, DateTime> dateFields = MapUtils.lazyMap(new HashMap<String, DateTime>(), FactoryUtils
             .instantiateFactory(DateTime.class));
@@ -179,6 +181,10 @@ public abstract class AbstractNodeAction extends Action {
 
     public void setFields(Map<String, String> fields) {
         this.fields = fields;
+    }
+
+    public void setSecurityContext(String c) {
+        this.securityContext = c;
     }
 
     public MultipartFile getFile() {
@@ -462,6 +468,10 @@ public abstract class AbstractNodeAction extends Action {
 
                 }
             }
+        }
+
+        if (securityContext != null) {
+            node.setContext(securityContext);
         }
 
         for (String field : dateFields.keySet()) {
