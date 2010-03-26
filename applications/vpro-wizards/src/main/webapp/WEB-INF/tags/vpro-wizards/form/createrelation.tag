@@ -61,6 +61,8 @@
     <c:if test="${not empty relationValues}">
       <input type="hidden" name="actions[createRelation][${relationid}].relationValues" value="${relationValues}" />
     </c:if>
+    <input type="hidden" name="actions[createRelation][${relationid}].securityContext"
+           value="${requestScope['org.mmbase.vprowizards.securityContext']}" />
 
 
     <%-- do the body--%>

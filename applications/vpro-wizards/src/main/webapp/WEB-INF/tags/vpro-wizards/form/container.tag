@@ -55,6 +55,8 @@
 		            <input type="hidden" name="actions[${modifier}${action}][].id" value="new"/>
 		            <input type="hidden" name="actions[${modifier}${action}][].nodeType" value="${nodetype}"/>
 		            <input type="hidden" name="actions[${modifier}${action}][].nodeAsParam" value="nodenr"/>
+		            <input type="hidden" name="actions[${modifier}${action}][].securityContext"
+                       value="${requestScope['org.mmbase.vprowizards.securityContext']}"/>
 		        </c:if>
 		        <%--if --%>
 		        <c:if test="${modifier == 'update'}">
