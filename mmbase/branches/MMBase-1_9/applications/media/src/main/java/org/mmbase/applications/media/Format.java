@@ -83,6 +83,10 @@ public enum Format {
     /* a few more audio formats */
     AAC(200),
     FLAC(201),
+    
+    /* others */
+    M3U(501),
+    M3U8(502),
 
     ANY(10000);
 
