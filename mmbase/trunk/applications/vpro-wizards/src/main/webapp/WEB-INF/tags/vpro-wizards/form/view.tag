@@ -252,6 +252,8 @@
                                 <c:otherwise>
                                   <mm:node number="${_relationnr}">
                                     <span
+                                        class="disallowed"
+                                        style="background-image: url(${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/unlink.png);"
                                         title="Niet toegestaan om de relatie te verwijderen. Eigenaar:  ${_node.owner}">X</span>
                                   </mm:node>
                                 </c:otherwise>
@@ -272,6 +274,8 @@
                                  <c:otherwise>
                                    <mm:node number="${_nodenr}">
                                     <span
+                                        class="disallowed"
+                                        style="background-image: url(${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/delete.png);"
                                         title="Niet toegestaan om de node te verwijderen. Eigenaar:  ${_node.owner}">X</span>
                                   </mm:node>
                                  </c:otherwise>
@@ -301,7 +305,10 @@
                                     </c:choose>
                                 </mm:maywrite>
                                 <mm:maywrite inverse="true">
-                                  <span title="Niet toegestaan. Eigenaar: ${_node.owner}">X</span>
+                                  <span
+                                      class="disallowed"
+                                      style="background-image: url(${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png);"
+                                      title="Niet toegestaan. Eigenaar: ${_node.owner}">X</span>
                                 </mm:maywrite>
                             </mm:node>
 
