@@ -237,25 +237,46 @@
                             <c:remove var="mayharddelete" />
                             <mm:node number="${_nodenr}"> <mm:maydelete><c:set var="mayharddelete" value="true"/></mm:maydelete> </mm:node>
 
-                            <c:if test="${delete && not empty maydelete}">
-                                <mm:link page="/wizard/post">
+                            <c:if test="${delete}">
+                              <c:choose>
+                                <c:when test="${not empty maydelete}">
+                                  <mm:link page="/wizard/post">
                                     <mm:param name="actions[deleteNode][1].nodenr" value="${_relationnr}" />
                                     <mm:param name="flushname" value="${flushname}" />
-                                    <a href="${_}" class="delete"  onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt loskoppelen?')">
-                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/unlink.png" class="icon" border="0" alt="" title="Koppel los"/>
+                                    <a href="${_}" class="delete"
+                                       onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt loskoppelen?')">
+                                      <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/unlink.png" class="icon" border="0" alt="" title="Koppel los"/>
                                     </a>
-                                </mm:link>
+                                  </mm:link>
+                                </c:when>
+                                <c:otherwise>
+                                  <mm:node number="${_relationnr}">
+                                    <span
+                                        title="Niet toegestaan om de relatie te verwijderen. Eigenaar:  ${_node.owner}">X</span>
+                                  </mm:node>
+                                </c:otherwise>
+                              </c:choose>
                             </c:if>
 
-                             <c:if test="${harddelete && not empty mayharddelete}">
-                                <mm:link page="/wizard/post">
-                                    <mm:param name="actions[deleteNode][1].nodenr" value="${_nodenr}" />
-                                    <mm:param name="flushname" value="${flushname}" />
-                                    <a href="${_}" class="delete"  onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt verwijderen? (kan niet hersteld worden)')">
-                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/delete.png" class="icon" border="0" alt="" title="Verwijder"/>
-                                    </a>
-                                </mm:link>
-                            </c:if>
+                             <c:if test="${harddelete}">
+                               <c:choose>
+                                 <c:when test="${not empty mayharddelete}">
+                                   <mm:link page="/wizard/post">
+                                     <mm:param name="actions[deleteNode][1].nodenr" value="${_nodenr}" />
+                                     <mm:param name="flushname" value="${flushname}" />
+                                     <a href="${_}" class="delete"  onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt verwijderen? (kan niet hersteld worden)')">
+                                       <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/delete.png" class="icon" border="0" alt="" title="Verwijder"/>
+                                     </a>
+                                   </mm:link>
+                                 </c:when>
+                                 <c:otherwise>
+                                   <mm:node number="${_nodenr}">
+                                    <span
+                                        title="Niet toegestaan om de node te verwijderen. Eigenaar:  ${_node.owner}">X</span>
+                                  </mm:node>
+                                 </c:otherwise>
+                               </c:choose>
+                             </c:if>
                             <c:remove var="maydelete"/>
 
                             <mm:node element="${nodetype}" id="currentnode">
@@ -278,6 +299,9 @@
                                         <c:otherwise>
                                         </c:otherwise>
                                     </c:choose>
+                                </mm:maywrite>
+                                <mm:maywrite inverse="true">
+                                  <span title="Niet toegestaan. Eigenaar: ${_node.owner}">X</span>
                                 </mm:maywrite>
                             </mm:node>
 
