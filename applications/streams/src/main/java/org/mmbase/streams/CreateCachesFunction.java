@@ -31,20 +31,24 @@ import org.mmbase.datatypes.processors.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Retriggers creation of the caches.
+ * Retriggers creation of (all) caches of a source node.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
  */
 
-public class CreateCachesFunction  extends NodeFunction<Boolean> {
+public class CreateCachesFunction extends NodeFunction<Boolean> {
 
     private static final Logger LOG = Logging.getLoggerInstance(CreateCachesFunction.class);
     public CreateCachesFunction() {
         super("createcaches");
     }
 
-
+    /**
+     * CommitProcessor is on url field of source node.
+     * @param url   field url of source node
+     * @return Processor to (re)create caches nodes
+     */
     protected static Processor getCacheCreator(final Field url) {
         CommitProcessor commitProcessor = url.getDataType().getCommitProcessor();
         if (commitProcessor instanceof ChainedCommitProcessor) {
