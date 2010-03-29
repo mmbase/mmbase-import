@@ -24,7 +24,13 @@
                            description="An mmbase Query describing which list is considered to represent already 'related' nodes" />
 
   <jsp:directive.attribute name="submit"            type="java.lang.String"
-                           description="Id of an element (typically a button) to submit and commit changes. Default it is, when no value is given it means that relate/unrelate happen immediately. The 'commit' action will be binded to the 'onclick' of the element." />
+                           description="Id of an element (typically a button) to submit and commit changes. Default it is, when no value is given it means that relate/unrelate happen immediately.
+                                        The 'commit' action will be binded to the 'onclick' of the element." />
+
+  <jsp:directive.attribute name="select"            type="java.lang.Boolean"
+                           description="If this is true (it defaults to false), then an extra button 'change' is added 'between' the current and repository lists.
+                                        Clicking on an item in one of the lists only selects it. Clicking on this change button then moves the selected items between the two lists.
+                                        " />
 
   <jsp:directive.attribute name="unrelate"          type="java.lang.Boolean"
                            description="Whether, or not, the tools should also allow deletion of relations" />
@@ -35,7 +41,7 @@
   <jsp:directive.attribute name="create"             type="java.lang.Boolean"
                            description="Whether, or not, the tools should also allow creation of new nodes. Defaults to 'false'." />
 
-  <jsp:directive.attribute name="extracreate"           type="java.lang.String"
+  <jsp:directive.attribute name="extracreate"        type="java.lang.String"
                            description="Jsp to be included in after the field list in the create jsp." />
 
   <jsp:directive.attribute name="transaction"        type="java.lang.String"
@@ -56,25 +62,25 @@
   <jsp:directive.attribute name="context"
                            description="The MMBase security context for new nodes (defaults to unset, which will normally result in nodes in the default context of the current user)" />
 
-  <jsp:directive.attribute name="currentTitle"        fragment="true"
+  <jsp:directive.attribute name="currentTitle"       fragment="true"
                            description="A piece of HTML that will be presented first in the 'current' div"/>
 
-  <jsp:directive.attribute name="repositoryTitle"     fragment="true"
+  <jsp:directive.attribute name="repositoryTitle"    fragment="true"
                            description="A piece of HTML that will be presented first in the 'repository' div"/>
 
-  <jsp:directive.attribute name="forms"               type="java.lang.Boolean"
+  <jsp:directive.attribute name="forms"              type="java.lang.Boolean"
                            description="Whether to produce forms. Default to true, but since forms cannot be nested you may want to set this to false."/>
 
-  <jsp:directive.attribute name="customizedir"        type="java.lang.String"
+  <jsp:directive.attribute name="customizedir"       type="java.lang.String"
                            description="Enables the specification of the location of a directory with extra actions on nodes in the lists which will become visible in the td.action." />
 
-  <jsp:directive.attribute name="implicitRepository"   type="java.lang.Boolean"
+  <jsp:directive.attribute name="implicitRepository" type="java.lang.Boolean"
                            description="Wether to fill the repository even when not yet explicitely searched (defaults to true)" />
 
-  <jsp:directive.attribute name="config"               type="java.lang.String"
+  <jsp:directive.attribute name="config"             type="java.lang.String"
                            description="Configuration file defaults to ('searchrelate')" />
 
-  <jsp:directive.attribute name="load"                type="java.lang.Boolean"
+  <jsp:directive.attribute name="load"               type="java.lang.Boolean"
                            description="Wether or not to load the javascript. Default should be ok, but sometimes it isn't (e.g. when using in ajax-included pieces of HTML)" />
 
 
@@ -112,7 +118,7 @@
     $(document).ready(function() {
     <c:if test="${! empty submit}"><!-- submit attribute given: commit search/relate on click of that element -->
       $("${submit}").click(function(el) {
-            return $("#mm_related_${sid}")[0].relater.commit(el); });</c:if>
+        return $("#mm_related_${sid}")[0].relater.commit(el); });</c:if>
       $("#mm_related_${sid}").each(function() {
       if (this.relater != null) {
     <c:if test="${! empty fields}"> this.relater.setFields('${fields}'); </c:if>
@@ -173,9 +179,7 @@
           </mm:include>
         </div>
       </c:if>
-      <c:if test="${select}">
-        <a href="#move" class="move"><mm-sr:button type="move" alt="move" /></a>
-      </c:if>
+
       <div class="mm_relate_repository searchable">
         <jsp:invoke fragment="repositoryTitle" />
         <c:choose>
@@ -191,6 +195,10 @@
                   <jsp:text> </jsp:text>
                   <a href="#mm_related_${sid}_repository_create" class="create"><fmt:message key="create" /></a>
                 </c:if>
+                <c:if test="${select}">
+                  <jsp:text> </jsp:text>
+                  <a href="#move" class="move"><mm-sr:button type="move" alt="move" /></a>
+                </c:if>
               </fieldset>
             </form>
           </c:when>
@@ -201,6 +209,10 @@
               <jsp:text> </jsp:text>
               <a href="#mm_related_${sid}_repository_create" class="create"><fmt:message key="create" /></a>
             </c:if>
+            <c:if test="${select}">
+              <jsp:text> </jsp:text>
+              <a href="#move" class="move"><mm-sr:button type="move" alt="move" /></a>
+            </c:if>            
           </c:otherwise>
         </c:choose>
 
