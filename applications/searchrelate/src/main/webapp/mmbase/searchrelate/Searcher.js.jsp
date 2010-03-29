@@ -124,7 +124,7 @@ function MMBaseRelater(d, validator) {
  *  This Searcher.js.jsp is normally loaded implicetly by the first mm-sr:relate. Using the 'ready'
  *  function, you can do something immediately after the MMBaseRelater is ready. E.g. you can add a
  *  'relateCallBack' function.
- *  @todo I think jquery provides something with user defined events.
+ *  @deprecated
  */
 MMBaseRelater.readyFunctions = [];
 
@@ -178,15 +178,15 @@ MMBaseRelater.prototype.needsCommit = function() {
  * Commits makes changes to MMBase. Depends on a jsp /mmbase/searchrelate/relate.jsp to do the actual work.
  * This jsp, in turn, depends on the query in the user's session which defines precisely what must happen.
  */
-MMBaseRelater.prototype.commit = function(button) {
+MMBaseRelater.prototype.commit = function(el) {
     var relatedNumbers   = this.getNumbers(this.related);
     var unrelatedNumbers = this.getNumbers(this.unrelated);
     var deletedRelations = this.getNumbers(this.deleterels);
     if (relatedNumbers != "" || unrelatedNumbers != "" || deletedRelations != "") {
-        if (button != null) {
-            $(button).addClass("submitting");
-            $(button).removeClass("failed");
-            $(button).removeClass("succeeded");
+        if (el != null) {
+            $(el).addClass("submitting");
+            $(el).removeClass("failed");
+            $(el).removeClass("succeeded");
         }
 
         this.logger.debug("Commiting changed relations of " + this.div.id);
@@ -205,10 +205,10 @@ MMBaseRelater.prototype.commit = function(button) {
         $.ajax({async: false,
                 url: url, type: "GET", dataType: "xml", data: params,
                 complete: function(res, status){
-                    $(a).removeClass("submitting");
+                    $(el).removeClass("submitting");
                     if (status == "success") {
                         //console.log("" + res);
-                        $(a).addClass("succeeded");
+                        $(el).addClass("succeeded");
                         if (self.canEditrelations && relatedNumbers != "") { // create tr's in which to edit relations
                             var nrs = relatedNumbers.split(",");
                             $(nrs).each(function(i) {
@@ -225,11 +225,11 @@ MMBaseRelater.prototype.commit = function(button) {
                         self.unrelated = {};
                         self.deleterels = {};
                         if (self.canEditrelations) self.bindSaverelation(this.div);
-                        $(self.div).trigger("mmsrCommitted", [a, status, self, relatedNumbers, unrelatedNumbers, deletedRelations]);
+                        $(self.div).trigger("mmsrCommitted", [el, status, self, relatedNumbers, unrelatedNumbers, deletedRelations]);
                         return true;
                     } else {
-                        $(a).addClass("failed");
-                        $(self.div).trigger("mmsrCommitted", [a, status, self]);
+                        $(el).addClass("failed");
+                        $(self.div).trigger("mmsrCommitted", [el, status, self]);
                         return false;
                     }
                 }
@@ -239,8 +239,8 @@ MMBaseRelater.prototype.commit = function(button) {
 
     } else {
         this.logger.debug("No changes, no need to commit");
-        $(this.div).trigger("mmsrCommitted", [a, "nochanges", this]);
-        $(a).addClass("succeeded");
+        $(this.div).trigger("mmsrCommitted", [el, "nochanges", this]);
+        $(el).addClass("succeeded");
     }
 };
 
@@ -569,7 +569,7 @@ MMBaseRelater.prototype.saverelation = function(ev) {
                 }
                 $(form).find('div.succeeded').text(msg);
                 $(form).find('div.succeeded').fadeOut(2000, function() {
-                    $(this).parents('tr.relation').toggle();
+                    //$(this).parents('tr.relation').toggle();
                 });
             } else {
                 $(form).prepend('<div class="failed" />');
