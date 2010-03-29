@@ -1,6 +1,7 @@
 <jsp:root
     version="2.0"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
@@ -8,7 +9,7 @@
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.include file="parameters.jspf" />
   <mm:import externid="href" required="true" />
-  <mm:import externid="node" required="true" />
+  <mm:import externid="node" required="true"  vartype="integer"/>
   <mm:import externid="requestID" required="true" />
   <c:if test="${! empty parameters.config}">
     <mm:write  request="org.mmbase.searchrelate.config" value="${parameters.config}" />
@@ -20,7 +21,9 @@
         <c:choose>
           <c:when test="${! parameters.autosubmit or ! empty parameters.formtag}">
             <mm:form name="${parameters.formtag}">
-              <mm:node number="${node}" commitonclose="false">
+              <mm:log>RS: ${sessionScope['org.mmbase.searchrelate.Submitter.resolutions']}</mm:log>
+              <mm:import id="resolvedNode">${sessionScope['org.mmbase.searchrelate.Submitter.resolutions'][node]}</mm:import>
+              <mm:node number="${empty resolvedNode ? node : resolvedNode}" commitonclose="false">
                 <mm:include debug="html"
                             page="${href}"
                             referids="rid">
