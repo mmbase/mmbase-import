@@ -34,7 +34,7 @@
           <mm:form name="${parameters.formtag}">
             <mm:write value="${requestScope['org.mmbase.transaction'].id}" jspvar="fn" vartype="string">
               <jsp:scriptlet>
-                Submitter submitter = Submitter.getInstance(fn);
+                Submitter submitter = Submitter.getInstance(fn, session);
                 submitter.setOrder(query, order);
               </jsp:scriptlet>
             </mm:write>
