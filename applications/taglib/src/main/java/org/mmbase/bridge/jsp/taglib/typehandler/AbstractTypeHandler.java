@@ -141,7 +141,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (name.endsWith("DataType")) {
             name = name.substring(0, name.length() - "DataType".length());
         }
-        return name;
+        return name.toLowerCase();
     }
 
     /**
