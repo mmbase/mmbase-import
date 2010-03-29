@@ -7,6 +7,9 @@
   <jsp:output omit-xml-declaration="true" />
 
   <jsp:directive.include file="parameters.jspf" />
+  <c:if test="${! empty parameters.config}">
+    <mm:write  request="org.mmbase.searchrelate.config" value="${parameters.config}" />
+  </c:if>
 
   <mm:content expires="0" type="application/xml">
     <mm:cloud method="asis">
