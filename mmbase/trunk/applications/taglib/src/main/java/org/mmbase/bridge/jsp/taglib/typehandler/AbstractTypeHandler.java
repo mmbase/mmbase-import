@@ -131,6 +131,19 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         return buf;
     }
 
+
+    /**
+     * @since MMBase-1.9.3
+     */
+    protected String getClassName(Class<?> c) {
+        String name = c.getName();
+        name = name.substring(c.getPackage().getName().length() + 1);
+        if (name.endsWith("DataType")) {
+            name = name.substring(0, name.length() - "DataType".length());
+        }
+        return name;
+    }
+
     /**
      * @since MMBase-1.8
      */
@@ -138,7 +151,25 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         StringBuilder buf = new StringBuilder("mm_validate ");
         DataType dt = field.getDataType();
         for (String styleClass : dt.getStyleClasses()) {
-            buf.append(styleClass).append(' ');
+            buf.append(styleClass);
+        }
+        {
+            Class<?> sup = dt.getClass();
+            while(DataType.class.isAssignableFrom(sup)) {
+                if (sup.equals(org.mmbase.datatypes.BasicDataType.class)) {
+                    break;
+                }
+                buf.append(" mm_dtclass_");
+                buf.append(getClassName(sup));
+                sup = sup.getSuperclass();
+            }
+            for (Class<?> c : dt.getClass().getInterfaces()) {
+                if (DataType.class.isAssignableFrom(c)) {
+                    buf.append(" mm_dtclass_");
+                    buf.append(getClassName(c));
+                }
+            }
+            buf.append(' ');
         }
         if (field instanceof org.mmbase.bridge.util.DataTypeField) {
             buf.append("mm_dt_");
