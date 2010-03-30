@@ -742,7 +742,7 @@ List.prototype.commit = function(stale, leavePage) {
                 $(self.div).trigger("mmsrStartSave", [self]);
                 result = null;
                 self.saving = true;
-                console.log("ASYNC " + (leavePage == null ? true : !leavePage));
+                // console.log("ASYNC " + (leavePage == null ? true : !leavePage));
                 $.ajax({ type: "POST",
                          async: leavePage == null ? true : !leavePage,
                          url: "${mm:link('/mmbase/searchrelate/list/save.jspx')}",
