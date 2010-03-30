@@ -19,7 +19,8 @@ $(document).ready(
             function() {
                 this.pathSearcher = new MMBasePathSearcher(this);
             });
-    });
+    }
+);
 
 $("div.mm_related.pathsearcher_ontheway").
     live("mmsrRelate",
@@ -51,10 +52,11 @@ MMBasePathSearcher.prototype.fillStep = function(step, node) {
     var td = $(this.table).find("> tr > td")[step - 1];
     var params = {};
     params.step = (step - 1) * 2;
-    params.node = node;
+    params.nodeNumber = node;
     params.pid = this.pid;
     var url = "${mm:link('/mmbase/searchrelate/path/searcher.jspx')}";
-    $(td).load(url, params, function() {
+    $(td).load(url, params,
+               function() {
                    $(td).find("div.mm_related").each(
                        function() {
                            if (this.relater == null) {
