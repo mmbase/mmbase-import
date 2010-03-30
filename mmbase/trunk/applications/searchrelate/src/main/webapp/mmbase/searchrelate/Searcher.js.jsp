@@ -26,6 +26,15 @@
  */
 
 
+$(document).ready(
+    function(){
+        $("body").find("div.mm_related").each(
+            function() {
+                if (this.relater == null) {
+                    this.relater = new MMBaseRelater(this);
+                }
+            });
+    });
 
 /**
  * Logger, a bit like org.mmbase.util.logging.Logger. Logs to firebug console or a dedicated area.

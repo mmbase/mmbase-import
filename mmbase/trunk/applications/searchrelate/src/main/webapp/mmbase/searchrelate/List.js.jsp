@@ -29,6 +29,30 @@
 $(document).ready(
     function() {
         List.prototype.init(document, false);
+
+        // we allow mm-sr:search to be used for your own implementation of searcher.
+        // This arranges the version arranged by mm-sr:relatednodes itself
+        // (recognizable by the class).
+        $("div.mm_related.relatednodes_search_simple").
+            live("mmsrRelate",
+                 function (e, tr, relater) {
+                     var number = relater.getNumber(tr);
+                     relater.repository.searcher.dec();
+                     $(tr).addClass("removed");
+                     relater.repository.searcher.resetTrClasses();
+                     $(e.target).trigger("mmsrAddToList", [number]);
+                 });
+
+        // i.e, we bind to the 'mmsrRelate' event to put the selected
+        // tr in the list as a new item.
+        $("div.mm_related").
+            live("mmsrAddToList",
+                 function (e, number) {
+                     var div = $(e.target).closest("div.list")[0];
+                     var list = div.list;
+                     list.relate(e, number);
+                 });
+
     }
 );
 
@@ -147,18 +171,6 @@ function List(d) {
             }
             );
         this.validator.validatePage(false);
-    }
-
-    // If a searcher was requested for this list, then set that up too.
-    if (this.search) {
-        // i.e, we bind to the 'mmsrRelate' event to put the selected
-        // tr in the list as a new item.
-        this.find("mm_related", "div").bind("mmsrRelate", function (e, relate, relater) {
-                self.relate(e, relate, relater);
-                relater.repository.searcher.dec();
-                $(relate).addClass("removed");
-                relater.repository.searcher.resetTrClasses();
-            });
     }
 
 
@@ -888,13 +900,14 @@ List.prototype.getOrder = function(ol) {
     //console.log(order);
 };
 
-List.prototype.relate = function(event, relate, relater) {
+List.prototype.relate = function(event, number) {
     var list = this;
     var params = this.getListParameters();
     var url = "${mm:link('/mmbase/searchrelate/list/relate.jspx')}";
-    params.destination = relater.getNumber(relate);
+    params.destination = number;
     params.order = this.getOrder(event.target);
-    $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
+    $.ajax({async: false,
+            url: url, type: "GET", dataType: "xml", data: params,
             complete: function(res, status){
                 try {
                     if ( status == "success" || status == "notmodified" ) {
