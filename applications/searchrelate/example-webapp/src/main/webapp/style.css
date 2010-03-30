@@ -13,6 +13,12 @@ div.nosearchneeded form.searchform {
 }
 
 
+body.pathsearch .searchresult.implicit {
+  display: block;
+}
+body.pathsearch form.searchform {
+  display: none;
+}
 
 body.search .searchresult.implicit {
   display: block;
@@ -193,6 +199,20 @@ a.toggle {
   cursor: pointer;
 }
 
+table.mmsr_pathsearch {
+  width: 100%;
+}
+table.mmsr_pathsearch th.last {
+  text-decoration: underline;
+  text-transform: uppercase;
+}
+
 table.mmsr_pathsearch td {
   vertical-align: top;
+}
+table.mmsr_pathsearch.steps_3 th {
+  width: 33%;
+}
+table.mmsr_pathsearch.steps_2 th {
+  width: 50%;
 }
