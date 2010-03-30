@@ -2,22 +2,26 @@
 <mm-sre:html
     xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
     xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <mm-sre:form>
 
     <mm:node number="default.mags">
-      <mm-srt:relatednodes
-          type="news" orderby="posrel.pos" sortable="true" role="posrel"
+      <mm-sr:relatednodes
+          type="news" orderby="posrel.pos" unlink="true" sortable="true" role="posrel"
           >
         <jsp:attribute name="searcher">
-          <mm-srt:pathsearch path="mags,news"  create="true">
+          <mm-sr:pathsearch path="mags,posrel,news"  create="true">
+            <!-- hmm, this seems to break distinct.
+            <mm:sortorder field="posrel.pos" />
+            -->
             <!-- you could constraint the query further
             <mm:constraint field="news.title" operator="LIKE" value="%a%" />
             -->
-          </mm-srt:pathsearch>
+          </mm-sr:pathsearch>
         </jsp:attribute>
-      </mm-srt:relatednodes>
+      </mm-sr:relatednodes>
     </mm:node>
   </mm-sre:form>
   <hr />
