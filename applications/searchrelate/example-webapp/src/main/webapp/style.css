@@ -12,6 +12,8 @@ div.nosearchneeded form.searchform {
   display: none;
 }
 
+
+
 body.search .searchresult.implicit {
   display: block;
 }
@@ -189,4 +191,8 @@ a.toggle {
   background-color: #fff;
   border-bottom: solid 1px #999;
   cursor: pointer;
+}
+
+table.mmsr_pathsearch td {
+  vertical-align: top;
 }
