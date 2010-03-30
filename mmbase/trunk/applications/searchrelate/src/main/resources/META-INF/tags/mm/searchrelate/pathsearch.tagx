@@ -27,10 +27,20 @@
   <jsp:directive.attribute name="config"               type="java.lang.String"
                            description="Configuration file defaults to ('searchrelate')" />
 
+  <jsp:directive.attribute name="load"               type="java.lang.String"
+                           description="" />
+
   <mm:import id="requestid">P<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape>${param.requestID}</mm:import>
   <mm:import from="request" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
   <mm:write request="${requestid}_sequence" value="${seq + 1}" />
   <mm:import id="pid">${requestid}_${seq}</mm:import>
+
+  <mm:import from="request" id="javascript_loaded" externid="mm_pathsearch_javascript" />
+  <mm:import id="_load">${((empty javascript_loaded and empty load) or load) and load ne 'false' and param['org.mmbase.sr.relatednodes.load'] ne 'false'}</mm:import>
+  <c:if test="${_load}">
+    <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/PathSearcher.js.jsp')}"><jsp:text>&lt;!-- --&gt;</jsp:text></script>
+    <mm:write request="mm_pathsearch_javascript" value="yes" />
+  </c:if>
 
 
   <mm:listnodescontainer path="${path}" element="${element}" id="query" jspvar="q">
