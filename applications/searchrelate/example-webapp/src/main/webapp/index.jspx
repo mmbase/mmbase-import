@@ -181,7 +181,7 @@
               <a href="${_}">Lazy loaded items</a>
             </mm:link>
           </li>
-          <li>
+          <li class="done">
             <mm:link page="relatednodes-search.jspx" referids="${referids}">
               <a href="${_}">Using your own searcher implementation</a>
             </mm:link>
@@ -273,7 +273,7 @@
         </ul>
         <h2>mm-sr:pathsearch</h2>
         <ul>
-          <li class="">
+          <li class="done">
             <mm:link page="pathsearch.jspx" referids="${referids}">
               <a href="${_}">mm-sr:pathsearch</a>
             </mm:link>
