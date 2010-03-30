@@ -21,13 +21,26 @@
   <jsp:directive.attribute name="element"        type="java.lang.String"
                            description="This is equivalent to the element attribute of an mm:listnodescontainer, but it defaults to the _last_ element." />
 
+  <jsp:directive.attribute name="pagesize"        type="java.lang.Integer"
+                           description="" />
+
   <jsp:directive.attribute name="config"               type="java.lang.String"
                            description="Configuration file defaults to ('searchrelate')" />
+
+  <jsp:directive.attribute name="load"               type="java.lang.String"
+                           description="" />
 
   <mm:import id="requestid">P<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape>${param.requestID}</mm:import>
   <mm:import from="request" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
   <mm:write request="${requestid}_sequence" value="${seq + 1}" />
   <mm:import id="pid">${requestid}_${seq}</mm:import>
+
+  <mm:import from="request" id="javascript_loaded" externid="mm_pathsearch_javascript" />
+  <mm:import id="_load">${((empty javascript_loaded and empty load) or load) and load ne 'false' and param['org.mmbase.sr.relatednodes.load'] ne 'false'}</mm:import>
+  <c:if test="${_load}">
+    <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/PathSearcher.js.jsp')}"><jsp:text>&lt;!-- --&gt;</jsp:text></script>
+    <mm:write request="mm_pathsearch_javascript" value="yes" />
+  </c:if>
 
 
   <mm:listnodescontainer path="${path}" element="${element}" id="query" jspvar="q">
@@ -38,24 +51,30 @@
     <mm:import externid="laststep" vartype="integer"><jsp:expression>q.getSteps().indexOf(q.getNodeStep())</jsp:expression></mm:import>
   </mm:listnodescontainer>
 
-  <mm:write session="${pid}" referid="query" />
+
+  <mm:write session="${pid}_context" value="" />
+  <mm:context scope="session" id="${pid}_context">
+    <mm:import externid="query" from="parent" />
+    <mm:import id="pagesize">${empty pagesize ? 10 : pagesize}</mm:import>
+  </mm:context>
 
 
-  <table class="mmsr_pathsearch"
+  <mm:import id="numberoftd" vartype="integer">${laststep / 2 + 1}</mm:import>
+  <table class="mmsr_pathsearch steps_${numberoftd}"
          id="${pid}">
     <tr>
-      <c:forEach begin="0" end="${laststep + 1}"  var="i" step="2">
-        <th><mm:nodeinfo nodetype="${query.steps[i].tableName}" type="plural_guinodemanager" /></th>
+      <c:forEach begin="0" end="${laststep + 1}"  var="i" step="2" varStatus="status">
+        <th class="${status.first ? 'first' : ''} ${status.last ? 'last' : ''}"><mm:nodeinfo nodetype="${query.steps[i].tableName}" type="plural_guinodemanager" /></th>
       </c:forEach>
     </tr>
     <tr>
-      <td>
-        <mm:include page="/mmbase/searchrelate/path/searcher.jspx" referids="pid">
+      <td class="first">
+        <mm:include page="/mmbase/searchrelate/path/searcher.jspx" referids="pid,pagesize?">
           <mm:param name="step">0</mm:param>
         </mm:include>
       </td>
-      <c:forEach begin="3" end="${laststep + 1}" step="2">
-        <td />
+      <c:forEach begin="3" end="${laststep + 1}" step="2" varStatus="status">
+        <td class="${status.last ? 'last' : ''}" />
       </c:forEach>
     </tr>
   </table>
