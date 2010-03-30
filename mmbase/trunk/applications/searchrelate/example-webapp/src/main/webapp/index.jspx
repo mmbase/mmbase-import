@@ -271,6 +271,14 @@
 
           <li>Make more test-cases for this tag</li>
         </ul>
+        <h2>mm-sr:pathsearch</h2>
+        <ul>
+          <li class="">
+            <mm:link page="pathsearch.jspx" referids="${referids}">
+              <a href="${_}">mm-sr:pathsearch</a>
+            </mm:link>
+          </li>
+        </ul>
         <hr />
         <p>
           <mm:link referids="ct?">
