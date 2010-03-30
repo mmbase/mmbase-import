@@ -28,6 +28,8 @@ $("div.mm_related.pathsearcher_ontheway").
              var number = relater.getNumber(tr);
              var pathSearcher = $(e.target).closest("table.mmsr_pathsearch")[0].searcher;
              var index = $(e.target).closest("td").index() + 1;
+             $(tr).addClass("selected");
+             $(tr).siblings().removeClass("selected");
              pathSearcher.fillStep(index + 1, number);
          });
 
@@ -63,6 +65,7 @@ MMBasePathSearcher.prototype.fillStep = function(step, node) {
                                this.relater = new MMBaseRelater(this);
                            }
                        });
+                   $(td).find("~ td").empty();
                });
 
 }
