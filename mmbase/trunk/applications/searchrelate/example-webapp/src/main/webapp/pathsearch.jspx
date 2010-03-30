@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <mm-sre:html
+    styleClass="pathsearch"
     xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
     xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
@@ -20,7 +21,7 @@
   <mm-sr:pathsearch path="mags,posrel,news" />
 
   <p>Straight forward two step searcher, not indicated role, finding people</p>
-  <mm-sr:pathsearch path="news,people" />
+  <mm-sr:pathsearch path="news,people" pagesize="100" />
 
   <p>Straight forward three step searcher to find people</p>
   <mm-sr:pathsearch path="mags,news,people" />
