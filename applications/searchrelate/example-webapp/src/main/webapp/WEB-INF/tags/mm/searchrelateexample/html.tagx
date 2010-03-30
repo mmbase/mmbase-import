@@ -47,6 +47,13 @@
         <mm:link page="/style.css">
           <link rel="stylesheet" href="${_}" type="text/css" />
         </mm:link>
+        <mm:link page="/mmbase/searchrelate/PathSearcher.js.jsp">
+          <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
+        </mm:link>
+        <mm:link page="/mmbase/searchrelate/Toggle.js.jsp">
+          <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
+        </mm:link>
+
         <meta name="ContentRoot" content="${mm:link('/')}" />
 
         <c:if test="${! empty prefetch}">
