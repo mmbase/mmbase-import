@@ -80,7 +80,7 @@
   <jsp:directive.attribute name="config"             type="java.lang.String"
                            description="Configuration file defaults to ('searchrelate')" />
 
-  <jsp:directive.attribute name="load"               type="java.lang.Boolean"
+  <jsp:directive.attribute name="load"               type="java.lang.String"
                            description="Wether or not to load the javascript. Default should be ok, but sometimes it isn't (e.g. when using in ajax-included pieces of HTML)" />
 
 
@@ -94,10 +94,12 @@
   <mm:write request="${requestid}_sequence" value="${seq + 1}" />
   <mm:import id="sid">${requestid}_${seq}</mm:import>
 
+
   <mm:write session="mm_related_${sid}_repository" referid="repository" />
   <mm:write session="mm_related_${sid}_current"    referid="current" />
   <mm:write session="mm_related_${sid}_extracreate"  value="${extracreate}" />
-  <c:if test="${seq eq 0 and (empty load ? true : load)}">
+
+  <c:if test="${seq eq 0 and (empty load ? true : 'true' eq load)}">
     <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
     <mm:include page="/mmbase/jquery/jquery.jspx" />
     <mm:link page="/mmbase/searchrelate/Searcher.js.jsp">
