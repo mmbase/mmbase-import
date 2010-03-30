@@ -9,44 +9,52 @@
   <!--
 
 
-
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.40 2008-11-27 16:03:47 andre Exp $
+      @version $Id$
   -->
   <jsp:directive.tag
-      example=""
-      description="Combines mm-sr:search to a an 'accordion' search" />
+      description="Combines mm-sr:search's to a an 'accordion' search" />
 
   <jsp:directive.attribute name="path"        type="java.lang.String"  required="true"
-                           description="Node type to search" />
+                           description="Node types to search. This is equivalent to the path attribute of an mm:listnodescontainer" />
+
+  <jsp:directive.attribute name="element"        type="java.lang.String"
+                           description="This is equivalent to the element attribute of an mm:listnodescontainer, but it defaults to the _last_ element." />
 
   <jsp:directive.attribute name="config"               type="java.lang.String"
                            description="Configuration file defaults to ('searchrelate')" />
 
-  <jsp:directive.attribute name="create"        type="java.lang.Boolean"
-                           />
-
   <mm:import id="requestid">P<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape>${param.requestID}</mm:import>
+  <mm:import from="request" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
+  <mm:write request="${requestid}_sequence" value="${seq + 1}" />
+  <mm:import id="pid">${requestid}_${seq}</mm:import>
 
-  <mm:listnodescontainer path="${path}" id="query">
+
+  <mm:listnodescontainer path="${path}" element="${element}" id="query" jspvar="q">
+    <c:if test="${empty element}">
+      <jsp:scriptlet>q.setNodeStep(q.getSteps().get(q.getSteps().size() - 1));</jsp:scriptlet>
+    </c:if>
     <jsp:doBody />
+    <mm:import externid="laststep" vartype="integer"><jsp:expression>q.getSteps().indexOf(q.getNodeStep())</jsp:expression></mm:import>
   </mm:listnodescontainer>
 
-  <mm:write session="${requestid}" referid="query" />
+  <mm:write session="${pid}" referid="query" />
 
-  <table class="mmsr_pathsearch" id="${requestid}">
+
+  <table class="mmsr_pathsearch"
+         id="${pid}">
     <tr>
-      <c:forEach items="${query.steps}" var="p" step="2">
-        <th><mm:nodeinfo nodetype="${p.tableName}" type="guitype" /></th>
+      <c:forEach begin="0" end="${laststep + 1}"  var="i" step="2">
+        <th><mm:nodeinfo nodetype="${query.steps[i].tableName}" type="plural_guinodemanager" /></th>
       </c:forEach>
     </tr>
     <tr>
       <td>
-        <mm:include page="/mmbase/searchrelate/path/searcher.jspx" referids="requestid@pid">
+        <mm:include page="/mmbase/searchrelate/path/searcher.jspx" referids="pid">
           <mm:param name="step">0</mm:param>
         </mm:include>
       </td>
-      <c:forEach begin="3" end="${fn:length(query.steps)}" step="2">
+      <c:forEach begin="3" end="${laststep + 1}" step="2">
         <td />
       </c:forEach>
     </tr>
