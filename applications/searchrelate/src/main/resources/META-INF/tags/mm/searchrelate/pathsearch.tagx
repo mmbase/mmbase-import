@@ -21,6 +21,9 @@
   <jsp:directive.attribute name="element"        type="java.lang.String"
                            description="This is equivalent to the element attribute of an mm:listnodescontainer, but it defaults to the _last_ element." />
 
+  <jsp:directive.attribute name="pagesize"        type="java.lang.Integer"
+                           description="" />
+
   <jsp:directive.attribute name="config"               type="java.lang.String"
                            description="Configuration file defaults to ('searchrelate')" />
 
@@ -38,24 +41,30 @@
     <mm:import externid="laststep" vartype="integer"><jsp:expression>q.getSteps().indexOf(q.getNodeStep())</jsp:expression></mm:import>
   </mm:listnodescontainer>
 
-  <mm:write session="${pid}" referid="query" />
+
+  <mm:write session="${pid}_context" value="" />
+  <mm:context scope="session" id="${pid}_context">
+    <mm:import externid="query" from="parent" />
+    <mm:import id="pagesize">${empty pagesize ? 10 : pagesize}</mm:import>
+  </mm:context>
 
 
-  <table class="mmsr_pathsearch"
+  <mm:import id="numberoftd" vartype="integer">${laststep / 2 + 1}</mm:import>
+  <table class="mmsr_pathsearch steps_${numberoftd}"
          id="${pid}">
     <tr>
-      <c:forEach begin="0" end="${laststep + 1}"  var="i" step="2">
-        <th><mm:nodeinfo nodetype="${query.steps[i].tableName}" type="plural_guinodemanager" /></th>
+      <c:forEach begin="0" end="${laststep + 1}"  var="i" step="2" varStatus="status">
+        <th class="${status.first ? 'first' : ''} ${status.last ? 'last' : ''}"><mm:nodeinfo nodetype="${query.steps[i].tableName}" type="plural_guinodemanager" /></th>
       </c:forEach>
     </tr>
     <tr>
-      <td>
-        <mm:include page="/mmbase/searchrelate/path/searcher.jspx" referids="pid">
+      <td class="first">
+        <mm:include page="/mmbase/searchrelate/path/searcher.jspx" referids="pid,pagesize?">
           <mm:param name="step">0</mm:param>
         </mm:include>
       </td>
-      <c:forEach begin="3" end="${laststep + 1}" step="2">
-        <td />
+      <c:forEach begin="3" end="${laststep + 1}" step="2" varStatus="status">
+        <td class="${status.last ? 'last' : ''}" />
       </c:forEach>
     </tr>
   </table>
