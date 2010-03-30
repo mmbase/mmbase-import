@@ -101,6 +101,10 @@
                            description="Include also the possibility to search existing nodes"
                            />
 
+  <jsp:directive.attribute name="searcher"    fragment="true"
+                           description="You may provide your own implementation of the search tool"
+                           />
+
   <jsp:directive.attribute name="implicitSearch"    type="java.lang.Boolean"
                            description="Wether to fill automaticly even when not yet explicitely searched (defaults to the property 'implicitRepository' of searchrelate.xml, which itself defaults to 'true')" />
 
@@ -196,7 +200,7 @@
   <mm:import id="_formtag">${empty __formtag ? parentformtag : __formtag}</mm:import>
   <mm:import id="_orderby">${empty orderby ? _role : orderby}${empty orderby ? (_role eq 'posrel' ? '.pos' : '.number') : ''}</mm:import>
   <mm:import id="_fields">${fields}</mm:import>
-  <mm:import id="_search">${empty searchRepository ? (empty search ? false : search) : true}</mm:import>
+  <mm:import id="_search">${empty searchRepository and empty searcher ? (empty search ? false : search) : true}</mm:import>
   <mm:import id="_delete">${empty delete ? (! _search) : delete}</mm:import>
   <mm:import id="_confirm">${empty confirm ? false : confirm}</mm:import>
   <mm:import id="_create">${empty create ? 'true' : create}</mm:import>
@@ -368,18 +372,30 @@
       </mm:relatednodescontainer>
 
       <mm:import id="searcher">
-        <c:if test="${parameters.search}">
+        <c:if test="${parameters.search || ! empty searcher}">
           <mm:cloud>
             <c:choose>
-              <c:when test="${empty searchRepository}">
-                <mm-sr:search type="${query.nodeManager.name}" load="false" implicit="${empty implicitSearch ? settings['implicitRepository'] : implicitSearch}">
-                  <mm:constraint field="number" operator="IN" inverse="true" referid="related" />
-                </mm-sr:search>
+              <c:when test="${empty searcher}">
+                <c:choose>
+                  <c:when test="${empty searchRepository}">
+                    <mm-sr:search
+                        styleClass="relatednodes_search_simple"
+                        type="${query.nodeManager.name}" load="false" implicit="${empty implicitSearch ? settings['implicitRepository'] : implicitSearch}">
+                      <mm:constraint field="number" operator="IN" inverse="true" referid="related" />
+                    </mm-sr:search>
+                  </c:when>
+                  <c:otherwise>
+                    <mm-sr:relate
+                        repository="${searchRepository}" load="false"
+                        styleClass="relatednodes_search_simple"
+                        >
+                      <mm:constraint field="number" operator="IN" inverse="true" referid="related" />
+                    </mm-sr:relate>
+                  </c:otherwise>
+                </c:choose>
               </c:when>
               <c:otherwise>
-                <mm-sr:relate repository="${searchRepository}" load="false">
-                  <mm:constraint field="number" operator="IN" inverse="true" referid="related" />
-                </mm-sr:relate>
+                <jsp:invoke fragment="searcher" />
               </c:otherwise>
             </c:choose>
           </mm:cloud>

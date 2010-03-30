@@ -3,7 +3,6 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
-    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
     version="2.0"
     >
   <!--
@@ -33,11 +32,25 @@
   <jsp:directive.attribute name="create"        type="java.lang.Boolean"
                            />
 
+  <jsp:directive.attribute name="styleClass"               type="java.lang.String"
+                           description="Extra style class" />
+
+  <jsp:directive.attribute name="pagesize"               type="java.lang.Integer"
+                           description="Size of one page. Defaults to 10." />
+
+  <mm:import id="_pagesize" vartype="integer">${empty pagesize ? 10 : pagesize}</mm:import>
 
   <mm:listnodescontainer type="${type}" id="repository">
     <jsp:doBody />
     <mm:sortorder field="number" direction="down" />
   </mm:listnodescontainer>
   <jsp:directive.include file="/mmbase/searchrelate/settings.jspf" />
-  <mm-sr:relate repository="${repository}" load="${load}" implicitRepository="${empty implicit ? settings['implicitRepository'] : implicit}" create="${create}" />
+  <mm-sr:relate
+      repository="${repository}"
+      load="${load}"
+      pagesize="${_pagesize}"
+      implicitRepository="${empty implicit ? settings['implicitRepository'] : implicit}"
+      create="${create}"
+      styleClass="${styleClass}"
+      />
 </jsp:root>

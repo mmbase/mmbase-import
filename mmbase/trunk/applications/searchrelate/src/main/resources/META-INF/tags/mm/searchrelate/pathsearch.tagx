@@ -1,0 +1,54 @@
+<jsp:root
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+    version="2.0"
+    >
+  <!--
+
+
+
+      @author Michiel Meeuwissen
+      @version $Id: relate.tagx,v 1.40 2008-11-27 16:03:47 andre Exp $
+  -->
+  <jsp:directive.tag
+      example=""
+      description="Combines mm-sr:search to a an 'accordion' search" />
+
+  <jsp:directive.attribute name="path"        type="java.lang.String"  required="true"
+                           description="Node type to search" />
+
+  <jsp:directive.attribute name="config"               type="java.lang.String"
+                           description="Configuration file defaults to ('searchrelate')" />
+
+  <jsp:directive.attribute name="create"        type="java.lang.Boolean"
+                           />
+
+  <mm:import id="requestid">P<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape>${param.requestID}</mm:import>
+
+  <mm:listnodescontainer path="${path}" id="query">
+    <jsp:doBody />
+  </mm:listnodescontainer>
+
+  <mm:write session="${requestid}" referid="query" />
+
+  <table class="mmsr_pathsearch" id="${requestid}">
+    <tr>
+      <c:forEach items="${query.steps}" var="p" step="2">
+        <th><mm:nodeinfo nodetype="${p.tableName}" type="guitype" /></th>
+      </c:forEach>
+    </tr>
+    <tr>
+      <td>
+        <mm:include page="/mmbase/searchrelate/path/searcher.jspx" referids="requestid@pid">
+          <mm:param name="step">0</mm:param>
+        </mm:include>
+      </td>
+      <c:forEach begin="3" end="${fn:length(query.steps)}" step="2">
+        <td />
+      </c:forEach>
+    </tr>
+  </table>
+</jsp:root>

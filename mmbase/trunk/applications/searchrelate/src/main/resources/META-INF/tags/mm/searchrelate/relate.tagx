@@ -84,6 +84,7 @@
                            description="Wether or not to load the javascript. Default should be ok, but sometimes it isn't (e.g. when using in ajax-included pieces of HTML)" />
 
 
+
   <mm:import externid="current" from="this" />
 
   <mm:import id="requestid">S<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}?${pageContext.request.queryString}</mm:escape></mm:import>
@@ -105,15 +106,6 @@
     </mm:link>
   </c:if>
   <jsp:directive.include file="/mmbase/searchrelate/settings.jspf" />
-  <script type="text/javascript">
-    $(document).ready(function(){
-    $("body").find("div.mm_related").each(function() {
-    if (this.relater == null) {
-      this.relater = new MMBaseRelater(this);
-      }
-    });
-    });
-  </script>
   <script type="text/javascript">
     $(document).ready(function() {
     <c:if test="${! empty submit}"><!-- submit attribute given: commit search/relate on click of that element -->
@@ -180,7 +172,11 @@
         </div>
       </c:if>
 
-      <div class="mm_relate_repository searchable">
+      <mm:listnodescontainer referid="repository">
+        <mm:size id="nosearchsize" write="false" />
+      </mm:listnodescontainer>
+
+      <div class="mm_relate_repository searchable ${nosearchsize lt (empty pagesize ? 10 : pagesize) ? 'nosearchneeded' : 'searchneeded'}">
         <jsp:invoke fragment="repositoryTitle" />
         <c:choose>
           <c:when test="${empty forms or forms}">
@@ -212,7 +208,7 @@
             <c:if test="${select}">
               <jsp:text> </jsp:text>
               <a href="#move" class="move"><mm-sr:button type="move" alt="move" /></a>
-            </c:if>            
+            </c:if>
           </c:otherwise>
         </c:choose>
 
@@ -222,12 +218,12 @@
                         referids="customizedir?,relations?,fields?">
               <c:if test="${! empty pagesize}">
                 <mm:param name="pagesize" referid="pagesize" />
-            </c:if>
-            <c:if test="${! empty maxpages}">
-              <mm:param name="maxpages" referid="maxpages" />
-            </c:if>
-            <mm:param name="id">mm_related_${sid}_repository</mm:param>
-            <mm:param name="extraClass">implicit</mm:param>
+              </c:if>
+              <c:if test="${! empty maxpages}">
+                <mm:param name="maxpages" referid="maxpages" />
+              </c:if>
+              <mm:param name="id">mm_related_${sid}_repository</mm:param>
+              <mm:param name="extraClass">implicit</mm:param>
             </mm:include>
           </c:when>
           <c:otherwise>
