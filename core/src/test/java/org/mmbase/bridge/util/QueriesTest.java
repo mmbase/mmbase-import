@@ -177,6 +177,7 @@ public class QueriesTest  {
     }
 
 
+
     // ================================================================================
     // Tests below this assume an RMMCI connection
     // ================================================================================
@@ -416,4 +417,40 @@ public class QueriesTest  {
 
 
     }
+
+
+
+    @Test
+    public void createSubQueryWithoutNode() {
+        assumeNotNull(remoteCloud);
+        Cloud cloud = remoteCloud; //getCloudContext().getCloud("mmbase");
+        NodeQuery q = cloud.createNodeQuery();
+        q.addStep(cloud.getNodeManager("mags"));
+        q.addRelationStep(cloud.getNodeManager("news"), "posrel", "destination");
+        q.addRelationStep(cloud.getNodeManager("images"), "posrel", "destination");
+        NodeQuery subq = Queries.getSubQuery(q, null, 0);
+        assertEquals(5, subq.getSteps().size());
+        System.out.println(subq.toString());
+        assertEquals("mags", subq.getNodeStep().getTableName());
+    }
+
+
+    @Test
+    public void createSubQuery() {
+        assumeNotNull(remoteCloud);
+        Cloud cloud = remoteCloud; //getCloudContext().getCloud("mmbase");
+        NodeQuery q = cloud.createNodeQuery();
+        q.addStep(cloud.getNodeManager("mags"));
+        q.addRelationStep(cloud.getNodeManager("news"), "posrel", "destination");
+        q.addRelationStep(cloud.getNodeManager("images"), "posrel", "destination");
+        Node newsNode = cloud.getNodeManager("news").createNode();
+        newsNode.commit();
+        NodeQuery subq = Queries.getSubQuery(q, newsNode, 4);
+        assertEquals(3, subq.getSteps().size());
+        System.out.println(subq.toString());
+        assertEquals(Integer.valueOf(newsNode.getNumber()), subq.getSteps().get(0).getNodes().iterator().next());
+        assertEquals("images", subq.getNodeStep().getTableName());
+
+    }
+
 }
