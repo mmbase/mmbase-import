@@ -181,6 +181,11 @@
               <a href="${_}">Lazy loaded items</a>
             </mm:link>
           </li>
+          <li>
+            <mm:link page="relatednodes-search.jspx" referids="${referids}">
+              <a href="${_}">Using your own searcher implementation</a>
+            </mm:link>
+          </li>
         </ul>
 
         <h3>TODO</h3>
@@ -265,6 +270,14 @@
 
 
           <li>Make more test-cases for this tag</li>
+        </ul>
+        <h2>mm-sr:pathsearch</h2>
+        <ul>
+          <li class="">
+            <mm:link page="pathsearch.jspx" referids="${referids}">
+              <a href="${_}">mm-sr:pathsearch</a>
+            </mm:link>
+          </li>
         </ul>
         <hr />
         <p>
