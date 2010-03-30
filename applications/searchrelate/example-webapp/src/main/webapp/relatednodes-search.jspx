@@ -17,6 +17,6 @@
     </mm:node>
   </mm-sre:form>
   <hr />
-  <mm:escape escape="links">$URL: https://scm.mmbase.org/mmbase/trunk/applications/searchrelate/example-webapp/src/main/webapp/lazy.jspx $</mm:escape>
+  <mm:escape escape="links">$URL$</mm:escape>
 
 </mm-sre:html>
