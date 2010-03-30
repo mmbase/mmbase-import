@@ -24,6 +24,11 @@
   </mm:link>
 
 
+  <mm:link page="/mmbase/searchrelate/PathSearcher.js.jsp">
+    <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
+  </mm:link>
+
+
   <mm:form
       name="${name}" jspvar="trans">
 
