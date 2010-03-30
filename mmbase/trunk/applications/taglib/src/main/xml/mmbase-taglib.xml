@@ -7291,7 +7291,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>contextreader</extends>
     <extends>cloudreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.containers.QueryTEI</teiclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.containers.NodeQueryTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
       Surrounds a listnodes tag and provides a query object.
@@ -7386,7 +7386,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>contextreader</extends>
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.RelatedNodesContainerTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.containers.QueryTEI</teiclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.containers.NodeQueryTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
        Surrounds a relatednodes tag and provides a query object. Alternatively, it can also surround
