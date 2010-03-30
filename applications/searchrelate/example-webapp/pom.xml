@@ -35,6 +35,14 @@
               <name>java.awt.headless</name>
               <value>true</value>
             </systemProperty>
+            <systemProperty>
+              <!--
+              This may not be very safe, but we use jetty only for developing
+              See: http://communitymapbuilder.org/display/JETTY/How+to+enable+serving+aliased+files
+              -->
+              <name>org.mortbay.util.FileResource.checkAliases</name>
+              <value>false</value>
+            </systemProperty>
           </systemProperties>
           <scanTargets>
             <scanTarget>src/main/config</scanTarget>
