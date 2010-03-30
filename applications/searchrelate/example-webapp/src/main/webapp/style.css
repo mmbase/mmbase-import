@@ -4,7 +4,11 @@ body {
 
 }
 
-.searchresult.implicit {
+
+div.searchneeded .searchresult.implicit {
+  display: none;
+}
+div.nosearchneeded form.searchform {
   display: none;
 }
 
