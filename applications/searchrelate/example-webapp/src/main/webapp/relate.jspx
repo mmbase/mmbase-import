@@ -39,7 +39,8 @@
           unrelate="true"
           create="true"
           submit="#save"
-          extracreate="">
+          implicitRepository="false"
+          >
         <jsp:attribute name="currentTitle"><b>News</b></jsp:attribute>
         <jsp:attribute name="repositoryTitle"><b>Add other news</b></jsp:attribute>
       </mm-srt:relate>
