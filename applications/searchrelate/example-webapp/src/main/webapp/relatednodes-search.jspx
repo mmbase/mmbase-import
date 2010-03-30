@@ -12,12 +12,11 @@
           type="news" orderby="posrel.pos" unlink="true" sortable="true" role="posrel"
           >
         <jsp:attribute name="searcher">
-          <mm-srt:pathsearch path="mags,posrel,news">
-            <mm:sortorder field="posrel.pos" />
+          <mm-sr:pathsearch path="mags,posrel,news">
             <!-- you could constraint the query further
             <mm:constraint field="news.title" operator="LIKE" value="%a%" />
             -->
-          </mm-srt:pathsearch>
+          </mm-sr:pathsearch>
         </jsp:attribute>
       </mm-sr:relatednodes>
     </mm:node>
