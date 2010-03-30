@@ -11,47 +11,47 @@
   <jsp:output omit-xml-declaration="true" />
   <mm:content expires="0" postprocessor="none">
 
-  <jsp:directive.page import="org.mmbase.bridge.util.Queries,org.mmbase.bridge.*" />
+    <jsp:directive.page import="org.mmbase.bridge.util.Queries,org.mmbase.bridge.*" />
 
-  <mm:import externid="pid" from="parameters" required="true" />
+    <mm:import externid="pid" from="parameters" required="true" />
 
-  <mm:context scope="session" id="parameters" referid="${pid}_context" />
-
-
-  <mm:cloud>
-    <mm:import externid="step" from="request,parameters" vartype="integer" required="true"  jspvar="step"/>
-    <mm:import externid="nodeNumber" from="request,parameters" required="${step gt 0}"   />
-
-    <mm:write referid="parameters.query" jspvar="q" vartype="org.mmbase.bridge.NodeQuery" write="false">
+    <mm:context scope="session" id="parameters" referid="${pid}_context" />
 
 
-      <jsp:scriptlet>Node node = null;</jsp:scriptlet>
-      <c:if test="${!empty nodeNumber}">
-        <mm:node referid="nodeNumber" jspvar="n">
-          <jsp:scriptlet>node = n;</jsp:scriptlet>
-        </mm:node>
-      </c:if>
-      <jsp:scriptlet>
-        pageContext.setAttribute("laststep", q.getSteps().indexOf(q.getNodeStep()));
-        NodeQuery nodeQuery = Queries.getSubQuery(q, node, step);
-        pageContext.setAttribute("nodeQuery", nodeQuery);
-      </jsp:scriptlet>
-    </mm:write>
+    <mm:cloud>
+      <mm:import externid="step" from="request,parameters" vartype="integer" required="true"  jspvar="step"/>
+      <mm:import externid="nodeNumber" from="request,parameters" required="${step gt 0}"   />
 
-    <mm-srt:relate
-        pagesize="${parameters.pagesize}"
-        styleClass="pathsearcher_${laststep eq step ? 'end' : 'ontheway'}"
-        repository="${nodeQuery}"
-        load="${step eq 0 ? null : false}"
-        implicitRepository="true"
-        create="false"
-        >
-      <jsp:attribute name="repositoryTitle">
-        <c:if test="${! empty nodeNumber}">
-          <mm:node number="${nodeNumber}"><mm:nodeinfo type="gui" /></mm:node>
+      <mm:write referid="parameters.query" jspvar="q" vartype="org.mmbase.bridge.NodeQuery" write="false">
+
+
+        <jsp:scriptlet>Node node = null;</jsp:scriptlet>
+        <c:if test="${!empty nodeNumber}">
+          <mm:node referid="nodeNumber" jspvar="n">
+            <jsp:scriptlet>node = n;</jsp:scriptlet>
+          </mm:node>
         </c:if>
-      </jsp:attribute>
-    </mm-srt:relate>
-  </mm:cloud>
+        <jsp:scriptlet>
+          pageContext.setAttribute("laststep", q.getSteps().indexOf(q.getNodeStep()));
+          NodeQuery nodeQuery = Queries.getSubQuery(q, node, step);
+          pageContext.setAttribute("nodeQuery", nodeQuery);
+        </jsp:scriptlet>
+      </mm:write>
+
+      <mm-sr:relate
+          pagesize="${parameters.pagesize}"
+          styleClass="pathsearcher_${laststep eq step ? 'end' : 'ontheway'}"
+          repository="${nodeQuery}"
+          load="${step eq 0 ? null : false}"
+          implicitRepository="true"
+          create="false"
+          >
+        <jsp:attribute name="repositoryTitle">
+          <c:if test="${! empty nodeNumber}">
+            <mm:node number="${nodeNumber}"><mm:nodeinfo type="gui" /></mm:node>
+          </c:if>
+        </jsp:attribute>
+      </mm-sr:relate>
+    </mm:cloud>
   </mm:content>
 </div>
