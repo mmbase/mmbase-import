@@ -8,35 +8,43 @@
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
     >
-
   <jsp:output omit-xml-declaration="true" />
+  <mm:content expires="0" postprocessor="none">
+
   <jsp:directive.page import="org.mmbase.bridge.util.Queries,org.mmbase.bridge.*" />
 
   <mm:import externid="pid" from="parameters" required="true" />
-  <mm:import from="session" externid="${pid}" id="query" jspvar="q" required="true" vartype="org.mmbase.bridge.Query" />
+  <mm:import from="session" externid="${pid}" id="query" jspvar="q" required="true" vartype="org.mmbase.bridge.NodeQuery" />
 
   <mm:cloud>
-    <mm:import externid="step" vartype="integer" required="true"  jspvar="step"/>
-    <mm:import externid="node" required="${step gt 0}"   />
+    <mm:import externid="step" from="request,parameters" vartype="integer" required="true"  jspvar="step"/>
+    <mm:import externid="nodeNumber" from="request,parameters" required="${step gt 0}"   />
 
     <jsp:scriptlet>Node node = null;</jsp:scriptlet>
-    <mm:present referid="node">
-      <mm:node referid="node" jspvar="n">
+    <c:if test="${!empty nodeNumber}">
+      <mm:node referid="nodeNumber" jspvar="n">
         <jsp:scriptlet>node = n;</jsp:scriptlet>
       </mm:node>
-    </mm:present>
+    </c:if>
     <jsp:scriptlet>
+      pageContext.setAttribute("laststep", q.getSteps().indexOf(q.getNodeStep()));
       NodeQuery nodeQuery = Queries.getSubQuery(q, node, step);
       pageContext.setAttribute("nodeQuery", nodeQuery);
     </jsp:scriptlet>
 
-    <mm-sr:relate
-        styleClass="pathsearcher_${fn:length(query.steps) - 1 eq step ? 'end' : 'ontheway'}"
+    <mm-srt:relate
+        styleClass="pathsearcher_${laststep eq step ? 'end' : 'ontheway'}"
         repository="${nodeQuery}"
-        load="false"
+        load="${step eq 0 ? null : false}"
         implicitRepository="true"
         create="false"
-        />
+        >
+      <jsp:attribute name="repositoryTitle">
+        <c:if test="${! empty nodeNumber}">
+          <mm:node number="${nodeNumber}"><mm:nodeinfo type="gui" /></mm:node>
+        </c:if>
+      </jsp:attribute>
+    </mm-srt:relate>
   </mm:cloud>
-
+  </mm:content>
 </div>
