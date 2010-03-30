@@ -124,13 +124,13 @@
           </tfoot>
           <!--  ACTUAL SEARCHRESULT -->
           <tbody>
-            
+
             <mm:compare referid="id" regexp="\w*current">
               <mm:import id="relations" vartype="List" />
             </mm:compare>
-            
+
             <mm:listnodes varStatus="status" jspvar="n">
-              
+
               <mm:compare referid="id" regexp="\w*current">
                 <jsp:scriptlet>
                   NodeList rl = Queries.getRelations(q, n);
@@ -147,15 +147,15 @@
                   </mm:listnodes>
                 </mm:isnotempty>
               </mm:compare>
-              
+
               <mm:include page="node.tr.jspx" attributes="status,_node@node,customizedir?,flds@fields?,editrelations?,relation?" />
-              
+
               <c:if test="${editrelations == true}">
                 <mm:compare referid="id" regexp="\w*current">
                   <mm:include page="relations.tr.jspx" attributes="_node@node,query,customizedir?,flds@fields?,relation" />
                 </mm:compare>
               </c:if>
-              
+
             </mm:listnodes>
           </tbody>
         </table>
