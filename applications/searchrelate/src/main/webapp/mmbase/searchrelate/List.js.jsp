@@ -53,6 +53,15 @@ $(document).ready(
                      list.relate(e, number);
                  });
 
+
+        $("div.lazy").
+            live("mmsr_lazyloaded",
+                 function(e) {
+                     var div = e.target;
+                     // switch on mm-sr stuf in this newly loaded block too
+                     List.prototype.init(this);
+                 }
+                );
     }
 );
 
