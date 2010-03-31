@@ -31,6 +31,8 @@
 
   <jsp:directive.attribute name="create"        type="java.lang.Boolean"
                            />
+  <jsp:directive.attribute name="forms"        type="java.lang.Boolean"
+                           />
 
   <jsp:directive.attribute name="styleClass"               type="java.lang.String"
                            description="Extra style class" />
@@ -40,12 +42,16 @@
 
   <mm:import id="_pagesize" vartype="integer">${empty pagesize ? 10 : pagesize}</mm:import>
 
+  <mm:import externid="org.mmbase.in_form" id="in_form" vartype="boolean">false</mm:import>
+  <mm:import id="_forms" vartype="boolean">${empty forms ? ! in_form : forms}</mm:import>
+
   <mm:listnodescontainer type="${type}" id="repository">
     <jsp:doBody />
     <mm:sortorder field="number" direction="down" />
   </mm:listnodescontainer>
   <jsp:directive.include file="/mmbase/searchrelate/settings.jspf" />
   <mm-sr:relate
+      forms="${_forms}"
       repository="${repository}"
       load="${load}"
       pagesize="${_pagesize}"
