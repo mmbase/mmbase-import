@@ -17,6 +17,8 @@
 
   <jsp:directive.attribute name="path"        type="java.lang.String"  required="true"
                            description="Node types to search. This is equivalent to the path attribute of an mm:listnodescontainer" />
+  <jsp:directive.attribute name="searchdirs" type="java.lang.String"
+                           description="This is equivalent to the searchdirs attribute of an mm:listnodescontainer" /> 
 
   <jsp:directive.attribute name="element"        type="java.lang.String"
                            description="This is equivalent to the element attribute of an mm:listnodescontainer, but it defaults to the _last_ element." />
@@ -43,7 +45,7 @@
   </c:if>
 
 
-  <mm:listnodescontainer path="${path}" element="${element}" id="query" jspvar="q">
+  <mm:listnodescontainer path="${path}" element="${element}" searchdirs="${searchdirs}" id="query" jspvar="q">
     <c:if test="${empty element}">
       <jsp:scriptlet>q.setNodeStep(q.getSteps().get(q.getSteps().size() - 1));</jsp:scriptlet>
     </c:if>
