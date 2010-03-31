@@ -50,8 +50,7 @@ $(document).ready(
                                                              },
                                                              function(responseText, textStatus) {
                                                                  if ("success" == textStatus) {
-                                                                     // switch on mm-sr stuf in this newly loaded block too
-                                                                     List.prototype.init(this);
+                                                                     $(this).trigger("mmsr_lazyloaded", []);
                                                                  } else {
                                                                      // well, it doesn't work.
                                                                      // Show at least that.
