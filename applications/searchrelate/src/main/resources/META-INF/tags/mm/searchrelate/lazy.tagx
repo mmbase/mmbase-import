@@ -32,7 +32,7 @@
     </c:otherwise>
   </c:choose>
 
-  <div class="unloaded">
+  <div class="unloaded lazy">
     <mm:link  page="${absolutehref}" absolute="context">
       <a href="${_}" class="lazyloading node_${_node}">
         <img class='loader icon' src="${mm:link('/mmbase/style/ajax-loader.gif')}" />
