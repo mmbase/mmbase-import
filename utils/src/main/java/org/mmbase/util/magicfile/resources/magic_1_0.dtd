@@ -4,7 +4,8 @@
 <!ELEMENT author (#PCDATA)>
 <!ELEMENT description (#PCDATA)>
 <!ELEMENT detectorlist (detector*)>
-<!ELEMENT detector (mimetype,extension,designation,test?,childlist?)>
+<!ELEMENT detector (mimetype,extension,designation,test,param?,childlist?)>
+<!ATTLIST detector class CDATA "org.mmbase.util.magicfile.BasicDetector">
 <!ELEMENT extension (#PCDATA)>
 <!ELEMENT mimetype (#PCDATA)>
 <!ELEMENT designation (#PCDATA)>
@@ -13,5 +14,8 @@
 <!ATTLIST test type CDATA "string">
 <!ATTLIST test comparator CDATA "=">
 <!ELEMENT childlist (detector+)>
-	       
-               
+
+<!ELEMENT param (#PCDATA)>
+<!ATTLIST param name CDATA "=">
+
+

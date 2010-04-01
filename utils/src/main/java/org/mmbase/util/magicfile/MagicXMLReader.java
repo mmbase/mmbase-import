@@ -6,6 +6,7 @@ import java.util.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.DocumentReader;
+import org.mmbase.util.xml.Instantiator;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -80,7 +81,7 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
     /**
      * Returns all 'Detectors'.
      */
-    public List<Detector> getDetectors() {
+    public List<Detector> getDetectors()  {
         if (detectors == null) {
             detectors = new CopyOnWriteArrayList<Detector>();
             Element e = getElementByPath("magic.detectorlist");
@@ -90,92 +91,27 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
                 return detectors;
             }
             for (Element element : getChildElements(e)) {
-                Detector d = getOneDetector(element);
-                detectors.add(d);
+                try {
+                    Detector d = getOneDetector(element);
+                    detectors.add(d);
+                } catch (Exception ex) {
+                    log.error(ex.getMessage() + ": " + element, ex);
+                }
             }
         }
+
         return detectors;
     }
 
-    /**
-     * Replaces octal representations of bytes, written as \ddd to actual byte values.
-     */
-    private String convertOctals(String s) {
-        int p = 0;
-        int stoppedAt = 0;
-        ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        char c;
-        try {
-            while (p < s.length()) {
-                c = s.charAt(p);
-                if (c == '\\') {
-                    if (p > s.length() - 4) {
-                        // Can't be a full octal representation here, let's cut it off
-                        break;
-                    } else {
-                        char c0;
-                        boolean failed = false;
-                        for (int p0 = p + 1; p0 < p + 4; p0++) {
-                            c0 = s.charAt(p0);
-                            if (!(c0 >= '0' && c0 <= '7')) {
-                                failed = true;
-                            }
-                        }
-                        if (!failed) {
-                            byte[]  bytes = s.substring(stoppedAt, p).getBytes("US-ASCII");
-                            buf.write(bytes, 0, bytes.length);
-                            buf.write(Integer.parseInt(s.substring(p + 1, p + 4), 8));
-                            stoppedAt = p + 4;
-                            p = p + 4;
-                        } else {
-                            p++;
-                        }
-                    }
-                } else {
-                    p++;
-                }
-            }
-            byte[]  bytes = s.substring(stoppedAt, p).getBytes("US-ASCII");
-            buf.write(bytes, 0, bytes.length);
-            return buf.toString("US-ASCII");
-        } catch (java.io.UnsupportedEncodingException use) { // could not happen US-ASCII is supported
-            return "";
-        }
-    }
+    private Detector getOneDetector(Element e) throws
+        org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException,
+        java.lang.reflect.InvocationTargetException {
+        Detector d = (Detector) Instantiator.getInstance(e);
 
-    private Detector getOneDetector(Element e) {
-        Detector d = new Detector();
-        Element e1;
 
-        e1 = getElementByPath(e, "detector.mimetype");
-        d.setMimeType(getElementValue(e1));
+        d.configure(e);
 
-        e1 = getElementByPath(e, "detector.extension");
-        d.setExtension(getElementValue(e1));
-
-        e1 = getElementByPath(e, "detector.designation");
-        d.setDesignation(getElementValue(e1));
-
-        e1 = getElementByPath(e, "detector.test");
-        if (e1 != null) {
-            d.setTest(convertOctals(getElementValue(e1)));
-            d.setOffset(getElementAttributeValue(e1, "offset"));
-            d.setType(getElementAttributeValue(e1, "type"));
-            String comparator = getElementAttributeValue(e1, "comparator");
-            if (comparator.equals("&gt;")) {
-                d.setComparator('>');
-            } else if (comparator.equals("&lt;")) {
-                d.setComparator('<');
-            } else if (comparator.equals("&amp;")) {
-                d.setComparator('&');
-            } else if (comparator.length() == 1) {
-                d.setComparator(comparator.charAt(0));
-            } else {
-                d.setComparator('=');
-            }
-        }
-
-        e1 = getElementByPath(e, "detector.childlist");
+        Element e1 = getElementByPath(e, "detector.childlist");
         if (e1 != null) {
             for (Element element: getChildElements(e1)) {
                 Detector child = getOneDetector(element);
