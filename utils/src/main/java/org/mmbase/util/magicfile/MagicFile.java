@@ -24,12 +24,13 @@ import org.mmbase.util.logging.*;
 public class MagicFile {
     private static final Logger log = Logging.getLoggerInstance(MagicFile.class);
 
-    public static final String FAILED = "Failed to determine type";
-    // application/octet-stream?
-
     protected static final int BUFSIZE = 4598;
     // Read a string of maximally this length from the file
     // Is this garanteed to be big enough?
+
+
+    public static final String FAILED = "Failed to determine type";
+    // application/octet-stream?
 
     private static MagicFile instance;
 
@@ -62,6 +63,7 @@ public class MagicFile {
     public List<Detector> getDetectors() {
         return detectors.getDetectors();
     }
+
 
     /*
      * @deprecated use getMimeType(File)
@@ -105,9 +107,13 @@ public class MagicFile {
      *
      * @return The found mime-type or FAILED
      */
-    public String getMimeType(byte[] input) {
+    public String getMimeType(final byte[] input) {
+        List<Detector> list = getDetectors();
+        if (list == null || list.size() == 0) {
+            log.warn("No detectors found");
+            return FAILED;
+        }
         byte[] lithmus;
-
         if (input.length > BUFSIZE) {
             lithmus = new byte[BUFSIZE];
             System.arraycopy(input, 0, lithmus, 0, BUFSIZE);
@@ -116,14 +122,10 @@ public class MagicFile {
             lithmus = input;
         }
 
-        List<Detector> list = getDetectors();
-        if (list == null) {
-            log.warn("No detectors found");
-            return FAILED;
-        }
         for (Detector detector : list) {
             if (detector.test(lithmus)) {
-                log.debug("Trying " + detector.getMimeType());
+                log.debug("Matched " + detector);
+
                 return detector.getMimeType();
             }
         }
@@ -137,6 +139,9 @@ public class MagicFile {
         int res = input.read(lithmus, 0, BUFSIZE);
         log.debug("read " + res + "  bytes from " + input);
         return getMimeType(lithmus);
+
+
+
     }
 
     /**

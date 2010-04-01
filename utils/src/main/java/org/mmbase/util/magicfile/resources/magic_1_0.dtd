@@ -4,7 +4,7 @@
 <!ELEMENT author (#PCDATA)>
 <!ELEMENT description (#PCDATA)>
 <!ELEMENT detectorlist (detector*)>
-<!ELEMENT detector (mimetype,extension,designation,test,param?,childlist?)>
+<!ELEMENT detector (mimetype,extension,designation,test?,param?,childlist?)>
 <!ATTLIST detector class CDATA "org.mmbase.util.magicfile.BasicDetector">
 <!ELEMENT extension (#PCDATA)>
 <!ELEMENT mimetype (#PCDATA)>
