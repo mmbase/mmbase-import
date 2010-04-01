@@ -154,7 +154,11 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         handlers              = (Map<String, Handler<?>>) in.readObject();
         restrictions          = (Collection<Restriction<?>>) in.readObject();
         unmodifiableRestrictions = Collections.unmodifiableCollection(restrictions);
-        defaultProcessor      = (Processor) in.readObject();
+        try {
+            defaultProcessor      = (Processor) in.readObject();
+        } catch (OptionalDataException ode) {
+            log.service(ode.getClass() + " " + ode.getMessage() +  " (remote version probably not supporting defaultProcessor yet (< 1.9.3))");
+        }
     }
 
     public String getBaseTypeIdentifier() {
@@ -1144,6 +1148,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * cloning in java</a>
      */
     protected static abstract class StaticAbstractRestriction<D extends Serializable>  implements DataType.Restriction<D> {
+        private static final long serialVersionUID = -1921261633989010854L;
         protected final String name;
         protected final BasicDataType<?> parent;
         protected LocalizedString errorDescription;
@@ -1573,6 +1578,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             if (value == null || value.isEmpty()) {
                 return true;
             }
+
             Cloud cloud = BasicDataType.this.getCloud(node, field);
             Collection<Map.Entry<C, String>> validValues = getEnumeration(null, cloud, node, field);
             if (validValues.size() == 0) {
@@ -1613,7 +1619,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                 }
             }
             if (i < col.size()) {
-                buf.append(".(" + col.size() + " " + (col.size() - i) + " more ..");
+                buf.append(".(" + (col.size() - i) + " more ..)");
             }
             return buf.toString();
         }
