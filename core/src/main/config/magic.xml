@@ -1949,6 +1949,12 @@
       <designation>Windows NT Registry file</designation>
       <test offset="0" type="string" comparator="=">regf</test>
     </detector>
+    <detector class="org.mmbase.util.magicfile.XmlDetector">
+      <mimetype>application/msword</mimetype>
+      <extension>doc</extension>
+      <designation>Word XML file</designation>
+      <param name="xmlns">http://schemas.microsoft.com/office/word/2003/wordml</param>
+    </detector>
     <detector>
       <mimetype>application/msword</mimetype>
       <extension>doc</extension>
