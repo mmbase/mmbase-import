@@ -33,6 +33,8 @@ public class MagicFileTest  {
 
             new Object[] {"cx.png", "image/png"},
             new Object[] {"wordxml.doc", "application/msword"},
+            new Object[] {"test.xhtml", "application/xml+xhtml"},
+            new Object[] {"test.html", "text/html"},
             new Object[] {"test.xml", "text/xml"},
             new Object[] {"dot.", MagicFile.FAILED
             }

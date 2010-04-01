@@ -2660,6 +2660,12 @@
         </detector>
       </childlist>
     </detector>
+    <detector class="org.mmbase.util.magicfile.XmlDetector">
+      <mimetype>application/xml+xhtml</mimetype>
+      <extension>xhtml</extension>
+      <designation>XHTML</designation>
+      <param name="xmlns">http://www.w3.org/1999/xhtml</param>
+    </detector>
     <detector>
       <mimetype>text/html</mimetype>
       <extension>html</extension>
@@ -2713,6 +2719,12 @@
       <extension>doc</extension>
       <designation>Word XML file</designation>
       <param name="xmlns">http://schemas.microsoft.com/office/word/2003/wordml</param>
+    </detector>
+    <detector class="org.mmbase.util.magicfile.XmlDetector">
+      <mimetype>text/html</mimetype>
+      <extension>html</extension>
+      <designation>HTML</designation>
+      <param name="publicId">(?i)-//W3C//DTD HTML .*</param>
     </detector>
     <detector>
       <mimetype>text/xml</mimetype>
