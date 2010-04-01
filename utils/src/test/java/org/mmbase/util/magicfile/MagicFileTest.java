@@ -32,7 +32,8 @@ public class MagicFileTest  {
             new Object[] {"flash2.swf", "application/x-shockwave-flash"},
 
             new Object[] {"cx.png", "image/png"},
-            new Object[] {"dot.", MagicFile.FAILED}
+            new Object[] {"wordxml.doc", "appication/msword"},
+            new Object[] {"dot.", MagicFile.FAILED }
         };
 
         File dir = new File("src" + File.separator + "test" + File.separator + "files");
@@ -54,7 +55,7 @@ public class MagicFileTest  {
 
     @Test
     public void test() throws IOException  {
-        assertEquals(mimeType, MagicFile.getInstance().getMimeType(file));
+        assertEquals(file.getName(), mimeType, MagicFile.getInstance().getMimeType(file));
     }
 
 
