@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
 
 /**
 
- * @version $Id: Detector.java 41036 2010-02-15 22:30:54Z michiel $
+ * @version $Id$
  */
 
 public abstract class AbstractDetector implements Detector {
