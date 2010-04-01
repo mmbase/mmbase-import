@@ -107,7 +107,14 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
     private Detector getOneDetector(Element e) throws
         org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException,
         java.lang.reflect.InvocationTargetException {
-        Detector d = (Detector) Instantiator.getInstance(e);
+
+        Detector d;
+        if (e.getAttribute("class") == null || e.getAttribute("class").equals("")) {
+            // in case somewhy the dtd is not used.
+            d = new BasicDetector();
+        } else {
+            d = (Detector) Instantiator.getInstance(e);
+        }
 
 
         d.configure(e);
