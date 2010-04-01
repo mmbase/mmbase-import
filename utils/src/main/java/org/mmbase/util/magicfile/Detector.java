@@ -31,7 +31,7 @@ public interface Detector {
     void addChild(Detector detector, int level);
     boolean test(byte[] lithmus);
 
-    void setInvalid();
+    void setValid(boolean v);
     boolean valid();
 
 

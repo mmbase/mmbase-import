@@ -7,6 +7,7 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.xml.Instantiator;
+import org.mmbase.util.xml.XMLWriter;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -95,7 +96,7 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
                     Detector d = getOneDetector(element);
                     detectors.add(d);
                 } catch (Exception ex) {
-                    log.error(ex.getMessage() + ": " + element, ex);
+                    log.error(ex.getClass() + " " + ex.getMessage() + ": " + XMLWriter.write(element));
                 }
             }
         }
@@ -114,8 +115,12 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
         Element e1 = getElementByPath(e, "detector.childlist");
         if (e1 != null) {
             for (Element element: getChildElements(e1)) {
-                Detector child = getOneDetector(element);
-                d.addChild(child, 1); // Not sure if this is the right thing
+                try {
+                    Detector child = getOneDetector(element);
+                    d.addChild(child, 1); // Not sure if this is the  thing
+                } catch (Exception ex) {
+                    log.warn(ex.getClass() + " " + ex.getMessage() + ": " + XMLWriter.write(e1));
+                }
             }
         }
         return d;

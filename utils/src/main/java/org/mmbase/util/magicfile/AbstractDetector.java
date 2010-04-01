@@ -11,6 +11,8 @@ See http://www.MMBase.org/license
 package org.mmbase.util.magicfile;
 import java.util.*;
 import java.io.*;
+import org.w3c.dom.Element;
+import org.mmbase.util.xml.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -83,8 +85,45 @@ public abstract class AbstractDetector implements Detector {
     public void setDesignation(String designation) {
         this.message = designation;
     }
-
-    public void configure(org.w3c.dom.Element el) {
-        // nothing to do.
+    public String getDesignation() {
+        return message;
     }
+
+    public void setValid(boolean v) {
+        valid = v;
+    }
+
+    /**
+     * @return Whether parsing of magic line for this detector succeeded
+     */
+    public boolean valid() {
+        return valid;
+    }
+
+
+
+    public void configure(Element e) {
+
+        {
+            Element e1 = DocumentReader.getElementByPath(e, "detector.mimetype");
+            if (e1 == null ) log.error("No mime type in " + XMLWriter.write(e));
+            setMimeType(DocumentReader.getElementValue(e1));
+        }
+
+        {
+            Element e1 = DocumentReader.getElementByPath(e, "detector.extension");
+            setExtension(DocumentReader.getElementValue(e1));
+        }
+        {
+            Element e1 = DocumentReader.getElementByPath(e, "detector.designation");
+            setDesignation(DocumentReader.getElementValue(e1));
+        }
+    }
+
+
+    @Override
+    public String toString() {
+        return getClass() + " " + getMimeType() + " " + extensions;
+    }
+
 }
