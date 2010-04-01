@@ -20,7 +20,7 @@ import org.mmbase.util.xml.*;
 import org.mmbase.util.logging.*;
 
 /**
- * A detector which can match on XML namespaces, doctypes.
+ * A detector which can match on XML namespaces, publicId.
  *
  * @version $Id$
  * @author Michiel Meeuwissen
