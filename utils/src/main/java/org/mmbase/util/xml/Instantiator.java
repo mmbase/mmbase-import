@@ -89,8 +89,17 @@ public abstract class Instantiator {
         log.debug("Found constructor " + constructor);
 
         Object o = constructor.newInstance(args);
+        setParameters(classElement, o);
+        return o;
+    }
 
-        NodeList params = classElement.getChildNodes();
+
+    /**
+     * @since MMBase-2.0
+     */
+    public static void setParameters(Element element, Object o) {
+        NodeList params = element.getChildNodes();
+        Class claz = o.getClass();
         for (int i = 0 ; i < params.getLength(); i++) {
             try {
                 Node node = params.item(i);
@@ -105,7 +114,6 @@ public abstract class Instantiator {
                 log.error(e.getMessage(), e);
             }
         }
-        return o;
     }
 
     /**
