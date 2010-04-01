@@ -33,7 +33,9 @@ public class MagicFileTest  {
 
             new Object[] {"cx.png", "image/png"},
             new Object[] {"wordxml.doc", "application/msword"},
-            new Object[] {"dot.", MagicFile.FAILED }
+            new Object[] {"test.xml", "text/xml"},
+            new Object[] {"dot.", MagicFile.FAILED
+            }
         };
 
         File dir = new File("src" + File.separator + "test" + File.separator + "files");
