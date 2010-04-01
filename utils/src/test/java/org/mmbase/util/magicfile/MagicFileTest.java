@@ -32,7 +32,7 @@ public class MagicFileTest  {
             new Object[] {"flash2.swf", "application/x-shockwave-flash"},
 
             new Object[] {"cx.png", "image/png"},
-            new Object[] {"wordxml.doc", "appication/msword"},
+            new Object[] {"wordxml.doc", "application/msword"},
             new Object[] {"dot.", MagicFile.FAILED }
         };
 
@@ -63,7 +63,15 @@ public class MagicFileTest  {
     public void noExtension() throws IOException  {
         File tempFile = File.createTempFile(MagicFileTest.class.getName(), ".tmp");
         IOUtil.copy(new FileInputStream(file), new FileOutputStream(tempFile));
-        assertEquals(mimeType, MagicFile.getInstance().getMimeType(tempFile));
+        assertEquals(tempFile.getName(), mimeType, MagicFile.getInstance().getMimeType(tempFile));
+    }
+
+
+    @Test
+    public void uppercase() throws IOException  {
+        File tempFile = File.createTempFile("uppered", file.getName().toUpperCase());
+        IOUtil.copy(new FileInputStream(file), new FileOutputStream(tempFile));
+        assertEquals(tempFile.getName(), mimeType, MagicFile.getInstance().getMimeType(tempFile));
     }
 
 
