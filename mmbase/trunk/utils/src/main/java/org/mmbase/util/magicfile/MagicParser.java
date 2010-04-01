@@ -19,6 +19,9 @@ import org.mmbase.util.logging.Logging;
 /**
  * This Parser translates the configuration file of UNIX's file to a
  * list of Detectors (and to a magic.xml)
+
+ * @TODO, this is unused, and probably cannot be used while magic.xml
+ * is maintained manually.
  *
  * @version $Id$
  */
@@ -434,7 +437,7 @@ public class MagicParser implements DetectorProvider {
     }
 
     private Detector createDetector(String line) {
-        Detector detector = new Detector();
+        BasicDetector detector = new BasicDetector();
         // rawinput = line;
 
         // hasX = false;
@@ -444,27 +447,20 @@ public class MagicParser implements DetectorProvider {
 
         // parse line
         log.debug("parse: " + line);
-        int n;
-        String level = "start";
         try {
-            level = "parseOffsetString";
-            n = parseOffsetString(line, 0);
-            level = "parseTypeString";
+            int n = parseOffsetString(line, 0);
             n = parseTypeString(line, n);
-            level = "parseTestString";
             n = parseTestString(line, n);
             // If there are multiple test level, an upper one doesn't have to have a message string
             if (n > 0) {
-                level = "parseMessageString";
                 parseMessageString(line, n);
             } else {
                 message = "";
             }
-            level = "end";
         } catch (UnsupportedOperationException e) {
             log.warn(e.getMessage());
         } catch (Exception e) {
-            log.error("parse failure at " + level + ": " + e.getMessage() + " for [" + line + "]");
+            log.error("parse failure: " + e.getMessage() + " for [" + line + "]", e);
         }
         detector.setType(type);
         detector.setOffset("" + offset);
@@ -487,12 +483,18 @@ public class MagicParser implements DetectorProvider {
      * @throws IOException Throws an exception when parsing failed
      */
     public boolean toXML(File f) throws IOException {
+
+
+        // TODO should something like StAX or so.
+
         FileWriter writer = new FileWriter(f);
 
         writer.write(
             "<!DOCTYPE magic PUBLIC \"-//MMBase//DTD magic config 1.0//EN\" \"http://www.mmbase.org/dtd/magic_1_0.dtd\">\n<magic>\n<info>\n<version>0.1</version>\n<author>cjr@dds.nl</author>\n<description>Conversion of the UNIX 'magic' file with added mime types and extensions.</description>\n</info>\n<detectorlist>\n");
         for (Detector detector : getDetectors()) {
-            detector.toXML(writer);
+            if (detector instanceof BasicDetector) {
+                ((BasicDetector) detector).toXML(writer); // see TODO
+            }
         }
         writer.write("</detectorlist>\n</magic>\n");
         writer.close();
