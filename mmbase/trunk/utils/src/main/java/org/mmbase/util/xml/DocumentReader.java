@@ -454,7 +454,7 @@ public class DocumentReader  {
      * @return Value of attribute
      */
     public String getElementAttributeValue(String path, String attr) {
-        return getElementAttributeValue(getElementByPath(path),attr);
+        return getElementAttributeValue(getElementByPath(path), attr);
     }
 
 

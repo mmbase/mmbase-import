@@ -54,6 +54,7 @@ import org.mmbase.util.logging.*;
 public class BasicDetector extends AbstractDetector {
     private static final Logger log = Logging.getLoggerInstance(BasicDetector.class);
 
+
     // No configuration below
     private static final int BIG_ENDIAN = 0;
     private static final int LITTLE_ENDIAN = 1;
@@ -102,6 +103,8 @@ public class BasicDetector extends AbstractDetector {
         return testComparator;
     }
 
+
+
     /**
      * @return Whether detector matches the prefix/lithmus of the file
      */
@@ -145,6 +148,7 @@ public class BasicDetector extends AbstractDetector {
     /**
      * todo: I noticed there is also a %5.5s variation in magic...
      */
+    @Override
     public String getDesignation() {
         if (hasX) {
             int n = message.indexOf("%d");
@@ -163,17 +167,6 @@ public class BasicDetector extends AbstractDetector {
             }
         }
         return message;
-    }
-
-    public void setInvalid() {
-        valid = false;
-    }
-
-    /**
-     * @return Whether parsing of magic line for this detector succeeded
-     */
-    public boolean valid() {
-        return valid;
     }
 
     /**
@@ -556,18 +549,8 @@ public class BasicDetector extends AbstractDetector {
 
     @Override
     public void configure(Element e) {
-        Element e1;
-
-        e1 = DocumentReader.getElementByPath(e, "detector.mimetype");
-        setMimeType(DocumentReader.getElementValue(e1));
-
-        e1 = DocumentReader.getElementByPath(e, "detector.extension");
-        setExtension(DocumentReader.getElementValue(e1));
-
-        e1 = DocumentReader.getElementByPath(e, "detector.designation");
-        setDesignation(DocumentReader.getElementValue(e1));
-
-        e1 = DocumentReader.getElementByPath(e, "detector.test");
+        super.configure(e);
+        Element e1 = DocumentReader.getElementByPath(e, "detector.test");
         if (e1 != null) {
             setTest(convertOctals(DocumentReader.getElementValue(e1)));
             setOffset(e1.getAttribute("offset"));
