@@ -77,7 +77,7 @@
           <include>org/mmbase/util/IOUtil*</include>
           <include>org/mmbase/util/SizeOf*</include>
           <include>org/mmbase/util/MimeType*</include>
-          <include>org/mmbase/util/magicfile/*</include>
+          <include>org/mmbase/util/magicfile/**</include>
 
 
           <include>org/mmbase/util/ChainedList*.class</include>            <!-- Used by Mock -->
