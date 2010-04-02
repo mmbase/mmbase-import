@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 
 import java.util.*;
 
+import org.mmbase.core.event.*;
 import org.mmbase.util.ApplicationContextReader;
 import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.ResourceLoader;
@@ -85,6 +86,16 @@ public class Logging {
 
     private static String machineName = "localhost";
 
+    static {
+        EventManager.getInstance().addEventListener(new SystemEventListener() {
+                public void notify(SystemEvent se) {
+                    if (se instanceof SystemEvent.MachineName) {
+                        machineName = ((SystemEvent.MachineName) se).getName();
+                    }
+                }
+            });
+    }
+
 
     private Logging() {
         // this class has no instances.
@@ -96,12 +107,6 @@ public class Logging {
      */
     public static String getMachineName() {
         return machineName;
-    }
-    /**
-     * @since MMBase-1.8
-     */
-    public static void setMachineName(String mn) {
-        machineName = mn;
     }
 
     /**
