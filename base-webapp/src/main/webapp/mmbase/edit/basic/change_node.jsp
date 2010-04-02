@@ -69,7 +69,7 @@
      </a>
      <mm:present referid="hasmmxf">
        <mm:write cookie="mmjspeditors_xmlmode"       referid="config.xmlmode"      />
-       <mm:import id="xmlmodes" vartype="list">wiki,xml,prettyxml,kupu,docbook</mm:import>
+       <mm:import id="xmlmodes" vartype="list">xml,wiki,prettyxml,kupu,docbook</mm:import>
        <mm:stringlist referid="xmlmodes">
          <mm:compare referid2="config.xmlmode" inverse="true">
            <a href="<mm:url referids="this_node@node_number">
