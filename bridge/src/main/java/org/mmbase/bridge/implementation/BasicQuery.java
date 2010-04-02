@@ -719,9 +719,11 @@ public class BasicQuery implements Query  {
     public String toSql() {
         try {
             //return MMBase.getMMBase().getSearchQueryHandler().createSqlString(query);
-            return cloud.getCloudContext().getSearchQueryHandler().createSqlString(query);
-        } catch (org.mmbase.storage.search.SearchQueryException sqe) {
-            return sqe.getMessage() + ": " + toString();
+            //return cloud.getCloudContext().getSearchQueryHandler().createSqlString(query);
+            // TODO
+            return "" + toString();
+            //        } catch (org.mmbase.storage.search.SearchQueryException sqe) {
+            //return sqe.getMessage() + ": " + toString();
         } catch (Exception ise) {
             return ise.getMessage() + ": " + toString();
         }

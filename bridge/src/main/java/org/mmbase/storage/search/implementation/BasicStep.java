@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation;
 
 import java.util.*;
-import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.search.*;
 
 /**

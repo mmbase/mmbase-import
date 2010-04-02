@@ -230,7 +230,6 @@ public class Fields {
         }
     }
     public static Map<String, Field> getFieldTypes(SearchQuery query,  NodeManager nm) {
-        return Fields.getFieldTypes(query, nm);
         Cloud cloud = nm.getCloud();
         Map<String, Field> fieldTypes = new HashMap<String, Field>();
         // code to solve the fields.
@@ -239,7 +238,7 @@ public class Fields {
             if (name == null) {
                 name = step.getTableName();
             }
-            Field ft = new VirtualNodeManagerField(nm, UNKNOWN_NODE_TYPE, name);
+            Field ft = new VirtualNodeManagerField(nm, createSystemField(cloud, name, Field.TYPE_NODE),  name);
             fieldTypes.put(name, ft);
 
             if (allowNonQueriedFields && ! query.isAggregating()) {
@@ -269,6 +268,23 @@ public class Fields {
             }
         }
         return fieldTypes;
+    }
+
+
+    public static Field createSystemField(Cloud cloud, String name, int type) {
+        return createField(cloud, name, type, Field.TYPE_UNKNOWN, Field.STATE_SYSTEM, null);
+    }
+    /**
+     * Defaulting version of {@link #createField(String, int int, int, DataType)} (no list item type,
+     * because it is nearly always irrelevant).
+      */
+    public static Field createField(Cloud cloud, String name, int type, int state, DataType dataType) {
+        return createField(cloud, name, type, Field.TYPE_UNKNOWN, state, dataType);
+    }
+
+
+    public static Field createField(Cloud cloud, String name, int type, int listItemType, int state, DataType dataType) {
+        throw new UnsupportedOperationException("TODO");
     }
 
 

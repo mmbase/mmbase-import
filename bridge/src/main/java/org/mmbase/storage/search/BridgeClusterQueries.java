@@ -11,9 +11,13 @@ package org.mmbase.storage.search;
 
 import java.util.*;
 import org.mmbase.bridge.*;
+import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.logging.*;
 
 
+/**
+ * @since MMBase-2.0
+ */
 public class BridgeClusterQueries extends ClusterQueries {
     private final Cloud cloud;
     public BridgeClusterQueries(Cloud cloud) {
@@ -38,6 +42,12 @@ public class BridgeClusterQueries extends ClusterQueries {
         return cloud.getNode(nodeNumber).getNodeManager().getName();
     }
 
+
+    @Override
+    protected int getBuilderNumber(String nodeManager) {
+        return cloud.getNodeManager(nodeManager).getNumber();
+    }
+
     @Override
     protected String getParentBuilder(String builder) {
         NodeManager parent = cloud.getNodeManager(builder).getParent();
@@ -51,6 +61,17 @@ public class BridgeClusterQueries extends ClusterQueries {
         } catch (NotFoundException nfe) {
             throw new IllegalArgumentException(nfe);
         }
+    }
+    @Override
+    protected StepField getField(String fieldName, SearchQuery query){
+        // TODO TEST.
+        String[] split = fieldName.split(".");
+        for (StepField sf : query.getFields()) {
+            if (sf.getStep().getAlias().equals(split[0]) && sf.getFieldName().equals(split[1])) {
+                return sf;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -93,6 +114,9 @@ public class BridgeClusterQueries extends ClusterQueries {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    protected void setConstraint(BasicSearchQuery query, String where) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
 
 }
