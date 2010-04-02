@@ -112,6 +112,7 @@ public abstract class ClusterQueries {
         return table.substring(0, end );
     }
 
+
     /**
      * Returns the name part of a tablename, and convert it to a buidler name.
      * This will catch specifying a rolename in stead of a builder name when using relations.
@@ -530,9 +531,10 @@ public abstract class ClusterQueries {
         }
     }
 
-    protected abstract StepField getField(String fieldName, BasicSearchQuery query);
+    protected abstract StepField getField(String fieldName, SearchQuery query);
 
     protected abstract String getBuilder(int nodeNumber);
+    protected abstract int getBuilderNumber(String builderName);
     protected abstract String getParentBuilder(String builder);
 
     /**
@@ -609,9 +611,9 @@ public abstract class ClusterQueries {
             // FIXME this cast to BasicStep is ugly and should not be here in a clean implementation
 
             // Determine typedef number of the source-type.
-            int sourceType = ((BasicStep)sourceStep).getBuilder().getObjectType();
+            int sourceType = getBuilderNumber(sourceStep.getTableName());
             // Determine the typedef number of the destination-type.
-            int destinationType = ((BasicStep)destinationStep).getBuilder().getObjectType();
+            int destinationType = getBuilderNumber(destinationStep.getTableName());
 
             // Determine reldef number of the role.
             Integer role = roles.get(relationStep.getAlias());

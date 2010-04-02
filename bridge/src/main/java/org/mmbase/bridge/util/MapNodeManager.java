@@ -54,8 +54,9 @@ public class MapNodeManager extends AbstractNodeManager  {
     private Field mapField(String fieldName, Object value) {
         Field field = fieldTypes.get(fieldName);
         if (field == null) {
-            Field fd = Fields.createField(fieldName, Fields.classToType(value == null ? Object.class : value.getClass()),
-                                              Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, null);
+            Field fd = Fields.createField(getCloud(),
+                                          fieldName, Fields.classToType(value == null ? Object.class : value.getClass()),
+                                          Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, null);
             field = new BasicField(fd, this);
             fieldTypes.put(fieldName, field);
         }
