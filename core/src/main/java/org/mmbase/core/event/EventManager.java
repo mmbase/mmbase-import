@@ -78,6 +78,12 @@ public class EventManager implements SystemEventListener {
         return machineName;
     }
 
+    public void notify(SystemEvent se) {
+        if (se instanceof SystemEvent.MachineName) {
+            machineName = ((SystemEvent.MachineName) se).getName();
+        }
+    }
+
 
     protected ResourceWatcher watcher = new ResourceWatcher() {
             public void onChange(String w) {

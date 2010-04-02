@@ -35,7 +35,7 @@ public abstract class SystemEvent extends Event {
      */
     public static class MachineName extends SystemEvent {
         private final String name;
-        public MachinaName(String n) {
+        public MachineName(String n) {
             name = n;
         }
         public String getName() {
