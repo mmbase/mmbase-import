@@ -178,6 +178,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         //log.info("copied steps " + q.getSteps() + " became " + steps);
         unmodifiableSteps = Collections.unmodifiableList(steps);
     }
+
     protected void copyFields(SearchQuery q) {
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
         fields = new ArrayList<StepField>(q.getFields().size());
@@ -453,14 +454,15 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
 
     }
 
-    // MM
-    /*
     public void  addFields(Step step) {
+        throw new UnsupportedOperationException("TODO");
+        /*
         MMBase mmb = MMBase.getMMBase();
         MMObjectBuilder builder = mmb.getBuilder(step.getTableName());
         addFields(step, builder);
+        */
     }
-    */
+
     /**
      * Add all fields of given step
      */
