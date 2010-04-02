@@ -12,15 +12,16 @@ import java.util.Map;
 
 /**
  * Represents a pair of values ('key' and a 'value'). It is a straight-forward implementation of
- * {@link java.util.Map.Entry}, and can be used as a utility for Map implementations. 
+ * {@link java.util.Map.Entry}, and can be used as a utility for Map implementations.
  *
  * @since MMBase-1.8
+ * @todo Java 6 provides this as AbstractMap.SimpleEntry
  * @version $Id$
  * @author Michiel Meeuwissen
  */
 public final class Entry<K, V> implements Map.Entry<K, V>, PublicCloneable<Entry<K, V>>, java.io.Serializable {
     private static final long serialVersionUID = 0L;
-    private final K key; 
+    private final K key;
     private V value;
 
      /**
@@ -31,7 +32,7 @@ public final class Entry<K, V> implements Map.Entry<K, V>, PublicCloneable<Entry
         key = k ;
         value = v;
     }
-    public Entry(Map.Entry<K, V> e) {
+    public Entry(Map.Entry<? extends K, ? extends V> e) {
         key = e.getKey();
         value = e.getValue();
     }
