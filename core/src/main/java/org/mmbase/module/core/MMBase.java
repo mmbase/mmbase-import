@@ -397,7 +397,9 @@ public class MMBase extends ProcessorModule {
 
         }
         log.info("MMBase machine name used for clustering: '" + MMBaseContext.machineName + "'");
-        Logging.setMachineName(MMBaseContext.machineName);
+
+        EventManager.getInstance().propagateEvent(new SystemEvent.MachineName(MMBaseContext.machineName), true);
+
         setMMEntities(false);
 
         log.service("Initializing  storage");
