@@ -30,7 +30,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @since   MMBase-1.8
  * @version $Id$
  */
-public class EventManager { //implements SystemEventListener {
+public class EventManager implements SystemEventListener {
 
     private static final Logger log = Logging.getLoggerInstance(EventManager.class);
 
@@ -128,6 +128,7 @@ public class EventManager { //implements SystemEventListener {
             log.fatal("No event brokers could not be found. This means that query-invalidation does not work correctly now. Proceeding anyway.");
             return;
         }
+        addEventListener(this);
     }
 
     /**

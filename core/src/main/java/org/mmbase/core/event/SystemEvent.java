@@ -30,6 +30,19 @@ public abstract class SystemEvent extends Event {
     public static class Up extends SystemEvent {
     }
 
+    /**
+     * Notifies the first determination or change in the 'machinename'
+     */
+    public static class MachineName extends SystemEvent {
+        private final String name;
+        public MachinaName(String n) {
+            name = n;
+        }
+        public String getName() {
+            return name;
+        }
+    }
+
     static {
         SystemEventListener logger = new SystemEventListener() {
                 public void notify(SystemEvent s) {
