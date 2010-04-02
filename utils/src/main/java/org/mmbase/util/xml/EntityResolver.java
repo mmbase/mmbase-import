@@ -26,6 +26,7 @@ import org.xml.sax.InputSource;
 
 /**
  * Take the systemId and converts it into a local file, using the MMBase config path
+ * This is used for resolving DTD's and XSD's, but also e.g. for Xincludes.
  *
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
@@ -59,7 +60,11 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
      * Container for dtd resources information
      */
     static abstract class  Resource {
+        String encoding = "UTF-8";
         abstract InputStream getStream();
+        public String getEncoding() {
+            return encoding;
+        }
     }
     static class StringResource extends Resource {
         private String string;
@@ -67,7 +72,12 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
             string = s;
         }
         InputStream getStream() {
-            return new ByteArrayInputStream(string.getBytes());
+            try {
+                return new ByteArrayInputStream(string.getBytes(encoding));
+            } catch (java.io.UnsupportedEncodingException uee) {
+                log.error(uee); // WTF
+                return new ByteArrayInputStream(string.getBytes());
+            }
         }
     }
     static class FileResource extends Resource {
@@ -99,7 +109,6 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
             if (stream == null && clazz != null) {
                 stream = clazz.getResourceAsStream(getResource());
             }
-
             return stream;
         }
 
@@ -280,6 +289,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
         }
 
         InputStream definitionStream = null;
+        String encoding = "UTF-8";
 
         if ("http://www.mmbase.org/mmentities.ent".equals(systemId)) {
             log.debug("Reding mmbase entities for " + systemId + " " + publicId);
@@ -299,6 +309,9 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
             Resource res = publicIDtoResource.get(publicId);
             log.debug("Found publicId " + publicId + " -> " + res);
             definitionStream = res == null ? null : res.getStream();
+            if (res != null) {
+                encoding = res.getEncoding();
+            }
         }
 
 
@@ -308,6 +321,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
             Resource res = systemIDtoResource.get(systemId);
             if (res != null) {
                 definitionStream = res.getStream();
+                encoding = res.getEncoding();
             }
             log.debug("Get definition stream by registered system id: " + systemId + " " + definitionStream);
         }
@@ -338,6 +352,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
                     log.debug("mmbase resource " + ResourceLoader.getConfigurationRoot().getResource(mmResource));
                 }
                 definitionStream = ResourceLoader.getConfigurationRoot().getResourceAsStream(mmResource);
+                encoding = "UTF-8";
                 if (definitionStream == null) {
                     Class<?> base = resolveBase; // if resolveBase was specified, use that.
                     Resource res = null;
@@ -380,7 +395,14 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
         }
         hasDefinition = true;
 
-        InputStreamReader definitionInputStreamReader = new InputStreamReader(definitionStream);
+        InputStreamReader definitionInputStreamReader;
+        try {
+            definitionInputStreamReader = new InputStreamReader(definitionStream, encoding);
+        } catch (java.io.UnsupportedEncodingException uee) {
+            log.error(uee); // WTF
+            definitionInputStreamReader = new InputStreamReader(definitionStream);
+        }
+
         InputSource definitionInputSource = new InputSource();
         if (systemId != null) {
             definitionInputSource.setSystemId(systemId);
