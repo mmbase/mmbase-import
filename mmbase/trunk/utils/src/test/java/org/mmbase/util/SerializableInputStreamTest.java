@@ -94,8 +94,8 @@ public class SerializableInputStreamTest  {
         assertEquals(3, instance.getSize());
         assertNull(instance.getName());
         String contentType = instance.getContentType();
-        //assertNull(contentType, contentType);
-        assertEquals("unknown/unknown", contentType); // hmm, something changed here
+        assertNull(contentType, contentType);
+        //assertEquals("unknown/unknown", contentType); // hmm, something changed here
 
     }
 
