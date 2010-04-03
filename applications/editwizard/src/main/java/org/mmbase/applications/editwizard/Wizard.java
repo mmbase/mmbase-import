@@ -67,14 +67,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
     // File -> Document (resolved includes/shortcuts)
     private static WizardSchemaCache wizardSchemaCache;
-    private static NodeCache nodeCache; // it's absurd to name this NodeCache
 
     static {
         wizardSchemaCache = new WizardSchemaCache();
         wizardSchemaCache.putCache();
-        nodeCache = new NodeCache();
-        nodeCache.putCache();
     }
+
+    private Map<String, Node> nodePermissionCache = new HashMap<String, Node>();
 
     /**
      * The cloud used to connect to MMBase
@@ -304,7 +303,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @throws WizardException if the object cannot be retrieved
      */
     protected boolean checkNode(String objectNumber, String operation) throws WizardException {
-        Node node = nodeCache.get(objectNumber);
+        Node node = nodePermissionCache.get(objectNumber);
 
         if (node == null) {
             NodeList nodes = Utils.selectNodeList(data, ".//*[@number='" + objectNumber + "']");
@@ -323,7 +322,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                 node = databaseConnector.getDataNode(null, objectNumber, null);
             }
 
-            nodeCache.put(objectNumber, node);
+            nodePermissionCache.put(objectNumber, node);
             log.debug("Node loaded: " + node);
         } else {
             log.debug("Node found in cache: " + node);
@@ -2954,24 +2953,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             } else {
                 return inverse * order1.compareToIgnoreCase(order2);
             }
-        }
-    }
-
-    /**
-     * Caches objectNumber to Node.
-     * @since MMBase-1.6.4
-     */
-    static class NodeCache extends Cache<String, Node> {
-        NodeCache() {
-            super(100);
-        }
-
-        public String getName() {
-            return "Editwizard nodes";
-        }
-
-        public String getDescription() {
-            return "objectNumber -> DOM Node";
         }
     }
 
