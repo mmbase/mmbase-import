@@ -4,10 +4,6 @@
 
   <!-- other caches ... -->
 
-  <cache name="Editwizard nodes">
-    <status>active</status>
-    <size>100</size>
-  </cache>
   <cache name="Editwizard schemas">
     <status>active</status>
     <size>100</size>
