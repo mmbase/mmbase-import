@@ -19,15 +19,26 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
 
     private static Logger log = Logging.getLoggerInstance(MagicXMLReader.class);
 
-    private static MagicXMLReader reader = null;
+    private static DetectorProvider provider;
+
     protected static final String MAGICXMLFILE = "magic.xml";
     // Name of the XML magic file - should reside in top config dir
 
-    private static void setReader(String config) throws IllegalArgumentException {
+    private static void loadDetectorProvider(String config) throws IllegalArgumentException {
         try {
             InputSource is = ResourceLoader.getConfigurationRoot().getInputSource(config);
             if (is != null) {
-                reader = new MagicXMLReader(is);
+              MagicXMLReader reader = new MagicXMLReader(is);
+               if (reader != null) {
+                   log.info("Magic XML file is: " + reader.getSystemId());
+                    final List<Detector> detectors = new ArrayList<Detector>(reader.getDetectors());
+                    DetectorProvider dp = new DetectorProvider() {
+                       public List<Detector> getDetectors() {
+                          return detectors;
+                       }
+                    };
+                    provider = dp;
+               }
             }
         } catch (IOException ie) {
             log.warn(ie);
@@ -39,29 +50,24 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
      * @return MagicXMLReader if mmbase was staterd or null if mmbase was not started
      */
 
-    public synchronized static MagicXMLReader getInstance() {
-        if (reader == null) { // can only occur once.
+   public synchronized static DetectorProvider getInstance() {
+       if (provider == null) { // can only occur once.
 
-            setReader(MAGICXMLFILE);
+           loadDetectorProvider(MAGICXMLFILE);
 
-            if (reader != null) {
-                log.info("Magic XML file is: " + reader.getSystemId());
-            }
+           ResourceWatcher watcher = new ResourceWatcher() {
+                   public void onChange(String file) {
+                       // reader is replaced on every change of magic.xml
+                       loadDetectorProvider(file);
+                   }
+               };
+           watcher.start();
+           watcher.add(MAGICXMLFILE);
 
-            ResourceWatcher watcher = new ResourceWatcher() {
-                    public void onChange(String file) {
-                        // reader is replaced on every change of magic.xml
-                        setReader(file);
-                    }
-                };
-            watcher.start();
-            watcher.add(MAGICXMLFILE);
-
-        }
-        return reader;
+       }
+       return provider;
     }
-    private List<Detector> detectors = null;
-
+   
     private MagicXMLReader(InputSource is) {
         super(is, MagicXMLReader.class);
     }
@@ -83,24 +89,21 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
      * Returns all 'Detectors'.
      */
     public List<Detector> getDetectors()  {
-        if (detectors == null) {
-            detectors = new CopyOnWriteArrayList<Detector>();
-            Element e = getElementByPath("magic.detectorlist");
-            if (e == null) {
-                log.fatal("Could not find magic/detectorlist in magic.xml");
-                // aargh!
-                return detectors;
-            }
-            for (Element element : getChildElements(e)) {
-                try {
-                    Detector d = getOneDetector(element);
-                    detectors.add(d);
-                } catch (Exception ex) {
-                    log.error(ex.getClass() + " " + ex.getMessage() + ": " + XMLWriter.write(element));
-                }
+        List<Detector> detectors = new CopyOnWriteArrayList<Detector>();
+        Element e = getElementByPath("magic.detectorlist");
+        if (e == null) {
+            log.fatal("Could not find magic/detectorlist in magic.xml");
+            // aargh!
+            return detectors;
+        }
+        for (Element element : getChildElements(e)) {
+            try {
+                Detector d = getOneDetector(element);
+                detectors.add(d);
+            } catch (Exception ex) {
+                log.error(ex.getClass() + " " + ex.getMessage() + ": " + XMLWriter.write(element));
             }
         }
-
         return detectors;
     }
 
