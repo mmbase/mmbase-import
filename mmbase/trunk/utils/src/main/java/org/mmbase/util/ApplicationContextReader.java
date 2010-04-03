@@ -79,7 +79,12 @@ public class ApplicationContextReader {
                         properties.put(contextName + "/" + entry.getKey(), entry.getValue());
                     }
                 } else {
-                    properties.put(contextName, value.toString());
+                   if (value != null) {
+                      properties.put(contextName, value.toString());
+                   }
+                   else {
+                      properties.put(contextName, "");
+                   }
                 }
             }
         }
