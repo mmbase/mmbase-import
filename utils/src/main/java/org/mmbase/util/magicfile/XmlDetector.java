@@ -24,6 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @version $Id$
  * @author Michiel Meeuwissen
+ * @since MMBase-1.9.3
  */
 
 public class XmlDetector extends AbstractDetector {
@@ -54,13 +55,19 @@ public class XmlDetector extends AbstractDetector {
             parser.setErrorHandler(new ErrorHandler(false, ErrorHandler.FATAL_ERROR));
             InputSource source = new InputSource(new ByteArrayInputStream(lithmus));
             parser.parse(source);
+
+            // successfully parsed (which is remarkable while the byte array is truncated),
+            // but no matches found.
             return false;
         } catch (Matched m) {
+            // Parsing interrupted because of a match!
             log.debug("Matched " + m.getMessage());
             return true;
         } catch (SAXException e) {
+            // probably not XML, probably end of array reached.
             return false;
         } catch (java.io.IOException ioe) {
+            // this really is exceptional, and should not happen
             log.warn(ioe);
             return false;
         }
@@ -74,6 +81,9 @@ public class XmlDetector extends AbstractDetector {
         }
     }
 
+    /**
+     * In case a match is found, this exception is thrown and further parsing is interrupted.
+     */
     protected class Matched extends RuntimeException {
         public Matched(String mes) {
             super(mes);
