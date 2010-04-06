@@ -15,12 +15,17 @@
 
 $(document).ready(
     function() {
-        $("table.mmsr_pathsearch").each(
-            function() {
-                this.pathSearcher = new MMBasePathSearcher(this);
-            });
+        MMBasePathSearcher.prototype.init($("body")[0]);
     }
 );
+
+$("div.lazy").
+    live("mmsr_lazyloaded",
+         function(e) {
+             var div = e.target;
+             MMBasePathSearcher.prototype.init(this);
+         }
+        );
 
 $("div.mm_related.pathsearcher_ontheway").
     live("mmsrRelate",
@@ -70,7 +75,14 @@ MMBasePathSearcher.prototype.fillStep = function(step, node) {
 
 }
 
-
+MMBasePathSearcher.prototype.init = function(el) {
+    $(el).find("table.mmsr_pathsearch").each(
+        function() {
+            if (this.pathSearch == null) {
+                this.pathSearcher = new MMBasePathSearcher(this);
+            }
+        });
+}
 /*
 </fmt:bundle>
 </mm:content>

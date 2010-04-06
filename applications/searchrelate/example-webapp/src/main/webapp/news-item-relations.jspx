@@ -14,15 +14,17 @@
       role="related"
       min="1"
       max="1"
+      implicitSearch="false"
       search="true"
       fields="number,firstname">
       <h4><span class="debug">${rid} </span>authors</h4>
-      </mm-sr:relatednodes>
+  </mm-sr:relatednodes>
   <mm-sr:relatednodes
       idvar="rid"
       type="urls"
       search="true"
       sortable="true"
+      implicitSearch="false"
       fields="url">
     <h4><span class="debug">${rid} </span>urls</h4>
   </mm-sr:relatednodes>
@@ -30,7 +32,11 @@
   <mm-sr:relatednodes
       idvar="rid"
       type="images"
-      search="true">
+      >
+    <jsp:attribute name="searcher">
+      <mm-sr:pathsearch path="news,images" />
+    </jsp:attribute>
     <h4><span class="debug">${rid} </span>images</h4>
   </mm-sr:relatednodes>
+
 </div>
