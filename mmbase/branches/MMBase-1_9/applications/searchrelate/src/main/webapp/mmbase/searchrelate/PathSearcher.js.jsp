@@ -62,6 +62,10 @@ MMBasePathSearcher.prototype.fillStep = function(step, node) {
     params.nodeNumber = node;
     params.pid = this.pid;
     var url = "${mm:link('/mmbase/searchrelate/path/searcher.jspx')}";
+    var loader = $("<img src='${mm:link('/mmbase/style/ajax-loader.gif')}' height='32' width='32' alt='loading' class='searching' />");
+    $(td).empty();
+    $(td).append(loader);
+
     $(td).load(url, params,
                function() {
                    $(td).find("div.mm_related").each(
