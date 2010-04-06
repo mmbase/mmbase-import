@@ -53,8 +53,15 @@ $(document).ready(
 			     $(anchor).text('<fmt:message key="search" />');
 			 }
 		     }
-
-		 });
+		     // The onlick of mm_gui's are rather annoying
+		     // TODO, should this be configuable?
+                     $(relater.div).find("a.mm_gui").removeAttr("onclick");
+                     $(relater.div).find("a.mm_gui").click(
+			 function(ev) {
+			     ev.preventDefault();
+			 });
+                 }
+		);
 
 	$("input.search").
 	    live("keyup",
