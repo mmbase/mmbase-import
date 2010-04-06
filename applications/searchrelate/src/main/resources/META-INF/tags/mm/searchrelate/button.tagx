@@ -21,8 +21,7 @@
 
   <jsp:directive.attribute name="alt"        type="java.lang.String"   />
 
-
-  <c:if test="${empty jspContext.parameters.icondir}">
+  <c:if test="${empty jspContext.parameters}">
     <c:set var="parameters" value="${requestScope['org.mmbase.sr.relatednodes.parameters']}" />
   </c:if>
 
