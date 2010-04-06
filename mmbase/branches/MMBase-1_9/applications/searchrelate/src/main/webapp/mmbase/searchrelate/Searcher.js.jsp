@@ -776,7 +776,7 @@ MMBaseSearcher.prototype.search = function(val, offset, anchor) {
         $.ajax({ url: this.searchUrl, type: "GET", dataType: "xml", data: params,
                  beforeSend: function() {
                     $(self.div).find("input.search").addClass("searching");
-                    $(rep).append($('<p><fmt:message key="searching" /></p>'));
+                    $(rep).append($('<p class=\'searching\'><fmt:message key="searching" /></p>'));
                  },
                  complete: function(res, status) {
                     if ( status == "success" || status == "notmodified" ) {
