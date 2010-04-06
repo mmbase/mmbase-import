@@ -19,7 +19,7 @@
   <jsp:directive.attribute name="parameters"      type="java.util.Map" />
 
 
-  <c:if test="${empty jspContext.parameters}">
+  <c:if test="${empty pageScope.parameters}">
     <c:set var="parameters" value="${requestScope['org.mmbase.sr.relatednodes.parameters']}" />
   </c:if>
 
