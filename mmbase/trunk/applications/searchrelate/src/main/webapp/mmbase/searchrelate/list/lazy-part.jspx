@@ -28,6 +28,7 @@
                             page="${href}"
                             referids="rid">
                   <mm:param name="org.mmbase.sr.relatednodes.load">false</mm:param>
+                  <mm:param name="org.mmbase.in_form">true</mm:param>
                 </mm:include>
               </mm:node>
             </mm:form>
@@ -43,7 +44,7 @@
                             page="${href}"
                             referids="rid">
                   <mm:param name="org.mmbase.sr.relatednodes.load">false</mm:param>
-
+                  <mm:param name="org.mmbase.in_form">true</mm:param>
                 </mm:include>
               </mm:node>
               <mm:cancel  />

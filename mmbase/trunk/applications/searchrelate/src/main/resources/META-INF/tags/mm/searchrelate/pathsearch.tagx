@@ -20,6 +20,9 @@
   <jsp:directive.attribute name="searchdirs" type="java.lang.String"
                            description="This is equivalent to the searchdirs attribute of an mm:listnodescontainer" /> 
 
+  <jsp:directive.attribute name="searchdirs" type="java.lang.String"
+                           description="This is equivalent to the searchdirs attribute of an mm:listnodescontainer" />
+
   <jsp:directive.attribute name="element"        type="java.lang.String"
                            description="This is equivalent to the element attribute of an mm:listnodescontainer, but it defaults to the _last_ element." />
 
@@ -31,6 +34,11 @@
 
   <jsp:directive.attribute name="load"               type="java.lang.String"
                            description="" />
+  <jsp:directive.attribute name="forms"        type="java.lang.Boolean"
+                           />
+
+  <mm:import externid="org.mmbase.in_form" id="in_form" vartype="boolean">false</mm:import>
+  <mm:import id="_forms" vartype="boolean">${empty forms ? ! in_form : forms}</mm:import>
 
   <mm:import id="requestid">P<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape>${param.requestID}</mm:import>
   <mm:import from="request" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
@@ -40,8 +48,7 @@
   <mm:import from="request" id="javascript_loaded" externid="mm_pathsearch_javascript" />
   <mm:import id="_load">${((empty javascript_loaded and empty load) or load) and load ne 'false' and param['org.mmbase.sr.relatednodes.load'] ne 'false'}</mm:import>
   <c:if test="${_load}">
-    <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/PathSearcher.js.jsp')}"><jsp:text>&lt;!-- --&gt;</jsp:text></script>
-    <mm:write request="mm_pathsearch_javascript" value="yes" />
+    <jsp:directive.include file="/mmbase/searchrelate/path/javascript.jspf" />
   </c:if>
 
 
