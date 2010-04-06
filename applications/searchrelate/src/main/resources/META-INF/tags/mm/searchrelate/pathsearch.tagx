@@ -35,6 +35,10 @@
   <jsp:directive.attribute name="forms"        type="java.lang.Boolean"
                            />
 
+  <jsp:directive.attribute name="intro"        fragment="true"
+                           description="A fragment that will be used to introduce the first step. The following steps will be introduced with the selected previous step."
+                           />
+
   <mm:import externid="org.mmbase.in_form" id="in_form" vartype="boolean">false</mm:import>
   <mm:import id="_forms" vartype="boolean">${empty forms ? ! in_form : forms}</mm:import>
 
@@ -71,11 +75,16 @@
          id="${pid}">
     <tr>
       <c:forEach begin="0" end="${laststep + 1}"  var="i" step="2" varStatus="status">
-        <th class="${status.first ? 'first' : ''} ${status.last ? 'last' : ''}"><mm:nodeinfo nodetype="${query.steps[i].tableName}" type="plural_guinodemanager" /></th>
+        <th class="${status.first ? 'first' : ''} ${status.last ? 'last' : ''}">
+          <mm:nodeinfo nodetype="${query.steps[i].tableName}" type="plural_guinodemanager" />
+        </th>
       </c:forEach>
     </tr>
     <tr>
       <td class="first">
+        <div class="intro">
+          <jsp:invoke fragment="intro" />
+        </div>
         <mm:include page="/mmbase/searchrelate/path/searcher.jspx" referids="pid,pagesize?">
           <mm:param name="step">0</mm:param>
         </mm:include>
