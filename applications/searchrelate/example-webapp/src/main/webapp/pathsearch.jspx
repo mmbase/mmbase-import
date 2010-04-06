@@ -29,6 +29,8 @@
   <p>Three step searcher, but element is set to the second step. You only find news to which people are related now.</p>
   <mm-sr:pathsearch path="mags,news,people" element="news" />
 
+  <p>A one step searcher is more or less the same as simply mm-sr:search</p>
+  <mm-sr:pathsearch path="news"  />
 
   <hr />
   <mm:escape escape="links">$URL$</mm:escape>
