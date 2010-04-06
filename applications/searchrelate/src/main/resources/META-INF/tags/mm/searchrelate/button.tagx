@@ -21,9 +21,10 @@
 
   <jsp:directive.attribute name="alt"        type="java.lang.String"   />
 
-  <c:if test="${empty jspContext.parameters}">
+  <c:if test="${empty pageScope.parameters}">
     <c:set var="parameters" value="${requestScope['org.mmbase.sr.relatednodes.parameters']}" />
   </c:if>
+
 
   <mm:haspage page="${parameters.icondir}/${type}.jspx">
     <c:set var="alt">
@@ -43,4 +44,6 @@
   <mm:haspage page="${parameters.icondir}/${type}.png" inverse="true">
     <jsp:text>${alt}</jsp:text>
   </mm:haspage>
+
+
 </jsp:root>
