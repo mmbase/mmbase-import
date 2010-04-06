@@ -47,6 +47,9 @@
           create="false"
           >
         <jsp:attribute name="repositoryTitle">
+          <c:if test="${! empty param.intro}">
+            <div class="intro"><jsp:text>${param.intro}</jsp:text></div>
+          </c:if>
           <c:if test="${! empty nodeNumber}">
             <div class="intro">
               <mm:node number="${nodeNumber}">
