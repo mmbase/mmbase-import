@@ -48,7 +48,15 @@
           >
         <jsp:attribute name="repositoryTitle">
           <c:if test="${! empty nodeNumber}">
-            <mm:node number="${nodeNumber}"><mm:nodeinfo type="gui" /></mm:node>
+            <div class="intro">
+              <mm:node number="${nodeNumber}">
+                <span class="type">
+                  <mm:nodeinfo type="guitype" />
+                  <jsp:text>: </jsp:text>
+                </span>
+                <mm:nodeinfo type="gui" />
+              </mm:node>
+            </div>
           </c:if>
         </jsp:attribute>
       </mm-sr:relate>
