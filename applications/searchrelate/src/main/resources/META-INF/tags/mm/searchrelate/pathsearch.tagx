@@ -82,10 +82,10 @@
     </tr>
     <tr>
       <td class="first">
-        <div class="intro">
-          <jsp:invoke fragment="intro" />
-        </div>
         <mm:include page="/mmbase/searchrelate/path/searcher.jspx" referids="pid,pagesize?">
+          <mm:param name="intro">
+            <jsp:invoke fragment="intro" />
+          </mm:param>
           <mm:param name="step">0</mm:param>
         </mm:include>
       </td>
