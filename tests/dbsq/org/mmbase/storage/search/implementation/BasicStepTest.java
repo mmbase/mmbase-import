@@ -85,29 +85,35 @@ public class BasicStepTest extends TestCase {
         testSetAlias();
     }
 
+
+
+
     /** Test of addNode method, of class org.mmbase.storage.search.implementation.BasicStep. */
     public void testAddNode() {
-        // Negative node, should throw IllegalArgumentException
-        try {
-            instance.addNode(-1);
-            fail("Negative node, should throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {}
-
         SortedSet<Integer> nodes = instance.getNodes();
         assertNull(nodes);  	//  MMB-1682
+
+        // Negative node, should not throw IllegalArgumentException
+        instance.addNode(-10);
+
+
         int nodeNumber0 = 23456;
         instance.addNode(nodeNumber0);
         nodes = instance.getNodes();
-        assertTrue(nodes.size() == 1);
+        assertTrue(nodes.size() == 2);
         Iterator<Integer> iNodes = nodes.iterator();
+        assertTrue(iNodes.hasNext());
+        assertTrue(iNodes.next().equals(new Integer(-10)));
         assertTrue(iNodes.hasNext());
         assertTrue(iNodes.next().equals(new Integer(nodeNumber0)));
         assertTrue(!iNodes.hasNext());
         int nodeNumber1 = 2345;
         Step result = instance.addNode(nodeNumber1);
         nodes = instance.getNodes();
-        assertTrue(nodes.size() == 2);
+        assertTrue(nodes.size() == 3);
         iNodes = nodes.iterator();
+        assertTrue(iNodes.hasNext());
+        assertTrue(iNodes.next().equals(new Integer(-10)));
         assertTrue(iNodes.hasNext());
         assertTrue(iNodes.next().equals(new Integer(nodeNumber1)));
         assertTrue(iNodes.hasNext());
@@ -120,6 +126,8 @@ public class BasicStepTest extends TestCase {
     public void testGetNodes() {
         // See:
         testAddNode();
+
+        instance.setUnmodifiable();
 
         SortedSet<Integer> nodes = instance.getNodes();
         Integer item = nodes.first();
