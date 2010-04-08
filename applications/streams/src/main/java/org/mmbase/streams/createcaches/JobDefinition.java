@@ -51,8 +51,8 @@ public class JobDefinition implements Serializable {
     /**
      * Creates a JobDefinition template as used in the configuration container or to kick-start
      * a transcoding.
-     * @param id    identifier of this job, normally matches the one in configuration 
-     * @param inId  identifier of the jobdefinition or cache that is used as input. 
+     * @param id    identifier of this job, normally matches the one in configuration
+     * @param inId  identifier of the jobdefinition or cache that is used as input.
                     If no inId is found the orginal source is used, otherwise it should match with
                     a preceding jobdefinition id in config or a node number of an already existing cache.
      * @param label description for user purposes of the result

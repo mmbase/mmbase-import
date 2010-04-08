@@ -12,6 +12,11 @@
 
   <mm:import externid="nodemanager">urls</mm:import>
 
+  <script type="text/javascript">
+    $(document).bind("mmsrRelate", function (e, tr, relater) {
+    alert("Clicked on node " + relater.getNumber(tr));
+    });
+  </script>
   <mm:form name="bloe">
 
 

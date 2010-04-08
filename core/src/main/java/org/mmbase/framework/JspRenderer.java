@@ -42,7 +42,8 @@ public class JspRenderer extends AbstractRenderer {
         return path.charAt(0) == '/' ? path : JSP_ROOT + getBlock().getComponent().getName() + '/' + path;
     }
 
-    @Override public  Parameter<?>[] getParameters() {
+    @Override
+    public  Parameter<?>[] getParameters() {
         return new Parameter<?>[] {Parameter.RESPONSE, Parameter.REQUEST};
     }
 
@@ -50,7 +51,8 @@ public class JspRenderer extends AbstractRenderer {
         public int code = 200;
         public String mesg = null;
     }
-    @Override   public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
+    @Override
+    public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
         try {
             HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
             HttpServletRequest request  = blockParameters.get(Parameter.REQUEST);
@@ -86,6 +88,14 @@ public class JspRenderer extends AbstractRenderer {
                 log.debug("Rendering " + url + " status " + status.code);
             }
             requestDispatcher.include(request, respw);
+
+            String redirected = respw.getRedirected();
+            if (redirected != null) {
+                log.service("Redirecting to " + redirected);
+                response.sendRedirect(redirected);
+                return;
+            }
+
             log.debug("Status " + status.code);
             if (status.code == 401) {
                 DeniedRenderer denied = new DeniedRenderer(getType(), getBlock());
@@ -108,7 +118,8 @@ public class JspRenderer extends AbstractRenderer {
         return getPath() + (params == null ? "" : "?" + Arrays.asList(params));
     }
 
-    @Override public java.net.URI getUri() {
+    @Override
+public java.net.URI getUri() {
         try {
             return org.mmbase.util.ResourceLoader.getWebRoot().getResource(getPath()).toURI();
         } catch (Exception e) {

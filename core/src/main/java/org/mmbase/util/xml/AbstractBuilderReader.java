@@ -91,12 +91,6 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
     }
 
 
-    static {
-        org.mmbase.bridge.util.xml.query.QueryReader.registerSystemIDs();
-        registerPublicIDs();
-        registerSystemIDs();
-    }
-
     public static ResourceLoader getBuilderLoader() {
         return ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders");
     }
@@ -187,7 +181,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
      * @param item The tagname of the list item element
      * @param attr The attribute identifying the item (i.e. "name" or "xml:lang")
      * @param replace if <code>true</code>, the item is entirely replaced. If <code>false</code>, it is merged.
-     * @since MMBase-1.9.3
+     * @since MMBase-1.9
      */
     protected static void mergeElementLists(Document doc, Document overrides, String list, String item, String attr, boolean replace) {
         Element docListEl = getElementByPath(doc.getDocumentElement(), "builder." + list);

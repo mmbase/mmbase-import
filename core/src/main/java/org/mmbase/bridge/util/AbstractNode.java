@@ -124,7 +124,7 @@ public abstract class AbstractNode implements Node {
                 setLongValue(fieldName, Casting.toLong(value));
                 break;
             case Field.TYPE_XML:     setXMLValue(fieldName, (Document) value); break;
-            case Field.TYPE_NODE:    setNodeValue(fieldName, BridgeCaster.toNode(value, getCloud())); break;
+            case Field.TYPE_NODE:    setNodeValue(fieldName, Casting.toNode(value, getCloud())); break;
             case Field.TYPE_DATETIME: setDateValue(fieldName, (Date) value); break;
             case Field.TYPE_BOOLEAN: setBooleanValue(fieldName, Casting.toBoolean(value)); break;
             case Field.TYPE_DECIMAL: setDecimalValue(fieldName, Casting.toDecimal(value)); break;
@@ -481,7 +481,7 @@ public abstract class AbstractNode implements Node {
     }
 
     public Node getNodeValue(String fieldName) {
-        Node result = BridgeCaster.toNode(getValueWithoutProcess(fieldName), getCloud());
+        Node result = Casting.toNode(getValueWithoutProcess(fieldName), getCloud());
         NodeManager nodeManager = getNodeManager();
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);

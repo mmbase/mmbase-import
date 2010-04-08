@@ -55,11 +55,11 @@ public interface StepField {
      * <code>false</code> otherwise.
      */
     @Override
-    boolean equals(Object obj);
+    public boolean equals(Object obj);
 
     // javadoc is inherited
     @Override
-    int hashCode();
+    public int hashCode();
 
     /**
      * Returns a string representation of this StepField.
@@ -79,7 +79,7 @@ public interface StepField {
      * @return A string representation of this StepField.
      */
     @Override
-    String toString();
+    public String toString();
 
 
     /**

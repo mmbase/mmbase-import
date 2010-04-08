@@ -528,6 +528,14 @@ List.prototype.addItem = function(res, cleanOnFocus) {
             var div = this;
             if (div.list == null) {
                 div.list = new List(div);
+		if (typeof MMBaseRelater == "function") {
+		    $(div).find("div.mm_related").
+			each(function() {
+				 if (this.relater == null) {
+				     this.relater = new MMBaseRelater(this);
+				 }
+			     });
+		}
             }
         });
 

@@ -6,18 +6,18 @@
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-parent</artifactId>
-    <version>2.0-SNAPSHOT</version>
+    <version>1.9-SNAPSHOT</version>
     <relativePath>../maven-base/pom.xml</relativePath>
   </parent>
 
   <artifactId>example-webapp</artifactId>
   <packaging>war</packaging>
   <name>MMBase Example webapp</name>
-  <version>${mmbase.version}</version>
+  <version>${base.version}</version>
 
   <properties>
     <my.postfix>${mmbase.version.postfix}</my.postfix>
-
+    <base.version>${mmbase.version.number}${my.postfix}</base.version>
     <jdbcUrl>jdbc:hsqldb:file:data/mmbase</jdbcUrl>
     <!-- E.g. use
          -DjdbcUrl=jdbc:hsqldb:hsql://localhost/testb
@@ -38,6 +38,7 @@
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
+        <version>7.0.0.pre5</version>
         <configuration>
           <jettyEnvXml>${basedir}/jetty-env.xml</jettyEnvXml>
           <systemProperties>
@@ -46,11 +47,29 @@
               <value>${jdbcUrl}</value>
             </systemProperty>
             <systemProperty>
+              <name>com.sun.management.jmxremote</name>
+              <value></value>
+            </systemProperty>
+            <systemProperty>
               <name>java.awt.headless</name>
               <value>true</value>
             </systemProperty>
           </systemProperties>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
+            <scope>runtime</scope>
+          </dependency>
+
+          <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.8.0.7</version>
+          </dependency>
+        </dependencies>
       </plugin>
       <!--
           it's broken.
@@ -77,18 +96,18 @@
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>base-webapp</artifactId>
-      <version>${mmbase.version}</version>
+      <version>${base.version}</version>
       <type>war</type>
     </dependency>
-
+<!--
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase</artifactId>
       <version>${mmbase.version}</version>
       <type>jar</type>
       <classifier>tests</classifier>
-
     </dependency>
+ -->
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-resources</artifactId>
@@ -168,13 +187,6 @@
 
     <dependency>
       <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-lucene</artifactId>
-      <version>${mmbase.version}</version>
-      <type>war</type>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mmbase</groupId>
       <artifactId>mmbase-email</artifactId>
       <version>${mmbase.version}</version>
       <type>war</type>
@@ -186,21 +198,6 @@
       <version>0.4-SNAPSHOT</version>
       <type>war</type>
     </dependency>
-
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-forms</artifactId>
-      <version>0.1-SNAPSHOT</version>
-      <type>war</type>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-forms</artifactId>
-      <version>0.1-SNAPSHOT</version>
-      <classifier>tests</classifier>
-    </dependency>
-
 
     <dependency>
       <groupId>org.mmbase</groupId>
@@ -229,17 +226,30 @@
       <version>1.8.0.7</version>
     </dependency>
 
-
-
   </dependencies>
 
-  <pluginRepositories>
-    <pluginRepository>
-      <id>caucho</id>
-      <name>Caucho</name>
-      <url>http://caucho.com/m2</url>
-    </pluginRepository>
-  </pluginRepositories>
+  <profiles>
+    <profile>
+      <id>servlet25</id>
+      <activation>
+        <property>
+          <name>servlet.version</name>
+          <value>2.5</value>
+        </property>
+      </activation>
+      <properties>
+        <my.postfix>-${my.version}</my.postfix>
+        <base.version>${mmbase.version.number}-servlet25${mmbase.version.postfix}</base.version>
+      </properties>
+    </profile>
+  </profiles>
+   <pluginRepositories>
+      <pluginRepository>
+        <id>caucho</id>
+        <name>Caucho</name>
+        <url>http://caucho.com/m2</url>
+      </pluginRepository>
+    </pluginRepositories>
 
 </project>
 

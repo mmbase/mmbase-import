@@ -14,7 +14,8 @@ import java.util.concurrent.*;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-import org.mmbase.util.*;
+import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.LocalizedString;
 import org.mmbase.util.logging.*;
 
 
@@ -76,35 +77,29 @@ public class ContextProvider {
     private static final List<Resolver> resolvers = new CopyOnWriteArrayList<Resolver>();
 
     static {
-        try {
-            for (URL url : ResourceLoader.getConfigurationRoot().getResourceList("contextproviders")) {
-                try {
-                    URLConnection uc = url.openConnection();
-                    if (uc.getDoInput()) {
-                        InputStream is = uc.getInputStream();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-                        String line = reader.readLine();
-                        while (line != null) {
-                            line = line.trim();
-                            if (line.length() > 0 && ! line.startsWith("#")) {
-                                try {
-                                    Resolver resolver = (Resolver) Class.forName(line).newInstance();
-                                    resolvers.add(resolver);
-                                } catch (Exception e) {
-                                    log.error("During parsing of " + url + ": " + line + ":" + e.getMessage(), e);
-                                }
+        for (URL url : ResourceLoader.getConfigurationRoot().getResourceList("contextproviders")) {
+            try {
+                URLConnection uc = url.openConnection();
+                if (uc.getDoInput()) {
+                    InputStream is = uc.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                    String line = reader.readLine();
+                    while (line != null) {
+                        line = line.trim();
+                        if (line.length() > 0 && ! line.startsWith("#")) {
+                            try {
+                                Resolver resolver = (Resolver) Class.forName(line).newInstance();
+                                resolvers.add(resolver);
+                            } catch (Exception e) {
+                                log.error("During parsing of " + url + ": " + line + ":" + e.getMessage(), e);
                             }
-                            line = reader.readLine();
                         }
+                        line = reader.readLine();
                     }
-                } catch (Exception e) {
-                    log.error("During parsing of " + url + ": " + e.getMessage(), e);
                 }
+            } catch (Exception e) {
+                log.error("During parsing of " + url + ": " + e.getMessage(), e);
             }
-
-            Casting.setHelper(new BridgeCaster());
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
         }
     }
 

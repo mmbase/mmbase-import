@@ -98,7 +98,6 @@
             Currently, the pattern is interpreted as a Condition for Strings and for DateTimes it
             is interpreted a format indication (like the pattern of SimpleDateFormat). In this
             last case there can also be more than one pattern: for every locale a different one.
-            For binaries, this is interpreted as a pattern to which the mimetype must match.
           </xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>

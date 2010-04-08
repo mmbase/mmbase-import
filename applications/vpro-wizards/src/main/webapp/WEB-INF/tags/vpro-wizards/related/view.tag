@@ -1,29 +1,21 @@
-<%@ tag
-    description="This tags shows currently related nodes"
-%>
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"
-%><%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util"
-%>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util" %>
 
-<%@ attribute name="title"
-%><%@ attribute name="relationrole"
-%><%@ attribute name="searchdir"
-                description="The searchdir to use ('source', 'destintion', 'both' or empty (which is 'both' and default)"
-%><%@ attribute name="nodetype" description="is used by the related:view tag "
-%><%@ attribute name="edit" type="java.lang.Boolean"
-%><%@ attribute name="delete" type="java.lang.Boolean"
-%><%@ attribute name="constraints"  description="'legacy' constraints as a string"
-%><%@ attribute name="confirmdelete" type="java.lang.Boolean" description="wether you must confirm deleting nodes. default is true"
-%><%@ attribute name="sortable" type="java.lang.Boolean"
-%><%@ attribute name="multipart" type="java.lang.Boolean"  description="don't set this if you use a fielfield in the body. In that case it's the default"
-%><%--for overriding the gui for this node
---%>
-<%@ attribute name="display" fragment="true"
-              description="when this is set, the fragment is evaluated for each node. the fragment must render the gui for this node. use fields '_nodenr', '_relationnr' and 'nodetype'" %>
-<%@ variable name-given="_nodenr" scope="AT_BEGIN"
-%><%@ variable name-given="_relationnr"  scope="AT_BEGIN"
-%>
+<%@ attribute name="title" %>
+<%@ attribute name="relationrole" %>
+<%@ attribute name="nodetype" description="is used by the related:view tag "  %>
+<%@ attribute name="edit" type="java.lang.Boolean" %>
+<%@ attribute name="delete" type="java.lang.Boolean" %>
+<%@ attribute name="constraints"  description="'legacy' constraints as a string" %>
+<%@ attribute name="confirmdelete" type="java.lang.Boolean" description="wether you must confirm deleting nodes. default is true"%>
+<%@ attribute name="sortable" type="java.lang.Boolean" %>
+<%@ attribute name="multipart" type="java.lang.Boolean"  description="don't set this if you use a fielfield in the body. In that case it's the default" %>
+
+<%--for overriding the gui for this node--%>
+<%@ attribute name="display" fragment="true" description="when this is set, the fragment is evaluated for each node. the fragment must render the gui for this node. use fields '_nodenr', '_relationnr' and 'nodetype'" %>
+<%@ variable name-given="_nodenr" scope="AT_BEGIN" %>
+<%@ variable name-given="_relationnr"  scope="AT_BEGIN"%>
 
 <%-- this parameter is used to communicate the editor to open the records with (when edit is true). perhaps it should be a tag parameter--%>
 <c:if test="${not empty param.openwizard}">
@@ -72,10 +64,7 @@
         <mm:log>test related:view relationrole:${relationrole}, nodetype:${nodetype}, orderby: ${orderby}</mm:log>
         <c:if test="${not empty nodenr}">
             <mm:node number="${nodenr}">
-
-              <mm:related  path="${relationrole},${nodetype}" orderby="${orderby}"
-                           searchdir="${searchdir}"
-                             fields="${orderby}" constraints="${constraints}">
+                <mm:related  path="${relationrole},${nodetype}" orderby="${orderby}" fields="${orderby}" constraints="${constraints}">
                     <mm:first>
                         <ul>
                     </mm:first>
@@ -101,7 +90,7 @@
                                 --%>
 
                                 <input type="hidden" name="actions[updateNode][${_nodenr}].nodeType" value="${nodetype}"/>
-                                <input type="hidden" name="actions[updateNode][${_nodenr}].nodenr" value="${_nodenr}"/>
+                                <input type="hidden" name="actions[updateNode][${_nodenr}].number" value="${_nodenr}"/>
 
                                 <%--toon de velden die geedit kunnen worden--%>
                                 <%--

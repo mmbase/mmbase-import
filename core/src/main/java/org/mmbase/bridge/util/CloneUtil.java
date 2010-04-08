@@ -58,21 +58,22 @@ public class CloneUtil {
      * @return the newly created node in the other cloud
      */
     public static Node cloneNode(Node localNode) {
-        if (localNode.isRelation()) {
+        if (isRelation(localNode)) {
             return cloneRelation(localNode);
         } else {
             NodeManager localNodeManager = localNode.getNodeManager();
             NodeManager nodeManager = localNode.getCloud().getNodeManager(localNodeManager.getName());
             Node newNode = nodeManager.createNode();
 
-            for (Field field : localNodeManager.getFields()) {
+            FieldIterator fields = localNodeManager.getFields().fieldIterator();
+            while (fields.hasNext()) {
+                Field field = fields.nextField();
                 String fieldName = field.getName();
 
                 if (field.getState() == Field.STATE_PERSISTENT) {
                     if (!(fieldName.equals("owner") || fieldName.equals("number") ||
                           fieldName.equals("otype") ||
-                          (fieldName.indexOf("_") == 0))) { // I think these fields's state are SYSTEM, so hence this
-                                                            // check is superfloous.
+                          (fieldName.indexOf("_") == 0))) {
                         cloneNodeField(localNode, newNode, field);
                     }
                 }
@@ -173,7 +174,9 @@ public class CloneUtil {
         }
         Relation newRelation = relationManager.createRelation(sourceNode, destNode);
 
-        for (Field field : sourceRelation.getNodeManager().getFields()) {
+        FieldIterator fields = sourceRelation.getNodeManager().getFields().fieldIterator();
+        while (fields.hasNext()) {
+            Field field = fields.nextField();
             String fieldName = field.getName();
 
             if (field.getState() == Field.STATE_PERSISTENT) {
@@ -197,7 +200,12 @@ public class CloneUtil {
      * @param destNode destination node
      */
     public static void cloneRelations(Node sourceNode, Node destNode) {
-        for (Relation rel : sourceNode.getRelations()) {
+        RelationIterator ri = sourceNode.getRelations().relationIterator();
+        if (ri.hasNext()) {
+            log.debug("the local node has relations");
+        }
+        while (ri.hasNext()) {
+            Relation rel = ri.nextRelation();
             if (rel.getSource().getNumber() == sourceNode.getNumber()) {
                 cloneRelation(rel, destNode, rel.getDestination());
             } else {
@@ -217,7 +225,12 @@ public class CloneUtil {
      * @param managerName manager of the other nodes which the relations are replicated for.
      */
     public static void cloneRelations(Node sourceNode, Node destNode, String relationName, String managerName) {
-        for (Relation rel : sourceNode.getRelations(relationName, managerName)) {
+        RelationIterator ri = sourceNode.getRelations(relationName, managerName).relationIterator();
+        if (ri.hasNext()) {
+            log.debug("the local node has relations");
+        }
+        while (ri.hasNext()) {
+            Relation rel = ri.nextRelation();
             if (rel.getSource().getNumber() == sourceNode.getNumber()) {
                 cloneRelation(rel, destNode, rel.getDestination());
             } else {
@@ -235,11 +248,36 @@ public class CloneUtil {
      * @param destNode destination/remote node
      */
     public static void cloneAliasses(Node localNode, Node destNode) {
-        for (String a : localNode.getAliases()) {
-            destNode.createAlias(a);
+        StringList list = localNode.getAliases();
+        for (int x = 0; x < list.size(); x++) {
+            destNode.createAlias(list.getString(x));
         }
     }
 
+    /**
+     * quick test to see if node is a relation by testing fieldnames
+     * @param node Possible relation
+     * @return <code>true</code> when relation fields present
+     */
+    protected static boolean isRelation(Node node) {
+        FieldIterator fi = node.getNodeManager().getFields().fieldIterator();
+        int count = 0;
+
+        while (fi.hasNext()) {
+            String name = fi.nextField().getName();
+
+            if (name.equals("rnumber") || name.equals("snumber") ||
+                name.equals("dnumber")) {
+                count++;
+            }
+        }
+
+        if (count == 3) {
+            return true;
+        }
+
+        return false;
+    }
 
 }
 

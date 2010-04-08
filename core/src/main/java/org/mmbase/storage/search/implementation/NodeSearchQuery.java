@@ -65,14 +65,17 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery, ja
         addFields(step, builder);
         this.builder = builder.getTableName();
     }
-    public NodeSearchQuery(NodeManager  builder) {
-        Step step = super.addStep(builder.getName());
-        for (Field f : builder.getFields(NodeManager.ORDER_CREATE)) {
+
+    public NodeSearchQuery(NodeManager  nodeManager) {
+        Step step = super.addStep(nodeManager.getName());
+
+        for (Field f : nodeManager.getFields(NodeManager.ORDER_CREATE)) {
             if (! f.isVirtual() && f.getType() != Field.TYPE_BINARY) {
                 addField(step, f);
             }
         }
-        this.builder = builder.getName();
+        this.builder = nodeManager.getName();
+
     }
 
     /*
@@ -104,9 +107,6 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery, ja
      *         persistent field of the associated nodetype.
      */
     public BasicStepField getField(Field field) {
-        if (field == null) {
-            throw new NullPointerException("No field given");
-        }
         if (! field.getNodeManager().getName().equals(builder)) {
             throw new IllegalArgumentException();
         }

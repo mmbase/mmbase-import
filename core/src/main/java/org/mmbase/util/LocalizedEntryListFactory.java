@@ -483,7 +483,10 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                     } catch (Exception e) {
                         log.warn(e.getMessage(), e);
                     }
+                } else if (o instanceof Map.Entry) {
+                    // already in size();
                 } else {
+                    log.service("Unanticipated entry " + o.getClass() + " " + o);
                     queriesSize++;
                 }
             }
@@ -516,20 +519,6 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
      * casts to the value.
      */
     public Object castKey(final Object key, final Cloud cloud) {
-        try {
-            return castKeyOrException(key, cloud);
-        } catch (IllegalArgumentException ia) {
-            return key;
-        }
-
-    }
-    /**
-     * @since MMBase-2.0
-     */
-    public Object castKeyOrException(final Object key, final Cloud cloud) throws IllegalArgumentException {
-        if (key == null) {
-            return null;
-        }
         String string = null;
         Iterator<Bundle> i = bundles.iterator();
         if (i.hasNext()) {
@@ -545,27 +534,19 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                     }
                     return nk;
                 }
-                try {
-                    if (b.resource != null && b.getMap(null).containsKey(string)) {
-                        return nk;
-                    }
-                } catch (ClassCastException cce) {
-                    // that means no
-                }
             }
         }
         if (usesCloud && cloud != null) {
-            if (string == null) {
-                string = Casting.toString(key);
-            }
+            if (string == null) string = Casting.toString(key);
             if (cloud.hasNode(string)) {
                 return cloud.getNode(string);
             }
         }
-        if (key instanceof SortedBundle.ValueWrapper) {
+        if (key != null && key instanceof SortedBundle.ValueWrapper) {
             return ((SortedBundle.ValueWrapper) key).getKey();
         }
-        throw new IllegalArgumentException("'" + key.getClass() + Casting.toString(key) + "' cannot be cast to one of the keys of " + this + " (using" + cloud + " " + usesCloud + ")");
+        return key;
+
     }
 
     public Object clone() {
@@ -754,17 +735,12 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
         Bundle(String r, ClassLoader cl, HashMap<String,Object> cp, Class w, Comparator comp) {
             resource = r; classLoader = cl; constantsProvider = cp ; wrapper = w; comparator = comp;
         }
-
-        Map<D, String> getMap(Locale loc) {
-            return  SortedBundle.getResource(resource, loc, classLoader, constantsProvider, wrapper, comparator);
-        }
-
         /**
          * Collection of Map.Entry's
          */
         Collection<Map.Entry<D, String>> get(Locale loc) throws MissingResourceException {
             try {
-                Map<D, String> resourceMap = getMap(loc);
+                Map<D, String> resourceMap = SortedBundle.getResource(resource, loc, classLoader, constantsProvider, wrapper, comparator);
                 return resourceMap.entrySet();
             } catch (IllegalArgumentException iae) {
                 log.error(iae);

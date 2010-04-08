@@ -15,7 +15,7 @@
     </dependency>
 
     @author Pierre van Rooden
-    @version $Id$
+    @version $Id: wizard_tinymce.xsl,v 1.7 2007-03-29 12:31:56 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes

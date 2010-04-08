@@ -48,7 +48,7 @@ public abstract class WrappedFunction<R> implements Function<R> {
 	     return getFunctionValue(params);
          }
     }
-    public R getFunctionValueWithArgs(Object... parameters) {
+    public R getFunctionValue(Object... parameters) {
         Parameters params = wrappedFunction.createParameters();
         params.setAutoCasting(true);
         params.setAll(parameters);

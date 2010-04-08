@@ -51,12 +51,10 @@ public class DataTypes {
 
     private static boolean initialized = false;
     public static void initialize() {
+        log.trace("" + Constants.class); // make sure its static init is called, otherwise it goes horribly wrong.
+
         synchronized(DataTypes.class) {
             if (! initialized) {
-		log.trace("" + Constants.class); // make sure its static init is called, otherwise it goes horribly wrong
-
-		org.mmbase.bridge.util.xml.query.QueryReader.registerSystemIDs();
-
                 // read the XML
                 // Watching will probably not work properly,
                 // as datatypes depend one ach other, and are are referred

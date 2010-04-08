@@ -45,11 +45,6 @@ public abstract class QueryReader {
         org.mmbase.util.xml.EntityResolver.registerSystemID(NAMESPACE_SEARCHQUERY_1_0 + ".xsd",  XSD_SEARCHQUERY_1_0, QueryReader.class);
     }
 
-    static {
-        registerSystemIDs();
-
-    }
-
     /**
      * Returns whether an element has a certain attribute, either an unqualified attribute or an attribute that fits in the
      * searchquery namespace

@@ -8,6 +8,7 @@
     <dependencySet>
       <includes>
         <include>org.mmbase:mmbase:jar</include>
+        <include>javax.servlet:servlet-api</include>
       </includes>
       <unpack>true</unpack>
       <scope>provided</scope>
@@ -42,7 +43,6 @@
           <include>org/mmbase/util/logging/**</include>                  <!-- every class use, and it's no real burden to have it -->
           <include>org/mmbase/util/ResourceLoader*.class</include>       <!-- well... -->
           <include>org/mmbase/util/ResourceWatcher*.class</include>      <!--  -->
-          <include>org/mmbase/util/NodeURLStreamHandlerFactory*.class</include>      <!--  -->
           <include>org/mmbase/util/LocalizedString.class</include>         <!-- returned by bridge -->
           <include>org/mmbase/util/LocaleCollator*</include>         <!-- returned by bridge -->
           <include>org/mmbase/util/ReadonlyLocalizedString.class</include>
@@ -77,9 +77,8 @@
           <include>org/mmbase/util/IOUtil*</include>
           <include>org/mmbase/util/SizeOf*</include>
           <include>org/mmbase/util/MimeType*</include>
-          <include>org/mmbase/util/magicfile/*</include>
-          <include>org/mmbase/util/magicfile/resources/*</include>
-          <include>org/mmbase/config/magic.xml</include>
+          <include>org/mmbase/util/magicfile/**</include>
+
 
           <include>org/mmbase/util/ChainedList*.class</include>            <!-- Used by Mock -->
           <include>org/mmbase/util/LinkMap*.class</include>            <!-- Used by Mock -->
@@ -100,11 +99,10 @@
 
           <include>org/mmbase/util/RandomPool*</include>          <!-- Used in test cases .. -->
           <include>org/mmbase/util/PasswordGenerator*</include>            <!-- Used in test cases .. -->
-          <include>org/mmbase/util/BridgeCaster*</include>
           <include>org/mmbase/config/functions/**</include>                  <!-- Used in test cases .. -->
           <include>org/mmbase/config/datatypes.xml</include>                  <!-- Used in test cases .. -->
           <include>org/mmbase/config/builders/core/**</include>                  <!-- Used in Mock/test cases .. -->
-          <include>org/mmbase/config/utils/resourceloader**</include>
+          <include>org/mmbase/config/magic.xml</include>
 
 
           <include>org/mmbase/framework/**</include>                  <!-- Used in taglib .. -->

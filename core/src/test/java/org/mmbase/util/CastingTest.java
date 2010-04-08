@@ -125,8 +125,8 @@ public class CastingTest  {
         news.setDateValue("date", new Date(123000));
         news.commit();
 
-        assertEquals(news, BridgeCaster.toNode(news.getNumber(), cloud));
-        assertEquals(news, BridgeCaster.toNode("" + news.getNumber(), cloud));
+        assertEquals(news, Casting.toNode(news.getNumber(), cloud));
+        assertEquals(news, Casting.toNode("" + news.getNumber(), cloud));
 
 
         assertEquals(news, Casting.toType(Node.class, cloud,  news.getNumber()));

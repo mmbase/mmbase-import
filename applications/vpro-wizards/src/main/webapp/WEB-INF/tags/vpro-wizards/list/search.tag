@@ -1,7 +1,7 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"
-%><%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0"
-%><%@taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util"
-%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0"%>
+<%@taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util"%>
+
 <%@ attribute name="nodetype" description="the node type this search will show" %>
 <%@ attribute name="wizardfile" description="the name of the wizard that is called to edit the node (minus .jsp). when empyt editing is disabled"  %>
 <%@ attribute name="collapsed" type="java.lang.Boolean" description="wether the search element is collapsed to a single bar. Default is false"  %>

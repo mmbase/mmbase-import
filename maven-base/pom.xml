@@ -14,7 +14,7 @@ See http://www.MMBase.org/license
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-cms</artifactId>
-    <version>2.0-SNAPSHOT</version>
+    <version>1.9-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -25,10 +25,22 @@ See http://www.MMBase.org/license
 
   <properties>
 
-    <servlet.version>2.5</servlet.version>
-    <jsp.version>2.1</jsp.version>
-    <jsp.groupId>javax.servlet.jsp</jsp.groupId>
-    <jstl.version>1.2</jstl.version>
+    <servlet.version>2.4</servlet.version>
+    <jsp.version>2.0</jsp.version>
+    <jsp.groupId>javax.servlet</jsp.groupId>
+    <jstl.version>1.1.2</jstl.version>
+    <taglib-standard.version>1.1.2</taglib-standard.version>
+
+
+    <!-- MMBase 2.0?
+    -->
+    <!--
+        <servlet.version>2.5</servlet.version>
+        <jsp.version>2.1</jsp.version>
+        <jsp.groupId>javax.servlet.jsp</jsp.groupId>
+        <jstl.version>1.2</jstl.version>
+    -->
+
 
     <log4j.version>1.2.14</log4j.version>
 
@@ -125,8 +137,8 @@ See http://www.MMBase.org/license
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <configuration>
-            <source>1.6</source>
-            <target>1.6</target>
+            <source>1.5</source>
+            <target>1.5</target>
             <maxmem>256M</maxmem>
             <fork>${compiler.fork}</fork>
             <showDeprecation>false</showDeprecation>
@@ -309,7 +321,7 @@ See http://www.MMBase.org/license
         </plugin>
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
-          <version>2.4</version><!-- The default version (2.2) contains a horrible bug (MCLEAN-39), and deletes the _contents_ of a symlinked directory -->
+          <version>2.3</version><!-- The default version (2.2) contains a horrible bug, and deletes the _contents_ of a symlinked directory -->
         </plugin>
       </plugins>
 
@@ -372,6 +384,11 @@ See http://www.MMBase.org/license
         <groupId>javax.servlet</groupId>
         <artifactId>jstl</artifactId>
         <version>${jstl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>taglibs</groupId>
+        <artifactId>standard</artifactId>
+        <version>${taglib-standard.version}</version>
       </dependency>
 
       <dependency>
@@ -604,6 +621,29 @@ See http://www.MMBase.org/license
       </build>
     </profile>
 
+    <profile>
+      <id>servlet24</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+    </profile>
+
+    <profile>
+      <id>servlet25</id>
+      <activation>
+        <property>
+          <name>servlet.version</name>
+          <value>2.5</value>
+        </property>
+      </activation>
+      <properties>
+        <servlet.version>2.5</servlet.version>
+        <jsp.version>2.1</jsp.version>
+        <jsp.groupId>javax.servlet.jsp</jsp.groupId>
+        <jstl.version>1.2</jstl.version>
+      </properties>
+
+    </profile>
     <profile>
       <id>development</id>
       <properties>

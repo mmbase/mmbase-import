@@ -131,7 +131,7 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
         outStream.close();
         errStream.close();
     }
-
+    
     public CommandTranscoder clone() {
         return  (CommandTranscoder) super.clone();
     }

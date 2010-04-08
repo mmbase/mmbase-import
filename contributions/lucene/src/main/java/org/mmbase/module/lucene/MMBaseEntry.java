@@ -76,42 +76,23 @@ public class MMBaseEntry implements IndexEntry {
         return getIdentifier();
     }
 
-    /**
-     * Adds the standard keys 'number', 'owner', 'builder' and returns a set of the steps which still needs adding to the
-     * document. The set contains 'null' if this is not a multilevel or the main step needs adding.
-     */
-    protected  Set<String> addStandardKeys(Document document) {
-
+    protected void addStandardKeys(Document document) {
         log.debug("Adding standard keys");
         // always add the 'element' number first, because that ensures that document.get("number") returns 'the' node
-        final String id = getIdentifier();
-        boolean elementAdded = false;
-        if (! Arrays.asList(document.getValues("number")).contains(id)) {
-            document.add(new Field("number",   id,  Field.Store.YES, Field.Index.NOT_ANALYZED));
-            elementAdded = true;
-        }
-        final Set<String> result = new HashSet<String>();
-
+        String id = getIdentifier();
+        document.add(new Field("number",   id,  Field.Store.YES, Field.Index.NOT_ANALYZED));
         if (multiLevel) {
             document.add(new Field("builder", elementManager.getName(),    Field.Store.YES, Field.Index.NOT_ANALYZED)); // keyword
-            log.debug("added builder as " + elementManager.getName() + " now checking " + node.getNodeManager().getFields());
-            for (org.mmbase.bridge.Field field : node.getNodeManager().getFields()) {
-                if (field.getName().indexOf(".") >= 0 ) {
-                    continue;
-                }
-
+            log.debug("added builder as " + elementManager.getName());
+            //for (org.mmbase.bridge.Field field : node.getNodeManager().getFields()) {
+            for (FieldIterator i = node.getNodeManager().getFields().fieldIterator(); i.hasNext();) {
+                org.mmbase.bridge.Field field = i.nextField();
+                if (field.getName().indexOf(".") >= 0 ) continue;
+                if (id.equals(field.getName())) continue; // was added already
 		try {
 	            Node subNode = node.getNodeValue(field.getName());
-                    String number = "" + subNode.getNumber();
-                    if ((elementAdded && number.equals(id)) ||
-                        (!Arrays.asList(document.getValues("number")).contains(number))) {
-                        document.add(new Field("number",  "" + subNode.getNumber(), Field.Store.YES, Field.Index.NOT_ANALYZED)); // keyword
-                        document.add(new Field("owner",  subNode.getStringValue("owner"), Field.Store.YES, Field.Index.NOT_ANALYZED));
-                        result.add(field.getName());
-                    } else {
-                        log.debug("Ignoring " + field.getName() + " because already indexed for this document");
-                        // ignore
-                    }
+        	    document.add(new Field("number",  "" + subNode.getNumber(), Field.Store.YES, Field.Index.NOT_ANALYZED)); // keyword
+        	    document.add(new Field("owner",  subNode.getStringValue("owner"), Field.Store.YES, Field.Index.NOT_ANALYZED));
 		} catch (Exception e) {
 		    log.warn("Failed to load " + field.getName() + "from " + node + " as a node value, continuing...");
 		}
@@ -120,44 +101,21 @@ public class MMBaseEntry implements IndexEntry {
             document.add(new Field("builder",  node.getNodeManager().getName(),    Field.Store.YES, Field.Index.NOT_ANALYZED)); // keyword
             log.debug("added builder as " + node.getNodeManager().getName());
             document.add(new Field("owner",  node.getStringValue("owner"), Field.Store.YES, Field.Index.NOT_ANALYZED));
-            result.add(null);
         }
-
-        return result;
 
     }
 
 
     public void index(Document document) {
-        final Map<String, Object> data = new HashMap<String, Object>();
+        Map<String, Object> data = new HashMap<String, Object>();
         if (log.isTraceEnabled()) {
-            log.trace("Indexing " + getIdentifier() + " (" + node.getNodeManager().getName() + ")");
+            log.trace("Indexing " + getIdentifier() + "(" + node.getNodeManager().getName() + ")");
         }
         storeData(data);
-        Set<String> prefixes = addStandardKeys(document);
-        if (log.isDebugEnabled()) {
-            log.debug("Found prefixes " + prefixes + " data " + data);
-        }
+        addStandardKeys(document);
         for (IndexFieldDefinition fieldDefinition : fields) {
             String fieldName = fieldDefinition.alias;
-            if (fieldName == null)  {
-                fieldName = fieldDefinition.fieldName;
-            }
-            {
-                String[] fieldNameParts = fieldDefinition.fieldName.split("\\.", 2);
-                if (fieldNameParts.length == 1) {
-                    if (!prefixes.contains(null)) {
-                        log.debug("Skipping fields " + fieldDefinition.fieldName + " (" + fieldName + ")");
-                        continue;
-                    }
-                } else {
-                    if (!prefixes.contains(fieldNameParts[0])) {
-                        log.debug("Skipping fields " + fieldDefinition.fieldName + " (" + fieldName + ")");
-                        continue;
-                    }
-                }
-            }
-            log.debug(fieldName);
+            if (fieldName == null)  fieldName = fieldDefinition.fieldName;
             if (document.getField(fieldName) == null || !fieldDefinition.keyWord) {
                 String value = getFieldDataAsString(data, fieldName);
                 if (fieldDefinition.escaper != null) {
@@ -267,14 +225,11 @@ public class MMBaseEntry implements IndexEntry {
      */
     @SuppressWarnings("fallthrough")
     protected void storeData(Map<String, Object> map) {
-
         Cloud cloud = elementManager.getCloud();
         for (IndexFieldDefinition fieldDefinition : fields) {
             String fieldName = fieldDefinition.fieldName;
             String alias = fieldDefinition.alias;
-            if (alias == null)  {
-                alias = fieldDefinition.fieldName;
-            }
+            if (alias == null)  alias = fieldDefinition.fieldName;
             String decryptionPassword = fieldDefinition.decryptionPassword;
             if (shouldIndex(fieldDefinition)) {
                 // some hackery

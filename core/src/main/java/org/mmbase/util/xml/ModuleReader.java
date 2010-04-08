@@ -61,9 +61,6 @@ public class ModuleReader extends DocumentReader {
         EntityResolver.registerPublicID(PUBLIC_ID_MODULE_1_0_FAULT, DTD_MODULE_1_0, ModuleReader.class);
         EntityResolver.registerPublicID(PUBLIC_ID_MODULE_1_0_FAULT2, DTD_MODULE_1_0, ModuleReader.class);
     }
-    static {
-        registerPublicIDs();
-    }
 
     public ModuleReader(InputSource is) {
         super(is, ModuleReader.class);

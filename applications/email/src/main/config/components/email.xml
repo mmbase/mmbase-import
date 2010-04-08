@@ -48,6 +48,7 @@
     </body>
   </block>
 
+  <!--
   <block
       classification="mmbase.email:50 mmbase.examples"
       name="emailexamples" mimetype="text/html">
@@ -59,6 +60,7 @@
       </class>
     </body>
   </block>
+  -->
 
   <block name="email-documentation"
          classification="mmbase.email:90 mmbase.documentation"

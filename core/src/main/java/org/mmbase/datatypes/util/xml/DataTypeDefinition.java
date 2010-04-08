@@ -457,21 +457,20 @@ public class DataTypeDefinition {
                 long value = DataTypeXml.getLongValue(conditionElement);
                 bDataType.setMinLength(value);
                 setRestrictionData(bDataType.getMinLengthRestriction(), conditionElement);
+                return true;
             } else if ("maxLength".equals(localName)) {
                 long value = DataTypeXml.getLongValue(conditionElement);
                 bDataType.setMaxLength(value);
                 setRestrictionData(bDataType.getMaxLengthRestriction(), conditionElement);
+                return true;
             } else if ("length".equals(localName)) {
                 long value = DataTypeXml.getLongValue(conditionElement);
                 bDataType.setMinLength(value);
                 setRestrictionData(bDataType.getMinLengthRestriction(), conditionElement);
                 bDataType.setMaxLength(value);
                 setRestrictionData(bDataType.getMaxLengthRestriction(), conditionElement);
-            } else {
-                return false;
+                return true;
             }
-            return true;
-
         }
         return false;
     }
@@ -535,7 +534,7 @@ public class DataTypeDefinition {
                 sDataType.setPattern(value, locale);
                 return true;
             }
-        } else if (dataType instanceof BinaryDataType) {
+        } else if (dataType instanceof BinaryDataType) { // not really a condition yet.
             BinaryDataType sDataType = (BinaryDataType) dataType;
             if ("pattern".equals(localName)) {
                 String value = DataTypeXml.getAttribute(conditionElement, "value");

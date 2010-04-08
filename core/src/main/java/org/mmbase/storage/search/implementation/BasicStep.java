@@ -76,10 +76,9 @@ public class BasicStep implements Step, java.io.Serializable {
      */
     public Step addNode(int nodeNumber) {
         if (! modifiable) throw new IllegalStateException();
-        if (nodeNumber < 0) {
-            throw new IllegalArgumentException("Invalid nodeNumber value: " + nodeNumber);
+        if (nodes == null) {
+            nodes =  new TreeSet<Integer>();
         }
-        if (nodes == null) nodes =  new TreeSet<Integer>();
         nodes.add(nodeNumber);
         return this;
     }
@@ -105,7 +104,7 @@ public class BasicStep implements Step, java.io.Serializable {
 
     // javadoc is inherited
     public SortedSet<Integer> getNodes() {
-        return nodes == null ? null : Collections.unmodifiableSortedSet(nodes);
+        return nodes == null ? null : (modifiable ? nodes : Collections.unmodifiableSortedSet(nodes));
     }
 
     // javadoc is inherited

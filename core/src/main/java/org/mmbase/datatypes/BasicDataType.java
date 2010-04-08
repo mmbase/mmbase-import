@@ -154,7 +154,11 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         handlers              = (Map<String, Handler<?>>) in.readObject();
         restrictions          = (Collection<Restriction<?>>) in.readObject();
         unmodifiableRestrictions = Collections.unmodifiableCollection(restrictions);
-        defaultProcessor      = (Processor) in.readObject();
+        try {
+            defaultProcessor      = (Processor) in.readObject();
+        } catch (OptionalDataException ode) {
+            log.service(ode.getClass() + " " + ode.getMessage() +  " (remote version probably not supporting defaultProcessor yet (< 1.9.3))");
+        }
     }
 
     public String getBaseTypeIdentifier() {
@@ -273,7 +277,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     public void checkType(Object value) {
         if (!isCorrectType(value)) {
             // customize this?
-            throw new IllegalArgumentException("DataType of '" + Casting.toString(value) + "' for '" + getName() + "' must be of type " + classType + " (but is " + (value == null ? value : value.getClass()) + ")");
+            throw new IllegalArgumentException("DataType of '" + value + "' for '" + getName() + "' must be of type " + classType + " (but is " + (value == null ? value : value.getClass()) + ")");
         }
     }
 
@@ -285,11 +289,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      */
     public final <D> D preCast(D value, Node node, Field field) {
         //public final Object preCast(Object value, Node node, Field field) {
-        try {
-            return preCast(value, getCloud(node, field), node, field);
-        } catch (Exception e) {
-            return value;
-        }
+        return preCast(value, getCloud(node, field), node, field);
     }
 
     /**
@@ -308,7 +308,6 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     protected <D> D preCast(D value, Cloud cloud, Node node, Field field) {
         if (value == null) return null;
         D preCast =  enumerationRestriction.preCast(value, cloud);
-        //System.out.println("Enumeration casted " + value + " to " + preCast);
         return preCast;
     }
 
@@ -322,29 +321,19 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * Override {@link #cast(Object, Cloud, Node, Field)}
      */
     public final C cast(Object value, final Node node, final Field field) {
-        try {
-            return castOrException(value, node, field);
-        } catch (CastException ce) {
-            log.service(ce.getMessage(), ce);
-            Cloud cloud = getCloud(getCloud(node, field));
-            return Casting.toType(classType, cloud, preCast(value, cloud, node, field));
-        }
-    }
-
-    /**
-     * @since MMBase-2.0
-     */
-    public final C castOrException(Object value, final Node node, final Field field) throws CastException {
         if (origin != null && (! origin.getClass().isAssignableFrom(getClass()))) {
             // if inherited from incompatible type, then first try to cast in the way of origin.
             // e.g. if origin is Date, but actual type is integer, then casting of 'today' works now.
             value = origin.cast(value, node, field);
         }
-        if (value == null) {
-            return null;
-        }
+        if (value == null) return null;
         Cloud cloud = getCloud(getCloud(node, field));
-        return cast(value, cloud, node, field);
+        try {
+            return cast(value, cloud, node, field);
+        } catch (CastException ce) {
+            log.service(ce.getMessage(), ce);
+            return Casting.toType(classType, cloud, preCast(value, cloud, node, field));
+        }
     }
 
     /**
@@ -370,15 +359,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                 // Corefield does not support getNodeManager
             }
         }
-        Cloud cloud = org.mmbase.bridge.util.CloudThreadLocal.currentCloud();
-        if (cloud != null) {
-            return cloud;
-        }
-        try {
-            return ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
-        } catch (NotFoundException nfe) {
-            return null;
-        }
+        return null;
     }
 
     private static Cloud classCloud = null;
@@ -599,11 +580,6 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             log.debug(ce);
             errors = typeRestriction.addError(errors, value, node, field);
             castValue = value;
-        } catch (IllegalArgumentException iae) {
-            log.debug(iae);
-            errors = typeRestriction.addError(errors, value, node, field);
-            castValue = value;
-
         }
         if (log.isDebugEnabled()) {
             log.debug("Validating cast value " + castValue);
@@ -996,22 +972,15 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         deleteProcessor = cp;
     }
 
-
     /**
      * {@inheritDoc}
      */
     public Processor getProcessor(int action) {
         Processor processor;
-        switch(action) {
-        case PROCESS_GET: {
+        if (action == PROCESS_GET) {
             processor =  getProcessors == null ? null : getProcessors[0];
-            break;
-        }
-        case PROCESS_SET: {
+        } else {
             processor =  setProcessors == null ? null : setProcessors[0];
-            break;
-        }
-        default: throw new IllegalArgumentException();
         }
         return processor == null ? CopyProcessor.getInstance() : processor;
     }
@@ -1024,10 +993,10 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             return getProcessor(action);
         } else {
             Processor processor;
-            switch(action) {
-            case PROCESS_GET: processor =  getProcessors == null ? null : getProcessors[processingType]; break;
-            case PROCESS_SET: processor =  setProcessors == null ? null : setProcessors[processingType]; break;
-            default: throw new IllegalArgumentException();
+            if (action == PROCESS_GET) {
+                processor =  getProcessors == null ? null : getProcessors[processingType];
+            } else {
+                processor =  setProcessors == null ? null : setProcessors[processingType];
             }
             return processor == null ? getProcessor(action) : processor;
         }
@@ -1037,10 +1006,10 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         if (processingType == -1) {
             processingType = 0;
         }
-        switch(action) {
-        case PROCESS_GET: return getProcessors == null ? null : getProcessors[processingType];
-        case PROCESS_SET: return setProcessors == null ? null : setProcessors[processingType];
-        default: throw new IllegalArgumentException();
+        if (action == PROCESS_GET) {
+            return getProcessors == null ? null : getProcessors[processingType];
+        } else {
+            return setProcessors == null ? null : setProcessors[processingType];
         }
     }
 
@@ -1062,21 +1031,14 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         if (processingType == Field.TYPE_UNKNOWN) {
             processingType = 0;
         }
-        switch (action) {
-        case PROCESS_GET: {
+        if (action == PROCESS_GET) {
             if (getProcessors == null) getProcessors = newProcessorsArray();
             getProcessors[processingType] = processor;
-            break;
-        }
-        case PROCESS_SET: {
+        } else {
             if (setProcessors == null) setProcessors = newProcessorsArray();
             setProcessors[processingType] = processor;
-            break;
-        }
-        default: throw new IllegalArgumentException();
         }
     }
-
 
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
     public String[] getStyleClasses() {
@@ -1144,6 +1106,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * cloning in java</a>
      */
     protected static abstract class StaticAbstractRestriction<D extends Serializable>  implements DataType.Restriction<D> {
+        private static final long serialVersionUID = -1921261633989010854L;
         protected final String name;
         protected final BasicDataType<?> parent;
         protected LocalizedString errorDescription;
@@ -1544,19 +1507,13 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
          * @see BasicDataType#preCast
          */
         protected <D> D preCast(D v, Cloud cloud) {
-            if (getValue() == null) {
-                return v;
-            }
+            if (getValue() == null) return v;
             try {
                 if (v == null) {
                     return null;
                 }
-                Object res;
-                if (!value.isEmpty()) {
-                    res = value.castKey(v, cloud);
-                } else {
-                    res = v;
-                }
+
+                Object res = value.castKey(v, cloud);
                 // type may have changed (to some value wrapper). Undo that:
                 return (D) Casting.unWrap(res);
 
@@ -1573,6 +1530,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             if (value == null || value.isEmpty()) {
                 return true;
             }
+
             Cloud cloud = BasicDataType.this.getCloud(node, field);
             Collection<Map.Entry<C, String>> validValues = getEnumeration(null, cloud, node, field);
             if (validValues.size() == 0) {
@@ -1613,7 +1571,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                 }
             }
             if (i < col.size()) {
-                buf.append(".(" + col.size() + " " + (col.size() - i) + " more ..");
+                buf.append(".(" + (col.size() - i) + " more ..)");
             }
             return buf.toString();
         }

@@ -9,8 +9,4 @@
     <minLength value="1" enforce="onchange" />
     <maxLength value="200" enforce="onchange"/>
   </datatype>
-
-  <datatype base="binary" id="mimetype_restricted_binary">
-    <pattern value="image/.*" />
-  </datatype>
 </datatypes>

@@ -15,28 +15,22 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Makes sure a mediasources node has its equivalent mediafragments,
+ * Makes sure a mediasources node has its equivalent mediafragments, 
  * a videosources needs a videofragments etc.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
  */
 public class FragmentTypeFixer implements CommitProcessor {
-    private static final Logger log = Logging.getLoggerInstance(FragmentTypeFixer.class);
+    private static Logger log = Logging.getLoggerInstance(FragmentTypeFixer.class);
     public final static String NOT = FragmentTypeFixer.class + ".NOT";
     private static final long serialVersionUID = 1L;
 
     public void commit(Node node, Field field) {
-        if (node.getCloud().getProperty(NOT) != null) {
-            log.info("Skipping because of " + NOT);
-            return;
-        }
-        assert node.getValue("number") != null;
+        if (node.getCloud().getProperty(NOT) != null) return;
         Node fragment = node.getNodeValue("mediafragment");
-        assert node.getValue("number") != null;
         if (fragment == null) {
-            log.info("No fragment yet " + node);
-            //System.out.println("No fragment yet " + node);
+            log.debug("No fragment yet");
             return;
         }
         if (fragment.getNumber() > 0) {
@@ -53,8 +47,6 @@ public class FragmentTypeFixer implements CommitProcessor {
             } else {
                 log.debug("Fragment of " + node.getNumber() + " has correct fragment already");
             }
-        } else {
-            log.warn("Fragment negative number" + fragment);
         }
     }
 

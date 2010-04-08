@@ -358,6 +358,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 dataType = field.getDataType();
             }
         }
+        log.debug("Found field provider " + fieldProvider + " node: " + node);
 
         String fieldName = field.getName();
 
@@ -421,10 +422,6 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             break;
         default:
         }
-        if (log.isDebugEnabled()) {
-            log.debug("Found field provider " + fieldProvider + " node " + node);
-        }
-
 
         Locale locale = getLocale();;
         log.debug("Using locale " + locale);

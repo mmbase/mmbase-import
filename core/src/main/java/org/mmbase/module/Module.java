@@ -50,15 +50,6 @@ public abstract class Module extends DescribedFunctionProvider {
     // A map containing all currently loaded modules by name.
     private static Map<String, Module> modules;
 
-    static {
-        try {
-            Locale locale = org.mmbase.util.LocalizedString.getLocale(org.mmbase.module.Module.getInitParameter("mmbaseroot", "language"));
-            org.mmbase.util.LocalizedString.setDefault(locale);
-        } catch (java.io.IOException ioe) {
-            log.error(ioe);
-        }
-
-    }
     /**
      * This function returns the Module's version number as an Integer.
      * It takes no parameters.

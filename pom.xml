@@ -13,14 +13,14 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
 
   <groupId>org.mmbase</groupId>
   <artifactId>mmbase-cms</artifactId>
-  <version>2.0-SNAPSHOT</version>
+  <version>1.9-SNAPSHOT</version>
   <name>MMBase</name>
 
   <packaging>pom</packaging>
 
   <properties>
     <compiler.fork>false</compiler.fork>
-    <mmbase.version.number>2.0</mmbase.version.number>
+    <mmbase.version.number>1.9</mmbase.version.number>
     <mmbase.version.postfix>-SNAPSHOT</mmbase.version.postfix>
     <mmbase.version>${mmbase.version.number}${mmbase.version.postfix}</mmbase.version>
     <!-- Cannot be project.version, because then an extension of this cannot have it's own version any more -->
@@ -608,7 +608,6 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
         <module>maven</module>
         <module>maven-base</module>
         <module>maven-base/applications</module>
-        <module>utils</module>
         <module>core</module>
         <module>applications</module>
         <module>contributions</module>
@@ -624,7 +623,6 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       <modules>
         <module>maven/assembly-descriptors</module>
         <module>core</module>
-        <module>utils</module>
         <module>applications</module>
         <module>contributions</module>
         <module>base-webapp</module>

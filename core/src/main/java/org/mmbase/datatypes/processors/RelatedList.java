@@ -58,7 +58,7 @@ public class RelatedList {
             NodeList otherNodes   = cloud.getCloudContext().createNodeList();
             NodeList relatedNodes = cloud.getCloudContext().createNodeList();
             for (Object v : Casting.toList(value)) {
-                otherNodes.add(BridgeCaster.toNode(v, cloud));
+                otherNodes.add(Casting.toNode(v, cloud));
             }
             relatedNodes.addAll(otherNodes);
 

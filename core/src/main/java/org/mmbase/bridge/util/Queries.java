@@ -13,6 +13,8 @@ import java.util.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.BasicQuery;
+import org.mmbase.module.core.ClusterBuilder;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.legacy.ConstraintParser;
 import org.mmbase.util.*;
@@ -35,7 +37,6 @@ abstract public class Queries {
     public static final int OPERATOR_NULL = 10001; // FieldIsNullConstraint
 
     private static final Logger log = Logging.getLoggerInstance(Queries.class);
-
 
     /**
      * Translates a string to a search direction constant. If the string is <code>null</code> then
@@ -63,7 +64,6 @@ abstract public class Queries {
             throw new BridgeException("'" + search + "' cannot be converted to a relation-step direction constant");
         }
     }
-
 
     /**
      * Creates a Query object using arguments for {@link Cloud#getList(String, String, String, String, String, String, String, boolean)}
@@ -133,9 +133,14 @@ abstract public class Queries {
 
 
         // create query object
+        //TODO: remove this code... classes under org.mmbase.bridge.util must not use the core
+
+        // getMultilevelSearchQuery must perhaps move to a utility container org.mmbase.storage.search.Queries or so.
+
+        ClusterBuilder clusterBuilder = MMBase.getMMBase().getClusterBuilder();
         int search = -1;
         if (searchDir != null) {
-            search = getRelationStepDirection(searchDir);
+            search = ClusterBuilder.getSearchDir(searchDir);
         }
 
         List<String> snodes   = StringSplitter.split(startNodes);
@@ -144,8 +149,10 @@ abstract public class Queries {
         List<String> orderVec = StringSplitter.split(orderby);
         List<String> d        = StringSplitter.split(directions);
         try {
-            Query query = new BasicQuery(cloud,
-                                         new BridgeClusterQueries(cloud).getMultiLevelSearchQuery(snodes, f, distinct ? "YES" : "NO", tables, constraints, orderVec, d, Collections.singletonList(search)));
+            // pitty that we can't use cloud.createQuery for this.
+            // but all essential methods are on ClusterBuilder
+            // XXX need casting here, something's wrong!!!
+            Query query = new BasicQuery(cloud, clusterBuilder.getMultiLevelSearchQuery(snodes, f, distinct ? "YES" : "NO", tables, constraints, orderVec, d, search));
             return query;
         } catch (IllegalArgumentException iae) {
             throw new BridgeException(iae.getMessage() + ". (arguments: startNodes='" + startNodes + "', path='" + nodePath + "', fields='" + fields + "', constraints='" + constraints + "' orderby='" + orderby + "', directions='" + directions + "', searchdir='" + searchDir + "')" , iae);
@@ -1033,9 +1040,7 @@ abstract public class Queries {
         NodeQuery query = node.getCloud().createNodeQuery(); // use the version which can accept more steps
         Step step       = query.addStep(nm);
         query.setNodeStep(step);
-        if (! node.isNew()) {
-            query.addNode(step, node);
-        }
+        Queries.setStartNode(query, node);
         return query;
     }
 
@@ -1049,10 +1054,6 @@ abstract public class Queries {
      */
     public static NodeQuery createRelatedNodesQuery(Node node, NodeManager otherNodeManager, String role, String direction) {
         NodeQuery query = createNodeQuery(node);
-        if (node.isNew()) {
-            // new nodes do not have related nodes, make sure the query returns nothing either
-            addConstraint(query, createMakeEmptyConstraint(query));
-        }
         if (otherNodeManager == null) {
             otherNodeManager = node.getCloud().getNodeManager("object");
         }
@@ -1072,10 +1073,6 @@ abstract public class Queries {
      */
     public static NodeQuery createRelationNodesQuery(Node node, NodeManager otherNodeManager, String role, String direction) {
         NodeQuery query = createNodeQuery(node);
-        if (node.isNew()) {
-            // new nodes do not have related nodes
-            addConstraint(query, createMakeEmptyConstraint(query));
-        }
         if (otherNodeManager == null) {
             otherNodeManager = node.getCloud().getNodeManager("object");
         }
@@ -1102,10 +1099,6 @@ abstract public class Queries {
      */
     public static NodeQuery createRelationNodesQuery(Node node, Node otherNode, String role, String direction) {
         NodeQuery query = createNodeQuery(node);
-        if (node.isNew()) {
-            // new nodes do not have related nodes
-            addConstraint(query, createMakeEmptyConstraint(query));
-        }
         NodeManager otherNodeManager = otherNode.getNodeManager();
         RelationStep step = query.addRelationStep(otherNodeManager, role, direction);
         Step nextStep = step.getNext();
@@ -1133,6 +1126,7 @@ abstract public class Queries {
     public static NodeList getRelatedNodes(Node node, NodeManager otherNodeManager, String role, String direction, String relationFields, String sortOrders) {
         NodeQuery q = Queries.createRelatedNodesQuery(node, otherNodeManager, role, direction);
         Queries.addRelationFields(q, role, relationFields, sortOrders);
+        sortUniquely(q);
         return q.getCloud().getList(q);
     }
 
@@ -1368,28 +1362,6 @@ abstract public class Queries {
         }
     }
 
-    // The start node is hacked in the query when it is new, and hence query object forbids it to be an actual startnode.
-
-    private static final Node getStartNodeTaglibHack(Query query) {
-        Step firstStep = query.getSteps().get(0);
-        // probably this startNode is _new_ See remarks in RelatedNodesConstainer
-        Constraint c = query.getConstraint();
-        if (c instanceof CompositeConstraint) {
-            for (Constraint sub : ((CompositeConstraint) c).getChilds()) {
-                if (sub instanceof FieldValueConstraint) {
-                    FieldValueConstraint fvc = (FieldValueConstraint) sub;
-                    if (fvc.getField().getStep().equals(firstStep) && fvc.getField().getFieldName().equals("owner")) {
-                        c = fvc;
-                        break;
-                    }
-                }
-            }
-        }
-        FieldValueConstraint fvc = (FieldValueConstraint) c;
-        String value = (String) fvc.getValue();
-        return query.getCloud().getNode(value);
-    }
-
 
     /**
      * Explores a query object, and creates a certain new relation object, which would make the
@@ -1437,7 +1409,7 @@ abstract public class Queries {
                     startNode = cloud.getNode(nodes1.iterator().next());
                 }
                 if (startNode == null) {
-                    startNode = getStartNodeTaglibHack(q);
+                    throw new RuntimeException("No start node found in " + q);
                 }
 
 
@@ -1468,13 +1440,9 @@ abstract public class Queries {
 
 
     /**
-     * Deletes the relations with a node from a queries resulting relations list. 
-     * If multiple relations to a node exist all get removed.
-     * 
+     *
      * @throws UnsupportedOperationException If it cannot be determined how the node should be related.
-     * @param q query from which resulting list the node should be removed from
-     * @param n node to remove
-     * @return Removed relation nodes
+     * @return Removed relations.
      * @since MMBase-1.8.6
      */
     public static NodeList removeFromResult(Query q, Node n) {
@@ -1490,8 +1458,6 @@ abstract public class Queries {
      *
      * @throws UnsupportedOperationException If it cannot be determined how the node is related.
      * @since MMBase-1.9.1
-     * @param q query that constructs the list 
-     * @param n node to which relations are related
      * @return The relation nodes
      * @throws NullPointerException if q or n is <code>null</code>
      */
@@ -1630,6 +1596,40 @@ abstract public class Queries {
         return q.createConstraint(sf, new Integer(-1));
     }
 
+    /**
+     * Fixes the nodes of the steps of query.
+     * @since MMBase-1.9.3
+     */
+    public static Query fixQuery(Query query, Map<Integer, Integer> resolution) {
+        NodeQuery toChange = null;
+        for (int i = 0; i < query.getSteps().size(); i++) {
+            Step s = query.getSteps().get(i);
+            Set<Integer> nodes = s.getNodes();
+            if (nodes != null) {
+                SortedSet<Integer> newNodes = new TreeSet<Integer>();
+                for (Integer n : nodes) {
+                    Integer newNumber = resolution.get(n);
+                    if (newNumber != null) {
+                        newNodes.add(newNumber);
+                    } else {
+                        if (n < 0) {
+                            log.warn("Could not resolve " + n + " with " + resolution);
+                        }
+                        newNodes.add(n);
+                    }
+                }
+                if (! newNodes.equals(nodes)) {
+                    if (toChange == null) {
+                        toChange = (NodeQuery) query.clone();
+                    }
+                    toChange.getSteps().get(i).getNodes().clear();
+                    toChange.getSteps().get(i).getNodes().addAll(newNodes);
+                }
+            }
+        }
+        return toChange;
+    }
+
 
 
     /**
@@ -1655,6 +1655,9 @@ abstract public class Queries {
      * @since MMBase-1.9.2
      */
     public static int reorderResult(NodeQuery q, List<Integer> desiredOrder) {
+        if (log.isDebugEnabled()) {
+            log.debug(" " + q.toSql() + " must become " + desiredOrder);
+        }
         List<SortOrder> sos = q.getSortOrders();
         if (sos == null || sos.size() == 0) {
             throw new IllegalArgumentException("The query " + q + " is not sorted");
@@ -1679,19 +1682,14 @@ abstract public class Queries {
         Cloud cloud = clone.getCloud();
         if (cloud instanceof Transaction) {
             Transaction trans = (Transaction) cloud;
-            if (trans.isCommitted()) {
-                cloud = trans.getNonTransactionalCloud();
-            }
+            cloud = trans.getNonTransactionalCloud();
         }
 
         Transaction t = cloud.getTransaction(Queries.class.getName() + ".orderResults");
 
         if (! orderStep.equals(nodeStep)) {
             Field f = t.getNodeManager(orderStep.getTableName()).getField("number");
-            StepField sf = clone.createStepField(orderStep, f);
-            if (! clone.getFields().contains(sf)) {
-                clone.addField(orderStep, f);
-            }
+            clone.addField(orderStep, f);
         }
 
         List<Integer> desiredOrderCopy = new ArrayList<Integer>(desiredOrder);
@@ -1715,8 +1713,8 @@ abstract public class Queries {
             an.putAnnotation("desired", index);
             list.add(an);
         }
-        if (list.size() <= 1) {
-            // 0 or 1 long only, that's always correctly ordered
+        if (list.size() < 1) {
+            log.debug(list.size() + " long only, that's always correctly ordered");
             return 0;
         }
 
@@ -1868,71 +1866,6 @@ abstract public class Queries {
 
 
     /**
-     * Used by {@link #setStartNode}/{@link #getStartNode}
-     * @since MMBase-1.9.2
-     */
-    private static boolean matchesHelpConstraint(Step firstStep, FieldValueConstraint fvc) {
-        return fvc.getField().getStep().equals(firstStep) && fvc.getField().getFieldName().equals("owner");
-    }
-
-    /**
-     * Used by {@link #setStartNode}/{@link #getStartNode}
-     * @since MMBase-1.9.2
-     */
-    private static FieldValueConstraint getStartNodeConstraint(NodeQuery query) {
-        Step firstStep = query.getSteps().get(0);
-        Constraint c = query.getConstraint();
-        if (c instanceof CompositeConstraint) {
-            for (Constraint sub : ((CompositeConstraint) c).getChilds()) {
-                if (sub instanceof FieldValueConstraint) {
-                    FieldValueConstraint fvc = (FieldValueConstraint) sub;
-                    if (matchesHelpConstraint(firstStep, fvc)) {
-                        c = fvc;
-                        break;
-                    }
-                }
-            }
-        }
-        return  (FieldValueConstraint) c;
-    }
-    /**
-     * Used by {@link #setStartNode}/{@link #getStartNode}
-     * @since MMBase-1.9.2
-     */
-    private static void dropStartNodeConstraint(NodeQuery query) {
-        Constraint c = query.getConstraint();
-        if (c == null) return;
-        if (c instanceof CompositeConstraint) {
-            Step firstStep = query.getSteps().get(0);
-            org.mmbase.storage.search.implementation.BasicCompositeConstraint composite =
-                (org.mmbase.storage.search.implementation.BasicCompositeConstraint) c;
-            List<Constraint> removes = new ArrayList<Constraint>();
-            for (Constraint sub : composite.getChilds()) {
-                if (sub instanceof FieldValueConstraint) {
-                    FieldValueConstraint fvc = (FieldValueConstraint) sub;
-                    if (matchesHelpConstraint(firstStep, fvc)) {
-                        removes.add(sub);
-                    }
-                    if (fvc.getField().getStep().equals(firstStep) && fvc.getField().getFieldName().equals("number") && fvc.getValue().equals(new Integer(-1))) {
-                        // drop the make empty constraint
-                        removes.add(sub);
-                    }
-                }
-            }
-            for (Constraint sub : removes) {
-                composite.removeChild(sub);
-            }
-            if (composite.getChilds().size() == 0) {
-                query.setConstraint(null);
-            }
-        } else if (c instanceof FieldValueConstraint) {
-            if (matchesHelpConstraint(query.getSteps().get(0), (FieldValueConstraint) c)) {
-                query.setConstraint(null);
-            }
-        }
-    }
-
-    /**
      * This puts the node as 'startnode' in the query (propably a 'related nodes' query.
      * If the node is uncommited yet, this cannot be done with the normal {@link Query#addNode} method.
      * The information will be put in the query in another way then, so that at least {@link #getStartNode} will give the correct result.
@@ -1942,20 +1875,7 @@ abstract public class Queries {
      * @since MMBase-1.9.2
      */
     public static void setStartNode(NodeQuery query, Node startNode) {
-        if (startNode.getNumber() < 0) { // new node does not have relations, we know that.
-
-            // The query must be made empty on one hand, and on the other hand it must store the inforrmation about this startNode.
-            // The start-node is needed in #getNodeList(Query) when usetransaction="true"
-
-            // This hack stores the tempory node in a constraint on owner, and can be picked up again in #getNodeList(Query)
-            Queries.addConstraint(query, Queries.createMakeEmptyConstraint(query)); // to make absolutely sure nothing is found
-            StepField f = query.createStepField(query.getSteps().get(0), startNode.getNodeManager().getField("owner"));
-            Queries.addConstraint(query, query.createConstraint(f, Queries.getOperator("="), startNode.getStringValue("_number")));
-
-        } else {
-            dropStartNodeConstraint(query);
-            query.addNode(query.getSteps().get(0), startNode);
-        }
+        query.addNode(query.getSteps().get(0), startNode);
     }
     /**
      * This method is the counterpart of {@link #setStartNode} and receives 'the' startnode from the Query (which may not be committed).
@@ -1964,15 +1884,7 @@ abstract public class Queries {
     public static Node getStartNode(NodeQuery nq, Cloud cloud) {
         Step firstStep = nq.getSteps().get(0);
         Set<Integer> nodes = firstStep.getNodes();
-
-        if (nodes == null || nodes.size() == 0) {
-            // probably this startNode is _new_ See remarks in #setStartNode
-            FieldValueConstraint fvc = getStartNodeConstraint(nq);
-            String value = (String) fvc.getValue();
-            return cloud.getNode(value);
-        } else {
-            return cloud.getNode(nodes.iterator().next());
-        }
+        return cloud.getNode(nodes.iterator().next());
     }
 
     /**
@@ -1999,6 +1911,7 @@ abstract public class Queries {
 
         NodeQuery clone = (NodeQuery) q.clone();
         Queries.addSortedFields(clone);
+        Queries.sortUniquely(clone);
 
         Transaction t = (Transaction) startNode.getCloud();
 
@@ -2051,15 +1964,12 @@ abstract public class Queries {
         // The following code finds the newly made relations for this query, and adds them to the result
         for (Node n : t.getNodes()) {
             if (n.getNumber() < 0 && ! n.getStringValue("_exists").equals("nolonger")) { // NEW and not DELETED again
+                String tempNumber = n.getStringValue("_number");
                 if (n instanceof Relation) {
                     Relation r = (Relation) n;
-                    if (log.isDebugEnabled()) {
-                        log.debug("Considering" + r);
-                    }
+                    log.debug("Considering" + r);
                     if (r.getIntValue("rnumber") != role) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("Role of " + r + "  is not " + role);
-                        }
+                        log.debug("Role of " + r + "  is not " + role);
                         continue;
                     }
 
@@ -2103,15 +2013,11 @@ abstract public class Queries {
                     }
 
                 } else {
-                    if (log.isDebugEnabled()) {
-                        log.debug("" + n + " is not a relation");
-                    }
+                    log.debug("" + n + " is not a relation");
 
                 }
             } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("" + n + " is deleted or not new");
-                }
+                log.debug("" + n + " is deleted or not new");
             }
         }
 
@@ -2141,5 +2047,90 @@ abstract public class Queries {
     }
 
 
+    /**
+     * Given a Query, and Node, produces a new query, where the first part of the query is replaced by the Node.
+     * So, e.g. if you have a query mags,posrel,news,posrel,images and a news node, you can feed this query, and
+     * the node into this method (with step is 2), to produce a query news,posrel,images, where the start node is the given news node. All
+     * constraints, nodes, and aliases on the remainings steps are copied.
+     *
+     * The query is a NodeQuery, where the NodeStep is the (normal) step after the node.
+     *
+     * @param q The query to base the new query
+     * @param node The node to start the query with. If this is <code>null</code> then step must be 0, and the original query will be
+     * returned, only converted to a NodeQuery for the first step.
+     * @param The element step. The first non-relation step after the first step where the node is fixed.
+     * @exception ClassCastException if step+1 is not a relationstep. (This restriction may perhaps be removed).
+     * @since MMBase-1.9.3
+     */
+    public static NodeQuery getSubQuery(final Query q, final Node node, int step) {
+
+        Cloud cloud = q.getCloud();
+        NodeQuery subQuery = cloud.createNodeQuery();
+
+        if (step % 2 != 0) {
+            throw new UnsupportedOperationException("Only non-relation steps are supported, so step must be even (now " + step + ")");
+        }
+        if (node != null) {
+            Step firstStep = q.getSteps().get(step - 2);
+            Step copyFirstStep = subQuery.addStep(cloud.getNodeManager(firstStep.getTableName()));
+            subQuery.addNode(copyFirstStep, node);
+            addConstraint(subQuery, copyConstraint(q.getConstraint(), firstStep, subQuery, copyFirstStep));
+        } else {
+            if (step == 0) {
+                Step sourceStep = q.getSteps().get(0);
+                Step destStep = subQuery.addStep(cloud.getNodeManager(sourceStep.getTableName()));
+                addConstraint(subQuery, copyConstraint(q.getConstraint(), sourceStep, subQuery, destStep));
+                subQuery.setAlias(destStep, sourceStep.getAlias());
+                addConstraint(subQuery, copyConstraint(q.getConstraint(), sourceStep, subQuery, destStep));
+                step += 2;
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        for (int i = step - 1; i < q.getSteps().size(); i+=2) {
+            RelationStep sourceRelStep = (RelationStep) q.getSteps().get(i);
+
+            // Seems a bit cumbersome...
+            Integer role = sourceRelStep.getRole();
+            log.debug("Found role " + role);
+            String roleAsString = role == null ? null : cloud.getNode(role).getStringValue("sname");
+
+            RelationStep destRelStep = subQuery.addRelationStep(cloud.getNodeManager(sourceRelStep.getNext().getTableName()),
+                                                                roleAsString,
+                                                                RelationStep.DIRECTIONALITY_DESCRIPTIONS[sourceRelStep.getDirectionality()]);
+
+            addConstraint(subQuery, copyConstraint(q.getConstraint(), sourceRelStep, subQuery, destRelStep));
+            if (sourceRelStep.getNodes() != null) {
+                for (int n : sourceRelStep.getNodes()) {
+                    subQuery.addNode(destRelStep, n);
+                }
+            }
+            subQuery.setAlias(destRelStep, sourceRelStep.getAlias());
+
+
+            Step sourceStep = sourceRelStep.getNext();
+            Step destStep = destRelStep.getNext();
+            addConstraint(subQuery, copyConstraint(q.getConstraint(), sourceStep, subQuery, destStep));
+
+            if (sourceStep.getNodes() != null) {
+                for (int n : sourceStep.getNodes()) {
+                    subQuery.addNode(destStep, n);
+                }
+            }
+            subQuery.setAlias(destStep, sourceStep.getAlias());
+            copySortOrders(q.getSortOrders(), sourceRelStep, subQuery, destRelStep);
+            copySortOrders(q.getSortOrders(), sourceStep, subQuery, destStep);
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Setting nodeStep to " + subQuery.getSteps().get(2));
+        }
+        if (node != null) {
+            subQuery.setNodeStep(subQuery.getSteps().get(2));
+        } else {
+            subQuery.setNodeStep(subQuery.getSteps().get(0));
+        }
+        subQuery.setDistinct(true);
+        return subQuery;
+    }
 
 }

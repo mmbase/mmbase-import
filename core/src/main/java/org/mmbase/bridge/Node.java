@@ -559,7 +559,7 @@ public interface Node extends Comparable<Node> {
      * This action fails if the current node is not in edit mode.
      * If the node is in a transaction, nothing happens - actual committing occurs through the transaction.
      * @throws BridgeException
-     * @throws IllegalArgumentException If a certain value of the node is invalid according to it's data type.
+     * @throws IllegalArgumentException If certain value of the node are invalid according to their data type.
      */
     void commit();
 
@@ -571,7 +571,7 @@ public interface Node extends Comparable<Node> {
     void cancel();
 
     /**
-     * Removes the Node. Throws an exception if it still has relations. Like delete(false).
+     * Removes the Node. Throws an exception if still has relations. Like delete(false).
      */
     void delete();
 

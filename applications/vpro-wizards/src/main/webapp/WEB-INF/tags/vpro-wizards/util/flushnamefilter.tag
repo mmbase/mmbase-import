@@ -33,8 +33,8 @@
             <c:set var="type" ><mm:nodeinfo type="type"/></c:set>
                 <jsp:useBean id="filter" class="org.mmbase.applications.vprowizards.spring.cache.FlushNameTemplateBean"/>
                 <jsp:setProperty name="filter" property="template" value="${flushname}"/>
-                <jsp:setProperty name="filter" property="nodeNumber" value="${nodenr}"/>
-                <jsp:setProperty name="filter" property="nodeType" value="${type}"/>
+                <jsp:setProperty name="filter" property="nodenr" value="${nodenr}"/>
+                <jsp:setProperty name="filter" property="type" value="${type}"/>
                 <jsp:setProperty name="filter" property="cloud" value="${cloud}"/>
             <c:set var="result"><jsp:getProperty name="filter" property="template"/></c:set>
         </mm:node>

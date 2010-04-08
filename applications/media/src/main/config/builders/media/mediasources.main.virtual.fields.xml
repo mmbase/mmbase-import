@@ -6,7 +6,7 @@
     xmlns="http://www.mmbase.org/xmlns/builder"
     >
   <!--
-       Sometimes one of the sources is leading (e.g. uploaded by a user), and can as well mirror some fields of the associated fragment.
+       Sometimes one of the sources is leading (e.g. uploaded by a user), and can as well mirrors some fields of the associated fragment.
   -->
 
   <field

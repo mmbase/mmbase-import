@@ -62,8 +62,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @since MMBase-1.8
      */
     private Map<String, Object> oldValues = null;
-    
-    
+
+
     /**
      * Holds the name - value pairs of this node (the node's fields).
      * Most nodes will have a 'number' and an 'otype' field, and fields which will differ by builder.
@@ -97,7 +97,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * since the last commit.
      */
     private Set<String> changed = null;
-    
+
     /**
      * Pointer to the parent builder that is responsible for this node.
      * Note: this may on occasion (due to optimization) differ for the node's original builder.
@@ -214,7 +214,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         }
         return sizes;
     }
-    
+
     /**
      * Returns the actual builder of the node.
      * Note that it is possible that, due to optimization, a node is currently associated with

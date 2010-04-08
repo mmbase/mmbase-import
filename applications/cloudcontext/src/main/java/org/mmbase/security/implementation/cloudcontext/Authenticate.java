@@ -88,8 +88,7 @@ public class Authenticate extends CloudContextAuthentication {
     /**
      * @since MMBase-1.9
      */
-    @Override
-    public int getNode(UserContext user) throws SecurityException {
+    @Override public int getNode(UserContext user) throws SecurityException {
         return ((User) user).getNode().getNumber();
     }
 
@@ -231,8 +230,7 @@ public class Authenticate extends CloudContextAuthentication {
     }
 
 
-    @Override
-    public String[] getTypes(int method) {
+    @Override public String[] getTypes(int method) {
         if (allowEncodedPassword) {
             if (method == METHOD_ASIS) {
                 return new String[] {"anonymous", "name/password", "name/encodedpassword", "class"};
@@ -256,8 +254,7 @@ public class Authenticate extends CloudContextAuthentication {
             PARAMETER_ENCODEDPASSWORD,
             new Parameter.Wrapper(PARAMETERS_USERS) };
 
-    @Override
-    public Parameters createParameters(String application) {
+    @Override public Parameters createParameters(String application) {
         application = application.toLowerCase();
         if ("anonymous".equals(application)) {
             return new Parameters(PARAMETERS_ANONYMOUS);
