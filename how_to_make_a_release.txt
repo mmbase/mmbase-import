@@ -30,16 +30,16 @@ $Id$
 
  - Build following dirs first with -N
    maven-base
-   maven-base/applications
    maven
    maven/maven-mmbase-plugin
-   applications
+   maven-base/applications
+  applications
    /
 
  - Then:
    mvn -P'deploy,!development,!servlet25' clean deploy
    cd base-app
-   mvn -P'deploy,!development,setvlet25' clean deploy
+   mvn -P'deploy,!development,servlet25' clean deploy
 
 
 
