@@ -10,7 +10,7 @@
   <h3><a href="http://www.mmbase.org/jira/browse/MMB-1248">MMB-1248</a></h3>
 
   <mm:import externid="wizards"><mm:setting name="location" /></mm:import>
-  <mm:import id="jsps">${wizards}/jsp</mm:import>
+  <mm:import id="jsps">${wizards}jsp</mm:import>
 
   <mm:import id="templates">/mmbase/components/editwizard/test/</mm:import>
   <mm:import id="referrer"><mm:url absolute="context" /></mm:import>
