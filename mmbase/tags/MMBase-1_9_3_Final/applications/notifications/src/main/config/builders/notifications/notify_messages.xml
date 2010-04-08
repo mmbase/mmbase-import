@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="notify_messages" maintainer="mmbase.org" version="1" extends="object">
+
+  <fieldlist>
+
+    <field name="type">
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <datatype base="notify_types" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="message">
+      <descriptions>
+        <description xml:lang="en">Message of the to be send notification.</description>
+      </descriptions>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="64000" />
+      </datatype>
+    </field>
+
+  </fieldlist>
+
+</builder>

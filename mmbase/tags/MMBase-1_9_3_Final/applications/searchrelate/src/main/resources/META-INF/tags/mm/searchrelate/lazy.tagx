@@ -1,0 +1,44 @@
+<jsp:root
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    version="2.0"
+    >
+  <!--
+      @author Michiel Meeuwissen
+      @version $Id$
+  -->
+
+  <jsp:directive.tag
+      description="This tag is meant to be used as a child of mm-sr:toggle. Using the 'page'
+                   attribute you specify what must be shown when the toggled block is expanded.
+                   The point is that it is only loaded at the first time that happens. This may be useful
+                   if the items itself contain mm-sr-relatednodes tags and loading everyting at once may
+                   become somewhat costly. That can be avoided by lazy-loading."
+      />
+
+
+  <jsp:directive.attribute name="page" required="true" />
+  <jsp:directive.include file="/mmbase/searchrelate/list/parameters.jspf" />
+
+  <c:choose>
+    <c:when test="${fn:indexOf(page, '/') eq 0}">
+      <mm:import id="absolutehref">${page}</mm:import>
+    </c:when>
+    <c:otherwise>
+      <mm:import id="absolutehref">${mm:directory(parameters.referrer)}/${page}</mm:import>
+    </c:otherwise>
+  </c:choose>
+
+  <div class="unloaded lazy">
+    <mm:link  page="${absolutehref}" absolute="context">
+      <a href="${_}" class="lazyloading node_${_node}">
+        <img class='loader icon' src="${mm:link('/mmbase/style/ajax-loader.gif')}" />
+      </a>
+    </mm:link>
+  </div>
+
+
+</jsp:root>

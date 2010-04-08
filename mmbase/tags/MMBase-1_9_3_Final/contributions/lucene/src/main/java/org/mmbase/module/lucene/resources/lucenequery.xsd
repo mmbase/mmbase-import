@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.mmbase.org/xmlns/searchquery"
+    xmlns="http://www.mmbase.org/xmlns/searchquery"
+    xmlns:mmsq="http://www.mmbase.org/xmlns/searchquery"
+    version="1.0">
+  <xsd:annotation>
+    <xsd:documentation>Lucene search query redefinition</xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:redefine schemaLocation="http://www.mmbase.org/xmlns/searchquery.xsd">
+
+    <xsd:complexType name="SearchQuery">
+      <xsd:complexContent>
+        <xsd:extension base="SearchQuery">
+          <xsd:sequence>
+            <xsd:element ref="related" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element ref="relatednodes" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+          <xsd:attribute name="optimize" type="xsd:string"/>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Field">
+      <xsd:complexContent>
+        <xsd:extension base="mmsq:Field">
+          <xsd:attribute name="alias" type="xsd:string"/>
+          <xsd:attribute name="keyword" type="xsd:string"/>
+          <xsd:attribute name="escape" type="xsd:string"/>
+          <xsd:attribute name="store" type="xsd:string"/>
+          <xsd:attribute name="password" type="xsd:string"/>
+          <xsd:attribute name="boost" type="xsd:float"/>
+          <xsd:attribute name="split" type="xsd:string" default="" />
+          <xsd:attribute name="multiple" type="type_multiple" default="add">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">
+                The multiple attribute can be used to inform what must happen if, during indexing,
+                in one Lucene Document the same field is encountered again. The default is simply to
+                add this one to the document too (as permitted by the Lucene interface). But you can
+                also specify 'first' which means that nothing happens if the field is already in the
+                document, or 'last' which means the the preexisting field is firstly removed from the
+                Document.
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+  </xsd:redefine>
+
+  <xsd:element name="related" type="SearchQuery" />
+  <xsd:element name="relatednodes" type="SearchQuery" />
+
+  <xsd:simpleType name="type_multiple">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="add"/>
+      <xsd:enumeration value="first"/>
+      <xsd:enumeration value="last"/>
+      <!--
+          we could make  e.g. also
+          <xsd:enumeration value="biggest"/>
+          <xsd:enumeration value="smallest"/>
+      -->
+    </xsd:restriction>
+  </xsd:simpleType>
+
+
+
+</xsd:schema>

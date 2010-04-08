@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase//DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="nieuws">
+  <title>Enquete</title>
+  <action type="create">
+    <object type="poll">
+    </object>
+  </action>
+
+  <action type="delete" />
+
+  <action type="load">
+    <relation destinationtype="answer" role="posrel" >
+      <object />
+    </relation>
+  </action>
+
+  <form-schema id="hoi">
+    <title>Enquete</title>
+    <field name="question" dtrequired="true" />
+    <field name="description" />
+    <field name="begin" />
+    <field name="end" />
+
+    <list role="posrel" destination="answer"  orderby="field[@name='pos']" minoccurs="2">
+      <title>Antwoorden</title>
+      <item displaytype="section" >
+        <field name="answer" />
+        <field name="description" />
+        <field name="total_answers" />
+      </item>
+      <command name="insert" />
+      <action type="create">
+        <relation role="posrel" destinationtype="answer">
+          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+          <object type="answer">
+            <field name="total_answers">0</field>
+          </object>
+        </relation>
+      </action>
+    </list>
+  </form-schema>
+</wizard-schema>
+
+
+
+

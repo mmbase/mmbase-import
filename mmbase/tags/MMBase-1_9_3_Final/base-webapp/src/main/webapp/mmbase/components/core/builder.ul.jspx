@@ -1,0 +1,37 @@
+<mm:cloud
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    jspvar="cloud"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.page import="org.mmbase.bridge.*" />
+
+  <mm:import externid="b" jspvar="builder" required="true" />
+  <jsp:declaration>
+    NodeManagerList getDirectDescendants(NodeManager nm) {
+      NodeManagerList list = nm.getCloud().getCloudContext().createNodeManagerList();
+      for (NodeManager n : nm.getDescendants()) {
+         if (n.getParent() == nm) {
+           list.add(n);
+         }
+      }
+      return list;
+    }
+  </jsp:declaration>
+
+  <ul>
+    <jsp:scriptlet>
+      for (org.mmbase.bridge.NodeManager nm : getDirectDescendants(cloud.getNodeManager(builder))) {
+    </jsp:scriptlet>
+    <li>
+      <mm:link>
+        <mm:param name="builder"><jsp:expression>nm.getName()</jsp:expression></mm:param>
+        <a href="${_}"><jsp:expression>nm.getName()</jsp:expression></a>
+      </mm:link>
+      <mm:include page="builder.ul.jspx">
+        <mm:param name="b"><jsp:expression>nm.getName()</jsp:expression></mm:param>
+      </mm:include>
+    </li>
+    <jsp:scriptlet>}</jsp:scriptlet>
+  </ul>
+</mm:cloud>

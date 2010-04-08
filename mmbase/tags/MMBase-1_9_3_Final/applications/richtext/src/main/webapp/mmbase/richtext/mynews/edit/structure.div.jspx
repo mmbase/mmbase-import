@@ -1,0 +1,41 @@
+<!-- This is basicly the 'menu-editor' -->
+<div
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <mm:import id="tab">structure</mm:import>
+
+
+  <jsp:directive.include file="wizard.imports.jspx" /> 
+  <mm:content type="application/xml">
+
+    <mm:cloud rank="basic user" jspvar="cloud">
+      <mm:import externid="home">my.rich.magazine</mm:import>
+      <mm:notpresent referid="nodenumber">
+        <mm:node number="$home">
+          <p> 
+            <mm:maywrite>
+              <mm:import id="wizard">tasks/structure/categories</mm:import>
+              <mm:link referids="loginsessionname,referrer,language,wizard" page="${jsps}wizard.jsp">
+                <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
+                <a href="${_}">Change structure</a>
+              </mm:link>
+            </mm:maywrite>
+          </p>
+          <mm:relatednodescontainer type="categories" role="posrel" searchdirs="destination">
+            <mm:sortorder field="posrel.pos" />
+            <mm:tree type="categories" role="posrel" orderby="posrel.pos" searchdir="destination">
+              <mm:grow>                      
+                <![CDATA[<ul>]]>
+                <mm:onshrink><![CDATA[</ul>]]></mm:onshrink>
+              </mm:grow>
+              <jsp:directive.include file="struct.li.jspx" />
+              <mm:shrink />
+            </mm:tree>
+          </mm:relatednodescontainer>
+        </mm:node>
+      </mm:notpresent>
+    </mm:cloud>    
+  </mm:content>
+</div>

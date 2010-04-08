@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<div
+    class="mm_c c_editwizard b_examples ${requestScope.componentClassName}"
+    id="${requestScope.componentId}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <table>
+    <tr>
+      <th class="main" colspan="3">MMBase EditWizard Examples</th>
+    </tr>
+    <tr>
+      <td colspan="3">
+        <mm:link page="magazine">
+          <mm:frameworkparam name="component" value="mynews" />
+          <mm:frameworkparam name="urlconverter" value="org.mmbase.mynews.MyNewsUrlConverter" />
+          <p>Lots of these examples edit data from the <a href="${_}">My News example</a>.</p>
+        </mm:link>
+      </td>
+    </tr>
+    <tr>
+      <th class="header" colspan="3">Wizards of various complexity</th>
+    </tr>
+    <tr>
+      <th>Name</th>
+      <th colspan="2">Description</th>
+    </tr>
+
+    <tr>
+      <td>Simple Wizards</td><td>A very simple example.</td>
+      <td class="link" >
+        <mm:link page="simple.example">
+          <a href="${_}"><img alt="&gt;" src="${mm:link('/mmbase/style/images/next.png')}" /></a>
+        </mm:link>
+      </td>
+    </tr>
+    <tr>
+      <td>Wizards in Dutch</td><td>Also very simple. Shows how to internationalize (to dutch),</td>
+      <td class="link" >
+        <mm:link page="dutch.example">
+          <a href="${_}"><img alt="&gt;" src="${mm:link('/mmbase/style/images/next.png')}" /></a>
+        </mm:link>
+      </td>
+    </tr>
+    <tr>
+      <td>Adding a Logo</td><td>This example shows how to add a logo</td>
+      <td class="link" >
+        <mm:link page="logo.example">
+          <a href="${_}"><img alt="&gt;" src="${mm:link('/mmbase/style/images/next.png')}" /></a>
+        </mm:link>
+      </td>
+    </tr>
+    <tr>
+      <td>New Field Format Type</td><td>This example shows how to create a new ftype (field format type)</td>
+      <td class="link" >
+        <mm:link page="newftype.example">
+          <a href="${_}"><img alt="&gt;" src="${mm:link('/mmbase/style/images/next.png')}" /></a>
+        </mm:link>
+      </td>
+    </tr>
+    <tr>
+      <td>Advanced Wizards</td><td>Some more sophisticated examples</td>
+      <td class="link" >
+        <mm:link page="advanced.example">
+          <a href="${_}"><img alt="&gt;" src="${mm:link('/mmbase/style/images/next.png')}" /></a>
+        </mm:link>
+      </td>
+    </tr>
+    <tr>
+      <td>Calling Other Wizards</td><td>Examplkes containing all kinds of wizard calls ('start-wizards').</td>
+      <td class="link" >
+        <mm:link page="startwizard.example">
+          <a href="${_}"><img alt="&gt;" src="${mm:link('/mmbase/style/images/next.png')}" /></a>
+        </mm:link>
+      </td>
+    </tr>
+
+    <tr>
+      <td>Component blocks</td>
+      <td>Examples about how to include mmbase component framework blocks.</td>
+      <td class="link" >
+        <mm:link page="components.example">
+          <a href="${_}"><img alt="&gt;" src="${mm:link('/mmbase/style/images/next.png')}" /></a>
+        </mm:link>
+      </td>
+    </tr>
+
+    <tr>
+      <th class="header" colspan="3">Wizards with alternate styles</th>
+    </tr>
+    <tr>
+      <th>Name</th>
+      <th colspan="2">Description</th>
+    </tr>
+
+    <tr>
+      <td>Alternate Look: PO</td><td>Different wizard styles: "PO" style (using alternate images and CSS)</td>
+      <td class="link" >
+        <mm:link page="style.po.example">
+          <a href="${_}"><img alt="&gt;" src="${mm:link('/mmbase/style/images/next.png')}" /></a>
+        </mm:link>
+      </td>
+    </tr>
+    <tr>
+      <td>Alternate Look: Preditor</td><td>Different wizard styles: "preditor" style (using alternate images, CSS, and xsl sheet)</td>
+      <td class="link" >
+        <mm:link page="style.preditor.example">
+          <a href="${_}"><img alt="&gt;" src="${mm:link('/mmbase/style/images/next.png')}" /></a>
+        </mm:link>
+      </td>
+    </tr>
+    <tr>
+      <td>Alternate Look: Finalist</td><td>Different wizard styles: "finalist" style (using alternate images, CSS, javascript and xsl sheet)</td>
+      <td class="link" >
+        <mm:link page="style.finalist.example">
+          <a href="${_}"><img alt="&gt;" src="${mm:link('/mmbase/style/images/next.png')}" /></a>
+        </mm:link>
+      </td>
+    </tr>
+
+  </table>
+</div>

@@ -1,0 +1,27 @@
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    name="audiostreamsourcescaches" maintainer="mmbase.org" version="1" extends="audiosources">
+
+  <names>
+    <singular xml:lang="en">Streamcache: Audio</singular>
+    <singular xml:lang="nl">Streamcache: Audio</singular>
+    <plural xml:lang="en">Streamcaches: Audio</plural>
+    <plural xml:lang="nl">Streamcaches: Audio</plural>
+  </names>
+
+  <descriptions>
+  </descriptions>
+
+  <properties>
+    <property name="org.mmbase.streams.cachestype">audiostreamsourcescaches</property>
+  </properties>
+
+  <xi:include href="streamsourcescaches.fields.xml" />
+  <xi:include href="http://www.mmbase.org/builders/media/mediasources.virtual.fields.xml" />
+  <xi:include href="streamsourcescaches.virtual.fields.xml" />
+
+</builder>

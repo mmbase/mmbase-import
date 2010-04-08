@@ -1,0 +1,11 @@
+<jsp:root
+    version="2.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.include file="/mmbase/searchrelate/list/parameters.jspf" />
+  <span>
+    <jsp:text>WEG</jsp:text>
+  </span>
+</jsp:root>

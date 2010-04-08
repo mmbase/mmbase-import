@@ -1,0 +1,44 @@
+<!ELEMENT luceneindex (extractor*, index*)>
+
+<!ELEMENT extractor EMPTY>
+<!ATTLIST extractor class NMTOKEN #IMPLIED>
+
+<!ELEMENT index (list*)>
+<!ATTLIST index name NMTOKEN #IMPLIED>
+<!ATTLIST index optimize NMTOKEN #IMPLIED>
+
+<!ELEMENT list (analyzer*, constraint*, field*, related*)>
+<!ATTLIST list type NMTOKEN #IMPLIED>
+<!ATTLIST list path NMTOKEN #IMPLIED>
+<!ATTLIST list searchdirs NMTOKEN #IMPLIED>
+<!ATTLIST list element NMTOKEN #IMPLIED>
+<!ATTLIST list optimize NMTOKEN #IMPLIED>
+
+<!ELEMENT analyzer EMPTY>
+<!ATTLIST analyzer class NMTOKEN #IMPLIED>
+
+<!ELEMENT constraint EMPTY>
+<!ATTLIST constraint field NMTOKEN #IMPLIED>
+<!ATTLIST constraint value NMTOKEN #IMPLIED>
+<!ATTLIST constraint operator NMTOKEN #IMPLIED>
+<!ATTLIST constraint value2 NMTOKEN #IMPLIED>
+<!ATTLIST constraint field2 NMTOKEN #IMPLIED>
+<!ATTLIST constraint part NMTOKEN #IMPLIED>
+<!ATTLIST constraint casesensitive NMTOKEN #IMPLIED>
+<!ATTLIST constraint inverse NMTOKEN #IMPLIED>
+
+<!ELEMENT field (#PCDATA)>
+<!ATTLIST field name NMTOKEN #REQUIRED>
+<!ATTLIST field alias NMTOKEN #IMPLIED>
+<!ATTLIST field keyword NMTOKEN #IMPLIED>
+<!ATTLIST field store NMTOKEN #IMPLIED>
+<!ATTLIST field password NMTOKEN #IMPLIED>
+
+<!ELEMENT related (constraint*,field*, related*)>
+<!ATTLIST related type NMTOKEN #IMPLIED>
+<!ATTLIST related path NMTOKEN #IMPLIED>
+<!ATTLIST related searchdirs NMTOKEN #IMPLIED>
+<!ATTLIST related element NMTOKEN #IMPLIED>
+<!ATTLIST related optimize NMTOKEN #IMPLIED>
+
+

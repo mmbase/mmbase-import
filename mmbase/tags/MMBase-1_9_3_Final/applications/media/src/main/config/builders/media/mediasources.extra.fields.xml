@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<fieldlist
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    >
+  <!-- Override this resource if you need sources to have more fields -->
+
+</fieldlist>
+

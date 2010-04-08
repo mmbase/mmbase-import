@@ -1,0 +1,20 @@
+<jsp:root
+    version="1.2"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <mm:import externid="a" >XXX</mm:import>
+  <div class="included">
+    <h2>Included</h2>
+    <p>
+      <c:choose>
+        <c:when test="${a eq 'XXX'}">NOT ok (a=${a}, should not be 'XXX')</c:when>
+        <c:otherwise>OK a != 'XXX' (but ${a})</c:otherwise>
+      </c:choose>
+    </p>
+  </div>
+</jsp:root>
