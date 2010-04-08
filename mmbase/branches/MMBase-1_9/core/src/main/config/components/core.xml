@@ -527,7 +527,7 @@
          mimetype="text/html">
     <body>
       <class name="org.mmbase.framework.ConnectionRenderer">
-        <param name="url">http://search.twitter.com/search.atom?q=mmbase</param>
+        <param name="url">http://twitter.com/statuses/user_timeline/42594291.rss</param>
         <param name="xslt">xslt/rss.xslt</param>
       </class>
     </body>
