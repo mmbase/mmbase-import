@@ -16,6 +16,7 @@ $Id$
 
    And edit:
   - core/src/main/java/org/mmbase/Version.java
+  - core/src/main/config/components/core.xml (make release notes point to right RSS)
   - pom.xml
     Change <mmbase.version.number> and <mmbase.version.postfix> to the right numbers.
     Such as 1.9.2 and -20091104
