@@ -106,7 +106,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
                 String ct = MagicFile.getInstance().getMimeType(array);
 
                 if (MagicFile.FAILED.equals(ct)) {
-                    log.warn("Failed to determin type of byte array");
+                    log.debug("Failed to determin type of byte array");
                     this.contentType = MimeType.UNDETERMINED;
                 } else {
                     this.contentType = new MimeType(ct);
