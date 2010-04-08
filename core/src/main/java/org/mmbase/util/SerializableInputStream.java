@@ -82,7 +82,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         if (tempFile.length() > 0) {
             String ct = MagicFile.getInstance().getMimeType(tempFile);
             if (MagicFile.FAILED.equals(ct)) {
-                log.warn("Failed to determin type of " + tempFile);
+                log.debug("Failed to determin type of " + tempFile);
                 this.contentType = MimeType.UNDETERMINED;
             } else {
                 this.contentType = new MimeType(ct);
