@@ -301,7 +301,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
         if (running) { // it's simplest like this.
             exit();
         }
-        getResources().remove(resourceName);
+        resources.remove(resourceName);
         if (wasRunning) {
             start();
         }
