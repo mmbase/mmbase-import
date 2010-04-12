@@ -22,6 +22,7 @@ import org.mmbase.cache.Cache;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
 import org.mmbase.module.core.*;
+import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.storage.*;
 import org.mmbase.storage.util.*;
 import org.mmbase.util.Casting;
@@ -3232,7 +3233,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                                 } finally {
                                     releaseActiveConnection();
                                 }
-                                List<MMObjectNode> nodes = builder.getNodes(new org.mmbase.storage.search.implementation.NodeSearchQuery(builder));
+                                List<MMObjectNode> nodes = builder.getNodes(new NodeSearchQuery(builder));
                                 log.service("Checking all " + nodes.size() + " nodes of '" + builder.getTableName() + "'");
                                 for (MMObjectNode node : nodes) {
                                     File storeFile = getBinaryFile(node, fieldName);

@@ -7,6 +7,7 @@ import java.util.TreeMap;
 import org.mmbase.bridge.BridgeException;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
+import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.logging.Logger;

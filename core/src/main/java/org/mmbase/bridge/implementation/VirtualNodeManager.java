@@ -86,7 +86,6 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
 
 
 
-    private static CoreField UNKNOWN_NODE_TYPE = Fields.createField("unknown_node_type", Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, DataTypes.getDataType("node"));
     /**
      * Returns the fieldlist of this nodemanager after making sure the manager is synced with the builder.
      * @since MMBase-1.8
@@ -104,6 +103,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
         }
     }
 
+    private static CoreField UNKNOWN_NODE_TYPE = Fields.createField("unknown_node_type", Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, DataTypes.getDataType("node"));
     public static Map<String, Field> getFieldTypes(SearchQuery query,  NodeManager nm) {
         Cloud cloud = nm.getCloud();
         Map<String, Field> fieldTypes = new HashMap<String, Field>();
@@ -146,7 +146,6 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
     }
 
 
-
     @Override
     public String getGUIName(int plurality, Locale locale) {
         if (locale == null) locale = cloud.getLocale();
@@ -175,35 +174,6 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
         if (builder == null) return getStringValue("description");
         if (locale == null) locale = cloud.getLocale();
         return builder.getDescription(locale.getLanguage());
-    }
-
-    /**
-     */
-    public static class VirtualNodeManagerField extends FieldWrapper {
-
-        private final String name;
-        private final NodeManager nodeManager;
-        VirtualNodeManagerField(NodeManager nm, Field field, String name)  {
-            super(field);
-            this.name = name;
-            this.nodeManager = nm;
-        }
-        @Override
-        public NodeManager getNodeManager() {
-            return nodeManager;
-        }
-        @Override
-        public String getName() {
-            return name;
-        }
-        @Override
-        public int getState() {
-            return Field.STATE_VIRTUAL;
-        }
-
-        public int compareTo(Field o) {
-            return name.compareTo(o.getName());
-        }
     }
 
 }
