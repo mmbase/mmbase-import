@@ -30,7 +30,9 @@ import org.mmbase.security.Authorization;
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
-public class BasicQuery implements Query  {
+public class BasicQuery implements Query, java.io.Serializable  {
+    private static final long serialVersionUID = 1L;
+
 
     private static final Logger log = Logging.getLoggerInstance(BasicQuery.class);
 
