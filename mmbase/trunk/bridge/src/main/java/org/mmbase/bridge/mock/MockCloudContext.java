@@ -135,7 +135,12 @@ public class MockCloudContext extends  AbstractCloudContext {
     public void addCore() throws java.io.IOException {
         for (String buil : new String[] {"object", "typedef", "typerel", "reldef", "insrel"}) {
             if (! nodeManagers.containsKey(buil)) {
-                addNodeManager(MockBuilderReader.getBuilderLoader().getInputSource("core/" + buil + ".xml"));
+                InputSource source = MockBuilderReader.getBuilderLoader().getInputSource("core/" + buil + ".xml");
+                if (source == null) {
+                    LOG.warn("Not found " + MockBuilderReader.getBuilderLoader().getResource("core/" + buil + ".xml"));
+                } else {
+                    addNodeManager(source);
+                }
             } else {
                 LOG.service("Builder with name '" + buil + "' already exists");
             }
