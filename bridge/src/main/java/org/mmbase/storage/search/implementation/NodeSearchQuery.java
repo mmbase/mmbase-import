@@ -118,7 +118,7 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery, ja
      *
      * @return The builder.
      */
-    public String getBuilder() {
+    public String getTableName() {
         return builder;
     }
 
