@@ -25,13 +25,19 @@ public interface QueryContext {
 
     String getStorageIdentifier(String s);
     Field  getField(String builder, String fieldName);
+    Collection<? extends Field> getFields(String builder);
+
+    ClusterQueries getClusterQueries();
 
 
     public static class Bridge implements QueryContext {
 
         protected final Cloud cloud;
+        protected final BridgeClusterQueries clusterQueries;
+
         public Bridge(Cloud c) {
             cloud = c;
+            clusterQueries = new BridgeClusterQueries(this);
         }
         public  String getStorageIdentifier(String s) {
             return s;
@@ -39,6 +45,17 @@ public interface QueryContext {
         public  Field getField(String builder, String fieldName) {
             return cloud.getNodeManager(builder).getField(fieldName);
         }
+        public  Collection<Field> getFields(String builder) {
+            return cloud.getNodeManager(builder).getFields(NodeManager.ORDER_CREATE);
+        }
+
+
+
+        public BridgeClusterQueries getClusterQueries() {
+            return clusterQueries;
+        }
+
+
     }
 
 

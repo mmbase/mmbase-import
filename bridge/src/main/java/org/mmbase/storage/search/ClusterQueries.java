@@ -25,6 +25,8 @@ public abstract class ClusterQueries {
 
     private static final Logger log= Logging.getLoggerInstance(ClusterQueries.class);
 
+
+    protected abstract QueryContext getQueryContext();
     /**
      * Translates a search direction constant to a string.
      *
@@ -82,7 +84,7 @@ public abstract class ClusterQueries {
     public Field getField(String fieldName) {
         String builderName = getBuilderNameFromField(fieldName);
         if (builderName.length() > 0) {
-            return getField(builderName, getFieldNameFromField(fieldName));
+            return getQueryContext().getField(builderName, getFieldNameFromField(fieldName));
         } else {
             //
             String bul = getTrueTableName(fieldName);
@@ -93,10 +95,7 @@ public abstract class ClusterQueries {
         return null;
     }
 
-    public abstract Field getField(String builder, String fieldName);
 
-
-    public abstract Collection<? extends Field> getFields(String builder);
 
     /**
      * Returns the name part of a tablename.
@@ -467,7 +466,7 @@ public abstract class ClusterQueries {
             return;
         }
 
-        Field fieldDefs= getField(step.getTableName(), fieldName);
+        Field fieldDefs= getQueryContext().getField(step.getTableName(), fieldName);
         if (fieldDefs == null) {
             throw new IllegalArgumentException("Not a known field of builder " + step.getTableName() + ": \"" + fieldName + "\"");
         }

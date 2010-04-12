@@ -19,51 +19,48 @@ import org.mmbase.util.logging.*;
  * @since MMBase-2.0
  */
 public class BridgeClusterQueries extends ClusterQueries {
-    private final Cloud cloud;
-    public BridgeClusterQueries(Cloud cloud) {
-        this.cloud = cloud;
+    private final QueryContext.Bridge queryContext;
+    public BridgeClusterQueries(QueryContext.Bridge qc) {
+        this.queryContext = qc;
+    }
+
+    @Override
+    public QueryContext getQueryContext() {
+        return queryContext;
     }
 
     @Override
     protected int getNumberForAlias(String alias) {
-        return cloud.getNode(alias).getNumber();
+        return queryContext.cloud.getNode(alias).getNumber();
 
     }
 
     @Override
     protected boolean isRelation(String builder) {
-        NodeManager insrel = cloud.getNodeManager("insrel");
-        NodeManager nm     = cloud.getNodeManager(builder);
+        NodeManager insrel = queryContext.cloud.getNodeManager("insrel");
+        NodeManager nm     = queryContext.cloud.getNodeManager(builder);
         return nm.equals(insrel) || insrel.getDescendants().contains(nm);
     }
 
     @Override
     protected String getBuilder(int nodeNumber) {
-        return cloud.getNode(nodeNumber).getNodeManager().getName();
+        return queryContext.cloud.getNode(nodeNumber).getNodeManager().getName();
     }
 
 
     @Override
     protected int getBuilderNumber(String nodeManager) {
-        return cloud.getNodeManager(nodeManager).getNumber();
+        return queryContext.cloud.getNodeManager(nodeManager).getNumber();
     }
 
     @Override
     protected String getParentBuilder(String builder) {
-        NodeManager parent = cloud.getNodeManager(builder).getParent();
+        NodeManager parent = queryContext.cloud.getNodeManager(builder).getParent();
         return parent == null ? null : parent.getName();
     }
 
     @Override
-    public Field getField(String builder, String fieldName) {
-        try {
-            return cloud.getNodeManager(builder).getField(fieldName);
-        } catch (NotFoundException nfe) {
-            throw new IllegalArgumentException(nfe);
-        }
-    }
-    @Override
-    protected StepField getField(String fieldName, SearchQuery query){
+    protected StepField getField(String fieldName, SearchQuery query) {
         // TODO TEST.
         String[] split = fieldName.split(".");
         for (StepField sf : query.getFields()) {
@@ -73,16 +70,12 @@ public class BridgeClusterQueries extends ClusterQueries {
         }
         return null;
     }
-    @Override
-    public  Collection<Field> getFields(String builder) {
-        return cloud.getNodeManager(builder).getFields(NodeManager.ORDER_CREATE);
-    }
 
     @Override
     public String getTrueTableName(String table) {
         String tab = getTableName(table);
-        if (cloud.hasRelationManager(tab)) {
-            return cloud.getRelationManager(tab).getName();
+        if (queryContext.cloud.hasRelationManager(tab)) {
+            return queryContext.cloud.getRelationManager(tab).getName();
         } else {
             return table;
         }
@@ -98,13 +91,12 @@ public class BridgeClusterQueries extends ClusterQueries {
     protected String getBuilder(final String tableAlias, Map<String, Integer> roles) {
         String tableName = getTableName(tableAlias);
         try {
-            RelationManager rm = cloud.getRelationManager(tableName);
-            System.out.println(cloud);
+            RelationManager rm = queryContext.cloud.getRelationManager(tableName);
             String r = rm.getForwardRole();
             roles.put(tableAlias, rm.getNumber());
             return rm.getName();
         } catch (NotFoundException nfe) {
-            if (cloud.hasNodeManager(tableName)) {
+            if (queryContext.cloud.hasNodeManager(tableName)) {
                 return tableName;
             } else {
                 throw new IllegalArgumentException("'" + tableAlias + "' is neither a role, nor a builder");

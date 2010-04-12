@@ -164,7 +164,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         query.setDistinct(distinct);
         if (distinct) { // in that case, make sure only the 'explicitely' added fields remain.
             query.removeFields();
-            query.addFields(step, new BridgeClusterQueries(getCloud()));
+            query.addFields(step, new QueryContext.Bridge(getCloud()));
             implicitFields.clear();
             addFields(explicitFields);
         }
