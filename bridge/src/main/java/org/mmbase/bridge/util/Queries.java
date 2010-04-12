@@ -145,7 +145,7 @@ abstract public class Queries {
         List<String> d        = StringSplitter.split(directions);
         try {
             Query query = new BasicQuery(cloud,
-                                         new BridgeClusterQueries(cloud).getMultiLevelSearchQuery(snodes, f, distinct ? "YES" : "NO", tables, constraints, orderVec, d, Collections.singletonList(search)));
+                                         new QueryContext.Bridge(cloud).getClusterQueries().getMultiLevelSearchQuery(snodes, f, distinct ? "YES" : "NO", tables, constraints, orderVec, d, Collections.singletonList(search)));
             return query;
         } catch (IllegalArgumentException iae) {
             throw new BridgeException(iae.getMessage() + ". (arguments: startNodes='" + startNodes + "', path='" + nodePath + "', fields='" + fields + "', constraints='" + constraints + "' orderby='" + orderby + "', directions='" + directions + "', searchdir='" + searchDir + "')" , iae);

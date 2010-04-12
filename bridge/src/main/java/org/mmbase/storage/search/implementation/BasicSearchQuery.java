@@ -454,20 +454,20 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
 
     }
 
-    public void  addFields(Step step, ClusterQueries cq) {
-        addFields(step, step.getTableName(), cq);
+    public void  addFields(Step step, QueryContext qc) {
+        addFields(step, step.getTableName(), qc);
     }
 
     /**
      * Add all fields of given step
      */
-    protected void  addFields(Step step, String builder, ClusterQueries cq) {
+    protected void  addFields(Step step, String builder, QueryContext qc) {
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
         // http://www.mmbase.org/jira/browse/MMB-1435,
         // Using fields with "ORDER_CREATE" only returns fields actually in storage, and also in the
         // right order, which is important for microsoft JDBC.
 
-        for (Field field : cq.getFields(builder)) {
+        for (Field field : qc.getFields(builder)) {
             if (! field.isVirtual()) {
                 BasicStepField stepField = addField(step, field);
                 mapField(field, stepField);
