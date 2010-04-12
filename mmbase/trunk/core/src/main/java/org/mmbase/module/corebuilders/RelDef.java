@@ -11,6 +11,7 @@ package org.mmbase.module.corebuilders;
 
 import java.util.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.core.NodeSearchQuery;
 
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;

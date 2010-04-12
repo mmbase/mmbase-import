@@ -16,6 +16,7 @@ import org.mmbase.bridge.NodeQuery;
 import org.mmbase.cache.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
+import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.storage.*;
 import org.mmbase.storage.util.Index;
 import org.mmbase.storage.search.*;
@@ -430,7 +431,7 @@ public class StorageConnector {
         if (query instanceof NodeQuery) {
             builderName = ((NodeQuery)query).getNodeManager().getName();
         } else if (query instanceof NodeSearchQuery) {
-            builderName = ((NodeSearchQuery)query).getBuilder().getTableName();
+            builderName = ((NodeSearchQuery)query).getBuilder();
         }
         if (builderName != null && !builderName.equals(builder.getTableName())) {
             throw new IllegalArgumentException("Query passed runs on '" + builderName + "' but was passed to '" + builder.getTableName() + "'");

@@ -105,7 +105,6 @@ public class ClusterBuilder extends VirtualBuilder {
     private static final Logger log= Logging.getLoggerInstance(ClusterBuilder.class);
 
 
-    ClusterQueriesImpl clusterQueries = new ClusterQueriesImpl();
 
     /**
      * Creates <code>ClusterBuilder</code> instance.
@@ -207,7 +206,7 @@ public class ClusterBuilder extends VirtualBuilder {
         } else {
             int pos = field.indexOf('.');
             if (pos != -1) {
-                String bulName = clusterQueries.getTrueTableName(field.substring(0, pos));
+                String bulName = CoreClusterQueries.INSTANCE.getTrueTableName(field.substring(0, pos));
                 MMObjectNode n = clusterNode.getRealNode(bulName);
                 if (n != null) {
                     MMObjectBuilder bul= n.getBuilder();
@@ -236,7 +235,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return the name of the field's builder
      */
     public String getBuilderNameFromField(String fieldName) {
-        return clusterQueries.getBuilderNameFromField(fieldName);
+        return CoreClusterQueries.INSTANCE.getBuilderNameFromField(fieldName);
     }
 
     /**
@@ -254,7 +253,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return the field
      */
     public FieldDefs getField(String fieldName) {
-        return (FieldDefs) clusterQueries.getField(fieldName);
+        return (FieldDefs) CoreClusterQueries.INSTANCE.getField(fieldName);
     }
 
     @Override
@@ -582,8 +581,8 @@ public class ClusterBuilder extends VirtualBuilder {
     public BasicSearchQuery getMultiLevelSearchQuery(List<String> snodes, List<String> fields, String pdistinct, List<String> tables, String where,
             List<String> sortFields, List<String> directions, List<Integer> searchDirs) {
 
-        return clusterQueries.getMultiLevelSearchQuery(snodes, fields, pdistinct, tables, where,
-                                                       sortFields,  directions, searchDirs);
+        return CoreClusterQueries.INSTANCE.getMultiLevelSearchQuery(snodes, fields, pdistinct, tables, where,
+                                                                    sortFields,  directions, searchDirs);
     }
 
     /**
@@ -608,7 +607,7 @@ public class ClusterBuilder extends VirtualBuilder {
      */
     // package access!
     Map<String, BasicStep> addSteps(BasicSearchQuery query, List<String> tables, Map<String, Integer> roles, boolean includeAllReference, Map<String, BasicStepField> fieldsByAlias) {
-        return clusterQueries.addSteps(query, tables, roles, includeAllReference, fieldsByAlias);
+        return CoreClusterQueries.INSTANCE.addSteps(query, tables, roles, includeAllReference, fieldsByAlias);
     }
 
     /**
@@ -629,7 +628,7 @@ public class ClusterBuilder extends VirtualBuilder {
      */
     // package access!
     MMObjectBuilder getBuilder(String tableAlias, Map<String, Integer> roles) {
-        return mmb.getBuilder(clusterQueries.getBuilder(tableAlias, roles));
+        return mmb.getBuilder(CoreClusterQueries.INSTANCE.getBuilder(tableAlias, roles));
     }
 
     /**
@@ -651,7 +650,7 @@ public class ClusterBuilder extends VirtualBuilder {
      */
     // package access!
     void addFields(BasicSearchQuery query, String expression, Map<String, BasicStep> stepsByAlias, Map<String, BasicStepField> fieldsByAlias) {
-        clusterQueries.addFields(query, expression, stepsByAlias, fieldsByAlias);
+        CoreClusterQueries.INSTANCE.addFields(query, expression, stepsByAlias, fieldsByAlias);
     }
 
 
@@ -667,7 +666,7 @@ public class ClusterBuilder extends VirtualBuilder {
      */
     // package visibility!
     void addSortOrders(BasicSearchQuery query, List<String> fieldNames, List<String> directions, Map<String, BasicStepField> fieldsByAlias) {
-        clusterQueries.addSortOrders(query, fieldNames, directions, fieldsByAlias);
+        CoreClusterQueries.INSTANCE.addSortOrders(query, fieldNames, directions, fieldsByAlias);
     }
 
 
@@ -683,7 +682,7 @@ public class ClusterBuilder extends VirtualBuilder {
      */
     // package visibility!
     Step getNodesStep(List<Step> steps, int nodeNumber) {
-        return clusterQueries.getNodesStep(steps, nodeNumber);
+        return CoreClusterQueries.INSTANCE.getNodesStep(steps, nodeNumber);
     }
 
     /**
@@ -699,97 +698,8 @@ public class ClusterBuilder extends VirtualBuilder {
      */
     // package visibility!
     void addRelationDirections(BasicSearchQuery query, List<Integer> searchDirs, Map<String, Integer> roles) {
-        clusterQueries.addRelationDirections(query, searchDirs, roles);
+        CoreClusterQueries.INSTANCE.addRelationDirections(query, searchDirs, roles);
     }
 
-    class ClusterQueriesImpl extends ClusterQueries {
-
-        public ClusterQueriesImpl() {
-        }
-
-        protected int getNumberForAlias(String alias) {
-            int nodeNumber = mmb.getOAlias().getNumber(alias);
-            if (nodeNumber < 0) {
-                nodeNumber = 0;
-            }
-            return nodeNumber;
-        }
-
-        protected boolean isRelation(String builder) {
-            return mmb.getBuilder(builder) instanceof InsRel;
-        }
-
-        protected String getBuilder(int nodeNumber) {
-            MMObjectNode node = getNode(nodeNumber);
-            if (node == null) {
-                return null;
-            }
-            return node.parent.getTableName();
-        }
-
-        protected String getParentBuilder(String buil) {
-            MMObjectBuilder builder = mmb.getBuilder(buil);
-            MMObjectBuilder parent = builder.getParentBuilder();
-            return parent == null ? null : parent.getTableName();
-        }
-
-        public FieldDefs getField(String buil, String fieldName) {
-            MMObjectBuilder builder = mmb.getBuilder(buil);
-            return builder.getField(fieldName);
-        }
-
-        public FieldDefs getNodeField(String fieldName) {
-            return new FieldDefs(fieldName, Field.TYPE_NODE, -1, Field.STATE_VIRTUAL, org.mmbase.datatypes.DataTypes.getDataType("node"));
-        }
-
-        public String getTrueTableName(String table) {
-            String tab = getTableName(table);
-            int rnumber = mmb.getRelDef().getNumberByName(tab);
-            if (rnumber != -1) {
-                return mmb.getRelDef().getBuilderName(rnumber);
-            } else {
-                return tab;
-            }
-        }
-
-        protected boolean optimizeRelationStep(RelationStep relationStep, int sourceType, int destType, int role, int searchDir) {
-            return mmb.getTypeRel().optimizeRelationStep((BasicRelationStep) relationStep, sourceType, destType, role, searchDir);
-        }
-        // just changing scope for test-cases
-        protected String getUniqueTableAlias(String tableAlias, Set<String> tableAliases, Collection<String> originalAliases) {
-            return super.getUniqueTableAlias(tableAlias, tableAliases, originalAliases);
-        }
-
-        @Override
-        protected String getBuilder(String tableAlias, Map<String, Integer> roles) {
-            String tableName = getTableName(tableAlias);
-            // check builder - should throw exception if builder doesn't exist ?
-            MMObjectBuilder bul = null;
-            try {
-                bul = mmb.getBuilder(tableName);
-            } catch (BuilderConfigurationException e) {
-            }
-            if (bul == null) {
-                // check if it is a role name. if so, use the builder of the
-                // rolename and store a filter on rnumber.
-                int rnumber = mmb.getRelDef().getNumberByName(tableName);
-                if (rnumber == -1) {
-                    throw new IllegalArgumentException("Specified builder '" + tableName + "' does not exist.");
-                } else {
-                    bul = mmb.getRelDef().getBuilder(rnumber); // relation builder
-                    roles.put(tableAlias, rnumber);
-                }
-            } else if (bul instanceof InsRel) {
-                int rnumber = mmb.getRelDef().getNumberByName(tableName);
-                if (rnumber != -1) {
-                    roles.put(tableAlias, rnumber);
-                }
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("Resolved table alias \"" + tableAlias + "\" to builder \"" + bul.getTableName() + "\"");
-            }
-            return bul.getTableName();
-        }
-    }
 
 }
