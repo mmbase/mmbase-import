@@ -27,6 +27,7 @@
 
   <mm:form
       name="${name}" jspvar="trans">
+    <input type="hidden" name="mm_form_name" value="${requestScope['org.mmbase.cloud'].name}" />
 
     <mm:import externid="debug" />
     <mm:present referid="debug">
