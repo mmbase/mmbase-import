@@ -51,19 +51,15 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery, ja
      *        {@link org.mmbase.module.core.VirtualBuilder virtual} builder.
      * @throws IllegalArgumentException When an invalid argument is supplied.
      */
-    /*
-    public NodeSearchQuery(String builder) {
+    public NodeSearchQuery(String builder, ClusterQueries cq) {
         if (builder == null) {
             throw new IllegalArgumentException("Invalid builder value: " + builder);
         }
-        if (builder instanceof VirtualBuilder) {
-            throw new IllegalArgumentException("Invalid builder type, because this is a virtual builder: " + builder.getClass().getName());
-        }
-        Step step = super.addStep(builder.getTableName());
-        addFields(step, builder);
-        this.builder = builder.getTableName();
+        Step step = super.addStep(builder);
+        addFields(step, builder, cq);
+        this.builder = builder;
     }
-    */
+
     public NodeSearchQuery(NodeManager  nodeManager) {
         Step step = super.addStep(nodeManager.getName());
         for (Field f : nodeManager.getFields(NodeManager.ORDER_CREATE)) {
