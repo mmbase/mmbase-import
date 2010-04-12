@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Rob van Maris (ClusterBuilder)
- * @version $Id: $
+ * @version $Id$
  */
 public abstract class ClusterQueries {
 
@@ -95,6 +95,8 @@ public abstract class ClusterQueries {
 
     public abstract Field getField(String builder, String fieldName);
 
+
+    public abstract Collection<Field> getFields(String builder);
 
     /**
      * Returns the name part of a tablename.

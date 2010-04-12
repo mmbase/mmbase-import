@@ -454,33 +454,26 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
 
     }
 
-    public void  addFields(Step step) {
-        throw new UnsupportedOperationException("TODO");
-        /*
-        MMBase mmb = MMBase.getMMBase();
-        MMObjectBuilder builder = mmb.getBuilder(step.getTableName());
-        addFields(step, builder);
-        */
+    public void  addFields(Step step, ClusterQueries cq) {
+        addFields(step, step.getTableName(), cq);
     }
 
     /**
      * Add all fields of given step
      */
-    /*
-    protected void  addFields(Step step, MMObjectBuilder builder) {
+    protected void  addFields(Step step, String builder, ClusterQueries cq) {
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
         // http://www.mmbase.org/jira/browse/MMB-1435,
         // Using fields with "ORDER_CREATE" only returns fields actually in storage, and also in the
         // right order, which is important for microsoft JDBC.
 
-        for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
+        for (Field field : cq.getFields(builder)) {
             if (! field.isVirtual()) {
                 BasicStepField stepField = addField(step, field);
                 mapField(field, stepField);
             }
         }
     }
-    */
 
     public void removeFields() {
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
