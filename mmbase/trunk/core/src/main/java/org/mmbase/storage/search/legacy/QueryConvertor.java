@@ -296,7 +296,7 @@ class DBQuery  extends ParseItem {
                     }
                 }
 
-                CoreField coreField = ((BasicStep)step).getBuilder().getField(condition.fieldName);
+                CoreField coreField = org.mmbase.module.core.MMBase.getMMBase().getBuilder(step.getTableName()).getField(condition.fieldName);
                 if (coreField == null) {
                     // Field not found.
                     throw new IllegalStateException("Field with name '"
