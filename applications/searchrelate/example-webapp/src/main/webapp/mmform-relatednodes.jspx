@@ -31,6 +31,17 @@
     </div>
 
     <h3><mm:field name="title" /></h3>
+    <table>
+      <mm:fieldlist fields="subtitle">
+        <tr>
+          <th><mm:fieldinfo type="guiname" /></th>
+          <th>
+            <mm:fieldinfo type="input" />
+            <mm:fieldinfo type="errors" />
+          </th>
+        </tr>
+      </mm:fieldlist>
+    </table>
 
     <mm-sr:relatednodes
         idvar="rid"
