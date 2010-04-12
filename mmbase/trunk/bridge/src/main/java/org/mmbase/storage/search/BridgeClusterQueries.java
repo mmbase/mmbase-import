@@ -73,6 +73,10 @@ public class BridgeClusterQueries extends ClusterQueries {
         }
         return null;
     }
+    @Override
+    public  Collection<Field> getFields(String builder) {
+        return cloud.getNodeManager(builder).getFields(NodeManager.ORDER_CREATE);
+    }
 
     @Override
     public String getTrueTableName(String table) {
