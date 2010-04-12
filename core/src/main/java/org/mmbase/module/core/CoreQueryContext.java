@@ -9,8 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
+import java.util.*;
 import org.mmbase.bridge.Field;
+import org.mmbase.core.CoreField;
 import org.mmbase.storage.search.QueryContext;
+import org.mmbase.storage.search.ClusterQueries;
 import org.mmbase.storage.*;
 /**
  *
@@ -22,12 +25,22 @@ public class CoreQueryContext implements QueryContext {
 
     public static final QueryContext INSTANCE = new CoreQueryContext();
 
+    public ClusterQueries getClusterQueries () {
+        return CoreClusterQueries.INSTANCE;
+    }
+
     public  String getStorageIdentifier(String s) {
         StorageManagerFactory<?> factory = MMBase.getMMBase().getStorageManagerFactory();
         return (String) factory.getStorageIdentifier(s);
     }
     public  Field getField(String builder, String fieldName) {
         return MMBase.getMMBase().getBuilder(builder).getField(fieldName);
+    }
+
+
+    @Override
+    public Collection<CoreField> getFields(String buil) {
+        return MMBase.getMMBase().getBuilder(buil).getFields(org.mmbase.bridge.NodeManager.ORDER_CREATE);
     }
 
 }
