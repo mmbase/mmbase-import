@@ -224,6 +224,7 @@ function List(d) {
     $(window).bind("beforeunload",
                    function(ev) {
                        List.prototype.leftPage = true;
+		       $(self.div).find(":input").attr("disabled", true);
                        var result = self.commit(0, true);
                        if (result != null) {
                            ev.returnValue = confirm(result); //'<fmt:message key="invalid" />';
@@ -799,9 +800,20 @@ List.prototype.commit = function(stale, leavePage) {
         result = null;
     }
     if (leavePage) {
-        if (self.saving) {
-            return "Cannot leave because still saving " + result;
-        }
+
+	// put a maximum on the duration time of the next while loop. Just to be sure.
+	$.timer(10000,
+		function(timer) {
+		    self.saving = false;
+		    timer.stop();
+                }
+               );
+
+	while(self.saving) {
+	    // waiting a bit for that.
+	    // There is no proper wait or join method  in javascript.
+	}
+
         if (result != null) {
             return "Cannot leave because save failed: " + result;
         }
