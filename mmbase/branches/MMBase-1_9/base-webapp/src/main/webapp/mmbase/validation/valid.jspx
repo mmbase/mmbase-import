@@ -51,7 +51,18 @@
     <error xml:lang="${xmllang}"><jsp:expression>s.get(locale)</jsp:expression></error>
     <jsp:scriptlet>
       }
+      if (errors.size() == 0) {
     </jsp:scriptlet>
+    <mm:import externid="form" />
+    <mm:present referid="form">
+      <saved>
+        <mm:form name="${form}" jspvar="trans" mode="transaction">
+          <jsp:scriptlet>trans.getNode(n).setValue(field.getName(), value);</jsp:scriptlet>
+          <jsp:text>${form} </jsp:text><jsp:expression>field.getName()</jsp:expression>
+        </mm:form>
+      </saved>
+    </mm:present>
+    <jsp:scriptlet>}</jsp:scriptlet>
   </result>
   </mm:cloud>
 </mm:content>
