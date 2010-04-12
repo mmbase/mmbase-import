@@ -431,7 +431,7 @@ public class StorageConnector {
         if (query instanceof NodeQuery) {
             builderName = ((NodeQuery)query).getNodeManager().getName();
         } else if (query instanceof NodeSearchQuery) {
-            builderName = ((NodeSearchQuery)query).getBuilder();
+            builderName = ((NodeSearchQuery)query).getTableName();
         }
         if (builderName != null && !builderName.equals(builder.getTableName())) {
             throw new IllegalArgumentException("Query passed runs on '" + builderName + "' but was passed to '" + builder.getTableName() + "'");
