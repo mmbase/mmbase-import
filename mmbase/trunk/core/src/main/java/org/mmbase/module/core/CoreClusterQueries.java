@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @since MMBase-2.0
  */
 
-public class CoreClusterQueries extends ClusterQueries {
+class CoreClusterQueries extends ClusterQueries {
 
     private static final Logger log= Logging.getLoggerInstance(CoreClusterQueries.class);
 
@@ -39,6 +39,10 @@ public class CoreClusterQueries extends ClusterQueries {
     public static final CoreClusterQueries INSTANCE = new CoreClusterQueries();
 
     private CoreClusterQueries() {
+    }
+
+    public QueryContext getQueryContext() {
+        return CoreQueryContext.INSTANCE;
     }
 
     protected int getNumberForAlias(String alias) {
@@ -55,7 +59,7 @@ public class CoreClusterQueries extends ClusterQueries {
         QueryConvertor.setConstraint(query, where);
     }
     protected StepField getField(String fieldName, BasicSearchQuery query) {
-        return ConstraintParser.getField(fieldName, query.getSteps());
+        return ConstraintParser.getField(getQueryContext(), fieldName, query.getSteps());
     }
 
     protected boolean isRelation(String builder) {
@@ -145,9 +149,5 @@ public class CoreClusterQueries extends ClusterQueries {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public Collection<CoreField> getFields(String buil) {
-        return MMBase.getMMBase().getBuilder(buil).getFields(org.mmbase.bridge.NodeManager.ORDER_CREATE);
-    }
 }
 

@@ -22,7 +22,7 @@ public class ClusterQueriesTest {
         RELATED =  MockCloudContext.getInstance().getCloud("mmbase").getRelationManager("related").getNumber();
     }
 
-    ClusterQueries instance = new BridgeClusterQueries(MockCloudContext.getInstance().getCloud("mmbase"));
+    ClusterQueries instance = new BridgeClusterQueries(new QueryContext.Bridge(MockCloudContext.getInstance().getCloud("mmbase")));
 
     @Test
     public void getUniqueTableAlias() {

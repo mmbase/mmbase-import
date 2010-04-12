@@ -1338,7 +1338,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             if (properties == null) {
                 properties = new HashMap<String,MMObjectNode>();
                 MMObjectBuilder bul = parent.mmb.getBuilder("properties");
-                NodeSearchQuery query = new NodeSearchQuery(bul.getTableName(), CoreClusterQueries.INSTANCE);
+                NodeSearchQuery query = new NodeSearchQuery(bul.getTableName(), CoreQueryContext.INSTANCE);
                 StepField parentField = query.getField(bul.getField("parent"));
                 BasicFieldValueConstraint cons = new BasicFieldValueConstraint(parentField, getNumber());
                 query.setConstraint(cons);

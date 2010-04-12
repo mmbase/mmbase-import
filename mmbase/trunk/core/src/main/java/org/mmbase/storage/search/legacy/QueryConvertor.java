@@ -16,6 +16,7 @@ import org.mmbase.util.Strip;
 import org.mmbase.bridge.Field;
 import org.mmbase.core.CoreField;
 import org.mmbase.storage.StorageManagerFactory;
+import org.mmbase.module.core.CoreQueryContext;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
@@ -116,14 +117,14 @@ public class QueryConvertor {
             // "where"-clause.
             // Strip leading "where ".
             constraint =
-                new ConstraintParser(query).toConstraint(where.substring(6));
+                new ConstraintParser(CoreQueryContext.INSTANCE, query).toConstraint(where.substring(6));
 
         } else if (where.substring(0, 6).equalsIgnoreCase("WHERE(")) {
             // "where"-clause, without space following "where".
             // Supported for backward compatibility.
             // Strip leading "where".
             constraint =
-                new ConstraintParser(query).toConstraint(where.substring(5));
+                new ConstraintParser(CoreQueryContext.INSTANCE, query).toConstraint(where.substring(5));
 
         } else {
             // AltaVista format.
