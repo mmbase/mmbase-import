@@ -96,7 +96,7 @@ public abstract class ClusterQueries {
     public abstract Field getField(String builder, String fieldName);
 
 
-    public abstract Collection<Field> getFields(String builder);
+    public abstract Collection<? extends Field> getFields(String builder);
 
     /**
      * Returns the name part of a tablename.
