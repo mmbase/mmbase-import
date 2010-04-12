@@ -7,7 +7,7 @@ public class NodeSearchQuery extends org.mmbase.storage.search.implementation.No
 
 
     public NodeSearchQuery(MMObjectBuilder buil) {
-        super(buil.getTableName(), CoreClusterQueries.INSTANCE);
+        super(buil.getTableName(), CoreQueryContext.INSTANCE);
     }
 
     public MMObjectBuilder getBuilder() {
