@@ -2,5 +2,4 @@
 # It is read by org.mmbase.bridge.ContextProvider itself.
 # Any other jar can do the same (e.g. the mmbase-rmmci client jar is doing it)
 # See http://www.mmbase.org/jira/browse/MMB-1881
-
-org.mmbase.bridge.ContextProvider$LocalResolver
+org.mmbase.bridge.mock.MockCloudContext$MockResolver
