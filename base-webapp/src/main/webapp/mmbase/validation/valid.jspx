@@ -57,8 +57,9 @@
     <mm:present referid="form">
       <saved>
         <mm:form name="${form}" jspvar="trans" mode="transaction">
-          <jsp:scriptlet>trans.getNode(n).setValue(field.getName(), value);</jsp:scriptlet>
+          <jsp:scriptlet>if (trans.hasNode(n)) { trans.getNode(n).setValue(field.getName(), value);</jsp:scriptlet>
           <jsp:text>${form} </jsp:text><jsp:expression>field.getName()</jsp:expression>
+          <jsp:scriptlet>}</jsp:scriptlet>
         </mm:form>
       </saved>
     </mm:present>
