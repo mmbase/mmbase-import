@@ -90,6 +90,101 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
         }
     }
 
+    /**
+     * Alter a specified, named FieldDef object using information obtained from the buidler configuration.
+     * Only GUI information is retrieved and stored (name and type of the field sg=hould already be specified).
+     * @since MMBase-1.6
+     * @param field The element containing the field information according to the buidler xml format
+     * @param def The field definition to alter
+     */
+    protected void decodeFieldDef(Element field, CoreField def, DataTypeCollector collector) {
+        // Gui
+        Element descriptions = getElementByPath(field, "field.descriptions");
+        if (descriptions != null) {
+            def.getLocalizedDescription().fillFromXml("description", descriptions);
+        }
+
+        // XXX: deprecated tag 'gui'
+        Element gui = getElementByPath(field, "field.gui");
+        if (gui != null) {
+            def.getLocalizedGUIName().fillFromXml("guiname", gui);
+            // XXX: even more deprecated
+            def.getLocalizedGUIName().fillFromXml("name", gui);
+        }
+
+        // Editor
+        Element editorpos = getElementByPath(field, "field.editor.positions.input");
+        if (editorpos != null) {
+            int inputPos = getEditorPos(editorpos);
+            if (inputPos > -1) inputPositions.add(inputPos);
+            def.setEditPosition(inputPos);
+        } else {
+            // if not specified, use lowest 'free' position.
+            int i = 1;
+            while (inputPositions.contains(i)) {
+                ++i;
+            }
+            inputPositions.add(i);
+            def.setEditPosition(i);
+
+        }
+        editorpos = getElementByPath(field, "field.editor.positions.list");
+        if (editorpos != null) {
+            def.setListPosition(getEditorPos(editorpos));
+        }
+        editorpos = getElementByPath(field, "field.editor.positions.search");
+        if (editorpos != null) {
+            int searchPos = getEditorPos(editorpos);
+            if (searchPos > -1) searchPositions.add(searchPos);
+            def.setSearchPosition(searchPos);
+        } else {
+            // if not specified, use lowest 'free' position, unless, db-type is BINARY (non-sensical searching on that)
+            // or the field is not in storage at all (search cannot be performed by database)
+            if (def.getType() != Field.TYPE_BINARY && !def.isVirtual()) {
+                int i = 1;
+                while (searchPositions.contains(i)) {
+                    ++i;
+                }
+                searchPositions.add(i);
+                def.setSearchPosition(i);
+            } else {
+                def.setSearchPosition(-1);
+            }
+        }
+    }
+
+    /**
+     * @since MMBase-1.8.6
+     */
+    protected void decodeFieldAttributes(Element field, CoreField def) {
+        String fieldState = getElementAttributeValue(field, "state");
+        String fieldReadOnly = getElementAttributeValue(field, "readonly");
+        // deprecated db type tag - only use if no other data is given!
+        Element dbtype = getElementByPath(field, "field.db.type");
+        if (dbtype != null) {
+            if ("".equals(fieldState))    fieldState = getElementAttributeValue(dbtype, "state");
+            if ("".equals(fieldReadOnly)) fieldReadOnly = getElementAttributeValue(dbtype, "readonly");
+        }
+
+        // state - default peristent
+        int state = Field.STATE_PERSISTENT;
+        if (!"".equals(fieldState)) { state = Fields.getState(fieldState); }
+        if (state != def.getState()) def.setState(state);
+
+
+        boolean readOnly = false;
+        if ("".equals(fieldReadOnly)) {
+            readOnly = state == Field.STATE_SYSTEM || state == Field.STATE_SYSTEM_VIRTUAL;
+        }
+        else {
+            readOnly = "true".equalsIgnoreCase(fieldReadOnly);
+        }
+
+        if (def.isReadOnly() != readOnly) {
+            def.setReadOnly(readOnly);
+        }
+    }
+
 
     @Override
     protected boolean resolveInheritance() {

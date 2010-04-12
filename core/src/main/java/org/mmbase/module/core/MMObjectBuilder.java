@@ -1197,7 +1197,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public boolean checkAddTmpField(String field) {
         if (getDBState(field) == Field.STATE_UNKNOWN) { // means that field is not yet defined.
-            CoreField fd = Fields.createField(field, Field.TYPE_STRING, Field.STATE_VIRTUAL, null);
+            CoreField fd = org.mmbase.core.util.Fields.createField(field, Field.TYPE_STRING, Field.STATE_VIRTUAL, null);
             if (! fd.isTemporary()) {
                 fd.setStoragePosition(1000);
                 log.service("Added a virtual field '" + field + "' to builder '" + getTableName() + "' because it was not defined in the builder's XML, but the implementation requires it to exist.");

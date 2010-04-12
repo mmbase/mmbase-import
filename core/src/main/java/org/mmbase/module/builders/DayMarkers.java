@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.text.DateFormat;
 import org.mmbase.module.core.*;
+import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.*;

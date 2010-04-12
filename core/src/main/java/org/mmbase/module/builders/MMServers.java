@@ -16,6 +16,7 @@ import java.util.concurrent.*;
 import org.mmbase.util.ThreadPools;
 
 import org.mmbase.module.core.*;
+import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.implementation.*;
