@@ -1142,7 +1142,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             cloud = getDefaultCloudContext().getCloud(getName(), getAuthenticate(), user == null ? null : user.toMap());
             log.debug("Logged in " );
             if (!cloud.getUser().isValid()) {
-                log.warn("Just acquired user " + cloud.getUser().getIdentifier() + " is not valid!");
+                log.warn("Just acquired user " + cloud.getUser().getClass() + " " + cloud.getUser().getIdentifier() + " is not valid!");
                 return deny(DENYREASON_FAIL, "Just acquired user " + cloud.getUser().getIdentifier() + " is not valid!");
             }
             if (logon != null && pwd != Attribute.NULL) {
