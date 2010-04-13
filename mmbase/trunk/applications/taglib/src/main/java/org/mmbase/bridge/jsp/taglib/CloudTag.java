@@ -516,10 +516,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         pageContext.setAttribute(KEY, cloud, SCOPE);
         org.mmbase.bridge.util.CloudThreadLocal.bind(cloud);
 
-        if (cloud.getCloudContext() instanceof LocalContext) {
-            cloud.setProperty(Cloud.PROP_REQUEST, request);
-            cloud.setProperty(Cloud.PROP_RESPONSE, response);
-        }
+        //        if (cloud.getCloudContext() instanceof LocalContext) {
+        cloud.setProperty(Cloud.PROP_REQUEST, request);
+        cloud.setProperty(Cloud.PROP_RESPONSE, response);
+        //}
         cloud.setProperty(LocaleTag.TZ_KEY, getTimeZone());
 
         if (jspVar != null) {

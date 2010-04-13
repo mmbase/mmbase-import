@@ -38,8 +38,8 @@
   </listener>
 
   <welcome-file-list>
-    <welcome-file>index.jspx</welcome-file>
     <welcome-file>index.jsp</welcome-file>
+    <welcome-file>index.jspx</welcome-file>
     <welcome-file>default.jsp</welcome-file>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
