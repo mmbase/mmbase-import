@@ -38,12 +38,13 @@
   </allowedrelationlist>
 
   <datasourcelist>
+    <datasource builder="mmbasecontexts" path="Security/mmbasecontexts.xml" />
     <datasource builder="mmbaseranks"    path="Security/mmbaseranks.xml" />
     <datasource builder="mmbasegroups"   path="Security/mmbasegroups.xml" />
     <datasource builder="mmbaseusers"    path="Security/mmbaseusers.xml" />
     <datasource builder="mmbaseactions"   path="Security/mmbaseactions.xml" />
 
-    <datasource builder="mmbasecontexts" path="Security/mmbasecontexts.xml" />
+
   </datasourcelist>
 
   <relationsourcelist>
