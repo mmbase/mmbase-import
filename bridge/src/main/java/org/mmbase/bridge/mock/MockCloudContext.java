@@ -135,7 +135,7 @@ public class MockCloudContext extends  AbstractCloudContext {
             if (! nodeManagers.containsKey(buil)) {
                 InputSource source = MockBuilderReader.getBuilderLoader().getInputSource("core/" + buil + ".xml");
                 if (source == null) {
-                    LOG.warn("Not found " + MockBuilderReader.getBuilderLoader().getResource("core/" + buil + ".xml"));
+                    LOG.warn("Not found " + MockBuilderReader.getBuilderLoader().getResource("core/" + buil + ".xml") + " with " + MockBuilderReader.getBuilderLoader());
                 } else {
                     addNodeManager(source);
                 }
