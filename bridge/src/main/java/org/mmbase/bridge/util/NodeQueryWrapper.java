@@ -27,21 +27,26 @@ public class NodeQueryWrapper extends AbstractQueryWrapper<NodeQuery> implements
     }
 
 
+    @Override
     public Step getNodeStep() {
         return query.getNodeStep();
     }
 
+    @Override
     public Step setNodeStep(Step step) {
         return query.setNodeStep(step);
     }
 
+    @Override
     public NodeManager getNodeManager() {
         return query.getNodeManager();
     }
+    @Override
     public StepField getStepField(Field field) {
         return query.getStepField(field);
     }
 
+    @Override
     public java.util.List<StepField> getExtraFields() {
         return query.getExtraFields();
     }

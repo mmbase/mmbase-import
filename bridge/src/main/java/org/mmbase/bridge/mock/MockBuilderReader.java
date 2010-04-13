@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.mock;
 
 import org.mmbase.util.xml.ParentBuilderReader;
-import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.NodeManagerDescription;
 import org.xml.sax.InputSource;
 import org.w3c.dom.Document;

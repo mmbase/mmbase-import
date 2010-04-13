@@ -262,6 +262,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
         return treeIterator(ind);
     }
 
+    @Override
     public NodeIterator nodeIterator() {
         return treeIterator(0);
     }
@@ -668,33 +669,41 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
             return node;
         }
 
+        @Override
         public boolean hasPrevious() {
             return nextIndex > 0;
         }
 
+        @Override
         public Node previousNode() {
             nextIndex--;
             throw new UnsupportedOperationException("unfinished");
         }
+        @Override
         public Node previous() {
             return previousNode();
         }
+        @Override
         public int nextIndex() {
             return nextIndex;
         }
 
+        @Override
         public int previousIndex() {
             return nextIndex - 1;
         }
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException("TreeList is not modifiable");
         }
 
+        @Override
         public void set(Node o) {
             throw new UnsupportedOperationException("TreeList is not modifiable");
         }
 
+        @Override
         public void add(Node o) {
             throw new UnsupportedOperationException("TreeList is not modifiable");
         }

@@ -110,7 +110,7 @@ public interface Field extends Descriptor, Comparable<Field> {
      *
      * @return  the node manager this field belongs to
      */
-    public NodeManager getNodeManager();
+    NodeManager getNodeManager();
 
     /**
      * Returns this field's state identifier ({@link #STATE_VIRTUAL}, {@link #STATE_PERSISTENT}, {@link #STATE_SYSTEM} or
@@ -118,7 +118,7 @@ public interface Field extends Descriptor, Comparable<Field> {
      * @see #isReadOnly();
      * @return  an <code>int</code> which identifies the state of this field
      */
-    public int getState();
+    int getState();
 
     /**
      * Returns the data type this field contains.
@@ -126,9 +126,9 @@ public interface Field extends Descriptor, Comparable<Field> {
      * @return  a <code>DataType</code>  object describing the constraints on this field.
      * @since MMBase-1.8
      */
-    public DataType getDataType();
+    DataType getDataType();
 
-    // public DataType<?> getDataType();  // This opens a can of worms
+    // DataType<?> getDataType();  // This opens a can of worms
 
 
 
@@ -141,7 +141,7 @@ public interface Field extends Descriptor, Comparable<Field> {
      * @return  <code>true</code> if the field is part of a unique key
      * @since  MMBase-1.6
      */
-    public boolean isUnique();
+    boolean isUnique();
 
     /**
      * Returns whether this field is a key field, meaning that the storage layer should define an index for it, allowing
@@ -153,7 +153,7 @@ public interface Field extends Descriptor, Comparable<Field> {
      * @return  <code>true</code> if the field has a key defined
      * @since  MMBase-1.7
      */
-    public boolean hasIndex();
+    boolean hasIndex();
 
     /**
      * Returns the identifier for the MMBase base type for this field.
@@ -166,7 +166,7 @@ public interface Field extends Descriptor, Comparable<Field> {
      * To acquire the datatype's type, use <code>getDataType.getBaseType()</code> instead.
      * @return  an <code>int</code> which identifies the base type
      */
-    public int getType();
+    int getType();
 
     /**
      * If the type of this field is TYPE_LIST, this method returns the MMBase base type for the list elements.
@@ -174,7 +174,7 @@ public interface Field extends Descriptor, Comparable<Field> {
      * For any field types other that TYPE_LIST, this method returns TYPE_UNKNOWN.
      * @return  an <code>int</code> which identifies the base type
      */
-    public int getListItemType();
+    int getListItemType();
 
     /**
      * Retrieve the position of the field when searching.
@@ -182,7 +182,7 @@ public interface Field extends Descriptor, Comparable<Field> {
      * @return position of the field when searching
      * @since MMBase-1.8
      */
-    public int getSearchPosition();
+    int getSearchPosition();
 
     /**
      * Retrieve the position of the field when listing.
@@ -190,7 +190,7 @@ public interface Field extends Descriptor, Comparable<Field> {
      * @return position of the field when listing
      * @since MMBase-1.8
      */
-    public int getListPosition();
+    int getListPosition();
 
     /**
      * Retrieve the position of the field when editing.
@@ -198,14 +198,14 @@ public interface Field extends Descriptor, Comparable<Field> {
      * @return  position of the field when editing
      * @since MMBase-1.8
      */
-    public int getEditPosition();
+    int getEditPosition();
 
     /**
      * Retrieve the position of the field in the database table.
      * @return position in the database table
      * @since MMBase-1.8
      */
-    public int getStoragePosition();
+    int getStoragePosition();
 
     /**
      * Returns the GUI name for the data type this field contains.
@@ -214,7 +214,7 @@ public interface Field extends Descriptor, Comparable<Field> {
      * @see #getDataType
      */
     @Deprecated
-    public String getGUIType();
+    String getGUIType();
 
     /**
      * Returns whether this field is required (should have content).
@@ -226,7 +226,7 @@ public interface Field extends Descriptor, Comparable<Field> {
      * @return  <code>true</code> if the field is required
      * @since  MMBase-1.6
      */
-    public boolean isRequired();
+    boolean isRequired();
 
     /**
      * Returns the maximum length of data this field can contain.
@@ -237,7 +237,7 @@ public interface Field extends Descriptor, Comparable<Field> {
      *
      * @return  the maximum length of data this field can contain
      */
-    public int getMaxLength();
+    int getMaxLength();
 
     /**
      * Checks whether a given value is valid for this field.
@@ -245,14 +245,14 @@ public interface Field extends Descriptor, Comparable<Field> {
      * @return Collection of error-strings (describing the problem) in the current locale, or an empty collection if the value is ok.
      * @since MMBase-1.8
      */
-    public java.util.Collection<String> validate(Object value);
+    java.util.Collection<String> validate(Object value);
 
     /**
      * A field's state is 'virtual' if it is not persistent in storage.
      * @return <code>true</code> when a field is virtual
      * @since MMBase-1.8
      */
-    public boolean isVirtual();
+    boolean isVirtual();
 
     /**
      * Returns whether a field is 'read only' - that is, a user cannot edit it.
@@ -261,6 +261,6 @@ public interface Field extends Descriptor, Comparable<Field> {
      * @return <code>true</code> when a field is read only
      * @since MMBase-1.8
      */
-    public boolean isReadOnly();
+    boolean isReadOnly();
 
 }

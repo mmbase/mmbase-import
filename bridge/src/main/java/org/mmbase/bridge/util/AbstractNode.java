@@ -40,34 +40,42 @@ public abstract class AbstractNode implements Node {
     private static final Logger log = Logging.getLoggerInstance(AbstractNode.class);
 
 
+    @Override
     public boolean isRelation() {
         return false;
     }
 
+    @Override
     public Relation toRelation() {
         throw new ClassCastException("The node " + this + " is not a relation, (but a " + getClass() + ")");
     }
 
+    @Override
     public boolean isNodeManager() {
         return false;
     }
 
+    @Override
     public NodeManager toNodeManager() {
         throw new ClassCastException("The node " + this + " is not a node manager , (but a " + getClass() + ")");
     }
 
+    @Override
     public boolean isRelationManager() {
         return false;
     }
 
+    @Override
     public RelationManager toRelationManager() {
         throw new ClassCastException("The node " + this + " is not a relation manager , (but a " + getClass() + ")");
     }
 
+    @Override
     public boolean isNull(String fieldName) {
         return getValueWithoutProcess(fieldName) == null;
     }
 
+    @Override
     public int getNumber() {
         return Casting.toInt(getValueWithoutProcess("number"));
     }
@@ -77,6 +85,7 @@ public abstract class AbstractNode implements Node {
      * @param fieldName name of the field
      * @param value set value
      */
+    @Override
     public final void setValue(String fieldName, Object value) {
         Field field = getNodeManager().getField(fieldName);
         if (value == null) {
@@ -148,6 +157,7 @@ public abstract class AbstractNode implements Node {
      *       method such as setSource(), where applicable.
      * @since MMBase-1.7
      */
+    @Override
     public void setValueWithoutProcess(String fieldName, Object value) {
         checkWrite();
         if ("owner".equals(fieldName)) {
@@ -163,29 +173,34 @@ public abstract class AbstractNode implements Node {
 
     protected abstract void setValueWithoutChecks(String fieldName, Object value);
 
+    @Override
     public final void setObjectValue(String fieldName, Object value) {
         Field field = getNodeManager().getField(fieldName);
         value = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_UNKNOWN).process(this, field, value);
         setValueWithoutProcess(fieldName, value);
     }
 
+    @Override
     public final void setBooleanValue(String fieldName,final  boolean value) {
         Field field = getNodeManager().getField(fieldName);
         Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BOOLEAN).process(this, field, Boolean.valueOf(value));
         setValueWithoutProcess(fieldName, v);
     }
 
+    @Override
     public final void setDateValue(String fieldName, final Date value) {
         Field field = getNodeManager().getField(fieldName);
         Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_DATETIME).process(this, field, value);
         setValueWithoutProcess(fieldName, v);
     }
+    @Override
     public final void setDecimalValue(String fieldName, final BigDecimal value) {
         Field field = getNodeManager().getField(fieldName);
         Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_DECIMAL).process(this, field, value);
         setValueWithoutProcess(fieldName, v);
     }
 
+    @Override
     public final void setListValue(String fieldName, final List value) {
         Field field = getNodeManager().getField(fieldName);
         Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_LIST).process(this, field, value);
@@ -207,36 +222,42 @@ public abstract class AbstractNode implements Node {
         }
     }
 
+    @Override
     public final void setNodeValue(String fieldName, final Node value) {
         Field field = getNodeManager().getField(fieldName);
         Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_NODE).process(this, field, value);
         setValueWithoutProcess(fieldName, toNodeNumber(v));
     }
 
+    @Override
     public final void setIntValue(String fieldName, final int value) {
         Field field = getNodeManager().getField(fieldName);
         Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_INTEGER).process(this, field, Integer.valueOf(value));
         setValueWithoutProcess(fieldName, v);
     }
 
+    @Override
     public final void setLongValue(String fieldName, final long value) {
         Field field = getNodeManager().getField(fieldName);
         Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_LONG).process(this, field, Long.valueOf(value));
         setValueWithoutProcess(fieldName, v);
     }
 
+    @Override
     public final void setFloatValue(String fieldName, final float value) {
         Field field = getNodeManager().getField(fieldName);
         Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_FLOAT).process(this, field, Float.valueOf(value));
         setValueWithoutProcess(fieldName, v);
     }
 
+    @Override
     public final void setDoubleValue(String fieldName, final double value) {
         Field field = getNodeManager().getField(fieldName);
         Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_DOUBLE).process(this, field, Double.valueOf(value));
         setValueWithoutProcess(fieldName, v);
     }
 
+    @Override
     public final void setByteValue(String fieldName, final byte[] value) {
         Field field = getNodeManager().getField(fieldName);
         Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY).process(this, field, value);
@@ -247,6 +268,7 @@ public abstract class AbstractNode implements Node {
 
     private static final int readLimit = 10 * 1024 * 1024;
 
+    @Override
     public final void setInputStreamValue(String fieldName, final InputStream value, long size) {
         if (log.isDebugEnabled()) {
             log.debug("Setting " + size + " + bytes (" + value + ")");
@@ -286,6 +308,7 @@ public abstract class AbstractNode implements Node {
         setValueWithoutProcess(fieldName, v);
     }
 
+    @Override
     public final void setStringValue(final String fieldName, final String value) {
         Field field = getNodeManager().getField(fieldName);
         Object setValue = field.getDataType().preCast(value, this, field); // to resolve enumerations
@@ -293,6 +316,7 @@ public abstract class AbstractNode implements Node {
         setValueWithoutProcess(fieldName, v);
     }
 
+    @Override
     public final void setXMLValue(String fieldName, final Document value) {
         Field field = getNodeManager().getField(fieldName);
         Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_XML).process(this, field, value);

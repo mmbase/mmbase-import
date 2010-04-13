@@ -25,12 +25,12 @@ public interface FieldIterator extends ListIterator<Field> {
      * Returns the next element in the iterator as a Field
      * @return next Field
      */
-    public Field nextField();
+    Field nextField();
 
     /**
      * Returns the previous element in the iterator as a Field
      * @return previous Field
      */
-    public Field previousField();
+    Field previousField();
 
 }

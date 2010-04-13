@@ -33,7 +33,7 @@ See http://www.MMBase.org/license
 
 
   <scm>
-    <url>https://scm.mmbase.org/mmbase/trunk/utils/</url>
+    <url>https://scm.mmbase.org/mmbase/trunk/bridge/</url>
   </scm>
 
   <build>

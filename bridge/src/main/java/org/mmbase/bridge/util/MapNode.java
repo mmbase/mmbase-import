@@ -14,7 +14,6 @@ import java.util.*;
 import java.io.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.*;
-import org.mmbase.util.functions.*;
 
 /**
  * A bridge Node based on a {@link java.util.Map}. It can come in handy sometimes to be able to present any {@link
@@ -83,10 +82,12 @@ public class MapNode<V> extends AbstractNode implements Node, Serializable {
         return new MapNodeManager(cloud, map, implicitCreate);
     }
 
+    @Override
     public Cloud getCloud() {
         return nodeManager.getCloud();
     }
 
+    @Override
     public NodeManager getNodeManager() {
         return nodeManager;
     }
@@ -135,6 +136,7 @@ public class MapNode<V> extends AbstractNode implements Node, Serializable {
         sizes.put(fieldName, size);
     }
 
+    @Override
     public long getSize(String fieldName) {
         Long size = sizes.get(fieldName);
         if (size != null) {
