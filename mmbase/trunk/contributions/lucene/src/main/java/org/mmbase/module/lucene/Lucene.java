@@ -194,7 +194,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      * This may take a while.
      * This function can be called through the function framework.
      */
-    protected Function<Void> fullIndexFunction = new AbstractFunction<Void>("fullIndex", new Parameter[] {INDEX, MACHINES}, ReturnType.VOID) {
+    protected final Function<Void> fullIndexFunction = new AbstractFunction<Void>("fullIndex", new Parameter[] {INDEX, MACHINES}, ReturnType.VOID) {
         private static final long serialVersionUID = 0L;
         public Void getFunctionValue(Parameters arguments) {
             String index = arguments.get(INDEX);
