@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.util;
 
-import org.mmbase.bridge.Fields;
 import org.mmbase.bridge.implementation.BasicField;
 import java.util.*;
 import org.mmbase.bridge.*;

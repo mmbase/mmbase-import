@@ -35,12 +35,14 @@ public class NodeMap extends NodeWrapper implements Map<String, Object> {
     }
 
     // javadoc inherited
+    @Override
     public void clear() {
         // the fields of a node are fixed by it's nodemanager.
         throw new UnsupportedOperationException("You cannot remove fields from a Node.");
     }
 
     // javadoc inherited
+    @Override
     public boolean containsKey(Object key) {
         if (key instanceof String) {
             return getNodeManager().hasField((String) key);
@@ -51,6 +53,7 @@ public class NodeMap extends NodeWrapper implements Map<String, Object> {
 
     // javadoc inherited
     // code copied from AbstractMap
+    @Override
     public boolean containsValue(Object value) {
         Iterator<Entry<String, Object>>  i = entrySet().iterator();
         if (value==null) {
@@ -72,6 +75,7 @@ public class NodeMap extends NodeWrapper implements Map<String, Object> {
     }
 
     // javadoc inherited
+    @Override
     public Object remove(Object key) {
         throw new UnsupportedOperationException("You cannot remove fields from a Node.");
     }
@@ -92,70 +96,84 @@ public class NodeMap extends NodeWrapper implements Map<String, Object> {
     }
 
     // javadoc inherited
+    @Override
     public Set<Entry<String, Object>> entrySet() {
         return new AbstractSet<Entry<String, Object>>() {
-                FieldList fields = getNodeManager().getFields();
-                @Override
-                public Iterator<Entry<String, Object>> iterator() {
-                    return new Iterator<Entry<String, Object>>() {
-                            FieldIterator i = fields.fieldIterator();
-                            public boolean hasNext() { return i.hasNext();}
-                            public Entry<String, Object>  next() {
-                                return new Map.Entry<String, Object>() {
-                                        Field field = i.nextField();
-                                        public String getKey() {
-                                            return field.getName();
-                                        }
-                                        public Object getValue() {
-                                            return NodeMap.this.getValueForMap(field.getName());
-                                        }
-                                        public Object setValue(Object value) {
-                                            Object r = getValue();
-                                            NodeMap.this.setValueForMap(field.getName(), value);
-                                            return r;
-                                        }
-                                        @Override
-                                        public String toString() {
-                                            return getKey() + "=" + NodeMap.this.getValueWithoutProcess(field.getName());
-                                        }
-                                    };
+            FieldList fields = getNodeManager().getFields();
+            @Override
+            public Iterator<Entry<String, Object>> iterator() {
+                return new Iterator<Entry<String, Object>>() {
+                    FieldIterator i = fields.fieldIterator();
+                    @Override
+                    public boolean hasNext() {
+                        return i.hasNext();
+                    }
+                    @Override
+                    public Entry<String, Object> next() {
+                        return new Map.Entry<String, Object>() {
+                            Field field = i.nextField();
+                            @Override
+                            public String getKey() {
+                                return field.getName();
                             }
-                            public void remove() {
-                                throw new UnsupportedOperationException("You cannot remove fields from a Node.");
+                            @Override
+                            public Object getValue() {
+                                return NodeMap.this.getValueForMap(field.getName());
+                            }
+                            @Override
+                            public Object setValue(Object value) {
+                                Object r = getValue();
+                                NodeMap.this.setValueForMap(field.getName(), value);
+                                return r;
+                            }
+                            @Override
+                            public String toString() {
+                                return getKey() + "=" + NodeMap.this.getValueWithoutProcess(field.getName());
                             }
                         };
-                }
-                @Override
-                public int size() {
-                    return fields.size();
-                }
-            };
+                    }
+                    @Override
+                    public void remove() {
+                        throw new UnsupportedOperationException("You cannot remove fields from a Node.");
+                    }
+                };
+            }
+            @Override
+            public int size() {
+                return fields.size();
+            }
+        };
     }
 
     // javadoc inherited
     // todo: could be modifiable?
     public Collection<Object> values() {
         return new AbstractCollection<Object>() {
-                FieldList fields = getNodeManager().getFields();
-                @Override
-                public Iterator<Object> iterator() {
-                    return new Iterator<Object>() {
-                            FieldIterator i = fields.fieldIterator();
-                            public boolean hasNext() { return i.hasNext();}
-                            public Object  next() {
-                                Field field = i.nextField();
-                                return NodeMap.this.getValueForMap(field.getName());
-                            }
-                            public void remove() {
-                                throw new UnsupportedOperationException("You cannot remove fields from a Node.");
-                            }
-                        };
-                }
-                @Override
-                public int size() {
-                    return fields.size();
-                }
-            };
+            FieldList fields = getNodeManager().getFields();
+            @Override
+            public Iterator<Object> iterator() {
+                return new Iterator<Object>() {
+                    FieldIterator i = fields.fieldIterator();
+                    @Override
+                    public boolean hasNext() {
+                        return i.hasNext();
+                    }
+                    @Override
+                    public Object next() {
+                        Field field = i.nextField();
+                        return NodeMap.this.getValueForMap(field.getName());
+                    }
+                    @Override
+                    public void remove() {
+                        throw new UnsupportedOperationException("You cannot remove fields from a Node.");
+                    }
+                };
+            }
+            @Override
+            public int size() {
+                return fields.size();
+            }
+        };
     }
 
     // javadoc inherited
@@ -165,45 +183,55 @@ public class NodeMap extends NodeWrapper implements Map<String, Object> {
                 @Override
                 public Iterator<String> iterator() {
                     return new Iterator<String>() {
-                            FieldIterator i = fields.fieldIterator();
-                            public boolean hasNext() { return i.hasNext();}
-                            public String  next() {
-                                Field field = i.nextField();
-                                return field.getName();
-                            }
-                            public void remove() {
-                                throw new UnsupportedOperationException("You cannot remove fields from a Node.");
-                            }
-                        };
-                }
-                @Override
-                public int size() {
-                    return fields.size();
-                }
+                        FieldIterator i = fields.fieldIterator();
+                        @Override
+                        public boolean hasNext() {
+                            return i.hasNext();
+                        }
+                        @Override
+                        public String next() {
+                            Field field = i.nextField();
+                            return field.getName();
+                        }
+                        @Override
+                        public void remove() {
+                            throw new UnsupportedOperationException("You cannot remove fields from a Node.");
+                        }
+                    };
+            }
+            @Override
+            public int size() {
+                return fields.size();
+            }
             };
     }
 
     // javadoc inherited
+    @Override
     public void putAll(Map<? extends String, ? extends Object> map) {
         for (java.util.Map.Entry<? extends String, ? extends Object> e : map.entrySet()) {
             put(e.getKey(), e.getValue());
         }
     }
 
+    @Override
     public Object put(String key, Object value) {
         Object r = getValueForMap(key);
         setValueForMap(key, value);
         return r;
     }
 
+    @Override
     public Object get(Object key) {
         return getValueForMap((String) key);
     }
 
+    @Override
     public boolean isEmpty() {
         return false;
     }
 
+    @Override
     public int size() {
         return getNodeManager().getFields().size();
     }

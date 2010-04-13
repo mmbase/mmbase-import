@@ -10,12 +10,8 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.mock;
 
-import static org.mmbase.datatypes.Constants.*;
-import org.mmbase.bridge.util.*;
-import org.mmbase.datatypes.DataType;
 import java.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.util.functions.*;
 
 /**
  * Straight-forward implementation of NodeManager based on a Map with DataType's.

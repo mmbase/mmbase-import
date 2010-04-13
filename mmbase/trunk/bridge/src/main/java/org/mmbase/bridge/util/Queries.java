@@ -1309,6 +1309,7 @@ abstract public class Queries {
             query = q;
         }
 
+        @Override
         public int compare(Node node1, Node node2) {
             return Queries.compare(node1, node2, query.getSortOrders());
         }
@@ -1336,6 +1337,7 @@ abstract public class Queries {
      * Compare 2 nodes from a transaction. If it's 'earlier', it's smaller.
      */
     private static class TransactionNodeComparator implements Comparator<Node> {
+        @Override
         public int compare(Node node1, Node node2) {
             int result =  node1.getStringValue("_number").compareTo(node2.getStringValue("_number"));
             if (result != 0) return result;

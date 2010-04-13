@@ -15,8 +15,6 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.AbstractCloudContext;
 import org.mmbase.bridge.util.NodeManagerDescription;
 import org.mmbase.datatypes.DataType;
-import org.mmbase.bridge.implementation.*;
-import org.mmbase.storage.search.*;
 import org.mmbase.security.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -280,6 +278,7 @@ public class MockCloudContext extends  AbstractCloudContext {
         }
     }
 
+    @Override
     public Cloud getCloud(String name, org.mmbase.security.UserContext user) throws NotFoundException {
         if (clouds.contains(name)) {
             return new MockCloud(name, this, user);
@@ -288,6 +287,7 @@ public class MockCloudContext extends  AbstractCloudContext {
         }
     }
 
+    @Override
     public String getUri() {
         return "mock:local";
     }
@@ -317,6 +317,12 @@ public class MockCloudContext extends  AbstractCloudContext {
         @Override
         public String toString() {
             return "mock:local";
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            return hash;
         }
     }
 

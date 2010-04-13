@@ -12,7 +12,6 @@ package org.mmbase.bridge.mock;
 
 import java.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.storage.search.*;
 
 /**
 
@@ -29,6 +28,7 @@ class NodeQueryHandler extends AbstractQueryHandler  {
     }
 
 
+    @Override
     public List<Map<String, Object>> getRecords(Query query) {
         assert query instanceof NodeQuery;
         NodeQuery nq = (NodeQuery) query;
