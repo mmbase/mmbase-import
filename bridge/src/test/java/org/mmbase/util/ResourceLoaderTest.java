@@ -29,17 +29,6 @@ import static org.junit.Assert.*;
 public class ResourceLoaderTest {
 
 
-
-    /**
-     * perform lookup of mmbaseroot.xml using getConfigurationroot
-     */
-    @Test
-    public void getMMBaseRootModule() throws java.io.IOException {
-        URL url = ResourceLoader.getConfigurationRoot().getResource("modules/mmbaseroot.xml");
-        assertNotNull("did not find mmbaseroot.xml", url);
-        assertTrue("existing resource should be openable for input", url.openConnection().getDoInput());
-    }
-
     @Test
     public void getPropertiesBuilder() throws java.io.IOException {
         URL url = ResourceLoader.getConfigurationRoot().getResource("builders/properties.xml");
