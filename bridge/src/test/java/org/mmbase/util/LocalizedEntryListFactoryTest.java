@@ -209,6 +209,7 @@ public class LocalizedEntryListFactoryTest {
         System.out.println("dk" + fact.get(dk));
         System.out.println("eo" + fact.get(eo));
 
+        /** TODO need anothe rtest for this.
         LocalizedEntryListFactory fact2 = new LocalizedEntryListFactory();
         fact2.addBundle("org.mmbase.datatypes.resources.states", null, org.mmbase.module.builders.MMServers.class, SortedBundle.NO_WRAPPER, SortedBundle.NO_COMPARATOR);
 
@@ -217,7 +218,7 @@ public class LocalizedEntryListFactoryTest {
         System.out.println("" + fact2.get(nl));
         Object error = fact2.castKey("ERROR", null);
         System.out.println("ERROR=" + error.getClass().getName() + " " + error);
-
+        */
 
     }
 
