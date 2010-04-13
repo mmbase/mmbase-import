@@ -609,6 +609,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
         <module>maven-base</module>
         <module>maven-base/applications</module>
         <module>utils</module>
+        <module>bridge</module>
         <module>core</module>
         <module>applications</module>
         <module>contributions</module>
@@ -623,8 +624,10 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       -->
       <modules>
         <module>maven/assembly-descriptors</module>
-        <module>core</module>
         <module>utils</module>
+        <module>bridge</module>
+        <module>core</module>
+
         <module>applications</module>
         <module>contributions</module>
         <module>base-webapp</module>
