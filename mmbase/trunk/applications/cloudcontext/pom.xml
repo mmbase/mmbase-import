@@ -21,5 +21,12 @@
   <properties>
     <templatesTarget>mmbase/security</templatesTarget>
   </properties>
-
+  <dependencies>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 </project>
