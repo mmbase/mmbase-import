@@ -21,6 +21,12 @@
   <dependencies>
     <dependency>
       <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
       <artifactId>mmbase-email</artifactId>
       <version>${mmbase.version}</version>
       <classifier>classes</classifier>
