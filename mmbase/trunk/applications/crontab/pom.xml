@@ -21,4 +21,13 @@
     regular intervals.
   </description>
 
+  <dependencies>
+    <!-- TODO: remove dependency on core (and even bridge?) -->
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 </project>
