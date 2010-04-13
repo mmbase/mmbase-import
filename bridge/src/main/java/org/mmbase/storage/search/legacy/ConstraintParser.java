@@ -497,6 +497,10 @@ public class ConstraintParser {
         this.queryContext = queryContext;
     }
 
+    public ConstraintParser(Query query) {
+        this(new QueryContext.Bridge(query.getCloud()), query);
+    }
+
     /**
      * Parses <em>SQL-search-condition</em>, and produces a corresponding
      * {@link org.mmbase.storage.search.Constraint Constraint} object.
