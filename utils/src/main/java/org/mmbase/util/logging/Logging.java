@@ -84,18 +84,6 @@ public class Logging {
      */
     private static ResourceWatcher configWatcher;
 
-    private static String machineName = "localhost";
-
-    static {
-        EventManager.getInstance().addEventListener(new SystemEventListener() {
-                public void notify(SystemEvent se) {
-                    if (se instanceof SystemEvent.MachineName) {
-                        machineName = ((SystemEvent.MachineName) se).getName();
-                    }
-                }
-            });
-    }
-
 
     private Logging() {
         // this class has no instances.
@@ -106,7 +94,7 @@ public class Logging {
      * @since MMBase-1.8
      */
     public static String getMachineName() {
-        return machineName;
+        return EventManager.getMachineName();
     }
 
     /**
