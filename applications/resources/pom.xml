@@ -46,6 +46,13 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>javax.media</groupId>
       <artifactId>jai-core</artifactId>
       <version>${jai.version}</version>

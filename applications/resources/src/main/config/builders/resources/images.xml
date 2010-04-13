@@ -174,7 +174,7 @@
       </editor>
       <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <property name="validMimeTypes" value="image/.*" />
-        <maxLength value="16777215" enforce="never"/>
+        <maxLength value="16777215" enforce="onvalidate"/>
         <commitprocessor>
           <class name="org.mmbase.datatypes.processors.BinaryCommitProcessor">
             <param name="contenttypeField">itype</param>
