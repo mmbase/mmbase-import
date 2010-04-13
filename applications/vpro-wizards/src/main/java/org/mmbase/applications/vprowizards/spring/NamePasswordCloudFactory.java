@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
-*/ 
+*/
 package org.mmbase.applications.vprowizards.spring;
 
 import java.util.HashMap;
@@ -40,7 +40,7 @@ public class NamePasswordCloudFactory implements CloudFactory {
         credentials.put("username", username);
         credentials.put("password", password);
         //TODO: how to call getCloud ???
-        return LocalContext.getCloudContext().getCloud("een", "twee", credentials );
+        return ContextProvider.getDefaultCloudContext().getCloud("een", "twee", credentials );
     }
 
     public Transaction createTransaction(HttpServletRequest request) {
