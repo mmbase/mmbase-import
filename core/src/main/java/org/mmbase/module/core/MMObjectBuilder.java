@@ -265,6 +265,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             {
                 setDescription("This function wraps a field, word-by-word. You can use this, e.g. in <pre>-tags. This functionality should be available as an 'escaper', and this version should now be considered an example.");
             }
+        @Override
             public String getFunctionValue(Node node, Parameters parameters) {
                 String val = node.getStringValue(parameters.getString(Parameter.FIELD));
                 Number wrappos = (Number) parameters.get("length");
@@ -1806,6 +1807,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @inheritDoc
      * @since MMBase-1.8
      */
+    @Override
     protected Function newFunctionInstance(String name, Parameter[] parameters, ReturnType returnType) {
         return new MMObjectNodeFunction<Object>(name, parameters, returnType) {
             @Override public Object getFunctionValue(Node node, Parameters parameters) {
@@ -2854,6 +2856,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      *
      * @since MMBase-1.6.2
      */
+    @Override
     public final boolean equals(Object o) {
         if (o == this) return true;
         if (o == null) return false;
@@ -2867,6 +2870,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
         return tableName == null ? 0 : tableName.hashCode();
     }
@@ -2924,6 +2928,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * this method covers for both node and relation events.
      * @since MMBase-1.8
      */
+    @Override
     public void notify(NodeEvent event) {
         if (log.isDebugEnabled()) {
             log.debug("" + this + " received node event " + event);
@@ -2935,6 +2940,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      * @since MMBase-1.8
      */
+    @Override
     public void notify(RelationEvent event) {
         if (log.isDebugEnabled()) {
             log.debug("" + this + " received relation event " + event);

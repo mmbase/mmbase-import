@@ -133,38 +133,47 @@ public class FieldDefs extends org.mmbase.core.CoreField {
         public LocaleToStringMap(Map<Locale,String> m) {
             map = m;
         }
+        @Override
         public Set<Entry<String,String>> entrySet() {
-            return new AbstractSet<Entry<String,String>>() {
-                    public Iterator<Entry<String,String>> iterator() {
-                        return new Iterator<Entry<String,String>>() {
-                                private final Iterator<Entry<Locale,String>> i = map.entrySet().iterator();
-                                public boolean hasNext() {
-                                    return i.hasNext();
+            return new AbstractSet<Entry<String, String>>() {
+                @Override
+                public Iterator<Entry<String, String>> iterator() {
+                    return new Iterator<Entry<String, String>>() {
+                        private final Iterator<Entry<Locale, String>> i = map.entrySet().iterator();
+                        @Override
+                        public boolean hasNext() {
+                            return i.hasNext();
+                        }
+                        @Override
+                        public void remove() {
+                            throw new UnsupportedOperationException("");
+                        }
+                        @Override
+                        public Entry<String, String> next() {
+                            final Entry<Locale, String> entry = i.next();
+                            return new Map.Entry<String, String>() {
+                                @Override
+                                public String getKey() {
+                                    return entry.getKey().getLanguage();
                                 }
-                                public void remove() {
-                                    throw new UnsupportedOperationException("");
+                                @Override
+                                public String getValue() {
+                                    return entry.getValue();
                                 }
-                                public Entry<String,String> next() {
-                                    final Entry<Locale,String> entry = i.next();
-                                    return new Map.Entry<String,String>() {
-                                            public String getKey() {
-                                                return entry.getKey().getLanguage();
-                                            }
-                                            public String getValue() {
-                                                return entry.getValue();
-                                            }
-                                            public String setValue(String o) {
-                                                return entry.setValue(o);
-                                            }
-                                        };
-
+                                @Override
+                                public String setValue(String o) {
+                                    return entry.setValue(o);
                                 }
                             };
-                    }
-                    public int size() {
-                        return map.size();
-                    }
-                };
+
+                        }
+                    };
+                }
+                @Override
+                public int size() {
+                    return map.size();
+                }
+            };
         }
     }
 

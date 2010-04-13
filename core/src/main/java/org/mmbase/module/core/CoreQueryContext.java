@@ -25,14 +25,17 @@ public class CoreQueryContext implements QueryContext {
 
     public static final QueryContext INSTANCE = new CoreQueryContext();
 
+    @Override
     public ClusterQueries getClusterQueries () {
         return CoreClusterQueries.INSTANCE;
     }
 
+    @Override
     public  String getStorageIdentifier(String s) {
         StorageManagerFactory<?> factory = MMBase.getMMBase().getStorageManagerFactory();
         return (String) factory.getStorageIdentifier(s);
     }
+    @Override
     public  Field getField(String builder, String fieldName) {
         return MMBase.getMMBase().getBuilder(builder).getField(fieldName);
     }
