@@ -24,6 +24,13 @@
 
 
   <dependencies>
+    <!-- TODO: Remove dependency on core -->
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>jgroups</groupId>
       <artifactId>jgroups-all</artifactId>
