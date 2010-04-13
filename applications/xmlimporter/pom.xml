@@ -19,4 +19,12 @@
     Currently this code still depends on the SCAN application which is deprecated.
   </description>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 </project>
