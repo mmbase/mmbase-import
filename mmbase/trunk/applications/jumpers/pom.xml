@@ -19,4 +19,13 @@
     redirects to a long one.
   </description>
 
+
+  <dependencies>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 </project>
