@@ -35,8 +35,10 @@ public class LuceneTest {
     public static void setup() throws Exception {
         MockCloudContext.getInstance().addCore();
         MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
-        lucene = org.mmbase.module.Module.getModule(Lucene.class, false);
+        org.mmbase.module.Module.checkModules(true, "lucene");
+        lucene = org.mmbase.module.Module.getModule(Lucene.class, true);
         assertTrue(lucene != null);
+        lucene.init(false);
         lucene.fullIndexFunction.getFunctionValueWithArgs("mynews_magazine");
         lucene.fullIndexFunction.getFunctionValueWithArgs("mynews_news");
         System.out.println("Found cloud " + getCloud() + " and lucene " + lucene);
@@ -70,6 +72,7 @@ public class LuceneTest {
         testSize("mynews_magazine", "xml", 3);
     }
 
+    @Test
     public void testChange() throws Exception {
         Cloud cloud = getCloud();
         Node article = cloud.getNode("anewsarticle");

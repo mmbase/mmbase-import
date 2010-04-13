@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  * @author Michiel Meeuwissen
  * @version $Id$
  **/
-public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener {
+public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener, SystemEventListener {
 
     public static final String PUBLIC_ID_LUCENE_2_0 = "-//MMBase//DTD luceneindex config 2.0//EN";
     public static final String DTD_LUCENE_2_0 = "luceneindex_2_0.dtd";
@@ -678,162 +678,151 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     }
 
     private ContentExtractor factory;
+    private SystemEvent.Up up;
+    private SystemEvent.Shutdown shutdown;
 
     @Override
     public void init() {
-        init(true);
+        EventManager.getInstance().addEventListener(this);
     }
+    public void init(boolean initialWait) {
 
-    protected void init(final boolean initialWait) {
-        super.init();
+        String path = getInitParameter("indexpath");
+        if (path != null) {
+            indexPath = path;
+            if (up != null) {
+                indexPath = indexPath.replace("$BINARYFILEBASEPATH", up.getDataDir().toString());
+                indexPath = indexPath.replace("$DATABASE", up.getDatabaseName());
+            }
 
-        ThreadPools.jobsExecutor.execute(new Runnable() {
-                public void run() {
+            //hack, to get backslashes working on windows
+            indexPath = indexPath.replaceAll("/+", "/");
+            indexPath = indexPath.replace('/', File.separatorChar);
 
-                    // Make sure that everthing is well initalized, otherwise the binary file base
-                    // path may still be empty.
-                    org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
+            log.service("found module parameter for lucene index path : " + indexPath);
+        } else {
+            if (up != null) {
+                indexPath = up.getDataDir().toString()  + "lucene" + File.separator + up.getDatabaseName();
+            }
+        }
 
-                    mmbase = MMBase.getMMBase();
-                    String databaseName = "";
-                    String binaryFileBasePath = "";
-                    //try to get the index path from the strorage configuration
-                    try {
-                        DatabaseStorageManagerFactory dsmf = (DatabaseStorageManagerFactory)mmbase.getStorageManagerFactory();
-                        String binaries = dsmf.getBinaryFileBasePath().toString();
-                        if (binaries != null) {  // this test is needed for compatibility betwen 1.8 and 1.9
-                            if (! binaries.endsWith(File.separator)) {
-                                binaries += File.separator;
-                            }
-                            binaryFileBasePath = binaries;
-                            databaseName = dsmf.getDatabaseName();
-                        }
-                    } catch(Exception e){}
+        if(indexPath != null) {
+            log.service("found storage configuration for lucene index path : " + indexPath);
+        } else {
+            // expand the default path (which is relative to the web-application)
+            indexPath = MMBaseContext.getServletContext().getRealPath(indexPath);
+            log.service("fall back to default for lucene index path : " + indexPath);
+        }
 
-                    String path = getInitParameter("indexpath");
-                    if (path != null) {
-                        indexPath = path;
-                        indexPath = indexPath.replace("$BINARYFILEBASEPATH", binaryFileBasePath);
-                        indexPath = indexPath.replace("$DATABASE", databaseName);
-
-                        //hack, to get backslashes working on windows
-                        indexPath = indexPath.replaceAll("/+", "/");
-                        indexPath = indexPath.replace('/', File.separatorChar);
-
-                        log.service("found module parameter for lucene index path : " + indexPath);
-                    } else {
-                        indexPath = binaryFileBasePath + "lucene" + File.separator + databaseName;
-                    }
-
-                    if(indexPath != null) {
-                        log.service("found storage configuration for lucene index path : " + indexPath);
-                    } else {
-                        // expand the default path (which is relative to the web-application)
-                        indexPath = MMBaseContext.getServletContext().getRealPath(indexPath);
-                        log.service("fall back to default for lucene index path : " + indexPath);
-                    }
-
-
-                    if (initialWait) {
-                        // initial wait time?
-                        String time = getInitParameter("initialwaittime");
-                       if (time != null) {
-                           try {
-                               initialWaitTime = Long.parseLong(time);
-                               log.debug("Set initial wait time to " + time + " milliseconds");
-                           } catch (NumberFormatException nfe) {
-                               log.warn("Invalid value '" + time + "' for property 'initialwaittime'");
-                           }
-                       }
-                       try {
-                           if (initialWaitTime > 0) {
-                               log.service("Sleeping " + (initialWaitTime / 1000) + " seconds for initialisation");
-                               Thread.sleep(initialWaitTime);
-                           }
-                       } catch (InterruptedException ie) {
-                           //return;
-                       }
-                    }
-
-
-                    factory = ContentExtractor.getInstance();
-
-                    String incrementalUpdatesSetting = getInitParameter("incrementalupdates");
-                    incrementalUpdates = "true".equals(incrementalUpdatesSetting);
-                    log.info("Setting incremental index updates to " + incrementalUpdates);
-
-                    String readOnlySetting = getInitParameter("readonly");
-                    while (readOnlySetting != null && readOnlySetting.startsWith("system:")) {
-                        try {
-                            readOnlySetting = System.getProperty(readOnlySetting.substring(7));
-                        } catch (SecurityException se) {
-                            log.info(se);
-                            break;
-                        }
-                    }
-                    if (readOnlySetting != null) {
-                        if (readOnlySetting.startsWith("host:")) {
-                            String host = readOnlySetting.substring(5);
-                            try {
-                                boolean write =
-                                    java.net.InetAddress.getLocalHost().getHostName().equals(host) ||
-                                    (System.getProperty("catalina.base") + "@" + java.net.InetAddress.getLocalHost().getHostName()).equals(host) ||
-                                    mmbase.getMachineName().equals(host);
-                                readOnly = ! write;
-                                if (readOnly) {
-                                    master = getInitParameter("master");
-                                    if (master == null) {
-                                        master = host;
-                                    }
-                                }
-                            } catch (java.net.UnknownHostException uhe) {
-                                log.error(uhe);
-                            }
-                        } else {
-                            readOnly = "true".equals(readOnlySetting);
-                            if (readOnly) {
-                                master = getInitParameter("master");
-                            }
-                        }
-                    }
-                    if (readOnly) {
-                        log.info("Lucene module of this MMBase will be READONLY. Responsible for the index is " + (master != null ? master : "UKNOWN"));
-                    }
-
-                    String time = getInitParameter("waittime");
-                    if (time != null) {
-                        try {
-                            waitTime = Long.parseLong(time);
-                            log.debug("Set wait time to " + time + " milliseconds. This long assigments remain scheduled, and can still be canceled.");
-                        } catch (NumberFormatException nfe) {
-                            log.warn("Invalid value '" + time +" ' for property 'waittime'");
-                        }
-                    }
-
-                    ResourceWatcher watcher = new ResourceWatcher() {
-                            public void onChange(String resource) {
-                                readConfiguration(resource);
-                            }
-                        };
-                    watcher.add(INDEX_CONFIG_FILE);
-                    watcher.onChange();
-                    watcher.start();
-
-                    if (!readOnly) {
-                        scheduler = new Scheduler();
-                        log.service("Module Lucene started");
-                        // full index ?
-                        String fias = getInitParameter("fullindexatstartup");
-                        if ("true".equals(fias)) {
-                            log.info("Configured to run a full index at startup, so doing that now");
-                            scheduler.fullIndex();
-                        }
-                    } else {
-                        log.service("No scheduler started, because read-only");
+        if (initialWait) {
+            // initial wait time?
+            String time = getInitParameter("initialwaittime");
+            if (time != null) {
+                try {
+                    initialWaitTime = Long.parseLong(time);
+                    log.debug("Set initial wait time to " + time + " milliseconds");
+                    } catch (NumberFormatException nfe) {
+                        log.warn("Invalid value '" + time + "' for property 'initialwaittime'");
                     }
                 }
-            });
+                try {
+                    if (initialWaitTime > 0) {
+                        log.service("Sleeping " + (initialWaitTime / 1000) + " seconds for initialisation");
+                        Thread.sleep(initialWaitTime);
+                    }
+                } catch (InterruptedException ie) {
+                    //return;
+                }
+            }
 
+
+            factory = ContentExtractor.getInstance();
+
+            String incrementalUpdatesSetting = getInitParameter("incrementalupdates");
+            incrementalUpdates = "true".equals(incrementalUpdatesSetting);
+            log.info("Setting incremental index updates to " + incrementalUpdates);
+
+            String readOnlySetting = getInitParameter("readonly");
+            while (readOnlySetting != null && readOnlySetting.startsWith("system:")) {
+                try {
+                    readOnlySetting = System.getProperty(readOnlySetting.substring(7));
+                } catch (SecurityException se) {
+                    log.info(se);
+                    break;
+                }
+            }
+            if (readOnlySetting != null) {
+                if (readOnlySetting.startsWith("host:")) {
+                    String host = readOnlySetting.substring(5);
+                    try {
+                        boolean write =
+                            java.net.InetAddress.getLocalHost().getHostName().equals(host) ||
+                            (System.getProperty("catalina.base") + "@" + java.net.InetAddress.getLocalHost().getHostName()).equals(host) ||
+                            mmbase.getMachineName().equals(host);
+                        readOnly = ! write;
+                        if (readOnly) {
+                            master = getInitParameter("master");
+                            if (master == null) {
+                                master = host;
+                            }
+                        }
+                    } catch (java.net.UnknownHostException uhe) {
+                        log.error(uhe);
+                    }
+                } else {
+                    readOnly = "true".equals(readOnlySetting);
+                    if (readOnly) {
+                        master = getInitParameter("master");
+                    }
+                }
+            }
+            if (readOnly) {
+                log.info("Lucene module of this MMBase will be READONLY. Responsible for the index is " + (master != null ? master : "UKNOWN"));
+            }
+
+            String time = getInitParameter("waittime");
+            if (time != null) {
+                try {
+                    waitTime = Long.parseLong(time);
+                    log.debug("Set wait time to " + time + " milliseconds. This long assigments remain scheduled, and can still be canceled.");
+                } catch (NumberFormatException nfe) {
+                    log.warn("Invalid value '" + time +" ' for property 'waittime'");
+                }
+            }
+
+            ResourceWatcher watcher = new ResourceWatcher() {
+                    public void onChange(String resource) {
+                        readConfiguration(resource);
+                    }
+                };
+            watcher.add(INDEX_CONFIG_FILE);
+            watcher.onChange();
+            watcher.start();
+
+            if (!readOnly) {
+                scheduler = new Scheduler();
+                log.service("Module Lucene started");
+                // full index ?
+                String fias = getInitParameter("fullindexatstartup");
+                if ("true".equals(fias)) {
+                    log.info("Configured to run a full index at startup, so doing that now");
+                    scheduler.fullIndex();
+                }
+            } else {
+                log.service("No scheduler started, because read-only");
+            }
+    }
+
+    @Override
+    public void notify(SystemEvent systemEvent) {
+        if (systemEvent instanceof SystemEvent.Up) {
+            up = (SystemEvent.Up) systemEvent;
+            init(true);
+        }
+        if (systemEvent instanceof SystemEvent.Shutdown) {
+            shutdown = (SystemEvent.Shutdown) systemEvent;
+            shutdown();
+        }
     }
 
 
@@ -881,7 +870,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     public void reload() {
         shutdown();
-        init(false);
+        notify((SystemEvent) null);
     }
 
     @Override
@@ -1243,9 +1232,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
         @Override
         public void run() {
-            MMBase mmbase = MMBase.getMMBase();
-            log.service("Start Lucene Scheduler");
-            while (mmbase != null && !mmbase.isShutdown()) {
+            while (shutdown == null) {
                 if (log.isTraceEnabled()) {
                     log.trace("Obtain Assignment from " + indexAssignments);
                 }
@@ -1266,8 +1253,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 } finally {
                     assignment = null;
                 }
-
             }
+
         }
         public int unAssign(int id) {
             int tot = 0;
