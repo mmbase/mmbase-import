@@ -16,6 +16,7 @@ import java.io.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.module.builders.DayMarkers;
 import org.mmbase.jumpers.Jumpers;
 import org.mmbase.module.corebuilders.FieldDefs;
