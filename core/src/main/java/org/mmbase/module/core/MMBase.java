@@ -478,7 +478,10 @@ public class MMBase extends ProcessorModule {
         // signal that MMBase is up and running
         mmbaseState = STATE_UP;
         log.info("MMBase is up and running");
-        EventManager.getInstance().propagateEvent(new SystemEvent.Up(), true);
+
+        org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory dsmf =
+            (org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory) getStorageManagerFactory();
+        EventManager.getInstance().propagateEvent(new SystemEvent.Up(dsmf.getDatabaseName(), dsmf.getBinaryFileBasePath()), true);
         //notifyAll();
         //}
     }
