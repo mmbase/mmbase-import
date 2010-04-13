@@ -152,12 +152,13 @@ public class ParameterizedDataTypesTest  {
                           new Object[] {new Double(Double.POSITIVE_INFINITY), "bla bla"
                           }},
             new Object[] {"handle",
-                          new Object[] {null, binary},
-                          new Object[] {new byte[] {1, 2}}
+                          new Object[] {null, binary /* UNDETERMINED so valid, or at least unknnown*/},
+                          new Object[] {new byte[] {1, 2} /* too short */}
             },
             new Object[] {"image",
-                          new Object[] {null},
-                          new Object[] { binary, new byte[] {1, 2}
+                          new Object[] {null, binary /* UNDTERMINED so valid (or at least unknown) */
+                },
+                          new Object[] {new byte[] {1, 2}// TODO think of invalid binaries.
                           }
             },
             new Object[] {"boolean",
