@@ -24,6 +24,14 @@
 
 
   <dependencies>
+    <!-- TODO: drop this dependency -->
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.oscom</groupId>
       <artifactId>mmbase-kupu</artifactId>
