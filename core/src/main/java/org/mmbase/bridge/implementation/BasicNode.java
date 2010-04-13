@@ -252,7 +252,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
 
     protected void checkAccount()  {
-        if (!account.equals(cloud.getAccount())) {
+        if (account == null || cloud == null || !account.equals(cloud.getAccount())) {
             throw new BridgeException("User context changed. Cannot proceed to edit this node .");
         }
     }
