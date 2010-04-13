@@ -81,6 +81,7 @@ public class TypeRel extends MMObjectBuilder {
 
     public InverseTypeRelSet inverseTypeRelNodes; // for searching sources
 
+    @Override
     public boolean init() {
         if (oType != -1) return true;
         super.init();
@@ -243,6 +244,7 @@ public class TypeRel extends MMObjectBuilder {
      * @return An <code>int</code> value which is the new object's unique number, -1 if the insert
      * failed.
      */
+    @Override
     public int insert(String owner, MMObjectNode node) {
         int snumber = node.getIntValue("snumber");
         int dnumber = node.getIntValue("dnumber");
@@ -260,6 +262,7 @@ public class TypeRel extends MMObjectBuilder {
      * Remove a node from the cloud.
      * @param node The node to remove.
      */
+    @Override
     public void removeNode(MMObjectNode node) {
         super.removeNode(node);
     }
@@ -374,6 +377,7 @@ public class TypeRel extends MMObjectBuilder {
      * @param node Node from which to retrieve the data
      * @return A <code>String</code> describing the content of the node
      */
+    @Override
     public String getGUIIndicator(MMObjectNode node) {
         try {
             String source      = mmb.getTypeDef().getValue(node.getIntValue("snumber"));
@@ -394,6 +398,7 @@ public class TypeRel extends MMObjectBuilder {
      * @param node Node from which to retrieve the data
      * @return A <code>String</code> describing the content of the field
      */
+    @Override
     public String getGUIIndicator(String field, MMObjectNode node) {
         try {
             if (field.equals("snumber")) {
@@ -414,6 +419,7 @@ public class TypeRel extends MMObjectBuilder {
      * be retrieved through tagger).
      * @javadoc parameters
      */
+    @Override
     public Vector<String> getList(PageInfo sp, StringTagger tagger, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd = tok.nextToken(); //Retrieving command.
@@ -521,6 +527,7 @@ public class TypeRel extends MMObjectBuilder {
      * (non-Javadoc)
      * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
      */
+    @Override
     public void notify(NodeEvent event) {
         if (log.isDebugEnabled()) {
             log.debug("Changed " + event.getMachine() + " " + event.getNodeNumber() + " "
@@ -616,6 +623,7 @@ public class TypeRel extends MMObjectBuilder {
      * are the same, and the rnumber fields are the same, or one of these is '-1' (don't care).
      * @since MMBase-1.6.2
      */
+    @Override
     public boolean equals(MMObjectNode o1, MMObjectNode o2) {
         if (o2.getBuilder() instanceof TypeRel) {
             int r1 = o1.getIntValue("rnumber");
@@ -630,6 +638,7 @@ public class TypeRel extends MMObjectBuilder {
      * Implements for MMObjectNode
      * @since MMBase-1.6.2
      */
+    @Override
     public int hashCode(MMObjectNode o) {
         int result = 0;
         result = HashCodeUtil.hashCode(result, o.getIntValue("snumber"));
@@ -638,6 +647,7 @@ public class TypeRel extends MMObjectBuilder {
         return result;
     }
 
+    @Override
     public String toString(MMObjectNode n) {
         try {
             int snumber = n.getIntValue("snumber");
@@ -707,6 +717,7 @@ public class TypeRel extends MMObjectBuilder {
         protected TypeRelSet() {
             super(new Comparator<MMObjectNode>() {
                 // sorted by source, destination, role
+                @Override
                 public int compare(MMObjectNode n1, MMObjectNode n2) {
                     {
                         int i1 = n1.getIntValue("snumber");
@@ -730,6 +741,7 @@ public class TypeRel extends MMObjectBuilder {
         }
 
         // make sure only MMObjectNode's are added
+        @Override
         public boolean add(MMObjectNode node) {
             return super.add(node);
         }
@@ -785,6 +797,7 @@ public class TypeRel extends MMObjectBuilder {
         protected InverseTypeRelSet() {
             super(new Comparator<MMObjectNode>() {
                 // sorted by destination, source, role
+                @Override
                 public int compare(MMObjectNode n1, MMObjectNode n2) {
                     int i1 = n1.getIntValue("dnumber");
                     int i2 = n2.getIntValue("dnumber");
@@ -803,6 +816,7 @@ public class TypeRel extends MMObjectBuilder {
         }
 
         // make sure only MMObjectNode's are added
+        @Override
         public boolean add(MMObjectNode object) {
             return super.add(object);
         }
@@ -874,6 +888,7 @@ public class TypeRel extends MMObjectBuilder {
             values = Collections.unmodifiableMap(values); // make sure it is not changed any more!
         }
 
+        @Override
         public String toString() {
             return "V:" + getValue("snumber") + "->" + getValue("dnumber") + "(" + getValue("rnumber") + ")";
         }

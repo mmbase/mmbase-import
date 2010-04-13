@@ -10,16 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.util.*;
-import java.util.Map.Entry;
 
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.cache.MultilevelCache;
-import org.mmbase.core.CoreField;
-import org.mmbase.bridge.BridgeException;
 import org.mmbase.bridge.Field;
-import org.mmbase.core.util.Fields;
-import org.mmbase.util.functions.*;
-import org.mmbase.datatypes.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.legacy.ConstraintParser;
@@ -41,10 +34,12 @@ class CoreClusterQueries extends ClusterQueries {
     private CoreClusterQueries() {
     }
 
+    @Override
     public QueryContext getQueryContext() {
         return CoreQueryContext.INSTANCE;
     }
 
+    @Override
     protected int getNumberForAlias(String alias) {
         int nodeNumber = MMBase.getMMBase().getOAlias().getNumber(alias);
         if (nodeNumber < 0) {
@@ -55,6 +50,7 @@ class CoreClusterQueries extends ClusterQueries {
 
     // Add constraints.
     // QueryConverter supports the old formats for backward compatibility.
+    @Override
     protected void setConstraint(BasicSearchQuery query, String where) {
         QueryConvertor.setConstraint(query, where);
     }
@@ -62,10 +58,12 @@ class CoreClusterQueries extends ClusterQueries {
         return ConstraintParser.getField(getQueryContext(), fieldName, query.getSteps());
     }
 
+    @Override
     protected boolean isRelation(String builder) {
         return MMBase.getMMBase().getBuilder(builder) instanceof InsRel;
     }
 
+    @Override
     protected String getBuilder(int nodeNumber) {
         MMObjectNode node = MMBase.getMMBase().getBuilder("object").getNode(nodeNumber);
         if (node == null) {
@@ -74,6 +72,7 @@ class CoreClusterQueries extends ClusterQueries {
         return node.parent.getTableName();
     }
 
+    @Override
     protected String getParentBuilder(String buil) {
         MMObjectBuilder builder = MMBase.getMMBase().getBuilder(buil);
         MMObjectBuilder parent = builder.getParentBuilder();
@@ -85,10 +84,12 @@ class CoreClusterQueries extends ClusterQueries {
         return builder.getField(fieldName);
     }
 
+    @Override
     public FieldDefs getNodeField(String fieldName) {
         return new FieldDefs(fieldName, Field.TYPE_NODE, -1, Field.STATE_VIRTUAL, org.mmbase.datatypes.DataTypes.getDataType("node"));
     }
 
+    @Override
     public String getTrueTableName(String table) {
         String tab = getTableName(table);
         int rnumber = MMBase.getMMBase().getRelDef().getNumberByName(tab);
@@ -99,10 +100,12 @@ class CoreClusterQueries extends ClusterQueries {
         }
     }
 
+    @Override
     protected boolean optimizeRelationStep(RelationStep relationStep, int sourceType, int destType, int role, int searchDir) {
         return MMBase.getMMBase().getTypeRel().optimizeRelationStep((BasicRelationStep) relationStep, sourceType, destType, role, searchDir);
     }
     // just changing scope for test-cases
+    @Override
     protected String getUniqueTableAlias(String tableAlias, Set<String> tableAliases, Collection<String> originalAliases) {
         return super.getUniqueTableAlias(tableAlias, tableAliases, originalAliases);
     }

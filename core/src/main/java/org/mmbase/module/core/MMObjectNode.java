@@ -15,8 +15,6 @@ import java.io.*;
 import org.mmbase.cache.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
-import org.mmbase.core.CoreField;
-import org.mmbase.storage.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.builders.DayMarkers;
 import org.mmbase.security.*;
@@ -482,6 +480,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * For data exchange use toXML() and getDTD().
      * @return the contents of the node as a string.
      */
+    @Override
     public String toString() {
         if (parent != null) {
             return parent.toString(this);
@@ -1725,7 +1724,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     public Vector<MMObjectNode> getRelatedNodes(String type, String role, int search_type) {
         Vector<MMObjectNode> result = null;
 
-        MMObjectBuilder builder = parent.mmb.getBuilder(type);
+        MMObjectBuilder bul = parent.mmb.getBuilder(type);
 
         // example: we want a thisnode.relatedNodes(mediaparts) where mediaparts are of type
         // audioparts and videoparts. This method will return the real nodes (thus of type audio/videoparts)
@@ -1735,7 +1734,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         //   (this will return virtual audio- and/or videoparts ordered on their *real* parent)
         // - construct a list of nodes for each parentbuilder seperately
         // - ask the parentbuilder for each list of virtual nodes to get a list of the real nodes
-        if( builder != null ) {
+        if( bul != null ) {
 
             ClusterBuilder clusterBuilder = parent.mmb.getClusterBuilder();
 
@@ -1891,10 +1890,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         return result;
     }
 
+    @Override
     public int getByteSize() {
         return getByteSize(new SizeOf());
     }
 
+    @Override
     public int getByteSize(SizeOf sizeof) {
         return sizeof.sizeof(values) +
             sizeof.sizeof(oldValues) +
@@ -1907,6 +1908,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     /**
      * @since MMBase-1.6.2
      */
+    @Override
     public int hashCode() {
         if (parent != null) {
             return parent.hashCode(this);
@@ -1918,6 +1920,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     /**
      * @since MMBase-1.6.2
      */
+    @Override
     public boolean equals(Object o) {
         if (o instanceof MMObjectNode) {
             MMObjectNode n = (MMObjectNode) o;
@@ -2008,6 +2011,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         return getNumber() - n.getNumber();
     }
 
+    @Override
     public MMObjectNode clone() {
         try {
             MMObjectNode clone = (MMObjectNode) super.clone();
