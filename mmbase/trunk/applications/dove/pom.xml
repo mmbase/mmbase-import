@@ -16,5 +16,14 @@
   <packaging>jar</packaging>
   <version>${mmbase.version}</version>
 
+  <dependencies>
+    <!-- TODO: drop this dependency -->
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
 </project>
