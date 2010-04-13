@@ -5,14 +5,15 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/luceneindex http://www.mmbase.org/xmlns/luceneindex.xsd">
 
+
   <index name="mynews_magazine">
     <description xml:lang="en">Lucene index for the 'MyNews' example (mags,news).</description>
     <analyzer class="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" />
     <list startnodes="default.mags,nondefault.mags" path="mags,news" element="news" searchdirs="destination">
-      <mmsq:field name="news.title"        />
+      <mmsq:field name="news.title"     />
       <mmsq:field name="news.subtitle"  />
-      <mmsq:field name="news.intro"  />
-      <mmsq:field name="news.body"  />
+      <mmsq:field name="news.intro"     />
+      <mmsq:field name="news.body"     />
     </list>
   </index>
 

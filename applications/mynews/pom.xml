@@ -19,4 +19,13 @@
     In its simplicity it is a good example to see how the basic MMBase taglib works.
   </description>
 
+
+  <dependencies>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 </project>
