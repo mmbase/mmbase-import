@@ -11,6 +11,7 @@ import org.mmbase.util.logging.*;
 
 
 /**
+ * Plugged into {@link org.mmbase.util.Casting} to supply some extra casting based on the availability of an MMBase Bridge.
  * @since MMBase-2.0
  */
 public class BridgeCaster implements Caster {
@@ -19,6 +20,7 @@ public class BridgeCaster implements Caster {
 
     private static Cloud anonymousCloud;
 
+    @Override
     public <C> C toType(Class<C> type, Object cloud, Object value) throws NotRecognized {
         if (type.equals(Node.class)) {
             try {
@@ -42,6 +44,7 @@ public class BridgeCaster implements Caster {
         }
     }
 
+    @Override
     public Object wrap(final Object o, final CharTransformer escaper) throws NotRecognized {
         if (o instanceof Node) {
             return new NodeMap((Node)o) {
@@ -90,6 +93,7 @@ public class BridgeCaster implements Caster {
         }
     }
 
+    @Override
     public Object unWrap(final Object o) throws NotRecognized {
         if (o instanceof NodeWrapper) {
             return ((NodeWrapper)o).getNode();
@@ -100,6 +104,7 @@ public class BridgeCaster implements Caster {
         }
     }
 
+    @Override
     public Map toMap(Object o) throws NotRecognized {
         if (o instanceof Node) {
             return new NodeMap((Node)o);
@@ -109,6 +114,7 @@ public class BridgeCaster implements Caster {
             throw NotRecognized.INSTANCE;
         }
     }
+    @Override
     public int toInt(Object i) throws NotRecognized {
         if (i instanceof Node) {
             return ((Node)i).getNumber();
@@ -118,6 +124,7 @@ public class BridgeCaster implements Caster {
     }
 
 
+    @Override
     public boolean toBoolean(Object i) throws NotRecognized {
         if (i instanceof Node) {
             return true;
@@ -126,12 +133,14 @@ public class BridgeCaster implements Caster {
         }
     }
 
+    @Override
     public boolean isStringRepresentable(Class<?> type) {
         return Node.class.isAssignableFrom(type);
     }
 
 
 
+    @Override
     public long toLong(Object i) throws NotRecognized {
         if (i instanceof Node) {
             return ((Node)i).getNumber();
@@ -139,6 +148,7 @@ public class BridgeCaster implements Caster {
             throw NotRecognized.INSTANCE;
         }
     }
+    @Override
     public float toFloat(Object i) throws NotRecognized {
         if (i instanceof Node) {
             return ((Node)i).getNumber();
@@ -146,6 +156,7 @@ public class BridgeCaster implements Caster {
             throw NotRecognized.INSTANCE;
         }
     }
+    @Override
     public double toDouble(Object i) throws NotRecognized {
         if (i instanceof Node) {
             return ((Node)i).getNumber();
@@ -154,6 +165,7 @@ public class BridgeCaster implements Caster {
         }
     }
 
+    @Override
     public String toString(Object s) throws NotRecognized {
         if (s instanceof org.mmbase.bridge.Query) {
             return ((org.mmbase.bridge.Query) s).toSql();
@@ -217,9 +229,11 @@ public class BridgeCaster implements Caster {
             }
             escaper = e;
         }
+        @Override
         public Node get(int index) {
             return (Node) Casting.wrap(super.get(index), escaper);
         }
+        @Override
         public String toString() {
             StringBuilder buf = new StringBuilder();
             Iterator<Node> i = iterator();
