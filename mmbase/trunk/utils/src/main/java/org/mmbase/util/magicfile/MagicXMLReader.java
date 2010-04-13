@@ -24,6 +24,9 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
     protected static final String MAGICXMLFILE = "magic.xml";
     // Name of the XML magic file - should reside in top config dir
 
+    /**
+     * @since MMBase-1.9.3
+     */
     private static void loadDetectorProvider(String config) throws IllegalArgumentException {
         try {
             InputSource is = ResourceLoader.getConfigurationRoot().getInputSource(config);
@@ -33,10 +36,10 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
                    log.info("Magic XML file is: " + reader.getSystemId());
                     final List<Detector> detectors = new ArrayList<Detector>(reader.getDetectors());
                     DetectorProvider dp = new DetectorProvider() {
-                       public List<Detector> getDetectors() {
-                          return detectors;
-                       }
-                    };
+                            public List<Detector> getDetectors() {
+                                return detectors;
+                            }
+                        };
                     provider = dp;
                }
             }
@@ -67,7 +70,7 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
        }
        return provider;
     }
-   
+
     private MagicXMLReader(InputSource is) {
         super(is, MagicXMLReader.class);
     }
