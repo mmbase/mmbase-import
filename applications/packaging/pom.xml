@@ -17,6 +17,12 @@
   <description>I think we can consider this deprecated. Use war-overlays  </description>
 
   <dependencies>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
 
