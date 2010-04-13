@@ -50,6 +50,9 @@ public abstract class SystemEvent extends Event {
         }
     }
 
+    public static class Shutdown extends Collectable {
+    }
+
     /**
      * Notifies the first determination or change in the 'machinename'
      */
