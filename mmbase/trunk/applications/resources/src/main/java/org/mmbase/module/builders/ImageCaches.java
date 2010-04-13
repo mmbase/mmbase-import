@@ -11,6 +11,7 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.images.*;
 import org.mmbase.util.UriParser;
