@@ -284,7 +284,11 @@ public class Fields {
 
 
     public static Field createField(Cloud cloud, String name, int type, int listItemType, int state, DataType dataType) {
-        throw new UnsupportedOperationException("TODO");
+        // TODO, Most arguments till ignored
+        if (dataType == null) dataType = DataTypes.createDataType(name, Object.class);
+
+        // TODO 'name' should be used.
+        return new DataTypeField(cloud, dataType);
     }
 
 
