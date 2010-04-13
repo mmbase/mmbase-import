@@ -129,16 +129,27 @@ public class User extends BasicUser implements UserContext, WeakNodeEventListene
         final int number = in.readInt();
         key = in.readLong();
         if (number == -1) {
-            log.warn("Found node -1 on deserialization!. Interpreting as 'null'. User object was probably not correctly serialized, or not assiociated with a real node.");
+            log.warn("Found node -1 on deserialization!. Interpreting as 'null'. User object was probably not correctly serialized, or not associated with a real node.");
             node = null;
         } else {
-            org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
-                    public void run() {
-                        org.mmbase.bridge.LocalContext.getCloudContext().assertUp();
-                        MMObjectBuilder users = Authenticate.getInstance().getUserProvider().getUserBuilder();
-                        node = users.getNode(number);
-                    }
-                });
+            boolean isUp;
+            try {
+                isUp = org.mmbase.bridge.LocalContext.getCloudContext().isUp();
+            } catch (Exception e) {
+                isUp = false;
+            }
+            if (isUp) {
+                MMObjectBuilder users = Authenticate.getInstance().getUserProvider().getUserBuilder();
+                node = users.getNode(number);
+            } else {
+                org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
+                        public void run() {
+                            org.mmbase.bridge.LocalContext.getCloudContext().assertUp();
+                            MMObjectBuilder users = Authenticate.getInstance().getUserProvider().getUserBuilder();
+                            node = users.getNode(number);
+                        }
+                    });
+            }
         }
     }
 
