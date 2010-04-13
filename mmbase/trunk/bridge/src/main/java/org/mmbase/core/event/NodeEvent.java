@@ -12,7 +12,6 @@ import java.util.*;
 import org.mmbase.util.HashCodeUtil;
 import org.mmbase.cache.Cache;
 import org.mmbase.cache.CacheManager;
-import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -263,7 +262,7 @@ public class NodeEvent extends Event {
         in.defaultReadObject();
         log.debug("deserialized node event for " + nodeNumber);
         try {
-            int otype = MMBase.getMMBase().getTypeDef().getIntValue(builderName);
+            int otype = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase").getNodeManager(builderName).getNumber();
             if (otype != -1) {
                 Cache<Integer, Integer> typeCache = CacheManager.getCache("TypeCache");
                 if (typeCache != null) {
