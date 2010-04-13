@@ -33,7 +33,7 @@ public class ContextUserContext extends BasicUser implements java.io.Serializabl
     protected transient MMBaseCop manager;
 
     public ContextUserContext(String username, Rank rank, long key, MMBaseCop manager, String app) {
-        super(app);
+        super(manager.getAuthentication(), app, username);
         this.rank = rank;
         this.username = username;
         this.key = key;
