@@ -493,13 +493,14 @@ public abstract class Module extends DescribedFunctionProvider {
 
     /**
      * Makes sure that modules are loaded and started.
+     * @param names Limit to these modules.
      * @since MMBase-1.9
      */
-    private static synchronized void checkModules(boolean startOnLoad) {
+    public static synchronized void checkModules(boolean startOnLoad, String... names) {
         // are the modules loaded yet ? if not load them
         if (modules == null) { // still null after obtaining lock
             log.service("Loading MMBase modules...");
-            modules = loadModulesFromDisk();
+            modules = loadModulesFromDisk(names);
             if (log.isDebugEnabled()) {
                 log.debug("Modules not loaded, loading them..");
             }
@@ -566,7 +567,11 @@ public abstract class Module extends DescribedFunctionProvider {
      * @return A HashTable with <module-name> --> Module-instance
      */
     @SuppressWarnings("deprecation")
-    private static synchronized Map<String, Module>  loadModulesFromDisk() {
+    private static synchronized Map<String, Module>  loadModulesFromDisk(String... names) {
+        Set<String> namesSet = new HashSet<String>();
+        for (String n : names) {
+            namesSet.add(n);
+        }
         Map<String, Module> results = Collections.synchronizedMap(new TreeMap<String, Module>());
         ResourceLoader moduleLoader = getModuleLoader();
         Collection<String> mods = moduleLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false/* non-recursive*/);
@@ -585,6 +590,11 @@ public abstract class Module extends DescribedFunctionProvider {
                 if (moduleName == null) {
                     moduleName = ResourceLoader.getName(file);
                 }
+                if (namesSet.size() > 0 && ! namesSet.contains(moduleName)) {
+                    log.info("Skipping " + moduleName);
+                    continue;
+                }
+
                 String className = parser.getClassName();
                 // try starting the module and give it its properties
                 try {
