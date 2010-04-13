@@ -204,7 +204,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag  imple
 
             if (inTransaction && usetransaction.getString(this).equals("true") && nq.getSteps().size() >= 3) {
                 Node startNode = Queries.getStartNode(nq, cloud);
-                return new org.mmbase.bridge.implementation.BasicNodeList(Queries.getRelatedNodesInTransaction(startNode, nq), nq.getNodeManager());
+                return new org.mmbase.bridge.implementation.SimpleNodeList(Queries.getRelatedNodesInTransaction(startNode, nq), nq.getNodeManager());
             } else {
                 return cloud.getNodeManager(nq.getNodeManager().getName()).getList(nq);
             }
