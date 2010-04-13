@@ -133,7 +133,7 @@
       </gui>
       <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <property name="validMimeTypes" value="application/.*" />
-        <maxLength value="16777215" enforce="never"/>
+        <maxLength value="16777215" enforce="onvalidate"/>
       </datatype>
     </field>
   </fieldlist>
