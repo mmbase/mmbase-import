@@ -56,10 +56,10 @@ public class BinaryDataTypeTest  {
         assertTrue(new MimeType("image", MimeType.STAR).matches(dt.getMimeType(new ByteArrayInputStream(GIF), null, null)));
         assertEquals(new MimeType("image", "gif"), dt.getMimeType(new ByteArrayInputStream(GIF), null, null)); //FAILS
 
-        assertEquals(MimeType.OCTETSTREAM, dt.getMimeType(new byte[] {0, 1, 2}, null, null));
-        assertEquals(MimeType.OCTETSTREAM, dt.getMimeType(new byte[] {1, 2, 3, 4}, null, null));
-        assertEquals(MimeType.OCTETSTREAM, dt.getMimeType(new byte[0], null, null));
-        assertEquals(MimeType.OCTETSTREAM, dt.getMimeType(new NullInputStream(100), null, null));
+        assertEquals(MimeType.UNDETERMINED, dt.getMimeType(new byte[] {0, 1, 2}, null, null));
+        assertEquals(MimeType.UNDETERMINED, dt.getMimeType(new byte[] {1, 2, 3, 4}, null, null));
+        assertEquals(MimeType.UNDETERMINED, dt.getMimeType(new byte[0], null, null));
+        assertEquals(MimeType.UNDETERMINED, dt.getMimeType(new NullInputStream(100), null, null));
 
     }
 
@@ -81,8 +81,13 @@ public class BinaryDataTypeTest  {
         BinaryDataType restrictedBinary = (BinaryDataType) DataTypes.getDataType("mimetype_restricted_binary");
         assertNotNull(restrictedBinary);
 
-        assertFalse(restrictedBinary.mimeTypeRestriction.simpleValid(new byte[] { 0, 1, 2, }, null, null));
-        assertEquals(1, restrictedBinary.castAndValidate(new byte[] { 0, 1, 2}, null, null).size());
+        // UNDETERMINED, so valid for now
+        assertTrue(restrictedBinary.mimeTypeRestriction.simpleValid(new byte[] { 0, 1, 2, }, null, null));
+        assertEquals(0, restrictedBinary.castAndValidate(new byte[] { 0, 1, 2}, null, null).size());
+
+        // TODO make a test for somethign which _can_ be determined.
+
+
 
     }
 
