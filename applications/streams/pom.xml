@@ -33,6 +33,12 @@
   <dependencies>
     <dependency>
       <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
       <artifactId>mmbase-resources</artifactId>
       <version>${project.version}</version>
       <type>war</type>
