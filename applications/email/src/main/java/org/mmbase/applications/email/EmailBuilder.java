@@ -16,6 +16,7 @@ import org.mmbase.bridge.Node;
 
 import org.mmbase.module.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.util.ThreadPools;
 
 import org.mmbase.storage.search.*;
