@@ -39,7 +39,9 @@ public class OAlias extends MMObjectBuilder {
 
     // alias -> node-number (Integer)
     private Cache<String,Integer> numberCache = new Cache<String,Integer>(128) {
+        @Override
         public String getName()        { return "AliasCache"; }
+        @Override
         public String getDescription() { return "Cache for node aliases"; }
         };
 
@@ -49,6 +51,7 @@ public class OAlias extends MMObjectBuilder {
         numberCache.putCache();
     }
 
+    @Override
     public boolean init() {
         boolean res = super.init();
         if (res) checkAddTmpField("_destination");
@@ -189,6 +192,7 @@ public class OAlias extends MMObjectBuilder {
      * Remove a node from the cloud and update the cache
      * @param node The node to remove.
      */
+    @Override
     public void removeNode(MMObjectNode node) {
         String name = node.getStringValue("name");
         super.removeNode(node);
@@ -201,6 +205,7 @@ public class OAlias extends MMObjectBuilder {
      * cache.
      * @since MMBase-1.7.1
      */
+    @Override
     public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
         if (builder.equals(getTableName())) {
             if (ctype.equals("c") || ctype.equals("n")) {
