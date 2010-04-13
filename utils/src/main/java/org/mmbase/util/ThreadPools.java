@@ -11,6 +11,7 @@ package org.mmbase.util;
 import java.util.*;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.*;
+import org.mmbase.core.event.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.UtilReader;
 import org.mmbase.util.xml.Instantiator;
@@ -153,25 +154,29 @@ public abstract class ThreadPools {
     static {
         scheduler.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
 
-        // after some time the machine name will be known, use it for the 'nameless' threads.
-        // Actually, getMachineName is starting to wait too, so I think the scheduled delay here is
-        // a bit silly, but otherwise I in some cases encountered an exception ('cannot be started
-        // by this class').
-        scheduler.schedule(new Runnable() {
-                public void run() {
-                    String machineName = getMachineName();
-                    for (WeakReference<Thread> tr : nameLess) {
-                        Thread t = tr.get();
-                        if (t != null) {
-                            String stringBefore = "" + t;
-                            t.setName(machineName + t.getName());
-                            log.debug("Fixed name of " + stringBefore + " -> " + t);
+
+        EventManager.getInstance().addEventListener(new SystemEventListener() {
+                @Override
+                public void notify(SystemEvent systemEvent) {
+                    if (systemEvent instanceof SystemEvent.MachineName) {
+
+                        String machineName = ((SystemEvent.MachineName) systemEvent).getName();
+                        for (WeakReference<Thread> tr : nameLess) {
+                            Thread t = tr.get();
+                            if (t != null) {
+                                String stringBefore = "" + t;
+                                t.setName(machineName + t.getName());
+                                log.debug("Fixed name of " + stringBefore + " -> " + t);
+                            }
                         }
+                        nameLess.clear();
+                    } else if (systemEvent instanceof SystemEvent.Shutdown) {
+                        ThreadPools.shutdown();
                     }
-                    nameLess.clear();
                 }
-            }, 60, TimeUnit.SECONDS);
+            });
     }
+
 
     private static final Map<String, ExecutorService> threadPools = new ConcurrentHashMap<String, ExecutorService>();
     static {

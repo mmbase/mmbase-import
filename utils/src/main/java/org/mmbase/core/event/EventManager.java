@@ -83,6 +83,9 @@ public class EventManager implements SystemEventListener {
         if (se instanceof SystemEvent.MachineName) {
             machineName = ((SystemEvent.MachineName) se).getName();
         }
+        if (se instanceof SystemEvent.Shutdown) {
+            shutdown();
+        }
         if (se instanceof SystemEvent.Collectable) {
             receivedSystemEvents.add((SystemEvent.Collectable) se);
         }
