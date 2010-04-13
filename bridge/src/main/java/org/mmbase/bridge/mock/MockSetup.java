@@ -28,10 +28,12 @@ import javax.servlet.*;
 
 public class MockSetup implements ServletContextListener {
 
+    @Override
     public void	contextDestroyed(ServletContextEvent sce) {
         MockCloudContext.getInstance().clear();
     }
 
+    @Override
     public void contextInitialized(ServletContextEvent sce) {
         try {
             MockCloudContext.getInstance().addCore();

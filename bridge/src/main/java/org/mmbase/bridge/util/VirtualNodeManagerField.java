@@ -28,6 +28,7 @@ public class VirtualNodeManagerField extends FieldWrapper {
         return Field.STATE_VIRTUAL;
     }
 
+    @Override
     public int compareTo(Field o) {
         return name.compareTo(o.getName());
     }

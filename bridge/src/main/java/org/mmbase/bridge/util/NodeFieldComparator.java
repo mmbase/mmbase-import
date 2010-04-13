@@ -42,6 +42,7 @@ public class NodeFieldComparator implements Comparator<Node> {
     *         equal to, or greater than the second.
     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
     */
+    @Override
    public int compare(Node n1, Node n2) {
        int result = 0;
 

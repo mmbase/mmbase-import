@@ -12,7 +12,6 @@ package org.mmbase.bridge.mock;
 
 import java.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.*;
 
 /**
  * @author  Michiel Meeuwissen
@@ -26,23 +25,28 @@ public class MockRelation extends MockNode implements Relation {
         super(new HashMap<String, Object>(map), cloud, nm, isNew);
     }
 
+    @Override
     public RelationManager getRelationManager() {
         int role = getIntValue("rnumber");
         return new MockRelationManager(cloud, cloud.getCloudContext().getRole(role), "object", "object");
     }
 
+    @Override
     public void setSource(Node n) {
         throw new UnsupportedOperationException();
     }
 
 
+    @Override
     public void setDestination(Node n) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public Node getSource() {
         return getNodeValue("snumber");
     }
+    @Override
     public Node getDestination() {
         return getNodeValue("dnumber");
     }

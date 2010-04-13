@@ -10,9 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.mock;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.*;
-import org.mmbase.bridge.implementation.*;
-import org.mmbase.security.*;
 import java.util.*;
 
 /**
@@ -34,24 +31,30 @@ public class MockTransaction extends MockCloud implements Transaction {
         nodes = cloud.createNodeList();
     }
 
+    @Override
     public boolean commit() {
         return true;
     }
 
+    @Override
     public void cancel() {
         throw new UnsupportedOperationException();
     }
+    @Override
     public boolean isCommitted() {
         return true;
     }
 
+    @Override
     public boolean isCanceled() {
         return false;
     }
 
+    @Override
     public NodeList getNodes() {
         return nodes;
     }
+    @Override
     public String getCloudName() {
         return cloud.getName();
     }
