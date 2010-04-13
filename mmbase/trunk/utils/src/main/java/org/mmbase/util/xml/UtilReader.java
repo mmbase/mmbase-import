@@ -84,7 +84,9 @@ public class UtilReader {
 
     static {
         // doesnt startup, probably because of cyclic referecnes, if this happens in DocumentReader itself.
+        registerPublicIDs();
         DocumentReader.utilProperties = UtilReader.get("documentreader.xml").getProperties();
+
 
     }
 

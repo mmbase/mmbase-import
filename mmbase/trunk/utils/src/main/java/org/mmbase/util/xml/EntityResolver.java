@@ -122,7 +122,6 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
         // ask known (core) xml readers to register their public ids and dtds
         // the advantage of doing it this soon, is that the 1DTD are know as early as possible.
         org.mmbase.util.xml.DocumentReader.registerPublicIDs();
-        org.mmbase.util.xml.UtilReader.registerPublicIDs();
 
         registerSystemID("http://www.w3.org/2001/03/xml.xsd",       "xml.xsd", null);
         registerSystemID("http://www.w3.org/2001/03/XMLSchema.dtd", "XMLSchema.dtd", null);
