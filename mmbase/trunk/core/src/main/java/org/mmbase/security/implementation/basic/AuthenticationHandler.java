@@ -115,7 +115,7 @@ public class AuthenticationHandler extends Authentication {
             log.error("Login Module with name '" + moduleName + "' not found ! (available:" + listModules() + ")");
             throw new UnknownAuthenticationMethodException("Login Module with name '" + moduleName + "' not found ! (available:" + listModules() + ")");
         }
-        NameContext newUser = new NameContext(moduleRanks.get(moduleName), moduleName);
+        NameContext newUser = new NameContext(this, moduleRanks.get(moduleName), moduleName);
         if (module.login(newUser, loginInfo, parameters)) {
             // our login succeeded..
             // check if the identifier was set by the loginModule, when invalid will trow exception..
