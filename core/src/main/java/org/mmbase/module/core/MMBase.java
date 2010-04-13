@@ -496,9 +496,7 @@ public class MMBase extends ProcessorModule {
 
         //shutdown in the reverse order as init does
 
-        org.mmbase.core.event.EventManager.getInstance().shutdown();
-
-        org.mmbase.util.ThreadPools.shutdown();
+        org.mmbase.core.event.EventManager.getInstance().propagateEvent(new SystemEvent.Shutdown());
 
         mmbaseCop = null;
 
