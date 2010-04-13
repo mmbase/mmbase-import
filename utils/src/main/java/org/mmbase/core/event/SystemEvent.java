@@ -24,16 +24,36 @@ public abstract class SystemEvent extends Event {
     public SystemEvent() {
     }
 
+
+    /**
+     * A SystemEvent that is also Collectable will be collected by the EventManger and also issued to EventListeners which are added after the event
+     * happened.
+     */
+    public static abstract class  Collectable extends SystemEvent {
+    }
+
     /**
      * Notifies that the local MMBase is now fully up and running
      */
-    public static class Up extends SystemEvent {
+    public static class Up extends Collectable {
+        private final String databaseName;
+        private final File  dataDir;
+        public Up(String databaseName, File dataDir) {
+            this.databaseName = databaseName;
+            this.dataDir = dataDir;
+        }
+        public String getDatabaseName() {
+            return databaseName;
+        }
+        public File getDataDir() {
+            return dataDir;
+        }
     }
 
     /**
      * Notifies the first determination or change in the 'machinename'
      */
-    public static class MachineName extends SystemEvent {
+    public static class MachineName extends Collectable {
         private final String name;
         public MachineName(String n) {
             name = n;
