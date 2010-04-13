@@ -77,10 +77,14 @@ public class EventManager implements SystemEventListener {
     public static String getMachineName() {
         return machineName;
     }
+    private final List<SystemEvent.Collectable> receivedSystemEvents = new ArrayList<SystemEvent.Collectable>();
 
-    public void notify(SystemEvent se) {
+    public synchronized void notify(SystemEvent se) {
         if (se instanceof SystemEvent.MachineName) {
             machineName = ((SystemEvent.MachineName) se).getName();
+        }
+        if (se instanceof SystemEvent.Collectable) {
+            receivedSystemEvents.add((SystemEvent.Collectable) se);
         }
     }
 
@@ -179,6 +183,11 @@ public class EventManager implements SystemEventListener {
         while (i.hasNext()) {
             EventBroker broker = i.next();
             if (broker.addListener(listener)) {
+                if (listener instanceof SystemEventListener) {
+                    for (SystemEvent.Collectable se : receivedSystemEvents) {
+                        ((SystemEventListener) listener).notify(se);
+                    }
+                }
                 if (log.isDebugEnabled()) {
                     log.debug("listener " + listener + " added to broker " + broker );
                 }
