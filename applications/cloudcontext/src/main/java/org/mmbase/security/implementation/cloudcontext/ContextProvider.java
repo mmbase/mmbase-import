@@ -9,12 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.cloudcontext;
 
-import org.mmbase.storage.search.implementation.NodeSearchQuery;
 import java.util.*;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.NodeSearchQuery;
 
 /**
  * The implemention of 'context' is pluggable, and should be returned by {@link

@@ -12,6 +12,7 @@ package org.mmbase.security.implementation.cloudcontext.builders;
 import org.mmbase.security.implementation.cloudcontext.*;
 import java.util.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.cache.Cache;
 import org.mmbase.util.logging.Logger;
@@ -74,15 +75,15 @@ public class Groups extends MMObjectBuilder {
 
             MMObjectBuilder object = mmb.getBuilder("object");
             BasicSearchQuery query = new BasicSearchQuery();
-            Step step = query.addStep(object);
+            Step step = query.addStep(object.getTableName());
             BasicStepField numberStepField = new BasicStepField(step, object. getField("number"));
             BasicFieldValueConstraint numberConstraint = new BasicFieldValueConstraint(numberStepField, new Integer(containedObject));
 
-            BasicRelationStep relationStep = query.addRelationStep(insrel, this);
+            BasicRelationStep relationStep = query.addRelationStep(insrel.getTableName(), this.getTableName());
             relationStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
 
             query.setConstraint(numberConstraint);
-            query.addFields(relationStep.getNext());
+            query.addFields(relationStep.getNext(), CoreQueryContext.INSTANCE);
 
             List<MMObjectNode> resultList;
             try {
