@@ -11,6 +11,7 @@ package org.mmbase.storage.search;
 
 import java.util.*;
 import org.mmbase.bridge.Field;
+import org.mmbase.bridge.NotFoundException;
 import org.mmbase.storage.search.implementation.*;
 
 import org.mmbase.util.logging.*;
@@ -466,14 +467,18 @@ public abstract class ClusterQueries {
             return;
         }
 
-        Field fieldDefs= getQueryContext().getField(step.getTableName(), fieldName);
-        if (fieldDefs == null) {
-            throw new IllegalArgumentException("Not a known field of builder " + step.getTableName() + ": \"" + fieldName + "\"");
-        }
+        try {
+            Field fieldDefs= getQueryContext().getField(step.getTableName(), fieldName);
+            if (fieldDefs == null) {
+                throw new IllegalArgumentException("Not a known field of builder " + step.getTableName() + ": \"" + fieldName + "\"");
+            }
 
-        // Add the stepfield.
-        BasicStepField stepField= query.addField(step, fieldDefs);
-        fieldsByAlias.put(fieldAlias, stepField);
+            // Add the stepfield.
+            BasicStepField stepField= query.addField(step, fieldDefs);
+            fieldsByAlias.put(fieldAlias, stepField);
+        } catch (NotFoundException nfe) {
+            throw new IllegalArgumentException(nfe);
+        }
     }
 
     /**
