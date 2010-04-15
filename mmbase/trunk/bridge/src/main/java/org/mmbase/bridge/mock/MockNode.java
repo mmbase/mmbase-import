@@ -25,7 +25,7 @@ import org.mmbase.bridge.util.*;
  * @since   MMBase-1.9.2
  */
 
-public class MockNode extends MapNode  {
+public class MockNode extends MapNode<Object> implements Node  {
 
     private final Map<String, Object> originalMap;
     protected final MockCloud cloud;
