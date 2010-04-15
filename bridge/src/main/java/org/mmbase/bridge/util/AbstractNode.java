@@ -330,6 +330,7 @@ public abstract class AbstractNode implements Node {
         return field.getDataType().getProcessor(DataType.PROCESS_GET, type).process(this, field, null);
     }
 
+    @Override
     public final Object getValue(String fieldName) {
         Object value = getValueWithoutProcess(fieldName);
         NodeManager nm = getNodeManager();
@@ -371,6 +372,7 @@ public abstract class AbstractNode implements Node {
 
     }
 
+    @Override
     public final Object getObjectValue(String fieldName) {
         Object result = getValueWithoutProcess(fieldName);
         NodeManager nodeManager = getNodeManager();
@@ -385,6 +387,7 @@ public abstract class AbstractNode implements Node {
         return result;
     }
 
+    @Override
     public boolean getBooleanValue(String fieldName) {
         Boolean result = Casting.toBoolean(getValueWithoutProcess(fieldName)) ? Boolean.TRUE : Boolean.FALSE; // odd.
         NodeManager nodeManager = getNodeManager();
@@ -395,6 +398,7 @@ public abstract class AbstractNode implements Node {
         return result.booleanValue();
     }
 
+    @Override
     public Date getDateValue(String fieldName) {
         Date result = Casting.toDate(getValueWithoutProcess(fieldName));
         NodeManager nodeManager = getNodeManager();
@@ -404,6 +408,7 @@ public abstract class AbstractNode implements Node {
         }
         return result;
     }
+    @Override
     public BigDecimal getDecimalValue(String fieldName) {
         BigDecimal result = Casting.toDecimal(getValueWithoutProcess(fieldName));
         NodeManager nodeManager = getNodeManager();
@@ -414,6 +419,7 @@ public abstract class AbstractNode implements Node {
         return result;
     }
 
+    @Override
     public List getListValue(String fieldName) {
         List result =  Casting.toList(getValueWithoutProcess(fieldName));
         NodeManager nodeManager = getNodeManager();
@@ -424,6 +430,7 @@ public abstract class AbstractNode implements Node {
         return result;
     }
 
+    @Override
     public int getIntValue(String fieldName) {
         Integer result = Casting.toInteger(getValueWithoutProcess(fieldName));
         NodeManager nodeManager = getNodeManager();
@@ -434,6 +441,7 @@ public abstract class AbstractNode implements Node {
         return result.intValue();
     }
 
+    @Override
     public float getFloatValue(String fieldName) {
         Float result = Float.valueOf(Casting.toFloat(getValueWithoutProcess(fieldName)));
         NodeManager nodeManager = getNodeManager();
@@ -444,6 +452,7 @@ public abstract class AbstractNode implements Node {
         return result.floatValue();
     }
 
+    @Override
     public long getLongValue(String fieldName) {
         Long result = Long.valueOf(Casting.toLong(getValueWithoutProcess(fieldName)));
         NodeManager nodeManager = getNodeManager();
@@ -454,6 +463,7 @@ public abstract class AbstractNode implements Node {
         return result.longValue();
     }
 
+    @Override
     public double getDoubleValue(String fieldName) {
         Double result = Double.valueOf(Casting.toDouble(getValueWithoutProcess(fieldName)));
         NodeManager nodeManager = getNodeManager();
@@ -464,6 +474,7 @@ public abstract class AbstractNode implements Node {
         return result.doubleValue();
     }
 
+    @Override
     public byte[] getByteValue(String fieldName) {
         byte[] result = Casting.toByte(getValueWithoutProcess(fieldName));
         NodeManager nodeManager = getNodeManager();
@@ -474,6 +485,7 @@ public abstract class AbstractNode implements Node {
         return result;
     }
 
+    @Override
     public java.io.InputStream getInputStreamValue(String fieldName) {
         java.io.InputStream result = Casting.toInputStream(getValueWithoutProcess(fieldName));
         NodeManager nodeManager = getNodeManager();
@@ -484,6 +496,7 @@ public abstract class AbstractNode implements Node {
         return result;
     }
 
+    @Override
     public String getStringValue(String fieldName) {
         String result = Casting.toString(getValueWithoutProcess(fieldName));
         NodeManager nodeManager = getNodeManager();
@@ -494,6 +507,7 @@ public abstract class AbstractNode implements Node {
         return result;
     }
 
+    @Override
     public Document getXMLValue(String fieldName) {
         Document result = Casting.toXML(getValueWithoutProcess(fieldName));
         NodeManager nodeManager = getNodeManager();
@@ -504,6 +518,7 @@ public abstract class AbstractNode implements Node {
         return result;
     }
 
+    @Override
     public Node getNodeValue(String fieldName) {
         Node result = BridgeCaster.toNode(getValueWithoutProcess(fieldName), getCloud());
         NodeManager nodeManager = getNodeManager();
@@ -514,14 +529,17 @@ public abstract class AbstractNode implements Node {
         return result;
     }
 
+    @Override
     public final FieldValue getFieldValue(String fieldName) throws NotFoundException {
         return new BasicFieldValue(this, getNodeManager().getField(fieldName));
     }
 
+    @Override
     public final FieldValue getFieldValue(Field field) {
         return new BasicFieldValue(this, field);
     }
 
+    @Override
     public final Element getXMLValue(String fieldName, Document tree) {
         Document doc = getXMLValue(fieldName);
         if (doc == null) {
@@ -532,6 +550,7 @@ public abstract class AbstractNode implements Node {
 
 
 
+    @Override
     public Collection<String> validate() {
         List<String> errors = new ArrayList<String>();
         Locale locale = getCloud().getLocale();
@@ -561,22 +580,27 @@ public abstract class AbstractNode implements Node {
         return errors;
     }
 
+    @Override
     public final void delete() {
         delete(false);
     }
 
+    @Override
     public final void deleteRelations() {
         deleteRelations("object");
     }
 
+    @Override
     public final RelationList getRelations() {
         return getRelations(null, (String) null);
     }
 
+    @Override
     public final RelationList getRelations(String role) {
         return getRelations(role, (String) null);
     }
 
+    @Override
     public final RelationList getRelations(String role, NodeManager nodeManager) {
         if (nodeManager == null) {
             return getRelations(role);
@@ -585,31 +609,38 @@ public abstract class AbstractNode implements Node {
         }
     }
 
+    @Override
     public final int countRelations() {
         return countRelatedNodes(getCloud().getNodeManager("object"), null, "BOTH");
     }
 
+    @Override
     public final int countRelations(String type) {
         //err
         return countRelatedNodes(getCloud().getNodeManager("object"), type, "BOTH");
     }
 
+    @Override
     public final NodeList getRelatedNodes() {
         return getRelatedNodes("object", null, null);
     }
 
+    @Override
     public final NodeList getRelatedNodes(String type) {
         return getRelatedNodes(type, null, null);
     }
 
+    @Override
     public final NodeList getRelatedNodes(NodeManager nodeManager) {
         return getRelatedNodes(nodeManager, null, null);
     }
 
+    @Override
     public final NodeList getRelatedNodes(String type, String role, String searchDir) {
         return getRelatedNodes(getCloud().getNodeManager(type), role, searchDir);
     }
 
+    @Override
     public Relation createRelation(Node destinationNode, RelationManager relationManager) {
         Relation relation = relationManager.createRelation(this, destinationNode);
         return relation;
@@ -628,6 +659,7 @@ public abstract class AbstractNode implements Node {
      * @return 0 if they are equal, -1 if the object passed is a NodeManager and larger than this manager,
      * and +1 if the object passed is a NodeManager and smaller than this manager.
      */
+    @Override
     public final int compareTo(Node o) {
         Node n = o;
         String s1 = "";
@@ -668,91 +700,114 @@ public abstract class AbstractNode implements Node {
         }
     }
 
+    @Override
     public boolean isNew() {
         return false;
     }
 
+    @Override
     public boolean isChanged(String fieldName) {
         return false;
     }
 
+    @Override
     public boolean isChanged() {
         return false;
     }
+    @Override
     public Set<String> getChanged() {
         return Collections.emptySet();
     }
 
+    @Override
     public void commit() {
         throw new UnsupportedOperationException("Cannot edit node of type " + getClass().getName() + " " + this);
     }
 
+    @Override
     public void cancel() {
     }
 
+    @Override
     public void delete(boolean deleteRelations) {
         throw new UnsupportedOperationException("Cannot edit node of type " + getClass().getName() + " " + this);
     }
 
+    @Override
     public void deleteRelations(String type) throws NotFoundException {
     }
 
+    @Override
     public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
         return BridgeCollections.EMPTY_RELATIONLIST;
     }
+    @Override
     public RelationList getRelations(String role, String nodeManager) throws NotFoundException {
         return BridgeCollections.EMPTY_RELATIONLIST;
     }
 
+    @Override
     public boolean hasRelations() {
         return false;
     }
 
+    @Override
     public int countRelatedNodes(NodeManager otherNodeManager, String role, String direction) {
         return 0;
     }
 
+    @Override
     public int countRelatedNodes(String type) {
         return 0;
     }
 
+    @Override
     public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir) {
         return BridgeCollections.EMPTY_NODELIST;
     }
 
+    @Override
     public StringList getAliases() {
         return BridgeCollections.EMPTY_STRINGLIST;
     }
 
+    @Override
     public void createAlias(String aliasName) {
         throw new UnsupportedOperationException(this.getClass().getName() + "s have no aliases");
     }
 
+    @Override
     public void deleteAlias(String aliasName) {
         throw new UnsupportedOperationException(this.getClass().getName() + "s  have no aliases");
     }
 
+    @Override
     public void setContext(String context) {
         throw new UnsupportedOperationException(this.getClass().getName() + "s have no security context");
     }
 
+    @Override
     public String getContext() {
         throw new UnsupportedOperationException(this.getClass().getName() + "s have no security context");
     }
 
     // javadoc inherited (from Node)
+    @Override
     public StringList getPossibleContexts() {
         return BridgeCollections.EMPTY_STRINGLIST;
     }
 
+    @Override
     public boolean mayWrite() {
         return false;
     }
 
+    @Override
     public boolean mayDelete() {
         return false;
     }
 
+    @Override
     public boolean mayChangeContext() {
         return false;
     }
@@ -774,6 +829,7 @@ public abstract class AbstractNode implements Node {
     }
 
 
+    @Override
     public Parameters createParameters(String functionName) {
         return getNodeFunction(functionName).createParameters();
     }
@@ -787,6 +843,7 @@ public abstract class AbstractNode implements Node {
         };
     }
 
+    @Override
     public FieldValue getFunctionValue(String functionName, List<?> parameters) {
         Function function = getFunction(functionName);
         Parameters params = function.createParameters();
@@ -837,6 +894,7 @@ public abstract class AbstractNode implements Node {
     /**
      * This default implementation is based on {@link #getNodeManager}.{@link org.mmbase.bridge.NodeManager#getFunctions}.
      */
+    @Override
     public Collection<Function<?>> getFunctions() {
         return AbstractNode.this.getNodeManager().getFunctions();
     }
@@ -854,6 +912,7 @@ public abstract class AbstractNode implements Node {
         }
     }
 
+    @Override
     public Function<?> getFunction(String functionName) {
         Function<?> function = getNodeFunction(functionName);
         if (function == null) {
@@ -870,6 +929,7 @@ public abstract class AbstractNode implements Node {
         };
     }
 
+    @Override
     public void setNodeManager(NodeManager nm) {
         throw new UnsupportedOperationException();
     }
