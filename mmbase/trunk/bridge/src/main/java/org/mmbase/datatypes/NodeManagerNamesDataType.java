@@ -70,14 +70,17 @@ public class NodeManagerNamesDataType extends StringDataType {
                 }
                 return null;
             }
+            @Override
             public boolean hasNext() {
                 return next != null;
             }
+            @Override
             public Map.Entry<String, String> next() {
                 NodeManager prev = next;
                 next = findNext();
                 return new Entry(prev.getName(), prev.getGUIName(NodeManager.GUI_PLURAL, locale));
             }
+            @Override
             public void remove() {
                 throw new UnsupportedOperationException();
             }

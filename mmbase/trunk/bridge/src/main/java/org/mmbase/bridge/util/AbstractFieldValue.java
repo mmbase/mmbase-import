@@ -40,48 +40,60 @@ public abstract class AbstractFieldValue implements FieldValue {
      * Function values cannot be changed
      * @return false
      */
+    @Override
     public boolean canModify() {
         return false;
     }
 
+    @Override
     public boolean isNull() {
         return get() == null;
     }
 
+    @Override
     public abstract Object get();
 
+    @Override
     public Field getField() {
         return null;
     }
 
+    @Override
     public Node getNode() {
         return node;
     }
 
+    @Override
     public boolean toBoolean() {
         return Casting.toBoolean(get());
     }
 
+    @Override
     public byte[] toByte() {
         return Casting.toByte(get());
     }
 
+    @Override
     public float toFloat() {
         return Casting.toFloat(get());
     }
 
+    @Override
     public double toDouble() {
         return Casting.toDouble(get());
     }
 
+    @Override
     public long toLong() {
         return Casting.toLong(get());
     }
 
+    @Override
     public int toInt() {
         return Casting.toInt(get());
     }
 
+    @Override
     public Node toNode() {
         return BridgeCaster.toNode(get(), cloud);
     }
@@ -91,10 +103,12 @@ public abstract class AbstractFieldValue implements FieldValue {
         return Casting.toString(get());
     }
 
+    @Override
     public Document toXML() throws IllegalArgumentException {
         return Casting.toXML(get());
     }
 
+    @Override
     public final Element toXML(Document tree) throws IllegalArgumentException {
         Document doc = toXML();
         if(doc == null) return  null;
@@ -104,6 +118,7 @@ public abstract class AbstractFieldValue implements FieldValue {
     /**
      * @since MMBase-1.8
      */
+    @Override
     public Date toDate() {
         return Casting.toDate(get());
     }
@@ -114,11 +129,13 @@ public abstract class AbstractFieldValue implements FieldValue {
      * @param value set value
      * @throws BridgeException
      */
+    @Override
     public void set(Object value) {
         throw CANNOTCHANGE;
     }
 
 
+    @Override
     public void setObject(Object value) {
         throw CANNOTCHANGE;
     }
@@ -128,6 +145,7 @@ public abstract class AbstractFieldValue implements FieldValue {
      * @param value set value
      * @throws BridgeException
      */
+    @Override
     public void setBoolean(boolean value) {
         throw CANNOTCHANGE;
     }
@@ -137,6 +155,7 @@ public abstract class AbstractFieldValue implements FieldValue {
      * @param value set value
      * @throws BridgeException
      */
+    @Override
     public void setFLoat(float value) {
         throw CANNOTCHANGE;
     }
@@ -146,6 +165,7 @@ public abstract class AbstractFieldValue implements FieldValue {
      * @param value set value
      * @throws BridgeException
      */
+    @Override
     public void setDouble(double value) {
         throw CANNOTCHANGE;
     }
@@ -155,6 +175,7 @@ public abstract class AbstractFieldValue implements FieldValue {
      * @param value set value
      * @throws BridgeException
      */
+    @Override
     public void setLong(long value) {
         throw CANNOTCHANGE;
     }
@@ -164,6 +185,7 @@ public abstract class AbstractFieldValue implements FieldValue {
      * @param value set value
      * @throws BridgeException
      */
+    @Override
     public void setInt(int value) {
         throw CANNOTCHANGE;
     }
@@ -173,6 +195,7 @@ public abstract class AbstractFieldValue implements FieldValue {
      * @param value set value
      * @throws BridgeException
      */
+    @Override
     public void setByte(byte[] value) {
         throw CANNOTCHANGE;
     }
@@ -182,6 +205,7 @@ public abstract class AbstractFieldValue implements FieldValue {
      * @param value set value
      * @throws BridgeException
      */
+    @Override
     public void setString(String value) {
         throw CANNOTCHANGE;
     }
@@ -191,6 +215,7 @@ public abstract class AbstractFieldValue implements FieldValue {
      * @param value set value
      * @throws BridgeException
      */
+    @Override
     public void setNode(Node value) {
         throw CANNOTCHANGE;
     }
@@ -200,6 +225,7 @@ public abstract class AbstractFieldValue implements FieldValue {
      * @param value set value
      * @throws BridgeException
      */
+    @Override
     public void setXML(Document value) {
         throw CANNOTCHANGE;
     }
@@ -209,6 +235,7 @@ public abstract class AbstractFieldValue implements FieldValue {
      * @throws BridgeException
      * @since MMBase-1.8
      */
+    @Override
     public void setDate(Date value) {
         throw CANNOTCHANGE;
     }

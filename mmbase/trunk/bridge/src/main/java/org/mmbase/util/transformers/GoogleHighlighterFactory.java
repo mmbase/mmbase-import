@@ -40,6 +40,7 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
     private static final Parameter<String> HOST   = new Parameter<String>("host",   String.class, "google");
     private static final Parameter[] PARAM = new Parameter[] { FORMAT, HOST, Parameter.REQUEST };
 
+    @Override
     public CharTransformer createTransformer(final Parameters parameters) {
         parameters.checkRequiredParameters();
         if (log.isDebugEnabled()) {

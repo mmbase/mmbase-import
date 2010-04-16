@@ -44,6 +44,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
 
     protected static final Parameter[] PARAMS = new Parameter[] { TAGS, ADD_BRS, ESCAPE_AMPS, ADD_NEWLINES };
 
+    @Override
     public Parameters createParameters() {
         return new Parameters(PARAMS);
     }
@@ -53,6 +54,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
     /**
      * Creates a parameterized transformer.
      */
+    @Override
     public CharTransformer createTransformer(final Parameters parameters) {
 
         parameters.checkRequiredParameters();
@@ -74,6 +76,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
 
         final HTMLEditorKit.Parser parser = new ParserGetter().getParser();
         ReaderTransformer trans = new ReaderTransformer() {
+            @Override
                 public Writer transform(Reader r, final Writer w) {
                     final TagStripper callback = new TagStripper(w, tagList);
                     callback.addBrs     = parameters.get(ADD_BRS);
@@ -103,6 +106,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
 
                     return w;
                 }
+            @Override
                 public String toString() {
                     return tagList + " " + (parameters.get(ADD_BRS) ? "(adding brs)" : "");
                 }
@@ -131,12 +135,24 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
     }
 
     private static final Allowance ALLOW_ALL    = new Allowance() {
-            Allows allows(String p) { return Allows.YES; }
-            public String toString() { return "ALL"; }
-        };
+        @Override
+        Allows allows(String p) {
+            return Allows.YES;
+        }
+        @Override
+        public String toString() {
+            return "ALL";
+        }
+    };
     private static final Allowance DISALLOW_ALL = new Allowance() {
-            Allows allows(String p) { return Allows.NO; }
-            public String toString() { return "NONE"; }
+        @Override
+        Allows allows(String p) {
+            return Allows.NO;
+        }
+        @Override
+        public String toString() {
+            return "NONE";
+        }
         };
 
     private static class PatternAllowance extends Allowance {
@@ -147,9 +163,11 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         PatternAllowance(String s) {
             pattern = Pattern.compile(s);
         }
+        @Override
         Allows allows (String p) {
             return pattern.matcher(p).matches() ?  Allows.YES : Allows.DONTKNOW;
         }
+        @Override
         public String toString() {
             return pattern.toString();
         }
@@ -163,9 +181,11 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         PatternDisallowance(String s) {
             pattern = Pattern.compile(s);
         }
+        @Override
         Allows allows (String p) {
             return pattern.matcher(p).matches() ? Allows.NO : Allows.DONTKNOW;
         }
+        @Override
         public String toString() {
             return "!" + pattern.toString();
         }
@@ -177,6 +197,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                 allowances.add(a);
             }
         }
+        @Override
         Allows allows(String p) {
             for (Allowance a : allowances) {
                 Allows allows = a.allows(p);
@@ -184,6 +205,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
             }
             return Allows.DONTKNOW;
         }
+        @Override
         public String toString() {
             return allowances.toString();
         }
@@ -207,6 +229,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
             if (ka == Allows.YES && va == Allows.YES) return Allows.YES;
             return Allows.DONTKNOW;
         }
+        @Override
         public String toString() {
             return key.toString() + "=" + value;
         }
@@ -243,6 +266,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
             }
             return true;
         }
+        @Override
         public String toString() {
             return super.toString() + "(" + attributes + ")";
         }
@@ -278,7 +302,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         StringBuilder spaceBuffer = new StringBuilder();
         int wrote = 0;
 
-        public TagStripper(Writer out, List<Tag> t) {
+        TagStripper(Writer out, List<Tag> t) {
             this.out = out;
             tags = t;
         }
@@ -289,7 +313,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         }
 
 
-        protected TagCheck allowed(String tagName) {
+        TagCheck allowed(String tagName) {
             //System.out.print("Checking wheter 'tagName' allowed");
             for (Tag tag : tags) {
                 //System.out.println("using " + tag);
@@ -368,7 +392,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
             }
         }
 
-        protected TagCheck getTag(HTML.Tag tag, MutableAttributeSet attributes) {
+        TagCheck getTag(HTML.Tag tag, MutableAttributeSet attributes) {
             //System.out.println("getting tag " + tag);
             boolean implied = attributes.containsAttribute(IMPLIED, Boolean.TRUE);
             TagCheck t;
@@ -381,7 +405,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
             return t;
 
         }
-        protected void handleAttributes(Tag t, MutableAttributeSet attributes) throws IOException {
+        void handleAttributes(Tag t, MutableAttributeSet attributes) throws IOException {
             //System.out.println("handling attributes for " + t + " " + attributes);
             Enumeration<?> en = attributes.getAttributeNames();
             while (en.hasMoreElements()) {
@@ -550,16 +574,17 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
 
     protected static class ParserGetter extends HTMLEditorKit {
         // purely to make this method public
+        @Override
         public HTMLEditorKit.Parser getParser(){
             return super.getParser();
         }
     }
 
     // event attribute can contain javascript, so those are forbidden when doing XSS-stripping.
-    protected static final Attr EVENTS = new Attr(new PatternDisallowance("(?i)onclick|ondblclick|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|onload|onunload|onchange|onsubmit|onreset|onselect|onblur|onfocus|onkeydown|onkeyup|onkeypress"));
+    static final Attr EVENTS = new Attr(new PatternDisallowance("(?i)onclick|ondblclick|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|onload|onunload|onchange|onsubmit|onreset|onselect|onblur|onfocus|onkeydown|onkeyup|onkeypress"));
 
     // only strip cross-site-scripting
-    public final static List<Tag> XSS = new ArrayList<Tag>();
+    final static List<Tag> XSS = new ArrayList<Tag>();
     static {
         {
             // <a> tags are permitted.
@@ -583,7 +608,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
     }
 
     // strip all tags
-    public final  static List<Tag> NONE = new ArrayList<Tag>();
+    final  static List<Tag> NONE = new ArrayList<Tag>();
     static {
         NONE.add(new Tag(DISALLOW_ALL));
     }

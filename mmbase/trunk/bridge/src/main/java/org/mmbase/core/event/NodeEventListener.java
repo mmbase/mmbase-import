@@ -14,5 +14,5 @@ package org.mmbase.core.event;
  * @version $Id$
  */
 public interface NodeEventListener extends EventListener {
-    public void notify(NodeEvent event);
+    void notify(NodeEvent event);
 }

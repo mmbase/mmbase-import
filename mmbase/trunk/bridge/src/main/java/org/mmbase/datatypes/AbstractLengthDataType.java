@@ -70,11 +70,13 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
     /**
      * {@inheritDoc}
      */
+    @Override
     public abstract long getLength(Object value);
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public long getMinLength() {
         return minLengthRestriction.getValue();
     }
@@ -82,6 +84,7 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
     /**
      * {@inheritDoc}
      */
+    @Override
     public DataType.Restriction<Long> getMinLengthRestriction() {
         return minLengthRestriction;
     }
@@ -89,6 +92,7 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setMinLength(long value) {
         getMinLengthRestriction().setValue(Long.valueOf(value));
     }
@@ -96,6 +100,7 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
     /**
      * {@inheritDoc}
      */
+    @Override
     public long getMaxLength() {
         return getMaxLengthRestriction().getValue();
     }
@@ -103,6 +108,7 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
     /**
      * {@inheritDoc}
      */
+    @Override
     public DataType.Restriction<Long> getMaxLengthRestriction() {
         return maxLengthRestriction;
     }
@@ -112,6 +118,7 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
      * @param value the maximum length as an <code>int</code>, or -1 if there is no maximum length.
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is finished
      */
+    @Override
     public void setMaxLength(long value) {
         getMaxLengthRestriction().setValue(Long.valueOf(value));
     }

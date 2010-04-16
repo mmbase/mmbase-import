@@ -35,10 +35,12 @@ public class BasicRelationList extends AbstractNodeList<Relation> implements Rel
     }
 
 
+    @Override
     public Relation getRelation(int index) {
         return get(index);
     }
 
+    @Override
     public RelationList subRelationList(int fromIndex, int toIndex) {
         if (nodeManager != null) {
             return new BasicRelationList(subList(fromIndex, toIndex), nodeManager);
@@ -47,16 +49,19 @@ public class BasicRelationList extends AbstractNodeList<Relation> implements Rel
         }
     }
 
+    @Override
     public RelationIterator relationIterator() {
         return new BasicRelationIterator();
     }
 
     protected class BasicRelationIterator extends BasicIterator implements RelationIterator {
 
+        @Override
         public Relation nextRelation() {
             return next();
         }
 
+        @Override
         public Relation previousRelation() {
             return previous();
         }

@@ -873,13 +873,16 @@ public abstract class AbstractNode implements Node {
                     public Iterator<Map.Entry<String, Function<?>>> iterator() {
                         final Iterator<Function<?>> i = AbstractNode.this.getFunctions().iterator();
                         return new Iterator<Map.Entry<String, Function<?>>>() {
+                            @Override
                             public boolean hasNext() {
                                 return i.hasNext();
                             }
+                            @Override
                             public Map.Entry<String, Function<?>> next() {
                                 Function<?> n = i.next();
                                 return new org.mmbase.util.Entry<String, Function<?>>(n.getName(), n);
                             }
+                            @Override
                             public void remove() {
                                 throw new UnsupportedOperationException();
                             }

@@ -347,12 +347,14 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
      * Mark this query 'used'. It has to be copied first, if you want to add things to it.
      * @return if this query is was used before this method call
      */
+    @Override
     boolean markUsed();
 
     /**
      * Create an (unused) clone
      * @return Cloned Query
      */
+    @Override
     Query clone();
 
     /**

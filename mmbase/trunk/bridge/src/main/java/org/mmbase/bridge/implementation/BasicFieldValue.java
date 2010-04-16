@@ -28,6 +28,7 @@ public class BasicFieldValue implements FieldValue {
         this.field = field;
     }
 
+    @Override
     public boolean canModify() {
         // rather simple... should maybe ask Node
         return (field!=null) ||
@@ -39,46 +40,57 @@ public class BasicFieldValue implements FieldValue {
                "rnumber".equals(field.getName());
     }
 
+    @Override
     public boolean isNull() {
         return node.isNull(field.getName());
     }
 
+    @Override
     public Object get() {
         return node.getValue(field.getName());
     }
 
+    @Override
     public Field getField() {
         return field;
     }
 
+    @Override
     public Node getNode() {
         return node;
     }
 
+    @Override
     public boolean toBoolean() {
         return node.getBooleanValue(field.getName());
     }
 
+    @Override
     public byte[] toByte() {
         return node.getByteValue(field.getName());
     }
 
+    @Override
     public float toFloat() {
         return node.getFloatValue(field.getName());
     }
 
+    @Override
     public double toDouble() {
         return node.getDoubleValue(field.getName());
     }
 
+    @Override
     public long toLong() {
         return node.getLongValue(field.getName());
     }
 
+    @Override
     public int toInt() {
         return node.getIntValue(field.getName());
     }
 
+    @Override
     public Node toNode() {
         return node.getNodeValue(field.getName());
     }
@@ -88,63 +100,78 @@ public class BasicFieldValue implements FieldValue {
         return node.getStringValue(field.getName());
     }
 
+    @Override
     public org.w3c.dom.Document toXML() throws IllegalArgumentException {
         return node.getXMLValue(field.getName());
     }
 
+    @Override
     public org.w3c.dom.Element toXML(org.w3c.dom.Document tree) throws IllegalArgumentException {
         return node.getXMLValue(field.getName(), tree);
     }
 
+    @Override
     public java.util.Date toDate() {
         return node.getDateValue(field.getName());
     }
 
+    @Override
     public void set(Object value) {
         node.setValue(field.getName(), value);
     }
 
+    @Override
     public void setObject(Object value) {
         node.setObjectValue(field.getName(), value);
     }
 
+    @Override
     public void setBoolean(boolean value) {
         node.setBooleanValue(field.getName(),value);
     }
 
+    @Override
     public void setFLoat(float value) {
         node.setFloatValue(field.getName(),value);
     }
 
+    @Override
     public void setDouble(double value) {
         node.setDoubleValue(field.getName(),value);
     }
 
+    @Override
     public void setLong(long value) {
         node.setLongValue(field.getName(),value);
     }
 
+    @Override
     public void setInt(int value) {
         node.setIntValue(field.getName(),value);
     }
 
+    @Override
     public void setByte(byte[] value) {
         node.setByteValue(field.getName(),value);
     }
 
+    @Override
     public void setString(String value) {
         node.setStringValue(field.getName(),value);
     }
 
+    @Override
     public void setNode(Node value) {
         node.setNodeValue(field.getName(),value);
     }
 
+    @Override
     public void setXML(org.w3c.dom.Document value) {
         node.setXMLValue(field.getName(),value);
     }
 
 
+    @Override
     public void setDate(java.util.Date value) {
         node.setDateValue(field.getName(), value);
     }

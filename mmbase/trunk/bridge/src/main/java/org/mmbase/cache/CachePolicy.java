@@ -33,6 +33,7 @@ abstract public class CachePolicy implements Serializable {
      */
     static final public CachePolicy NEVER = new CachePolicy("never") {
         private static final long serialVersionUID = 0;
+        @Override
         public boolean checkPolicy(Object o) {
             return false;
         }
@@ -49,6 +50,7 @@ abstract public class CachePolicy implements Serializable {
      */
     static final public CachePolicy ALWAYS = new CachePolicy("always") {
         private static final long serialVersionUID = 0L;
+        @Override
         public boolean checkPolicy(Object o) {
             return true;
         }

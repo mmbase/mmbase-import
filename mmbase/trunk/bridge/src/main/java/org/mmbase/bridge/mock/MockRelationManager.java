@@ -33,44 +33,54 @@ public class MockRelationManager extends MockNodeManager implements RelationMana
         this.source = source;
         this.destination = destination;
     }
+    @Override
     public String getForwardRole() {
         return role;
     }
+    @Override
     public String getReciprocalRole() {
         return role;
     }
+    @Override
     public String getForwardGUIName() {
         return role;
     }
+    @Override
     public String getReciprocalGUIName() {
         return role;
     }
+    @Override
     public int getDirectionality() {
         return RelationManager.BIDIRECTIONAL;
     }
 
+    @Override
     public NodeManager getSourceManager() {
         return cloud.getNodeManager(source);
     }
 
+    @Override
     public NodeManager getDestinationManager() {
         return cloud.getNodeManager(destination);
     }
 
+    @Override
     public Relation createRelation(Node sourceNode, Node destinationNode) {
-        Map<String, Object> values = new HashMap<String, Object>();
-        values.put("snumber", sourceNode.getNumber());
-        values.put("dnumber", destinationNode.getNumber());
-        values.put("rnumber", vcloud.getCloudContext().roles.get(role).number);
+        Map<String, Object> v = new HashMap<String, Object>();
+        v.put("snumber", sourceNode.getNumber());
+        v.put("dnumber", destinationNode.getNumber());
+        v.put("rnumber", vcloud.getCloudContext().roles.get(role).number);
         NodeManager nm = vcloud.getNodeManager(vcloud.getCloudContext().roles.get(role).nodeManager);
-        return new MockRelation(values, vcloud, nm, true);
+        return new MockRelation(v, vcloud, nm, true);
     }
 
 
+    @Override
     public RelationList getRelations(Node node) {
         return null;
     }
 
+    @Override
     public boolean mayCreateRelation(Node sourceNode, Node destinationNode) {
         return true;
     }

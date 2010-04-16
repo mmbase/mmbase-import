@@ -36,14 +36,17 @@ public class CollectionRelationList extends AbstractCollectionNodeList<Relation>
         super(c, cloud);
     }
 
+    @Override
     public Relation getRelation(int index) {
         return get(index);
     }
 
+    @Override
     public CollectionRelationList subList(int fromIndex, int toIndex)  {
         return subRelationList(fromIndex, toIndex);
     }
 
+    @Override
     public CollectionRelationList subRelationList(int fromIndex, int toIndex) {
         if (nodeManager != null) {
             return new CollectionRelationList(subList(fromIndex, toIndex), nodeManager);
@@ -52,16 +55,19 @@ public class CollectionRelationList extends AbstractCollectionNodeList<Relation>
         }
     }
 
+    @Override
     public RelationIterator relationIterator() {
         return new BasicRelationIterator();
     }
 
     protected class BasicRelationIterator extends BasicIterator implements RelationIterator {
 
+        @Override
         public Relation nextRelation() {
             return next();
         }
 
+        @Override
         public Relation previousRelation() {
             return previous();
         }

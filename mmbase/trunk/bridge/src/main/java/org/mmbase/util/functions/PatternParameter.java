@@ -11,9 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 
 import org.mmbase.datatypes.*;
-import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
-import java.util.*;
 import java.util.regex.Pattern;
 
 

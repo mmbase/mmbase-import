@@ -941,18 +941,21 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
         // all methods from org.xml.sax.ErrorHandler
         // from org.xml.sax.ErrorHandler
+        @Override
         public void fatalError(org.xml.sax.SAXParseException exc) {
             errorBuff.append("FATAL[" + getLocationString(exc) + "]:" + exc.getMessage() + "\n");
             errorOrWarning = true;
         }
 
         // from org.xml.sax.ErrorHandler
+        @Override
         public void error(org.xml.sax.SAXParseException exc) {
             errorBuff.append("Error[" + getLocationString(exc) + "]: " + exc.getMessage() + "\n");
             errorOrWarning = true;
         }
 
         // from org.xml.sax.ErrorHandler
+        @Override
         public void warning(org.xml.sax.SAXParseException exc) {
             errorBuff.append("Warning[" + getLocationString(exc) + "]:" + exc.getMessage() + "\n");
             errorOrWarning = true;
@@ -987,6 +990,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         super(to);
     }
 
+    @Override
     public Map<String,Config> transformers() {
         Map<String,Config> h = new HashMap<String,Config>();
         h.put("MMXF_ASCII", new Config(XmlField.class, ASCII, "Converts xml to ASCII (cannoted be reversed)"));
@@ -1005,6 +1009,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         return h;
     }
 
+    @Override
     public String transform(String data) {
         switch (to) {
         case RICHBODY :
@@ -1024,6 +1029,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         }
     }
 
+    @Override
     public String transformBack(String r) {
         String result = null;
         switch (to) {
@@ -1071,6 +1077,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         return result;
     }
 
+    @Override
     public String getEncoding() {
         switch (to) {
         case RICHBODY :

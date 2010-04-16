@@ -78,18 +78,22 @@ abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<
      * Returns the name or 'key' of this descriptor.
      * @return the name as a String
      */
+    @Override
     public String getName() {
         return key;
     }
 
+    @Override
     public String getDescription(Locale locale) {
         return description.get(locale == null ? getDefaultLocale() : locale);
     }
 
+    @Override
     public String getDescription() {
         return getDescription(getDefaultLocale());
     }
 
+    @Override
     public LocalizedString getLocalizedDescription() {
         return description;
     }
@@ -101,10 +105,12 @@ abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<
     }
 
 
+    @Override
     public void setDescription(String desc, Locale locale) {
         description.set(desc, locale);
     }
 
+    @Override
     public void setDescription(String desc) {
         setDescription(desc, getDefaultLocale());
     }
@@ -116,6 +122,7 @@ abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<
      * If that one is unavailable the internal fieldname is returned.
      * @return the GUI Name
      */
+    @Override
     public String getGUIName(Locale locale) {
         return guiName.get(locale == null ? getDefaultLocale() : locale);
     }
@@ -126,26 +133,32 @@ abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<
      * If that one is unavailable the internal fieldname is returned.
      * @return the GUI Name
      */
+    @Override
     public String getGUIName() {
         return getGUIName(getDefaultLocale());
     }
 
+    @Override
     public void setGUIName(String g, Locale locale) {
         guiName.set(g, locale);
     }
 
+    @Override
     public void setGUIName(String g) {
         setGUIName(g, getDefaultLocale());
     }
 
+    @Override
     public LocalizedString getLocalizedGUIName() {
         return guiName;
     }
 
+    @Override
     public String toString() {
         return key;
     }
 
+    @Override
     public AbstractDescriptor clone()  {
         return clone(getName() + ".clone");
     }

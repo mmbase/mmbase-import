@@ -58,10 +58,12 @@ public class CombinedFunction<R> implements Function<R> {
         functions.add(func);
     }
 
+    @Override
     public Parameters createParameters() {
         if (parameterDefinition == null) determinDefinition();
         return new Parameters(parameterDefinition);
     }
+    @Override
     public R getFunctionValue(Parameters parameters) {
         if (parameterDefinition == null) determinDefinition();
         float maxscore = -1;
@@ -115,11 +117,13 @@ public class CombinedFunction<R> implements Function<R> {
         }
     }
 
+    @Override
     public R getFunctionValueWithList(List<?> parameters) {
         Parameters params = createParameters();
         params.setAll(parameters);
         return getFunctionValue(params);
     }
+    @Override
     public R getFunctionValueWithArgs(Object... parameters) {
         Parameters params = createParameters();
         params.setAll(parameters);
@@ -127,34 +131,42 @@ public class CombinedFunction<R> implements Function<R> {
     }
 
 
+    @Override
     public void setDescription(String description) {
         this.description = description;
     }
+    @Override
     public String getDescription() {
         return description;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public Parameter<?>[] getParameterDefinition(){
         if (parameterDefinition == null) determinDefinition();
         return parameterDefinition;
     }
 
+    @Override
     public void setParameterDefinition(Parameter<?>[] params) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public ReturnType<R> getReturnType() {
         return returnType;
     }
 
+    @Override
     public void setReturnType(ReturnType<R> type) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public String toString() {
         if (parameterDefinition == null && functions.size() > 0) determinDefinition();
         return "" + returnType + " " +

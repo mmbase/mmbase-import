@@ -29,6 +29,7 @@ public class WordWrapperFactory implements ParameterizedTransformerFactory<CharT
     protected static final Parameter<Integer> LENGTH = new Parameter<Integer>("length", Integer.class, 80);
     protected static final Parameter[] PARAMS = new Parameter[] { LENGTH };
 
+    @Override
     public Parameters createParameters() {
         return new Parameters(PARAMS);
     }
@@ -37,6 +38,7 @@ public class WordWrapperFactory implements ParameterizedTransformerFactory<CharT
     /**
      * Creates a parameterized transformer.
      */
+    @Override
     public CharTransformer createTransformer(final Parameters parameters) {
         if (log.isDebugEnabled()) {
             log.debug("Creating transformer, with " + parameters);
@@ -44,6 +46,7 @@ public class WordWrapperFactory implements ParameterizedTransformerFactory<CharT
         final int length = parameters.get(LENGTH);
         return new ReaderTransformer() {
 
+            @Override
             public Writer transform(Reader r, Writer w) {
                 StringBuilder word = new StringBuilder();  // current word
                 try {

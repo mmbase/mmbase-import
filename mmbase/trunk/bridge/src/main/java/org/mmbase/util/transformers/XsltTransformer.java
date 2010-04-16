@@ -40,6 +40,7 @@ public  class XsltTransformer extends InputStreamTransformer {
         xslt = ResourceLoader.getConfigurationRoot().getResource(x);
     }
 
+    @Override
     public  OutputStream transform(InputStream r, OutputStream o) {
         Source xml = new StreamSource(r);
         Result res = new StreamResult(o);

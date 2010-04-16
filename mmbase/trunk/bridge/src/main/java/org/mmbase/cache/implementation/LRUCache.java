@@ -75,6 +75,7 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
         });
     }
 
+    @Override
     public int getCount(K key) {
         return -1;
     }
@@ -84,6 +85,7 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
      * This may result in removal of entries in the table.
      * @param size the new desired size
      */
+    @Override
     public void setMaxSize(int size) {
         if (size < 0 ) {
             throw new IllegalArgumentException("Cannot set size to negative value " + size);
@@ -104,6 +106,7 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
     }
 
 
+    @Override
     public final int maxSize() {
         return maxSize;
     }
@@ -117,26 +120,44 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
     }
 
 
+    @Override
     public void config(Map<String, String> map) {
         // needs no configuration.
     }
 
+    @Override
     public Object getLock() {
         return backing;
     }
 
     // wrapping for synchronization
+    @Override
     public int size() { return backing.size(); }
+    @Override
     public boolean isEmpty() { return backing.isEmpty();}
+    @Override
+    @SuppressWarnings("element-type-mismatch")
     public boolean containsKey(Object key) { return backing.containsKey(key);}
+    @Override
+    @SuppressWarnings("element-type-mismatch")
     public boolean containsValue(Object value){ return backing.containsValue(value);}
+    @Override
+    @SuppressWarnings("element-type-mismatch")
     public V get(Object key) { return backing.get(key);}
+    @Override
     public V put(K key, V value) { return backing.put(key, value);}
+    @Override
+    @SuppressWarnings("element-type-mismatch")
     public V remove(Object key) { return backing.remove(key);}
+    @Override
     public void putAll(Map<? extends K, ? extends V> map) { backing.putAll(map); }
+    @Override
     public void clear() { backing.clear(); }
+    @Override
     public Set<K> keySet() { return backing.keySet(); }
+    @Override
     public Set<Map.Entry<K,V>> entrySet() { return backing.entrySet(); }
+    @Override
     public Collection<V> values() { return backing.values();}
 
 

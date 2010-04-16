@@ -30,10 +30,12 @@ public class BasicRelationManagerList extends AbstractNodeList<RelationManager> 
         super(c, cloud);
     }
 
+    @Override
     public RelationManager getRelationManager(int index) {
         return get(index);
     }
 
+    @Override
     public RelationManagerIterator relationManagerIterator() {
         return new BasicRelationManagerIterator();
     }
@@ -44,9 +46,11 @@ public class BasicRelationManagerList extends AbstractNodeList<RelationManager> 
 
     protected class BasicRelationManagerIterator extends BasicIterator implements RelationManagerIterator {
 
+        @Override
         public RelationManager nextRelationManager() {
             return next();
         }
+        @Override
         public RelationManager previousRelationManager() {
             return previous();
         }

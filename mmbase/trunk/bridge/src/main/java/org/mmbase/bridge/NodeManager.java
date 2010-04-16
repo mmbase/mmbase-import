@@ -82,6 +82,7 @@ public interface NodeManager extends Node {
      *
      * @return the cloud to which this manager belongs
      */
+    @Override
     public Cloud getCloud();
 
     /**

@@ -47,10 +47,12 @@ public class BasicNodeManagerList extends AbstractNodeList<NodeManager> implemen
     }
 
 
+    @Override
     public NodeManager getNodeManager(int index) {
         return get(index);
     }
 
+    @Override
     public NodeManagerIterator nodeManagerIterator() {
         return new BasicNodeManagerIterator();
     };
@@ -61,10 +63,12 @@ public class BasicNodeManagerList extends AbstractNodeList<NodeManager> implemen
 
     protected class BasicNodeManagerIterator extends BasicIterator implements NodeManagerIterator {
 
+        @Override
         public NodeManager nextNodeManager() {
             return next();
         }
 
+        @Override
         public NodeManager previousNodeManager() {
             return previous();
         }

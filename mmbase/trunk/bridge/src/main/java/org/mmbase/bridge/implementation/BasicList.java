@@ -45,13 +45,16 @@ public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> 
         backing = new ArrayList<Object>(c);
     }
 
+    @Override
     public Object getProperty(Object key) {
         return properties.get(key);
     }
 
+    @Override
     public void setProperty(Object key, Object value) {
         properties.put(key, value);
     }
+    @Override
     public Map<Object, Object> getProperties() {
         return Collections.unmodifiableMap(properties);
     }
@@ -103,10 +106,12 @@ public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> 
         return convert(backing.remove(i));
     }
 
+    @Override
     public void sort() {
         Collections.sort(this);
     }
 
+    @Override
     public void sort(Comparator<? super E> comparator) {
         Collections.sort(this, comparator);
     }
@@ -135,6 +140,7 @@ public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> 
 
 
 
+    @Override
     public BridgeList<E> subList(int fromIndex, int toIndex)  {
         return new BasicList<E>(super.subList(fromIndex, toIndex));
     }
@@ -146,41 +152,50 @@ public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> 
             this.iterator = BasicList.this.listIterator();
         }
 
+        @Override
         public boolean hasNext() {
             return  iterator.hasNext();
         }
 
+        @Override
         public boolean hasPrevious() {
             return  iterator.hasPrevious();
         }
 
+        @Override
         public int nextIndex() {
             return iterator.nextIndex();
         }
 
+        @Override
         public int previousIndex() {
             return iterator.previousIndex();
         }
 
+        @Override
         public void remove() {
             iterator.remove();
         }
 
         // These have to be implemented with a check if o is of the right type.
+        @Override
         public void set(E o) {
             iterator.set(o);
         }
 
+        @Override
         public void add(E o) {
             iterator.add(o);
         }
 
+        @Override
         public E next() {
             E next = iterator.next();
             int i = nextIndex();
             return BasicList.this.convert(next, i);
         }
 
+        @Override
         public E previous() {
             E previous = iterator.previous();
             int i = previousIndex();

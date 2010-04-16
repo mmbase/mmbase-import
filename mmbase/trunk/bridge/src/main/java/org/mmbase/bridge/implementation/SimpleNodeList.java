@@ -36,6 +36,7 @@ public class SimpleNodeList extends AbstractNodeList<Node> implements NodeList  
     }
 
 
+    @Override
     public NodeList subNodeList(int fromIndex, int toIndex) {
         if (nodeManager != null) {
             return new SimpleNodeList(subList(fromIndex, toIndex), nodeManager);
@@ -44,6 +45,7 @@ public class SimpleNodeList extends AbstractNodeList<Node> implements NodeList  
         }
     }
 
+    @Override
     public NodeIterator nodeIterator() {
         return new SimpleNodeIterator();
     }
@@ -51,10 +53,12 @@ public class SimpleNodeList extends AbstractNodeList<Node> implements NodeList  
 
     protected class SimpleNodeIterator extends BasicIterator implements NodeIterator {
 
+        @Override
         public Node nextNode() {
             return next();
         }
 
+        @Override
         public Node previousNode() {
             return previous();
         }
