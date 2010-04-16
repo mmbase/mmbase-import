@@ -61,6 +61,7 @@ public abstract class DescribedFunctionProvider extends FunctionProvider impleme
      * Returns the name or 'key' of this descriptor.
      * @return the name as a String
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -86,15 +87,18 @@ public abstract class DescribedFunctionProvider extends FunctionProvider impleme
         return LocalizedString.getDefault();
     }
 
+    @Override
     public String getDescription(Locale locale) {
         if (description == null) description = new LocalizedString(name);
         return description.get(locale == null ? getDefaultLocale() : locale);
     }
 
+    @Override
     public String getDescription() {
         return getDescription(getDefaultLocale());
     }
 
+    @Override
     public LocalizedString getLocalizedDescription() {
         return description;
     }
@@ -103,11 +107,13 @@ public abstract class DescribedFunctionProvider extends FunctionProvider impleme
         this.description = description;
     }
 
+    @Override
     public void setDescription(String desc, Locale locale) {
         if (description == null) description = new LocalizedString("");
         description.set(desc, locale);
     }
 
+    @Override
     public void setDescription(String desc) {
         setDescription(desc, getDefaultLocale());
     }
@@ -118,6 +124,7 @@ public abstract class DescribedFunctionProvider extends FunctionProvider impleme
      * If that one is unavailable the internal fieldname is returned.
      * @return the GUI Name
      */
+    @Override
     public String getGUIName(Locale locale) {
         if (guiName == null) guiName = new LocalizedString(name);
         return guiName.get(locale == null ? getDefaultLocale() : locale);
@@ -129,19 +136,23 @@ public abstract class DescribedFunctionProvider extends FunctionProvider impleme
      * If that one is unavailable the internal fieldname is returned.
      * @return the GUI Name
      */
+    @Override
     public String getGUIName() {
         return getGUIName(getDefaultLocale());
     }
 
+    @Override
     public void setGUIName(String g, Locale locale) {
         if (guiName == null) guiName = new LocalizedString(name);
         guiName.set(g, locale);
     }
 
+    @Override
     public void setGUIName(String g) {
         setGUIName(g, getDefaultLocale());
     }
 
+    @Override
     public LocalizedString getLocalizedGUIName() {
         return guiName;
     }

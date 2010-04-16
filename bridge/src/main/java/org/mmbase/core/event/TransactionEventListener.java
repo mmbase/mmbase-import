@@ -13,5 +13,5 @@ package org.mmbase.core.event;
  * @version $Id: TransactionEventListener.java 41419 2010-03-16 12:54:44Z michiel $
  */
 public interface TransactionEventListener extends EventListener {
-    public void notify(TransactionEvent event);
+    void notify(TransactionEvent event);
 }

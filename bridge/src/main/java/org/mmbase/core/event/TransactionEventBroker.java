@@ -20,6 +20,7 @@ public class TransactionEventBroker extends AbstractEventBroker {
      *
      * @see event.AbstractEventBroker#canBrokerFor(java.lang.Class)
      */
+    @Override
     public boolean canBrokerForListener(EventListener listener) {
         return listener instanceof TransactionEventListener;
     }
@@ -29,6 +30,7 @@ public class TransactionEventBroker extends AbstractEventBroker {
      *
      * @see event.AbstractEventBroker#shouldNotifyForEvent(event.Event)
      */
+    @Override
     public boolean canBrokerForEvent(Event event) {
         return event instanceof TransactionEvent;
     }
@@ -38,6 +40,7 @@ public class TransactionEventBroker extends AbstractEventBroker {
      *
      * @see event.AbstractEventBroker#notifyEventListeners()
      */
+    @Override
     protected void notifyEventListener(Event event, EventListener listener) {
         TransactionEvent te = (TransactionEvent) event; //!!!!!
         TransactionEventListener tel = (TransactionEventListener) listener;

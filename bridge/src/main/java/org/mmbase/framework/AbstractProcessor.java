@@ -26,11 +26,15 @@ abstract public class AbstractProcessor implements Processor {
      */
     public static Processor getEmpty(final Block b)  {
         return new Processor() {
+            @Override
             public Block getBlock() { return b; }
+            @Override
             public Parameter[] getParameters() { return Parameter.emptyArray(); }
+            @Override
             public void process(Parameters blockParameters) { }
             @Override
             public String toString() { return "EMPTY Processor"; }
+            @Override
             public URI getUri() { try {return new URI("mmbase:/processor/empty");} catch (Exception e) { return null;} }
         };
     }
@@ -40,10 +44,12 @@ abstract public class AbstractProcessor implements Processor {
         parent = p;
     }
 
+    @Override
     public Block getBlock() {
         return parent;
     }
 
+    @Override
     public URI getUri() {
         return null;
     }

@@ -47,6 +47,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
         return instance;
     }
 
+    @Override
     public Function<String> getFunction(String name) {
         Function func = functions.get(name);
         if (func == null) {
@@ -185,6 +186,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
             return params.toArray(new Parameter[] {});
         }
 
+        @Override
         protected String getFunctionValue(final Node node, final Parameters parameters) {
             StringBuffer sb = new StringBuffer(); // those guys from Sun forgot to supply Matcher#appendTail(StringBuilder)
             {

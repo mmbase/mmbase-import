@@ -71,6 +71,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
      * Creates an empty 'Parameters'  object for you, which you have to fill and feed back to getFunctionValue
      * @see #getFunctionValue(Parameters)
      */
+    @Override
     public Parameters createParameters() {
         if (parameterDefinition == null) {
             throw new IllegalStateException("Definition is not set yet");
@@ -85,6 +86,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
      *                   Implementors are encouraged to support <code>null</code> too.
      * @return The function value, which can be of any type compatible to {@link #getReturnType}
      */
+    @Override
     abstract public R getFunctionValue(Parameters parameters);
 
     /**
@@ -94,6 +96,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
      *
      * @return The function value, which can be of any type compatible to {@link #getReturnType}
      */
+    @Override
     public final R getFunctionValueWithList(List<?> parameters) {
          if (parameters instanceof Parameters) {
              return getFunctionValue((Parameters)parameters);
@@ -105,6 +108,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
     /**
      * @since MMBase-1.9
      */
+    @Override
     public final R getFunctionValueWithArgs(Object... parameters) {
         return getFunctionValue(new Parameters(parameterDefinition, parameters));
      }
@@ -113,6 +117,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
     /**
      * For documentational  purposes a function object needs a description too.
      */
+    @Override
     public void setDescription(String description)   {
         this.description = description;
     }
@@ -120,6 +125,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
     /**
      * @see #setDescription(String)
      */
+    @Override
     public String getDescription() {
         return description;
     }
@@ -128,6 +134,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
      * A function <em>must</em> have a name. This is the name which was used to aquire the function object.
      * @return The function's name, never <code>null</code>
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -135,6 +142,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
     /**
      * @return The currently set Parameter definition array, or <code>null</code> if not set already.
      */
+    @Override
     public Parameter<?>[] getParameterDefinition() {
         return parameterDefinition;
     }
@@ -144,6 +152,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
      * @param params An array of Parameter objects.
      * @throws IllegalStateException if there was already set a parameter defintion for this function object.
      */
+    @Override
     public void setParameterDefinition(Parameter<?>[] params) {
         if (parameterDefinition != null) {
             throw new IllegalStateException("Definition is set already");
@@ -156,6 +165,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
      * @return The currently set ReturnType, or <code>null</code> if not set already.
      */
     @SuppressWarnings("unchecked")
+    @Override
     public ReturnType<R> getReturnType() {
         if (returnType == null && autoReturnType) {
             try {
@@ -172,6 +182,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
      * @param type A ReturnType object. For void functions that could be {@link ReturnType#VOID}.
      * @throws IllegalStateException if there was already set a return type for this function object.
      */
+    @Override
     public void setReturnType(ReturnType<R> type) {
         if (returnType != null) {
             throw new IllegalStateException("Returntype is set already");
@@ -179,6 +190,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
         returnType = type;
     }
 
+    @Override
     public int compareTo(Function<R> fun) {
         return name.compareTo(fun.getName());
     }

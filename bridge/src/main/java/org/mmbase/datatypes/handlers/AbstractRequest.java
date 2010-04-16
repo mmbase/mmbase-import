@@ -29,25 +29,31 @@ public abstract class AbstractRequest implements Request {
     public AbstractRequest() {
     }
 
+    @Override
     public void invalidate() {
         valid = false;
     }
 
+    @Override
     public boolean isValid() {
         return valid;
     }
 
+    @Override
     public Cloud getCloud() {
         return ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
     }
+    @Override
     public Locale getLocale () {
         return getCloud().getLocale();
     }
 
+    @Override
     public <C> C setProperty(Parameter<C> name, C value) {
         return (C) properties.put(name, value);
     }
 
+    @Override
     public<C> C getProperty(Parameter<C> name) {
         return (C) properties.get(name);
     }

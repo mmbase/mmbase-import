@@ -114,18 +114,19 @@ public class BeanFunction extends AbstractFunction<Object> {
      */
     public static BeanFunction getFunction(final Class claz, String name) throws IllegalAccessException, InstantiationException, InvocationTargetException, DependencyException  {
         return getFunction(claz, name, new Producer() {
-                public Object getInstance()  {
-                    try {
-                        return  claz.newInstance();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
+            @Override
+            public Object getInstance() {
+                try {
+                    return claz.newInstance();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
-                @Override
-                public String toString() {
-                    return "";
                 }
-            });
+            @Override
+            public String toString() {
+                return "";
+            }
+        });
     }
 
     /**
@@ -380,8 +381,8 @@ public class BeanFunction extends AbstractFunction<Object> {
 
         Parameter<?>[] definition = getParameterDefinition(sampleInstance, setMethods);
         setParameterDefinition(definition);
-        ReturnType returnType = new ReturnType(method.getReturnType(), "");
-        setReturnType(returnType);
+        ReturnType rt = new ReturnType(method.getReturnType(), "");
+        setReturnType(rt);
 
     }
 
@@ -389,7 +390,12 @@ public class BeanFunction extends AbstractFunction<Object> {
      * @since MMBase-1.8.5
      */
     public BeanFunction(final Object bean, String name) throws IllegalAccessException, InstantiationException,  InvocationTargetException, DependencyException {
-        this(bean.getClass(), name, new Producer() { public Object getInstance() { return bean; }});
+        this(bean.getClass(), name, new Producer() {
+            @Override
+            public Object getInstance() {
+                return bean;
+            }
+        });
     }
 
     /**
@@ -404,6 +410,7 @@ public class BeanFunction extends AbstractFunction<Object> {
      * {@inheritDoc}
      * Instantiates the bean, calls all setters using the parameters, and executes the method associated with this function.
      */
+    @Override
     public Object getFunctionValue(Parameters parameters) {
         Object b = getProducer().getInstance();
         try {

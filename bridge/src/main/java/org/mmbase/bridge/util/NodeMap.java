@@ -147,6 +147,7 @@ public class NodeMap extends NodeWrapper implements Map<String, Object> {
 
     // javadoc inherited
     // todo: could be modifiable?
+    @Override
     public Collection<Object> values() {
         return new AbstractCollection<Object>() {
             FieldList fields = getNodeManager().getFields();
@@ -177,6 +178,7 @@ public class NodeMap extends NodeWrapper implements Map<String, Object> {
     }
 
     // javadoc inherited
+    @Override
     public Set<String> keySet() {
         return new AbstractSet<String>() {
                 FieldList fields = getNodeManager().getFields();

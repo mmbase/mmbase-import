@@ -106,6 +106,7 @@ public abstract class AbstractHandler<C>  implements Handler<C> {
     }
 
 
+    @Override
     public  Constraint search(Request request, Field field, Query query) {
         String value = findString(request, field);
         if (value != null) {
@@ -132,8 +133,10 @@ public abstract class AbstractHandler<C>  implements Handler<C> {
         node.setValue(fieldName, value);
     }
 
+    @Override
     abstract public C check(Request request, Node node, Field field, boolean errors);
 
+    @Override
     public boolean set(Request request, Node node, Field field) {
         String fieldName = field.getName();
         Object fieldValue = getFieldValue(request, node, field, false);
@@ -154,6 +157,7 @@ public abstract class AbstractHandler<C>  implements Handler<C> {
         }
     }
 
+    @Override
     abstract public C input(Request request, Node node, Field field, boolean search);
 
 

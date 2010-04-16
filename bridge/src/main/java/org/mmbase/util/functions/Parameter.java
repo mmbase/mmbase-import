@@ -17,6 +17,7 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import java.util.*;
 import java.io.*;
+import org.mmbase.bridge.Cloud;
 import org.w3c.dom.*;
 
 /**
@@ -47,7 +48,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
     public static final Parameter<org.mmbase.security.UserContext>         USER     = new Parameter<org.mmbase.security.UserContext>("user", org.mmbase.security.UserContext.class);
     public static final Parameter<javax.servlet.http.HttpServletResponse>  RESPONSE = new Parameter<javax.servlet.http.HttpServletResponse>("response", javax.servlet.http.HttpServletResponse.class);
     public static final Parameter<javax.servlet.http.HttpServletRequest>   REQUEST  = new Parameter<javax.servlet.http.HttpServletRequest>("request",  javax.servlet.http.HttpServletRequest.class);
-    public static final Parameter<org.mmbase.bridge.Cloud>                 CLOUD    = new Parameter<org.mmbase.bridge.Cloud> ("cloud",  org.mmbase.bridge.Cloud.class);
+    public static final Parameter<Cloud>                 CLOUD    = new Parameter<Cloud> ("cloud",  Cloud.class);
 
     /**
      * 'system' parameter set for nodefunctions.
@@ -380,6 +381,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      * required propererties are only 'utilities'.
      * @return true if o is Parameter of which key and type equal to this' key and type.
      */
+    @Override
     public boolean equals(Object o) {
         if (o instanceof Parameter) {
             Parameter<?> a = (Parameter<?>) o;
@@ -388,6 +390,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
         return false;
     }
 
+    @Override
     public String toString() {
         return getTypeAsClass().getName() + " " + getName();
     }
@@ -414,6 +417,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
         }
 
         // this toString makes the wrapping invisible in the toString of a wrapping Parameter[]
+        @Override
         public String toString() {
             StringBuilder buf = new StringBuilder();
             for (Parameter p : arguments) {

@@ -34,41 +34,70 @@ public class FieldWrapper implements Field {
     public FieldWrapper(Field field)  {
         this.field = field;
     }
+    @Override
     public NodeManager getNodeManager() {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public int getState() {
         return field.getState();
     }
 
+    @Override
     public DataType<?> getDataType() { return field.getDataType(); }
+    @Override
     public boolean isUnique() { return field.isUnique(); }
+    @Override
     public boolean hasIndex() { return field.hasIndex(); }
+    @Override
     public int getType() {  return field.getType(); }
+    @Override
     public int getListItemType() { return field.getListItemType(); }
+    @Override
     public int getSearchPosition() { return field.getSearchPosition(); }
+    @Override
     public int getListPosition() { return field.getListPosition(); }
+    @Override
     public int getEditPosition() { return field.getEditPosition(); }
+    @Override
     public int getStoragePosition() { return field.getStoragePosition(); }
     @SuppressWarnings("deprecation")
+    @Override
     public String getGUIType() { return field.getGUIType(); }
+    @Override
     public boolean isRequired() { return field.isRequired(); }
+    @Override
     public int getMaxLength() { return field.getMaxLength(); }
+    @Override
     public Collection<String> validate(Object value) { return field.validate(value); }
+    @Override
     public boolean isVirtual() { return field.isVirtual(); }
+    @Override
     public boolean isReadOnly() { return field.isReadOnly(); }
+    @Override
     public String getName() { return field.getName(); }
+    @Override
     public String getGUIName() { return field.getGUIName(); }
+    @Override
     public String getGUIName(Locale locale) { return field.getGUIName(locale); }
+    @Override
     public LocalizedString getLocalizedGUIName() { return field.getLocalizedGUIName(); }
+    @Override
     public void setGUIName(String g, Locale locale) { throw new UnsupportedOperationException(); }
+    @Override
     public void setGUIName(String g) { throw new UnsupportedOperationException(); }
+    @Override
     public LocalizedString getLocalizedDescription() { return field.getLocalizedDescription(); }
+    @Override
     public String getDescription(Locale locale) { return field.getDescription(locale); }
+    @Override
     public String getDescription() { return field.getDescription(); }
+    @Override
     public void setDescription(String description, Locale locale) { throw new UnsupportedOperationException(); }
+    @Override
     public void setDescription(String description) { throw new UnsupportedOperationException(); }
+    @Override
     public int compareTo(Field f) { return field.compareTo(f); }
 
 
@@ -76,6 +105,7 @@ public class FieldWrapper implements Field {
         return field;
     }
 
+    @Override
     public String toString() {
         return getClass().getName() + ":" + Fields.getStateDescription(getState()) + ":" + getStoragePosition() + ":" + getNodeManager().getName() + ":" + getName();
     }

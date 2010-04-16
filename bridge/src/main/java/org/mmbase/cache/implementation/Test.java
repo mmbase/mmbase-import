@@ -94,6 +94,7 @@ public class Test {
         for (int t = 0; t < thrds; t++) {
             final int  threadnr = t;
             Runnable runnable = new Runnable() {
+                @Override
                     public void run() {
                         if (threads.length > 1) {
                             System.out.print("[+" + threadnr + "]");

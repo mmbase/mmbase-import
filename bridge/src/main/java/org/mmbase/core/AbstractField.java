@@ -108,6 +108,7 @@ abstract public class AbstractField<D extends Object> extends AbstractDescriptor
         return getName().hashCode() * 13 + dataType.hashCode();
     }
 
+    @Override
     public final int getState() {
         return state;
     }
@@ -119,14 +120,17 @@ abstract public class AbstractField<D extends Object> extends AbstractDescriptor
         this.state = state;
     }
 
+    @Override
     public int getType() {
         return type;
     }
 
+    @Override
     public int getListItemType() {
         return listItemType;
     }
 
+    @Override
     public DataType getDataType() {
         return dataType;
     }
@@ -146,31 +150,39 @@ abstract public class AbstractField<D extends Object> extends AbstractDescriptor
         this.dataType = dataType;
     }
 
+    @Override
     public boolean hasIndex() {
         return (getType() == Field.TYPE_NODE) || getName().equals("number");
     }
 
+    @Override
     abstract public int getSearchPosition();
 
+    @Override
     abstract public int getListPosition();
 
+    @Override
     abstract public int getEditPosition();
 
+    @Override
     abstract public int getStoragePosition();
 
     /**
      * Retrieve whether the field is a key and thus need be unique.
      * @return <code>true</code> when field is unique
      */
+    @Override
     public boolean isUnique() {
         return dataType.isUnique();
     }
 
+    @Override
     abstract public int getMaxLength();
 
     /**
      * @see org.mmbase.bridge.Field#isRequired()
      */
+    @Override
     public boolean isRequired() {
         return dataType.isRequired();
     }
@@ -178,6 +190,7 @@ abstract public class AbstractField<D extends Object> extends AbstractDescriptor
     /**
      * @see org.mmbase.bridge.Field#isVirtual()
      */
+    @Override
     public boolean isVirtual() {
        return state == STATE_VIRTUAL || state == STATE_SYSTEM_VIRTUAL;
     }
@@ -203,10 +216,12 @@ abstract public class AbstractField<D extends Object> extends AbstractDescriptor
      * @return <code>true</code> when read only
      * @see org.mmbase.bridge.Field#isVirtual()
      */
+    @Override
     public boolean isReadOnly() {
        return readOnly;
     }
 
+    @Override
     abstract public String getGUIType();
 
     /**

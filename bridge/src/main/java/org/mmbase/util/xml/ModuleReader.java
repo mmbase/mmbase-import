@@ -15,7 +15,6 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
 import org.mmbase.util.LocalizedString;
-import org.mmbase.util.xml.EntityResolver;
 
 /**
  * @javadoc

@@ -115,6 +115,7 @@ public class MapNode<V> extends AbstractNode implements Node, Serializable {
     protected void edit(int i) {
         // always ok.
     }
+    @Override
     public Object getValueWithoutProcess(String fieldName) {
         return values.get(fieldName);
     }

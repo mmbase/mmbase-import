@@ -10,19 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.util.xml;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.mmbase.bridge.Field;
-import org.mmbase.bridge.NodeManager;
 import org.mmbase.datatypes.*;
 import org.mmbase.datatypes.util.xml.DataTypeReader;
 import org.mmbase.datatypes.util.xml.DependencyException;
 
 import org.mmbase.util.*;
 
-import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
 /**

@@ -37,6 +37,7 @@ public class WeekdaysDataType extends IntegerDataType {
         setMax(7, true);
     }
 
+    @Override
     public Iterator<Map.Entry<Integer, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
         final Calendar cal = Calendar.getInstance(locale);
         final SortedMap<Object, String> bundle = SortedBundle.getResource("org.mmbase.datatypes.resources.weekdays", locale, null,
@@ -45,9 +46,11 @@ public class WeekdaysDataType extends IntegerDataType {
         return new Iterator<Map.Entry<Integer, String>>() {
             int i = 0;
             int day = cal.getFirstDayOfWeek();
+            @Override
             public boolean hasNext() {
                 return i < 7;
             }
+            @Override
             public Map.Entry<Integer, String> next() {
                 Entry res  = new Entry(day, bundle.get(day));
                 i++;
@@ -55,6 +58,7 @@ public class WeekdaysDataType extends IntegerDataType {
                 if (day > 7) day = 1;
                 return res;
             }
+            @Override
             public void remove() {
                 throw new UnsupportedOperationException();
             }

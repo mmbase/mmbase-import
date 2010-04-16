@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util.xml;
 
 import org.mmbase.datatypes.DataType;
-import org.mmbase.util.xml.AbstractBuilderReader;
 import org.mmbase.bridge.mock.MockField;
 import org.mmbase.bridge.util.NodeManagerDescription;
 import java.util.*;
