@@ -32,9 +32,11 @@ public class SubstringFactory implements ParameterizedTransformerFactory<CharTra
     protected final static Parameter<Integer> TO   = new Parameter<Integer>("to", Integer.class, Integer.MAX_VALUE);
     protected final static Parameter<String>  ELLIPSIS = new Parameter<String>("ellipsis"  , String.class, "");
     protected final static Parameter[] PARAMS = { FROM, TO, ELLIPSIS };
+    @Override
     public  CharTransformer createTransformer(Parameters parameters) {
         return new Substring(parameters.get(FROM), parameters.get(TO), parameters.get(ELLIPSIS));
     }
+    @Override
     public Parameters createParameters() {
         return new Parameters(PARAMS);
     }
@@ -50,6 +52,7 @@ public class SubstringFactory implements ParameterizedTransformerFactory<CharTra
 
 
         // implementation, javadoc inherited
+        @Override
         public Writer transform(Reader r, Writer w) {
             if (from < 0 || to < 0) throw new UnsupportedOperationException("When using streams, it is not possible to use negative values.");
             int current = 0;
@@ -72,6 +75,7 @@ public class SubstringFactory implements ParameterizedTransformerFactory<CharTra
             return w;
         }
 
+        @Override
         public String toString() {
             return "SUBSTRING(" + from + "," + to + "," + ellipsis + ")";
         }

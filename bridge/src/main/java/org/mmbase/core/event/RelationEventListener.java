@@ -14,5 +14,5 @@ package org.mmbase.core.event;
  * @version $Id$ 
  */
 public interface RelationEventListener extends EventListener {
-    public void notify(RelationEvent event);
+    void notify(RelationEvent event);
 }

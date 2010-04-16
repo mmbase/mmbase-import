@@ -32,6 +32,7 @@ public class ChecksumFactory implements ParameterizedTransformerFactory  {
         new Parameter<String>("implementation", String.class, java.util.zip.Adler32.class.getName())
     };
 
+    @Override
     public Parameters createParameters() {
         return new Parameters(PARAMS);
     }
@@ -39,6 +40,7 @@ public class ChecksumFactory implements ParameterizedTransformerFactory  {
     /**
      * Creates a parameterized transformer.
      */
+    @Override
     public Transformer createTransformer(Parameters parameters) {
         String impl = (String) parameters.get("implementation");
         try {
@@ -65,6 +67,7 @@ public class ChecksumFactory implements ParameterizedTransformerFactory  {
         ChecksumTransformer(Checksum c) {
             checksum = c;
         }
+        @Override
         public String transform(byte[] bytes) {
             if (bytes == null) return null;
             synchronized(checksum) {

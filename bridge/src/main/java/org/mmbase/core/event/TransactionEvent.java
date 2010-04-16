@@ -6,7 +6,6 @@
  */
 package org.mmbase.core.event;
 
-import java.io.*;
 import java.util.*;
 
 import org.mmbase.util.logging.Logger;

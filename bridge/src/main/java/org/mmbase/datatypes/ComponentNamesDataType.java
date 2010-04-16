@@ -41,13 +41,16 @@ public class ComponentNamesDataType extends StringDataType {
     public Iterator<Map.Entry<String, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
         return new Iterator<Map.Entry<String, String>>() {
             Iterator<String> iterator = org.mmbase.framework.ComponentRepository.getInstance().toMap().keySet().iterator();
+            @Override
             public boolean hasNext() {
                 return iterator.hasNext();
             }
+            @Override
             public Map.Entry<String, String> next() {
                 String val = iterator.next();
                 return new Entry<String, String>(val, val);
             }
+            @Override
             public void remove() {
                 throw new UnsupportedOperationException();
             }

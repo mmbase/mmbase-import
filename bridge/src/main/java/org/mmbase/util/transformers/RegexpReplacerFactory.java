@@ -37,6 +37,7 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory<Ch
 
     protected static final Parameter[] PARAMS = new Parameter[] { PATTERNS, MODE, FIRST_MATCH, FIRST_PATTERN };
 
+    @Override
     public Parameters createParameters() {
         return new Parameters(PARAMS);
     }
@@ -44,6 +45,7 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory<Ch
     /**
      * Creates a parameterized transformer.
      */
+    @Override
     public CharTransformer createTransformer(final Parameters parameters) {
         parameters.checkRequiredParameters();
         if (log.isDebugEnabled()) {

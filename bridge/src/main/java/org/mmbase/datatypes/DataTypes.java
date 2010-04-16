@@ -122,6 +122,7 @@ public class DataTypes {
     /**
      * Initialize the type handlers defaultly supported by the system, plus those configured in WEB-INF/config.
      */
+    @SuppressWarnings("empty-statement")
     private static void readDataTypes(ResourceLoader loader, String resource) {
         List<URL> resources = loader.getResourceList(resource);
         if (log.isDebugEnabled()) log.debug("Using " + resources);

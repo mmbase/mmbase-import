@@ -40,6 +40,7 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
     protected void setValueWithoutChecks(String fieldName, Object value) {
         values.put(fieldName, value);
     }
+    @Override
     public Object getValueWithoutProcess(String fieldName) {
         return values.get(fieldName);
     }
@@ -51,20 +52,24 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
     protected void setSize(String fieldName, long size) {
         // never mind
     }
+    @Override
     public long getSize(String fieldName) {
         // never mind
         return 2;
     }
+    @Override
     public NodeManager getNodeManager() {
         return cloud.getNodeManager("typedef");
     }
 
+    @Override
     public void setNodeManager(NodeManager nm) {
         if (! nm.getName().equals("typedef")) {
             throw new IllegalArgumentException("Cannot change the node manager of node managers");
         }
     }
 
+    @Override
     public Cloud getCloud() {
         return cloud;
     }
@@ -78,9 +83,11 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
     public NodeManager toNodeManager() {
         return this;
     }
+    @Override
     public Node createNode() { throw new UnsupportedOperationException();}
 
 
+    @Override
     public NodeList getList(String constraints, String sorted, String directions) {
         NodeQuery query = createQuery();
         Queries.addConstraints(query, constraints);
@@ -93,57 +100,73 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
     }
 
 
+    @Override
     public FieldList createFieldList() {
         return new BasicFieldList(Collections.emptyList(), this);
     }
 
+    @Override
     public NodeList createNodeList() {
         return new CollectionNodeList(BridgeCollections.EMPTY_NODELIST, this);
     }
 
+    @Override
     public RelationList createRelationList() {
         return new CollectionRelationList(BridgeCollections.EMPTY_RELATIONLIST, this);
     }
 
+    @Override
     public boolean mayCreateNode() {
         return false;
     }
 
+    @Override
     public NodeList getList(NodeQuery query) {
         if (query == null) query = createQuery();
         return getCloud().getList(query);
     }
 
+    @Override
     public NodeQuery createQuery() {
         return new org.mmbase.bridge.implementation.BasicNodeQuery(this);
     }
+    @Override
     public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp){ throw new UnsupportedOperationException();}
 
+    @Override
     public NodeList getList(String command, Map parameters){ throw new UnsupportedOperationException();}
 
 
+    @Override
     public RelationManagerList getAllowedRelations() { return BridgeCollections.EMPTY_RELATIONMANAGERLIST; }
+    @Override
     public RelationManagerList getAllowedRelations(String nodeManager, String role, String direction) { return BridgeCollections.EMPTY_RELATIONMANAGERLIST; }
 
+    @Override
     public RelationManagerList getAllowedRelations(NodeManager nodeManager, String role, String direction) { return BridgeCollections.EMPTY_RELATIONMANAGERLIST; }
 
+    @Override
     public String getInfo(String command) { return getInfo(command, null,null);}
 
+    @Override
     public String getInfo(String command, ServletRequest req,  ServletResponse resp){ throw new UnsupportedOperationException();}
 
 
     protected abstract Map<String, Field> getFieldTypes();
 
 
+    @Override
     public boolean hasField(String fieldName) {
         Map<String, Field> fieldTypes = getFieldTypes();
         return fieldTypes.isEmpty() || fieldTypes.containsKey(fieldName);
     }
 
+    @Override
     public final FieldList getFields() {
         return getFields(NodeManager.ORDER_NONE);
     }
 
+    @Override
     public final FieldList getFields(int sortOrder) {
         if (sortOrder == ORDER_NONE) {
             return new BasicFieldList(getFieldTypes().values(), this);
@@ -166,48 +189,59 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
         }
     }
 
+    @Override
     public Field getField(String fieldName) throws NotFoundException {
         Field f = getFieldTypes().get(fieldName);
         if (f == null) throw new NotFoundException("Field '" + fieldName + "' does not exist in NodeManager '" + getName() + "'.(" + getFieldTypes() + ")");
         return f;
     }
 
+    @Override
     public String getGUIName() {
         return getGUIName(NodeManager.GUI_SINGULAR);
     }
 
+    @Override
     public String getGUIName(int plurality) {
         return getGUIName(plurality, null);
     }
 
+    @Override
     public String getGUIName(int plurality, Locale locale) {
         return getName();
     }
 
+    @Override
     public String getName() {
         return "virtual_manager";
     }
+    @Override
     public String getDescription() {
         return getDescription(null);
     }
 
+    @Override
     public String getDescription(Locale locale) {
         return "";
     }
 
+    @Override
     public NodeManager getParent() {
         return null;
     }
 
 
+    @Override
     public String getProperty(String name) {
         return getProperties().get(name);
     }
+    @Override
     public Map<String, String> getProperties() {
         return Collections.emptyMap();
     }
 
 
+    @Override
     public NodeManagerList getDescendants() {
         NodeManagerList descendants = getCloud().createNodeManagerList();
         String name = getName();

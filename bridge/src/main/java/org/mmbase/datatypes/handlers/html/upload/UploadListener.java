@@ -37,11 +37,13 @@ public class UploadListener implements OutputStreamListener {
         this.uploadInfo = new UploadInfo(request.getContentLength());
     }
 
+    @Override
     public void start() {
         uploadInfo.fileIndex++;
         updateUploadInfo(UploadInfo.Status.START);
     }
 
+    @Override
     public void bytesRead(int bytesRead) {
         uploadInfo.bytesRead += bytesRead;
         updateUploadInfo(UploadInfo.Status.PROGRESS);
@@ -59,11 +61,13 @@ public class UploadListener implements OutputStreamListener {
         }
     }
 
+    @Override
     public void error(String message) {
         updateUploadInfo(UploadInfo.Status.ERROR);
         uploadInfo.error(message);
     }
 
+    @Override
     public void done() {
         updateUploadInfo(UploadInfo.Status.DONE);
     }

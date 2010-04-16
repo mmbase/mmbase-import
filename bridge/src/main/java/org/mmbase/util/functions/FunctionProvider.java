@@ -29,12 +29,13 @@ public abstract class FunctionProvider {
      * Every Function Provider provides least the 'getFunctions' function, which returns a Set of all functions which it provides.
      */
     protected Function<Collection<Function<?>>> getFunctions = new AbstractFunction<Collection<Function<?>>>("getFunctions") {
-            {
-                setDescription("The 'getFunctions' returns the collections of al Function object which are available on this FunctionProvider");
-            }
-            public Collection<Function<?>> getFunctionValue(Parameters arguments) {
-                return getFunctions();
-            }
+        {
+            setDescription("The 'getFunctions' returns the collections of al Function object which are available on this FunctionProvider");
+        }
+        @Override
+        public Collection<Function<?>> getFunctionValue(Parameters arguments) {
+            return getFunctions();
+        }
         };
     {
         addFunction(getFunctions);

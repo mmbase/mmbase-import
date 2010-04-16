@@ -86,6 +86,7 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
         return relationDestinationNumber;
     }
 
+    @Override
     public int getType() {
         return eventType;
     }
@@ -98,6 +99,7 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
     }
 
 
+    @Override
     public int hashCode() {
         int result = nodeEvent.hashCode();
         result = HashCodeUtil.hashCode(result, relationSourceNumber);
@@ -109,6 +111,7 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
         return result;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (o instanceof RelationEvent) {
             RelationEvent re = (RelationEvent) o;
@@ -130,6 +133,7 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
         return nodeEvent;
     }
 
+    @Override
     public String toString() {
         return "Relation event. type: " + NodeEvent.getEventTypeGuiName(getType())
                 + ", sourcetype: " + relationSourceType + ", destinationtype: " + relationDestinationType

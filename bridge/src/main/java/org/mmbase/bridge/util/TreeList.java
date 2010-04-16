@@ -276,6 +276,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
     }
 
     // javadoc inherited
+    @Override
     public Node getNode(int i) {
         return get(i);
     }
@@ -301,17 +302,19 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
         return realNodes.getNode(index);
     }
 
+    @Override
     public NodeList subNodeList(int start, int end) {
         throw new UnsupportedOperationException("SubNodeLists not implemented for TreeList");
     }
+    @Override
     public NodeList subList(int start, int end) {
         throw new UnsupportedOperationException("SubNodeLists not implemented for TreeList");
     }
 
     @Override
     public String toString() {
-        int size = size();
-        return "size: " + size + " " + branches.toString();
+        int s = size();
+        return "size: " + s + " " + branches.toString();
     }
 
 
@@ -407,6 +410,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
 
         }
 
+        @Override
         public boolean hasNext() {
             if (TreeList.this.max != SearchQuery.DEFAULT_MAX_NUMBER && nextIndex > TreeList.this.max) return false;
             if (TreeList.this.foundEnd) { // why bother
@@ -482,12 +486,14 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
             return TreeList.this.getRealNode(index, iterator.previousIndex());
         }
 
+        @Override
         public Node nextNode() {
             nextIndex++;
             current = getNextNode();
             return current;
         }
 
+        @Override
         public Node getParent() {
             NodeList nl = TreeList.this.getLeafList(currentDepth() - 1);
             Query q = TreeList.this.branches.get(currentDepth() - 1).getQuery();
@@ -509,6 +515,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
             return null;
         }
 
+        @Override
         public NodeList getSiblings() {
             NodeList nl = TreeList.this.getLeafList(currentDepth() - 1);
             Query q = TreeList.this.branches.get(currentDepth() -1 ).getQuery();
@@ -538,6 +545,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
         /**
          * Depth of the last node fetched with next() or nextNode()
          */
+        @Override
         public int currentDepth() {
             Branch branch = TreeList.this.branches.get(currentIterator);
             int depth = (branch.query.getSteps().size() + 1) / 2;
@@ -548,6 +556,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
             }
         }
 
+        @Override
         public Node next() {
             return nextNode();
         }

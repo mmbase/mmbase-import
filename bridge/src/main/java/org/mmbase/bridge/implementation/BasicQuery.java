@@ -107,6 +107,7 @@ public class BasicQuery implements Query, java.io.Serializable  {
     public BasicSearchQuery getQuery() {
         return query;
     }
+    @Override
     public SearchQuery unwrap() {
         return query;
     }
@@ -118,17 +119,21 @@ public class BasicQuery implements Query, java.io.Serializable  {
 
     // SearchQuery impl:
 
+    @Override
     public List<Step> getSteps() {
         return query.getSteps();
     }
+    @Override
     public List<StepField> getFields() {
         return query.getFields();
     }
+    @Override
     public Constraint getConstraint() {
         return query.getConstraint();
     }
 
     // bridge.Query impl
+    @Override
     public Constraint getCleanConstraint() {
         if (queryCheck != null) {
             return insecureConstraint;
@@ -138,29 +143,36 @@ public class BasicQuery implements Query, java.io.Serializable  {
     }
 
     // more SearchQuery impl
+    @Override
     public int getMaxNumber() {
         return query.getMaxNumber();
     }
+    @Override
     public int getOffset() {
         return query.getOffset();
     }
+    @Override
     public List<SortOrder> getSortOrders() {
         return query.getSortOrders();
     }
+    @Override
     public boolean isDistinct() {
         return query.isDistinct();
     }
 
     // bridge.Query impl.:
 
+    @Override
     public boolean isAggregating() {
         return aggregating;
     }
 
+    @Override
     public CachePolicy getCachePolicy() {
         return query.getCachePolicy();
     }
 
+    @Override
     public void setCachePolicy(CachePolicy policy) {
         query.setCachePolicy(policy);
     }
@@ -211,6 +223,7 @@ public class BasicQuery implements Query, java.io.Serializable  {
             throw new InternalError(e.toString());
         }
     }
+    @Override
     public Query aggregatingClone() {
         BasicSearchQuery bsq = new BasicSearchQuery(query, BasicSearchQuery.COPY_AGGREGATING);
         removeSecurityConstraintFromClone(bsq);
@@ -220,6 +233,7 @@ public class BasicQuery implements Query, java.io.Serializable  {
         return clone;
     }
 
+    @Override
     public Query cloneWithoutFields() {
         BasicSearchQuery bsq = new BasicSearchQuery(query, BasicSearchQuery.COPY_WITHOUTFIELDS);
         removeSecurityConstraintFromClone(bsq);
@@ -258,6 +272,7 @@ public class BasicQuery implements Query, java.io.Serializable  {
     }
 
 
+    @Override
     public Step addStep(NodeManager nm) {
         if (used) throw new BridgeException("Query was used already");
 
@@ -273,6 +288,7 @@ public class BasicQuery implements Query, java.io.Serializable  {
         return step;
     }
 
+    @Override
     public void setAlias(Step step, String alias) {
         String currentAlias = step.getAlias();
         String aliasBase    = step.getTableName();
@@ -311,11 +327,13 @@ public class BasicQuery implements Query, java.io.Serializable  {
         }
         return relationStep;
     }
+    @Override
     public RelationStep addRelationStep(NodeManager otherNodeManager) {
         return addRelationStep(otherNodeManager, null, "BOTH");
     }
 
 
+    @Override
     public RelationStep addRelationStep(NodeManager otherNodeManager, String role, String direction) {
         if ("".equals(role)) role = null;
         return addRelationStep(otherNodeManager, role, direction, true);
@@ -372,6 +390,7 @@ public class BasicQuery implements Query, java.io.Serializable  {
         }
     }
 
+    @Override
     public void removeFields() {
         query.removeFields();
         explicitFields.clear();
@@ -383,6 +402,7 @@ public class BasicQuery implements Query, java.io.Serializable  {
     }
 
 
+    @Override
     public StepField addField(Step step, Field field) {
         if (used) throw new BridgeException("Query was used already");
         BasicStepField sf = new BasicStepField(step, field);
@@ -396,6 +416,7 @@ public class BasicQuery implements Query, java.io.Serializable  {
         explicitFields.add(sf);
         return sf;
     }
+    @Override
     public StepField addField(String fieldIdentifier) {
         // code copied from createStepField, should be centralized
         if (used) throw new BridgeException("Query was used already");
@@ -423,21 +444,25 @@ public class BasicQuery implements Query, java.io.Serializable  {
         }
     }
 
+    @Override
     public StepField createStepField(Step step, Field field) {
         if (field == null) throw new BridgeException("Field is null");
         return new BasicStepField(step, field);
     }
 
+    @Override
     public StepField createStepField(Step step, String fieldName) {
         return createStepField(step, cloud.getNodeManager(step.getTableName()).getField(fieldName));
     }
 
 
 
+    @Override
     public Step getStep(String stepAlias) {
         return Queries.searchStep(getSteps(), stepAlias);
     }
 
+    @Override
     public StepField createStepField(String fieldIdentifier) {
         // code copied from addField, should be centralized
         int dot = fieldIdentifier.indexOf('.');
@@ -451,6 +476,7 @@ public class BasicQuery implements Query, java.io.Serializable  {
         return createStepField(step, field);
     }
 
+    @Override
     public AggregatedField addAggregatedField(Step step, Field field, int aggregationType) {
         if (used) throw new BridgeException("Query was used already");
         BasicAggregatedField aggregatedField =  query.addAggregatedField(step, field, aggregationType);
@@ -472,6 +498,7 @@ public class BasicQuery implements Query, java.io.Serializable  {
     /**
      * @since MMBase-1.9.1
      */
+    @Override
     public void removeImplicitFields() {
        query.removeFields();
        implicitFields.clear();
@@ -480,6 +507,7 @@ public class BasicQuery implements Query, java.io.Serializable  {
        }
     }
 
+    @Override
     public Query setDistinct(boolean distinct) {
         if (used) throw new BridgeException("Query was used already");
         query.setDistinct(distinct);
@@ -489,11 +517,13 @@ public class BasicQuery implements Query, java.io.Serializable  {
         return this;
     }
 
+    @Override
     public Query setMaxNumber(int maxNumber) {
         if (used) throw new BridgeException("Query was used already");
         query.setMaxNumber(maxNumber);
         return this;
     }
+    @Override
     public Query setOffset(int offset) {
         if (used) throw new BridgeException("Query was used already");
         query.setOffset(offset);
@@ -501,24 +531,29 @@ public class BasicQuery implements Query, java.io.Serializable  {
 
     }
 
+    @Override
     public LegacyConstraint      createConstraint(String s) {
         return new BasicLegacyConstraint(s);
     }
 
+    @Override
     public FieldNullConstraint createConstraint(StepField f) {
         return new BasicFieldNullConstraint(f);
     }
 
+    @Override
     public FieldValueConstraint createConstraint(StepField f, Object v) {
         return createConstraint(f, FieldCompareConstraint.EQUAL, v);
     }
 
+    @Override
     public FieldValueConstraint createConstraint(StepField f, int op, Object v, int part) {
         BasicFieldValueConstraint c = new BasicFieldValueDateConstraint(f, v, part);
         c.setOperator(op);
         return c;
     }
 
+    @Override
     public FieldValueConstraint createConstraint(StepField f, int op, Object v) {
         if (v instanceof Node) v = Integer.valueOf(((Node)v).getNumber());
         BasicFieldValueConstraint c = new BasicFieldValueConstraint(f, v);
@@ -526,16 +561,19 @@ public class BasicQuery implements Query, java.io.Serializable  {
         return c;
     }
 
+    @Override
     public CompareFieldsConstraint createConstraint(StepField f, int op, StepField  v) {
         BasicCompareFieldsConstraint c = new BasicCompareFieldsConstraint(f, v);
         c.setOperator(op);
         return c;
     }
 
+    @Override
     public FieldValueBetweenConstraint createConstraint(StepField f, Object o1, Object o2) {
         return new BasicFieldValueBetweenConstraint(f, o1, o2);
     }
 
+    @Override
     public FieldValueInConstraint createConstraint(StepField f, SortedSet<? extends Object> v) {
         if (v.size() == 0) { // make sure the query becomes empty!
             Step step = f.getStep();
@@ -552,20 +590,24 @@ public class BasicQuery implements Query, java.io.Serializable  {
         }
     }
 
+    @Override
     public FieldValueInQueryConstraint createConstraint(StepField f, Query q) {
         return  new BasicFieldValueInQueryConstraint(f, q);
     }
 
+    @Override
     public Constraint setInverse(Constraint c, boolean i) {
         ((BasicConstraint) c).setInverse(i);
         return c;
     }
 
+    @Override
     public FieldConstraint setCaseSensitive(FieldConstraint c, boolean s) {
         ((BasicFieldConstraint) c).setCaseSensitive(s);
         return c;
 
     }
+    @Override
     public CompositeConstraint createConstraint(Constraint c1, int operator, Constraint c2) {
         if ((!used) && c1 instanceof BasicCompositeConstraint && ((CompositeConstraint) c1).getLogicalOperator() == operator) {
             if (c2 != null) ((BasicCompositeConstraint) c1).addChild(c2);
@@ -578,19 +620,23 @@ public class BasicQuery implements Query, java.io.Serializable  {
         }
     }
 
+    @Override
     public void setConstraint(Constraint c) {
         if (used) throw new BridgeException("Query was used already");
         query.setConstraint(c);
     }
 
+    @Override
     public SortOrder addSortOrder(StepField f, int direction) {
         return addSortOrder(f, direction, false);
     }
 
+    @Override
     public SortOrder addSortOrder(StepField f, int direction, boolean caseSensitive) {
         return addSortOrder(f, direction, caseSensitive, -1);
     }
 
+    @Override
     public SortOrder addSortOrder(StepField f, int direction, boolean caseSensitive, int part) {
         if (used) throw new BridgeException("Query was used already");
         if (f == null) throw new BridgeException("Cannot add sortorder on 'null' step field");
@@ -606,6 +652,7 @@ public class BasicQuery implements Query, java.io.Serializable  {
     /**
      * @since MMBase-1.7.1
      */
+    @Override
     public void addNode(Step  s, int nodeNumber) {
         if (used) throw new BridgeException("Query was used already");
         BasicStep step = (BasicStep) s;
@@ -614,14 +661,17 @@ public class BasicQuery implements Query, java.io.Serializable  {
         return;
     }
 
+    @Override
     public void addNode(Step  s, Node node) {
         addNode(s, node.getNumber());
     }
 
+    @Override
     public boolean isUsed() {
         return used;
     }
 
+    @Override
     public boolean markUsed() {
         boolean wasUsed = used;
         query.markUsed();
@@ -685,10 +735,12 @@ public class BasicQuery implements Query, java.io.Serializable  {
 
     }
 
+    @Override
     public Cloud getCloud() {
         return cloud;
     }
 
+    @Override
     public NodeList getList() {
         return cloud.getList(this);
     }
@@ -718,6 +770,7 @@ public class BasicQuery implements Query, java.io.Serializable  {
         return toSql();
     }
 
+    @Override
     public String toSql() {
         try {
             //return MMBase.getMMBase().getSearchQueryHandler().createSqlString(query);

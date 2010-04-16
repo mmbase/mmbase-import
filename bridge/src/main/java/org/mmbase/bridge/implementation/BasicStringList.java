@@ -32,20 +32,24 @@ public class BasicStringList extends BasicList<String> implements StringList {
         super(c);
     }
 
+    @Override
     public String getString(int index) {
         return get(index);
     }
 
+    @Override
     public StringIterator stringIterator() {
         return new BasicStringIterator();
     }
 
     protected class BasicStringIterator extends BasicIterator implements StringIterator {
 
+        @Override
         public String nextString() {
             return next();
         }
 
+        @Override
         public String previousString() {
             return previous();
         }

@@ -28,25 +28,30 @@ abstract public  class AbstractSequentialBridgeList<E extends Comparable<? super
     private Map<Object,Object> properties = new HashMap<Object,Object>();
 
     // javadoc inherited
+    @Override
     public Object getProperty(Object key) {
         return properties.get(key);
     }
 
     // javadoc inherited
+    @Override
     public void setProperty(Object key, Object value) {
         properties.put(key, value);
     }
 
+    @Override
     public Map<Object, Object> getProperties() {
         return Collections.unmodifiableMap(properties);
     }
 
     // javadoc inherited
+    @Override
     public void sort() {
         Collections.sort(this);
     }
 
     // javadoc inherited
+    @Override
     public void sort(Comparator<? super E> comparator) {
         Collections.sort(this, comparator);
     }

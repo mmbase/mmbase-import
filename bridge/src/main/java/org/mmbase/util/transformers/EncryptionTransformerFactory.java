@@ -76,6 +76,7 @@ public class EncryptionTransformerFactory implements ParameterizedTransformerFac
         new Parameter<String>("direction", String.class, "encrypt")
     };
 
+    @Override
     public Parameters createParameters() {
         return new Parameters(PARAMS);
     }
@@ -89,6 +90,7 @@ public class EncryptionTransformerFactory implements ParameterizedTransformerFac
      *  <li>key, defaults to '1234567890abcdef' (NOTE: the length of this key must match the requirements set by the algorithm</li>
      * </ul>
      */
+    @Override
     public CharTransformer createTransformer(Parameters parameters) {
         String direction = (String) parameters.get("direction");
         if ("encrypt".equalsIgnoreCase(direction)) {
@@ -116,6 +118,7 @@ public class EncryptionTransformerFactory implements ParameterizedTransformerFac
             }
         }
 
+        @Override
         public Writer transform(Reader r, Writer w) {
             StringBuilder sb = new StringBuilder();
 
@@ -167,6 +170,7 @@ public class EncryptionTransformerFactory implements ParameterizedTransformerFac
             }
         }
 
+        @Override
         public Writer transform(Reader r, Writer w) {
             StringBuilder sb = new StringBuilder();
 

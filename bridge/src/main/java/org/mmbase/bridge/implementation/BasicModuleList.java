@@ -29,20 +29,24 @@ public class BasicModuleList extends BasicList<Module> implements ModuleList {
         super(c);
     }
 
+    @Override
     public Module getModule(int index) {
         return get(index);
     }
 
+    @Override
     public ModuleIterator moduleIterator() {
         return new BasicModuleIterator();
     };
 
     protected class BasicModuleIterator extends BasicIterator implements ModuleIterator {
 
+        @Override
         public Module nextModule() {
             return next();
         }
 
+        @Override
         public Module previousModule() {
             return previous();
         }

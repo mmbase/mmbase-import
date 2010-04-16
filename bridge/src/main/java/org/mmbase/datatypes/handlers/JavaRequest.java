@@ -38,6 +38,7 @@ public class JavaRequest extends  AbstractRequest {
     /**
      *
      */
+    @Override
     public String getName(Field field) {
         return field.getName();
     }
@@ -45,14 +46,17 @@ public class JavaRequest extends  AbstractRequest {
     /**
      * Gets the user specified value for a field
      */
+    @Override
     public Object getValue(Field field) {
         return values.get(field.getName());
     }
 
+    @Override
     public Object getValue(Field field, String part) {
         return values.get(field.getName() + "_" + part);
     }
 
+    @Override
     public boolean isPost() {
         return post;
     }

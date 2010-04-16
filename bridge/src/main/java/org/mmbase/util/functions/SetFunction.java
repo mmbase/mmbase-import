@@ -205,6 +205,7 @@ public class SetFunction extends AbstractFunction<Object> {
 
     /**
      */
+    @Override
     public Object getFunctionValue(Parameters parameters) {
         parameters.checkRequiredParameters();
         try {

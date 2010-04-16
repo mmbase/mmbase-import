@@ -138,6 +138,7 @@ public class HugeNodeListIterator implements NodeIterator {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasNext() {
         return nextNode != null;
     }
@@ -145,6 +146,7 @@ public class HugeNodeListIterator implements NodeIterator {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasPrevious() {
         return previousNode != null;
     }
@@ -153,6 +155,7 @@ public class HugeNodeListIterator implements NodeIterator {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Node next() {
         return nextNode();
     }
@@ -160,18 +163,21 @@ public class HugeNodeListIterator implements NodeIterator {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Node previous() {
         return previousNode();
     }
     /**
      * {@inheritDoc}
      */
+    @Override
     public int previousIndex() {
         return nextIndex - 1;
     }
     /**
      * {@inheritDoc}
      */
+    @Override
     public int nextIndex() {
         return nextIndex;
     }
@@ -193,6 +199,7 @@ public class HugeNodeListIterator implements NodeIterator {
      * Implementation calculates also the next next Node, and gives back the 'old' next Node, from
      * now on known as 'previousNode'.
      */
+    @Override
     public  Node nextNode() {
         if (nextNode != null) {
             nextIndex++;
@@ -239,6 +246,7 @@ public class HugeNodeListIterator implements NodeIterator {
      *
      * Implementation is analogous to nextNode.
      */
+    @Override
     public  Node previousNode() {
         if (previousNode != null) {
             nextNode = previousNode;
@@ -275,6 +283,7 @@ public class HugeNodeListIterator implements NodeIterator {
    /**
      * @throws UnsupportedOperationException
      */
+    @Override
     public void remove() {
         throw new UnsupportedOperationException("Optional operation 'remove' not implemented");
     }
@@ -282,6 +291,7 @@ public class HugeNodeListIterator implements NodeIterator {
     /**
      * @throws UnsupportedOperationException
      */
+    @Override
     public void add(Node o) {
         throw new UnsupportedOperationException("Optional operation 'add' not implemented");
     }
@@ -289,6 +299,7 @@ public class HugeNodeListIterator implements NodeIterator {
     /**
      * @throws UnsupportedOperationException
      */
+    @Override
     public void set(Node o) {
         throw new UnsupportedOperationException("Optional operation 'set' not implemented");
     }

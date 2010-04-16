@@ -27,28 +27,34 @@ abstract public class AbstractBridgeList<E extends Comparable<? super E>> extend
     private Map<Object, Object> properties = new HashMap<Object, Object>();
 
     // javadoc inherited
+    @Override
     public Object getProperty(Object key) {
         return properties.get(key);
     }
 
     // javadoc inherited
+    @Override
     public void setProperty(Object key, Object value) {
         properties.put(key, value);
     }
 
+    @Override
     public Map<Object, Object> getProperties() {
         return Collections.unmodifiableMap(properties);
     }
 
     // javadoc inherited
+    @Override
     public void sort() {
         Collections.sort(this);
     }
 
     // javadoc inherited
+    @Override
     public void sort(Comparator<? super E> comparator) {
         Collections.sort(this, comparator);
     }
+    @Override
     public abstract BridgeList<E> subList(int f, int t);
 
     protected class BasicIterator implements ListIterator<E> {
@@ -58,38 +64,47 @@ abstract public class AbstractBridgeList<E extends Comparable<? super E>> extend
             this.iterator = AbstractBridgeList.this.listIterator();
         }
 
+        @Override
         public boolean hasNext() {
             return  iterator.hasNext();
         }
 
+        @Override
         public boolean hasPrevious() {
             return  iterator.hasPrevious();
         }
 
+        @Override
         public int nextIndex() {
             return iterator.nextIndex();
         }
 
+        @Override
         public int previousIndex() {
             return iterator.previousIndex();
         }
 
+        @Override
         public void remove() {
             iterator.remove();
         }
 
         // These have to be implemented with a check if o is of the right type.
+        @Override
         public void set(E o) {
             iterator.set(o);
         }
 
+        @Override
         public void add(E o) {
             iterator.add(o);
         }
 
+        @Override
         public E next() {
             return iterator.next();
         }
+        @Override
         public E previous() {
             return iterator.previous();
         }

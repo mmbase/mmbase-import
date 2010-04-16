@@ -89,13 +89,14 @@ public class FunctionSets {
         // read the XML
         try {
             ResourceWatcher watcher = new ResourceWatcher(functionLoader) {
-                    public void onChange(String resource) {
-                        functionSets.clear();
-                        clear();
-                        add(resource);
-                        readSets(this);
-                    }
-                };
+                @Override
+                public void onChange(String resource) {
+                    functionSets.clear();
+                    clear();
+                    add(resource);
+                    readSets(this);
+                }
+            };
             readSets(watcher);
             watcher.setDelay(10000);
             watcher.start();

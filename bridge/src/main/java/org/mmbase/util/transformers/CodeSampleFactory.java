@@ -44,10 +44,12 @@ public class CodeSampleFactory implements ParameterizedTransformerFactory<CharTr
 
     };
 
+    @Override
     public Parameters createParameters() {
         return new Parameters(PARAMS);
     }
 
+    @Override
     public CharTransformer createTransformer(Parameters parameters) {
         parameters.checkRequiredParameters();
 
@@ -82,6 +84,7 @@ public class CodeSampleFactory implements ParameterizedTransformerFactory<CharTr
          * @param str The original string
          * @return The transformed string
          */
+        @Override
         public String transform(String str) {
             return transform(str, starttag, closetag, escapecode, escaperest);
         }

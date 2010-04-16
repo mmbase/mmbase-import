@@ -37,6 +37,7 @@ public class BeanTransformerFactory<T extends Transformer> implements Parameteri
 
 
 
+    @Override
     public T createTransformer(Parameters parameters) {
         try {
             T result = implementation.newInstance();
@@ -48,6 +49,7 @@ public class BeanTransformerFactory<T extends Transformer> implements Parameteri
     }
 
 
+    @Override
     public Parameters createParameters() {
         return new Parameters(definition);
     }

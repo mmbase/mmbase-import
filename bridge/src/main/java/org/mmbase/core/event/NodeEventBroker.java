@@ -21,6 +21,7 @@ public class NodeEventBroker extends AbstractEventBroker {
      *
      * @see event.AbstractEventBroker#canBrokerFor(java.lang.Class)
      */
+    @Override
     public boolean canBrokerForListener(EventListener listener) {
         return listener instanceof NodeEventListener;
     }
@@ -30,6 +31,7 @@ public class NodeEventBroker extends AbstractEventBroker {
      *
      * @see event.AbstractEventBroker#shouldNotifyForEvent(event.Event)
      */
+    @Override
     public boolean canBrokerForEvent(Event event) {
         return event instanceof NodeEvent;
     }
@@ -39,6 +41,7 @@ public class NodeEventBroker extends AbstractEventBroker {
      *
      * @see event.AbstractEventBroker#notifyEventListeners()
      */
+    @Override
     protected void notifyEventListener(Event event, EventListener listener) {
         NodeEvent ne = (NodeEvent) event; //!!!!!
         NodeEventListener nel = (NodeEventListener) listener;
@@ -48,6 +51,7 @@ public class NodeEventBroker extends AbstractEventBroker {
     /* (non-Javadoc)
      * @see org.mmbase.core.event.AbstractEventBroker#toString()
      */
+    @Override
     public String toString() {
         return "NodeEvent Broker";
     }

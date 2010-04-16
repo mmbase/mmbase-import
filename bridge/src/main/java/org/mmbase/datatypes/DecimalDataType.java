@@ -58,33 +58,40 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
 
 
     // LengthDataType
+    @Override
     public long getLength(Object o) {
         if (o == null) return 0;
         return ((BigDecimal) o).precision();
     }
     // LengthDataType
+    @Override
     public long getMinLength() {
         return decimalMinRestriction.getValue();
     }
     // LengthDataType
+    @Override
     public DataType.Restriction<Long> getMinLengthRestriction() {
         return decimalMinRestriction;
     }
     // LengthDataType
+    @Override
     public void setMinLength(long value) {
         decimalMinRestriction.setValue(value);
     }
 
     // LengthDataType
+    @Override
     public long getMaxLength() {
         return (long) getPrecision();
     }
     // LengthDataType
+    @Override
     public DataType.Restriction<Long> getMaxLengthRestriction() {
         return precisionRestriction;
 
     }
     // LengthDataType
+    @Override
     public void setMaxLength(long value) {
         setPrecision((int) value);
     }

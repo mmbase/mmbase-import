@@ -30,14 +30,17 @@ public abstract class WrappedFunction<R> implements Function<R> {
          wrappedFunction = function;
     }
 
+    @Override
     public Parameters createParameters() {
         return wrappedFunction.createParameters();
     }
 
+    @Override
     public R getFunctionValue(Parameters parameters) {
          return wrappedFunction.getFunctionValue(parameters);
     }
 
+    @Override
     public R getFunctionValueWithList(List<?> parameters) {
          if (parameters instanceof Parameters) {
              return getFunctionValue((Parameters)parameters);
@@ -48,6 +51,7 @@ public abstract class WrappedFunction<R> implements Function<R> {
 	     return getFunctionValue(params);
          }
     }
+    @Override
     public R getFunctionValueWithArgs(Object... parameters) {
         Parameters params = wrappedFunction.createParameters();
         params.setAutoCasting(true);
@@ -55,30 +59,37 @@ public abstract class WrappedFunction<R> implements Function<R> {
         return getFunctionValue(params);
     }
 
+    @Override
     public void setDescription(String description) {
         wrappedFunction.setDescription(description);
     }
 
+    @Override
     public String getDescription() {
         return wrappedFunction.getDescription();
     }
 
+    @Override
     public String getName() {
         return wrappedFunction.getName();
     }
 
+    @Override
     public Parameter<?>[] getParameterDefinition() {
         return wrappedFunction.getParameterDefinition();
     }
 
+    @Override
     public void setParameterDefinition(Parameter<?>[] params) {
         wrappedFunction.setParameterDefinition(params);
     }
 
+    @Override
     public ReturnType<R> getReturnType() {
         return wrappedFunction.getReturnType();
     }
 
+    @Override
     public void setReturnType(ReturnType<R> type) {
         wrappedFunction.setReturnType(type);
     }

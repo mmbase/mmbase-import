@@ -122,6 +122,7 @@ public class NodeEvent extends Event {
     }
 
 
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder("Node event: '");
         buf.append(getEventTypeGuiName(eventType)).append( "', node: ").append(nodeNumber).append(", nodetype: ").append(builderName);
@@ -215,6 +216,7 @@ public class NodeEvent extends Event {
     }
 
 
+    @Override
     public int hashCode() {
         int result = 0;
         result = HashCodeUtil.hashCode(result, eventType);
@@ -223,6 +225,7 @@ public class NodeEvent extends Event {
         return result;
 
     }
+    @Override
     public boolean equals(Object o) {
         if (o instanceof NodeEvent) {
             NodeEvent ne = (NodeEvent) o;

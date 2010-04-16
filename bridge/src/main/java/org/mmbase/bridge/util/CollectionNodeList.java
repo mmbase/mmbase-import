@@ -37,18 +37,22 @@ public class CollectionNodeList extends AbstractCollectionNodeList<Node> impleme
         super(c, (Cloud) null);
     }
 
+    @Override
     public Node getNode(int index) {
         return get(index);
     }
 
+    @Override
     public NodeList subNodeList(int fromIndex, int toIndex) {
         return subList(fromIndex, toIndex);
     }
 
+    @Override
     public CollectionNodeList subList(int fromIndex, int toIndex)  {
         return new CollectionNodeList(wrappedCollection.subList(fromIndex, toIndex));
     }
 
+    @Override
     public NodeIterator nodeIterator() {
         return new BasicNodeIterator();
     }
@@ -56,10 +60,12 @@ public class CollectionNodeList extends AbstractCollectionNodeList<Node> impleme
 
     protected class BasicNodeIterator extends BasicIterator implements NodeIterator {
 
+        @Override
         public Node nextNode() {
             return next();
         }
 
+        @Override
         public Node previousNode() {
             return previous();
         }

@@ -93,6 +93,7 @@ public interface RelationManager extends NodeManager {
      * @param relationManager relation manager of the relation
      * @return new Relation
      **/
+    @Override
     public Relation createRelation(Node sourceNode, RelationManager relationManager);
 
     /**

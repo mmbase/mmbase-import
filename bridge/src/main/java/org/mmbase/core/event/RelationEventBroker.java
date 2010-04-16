@@ -27,6 +27,7 @@ public class RelationEventBroker extends AbstractEventBroker {
      *
      * @see event.AbstractEventBroker#canBrokerFor(event.EventListener)
      */
+    @Override
     public boolean canBrokerForListener(EventListener listener) {
         // if(listener.getClass().equals(RelationEventListener.class))return
         // true;
@@ -38,6 +39,7 @@ public class RelationEventBroker extends AbstractEventBroker {
      *
      * @see event.AbstractEventBroker#shouldNotifyForEvent(event.Event)
      */
+    @Override
     public boolean canBrokerForEvent(Event event) {
         return event instanceof RelationEvent;
     }
@@ -48,6 +50,7 @@ public class RelationEventBroker extends AbstractEventBroker {
      * @see event.AbstractEventBroker#notifyEventListener(event.Event,
      *      event.EventListener)
      */
+    @Override
     protected void notifyEventListener(Event event, EventListener listener) throws ClassCastException {
         RelationEvent re = (RelationEvent) event;
         RelationEventListener rel = (RelationEventListener) listener;
@@ -57,6 +60,7 @@ public class RelationEventBroker extends AbstractEventBroker {
     /* (non-Javadoc)
      * @see org.mmbase.core.event.AbstractEventBroker#toString()
      */
+    @Override
     public String toString() {
         return "RelationEvent Broker";
     }

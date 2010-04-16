@@ -226,6 +226,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     }
 
 
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder("[");
         checkDef();
@@ -292,11 +293,13 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     }
 
     // implementation of List
+    @Override
     public int size() {
         return toIndex - fromIndex;
     }
 
     // implementation of List
+    @Override
     public Object get(int i) {
         checkDef();
         int j = i + fromIndex;
@@ -312,6 +315,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      * implementation of (modifiable) List
      *  @exception NullPointerException if definition not set
      */
+    @Override
     public Object set(int i, Object value) {
         checkDef();
         int j = i + fromIndex;
@@ -573,6 +577,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         return this;
     }
 
+    @Override
     public Parameters subList(int fromIndex, int toIndex) {
         return new Parameters(this, fromIndex, toIndex);
     }
@@ -667,15 +672,19 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     protected Map<String, Object> undefaultBacking() {
         return new SerializableAbstractMap<String, Object>() {
             private static final long serialVersionUID = 1L;
+            @Override
             public Set<Map.Entry<String, Object>> entrySet() {
                 return new AbstractSet<Map.Entry<String, Object>>() {
+                    @Override
                     public Iterator<Map.Entry<String, Object>> iterator() {
                         final Iterator<Map.Entry<String, Object>> iterator = Parameters.this.backing.entrySet().iterator();
 
                         return new Iterator<Map.Entry<String, Object>>() {
+                            @Override
                             public boolean hasNext() {
                                 return iterator.hasNext();
                             }
+                            @Override
                             public Map.Entry<String, Object> next() {
                                 Map.Entry<String, Object> entry = iterator.next();
                                 Parameter<?> def = Parameters.this.definition[Parameters.this.indexOfParameter(entry.getKey())];
@@ -693,12 +702,14 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
                                     }
                                 }
                             }
+                            @Override
                             public void remove() {
                                 throw new UnsupportedOperationException();
                             }
 
                         };
                     }
+                    @Override
                     public int size() {
                         return Parameters.this.backing.size();
                     }
@@ -710,14 +721,17 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     private Map<String, Object> toMap(final Map<String, Object> b) {
         return new SerializableAbstractMap<String, Object>() {
             private static final long serialVersionUID = 1L;
+            @Override
             public Set<Map.Entry<String, Object>> entrySet() {
                 return new AbstractSet<Map.Entry<String, Object>>() {
+                    @Override
                     public Iterator<Map.Entry<String, Object>> iterator() {
                         return patternBacking != null ?
                             new org.mmbase.util.ChainedIterator<Map.Entry<String, Object>>(b.entrySet().iterator(), patternBacking.iterator())
                             :
                             b.entrySet().iterator();
                     }
+                    @Override
                     public int size() {
                         return Parameters.this.size();
                     }
@@ -743,32 +757,39 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
 
     private List<Map.Entry<String, Object>> toEntryList(final Map<String, Object> b) {
         return new AbstractList<Map.Entry<String, Object>>() {
+            @Override
             public int size() {
                 return Parameters.this.size();
             }
+            @Override
             public Map.Entry<String, Object> get(final int i) {
 
                 return new Map.Entry<String, Object>() {
                     final Parameter<?> a = Parameters.this.definition[i + Parameters.this.fromIndex];
                     // see Map.Entry
+                    @Override
                     public String getKey() {
                         return a.getName();
                     }
 
                     // see Map.Entry
+                    @Override
                     public Object getValue() {
                         return b.get(a.getName());
                     }
 
                     // see Map.Entry
+                    @Override
                     public Object setValue(Object v) {
                         return b.put(a.getName(), v);
                     }
 
+                    @Override
                     public int hashCode() {
                         Object value = getValue();
                         return a.getName().hashCode() ^ (value == null ? 0 : value.hashCode());
                     }
+                    @Override
                     public boolean equals(Object o) {
                         if (o instanceof Map.Entry) {
                             Map.Entry<String,Object> entry = (Map.Entry<String,Object>) o;

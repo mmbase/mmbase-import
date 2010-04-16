@@ -50,6 +50,7 @@ public class NodeManagerDescription {
         this.oType = oType;
     }
 
+    @Override
     public String toString() {
         return name + ":" + fields;
     }

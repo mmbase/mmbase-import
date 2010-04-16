@@ -37,6 +37,7 @@ public class ResourceBundleReplacerFactory implements ParameterizedTransformerFa
         Parameter.LOCALE
     };
 
+    @Override
     public Parameters createParameters() {
         return new Parameters(PARAMS);
     }
@@ -44,6 +45,7 @@ public class ResourceBundleReplacerFactory implements ParameterizedTransformerFa
     /**
      * Creates a parameterized transformer.
      */
+    @Override
     public CharTransformer createTransformer(final Parameters parameters) {
         parameters.checkRequiredParameters();
         if (log.isDebugEnabled()) {
@@ -64,6 +66,7 @@ class ResourceBundleReplacer extends ChunkedTransformer {
         this.bundle = bundle;
         this.name = name;
     }
+    @Override
     protected boolean replace(final String word, final Writer w, final Status status) throws IOException  {
          if (onlyFirstPattern && status.used.contains(word)) {
             w.write(word);
@@ -79,6 +82,7 @@ class ResourceBundleReplacer extends ChunkedTransformer {
             return false;
         }
     }
+    @Override
     protected String base() {
         return name;
     }

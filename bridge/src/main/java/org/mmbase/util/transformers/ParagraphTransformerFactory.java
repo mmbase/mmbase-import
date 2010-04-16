@@ -10,8 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util.transformers;
 
 import org.mmbase.util.functions.*;
-import java.io.Reader;
-import java.io.Writer;
 
 import org.mmbase.util.logging.*;
 
@@ -30,9 +28,11 @@ public class ParagraphTransformerFactory implements ParameterizedTransformerFact
         new Parameter<String>("class", String.class, "")
     };
 
+    @Override
     public Transformer createTransformer(Parameters parameters) {
         return new ParagraphTransformer( (String) parameters.get("class") );
     }
+    @Override
     public Parameters createParameters() {
         return new Parameters(PARAMS);
     }
@@ -45,6 +45,7 @@ public class ParagraphTransformerFactory implements ParameterizedTransformerFact
              className = c;
         }
 
+        @Override
         public String transform(String r) {
             if (r != null && !r.equals("")) {
                 if (r.startsWith("<p>")) {
