@@ -48,13 +48,18 @@ public abstract class AbstractCloud implements Cloud {
 
     @Override
     public Node getNode(String number) throws NotFoundException {
-        return getNode(Integer.parseInt(number));
+        try {
+            int n = Integer.parseInt(number);
+            return getNode(n);
+        } catch (NumberFormatException nfe) {
+            return getNodeByAlias(number);
+        }
     }
 
 
     @Override
     public Node getNodeByAlias(String alias) throws NotFoundException {
-        throw new NotFoundException();
+        throw new NotFoundException("No node with alias '" + alias + "' (aliases not supported)");
     }
 
     @Override

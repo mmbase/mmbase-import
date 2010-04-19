@@ -21,8 +21,8 @@ import org.mmbase.bridge.*;
 
 public class MockRelation extends MockNode implements Relation {
 
-    MockRelation(Map<String, Object> map, MockCloud cloud, NodeManager nm, boolean isNew) {
-        super(new HashMap<String, Object>(map), cloud, nm, isNew);
+    MockRelation(MockCloudContext.NodeDescription nd, MockCloud cloud, boolean isNew) {
+        super(nd, cloud, isNew);
     }
 
     @Override

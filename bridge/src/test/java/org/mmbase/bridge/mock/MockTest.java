@@ -91,6 +91,26 @@ public class MockTest  {
     }
 
     @Test
+    public void alias() {
+        Cloud cloud = getCloudContext().getCloud("mmbase");
+        Node news = cloud.getNodeManager("object").createNode();
+        news.createAlias("testalias");
+        news.commit();
+        assertEquals(1, news.getAliases().size());
+        Node news2 = cloud.getNode("testalias");
+        assertEquals(news.getNumber(), news2.getNumber());
+        assertEquals(1, news2.getAliases().size());
+        news2.deleteAlias("testalias");
+        news2.commit();
+        try {
+            cloud.getNode("testalias");
+            fail("Should have thrown exception");
+        } catch (NotFoundException nfe) {
+        }
+
+    }
+
+    @Test
     public void builderReader() throws Exception {
         Cloud cloud = getCloudContext().getCloud("mmbase");
 

@@ -61,13 +61,14 @@ public class MockCloudContext extends  AbstractCloudContext {
     public static class NodeDescription {
         public final String type;
         public final Map<String, Object> values;
+        public final Set<String> aliases = new HashSet<String>();
         public NodeDescription(String t, Map<String, Object> v) {
             type = t;
             values = v;
         }
         @Override
         public String toString() {
-            return type + ":" + values;
+            return type + ":" + values + (aliases.size() > 0 ? aliases : "");
         }
     }
 
@@ -264,9 +265,13 @@ public class MockCloudContext extends  AbstractCloudContext {
     }
 
     public synchronized int addNode(String type, Map<String, Object> map) {
+        return addNode(new NodeDescription(type, map));
+    }
+
+    synchronized int addNode(NodeDescription nd) {
         int number = ++lastNodeNumber;
-        nodes.put(number, new NodeDescription(type, map));
-        map.put("number", number);
+        nodes.put(number, nd);
+        nd.values.put("number", number);
         //System.out.println("produced " + number + " " + map);
         return number;
     }
@@ -274,7 +279,10 @@ public class MockCloudContext extends  AbstractCloudContext {
     synchronized void setNodeType(int node, String type) {
         NodeDescription nd = nodes.get(node);
         if (!nd.type.equals(type)) {
-            nodes.put(node, new NodeDescription(type, nd.values));
+            NodeDescription newDesc = new NodeDescription(type, nd.values);
+            newDesc.aliases.addAll(nd.aliases);
+            nodes.put(node, newDesc);
+
         }
     }
 
