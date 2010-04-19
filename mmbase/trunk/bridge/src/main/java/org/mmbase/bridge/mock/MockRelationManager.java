@@ -71,7 +71,7 @@ public class MockRelationManager extends MockNodeManager implements RelationMana
         v.put("dnumber", destinationNode.getNumber());
         v.put("rnumber", vcloud.getCloudContext().roles.get(role).number);
         NodeManager nm = vcloud.getNodeManager(vcloud.getCloudContext().roles.get(role).nodeManager);
-        return new MockRelation(v, vcloud, nm, true);
+        return new MockRelation(new MockCloudContext.NodeDescription(nm.getName(), v), vcloud, true);
     }
 
 
