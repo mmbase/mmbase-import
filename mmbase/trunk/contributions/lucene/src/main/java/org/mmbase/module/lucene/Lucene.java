@@ -829,10 +829,12 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     private Cloud cloud = null;
     protected Cloud getCloud() {
-        if (cloud != null && !cloud.getUser().isValid()) cloud = null;
+        if (cloud != null && !cloud.getUser().isValid()) {
+            cloud = null;
+        }
         while (cloud == null) {
             try {
-                cloud = LocalContext.getCloudContext().getCloud("mmbase", "class", null);
+                cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
                 cloud.setProperty(Cloud.PROP_XMLMODE, "flat");
                 log.info("Using cloud of " + cloud.getUser().getIdentifier() + "(" + cloud.getUser().getRank() + ") to lucene index.");
             } catch (Throwable t) {
