@@ -21,6 +21,7 @@ import java.util.regex.*;
 import org.mmbase.module.smtp.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.MMBase;
+import org.mmbase.core.event.EventManager;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 
@@ -261,6 +262,7 @@ public class SendMail extends AbstractSendMail {
                 msg.setContent(mmpart);
 
                 Transport.send(msg);
+                EventManager.getInstance().propagateEvent(new EmailEvent.Sent(msg));
 
                 emailSent++;
                 log.debug("JMimeSendMail done.");
@@ -472,6 +474,7 @@ public class SendMail extends AbstractSendMail {
                 MimeMessage msg = constructMessage(from, onlyTo, headers);
                 msg.setText(data, mailEncoding);
                 Transport.send(msg);
+                EventManager.getInstance().propagateEvent(new EmailEvent.Sent(msg));
                 log.debug("SendMail done.");
                 return true;
             } else {
@@ -662,6 +665,7 @@ public class SendMail extends AbstractSendMail {
                     log.service("JMSendMail sending mail to " + to + " cc:" + cc + " bcc:" + bcc + " (node " + n.getNumber() + ")" + " from " + from + " (mime-type " + mimeType + ") using " + session);
                 }
                 Transport.send(msg, onlyto);
+                EventManager.getInstance().propagateEvent(new EmailEvent.Sent(msg));
             } else {
                 log.debug("nothing to do");
             }

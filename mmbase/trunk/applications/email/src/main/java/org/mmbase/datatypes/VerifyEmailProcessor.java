@@ -17,6 +17,7 @@ import org.mmbase.util.functions.*;
 import org.mmbase.util.*;
 import org.mmbase.util.transformers.*;
 import org.mmbase.datatypes.processors.*;
+import org.mmbase.core.event.EventManager;
 import javax.mail.internet.*;
 import java.util.*;
 import java.text.*;
@@ -236,6 +237,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
             Node node = nl.getNode(0);
             node.setStringValue(field, key);
             node.commit();
+            EventManager.getInstance().propagateEvent(new EmailValidated(node.getNumber()));
             return node;
         }
         return null;
