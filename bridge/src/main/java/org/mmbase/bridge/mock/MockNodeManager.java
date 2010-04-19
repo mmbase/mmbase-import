@@ -93,7 +93,8 @@ public class MockNodeManager extends AbstractNodeManager  {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("otype", oType);
         map.put("owner", vcloud.getUser().getOwnerField());
-        return vcloud.getNode(map, this, true);
+        MockCloudContext.NodeDescription desc = new MockCloudContext.NodeDescription(getName(), map);
+        return vcloud.getNode(desc, true);
     }
 
 

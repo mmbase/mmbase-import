@@ -12,6 +12,7 @@ package org.mmbase.bridge.mock;
 
 import java.util.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.implementation.*;
 import org.mmbase.bridge.util.*;
 
 /**
@@ -26,15 +27,16 @@ import org.mmbase.bridge.util.*;
  */
 
 public class MockNode extends MapNode<Object> implements Node  {
+    private final MockCloudContext.NodeDescription nodeDescription;
 
-    private final Map<String, Object> originalMap;
+
     protected final MockCloud cloud;
     private String context = "default";
     private boolean isNew;
 
-    MockNode(Map<String, Object> map, MockCloud cloud, NodeManager nm, boolean isNew) {
-        super(new HashMap<String, Object>(map), nm);
-        originalMap = map;
+    MockNode(MockCloudContext.NodeDescription nodeDescription, MockCloud cloud, boolean isNew) {
+        super(new HashMap<String, Object>(nodeDescription.values), cloud.getNodeManager(nodeDescription.type));
+        this.nodeDescription = nodeDescription;
         this.cloud = cloud;
         this.isNew = isNew;
     }
@@ -45,12 +47,12 @@ public class MockNode extends MapNode<Object> implements Node  {
         if (errors.size() > 0) {
             throw new IllegalArgumentException("node " + getNumber() + getChanged() + ", builder '" + nodeManager.getName() + "' " + errors);
         }
-        if (! originalMap.containsKey("number")) {
+        if (! nodeDescription.values.containsKey("number")) {
             // This is a new node, so generate a number first
-            int number = cloud.getCloudContext().addNode(getNodeManager().getName(), values);
+            int number = cloud.getCloudContext().addNode(nodeDescription);
             values.put("number", number);
         }
-        originalMap.putAll(values);
+        nodeDescription.values.putAll(values);
         cloud.getCloudContext().setNodeType(getNumber(), getNodeManager().getName());
         isNew = false;
     }
@@ -92,4 +94,20 @@ public class MockNode extends MapNode<Object> implements Node  {
     public String toString() {
         return getNodeManager().toString() + values;
     }
+
+    @Override
+    public StringList getAliases() {
+        return new BasicStringList(nodeDescription.aliases);
+    }
+
+    @Override
+    public void createAlias(String aliasName) {
+        nodeDescription.aliases.add(aliasName);
+    }
+
+    @Override
+    public void deleteAlias(String aliasName) {
+        nodeDescription.aliases.remove(aliasName);
+    }
+
 }
