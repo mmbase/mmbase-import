@@ -107,11 +107,18 @@ public class MMBaseEntry implements IndexEntry {
                         (!Arrays.asList(document.getValues("number")).contains(number))) {
                         document.add(new Field("number",  "" + subNode.getNumber(), Field.Store.YES, Field.Index.NOT_ANALYZED)); // keyword
                         document.add(new Field("owner",  subNode.getStringValue("owner"), Field.Store.YES, Field.Index.NOT_ANALYZED));
-                        result.add(field.getName());
                     } else {
-                        log.debug("Ignoring " + field.getName() + " because already indexed for this document");
+                        log.debug("Ignoring " + number + " because already indexed for this document");
                         // ignore
                     }
+                    String fieldKey = number + ":" + field;
+                    if (!Arrays.asList(document.getValues("indexed_fields")).contains(fieldKey)) {
+                        document.add(new Field("indexed_fields",  fieldKey, Field.Store.YES, Field.Index.NOT_ANALYZED)); // keyword
+                        result.add(field.getName());
+                    } else {
+                        log.debug("Ignoring " + fieldKey + " because already indexed for this document");
+                    }
+
 		} catch (Exception e) {
 		    log.warn("Failed to load " + field.getName() + "from " + node + " as a node value, continuing...");
 		}
