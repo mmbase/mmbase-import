@@ -12,6 +12,7 @@ import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * Performs Runtime.gc(), and if afterwards the used memory is above a certain fraction of the
@@ -51,7 +52,12 @@ public class MemoryWarner extends AbstractCronJob  {
                 if (cloud.hasNodeManager("email")) {
                     NodeManager email = cloud.getNodeManager("email");
                     Node message = email.createNode();
-                    message.setValue("from", "memorywarner@" + java.net.InetAddress.getLocalHost().getHostName());
+                    String from = "memorywarner@" + java.net.InetAddress.getLocalHost().getHostName();
+                    Pattern p = Pattern.compile("(?i)\\A[A-Z0-9_\\-\\+\\&\\*\\#]+([\\.-]?[A-Z0-9_\\-\\+\\&\\*\\#])*@([A-Z0-9_-]{2,}[\\.]{1})+([A-Z]{2,})\\z");
+                    if (! p.matcher(from).matches()) {  // email not valid, use 'to' address
+                        from = config[1];
+                    }
+                    message.setValue("from", from);
                     message.setValue("to", config[1]);
                     message.setValue("subject", "Out of memory warning: more than " + limitPerc + " in use, for " +
                                      org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() + "@" +
@@ -62,10 +68,12 @@ public class MemoryWarner extends AbstractCronJob  {
                     Parameters params = mail.createParameters();
                     params.set("type", "oneshot");
                     mail.getFunctionValue(params);
+                    log.info("Used memory over " + limitPerc + " , mailed: " + config[1] + " (from: " + from + ")");
                 } else {
                     log.warn("No mail builder installed");
                     // could introduce depedency on java-mail here.
                 }
+                
             } else {
                 log.info("Memory use " + usePerc + " < " + limitPerc);
             }
