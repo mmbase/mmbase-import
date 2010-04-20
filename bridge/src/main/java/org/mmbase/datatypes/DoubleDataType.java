@@ -46,4 +46,9 @@ public class DoubleDataType extends NumberDataType<Double> {
         return max == null ? Double.POSITIVE_INFINITY : max.doubleValue();
     }
 
+    @Override
+    public Double first() {
+        return 0.0;
+    }
+
 }

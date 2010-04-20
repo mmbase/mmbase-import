@@ -230,6 +230,11 @@ public class StringDataType extends ComparableDataType<String> implements Length
     }
 
     @Override
+    public String first() {
+        return "";
+    }
+
+    @Override
     public void toXml(org.w3c.dom.Element parent) {
         super.toXml(parent);
         addRestriction(parent, "minLength",  "name,description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength", minLengthRestriction);

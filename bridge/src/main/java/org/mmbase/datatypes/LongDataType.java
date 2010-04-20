@@ -18,8 +18,8 @@ import org.mmbase.util.Casting;
  * @version $Id$
  * @since MMBase-1.8
  */
-public class LongDataType extends NumberDataType<Long> {
-    private static final long serialVersionUID = 1L; 
+public class LongDataType extends NumberDataType<Long> implements SequentialDataType<Long> {
+    private static final long serialVersionUID = 1L;
     /**
      * @param primitive indicate if a primitive type should be used
      */
@@ -47,5 +47,20 @@ public class LongDataType extends NumberDataType<Long> {
         Long max = getMaxRestriction().getValue();
         return max == null ? Long.MAX_VALUE : Casting.toLong(max); // casting, mainly to anticipate dates
     }
+
+    @Override
+    public Long increase(Long pos) {
+        return pos + 1;
+    }
+    @Override
+    public Long decrease(Long pos) {
+        return pos - 1;
+    }
+
+    @Override
+    public Long first() {
+        return 0L;
+    }
+
 
 }
