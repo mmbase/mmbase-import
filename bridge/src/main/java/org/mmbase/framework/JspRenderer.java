@@ -113,13 +113,14 @@ public class JspRenderer extends AbstractRenderer {
         }
     }
 
+    @Override
     public String toString() {
         Parameter[] params = getBlock().specific;
         return getPath() + (params == null ? "" : "?" + Arrays.asList(params));
     }
 
     @Override
-public java.net.URI getUri() {
+    public java.net.URI getUri() {
         try {
             return org.mmbase.util.ResourceLoader.getWebRoot().getResource(getPath()).toURI();
         } catch (Exception e) {

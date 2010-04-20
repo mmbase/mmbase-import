@@ -67,10 +67,12 @@ public interface SortOrder {
      * @return <code>true</code> if the objects are equal,
      * <code>false</code> otherwise.
      */
-    public boolean equals(Object obj);
+    @Override
+    boolean equals(Object obj);
 
     // javadoc is inherited
-    public int hashCode();
+    @Override
+    int hashCode();
 
     /**
      * Returns a string representation of this SortOrder.
@@ -86,7 +88,8 @@ public interface SortOrder {
      *
      * @return A string representation of this SortOrder.
      */
-    public String toString();
+    @Override
+    String toString();
 
     /**
      * @since MMBase-1.9.2

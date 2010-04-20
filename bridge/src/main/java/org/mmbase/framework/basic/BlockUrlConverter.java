@@ -39,6 +39,7 @@ public abstract class BlockUrlConverter implements UrlConverter {
     /**
      * Block url converters add an explicit 'component' and 'block' framework parameters
      */
+    @Override
     public Parameter[] getParameterDefinition() {
         return DEF;
     }
@@ -177,6 +178,7 @@ public abstract class BlockUrlConverter implements UrlConverter {
         return null;
     }
 
+    @Override
     public int getDefaultWeight() {
         return 0;
     }
@@ -185,6 +187,7 @@ public abstract class BlockUrlConverter implements UrlConverter {
      * Whether the current request already is in the realm of this URL-converter; the url converter
      * must implement here how it recognizes itself.
      */
+    @Override
     public abstract boolean isFilteredMode(Parameters frameworkParameters) throws FrameworkException;
 
 
@@ -257,12 +260,14 @@ public abstract class BlockUrlConverter implements UrlConverter {
 
 
 
+    @Override
     public Url getUrl(String path,
                          Map<String, ?> parameters,
                          Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
         return getUrl(path, parameters, frameworkParameters, escapeAmps, false);
     }
 
+    @Override
     public Url getProcessUrl(String path,
                              Map<String, ?> parameters,
                              Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
@@ -289,6 +294,7 @@ public abstract class BlockUrlConverter implements UrlConverter {
 
 
 
+    @Override
     public  final Url getInternalUrl(String path, Map<String, ?> params, Parameters frameworkParameters) throws FrameworkException {
         if (isFilteredMode(frameworkParameters)) {
             return getFilteredInternalUrl(path, params, frameworkParameters);

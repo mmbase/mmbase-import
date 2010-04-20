@@ -124,13 +124,16 @@ public class Setting<C> {
             }
             return new Iterator<Map.Entry<String, String>> () {
 
+                @Override
                 public boolean hasNext() {
                     return iterator.hasNext();
                 }
+                @Override
                 public Map.Entry<String, String> next() {
                     String val = iterator.next().getName();
                     return new Entry<String, String>(val, val);
                 }
+                @Override
                 public void remove() {
                     throw new UnsupportedOperationException();
                 }

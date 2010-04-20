@@ -13,7 +13,6 @@ import java.util.*;
 
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
-import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.*;
@@ -59,6 +58,7 @@ public class ClassAuthenticationWrapper extends Authentication {
      * {@inheritDoc}
      * Reads the configuration file and instantiates and loads the wrapped Authentication.
      */
+    @Override
     protected void load() throws SecurityException {
         try {
             InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configResource);
@@ -106,6 +106,7 @@ public class ClassAuthenticationWrapper extends Authentication {
     /**
      * {@inheritDoc}
      */
+    @Override
     public UserContext login(String application, Map loginInfo, Object[] parameters) throws SecurityException {
 
         // first try 'cleanly':
@@ -122,6 +123,7 @@ public class ClassAuthenticationWrapper extends Authentication {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isValid(UserContext userContext) throws SecurityException {
         return wrappedAuthentication.isValid(userContext);
     }

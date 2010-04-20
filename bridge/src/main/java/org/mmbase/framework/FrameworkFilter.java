@@ -102,6 +102,7 @@ public class FrameworkFilter implements Filter { //, MMBaseStarter  {
      * @param config object containing init parameters specified
      * @throws ServletException thrown when an exception occurs in the web.xml
      */
+    @Override
     public void init(FilterConfig config) throws ServletException {
         log.info("Starting UrlFilter");
         ServletContext ctx = config.getServletContext();
@@ -126,6 +127,7 @@ public class FrameworkFilter implements Filter { //, MMBaseStarter  {
     /**
      * Destroy method
      */
+    @Override
     public void destroy() {
         // nothing needed here
     }
@@ -160,6 +162,7 @@ public class FrameworkFilter implements Filter { //, MMBaseStarter  {
      * @throws ServletException thrown when an exception occurs
      * @throws IOException thrown when an exception occurs
      */
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         Object prevIp = Logging.getMDC().get("IP");
         try {

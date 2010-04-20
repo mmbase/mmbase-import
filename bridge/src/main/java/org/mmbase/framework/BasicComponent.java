@@ -56,17 +56,21 @@ public class BasicComponent implements Component {
     protected void init() {
     }
 
+    @Override
     public String getName() {
         return name;
     }
+    @Override
     public URI getUri() {
         return uri;
     }
+    @Override
     public float getVersion() {
         return version;
     }
 
 
+    @Override
     public LocalizedString getDescription() {
         return description;
     }
@@ -91,6 +95,7 @@ public class BasicComponent implements Component {
         return null;
     }
 
+    @Override
     public void configure(Element el) {
         try {
             uri = new URI(el.getOwnerDocument().getDocumentURI());
@@ -106,13 +111,13 @@ public class BasicComponent implements Component {
             NodeList depElements = el.getElementsByTagName("dependency");
             for (int i = 0; i < depElements.getLength(); i++) {
                 Element element = (Element) depElements.item(i);
-                String name = element.getAttribute("component");
-                float version = Float.parseFloat(element.getAttribute("version"));
-                Component comp = ComponentRepository.repository.getComponent(name);
-                if (comp != null && comp.getVersion() >= version) {
+                String n = element.getAttribute("component");
+                float v = Float.parseFloat(element.getAttribute("version"));
+                Component comp = ComponentRepository.repository.getComponent(n);
+                if (comp != null && comp.getVersion() >= v) {
                     dependencies.add(comp);
                 } else {
-                    unsatisfied.add(new VirtualComponent(name, version));
+                    unsatisfied.add(new VirtualComponent(n, v));
 
                 }
             }
@@ -250,45 +255,56 @@ public class BasicComponent implements Component {
 
     }
 
+    @Override
     public Collection<Block> getBlocks() {
         return Collections.unmodifiableCollection(blocks.values());
     }
+    @Override
     public Block getBlock(String name) {
         if (name == null) return getDefaultBlock();
         return blocks.get(name);
     }
+    @Override
     public Block getDefaultBlock() {
         return defaultBlock;
     }
 
+    @Override
     public String toString() {
         return getName();
     }
 
+    @Override
     public String getBundle() {
         return bundle;
     }
 
+    @Override
     public Collection<Setting<?>> getSettings() {
         return settings.values();
     }
 
+    @Override
     public Setting<?> getSetting(String name) {
         return settings.get(name);
     }
 
+    @Override
     public Collection<Component> getDependencies() {
         return Collections.unmodifiableCollection(dependencies);
     }
 
+    @Override
     public Collection<VirtualComponent> getUnsatisfiedDependencies() {
         return Collections.unmodifiableCollection(unsatisfied);
     }
 
+    @Override
     public Map<String, Action> getActions() {
         return ActionRepository.getInstance().get(getName());
     }
 
+    @Override
     public void resolve(VirtualComponent unsat, Component comp) {
         unsatisfied.remove(unsat);
         dependencies.add(comp);

@@ -80,8 +80,10 @@ abstract public class AbstractField<D extends Object> extends AbstractDescriptor
         setDataType(dataType);
     }
 
+    @Override
     abstract public NodeManager getNodeManager();
 
+    @Override
     public int compareTo(Field f) {
         int compared = getName().compareTo(f.getName());
         if (compared == 0) compared = dataType.compareTo(f.getDataType());

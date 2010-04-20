@@ -214,6 +214,7 @@ public class Block {
         return parent;
     }
 
+    @Override
     public String toString() {
         return getName();
     }
@@ -331,9 +332,11 @@ public class Block {
 
         public List<Block> getBlocks() {
             return new AbstractList<Block>() {
+                @Override
                 public int size() {
                     return blocks.size();
                 }
+                @Override
                 public Block get(int i) {
                     return blocks.get(i).get();
                 }
@@ -363,6 +366,7 @@ public class Block {
         public Type getParent() {
             return parent;
         }
+        @Override
         public boolean equals(Object o) {
             if (o instanceof Type) {
                 Type t = (Type) o;
@@ -371,13 +375,16 @@ public class Block {
                 return false;
             }
         }
+        @Override
         public int hashCode() {
             return name.hashCode();
         }
+        @Override
         public String toString() {
             return name + subs.toString();
         }
 
+        @Override
         public int compareTo(Type t) {
             int s = weight - t.weight;
             return s == 0 ? name.compareTo(t.name) : s;
@@ -409,6 +416,7 @@ public class Block {
         Block.Type getType() {
             return type;
         }
+        @Override
         public int compareTo(BlockContainer o) {
             int c =  weight - o.weight;
             if (c != 0) {

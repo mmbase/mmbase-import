@@ -53,6 +53,7 @@ public class  RequestActionChecker implements ActionChecker  {
         users = Pattern.compile(u);
     }
 
+    @Override
     public boolean check(UserContext user, Action ac, Parameters parameters) {
         if (users == null) {
             if (! rank.check(user, ac, parameters)) {
@@ -100,6 +101,7 @@ public class  RequestActionChecker implements ActionChecker  {
 
     }
 
+    @Override
     public Parameter[] getParameterDefinition() {
         return PARAMS;
     }

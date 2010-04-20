@@ -26,20 +26,20 @@ public interface UserContext extends java.io.Serializable {
      *  for every different user inside a cloud.
      *	@return an unique id for the current user
      */
-    public String getIdentifier();
+    String getIdentifier();
 
     /**
      *  Get the rank of this user.
      *	@return the rank of this user
      */
-    public Rank getRank();
+    Rank getRank();
 
     /**
      *  Is valid
      *	@return <code>true</code> if the user is still valid.
      *      	<code>false</code> if the user is expired..
      */
-    public boolean isValid();
+    boolean isValid();
 
 
     /**
@@ -48,7 +48,7 @@ public interface UserContext extends java.io.Serializable {
      *
      * @since MMBase-1.7
      */
-    public String getOwnerField();
+    String getOwnerField();
 
     /**
      * Returns the original authentication type as specified in getCloud
@@ -57,6 +57,6 @@ public interface UserContext extends java.io.Serializable {
      * @since MMBase-1.7
      * @see   org.mmbase.bridge.CloudContext#getCloud
      */
-    public String getAuthenticationType();
+    String getAuthenticationType();
 
 }

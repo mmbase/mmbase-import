@@ -41,6 +41,7 @@ public class DependencyException extends Exception {
         if (collector != null) throw new IllegalStateException();
         collector = col;
     }
+    @Override
     public String getMessage() {
         return "Attribute 'base' ('" + element.getAttribute("base") + "') of datatype '" + element.getAttribute("id") + "' is an unknown datatype (in " + element.getOwnerDocument().getDocumentURI() + ").";
 

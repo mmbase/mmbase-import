@@ -153,18 +153,18 @@ public class ClassAuthentication {
      * @since MMBase-1.9
      */
     public static LoginResult classCheck(String application, Map<String, ?> properties) {
-        if (authenticatedClasses == null) {
-            synchronized(ClassAuthentication.class) { // if load is running this locks
-                if (authenticatedClasses == null) { // if locked, load was running and this now skips, so load is not called twice.
-                    watcher = new ResourceWatcher(MMBaseCopConfig.securityLoader) {
-                            public void onChange(String resource) {
-                                load(resource);
-                            }
-                        };
-                    watcher.add("classauthentication.xml");
-                    watcher.start();
-                    watcher.onChange();
-                }
+        synchronized (ClassAuthentication.class) {
+            if (authenticatedClasses == null) {
+                watcher = new ResourceWatcher(MMBaseCopConfig.securityLoader) {
+
+                    @Override
+                    public void onChange(String resource) {
+                        load(resource);
+                    }
+                };
+                watcher.add("classauthentication.xml");
+                watcher.start();
+                watcher.onChange();
             }
         }
         if (log.isTraceEnabled()) {
@@ -262,9 +262,11 @@ public class ClassAuthentication {
         public Map<String, String> getMap() {
             return map;
         }
+        @Override
         public String toString() {
             return "" + weight + ":" + classPattern.pattern() + (application.equals("class") ? "" : ": " + application) + " " + map;
         }
+        @Override
         public int compareTo(Login o) {
             int result = o.weight - this.weight;
             if (result == 0 && (o.url == null ? url == null : o.url.equals(url))) {
@@ -293,6 +295,7 @@ public class ClassAuthentication {
             super(p.url, p.classPattern, p.application, properties == null ? p.map : createCombinedMap(p.map, properties), p.weight, p.position);
             this.propertyMatchCount = propertyMatchCount;
         }
+        @Override
         public String toString() {
             return super.toString() + (propertyMatchCount > 0 ? (" (matched " + propertyMatchCount + " properties)") : "");
         }

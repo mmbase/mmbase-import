@@ -36,17 +36,21 @@ abstract public class AbstractRenderer implements Renderer {
         parent = p;
     }
 
+    @Override
     public Type getType() {
         return type;
     }
 
+    @Override
     public Block getBlock() {
         return parent;
     }
 
+    @Override
     public java.net.URI getUri() {
         return null;
     }
+    @Override
     public java.net.URI getUri(Parameters blockParameters, RenderHints hints) {
         return getUri();
     }
@@ -78,10 +82,12 @@ abstract public class AbstractRenderer implements Renderer {
      *
      * On default, a renderer has no parameters of itself
      */
+    @Override
     public Parameter[] getParameters() {
         return new Parameter[] {};
     }
 
+    @Override
     public abstract void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException;
 
 }
