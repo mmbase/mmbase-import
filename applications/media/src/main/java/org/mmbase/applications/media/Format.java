@@ -69,6 +69,8 @@ public enum Format {
 
     M4A(60),
     M4V(61),
+    TS(62),
+
     GGP(70),
     H264(71),
     FLASH(80),
@@ -165,7 +167,7 @@ public enum Format {
         {
             put("AIF", "AIFF");
             put("JPG", "JPEG");
-            put("TIF", "TIFF");    
+            put("TIF", "TIFF");
         }
     };
 
@@ -199,7 +201,7 @@ public enum Format {
     public boolean isWindowsMedia() {
         return windowsMedia.contains(this);
     }
-    
+
     public List<Format> getSimilar() {
         if (isReal()) {
             return real;
