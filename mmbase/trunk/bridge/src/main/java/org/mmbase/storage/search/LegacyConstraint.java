@@ -28,7 +28,7 @@ public interface LegacyConstraint extends Constraint {
      *
      * @return The constraint as it appears in the where-clause.
      */
-    public String getConstraint();
+    String getConstraint();
 
     /**
      * Returns a string representation of this LegacyConstraint.
@@ -45,5 +45,6 @@ public interface LegacyConstraint extends Constraint {
      *
      * @return A string representation of this LegacyConstraint.
      */
-    public String toString();
+    @Override
+    String toString();
 }

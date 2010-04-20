@@ -30,6 +30,7 @@ public  class BasicUrl extends Url {
         super(u.getUrlConverter(), quality);
         this.url = u.getUrl();
     }
+    @Override
     public String getUrl() {
         return url;
     }

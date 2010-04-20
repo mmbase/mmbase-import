@@ -34,7 +34,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
      */
     private CacheImplementationInterface<K, V> implementation;
 
-    protected volatile Object lock;
+    protected volatile Object lock; //
 
     /**
      * The number of times an element was succesfully retrieved from this cache.

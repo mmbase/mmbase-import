@@ -47,24 +47,25 @@ public class TemplateCache extends Cache<TemplateCache.Key, Templates> {
      * the corresponding cache entry when the file changes.
      */
     private static ResourceWatcher templateWatcher = new ResourceWatcher(ResourceLoader.getWebRoot()) {
-            public  void onChange(String file) {
-                // invalidate cache.
-                if (log.isDebugEnabled()) {
-                    log.debug("Removing " + file.toString() + " from cache");
-                }
-                synchronized(cache) {
-                    int removed = cache.remove(file);
-                    if (removed == 0) {
-                        log.error("Could not remove " + file.toString() + " Template(s) from cache!");
-                    } else {
-                        if (log.isDebugEnabled()) {
-                            log.debug("Removed " + removed + " entries from cache");
-                        }
+        @Override
+        public void onChange(String file) {
+            // invalidate cache.
+            if (log.isDebugEnabled()) {
+                log.debug("Removing " + file.toString() + " from cache");
+            }
+            synchronized (cache) {
+                int removed = cache.remove(file);
+                if (removed == 0) {
+                    log.error("Could not remove " + file.toString() + " Template(s) from cache!");
+                } else {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Removed " + removed + " entries from cache");
                     }
                 }
-                this.remove(file); // should call remove of FileWatcher, not of TemplateCache again.
             }
-        };
+            this.remove(file); // should call remove of FileWatcher, not of TemplateCache again.
+        }
+    };
 
     /**
      * Returns the Template cache.
@@ -204,14 +205,14 @@ public class TemplateCache extends Cache<TemplateCache.Key, Templates> {
             fw.write("<xsl:stylesheet  version = \"1.1\" xmlns:xsl =\"http://www.w3.org/1999/XSL/Transform\"></xsl:stylesheet>");
             fw.close();
             for (int i= 0; i < 10; i++) {
-                TemplateCache cache = TemplateCache.getCache();
+                TemplateCache c = TemplateCache.getCache();
                 Source xsl = new StreamSource(xslFile);
                 org.mmbase.util.xml.URIResolver uri = new org.mmbase.util.xml.URIResolver(xslFile.getParentFile());
-                Templates cachedXslt = cache.getTemplates(xsl, uri);
-                log.info("template cache size " + cache.size() + " entries: " + cache.entrySet());
+                Templates cachedXslt = c.getTemplates(xsl, uri);
+                log.info("template cache size " + c.size() + " entries: " + c.entrySet());
                 if (cachedXslt == null) {
                     cachedXslt = FactoryCache.getCache().getFactory(uri).newTemplates(xsl);
-                    cache.put(xsl, cachedXslt, uri);
+                    c.put(xsl, cachedXslt, uri);
                 } else {
                     if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
                 }

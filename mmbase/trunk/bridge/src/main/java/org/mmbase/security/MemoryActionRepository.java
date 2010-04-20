@@ -54,6 +54,7 @@ public class MemoryActionRepository extends ActionRepository {
     @Override public Collection<Action> getActions() {
         return new AbstractCollection<Action>() {
             int size = -1;
+            @Override
             public int size() {
                 if (size == -1) {
                     size = 0;
@@ -63,6 +64,7 @@ public class MemoryActionRepository extends ActionRepository {
                 }
                 return size;
             }
+            @Override
             public Iterator<Action> iterator() {
                 ChainedIterator<Action> i = new ChainedIterator<Action>();
                 for (Map<String, Action> ns : store.values()) {

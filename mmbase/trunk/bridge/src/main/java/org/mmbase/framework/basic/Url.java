@@ -52,10 +52,11 @@ public abstract class Url {
      * NOT is the return value for an UrlConverter which cannot produce an URL for given parameters.
      */
     public static final Url NOT = new Url(null, Integer.MIN_VALUE) {
-            public String getUrl() {
-                return null;
-            }
-        };
+        @Override
+        public String getUrl() {
+            return null;
+        }
+    };
 
 
 }

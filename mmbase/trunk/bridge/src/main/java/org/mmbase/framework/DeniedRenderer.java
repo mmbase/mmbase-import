@@ -9,9 +9,7 @@
 */
 package org.mmbase.framework;
 
-import java.util.*;
 
-import javax.servlet.http.*;
 import java.io.*;
 import javax.servlet.http.*;
 import javax.servlet.*;
@@ -72,6 +70,7 @@ public class DeniedRenderer extends AbstractRenderer {
         default:
         }
     }
+    @Override
     public String toString() {
         return "DENIED";
     }

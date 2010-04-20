@@ -8,10 +8,6 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.storage.search;
-
-import java.util.List;
-
-import org.mmbase.cache.Cacheable;
 /**
 
  * @author Michiel Meeuwissen

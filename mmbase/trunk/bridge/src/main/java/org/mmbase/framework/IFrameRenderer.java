@@ -54,12 +54,14 @@ public class IFrameRenderer extends AbstractRenderer {
         return org.mmbase.framework.basic.BasicUrlConverter.getUrl(url, properties, request, true);
     }
 
+    @Override
     public Parameter[] getParameters() {
         return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST};
     }
 
     /**
      */
+    @Override
     public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
         try {
             HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
