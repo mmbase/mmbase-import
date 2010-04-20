@@ -14,6 +14,7 @@ import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.implementation.*;
 import org.mmbase.security.*;
 import org.mmbase.util.Casting;
+import org.mmbase.util.logging.*;
 import java.util.*;
 
 /**
@@ -26,6 +27,8 @@ import java.util.*;
  */
 
 public class MockCloud extends AbstractCloud {
+
+    private static final Logger LOG = Logging.getLoggerInstance(MockCloud.class);
 
     final MockCloudContext cloudContext;
 
@@ -54,13 +57,15 @@ public class MockCloud extends AbstractCloud {
     }
     @Override
     public Node getNodeByAlias(String alias) throws NotFoundException {
-        System.out.println("Fing node with alias " + alias + " in " + cloudContext.nodes);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Finding node with alias '" + alias + "' in " + cloudContext.nodes);
+        }
         for (Map.Entry<Integer, MockCloudContext.NodeDescription> nd : cloudContext.nodes.entrySet()) {
             if (nd.getValue().aliases.contains(alias)) {
                 return getNode(nd.getKey());
             }
         }
-        throw new NotFoundException("No node with alias " + alias + " found in " + this);
+        throw new NotFoundException("No node with alias '" + alias + "' found in " + this);
     }
 
     @Override
