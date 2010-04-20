@@ -44,6 +44,15 @@ public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> 
         super();
         backing = new ArrayList<Object>(c);
     }
+    /**
+     * @since MMBase-1.9.4
+     */
+    public BasicList(BridgeList<? extends E> b) {
+        super();
+        backing = new ArrayList<Object>(b);
+        properties.putAll(b.getProperties());
+    }
+
 
     @Override
     public Object getProperty(Object key) {
