@@ -167,7 +167,7 @@ public  class GrowingTreeList extends TreeList {
                 cleanLeafConstraint = leafElementTemplate.getCleanConstraint();
             }
 
-            Iterator<Step> steps = pathElementTemplate.getSteps().iterator();;
+            Iterator<Step> steps = pathElementTemplate.getSteps().iterator();
             steps.next(); // ignore first step
             if (! steps.hasNext()) {
                 foundEnd = true;
