@@ -132,26 +132,24 @@ public class Authenticate extends Authentication {
     /**
      * The user object for 'cloud' security.
      */
-    private static class User extends BasicUser {
+    private class User extends BasicUser {
         private String user;
         private Rank rank;
         private long key;
 
         User(String user, Rank rank, long key, String app) {
-            super(app);
+            super(Authenticate.this, app, user);
             this.user = user;
             this.rank = rank;
             this.key = key;
         }
 
-        public String getIdentifier() {
-            return user;
-        }
-
+        @Override
         public Rank getRank() throws org.mmbase.security.SecurityException {
             return rank;
         }
 
+        @Override
         public String toString() {
             return user + "[" + rank + "]";
         }
