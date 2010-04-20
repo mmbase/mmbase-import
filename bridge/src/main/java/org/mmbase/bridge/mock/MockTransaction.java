@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.mock;
 import org.mmbase.bridge.*;
-import java.util.*;
 
 /**
  * MockTransaction for the moment only does't give too much exceptions. It doesn't actually work, so {@link #cancel} still throws UnsupportedOperationException.

@@ -26,24 +26,28 @@ final public class NoAuthorization extends Authorization {
     /**
      *	This method does nothing
      */
+    @Override
     protected void load() {
     }
 
     /**
      *	This method does nothing
      */
+    @Override
     public void create(UserContext user, int nodeid) {
     }
 
     /**
      *	This method does nothing
      */
+    @Override
     public void update(UserContext user, int nodeid) {
     }
 
     /**
      * This method does nothing
      */
+    @Override
     public void remove(UserContext user, int nodeid) {
     }
 
@@ -51,6 +55,7 @@ final public class NoAuthorization extends Authorization {
      * No authorization means that everyting is allowed
      * @return true
      */
+    @Override
     public boolean check(UserContext user, int nodeid, Operation operation) {
         return true;
     }
@@ -66,6 +71,7 @@ final public class NoAuthorization extends Authorization {
      * No authorization means that everyting is allowed
      * @return true
      */
+    @Override
     public boolean check(UserContext user, int nodeid, int srcNodeid, int dstNodeid, Operation operation) {
         return true;
     }
@@ -81,6 +87,7 @@ final public class NoAuthorization extends Authorization {
     /**
      * This method does nothing, except from giving a specified string back
      */
+    @Override
     public String getContext(UserContext user, int nodeid) throws SecurityException {
         return EVERYBODY;
     }
@@ -88,6 +95,7 @@ final public class NoAuthorization extends Authorization {
     /**
      * Since this is not authorization, we simply allow every change of context.
      */
+    @Override
     public void setContext(UserContext user, int nodeid, String context) throws SecurityException {
         //if(!EVERYBODY.equals(context)) throw new SecurityException("unknown context");
     }
@@ -95,6 +103,7 @@ final public class NoAuthorization extends Authorization {
     /**
      * This method does nothing, except from returning a dummy value
      */
+    @Override
     public Set<String> getPossibleContexts(UserContext user, int nodeid) throws SecurityException {
         return possibleContexts;
     }

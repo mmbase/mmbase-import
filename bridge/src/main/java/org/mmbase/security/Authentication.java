@@ -72,6 +72,7 @@ public abstract class Authentication extends Configurable implements Authenticat
      * {@inheritDoc}
      * @since MMBase-1.9
      */
+    @Override
     public int getNode(UserContext userContext) throws SecurityException, UnsupportedOperationException {
         throw new UnsupportedOperationException("This security implementation (" + getClass() + ") does not support mapping from Security usercontexts to MMBase nodes");
     }
@@ -80,6 +81,7 @@ public abstract class Authentication extends Configurable implements Authenticat
      * {@inheritDoc}
      * @since MMBase-1.9
      */
+    @Override
     public String getUserBuilder() throws UnsupportedOperationException {
         throw new UnsupportedOperationException("This security implementation (" + getClass() + ") has no builder associated with UserContexts");
     }
@@ -88,6 +90,7 @@ public abstract class Authentication extends Configurable implements Authenticat
      * {@inheritDoc}
      * @since MMBase-1.8
      */
+    @Override
     public final int getMethod(String m) {
         if (m == null || m.equals("")) {
             return METHOD_UNSET;
@@ -144,6 +147,7 @@ public abstract class Authentication extends Configurable implements Authenticat
      * {@inheritDoc}
      * @since MMBase-1.8
      */
+    @Override
     public int getDefaultMethod(String protocol) {
         if (protocol == null || protocol.substring(0, 4).equalsIgnoreCase("HTTP")) {
             return METHOD_HTTP;
@@ -156,6 +160,7 @@ public abstract class Authentication extends Configurable implements Authenticat
      * {@inheritDoc}
      * @since MMBase-1.8
      */
+    @Override
     public String[] getTypes() {
         return getTypes(METHOD_UNSET);
     }
@@ -163,6 +168,7 @@ public abstract class Authentication extends Configurable implements Authenticat
      * {@inheritDoc}
      * @since MMBase-1.8
      */
+    @Override
     public String[] getTypes(int method) {
         if (method == METHOD_ASIS) {
             return new String[] {"anonymous", "name/password", "class"};
@@ -179,6 +185,7 @@ public abstract class Authentication extends Configurable implements Authenticat
      * {@inheritDoc}
      * @since MMBase-1.8
      */
+    @Override
     public Parameters createParameters(String application) {
         application = application.toLowerCase();
         if ("anonymous".equals(application)) {
@@ -208,6 +215,7 @@ public abstract class Authentication extends Configurable implements Authenticat
         return key;
     }
 
+    @Override
     public Object getAttribute(String key) {
         return attributes.get(key);
     }

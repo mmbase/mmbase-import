@@ -78,12 +78,13 @@ public class ComponentRepository {
     static {
         synchronized(repository) {
             ResourceWatcher rw = new ResourceWatcher() {
-                    public void onChange(String r) {
-                        repository.readConfiguration(r);
-                        Framework.framework = null; // invalidate also the framework configuration,
-                        // because e.g. UrlConverters may have referrences to components
-                    }
-                };
+                @Override
+                public void onChange(String r) {
+                    repository.readConfiguration(r);
+                    Framework.framework = null; // invalidate also the framework configuration,
+                    // because e.g. UrlConverters may have referrences to components
+                }
+            };
             rw.add("components");
             rw.onChange();
             rw.setDelay(2 * 1000); // 2 s

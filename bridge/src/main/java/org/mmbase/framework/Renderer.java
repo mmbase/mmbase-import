@@ -50,13 +50,19 @@ public interface Renderer {
          */
         public Renderer getEmpty(final Block block) {
             return new Renderer() {
+                @Override
                 public Type getType() { return Type.this; }
+                @Override
                 public void render(Parameters parameters, Writer w, RenderHints hints) { };
+                @Override
                 public Parameter[] getParameters() { return Parameter.emptyArray(); };
+                @Override
                 public Block getBlock() { return block ; };
                 @Override
                 public String toString() { return "EMPTY Renderer"; }
+                @Override
                 public URI getUri() { try {return new URI("mmbase:/renderer/" + Type.this + "/empty");} catch (Exception e) { return null;} }
+                @Override
                 public URI getUri(Parameters blockParameters, RenderHints hints) { return getUri(); }
                 @Override
                 public boolean equals(Object o) {

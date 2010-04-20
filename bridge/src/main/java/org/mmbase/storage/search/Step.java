@@ -52,7 +52,7 @@ public interface Step {
      * @return This <code>BasicStep</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public Step addNode(int nodeNumber);
+    Step addNode(int nodeNumber);
 
     /**
      * Compares this step to the specified object. The result is
@@ -66,11 +66,11 @@ public interface Step {
      * @see RelationStep#equals
      */
     @Override
-    public boolean equals(Object obj);
+    boolean equals(Object obj);
 
     // javadoc is inherited
     @Override
-    public int hashCode();
+    int hashCode();
 
     /**
      * Returns a string representation of this Step.
@@ -88,7 +88,7 @@ public interface Step {
      * @return A string representation of this Step.
      */
     @Override
-    public String toString();
+    String toString();
 
     /**
      * @since MMBase-1.9.2

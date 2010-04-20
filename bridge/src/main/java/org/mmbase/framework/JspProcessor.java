@@ -40,12 +40,14 @@ public class JspProcessor extends AbstractProcessor {
         return path.charAt(0) == '/' ? path : JspRenderer.JSP_ROOT + getBlock().getComponent().getName() + '/' + path;
     }
 
+    @Override
     public Parameter<?>[] getParameters() {
         return new Parameter<?>[] {Parameter.RESPONSE, Parameter.REQUEST};
     }
 
 
 
+    @Override
     public void process(Parameters blockParameters) throws FrameworkException {
         try {
             HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);

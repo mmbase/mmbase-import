@@ -67,6 +67,7 @@ public abstract class Module extends DescribedFunctionProvider {
      */
     protected Function<Integer> getVersionFunction = new AbstractFunction<Integer>("getVersion") {
         private static final long serialVersionUID = 0L;
+        @Override
         public Integer getFunctionValue(Parameters arguments) {
             return getVersion();
         }
@@ -80,6 +81,7 @@ public abstract class Module extends DescribedFunctionProvider {
      */
     protected Function<String> getMaintainerFunction = new AbstractFunction<String>("getMaintainer") {
         private static final long serialVersionUID = 0L;
+        @Override
         public String getFunctionValue(Parameters arguments) {
             return getMaintainer();
         }
@@ -128,12 +130,13 @@ public abstract class Module extends DescribedFunctionProvider {
         // is never actually used.
         Calendar now = Calendar.getInstance();
         future =  ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
-                public void run() {
-                    Module.this.maintainance();
-                }
-            },
-            3600 - (now.get(Calendar.MINUTE) * 60 + now.get(Calendar.SECOND)),  // some effort to run exactly at hour
-            3600, TimeUnit.SECONDS);
+            @Override
+            public void run() {
+                Module.this.maintainance();
+            }
+        },
+                3600 - (now.get(Calendar.MINUTE) * 60 + now.get(Calendar.SECOND)), // some effort to run exactly at hour
+                3600, TimeUnit.SECONDS);
         ThreadPools.identify(future, "Maintenance for '" + (name == null ? this.getClass().getName() : name) + "'");
     }
     /**

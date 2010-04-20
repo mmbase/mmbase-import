@@ -42,6 +42,7 @@ final public class NoAuthentication extends Authentication {
     /**
      *	This method does nothing
      */
+    @Override
     protected void load() {
     }
 
@@ -49,6 +50,7 @@ final public class NoAuthentication extends Authentication {
      * Returns always the same object (an user 'anonymous'with rank 'administrator'')
      * @see UserContext
      */
+    @Override
     public UserContext login(String application, Map loginInfo, Object[] parameters) throws SecurityException {
         String userName = loginInfo == null ? null : (String) loginInfo.get(AuthenticationData.PARAMETER_USERNAME.getName());
         if (userName != null) {
@@ -62,6 +64,7 @@ final public class NoAuthentication extends Authentication {
      * Users remain valid always.
      * @return true
      */
+    @Override
     public boolean isValid(UserContext usercontext) throws SecurityException {
         return usercontext instanceof NoAuthenticationUser;
     }

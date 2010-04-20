@@ -66,6 +66,7 @@ public class BasicFramework extends Framework {
     }
 
 
+    @Override
     public String getUrl(String path,
                          Map<String, ?> parameters,
                          Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
@@ -80,6 +81,7 @@ public class BasicFramework extends Framework {
     }
 
 
+    @Override
     public String getProcessUrl(String path, Map<String, ?> parameters,
                                Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
         HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
@@ -95,6 +97,7 @@ public class BasicFramework extends Framework {
         }
     }
 
+    @Override
     public String getInternalUrl(String page, Map<String, ?> params, Parameters frameworkParameters) throws FrameworkException {
         if (log.isDebugEnabled()) {
             log.debug("calling urlConverter " + urlConverter);
@@ -102,6 +105,7 @@ public class BasicFramework extends Framework {
         return urlConverter.getInternalUrl(page, params, frameworkParameters).getUrl();
     }
 
+    @Override
     public String getName() {
         return "BASIC";
     }
@@ -150,6 +154,7 @@ public class BasicFramework extends Framework {
         log.info("Configured with " + el.getOwnerDocument().getDocumentURI() + " " + getClass() + " " + this);
 
     }
+    @Override
     public Block getRenderingBlock(Parameters frameworkParameters) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         State state = State.getState(request);
@@ -172,6 +177,7 @@ public class BasicFramework extends Framework {
 
     /**
      */
+    @Override
     public Parameter<?>[] getParameterDefinition() {
         if (parDef == null) {
             parDef = new Parameter<?>[] {ACTION, Parameter.REQUEST, Parameter.CLOUD, new Parameter.Wrapper(urlConverter.getParameterDefinition())};
@@ -179,6 +185,7 @@ public class BasicFramework extends Framework {
         return parDef;
     }
 
+    @Override
     public Parameters createParameters() {
         return new Parameters(getParameterDefinition());
     }
@@ -227,6 +234,7 @@ public class BasicFramework extends Framework {
      * to do that (perhaps we could say, that the render method must process, if that is necessary,
      * and not yet done).
      */
+    @Override
     public void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w, WindowState windowState) throws FrameworkException {
         ServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         if (request == null) {
@@ -288,6 +296,7 @@ public class BasicFramework extends Framework {
      * I think in the basic framework this method is never called explicitely, because processing is
      * done implicitely by the render
      */
+    @Override
     public void process(Processor processor, Parameters blockParameters, Parameters frameworkParameters) throws FrameworkException {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         State state = State.getState(request);
@@ -296,6 +305,7 @@ public class BasicFramework extends Framework {
         processor.process(blockParameters);
     }
 
+    @Override
     public Node getUserNode(Parameters frameworkParameters) {
         Cloud cloud = frameworkParameters.get(Parameter.CLOUD);
         if (cloud == null) {
@@ -315,6 +325,7 @@ public class BasicFramework extends Framework {
         }
     }
 
+    @Override
     public String getUserBuilder() {
         //TODO
         //return org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthentication().getUserBuilder();
@@ -332,17 +343,23 @@ public class BasicFramework extends Framework {
     }
     protected Map<String, Object> getMap(final State state, final Map<String, Object> params) {
         return new AbstractMap<String, Object>() {
+            @Override
             public Set<Map.Entry<String, Object>> entrySet() {
                 return new AbstractSet<Map.Entry<String, Object>>() {
+                    @Override
                     public int size() { return params.size(); }
+                    @Override
                     public Iterator<Map.Entry<String, Object>> iterator() {
                         return new Iterator<Map.Entry<String, Object>>() {
                             private Iterator<Map.Entry<String, Object>> i = params.entrySet().iterator();
+                            @Override
                             public boolean hasNext() { return i.hasNext(); };
+                            @Override
                             public Map.Entry<String, Object> next() {
                                 Map.Entry<String, Object> e = i.next();
                                 return new org.mmbase.util.Entry<String, Object>(getPrefix(state) + e.getKey(), e.getValue());
                             }
+                            @Override
                             public void remove() { throw new UnsupportedOperationException(); }
 
                         };
@@ -358,6 +375,7 @@ public class BasicFramework extends Framework {
     }
 
     private static final Parameter<Boolean> USE_REQ = new Parameter<Boolean>("usesession", Boolean.class, Boolean.TRUE);
+    @Override
     public Parameters createSettingValueParameters() {
         return new Parameters(Parameter.REQUEST, Parameter.CLOUD, USE_REQ);
     }
@@ -367,6 +385,7 @@ public class BasicFramework extends Framework {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <C> C getSettingValue(Setting<C> setting, Parameters parameters) {
         boolean useSession = parameters != null && parameters.get(USE_REQ);
         if (useSession) {
@@ -391,6 +410,7 @@ public class BasicFramework extends Framework {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <C> C setSettingValue(Setting<C> setting, Parameters parameters, C value) {
         if (parameters == null) throw new SecurityException("You should provide Cloud and request parameters");
         boolean useSession = parameters.get(USE_REQ);

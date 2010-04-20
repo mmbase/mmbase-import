@@ -45,6 +45,7 @@ public class BasicUser implements UserContext, Comparable<Object> {
      *
      * @return A unique identifier for this user.
      */
+    @Override
     public String getIdentifier() {
         return identifier;
     }
@@ -55,6 +56,7 @@ public class BasicUser implements UserContext, Comparable<Object> {
      * not attribute rights to users directly ('context' implementations).
      * @return A possible value for the owner field
      */
+    @Override
     public String getOwnerField() {
         return getIdentifier();
     }
@@ -63,6 +65,7 @@ public class BasicUser implements UserContext, Comparable<Object> {
      * Gets the rank of this user.
      * @return the user rank
      */
+    @Override
     public Rank getRank() throws org.mmbase.security.SecurityException {
         // we need the highest rank.. to fool the security checks that we are allowed...
         return Rank.ADMIN;
@@ -81,6 +84,7 @@ public class BasicUser implements UserContext, Comparable<Object> {
         }
     }
 
+    @Override
     public boolean isValid() {
         try {
             if (authentication == null) {
@@ -95,6 +99,7 @@ public class BasicUser implements UserContext, Comparable<Object> {
         }
     }
 
+    @Override
     public String getAuthenticationType() {
         return authenticationType;
     }
@@ -119,6 +124,7 @@ public class BasicUser implements UserContext, Comparable<Object> {
         return result;
     }
 
+    @Override
     public int compareTo(Object o) {
         if (o instanceof UserContext) {
             UserContext uc = (UserContext) o;

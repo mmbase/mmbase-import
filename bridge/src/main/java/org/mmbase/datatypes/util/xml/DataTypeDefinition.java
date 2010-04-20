@@ -11,8 +11,6 @@ package org.mmbase.datatypes.util.xml;
 
 import java.util.*;
 import org.w3c.dom.*;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.datatypes.processors.*;

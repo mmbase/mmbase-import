@@ -48,6 +48,7 @@ public class StringRenderer extends AbstractRenderer {
         return new Parameter<?>[] {Parameter.REQUEST};
     }
 
+    @Override
     public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
         log.debug("Rendering " + string);
         try {

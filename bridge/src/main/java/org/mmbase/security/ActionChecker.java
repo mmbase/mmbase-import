@@ -32,18 +32,20 @@ public interface ActionChecker extends java.io.Serializable {
      * @since MMBase-1.9.2
      */
     public static final ActionChecker ALLOWS = new ActionChecker() {
-            private static final long serialVersionUID = 1L;
-            public boolean check(UserContext user, Action ac, Parameters parameters) {
-                return true;
-            }
-            public Parameter[] getParameterDefinition() {
-                return Parameter.EMPTY;
-            }
-            @Override
-            public String toString() {
-                return "allows";
-            }
-        };
+        private static final long serialVersionUID = 1L;
+        @Override
+        public boolean check(UserContext user, Action ac, Parameters parameters) {
+            return true;
+        }
+        @Override
+        public Parameter[] getParameterDefinition() {
+            return Parameter.EMPTY;
+        }
+        @Override
+        public String toString() {
+            return "allows";
+        }
+    };
 
     /**
      * This basic implementation of ActionChecker checks the action only based on rank. A minimal
@@ -56,9 +58,11 @@ public interface ActionChecker extends java.io.Serializable {
         public Rank(org.mmbase.security.Rank r) {
             rank = r;
         }
+        @Override
         public boolean check(UserContext user, Action ac, Parameters parameters) {
             return user.getRank().getInt() >= rank.getInt();
         }
+        @Override
         public Parameter[] getParameterDefinition() {
             return Parameter.EMPTY;
         }

@@ -79,6 +79,7 @@ public class ChainedUrlConverter implements UrlConverter {
         return uclist.contains(u);
     }
 
+    @Override
     public Parameter<?>[] getParameterDefinition() {
         return parameterDefinition.toArray(Parameter.EMPTY);
     }
@@ -112,10 +113,12 @@ public class ChainedUrlConverter implements UrlConverter {
      * The default weight of the UrlConverters. An Url proposal by an UrlConverter receives a weight
      * upon which is decided which one should resolve the request.
      */
+    @Override
     public int getDefaultWeight() {
         return 0;
     }
 
+    @Override
     public boolean isFilteredMode(Parameters frameworkParameters) throws FrameworkException {
         for (UrlConverter uc : uclist) {
             if (uc.isFilteredMode(frameworkParameters)) return true;
@@ -147,6 +150,7 @@ public class ChainedUrlConverter implements UrlConverter {
      * The URL to be printed in a page, the 'nice' url. This method requests an url proposal from
      * {@link #getProposal} and decides upon their weight which one prevails.
      */
+    @Override
     public Url getUrl(String path,
                       Map<String, ?> params,
                       Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
@@ -180,6 +184,7 @@ public class ChainedUrlConverter implements UrlConverter {
     /**
      * Basically the same as {@link #getUrl} but for a Processor url.
      */
+    @Override
     public Url getProcessUrl(String path,
                                 Map<String, ?> params,
                                 Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
@@ -208,6 +213,7 @@ public class ChainedUrlConverter implements UrlConverter {
      * decides upon their weight which of the proposed technical url's by the UrlConverters matches
      * the 'nice' url.
      */
+    @Override
     public Url getInternalUrl(String path,
                               Map<String, ?> params,
                               Parameters frameworkParameters) throws FrameworkException {

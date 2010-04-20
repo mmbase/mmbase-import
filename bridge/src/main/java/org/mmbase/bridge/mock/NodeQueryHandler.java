@@ -12,7 +12,6 @@ package org.mmbase.bridge.mock;
 
 import java.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.util.*;
 
 /**
 
