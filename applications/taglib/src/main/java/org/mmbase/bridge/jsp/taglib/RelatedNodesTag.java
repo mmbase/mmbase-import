@@ -110,7 +110,12 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             query = cloud.createNodeQuery();
             Step step1 = query.addStep(parentNode.getNodeManager());
             query.setAlias(step1, parentNode.getNodeManager().getName() + "0");
-            query.addNode(step1, parentNode);
+
+            Queries.addStartNode(query, parentNode);
+            if (log.isDebugEnabled()) {
+                log.debug("" + query.toSql());
+            }
+
 
 
             String searchDirections;
