@@ -17,7 +17,7 @@ import org.mmbase.util.Casting;
  * @version $Id$
  * @since MMBase-1.8
  */
-public class IntegerDataType extends NumberDataType<Integer> {
+public class IntegerDataType extends NumberDataType<Integer> implements SequentialDataType<Integer> {
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
     /**
@@ -57,5 +57,20 @@ public class IntegerDataType extends NumberDataType<Integer> {
         Integer max = getMaxRestriction().getValue();
         return max == null ? Integer.MAX_VALUE : Casting.toInt(max);
     }
+
+    @Override
+    public Integer increase(Integer pos) {
+        return pos + 1;
+    }
+    @Override
+    public Integer decrease(Integer pos) {
+        return pos - 1;
+    }
+
+    @Override
+    public Integer first() {
+        return 0;
+    }
+
 
 }

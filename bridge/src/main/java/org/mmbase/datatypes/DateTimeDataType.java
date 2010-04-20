@@ -147,4 +147,9 @@ public class DateTimeDataType extends ComparableDataType<Date> {
         buf.append(" " + pattern);
         return buf;
     }
+
+    @Override
+    public Date first() {
+        return new Date();
+    }
 }

@@ -1,10 +1,10 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+  This software is OSI Certified Open Source Software.
+  OSI Certified is a certification mark of the Open Source Initiative.
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+  The license (Mozilla version 1.0) can be read at the MMBase site.
+  See http://www.MMBase.org/license
 
 */
 package org.mmbase.datatypes;
@@ -54,7 +54,6 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
         setMin(null, false);
         setMax(null, false);
     }
-
 
 
     // LengthDataType
@@ -107,7 +106,8 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
         return org.mmbase.util.Casting.toDecimal(s);
     }
 
-    @Override protected BigDecimal castString(Object preCast, Cloud cloud) throws CastException {
+    @Override
+    protected BigDecimal castString(Object preCast, Cloud cloud) throws CastException {
         if (preCast == null || "".equals(preCast)) return null;
         Number su = super.castString(preCast, cloud);
         if (su instanceof BigDecimal) {
@@ -170,7 +170,7 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
         }
     }
     @Override@SuppressWarnings("unchecked")
- protected void cloneRestrictions(BasicDataType origin) {
+    protected void cloneRestrictions(BasicDataType origin) {
         super.cloneRestrictions(origin);
         if (origin instanceof DecimalDataType) {
             DecimalDataType dataType = (DecimalDataType) origin;
@@ -179,7 +179,8 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
         }
     }
 
-    @Override protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value,  Node node, Field field) {
+    @Override
+    protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value,  Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value, node, field);
         if (log.isDebugEnabled()) {
             log.debug("Validating for " + field + " " + castValue.getClass() + " " + castValue);
@@ -201,7 +202,8 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
         PrecisionRestriction() {
             super("precision", 128L);
         }
-        @Override protected boolean simpleValid(Object v, Node node, Field field) {
+        @Override
+        protected boolean simpleValid(Object v, Node node, Field field) {
             if ((v == null) || (getValue() == null)) return true;
             BigDecimal compare = (BigDecimal) v;
             long max = getValue();
@@ -225,7 +227,8 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
             super("scale", 34);
         }
 
-        @Override protected boolean simpleValid(Object v, Node node, Field field) {
+        @Override
+        protected boolean simpleValid(Object v, Node node, Field field) {
             if ((v == null) || (getValue() == null)) return true;
             BigDecimal compare = (BigDecimal) v;
             int max = getValue();
@@ -234,6 +237,11 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
             }
             return compare.scale() <= max;
         }
+    }
+
+    @Override
+    public BigDecimal first() {
+        return new BigDecimal(0.0);
     }
 
 

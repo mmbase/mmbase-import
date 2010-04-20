@@ -44,4 +44,10 @@ public class FloatDataType extends NumberDataType<Float> {
         Number max = getMaxRestriction().getValue();
         return max == null ? Float.POSITIVE_INFINITY : max.floatValue();
     }
+
+    @Override
+    public Float first() {
+        return 0.0f;
+    }
+
 }
