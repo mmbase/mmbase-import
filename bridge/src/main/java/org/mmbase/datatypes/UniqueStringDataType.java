@@ -14,7 +14,6 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.Constraint;
-import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
@@ -35,6 +34,7 @@ public class UniqueStringDataType extends StringDataType {
         super(name);
     }
 
+    @Override
     public String getDefaultValue(Locale locale, Cloud cloud, Field field) {
         if (defaultValue == null) return null;
         if (field == null) return Casting.toString(defaultValue);

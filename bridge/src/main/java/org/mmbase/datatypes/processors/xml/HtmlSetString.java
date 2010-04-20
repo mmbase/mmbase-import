@@ -37,6 +37,7 @@ public class HtmlSetString implements  Processor {
     protected static final String POST = "</div>";
 
 
+    @Override
     public Object process(Node node, Field field, Object value) {
 
         if (value instanceof org.w3c.dom.Document) return value;
@@ -71,6 +72,7 @@ public class HtmlSetString implements  Processor {
         }
 
     }
+    @Override
     public String toString() {
         return "set_HTML";
     }

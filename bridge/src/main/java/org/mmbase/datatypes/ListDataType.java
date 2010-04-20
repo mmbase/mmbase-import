@@ -35,6 +35,7 @@ public class ListDataType extends AbstractLengthDataType<List> {
     }
 
 
+    @Override
     protected void inheritRestrictions(BasicDataType origin) {
         super.inheritRestrictions(origin);
         if (origin instanceof ListDataType) {
@@ -42,6 +43,7 @@ public class ListDataType extends AbstractLengthDataType<List> {
             itemRestriction.inherit(dataType.itemRestriction);
          }
     }
+    @Override
     protected void cloneRestrictions(BasicDataType origin) {
         super.cloneRestrictions(origin);
         if (origin instanceof ListDataType) {
@@ -50,6 +52,7 @@ public class ListDataType extends AbstractLengthDataType<List> {
          }
     }
 
+    @Override
     public long getLength(Object value) {
         return ((Collection) value).size();
     }
@@ -78,16 +81,19 @@ public class ListDataType extends AbstractLengthDataType<List> {
         itemRestriction.setValue(value);
     }
 
+    @Override
     public int getEnforceStrength() {
         return Math.max(super.getEnforceStrength(), itemRestriction.getEnforceStrength());
     }
 
+    @Override
     protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value, node, field);
         errors = itemRestriction.validate(errors, castValue, node, field);
         return errors;
     }
 
+    @Override
     protected StringBuilder toStringBuilder() {
         StringBuilder buf = super.toStringBuilder();
         buf.append("items: " + getItemDataType());
@@ -105,6 +111,7 @@ public class ListDataType extends AbstractLengthDataType<List> {
             return (DataType) value;
         }
 
+        @Override
         protected boolean simpleValid(Object v, Node node, Field field) {
             DataType itemDataType = getItemDataType();
             if (itemDataType == Constants.DATATYPE_UNKNOWN) return true;
@@ -120,6 +127,7 @@ public class ListDataType extends AbstractLengthDataType<List> {
             return true;
         }
 
+        @Override
         protected Collection validate(Collection errors, Object v, Node node, Field field) {
             if (! enforce(v, node, field)) {
                 return errors;

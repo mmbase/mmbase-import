@@ -41,12 +41,14 @@ public class ChecksumProcessorFactory implements ParameterizedCommitProcessorFac
     /**
      * Creates a parameterized processor.
      */
+    @Override
     public CommitProcessor createProcessor(Parameters parameters) {
         final ByteToCharTransformer transformer = (ByteToCharTransformer) factory.createTransformer(parameters);
         final String  sourceField = (String) parameters.get("field");
         return new CommitProcessor() {
             private static final long serialVersionUID = 1L;
 
+            @Override
             public void commit(Node node, Field field) {
                 if (!field.isVirtual()) {
                     if (node.getChanged().contains(sourceField)) {
@@ -70,6 +72,7 @@ public class ChecksumProcessorFactory implements ParameterizedCommitProcessorFac
                     log.debug("Ignoring because '" + field + "' is virtual");
                 }
             }
+            @Override
             public String toString() {
                 return transformer.toString() + " on " + sourceField;
             }
@@ -79,6 +82,7 @@ public class ChecksumProcessorFactory implements ParameterizedCommitProcessorFac
     /**
      * Create  empty <code>Parameters</code> object for use with {@link #createProcessor}.
      */
+    @Override
     public Parameters createParameters() {
         return new Parameters(PARAMS);
     }

@@ -28,6 +28,7 @@ public class FieldGetString implements  Processor {
     private static final Logger log = Logging.getLoggerInstance(FieldGetString.class);
     private static final long serialVersionUID = 1L;
 
+    @Override
     public Object process(Node node, Field field, Object value) {
 
         Object realValue =  node.getValueWithoutProcess(field.getName());

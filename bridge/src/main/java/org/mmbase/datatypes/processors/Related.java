@@ -165,6 +165,7 @@ public class Related {
      */
     public static class Creator extends AbstractProcessor {
         private static final long serialVersionUID = 1L;
+        @Override
         public Object process(final Node node, final Field field, final Object value) {
             Node relatedNode = getRelatedNode(node, field);
             if (relatedNode == null) {
@@ -194,6 +195,7 @@ public class Related {
     public static class Setter extends AbstractProcessor {
 
         private static final long serialVersionUID = 1L;
+        @Override
         public Object process(final Node node, final Field field, final Object value) {
             if (log.isDebugEnabled()) {
                 log.debug("Setting "  + value);
@@ -272,6 +274,7 @@ public class Related {
     public static class Getter extends AbstractProcessor {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public Object process(final Node node, final Field field, final Object value) {
             if (log.isDebugEnabled()) {
                 log.debug("getting "  + node);

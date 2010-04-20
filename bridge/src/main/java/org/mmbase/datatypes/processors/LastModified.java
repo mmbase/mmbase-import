@@ -38,12 +38,14 @@ public class LastModified implements CommitProcessor {
         setIfNotChanged = b;
     }
 
+    @Override
     public void commit(Node node, Field field) {
         if (node.mayWrite() && (setIfNotChanged || node.getChanged().size() > 0)) {
             node.setValueWithoutProcess(field.getName(), new Date());
         }
     }
 
+    @Override
     public String toString() {
         return "lastmodified";
     }

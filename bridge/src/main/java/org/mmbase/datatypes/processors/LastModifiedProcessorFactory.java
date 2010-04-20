@@ -32,11 +32,13 @@ public class LastModifiedProcessorFactory implements ParameterizedProcessorFacto
     /**
      * Creates a parameterized processor.
      */
+    @Override
     public Processor createProcessor(Parameters parameters) {
         final String  destField = (String) parameters.get("field");
         return new Processor() {
             private static final long serialVersionUID = 1L;
 
+            @Override
             public Object process(Node node, Field field, Object value) {
                 node.setDateValue(destField, new java.util.Date());
                 return value;
@@ -47,6 +49,7 @@ public class LastModifiedProcessorFactory implements ParameterizedProcessorFacto
     /**
      * Create  empty <code>Parameters</code> object for use with {@link #createProcessor}.
      */
+    @Override
     public Parameters createParameters() {
         return new Parameters(PARAMS);
     }

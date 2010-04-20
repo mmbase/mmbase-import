@@ -31,11 +31,13 @@ public class CharTransformerProcessor implements Processor {
         charTransformer = ct;
     }
 
+    @Override
     public final Object process(Node node, Field field, Object value) {
         if (value == null) return null; // most CharTransformers would not choke in that, but lets not risque it.
         return charTransformer.transform((String) value);
     }
 
+    @Override
     public String toString() {
         return "processor(" + charTransformer + ")";
     }
