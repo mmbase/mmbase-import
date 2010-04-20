@@ -13,6 +13,8 @@ package org.mmbase.bridge.jsp.taglib.util;
 import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
+import org.mmbase.bridge.BridgeList;
+import org.mmbase.bridge.implementation.BasicList;
 import javax.servlet.jsp.PageContext;
 import java.util.*;
 import java.text.Collator;
@@ -27,20 +29,22 @@ import java.text.Collator;
 public class  ListSorter  {
 
 
-    public static <E> List<E> sort(List<E> list, String comparator, ContextReferrerTag tag) throws JspTagException {
+    public static <E extends Comparable<? super E>> List<E> sort(List<E> list, String comparator, ContextReferrerTag tag) throws JspTagException {
         if (comparator != null) {
-            if (comparator.equals("SHUFFLE")) {
-                Collections.shuffle(list);
-            }  else if (comparator.equals("REVERSE")) {
-                Collections.reverse(list);
-            }  else if (comparator.equals("NATURAL")) {
-                Collections.sort((List<? extends Comparable>) list);
-            }  else if (comparator.equals("CASE_INSENSITIVE")) {
-                Collator col = Collator.getInstance(tag.getLocale());
-                col.setStrength(Collator.PRIMARY);
-                Collections.sort(list, col);
-            } else {
-                try {
+            try {
+                if (comparator.equals("SHUFFLE")) {
+                    // for this entries need not be comparable
+                    Collections.shuffle(list);
+                }  else if (comparator.equals("REVERSE")) {
+                    // for this entries need not be comparable
+                    Collections.reverse(list);
+                }  else if (comparator.equals("NATURAL")) {
+                    Collections.sort(list);
+                }  else if (comparator.equals("CASE_INSENSITIVE")) {
+                    Collator col = Collator.getInstance(tag.getLocale());
+                    col.setStrength(Collator.PRIMARY);
+                    Collections.sort(list, col);
+                } else {
                     PageContext pageContext = tag.getPageContext();
                     Class<? super E> claz = null;
                     boolean pageClass = false;
@@ -63,16 +67,19 @@ public class  ListSorter  {
                     }
                     Comparator<? super E> comp = (Comparator<? super E>) claz.newInstance();
                     init(comp, pageContext);
-                    try {
-                        Collections.sort(list, comp);
-                    } catch (UnsupportedOperationException uoe) { // some unmodifiable list?
-                        // clone it.
-                        list = new ArrayList<E>(list);
-                        Collections.sort(list, comp);
-                    }
-                } catch (Exception e) {
-                    throw new TaglibException(e);
+                    Collections.sort(list, comp);
                 }
+            } catch (UnsupportedOperationException uoe) { // some unmodifiable list?
+                // clone it.
+                if (list instanceof BridgeList) {
+                    list = new BasicList<E>((BridgeList<E>) list);
+                } else {
+                    list = new ArrayList<E>(list);
+                }
+
+                return ListSorter.sort(list, comparator, tag);
+            } catch (Exception e) {
+                throw new TaglibException(e);
             }
         }
         return list;
