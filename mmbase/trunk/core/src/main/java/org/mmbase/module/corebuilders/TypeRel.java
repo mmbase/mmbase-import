@@ -11,12 +11,12 @@ package org.mmbase.module.corebuilders;
 
 import java.util.*;
 
+import javax.servlet.ServletContext;
 import org.mmbase.bridge.Field;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.core.CoreField;
-import org.mmbase.core.event.Event;
-import org.mmbase.core.event.NodeEvent;
+import org.mmbase.core.event.*;
 import org.mmbase.core.util.Fields;
 import org.mmbase.cache.*;
 import org.mmbase.storage.search.implementation.BasicRelationStep;
@@ -42,7 +42,7 @@ import org.mmbase.util.logging.Logging;
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
  */
-public class TypeRel extends MMObjectBuilder {
+public class TypeRel extends MMObjectBuilder implements SystemEventListener {
 
     private static final Logger log = Logging.getLoggerInstance(TypeRel.class);
 
@@ -85,13 +85,25 @@ public class TypeRel extends MMObjectBuilder {
     public boolean init() {
         if (oType != -1) return true;
         super.init();
-        // during init not yet all builder are available so inhertiance is not
+        // during init not yet all builder are available so inheritance is not
         // yet possible
         // This means that calls to getAllowedRelations do not consider
         // inheritance during initializion of MMBase.
         // This occurs e.g. in one of the Community-builders.
         readCache(false);
+        EventManager.getInstance().addEventListener(this);
         return true;
+    }
+
+    public void notify(SystemEvent se) {
+        if (se instanceof SystemEvent.ServletContext) {
+            ServletContext sx = ((SystemEvent.ServletContext) se).getServletContext();
+            String def = sx.getInitParameter("mmbase.defaultRelationStepDirection");
+            if (def != null && def.length() > 0) {
+                defaultRelationStepDirection = org.mmbase.bridge.util.Queries.getRelationStepDirection(def);
+                log.info("Found default relation step direction " + def);
+            }
+        }
     }
 
     /**
@@ -592,7 +604,9 @@ public class TypeRel extends MMObjectBuilder {
             if (sourceToDestination) {
                 // there is ALSO a typed relation from src to destination - make
                 // a more complex query
-                relationStep.setDirectionality(RelationStep.DIRECTIONS_BOTH);
+                // http://www.mmbase.org/jira/browse/MMB-1653
+
+                relationStep.setDirectionality(defaultRelationStepDirection);
             } else {
                 // there is ONLY a typed relation from destination to src -
                 // optimized query
