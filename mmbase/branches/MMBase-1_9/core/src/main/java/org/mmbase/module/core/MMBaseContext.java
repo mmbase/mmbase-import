@@ -14,6 +14,7 @@ import java.io.*;
 import javax.servlet.*;
 import java.text.DateFormat;
 
+import org.mmbase.core.event.*;
 import org.mmbase.core.util.DaemonTask;
 import org.mmbase.core.util.DaemonThread;
 import org.mmbase.util.ResourceLoader;
@@ -66,6 +67,8 @@ public class MMBaseContext {
 
             // store the current context
             sx = servletContext;
+            EventManager.getInstance().propagateEvent(new SystemEvent.ServletContext(sx));
+
             // Get the user directory using the user.dir property.
             // default set to the startdir of the appserver
             userDir = sx.getInitParameter("user.dir");
