@@ -69,7 +69,7 @@ public class BasicFieldCompareConstraint extends BasicFieldConstraint implements
         return this;
     }
 
-    // javadoc is inherited
+    @Override
     public int getOperator() {
         return operator;
     }
@@ -85,7 +85,7 @@ public class BasicFieldCompareConstraint extends BasicFieldConstraint implements
         }
     }
 
-    // javadoc is inherited
+    @Override
     public boolean equals(Object obj) {
         // Must be same class (subclasses should override this)!
         if (obj != null && obj.getClass() == getClass()) {
@@ -102,13 +102,13 @@ public class BasicFieldCompareConstraint extends BasicFieldConstraint implements
         }
     }
 
-    // javadoc is inherited
+    @Override
     public int hashCode() {
         return super.hashCode()
         + 113 * operator;
     }
 
-    // javadoc is inherited
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("BasicFieldCompareConstraint(inverse:").append(isInverse()).
         append(", field:").append(getFieldName()).

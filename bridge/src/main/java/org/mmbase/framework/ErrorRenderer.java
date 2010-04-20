@@ -26,9 +26,6 @@ import org.mmbase.util.logging.Logging;
 /**
  * If rendering of a {@link Block} fails for some reason this renderer should be used to present the error.
  *
- * @todo Its workings are similar to /mmbase/errorpages/500.jsp, and we should consider that these two
- * share code.
- *
  * @author Michiel Meeuwissen
  * @version $Id$
  * @since MMBase-1.9

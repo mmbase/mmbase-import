@@ -19,6 +19,7 @@ import org.mmbase.util.logging.*;
  * @since MMBase-2.0
  */
 public class BridgeClusterQueries extends ClusterQueries {
+    private static final Logger LOG = Logging.getLoggerInstance(BridgeClusterQueries.class);
     private final QueryContext.Bridge queryContext;
     public BridgeClusterQueries(QueryContext.Bridge qc) {
         this.queryContext = qc;
@@ -83,7 +84,8 @@ public class BridgeClusterQueries extends ClusterQueries {
 
     @Override
     protected boolean optimizeRelationStep(RelationStep rs, int sourceType, int destType, int role, int searchDir) {
-        // TODO
+        // TODO implement optimizeRelationStep
+        LOG.warn("TODO Not yet implemented");
         return false;
     }
 
@@ -110,6 +112,7 @@ public class BridgeClusterQueries extends ClusterQueries {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     protected void setConstraint(BasicSearchQuery query, String where) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
