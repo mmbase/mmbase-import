@@ -5,7 +5,7 @@
 
   Web-app 2.4 gives the possibility to use EL (Expression Language)
 
-  $Id: web.xml 35123 2009-05-12 21:20:03Z michiel $
+  $Id$
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
