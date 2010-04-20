@@ -124,6 +124,11 @@
     <param-value>false</param-value>
   </context-param>
 
+  <context-param>
+    <param-name>mmbase.defaultRelationStepDirection</param-name>
+    <param-value>BOTH</param-value> <!-- consider DESTINATION -->
+  </context-param>
+
 
   <!--
        Whether URL's generated to images must include a filename.
