@@ -63,7 +63,13 @@ public class  ListSorter  {
                     }
                     Comparator<? super E> comp = (Comparator<? super E>) claz.newInstance();
                     init(comp, pageContext);
-                    Collections.sort(list, comp);
+                    try {
+                        Collections.sort(list, comp);
+                    } catch (UnsupportedOperationException uoe) { // some unmodifiable list?
+                        // clone it.
+                        list = new ArrayList<E>(list);
+                        Collections.sort(list, comp);
+                    }
                 } catch (Exception e) {
                     throw new TaglibException(e);
                 }
