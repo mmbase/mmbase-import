@@ -111,7 +111,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             Step step1 = query.addStep(parentNode.getNodeManager());
             query.setAlias(step1, parentNode.getNodeManager().getName() + "0");
 
-            Queries.addStartNode(query, parentNode);
+            Queries.addStartNodes(query, parentNode);
             if (log.isDebugEnabled()) {
                 log.debug("" + query.toSql());
             }
