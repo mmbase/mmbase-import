@@ -49,6 +49,7 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
         }
     }
 
+    @Override
     public void setUnmodifiable() {
         super.setUnmodifiable();
         for (Constraint c : childs) {
@@ -86,12 +87,14 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
 
 
     // javadoc is inherited
+    @Override
     public List<Constraint> getChilds() {
         // return a unmodifiable list
         return Collections.unmodifiableList(childs);
     }
 
     // javadoc is inherited
+    @Override
     public int getLogicalOperator() {
         return logicalOperator;
     }
@@ -108,6 +111,7 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
     }
 
     // javadoc is inherited
+    @Override
     public int getBasicSupportLevel() {
         // Calculate support as lowest value among childs.
         int result = 3; //TODO SearchQueryHandler.SUPPORT_OPTIMAL;
@@ -127,6 +131,7 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
     }
 
     // javadoc is inherited
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -143,6 +148,7 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
     }
 
     // javadoc is inherited
+    @Override
     public int hashCode() {
         return super.hashCode()
         + 109 * logicalOperator
@@ -150,6 +156,7 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
     }
 
     // javadoc is inherited
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CompositeConstraint(inverse:").append(isInverse()).
         append(", operator:").append(getLogicalOperatorDescription()).

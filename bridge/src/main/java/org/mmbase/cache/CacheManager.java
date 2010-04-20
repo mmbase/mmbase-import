@@ -72,6 +72,7 @@ public class CacheManager implements CacheManagerMBean {
         if (instance == null) {
             instance = new CacheManager();
             ThreadPools.jobsExecutor.execute(new Runnable() {
+                @Override
                     public void run() {
 
                         ObjectName on;
@@ -163,11 +164,12 @@ public class CacheManager implements CacheManagerMBean {
 
 
     private static ThreadPoolExecutor cachePutter = new ThreadPoolExecutor(0, 1, 2 , TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
-            public Thread newThread(Runnable r) {
-                return ThreadPools.newThread(r, "CachePutter");
-            }
-        });
-/*    static {
+        @Override
+        public Thread newThread(Runnable r) {
+            return ThreadPools.newThread(r, "CachePutter");
+        }
+    });
+    /*    static {
         cachePutter.allowCoreThreadTimeOut(true);
     }
 */
@@ -186,18 +188,19 @@ public class CacheManager implements CacheManagerMBean {
             log.error(t.getMessage(), t);
         }
         Runnable run = new Runnable() {
-                public void run() {
-                    ObjectName name = getObjectName(cache, true);
-                    try {
-                        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-                        mbs.registerMBean(cache, name);
-                    } catch (JMException jmo) {
-                        log.warn("" + name + " " + jmo.getClass() + " " + jmo.getMessage());
-                    } catch (Throwable t) {
-                        log.error("" + name + " " + t.getClass() + " " + t.getMessage());
-                    }
+            @Override
+            public void run() {
+                ObjectName name = getObjectName(cache, true);
+                try {
+                    MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+                    mbs.registerMBean(cache, name);
+                } catch (JMException jmo) {
+                    log.warn("" + name + " " + jmo.getClass() + " " + jmo.getMessage());
+                } catch (Throwable t) {
+                    log.error("" + name + " " + t.getClass() + " " + t.getMessage());
                 }
-            };
+            }
+        };
         if (org.mmbase.bridge.ContextProvider.getDefaultCloudContext().isUp()) {
             run.run();
         } else {
@@ -267,27 +270,25 @@ public class CacheManager implements CacheManagerMBean {
             if (only != null && ! only.equals(cacheName)) {
                 continue;
             }
-            // TODO: fix again when everybody runs 1.5.0_08, because of
-            // generics bug http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4916620
-            Cache cache = getCache(cacheName);
+            Cache<?, ?> cache = getCache(cacheName);
             if (cache == null) {
                 log.service("No cache " + cacheName + " is present (perhaps not used yet?)");
             } else {
-                String clazz = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.implementation.class"));
+                String clazz = DocumentReader.getElementValue(DocumentReader.getElementByPath(cacheElement, "cache.implementation.class"));
                 if(!"".equals(clazz)) {
-                    Element cacheImpl = xmlReader.getElementByPath(cacheElement, "cache.implementation");
+                    Element cacheImpl = DocumentReader.getElementByPath(cacheElement, "cache.implementation");
                     Map<String,String> configValues = new HashMap<String,String>();
-                    for (Element attrNode: xmlReader.getChildElements(cacheImpl, "param")) {
+                    for (Element attrNode: DocumentReader.getChildElements(cacheImpl, "param")) {
                         String paramName = xmlReader.getElementAttributeValue(attrNode, "name");
-                        String paramValue = xmlReader.getElementValue(attrNode);
+                        String paramValue = DocumentReader.getElementValue(attrNode);
                         configValues.put(paramName, paramValue);
                     }
                     cache.setImplementation(clazz, configValues);
                 }
-                String status = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.status"));
+                String status = DocumentReader.getElementValue(DocumentReader.getElementByPath(cacheElement, "cache.status"));
                 cache.setActive(status.equalsIgnoreCase("active"));
                 try {
-                    Integer size = Integer.valueOf(xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.size")));
+                    Integer size = Integer.valueOf(DocumentReader.getElementValue(DocumentReader.getElementByPath(cacheElement, "cache.size")));
                     cache.setMaxSize(size.intValue());
                     log.service("Setting " + cacheName + " " + status + " with size " + size);
                 } catch (NumberFormatException nfe) {
@@ -295,7 +296,7 @@ public class CacheManager implements CacheManagerMBean {
                 } catch (Throwable t) {
                     log.error(" " + cacheName + " maxsize " + t.getMessage());
                 }
-                String maxSize = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.maxEntrySize"));
+                String maxSize = DocumentReader.getElementValue(DocumentReader.getElementByPath(cacheElement, "cache.maxEntrySize"));
                 if (!"".equals(maxSize)) {
                     try {
                         cache.maxEntrySize = Integer.parseInt(maxSize);
@@ -345,18 +346,19 @@ public class CacheManager implements CacheManagerMBean {
      * be changed which causes the caches to be reconfigured automaticly.
      */
     private static ResourceWatcher configWatcher = new ResourceWatcher () {
-            public void onChange(String resource) {
-                try {
-                    org.xml.sax.InputSource is =  ResourceLoader.getConfigurationRoot().getInputSource(resource);
-                    log.service("Reading " + is.getSystemId());
-                    configReader = new DocumentReader(is, Cache.class);
-                } catch (Exception e) {
-                    log.warn(e.getClass() + " " + e.getMessage());
-                    return;
-                }
-                configure(configReader);
+        @Override
+        public void onChange(String resource) {
+            try {
+                org.xml.sax.InputSource is = ResourceLoader.getConfigurationRoot().getInputSource(resource);
+                log.service("Reading " + is.getSystemId());
+                configReader = new DocumentReader(is, Cache.class);
+            } catch (Exception e) {
+                log.warn(e.getClass() + " " + e.getMessage());
+                return;
             }
-        };
+            configure(configReader);
+        }
+    };
 
     static { // configure
         try {
@@ -440,6 +442,7 @@ public class CacheManager implements CacheManagerMBean {
     /**
      * @since MMBase-1.9.1
      */
+    @Override
     public String clear(String pattern) {
         if (pattern == null) pattern = ".*";
         StringBuilder buf = new StringBuilder();
@@ -456,6 +459,7 @@ public class CacheManager implements CacheManagerMBean {
     /**
      * @since MMBase-1.9.1
      */
+    @Override
     public String enable(String pattern) {
         if (pattern == null) pattern = ".*";
         StringBuilder buf = new StringBuilder();
@@ -478,6 +482,7 @@ public class CacheManager implements CacheManagerMBean {
     /**
      * @since MMBase-1.9.1
      */
+    @Override
     public String disable(String pattern) {
         if (pattern == null) pattern = ".*";
         StringBuilder buf = new StringBuilder();
@@ -500,6 +505,7 @@ public class CacheManager implements CacheManagerMBean {
     /**
      * @since MMBase-1.9.1
      */
+    @Override
     public String readConfiguration() {
         configWatcher.onChange("caches.xml");
         return "Read " + ResourceLoader.getConfigurationRoot().getResource("caches.xml");
@@ -532,6 +538,7 @@ public class CacheManager implements CacheManagerMBean {
         public  int getSize() { return cache.size(); }
         public double getRatio() { return cache.getRatio(); }
         public String getStats() { return cache.getStats(); }
+        @Override
         public String toString() { return cache.toString(); }
         public boolean isActive() { return cache.isActive(); }
         public int getByteSize() { return cache.getByteSize(); }
@@ -545,21 +552,27 @@ public class CacheManager implements CacheManagerMBean {
         public Map<K, V> getMap() {  return cache; }
         public Map<K, Integer> getCounts() {
             return new AbstractMap<K, Integer>() {
+                @Override
                 public Set<Map.Entry<K, Integer>> entrySet() {
                     return new AbstractSet<Map.Entry<K, Integer>>() {
+                        @Override
                         public int size() {
                             return cache.size();
                         }
+                        @Override
                         public Iterator<Map.Entry<K, Integer>> iterator() {
                             return new Iterator<Map.Entry<K, Integer>>() {
                                 private Iterator<K> iterator = Bean.this.getKeySet().iterator();
+                                @Override
                                 public boolean hasNext() {
                                     return iterator.hasNext();
                                 }
+                                @Override
                                 public Map.Entry<K, Integer> next() {
                                     K key = iterator.next();
                                     return new org.mmbase.util.Entry<K, Integer>(key, cache.getCount(key));
                                 }
+                                @Override
                                 public void remove() {
                                     throw new UnsupportedOperationException();
                                 }
@@ -569,12 +582,15 @@ public class CacheManager implements CacheManagerMBean {
                 }
             };
         }
+        @Override
         public boolean equals(Object o) {
             return  o instanceof Bean && ((Bean) o).cache.equals(cache);
         }
+        @Override
         public int hashCode() {
             return cache.hashCode();
         }
+        @Override
         public int compareTo(Bean<?, ?> bean) {
             return getName().compareTo(bean.getName());
         }

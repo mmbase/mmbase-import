@@ -56,17 +56,17 @@ public class BasicFieldConstraint extends BasicConstraint implements FieldConstr
         return this;
     }
 
-    // javadoc is inherited
+    @Override
     public StepField getField() {
         return field;
     }
 
-    // javadoc is inheritied
+    @Override
     public boolean isCaseSensitive() {
         return caseSensitive;
     }
 
-    // javadoc is inherited
+    @Override
     public boolean equals(Object obj) {
         // Must be same class (subclasses should override this)!
         if (obj != null && obj.getClass() == getClass()) {
@@ -81,7 +81,7 @@ public class BasicFieldConstraint extends BasicConstraint implements FieldConstr
         }
     }
 
-    // javadoc is inherited
+    @Override
     public int hashCode() {
         return super.hashCode()
         + (isCaseSensitive()? 0: 73)
@@ -99,7 +99,7 @@ public class BasicFieldConstraint extends BasicConstraint implements FieldConstr
         return BasicStepField.getFieldName(getField());
     }
 
-    // javadoc is inherited
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("BasicFieldConstraint(inverse:").append(isInverse()).
         append("field:").append(getFieldName()).

@@ -381,7 +381,6 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
 
     /**
      * Determine a data type instance based on the given gui element
-     * @todo  'guitype' may become deprecated in favour of the 'datatype' element
      * @param builder the MMObjectBuilder to which the field belongs
      * @param collector The DataTypeCollector of the bulider.
      * @param fieldName the name of the field (used in log messages)
@@ -404,7 +403,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
         BasicDataType dataType = null;
         Element guiTypeElement = getElementByPath(field, "field.gui.guitype");
 
-        // XXX: deprecated tag 'type'
+        // deprecated tag 'type'
         if (guiTypeElement == null) {
             guiTypeElement = getElementByPath(field, "field.gui.type");
         }
@@ -693,6 +692,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
      * {@inheritDoc}
      * @since MMBase-1.7
      */
+    @Override
     public boolean equals(Object o) {
         if (o instanceof AbstractBuilderReader) {
             AbstractBuilderReader b = (AbstractBuilderReader) o;
@@ -713,6 +713,15 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + (this.inheritanceResolved ? 1 : 0);
+        hash = 53 * hash + (this.searchPositions != null ? this.searchPositions.hashCode() : 0);
+        hash = 53 * hash + (this.inputPositions != null ? this.inputPositions.hashCode() : 0);
+        return hash;
     }
 
     @Override

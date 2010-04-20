@@ -118,10 +118,12 @@ public final class BasicUrlConverter implements UrlConverter {
     /**
      * This URLConverter can work on any url, so is wlays in 'filtered' mode'.
      */
+    @Override
     public boolean isFilteredMode(Parameters frameworkParameters) throws FrameworkException {
         return true;
     }
 
+    @Override
     public int getDefaultWeight() {
         return Integer.MIN_VALUE + 1000;
     }
@@ -139,6 +141,7 @@ public final class BasicUrlConverter implements UrlConverter {
      * @todo Actually these parameters are only added here, because this urlconverter is always in
      * BasicFramework. Actually BasicFramework should add them itself.
      */
+    @Override
     public Parameter<?>[] getParameterDefinition() {
         return DEF;
     }
@@ -213,17 +216,20 @@ public final class BasicUrlConverter implements UrlConverter {
     }
 
 
+    @Override
     public Url getUrl(String path,
                             Map<String, ?> parameters,
                             Parameters frameworkParameters, boolean escapeAmps) {
         return new BasicUrl(this, getUrl(path, parameters, frameworkParameters, escapeAmps, false));
     }
+    @Override
     public Url getProcessUrl(String path,
                             Map<String, ?> parameters,
                             Parameters frameworkParameters, boolean escapeAmps) {
         return new BasicUrl(this, getUrl(path, parameters, frameworkParameters, escapeAmps, true));
     }
 
+    @Override
     public Url getInternalUrl(String page, Map<String, ?> params, Parameters frameworkParameters) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         return new BasicUrl(this, BasicUrlConverter.getUrl(page, params, request, false));

@@ -37,6 +37,7 @@ public class BasicField extends FieldWrapper implements Field {
         return nodeManager;
     }
 
+    @Override
     public int compareTo(Field f) {
        int compared = getName().compareTo(f.getName());
        if (compared == 0) compared = getDataType().compareTo(f.getDataType());

@@ -31,7 +31,7 @@ public class BasicFieldNullConstraint extends BasicFieldConstraint implements Fi
         super(field);
     }
 
-    // javadoc is inherited
+    @Override
     public boolean equals(Object obj) {
         // Must be same class (subclasses should override this)!
         if (obj != null && obj.getClass() == getClass()) {
@@ -46,12 +46,12 @@ public class BasicFieldNullConstraint extends BasicFieldConstraint implements Fi
         }
     }
 
-    // javadoc is inherited
+    @Override
     public int hashCode() {
         return super.hashCode();
     }
 
-    // javadoc is inherited
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("FieldNullConstraint(inverse:").append(isInverse()).
         append(", field:").append(getFieldName()).
