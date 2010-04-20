@@ -32,5 +32,9 @@ public enum WindowState {
       * similar state.
       */
      NORMAL;
+
+    public String getValue() {
+        return toString();
+    }
 }
 
