@@ -39,18 +39,22 @@ public interface QueryContext {
             cloud = c;
             clusterQueries = new BridgeClusterQueries(this);
         }
+        @Override
         public  String getStorageIdentifier(String s) {
             return s;
         }
+        @Override
         public  Field getField(String builder, String fieldName) {
             return cloud.getNodeManager(builder).getField(fieldName);
         }
+        @Override
         public  Collection<Field> getFields(String builder) {
             return cloud.getNodeManager(builder).getFields(NodeManager.ORDER_CREATE);
         }
 
 
 
+        @Override
         public BridgeClusterQueries getClusterQueries() {
             return clusterQueries;
         }

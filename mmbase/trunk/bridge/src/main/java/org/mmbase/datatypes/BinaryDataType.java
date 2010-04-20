@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes;
 
 import org.mmbase.util.logging.*;
-import org.mmbase.util.SerializableInputStream;
 import org.mmbase.bridge.*;
 import org.mmbase.util.*;
 import org.mmbase.util.magicfile.MagicFile;

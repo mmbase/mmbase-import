@@ -87,9 +87,8 @@ public class Fields {
      */
     public static int getType(String type) {
         if (type == null) return Field.TYPE_UNKNOWN;
-        // XXX: deprecated VARCHAR
         type = type.toUpperCase();
-        if (type.equals("VARCHAR")) return Field.TYPE_STRING;
+        if (type.equals("VARCHAR")) return Field.TYPE_STRING; // deprecated
         if (type.equals("STRING"))  return Field.TYPE_STRING;
         if (type.equals("XML"))     return Field.TYPE_XML;
         if (type.equals("INTEGER")) return Field.TYPE_INTEGER;
@@ -216,6 +215,7 @@ public class Fields {
         /**
          * Compare two objects.
          */
+        @Override
         public int compare(Field o1, Field o2) {
             int pos1 = getPos(o1);
             int pos2 = getPos(o2);

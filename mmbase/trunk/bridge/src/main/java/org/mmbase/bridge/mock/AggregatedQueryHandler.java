@@ -31,6 +31,7 @@ class AggregatedQueryHandler extends  AbstractQueryHandler  {
     }
 
 
+    @Override
     public List<Map<String, Object>> getRecords(Query query) {
         if (query.getSteps().size() == 1 && query.getFields().size() == 1) {
             StepField field = query.getFields().get(0);
