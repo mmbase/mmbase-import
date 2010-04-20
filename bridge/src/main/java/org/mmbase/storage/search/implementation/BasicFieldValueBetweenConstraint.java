@@ -78,17 +78,17 @@ public class BasicFieldValueBetweenConstraint extends BasicFieldConstraint imple
         return this;
     }
 
-    // javadoc is inherited
+    @Override
     public Object getLowerLimit() {
         return lowerLimit;
     }
 
-    // javadoc is inherited
-    public Object getUpperLimit() {
+    @Override
+     public Object getUpperLimit() {
         return upperLimit;
     }
 
-    // javadoc is inherited
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -108,14 +108,14 @@ public class BasicFieldValueBetweenConstraint extends BasicFieldConstraint imple
         }
     }
 
-    // javadoc is inherited
+     @Override
     public int hashCode() {
         return 101 * (lowerLimit.hashCode()
             + 97 * (upperLimit.hashCode()
                 + 89 * super.hashCode()));
     }
 
-    // javadoc is inherited
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("FieldValueBetweenConstraint(inverse:").append(isInverse()).
         append(", field:").append(getFieldName()).

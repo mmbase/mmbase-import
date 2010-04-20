@@ -48,12 +48,12 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
         return this;
     }
 
-    // javadoc is inherited
+    @Override
     public SortedSet<Object> getValues() {
         return Collections.unmodifiableSortedSet(values);
     }
 
-    // javadoc is inherited
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -72,13 +72,13 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
         }
     }
 
-    // javadoc is inherited
+    @Override
     public int hashCode() {
         return super.hashCode()
         + 89 * values.hashCode();
     }
 
-    // javadoc is inherited
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("FieldValueInConstraint(inverse:").append(isInverse()).
         append(", field:").append(getFieldName()).

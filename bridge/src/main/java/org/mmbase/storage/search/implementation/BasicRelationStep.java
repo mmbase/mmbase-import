@@ -109,12 +109,12 @@ public class BasicRelationStep extends BasicStep implements RelationStep, java.i
         return this;
     }
 
-    // javadoc is inherited
+    @Override
     public boolean getCheckedDirectionality() {
         return checkedDirectionality;
     }
 
-    // javadoc is inherited
+    @Override
     public int getDirectionality() {
         return directionality;
     }
@@ -130,12 +130,11 @@ public class BasicRelationStep extends BasicStep implements RelationStep, java.i
         }
     }
 
-    // javadoc is inherited
+    @Override
     public Integer getRole() {
         return role;
     }
 
-    // javadoc is inherited
     public String getRoleDescription() {
         String roleName = "reldef:" + role;
         /*
@@ -149,17 +148,17 @@ public class BasicRelationStep extends BasicStep implements RelationStep, java.i
         return roleName;
     }
 
-    // javadoc is inherited
+    @Override
     public Step getPrevious() {
         return previous;
     }
 
-    // javadoc is inherited
+    @Override
     public Step getNext() {
         return next;
     }
 
-    // javadoc is inherited
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -176,7 +175,7 @@ public class BasicRelationStep extends BasicStep implements RelationStep, java.i
         }
     }
 
- // javadoc is inherited
+    @Override
     public int hashCode() {
         return 41 * (getTableName().hashCode()
                      + 43 * ( (alias != null ? alias.hashCode() : 0)
@@ -185,7 +184,7 @@ public class BasicRelationStep extends BasicStep implements RelationStep, java.i
                                                 + 31 * (role != null ? role.intValue() : 0)))));
 }
 
-    // javadoc is inherited
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("RelationStep(tablename:").append(getTableName()).
         append(", alias:").append(getAlias()).

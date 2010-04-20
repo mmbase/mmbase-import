@@ -11,7 +11,6 @@ package org.mmbase.storage.search.implementation;
 
 import java.util.*;
 import org.mmbase.bridge.Field;
-import org.mmbase.bridge.NodeManager;
 import org.mmbase.cache.CachePolicy;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.SizeMeasurable;
@@ -117,6 +116,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
     }
 
 
+    @Override
     public BasicSearchQuery clone() {
         try {
             BasicSearchQuery clone = (BasicSearchQuery) super.clone();
@@ -534,53 +534,55 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         this.constraint = constraint;
     }
 
-    // javadoc is inherited
+    @Override
     public boolean isDistinct() {
         return distinct;
     }
 
-    // javadoc is inherited
+    @Override
     public boolean isAggregating() {
         return aggregating;
     }
 
-    // javadoc is inherited
+    @Override
     public List<SortOrder> getSortOrders() {
         // return as unmodifiable list
         return Collections.unmodifiableList(sortOrders);
     }
 
-    // javadoc is inherited
+    @Override
     public List<Step> getSteps() {
         return unmodifiableSteps;
     }
 
 
-    // javadoc is inherited
+    @Override
     public List<StepField> getFields() {
         // return as unmodifiable list
         return Collections.unmodifiableList(fields);
     }
 
-    // javadoc is inherited
+    @Override
     public Constraint getConstraint() {
         return constraint;
     }
 
-    // javadoc is inherited
+    @Override
     public int getMaxNumber() {
         return maxNumber;
     }
 
-    //javadoc is inherited
+    @Override
     public int getOffset() {
         return offset;
     }
 
+    @Override
     public CachePolicy getCachePolicy() {
         return cachePolicy;
     }
 
+    @Override
     public void setCachePolicy(CachePolicy policy) {
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
         this.cachePolicy = policy;
@@ -597,6 +599,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
     /**
      * @since MMBase-1.9.2
      */
+    @Override
     public boolean markUsed() {
         boolean wasModifiable = modifiable;
         modifiable = false;
@@ -670,10 +673,12 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         return sb.toString();
     }
 
+    @Override
     public int getByteSize() {
         return getByteSize(new SizeOf());
     }
 
+    @Override
     public int getByteSize(SizeOf sizeof) {
         int size = 47;
         size += 21 * steps.size();    // 21: Size of a BasicStep

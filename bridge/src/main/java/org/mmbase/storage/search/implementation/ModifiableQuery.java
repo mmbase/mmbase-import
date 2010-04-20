@@ -203,7 +203,7 @@ public class ModifiableQuery implements SearchQuery, java.io.Serializable {
         return this;
     }
 
-    // javadoc is inherited
+    @Override
     public int getMaxNumber() {
         if (maxNumber != -1) {
             return maxNumber;
@@ -212,7 +212,7 @@ public class ModifiableQuery implements SearchQuery, java.io.Serializable {
         }
     }
 
-    // javadoc is inherited
+    @Override
     public int getOffset() {
         if (offset != -1) {
             return offset;
@@ -221,7 +221,7 @@ public class ModifiableQuery implements SearchQuery, java.io.Serializable {
         }
     }
 
-    // javadoc is inherited
+    @Override
     public Constraint getConstraint() {
         if (constraint != null) {
             return constraint;
@@ -230,7 +230,7 @@ public class ModifiableQuery implements SearchQuery, java.io.Serializable {
         }
     }
 
-    // javadoc is inherited
+    @Override
     public List<StepField> getFields() {
         if (fields != null) {
             return fields;
@@ -239,7 +239,7 @@ public class ModifiableQuery implements SearchQuery, java.io.Serializable {
         }
     }
 
-    // javadoc is inherited
+    @Override
     public List<SortOrder> getSortOrders() {
         if (sortOrders != null) {
             return sortOrders;
@@ -248,7 +248,7 @@ public class ModifiableQuery implements SearchQuery, java.io.Serializable {
         }
     }
 
-    // javadoc is inherited
+    @Override
     public List<Step> getSteps() {
         if (steps != null) {
             return steps;
@@ -257,7 +257,7 @@ public class ModifiableQuery implements SearchQuery, java.io.Serializable {
         }
     }
 
-    // javadoc is inherited
+    @Override
     public boolean isDistinct() {
         if (distinct != null) {
             return distinct.booleanValue();
@@ -266,7 +266,7 @@ public class ModifiableQuery implements SearchQuery, java.io.Serializable {
         }
     }
 
-    // javadoc is inherited
+    @Override
     public boolean isAggregating() {
         if (aggregating != null) {
             return aggregating.booleanValue();
@@ -275,6 +275,7 @@ public class ModifiableQuery implements SearchQuery, java.io.Serializable {
         }
     }
 
+    @Override
     public CachePolicy getCachePolicy() {
         if (cachePolicy != null) {
             return cachePolicy;
@@ -284,6 +285,7 @@ public class ModifiableQuery implements SearchQuery, java.io.Serializable {
         }
     }
 
+    @Override
     public void setCachePolicy(CachePolicy policy) {
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
         this.cachePolicy = policy;
@@ -294,22 +296,23 @@ public class ModifiableQuery implements SearchQuery, java.io.Serializable {
      * {@inheritDoc}
      * Should correspond to  {@link BasicSearchQuery#equals}
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
         if (obj instanceof SearchQuery) {
-            SearchQuery query = (SearchQuery) obj;
-            Constraint constraint = getConstraint();
-            return isDistinct() == query.isDistinct()
-                && getMaxNumber() == query.getMaxNumber()
-                && getOffset() == query.getOffset()
-                && getSteps().equals(query.getSteps())
-                && getFields().equals(query.getFields())
-                && getSortOrders().equals(query.getSortOrders())
-                && (constraint == null?
-                    query.getConstraint() == null:
-                    constraint.equals(query.getConstraint()));
+            SearchQuery q = (SearchQuery) obj;
+            Constraint con = getConstraint();
+            return isDistinct() == q.isDistinct()
+                && getMaxNumber() == q.getMaxNumber()
+                && getOffset() == q.getOffset()
+                && getSteps().equals(q.getSteps())
+                && getFields().equals(q.getFields())
+                && getSortOrders().equals(q.getSortOrders())
+                && (con == null?
+                    q.getConstraint() == null:
+                    con.equals(q.getConstraint()));
         } else {
             return false;
         }
@@ -319,17 +322,18 @@ public class ModifiableQuery implements SearchQuery, java.io.Serializable {
      * {@inheritDoc}
      * Should correspond to  {@link BasicSearchQuery#hashCode}
      */
+    @Override
     public int hashCode() {
-        Constraint constraint = getConstraint();
+        Constraint con = getConstraint();
         return (isDistinct()? 0: 101)
         + getMaxNumber() * 17 + getOffset() * 19
         + 23 * getSteps().hashCode()
         + 29 * getFields().hashCode()
         + 31 * getSortOrders().hashCode()
-        + 37 * (constraint == null ? 0 : constraint.hashCode());
+        + 37 * (con == null ? 0 : con.hashCode());
     }
 
-    // javadoc is inherited
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ModifiableSearchQuery(distinct:").append(isDistinct()).
         append(", steps:").append(getSteps()).
@@ -342,6 +346,7 @@ public class ModifiableQuery implements SearchQuery, java.io.Serializable {
         return sb.toString();
     }
 
+    @Override
     public boolean markUsed() {
         boolean wasUsed = !modifiable;
         query.markUsed();

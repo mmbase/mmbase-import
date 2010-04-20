@@ -70,6 +70,7 @@ public class BasicStep implements Step, java.io.Serializable {
      * @return This <code>BasicStep</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
+    @Override
     public Step addNode(int nodeNumber) {
         if (! modifiable) throw new IllegalStateException();
         if (nodes == null) {
@@ -90,22 +91,22 @@ public class BasicStep implements Step, java.io.Serializable {
     }
     */
 
-    // javadoc is inherited
+    @Override
     public String getTableName() {
         return builder;
     }
 
-    // javadoc is inherited
+    @Override
     public String getAlias() {
         return alias;
     }
 
-    // javadoc is inherited
+    @Override
     public SortedSet<Integer> getNodes() {
         return nodes == null ? null : (modifiable ? nodes : Collections.unmodifiableSortedSet(nodes));
     }
 
-    // javadoc is inherited
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -120,13 +121,13 @@ public class BasicStep implements Step, java.io.Serializable {
         }
     }
 
-    // javadoc is inherited
+    @Override
     public int hashCode() {
         return 41 * builder.hashCode()
             + (alias == null? 0: 43 * alias.hashCode()) + 47 * (nodes == null ? 1 : nodes.hashCode());
     }
 
-    // javadoc is inherited
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Step(tablename:").append(getTableName()).
         append(", alias:").append(alias).
@@ -135,6 +136,7 @@ public class BasicStep implements Step, java.io.Serializable {
         return sb.toString();
     }
 
+    @Override
     public void setUnmodifiable() {
         modifiable = false;
     }

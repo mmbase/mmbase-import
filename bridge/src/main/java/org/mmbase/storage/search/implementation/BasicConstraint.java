@@ -47,19 +47,16 @@ public class BasicConstraint implements Constraint, java.io.Serializable  {
         return this;
     }
 
-    // javadoc is inherited
     @Override
     public boolean isInverse() {
         return inverse;
     }
 
-    // javadoc is inherited
     @Override
     public int getBasicSupportLevel() {
         return 3; // TODO SearchQueryHandler.SUPPORT_OPTIMAL;
     }
 
-    // javadoc is inherited
     @Override
     public boolean equals(Object obj) {
         // Must be same class (subclasses should override this)!
@@ -71,7 +68,6 @@ public class BasicConstraint implements Constraint, java.io.Serializable  {
         }
     }
 
-    // javadoc is inherited
     @Override
     public int hashCode() {
         return (inverse? 0: 107);
