@@ -16,6 +16,7 @@ import java.text.DateFormat;
 
 import org.mmbase.core.util.DaemonTask;
 import org.mmbase.core.util.DaemonThread;
+import org.mmbase.core.event.*;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -70,13 +71,14 @@ public class MMBaseContext {
             if (servletContext == null) {
                 throw new IllegalArgumentException();
             }
-
             if (initialized) {
                 log.info("Reinitializing, this time with ServletContext");
             }
 
             // store the current context
             sx = servletContext;
+            EventManager.getInstance().propagateEvent(new SystemEvent.ServletContext(sx));
+
             // Get the user directory using the user.dir property.
             // default set to the startdir of the appserver
             userDir = sx.getInitParameter("user.dir");
@@ -107,7 +109,6 @@ public class MMBaseContext {
             initOutputfile(outputFile);
 
             ResourceLoader.init(sx);
-            org.mmbase.util.ResourceWatcher.reinitWatchers();
 
 
             // Init logging.

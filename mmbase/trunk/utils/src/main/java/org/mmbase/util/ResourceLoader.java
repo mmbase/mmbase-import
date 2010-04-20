@@ -33,6 +33,7 @@ import javax.xml.transform.dom.DOMSource;
 
 // used for Unicode Escaping when editing property files
 import org.mmbase.util.transformers.*;
+import org.mmbase.core.event.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;

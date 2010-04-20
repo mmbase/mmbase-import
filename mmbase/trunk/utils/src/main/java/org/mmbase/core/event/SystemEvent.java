@@ -50,6 +50,16 @@ public abstract class SystemEvent extends Event {
         }
     }
 
+    public static class ServletContext extends Collectable  {
+        private final javax.servlet.ServletContext servletContext;
+        public ServletContext(javax.servlet.ServletContext sc) {
+            servletContext = sc;
+        }
+        public javax.servlet.ServletContext getServletContext() {
+            return servletContext;
+        }
+    }
+
     public static class Shutdown extends Collectable {
     }
 
@@ -68,8 +78,13 @@ public abstract class SystemEvent extends Event {
 
     static {
         SystemEventListener logger = new SystemEventListener() {
+                @Override
                 public void notify(SystemEvent s) {
                     LOG.service(" Received " + s);
+                }
+                @Override
+                public String toString() {
+                    return "SystemEventLogger";
                 }
             };
         EventManager.getInstance().addEventListener(logger);
