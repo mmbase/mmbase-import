@@ -17,82 +17,36 @@
 
   <display-name>MMBase distro</display-name>
 
-  <!-- uncomment this and fill in the right value if you want to relocate your user or config directory
-  <context-param>
-    <param-name>user.dir</param-name>
-    <param-value>$WEBROOT</param-value>
-  </context-param>
-  <context-param>
-    <param-name>mmbase.config</param-name>
-    <param-value>WEB-INF/config</param-value>
-  </context-param>
+  <!-- for some  more explanations about several context-params, see web.xml of example-webapp
+       https://scm.mmbase.org/mmbase/trunk/example-webapp/src/main/webapp/WEB-INF/web.xml
   -->
-  <!--
-    MMBase Taglib settings
-    -->
-  <!--
-  Whether tags should try to evaluate the body without buffering if that is possible. This feature
-  of taglibs is not supported by all applications servers (orion, tomcat < 4.1.19?), in which case
-  setting this to true will cause rather strange results.
-  If your application server does support this well (resin 3, tomcat 5), you can set this to true,
-  and improve performance.
-  -->
+
   <context-param>
     <param-name>mmbase.taglib.eval_body_include</param-name>
     <param-value>true</param-value>
   </context-param>
 
-  <!--
-    Whether the mm:url tag (and other URL producing tags) should produce relative URL's (relative to
-    the page on which the mm:url is called).  You might try to set this to 'true' if you desire only
-    relative urls in your site. This is an expirimental option, which is known not to work in
-    certain situations (like redirects).
-  -->
   <context-param>
     <param-name>mmbase.taglib.url.makerelative</param-name>
     <param-value>false</param-value>
   </context-param>
-
-  <!--
-      MMB-1897
-  -->
   <context-param>
     <param-name>mmbase.taglib.url.excludeForEncoding</param-name>
     <param-value>.*\.(ico|jpg|gif|png|css|js)</param-value>
   </context-param>
 
-  <!--
-      To avoid accidental recursing mm:include (and extended tags) don't work below a certain level (defaults to 50).
-  -->
   <context-param>
     <param-name>mmbase.taglib.max_include_level</param-name>
     <param-value>50</param-value>
   </context-param>
-
-  <!--
-    The MMBase taglib stores its variable compatible with EL. If you don't want that (e.g. because
-    it was not like this in MMBase 1.7) then you can set this parameter to 'true'
-  -->
   <context-param>
     <param-name>mmbase.taglib.isELIgnored</param-name>
     <param-value>false</param-value>
   </context-param>
-
-  <!--
-      If true, the image tag wil produce URL's with templates in them. This is to support legacy
-      setups (e.g. with an 'servdb' image-servlet). This option is actually unneeded in 1.8, but
-      could have its use in 1.7, and is here only for completeness.
-  -->
   <context-param>
     <param-name>mmbase.taglib.image.urlconvert</param-name>
     <param-value>false</param-value>
   </context-param>
-  <!--
-      If true, the image tag will automaticly add 'f(asis)' to every template. This means that
-      e.g. a png source image will be converted to a png. This can also be arranged as a
-      image-builder property, but in that case this behaviour is not reflected in the 'ckey' of the
-      image, so that may lead to backwards-compatibility issues.
-  -->
   <context-param>
     <param-name>mmbase.taglib.image.format.asis</param-name>
     <param-value>false</param-value>
@@ -107,33 +61,19 @@
     <param-name>mmbase.taglib.function.nonExistance</param-name>
     <param-value>exception</param-value>
   </context-param>
-
-  <!--
-      Whether the server must be 'stalled' until this web-app is completely running.  Recognized by
-      MMBase.  If your web-app is in an application server with other application, it is good that
-      the initialization of mmbase does not stall the initialization of the complete application
-      server. Faster applications can already start serving content, without having to wait for the rest.
-
-      If however your application is 'alone' in the application server and is even load-balanced
-      over several servers, then you do want that the application stalls the server, so that the
-      load-balancer (with AJP) can see that this one is not actually running (the 503 status code
-      does not seem to suffice).
-  -->
   <context-param>
     <param-name>stall-server</param-name>
     <param-value>false</param-value>
   </context-param>
+  <context-param>
+    <param-name>mmbase.defaultRelationStepDirection</param-name>
+    <param-value>BOTH</param-value> <!-- consider DESTINATION -->
+  </context-param>
 
-
-  <!--
-       Whether URL's generated to images must include a filename.
-       Possible values are: 'yes' (from filename field, or from title), 'no', or '' (only if the 'filename' field is present, and filled).
-  -->
   <context-param>
     <param-name>mmbase.servlet.images.addfilename</param-name>
     <param-value>yes</param-value>
   </context-param>
-  <!-- some for attachments -->
   <context-param>
     <param-name>mmbase.servlet.attachments.addfilename</param-name>
     <param-value>yes</param-value>
@@ -244,6 +184,13 @@
     <mime-type>application/java-archive</mime-type>
   </mime-mapping>
 
+  <mime-mapping>
+    <extension>meta</extension>
+    <mime-type>text/plain</mime-type>
+  </mime-mapping>
+
+
+
   <welcome-file-list>
     <welcome-file>index.jspx</welcome-file>
     <welcome-file>index.jsp</welcome-file>
@@ -271,5 +218,17 @@
     <error-code>503</error-code>
     <location>/mmbase/errorpages/503.jsp</location>
   </error-page>
+
+
+  <resource-ref>
+    <description>
+      Datasource for the MMBase Database. This datasource must be
+      configured in the application server.
+      This entry is not needed in tomcat, but jetty needs it.
+    </description>
+    <res-ref-name>jdbc/MMBase</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
 
 </web-app>
