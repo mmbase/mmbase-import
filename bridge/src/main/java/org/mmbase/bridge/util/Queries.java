@@ -12,6 +12,7 @@ package org.mmbase.bridge.util;
 import java.util.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.datatypes.*;
 import org.mmbase.bridge.implementation.BasicQuery;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.legacy.ConstraintParser;
@@ -1735,31 +1736,31 @@ abstract public class Queries {
             Comparable pos = null;
             for (AnnotatedNode n : list) {
                 Node node = n.getNodeValue(orderAlias + ".number");
-                Object posValue = node.getValue(orderField.getFieldName());
-                if (posValue == null) {
-                    posValue = getFirstValue(node.getNodeManager().getField(orderField.getFieldName()).getDataType().getTypeAsClass());
-                    log.debug("Value of " + orderField + " is null. Substituted 'first' value " + posValue);
-                    node.setValue(orderField.getFieldName(), posValue);
-                }
-                if (posValue == null) {
-                    if (posValue == null) {
-                        log.warn("Value of " + orderField + " is null");
-                        continue;
+                Field field = node.getNodeManager().getField(orderField.getFieldName());
+                DataType dataType = field.getDataType();
+                if (dataType instanceof SequentialDataType) {
+                    SequentialDataType<Comparable> seqDataType =
+                        (SequentialDataType<Comparable>) dataType;
+                    Comparable<? super Comparable> comparable = (Comparable<? super Comparable>) seqDataType.cast(node.getValue(orderField.getFieldName()), node, field);
+
+                    if (comparable == null) {
+                        comparable = (Comparable<? super Comparable>) seqDataType.first();
+                        log.debug("Value of " + orderField + " is null. Substituted 'first' value " + comparable);
+                        node.setValue(orderField.getFieldName(), comparable);
                     }
-                } else if (posValue instanceof Comparable) {
-                    Comparable comparable = (Comparable) posValue;
                     if (pos != null) {
+
                         if (so.getDirection() == SortOrder.ORDER_ASCENDING) {
                             if (comparable.compareTo(pos) <= 0) {
-                                comparable = increaseValue(pos);
-                                log.debug("Setting " + node.getNumber() + " " + orderField + " from " + posValue + " to " + comparable);
+                                comparable = seqDataType.increase(pos);
+                                log.debug("Setting " + node.getNumber() + " " + orderField + " to " + comparable);
                                 node.setValue(orderField.getFieldName(), comparable);
                                 numberOfChanges++;
                             }
                         } else {
                             if (comparable.compareTo(pos) >= 0) {
-                                comparable = decreaseValue(pos);
-                                log.debug("Setting " + node.getNumber() + " " + orderField + " from " + posValue + " to " + comparable);
+                                comparable = seqDataType.decrease(pos);
+                                log.debug("Setting " + node.getNumber() + " " + orderField + " from  to " + comparable);
                                 node.setValue(orderField.getFieldName(), comparable);
                                 numberOfChanges++;
                             }
@@ -1768,7 +1769,7 @@ abstract public class Queries {
                     pos = comparable;
                     log.debug("" + node.getNumber() + ": " + pos);
                 } else {
-                    log.warn("Value of " + orderField + " is not comparable but " + posValue);
+                    log.warn("DataType  of " + orderField + " is not sequential but " + dataType);
                     break;
                 }
             }
@@ -1817,41 +1818,6 @@ abstract public class Queries {
     }
 
 
-
-    // TODO, 'increase', 'decrease' and 'first' are perhaps properties of the datatype.
-    // we may move this stuff to DataType implementations
-    /**
-     * Used by {@link #reorderResult} to 'increase' the value of position determining field.
-     */
-    private static Comparable increaseValue(Comparable pos) {
-        if (pos instanceof Integer) {
-            return (Integer) pos + 1;
-        } else if (pos instanceof Long) {
-            return (Long) pos + 1;
-        } else {
-            log.warn("Don't know how to increase " + pos);
-            return pos;
-        }
-    }
-    private static Comparable decreaseValue(Comparable pos) {
-        if (pos instanceof Integer) {
-            return (Integer) pos - 1;
-        } else if (pos instanceof Long) {
-            return (Long) pos - 1;
-        } else {
-            log.warn("Don't know how to decrease " + pos);
-            return pos;
-        }
-    }
-    private static Comparable getFirstValue(Class<Comparable> c) {
-        if (Integer.class.isAssignableFrom(c)) {
-            return 0;
-        } else if (Long.class.isAssignableFrom(c)) {
-            return 0L;
-        } else {
-            return org.mmbase.util.Casting.toType(c, "");
-        }
-    }
 
 
     /**
