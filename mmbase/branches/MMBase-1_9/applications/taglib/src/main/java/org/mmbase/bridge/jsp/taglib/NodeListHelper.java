@@ -251,10 +251,10 @@ public class NodeListHelper implements ListProvider {
                 }
             }
         }
-        ListSorter.sort(nodes, (String) comparator.getValue(thisTag), thisTag);
+        returnList = (BridgeList<Node>) ListSorter.sort(nodes, (String) comparator.getValue(thisTag), thisTag);
 
         if (trim && (max != Attribute.NULL || offset != Attribute.NULL)) {
-            int currentSize = nodes.size();
+            int currentSize = returnList.size();
 
             int maxi = max.getInt(thisTag, currentSize);
             int maxx = (maxi > currentSize ? currentSize : maxi);
@@ -271,10 +271,9 @@ public class NodeListHelper implements ListProvider {
             if (offseti < 0) {
                 offseti = 0;
             }
-            nodes = nodes.subList(offseti, to);
+            returnList = returnList.subList(offseti, to);
 
         }
-        returnList   = nodes;
 
         // returnList is know, now we can serve parent formatter tag
         FormatterTag f = thisTag.findParentTag(FormatterTag.class, null, false);
