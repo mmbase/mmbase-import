@@ -110,14 +110,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             query = cloud.createNodeQuery();
             Step step1 = query.addStep(parentNode.getNodeManager());
             query.setAlias(step1, parentNode.getNodeManager().getName() + "0");
-
-            Queries.addStartNodes(query, parentNode);
-            if (log.isDebugEnabled()) {
-                log.debug("" + query.toSql());
-            }
-
-
-
+            query.addNode(step1, parentNode);
             String searchDirections;
             if (searchDir == Attribute.NULL) { // searchdir is a bit deprecated.
                 searchDirections = (String) searchDirs.getValue(this);
