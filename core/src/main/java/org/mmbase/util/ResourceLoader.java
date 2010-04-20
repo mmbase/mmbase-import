@@ -2192,7 +2192,7 @@ public class ResourceLoader extends ClassLoader {
      * URLStreamHandler for URL's which can do neither input, nor output. Such an URL can be
      * returned by other PathURLStreamHandlers too.
      */
-    private  PathURLStreamHandler NOT_AVAILABLE_URLSTREAM_HANDLER = new PathURLStreamHandler() {
+    private  final PathURLStreamHandler NOT_AVAILABLE_URLSTREAM_HANDLER = new PathURLStreamHandler() {
 
             @Override
             protected String getName(URL u) {
