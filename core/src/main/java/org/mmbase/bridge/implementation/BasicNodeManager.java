@@ -297,7 +297,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         cloud.add(result);
         return result;
     }
-    public final Node createNode() {
+    public final Node createNode(
+) {
         return createBasicNode();
     }
 
