@@ -12,7 +12,6 @@ package org.mmbase.datatypes;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
 
 /**
  * An enumeration datatype representing all days of a week, so an integer with the value 1 through

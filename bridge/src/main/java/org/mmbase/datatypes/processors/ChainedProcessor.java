@@ -38,6 +38,7 @@ public class ChainedProcessor implements Processor {
         return this;
     }
 
+    @Override
     public Object process(Node node, Field field, Object value) {
         for (Processor proc: processors) {
             value = proc.process(node, field, value);

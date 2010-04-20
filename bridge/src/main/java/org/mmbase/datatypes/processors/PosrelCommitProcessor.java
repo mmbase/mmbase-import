@@ -30,6 +30,7 @@ public class PosrelCommitProcessor implements CommitProcessor {
     private static final long serialVersionUID = 1L;
 
 
+    @Override
     public void commit(Node node, Field field) {
         if (log.isDebugEnabled()) {
             log.debug("Committing" + node);

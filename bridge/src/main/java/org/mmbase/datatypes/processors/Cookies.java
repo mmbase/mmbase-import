@@ -43,6 +43,7 @@ public class Cookies  {
     public static class Getter extends CookieBase implements Processor {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public Object process(Node node, Field field, Object value) {
             LOG.debug("Getting default value for " + field);
             Cloud cloud = CloudThreadLocal.currentCloud();
@@ -73,6 +74,7 @@ public class Cookies  {
 
     public static class Setter extends CookieBase implements Processor {
         private static final long serialVersionUID = 1L;
+        @Override
         public Object process(Node node, Field field, Object value) {
             Cloud cloud = CloudThreadLocal.currentCloud();
             if (cloud == null) {

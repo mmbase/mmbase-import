@@ -28,6 +28,7 @@ public class CreationTimeGuesser implements Processor {
     private static final long serialVersionUID = 1L;
 
 
+    @Override
     public final Object process(Node node, Field field, Object value) {
         Object v = node.getValueWithoutProcess(field.getName());
         if (v == null) {
@@ -56,10 +57,12 @@ public class CreationTimeGuesser implements Processor {
         return "CreationTime";
     }
 
+    @Override
     public int hashCode() {
         return CreationTimeGuesser.class.hashCode();
     }
 
+    @Override
     public boolean equals(Object o) {
         return o != null && o instanceof CreationTimeGuesser;
     }

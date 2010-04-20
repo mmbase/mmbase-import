@@ -48,6 +48,8 @@ public class RelatedList {
     public static class Setter extends AbstractProcessor {
 
         private static final long serialVersionUID = 1L;
+        @Override
+        @SuppressWarnings("empty-statement")
         public Object process(Node node, Field field, Object value) {
             if (log.isDebugEnabled()) {
                 log.debug("Setting "  + value);
@@ -96,6 +98,7 @@ public class RelatedList {
     public static class Getter extends AbstractProcessor {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public Object process(Node node, Field field, Object value) {
             NodeList nl = node.getRelatedNodes(type, role, searchDir);
             if (log.isDebugEnabled()) {

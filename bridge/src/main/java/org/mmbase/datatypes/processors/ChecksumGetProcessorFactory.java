@@ -37,12 +37,14 @@ public class ChecksumGetProcessorFactory implements ParameterizedProcessorFactor
     /**
      * Creates a parameterized processor.
      */
+    @Override
     public Processor createProcessor(Parameters parameters) {
         final ByteToCharTransformer transformer = (ByteToCharTransformer) factory.createTransformer(parameters);
         final String  sourceField = (String) parameters.get("field");
         return new Processor() {
             private static final long serialVersionUID = 1L;
 
+            @Override
             public Object process(Node node, Field field, Object value) {
                 if (value == null || "".equals(value) ) {
                     if (node.isNull(sourceField) || node.getSize(sourceField) == 0) {
@@ -63,6 +65,7 @@ public class ChecksumGetProcessorFactory implements ParameterizedProcessorFactor
                     return value;
                 }
             }
+            @Override
             public String toString() {
                 return transformer.toString() + " on " + sourceField;
             }
@@ -72,6 +75,7 @@ public class ChecksumGetProcessorFactory implements ParameterizedProcessorFactor
     /**
      * Create  empty <code>Parameters</code> object for use with {@link #createProcessor}.
      */
+    @Override
     public Parameters createParameters() {
         return new Parameters(PARAMS);
     }

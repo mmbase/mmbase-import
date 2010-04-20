@@ -11,7 +11,6 @@ package org.mmbase.datatypes.processors;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -41,6 +40,7 @@ public class PathRelatedList {
     public static class Getter extends AbstractProcessor {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public Object process(Node node, Field field, Object value) {
             NodeQuery q = Queries.createNodeQuery(node);
             Queries.addPath(q, path, searchDirs);

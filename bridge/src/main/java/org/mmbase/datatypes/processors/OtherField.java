@@ -51,6 +51,7 @@ public class OtherField {
     public static class Setter extends AbstractProcessor {
 
         private static final long serialVersionUID = 1L;
+        @Override
         public Object process(final Node node, final Field field, final Object value) {
             if (onlyIfEmpty && ! empty(node, fieldName)) {
                 return value;
@@ -63,6 +64,7 @@ public class OtherField {
     public static class Getter extends AbstractProcessor {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public Object process(Node node, Field field, Object value) {
             if (onlyIfEmpty) {
                 if (value == null || "".equals(value)) {

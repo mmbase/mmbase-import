@@ -170,9 +170,11 @@ public final class DataTypeCollector {
         return new Iterator<DataType<?>>() {
             DataType<?> next = i.hasNext() ? i.next() : null;
             Iterator<DataType<?>> subIterator = null;
+            @Override
             public boolean hasNext() {
                 return next != null || subIterator != null;
             }
+            @Override
             public DataType<?> next() {
                 if (subIterator != null) {
                     DataType<?> n = subIterator.next();
@@ -192,6 +194,7 @@ public final class DataTypeCollector {
                 }
                 throw new NoSuchElementException();
             }
+            @Override
             public void remove() {
                 throw new UnsupportedOperationException();
             }
@@ -262,6 +265,7 @@ public final class DataTypeCollector {
     /**
      * Returns whether the dataType is part of the current collection.
      */
+    @SuppressWarnings("element-type-mismatch")
     public boolean contains(DataType<?> dataType) {
         return dataTypes.containsValue(dataType);
     }

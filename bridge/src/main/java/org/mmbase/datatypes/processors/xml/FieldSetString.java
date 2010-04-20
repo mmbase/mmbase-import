@@ -32,6 +32,7 @@ public class FieldSetString implements  Processor {
 
     protected static final String PREF = "<field><![CDATA[";
     protected static final String POST = "]]></field>";
+    @Override
     public Object process(Node node, Field field, Object value) {
         if (value instanceof org.w3c.dom.Document) return value;
         log.debug("Getting " + field + " from " + node + " as a String");

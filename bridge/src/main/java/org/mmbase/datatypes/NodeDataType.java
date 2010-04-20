@@ -117,6 +117,7 @@ public class NodeDataType extends BasicDataType<Node> {
     @Override
     public Comparator<Node> getComparator() {
         return new DataTypeComparator<Node>(this) {
+            @Override
             public int compare(Node n1, Node n2) {
                 if (n1 == null) {
                     if (n2 == null) {
@@ -156,6 +157,7 @@ public class NodeDataType extends BasicDataType<Node> {
             return cloud;
         }
 
+        @Override
         protected boolean simpleValid(Object v, Node node, Field field) {
             if (getValue().equals(Boolean.TRUE)) {
                 if (v != null) {

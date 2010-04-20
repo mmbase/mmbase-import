@@ -28,6 +28,7 @@ public final class CopyProcessor implements Processor {
         return instance;
     }
 
+    @Override
     public final Object process(Node node, Field field, Object value) {
         return value;
     }
