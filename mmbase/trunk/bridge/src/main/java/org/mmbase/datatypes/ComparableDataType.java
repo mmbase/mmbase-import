@@ -234,6 +234,13 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
         };
     }
 
+    /**
+     * Returns a natural 'first' value. This may return some kind of <code>0</code>
+     * @since MMBase-2.0
+     */
+    public abstract E first();
+
+
     protected class MinRestriction extends AbstractRestriction<E> {
         private boolean inclusive;
         MinRestriction(MinRestriction source) {
