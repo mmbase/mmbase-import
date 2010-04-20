@@ -23,7 +23,7 @@
         <dependencies>
           <dependency>
             <groupId>org.mmbase</groupId>
-            <artifactId>mmbase</artifactId>
+            <artifactId>mmbase-bridge</artifactId>
             <version>${mmbase.version}</version>
           </dependency>
           <dependency>
@@ -85,7 +85,6 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
           <descriptors>
-            <descriptor>assembly/client.xml</descriptor>
             <descriptor>assembly/client-skinny.xml</descriptor>
             <descriptor>examples-assembly.xml</descriptor>
           </descriptors>

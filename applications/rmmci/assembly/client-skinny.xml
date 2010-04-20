@@ -1,5 +1,5 @@
 <assembly>
-  <id>client-skinny</id>
+  <id>client</id>
   <formats>
     <format>jar</format>
   </formats>
