@@ -81,6 +81,8 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
 
     public InverseTypeRelSet inverseTypeRelNodes; // for searching sources
 
+    private int defaultRelationStepDirection = RelationStep.DIRECTIONS_BOTH;
+
     @Override
     public boolean init() {
         if (oType != -1) return true;
