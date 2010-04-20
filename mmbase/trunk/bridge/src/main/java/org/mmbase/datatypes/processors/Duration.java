@@ -112,6 +112,7 @@ public class Duration {
             return buf.toString();
         }
 
+        @Override
         public Object process(Node node, Field field, Object value) {
             long time = Casting.toLong(value) * 1000;
             return getString(time);
@@ -151,6 +152,7 @@ public class Duration {
             index--;
             return l + 0.5; // +0.5 makes rounding correct
         }
+        @Override
         public Object process(Node node, Field field, Object value) {
             if (value instanceof Long) {
                 return value;

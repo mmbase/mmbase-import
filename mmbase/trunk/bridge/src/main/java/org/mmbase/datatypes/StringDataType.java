@@ -49,6 +49,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
         super(name, String.class);
     }
 
+    @Override
     protected void inheritProperties(BasicDataType<String> origin) {
         super.inheritProperties(origin);
         if (origin instanceof StringDataType) {
@@ -63,6 +64,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
     public static final Pattern NON_NEGATIVE_INTEGER_PATTERN = Pattern.compile("\\A[0-9]+\\z");
     public static final Pattern LONG_PATTERN    = INTEGER_PATTERN;
 
+    @Override
     protected void inheritRestrictions(BasicDataType origin) {
         super.inheritRestrictions(origin);
         if (origin instanceof StringDataType) {
@@ -97,6 +99,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
         }
     }
 
+    @Override
     protected void cloneRestrictions(BasicDataType origin) {
         super.cloneRestrictions(origin);
         if (origin instanceof StringDataType) {
@@ -113,6 +116,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
         return collator.compare(comp1, comp2);
     }
 
+    @Override
     public long getLength(Object value) {
         if (value == null) return 0;
         return ((String) value).length();
@@ -120,6 +124,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
     /**
      * {@inheritDoc}
      */
+    @Override
     public long getMinLength() {
         return Casting.toLong(minLengthRestriction.getValue());
     }
@@ -127,6 +132,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
     /**
      * {@inheritDoc}
      */
+    @Override
     public DataType.Restriction<Long> getMinLengthRestriction() {
         return minLengthRestriction;
     }
@@ -134,6 +140,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setMinLength(long value) {
         getMinLengthRestriction().setValue(Long.valueOf(value));
     }
@@ -141,6 +148,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
     /**
      * {@inheritDoc}
      */
+    @Override
     public long getMaxLength() {
         return Casting.toLong(getMaxLengthRestriction().getValue());
     }
@@ -148,12 +156,14 @@ public class StringDataType extends ComparableDataType<String> implements Length
     /**
      * {@inheritDoc}
      */
+    @Override
     public DataType.Restriction<Long> getMaxLengthRestriction() {
         return maxLengthRestriction;
     }
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setMaxLength(long value) {
         getMaxLengthRestriction().setValue(Long.valueOf(value));
     }
@@ -223,6 +233,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
     @Override
     public Comparator<String> getComparator() {
         return new DataTypeComparator<String>(this) {
+            @Override
             public int compare(String s1, String s2) {
                 return StringDataType.this.getCollator().compare(s1, s2);
             }
@@ -294,6 +305,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
         Pattern getPattern() {
             return value;
         }
+        @Override
         protected boolean simpleValid(Object v, Node node, Field field) {
             String s = StringDataType.this.castForPattern(v, node, field);
             boolean res = value == null || s == null ? true : value.matcher(s).matches();

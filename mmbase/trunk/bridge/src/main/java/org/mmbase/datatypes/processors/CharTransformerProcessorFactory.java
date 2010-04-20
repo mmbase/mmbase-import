@@ -30,12 +30,14 @@ public class CharTransformerProcessorFactory implements ParameterizedProcessorFa
         factory = f;
     }
 
+    @Override
     public Processor createProcessor(Parameters parameters) {
         CharTransformer ct = factory.createTransformer(parameters);
         return new CharTransformerProcessor(ct);
     }
 
 
+    @Override
     public Parameters createParameters() {
         return factory.createParameters();
     }

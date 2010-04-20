@@ -27,6 +27,7 @@ public class IgnoreIfChangedProcessor implements Processor {
     private static final Logger log = Logging.getLoggerInstance(IgnoreIfChangedProcessor.class);
     private static final long serialVersionUID = 1L;
 
+    @Override
     public final Object process(Node node, Field field, Object value) {
         if (node == null) return value;
         if (! node.isNew()) {
@@ -39,6 +40,7 @@ public class IgnoreIfChangedProcessor implements Processor {
         return value;
     }
 
+    @Override
     public String toString() {
         return "IGNOREIFCHANGED";
     }

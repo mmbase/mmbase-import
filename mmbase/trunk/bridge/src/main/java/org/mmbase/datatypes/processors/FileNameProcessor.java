@@ -27,6 +27,7 @@ public class FileNameProcessor implements Processor {
 
     private static final long serialVersionUID = 1L;
 
+    @Override
     public final Object process(Node node, Field field, Object value) {
         if (value == null) {
             return null;

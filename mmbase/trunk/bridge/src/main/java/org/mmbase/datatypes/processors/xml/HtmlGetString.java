@@ -24,6 +24,7 @@ public class HtmlGetString implements  Processor {
 
     private Processor processor = new FieldGetString();
 
+    @Override
     public Object process(Node node, Field field, Object value) {
         return processor.process(node, field, value);
     }

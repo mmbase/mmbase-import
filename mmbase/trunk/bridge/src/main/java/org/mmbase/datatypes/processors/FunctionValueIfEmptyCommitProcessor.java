@@ -38,6 +38,7 @@ public class FunctionValueIfEmptyCommitProcessor implements CommitProcessor {
         fieldName = fn;
     }
 
+    @Override
     public void commit(Node node, Field field) {
         if (node.getValue(field.getName()) == null || "".equals(node.getStringValue(field.getName()))) {
             if (fieldName != null) {

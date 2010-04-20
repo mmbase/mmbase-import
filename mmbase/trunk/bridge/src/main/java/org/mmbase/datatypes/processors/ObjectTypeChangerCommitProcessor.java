@@ -27,6 +27,7 @@ public class ObjectTypeChangerCommitProcessor implements CommitProcessor {
     private static final Logger log = Logging.getLoggerInstance(ObjectTypeChangerCommitProcessor.class);
     private static final long serialVersionUID = 1L;
 
+    @Override
     public void commit(Node node, Field field) {
         if (! node.isNew()) {
             String bul = (String) node.getValue(field.getName());
@@ -39,6 +40,7 @@ public class ObjectTypeChangerCommitProcessor implements CommitProcessor {
 
     public static class Getter implements Processor {
         private static final long serialVersionUID = 1L;
+        @Override
         public Object process(Node node, Field field, Object value) {
             String bul = (String) node.getValueWithoutProcess(field.getName());
             if (bul != null) {

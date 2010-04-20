@@ -34,6 +34,7 @@ public class UserNodeDataType extends NodeDataType {
         super(name);
     }
 
+    @Override
     public Node getDefaultValue(Locale locale, Cloud cloud, Field field) {
         Framework fw = Framework.getInstance();
         Parameters params = fw.createParameters();

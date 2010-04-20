@@ -26,6 +26,7 @@ public class IgnoreEmptyProcessor implements Processor {
     private static final Logger log = Logging.getLoggerInstance(IgnoreEmptyProcessor.class);
     private static final long serialVersionUID = 1L;
 
+    @Override
     public final Object process(Node node, Field field, Object value) {
         if (node == null) return value;
         if (value == null || "".equals(value)) {
@@ -35,6 +36,7 @@ public class IgnoreEmptyProcessor implements Processor {
         return value;
     }
 
+    @Override
     public String toString() {
         return "IGNORE";
     }

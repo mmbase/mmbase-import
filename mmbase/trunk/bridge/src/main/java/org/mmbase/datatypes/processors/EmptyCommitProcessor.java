@@ -29,10 +29,12 @@ public final class EmptyCommitProcessor  implements CommitProcessor {
         return instance;
     }
 
+    @Override
     public final void commit(Node node, Field field) {
         return;
     }
 
+    @Override
     public String toString() {
         return "EMPTY";
     }

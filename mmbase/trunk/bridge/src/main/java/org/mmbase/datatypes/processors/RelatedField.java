@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes.processors;
 
 import org.mmbase.bridge.*;
-import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -49,6 +48,7 @@ public class RelatedField {
     public static class Setter extends AbstractProcessor {
 
         private static final long serialVersionUID = 1L;
+        @Override
         public Object process(final Node node, final Field field, final Object value) {
             if (log.isDebugEnabled()) {
                 log.debug("Setting "  + value);
@@ -71,6 +71,7 @@ public class RelatedField {
     public static class Getter extends AbstractProcessor {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public Object process(Node node, Field field, Object value) {
             if (log.isDebugEnabled()) {
                 log.debug("getting "  + node);

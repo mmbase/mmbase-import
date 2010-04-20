@@ -25,9 +25,11 @@ public abstract class ContextProcessor {
     public static class Get implements Processor {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public final Object process(Node node, Field field, Object value) {
             return node.getContext();
         }
+        @Override
         public String toString() {
             return "GET_CONTEXT";
         }
@@ -36,11 +38,13 @@ public abstract class ContextProcessor {
     public static class Set implements Processor {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public final Object process(Node node, Field field, Object value) {
             node.setContext(Casting.toString(value));
             return node.getContext();
         }
 
+        @Override
         public String toString() {
             return "SET_CONTEXT";
         }

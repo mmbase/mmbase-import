@@ -23,7 +23,7 @@ import java.util.*;
 
 public class JavaRequest extends  AbstractRequest {
 
-    private Map<String, Object> values = new HashMap<String, Object>();
+    private final Map<String, Object> values = new HashMap<String, Object>();
 
     private boolean post = false;
 

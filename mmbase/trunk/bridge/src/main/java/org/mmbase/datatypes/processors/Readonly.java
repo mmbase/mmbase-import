@@ -30,6 +30,7 @@ public class Readonly implements Processor {
      * You can plug this in on every set-action besides 'object' which will make this
      * field unmodifiable, except for set(Object) itself (which is never used from editors).
      */
+    @Override
     public Object process(Node node, Field field, Object value) {
         throw new BridgeException("You cannot change the field " + field.getName());
     }

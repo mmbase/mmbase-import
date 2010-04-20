@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes.processors;
 
+import java.util.Arrays;
 import org.mmbase.bridge.*;
 import java.text.*;
 import java.util.regex.*;
@@ -136,6 +137,7 @@ public class FormatQuantity implements Processor {
     }
 
 
+    @Override
     public  Object process(Node node, Field field, Object value) {
         if (value == null) return null;
 
@@ -220,7 +222,7 @@ public class FormatQuantity implements Processor {
         if (! o.getClass().equals(this.getClass())) return false;
         FormatQuantity f = (FormatQuantity) o;
         return k.equals(f.k) &&
-            prefixes.equals(f.prefixes) &&
+            Arrays.equals(prefixes, f.prefixes) &&
             unit.equals(f.unit) &&
             lowFormat.equals(f.lowFormat) &&
             highFormat.equals(f.highFormat) &&
