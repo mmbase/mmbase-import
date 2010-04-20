@@ -25,15 +25,38 @@ public abstract class SystemEvent extends Event {
     }
 
     /**
+     * A SystemEvent that is also Collectable will be collected by the EventManger and also issued to EventListeners which are added after the event
+     * happened.
+     */
+    public static abstract class  Collectable extends SystemEvent {
+    }
+
+    /**
      * Notifies that the local MMBase is now fully up and running
      */
-    public static class Up extends SystemEvent {
+    public static class Up extends Collectable {
     }
+
+
+    public static class ServletContext extends Collectable  {
+        private final javax.servlet.ServletContext servletContext;
+        public ServletContext(javax.servlet.ServletContext sc) {
+            servletContext = sc;
+        }
+        public javax.servlet.ServletContext getServletContext() {
+            return servletContext;
+        }
+    }
+
 
     static {
         SystemEventListener logger = new SystemEventListener() {
                 public void notify(SystemEvent s) {
                     LOG.service(" Received " + s);
+                }
+                @Override
+                public String toString() {
+                    return "SystemEventLogger";
                 }
             };
         EventManager.getInstance().addEventListener(logger);

@@ -30,7 +30,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @since   MMBase-1.8
  * @version $Id$
  */
-public class EventManager {
+public class EventManager implements SystemEventListener {
 
     private static final Logger log = Logging.getLoggerInstance(EventManager.class);
 
@@ -51,6 +51,7 @@ public class EventManager {
      * The collection of event brokers. There is one for every event type that can be sent/received
      */
     private final Set<EventBroker> eventBrokers = new CopyOnWriteArraySet<EventBroker>();
+    private final List<SystemEvent.Collectable> receivedSystemEvents = new ArrayList<SystemEvent.Collectable>();
 
     private long numberOfPropagatedEvents = 0;
     private long duration = 0;
@@ -60,6 +61,12 @@ public class EventManager {
      */
     public static EventManager getInstance() {
         return eventManager;
+    }
+
+    public synchronized void notify(SystemEvent se) {
+        if (se instanceof SystemEvent.Collectable) {
+            receivedSystemEvents.add((SystemEvent.Collectable) se);
+        }
     }
 
 
@@ -112,6 +119,7 @@ public class EventManager {
             log.fatal("No event brokers could not be found. This means that query-invalidation does not work correctly now. Proceeding anyway.");
             return;
         }
+        addEventListener(this);
     }
 
     /**
@@ -156,6 +164,11 @@ public class EventManager {
         while (i.hasNext()) {
             EventBroker broker = i.next();
             if (broker.addListener(listener)) {
+                if (listener instanceof SystemEventListener) {
+                    for (SystemEvent.Collectable se : receivedSystemEvents) {
+                        ((SystemEventListener) listener).notify(se);
+                    }
+                }
                 if (log.isDebugEnabled()) {
                     log.debug("listener " + listener + " added to broker " + broker );
                 }
