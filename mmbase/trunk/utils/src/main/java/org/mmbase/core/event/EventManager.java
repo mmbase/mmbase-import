@@ -105,7 +105,7 @@ public class EventManager implements SystemEventListener {
     }
 
 
-    protected void configure(String resource) {
+    protected synchronized void configure(String resource) {
         log.service("Configuring the event manager");
         eventBrokers.clear();
         for (URL url : ResourceLoader.getConfigurationRoot().getResourceList(resource)) {
@@ -181,12 +181,15 @@ public class EventManager implements SystemEventListener {
     /**
      * @param listener
      */
-    public void addEventListener(EventListener listener) {
+    public synchronized void addEventListener(EventListener listener) {
         BrokerIterator i =  findBrokers(listener);
+        boolean notifiedReceived = false;
         while (i.hasNext()) {
             EventBroker broker = i.next();
             if (broker.addListener(listener)) {
-                if (listener instanceof SystemEventListener) {
+                if (! notifiedReceived && listener instanceof SystemEventListener) {
+                    log.debug("Notifying " + receivedSystemEvents + " to " + listener);
+                    notifiedReceived = true;
                     for (SystemEvent.Collectable se : receivedSystemEvents) {
                         ((SystemEventListener) listener).notify(se);
                     }
@@ -255,6 +258,7 @@ public class EventManager implements SystemEventListener {
     /**
      * Like {@link #propagateEvent} but with an extra argument 'asynchronous'.
      * @param asynchronous If true, execute the propagation in a different thread, and don't let this thread wait for the result.
+     * @since MMBase-1.9.3
      */
     public void propagateEvent(final Event event, boolean asynchronous) {
         if (asynchronous) {
