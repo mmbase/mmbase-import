@@ -14,7 +14,7 @@ import org.mmbase.bridge.*;
 import java.util.*;
 
 /**
- * As AbstractSequentialList, but implements some extra methods required by BridgeList
+ * As {@link AbstractSequentialList}, but implements some extra methods required by BridgeList
  *
  *
  * @author  Michiel Meeuwissen

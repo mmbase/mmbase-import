@@ -54,6 +54,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
         private static final long serialVersionUID = 1L;
         ArrayList entries    = new ArrayList(); //  List of Map.Entries, Bundles and DocumentSerializable's
         ArrayList<Serializable> unusedKeys = new ArrayList<Serializable>(); //  List of unused keys;
+        @Override
         public Object clone() {
             try {
                 LocalizedEntry clone = (LocalizedEntry) super.clone();
@@ -69,6 +70,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                 return new LocalizedEntry();
             }
         }
+        @Override
         public String toString() {
             return "entries:" + entries + "uu:" + unusedKeys;
         }
@@ -245,9 +247,11 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
         final Cloud cloud = c;
         return new AbstractSequentialList<Map.Entry<C, String>> () {
 
+            @Override
             public int size() {
                 return LocalizedEntryListFactory.this.size(cloud);
             }
+            @Override
             public ListIterator<Map.Entry<C, String>> listIterator(final int index) {
                 return new ListIterator<Map.Entry<C, String>>() {
                         int   i = -1;
@@ -325,51 +329,56 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                                         final Query query = QueryReader.parseQuery(element, qc, useCloud, null).query;
                                         final org.mmbase.bridge.NodeList list = query.getList();
                                         subIterator = new Iterator<Map.Entry<C, String>>() {
-                                                final NodeIterator nodeIterator = list.nodeIterator();
-                                                public boolean hasNext() {
-                                                    return nodeIterator.hasNext();
-                                                }
-                                                public Map.Entry<C, String> next() {
-                                                    org.mmbase.bridge.Node next = nodeIterator.nextNode();
-                                                    if (query instanceof NodeQuery) {
-                                                        if (next == null) {
-                                                            return new Entry<C, String>((C) next, "NULL_NODE");
-                                                        } else {
-                                                            try {
-                                                                Function function = next.getFunction("gui");
-                                                                String gui = function.getFunctionValue(function.createParameters()).toString();
-                                                                return new Entry<C, String>((C) next, gui);
-                                                            } catch (NotFoundException nfe) {
-                                                                if (node == null) {
-                                                                    return new Entry<C, String>((C) next, "-1");
-                                                                } else {
-                                                                    return new Entry<C, String>((C) next, "" + node.getNumber());
-                                                                }
-
-                                                            }
-                                                        }
+                                            final NodeIterator nodeIterator = list.nodeIterator();
+                                            @Override
+                                            public boolean hasNext() {
+                                                return nodeIterator.hasNext();
+                                            }
+                                            @Override
+                                            public Map.Entry<C, String> next() {
+                                                org.mmbase.bridge.Node next = nodeIterator.nextNode();
+                                                if (query instanceof NodeQuery) {
+                                                    if (next == null) {
+                                                        return new Entry<C, String>((C) next, "NULL_NODE");
                                                     } else {
-                                                        String alias = Queries.getFieldAlias(query.getFields().get(0));
-                                                        log.debug("using field " + alias);
-                                                        if (query.getFields().size() == 1) {
-                                                            return new Entry<C, String>((C) next.getValue(alias),
-                                                                             next.getStringValue(alias));
-                                                        } else {
-                                                            StringBuilder buf = new StringBuilder();
-                                                            for (int i = 1 ; i < query.getFields().size(); i++) {
-                                                                String a = Queries.getFieldAlias(query.getFields().get(i));
-                                                                if (buf.length() > 0) buf.append(" ");
-                                                                buf.append(next.getStringValue(a));
+                                                        try {
+                                                            Function function = next.getFunction("gui");
+                                                            String gui = function.getFunctionValue(function.createParameters()).toString();
+                                                            return new Entry<C, String>((C) next, gui);
+                                                        } catch (NotFoundException nfe) {
+                                                            if (node == null) {
+                                                                return new Entry<C, String>((C) next, "-1");
+                                                            } else {
+                                                                return new Entry<C, String>((C) next, "" + node.getNumber());
                                                             }
-                                                            return new Entry<C, String>((C) next.getValue(alias),
-                                                                                        buf.toString());
+
                                                         }
                                                     }
+                                                } else {
+                                                    String alias = Queries.getFieldAlias(query.getFields().get(0));
+                                                    log.debug("using field " + alias);
+                                                    if (query.getFields().size() == 1) {
+                                                        return new Entry<C, String>((C) next.getValue(alias),
+                                                                next.getStringValue(alias));
+                                                    } else {
+                                                        StringBuilder buf = new StringBuilder();
+                                                        for (int i = 1; i < query.getFields().size(); i++) {
+                                                            String a = Queries.getFieldAlias(query.getFields().get(i));
+                                                            if (buf.length() > 0) {
+                                                                buf.append(" ");
+                                                            }
+                                                            buf.append(next.getStringValue(a));
+                                                        }
+                                                        return new Entry<C, String>((C) next.getValue(alias),
+                                                                buf.toString());
+                                                    }
                                                 }
-                                                public void remove() {
-                                                    throw new UnsupportedOperationException();
-                                                }
-                                            };
+                                            }
+                                            @Override
+                                            public void remove() {
+                                                throw new UnsupportedOperationException();
+                                            }
+                                        };
                                         if (subIterator.hasNext()) {
                                             break;
                                         } else {
@@ -382,56 +391,65 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                                     next = new Entry(candidate, candidate);
                                 }
                             }
-                        }
+                    }
 
-                        public boolean hasNext() {
-                            return next != null || subIterator != null;
-                        }
-                        public Map.Entry<C, String> next() {
-                            Map.Entry<C, String> res;
-                            if (subIterator != null) {
-                                res = subIterator.next();
-                                Object key = res.getKey();
-                                if (key != null && key instanceof SortedBundle.ValueWrapper) {
-                                    res = new Entry(((SortedBundle.ValueWrapper) key).getKey(), res.getValue());
-                                }
-                                if (!subIterator.hasNext()) {
-                                    subIterator = null;
-                                    findNext();
-                                }
-                            } else {
-                                res = next;
+                    @Override
+                    public boolean hasNext() {
+                        return next != null || subIterator != null;
+                    }
+                    @Override
+                    public Map.Entry<C, String> next() {
+                        Map.Entry<C, String> res;
+                        if (subIterator != null) {
+                            res = subIterator.next();
+                            Object key = res.getKey();
+                            if (key != null && key instanceof SortedBundle.ValueWrapper) {
+                                res = new Entry(((SortedBundle.ValueWrapper) key).getKey(), res.getValue());
+                            }
+                            if (!subIterator.hasNext()) {
+                                subIterator = null;
                                 findNext();
                             }
-                            return res;
+                        } else {
+                            res = next;
+                            findNext();
                         }
-                        public int nextIndex() {
-                            return i;
-                        }
-                        public int previousIndex() {
-                            return i - 1;
-                        }
-                        public boolean hasPrevious() {
-                            // TODO
-                            throw new UnsupportedOperationException();
-                        }
-                        public Map.Entry<C, String> previous() {
-                            // TODO
-                            throw new UnsupportedOperationException();
-                        }
-                        // this is why we hate java:
+                        return res;
+                    }
+                    @Override
+                    public int nextIndex() {
+                        return i;
+                    }
+                    @Override
+                    public int previousIndex() {
+                        return i - 1;
+                    }
+                    @Override
+                    public boolean hasPrevious() {
+                        // TODO
+                        throw new UnsupportedOperationException();
+                    }
+                    @Override
+                    public Map.Entry<C, String> previous() {
+                        // TODO
+                        throw new UnsupportedOperationException();
+                    }
+                    // this is why we hate java:
 
 
-                        public void remove() {
-                            throw new UnsupportedOperationException();
-                        }
-                        public void add(Map.Entry<C, String> o) {
-                            throw new UnsupportedOperationException();
-                        }
-                        public void set(Map.Entry<C, String> o) {
-                            throw new UnsupportedOperationException();
-                        }
-                    };
+                    @Override
+                    public void remove() {
+                        throw new UnsupportedOperationException();
+                    }
+                    @Override
+                    public void add(Map.Entry<C, String> o) {
+                        throw new UnsupportedOperationException();
+                    }
+                    @Override
+                    public void set(Map.Entry<C, String> o) {
+                        throw new UnsupportedOperationException();
+                    }
+                };
             }
         };
     }
@@ -571,6 +589,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
         throw new IllegalArgumentException("'" + key.getClass() + Casting.toString(key) + "' cannot be cast to one of the keys of " + this + " (using" + cloud + " " + usesCloud + ")");
     }
 
+    @Override
     public Object clone() {
         try {
             LocalizedEntryListFactory clone = (LocalizedEntryListFactory) super.clone();
@@ -718,6 +737,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
         }
     }
 
+    @Override
     public String toString() {
         return "(localized: " + localized  + "bundles: " + bundles + "fallBack: " + fallBack + ")";
     }
@@ -776,9 +796,11 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
         }
 
 
+        @Override
         public String toString() {
             return resource + " " + constantsProvider + " " + wrapper + " " + comparator;
         }
+        @Override
         public boolean equals(Object o) {
             if (o instanceof Bundle) {
                 Bundle b = (Bundle) o;
@@ -793,6 +815,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                 return false;
             }
         }
+        @Override
         public int hashCode() {
             int result = 0;
             result = HashCodeUtil.hashCode(result, resource);
@@ -803,6 +826,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             return result;
         }
 
+        @Override
         public Bundle<D> clone() {
             log.debug("Cloning bundle " + this);
             try {
