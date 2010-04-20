@@ -55,7 +55,13 @@
     </dependency>
     <dependency>
       <groupId>org.mmbase</groupId>
-      <artifactId>mmbase</artifactId>
+      <artifactId>mmbase-bridge</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-bridge</artifactId>
       <version>${project.version}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
@@ -65,6 +71,11 @@
       <artifactId>mmbase-utils</artifactId>
       <version>${project.version}</version>
       <classifier>tests</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-bridge</artifactId>
+      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
