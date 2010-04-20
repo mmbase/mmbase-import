@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation;
 
 import java.util.*;
-import org.mmbase.core.*;
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 
@@ -82,11 +81,13 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery, ja
     }
     */
 
+    @Override
     protected void copySteps(SearchQuery q) {
         // no need, can be done by clone
     }
 
 
+    @Override
     protected void copyFields(SearchQuery q) {
         // no need, can be done by clone
     }

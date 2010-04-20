@@ -240,12 +240,12 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
         return this;
     }
 
-    // javadoc is inherited
+    @Override
     public Map<String,Object> getParameters() {
         return Collections.unmodifiableMap(parameters);
     }
 
-    // javadoc is inherited
+    @Override
     public int getMatchType() {
         return matchType;
     }
@@ -261,7 +261,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
         }
     }
 
-    // javadoc is inherited
+    @Override
     public int getSearchType() {
         return searchType;
     }
@@ -277,18 +277,18 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
         }
     }
 
-    // javadoc is inherited
+    @Override
     public List<String> getSearchTerms() {
         return Collections.unmodifiableList(searchTerms);
     }
 
-    // javadoc is inherited
+    @Override
     public int getBasicSupportLevel() {
         // no basic support
         return 0; //SearchQueryHandler.SUPPORT_NONE;
     }
 
-    // javadoc is inherited
+    @Override
     public boolean equals(Object obj) {
         // Must be same class (subclasses should override this)!
         if (obj != null && obj.getClass() == getClass()) {
@@ -307,7 +307,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
         }
     }
 
-    // javadoc is inherited
+    @Override
     public int hashCode() {
         return super.hashCode()
         + 117 * searchType
@@ -316,7 +316,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
         + 137 + searchTerms.hashCode();
     }
 
-    // javadoc is inherited
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("StringSearchConstraint(inverse:").append(isInverse()).
         append("field:").append(getFieldName()).

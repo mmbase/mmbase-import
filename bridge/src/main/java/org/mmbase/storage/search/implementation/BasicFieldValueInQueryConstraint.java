@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation;
 
-import java.util.*;
 import org.mmbase.storage.search.*;
 
 /**
@@ -37,11 +36,13 @@ public class BasicFieldValueInQueryConstraint extends BasicFieldConstraint imple
     }
 
 
+    @Override
     public SearchQuery getInQuery() {
         return query;
     }
 
     // javadoc is inherited
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -60,13 +61,13 @@ public class BasicFieldValueInQueryConstraint extends BasicFieldConstraint imple
         }
     }
 
-    // javadoc is inherited
-    public int hashCode() {
+    @Override
+     public int hashCode() {
         return super.hashCode()
             + 89 * query.hashCode();
     }
 
-    // javadoc is inherited
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("FieldValueInConstraint(inverse:").append(isInverse()).
             append(", field:").append(getFieldName()).

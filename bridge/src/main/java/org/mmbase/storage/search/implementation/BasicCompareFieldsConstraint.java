@@ -47,13 +47,11 @@ public class BasicCompareFieldsConstraint extends BasicFieldCompareConstraint im
         this.field2 = field2;
     }
 
-    // javadoc is inherited
     @Override
     public StepField getField2() {
         return field2;
     }
 
-    // javadoc is inherited
     @Override
     public boolean equals(Object obj) {
         // Must be same class (subclasses should override this)!
@@ -74,7 +72,6 @@ public class BasicCompareFieldsConstraint extends BasicFieldCompareConstraint im
         }
     }
 
-    // javadoc is inherited
     @Override
     public int hashCode() {
         return super.hashCode()
@@ -84,7 +81,6 @@ public class BasicCompareFieldsConstraint extends BasicFieldCompareConstraint im
             97 * field2.getStep().getAlias().hashCode());
     }
 
-    // javadoc is inherited
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CompareFieldsConstraint(inverse:").append(isInverse()).

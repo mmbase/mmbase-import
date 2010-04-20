@@ -42,6 +42,7 @@ public class BasicFieldValueDateConstraint extends BasicFieldValueConstraint imp
         setPart(part);
     }
 
+    @Override
     public int getPart() {
         return part;
     }
@@ -62,17 +63,18 @@ public class BasicFieldValueDateConstraint extends BasicFieldValueConstraint imp
         part = p;
     }
 
-    // javadoc is inherited
+    @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object obj) {
         return super.equals(obj) && ((FieldValueDateConstraint)obj).getPart() == part;
     }
 
-    // javadoc is inherited
+    @Override
     public int hashCode() {
         return super.hashCode() + part * 117;
     }
 
-    // javadoc is inherited
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("BasicFieldValueDateConstraint(inverse:").append(isInverse()).
         append(", field:").append(getFieldName()).

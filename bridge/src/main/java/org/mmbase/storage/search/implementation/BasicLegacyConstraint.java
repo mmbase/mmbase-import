@@ -63,12 +63,12 @@ public class BasicLegacyConstraint extends BasicConstraint implements LegacyCons
         return this;
     }
 
-    // javadoc is inherited
+    @Override
     public String getConstraint() {
         return constraint;
     }
 
-    // javadoc is inherited
+    @Override
     public boolean equals(Object obj) {
         // Must be same class (subclasses should override this)!
         if (obj != null && obj.getClass() == getClass()) {
@@ -79,12 +79,12 @@ public class BasicLegacyConstraint extends BasicConstraint implements LegacyCons
         }
     }
 
-    // javadoc is inherited
+    @Override
     public int hashCode() {
         return 31 * (constraint.hashCode() + super.hashCode());
     }
 
-    // javadoc is inherited
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("LegacyConstraint(inverse:").append(isInverse()).
         append(", constraint:").append(getConstraint()).

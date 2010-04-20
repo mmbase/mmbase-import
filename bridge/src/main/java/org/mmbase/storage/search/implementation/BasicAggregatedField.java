@@ -74,7 +74,6 @@ public class BasicAggregatedField extends BasicStepField implements AggregatedFi
         }
     }
 
-    // javadoc is inherited
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof AggregatedField) {
@@ -88,14 +87,12 @@ public class BasicAggregatedField extends BasicStepField implements AggregatedFi
         }
     }
 
-    // javadoc is inherited
     @Override
     public int hashCode() {
         return super.hashCode()
         + 149 * aggregationType;
     }
 
-    // javadoc is inherited
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("AggregatedField(step:");
