@@ -201,7 +201,7 @@ public class Authenticate extends CloudContextAuthentication {
                                                            + "  and 'class' are supported");
         }
         if (node == null)  return null;
-        return new User(node, getKey(), type);
+        return new User(Authenticate.this, node, getKey(), type);
     }
 
     public static User getLoggedInExtraAdmin(String userName) {
@@ -279,7 +279,7 @@ public class Authenticate extends CloudContextAuthentication {
         private long   l;
         private Rank   r = Rank.ADMIN;
         LocalAdmin(String user, String app) {
-            super(new AdminVirtualNode(), Authenticate.this.getKey(), app);
+            super(Authenticate.this, new AdminVirtualNode(), Authenticate.this.getKey(), app);
             l = extraAdminsUniqueNumber;
             userName = user;
         }
