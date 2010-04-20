@@ -115,6 +115,18 @@
     <param-name>stall-server</param-name>
     <param-value>false</param-value>
   </context-param>
+  <!--
+      When creating a query, it is not necessary to specify which of the path elements are on wich side of the join via insrel.  Using the allowed
+      relations in 'typerel' this will be implicitely corrected to the correct value.  If _both_ directions are possible, and it is not specified,
+      then MMBase used to fall back to implementing precisely that, so it would add OR's to the query to make both possibilities match.
+
+      The disadvantage of that, is that it most of the time performs very badly in the database. So this implicit fall back direction can be configured.
+      If you set it to 'DESTINATION' then if not specified, and both directions are possible, it takes 'DESTINATION'.
+  -->
+  <context-param>
+    <param-name>mmbase.defaultRelationStepDirection</param-name>
+    <param-value>DESTINATION</param-value> <!-- Defaults to BOTH in MMBase lt 1.9.4 or this context-param is missing -->
+  </context-param>
 
 
   <!--
@@ -125,11 +137,12 @@
     <param-name>mmbase.servlet.images.addfilename</param-name>
     <param-value>yes</param-value>
   </context-param>
-  <!-- some for attachments -->
+  <!-- same for attachments -->
   <context-param>
     <param-name>mmbase.servlet.attachments.addfilename</param-name>
     <param-value>yes</param-value>
   </context-param>
+
 
 
   <filter>
