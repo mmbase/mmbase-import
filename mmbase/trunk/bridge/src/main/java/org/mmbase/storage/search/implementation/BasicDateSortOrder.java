@@ -55,7 +55,6 @@ public class BasicDateSortOrder extends BasicSortOrder implements DateSortOrder,
         part = p;
     }
 
-    // javadoc is inherited
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof DateSortOrder) {
@@ -66,13 +65,11 @@ public class BasicDateSortOrder extends BasicSortOrder implements DateSortOrder,
         }
     }
 
-    // javadoc is inherited
     @Override
     public int hashCode() {
         return super.hashCode() + part * 117;
     }
 
-    // javadoc is inherited
     @Override
     public String toString() {
         return "DateSortOrder(field:" + BasicStepField.getFieldName(getField()) + ", dir:" + getDirectionDescription() +

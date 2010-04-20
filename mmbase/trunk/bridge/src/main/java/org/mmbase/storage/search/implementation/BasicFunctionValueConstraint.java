@@ -35,6 +35,7 @@ public class BasicFunctionValueConstraint extends BasicFieldValueConstraint impl
         }
     }
 
+    @Override
     public String getFunction() {
         if (log.isDebugEnabled()) {
             log.debug("for field(" + getField() + ") and object(" + getValue() + "): getting function(" + function + ")");

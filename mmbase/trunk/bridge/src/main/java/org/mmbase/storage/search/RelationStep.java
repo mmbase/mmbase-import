@@ -122,7 +122,6 @@ public interface RelationStep extends Step {
     @Override
     boolean equals(Object obj);
 
-    // javadoc is inherited
     @Override
     int hashCode();
 

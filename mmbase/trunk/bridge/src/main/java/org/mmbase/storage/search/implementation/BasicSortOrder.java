@@ -46,6 +46,7 @@ public class BasicSortOrder implements SortOrder, java.io.Serializable {
     /**
      * @since MMBase-1.9.2
      */
+    @Override
     public void setUnmodifiable() {
         modifiable = false;
     }
@@ -67,12 +68,12 @@ public class BasicSortOrder implements SortOrder, java.io.Serializable {
         return this;
     }
 
-    // javadoc is inherited
+    @Override
     public StepField getField() {
         return field;
     }
 
-    // javadoc is inherited
+    @Override
     public int getDirection() {
         return direction;
     }
@@ -88,6 +89,7 @@ public class BasicSortOrder implements SortOrder, java.io.Serializable {
         }
     }
 
+    @Override
     public boolean isCaseSensitive() {
         return caseSensitive;
     }
@@ -100,7 +102,7 @@ public class BasicSortOrder implements SortOrder, java.io.Serializable {
         return this;
     }
 
-    // javadoc is inherited
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof SortOrder) {
             SortOrder order = (SortOrder) obj;
@@ -115,7 +117,7 @@ public class BasicSortOrder implements SortOrder, java.io.Serializable {
         }
     }
 
-    // javadoc is inherited
+    @Override
     public int hashCode() {
         String alias = field.getStep().getAlias();
         return
@@ -123,7 +125,7 @@ public class BasicSortOrder implements SortOrder, java.io.Serializable {
             + 67 * (alias != null ? alias.hashCode() : 1) + 103 * direction + (caseSensitive ? 13 : 0);
     }
 
-    // javadoc is inherited
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("SortOrder(field:").append(BasicStepField.getFieldName(getField())).
         append(", dir:").append(getDirectionDescription()).

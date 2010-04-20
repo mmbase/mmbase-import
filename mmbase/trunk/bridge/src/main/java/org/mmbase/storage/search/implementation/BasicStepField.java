@@ -170,6 +170,7 @@ public class BasicStepField implements StepField, SizeMeasurable, java.io.Serial
     /**
      * @since MMBase-1.9.2
      */
+    @Override
     public void setUnmodifiable() {
         modifiable = false;
     }
@@ -200,22 +201,22 @@ public class BasicStepField implements StepField, SizeMeasurable, java.io.Serial
         return field;
     }
 
-    // javadoc is inherited
+    @Override
     public final String getFieldName() {
         return field.getName();
     }
 
-    // javadoc is inherited
-    public String getAlias() {
+    @Override
+     public String getAlias() {
         return alias;
     }
 
-    // javadoc is inherited
+    @Override
     public Step getStep() {
         return step;
     }
 
-    // javadoc in inherited
+    @Override
     public int getType() {
         return field.getType();
     }
@@ -296,11 +297,11 @@ public class BasicStepField implements StepField, SizeMeasurable, java.io.Serial
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        Step step = getStep();
-        if (step == null) {
+        Step s = getStep();
+        if (s == null) {
             sb.append("null");
         } else {
-            String stepAlias = step.getAlias();
+            String stepAlias = s.getAlias();
             if (stepAlias == null) {
                 sb.append(getStep().getTableName());
             } else {
@@ -308,17 +309,19 @@ public class BasicStepField implements StepField, SizeMeasurable, java.io.Serial
             }
         }
         sb.append(".").append(getFieldName());
-        String alias = getAlias();
-        if (alias != null) {
-            sb.append(" as ").append(alias);
+        String a = getAlias();
+        if (a != null) {
+            sb.append(" as ").append(a);
         }
         return sb.toString();
     }
 
+    @Override
     public int getByteSize() {
         return getByteSize(new SizeOf());
     }
 
+    @Override
     public int getByteSize(SizeOf sizeof) {
         int size = 21;
         size += sizeof.sizeof(alias);

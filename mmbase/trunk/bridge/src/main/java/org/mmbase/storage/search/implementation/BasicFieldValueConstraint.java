@@ -54,12 +54,12 @@ public class BasicFieldValueConstraint extends BasicFieldCompareConstraint imple
         return this;
     }
 
-    // javadoc is inherited
+    @Override
     public Object getValue() {
         return value;
     }
 
-    // javadoc is inherited
+    @Override
     public boolean equals(Object obj) {
         // Must be same class (subclasses should override this)!
         if (obj != null && obj.getClass() == getClass()) {
@@ -77,13 +77,13 @@ public class BasicFieldValueConstraint extends BasicFieldCompareConstraint imple
         }
     }
 
-    // javadoc is inherited
+    @Override
     public int hashCode() {
         return super.hashCode()
         + (value == null? 0: value.hashCode());
     }
 
-    // javadoc is inherited
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("BasicFieldValueConstraint(inverse:").append(isInverse()).
         append(", field:").append(getFieldName()).
