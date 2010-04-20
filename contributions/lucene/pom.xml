@@ -104,6 +104,14 @@
     </dependency>
 
     <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-mynews</artifactId>
+      <version>${mmbase.version}</version>
+      <classifier>classes</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
