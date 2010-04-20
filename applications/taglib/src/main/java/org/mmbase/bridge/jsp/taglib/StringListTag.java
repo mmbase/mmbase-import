@@ -190,7 +190,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
 
         currentItemIndex = - 1;  // reset index
 
-        ListSorter.sort(returnList, (String) comparator.getValue(this), this);
+        returnList = ListSorter.sort(returnList, (String) comparator.getValue(this), this);
         iterator = returnList.iterator();
         // if we get a result from the query
         // evaluate the body , else skip the body

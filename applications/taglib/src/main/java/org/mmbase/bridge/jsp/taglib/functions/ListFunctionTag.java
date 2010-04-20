@@ -102,7 +102,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
         helper.overrideWrite(false); // default behavior is not to write to page
         currentItemIndex = -1;  // reset index
         if (!comparator.equals(Attribute.NULL)) {
-            ListSorter.sort((List)returnCollection, (String) comparator.getValue(this), this);
+            returnCollection = ListSorter.sort((List)returnCollection, (String) comparator.getValue(this), this);
         }
         int o = offset.getInt(this, 0);
         iterator = returnCollection.iterator();

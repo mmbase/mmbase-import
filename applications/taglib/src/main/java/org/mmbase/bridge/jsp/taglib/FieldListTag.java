@@ -279,7 +279,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             }
         }
 
-        ListSorter.sort(returnList, (String) comparator.getValue(this), this);
+        returnList = ListSorter.sort(returnList, (String) comparator.getValue(this), this);
         fieldIterator = returnList.iterator();
 
         //this is where we do the search
