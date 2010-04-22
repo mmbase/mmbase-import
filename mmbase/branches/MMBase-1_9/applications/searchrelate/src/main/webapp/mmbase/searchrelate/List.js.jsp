@@ -230,8 +230,7 @@ function List(d) {
                            ev.returnValue = confirm(result); //'<fmt:message key="invalid" />';
                            return ev.returnValue;
                        }
-                       return result;
-
+		       return result == null ? undefined : result; // IE want 'undefined' to avoid the popup
                    });
     // automaticly make the entries empty on focus if they evidently contain the default value only
     this.find("mm_validate", "input").filter(function() {
