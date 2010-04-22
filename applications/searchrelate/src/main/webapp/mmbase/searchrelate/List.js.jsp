@@ -229,7 +229,7 @@ function List(d) {
                            ev.returnValue = confirm(result); //'<fmt:message key="invalid" />';
                            return ev.returnValue;
                        }
-                       return result;
+		       return result == null ? undefined : result; // IE want 'undefined' to avoid the popup
 
                    });
     // automaticly make the entries empty on focus if they evidently contain the default value only
@@ -528,6 +528,14 @@ List.prototype.addItem = function(res, cleanOnFocus) {
             var div = this;
             if (div.list == null) {
                 div.list = new List(div);
+		if (typeof MMBaseRelater == "function") {
+		    $(div).find("div.mm_related").
+			each(function() {
+				 if (this.relater == null) {
+				     this.relater = new MMBaseRelater(this);
+				 }
+			     });
+		}
             }
         });
 
