@@ -1,5 +1,5 @@
 /**
-<%@page contentType="text/javascript; charset=UTF-8"
+<%@page contentType="text/javascript; charset=UTF-8" session="false"
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"
 %><fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
@@ -224,13 +224,13 @@ function List(d) {
     $(window).bind("beforeunload",
                    function(ev) {
                        List.prototype.leftPage = true;
-		       $(self.div).find(":input").attr("disabled", true);
+                       $(self.div).find(":input").attr("disabled", true);
                        var result = self.commit(0, true);
                        if (result != null) {
                            ev.returnValue = confirm(result); //'<fmt:message key="invalid" />';
                            return ev.returnValue;
                        }
-		       return result == null ? undefined : result; // IE want 'undefined' to avoid the popup
+                       // IE wants no return here
                    });
     // automaticly make the entries empty on focus if they evidently contain the default value only
     this.find("mm_validate", "input").filter(function() {
