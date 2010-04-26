@@ -155,6 +155,15 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
         return  super.doEndTag();
     }
 
+    @Override
+    public void doFinally() {
+        returnCollection = null;
+        iterator = null;
+        collector = null;
+        super.doFinally();
+    }
+
+
 
     public void doInitBody() throws JspTagException {
         if (iterator.hasNext()){
