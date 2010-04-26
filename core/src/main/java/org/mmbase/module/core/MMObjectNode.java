@@ -589,7 +589,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             fieldValue = new SerializableInputStream((InputStream) fieldValue, getSize(fieldName));
         }
         if (fieldValue instanceof Node) {
-            fieldValue = Integer.valueOf(((Node) fieldValue).getNumber());
+            Node nodeValue = (Node) fieldValue;
+            if (! (nodeValue instanceof org.mmbase.bridge.implementation.VirtualNode)) {
+                int number = nodeValue.getNumber();
+                if (number != -1) { // -1 is very meaningless, and it will not be possible to make a sensible node of that again
+                    fieldValue = Integer.valueOf(number);
+                }
+            }
         }
         fieldValue = checkSerializable(fieldName, fieldValue);
         if (checkFieldExistance(fieldName)) {
