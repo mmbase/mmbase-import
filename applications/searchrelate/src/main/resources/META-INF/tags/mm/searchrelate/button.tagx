@@ -23,8 +23,11 @@
 
   <c:if test="${empty pageScope.parameters}">
     <c:set var="parameters" value="${requestScope['org.mmbase.sr.relatednodes.parameters']}" />
+    <c:if test="${empty parameters}">
+      <jsp:directive.include file="/mmbase/searchrelate/settings.jspf" />
+      <c:set var="parameters" value="${settings}" />
+    </c:if>
   </c:if>
-
 
   <mm:haspage page="${parameters.icondir}/${type}.jspx">
     <c:set var="alt">
@@ -34,7 +37,6 @@
     </c:set>
   </mm:haspage>
   <mm:haspage page="${parameters.icondir}/${type}.png">
-
     <mm:link page="${parameters.icondir}/${type}.png">
       <img class="icon"
            alt="${empty alt ? '+' : mm:escape('tagstripper(NONE),trimmer', alt)}"
