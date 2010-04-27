@@ -126,7 +126,8 @@ public class BasicStepField implements StepField, SizeMeasurable, java.io.Serial
 
     // Perhaps it is better to have something like this available in CloudContext itself.
     // CloudContext#getAnonymousCloud or so.
-    private static final Map<CloudContext, Cloud> anonymousClouds = new ConcurrentHashMap<CloudContext, Cloud>(3);
+    private static final Map<CloudContext, Map<String, Cloud>> anonymousClouds = new ConcurrentHashMap<CloudContext, Map<String, Cloud>>();
+
     /**
      * Constructor.
      *
@@ -156,10 +157,15 @@ public class BasicStepField implements StepField, SizeMeasurable, java.io.Serial
             // So, we use a specialized anonymous cloud instance
             Cloud cloud = f.getNodeManager().getCloud();
             CloudContext cloudContext = cloud.getCloudContext();
-            Cloud anonymousCloud = anonymousClouds.get(cloudContext);
+            Map<String, Cloud> map = anonymousClouds.get(cloudContext);
+            if (map == null) {
+                map = new ConcurrentHashMap<String, Cloud>();
+                anonymousClouds.put(cloudContext, map);
+            }
+            Cloud anonymousCloud = map.get(cloud.getName());
             if (anonymousCloud == null) {
                 anonymousCloud = cloudContext.getCloud(cloud.getName());
-                anonymousClouds.put(cloudContext, anonymousCloud);
+                map.put(cloud.getName(), anonymousCloud);
             }
             NodeManager anonymousNodeManager = anonymousCloud.getNodeManager(f.getNodeManager().getName());
             Field origField = f;
