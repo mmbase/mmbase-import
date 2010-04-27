@@ -180,6 +180,10 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             buf.append(" mm_nm_");
             buf.append(field.getNodeManager().getName());
         }
+        FieldInfoTag.DataTypeOrigin o = tag.getOrigin();
+        if (o != FieldInfoTag.DataTypeOrigin.FIELD) {
+            buf.append(" mm_dto_").append(o.toString().toLowerCase());
+        }
         if (node != null) {
             buf.append(" mm_n_");
             buf.append(node.getNumber());
