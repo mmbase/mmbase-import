@@ -154,10 +154,11 @@ public class BasicStepField implements StepField, SizeMeasurable, java.io.Serial
             // SearchQueries can be referenced in caches. We don't want to
             // have references to user clouds there (Field is probably a BasicField then)
             // So, we use a specialized anonymous cloud instance
-            CloudContext cloudContext = f.getNodeManager().getCloud().getCloudContext();
+            Cloud cloud = f.getNodeManager().getCloud();
+            CloudContext cloudContext = cloud.getCloudContext();
             Cloud anonymousCloud = anonymousClouds.get(cloudContext);
             if (anonymousCloud == null) {
-                anonymousCloud = cloudContext.getCloud("mmbase");
+                anonymousCloud = cloudContext.getCloud(cloud.getName());
                 anonymousClouds.put(cloudContext, anonymousCloud);
             }
             NodeManager anonymousNodeManager = anonymousCloud.getNodeManager(f.getNodeManager().getName());
