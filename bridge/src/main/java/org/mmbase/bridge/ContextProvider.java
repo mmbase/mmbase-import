@@ -89,7 +89,11 @@ public class ContextProvider {
                             if (line.length() > 0 && ! line.startsWith("#")) {
                                 try {
                                     Resolver resolver = (Resolver) Class.forName(line).newInstance();
-                                    resolvers.add(resolver);
+                                    if (resolvers.contains(resolver)) {
+                                        log.warn("Already resolving with " + resolver + "(" + url + ")");
+                                    } else {
+                                        resolvers.add(resolver);
+                                    }
                                 } catch (Exception e) {
                                     log.error("During parsing of " + url + ": " + line + ":" + e.getMessage(), e);
                                 }
