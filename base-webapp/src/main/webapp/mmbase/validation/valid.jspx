@@ -16,7 +16,7 @@
   -->
   <jsp:directive.page
       import="org.mmbase.datatypes.*,org.mmbase.util.LocalizedString"
-      session="false" />
+      />
   <jsp:directive.include file="get.datatype.jspxf" />
   <mm:import externid="value" required="true" vartype="string" jspvar="value"/>
   <mm:cloud method="asis" sessionname="${param.sessionname}" uri="${param.uri}" name="${param.name}"><!-- cloud to provide locale -->
