@@ -664,9 +664,10 @@ function Key() {
     this.nodeManager = null;
     this.field = null;
     this.datatype = null;
+    this.origin = "field";
 }
 Key.prototype.string = function() {
-    return this.cloud + "@" + this.uri + "," + this.dataType + "," + this.field + "," + this.nodeManager;
+    return this.cloud + "@" + this.uri + "," + this.dataType + "," + this.field + "," + this.nodeManager + "," + this.origin;
 };
 
 /**
@@ -687,6 +688,8 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
             var className = classNames[i];
             if (className.indexOf("mm_dt_") == 0) {
                 result.dataType = className.substring(6);
+	    } else if (className.indexOf("mm_dto_") == 0) {
+                result.origin = className.substring(7);
             } else if (className.indexOf("mm_f_") == 0) {
                 result.field = className.substring(5);
             } else if (className.indexOf("mm_nm_") == 0) {
@@ -784,7 +787,7 @@ MMBaseValidator.prototype.checkPrefetch = function() {
  */
 MMBaseValidator.prototype.getDataTypeArguments = function(key) {
     if (key.dataType != null) {
-        return {datatype: key.dataType, uri: key.uri, cloud: key.cloud};
+        return {datatype: key.dataType, uri: key.uri, cloud: key.cloud, origin: key.origin};
     } else {
         return {field: key.field, nodemanager: key.nodeManager, uri: key.uri, cloud: key.cloud};
     }
@@ -1109,7 +1112,9 @@ MMBaseValidator.prototype.serverValidate = function(event) {
 
 MMBaseValidator.prototype.showServerErrors = function(element, serverXml, id) {
     var valid = this.validResult(serverXml);
-    if (id == null) id = element.id;
+    if (id == null) {
+      id = element.id;
+    }
     if (id != null) {
         var errorDiv = document.getElementById("mm_check_" + id.substring(3));
         if (errorDiv != null) {
@@ -1128,7 +1133,11 @@ MMBaseValidator.prototype.showServerErrors = function(element, serverXml, id) {
 		    }
                 }
             }
+        } else {
+            console.log("No error div " + "mm_check_" + id.substring(3));
         }
+    } else {
+      console.log("No element " + id);
     }
     this.updateValidity(element, valid);
 };
