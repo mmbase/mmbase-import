@@ -25,6 +25,7 @@ import org.xml.sax.InputSource;
 import javax.xml.parsers.DocumentBuilder;
 
 import javax.servlet.jsp.*;
+import javax.servlet.http.*;
 import java.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -39,7 +40,7 @@ public class DataTypeTag extends CloudReferrerTag {
     private static final Logger log = Logging.getLoggerInstance(DataTypeTag.class);
 
     public static final String KEY = "org.mmbase.taglib.datatypecollector";
-    public static final int SCOPE = PageContext.REQUEST_SCOPE;
+    public static final int SCOPE = PageContext.SESSION_SCOPE;
 
     private Attribute base = Attribute.NULL;
     private Attribute nodeManager = Attribute.NULL;
@@ -56,14 +57,25 @@ public class DataTypeTag extends CloudReferrerTag {
         field = getAttribute(f, true);
     }
 
-    protected DataTypeCollector getCollector() {
-        DataTypeCollector collector = (DataTypeCollector) pageContext.getAttribute(KEY, SCOPE);
+
+
+
+    /**
+     * @since MMBase-1.9.4
+     */
+    public static DataTypeCollector getCollector(PageContext pageContext) {
+        HttpSession session = ((HttpServletRequest) pageContext.getRequest()).getSession(false);
+        int scope = session == null ? PageContext.REQUEST_SCOPE : PageContext.SESSION_SCOPE;
+        DataTypeCollector collector = (DataTypeCollector) pageContext.getAttribute(KEY, scope);
         if (collector == null) {
             collector = new DataTypeCollector(new Object());
-            pageContext.setAttribute(KEY, collector, SCOPE);
+            pageContext.setAttribute(KEY, collector, scope);
 
         }
         return collector;
+    }
+    protected  DataTypeCollector getCollector() {
+        return getCollector(pageContext);
     }
     /**
      *

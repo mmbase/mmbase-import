@@ -95,7 +95,20 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static final int TYPE_IGNORE           = 1000;
 
 
+    /**
+     * @since MMBase-1.9.4
+     */
+    public static enum DataTypeOrigin {
+        UNDETERMINED,
+        FIELD,
+        SYSTEM,
+        DATATYPETAG,
+        SPECIFIED
+    }
+
     private String sessionName = "cloud_mmbase";
+
+    private DataTypeOrigin origin = DataTypeOrigin.UNDETERMINED;
 
     public String getSessionName() {
         return sessionName;
@@ -189,23 +202,33 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      */
     public DataType getDataType() throws JspTagException {
         if (dataType != Attribute.NULL) {
-            if (specifiedDataType != null) throw new RuntimeException();
+            if (specifiedDataType != null) {
+                throw new RuntimeException();
+            }
             String name = dataType.getString(this);
             DataType dt = null;
-            DataTypeCollector collector = (DataTypeCollector) pageContext.getAttribute(DataTypeTag.KEY, DataTypeTag.SCOPE);
+            DataTypeCollector collector = DataTypeTag.getCollector(pageContext);
             if (collector != null) {
                 dt = collector.getDataType(name);
             }
             if (dt == null) {
+                origin = DataTypeOrigin.SYSTEM;
                 dt =  DataTypes.getDataType(name);
+            } else {
+                origin = DataTypeOrigin.DATATYPETAG;
             }
             if (dt == null) {
-                throw new JspTagException("No datatype '" + name + "'");
+                throw new JspTagException("No datatype '" + name + "' from " + origin + " " + collector);
             }
             return dt;
         } else {
+            origin = DataTypeOrigin.SPECIFIED;
             return specifiedDataType;
         }
+    }
+
+    public DataTypeOrigin getOrigin() {
+        return origin;
     }
 
     /**
@@ -355,6 +378,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             if (dataType != null) {
                 field = new DataTypeField(field, dataType);
             } else {
+                origin   = DataTypeOrigin.FIELD;
                 dataType = field.getDataType();
             }
         }
@@ -520,7 +544,6 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             log.debug("Unknown info type " + infoType);
             break;
         }
-
 
         helper.useEscaper(false); // fieldinfo typicaly produces xhtml
         helper.setValue(show);
