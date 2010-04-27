@@ -129,7 +129,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     protected String getName() throws JspTagException {
         if (loginPageCloudName != null) return loginPageCloudName;
         if (cloudName == Attribute.NULL) {
-            return getDefaultCloudContext().getCloudNames().get(0);
+            List<String> cloudNames = getDefaultCloudContext().getCloudNames();
+            if (cloudNames.size() == 0) {
+                throw new JspTagException("The cloud context " + getDefaultCloudContext() + " has no clouds");
+            }
+            return cloudNames.get(0);
         }
         return cloudName.getString(this);
     }
