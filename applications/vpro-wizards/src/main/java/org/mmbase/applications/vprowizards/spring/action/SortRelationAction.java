@@ -147,8 +147,7 @@ public class SortRelationAction extends AbstractRelationAction {
                         log.error("you want to go up, but you are at the top of the list. Abort!");
                         return;
                     }
-                } else if (direction.equals(
-                                            DIRECTION_DOWN)) {
+                } else if (direction.equals(DIRECTION_DOWN)) {
                     if (i < ( nl.size() - 1 )) {
                         log.debug("direction is down and list index is "+i+" and list size = "+nl.size());
                         nodeToSwapWith = nl.getNode(i + 1).getNodeValue(pb.getStep(1));
@@ -168,21 +167,25 @@ public class SortRelationAction extends AbstractRelationAction {
                 }
 
                 nodeToSwapWith = transaction.getRelation(nl.getNode(nodeToSwapIndex).getStringValue(pb.getStep(1) + ".number"));
-                log.debug(String.format(
-                                        "Swap relation found at list position %s with sort field value %s",
-                                        nodeToSwapIndex,
-                                        nodeToSwapWith.getIntValue(sortField)));
+                if (log.isDebugEnabled()) {
+                    log.debug(String.format("Swap relation found at list position %s with sort field value %s",
+                                            nodeToSwapIndex,
+                                            nodeToSwapWith.getIntValue(sortField)));
 
-                log.debug(String.format("node number is %s and swap node number is %s", getNode().getNumber(), nodeToSwapWith.getNumber()));
-                log.debug(String.format("node pos is %s and swap pos is %s", getNode().getStringValue("pos"), nodeToSwapWith.getStringValue("pos")));
-
+                    log.debug(String.format("node number is %s and swap node number is %s", getNode().getNumber(), nodeToSwapWith.getNumber()));
+                    log.debug(String.format("node pos is %s and swap pos is %s", getNode().getStringValue("pos"), nodeToSwapWith.getStringValue("pos")));
+                }
                 // now let the two nodes swap position
                 int p1 = getNode().getIntValue(sortField);
                 int p2 = nodeToSwapWith.getIntValue(sortField);
 
                 log.debug("swapping the position values");
                 getNode().setIntValue(sortField, p2);
-                nodeToSwapWith.setIntValue(sortField, p1);
+                if (nodeToSwapWith.mayWrite()) {
+                    nodeToSwapWith.setIntValue(sortField, p1);
+                } else {
+                    log.warn("May not write " + nodeToSwapWith);
+                }
                 log.debug(String.format("after: node pos is %s and swap pos is %s", getNode().getStringValue("pos"), nodeToSwapWith.getStringValue("pos")));
 
                 // a cacheflush hint needs to be created for this action.
