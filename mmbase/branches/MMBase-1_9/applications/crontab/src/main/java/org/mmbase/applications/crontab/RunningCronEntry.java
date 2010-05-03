@@ -91,7 +91,7 @@ public class RunningCronEntry  implements Delayed, java.io.Serializable {
 
     @Override
     public String toString() {
-        return  getMachine() + ":" + thread + ":" + entry.getId();
+        return  getMachine() + ":" + thread + ":" + entry;
     }
 
 
