@@ -9,11 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.crontab;
 
-import org.mmbase.core.event.*;
 import java.util.concurrent.*;
 import java.util.Date;
 
-import org.mmbase.util.logging.*;
 
 /**
  *
@@ -80,11 +78,13 @@ public class RunningCronEntry  implements Delayed, java.io.Serializable {
             return false;
         }
     }
+    @Override
     public long getDelay(TimeUnit unit) {
         long delay = getStart().getTime() + entry.getMaxDuration() - System.currentTimeMillis();
         if (delay < 0) delay = 0;
         return unit.convert(delay, TimeUnit.MILLISECONDS);
     }
+    @Override
     public int compareTo(Delayed d) {
         return (int) (getDelay(TimeUnit.MILLISECONDS) - d.getDelay(TimeUnit.MILLISECONDS));
     }

@@ -399,6 +399,7 @@ public class CronEntry implements java.io.Serializable {
         result = HashCodeUtil.hashCode(result, name);
         result = HashCodeUtil.hashCode(result, className);
         result = HashCodeUtil.hashCode(result, cronTime);
+        result = HashCodeUtil.hashCode(result, configuration);
         return result;
     }
 

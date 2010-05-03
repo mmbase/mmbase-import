@@ -32,6 +32,7 @@ public class MemoryWarner extends AbstractCronJob  {
     private static final Logger log = Logging.getLoggerInstance(MemoryWarner.class);
 
 
+    @Override
     public final void run() {
         try {
             String[] config = cronEntry.getConfiguration().split(";");

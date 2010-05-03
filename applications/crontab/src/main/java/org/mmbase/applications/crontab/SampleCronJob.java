@@ -29,6 +29,7 @@ public class SampleCronJob extends AbstractCronJob implements CronJob {
         log.info("The constructor of a cronjob is only called once");
     }
 
+    @Override
     public void run() {
         log.info("The job has been started by the cronEntry" + cronEntry);
         log.info("the entry has this configuration " + cronEntry.getConfiguration());
