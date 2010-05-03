@@ -76,39 +76,6 @@ public class NodeEventHelper {
         return new NodeEvent(machineName, node.getBuilder().getTableName(), node.getNumber(), oldEventValues, newEventValues, eventType);
     }
 
-    /**
-     * Removes all non-serializable values, and all values we don't want to serialize (binaries,
-     * because they are too big).
-     */
-    private static Map<String, Object> removeNonSerializingValues(Map<String, Object> oldEventValues) {
-        Set<String> toremove = null;
-        synchronized(oldEventValues) {
-            for (Map.Entry<String, Object> entry : oldEventValues.entrySet()) {
-                Object value = entry.getValue();
-                if (value != null) {
-                    if (value instanceof byte[]) {
-                        if (toremove == null) toremove = new HashSet<String>();
-                        toremove.add(entry.getKey());
-                    } else if (! (value instanceof java.io.Serializable)) {
-                        log.warn("Found non serializable '" + entry.getKey() + "' in " + oldEventValues);
-                        if (toremove == null) toremove = new HashSet<String>();
-                        toremove.add(entry.getKey());
-
-                    }
-                }
-            }
-        }
-        if (toremove != null) {
-            Map<String, Object> newMap = new HashMap<String, Object>();
-            newMap.putAll(oldEventValues);
-            for (String k : toremove) {
-                newMap.remove(k);
-            }
-            return Collections.unmodifiableMap(newMap);
-        } else {
-            return oldEventValues;
-        }
-    }
 
     public static RelationEvent createRelationEventInstance(Relation node, int eventType, String machineName){
         MMObjectNode coreNode = MMBase.getMMBase().getBuilder(node.getNodeManager().getName()).getNode(node.getNumber());

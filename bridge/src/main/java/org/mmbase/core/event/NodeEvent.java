@@ -34,21 +34,51 @@ public class NodeEvent extends Event {
      */
     public static final int TYPE_RELATION_CHANGE = 3;
 
+    private static final Map<String, Object> EMPTY = Collections.unmodifiableMap(new HashMap<String, Object>());
+    private static final Object EMPTIED = null;
+
+    /**
+     * Removes all non-serializable values, and all values we don't want to serialize (binaries,
+     * because they are too big). This is put in a new (to not reflect further changes) unmodifiable map and returned.
+     */
+    private static Map<String, Object> values(final Map<String, Object> values) {
+        Set<String> toremove = new HashSet<String>();
+        Map<String, Object> newMap = new HashMap<String, Object>();
+        synchronized(values) {
+            for (Map.Entry<String, Object> entry : values.entrySet()) {
+                Object value = entry.getValue();
+                if (value != null) {
+                    if (value instanceof byte[]) {
+                        toremove.add(entry.getKey());
+                    } else if (! (value instanceof java.io.Serializable)) {
+                        log.warn("Found non serializable '" + entry.getKey() + "' in " + values);
+                        toremove.add(entry.getKey());
+                    }
+                }
+            }
+            newMap.putAll(values);
+        }
+        for (String k : toremove) {
+            newMap.put(k, EMPTIED);
+        }
+        return Collections.unmodifiableMap(newMap);
+    }
+
+
     private final int nodeNumber;
-    private String builderName;
+    private final String builderName;
 
     private final Map<String, Object> oldValues;
     private final Map<String, Object> newValues;
 
-    private static final Map<String, Object> EMPTY = Collections.unmodifiableMap(new HashMap<String, Object>());
 
     /**
-     *@param machineName (MMBase) name of the server
-     *@param builderName name of builder of node event is about
-     *@param oldValues map with fields and their values that have been changed by the event. This may be <code>null</code>
-     *@param newValues map with new values of changed fields
-     *@param eventType the type of event
-     **/
+     * @param machineName (MMBase) name of the server
+     * @param builderName name of builder of node event is about
+     * @param oldValues map with fields and their values that have been changed by the event. This may be <code>null</code>
+     * @param newValues map with new values of changed fields
+     * @param eventType the type of event
+     */
     public NodeEvent(String machineName, String builderName, int nodeNumber, final Map<String, Object> oldValues, final Map<String, Object> newValues, int eventType ){
         super(machineName, eventType);
         this.builderName = builderName;
@@ -56,16 +86,12 @@ public class NodeEvent extends Event {
         if (oldValues == null) {
             this.oldValues = EMPTY;
         } else {
-            synchronized(oldValues) {
-                this.oldValues = Collections.unmodifiableMap(new HashMap<String, Object>(oldValues));
-            }
+            this.oldValues = values(oldValues);
         }
         if (newValues == null) {
             this.newValues = EMPTY;
         } else {
-            synchronized(newValues) {
-                this.newValues =  Collections.unmodifiableMap(new HashMap<String, Object>(newValues));
-            }
+            this.newValues =  values(newValues);
         }
     }
 
@@ -151,18 +177,6 @@ public class NodeEvent extends Event {
     }
 
 
-
-    /**
-     * I think this method is not needed.
-     * @deprecated
-     */
-    /*
-    public NodeEvent clone(String builderName) {
-        NodeEvent clone = (NodeEvent) super.clone();
-        clone.builderName = builderName;
-        return clone;
-    }
-    */
 
     /**
      * For conveneance: conversion of the new event type indication to the old
