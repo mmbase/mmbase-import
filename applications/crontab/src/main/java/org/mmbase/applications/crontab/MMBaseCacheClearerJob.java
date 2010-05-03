@@ -23,10 +23,12 @@ public class MMBaseCacheClearerJob extends AbstractCronJob  {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCacheClearerJob.class);
 
     protected String[] caches = null;
+    @Override
     protected void init() {
         caches = cronEntry.getConfiguration() != null ? caches = cronEntry.getConfiguration().split(",") : null;
     }
 
+    @Override
     public final void run() {
         if (caches != null && caches.length > 0) {
             log.service("Clearing " + java.util.Arrays.asList(caches));

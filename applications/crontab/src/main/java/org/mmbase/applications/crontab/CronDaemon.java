@@ -53,6 +53,7 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
     }
 
 
+    @Override
     public void notify(ProposedJobs.Event event) {
         log.debug("Received " + event);
         if (proposedJobs != null) {
@@ -84,6 +85,7 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
             log.service("Ignored " + event + " because we don't have jobs of type " + CronEntry.Type.BALANCE);
         }
     }
+    @Override
     public void notify(Events.Event event) {
         synchronized(runningJobs) {
             switch (event.getType()) {
@@ -215,11 +217,21 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
         if ((entry.getType() == CronEntry.Type.BALANCE || entry.getType() == CronEntry.Type.BALANCE_MUSTBEONE)
              && proposedJobs == null) {
             proposedJobs = new DelayQueue<ProposedJobs.Event>();
-            proposedFuture = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() { public void run() {CronDaemon.this.consumeJobs();} }, getFirst(), 60 * 1000, TimeUnit.MILLISECONDS);
+            proposedFuture = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
+                @Override
+                public void run() {
+                    CronDaemon.this.consumeJobs();
+                }
+            }, getFirst(), 60 * 1000, TimeUnit.MILLISECONDS);
             ThreadPools.identify(proposedFuture, "Crontab's poposed balanced job consumer");
         }
         if (failedFuture == null) {
-            failedFuture = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() { public void run() {CronDaemon.this.detectFailedJobs();} }, getFirst(), 60 * 1000, TimeUnit.MILLISECONDS);
+            failedFuture = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
+                @Override
+                public void run() {
+                    CronDaemon.this.detectFailedJobs();
+                }
+            }, getFirst(), 60 * 1000, TimeUnit.MILLISECONDS);
             ThreadPools.identify(failedFuture, "Crontab's failed job detector (unfinished)");
         }
         cronEntries.add(entry);
@@ -270,7 +282,12 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
         log.info("Starting CronDaemon");
         long first = getFirst();
         log.debug("First run at " + first);
-        future = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() { public void run() {CronDaemon.this.run();} }, first, 60 * 1000, TimeUnit.MILLISECONDS);
+        future = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                CronDaemon.this.run();
+            }
+        }, first, 60 * 1000, TimeUnit.MILLISECONDS);
         ThreadPools.identify(future, "Crontab's job kicker");
     }
 
@@ -376,6 +393,7 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
         return Collections.unmodifiableSet(cronEntries);
     }
 
+    @Override
     public String toString() {
         return "MMBase Cron Daemon";
     }
@@ -399,9 +417,7 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
         d.add(new CronEntry("1", "*/2 5-23 * * *", "every 2 minute from 5 till 11 pm", "org.mmbase.applications.crontab.TestCronJob", null));
         //d.add(new CronEntry("40-45,50-59 * * * *","test 40-45,50-60","Dummy",null));
 
-        try {
-            Thread.sleep(240 * 1000 * 60);
-        } catch (Exception e) {};
+        Thread.sleep(240 * 1000 * 60);
         d.stop();
     }
 }

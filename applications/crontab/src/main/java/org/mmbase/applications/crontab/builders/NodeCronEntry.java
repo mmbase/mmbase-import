@@ -47,7 +47,8 @@ public class NodeCronEntry extends CronEntry {
         return org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null).getNode(getId());
     }
 
-    @Override public String getServers() {
+    @Override
+    public String getServers() {
         Node jobNode = getNode();
         NodeIterator servers = jobNode.getRelatedNodes("mmservers").nodeIterator();
 
@@ -64,7 +65,8 @@ public class NodeCronEntry extends CronEntry {
 
     }
 
-    @Override public boolean isActive() {
+    @Override
+    public boolean isActive() {
         Node jobNode = getNode();
         NodeIterator servers = jobNode.getRelatedNodes("mmservers").nodeIterator();
         if (! servers.hasNext() &&
@@ -87,7 +89,8 @@ public class NodeCronEntry extends CronEntry {
         return false;
     }
 
-    @Override protected void setCronTime(String ct) {
+    @Override
+    protected void setCronTime(String ct) {
         String prev = cronTime;
         super.setCronTime(ct);
         if (prev == null) {
@@ -98,14 +101,16 @@ public class NodeCronEntry extends CronEntry {
     }
 
 
-    @Override public void setConfiguration(String conf) {
+    @Override
+    public void setConfiguration(String conf) {
         super.setConfiguration(conf);
         Node n = getNode();
         n.setStringValue("config", conf);
         n.commit();
     }
 
-    @Override protected void setLastRun(Date d) {
+    @Override
+    protected void setLastRun(Date d) {
         super.setLastRun(d);
         Node node = getNode();
         if (node.getNodeManager().hasField("lastrun")) {
@@ -117,7 +122,8 @@ public class NodeCronEntry extends CronEntry {
         }
     }
 
-    @Override protected void incCount() {
+    @Override
+    protected void incCount() {
         super.incCount();
         Node node = getNode();
         if (node.getNodeManager().hasField("count")) {
@@ -127,7 +133,8 @@ public class NodeCronEntry extends CronEntry {
         }
     }
 
-    @Override protected void setLastCost(int i) {
+    @Override
+    protected void setLastCost(int i) {
         super.setLastCost(i);
         Node node = getNode();
         if (node.getNodeManager().hasField("lastcost")) {
@@ -140,7 +147,8 @@ public class NodeCronEntry extends CronEntry {
     }
 
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "NODE: " + super.toString();
     }
 

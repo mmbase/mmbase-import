@@ -25,12 +25,14 @@ public class MMBaseQueryJob extends AbstractCronJob  {
     private static final Logger log = Logging.getLoggerInstance(MMBaseQueryJob.class);
 
     private String sql;
+    @Override
     protected void init() {
         // determin what needs to be done in run().
         sql = cronEntry.getConfiguration();
 
     }
 
+    @Override
     public final void run() {
         try {
             MMBase mmbase = MMBase.getMMBase();
