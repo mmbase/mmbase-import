@@ -42,8 +42,11 @@ public class NodeEvent extends Event {
     private static final Object EMPTIED = null;
 
     /**
-     * Removes all non-serializable values, and all values we don't want to serialize (binaries,
-     * because they are too big). This is put in a new (to not reflect further changes) unmodifiable map and returned.
+     * Removes all non-serializable values, and all values we don't want to serialize (binaries, because they are too big) (actually, it considers
+     * {@link #getUnacceptableValueTypes} and {@link #getRequiredValueTypes}). This is put in a new (to not reflect further changes) unmodifiable map
+     * and returned.
+     * @since MMBase-1.9.4
+     */
      */
     private static Map<String, Object> values(final Map<String, Object> values) {
         if (values.size() == 0) {
@@ -80,27 +83,56 @@ public class NodeEvent extends Event {
         return Collections.unmodifiableMap(newMap);
     }
 
+    /**
+     * @see #getUnacceptableValueTypes
+     * @since MMBase-1.9.4
+     */
     static void setUnacceptableValueTypes(Class[] types) {
         unacceptableValueTypes = types;
     }
 
+    /**
+     * @see #getRequiredValueTypes
+     * @since MMBase-1.9.4
+     */
     static void setRequiredValueTypes(Class[] types) {
         requiredValueTypes = types;
     }
+    /**
+     * Sets the types of which values are unacceptable in the values and oldvalues maps. This can be configured in config/utils/nodeevents.xml
+     * This defaults to [byte[]], but you can add other larges types too e.g. String. You could also set it to Object.class not not include any values
+     * in the event.
+     *
+     * @since MMBase-1.9.4
+     */
     public static Class[] getUnacceptableValueTypes() {
         return unacceptableValueTypes;
     }
+    /**
+     * Gets the types (interfaces) which values must implement in the values and oldvalues maps.  This can be configured in config/utils/nodeevents.xml
+     * This defaults to [java.io.Serializable]. The values must be serializable, otherwise the event itself is not properly serializable, which is needed
+     * in a clustering environment.
+     * @since MMBase-1.9.4
+     */
     public static Class[] getRequiredValueTypes() {
         return requiredValueTypes;
     }
 
 
+    /**
+     * @since MMBase-1.9.4
+     */
     static final UtilReader properties = new UtilReader("nodeevents.xml", new Runnable() {
             @Override
             public void run() {
                 configure();
             }
         });
+
+    /**
+     * Reads nodeevents.xml
+     * @since MMBase-1.9.4
+     */
     static void configure() {
         log.info("Reading " + properties);
         {
