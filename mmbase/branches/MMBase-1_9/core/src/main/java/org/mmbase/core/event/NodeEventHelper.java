@@ -50,21 +50,24 @@ public class NodeEventHelper {
         //fill the old and new values maps for the event
         switch(eventType) {
         case Event.TYPE_NEW:
-            newEventValues = removeNonSerializingValues(node.getValues());
+            newEventValues = node.getValues();
             oldEventValues = Collections.emptyMap();
             break;
         case Event.TYPE_CHANGE:
-            oldEventValues = removeNonSerializingValues(node.getOldValues());
-            newEventValues = new HashMap<String, Object>();
-            Map<String, Object> values = node.getValues();
-            for (String key : oldEventValues.keySet()) {
-                newEventValues.put(key, values.get(key));
+            oldEventValues = node.getOldValues();
+            {
+                // this makes sure the old an new map contain the same keys.
+                Map<String, Object> help = new HashMap<String, Object>();
+                Map<String, Object> values = node.getValues();
+                for (String key : oldEventValues.keySet()) {
+                    help.put(key, values.get(key));
+                }
+                newEventValues = help;
             }
-            newEventValues = removeNonSerializingValues(newEventValues);
             break;
         case Event.TYPE_DELETE:
             newEventValues = Collections.emptyMap();
-            oldEventValues = removeNonSerializingValues(node.getValues());
+            oldEventValues = node.getValues();
             break;
         default: {
             oldEventValues = Collections.emptyMap();
@@ -76,39 +79,6 @@ public class NodeEventHelper {
         return new NodeEvent(machineName, node.getBuilder().getTableName(), node.getNumber(), oldEventValues, newEventValues, eventType);
     }
 
-    /**
-     * Removes all non-serializable values, and all values we don't want to serialize (binaries,
-     * because they are too big).
-     */
-    private static Map<String, Object> removeNonSerializingValues(Map<String, Object> oldEventValues) {
-        Set<String> toremove = null;
-        synchronized(oldEventValues) {
-            for (Map.Entry<String, Object> entry : oldEventValues.entrySet()) {
-                Object value = entry.getValue();
-                if (value != null) {
-                    if (value instanceof byte[]) {
-                        if (toremove == null) toremove = new HashSet<String>();
-                        toremove.add(entry.getKey());
-                    } else if (! (value instanceof java.io.Serializable)) {
-                        log.warn("Found non serializable '" + entry.getKey() + "' in " + oldEventValues);
-                        if (toremove == null) toremove = new HashSet<String>();
-                        toremove.add(entry.getKey());
-
-                    }
-                }
-            }
-        }
-        if (toremove != null) {
-            Map<String, Object> newMap = new HashMap<String, Object>();
-            newMap.putAll(oldEventValues);
-            for (String k : toremove) {
-                newMap.remove(k);
-            }
-            return Collections.unmodifiableMap(newMap);
-        } else {
-            return oldEventValues;
-        }
-    }
 
     public static RelationEvent createRelationEventInstance(Relation node, int eventType, String machineName){
         MMObjectNode coreNode = MMBase.getMMBase().getBuilder(node.getNodeManager().getName()).getNode(node.getNumber());
