@@ -42,6 +42,9 @@ public class NodeEvent extends Event {
      * because they are too big). This is put in a new (to not reflect further changes) unmodifiable map and returned.
      */
     private static Map<String, Object> values(final Map<String, Object> values) {
+        if (values.size() == 0) {
+            return Collections.unmodifiableMap(values);
+        }
         Set<String> toremove = new HashSet<String>();
         Map<String, Object> newMap = new HashMap<String, Object>();
         synchronized(values) {
