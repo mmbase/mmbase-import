@@ -10,9 +10,9 @@ import java.io.*;
 import java.util.*;
 
 import org.mmbase.util.HashCodeUtil;
+import org.mmbase.util.xml.UtilReader;
 import org.mmbase.cache.Cache;
 import org.mmbase.cache.CacheManager;
-import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -30,26 +30,125 @@ public class NodeEvent extends Event {
 
     private static final long serialVersionUID = 1L;
 
+    private static Class[] unacceptableValueTypes = new Class[] { byte[].class };
+    private static Class[] requiredValueTypes = new Class[] { Serializable.class };
+
     /**
      * Event type speicfic for MMBase nodes.
      */
     public static final int TYPE_RELATION_CHANGE = 3;
 
+    private static final Map<String, Object> EMPTY = Collections.unmodifiableMap(new HashMap<String, Object>());
+    private static final Object EMPTIED = null;
+
+    /**
+     * Removes all non-serializable values, and all values we don't want to serialize (binaries,
+     * because they are too big). This is put in a new (to not reflect further changes) unmodifiable map and returned.
+     */
+    private static Map<String, Object> values(final Map<String, Object> values) {
+        if (values.size() == 0) {
+            return Collections.unmodifiableMap(values);
+        }
+        Set<String> toremove = new HashSet<String>();
+        Map<String, Object> newMap = new HashMap<String, Object>();
+        synchronized(values) {
+            ENTRIES:
+            for (Map.Entry<String, Object> entry : values.entrySet()) {
+                Object value = entry.getValue();
+                if (value != null) {
+                    for (Class clazz : requiredValueTypes) {
+                        if (! clazz.isInstance(value)) {
+                            log.warn("Found non " + clazz + "'" + entry.getKey() + "' in " + values);
+                            toremove.add(entry.getKey());
+                            continue ENTRIES;
+                        }
+                    }
+                    for (Class clazz : unacceptableValueTypes) {
+                        if (clazz.isInstance(value)) {
+                            log.debug("Found  " + clazz + "'" + entry.getKey() + "' in " + values);
+                            toremove.add(entry.getKey());
+                            continue ENTRIES;
+                        }
+                    }
+                }
+            }
+            newMap.putAll(values);
+        }
+        for (String k : toremove) {
+            newMap.put(k, EMPTIED);
+        }
+        return Collections.unmodifiableMap(newMap);
+    }
+
+    static void setUnacceptableValueTypes(Class[] types) {
+        unacceptableValueTypes = types;
+    }
+
+    static void setRequiredValueTypes(Class[] types) {
+        requiredValueTypes = types;
+    }
+    public static Class[] getUnacceptableValueTypes() {
+        return unacceptableValueTypes;
+    }
+    public static Class[] getRequiredValueTypes() {
+        return requiredValueTypes;
+    }
+
+
+    static final UtilReader properties = new UtilReader("nodeevents.xml", new Runnable() {
+            //@Override
+            public void run() {
+                configure();
+            }
+        });
+    static void configure() {
+        log.info("Reading " + properties);
+        {
+            String[] unacceptable = properties.getProperties().get("unacceptable").split(",");
+            List<Class> classes = new ArrayList<Class>();
+            for (String clazz : unacceptable) {
+                try {
+                    classes.add(Class.forName(clazz));
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+            log.info("Setting unacceptable values types for NodeEvents to " + classes);
+            setUnacceptableValueTypes(classes.toArray(new Class[] {}));
+        }
+        {
+            String[] required = properties.getProperties().get("required").split(",");
+            List<Class> classes = new ArrayList<Class>();
+            for (String clazz : required) {
+                try {
+                    classes.add(Class.forName(clazz));
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+            log.info("Setting unacceptable values types for NodeEvents to " + classes);
+            setRequiredValueTypes(classes.toArray(new Class[] {}));
+        }
+    }
+    static {
+        configure();
+    }
+
+
     private final int nodeNumber;
-    private String builderName;
+    private final String builderName;
 
     private final Map<String, Object> oldValues;
     private final Map<String, Object> newValues;
 
-    private static final Map<String, Object> EMPTY = Collections.unmodifiableMap(new HashMap<String, Object>());
 
     /**
-    *@param machineName (MMBase) name of the server
-    *@param builderName name of builder of node event is about
-    *@param oldValues map with fields and their values that have been changed by the event. This may be <code>null</code>
-    *@param newValues map with new values of changed fields
-    *@param eventType the type of event
-    **/
+     * @param machineName (MMBase) name of the server
+     * @param builderName name of builder of node event is about
+     * @param oldValues map with fields and their values that have been changed by the event. This may be <code>null</code>
+     * @param newValues map with new values of changed fields
+     * @param eventType the type of event
+     */
     public NodeEvent(String machineName, String builderName, int nodeNumber, final Map<String, Object> oldValues, final Map<String, Object> newValues, int eventType ){
         super(machineName, eventType);
         this.builderName = builderName;
@@ -57,16 +156,12 @@ public class NodeEvent extends Event {
         if (oldValues == null) {
             this.oldValues = EMPTY;
         } else {
-            synchronized(oldValues) {
-                this.oldValues = Collections.unmodifiableMap(new HashMap<String, Object>(oldValues));
-            }
+            this.oldValues = values(oldValues);
         }
         if (newValues == null) {
             this.newValues = EMPTY;
         } else {
-            synchronized(newValues) {
-                this.newValues =  Collections.unmodifiableMap(new HashMap<String, Object>(newValues));
-            }
+            this.newValues =  values(newValues);
         }
     }
 
@@ -123,6 +218,7 @@ public class NodeEvent extends Event {
     }
 
 
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder("Node event: '");
         buf.append(getEventTypeGuiName(eventType)).append( "', node: ").append(nodeNumber).append(", nodetype: ").append(builderName);
@@ -151,18 +247,6 @@ public class NodeEvent extends Event {
     }
 
 
-
-    /**
-     * I think this method is not needed.
-     * @deprecated
-     */
-    /*
-    public NodeEvent clone(String builderName) {
-        NodeEvent clone = (NodeEvent) super.clone();
-        clone.builderName = builderName;
-        return clone;
-    }
-    */
 
     /**
      * For conveneance: conversion of the new event type indication to the old
@@ -216,6 +300,7 @@ public class NodeEvent extends Event {
     }
 
 
+    @Override
     public int hashCode() {
         int result = 0;
         result = HashCodeUtil.hashCode(result, eventType);
@@ -224,6 +309,7 @@ public class NodeEvent extends Event {
         return result;
 
     }
+    @Override
     public boolean equals(Object o) {
         if (o instanceof NodeEvent) {
             NodeEvent ne = (NodeEvent) o;
@@ -263,7 +349,7 @@ public class NodeEvent extends Event {
         in.defaultReadObject();
         log.debug("deserialized node event for " + nodeNumber);
         try {
-            int otype = MMBase.getMMBase().getTypeDef().getIntValue(builderName);
+            int otype = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase").getNodeManager(builderName).getNumber();
             if (otype != -1) {
                 Cache<Integer, Integer> typeCache = CacheManager.getCache("TypeCache");
                 if (typeCache != null) {
