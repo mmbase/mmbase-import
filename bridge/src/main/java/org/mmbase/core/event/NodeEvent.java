@@ -10,6 +10,7 @@ import java.io.*;
 import java.util.*;
 
 import org.mmbase.util.HashCodeUtil;
+import org.mmbase.util.xml.UtilReader;
 import org.mmbase.cache.Cache;
 import org.mmbase.cache.CacheManager;
 import org.mmbase.util.logging.Logger;
@@ -28,6 +29,9 @@ public class NodeEvent extends Event {
     private static final Logger log = Logging.getLoggerInstance(NodeEvent.class);
 
     private static final long serialVersionUID = 1L;
+
+    private static Class[] unacceptableValueTypes = new Class[] { byte[].class };
+    private static Class[] requiredValueTypes = new Class[] { Serializable.class };
 
     /**
      * Event type speicfic for MMBase nodes.
@@ -48,14 +52,23 @@ public class NodeEvent extends Event {
         Set<String> toremove = new HashSet<String>();
         Map<String, Object> newMap = new HashMap<String, Object>();
         synchronized(values) {
+            ENTRIES:
             for (Map.Entry<String, Object> entry : values.entrySet()) {
                 Object value = entry.getValue();
                 if (value != null) {
-                    if (value instanceof byte[]) {
-                        toremove.add(entry.getKey());
-                    } else if (! (value instanceof java.io.Serializable)) {
-                        log.warn("Found non serializable '" + entry.getKey() + "' in " + values);
-                        toremove.add(entry.getKey());
+                    for (Class clazz : requiredValueTypes) {
+                        if (! clazz.isInstance(value)) {
+                            log.warn("Found non " + clazz + "'" + entry.getKey() + "' in " + values);
+                            toremove.add(entry.getKey());
+                            continue ENTRIES;
+                        }
+                    }
+                    for (Class clazz : unacceptableValueTypes) {
+                        if (clazz.isInstance(value)) {
+                            log.debug("Found  " + clazz + "'" + entry.getKey() + "' in " + values);
+                            toremove.add(entry.getKey());
+                            continue ENTRIES;
+                        }
                     }
                 }
             }
@@ -65,6 +78,60 @@ public class NodeEvent extends Event {
             newMap.put(k, EMPTIED);
         }
         return Collections.unmodifiableMap(newMap);
+    }
+
+    static void setUnacceptableValueTypes(Class[] types) {
+        unacceptableValueTypes = types;
+    }
+
+    static void setRequiredValueTypes(Class[] types) {
+        requiredValueTypes = types;
+    }
+    public static Class[] getUnacceptableValueTypes() {
+        return unacceptableValueTypes;
+    }
+    public static Class[] getRequiredValueTypes() {
+        return requiredValueTypes;
+    }
+
+
+    static final UtilReader properties = new UtilReader("nodeevents.xml", new Runnable() {
+            @Override
+            public void run() {
+                configure();
+            }
+        });
+    static void configure() {
+        log.info("Reading " + properties);
+        {
+            String[] unacceptable = properties.getProperties().get("unacceptable").split(",");
+            List<Class> classes = new ArrayList<Class>();
+            for (String clazz : unacceptable) {
+                try {
+                    classes.add(Class.forName(clazz));
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+            log.info("Setting unacceptable values types for NodeEvents to " + classes);
+            setUnacceptableValueTypes(classes.toArray(new Class[] {}));
+        }
+        {
+            String[] required = properties.getProperties().get("required").split(",");
+            List<Class> classes = new ArrayList<Class>();
+            for (String clazz : required) {
+                try {
+                    classes.add(Class.forName(clazz));
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+            log.info("Setting unacceptable values types for NodeEvents to " + classes);
+            setRequiredValueTypes(classes.toArray(new Class[] {}));
+        }
+    }
+    static {
+        configure();
     }
 
 
