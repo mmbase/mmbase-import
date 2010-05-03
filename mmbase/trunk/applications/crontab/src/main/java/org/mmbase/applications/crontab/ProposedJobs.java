@@ -48,6 +48,7 @@ public class ProposedJobs {
             ready = true;
         }
 
+        @Override
         public boolean equals(Object o) {
             if (o instanceof Event) {
                 Event other = (Event) o;
@@ -59,21 +60,25 @@ public class ProposedJobs {
                 return false;
             }
         }
+        @Override
         public int hashCode() {
             int result = entry.hashCode();
             result = HashCodeUtil.hashCode(result, cronStart);
             return result;
         }
+        @Override
         public long getDelay(TimeUnit unit) {
             long delay = cronStart.getTime() + WAIT - System.currentTimeMillis();
             if (delay < 0) delay = 0;
             return unit.convert(delay, TimeUnit.MILLISECONDS);
         }
+        @Override
         public int compareTo(Delayed d) {
             return (int) (getDelay(TimeUnit.MILLISECONDS) - d.getDelay(TimeUnit.MILLISECONDS));
 
         }
 
+        @Override
         public String toString() {
             return getMachine() + ":" + cronStart + ":" + entry;
         }
@@ -94,17 +99,21 @@ public class ProposedJobs {
      */
     public static class Broker extends AbstractEventBroker {
 
+        @Override
         public boolean canBrokerForListener(EventListener listener) {
             return listener instanceof ProposedJobs.Listener;
         }
+        @Override
         public boolean canBrokerForEvent(org.mmbase.core.event.Event event) {
             return event instanceof ProposedJobs.Event;
         }
+        @Override
         protected void notifyEventListener(org.mmbase.core.event.Event event, EventListener listener) {
             ProposedJobs.Event ne = (ProposedJobs.Event) event; //!!!!!
             Listener nel = (Listener) listener;
             nel.notify(ne);
         }
+        @Override
         public String toString() {
             return "Crontab Proposed Jobs Broker";
         }
