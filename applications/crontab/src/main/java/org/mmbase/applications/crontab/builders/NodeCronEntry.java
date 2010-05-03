@@ -152,4 +152,18 @@ public class NodeCronEntry extends CronEntry {
         return "NODE: " + super.toString();
     }
 
+
+
+    /**
+     * Two NodeCronEntry's as considered equal if they have the same id
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof NodeCronEntry)) {
+            return false;
+        }
+        CronEntry other = (CronEntry)o;
+        return getId().equals(other.getId());
+    }
+
 }
