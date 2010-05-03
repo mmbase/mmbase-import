@@ -24,32 +24,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 public class CrontabModule extends WatchedReloadableModule {
-
-    //some hackery to make it 1.8 compatible. Can be dropped if not necessary any more.
-    private static interface Function<C> extends org.mmbase.util.functions.Function {
-    }
-
-    private static abstract class AbstractFunction<C> extends org.mmbase.util.functions.AbstractFunction implements Function<C> {
-        public AbstractFunction(String name, Parameter[] def, ReturnType returnType) {
-            super(name, def, returnType);
-        }
-        public AbstractFunction(String name, Parameter<?>... def) {
-            this(name, def, null);
-        }
-    }
-    private static class Parameter<C> extends org.mmbase.util.functions.Parameter {
-        public Parameter(String name, Class type, boolean required) {
-            super(name, type, required);
-        }
-        public Parameter(String name, Class type, Object o) {
-            super(name, type, o);
-        }
-        public Parameter(String name, Class type) {
-            super(name, type, null);
-        }
-
-    }
-
+  
     private static final Logger log = Logging.getLoggerInstance(CrontabModule.class);
     protected final CronDaemon cronDaemon;
 
