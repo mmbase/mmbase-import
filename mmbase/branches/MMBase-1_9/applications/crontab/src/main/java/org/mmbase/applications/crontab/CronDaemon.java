@@ -85,7 +85,8 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
         synchronized(runningJobs) {
             switch (event.getType()) {
             case Events.STARTED: runningJobs.add(event.getEntry()); break;
-            case Events.INTERRUPTED: log.service("Removing " + event  + " from " + runningJobs);
+            case Events.INTERRUPTED:
+                log.service("Removing " + event  + " from " + runningJobs);
             case Events.DONE   :
                 if (! runningJobs.remove(event.getEntry())) {
                     log.warn("" + event + " was not administrated as running in: " + runningJobs);
