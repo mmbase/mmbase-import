@@ -30,11 +30,12 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
     private static final Logger log = Logging.getLoggerInstance(CronDaemon.class);
 
     private static CronDaemon cronDaemon;
-    private Set<CronEntry> cronEntries;
-    private Set<CronEntry> removedCronEntries;
-    private Set<CronEntry> addedCronEntries;
+    private final Set<CronEntry> cronEntries        = Collections.synchronizedSet(new LinkedHashSet<CronEntry>()); // predictable order
+    private final Set<CronEntry> removedCronEntries = Collections.synchronizedSet(new HashSet<CronEntry>());
+    private final Set<CronEntry> addedCronEntries   = Collections.synchronizedSet(new LinkedHashSet<CronEntry>()); // predictable  order
 
-    private DelayQueue<ProposedJobs.Event> proposedJobs = null;
+    private final DelayQueue<ProposedJobs.Event> proposedJobs = new DelayQueue<ProposedJobs.Event>();
+
 
     private ScheduledFuture proposedFuture;
     private ScheduledFuture failedFuture;
@@ -45,9 +46,6 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
      * CronDaemon is a Singleton. This makes the one instance and starts the Thread.
      */
     private CronDaemon() {
-        cronEntries = Collections.synchronizedSet(new LinkedHashSet<CronEntry>()); // predictable order
-        removedCronEntries = Collections.synchronizedSet(new HashSet<CronEntry>());
-        addedCronEntries = Collections.synchronizedSet(new LinkedHashSet<CronEntry>()); // predictable  order
         EventManager.getInstance().addEventListener(this);
         start();
     }
@@ -126,7 +124,6 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
 
     protected void consumeJobs() {
         synchronized(proposedJobs) {
-
             for (ProposedJobs.Event event = proposedJobs.poll(); event != null; event = proposedJobs.poll()) {
                 if (event.isLocal()) {
                     log.service("Consuming " + event + " locally");
@@ -214,27 +211,28 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
      */
     protected void addEntry(CronEntry entry) {
         entry.init();
-        if ((entry.getType() == CronEntry.Type.BALANCE || entry.getType() == CronEntry.Type.BALANCE_MUSTBEONE)
-             && proposedJobs == null) {
-            proposedJobs = new DelayQueue<ProposedJobs.Event>();
-            proposedFuture = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    CronDaemon.this.consumeJobs();
-                }
-            }, getFirst(), 60 * 1000, TimeUnit.MILLISECONDS);
-            ThreadPools.identify(proposedFuture, "Crontab's poposed balanced job consumer");
+        synchronized(cronEntries) {
+            if ((entry.getType() == CronEntry.Type.BALANCE || entry.getType() == CronEntry.Type.BALANCE_MUSTBEONE)
+                && proposedFuture == null) {
+                proposedFuture = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
+                        @Override
+                        public void run() {
+                            CronDaemon.this.consumeJobs();
+                        }
+                    }, getFirst(), 60 * 1000, TimeUnit.MILLISECONDS);
+                ThreadPools.identify(proposedFuture, "Crontab's poposed balanced job consumer");
+            }
+            if (failedFuture == null) {
+                failedFuture = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
+                        @Override
+                        public void run() {
+                            CronDaemon.this.detectFailedJobs();
+                        }
+                    }, getFirst(), 60 * 1000, TimeUnit.MILLISECONDS);
+                ThreadPools.identify(failedFuture, "Crontab's failed job detector (unfinished)");
+            }
+            cronEntries.add(entry);
         }
-        if (failedFuture == null) {
-            failedFuture = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    CronDaemon.this.detectFailedJobs();
-                }
-            }, getFirst(), 60 * 1000, TimeUnit.MILLISECONDS);
-            ThreadPools.identify(failedFuture, "Crontab's failed job detector (unfinished)");
-        }
-        cronEntries.add(entry);
         log.service("Added entry " + entry);
     }
 
