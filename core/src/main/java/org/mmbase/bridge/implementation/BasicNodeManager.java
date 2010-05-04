@@ -485,7 +485,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
             typerelNodes = BasicCloudContext.mmb.getTypeRel().getAllowedRelations(thisOType);
         }
 
-        List<MMObjectNode> nodes = new ArrayList<MMObjectNode>();
+        List<Node> nodes = new ArrayList<Node>();
         while (typerelNodes.hasMoreElements()) {
             MMObjectNode n = typerelNodes.nextElement();
             if ((requestedRole == -1) || (requestedRole == n.getIntValue("rnumber"))) {
@@ -502,7 +502,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
                         }
                     }
                 }
-                nodes.add(n);
+                nodes.add(BasicNodeList.convertMMObjectNodeToBridgeNode(getCloud(), this, n));
             }
         }
         return new BasicRelationManagerList(nodes, cloud);
