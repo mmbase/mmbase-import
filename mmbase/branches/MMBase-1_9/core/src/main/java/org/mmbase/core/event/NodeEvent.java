@@ -47,7 +47,6 @@ public class NodeEvent extends Event {
      * and returned.
      * @since MMBase-1.9.4
      */
-     */
     private static Map<String, Object> values(final Map<String, Object> values) {
         if (values.size() == 0) {
             return Collections.unmodifiableMap(values);
