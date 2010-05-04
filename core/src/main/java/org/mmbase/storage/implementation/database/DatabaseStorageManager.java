@@ -160,6 +160,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             if (bufferSizeAttribute != null) {
                 try {
                     bufferSize = Integer.valueOf(bufferSizeAttribute.toString());
+                    log.info("Found key buffer size " + bufferSize);
                 } catch (NumberFormatException nfe) {
                     // remove the SEQUENCE_BUFFER_SIZE attribute (invalid value)
                     factory.setAttribute(Attributes.SEQUENCE_BUFFER_SIZE, null);
@@ -256,6 +257,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                         log.debug("No active connection got");
                         return;
                     }
+                    log.debug("begin transaction");
                     activeConnection.setTransactionIsolation(transactionIsolation);
                     activeConnection.setAutoCommit(false);
                 } catch (SQLException se) {
@@ -283,6 +285,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
 
                 try {
                     activeConnection.commit();
+                    log.debug("committed transaction");
                 } catch (SQLException se) {
                     throw new StorageException(se);
                 } finally {
@@ -344,14 +347,14 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         log.debug("Creating key");
         synchronized (sequenceKeys) {
             log.debug("Acquired lock");
-            // if sequenceKeys conatins (buffered) keys, return this
+            // if sequenceKeys contains (buffered) keys, return this
             if (sequenceKeys.size() > 0) {
                 return sequenceKeys.remove(0);
             } else {
                 String query = "";
                 try {
-
                     getActiveConnection();
+                    beginTransaction();
                     Statement s;
                     Scheme scheme = factory.getScheme(Schemes.UPDATE_SEQUENCE, Schemes.UPDATE_SEQUENCE_DEFAULT);
                     if (scheme != null) {
@@ -376,6 +379,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                                 for (int i = 1; i < bufferSize.intValue(); i++) {
                                     sequenceKeys.add(keynr + i);
                                 }
+                                log.service("Created key buffer " + sequenceKeys);
                                 return keynr;
                             } else {
                                 throw new StorageException("The sequence table is empty.");
@@ -394,6 +398,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                     } catch (InterruptedException re) {}
                     throw new StorageException(se);
                 } finally {
+                    commit();
                     releaseActiveConnection();
                 }
             }
