@@ -45,7 +45,7 @@ public class BasicNodeList extends AbstractNodeList<Node> implements NodeList  {
     }
 
 
-    public static Node convertMMObjectNodetoBridgeNode(Cloud cloud, NodeManager nodeManager, Object o) {
+    public static Node convertMMObjectNodeToBridgeNode(Cloud cloud, NodeManager nodeManager, Object o) {
         if (o == null) return null;
         if (! (o instanceof MMObjectNode)) return null;
         MMObjectNode coreNode = (MMObjectNode) o;
@@ -129,7 +129,7 @@ public class BasicNodeList extends AbstractNodeList<Node> implements NodeList  {
                 node = cloud.getNodeManager(((MMObjectBuilder)o).getTableName());
             } else {
                 MMObjectNode coreNode = (MMObjectNode) o;
-                node = convertMMObjectNodetoBridgeNode(cloud, nodeManager, coreNode);
+                node = convertMMObjectNodeToBridgeNode(cloud, nodeManager, coreNode);
             }
             //log.info("Found " + node.getClass() + " in " + getClass());
         }
