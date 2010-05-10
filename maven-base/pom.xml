@@ -579,27 +579,18 @@ See http://www.MMBase.org/license
               </execution>
             </executions>
           </plugin>
-          <!-- This is broken.
-               It will fail the complete build on:
-               ERROR: Could not resolve order in ObjectWrapperHelper
-               Completely ridiculous.
-
-               for now disable the whole thing
-          -->
-          <!--
-              <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-javadoc-plugin</artifactId>
-              <executions>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
               <execution>
-              <id>attach-javadocs</id>
-              <goals>
-              <goal>jar</goal>
-              </goals>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
               </execution>
-              </executions>
-              </plugin>
-          -->
+            </executions>
+          </plugin>
         </plugins>
       </build>
     </profile>
