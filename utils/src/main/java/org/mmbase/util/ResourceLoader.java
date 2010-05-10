@@ -1230,9 +1230,10 @@ public class ResourceLoader extends ClassLoader {
         }
         private  Set<String> getPaths(final Set<String> results, final Pattern pattern,  final String recursive, final boolean directories) {
             FilenameFilter filter = new FilenameFilter() {
+                    @Override
                     public boolean accept(File dir, String name) {
                         File f = new File(dir, name);
-                        return pattern == null || (f.isDirectory() && recursive != null) || pattern.matcher(f.toString()).matches();
+                        return pattern == null || (f.isDirectory() && recursive != null) || pattern.matcher(name).matches();
                     }
                 };
             File f = getFile(recursive);
