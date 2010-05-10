@@ -46,11 +46,15 @@ public class SessionCleaner implements Runnable {
 
 
     public void run() {
-        LOG.info("Removing from session " + keys);
-        for (String key : keys) {
-            session.removeAttribute(key);
+        try {
+            LOG.info("Removing from session " + session.getId() + " " + keys);
+            for (String key : keys) {
+                session.removeAttribute(key);
+            }
+            session.removeAttribute(KEY);
+        } catch (IllegalStateException ise) {
+            LOG.info(session.getId() + ": " + ise.getMessage());
         }
-        session.removeAttribute(KEY);
     }
 
     @Override
