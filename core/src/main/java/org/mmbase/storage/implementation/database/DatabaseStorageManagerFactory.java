@@ -375,6 +375,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
             log.info("Configuration used for database storage: " + url);
             try {
                 InputSource in = ResourceLoader.getInputSource(url);
+                if (in == null) throw new StorageConfigurationException("No such resource '" + url + "'");
                 reader = new StorageReader(this, in);
             } catch (java.io.IOException ioe) {
                 throw new StorageConfigurationException(ioe);
