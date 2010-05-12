@@ -3,7 +3,6 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
     version="2.0"
     >
   <!--
@@ -13,16 +12,12 @@
       @version $Id$
   -->
   <jsp:directive.tag
-      description="Combines mm-sr:search's to a an 'accordion' search" />
+      description="Combines mm-sr:searchs to an accordion search" />
 
   <jsp:directive.attribute name="path"        type="java.lang.String"  required="true"
                            description="Node types to search. This is equivalent to the path attribute of an mm:listnodescontainer" />
   <jsp:directive.attribute name="searchdirs" type="java.lang.String"
-                           description="This is equivalent to the searchdirs attribute of an mm:listnodescontainer" /> 
-
-  <jsp:directive.attribute name="searchdirs" type="java.lang.String"
                            description="This is equivalent to the searchdirs attribute of an mm:listnodescontainer" />
-
   <jsp:directive.attribute name="element"        type="java.lang.String"
                            description="This is equivalent to the element attribute of an mm:listnodescontainer, but it defaults to the _last_ element." />
 
@@ -35,6 +30,10 @@
   <jsp:directive.attribute name="load"               type="java.lang.String"
                            description="" />
   <jsp:directive.attribute name="forms"        type="java.lang.Boolean"
+                           />
+
+  <jsp:directive.attribute name="intro"        fragment="true"
+                           description="A fragment that will be used to introduce the first step. The following steps will be introduced with the selected previous step."
                            />
 
   <mm:import externid="org.mmbase.in_form" id="in_form" vartype="boolean">false</mm:import>
@@ -73,12 +72,17 @@
          id="${pid}">
     <tr>
       <c:forEach begin="0" end="${laststep + 1}"  var="i" step="2" varStatus="status">
-        <th class="${status.first ? 'first' : ''} ${status.last ? 'last' : ''}"><mm:nodeinfo nodetype="${query.steps[i].tableName}" type="plural_guinodemanager" /></th>
+        <th class="${status.first ? 'first' : ''} ${status.last ? 'last' : ''}">
+          <mm:nodeinfo nodetype="${query.steps[i].tableName}" type="plural_guinodemanager" />
+        </th>
       </c:forEach>
     </tr>
     <tr>
       <td class="first">
         <mm:include page="/mmbase/searchrelate/path/searcher.jspx" referids="pid,pagesize?">
+          <mm:param name="intro">
+            <jsp:invoke fragment="intro" />
+          </mm:param>
           <mm:param name="step">0</mm:param>
         </mm:include>
       </td>
