@@ -1224,7 +1224,7 @@ public class ResourceLoader extends ClassLoader {
             FilenameFilter filter = new FilenameFilter() {
                     public boolean accept(File dir, String name) {
                         File f = new File(dir, name);
-                        return pattern == null || (f.isDirectory() && recursive != null) || pattern.matcher(name).matches();
+                        return pattern == null || (f.isDirectory() && recursive != null) || pattern.matcher(f.toString()).matches();
                     }
                 };
             File f = getFile(recursive);
