@@ -465,9 +465,9 @@ public class Casting {
 
     private static String escape(CharTransformer escaper, CharSequence string) {
         if (escaper != null) {
-            return escaper.transform(string.toString());
+            return escaper.transform(string == null ? "" : string.toString());
         } else {
-            return string.toString();
+            return string == null ? "" : string.toString();
         }
     }
     /**
