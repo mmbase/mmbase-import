@@ -2,6 +2,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     version="2.0"
     >
@@ -12,8 +13,14 @@
   <jsp:directive.tag
       description="This is meant to be isued in an item jsp of mm-sr:relatednodes. A part of the item can be hidden with that, with a toggle button the user can click to show it. A subtag can be mm-sr:lazy" />
 
-  <a class="toggle toggle_open"><mm-sr:button type="toggle_open" alt="+" /></a>
-  <a class="toggle toggle_close" style="display: none;"><mm-sr:button type="toggle_close" alt="-" /></a>
+
+  <a class="toggle toggle_open">
+    <mm-sr:button type="toggle_open"
+                  alt="+" />
+  </a>
+  <a class="toggle toggle_close" style="display: none;">
+    <mm-sr:button type="toggle_close" alt="-" />
+  </a>
   <div class="toggle_body" style="display: none;">
     <jsp:doBody />
   </div>
