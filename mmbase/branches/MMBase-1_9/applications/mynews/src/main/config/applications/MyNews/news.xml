@@ -9,6 +9,7 @@ Most of the documentation at the MMBase site is adapted to the new XML configura
 		<title>XML based MMBase distribution</title>
 		<subtitle></subtitle>
 		<intro>The XML based MMBase distribution is now available at http://www.mmbase.org/download.</intro>
+		<date>962305380</date>
 	</node>
 
 	<node number="8504" owner="default">
@@ -20,6 +21,7 @@ The webdesign of the Pinkpop site was finished before the start of the festival.
 		<title>Pinkpop was no problem for MMBase</title>
 		<subtitle></subtitle>
 		<intro>The functionality of the Pinkpop site is facilitated by MMBase which did a very good job during Pinkpop 2000.</intro>
+		<date>962005020</date>
 	</node>
 
 	<node number="8502" owner="default">
@@ -32,6 +34,7 @@ The EO selected MMBase considering the following criteria: the system has to be 
 		<subtitle></subtitle>
 		<intro>Dutch radio and TV broadcaster EO will be co-user and developer of VPRO's Open Source content management system MMBase (http://www.mmbase.org). After careful comparison with other web publishing systems and extensive testing of the MMBase software, the EO decided to use MMBase to publish her website.
 		</intro>
+		<date>959281380</date>
 	</node>
 
 	<node number="8500" owner="default">
@@ -49,6 +52,7 @@ VPRO, Submarine, DDS, Lunatech, Sun Microsystems, Triple-P, CWI, Mediamatic, EO,
 		<intro>
 The MMBase Community meeting on 11 May was a success. Over 70 people showed up on the roof of the VPRO building. Improvements to MMBase wer discussed, newbies were introduced to what can be done with MMBase, and then there was the barbecue... (lots of pictures provided)
 		</intro>
+		<date>958090920</date>
 	</node>
 
 	<node number="8498" owner="default">
@@ -68,6 +72,7 @@ By distributing MMBase as Open Source software, the VPRO is creating a community
 		<subtitle></subtitle>
 		<intro>MMBase, the VPRO s web-publishing software, will be available as Open Source beginning on April 3, 2000. The VPRO has been using MMBase for its own website (www.vpro.nl) for more than two years, and produces every year major multimedia projects such as live Internet-reporting from the Pinkpop music festival
 		</intro>
+		<date>954113040</date>
 	</node>
 
   <node number="6375" owner="default" alias="example.codings">
