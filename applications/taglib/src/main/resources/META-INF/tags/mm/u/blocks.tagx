@@ -12,6 +12,7 @@
   <jsp:directive.attribute name="separator"         fragment="true" />
   <jsp:directive.attribute name="beforefirst"       fragment="true" />
   <jsp:directive.attribute name="afterlast"         fragment="true" />
+  <jsp:directive.attribute name="debug"          />
 
   <mm:hasfunction set="components" name="blockClassification">
     <div class="mmbase_fw_blocks ${classification} ${styleClass}">
@@ -24,7 +25,7 @@
             </mm:first>
             <jsp:doBody />
 
-            <mm:component name="${_.component.name}" block="${_.name}" />
+            <mm:component debug="${debug}" name="${_.component.name}" block="${_.name}" />
 
             <mm:last inverse="true">
               <jsp:invoke fragment="separator" />
