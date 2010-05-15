@@ -37,6 +37,38 @@
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
+    <field name="parent" state="virtual" readonly="false">
+      <gui>
+        <guiname xml:lang="nl">Ouder</guiname>
+        <guiname xml:lang="en">Parent</guiname>
+        <guiname xml:lang="eo">Patro</guiname>
+
+      </gui>
+      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <enumeration>
+          <query
+              xmlns="http://www.mmbase.org/xmlns/searchquery"
+              path="segments" />
+        </enumeration>
+        <setprocessor>
+          <class name="org.mmbase.datatypes.processors.Related$Setter">
+            <param name="role">index</param>
+            <param name="type">segments</param>
+            <param name="searchDir">source</param>
+          </class>
+        </setprocessor>
+        <getprocessor>
+          <class name="org.mmbase.datatypes.processors.Related$Getter">
+            <param name="role">index</param>
+            <param name="type">segments</param>
+            <param name="searchDir">source</param>
+          </class>
+        </getprocessor>
+      </datatype>
+
+    </field>
+
+
   </fieldlist>
 
   <functionlist>
