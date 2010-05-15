@@ -23,9 +23,7 @@
           <list>4</list>
         </positions>
       </editor>
-      <db>
-        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
-      </db>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
     <field name="root">
