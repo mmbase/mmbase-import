@@ -51,7 +51,7 @@ public class Identifier extends ReaderTransformer implements CharTransformer {
                 if (c == -1) break;
                 if (Character.isLetterOrDigit((char)c)) {
                     w.write((char)c);
-                } if (Character.isWhitespace((char) c))  {
+                } else if (Character.isWhitespace((char) c))  {
                     w.write(whitespace);
                 } else {
                     w.write('_');
