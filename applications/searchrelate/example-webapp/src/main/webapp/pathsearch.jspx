@@ -18,10 +18,16 @@
   </script>
 
   <p>Straight forward two step searcher, also indicated role. Finds news.</p>
-  <mm-sr:pathsearch path="mags,posrel,news" />
+  <mm-sr:pathsearch path="mags,posrel,news">
+    <jsp:attribute name="intro">Choose a magazine, than a news article</jsp:attribute>
+    <mm:sortorder field="mags.number" direction="down" />
+    <mm:sortorder field="news.number" direction="down" />
+  </mm-sr:pathsearch>
 
   <p>Straight forward two step searcher, not indicated role, finding people</p>
-  <mm-sr:pathsearch path="news,people" pagesize="100" />
+  <mm-sr:pathsearch path="news,people" pagesize="100">
+    <mm:sortorder field="news.number" direction="down" />
+  </mm-sr:pathsearch>
 
   <p>Straight forward three step searcher to find people</p>
   <mm-sr:pathsearch path="mags,news,people" />
