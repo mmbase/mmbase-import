@@ -249,6 +249,13 @@ public class Casting {
                 } else {
                     return (C) new Locale(toString(value));
                 }
+           } else if (type.equals(TimeZone.class)) {
+                if (value == null) return null;
+                if (value instanceof TimeZone) {
+                    return (C) value;
+                } else {
+                    return (C) TimeZone.getTimeZone(toString(value));
+                }
             } else if (type.equals(Collator.class)) {
                 if (value instanceof Collator) {
                     return (C) value;
@@ -1062,6 +1069,8 @@ public class Casting {
         }
 
     }
+
+
 
 
     /**
