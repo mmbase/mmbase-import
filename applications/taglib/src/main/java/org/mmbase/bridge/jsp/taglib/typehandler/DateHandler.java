@@ -47,8 +47,12 @@ public class DateHandler extends AbstractTypeHandler {
     }
 
 
-    private Calendar getInstance() throws JspTagException {
-        return Calendar.getInstance(tag.getTimeZone());
+    private Calendar getInstance(DataType dt) throws JspTagException {
+        TimeZone tz = null;
+        if (dt instanceof DateTimeDataType) {
+            tz = ((DateTimeDataType) dt).getTimeZone();
+        }
+        return Calendar.getInstance(tz == null ? tag.getTimeZone() : tz);
     }
 
     protected DateTimePattern getPattern(DataType dt) throws JspTagException {
@@ -93,7 +97,7 @@ public class DateHandler extends AbstractTypeHandler {
      */
     @Override
     protected Object getFieldValue(Node node, Field field) throws JspTagException {
-        Calendar cal = getSpecifiedValue(field, getInstance());
+        Calendar cal = getSpecifiedValue(field, getInstance(field.getDataType()));
         return cal == null ? null : cal.getTime();
     }
 
@@ -141,8 +145,8 @@ public class DateHandler extends AbstractTypeHandler {
         }
         DataType dt = field.getDataType();
         DateTimePattern dateTimePattern = getPattern(dt);
-        Calendar minDate = getInstance();
-        Calendar maxDate = getInstance();
+        Calendar minDate = getInstance(dt);
+        Calendar maxDate = getInstance(dt);
         if (dt instanceof DateTimeDataType) {
             Date min = ((DateTimeDataType) dt).getMin();
             minDate.setTime(min);
@@ -262,7 +266,7 @@ public class DateHandler extends AbstractTypeHandler {
     @Override
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         final String fieldName = field.getName();
-        final Calendar cal = getInstance();
+        final Calendar cal = getInstance(field.getDataType());
         Object oldValue = node.getValue(fieldName);
         if (oldValue != null) {
             oldValue = node.getDateValue(fieldName);
@@ -299,9 +303,9 @@ public class DateHandler extends AbstractTypeHandler {
         final String fieldName = field.getName();
         final DataType<Object> dt = field.getDataType();
         final DateTimePattern dateTimePattern = getPattern(dt);
-        final Calendar minDate = getInstance();
+        final Calendar minDate = getInstance(dt);
         minDate.setTime(DateTimeDataType.MIN_VALUE);
-        final Calendar maxDate = getInstance();
+        final Calendar maxDate = getInstance(dt);
         maxDate.setTime(DateTimeDataType.MAX_VALUE);
 
 
@@ -364,19 +368,19 @@ public class DateHandler extends AbstractTypeHandler {
                 if (node.isNull(field.getName())) {
                     cal = null;
                 } else {
-                    cal = getInstance();
+                    cal = getInstance(field.getDataType());
                     cal.setTime(node.getDateValue(field.getName()));
                 }
             } else {
                 Object def = field.getDataType().getDefaultValue(tag.getLocale(), tag.getCloudVar(), field);
                 if (def != null) {
-                    cal = getInstance();
+                    cal = getInstance(field.getDataType());
                     cal.setTime(Casting.toDate(def));
                 } else {
                     if (! field.getDataType().isRequired()) {
                         cal = null;
                     }  else {
-                        cal = getInstance();
+                        cal = getInstance(field.getDataType());
                     }
                 }
             }
@@ -395,7 +399,7 @@ public class DateHandler extends AbstractTypeHandler {
             return null;
         }
 
-        Date timeValue = getSpecifiedValue(field, getInstance()).getTime();
+        Date timeValue = getSpecifiedValue(field, getInstance(field.getDataType())).getTime();
 
         String time;
         if (field.getType() == Field.TYPE_DATETIME) {
@@ -430,7 +434,7 @@ public class DateHandler extends AbstractTypeHandler {
             return null;
         }
 
-        Object time = getSpecifiedValue(field, getInstance()).getTime();
+        Object time = getSpecifiedValue(field, getInstance(field.getDataType())).getTime();
         if (field.getType() != Field.TYPE_DATETIME) {
             time = Casting.toLong(time);
         }
