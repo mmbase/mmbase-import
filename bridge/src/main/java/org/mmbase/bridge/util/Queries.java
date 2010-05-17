@@ -2028,28 +2028,36 @@ abstract public class Queries {
     }
 
     /**
+     * Defaulting version {@link #getSubQuery(Query, Node, int, int)}. The last argument is replaced with q.getSteps().size();
+     * @since MMBase-1.9.3
+     */
+    public static NodeQuery getSubQuery(final Query q, final Node node, int step) {
+        return getSubQuery(q, node, step, q.getSteps().size());
+    }
+    /**
      * Given a Query, and Node, produces a new query, where the first part of the query is replaced by the Node.
      * So, e.g. if you have a query mags,posrel,news,posrel,images and a news node, you can feed this query, and
      * the node into this method (with step is 2), to produce a query news,posrel,images, where the start node is the given news node. All
-     * constraints, nodes, and aliases on the remainings steps are copied.
+     * constraints, nodes, and aliases on the remainings steps are copied. Sortorders are only preserved in steps <= elementStep.
      *
      * The query is a NodeQuery, where the NodeStep is the (normal) step after the node.
      *
      * @param q The query to base the new query
      * @param node The node to start the query with. If this is <code>null</code> then step must be 0, and the original query will be
      * returned, only converted to a NodeQuery for the first step.
-     * @param The element step. The first non-relation step after the first step where the node is fixed.
-     * @exception ClassCastException if step+1 is not a relationstep. (This restriction may perhaps be removed).
-     * @since MMBase-1.9.3
+     * @param elementStep The element step. The first non-relation step after the first step where the node is fixed.
+     * @param lastStep On default the remainder of the query is copied. It you need to truncate it from the back to, use this argument.
+     * @exception ClassCastException if step + 1 is not a relationstep. (This restriction may perhaps be removed).
+     * @since MMBase-1.9.4
      */
-    public static NodeQuery getSubQuery(final Query q, final Node node, int step) {
-
+    public static NodeQuery getSubQuery(final Query q, final Node node, final int elementStep, final int lastStep) {
         Cloud cloud = q.getCloud();
         NodeQuery subQuery = cloud.createNodeQuery();
 
-        if (step % 2 != 0) {
-            throw new UnsupportedOperationException("Only non-relation steps are supported, so step must be even (now " + step + ")");
+        if (elementStep % 2 != 0) {
+            throw new UnsupportedOperationException("Only non-relation steps are supported, so element step must be even (now " + elementStep + ")");
         }
+        int step = elementStep;
         if (node != null) {
             Step firstStep = q.getSteps().get(step - 2);
             Step copyFirstStep = subQuery.addStep(cloud.getNodeManager(firstStep.getTableName()));
@@ -2062,12 +2070,13 @@ abstract public class Queries {
                 addConstraint(subQuery, copyConstraint(q.getConstraint(), sourceStep, subQuery, destStep));
                 subQuery.setAlias(destStep, sourceStep.getAlias());
                 addConstraint(subQuery, copyConstraint(q.getConstraint(), sourceStep, subQuery, destStep));
+                copySortOrders(q.getSortOrders(), sourceStep, subQuery, destStep);
                 step += 2;
             } else {
                 throw new IllegalArgumentException();
             }
         }
-        for (int i = step - 1; i < q.getSteps().size(); i+=2) {
+        for (int i = step - 1; i < lastStep; i+=2) {
             RelationStep sourceRelStep = (RelationStep) q.getSteps().get(i);
 
             // Seems a bit cumbersome...
@@ -2098,8 +2107,11 @@ abstract public class Queries {
                 }
             }
             subQuery.setAlias(destStep, sourceStep.getAlias());
-            copySortOrders(q.getSortOrders(), sourceRelStep, subQuery, destRelStep);
-            copySortOrders(q.getSortOrders(), sourceStep,    subQuery, destStep);
+            if (i < elementStep) {
+                // don't copy sortorder other, that will **** up distinct restrictions in previous, actually shown steps
+                copySortOrders(q.getSortOrders(), sourceRelStep, subQuery, destRelStep);
+                copySortOrders(q.getSortOrders(), sourceStep, subQuery, destStep);
+            }
         }
         if (log.isDebugEnabled()) {
             log.debug("Setting nodeStep to " + subQuery.getSteps().get(2));
@@ -2112,6 +2124,5 @@ abstract public class Queries {
         subQuery.setDistinct(true);
         return subQuery;
     }
-
 
 }
