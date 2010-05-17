@@ -630,16 +630,22 @@ abstract public class Queries {
 
      */
     public static void copySortOrders(List<SortOrder> sortOrders, Step sourceStep,  Query query, Step step) {
+        log.info("Copying sortorders " + sortOrders);
         for (SortOrder sortOrder : sortOrders) {
             StepField sourceField = sortOrder.getField();
-            if (! sourceField.getStep().equals(sourceStep)) continue; // for another step
+            if (! sourceField.getStep().equals(sourceStep)) {
+                log.info("Different step " + sourceField + " " + sourceStep);
+                continue; // for another step
+            }
             if (sortOrder instanceof DateSortOrder) {
                 query.addSortOrder(query.createStepField(step, sourceField.getFieldName()), sortOrder.getDirection(),
                                    sortOrder.isCaseSensitive(),
                                    ((DateSortOrder)sortOrder).getPart());
             } else {
-                query.addSortOrder(query.createStepField(step, sourceField.getFieldName()), sortOrder.getDirection(),
-                                   sortOrder.isCaseSensitive());
+                SortOrder so = query.addSortOrder(query.createStepField(step, sourceField.getFieldName()), sortOrder.getDirection(),
+                                                  sortOrder.isCaseSensitive());
+                log.info("Copied " + so);
+
             }
         }
     }
@@ -2082,6 +2088,7 @@ abstract public class Queries {
                 addConstraint(subQuery, copyConstraint(q.getConstraint(), sourceStep, subQuery, destStep));
                 subQuery.setAlias(destStep, sourceStep.getAlias());
                 addConstraint(subQuery, copyConstraint(q.getConstraint(), sourceStep, subQuery, destStep));
+                copySortOrders(q.getSortOrders(), sourceStep, subQuery, destStep);
                 step += 2;
             } else {
                 throw new IllegalArgumentException();
