@@ -12,7 +12,8 @@
       @version $Id$
   -->
   <jsp:directive.tag
-      description="Combines mm-sr:searchs to an accordion search" />
+      example="See /mmexamples/searchrelate"
+      description="Combines mm-sr:searchs to an accordion search. The body can be used to modify the query." />
 
   <jsp:directive.attribute name="path"        type="java.lang.String"  required="true"
                            description="Node types to search. This is equivalent to the path attribute of an mm:listnodescontainer" />
@@ -22,14 +23,15 @@
                            description="This is equivalent to the element attribute of an mm:listnodescontainer, but it defaults to the _last_ element." />
 
   <jsp:directive.attribute name="pagesize"        type="java.lang.Integer"
-                           description="" />
+                           description="The number of items on one page" />
 
   <jsp:directive.attribute name="config"               type="java.lang.String"
                            description="Configuration file defaults to ('searchrelate')" />
 
   <jsp:directive.attribute name="load"               type="java.lang.String"
-                           description="" />
+                           description="Wether to load javascript" />
   <jsp:directive.attribute name="forms"        type="java.lang.Boolean"
+                           description="using forms around the input areas (should be false if already in a form, since forms cannot be nested)"
                            />
 
   <jsp:directive.attribute name="intro"        fragment="true"
