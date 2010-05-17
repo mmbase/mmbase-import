@@ -906,11 +906,11 @@ abstract public class Queries {
 
         String resultName;
         if (query instanceof NodeQuery) {
-            // all fields are present of the node-step, so, we could use the number field simply.
-            resultName = "number";
             NodeQuery nq = (NodeQuery) query;
-            //resultName = nq.getFields().get(0).getFieldName();
-            count.addAggregatedField(nq.getNodeStep(), nq.getNodeManager().getField(resultName), type);
+            // all fields are present of the node-step, so, we could use the number field simply.
+            Field firstField = nq.getNodeManager().getFields(NodeManager.ORDER_CREATE).get(0);
+            resultName = firstField.getName(); // probably "number";
+            count.addAggregatedField(nq.getNodeStep(), firstField, type);
         } else {
             List<StepField> fields = query.getFields();
             if (fields.size() == 0) { // for non-distinct queries always the number fields would be available
@@ -1517,30 +1517,31 @@ abstract public class Queries {
     /**
      * @since MMBase-1.9
      */
-    protected static int getDayMark(int age) {
+    protected static int getDayMark(Cloud cloud, int age) {
         log.debug("finding day mark for " + age + " days ago");
-        Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
-        NodeManager dayMarks = cloud.getNodeManager("daymarks");
-        NodeQuery query = dayMarks.createQuery();
-        StepField step = query.createStepField("daycount");
-        int currentDay = (int) (System.currentTimeMillis()/(1000*60*60*24));
-        Integer day = new Integer(currentDay  - age);
-        if (log.isDebugEnabled()) {
-            log.debug("today : " + currentDay + " requested " + day);
-        }
-        Constraint constraint = query.createConstraint(step, FieldCompareConstraint.LESS_EQUAL, day);
-        query.setConstraint(constraint);
-        query.addSortOrder(query.createStepField("daycount"), SortOrder.ORDER_DESCENDING);
-        query.setMaxNumber(1);
-
-        NodeList result = dayMarks.getList(query);
-        if (result.size() == 0) {
+        if (! cloud.hasNodeManager("daymarks")) {
             return -1;
         } else {
-            return result.getNode(0).getIntValue("mark");
+            NodeManager dayMarks = cloud.getNodeManager("daymarks");
+            NodeQuery query = dayMarks.createQuery();
+            StepField step = query.createStepField("daycount");
+            int currentDay = (int) (System.currentTimeMillis()/(1000*60*60*24));
+            Integer day = new Integer(currentDay  - age);
+            if (log.isDebugEnabled()) {
+                log.debug("today : " + currentDay + " requested " + day);
+            }
+            Constraint constraint = query.createConstraint(step, FieldCompareConstraint.LESS_EQUAL, day);
+            query.setConstraint(constraint);
+            query.addSortOrder(query.createStepField("daycount"), SortOrder.ORDER_DESCENDING);
+            query.setMaxNumber(1);
+
+            NodeList result = dayMarks.getList(query);
+            if (result.size() == 0) {
+                return -1;
+            } else {
+                return result.getNode(0).getIntValue("mark");
+            }
         }
-
-
     }
 
 
@@ -1561,24 +1562,29 @@ abstract public class Queries {
      * @since MMBase-1.9
      */
     public static Constraint createAgeConstraint(Query query, Step step, int minAge, int maxAge) {
+        Cloud cloud = query.getCloud();
+        if (! cloud.hasNodeManager("daymarks")) {
+            log.warn("No nodemanager 'frdaymarks'");
+            return null;
+        }
         StepField stepField = query.createStepField(step, "number");
         if (maxAge != -1 && minAge > 0) {
-            int maxMarker = getDayMark(maxAge);
+            int maxMarker = getDayMark(cloud, maxAge);
             if (maxMarker > 0) {
                 // BETWEEN constraint
-                return query.createConstraint(stepField, maxMarker + 1, Integer.valueOf(getDayMark(minAge - 1)));
+                return query.createConstraint(stepField, maxMarker + 1, Integer.valueOf(getDayMark(cloud, minAge - 1)));
             } else {
-                return query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(getDayMark(minAge - 1)));
+                return query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(getDayMark(cloud, minAge - 1)));
             }
         } else if (maxAge != -1) { // only on max
-            int maxMarker = getDayMark(maxAge);
+            int maxMarker = getDayMark(cloud, maxAge);
             if (maxMarker > 0) {
                 return  query.createConstraint(stepField, FieldCompareConstraint.GREATER_EQUAL, Integer.valueOf(maxMarker + 1));
             } else {
                 return null;
             }
         } else if (minAge > 0) {
-            return  query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(getDayMark(minAge - 1)));
+            return  query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(getDayMark(cloud, minAge - 1)));
         } else {
             // both unspecified
             return null;
@@ -2021,6 +2027,91 @@ abstract public class Queries {
 
     }
 
+    /**
+     * Given a Query, and Node, produces a new query, where the first part of the query is replaced by the Node.
+     * So, e.g. if you have a query mags,posrel,news,posrel,images and a news node, you can feed this query, and
+     * the node into this method (with step is 2), to produce a query news,posrel,images, where the start node is the given news node. All
+     * constraints, nodes, and aliases on the remainings steps are copied.
+     *
+     * The query is a NodeQuery, where the NodeStep is the (normal) step after the node.
+     *
+     * @param q The query to base the new query
+     * @param node The node to start the query with. If this is <code>null</code> then step must be 0, and the original query will be
+     * returned, only converted to a NodeQuery for the first step.
+     * @param The element step. The first non-relation step after the first step where the node is fixed.
+     * @exception ClassCastException if step+1 is not a relationstep. (This restriction may perhaps be removed).
+     * @since MMBase-1.9.3
+     */
+    public static NodeQuery getSubQuery(final Query q, final Node node, int step) {
+
+        Cloud cloud = q.getCloud();
+        NodeQuery subQuery = cloud.createNodeQuery();
+
+        if (step % 2 != 0) {
+            throw new UnsupportedOperationException("Only non-relation steps are supported, so step must be even (now " + step + ")");
+        }
+        if (node != null) {
+            Step firstStep = q.getSteps().get(step - 2);
+            Step copyFirstStep = subQuery.addStep(cloud.getNodeManager(firstStep.getTableName()));
+            subQuery.addNode(copyFirstStep, node);
+            addConstraint(subQuery, copyConstraint(q.getConstraint(), firstStep, subQuery, copyFirstStep));
+        } else {
+            if (step == 0) {
+                Step sourceStep = q.getSteps().get(0);
+                Step destStep = subQuery.addStep(cloud.getNodeManager(sourceStep.getTableName()));
+                addConstraint(subQuery, copyConstraint(q.getConstraint(), sourceStep, subQuery, destStep));
+                subQuery.setAlias(destStep, sourceStep.getAlias());
+                addConstraint(subQuery, copyConstraint(q.getConstraint(), sourceStep, subQuery, destStep));
+                step += 2;
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        for (int i = step - 1; i < q.getSteps().size(); i+=2) {
+            RelationStep sourceRelStep = (RelationStep) q.getSteps().get(i);
+
+            // Seems a bit cumbersome...
+            Integer role = sourceRelStep.getRole();
+            log.debug("Found role " + role);
+            String roleAsString = role == null ? null : cloud.getNode(role).getStringValue("sname");
+
+            RelationStep destRelStep = subQuery.addRelationStep(cloud.getNodeManager(sourceRelStep.getNext().getTableName()),
+                                                                roleAsString,
+                                                                RelationStep.DIRECTIONALITY_DESCRIPTIONS[sourceRelStep.getDirectionality()]);
+
+            addConstraint(subQuery, copyConstraint(q.getConstraint(), sourceRelStep, subQuery, destRelStep));
+            if (sourceRelStep.getNodes() != null) {
+                for (int n : sourceRelStep.getNodes()) {
+                    subQuery.addNode(destRelStep, n);
+                }
+            }
+            subQuery.setAlias(destRelStep, sourceRelStep.getAlias());
+
+
+            Step sourceStep = sourceRelStep.getNext();
+            Step destStep = destRelStep.getNext();
+            addConstraint(subQuery, copyConstraint(q.getConstraint(), sourceStep, subQuery, destStep));
+
+            if (sourceStep.getNodes() != null) {
+                for (int n : sourceStep.getNodes()) {
+                    subQuery.addNode(destStep, n);
+                }
+            }
+            subQuery.setAlias(destStep, sourceStep.getAlias());
+            copySortOrders(q.getSortOrders(), sourceRelStep, subQuery, destRelStep);
+            copySortOrders(q.getSortOrders(), sourceStep,    subQuery, destStep);
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Setting nodeStep to " + subQuery.getSteps().get(2));
+        }
+        if (node != null) {
+            subQuery.setNodeStep(subQuery.getSteps().get(2));
+        } else {
+            subQuery.setNodeStep(subQuery.getSteps().get(0));
+        }
+        subQuery.setDistinct(true);
+        return subQuery;
+    }
 
 
 }
