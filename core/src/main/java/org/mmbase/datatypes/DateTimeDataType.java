@@ -40,6 +40,8 @@ public class DateTimeDataType extends ComparableDataType<Date> {
     private boolean weakPattern = true; // means, may not be changed, must be cloned before changing something
     private DateTimePattern pattern = DateTimePattern.DEFAULT;
 
+    private TimeZone timeZone = null;
+
     /**
      * Constructor for DateTime field.
      */
@@ -75,6 +77,7 @@ public class DateTimeDataType extends ComparableDataType<Date> {
             if (weakPattern) {
                 pattern      = dataType.pattern;
             }
+            timeZone = dataType.timeZone;
         }
     }
 
@@ -131,6 +134,23 @@ public class DateTimeDataType extends ComparableDataType<Date> {
             }
         }
         pattern.set(p, locale);
+    }
+
+    /**
+     * You can assign a time zone to the datatype. This only has effect on {@link #getTimeZone}. Normally the timezone is provided by the client, but
+     * sometimes the timezone can be an intrinsic part of the datatype.
+     * @since MMBase-1.9.4
+     */
+    public void setTimeZone(TimeZone tz) {
+        timeZone = tz;
+    }
+    /**
+     * A timezone can be attributed.
+     * @return A TimeZone or <code>null</code> (default)
+     * @since MMBase-1.9.4
+     */
+    public TimeZone getTimeZone() {
+        return timeZone;
     }
 
 
