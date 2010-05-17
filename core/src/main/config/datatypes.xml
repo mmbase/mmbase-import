@@ -499,6 +499,7 @@
         1970-01-01, but you can use this to indicate an hour of any day. Generic editors will not
         offer to edit the date parts of the date-time.
       </description>
+      <property name="timeZone">UTC</property><!-- The actual timezone is not relevant. Those are only relevant when dates are involved  [MMB-1958] -->
       <default value="100" />
       <pattern value="HH:mm:ss" />
     </specialization>
