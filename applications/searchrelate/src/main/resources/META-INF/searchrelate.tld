@@ -25,7 +25,6 @@
     <name>unlink</name>
     <path>/META-INF/tags/mm/searchrelate/unlink.tagx</path>
   </tag-file>
-
   <tag-file>
     <name>tabs</name>
     <path>/META-INF/tags/mm/searchrelate/tabs.tagx</path>
@@ -40,7 +39,6 @@
     <name>search</name>
     <path>/META-INF/tags/mm/searchrelate/search.tagx</path>
   </tag-file>
-
   <tag-file>
     <name>heartbeat</name>
     <path>/META-INF/tags/mm/searchrelate/heartbeat.tagx</path>
