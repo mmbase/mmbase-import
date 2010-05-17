@@ -3,7 +3,7 @@
 <util>
   <properties>
     <property name="unacceptable">[B</property>
-    <!-- strings can become quite big too! -->
+    <!-- strings can become quite big too!
     <property name="unacceptable">[B,java.lang.String</property>
     -->
     <property name="required">java.io.Serializable</property>
