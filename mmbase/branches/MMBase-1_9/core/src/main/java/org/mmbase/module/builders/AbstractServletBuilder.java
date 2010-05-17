@@ -370,9 +370,16 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         if (backSlash > -1)  {
             fileName = fileName.substring(backSlash + 1);
         }
+        String fixedFileName = urlEscaper.transform(legalizeFileName.matcher(fileName).replaceAll("_"));
+        int extensionIndex = fixedFileName.lastIndexOf(".");
+        if (extensionIndex > 0) { //lowercase extensions (MMB-1957)
+            fixedFileName =
+                fixedFileName.substring(0, extensionIndex) +
+                fixedFileName.substring(extensionIndex).toLowerCase();
 
+        }
 
-        buf.append(urlEscaper.transform(legalizeFileName.matcher(fileName).replaceAll("_")));
+        buf.append(fixedFileName);
         return buf;
     }
 
