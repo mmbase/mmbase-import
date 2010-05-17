@@ -113,7 +113,7 @@ public abstract class Instantiator {
      * object. The point of this method is that it converts the name of the property to an actual
      * method name (set&lt;Name of the property&gt;). The methods needs to have precisely
      * <em>one</em> parameter. The type of this parameter may be anything as long as it can be
-     * converted to from String by {@link org.mmbase.util.Casting#toType(Class, Object)}.
+     * converted to and from String by {@link org.mmbase.util.Casting#toType(Class, Object)}.
      *
      * @param value The value as a <code>String</code>
      */
