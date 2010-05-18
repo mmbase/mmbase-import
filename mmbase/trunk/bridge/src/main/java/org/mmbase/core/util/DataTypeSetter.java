@@ -17,6 +17,9 @@ import org.mmbase.core.AbstractField;
 
 /**
  * Wraps a Field. It can and is extended to make some other modifications to the field once the datatype is determined.
+ * @since MMBase-1.9.4
+ * @author Michiel Meeuwissen
+ * @version $Id$
  */
 
 public class  DataTypeSetter  {
