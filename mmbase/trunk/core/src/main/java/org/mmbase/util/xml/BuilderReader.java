@@ -19,8 +19,6 @@ import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
 import org.mmbase.datatypes.*;
-import org.mmbase.datatypes.util.xml.DataTypeReader;
-import org.mmbase.datatypes.util.xml.DependencyException;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.util.Index;
@@ -281,7 +279,7 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
      * @return a List of all Fields as CoreField
      * @since MMBase-1.8
      */
-    public List<CoreField> getFields(MMObjectBuilder builder, DataTypeCollector collector) {
+    public List<CoreField> getFields(final MMObjectBuilder builder, final DataTypeCollector collector) {
         List<CoreField> results = new ArrayList<CoreField>();
         Map<String, CoreField> oldset = new HashMap<String, CoreField>();
         int pos = 1;
@@ -302,30 +300,38 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
         }
 
         for(Element fieldList : getChildElements("builder", "fieldlist")) {
-            for (Element field : getChildElements(fieldList,"field")) {
-                String fieldName = getElementAttributeValue(field, "name");
+            for (final Element fieldElement : getChildElements(fieldList,"field")) {
+                String fieldName = getElementAttributeValue(fieldElement, "name");
                 if ("".equals(fieldName)) {
-                    fieldName = getElementValue(getElementByPath(field,"field.db.name"));
+                    fieldName = getElementValue(getElementByPath(fieldElement,"field.db.name"));
                 }
-                CoreField def = oldset.get(fieldName);
+                final CoreField def = oldset.get(fieldName);
                 try {
                     if (def != null) {
                         def.rewrite();
-                        DataType dataType = decodeDataType((builder != null ? builder.getTableName() : null), collector, def.getName(), field, def.getType(), def.getListItemType(), false);
-                        if (dataType != null) {
-                            def.setDataType(dataType); // replace datatype
-                        }
-                        decodeFieldDef(field, def, collector);
-                        decodeFieldAttributes(field, def);
-                        def.finish();
+
+                        Fields.DataTypeSetter setter = new Fields.DataTypeSetter(def) {
+                                @Override
+                                public void set(DataType dt) {
+                                    if (dt != null) {
+                                        field.setDataType(dt); // replace datatype
+                                    }
+                                    decodeFieldDef(fieldElement, def, collector);
+                                    decodeFieldAttributes(fieldElement, def);
+                                    def.finish();
+                                }
+
+                            };
+                        decodeDataType(setter,
+                                       (builder != null ? builder.getTableName() : null), collector, def.getName(), fieldElement, false);
                     } else {
-                        def = decodeFieldDef(builder, collector, field);
+                        decodeFieldDef(fieldElement, def, collector);
                         def.setStoragePosition(pos++);
                         def.finish();
                         results.add(def);
                     }
                 } catch (Exception e) {
-                    log.error("During parsing of " + XMLWriter.write(field, true, true) + " " + e.getMessage(), e);
+                    log.error("During parsing of " + XMLWriter.write(fieldElement, true, true) + " " + e.getMessage(), e);
                 }
             }
         }
@@ -531,13 +537,14 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
      * obtained from the builder configuration.
      * @since MMBase-1.8
      */
-    private CoreField decodeFieldDef(MMObjectBuilder builder, DataTypeCollector collector, Element field) {
+    private CoreField decodeFieldDef(final MMObjectBuilder builder, final DataTypeCollector collector,
+                                     final Element fieldElement) {
         // create a new CoreField we need to fill
 
         // obtain field name.
         // if both the field name attribute and the <db><name> tag are specified, the attribute takes precedence.
-        String fieldName = getElementAttributeValue(field, "name");
-        String fieldDBName = getElementValue(getElementByPath(field, "field.db.name"));
+        String fieldName = getElementAttributeValue(fieldElement, "name");
+        String fieldDBName = getElementValue(getElementByPath(fieldElement, "field.db.name"));
         if ("".equals(fieldName)) {
             if ("".equals(fieldDBName)) {
                 throw new IllegalArgumentException("Field name was not specified for builder " + builder.getTableName() + ".");
@@ -553,93 +560,112 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
         // implied by datatype
         // use db/type to override for legacy database issues
         // (mostly to prevent warnings in the log, as mmbase fixes this anyway)
-        String fieldType = "";
-        String fieldSize = "";
-        String fieldNotNull = "";
+        final String fieldType;
+        final String fieldSize;
+        final String fieldNotNull;
 
         // defined in datatype
-        String fieldRequired = "";
-        String fieldUnique = "";
+        final String fieldRequired;
+        final String fieldUnique;
 
-        // deprecated db type tag - only use if no other data is given!
-        Element dbtype = getElementByPath(field, "field.db.type");
-        if (dbtype != null) {
-            if (!"".equals(fieldType) || !"".equals(fieldNotNull) || !"".equals(fieldSize)) {
-                log.warn("Specified field type info for '" + fieldName + "' twice: once in the field tag attributes and once in the <db><type> tag.");
-            } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("<db><type> tag for field '" + fieldName + "' is deprecated.");
-                }
-                fieldType = getElementValue(dbtype);
-                fieldNotNull = getElementAttributeValue(dbtype, "notnull");
-                fieldRequired = getElementAttributeValue(dbtype, "required");
-                fieldUnique = getElementAttributeValue(dbtype, "unique");
-                fieldSize = getElementAttributeValue(dbtype, "size");
-            }
-        }
 
         // type - default unknown (derived from datatype)
-        int type = Field.TYPE_UNKNOWN;
-        int listItemType = Field.TYPE_UNKNOWN;
-        if (!"".equals(fieldType)) {
-            type = Fields.getType(fieldType);
-            if (type == Field.TYPE_LIST) {
-                if (fieldType.length() > 5) {
-                    listItemType = Fields.getType(fieldType.substring(5, fieldType.length() - 1));
+        // deprecated db type tag - only use if no other data is given!
+        Element dbtype = getElementByPath(fieldElement, "field.db.type");
+        if (dbtype != null) {
+            if (log.isDebugEnabled()) {
+                log.debug("<db><type> tag for field '" + fieldName + "' is deprecated.");
+            }
+            fieldType = getElementValue(dbtype);
+            fieldNotNull = getElementAttributeValue(dbtype, "notnull");
+            fieldRequired = getElementAttributeValue(dbtype, "required");
+            fieldUnique = getElementAttributeValue(dbtype, "unique");
+            fieldSize = getElementAttributeValue(dbtype, "size");
+        } else {
+            fieldType = "";
+            fieldNotNull = "";
+            fieldRequired = "";
+            fieldUnique = "";
+            fieldSize = "";
+        }
+
+        final int type;
+        final int listItemType;
+        {
+            int _type         = Field.TYPE_UNKNOWN;
+            int _listItemType = Field.TYPE_UNKNOWN;
+            if (!"".equals(fieldType)) {
+                _type = Fields.getType(fieldType);
+                if (_type == Field.TYPE_LIST) {
+                    if (fieldType.length() > 5) {
+                        _listItemType = Fields.getType(fieldType.substring(5, fieldType.length()));
+                    }
                 }
             }
+            type = _type;
+            listItemType = _listItemType;
         }
 
+        final CoreField def = Fields.createField(fieldName, type, listItemType,
+                                                 Field.STATE_VIRTUAL,/*temp default, will set by decodeFieldAttributes*/
+                                                 Constants.DATATYPE_UNKNOWN);
+
+        Fields.DataTypeSetter setter = new Fields.DataTypeSetter(def) {
+                @Override
+                public void set(DataType dataType) {
+                    def.setDataType(dataType);
+                    // determine type from datatype, if possible)
+                    int _type = getType();
+                    if (_type == Field.TYPE_UNKNOWN) {
+                        setType(dataType.getBaseType());
+                        if (_type == Field.TYPE_LIST) {
+                            setListItemType(((ListDataType)dataType).getItemDataType().getBaseType());
+                        }
+                    }
+
+                    dataType = def.getDataType();
+
+                    decodeFieldAttributes(fieldElement, def);
+
+                    def.setParent(builder);
+
+                    if (!fieldSize.equals("")) {
+                        try {
+                            def.setMaxLength(Integer.parseInt(fieldSize));
+                        } catch (NumberFormatException e) {
+                            log.warn("invalid value for size : " + fieldSize);
+                        }
+                    }
+
+
+                    // set required property, but only if given
+                    if (!"".equals(fieldRequired)) {
+                        dataType.setRequired("true".equalsIgnoreCase(fieldRequired));
+                    }
+
+                    // default for notnull is value of required
+                    def.setNotNull("true".equals(fieldNotNull) || ("".equals(fieldNotNull) && dataType.isRequired()));
+
+                    if (def.isNotNull() && ! "false".equalsIgnoreCase(fieldRequired)) { // If not null, it _must_ be required, unless explicitely not so (MMB-1504)
+                        dataType.setRequired(true);
+                    }
+
+                    // set unique property, but only if given
+                    if ("implied".equalsIgnoreCase(fieldUnique)) {
+                        dataType.setUnique(true);
+                        dataType.getUniqueRestriction().setEnforceStrength(DataType.ENFORCE_NEVER);
+                    } else if ("true".equalsIgnoreCase(fieldUnique)) {
+                        dataType.setUnique(true);
+                    }
+
+                    decodeFieldDef(fieldElement, def, collector);
+
+                }
+            };
         // datatype
-        DataType dataType = decodeDataType((builder != null ? builder.getTableName() : null), collector, fieldName, field, type, listItemType, true);
+        decodeDataType(setter,
+                       (builder != null ? builder.getTableName() : null), collector, fieldName, fieldElement, true);
 
-        // determine type from datatype, if possible)
-        if (type == Field.TYPE_UNKNOWN) {
-            type = dataType.getBaseType();
-            if (type == Field.TYPE_LIST) {
-                listItemType = ((ListDataType)dataType).getItemDataType().getBaseType();
-            }
-        }
-
-        CoreField def = Fields.createField(fieldName, type, listItemType,
-                                           Field.STATE_VIRTUAL,/*temp default, will set by decodeFieldAttributes*/
-                                           dataType);
-        dataType = def.getDataType();
-
-        decodeFieldAttributes(field, def);
-
-        def.setParent(builder);
-
-        if (!fieldSize.equals("")) {
-            try {
-                def.setMaxLength(Integer.parseInt(fieldSize));
-            } catch (NumberFormatException e) {
-                log.warn("invalid value for size : " + fieldSize);
-            }
-        }
-
-
-        // set required property, but only if given
-        if (!"".equals(fieldRequired)) {
-            dataType.setRequired("true".equalsIgnoreCase(fieldRequired));
-        }
-
-        // default for notnull is value of required
-        def.setNotNull("true".equals(fieldNotNull) || ("".equals(fieldNotNull) && dataType.isRequired()));
-
-        if (def.isNotNull() && ! "false".equalsIgnoreCase(fieldRequired)) { // If not null, it _must_ be required, unless explicitely not so (MMB-1504)
-            dataType.setRequired(true);
-        }
-
-        // set unique property, but only if given
-        if ("implied".equalsIgnoreCase(fieldUnique)) {
-            dataType.setUnique(true);
-            dataType.getUniqueRestriction().setEnforceStrength(DataType.ENFORCE_NEVER);
-        } else if ("true".equalsIgnoreCase(fieldUnique)) {
-            dataType.setUnique(true);
-        }
-
-        decodeFieldDef(field, def, collector);
 
         return def;
     }
