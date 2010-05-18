@@ -840,7 +840,7 @@ public class MMBase extends ProcessorModule {
             String resourceDirectory = ResourceLoader.getDirectory(builderXml) + "/";
             loadBuilderFromXML(resourceName, resourceDirectory);
         }
-        EventManager.getInstance().propagateEvent(new SystemEvent.BuildersRead(org.mmbase.bridge.LocalContext.getCloudContext()));
+        EventManager.getInstance().propagateEvent(new BuildersRead(org.mmbase.bridge.LocalContext.getCloudContext()));
 
         log.debug("Starting Cluster Builder");
         clusterBuilder = new ClusterBuilder(this);

@@ -109,7 +109,7 @@ public class MockCloudContext extends  AbstractCloudContext {
                 LOG.service("Builder with name '" + buil + "' already exists");
             }
         }
-        EventManager.getInstance().propagateEvent(new SystemEvent.BuildersRead(this));
+        EventManager.getInstance().propagateEvent(new BuildersRead(this));
     }
 
     protected int getTypeDefNode(String name) {
@@ -125,7 +125,7 @@ public class MockCloudContext extends  AbstractCloudContext {
         }
 
         nodeManagers.put(name, new NodeManagerDescription(name, m, getTypeDefNode(name)));
-        EventManager.getInstance().propagateEvent(new SystemEvent.BuildersRead(this));
+        EventManager.getInstance().propagateEvent(new BuildersRead(this));
     }
 
     public void addNodeManager(InputSource source) {
@@ -133,7 +133,7 @@ public class MockCloudContext extends  AbstractCloudContext {
             MockBuilderReader reader = new MockBuilderReader(source, this);
             addNodeManager(reader);
         }
-        EventManager.getInstance().propagateEvent(new SystemEvent.BuildersRead(this));
+        EventManager.getInstance().propagateEvent(new BuildersRead(this));
     }
 
     protected void addNodeManager(MockBuilderReader reader) {
@@ -157,7 +157,7 @@ public class MockCloudContext extends  AbstractCloudContext {
                 }
             }
         }
-        EventManager.getInstance().propagateEvent(new SystemEvent.BuildersRead(this));
+        EventManager.getInstance().propagateEvent(new BuildersRead(this));
     }
 
     public synchronized int addNode(String type, Map<String, Object> map) {
