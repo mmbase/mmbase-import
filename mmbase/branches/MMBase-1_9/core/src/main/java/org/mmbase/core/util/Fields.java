@@ -217,6 +217,8 @@ public class Fields {
      */
 
     public static class  DataTypeSetter  {
+        private int type = -1;
+        private int listItemType = -1;
         protected AbstractField field;
         public DataTypeSetter(AbstractField field) {
             this.field = field;
@@ -226,6 +228,18 @@ public class Fields {
         }
         public AbstractField getField() {
             return field;
+        }
+        public int getType() {
+            return type == -1 ? field.getType() : type;
+        }
+        public int getListItemType() {
+            return listItemType == -1 ? field.getListItemType() : listItemType;
+        }
+        public void setType(int t) {
+            type = t;
+        }
+        public void setListItemType(int t) {
+            listItemType = t;
         }
 
     }
