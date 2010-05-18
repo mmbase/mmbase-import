@@ -574,6 +574,18 @@
  &lt;/db&gt;
                 </programlisting>
               </example>
+              <para>It is also possible to borrow the datatypes from another field. You use the 'field' attribute of the datatype tag for that.
+              The syntax for that is <literal>[[&lt;uri&gt;|]&lt;cloud name&gt;|]&lt;nodemanager&gt;|&lt;field&gt;</literal>
+              </para>
+              <example>
+                <title>Example DataType Tag (field reuse)</title>
+                <para>This borrows the datype of the 'name' field of the 'aa' node manager</para>
+                <programlisting><![CDATA[
+<datatype field="aa|name" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+]]>
+                </programlisting>
+              </example>
+
             </section>
 
             <section>
