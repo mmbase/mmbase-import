@@ -326,10 +326,10 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
                         decodeDataType(setter,
                                        (builder != null ? builder.getTableName() : null), collector, def.getName(), fieldElement, false);
                     } else {
-                        decodeFieldDef(fieldElement, def, collector);
-                        def.setStoragePosition(pos++);
-                        def.finish();
-                        results.add(def);
+                        CoreField newDef = decodeFieldDef(builder, collector, fieldElement);
+                        newDef.setStoragePosition(pos++);
+                        newDef.finish();
+                        results.add(newDef);
                     }
                 } catch (Exception e) {
                     log.error("During parsing of " + XMLWriter.write(fieldElement, true, true) + " " + e.getMessage(), e);
