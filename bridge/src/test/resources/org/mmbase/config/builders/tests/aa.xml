@@ -127,6 +127,11 @@
       </db>
     </field>
     -->
+    <field name="datatypesstring">
+      <!-- intentionally circular -->
+      <datatype field="datatypes|string" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      </datatype>
+    </field>
   </fieldlist>
 
 </builder>
