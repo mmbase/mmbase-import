@@ -438,6 +438,35 @@ public class DataTypesTest  {
         assertTrue(restrictedBinary.validate(new NullInputStream(199), null, null).size() == 0);
     }
 
+    @Test
+    public void dataTypeOfAnotherField() {
+        NodeManager aa = MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("aa");
+        NodeManager datatypes = MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("datatypes");
+        assertEquals(aa.getField("datatypesstring").getDataType(), datatypes.getField("string").getDataType());
+        assertEquals(datatypes.getField("aaname").getDataType(), aa.getField("name").getDataType());
+        System.out.println(aa.getField("datatypesstring") + "==" + datatypes.getField("string"));
+
+    }
+
+
+
+    @Test
+    public void listDataTypes() {
+        NodeManager lists = MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("lists");
+        {
+            Field string = lists.getField("stringlist");
+            ListDataType dataType = (ListDataType) string.getDataType();
+            assertTrue(dataType.getItemDataType() instanceof StringDataType);
+        }
+        {
+            Field legacy = lists.getField("legacy_stringlist");
+            ListDataType dataType = (ListDataType) legacy.getDataType();
+            assertTrue("" + dataType.getItemDataType().getClass().getName(), dataType.getItemDataType() instanceof StringDataType);
+        }
+
+
+    }
+
 
 
 }
