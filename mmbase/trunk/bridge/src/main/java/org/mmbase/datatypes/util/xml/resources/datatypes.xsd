@@ -127,6 +127,7 @@
     </xsd:sequence>
     <xsd:attribute name="id"   type="xsd:token" use="optional" /> <!-- optinal, because in builder xml exist 'anonymous' datatypes -->
     <xsd:attribute name="base" type="xsd:token" use="optional" />
+    <xsd:attribute name="field" type="xsd:string" use="optional" />
   </xsd:complexType>
 
 
