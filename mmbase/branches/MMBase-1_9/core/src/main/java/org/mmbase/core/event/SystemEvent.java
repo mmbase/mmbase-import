@@ -38,6 +38,32 @@ public abstract class SystemEvent extends Event {
     }
 
 
+    /**
+     * An BuilderReader system event is and should be issued after one or more builders are added to the system.
+     */
+    public static class BuildersRead extends Collectable {
+        private final String uri;
+        private final String name;
+        public BuildersRead() {
+            this(org.mmbase.bridge.ContextProvider.getDefaultCloudContext());
+        }
+        public BuildersRead(org.mmbase.bridge.CloudContext cc){
+            this(cc.getUri(), cc.getCloudNames().get(0));
+        }
+        public BuildersRead(String u, String n) {
+            uri  = u;
+            name = n;
+        }
+        public String getUri() {
+            return uri;
+        }
+        public String getName() {
+            return name;
+        }
+
+    }
+
+
     public static class ServletContext extends Collectable  {
         private final javax.servlet.ServletContext servletContext;
         public ServletContext(javax.servlet.ServletContext sc) {
