@@ -10,10 +10,15 @@ See http://www.MMBase.org/license
 package org.mmbase.util.xml;
 
 import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.Pattern;
+import org.mmbase.datatypes.DataTypes.FieldNotFoundException;
 
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.mmbase.bridge.Field;
+import org.mmbase.core.AbstractField;
+import org.mmbase.core.event.*;
 import org.mmbase.datatypes.*;
 import org.mmbase.datatypes.util.xml.DataTypeReader;
 import org.mmbase.datatypes.util.xml.DependencyException;
@@ -95,6 +100,31 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
         return ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders");
     }
 
+    private static List<Runnable> postponedDataTypeDecoders = new CopyOnWriteArrayList<Runnable>();
+
+    static {
+        EventManager.getInstance().addEventListener(new SystemEventListener() {
+                public void notify(SystemEvent se) {
+                    if (se instanceof BuildersRead) {
+                        int iterationCount = 0;
+                        int size;
+                        do {
+                            if (log.isDebugEnabled()) {
+                                log.debug(iterationCount + ": Builders are read now, dealing with " + postponedDataTypeDecoders);
+                            }
+                            size = postponedDataTypeDecoders.size();
+                            for (int i = 0; i < size; i++) {
+                                Runnable job = postponedDataTypeDecoders.remove(0);
+                                job.run();
+                            }
+                            iterationCount++;
+                        } while (postponedDataTypeDecoders.size() < size);
+
+                    }
+                }
+            });
+    }
+
     /**
      * If false, the parent builder could not be resolved.
      * A builder with an unresolved parent is set to 'inactive', regardless of actual status
@@ -109,8 +139,8 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
      * editor/positions), which is used to find defaults if not specified.
      * @since MMBase-1.7
      */
-    protected SortedSet<Integer> searchPositions = new TreeSet<Integer>();
-    protected SortedSet<Integer> inputPositions  = new TreeSet<Integer>();
+    protected final SortedSet<Integer> searchPositions = new TreeSet<Integer>();
+    protected final SortedSet<Integer> inputPositions  = new TreeSet<Integer>();
 
     protected  AbstractBuilderReader(InputSource source) {
         super(source, true, true, AbstractBuilderReader.class);
@@ -379,6 +409,26 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
         }
     }
 
+
+
+    protected void decodeDataTypeLater(final Fields.DataTypeSetter setter,
+                                       final String builder,
+                                       final DataTypeCollector collector,
+                                       final String fieldName,
+                                       final Element fieldElement,
+                                       final boolean forceInstance) {
+        postponedDataTypeDecoders.add(new Runnable() {
+                public void run() {
+                    decodeDataType(setter, builder, collector, fieldName, fieldElement, forceInstance);
+                }
+                public String toString() {
+                    return "Decoding datatype for " + builder + ":" + fieldName;
+                }
+            });
+        log.debug("Scheduling for later " + postponedDataTypeDecoders);
+
+    }
+
     /**
      * Determine a data type instance based on the given gui element
      * @param builder the MMObjectBuilder to which the field belongs
@@ -390,10 +440,18 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
      * @param forceInstance If true, it will never return <code>null</code>, but will return (a clone) of the DataType associated with the database type.
      * @since MMBase-1.8
      */
-    protected DataType decodeDataType(final String builder, final DataTypeCollector collector, final String fieldName, final Element field, final int type, final int listItemType, final boolean forceInstance) {
+    protected void decodeDataType(final Fields.DataTypeSetter setter,
+                                  final String builder,
+                                  final DataTypeCollector collector,
+                                  final String fieldName,
+                                  final Element fieldElement,
+                                  final boolean forceInstance) {
         BasicDataType baseDataType = null;
+        final int type = setter.getType();
+        final int listItemType = setter.getListItemType();
         if (type == Field.TYPE_LIST) {
             baseDataType = DataTypes.getListDataType(listItemType);
+            log.debug("Type was list, found base datatype " + baseDataType);
         } else if (type != Field.TYPE_UNKNOWN) {
             baseDataType = DataTypes.getDataType(type);
             if (baseDataType == null) {
@@ -401,11 +459,11 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
             }
         }
         BasicDataType dataType = null;
-        Element guiTypeElement = getElementByPath(field, "field.gui.guitype");
+        Element guiTypeElement = getElementByPath(fieldElement, "field.gui.guitype");
 
         // deprecated tag 'type'
         if (guiTypeElement == null) {
-            guiTypeElement = getElementByPath(field, "field.gui.type");
+            guiTypeElement = getElementByPath(fieldElement, "field.gui.type");
         }
 
         // Backwards compatible 'guitype' support
@@ -477,27 +535,44 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
             }
         }
 
-        Element dataTypeElement = getElementByPath(field, "field.datatype");
+        Element dataTypeElement = getElementByPath(fieldElement, "field.datatype");
 
         if (dataTypeElement != null) {
             if (dataType != null) {
                 log.warn("Using both deprecated 'gui/guitype' and 'datatype' subelements in field tag for field '" + fieldName + "', ignoring the first one.");
             }
             BasicDataType requestedBaseDataType; // pointer to the original field's datatype which will be used as a base.
-            String base = dataTypeElement.getAttribute("base");
-            if (base.equals("")) {
-                if (log.isDebugEnabled()) {
-                    log.debug("No base defined, using '" + baseDataType + "'");
+            String fieldAttribute = dataTypeElement.getAttribute("field");
+            if (! fieldAttribute.equals("")) {
+                try {
+                    requestedBaseDataType = DataTypes.getDataTypeForFieldAttribute(fieldAttribute);
+                } catch (FieldNotFoundException ex) {
+                    decodeDataTypeLater(setter,
+                                        builder,
+                                        collector,
+                                        fieldName,
+                                        fieldElement,
+                                        forceInstance);
+                    log.service(" " + ex.getMessage() + " Will try again later.");
+                    return;
                 }
-                if (baseDataType == null) {
-                    throw new IllegalArgumentException(getDocument().getDocumentURI() + ":'" + fieldName + "'. No base datatype given, and no field type defined");
-                }
-                requestedBaseDataType = baseDataType;
             } else {
-                requestedBaseDataType = collector == null ? null : collector.getDataType(base, true);
-                if (requestedBaseDataType == null) {
-                    log.error("Could not find base datatype for '" + base + "' falling back to " + baseDataType + " in builder '" + (builder == null ?  "NULL" : builder) + "'");
+                String base = dataTypeElement.getAttribute("base");
+                if (base.equals("")) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("No base defined, using '" + baseDataType + "'");
+                    }
+                    if (baseDataType == null) {
+                        throw new IllegalArgumentException(getDocument().getDocumentURI() + ":'" +
+                                                           fieldName + "'. No base datatype given, and no field type defined");
+                    }
                     requestedBaseDataType = baseDataType;
+                } else {
+                    requestedBaseDataType = collector == null ? null : collector.getDataType(base, true);
+                    if (requestedBaseDataType == null) {
+                        log.error("Could not find base datatype for '" + base + "' falling back to " + baseDataType + " in builder '" + (builder == null ?  "NULL" : builder) + "'");
+                        requestedBaseDataType = baseDataType;
+                    }
                 }
             }
             try {
@@ -526,9 +601,29 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
             dataType = (BasicDataType) baseDataType.clone(""); // clone with empty id
         }
 
-        return dataType;
+        setter.set(dataType);
     }
 
+
+
+
+        // state - default peristent
+        int state = Field.STATE_PERSISTENT;
+        if (!"".equals(fieldState)) { state = Fields.getState(fieldState); }
+        if (state != def.getState()) def.setState(state);
+
+
+        boolean readOnly = false;
+        if ("".equals(fieldReadOnly)) {
+            readOnly = state == Field.STATE_SYSTEM || state == Field.STATE_SYSTEM_VIRTUAL;
+        } else {
+            readOnly = "true".equalsIgnoreCase(fieldReadOnly);
+        }
+
+        if (def.isReadOnly() != readOnly) {
+            def.setReadOnly(readOnly);
+        }
+    }
 
 
 

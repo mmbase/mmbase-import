@@ -11,6 +11,9 @@ See http://www.MMBase.org/license
 package org.mmbase.util.xml;
 
 import org.mmbase.datatypes.DataType;
+import org.mmbase.datatypes.Constants;
+import org.mmbase.core.util.Fields;
+import org.mmbase.util.xml.AbstractBuilderReader;
 import org.mmbase.bridge.mock.MockField;
 import org.mmbase.bridge.util.NodeManagerDescription;
 import java.util.*;
@@ -113,23 +116,38 @@ public abstract class ParentBuilderReader extends AbstractBuilderReader<Field>  
                     }
                 }
 
-                int type = Field.TYPE_UNKNOWN;
+
+                final Element dbtype = getElementByPath(field, "field.db.type");
+
+                final MockField newField = new MockField(fieldName, null, Constants.DATATYPE_UNKNOWN);
+                Fields.DataTypeSetter setter = new Fields.DataTypeSetter(newField) {
+                        @Override
+                        public void set(DataType dt) {
+                            super.set(dt);
+                            if (dbtype != null) {
+                                if ("true".equals(dbtype.getAttribute("notnull"))) {// legacy
+                                    dt.setRequired(true);
+                                }
+                            }
+                        }
+                    };
                 // legacy support
-                Element dbtype = getElementByPath(field, "field.db.type");
-                if (dbtype != null) {
-                    type = Fields.getType(getNodeTextValue(dbtype));
-                }
-                DataType dt = decodeDataType(getName(), org.mmbase.datatypes.DataTypes.getSystemCollector(),
-                                             fieldName, field, type, Field.TYPE_UNKNOWN, true);
 
                 if (dbtype != null) {
-                    if ("true".equals(dbtype.getAttribute("notnull"))) {// legacy
-                        dt.setRequired(true);
+                    String fieldType = getNodeTextValue(dbtype);
+                    setter.setType(Fields.getType(fieldType));
+                    if (setter.getType() == Field.TYPE_LIST) {
+                        if (fieldType.length() > 5) {
+                            String subType = fieldType.substring(5, fieldType.length());
+                            setter.setListItemType(Fields.getType(subType));
+                        }
                     }
                 }
 
+                decodeDataType(setter,
+                               getName(), org.mmbase.datatypes.DataTypes.getSystemCollector(),
+                               fieldName, field, true);
 
-                MockField newField = new MockField(fieldName, null, dt);
                 String fieldState = getElementAttributeValue(field, "state");
                 if ("".equals(fieldState)) {
                     newField.setState(Field.STATE_PERSISTENT);
@@ -137,6 +155,7 @@ public abstract class ParentBuilderReader extends AbstractBuilderReader<Field>  
                     newField.setState(Fields.getState(fieldState));
                 }
                 assert newField.getName().length() > 0 : XMLWriter.write(field);
+
                 results.add(newField);
             }
 
