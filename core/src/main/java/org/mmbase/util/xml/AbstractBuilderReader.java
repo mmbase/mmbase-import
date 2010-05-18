@@ -19,6 +19,7 @@ import org.xml.sax.InputSource;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
+import org.mmbase.core.util.DataTypeSetter;
 import org.mmbase.core.util.Fields;
 import org.mmbase.core.AbstractField;
 import org.mmbase.core.event.*;
@@ -472,7 +473,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
 
 
 
-    protected void decodeDataTypeLater(final Fields.DataTypeSetter setter,
+    protected void decodeDataTypeLater(final DataTypeSetter setter,
                                        final String builder,
                                        final DataTypeCollector collector,
                                        final String fieldName,
@@ -502,7 +503,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
      * @param forceInstance If true, it will never return <code>null</code>, but will return (a clone) of the DataType associated with the database type.
      * @since MMBase-1.8
      */
-    protected void decodeDataType(final Fields.DataTypeSetter setter,
+    protected void decodeDataType(final DataTypeSetter setter,
                                   final String builder,
                                   final DataTypeCollector collector,
                                   final String fieldName,

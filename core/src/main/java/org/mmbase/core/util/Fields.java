@@ -210,41 +210,6 @@ public class Fields {
     public static void sort(List<? extends Field> fields, int order) {
         Collections.sort(fields, new FieldComparator(order));
     }
-
-
-    /**
-     * Wraps a Field. It can and is extended to make some other modifications to the field once the datatype is determined.
-     */
-
-    public static class  DataTypeSetter  {
-        private int type = -1;
-        private int listItemType = -1;
-        protected AbstractField field;
-        public DataTypeSetter(AbstractField field) {
-            this.field = field;
-        }
-        public void set(DataType dt) {
-            field.setDataType(dt);
-        }
-        public AbstractField getField() {
-            return field;
-        }
-        public int getType() {
-            return type == -1 ? field.getType() : type;
-        }
-        public int getListItemType() {
-            return listItemType == -1 ? field.getListItemType() : listItemType;
-        }
-        public void setType(int t) {
-            type = t;
-        }
-        public void setListItemType(int t) {
-            listItemType = t;
-        }
-
-    }
-
-
     /**
      * Comparator to sort CoreFields by creation order, or by position
      * specified in one of the GUIPos fields.
