@@ -443,6 +443,11 @@
       </datatype>
     </field>
 
+    <field name="aaname">
+      <datatype field="aa|name" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      </datatype>
+    </field>
+
   </fieldlist>
 
   <functionlist>
