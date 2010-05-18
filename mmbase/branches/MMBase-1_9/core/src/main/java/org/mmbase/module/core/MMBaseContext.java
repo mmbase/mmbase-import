@@ -67,7 +67,8 @@ public class MMBaseContext {
 
             // store the current context
             sx = servletContext;
-            EventManager.getInstance().propagateEvent(new SystemEvent.ServletContext(sx));
+            log.service("Found servletContext " + sx);
+            EventManager.getInstance().propagateEvent(new SystemEvent.ServletContext(sx), true);
 
             // Get the user directory using the user.dir property.
             // default set to the startdir of the appserver
