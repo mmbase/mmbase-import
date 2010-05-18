@@ -18,6 +18,7 @@ import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.mmbase.bridge.Field;
 import org.mmbase.core.AbstractField;
+import org.mmbase.core.util.DataTypeSetter;
 import org.mmbase.core.event.*;
 import org.mmbase.datatypes.*;
 import org.mmbase.datatypes.util.xml.DataTypeReader;
@@ -411,7 +412,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
 
 
 
-    protected void decodeDataTypeLater(final Fields.DataTypeSetter setter,
+    protected void decodeDataTypeLater(final DataTypeSetter setter,
                                        final String builder,
                                        final DataTypeCollector collector,
                                        final String fieldName,
@@ -440,7 +441,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
      * @param forceInstance If true, it will never return <code>null</code>, but will return (a clone) of the DataType associated with the database type.
      * @since MMBase-1.8
      */
-    protected void decodeDataType(final Fields.DataTypeSetter setter,
+    protected void decodeDataType(final DataTypeSetter setter,
                                   final String builder,
                                   final DataTypeCollector collector,
                                   final String fieldName,
@@ -604,26 +605,6 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
         setter.set(dataType);
     }
 
-
-
-
-        // state - default peristent
-        int state = Field.STATE_PERSISTENT;
-        if (!"".equals(fieldState)) { state = Fields.getState(fieldState); }
-        if (state != def.getState()) def.setState(state);
-
-
-        boolean readOnly = false;
-        if ("".equals(fieldReadOnly)) {
-            readOnly = state == Field.STATE_SYSTEM || state == Field.STATE_SYSTEM_VIRTUAL;
-        } else {
-            readOnly = "true".equalsIgnoreCase(fieldReadOnly);
-        }
-
-        if (def.isReadOnly() != readOnly) {
-            def.setReadOnly(readOnly);
-        }
-    }
 
 
 
