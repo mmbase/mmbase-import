@@ -17,6 +17,7 @@ import org.xml.sax.InputSource;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
+import org.mmbase.core.util.DataTypeSetter;
 import org.mmbase.core.util.Fields;
 import org.mmbase.datatypes.*;
 import org.mmbase.module.core.MMBase;
@@ -310,7 +311,7 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
                     if (def != null) {
                         def.rewrite();
 
-                        Fields.DataTypeSetter setter = new Fields.DataTypeSetter(def) {
+                        DataTypeSetter setter = new DataTypeSetter(def) {
                                 @Override
                                 public void set(DataType dt) {
                                     if (dt != null) {
@@ -610,7 +611,7 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
                                                  Field.STATE_VIRTUAL,/*temp default, will set by decodeFieldAttributes*/
                                                  Constants.DATATYPE_UNKNOWN);
 
-        Fields.DataTypeSetter setter = new Fields.DataTypeSetter(def) {
+        DataTypeSetter setter = new DataTypeSetter(def) {
                 @Override
                 public void set(DataType dataType) {
                     def.setDataType(dataType);
