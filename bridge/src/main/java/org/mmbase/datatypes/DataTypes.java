@@ -16,7 +16,7 @@ import javax.xml.parsers.DocumentBuilder;
 import org.xml.sax.InputSource;
 import org.w3c.dom.*;
 
-import org.mmbase.bridge.Field;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.Fields;
 import org.mmbase.datatypes.util.xml.*;
 import org.mmbase.util.*;
@@ -254,6 +254,46 @@ public class DataTypes {
     public static BasicDataType getDataType(String name) {
         return  dataTypeCollector.getDataType(name);
     }
+
+    public static class FieldNotFoundException extends Exception {
+        public FieldNotFoundException(Exception e) {
+            super(e);
+        }
+        public FieldNotFoundException(String message) {
+            super(message);
+        }
+    }
+
+    /**
+     * Get the datatype a defined for a certain field of a certain node manager, of a certain cloud context.
+     * It does this by parsing a string with this format:   [[&lt;uri&gt;|]&lt;cloud name&gt;|]&lt;nodemanager&gt;|&lt;field&gt;
+     * The point is that the string can be used as the value for an XML attribute of the datatype tag.
+     * @param fieldAttribute The string describing the datatype
+     * @throws FieldNotFoundException If the specified field could not be found (yet).
+     * @since MMBase-1.9.4
+     */
+    public static BasicDataType getDataTypeForFieldAttribute(String fieldAttribute) throws FieldNotFoundException {
+
+        List<String> elements = Arrays.asList(fieldAttribute.split("\\|", 4));
+        Collections.reverse(elements);
+        String uri                = elements.size() == 4 ? elements.get(3) : ContextProvider.getDefaultCloudContext().getUri();
+        CloudContext cloudContext = ContextProvider.getCloudContext(uri);
+        if (cloudContext == null) {
+            throw new FieldNotFoundException("No cloud context for uri '" + uri + "'");
+        }
+        try {
+            String cloudName         = elements.size() >= 3 ? elements.get(2) : cloudContext.getCloudNames().get(0);
+            String nodeManagerName   = elements.get(1);
+            String baseFieldName     = elements.get(0);
+
+            Cloud        cloud        = cloudContext.getCloud(cloudName);
+            NodeManager  nodeManager  = cloud.getNodeManager(nodeManagerName);
+            return (BasicDataType) nodeManager.getField(baseFieldName).getDataType();
+        } catch (NotFoundException nfe) {
+            throw new FieldNotFoundException(nfe);
+        }
+    }
+
 
     /**
      * Returns a DataType instance.
