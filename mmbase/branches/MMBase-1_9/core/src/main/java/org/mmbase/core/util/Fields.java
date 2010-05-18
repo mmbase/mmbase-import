@@ -12,6 +12,7 @@ package org.mmbase.core.util;
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.*;
 import org.mmbase.core.CoreField;
+import org.mmbase.core.AbstractField;
 import java.util.*;
 
 /**
@@ -208,6 +209,25 @@ public class Fields {
 
     public static void sort(List<? extends Field> fields, int order) {
         Collections.sort(fields, new FieldComparator(order));
+    }
+
+
+    /**
+     * Wraps a Field. It can and is extended to make some other modifications to the field once the datatype is determined.
+     */
+
+    public static class  DataTypeSetter  {
+        protected AbstractField field;
+        public DataTypeSetter(AbstractField field) {
+            this.field = field;
+        }
+        public void set(DataType dt) {
+            field.setDataType(dt);
+        }
+        public AbstractField getField() {
+            return field;
+        }
+
     }
 
 
