@@ -6,10 +6,12 @@
 <%--
     use this optionlist with some nested option tags, to create an optionlist manually.
 --%>
-<jsp:useBean id="_options" scope="request"class="org.mmbase.applications.vprowizards.spring.util.OptionlistBean"/>
+<jsp:useBean id="_options" scope="request" class="org.mmbase.applications.vprowizards.spring.util.OptionlistBean"/>
 
 <c:choose>
-    <c:when test="${empty options}"> <jsp:doBody var="_dummy"/> </c:when>
+    <c:when test="${empty options}">
+      <jsp:doBody var="_dummy"/>
+    </c:when>
     <c:otherwise>
         <c:set var="delim" value="," />
         <c:if test="${not empty delimiter}"><c:set var="delim" value="${delimiter}" /></c:if>

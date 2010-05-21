@@ -26,7 +26,7 @@
             </c:choose>
             <input type="radio" class="radio"
                 onchange="disableRelated();"
-                name="action[${modifier}${action}][${actionnr}].fields[${field}]"
+                name="actions[${modifier}${action}][${actionnr}].fields[${field}]"
                 value="${option.value}"
                 ${checked}
                 id="field_${nodetype}_${field}_${option.value}"/>${option.label}<br>
