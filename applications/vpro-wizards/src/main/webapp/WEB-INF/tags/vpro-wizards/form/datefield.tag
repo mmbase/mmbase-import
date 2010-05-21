@@ -3,9 +3,8 @@
 %><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"
 %><%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"
 %><%@ taglib prefix="form" tagdir="/WEB-INF/tags/vpro-wizards/form"
-%>
-
-<%@ attribute name="dateFormat"
+%><%@
+      attribute name="dateFormat"
 %><%@ attribute name="timeFormat"
 %><%@ attribute name="edit" type="java.lang.Boolean" description="when false the date/time is only displayed. When true the create attribute is ignored. Default is true"
 %><%@ attribute name="create" type="java.lang.Boolean" description="when true a formfield added for new nodes. when edit is false this will be a hidden field. Default is true"
@@ -25,7 +24,6 @@
 
 <c:if test="${empty timeFormat}"><c:set var="timeFormat" value="HH:mm" /></c:if>
 <c:if test="${empty dateFormat}"><c:set var="dateFormat" value="dd-MM-yyyy" /></c:if>
-
 
 <%-- when fieldvalue is  = 'now' (from defaultvalue)--%>
 <c:if test="${fieldvalue == 'now'}">
