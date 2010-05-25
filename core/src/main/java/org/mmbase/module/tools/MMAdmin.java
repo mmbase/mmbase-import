@@ -19,7 +19,6 @@ import org.mmbase.bridge.*;
 import org.mmbase.cache.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
-import org.mmbase.core.event.*;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.datatypes.DataTypes;
 import org.mmbase.module.Module;
@@ -44,11 +43,17 @@ import org.xml.sax.InputSource;
  * @author Pierre van Rooden
  * @version $Id$
  */
-public class MMAdmin extends ProcessorModule implements SystemEventListener {
+public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
 
     // true: ready (probeCall was called)
     private boolean state = false;
+
+    /**
+     * reference to MMBase
+     */
+    private MMBase mmb = null;
+
     /**
      * @javadoc
      */
@@ -118,7 +123,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
 
     public MMAdmin(String name) {
         super(name);
-        EventManager.getInstance().addEventListener(this);
     }
 
     /**
@@ -135,20 +139,19 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
         } catch (SecurityException se) {
             log.debug(se);
         }
-    }
-    @Override
-    public void notify(SystemEvent event) {
-        if (event instanceof SystemEvent.Up) {
-            org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
-                    public void run() {
-                        try {
-                            MMAdmin.this.probeCall();
-                        } catch (Exception e) {
-                            log.error(e.getMessage(), e);
-                        }
+        mmb = MMBase.getMMBase();
+        org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
+                public void run() {
+                    while (!mmb.getState()) {
+                        try {Thread.sleep(2000);} catch (InterruptedException e){ return;}
                     }
-                });
-        }
+                    try {
+                        MMAdmin.this.probeCall();
+                    } catch (Exception e) {
+                        log.error(e.getMessage(), e);
+                    }
+                }
+            });
     }
 
     /**
@@ -162,7 +165,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
      */
     @Override
     public MMObjectBuilder getListBuilder(String command, Map<String, ?> params) {
-        return new VirtualBuilder(MMBase.getMMBase());
+        return new VirtualBuilder(mmb);
     }
 
     /**
@@ -177,7 +180,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
         if (pos != -1) {
             path = path.substring(pos + 1);
         }
-        MMBase mmb = MMBase.getMMBase();
         return mmb.getBuilder(path);
     }
 
@@ -298,16 +300,16 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
      */
     @Override
     public boolean process(PageInfo sp, Hashtable<String,Object> cmds, Hashtable<String,Object> vars) {
-        MMBase mmb = MMBase.getMMBase();
+        String cmdline, token;
         for (Enumeration<String> h = cmds.keys(); h.hasMoreElements();) {
-            String cmdline = h.nextElement();
+            cmdline = h.nextElement();
             log.debug("cmdline: " + cmdline);
             if (!checkAdmin(sp, cmdline)) {
                 log.warn("Could not find cloud for " + sp + " returning false for process " + cmds + "/" + vars);
                 return false;
             }
             StringTokenizer tok = new StringTokenizer(cmdline, "-\n\r");
-            String token = tok.nextToken();
+            token = tok.nextToken();
             if (token.equals("SERVERRESTART")) {
                 lastmsg = "Server restart is not implemented any more";
                 return false;
@@ -318,7 +320,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
                     log.warn("Found empty app-name in " + cmds + " (used key " + cmdline + ")");
                 }
                 try {
-
                     if (new ApplicationInstaller(mmb, this).installApplication(appname, -1, null, result, new HashSet<String>(), false)) {
                         lastmsg = result.getMessage();
                     } else {
@@ -437,7 +438,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
             if (cmd.equals("VERSION")) {
                 return "" + getVersion(tok.nextToken());
             } else if (cmd.equals("INSTALLEDVERSION")) {
-                MMBase mmb = MMBase.getMMBase();
                 Versions ver = (Versions) mmb.getBuilder("versions");
                 if (ver == null) {
                     log.warn("Versions builder not installed, Can't get to apps");
@@ -504,6 +504,8 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
                 return ("" + (NodeCache.getCache().getRatio() * 100));
             } else if (cmd.equals("NODECACHESIZE")) {
                 return ("" + (NodeCache.getCache().maxSize()));
+            } else if (cmd.equals("TEMPORARYNODECACHESIZE")) {
+                return ("" + (MMObjectBuilder.temporaryNodes.size()));
             } else if (cmd.equals("RELATIONCACHEHITS")) {
                 return ("" + RelationsCache.getCache().getHits());
             } else if (cmd.equals("RELATIONCACHEMISSES")) {
@@ -534,7 +536,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
 
     // determine xmlpath to a builder, provided it is loaded by MMBase.
     private String getXMLPath(String builderName) {
-        MMBase mmb = MMBase.getMMBase();
         MMObjectBuilder bul = mmb.getBuilder(builderName);
         if (bul==null) {
             return "";
@@ -548,7 +549,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
      */
     int getBuilderVersion(String builderName) {
         int version = -1;
-        MMBase mmb = MMBase.getMMBase();
         BuilderReader bul = mmb.getBuilderReader(getXMLPath(builderName) + builderName);
         if (bul != null) {
             version = bul.getVersion();
@@ -560,7 +560,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
      * @javadoc
      */
     String getBuilderClass(String builderName) {
-        MMBase mmb = MMBase.getMMBase();
         String className = "";
         BuilderReader bul = mmb.getBuilderReader(getXMLPath(builderName) + builderName);
         if (bul != null) {
@@ -633,7 +632,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
      * @javadoc
      */
     String getBuilderDescription(String builderName) {
-        MMBase mmb = MMBase.getMMBase();
         String description = "";
         BuilderReader bul = mmb.getBuilderReader(getXMLPath(builderName) + builderName);
         if (bul != null) {
@@ -666,7 +664,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
      * warning, if the 'versions' builder could not be found.
      */
     protected void probeCall() throws SearchQueryException {
-        MMBase mmb = MMBase.getMMBase();
         Versions ver = (Versions)mmb.getBuilder("versions");
         if (ver == null) {
             log.warn("Versions builder not installed, Can't auto deploy apps");
@@ -695,7 +692,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
             log.warn("refused to write application, am in kiosk mode");
             return false;
         }
-        MMBase mmb = MMBase.getMMBase();
         ApplicationReader reader = getApplicationReader(name);
         ApplicationWriter writer = new ApplicationWriter(reader, mmb);
         writer.setIncludeComments(includeComments);
@@ -737,7 +733,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
      */
     Vector<String> getApplicationsList() throws SearchQueryException {
         Vector<String> results = new Vector<String>(); //sigh, synchronized, for what?
-        MMBase mmb = MMBase.getMMBase();
         if (mmb == null) {
             log.warn("MMBase not yet initialized, Can't get to apps");
             return results;
@@ -784,7 +779,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
      * @javadoc
      */
     List<String> getBuildersList() {
-        MMBase mmb = MMBase.getMMBase();
         Versions ver = (Versions)mmb.getBuilder("versions");
         List<String> results = new ArrayList<String>();
 
@@ -848,7 +842,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
      * @javadoc
      */
     Vector<String> getFields(String builderName) {
-        MMBase mmb = MMBase.getMMBase();
         Vector<String> results = new Vector<String>();
         BuilderReader bul = mmb.getBuilderReader(getXMLPath(builderName) + builderName);
         if (bul != null) {
@@ -899,7 +892,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
      * @javadoc
      */
     Vector<String> getDatabasesList() {
-        MMBase mmb = MMBase.getMMBase();
         Versions ver = (Versions)mmb.getBuilder("versions");
         if (ver == null) {
             log.warn("Versions builder not installed, Can't get to builders");
@@ -1243,8 +1235,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
             log.warn("Refused set DBSize field, am in kiosk mode");
             return;
         }
-        MMBase mmb = MMBase.getMMBase();
-
         String builder = (String)vars.get("BUILDER");
         String fieldname = (String)vars.get("FIELDNAME");
         String value = (String)vars.get("VALUE");
@@ -1282,7 +1272,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
             log.warn("Refused set setDBField field, am in kiosk mode");
             return;
         }
-        MMBase mmb = MMBase.getMMBase();
         String builder = (String)vars.get("BUILDER");
         String fieldname = (String)vars.get("FIELDNAME");
         String value = (String)vars.get("VALUE");
@@ -1322,7 +1311,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
         String fieldname = (String)vars.get("FIELDNAME");
         String value = (String)vars.get("VALUE");
 
-        MMBase mmb = MMBase.getMMBase();
         MMObjectBuilder bul = getBuilder(builder);
         CoreField def = bul.getField(fieldname);
         if (def != null) {
@@ -1387,7 +1375,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
             log.warn("Refused set NotNull field, am in kiosk mode");
             return;
         }
-        MMBase mmb = MMBase.getMMBase();
         String builder = (String)vars.get("BUILDER");
         String fieldname = (String)vars.get("FIELDNAME");
         String value = (String)vars.get("VALUE");
@@ -1422,7 +1409,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
             log.warn("Refused add builder field, am in kiosk mode");
             return;
         }
-        MMBase mmb = MMBase.getMMBase();
         String builder = (String)vars.get("BUILDER");
         MMObjectBuilder bul = getBuilder(builder);
         if (bul != null) {
@@ -1494,7 +1480,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
         String builder = (String) vars.get("BUILDER");
         String fieldname = (String) vars.get("FIELDNAME");
         String value = (String) vars.get("SURE");
-        MMBase mmb = MMBase.getMMBase();
+
         MMObjectBuilder bul = getBuilder(builder);
         if (bul != null && value != null && value.equals("Yes")) {
 
@@ -1583,7 +1569,6 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
      * @javadoc
      */
     public Vector<String> getNodeCacheEntries() {
-        MMBase mmb = MMBase.getMMBase();
         Vector<String> results = new Vector<String>();
         for (MMObjectNode node :  NodeCache.getCache().values()) {
             results.add("" + NodeCache.getCache().getCount(node.getIntegerValue("number")));

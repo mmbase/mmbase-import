@@ -12,7 +12,6 @@ package org.mmbase.security.implementation.cloudcontext.builders;
 import org.mmbase.security.implementation.cloudcontext.*;
 import java.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
 import org.mmbase.storage.search.*;

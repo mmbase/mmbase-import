@@ -12,7 +12,7 @@ package org.mmbase.applications.email;
 import org.mmbase.module.*;
 import org.mmbase.util.*;
 import java.util.*;
-import javax.mail.internet.*;
+import javax.mail.internet.MimeMultipart;
 
 /**
  * This module provides mail functionality
@@ -50,7 +50,6 @@ abstract public class AbstractSendMail extends WatchedReloadableModule {
      * Sends a 'multipart' mail.
      *
      */
-
     public abstract boolean sendMultiPartMail(String from, String to, Map<String, String> headers, MimeMultipart mmpart) throws javax.mail.MessagingException;
 
 

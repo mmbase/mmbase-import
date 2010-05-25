@@ -7,7 +7,6 @@
   <!--
       'rapid' development of templates in the base-webapp would e.g. go with this:
   -->
-
   <!--
   <Set name="baseResource">
     <New class="org.mortbay.resource.ResourceCollection">
@@ -15,9 +14,8 @@
         <Array type="java.lang.String">
           <Item>src/main/webapp</Item>
           <Item>../applications/taglib/src/main/webapp</Item>
-          <Item>../contributions/lucene/src/main/webapp</Item>
           <Item>../base-webapp/src/main/webapp</Item>
-          <Item>../base-webapp/target/base-webapp-2.0-SNAPSHOT</Item>
+          <Item>../base-webapp/target/base-webapp-1.9-servlet25-SNAPSHOT</Item>
         </Array>
       </Arg>
     </New>

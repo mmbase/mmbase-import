@@ -22,7 +22,6 @@ import org.mmbase.cache.Cache;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.storage.*;
 import org.mmbase.storage.util.*;
 import org.mmbase.util.Casting;
@@ -1114,17 +1113,42 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         try {
             return executeUpdate(query, node, fields);
         } catch (SQLException sqe) {
-            if (! inTransaction && ! activeConnection.isValid(0)) {
-                // so, connection must be broken.
-                log.service("Found broken connection, closing it");
-                if (activeConnection instanceof org.mmbase.module.database.MultiConnection) {
-                    ((org.mmbase.module.database.MultiConnection) activeConnection).realclose();
-                } else {
-                    activeConnection.close();
+            if (! inTransaction) {
+                while (true) {
+                    Statement s = null;
+                    ResultSet rs = null;
+                    try {
+                        s = activeConnection.createStatement();
+                        rs = s.executeQuery("SELECT 1 FROM " + factory.getMMBase().getBuilder("object").getFullTableName() + " WHERE 1 = 0"); // if this goes wrong too it can't be the query
+                    } catch (SQLException isqe) {
+                        // so, connection must be broken.
+                        log.service("Found broken connection, closing it");
+                        if (activeConnection instanceof org.mmbase.module.database.MultiConnection) {
+                            ((org.mmbase.module.database.MultiConnection) activeConnection).realclose();
+                        } else {
+                            activeConnection.close();
+                        }
+                        getActiveConnection();
+                        if (activeConnection.isClosed()) {
+                            // don't know if that can happen, but if it happens, this would perhaps avoid an infinite loop (and exception will get thrown in stead)
+                            break;
+                        }
+                        continue;
+                    } finally {
+                        if (s != null) s.close();
+                        if (rs != null) rs.close();
+                    }
+                    break;
                 }
-                getActiveConnection();
-                return executeUpdate(query, node, fields);
+                try {
+                    log.info("Second try update with new connection");
+                    return executeUpdate(query, node, fields);
+                } catch (Exception e) {
+                    throw sqe;
+                }
             } else {
+                // Dont' close connections in a transaction.
+                // In e.g. postgresql even the SELECT won't work then any more, so don't even try that.
                 throw sqe;
             }
         }
@@ -3238,7 +3262,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                                 } finally {
                                     releaseActiveConnection();
                                 }
-                                List<MMObjectNode> nodes = builder.getNodes(new NodeSearchQuery(builder));
+                                List<MMObjectNode> nodes = builder.getNodes(new org.mmbase.storage.search.implementation.NodeSearchQuery(builder));
                                 log.service("Checking all " + nodes.size() + " nodes of '" + builder.getTableName() + "'");
                                 for (MMObjectNode node : nodes) {
                                     File storeFile = getBinaryFile(node, fieldName);

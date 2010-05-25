@@ -45,6 +45,9 @@ Also, when using <mm:constraint> the following property can be used to change th
 'casesensitive="true"' to set it case sensitive. This speeds up MySQL searching.
 
 
+org.mmbase.util.functions.NodeFunction#getCoreNode  was dropped. If you used it, now extend from
+org.mmbase.module.core/MMObjectNodeFunction. (MMB-1896)
+
 
 
 ============
@@ -311,14 +314,6 @@ Known API incompatibilities of bridge, between 1.8 to 1.9.
   e.g.
   org.mmbase.util.xml.ApplicationReader ->   org.mmbase.util.xml.applicationdata.ApplicationReader
   and similar changes
-
-
----------------------------------------- 1.9.2
-
-- org.mmbase.util.functions.NodeFunction#getCoreNode  was dropped. If you used it, now extend from
-  org.mmbase.module.core/MMObjectNodeFunction. (MMB-1896)
-
-
 
 
 ========================

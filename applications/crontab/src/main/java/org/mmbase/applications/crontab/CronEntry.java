@@ -404,7 +404,7 @@ public class CronEntry implements java.io.Serializable {
 
 
     /**
-     * Two CronEntrys as considered equal if they have the same id, name, classname and configuration.
+     * Two CronEntrys as considered equal if they have the same id, name, classname, cronTime and configuration.
      */
     @Override
     public boolean equals(Object o) {

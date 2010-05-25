@@ -1,18 +1,20 @@
-<%@ tag import="java.util.*"
-    description="A description could perhaps be helpful, because I don't understand much of this."
-%><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"
-%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><%@ taglib uri="http://www.springframework.org/tags" prefix="spring"
+<%@ tag import="java.util.*" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
-%><%@ attribute name="url" description="the url for the link in the path. this defaults to the current url with all parameters."
-%><%@ attribute name="name" description="This is the new entry in the crumb path"
-%><%@ attribute name="node" description="I don't know what this is supposed to mean"
-%><%@ attribute name="reset" type="java.lang.Boolean" description="when this is true, the list with session path elements is cleared."
-%>
+<%@ attribute name="url" description="the url for the link in the path. this defaults to the current url with all parameters."  %>
+<%@ attribute name="name" %>
+<%@ attribute name="node" %>
+<%@ attribute name="reset" type="java.lang.Boolean" description="when this is true, the list with session path elements is cleard." %>
 
 <c:if test="${empty url}">
     <c:set var="url" >${pageContext.request.contextPath}${pageContext.request.servletPath}<c:if test="${not empty pageContext.request.queryString}">?</c:if>${pageContext.request.queryString}</c:set>
 </c:if>
+
+<%--
+<%@ attribute name="globalurl" %>
+--%>
 <%@ attribute name="session" description="write this path element to a map in the session."  %>
 
 
@@ -28,8 +30,9 @@
 </c:set>
 
 <%--flush the session path list?--%>
-<c:if test="${reset}">
+<c:if test="${reset == true}">
     <c:remove var="__path" scope="session"/>
+    <%-- <% request.getSession().setAttribute("__path", new java.util.ArrayList()); %> --%>
 </c:if>
 
 <c:if test="${not empty session}">
@@ -66,6 +69,12 @@
     %>
 </c:if>
 
+<%--
+<c:if test="${not empty globalurl}">
+    <c:set scope="request" var="path_url">${globalurl}</c:set>
+    <c:set scope="request" var="path_name">${name}</c:set>
+</c:if>
+--%>
 <c:if test="${empty session}">
     <script type="text/javascript">
         var path = document.getElementById('path');

@@ -23,6 +23,36 @@
   </properties>
 
   <fieldlist>
+    
+    <field name="acodec">
+      <descriptions>
+        <description xml:lang="en">
+          Codec used to encode the audio stream in this video file.
+        </description>
+        <description xml:lang="nl">
+          De codec die gebruikt is om de audiostream in dit video bestand te encoderen.
+        </description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Audio codec</guiname>
+        <guiname xml:lang="nl">Audiocodec</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>3</input>
+          <search>3</search>
+        </positions>
+      </editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="UNKNOWN" />
+        <enumeration>
+          <entry
+              javaconstants="org.mmbase.applications.media.Codec"
+              basename="org.mmbase.applications.media.resources.codecs" />
+        </enumeration>
+      </datatype>
+    </field>
+
     <field name="fps">
       <descriptions>
         <description xml:lang="en">Frames per second</description>
@@ -33,13 +63,15 @@
         <guiname xml:lang="nl">FPS</guiname>
       </gui>
       <editor>
-        <positions><list>10</list></positions>
+        <positions>
+          <input>4</input>
+          <search>4</search>
+        </positions>
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <minInclusive value="0" />
       </datatype>
     </field>
-
 
     <field name="height">
       <descriptions>
@@ -52,7 +84,8 @@
       </gui>
       <editor>
         <positions>
-          <list>11</list>
+          <input>5</input>
+          <search>5</search>
         </positions>
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
@@ -71,7 +104,8 @@
       </gui>
       <editor>
         <positions>
-          <list>12</list>
+          <input>5</input>
+          <search>5</search>
         </positions>
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">

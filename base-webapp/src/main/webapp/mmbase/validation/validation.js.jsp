@@ -18,6 +18,7 @@ function MMBaseValidator(root, id) {
 
     this.uniqueId     = id == null ? new Date().getTime() : id;
 
+
     this.logEnabled   = false;
     this.traceEnabled = false;
 
@@ -43,6 +44,7 @@ function MMBaseValidator(root, id) {
     if (MMBaseValidator.validators.length == 1) {
         setTimeout(MMBaseValidator.watcher, 500);
     }
+    this.saveToForm    = null;
 
 
 }
@@ -1022,9 +1024,15 @@ MMBaseValidator.prototype.serverValidation = function(el) {
         var self = this;
         var key = this.getDataTypeKey(el);
         var value = this.getValue(el);
+        var params = this.getDataTypeArguments(key);
 
         var validationUrl = '<mm:url page="/mmbase/validation/valid.jspx" />';
-        var params = this.getDataTypeArguments(key);
+
+	if (this.saveToForm != null) {
+	    params.form = this.saveToForm;
+	}
+
+
         if (this.lang != null) params.lang = this.lang;
         if (this.sessionName != null) params.sessionname = this.sessionName;
         params.value = value;
@@ -1118,9 +1126,11 @@ MMBaseValidator.prototype.showServerErrors = function(element, serverXml, id) {
 
 
                 for (var  i = 0; i < errors.length; i++) {
-                    var span = document.createElement("span");
-                    span.innerHTML = $(errors[i]).text();
-                    errorDiv.appendChild(span);
+		    if (errors[i].tagName == "error") {
+			var span = document.createElement("span");
+			span.innerHTML = $(errors[i]).text();
+			errorDiv.appendChild(span);
+		    }
                 }
             }
         } else {

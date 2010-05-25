@@ -29,7 +29,6 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.BuilderReader;
 import org.mmbase.util.xml.BuilderWriter;
-import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.functions.*;
 import org.xml.sax.SAXException;
 
@@ -95,7 +94,7 @@ public class MMBase extends ProcessorModule {
      * Time in seconds, when mmbase was started.
      * @since MMBase-1.7
      */
-    public static final int startTime = MMBaseContext.startTime;
+    public static final int startTime = (int) (System.currentTimeMillis() / 1000);
 
     /**
      * Base name for the storage  to be accessed using this instance of MMBase.
@@ -140,6 +139,13 @@ public class MMBase extends ProcessorModule {
      */
     private boolean inDevelopment = false;
 
+    /**
+     * Name of the machine used in the mmbase cluster.
+     * it is used for the mmservers objects. Make sure that this is different
+     * for each node in your cluster. This is not the machines dns name
+     * (as defined by host as name or ip number).
+     */
+    static String machineName = null;
 
     /**
      * The host or ip number of the machine this module is
@@ -243,32 +249,6 @@ public class MMBase extends ProcessorModule {
             log.service(e.getMessage());
         }
     }
-
-    /**
-     * @since MMBase-2.0
-     */
-    protected void setMMEntities(boolean logEnts) {
-        StringBuilder sb = new StringBuilder();
-        try {
-            Set<Object> added = new HashSet<Object>();
-            EntityResolver.appendEntities(sb, org.mmbase.framework.Framework.getInstance(), "framework", 0, added);
-            EntityResolver.appendEntities(sb, org.mmbase.framework.ComponentRepository.getInstance(), "componentRepository", 0, added);
-
-            org.mmbase.module.Module  mmbase = org.mmbase.module.Module.getModule("mmbaseroot", false);
-            if (mmbase != null) {
-                EntityResolver.appendEntities(sb, mmbase, "mmbase", 0, added);
-            }
-        } catch (Throwable ie) {
-            log.warn(ie.getMessage());
-            EntityResolver.setMMEntities(sb.toString());
-        }
-        String ents = sb.toString();
-        if (logEnts) {
-            log.debug("Using entities\n" + ents);
-        }
-        EntityResolver.setMMEntities(ents);
-
-    }
     /**
      * Initalizes the MMBase module. Evaluates the parameters loaded from the configuration file.
      * Sets parameters (authorisation, language), loads the builders, and starts MultiCasting.
@@ -334,7 +314,7 @@ public class MMBase extends ProcessorModule {
         if (tmp != null && !tmp.equals("")) {
             encoding = tmp;
         }
-        setMMEntities(false);
+        org.mmbase.util.xml.EntityResolver.clearMMEntities(false);
 
         // default locale has to be known before initializing datatypes:
         DataTypes.initialize();
@@ -361,7 +341,7 @@ public class MMBase extends ProcessorModule {
             host = localHost;
         }
 
-        setMMEntities(false);
+        org.mmbase.util.xml.EntityResolver.clearMMEntities(false);
 
         String machineNameParam = getInitParameter("MACHINENAME");
         if (machineNameParam != null) {
@@ -386,21 +366,19 @@ public class MMBase extends ProcessorModule {
                 machineNameParam = machineNameParam.substring(0, pos) + MMBaseContext.getHtmlRootUrlPath() + machineNameParam.substring(pos + 10);
             }
 
-            MMBaseContext.machineName = machineNameParam;
+            machineName = machineNameParam;
         } else {
             if (! MMBaseContext.htmlRootInitialized) {
                 log.warn("HTML root not yet known. MachineName will not be correct yet.");
             }
             // default machine name is the local host name plus context-path.
             // We suppose that that is sufficiently unique in most cases
-            MMBaseContext.machineName = localHost + MMBaseContext.getHtmlRootUrlPath();
+            machineName = localHost + MMBaseContext.getHtmlRootUrlPath();
 
         }
-        log.info("MMBase machine name used for clustering: '" + MMBaseContext.machineName + "'");
-
-        EventManager.getInstance().propagateEvent(new SystemEvent.MachineName(MMBaseContext.machineName), true);
-
-        setMMEntities(false);
+        log.info("MMBase machine name used for clustering: '" + machineName + "'");
+        Logging.setMachineName(machineName);
+        org.mmbase.util.xml.EntityResolver.clearMMEntities(false);
 
         log.service("Initializing  storage");
         initializeStorage();
@@ -425,15 +403,15 @@ public class MMBase extends ProcessorModule {
         }
 
         log.service("Initializing  builders:");
-        setMMEntities(false);
+        org.mmbase.util.xml.EntityResolver.clearMMEntities(false);
 
         initBuilders();
 
         MMObjectBuilder resources = getBuilder("resources");
         if (resources != null && resources.getClass().getName().equals("org.mmbase.module.builders.Resources")) {
-            org.mmbase.util.ResourceWatcher.setResourceBuilder("resources");
+            ResourceLoader.setResourceBuilder("resources");
         } else {
-            org.mmbase.util.ResourceWatcher.setResourceBuilder(null);
+            ResourceLoader.setResourceBuilder(null);
         }
 
         EventManager.getInstance().addEventListener(org.mmbase.cache.NodeCache.getCache());
@@ -462,7 +440,7 @@ public class MMBase extends ProcessorModule {
             return;
         }
 
-        setMMEntities(false);
+        org.mmbase.util.xml.EntityResolver.clearMMEntities(false);
         // try to load security...
         try {
             mmbaseCop = new MMBaseCop();
@@ -472,16 +450,13 @@ public class MMBase extends ProcessorModule {
             log.error("MMBase will continue without security.");
             log.error("All future security invocations will fail.");
         }
-        setMMEntities(true);
+        org.mmbase.util.xml.EntityResolver.clearMMEntities(true);
         typeRel.readCache();
 
         // signal that MMBase is up and running
         mmbaseState = STATE_UP;
         log.info("MMBase is up and running");
-
-        org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory dsmf =
-            (org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory) getStorageManagerFactory();
-        EventManager.getInstance().propagateEvent(new SystemEvent.Up(dsmf.getDatabaseName(), dsmf.getBinaryFileBasePath()), true);
+        EventManager.getInstance().propagateEvent(new SystemEvent.Up(), true);
         //notifyAll();
         //}
     }
@@ -496,7 +471,9 @@ public class MMBase extends ProcessorModule {
 
         //shutdown in the reverse order as init does
 
-        org.mmbase.core.event.EventManager.getInstance().propagateEvent(new SystemEvent.Shutdown());
+        org.mmbase.core.event.EventManager.getInstance().shutdown();
+
+        org.mmbase.util.ThreadPools.shutdown();
 
         mmbaseCop = null;
 
@@ -652,7 +629,7 @@ public class MMBase extends ProcessorModule {
      * @return a <code>MMObjectBuilder</code> if found, <code>null</code> otherwise
      */
     public MMObjectBuilder getMMObject(String name) {
-        if (name == null) throw new RuntimeException("Cannot get builder with name 'NULL' in " + MMBaseContext.machineName);
+        if (name == null) throw new RuntimeException("Cannot get builder with name 'NULL' in " + machineName);
         MMObjectBuilder o = mmobjs != null ? mmobjs.get(name) : null;
         if (o == null) {
             log.trace("MMObject " + name + " could not be found"); // can happen...
@@ -800,7 +777,7 @@ public class MMBase extends ProcessorModule {
      * @return the machine name as a <code>String</code>. Or <code>null</code> if not yet determined.
      */
     public String getMachineName() {
-        return MMBaseContext.machineName;
+        return machineName;
     }
 
     /**
@@ -863,7 +840,6 @@ public class MMBase extends ProcessorModule {
             String resourceDirectory = ResourceLoader.getDirectory(builderXml) + "/";
             loadBuilderFromXML(resourceName, resourceDirectory);
         }
-        EventManager.getInstance().propagateEvent(new BuildersRead(org.mmbase.bridge.LocalContext.getCloudContext()));
 
         log.debug("Starting Cluster Builder");
         clusterBuilder = new ClusterBuilder(this);

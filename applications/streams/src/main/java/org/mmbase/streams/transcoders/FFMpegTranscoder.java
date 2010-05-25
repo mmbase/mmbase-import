@@ -33,14 +33,13 @@ import java.util.regex.*;
 
 
 /**
- * The transcoder that uses <code>ffmpeg</code> to transcode media. Possible parameters to be set in 
+ * Transcoder that uses <code>ffmpeg</code> to transcode media. Possible parameters to be set in 
  * 'createcaches.xml' are: format, forceFormat (-f), acodec (-acodec), vcodec (-vcodec), 
  * vpre (-vpre), aq (-aq), ab (-ab), bitrate or b (-b), async (-async), framesPerSecond or 
- * r (-r), audioChannels or ac (-ac), 
- * width and height (combined to -s). 
+ * r (-r), audioChannels or ac (-ac), width and height (combined to -s). 
  * Others can be added as extra parameters but will be at the end of the commands parameters. See the
  * documentation for FFmpeg for more information.
- *
+ * 
  * @author Michiel Meeuwissen
  * @version $Id$
  */
@@ -148,7 +147,18 @@ public class FFMpegTranscoder extends CommandTranscoder {
         format = Format.AVI;
     }
 
-
+    /* Saving values like width, height */
+    public void init(Node dest) {
+        /*
+        if (width != null && dest.getNodeManager().hasField("width")) {
+            dest.setIntValue("width", width);
+            if (height != null) {
+                dest.setIntValue("height", height);
+            }        
+        }
+        */
+    }
+    
     @Override
     protected  String getCommand() {
         return "ffmpeg";
@@ -215,7 +225,7 @@ public class FFMpegTranscoder extends CommandTranscoder {
             args.add(async);
         }
         args.add("-y"); // overwrite
-
+        
         args.add(outFile.toString());
 
         return args.toArray(new String[args.size()]);

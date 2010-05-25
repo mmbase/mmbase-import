@@ -29,7 +29,6 @@ public class TestCronJob extends AbstractCronJob implements CronJob {
     }
 
 
-    @Override
     public void run() {
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null); // testing Class Security
         //Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "anonymous", null);

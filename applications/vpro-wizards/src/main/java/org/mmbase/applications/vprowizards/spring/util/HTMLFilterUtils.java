@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
-*/
+*/ 
 package org.mmbase.applications.vprowizards.spring.util;
 
 import java.io.*;
@@ -23,8 +23,6 @@ import org.mmbase.util.logging.Logging;
 /**
  * HTMLFilter contains utility methods for filtering and html used
  * in input fields
-
- * Very similar to {@link org.mmbase.util.transformers.TagStripperFactory}
  *
  * @author Peter Maas <peter.maas@finalist.com>
  */
@@ -48,7 +46,7 @@ public class HTMLFilterUtils {
         remover.acceptElement("li", null);
         remover.acceptElement("div", null);
         //remover.acceptElement("span", new String[] { "style" });
-        remover.acceptElement("a", new String[] { "href", "target", "id", "name", "dir", "accesskey", "title", "charset", "class", "style"});
+        remover.acceptElement("a", new String[] { "href" });
 
         // embedded video's
         remover.acceptElement("object", new String[] { "width","height" });

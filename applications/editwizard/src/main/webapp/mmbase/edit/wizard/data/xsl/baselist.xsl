@@ -9,7 +9,7 @@
     @author Nico Klasens
     @author Martijn Houtman
 
-    @version $Id$
+    @version $Id: baselist.xsl,v 1.8 2004-06-03 08:47:38 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />

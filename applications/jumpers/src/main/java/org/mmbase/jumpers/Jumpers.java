@@ -19,7 +19,6 @@ import org.mmbase.cache.Cache;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.jumpers.*;
@@ -61,17 +60,15 @@ public class Jumpers extends MMObjectBuilder {
     /**
      * Cache for URL jumpers.
      */
-    protected Cache<String, String> jumpCache = new  Cache<String, String>(DEFAULT_JUMP_CACHE_SIZE) {
-        @Override
-        public String getName() {
-            return "JumpersCache";
-        }
+    protected Cache jumpCache = new  Cache/*<String,String>*/(DEFAULT_JUMP_CACHE_SIZE) {
+            public String getName() {
+                return "JumpersCache";
+            }
 
-        @Override
-        public String getDescription() {
-            return "Cache for Jumpers";
-        }
-    };
+            public String getDescription() {
+                return "Cache for Jumpers";
+            }
+        };
     {
         jumpCache.putCache();
         addFunction(new AbstractFunction<String>("jump",
@@ -79,14 +76,14 @@ public class Jumpers extends MMObjectBuilder {
                                                      new Parameter<String>("key", String.class, true),
                                                      new Parameter<Boolean>("reload", Boolean.class, Boolean.FALSE)
                                                  }) {
-                        @Override
-                        public String  getFunctionValue(Parameters parameters) {
-                            String key = parameters.getString("key");
-                            boolean reload = org.mmbase.util.Casting.toBoolean(parameters.get("reload"));
-                            log.debug("Calculating jumper " + reload);
-                            return getJump(key, reload);
-                        }
-                    });
+                @Override
+                public String  getFunctionValue(Parameters parameters) {
+                    String key = parameters.getString("key");
+                    boolean reload = org.mmbase.util.Casting.toBoolean(parameters.get("reload"));
+                    log.debug("Calculating jumper " + reload);
+                    return getJump(key, reload);
+                }
+            });
     }
 
     /**
@@ -111,7 +108,6 @@ public class Jumpers extends MMObjectBuilder {
      *
      * @return always <code>true</code>
      */
-    @Override
     public boolean init() {
         super.init();
 
@@ -205,7 +201,6 @@ public class Jumpers extends MMObjectBuilder {
     /**
      * @since MMBase-1.7.1
      */
-    @Override
     public String getGUIIndicator(MMObjectNode node, Parameters args) {
         String field = (String) args.get("field");
         if (field == null || field.equals("url")) {
@@ -566,7 +561,6 @@ public class Jumpers extends MMObjectBuilder {
      *
      * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
      */
-    @Override
     public void notify(final NodeEvent event) {
         if(getTableName().equals(event.getBuilderName())){
             if (log.isDebugEnabled()) {
@@ -610,7 +604,6 @@ public class Jumpers extends MMObjectBuilder {
         super.notify(event);
     }
 
-    @Override
     protected Object executeFunction(MMObjectNode node, String function, List arguments) {
         if (function.equals("gui")) {
             String rtn;

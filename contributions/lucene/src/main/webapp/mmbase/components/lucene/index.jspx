@@ -177,7 +177,7 @@
         <jsp:text>${exception1}</jsp:text><![CDATA[</td></tr>]]>
       </c:if>
     </mm:listfunction>
-    <c:if test="${! empty total}">
+        <c:if test="${! empty total}">
       <tr>
         <th colspan="4">
           <jsp:text>total:  </jsp:text>
@@ -186,24 +186,24 @@
           <mm:write referid="total">
             <mm:time timezone="utc" format="${durationformat}" />
           </mm:write>
-        </td>
+      </td>
         <td colspan="4"><jsp:text> </jsp:text></td>
-      </tr>
+    </tr>
     </c:if>
   </table>
 
   <mm:import externid="fullindex" />
   <mm:present referid="fullindex">
     <p class="msg">
-      <jsp:text>Triggering full index for ${fullindex} for ${machines}.</jsp:text>
-      <mm:voidfunction module="lucene" name="fullIndex" referids="fullindex@index,machines" />
+    <jsp:text>Triggering full index for ${fullindex} for ${machines}.</jsp:text>
+    <mm:voidfunction module="lucene" name="fullIndex" referids="fullindex@index,machines" />
     </p>
   </mm:present>
   <mm:import externid="delete" />
   <mm:present referid="delete">
     <p class="msg">
-      <jsp:text>Removing assignment ${delete}</jsp:text>
-      <mm:voidfunction module="lucene" name="unassign" referids="delete@id" />
+    <jsp:text>Removing assignment ${delete}</jsp:text>
+    <mm:voidfunction module="lucene" name="unassign" referids="delete@id" />
     </p>
   </mm:present>
   <mm:import externid="interrupt" />

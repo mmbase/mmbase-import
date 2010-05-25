@@ -27,6 +27,7 @@ import java.net.*;
 import java.lang.reflect.*;
 import java.io.*;
 import java.util.*;
+import org.mmbase.bridge.Node;
 import org.mmbase.util.externalprocess.*;
 import org.mmbase.util.WriterOutputStream;
 import org.mmbase.util.MimeType;
@@ -60,10 +61,10 @@ public abstract class AbstractTranscoder implements Transcoder {
             } catch (ClassNotFoundException cnfe) {
                 clazz  = Class.forName(PACKAGE + idWithClass[1]);
             }
-            
+
             if (!"".equals(idWithClass[0])) {
-            Constructor constructor = clazz.getConstructor(String.class);
-            trans = (Transcoder) constructor.newInstance(idWithClass[0]);
+                Constructor constructor = clazz.getConstructor(String.class);
+                trans = (Transcoder) constructor.newInstance(idWithClass[0]);
             } else {
                 trans = (Transcoder) clazz.newInstance();
             }
@@ -78,7 +79,17 @@ public abstract class AbstractTranscoder implements Transcoder {
             }
         }
         return trans;
-
+    }
+    
+    public void init(Node dest) {
+        Format f = this.getFormat();
+        dest.setIntValue("format", f.toInt());
+        Codec c = this.getCodec();
+        if (c == null || c == Codec.UNKNOWN) {
+            dest.setValue("codec", null);
+        } else {
+            dest.setIntValue("codec", c.toInt());
+        }
     }
 
     protected AbstractTranscoder() {
@@ -152,7 +163,7 @@ public abstract class AbstractTranscoder implements Transcoder {
                     Field f = getClass().getDeclaredField(setting);
                     value = f.get(this);
                 } catch (NoSuchFieldException nsfe) {
-                    LOG.error("No such method " + methodName + " or field " + setting + " on " + getClass());;
+                    LOG.error("No such method " + methodName + " or field " + setting + " on " + getClass());
                 } catch (IllegalAccessException iea) {
                     LOG.error(iea);
                 }

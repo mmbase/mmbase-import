@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * The FragmentURLComposer to make images urls available the same way as audio and video.
- * 
+ *
  * @author Michiel Meeuwissen
  * @version $Id$
  */
@@ -72,7 +72,7 @@ public class ImagesURLComposer extends FragmentURLComposer {
         ImageSources builder = (ImageSources) MMBase.getMMBase().getBuilder("imagesources");
         return builder;
     }
-    
+
     private String getImagetype() {
         ImageCaches imageCaches = (ImageCaches) MMBase.getMMBase().getBuilder("icaches");
         if (imageCaches == null) {
@@ -85,7 +85,7 @@ public class ImagesURLComposer extends FragmentURLComposer {
         }
         return imageCaches.getImageFormat(icacheNode);
     }
-    
+
     @Override
     public MimeType getMimeType() {
         return new MimeType("image", getImagetype());
@@ -101,7 +101,7 @@ public class ImagesURLComposer extends FragmentURLComposer {
         MMObjectNode icacheNode = getBuilder().getCachedNode(source, template);
         return new Dimension(icacheNode.getIntValue("width"), icacheNode.getIntValue("height"));
     }
-    
+
     @Override
     public int getFilesize() {
         MMObjectNode icacheNode = getBuilder().getCachedNode(source, template);

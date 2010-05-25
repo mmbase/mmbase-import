@@ -14,7 +14,7 @@
       <mm:import externid="customizedir"  from="request,parameters" />
       <mm:import externid="relation"      from="request,parameters" />
       
-      <mm:node referid="node" jspvar="n">
+      <mm:node referid="node">
         <mm:nodeinfo type="nodemanager" id="nodemanager" write="false" />
         <tr class="click ${(! empty status and status.index % 2 eq 0) ? 'even' : 'odd'} ${nodemanager}">
           <td class="node number"><mm:field name="number" /></td>

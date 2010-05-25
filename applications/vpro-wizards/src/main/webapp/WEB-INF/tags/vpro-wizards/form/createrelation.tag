@@ -28,8 +28,7 @@
 <c:set var="relationid" scope="request" value="${relationid+1}"/>
 
 
-<c:choose>
-  <c:when test="${empty nodenr}">
+<c:if test="${empty nodenr}">
 
     <%--store values temporarily--%>
     <c:set var="_action" value="${action}"/>
@@ -44,25 +43,23 @@
 
 
     <c:if test="${not empty referSource}">
-      <input type="hidden" name="actions[createRelation][${relationid}].sourceNodeRef" value="${referSource}" />
+        <input type="hidden" name="actions[createRelation][${relationid}].sourceNodeRef" value="${referSource}" />
     </c:if>
     <c:if test="${not empty source}">
-      <input type="hidden" name="actions[createRelation][${relationid}].sourceNodeNumber" value="${source}" />
+        <input type="hidden" name="actions[createRelation][${relationid}].sourceNodeNumber" value="${source}" />
     </c:if>
     <c:if test="${not empty referDestination}">
-      <input type="hidden" name="actions[createRelation][${relationid}].destinationNodeRef" value="${referDestination}" />
+        <input type="hidden" name="actions[createRelation][${relationid}].destinationNodeRef" value="${referDestination}" />
     </c:if>
     <c:if test="${not empty destination}">
-      <input type="hidden" name="actions[createRelation][${relationid}].destinationNodeNumber" value="${destination}" />
+        <input type="hidden" name="actions[createRelation][${relationid}].destinationNodeNumber" value="${destination}" />
     </c:if>
     <c:if test="${not empty role}">
-      <input type="hidden" name="actions[createRelation][${relationid}].role" value="${role}" />
+        <input type="hidden" name="actions[createRelation][${relationid}].role" value="${role}" />
     </c:if>
-    <c:if test="${not empty relationValues}">
+    <c:if test="${not empty constraints}">
       <input type="hidden" name="actions[createRelation][${relationid}].relationValues" value="${relationValues}" />
     </c:if>
-    <input type="hidden" name="actions[createRelation][${relationid}].securityContext"
-           value="${requestScope['org.mmbase.vprowizards.securityContext']}" />
 
 
     <%-- do the body--%>
@@ -72,11 +69,4 @@
     <c:set var="action" value="${_action}" scope="request"/>
     <c:set var="modifier" value="${_modifier}" scope="request"/>
     <c:set var="nodetype" value="${_nodetype}" scope="request"/>
-  </c:when>
-  <c:otherwise>
-    <%--
-    <p> Node number not empty so nothing done</p>
-    --%>
-  </c:otherwise>
-
-</c:choose>
+</c:if>

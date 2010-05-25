@@ -23,7 +23,7 @@ See http://www.MMBase.org/license
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-parent</artifactId>
-    <version>2.0-SNAPSHOT</version>
+    <version>1.9-SNAPSHOT</version>
   </parent>
 
   <artifactId>mmbase</artifactId>
@@ -41,6 +41,20 @@ See http://www.MMBase.org/license
 
   <build>
     <plugins>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javacc-maven-plugin</artifactId>
+        <version>2.5</version>
+        <executions>
+          <execution>
+            <id>javacc</id>
+            <goals>
+              <goal>javacc</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
@@ -80,9 +94,15 @@ See http://www.MMBase.org/license
         </executions>
       </plugin>
       <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.mmbase.maven</groupId>
         <artifactId>maven-mmbase-plugin</artifactId>
-        <version>2.0-SNAPSHOT</version>
+        <version>1.9-SNAPSHOT</version>
         <executions>
           <execution>
             <id>create-index-files</id>
@@ -102,23 +122,46 @@ See http://www.MMBase.org/license
   </build>
   <dependencies>
 
+    <!--
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+      <version>4.0.1</version>
+    </dependency>
+    -->
+
 
     <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-utils</artifactId>
-      <version>${project.version}</version>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <scope>provided</scope>
     </dependency>
-
     <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-bridge</artifactId>
-      <version>${project.version}</version>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
     </dependency>
-
+    <dependency>
+      <!-- this is actually a depdency of commons-fileupload
+           which for some reason we have to maintain manually nowadays.
+      -->
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>${jsp.groupId}</groupId>
       <artifactId>jsp-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -129,10 +172,12 @@ See http://www.MMBase.org/license
     </dependency>
 
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.4.1</version>
       <scope>provided</scope>
     </dependency>
+
 
     <!--
     <dependency>
@@ -146,7 +191,6 @@ See http://www.MMBase.org/license
       <artifactId>junit</artifactId>
     </dependency>
 
-    <!--
     <dependency>
       <groupId>org.mmbase.tests</groupId>
       <artifactId>mmbase-rmmci</artifactId>
@@ -154,27 +198,6 @@ See http://www.MMBase.org/license
       <classifier>client-skinny</classifier>
       <scope>test</scope>
     </dependency>
-    -->
-    <!--
-        Spring has a mock imlementation of PageContext, which is used for testing some parts of this taglib.
-    -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-mock</artifactId>
-      <version>2.0-rc3</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>2.0-m4</version>
-      <scope>test</scope>
-    </dependency>
-
-
-
-
-
 
   </dependencies>
 

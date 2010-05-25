@@ -11,7 +11,6 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.images.*;
 import org.mmbase.util.UriParser;
@@ -71,6 +70,19 @@ public class ImageCaches extends AbstractImages {
         return getNode(node.getIntValue(FIELD_ID));
     }
 
+    /**
+     * @since MMBase-1.9.4
+     */
+    protected void appendExtension(StringBuilder buf, String ext) {
+        int extensionIndex = buf.lastIndexOf(".");
+        if (extensionIndex > 0) {
+            buf.replace(extensionIndex + 1, buf.length(), ext);
+        } else {
+            buf.append('.').append(ext);
+        }
+    }
+
+    @Override
     public StringBuilder getFileName(MMObjectNode node, StringBuilder buf) {
         MMObjectNode originalImage = originalImage(node);
         ImagesInterface images = (ImagesInterface) originalImage.getBuilder();
@@ -78,13 +90,14 @@ public class ImageCaches extends AbstractImages {
         String ext = getImageFormat(node);
         if (! (images instanceof Images) || ((Images) images).storesImageType()) { // otherwise too expensive
             if (! ext.equals(images.getImageFormat(originalImage))) {
-                buf.append('.').append(ext);
+                appendExtension(buf, ext);
             }
         } else {
-            buf.append('.').append(ext);
+            appendExtension(buf, ext);
         }
         return buf;
     }
+
     protected boolean addFileName(MMObjectNode node, String servlet) {
         if (super.addFileName(node, servlet)) return true;
         MMObjectNode originalImage = originalImage(node);

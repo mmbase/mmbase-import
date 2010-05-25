@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.functions.*;
 
-import org.mmbase.bridge.Fields;
+import org.mmbase.core.util.Fields;
 
 
 import org.mmbase.bridge.jsp.taglib.typehandler.TypeHandler;
@@ -382,6 +382,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 dataType = field.getDataType();
             }
         }
+        log.debug("Found field provider " + fieldProvider + " node: " + node);
 
         String fieldName = field.getName();
 
@@ -445,10 +446,6 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             break;
         default:
         }
-        if (log.isDebugEnabled()) {
-            log.debug("Found field provider " + fieldProvider + " node " + node);
-        }
-
 
         Locale locale = getLocale();;
         log.debug("Using locale " + locale);
@@ -510,7 +507,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             show = "" + field.getType();
             break;
         case TYPE_TYPEDESCRIPTION:
-            show = Fields.getTypeDescription(field.getType());
+            show = org.mmbase.core.util.Fields.getTypeDescription(field.getType());
             break;
         case TYPE_GUITYPE:
             show = field.getGUIType();

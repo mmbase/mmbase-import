@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-@Settings({"videoQuality",  "keyInt", "height", "width"})
+@Settings({"videoQuality", "keyInt", "height", "width"})
 public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
 
     private static final Logger log = Logging.getLoggerInstance(FFMpeg2TheoraTranscoder.class);
@@ -72,7 +72,15 @@ public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
     public void setWidth(int x) {
         width = x;
     }
-
+    
+    /* Saving values codec, acodec */
+    public void init(Node dest) {
+        dest.setIntValue("codec", Codec.THEORA.toInt() );
+        if (dest.getNodeManager().hasField("acodec")) {
+            dest.setIntValue("acodec", Codec.VORBIS.toInt() );
+        }
+    }
+    
     @Override
     protected  String getCommand() {
         return "ffmpeg2theora";
@@ -101,7 +109,7 @@ public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
         if (height != null) {
             args.add("-y"); args.add("" + height);
         }
-
+        
         args.add(inFile.toString());
 
         return args.toArray(new String[args.size()]);

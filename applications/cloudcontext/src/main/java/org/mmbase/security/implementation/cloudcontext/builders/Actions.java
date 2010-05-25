@@ -13,7 +13,6 @@ import org.mmbase.security.implementation.cloudcontext.User;
 import org.mmbase.framework.*;
 import java.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
 import org.mmbase.storage.search.*;
@@ -47,7 +46,7 @@ public class Actions extends MMObjectBuilder {
                 try {
                     NodeSearchQuery query = new NodeSearchQuery(this);
                     query.setMaxNumber(1);
-                    query.setConstraint(new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND,
+                    query.setConstraint(new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND, 
                                                                      new BasicFieldValueConstraint(query.getField(getField(FIELD_COMPONENT)), component.getName()),
                                                                      new BasicFieldValueConstraint(query.getField(getField(FIELD_ACTION)),    action.getName())
                                                                      ));

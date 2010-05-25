@@ -34,6 +34,55 @@ $(document).ready(
                     this.relater = new MMBaseRelater(this);
                 }
             });
+
+	/*
+	 * If you defined in your CSS that 'implicit' search results are not visible at all, then
+	 * this method arranges the texts on the search buttons accordingly
+	 * (between 'search' and 'close').
+	 */
+	 $("div.mm_related").
+	    live("mmsrPaged",
+		 function (e, status, relater, searcher) {
+                     var anchor = $(searcher.div).find("a.search")[0];
+                     anchor.searcher = searcher;
+                     var div = searcher.getResultDiv();
+		     if(! div.implicitIsVisible) {
+			 if (searcher.offset == 0 && ! $(div).hasClass("implicit")) {
+			     $(anchor).text('<fmt:message key="close" />');
+			 } else {
+			     $(anchor).text('<fmt:message key="search" />');
+			 }
+		     }
+		     // The onlick of mm_gui's are rather annoying
+		     // TODO, should this be configuable?
+                     $(relater.div).find("a.mm_gui").removeAttr("onclick");
+                     $(relater.div).find("a.mm_gui").click(
+			 function(ev) {
+			     ev.preventDefault();
+			 });
+                 }
+		);
+
+	$("input.search").
+	    live("keyup",
+		 function(e) {
+		     var target = e.target;
+		     var anchor = $(target).closest("div.searchable").find("a.search")[0];
+
+                     var searcher = anchor.searcher;
+                     if (searcher != null) {
+			 var div = searcher.getResultDiv();
+			 if(! div.implicitIsVisible) {
+			     if (searcher.offset == 0 && searcher.value == $(target).val() && ! $(div).hasClass("implicit")) {
+				 $(anchor).text('<fmt:message key="close" />');
+			     } else {
+				 $(anchor).text('<fmt:message key="search" />');
+			     }
+			 }
+                     }
+		 }
+		);
+
     });
 
 /**
@@ -738,6 +787,11 @@ MMBaseSearcher.prototype.search = function(val, offset, anchor) {
     var newSearch = val;
     var rep = this.getResultDiv();
 
+    if ($(rep).hasClass("implicit")) {
+	rep.implicitIsVisible = $(rep).is(":visible");
+    }
+
+
     if (newSearch != this.value) {
         $(rep).removeClass("implicit");
         this.searchResults = {};
@@ -776,7 +830,7 @@ MMBaseSearcher.prototype.search = function(val, offset, anchor) {
         $.ajax({ url: this.searchUrl, type: "GET", dataType: "xml", data: params,
                  beforeSend: function() {
                     $(self.div).find("input.search").addClass("searching");
-                    $(rep).append($('<p><fmt:message key="searching" /></p>'));
+                    $(rep).append($('<p class=\'searching\'><fmt:message key="searching" /></p>'));
                  },
                  complete: function(res, status) {
                     if ( status == "success" || status == "notmodified" ) {
@@ -814,40 +868,10 @@ MMBaseSearcher.prototype.search = function(val, offset, anchor) {
 
 
 /**
- * If you defined in your CSS that 'implicit' search results are not visible at all, then
- * you can call this method to bind events to change the texts on the search buttons accordingly
- * (between 'search' and 'close').
+ @deprecated Arranged automaticly.
  */
 MMBaseSearcher.prototype.implicitsAreHidden = function() {
-    $(document).bind("mmsrPaged",
-                     function (e, status, relater, searcher) {
-                         var anchor = $(searcher.div).find("a.search")[0];
-                         anchor.searcher = searcher;
-                         var div = searcher.getResultDiv();
-                         if (searcher.offset == 0 && ! $(div).hasClass("implicit")) {
-                             $(anchor).text('<fmt:message key="close" />');
-                         } else {
-                             $(anchor).text('<fmt:message key="search" />');
-                         }
-
-                     });
-
-    $(document).keyup(function(e) {
-            var target = e.target;
-            if (target.tagName == "input" && $(target).hasClass("search")) {
-                var anchor = $(target).closest("fieldset").find("a")[0];
-                var searcher = anchor.searcher;
-                if (searcher != null) {
-                    var div = searcher.getResultDiv();
-                    if (searcher.offset == 0 && searcher.value == $(target).val() && ! $(div).hasClass("implicit")) {
-                        $(anchor).text('<fmt:message key="close" />');
-                    } else {
-                        $(anchor).text('<fmt:message key="search" />');
-                    }
-                }
-            }
-
-        });
+    //DEPRECETATEd
 };
 
 

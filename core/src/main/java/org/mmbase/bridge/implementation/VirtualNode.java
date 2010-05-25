@@ -15,7 +15,6 @@ import java.io.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
-import org.mmbase.util.BridgeCaster;
 import org.mmbase.bridge.util.*;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.module.core.VirtualBuilder;
@@ -271,7 +270,7 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         }
         if (nodeManager.hasField(fieldName)) { // only if this is actually a field of this node-manager, otherewise it might be e.g. a request for an 'element' of a cluster node
             Field field = nodeManager.getField(fieldName);
-            result = BridgeCaster.toNode(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_NODE).process(getActualNodeForField(fieldName), field, result), getCloud());
+            result = Casting.toNode(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_NODE).process(getActualNodeForField(fieldName), field, result), getCloud());
         }
         return result;
     }

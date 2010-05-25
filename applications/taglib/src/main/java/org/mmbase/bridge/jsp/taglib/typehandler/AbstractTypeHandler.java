@@ -68,13 +68,13 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             IntegerDataType idt = (IntegerDataType) dt;
             final int min = idt.getMin() + (idt.isMinInclusive() ? 0 : 1);
             final int max = idt.getMax() - (idt.isMaxInclusive() ? 0 : 1);
+
             if ((long) max - min < 200L) {
                 return new EnumHandler(tag, node, field) {
                     @Override
                     protected Iterator<Entry<Integer, Integer>> getIterator(Node node, Field field) {
                         return new Iterator<Entry<Integer, Integer>>() {
                             int i = min;
-
                             public boolean hasNext() {
                                 return i <= max;
                             }
@@ -88,6 +88,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                         };
                     }
                 };
+
             }
         }
         if (dt instanceof LongDataType) {
@@ -96,11 +97,11 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             final long max = ldt.getMax() - (ldt.isMaxInclusive() ? 0 : 1);
             if ((double) max - min < 200.0) {
                 return new EnumHandler(tag, node, field) {
-                    @Override
-                    protected Iterator<Entry<Long, Long>> getIterator(Node node, Field field) {
+
+                        @Override
+                        protected Iterator<Entry<Long, Long>> getIterator(Node node, Field field) {
                             return new Iterator<Entry<Long, Long>>() {
                                 long i = min;
-
                                 public boolean hasNext() {
                                     return i <= max;
                                 }
@@ -112,7 +113,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                                     throw new UnsupportedOperationException();
                                 }
                             };
-                    }
+                        }
                 };
             }
         }
@@ -194,26 +195,12 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                     try {
                         buf.append(((org.mmbase.datatypes.LengthDataType) dt).getLength(value));
                     } catch (Exception e) {
-                        log.warn(e.getMessage(), e);
+                        log.warn(e.getMessage());
                         buf.append(node.getSize(field.getName()));
                     }
                 } else {
                     buf.append(node.getSize(field.getName()));
                 }
-            }
-            if (dt instanceof org.mmbase.datatypes.BinaryDataType) {
-                buf.append(" mm_mimetype_");
-                Object value  = getFieldValue(node, field, false);
-                if (value != null) {
-                    try {
-                        buf.append(((org.mmbase.datatypes.BinaryDataType) dt).getMimeType(value, node, field));
-                    } catch (Exception e) {
-                        log.warn(e.getMessage(), e);
-                    }
-                } else {
-                    buf.append("NULL");
-                }
-
             }
         }
         return buf.toString();

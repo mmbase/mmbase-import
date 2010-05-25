@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author André van Toly
- * @version $Id: RecreateCacheFunction.java 41117 2010-02-17 16:23:03Z michiel $
+ * @version $Id$
  */
 
 public class RecreateCacheFunction extends NodeFunction<Boolean> {

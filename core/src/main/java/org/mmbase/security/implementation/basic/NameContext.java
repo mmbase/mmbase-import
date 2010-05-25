@@ -13,12 +13,11 @@ package org.mmbase.security.implementation.basic;
 import org.mmbase.security.Rank;
 import org.mmbase.security.BasicUser;
 import org.mmbase.security.SecurityException;
-import org.mmbase.security.Authentication;
 
 /**
  * A UserContext implementation based only on user name, which serves as the identifier for the
  * user.
- *
+ * 
  * @author Eduard Witteveen
  * @version $Id$
  */
@@ -27,8 +26,8 @@ public class NameContext extends BasicUser {
     private String identifier = null;
     private Rank   rank       = null;
 
-    public NameContext(Authentication auth, Rank rank, String authenticationType) {
-        super(auth, authenticationType, "anonymous");
+    public NameContext(Rank rank, String authenticationType) {
+        super(authenticationType);
         this.rank = rank;
     }
 

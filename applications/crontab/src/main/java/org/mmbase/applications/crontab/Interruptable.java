@@ -31,7 +31,7 @@ public class Interruptable implements Runnable {
 
     private Throwable throwable;
 
-    public static interface CallBack {
+    static interface CallBack {
         void run(Interruptable i);
     }
 
@@ -54,7 +54,6 @@ public class Interruptable implements Runnable {
         return sequence;
     }
 
-    @Override
     public void run() {
         if (runThread != null) {
             throw new IllegalStateException();

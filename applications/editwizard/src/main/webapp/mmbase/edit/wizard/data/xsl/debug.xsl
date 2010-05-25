@@ -7,7 +7,7 @@
     @author Pierre van Rooden
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id$
+    @version $Id: debug.xsl,v 1.8 2008-01-17 15:12:19 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />

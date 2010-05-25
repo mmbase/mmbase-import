@@ -40,7 +40,6 @@ public class DataTypeTag extends CloudReferrerTag {
     private static final Logger log = Logging.getLoggerInstance(DataTypeTag.class);
 
     public static final String KEY = "org.mmbase.taglib.datatypecollector";
-    public static final int SCOPE = PageContext.SESSION_SCOPE;
 
     private Attribute base = Attribute.NULL;
     private Attribute nodeManager = Attribute.NULL;

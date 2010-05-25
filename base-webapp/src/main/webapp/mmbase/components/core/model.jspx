@@ -9,7 +9,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
    <script type="text/javascript">
-     $("object").ready(function() { $(this).change(function() { console.log("hoi");});});
+     $("object").ready(function() { $(this).click(function() { console.log("hoi");});});
    </script>
   <mm:import externid="nodemanager" />
   <mm:import externid="maxdistance">2</mm:import>
@@ -17,15 +17,6 @@
   <p>This page needs <a href="http://www.graphviz.org">graphviz</a> on the server and <a href="http://en.wikipedia.org/wiki/Scalable_Vector_Graphics">SVG</a> in the browser</p>
 
   <h3>Possible relations</h3>
-  <p>Click on nodemanagers to widen or narrow the view. Or fill out this table:</p>
-  <form method="POST">
-    <table>
-      <tr><th>nodemanagers</th><td><input type="text" name="nodemanager" value="${nodemanager}" /></td></tr>
-      <tr><th>max distance</th><td><input type="text" name="maxdistance" value="${maxdistance}" /></td></tr>
-    </table>
-    <input type="submit" />
-  </form>
-
   <mm:link page="/mmbase/components/core/model.svg.jsp" referids="nodemanager?,maxdistance">
     <object data="${_}" type="image/svg+xml" />
   </mm:link>

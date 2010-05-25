@@ -3,6 +3,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
     version="2.0"
     >
   <!--
@@ -12,26 +13,26 @@
       @version $Id$
   -->
   <jsp:directive.tag
-      example="See /mmexamples/searchrelate"
-      description="Combines mm-sr:searchs to an accordion search. The body can be used to modify the query." />
+      description="Combines mm-sr:search's to a an 'accordion' search" />
 
   <jsp:directive.attribute name="path"        type="java.lang.String"  required="true"
                            description="Node types to search. This is equivalent to the path attribute of an mm:listnodescontainer" />
+
   <jsp:directive.attribute name="searchdirs" type="java.lang.String"
                            description="This is equivalent to the searchdirs attribute of an mm:listnodescontainer" />
+
   <jsp:directive.attribute name="element"        type="java.lang.String"
                            description="This is equivalent to the element attribute of an mm:listnodescontainer, but it defaults to the _last_ element." />
 
   <jsp:directive.attribute name="pagesize"        type="java.lang.Integer"
-                           description="The number of items on one page" />
+                           description="" />
 
   <jsp:directive.attribute name="config"               type="java.lang.String"
                            description="Configuration file defaults to ('searchrelate')" />
 
   <jsp:directive.attribute name="load"               type="java.lang.String"
-                           description="Wether to load javascript" />
+                           description="" />
   <jsp:directive.attribute name="forms"        type="java.lang.Boolean"
-                           description="using forms around the input areas (should be false if already in a form, since forms cannot be nested)"
                            />
 
   <jsp:directive.attribute name="intro"        fragment="true"
