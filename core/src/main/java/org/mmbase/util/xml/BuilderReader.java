@@ -190,7 +190,7 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
         Map<String, CoreField> oldset = new HashMap<String, CoreField>();
         int pos = 1;
         if (parentBuilder != null) {
-            List<CoreField> parentfields = parentBuilder.getFields(NodeManager.ORDER_CREATE);
+            Collection<CoreField> parentfields = parentBuilder.getFields();
             if (parentfields != null) {
                 // have to clone the parent fields
                 // need clone()!
