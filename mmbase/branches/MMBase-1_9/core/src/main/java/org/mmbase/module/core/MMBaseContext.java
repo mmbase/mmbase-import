@@ -42,6 +42,16 @@ public class MMBaseContext {
     private static boolean htmlRootUrlPathInitialized = false;
     private static String outputFile;
 
+
+    /**
+     * Name of the machine used in the mmbase cluster.
+     * it is used for the mmservers objects. Make sure that this is different
+     * for each node in your cluster. This is not the machines dns name
+     * (as defined by host as name or ip number).
+     */
+    static String machineName = null;
+
+
     /**
      * Initialize MMBase using a <code>ServletContext</code>. This method will
      * check the servlet configuration for context parameters mmbase.outputfile
@@ -439,6 +449,6 @@ public class MMBaseContext {
      * @return 'machine name' to identify this web app or <code>null</code> if not yet determined.
      */
     public static String getMachineName() {
-        return MMBase.machineName;
+        return machineName;
     }
 }

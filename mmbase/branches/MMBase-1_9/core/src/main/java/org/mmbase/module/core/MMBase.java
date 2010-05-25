@@ -377,6 +377,7 @@ public class MMBase extends ProcessorModule {
 
         }
         log.info("MMBase machine name used for clustering: '" + machineName + "'");
+        MMBaseContext.machineName = machineName;
         Logging.setMachineName(machineName);
         org.mmbase.util.xml.EntityResolver.clearMMEntities(false);
 
