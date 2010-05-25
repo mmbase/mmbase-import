@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="empty">
+  <title>(advanced) example</title>
+
+  <action type="create">
+    <object type="news">
+      <field name="title">Don't forget to add a title!</field>
+    </object>
+  </action>
+
+  <action type="delete" />
+
+  <action type="load">
+    <relation destination="people" role="related" />
+    <relation destination="images" role="posrel"  />
+    <relation destination="urls" role="posrel"    />
+    <relation destination="news" role="posrel"  searchdir="source" />
+  </action>
+
+  <form-schema id="basics">
+    <title>Basic News</title>
+    <subtitle>foobar</subtitle>
+    <field name="title" />
+    <field name="subtitle" />
+    <field name="intro" />
+    <field name="body" ftype="html" />
+    <field name="date" />
+
+    <list role="related" destination="people" minoccurs="0"  maxoccurs="3">
+      <title>Authors (notice the search-filters)</title>
+
+      <item>
+        <fieldset>
+          <prompt>Name</prompt>
+          <field ftype="data" name="firstname" />
+          <field ftype="data" name="lastname" />
+        </fieldset>
+      </item>
+
+      <command name="search" nodepath="people" fields="firstname,lastname" orderby="lastname,firstname" age="-1" filterrequired="true">
+        <prompt>People</prompt>
+        <search-filter>
+          <name>firstname contains</name>
+          <search-fields>firstname</search-fields>
+          <default>Jan</default>
+        </search-filter>
+        <search-filter>
+          <name>lastname contains</name>
+          <search-fields>lastname</search-fields>
+        </search-filter>
+        <search-filter>
+          <name>number</name>
+          <search-fields>number</search-fields>
+        </search-filter>
+      </command>
+
+      <action type="create">
+        <relation destinationtype="people" role="related">
+        </relation>
+      </action>
+    </list>
+
+    <!-- use the library wizard for adding images -->
+    <list extends="lib/addimages.xml" />
+
+    <!-- use the library wizard for adding attachments -->
+    <list extends="lib/addattachments.xml" />
+
+  </form-schema>
+
+  <form-schema id="url">
+    <field name="title" ftype="data" />
+    <title>Relate URL's (example of pop-up wizard)</title>
+    <!-- you can also use the library wizard lib/addurls:
+       <list extends="lib/addurls" />
+    -->
+    <list role="posrel" destination="urls" ordertype="number" orderby="field[@name='pos']">
+      <title>Links</title>
+
+      <item>
+        <field name="name" />
+        <field name="url" />
+        <field name="description" rows="2" />
+      </item>
+
+      <command name="search" nodepath="urls" fields="name,url" orderby="name" age="-1">
+        <prompt>Search for urls</prompt>
+        <search-filter>
+          <name>Name contains</name>
+          <search-fields>name|description</search-fields>
+        </search-filter>
+        <search-filter>
+          <name>URL contains</name>
+          <search-fields>url</search-fields>
+        </search-filter>
+      </command>
+
+      <!-- a not-inline startwizard will pop-up a window to create the new object -->
+      <command name="startwizard" inline="false" wizardname="tasks/myurls" objectnumber="new" >
+        <prompt xml:lang="en">Add a url in a popup window</prompt>
+        <prompt xml:lang="nl">Voeg URL toe in een popup</prompt>
+      </command>
+
+      <!-- an inline startwizard will replace the current wizard to create the new object and come back when ready -->
+      <command name="startwizard" inline="true" wizardname="tasks/myurls" objectnumber="new" >
+        <prompt xml:lang="en">Add a url on a new page</prompt>
+        <prompt xml:lang="nl">Voeg URL toe op een aparte pagina</prompt>
+      </command>
+
+      <action type="add">
+        <relation role="posrel" destinationtype="urls">
+          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and @source=/data/object/@number and object/@searchtype = 'urls']/field[@name='pos'])+{$pos}}</field>
+        </relation>
+      </action>
+
+      <command name="insert" >
+       <prompt>Insert a url directly in this list</prompt>
+      </command>
+
+      <action type="create">
+        <relation role="posrel" destinationtype="urls">
+          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and @source=/data/object/@number and object/@searchtype = 'urls']/field[@name='pos'])+{$pos}}</field>
+          <object type="urls">
+            <field name="url">http://</field>
+          </object>
+          </relation>
+      </action>
+    </list>
+  </form-schema>
+
+  <form-schema id="news">
+    <field name="title" ftype="data" />
+    <title>Related news (example of relations to same node-type)</title>
+
+    <list role="posrel" destination="news" ordertype="number" orderby="field[@name='pos']">
+      <title>Related articles</title>
+
+      <item>
+        <field name="title"    ftype="data"/>
+      </item>
+
+      <command name="search" nodepath="news" fields="title" orderby="title" age="-1">
+        <prompt>Search for news</prompt>
+        <search-filter>
+          <name>Title</name>
+          <search-fields>title|subtitle</search-fields>
+        </search-filter>
+      </command>
+
+      <action type="create">
+        <relation role="posrel" destinationtype="news" createdir="source">
+          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and @source=/data/object/@number and object/@searchtype = 'news']/field[@name='pos'])+{$pos}}</field>
+         </relation>
+      </action>
+    </list>
+  </form-schema>
+
+</wizard-schema>

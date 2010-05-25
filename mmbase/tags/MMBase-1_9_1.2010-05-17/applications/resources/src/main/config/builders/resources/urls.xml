@@ -1,0 +1,86 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="urls" maintainer="mmbase.org" version="1" extends="object">
+  <class>org.mmbase.module.builders.Urls</class>
+  <searchage>14</searchage>
+  <names>
+    <singular xml:lang="en">Url</singular>
+    <singular xml:lang="nl">Url</singular>
+
+    <plural xml:lang="en">Urls</plural>
+    <plural xml:lang="nl">Urls</plural>
+    <plural xml:lang="bg">Връзки</plural>
+    <plural xml:lang="ro">Legături</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">Urls to external sites</description>
+    <description xml:lang="nl">Urls naar externe sites</description>
+  </descriptions>
+
+  <properties>
+    <property name="wiki_inlinecreate">true</property> <!-- indicate to wiki's that this typically can be created 'inline' -->
+  </properties>
+
+  <fieldlist>
+
+    <field name="name">
+      <descriptions>
+        <description xml:lang="en">The name of the site or page this url links to (linktext)</description>
+        <description xml:lang="nl">De naam van de pagina of website waarnaar deze link verwijst (linktekst)</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Name</guiname>
+        <guiname xml:lang="nl">Naam</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>2</list>
+        </positions>
+      </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="255" enforce="never"/>
+      </datatype>
+    </field>
+
+    <field name="url">
+      <descriptions>
+        <description xml:lang="en">The link or site internet address</description>
+        <description xml:lang="nl">Het internet adres van de link of website</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Url</guiname>
+        <guiname xml:lang="nl">Url</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>3</list>
+        </positions>
+      </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <default value="http://" />
+        <maxLength value="255" enforce="never"/>
+      </datatype>
+    </field>
+
+    <field name="description">
+      <descriptions>
+        <description xml:lang="en">A short description of the website of page</description>
+        <description xml:lang="nl">Een korte omschrijving van de website of pagina</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Description</guiname>
+        <guiname xml:lang="nl">Omschrijving</guiname>
+      </gui>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="255" enforce="never"/>
+      </datatype>
+    </field>
+
+  </fieldlist>
+
+</builder>

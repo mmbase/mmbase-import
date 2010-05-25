@@ -1,0 +1,30 @@
+<html
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xml:lang="en"
+    lang="en">
+  <jsp:output doctype-root-element="html"
+              doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
+              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+  <jsp:text>&lt;!-- $Id$ --&gt;</jsp:text>
+  <mm:content type="text/html" expires="0" postprocessor="none">
+    <head>
+      <title>MMBase Richtext Application</title>
+      <mm:link page="/mmbase/style/css/mmbase.css">
+        <link rel="stylesheet"    href="${_}"     type="text/css" />
+      </mm:link>
+      <mm:link page="/mmbase/style/images/favicon.ico">
+        <link rel="icon"          href="${_}" type="image/x-icon" />
+        <link rel="shortcut icon" href="${_}" type="image/x-icon" />
+      </mm:link>
+      <mm:component name="richtext" block="edit" render="head" />
+    </head>
+
+    <body >
+      <mm:component name="richtext" block="edit">
+        <mm:param name="objectnumber" value="1327" />
+      </mm:component>
+    </body>
+  </mm:content>
+</html>
+

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
+<util>
+  <properties>
+    <!--
+        This file contains patterns -> weight, which is used by the Classloader parth of ResourceLoaders
+    -->
+
+
+
+    <!--
+        This arranges that the datatypes defined in mmbase jar are read in first.
+        Other jars will normally define (or override) datatypes which are based on these, so it's
+        better if they are available asap.
+    -->
+    <property name="classloaderpatterns" type="mergingmap">
+      <entry><key>!/org/mmbase/config/datatypes.xml</key><value>-1</value></entry>
+    </property>
+  </properties>
+</util>

@@ -1,0 +1,68 @@
+<div
+    class="searchresult ${param.extraClass}"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <mm:content expires="0" postprocessor="none">
+
+    <jsp:directive.page import="org.mmbase.bridge.util.Queries,org.mmbase.bridge.*" />
+
+    <mm:import externid="pid" from="parameters" required="true" />
+
+    <mm:context scope="session" id="parameters" referid="${pid}_context" />
+
+
+    <mm:cloud>
+      <mm:import externid="step" from="request,parameters" vartype="integer" required="true"  jspvar="step"/>
+      <mm:import externid="nodeNumber" from="request,parameters" required="${step gt 0}"   />
+
+      <mm:write referid="parameters.query" jspvar="q" vartype="org.mmbase.bridge.NodeQuery" write="false">
+
+
+        <jsp:scriptlet>Node node = null;</jsp:scriptlet>
+        <c:if test="${!empty nodeNumber}">
+          <mm:node referid="nodeNumber" jspvar="n">
+            <jsp:scriptlet>node = n;</jsp:scriptlet>
+          </mm:node>
+        </c:if>
+        <jsp:scriptlet>
+          pageContext.setAttribute("laststep", q.getSteps().indexOf(q.getNodeStep()));
+          NodeQuery nodeQuery = Queries.getSubQuery(q, node, step);
+          pageContext.setAttribute("nodeQuery", nodeQuery);
+        </jsp:scriptlet>
+      </mm:write>
+
+      <mm-sr:relate
+          pagesize="${parameters.pagesize}"
+          styleClass="pathsearcher_${laststep eq step ? 'end' : 'ontheway'}"
+          repository="${nodeQuery}"
+          load="${step eq 0 ? null : false}"
+          implicitRepository="true"
+          create="false"
+          >
+        <jsp:attribute name="repositoryTitle">
+          <c:if test="${! empty param.intro}">
+            <div class="intro"><jsp:text>${param.intro}</jsp:text></div>
+          </c:if>
+          <c:if test="${! empty nodeNumber}">
+            <div class="intro">
+              <mm:node number="${nodeNumber}">
+                <span class="type">
+                  <mm:nodeinfo type="guitype" />
+                  <jsp:text>: </jsp:text>
+                </span>
+                <mm:nodeinfo type="gui" />
+              </mm:node>
+            </div>
+          </c:if>
+        </jsp:attribute>
+      </mm-sr:relate>
+    </mm:cloud>
+  </mm:content>
+</div>

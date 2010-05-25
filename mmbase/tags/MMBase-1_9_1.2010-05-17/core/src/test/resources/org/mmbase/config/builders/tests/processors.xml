@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="processors" maintainer="mmbase.org" version="0" extends="object">
+  <names>
+    <singular xml:lang="en">processors</singular>
+    <plural xml:lang="en">processors</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="nl">Builder voor het testen van datatype processor, met allerlei types velden</description>
+    <description xml:lang="en">Builder to test the datatype processers, with a lot of different typed fields </description>
+  </descriptions>
+
+  <fieldlist>
+    <field name="get">
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+        <getprocessor>
+          <class name="org.mmbase.datatypes.processors.CountProcessor" />
+          <class name="org.mmbase.util.transformers.UpperCaser" />
+        </getprocessor>
+      </datatype>
+    </field>
+  </fieldlist>
+</builder>

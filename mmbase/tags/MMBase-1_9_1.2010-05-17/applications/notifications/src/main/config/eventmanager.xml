@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE eventmanager PUBLIC "-//MMBase//DTD eventmanager config 1.0//EN" "http://www.mmbase.org/dtd/eventmanager_1_0.dtd">
+<eventmanager>
+	<brokers>
+		<broker class="org.mmbase.sms.SMSEventBroker"/>
+	</brokers>
+</eventmanager>

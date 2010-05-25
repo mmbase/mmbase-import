@@ -1,0 +1,31 @@
+<mm:cloud
+    method="asis"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <!--
+      Resets the stuff on the session
+  -->
+  <mm:content type="application/xml" expires="0">
+    <jsp:output omit-xml-declaration="true" />
+    <mm:import externid="rids" required="true" vartype="list" />
+    <mm:import externid="requestids" required="true" vartype="list" />
+    <left>
+      <c:forEach items="${rids}" var="rid">
+        <mm:context>
+          <mm:import id="parameters" externid="${rid}_context" from="session" />
+          <clear>${rid} ${parameters}</clear>
+          <mm:remove from="session" referid="${rid}_context" />
+        </mm:context>
+      </c:forEach>
+      <c:forEach items="${requestids}" var="requestid">
+        <seq>
+          <mm:log level="debug">clearing ${requestid}</mm:log>
+          <mm:remove from="session" referid="${requestid}_sequence" />
+        </seq>
+      </c:forEach>
+    </left>
+  </mm:content>
+</mm:cloud>

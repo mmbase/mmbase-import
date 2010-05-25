@@ -1,0 +1,113 @@
+<tr>
+  <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+  <td bgcolor="#44BDAD">
+    <font color="000000" face="helvetica,arial,geneva" size="2">
+      <strong>DB variables</strong>
+    </font>
+  </td>
+  <td bgcolor="#44BDAD">
+    <font color="000000" face="helvetica,arial,geneva" size="2">
+      <strong>Values</strong>
+    </font>
+  </td>
+  <td bgcolor="#44BDAD">
+    <font color="000000" face="helvetica,arial,geneva" size="2">
+      <strong>Change</strong>
+    </font>
+  </td>
+  <td bgcolor="#44BDAD" colspan="2">
+    <font color="000000" face="helvetica,arial,geneva" size="2">
+      <strong>Change</strong>
+    </font>
+  </td>
+</tr>
+<tr>
+  <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+  <td bgcolor="#00425A">
+      dbname
+  </td>
+  <td bgcolor="#00425A">
+      $MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-dbname
+  </td>
+  <td bgcolor="#00425A">
+      <a href="$MOD-INFO-SERVERCONTEXT^/mmdocs/administrators/builders.html#field_name" target="_blank">explain</a>
+  </td>
+  <td bgcolor="#00425A" colspan="2">
+      change
+  </td>
+</tr>
+<tr>
+  <td><img src="beeld/trans.gif" width="50" height="1"></td>
+  <td bgcolor="#00425A">
+    mmbase type
+  </td>
+  <td bgcolor="#00425A">
+    $MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-dbmmbasetype
+   </td>
+  <td bgcolor="#00425A">
+    <a href="$MOD-INFO-SERVERCONTEXT^/mmdocs/administrators/builders.html#field_type" target="_blank">explain</a>
+  </td>
+  <td bgcolor="#00425A" colspan="2">
+    <a href="builders_setdbmmbasetype.shtml?$PARAM1+$PARAM2">change</a>
+  </td>
+</tr>
+<tr>
+  <td><img src="beeld/trans.gif" width="50" height="1"></td>
+  <td bgcolor="#00425A">
+    state
+  </td>
+  <td bgcolor="#00425A">
+    $MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-dbstate
+  </td>
+  <td bgcolor="#00425A">
+    <a href="$MOD-INFO-SERVERCONTEXT^/mmdocs/administrators/builders.html#field_state" target="_blank">explain</a>
+  </td>
+  <td bgcolor="#00425A" colspan="2">
+    <a href="builders_setdbstate.shtml?$PARAM1+$PARAM2">change</a>
+  </td>
+</tr>
+<tr>
+  <td><img src="beeld/trans.gif" width="50" height="1"></td>
+  <td bgcolor="#00425A">
+    notnull
+  </td>
+  <td bgcolor="#00425A">
+    $MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-dbnotnull
+  </td>
+  <td bgcolor="#00425A">
+    <a href="$MOD-INFO-SERVERCONTEXT^/mmdocs/administrators/builders.html#field_notnull" target="_blank">explain</a>
+  </td>
+  <td bgcolor="#00425A" colspan="2">
+    <a href="builders_setdbnotnull.shtml?$PARAM1+$PARAM2">change</a>
+  </td>
+</tr>
+<tr>
+  <td><img src="beeld/trans.gif" width="50" height="1"></td>
+  <td bgcolor="#00425A">
+    key
+  </td>
+  <td bgcolor="#00425A">
+    $MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-dbkey
+  </td>
+  <td bgcolor="#00425A">
+    <a href="$MOD-INFO-SERVERCONTEXT^/mmdocs/administrators/builders.html#field_key" target="_blank">explain</a>
+  </td>
+  <td bgcolor="#00425A" colspan="2">
+    <a href="builders_setdbkey.shtml?$PARAM1+$PARAM2">change</a>
+  </td>
+</tr>
+<tr>
+  <td><img src="beeld/trans.gif" width="50" height="1"></td>
+  <td bgcolor="#00425A">
+    size
+  </td>
+  <td bgcolor="#00425A">
+    $MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-dbsize
+  </td>
+  <td bgcolor="#00425A">
+    <a href="$MOD-INFO-SERVERCONTEXT^/mmdocs/administrators/builders.html#field_size" target="_blank">explain</a>
+  </td>
+  <td bgcolor="#00425A" colspan="2">
+      <a href="builders_setdbsize.shtml?$PARAM1+$PARAM2">change</a>
+  </td>
+</tr>
