@@ -84,6 +84,7 @@
           <include>org/mmbase/util/LinkMap*.class</include>            <!-- Used by Mock -->
           <include>org/mmbase/storage/search/implementation/**</include> <!-- Used by Mock, test cases -->
           <include>org/mmbase/core/util/Fields**</include>                <!-- hmm -->
+          <include>org/mmbase/core/util/DataTypeSetter**</include>
 
 
           <include>org/mmbase/storage/Storable.class</include>              <!-- DataTypes uses .. -->
