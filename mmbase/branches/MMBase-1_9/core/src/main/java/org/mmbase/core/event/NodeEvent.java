@@ -157,7 +157,7 @@ public class NodeEvent extends Event {
                     log.error(e.getMessage(), e);
                 }
             }
-            log.info("Setting unacceptable values types for NodeEvents to " + classes);
+            log.info("Setting required values types for NodeEvents to " + classes);
             setRequiredValueTypes(classes.toArray(new Class[] {}));
         }
     }
