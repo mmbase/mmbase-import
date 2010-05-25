@@ -103,6 +103,8 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
     private static List<Runnable> postponedDataTypeDecoders = new CopyOnWriteArrayList<Runnable>();
 
     static {
+        BuilderReader.registerPublicIDs();
+        BuilderReader.registerSystemIDs();
         EventManager.getInstance().addEventListener(new SystemEventListener() {
                 public void notify(SystemEvent se) {
                     if (se instanceof BuildersRead) {
