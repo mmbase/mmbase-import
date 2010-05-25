@@ -101,6 +101,18 @@
   </context-param>
 
   <!--
+      mm:url (mm:link) will encode the URL (using response.encodeUrl), unless the url matches the given regexp.
+
+      Encoding the URL would add jsessionids' to the URL.
+  -->
+
+  <context-param>
+   <param-name>mmbase.taglib.url.excludeForEncoding</param-name>
+   <param-value>.*\.(ico|jpg|gif|png|css|js)</param-value> <!-- this is the default value too -->
+ </context-param>
+
+
+  <!--
       Whether the server must be 'stalled' until this web-app is completely running.  Recognized by
       MMBase.  If your web-app is in an application server with other application, it is good that
       the initialization of mmbase does not stall the initialization of the complete application
