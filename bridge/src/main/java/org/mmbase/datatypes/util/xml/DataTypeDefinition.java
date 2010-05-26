@@ -401,18 +401,9 @@ public class DataTypeDefinition {
             restriction.setFixed(isFixed);
         }
         String enforce = DataTypeXml.getAttribute(element, "enforce").toLowerCase();
-        if (enforce.equals("absolute")) {
-            restriction.setEnforceStrength(DataType.ENFORCE_ABSOLUTE);
-        } else if (enforce.equals("always") || enforce.equals("")) {
-            restriction.setEnforceStrength(DataType.ENFORCE_ALWAYS);
-        } else if (enforce.equals("onchange")) {
-            restriction.setEnforceStrength(DataType.ENFORCE_ONCHANGE);
-        } else if (enforce.equals("oncreate")) {
-            restriction.setEnforceStrength(DataType.ENFORCE_ONCREATE);
-        } else if (enforce.equals("onvalidate")) {
-            restriction.setEnforceStrength(DataType.ENFORCE_ONVALIDATE);
-        } else if (enforce.equals("never")) {
-            restriction.setEnforceStrength(DataType.ENFORCE_NEVER);
+        int strength = DataTypes.getEnforceStrength(enforce);
+        if (strength != -1) {
+            restriction.setEnforceStrength(strength);
         } else {
             log.warn("Unrecognised value for 'enforce' attribute '" + enforce + "' in " + XMLWriter.write(element, true, true));
         }
