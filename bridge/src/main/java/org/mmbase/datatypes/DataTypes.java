@@ -418,6 +418,31 @@ public class DataTypes {
         return doc;
     }
 
+
+
+
+    /**
+     * @since MMBase-1.9.4
+     */
+    public static int getEnforceStrength(String enforce) {
+        if (enforce.equals("absolute")) {
+            return DataType.ENFORCE_ABSOLUTE;
+        } else if (enforce.equals("always") || enforce.equals("")) {
+            return DataType.ENFORCE_ALWAYS;
+        } else if (enforce.equals("onchange")) {
+            return DataType.ENFORCE_ONCHANGE;
+        } else if (enforce.equals("oncreate")) {
+            return DataType.ENFORCE_ONCREATE;
+        } else if (enforce.equals("onvalidate")) {
+            return DataType.ENFORCE_ONVALIDATE;
+        } else if (enforce.equals("never")) {
+            return DataType.ENFORCE_NEVER;
+        } else {
+            return -1;
+        }
+    }
+
+
     public static void main(String arg[]) throws Exception {
         DataTypes.initialize();
         DataType dt = DataTypes.getDataType(arg[0]);
