@@ -265,7 +265,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                 int myNode = node.getCloud().getCloudContext().getAuthentication().getNode(node.getCloud().getUser());
                 log.debug("Comparing " + node.getNumber() + " with " + myNode);
                 if (myNode != node.getNumber()) {
-                    log.debug("Logged in a someone different. Ignoring");
+                    log.debug("Logged in as someone different. Ignoring");
                     return;
                 }
             } catch (UnsupportedOperationException uoe) {
