@@ -58,7 +58,7 @@ public class EmailHandler {
         String body = node.getStringValue("body");
 
         Map<String, String> headers = getHeaders(node);
-        
+
         boolean mailed = false;
         if (toGroup.size() > 0) {
             // bulk-mailing
@@ -300,15 +300,18 @@ public class EmailHandler {
                 mailResult =  EmailBuilder.getSendMail().sendMail(from, to.email, body, headers);
             } else {
                 MimeMultipart mmpart = MimeMessageGenerator.getMimeMultipart(body, node);
-                if (mmpart == null) throw new NullPointerException();
+                if (mmpart == null) {
+                    throw new NullPointerException();
+                }
                 mailResult =  EmailBuilder.getSendMail().sendMultiPartMail(from, to.email, headers, mmpart);
             }
         } catch (MessagingException me) {
+            mailResult = false;
             exception = me;
 
         }
         if (! mailResult) {
-            log.warn("Mail to " + to.email + " failed", exception);
+            log.warn("Mail to " + to.email + " failed",  exception);
             if (node.getNodeManager().hasField("mailstatus")) {
                 node.setValue("mailstatus", EmailBuilder.STATE_FAILED);
             }
@@ -322,7 +325,9 @@ public class EmailHandler {
                 node.setValue("mailstatus", EmailBuilder.STATE_DELIVERED);
             }
         }
-        if (exception != null) throw exception;
+        if (exception != null) {
+            throw exception;
+        }
 
         return true;
 
