@@ -59,6 +59,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
     private final ChainedLogger log = new ChainedLogger(LOG);
 
     private boolean updateSource;
+    private boolean updateDestination = false;
 
     AnalyzerUtils(Logger... loggers) {
         for (Logger l : loggers) {
@@ -71,6 +72,9 @@ public final class AnalyzerUtils implements java.io.Serializable {
     }
     public boolean getUpdateSource() {
         return updateSource;
+    }
+    public void setUpdateDestination(boolean b) {
+        updateDestination = b;
     }
 
     /**
@@ -214,6 +218,20 @@ public final class AnalyzerUtils implements java.io.Serializable {
         return false;
     }
 
+    /* Output #0, mpeg, to 'presto.mpeg': */
+    private static final Pattern PATTERN_OUTPUT = Pattern.compile("^Output #\\d+?, (.*), to.*?");
+    
+    public boolean output(String l, Node source, Node dest) {
+        Matcher m = PATTERN_OUTPUT.matcher(l);
+        if (m.matches()) {
+            log.info("### OUTPUT match: " + l);
+            if (log.isDebugEnabled()) log.debug("format: " + m.group(1));
+            updateDestination = true;
+            return true;
+        }
+        return false;
+    }
+
     /* ffmpeg reports sometimes no start and on some video's bitrate: N/A */
     private static final Pattern PATTERN_DURATION = Pattern.compile("\\s*Duration: (.*?),.* bitrate:.*?");
     private static final Pattern PATTERN_BITRATE  = Pattern.compile("\\s*Duration: .* bitrate: (.*?) kb/s.*?");
@@ -237,7 +255,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
             if (updateSource) {
                 source.setLongValue("length", length);
             }
-            if (dest != null) {
+            if (updateDestination && dest != null) {
                 dest.setLongValue("length", length);
             }
 
@@ -245,8 +263,12 @@ public final class AnalyzerUtils implements java.io.Serializable {
             if (m.matches()) {
                 if (log.isDebugEnabled()) log.debug("bitrate: " + m.group(1));
                 int bitrate = 1000 * Integer.parseInt(m.group(1));
-                if (updateSource) source.setIntValue("bitrate", bitrate);
-                if (dest != null) dest.setIntValue("bitrate", bitrate);
+                if (updateSource) {
+                    source.setIntValue("bitrate", bitrate);
+                }
+                if (updateDestination && dest != null) {
+                    dest.setIntValue("bitrate", bitrate);
+                }
             }
 
             m = PATTERN_START.matcher(l);
@@ -287,8 +309,12 @@ public final class AnalyzerUtils implements java.io.Serializable {
             if (m.matches()) {
                 if (log.isDebugEnabled()) log.debug("bitrate: " + m.group(1));
                 int bitrate = 1000 * Integer.parseInt(m.group(1));
-                if (updateSource) source.setIntValue("bitrate", bitrate);
-                if (dest != null) dest.setIntValue("bitrate", bitrate);
+                if (updateSource) {
+                    source.setIntValue("bitrate", bitrate);
+                }
+                if (updateDestination && dest != null) {
+                    dest.setIntValue("bitrate", bitrate);
+                }
             }
 
             return true;
@@ -315,6 +341,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
     }
 
     private static final Pattern PATTERN_DIMENSIONS = Pattern.compile(".*?\\sVideo: (.*?), (.*?), ([0-9]+)x([0-9]+).*");
+    private static final Pattern VIDEOBITRATE2_PATTERN = Pattern.compile(".*?\\sVideo: .*, (.*?) kb/s.*");
 
     /**
      * Looks for width and height when it finds a match for Video, and looks for bitrate after that.
@@ -343,7 +370,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
                 source.setIntValue("width", Integer.parseInt(m.group(3)));
                 source.setIntValue("height", Integer.parseInt(m.group(4)));
             }
-            if (dest != null) {
+            if (updateDestination && dest != null) {
                 if (dest.getIntValue("codec") < 0) {
                     dest.setIntValue("codec", libtoCodec(m.group(1)).toInt() );
                 }
@@ -352,10 +379,24 @@ public final class AnalyzerUtils implements java.io.Serializable {
             }
 
             m = VIDEOBITRATE_PATTERN.matcher(l);
+            Matcher m2 = VIDEOBITRATE2_PATTERN.matcher(l);
             if (m.matches()) {
-                if (log.isDebugEnabled()) log.debug("bitRate: " + m.group(1));
-                if (updateSource) source.setIntValue("bitrate", Integer.parseInt(m.group(1)));
-                if (dest != null) dest.setIntValue("bitrate", Integer.parseInt(m.group(1)));
+                if (log.isDebugEnabled()) log.debug("bitrate: " + m.group(1));
+                if (updateSource) {
+                    source.setIntValue("bitrate", Integer.parseInt(m.group(1)));
+                }
+                if (updateDestination && dest != null) {
+                    dest.setIntValue("bitrate", Integer.parseInt(m.group(1)));
+                }
+            } else if (m2.matches()) {
+                if (log.isDebugEnabled()) log.debug("bitrate: " + m2.group(1));
+                int bitrate = 1000 * Integer.parseInt(m2.group(1));
+                if (updateSource) {
+                    source.setIntValue("bitrate", bitrate);
+                }
+                if (updateDestination && dest != null) {
+                    dest.setIntValue("bitrate", bitrate);
+                }
             }
 
             return true;
@@ -365,7 +406,6 @@ public final class AnalyzerUtils implements java.io.Serializable {
     }
 
     private static final Pattern PATTERN_AUDIO = Pattern.compile(".*?\\sAudio: (.*?), (.*?) Hz, (stereo|mono|([0-9]+) channels), .*?");
-    private static final Pattern PATTERN_BITRATE2  = Pattern.compile("\\s*Audio: .* bitrate: (.*?) kb/s.*?");
 
     /**
      * Looks for audio channel(s).
@@ -389,13 +429,20 @@ public final class AnalyzerUtils implements java.io.Serializable {
 
             if (source.getNodeManager().hasField("channels") && updateSource) {
                 if (source.getIntValue("channels") < 0) source.setIntValue("channels", ch);
-                if (source.getIntValue("codec") < 0) {
+                
+                if (source.getNodeManager().hasField("acodec") && source.getIntValue("acodec") < 0) {
+                    source.setIntValue("acodec", libtoCodec(m.group(1)).toInt() );
+                } else if (source.getIntValue("codec") < 0) {
                     source.setIntValue("codec", libtoCodec(m.group(1)).toInt() );
                 }
             }
-            if (dest != null) {
-                if (dest.getIntValue("channels") < 0) dest.setIntValue("channels", ch);
-                if (dest.getIntValue("codec") < 0) {
+            if (updateDestination && dest != null) {
+                if (dest.getIntValue("channels") < 0) {
+                    dest.setIntValue("channels", ch);
+                }
+                if (dest.getNodeManager().hasField("acodec") && dest.getIntValue("acodec") < 0) {
+                    dest.setIntValue("acodec", libtoCodec(m.group(1)).toInt() );
+                } else if (source.getIntValue("codec") < 0) {
                     dest.setIntValue("codec", libtoCodec(m.group(1)).toInt() );
                 }
             }

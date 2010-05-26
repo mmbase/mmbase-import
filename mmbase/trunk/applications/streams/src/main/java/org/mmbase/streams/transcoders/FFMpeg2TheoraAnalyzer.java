@@ -52,7 +52,7 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
 
     private AnalyzerUtils util = new AnalyzerUtils(log);
 
-    private List<Throwable> errors =new ArrayList<Throwable>();
+    private List<Throwable> errors = new ArrayList<Throwable>();
 
     public void addThrowable(Throwable t) {
         errors.add(t);
@@ -70,11 +70,10 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
                 return;
             }
     
-            if (util.dimensions(l, source, des)) {
-                return;
-            }
-    
             if (util.audio(l, source, des)) {
+                util.setUpdateDestination(true);
+                util.audio(l, source, des);
+                util.setUpdateDestination(false);
                 return;
             }
 
@@ -83,9 +82,6 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
                 if (m.matches()) {
                     util.toVideo(source, des);
                     log.debug("Found " + m);
-                    source.setIntValue("width", Integer.parseInt(m.group(1)));
-                    source.setIntValue("height", Integer.parseInt(m.group(2)));
-                    source.commit();
                     des.setIntValue("width", Integer.parseInt(m.group(3)));
                     des.setIntValue("height", Integer.parseInt(m.group(4)));
                     des.commit();
@@ -95,9 +91,6 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
                     if (n.matches()) {
                         log.debug("Found " + n);
                         util.toVideo(source, des);
-                        source.setIntValue("width", Integer.parseInt(n.group(1)));
-                        source.setIntValue("height", Integer.parseInt(n.group(2)));
-                        source.commit();
                         des.setIntValue("width", Integer.parseInt(n.group(1)));
                         des.setIntValue("height", Integer.parseInt(n.group(2)));
                         des.commit();
@@ -112,7 +105,6 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
                     long videoBitrate = Integer.parseInt(m.group(3));
                     bits += ((double) (audioBitrate + videoBitrate)) * ((double) pos - prevPos) * 1000;
                     //System.out.println("" + pos + "ms "  + (audioBitrate + videoBitrate) + " -> " + (bits / pos) + " " + (100 * pos / length) + " %");
-    
                     prevPos = pos;
                 }
             }

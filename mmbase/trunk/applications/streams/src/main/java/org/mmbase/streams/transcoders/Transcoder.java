@@ -21,11 +21,10 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.transcoders;
 
-
 import java.net.*;
+import org.mmbase.bridge.Node;
 import org.mmbase.applications.media.*;
 import org.mmbase.util.logging.*;
-
 
 /**
  * Representation of one transcoding action. Instances should cloned before usage, so the transcoder
@@ -43,6 +42,12 @@ public interface Transcoder extends org.mmbase.util.PublicCloneable<Transcoder>,
 
     Codec getCodec();
 
+    /**
+     * Init the transcoder and destination node with appropiate values.
+     * @param destination   stream destination Node
+     */
+    void init(Node destination);
+    
     /**
      * Transcode a file to another, follow the process with a logger.
      * @param in
