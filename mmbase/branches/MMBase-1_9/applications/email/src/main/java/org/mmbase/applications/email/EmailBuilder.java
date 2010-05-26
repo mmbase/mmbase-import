@@ -89,7 +89,8 @@ public class EmailBuilder extends MMObjectBuilder {
     /**
      * init
      */
-    @Override public boolean init() {
+    @Override
+    public boolean init() {
         super.init ();
 
         String property = getInitParameter("expireTime");
@@ -142,7 +143,8 @@ public class EmailBuilder extends MMObjectBuilder {
         return true;
     }
 
-    @Override public void shutdown() {
+    @Override
+    public void shutdown() {
         if (expireHandler != null) {
             try {
                 expireHandler.getClass().getMethod("cancel", Boolean.TYPE).invoke(expireHandler, Boolean.TRUE);
@@ -187,8 +189,8 @@ public class EmailBuilder extends MMObjectBuilder {
     }
 
     {
-        addFunction(new NodeFunction/*<Void>*/("mail", MAIL_PARAMETERS, ReturnType.VOID) {
-                protected Boolean getFunctionValue(Node node, Parameters parameters) {
+        addFunction(new NodeFunction<Void>("mail", MAIL_PARAMETERS, ReturnType.VOID) {
+                protected Void getFunctionValue(Node node, Parameters parameters) {
                     try {
                         sendMail(node, parameters);
                     } catch (javax.mail.MessagingException me) {
@@ -198,7 +200,7 @@ public class EmailBuilder extends MMObjectBuilder {
                 }
             }
             );
-        addFunction(new NodeFunction/*<Void>*/("startmail", MAIL_PARAMETERS, ReturnType.VOID) {
+        addFunction(new NodeFunction<Void>("startmail", MAIL_PARAMETERS, ReturnType.VOID) {
                 protected Void getFunctionValue(final Node node, final Parameters parameters) {
                     org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
                             public void run() {
@@ -218,7 +220,7 @@ public class EmailBuilder extends MMObjectBuilder {
 
         // This is a silly function.
         // We could override setStringValue on 'type' itself. Perhaps that even already works.
-        addFunction(new NodeFunction/*<Void>*/("settype", MAIL_PARAMETERS, ReturnType.VOID) {
+        addFunction(new NodeFunction<Void>("settype", MAIL_PARAMETERS, ReturnType.VOID) {
                 protected Void getFunctionValue(final Node node, Parameters parameters) {
                     log.debug("We're in startmail - args: " + parameters);
                     setType(node, parameters);
