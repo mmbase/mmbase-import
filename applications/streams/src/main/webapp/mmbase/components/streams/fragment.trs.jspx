@@ -7,29 +7,26 @@
 
   <mm:listnodes id="fragment">
     <tr>
-      <th>
-        <mm:nodeinfo type="nodemanager"/>
-      </th><th>
-        <mm:field name="number" />
-      </th><th colspan="4">
-        <mm:nodeinfo type="gui" />
-      </th><th colspan="99" />
+      <th><mm:field name="number" /></th>
+      <th colspan="3"><mm:nodeinfo type="gui" /></th>
+      <th><mm:nodeinfo type="nodemanager" /></th>
+      <th colspan="3" />
     </tr>
     <mm:listfunction name="filteredurls">
       <c:if test="${_.main}">
         <c:set var="source"  value="${_.source.number}" />
       <tr>
-          <th>${_.source.builder.tableName}</th>
           <td>${_.source.number}</td>
         <td>
-          <jsp:text>${_.state}</jsp:text>
-            ${_.mimeType}
-          ${_.dimension}
+            <strong><a href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a></strong>
         </td>
-        <td>
-          <a href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a>
-        </td>
-            <td colspan="2">
+          <td> ${_.mimeType} </td>
+          <td> ${_.dimension} </td>
+          <td> ${_.source.builder.tableName}  </td>
+          <td>${_.state}</td>
+        </tr><tr>
+          <td />
+          <td colspan="4">
               <mm:function set="streams" name="getJob" referids="_node@node">
               JOB: ${_.class}<br />  
               </mm:function>
@@ -71,26 +68,30 @@
     <mm:listfunction name="filteredurls">
       <c:if test="${!_.main}">
         <tr>
-          <th>${_.source.builder.tableName}</th>
-          <td>${_.source.number}</td>
+          <td> ${_.source.number} </td>
           <td>
-            <jsp:text>${_.state}</jsp:text>
-            ${_.mimeType}
-            ${_.dimension}
+            <strong><a href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a></strong>
           </td>
+          <td> ${_.mimeType} </td>
           <td>
-            <a href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a>
-          </td>          
-          <mm:node number="${_.source.number}" notfound="skip" id="cache">
-              <td>
+            ${_.dimension}
+            <mm:node number="${_.source.number}" notfound="skip">
               <mm:hasfield name="label">
-                <mm:field name="label" /><br />
-              </mm:hasfield>
-                <mm:hasfield name="id">
-                  <mm:field name="id" />
+                <mm:field name="label"><mm:isnotempty>${_}</mm:isnotempty></mm:field>
                 </mm:hasfield>
+            </mm:node>
               </td>
               <td>
+            <mm:node number="${_.source.number}" notfound="skip">
+              <mm:hasfield name="id"><mm:field name="id" />, </mm:hasfield>
+            </mm:node>
+            ${_.source.builder.tableName}  
+          </td>
+          <td>${_.state}</td>
+        </tr><tr>
+          <td />
+          <mm:node number="${_.source.number}" notfound="skip" id="cache">
+            <td colspan="4">
               <mm:hasfield name="key">
                   <mm:field name="key" />
                 </mm:hasfield>

@@ -65,6 +65,7 @@ public class SegmenterAnalyzer implements Analyzer {
 
     public void analyze(String l, Node source, Node des) {
         synchronized(util) {
+            /*
             Cloud cloud = source.getCloud();
             
             if (util.duration(l, source, des)) {
@@ -78,7 +79,7 @@ public class SegmenterAnalyzer implements Analyzer {
             if (util.audio(l, source, des)) {
                 return;
             }
-
+            */
             // TODO: progress matcher
             /*
             {

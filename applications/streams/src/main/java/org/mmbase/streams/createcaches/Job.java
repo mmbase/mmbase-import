@@ -200,15 +200,7 @@ public class Job implements Iterable<Result> {
                     dest.setNodeValue("mediaprovider", mediaprovider);
                     dest.setNodeValue("mediafragment", mediafragment);
 
-                    Format f = jd.transcoder.getFormat();
-                    dest.setIntValue("format", f.toInt());
-                    Codec c = jd.transcoder.getCodec();
-                    if (c == null || c == Codec.UNKNOWN) {
-                        dest.setValue("codec", null);
-                    } else {
-                        dest.setIntValue("codec", c.toInt());
-                    }
-                    //dest.setNodeValue("id", Job.this.node);
+                    jd.transcoder.init(dest);
 
                     File inFile  = new File(processor.getDirectory(), Job.this.node.getStringValue("url").replace("/", File.separator));
 
@@ -236,12 +228,6 @@ public class Job implements Iterable<Result> {
                     while (destFileName.length() < 1 && w < 10) {
                         LOG.warn("No value for field url: '" + destFileName + "' in #" + dest.getNumber() + ", committing it again and trying again in 5 sec. (" + w + ")");
                         
-                        if (c == null || c == Codec.UNKNOWN) {
-                            dest.setValue("codec", null);
-                        } else {
-                            dest.setIntValue("codec", c.toInt());
-                        }
-                        dest.setIntValue("format", f.toInt());
                         dest.setStringValue("url", outFileName);
                         dest.commit();
                         
@@ -525,9 +511,10 @@ public class Job implements Iterable<Result> {
 
         if (future.isDone()) {
             processor.runningJobs.remove(getNode().getNumber());
+            /* this makes no sence: 
             ready = true;
         } else {
-            LOG.warn("This job has not completed yet.");
+            LOG.warn("This job has not completed yet."); */
         }
         ready = true;
     }
