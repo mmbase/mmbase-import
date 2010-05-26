@@ -84,6 +84,13 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
     private String url = "/mmbase/email/verify/";
     private String includeUrl = null; //"/core/mail.jsp";
 
+    private boolean onlyForSelf = false;
+
+
+    public void setOnlyForSelf(boolean o) {
+        onlyForSelf = o;
+    }
+
 
     public void setEmailField(String ef) {
         emailField = ef;
@@ -240,6 +247,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
             EventManager.getInstance().propagateEvent(new EmailValidated(node.getNumber()));
             return node;
         }
+        log.service("Not Found " + query.toSql());
         return null;
     }
 
@@ -257,7 +265,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                 int myNode = node.getCloud().getCloudContext().getAuthentication().getNode(node.getCloud().getUser());
                 log.debug("Comparing " + node.getNumber() + " with " + myNode);
                 if (myNode != node.getNumber()) {
-                    log.debug("Logged in as someone different. Ignoring");
+                    log.debug("Logged in a someone different. Ignoring");
                     return;
                 }
             } catch (UnsupportedOperationException uoe) {
