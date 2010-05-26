@@ -84,6 +84,11 @@ public class FFMpegAnalyzer implements Analyzer {
                 return;
             }
 
+            if (util.output(l, source, des)) {
+                util.setUpdateDestination(true);
+                return;
+            }
+            
             if (util.duration(l, source, des)) {
                 return;
             }
