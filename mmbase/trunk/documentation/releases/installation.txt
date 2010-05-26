@@ -20,7 +20,7 @@ and get MMBase running, you must do the following:
 3. Download and install ImageMagick. See note below if you're having
    problems with Imagemagick or don't want to use it.
 
-4. Copy the subdirectory 'example-webapp' or the WAR 'example-webapp-1.9.war' into the 
+4. Copy the subdirectory 'example-webapp' or the WAR 'example-webapp-2.0.war' into the 
    Servlet Engine's webapps directory. When you're familiar with configuring your
    Servlet Engine you can or point to it in a configuration file (e.g. server.xml 
    of tomcat).
