@@ -258,14 +258,16 @@ public class SendMail extends AbstractSendMail {
 
             try {
                 MimeMessage msg = constructMessage(from, onlyTo, headers);
-                if (mmpart == null) throw new NullPointerException();
+                if (mmpart == null) {
+                    throw new NullPointerException();
+                }
                 msg.setContent(mmpart);
 
                 Transport.send(msg);
                 EventManager.getInstance().propagateEvent(new EmailEvent.Sent(msg));
 
                 emailSent++;
-                log.debug("JMimeSendMail done.");
+                log.debug("JMimeSendMail to " + Arrays.asList(onlyTo) + " done.");
                 return true;
             } catch (javax.mail.MessagingException e) {
                 emailFailed++;
@@ -474,8 +476,8 @@ public class SendMail extends AbstractSendMail {
                 MimeMessage msg = constructMessage(from, onlyTo, headers);
                 msg.setText(data, mailEncoding);
                 Transport.send(msg);
+                log.debug("SendMail to " + to + " done.");
                 EventManager.getInstance().propagateEvent(new EmailEvent.Sent(msg));
-                log.debug("SendMail done.");
                 return true;
             } else {
                 log.service("not sending mail to " + to + " because it does not match " + onlyToPattern);
@@ -665,12 +667,12 @@ public class SendMail extends AbstractSendMail {
                     log.service("JMSendMail sending mail to " + to + " cc:" + cc + " bcc:" + bcc + " (node " + n.getNumber() + ")" + " from " + from + " (mime-type " + mimeType + ") using " + session);
                 }
                 Transport.send(msg, onlyto);
+                log.debug("JMSendMail to " + onlyto + " done.");
                 EventManager.getInstance().propagateEvent(new EmailEvent.Sent(msg));
             } else {
-                log.debug("nothing to do");
+                log.debug("nothing to do for JSMSendMail");
             }
 
-            log.debug("JMSendMail done.");
         } catch (javax.mail.MessagingException e) {
             log.error("JMSendMail failure: " + e.getMessage(), e);
             errors.append("\nMessaging: " + e.getMessage());

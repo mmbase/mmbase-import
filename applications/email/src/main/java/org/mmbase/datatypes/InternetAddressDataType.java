@@ -40,7 +40,7 @@ public class InternetAddressDataType extends StringDataType {
         super(name);
     }
 
-    protected Collection/*<LocalizedString>*/ validateCastValue(Collection/*<LocalizedString>*/ errors, Object castValue, Object value, Node node, Field field) {
+    protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {
         log.debug("Validating " + value);
         errors = super.validateCastValue(errors, castValue, value,  node, field);
         if (value == null) return errors;
@@ -73,7 +73,11 @@ public class InternetAddressDataType extends StringDataType {
         restriction.setLocal(Boolean.valueOf(l));
     }
 
-    class InternetAddressRestriction extends AbstractRestriction/*<Integer>*/ {
+    public void setRestrictionEnforceStrength(String ef) {
+        restriction.setEnforceStrength(DataTypes.getEnforceStrength(ef));
+    }
+
+    class InternetAddressRestriction extends AbstractRestriction<Integer> {
         protected boolean local = false;
         InternetAddressRestriction(InternetAddressRestriction source) {
             super(source);
@@ -112,10 +116,15 @@ public class InternetAddressDataType extends StringDataType {
                 if (log.isDebugEnabled()) {
                     log.debug("Found " + Arrays.asList(ia) + " this is valid if " + ia.length + " <= " + value);
                 }
-                if (! local) {
-                    for (InternetAddress a : ia) {
-                        if (a.getAddress().indexOf("@") == -1) { // not entirely sure that this is absolutely correct
-                            log.debug("Local addresses not allowed");
+                for (InternetAddress a : ia) {
+                    if (!local) {
+                        a.validate();
+                        String ad = a.getAddress();
+                        int lastAt = ad.lastIndexOf('@');
+                        String[] domain = ad.substring(lastAt + 1).split("\\.");
+                        log.debug("Domain" + Arrays.asList(domain));
+                        if (domain.length < 2) {
+                            log.debug("Too short domain  for " + ad);
                             return false;
                         }
                     }
