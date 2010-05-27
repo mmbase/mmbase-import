@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  * Triggers recreation of a certain streamsourcescaches belonging to this streamsources node.
  *
  * @author Michiel Meeuwissen
- * @author André van Toly
+ * @author Andr&eacute; van Toly
  * @version $Id$
  */
 
