@@ -6,7 +6,7 @@
       This xslt can be used in MMBase framework implementations, to merge the result 'head' of head
       renderers, as supplied by blocks on the page, with their own head.
 
-      See http://cvs.mmbase.org/viewcvs/html/mmbase/admin/index.jsp?revision=1.14&view=markup for a usage example.
+      See https://scm.mmbase.org/mmbase/trunk/base-webapp/src/main/webapp/mmbase/admin/index.jsp for a usage example.
 
       @version $Id: head.xslt,v 1.6 2008-12-30 13:58:33 michiel Exp $
       @author Michiel Meeuwissen
