@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * that try to extract information, convert nodetypes to the matching kind etc.
  *
  * @author Michiel Meeuwissen
- * @author Andre van Toly
+ * @author Andr&eacute; van Toly
  * @version $Id$
  */
 
