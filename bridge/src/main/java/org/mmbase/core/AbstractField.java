@@ -146,6 +146,10 @@ abstract public class AbstractField<D extends Object> extends AbstractDescriptor
      */
     public void setDataType(DataType<D> dataType) throws IllegalArgumentException {
         int dataTypeType = dataType.getBaseType();
+        if (type == TYPE_UNKNOWN) {
+            log.debug("Type was yet unknown, now set to " + dataTypeType);
+            type = dataTypeType;
+        }
         if (dataTypeType != type) {
             log.debug("DataType (" + dataType.getBaseTypeIdentifier() + ") is different from db type (" + Fields.getTypeDescription(type) + ").");
         }
