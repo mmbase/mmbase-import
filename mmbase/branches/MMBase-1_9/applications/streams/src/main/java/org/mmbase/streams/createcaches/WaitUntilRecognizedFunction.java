@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
 
 /**
  *
- * @author André van Toly
+ * @author Andr&eacute; van Toly
  * @version $Id$
  */
 public class WaitUntilRecognizedFunction extends NodeFunction<Boolean> {
