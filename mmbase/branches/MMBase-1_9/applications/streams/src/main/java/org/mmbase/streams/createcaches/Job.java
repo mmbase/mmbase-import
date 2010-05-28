@@ -41,6 +41,7 @@ import org.mmbase.util.logging.*;
  * 'caches' nodes for it. Such a Job object is created everytime somebody creates a new source
  * object, or explicitly triggers the associated 'cache' objects to be (re)created.
  *
+ * @author Michiel Meeuwissen
  * @version $Id$
  */
 public class Job implements Iterable<Result> {
@@ -73,6 +74,15 @@ public class Job implements Iterable<Result> {
         this(processor, processor.list, cloud, chain);
     }
     
+    /**
+     * A Job is defined by several {@link JobDefinition}'s, the output is goes to loggers in 
+     * {@link ChainedLogger}
+     *
+     * @param processor reads config, is called by user etc.
+     * @param list      the definitions
+     * @param cloud     mmbase cloud nodes belong to
+     * @param chain     loggers
+     */
     public Job(Processor processor, Map<String, JobDefinition> list, Cloud cloud, ChainedLogger chain) {
         user = cloud.getUser().getIdentifier();
         logger = new BufferedLogger();
@@ -127,7 +137,7 @@ public class Job implements Iterable<Result> {
                 
                 } else {    // using a previously cached node
                     String inId = jd.getInId();
-                    
+                    LOG.info("inId: " + inId);
                     if (! jobdefs.containsKey(inId) && node.getCloud().hasNode(inId)) {
                         // use an existing cache node
                         LOG.service("Using cache #" + inId + " as input");
@@ -151,7 +161,7 @@ public class Job implements Iterable<Result> {
                         
                     } else {    // use inId from config
                         if (! jobdefs.containsKey(inId)) {
-                            LOG.warn("Configuration error, no such job definition with id '" + inId);
+                            LOG.warn("Configuration error, no such job definition with id: " + inId);
                             continue;
                         }
                         Result prevResult = lookup.get(inId);
@@ -359,7 +369,7 @@ public class Job implements Iterable<Result> {
     }
 
     /**
-     * Start actually executing this Jobs.
+     * Start actually executing this Job by submitting it at {@link JobCallable}.
      */
     public void submit(Cloud cloud, int n, ChainedLogger chain) {
         JobCallable callable = new JobCallable(this, cloud, chain, n);
