@@ -26,6 +26,8 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * To be used in a template, indicates when an uploaded file has been recognized and the user 
+ * can start editing associated data.
  *
  * @author Andr&eacute; van Toly
  * @version $Id$

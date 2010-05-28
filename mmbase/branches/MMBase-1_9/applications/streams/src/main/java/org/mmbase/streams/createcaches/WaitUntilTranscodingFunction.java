@@ -26,6 +26,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * To be used in a template, indicates when transcoding of the uploaded file has started.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
