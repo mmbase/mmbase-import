@@ -39,7 +39,9 @@ import org.mmbase.datatypes.processors.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Triggers recreation of a certain streamsourcescaches belonging to this streamsources node.
+ * Triggers recreation of one streamsourcescaches belonging to a streamsources node.
+ * Uses for id of input stream not id from configuration but nodenumber of previously 
+ * cached stream node.
  *
  * @author Michiel Meeuwissen
  * @author Andr&eacute; van Toly
@@ -73,6 +75,7 @@ public class RecreateCacheFunction extends NodeFunction<Boolean> {
                 in = "" + inNode.getNumber();
             }
             String id        = "recache";
+            String label     = recache.getStringValue("label");
             String mimetype  = recache.getStringValue("mimetype");
             String key       = recache.getStringValue("key");
             Transcoder transcoder = null;
@@ -89,7 +92,7 @@ public class RecreateCacheFunction extends NodeFunction<Boolean> {
                 return false;
             }
 
-            JobDefinition jd = new JobDefinition(id, in, null, transcoder, new MimeType(mimetype), Stage.TRANSCODER);
+            JobDefinition jd = new JobDefinition(id, in, label, transcoder, new MimeType(mimetype), Stage.TRANSCODER);
             Map<String, JobDefinition> jdlist = new LinkedHashMap<String, JobDefinition>();
             jdlist.put(id, jd);
 
