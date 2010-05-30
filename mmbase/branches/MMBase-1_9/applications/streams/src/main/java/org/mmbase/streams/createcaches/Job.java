@@ -407,7 +407,8 @@ public class Job implements Iterable<Result> {
     }
 
     /**
-     * Gets and/or creates the node representing the 'cached' stream.
+     * Gets and/or creates the node representing the 'cached' stream, uses this (source) node as
+     * infile to create cache from.
      *
      * @param key   representation of the way the stream was created from its source
      * @return cached stream node
@@ -419,7 +420,7 @@ public class Job implements Iterable<Result> {
     /**
      * Gets and/or creates the node representing the 'cached' stream (the result of a conversion),
      * see the builder property 'org.mmbase.streams.cachestype'. It first looks if it already
-     * exists in the cloud or otherwise will create one.
+     * exists, if not it creates a new one.
      *
      * @param src   source node to create cache stream from, can be another cache
      * @param key   representation of the way the stream was created from its source, f.e. transcoding parameters
