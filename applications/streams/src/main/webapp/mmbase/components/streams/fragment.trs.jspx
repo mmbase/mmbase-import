@@ -40,7 +40,7 @@
               <c:choose>
                 <c:when test="${trigger eq triggervalue}">
                   <mm:log> CALLING TRIGGER FOR ${trigger}</mm:log>
-                  <mm:voidfunction name="triggerCaches" referids="all,cache" />
+                  <mm:voidfunction name="triggerCaches" referids="all" />
                   <div class="msg">Triggered transcoding</div>
                 </c:when>
                 <c:otherwise>
