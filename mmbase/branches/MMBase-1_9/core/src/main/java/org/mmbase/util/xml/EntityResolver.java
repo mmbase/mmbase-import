@@ -210,7 +210,11 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
             Set<Map.Entry<?,?>> map = ((Map) o).entrySet();
             for (Map.Entry<?,?> entry : map) {
                 Object value = entry.getValue();
-                if (value != null && Casting.isStringRepresentable(value.getClass()) && entry.getKey() instanceof String) {
+                if (value != null &&
+                    Casting.isStringRepresentable(value.getClass()) &&
+                    (!Collection.class.isAssignableFrom(value.getClass())) && // collection can be string resentable, but their entries can not be,
+                                                                              // and they are hardly useful in XML.
+                    entry.getKey() instanceof String) {
                     sb.append("<!ENTITY ");
                     sb.append(prefix);
                     sb.append('.');
