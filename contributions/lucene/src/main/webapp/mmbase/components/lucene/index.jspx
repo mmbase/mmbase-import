@@ -68,11 +68,12 @@
         </mm:functioncontainer>
       </mm:present>
     </mm:booleanfunction>
-    <mm:listfunction id="index" module="lucene" name="list">
+    <mm:listfunction id="indexer" module="lucene" name="indexerList">
+      <c:set var="index" value="${indexer.name}" />
       <c:catch var="exception1">
         <tr>
           <td>
-            <mm:write />
+            <mm:write value="${index}" />
             <mm:function module="lucene" name="default" write="false">
               <c:if test="${index eq _.name }">
                 <jsp:text>*</jsp:text>
@@ -81,7 +82,11 @@
             </mm:function>
           </td>
           <td>
+            <mm:write value="${mm:string(indexer.description)}" />
             <mm:function module="lucene" referids="index" name="description" />
+          </td>
+          <td>
+            ${indexer.incrementalUpdating}
           </td>
           <td class="numeric">
             <mm:function module="lucene" referids="index" name="searchsize">

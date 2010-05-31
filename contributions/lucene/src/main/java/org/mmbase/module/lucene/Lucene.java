@@ -405,8 +405,19 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             }
 
         };
+    /**
+     * This function returns Set with the names of all configured indexes (ordered alphabeticly)
+     */
+    protected Function<Set<Indexer>>  indexerListFunction = new AbstractFunction<Set<Indexer>> ("indexerList", Parameter.EMPTY, new ReturnType<Set<Indexer>>(Set.class, "")) {
+        private static final long serialVersionUID = 0L;
+            public Set<Indexer> getFunctionValue(Parameters arguments) {
+                return new TreeSet<Indexer>(indexerMap.values());
+            }
+
+        };
     {
         addFunction(listFunction);
+        addFunction(indexerListFunction);
     }
 
     /**
@@ -1048,6 +1059,14 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                             defaultIndex = indexName;
                             log.service("Default index: " + defaultIndex);
                         }
+
+                        boolean updates = incrementalUpdates;
+                        String updatesAttribute = Lucene.getAttribute(indexElement, "incrementalUpdates");
+                        if (updatesAttribute.length() > 0) {
+                            updates = Casting.toBoolean(updatesAttribute);
+                        }
+
+
                         Set<String> allIndexedFieldsSet = new HashSet<String>();
                         List<IndexDefinition> queries = new ArrayList<IndexDefinition>();
                         // lists
@@ -1097,7 +1116,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                             }
                         }
 
-                        Indexer indexer = new Indexer(indexPath, indexName, queries, analyzer, readOnly, scheduler);
+                        Indexer indexer = new Indexer(indexPath, indexName, queries, analyzer, readOnly, updates, scheduler);
                         for (String s : configErrors) {
                             indexer.addError(url.toString() + ": " + s);
                         }
@@ -1129,71 +1148,64 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
 
     public void notify(NodeEvent event) {
-        if (incrementalUpdates) {
-            if (log.isDebugEnabled()) {
-                log.debug("Received node event: " + event +  Logging.stackTrace(6));
-            }
-            if (scheduler != null) {
-                switch(event.getType()) {
-                case Event.TYPE_NEW:
-                    org.mmbase.bridge.Node node = getCloud().getNode(event.getNodeNumber());
-                    if (! node.isRelation()) {
-                        scheduler.newIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
-                    }
-                    break;
-                case Event.TYPE_CHANGE:
-                    if (event.getChangedFields().size() > 0) {
-                        scheduler.updateIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
-                    } else {
-                        // I don't know why the event was issued in the first place, but don't make it
-                        // worse.
-                    }
-                    break;
-                case Event.TYPE_DELETE:
-                    scheduler.deleteIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
-                    break;
+        if (log.isDebugEnabled()) {
+            log.debug("Received node event: " + event +  Logging.stackTrace(6));
+        }
+        if (scheduler != null) {
+            switch(event.getType()) {
+            case Event.TYPE_NEW:
+                if (! event.isRelation()) {
+                    scheduler.newIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
                 }
+                break;
+            case Event.TYPE_CHANGE:
+                if (event.getChangedFields().size() > 0) {
+                    scheduler.updateIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
+                } else {
+                    // I don't know why the event was issued in the first place, but don't make it
+                    // worse.
+                }
+                break;
+            case Event.TYPE_DELETE:
+                scheduler.deleteIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
+                break;
             }
         }
     }
     public void notify(RelationEvent event) {
-        if (incrementalUpdates) {
-            if (log.isDebugEnabled()) {
-                log.debug("Received relation event: " + event + Logging.stackTrace(6));
-            }
-            if (scheduler != null) {
-                switch(event.getType()) {
-                case Event.TYPE_NEW:
-                    //scheduler.newIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
-                    if (!startNodes.contains("" + event.getRelationDestinationNumber())) {
-                        scheduler.updateIndex("" + event.getRelationDestinationNumber(), MMBaseIndexDefinition.class);
-                    }
-                    break;
-                case Event.TYPE_CHANGE:
-                case Event.TYPE_DELETE:
-                    if (!startNodes.contains("" + event.getRelationSourceNumber())) {
-                        scheduler.updateIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
-                    }
-                    if (!startNodes.contains("" + event.getRelationDestinationNumber())) {
-                        scheduler.updateIndex("" + event.getRelationDestinationNumber(), MMBaseIndexDefinition.class);
-                    }
-                    break;
+        if (log.isDebugEnabled()) {
+            log.debug("Received relation event: " + event + Logging.stackTrace(6));
+        }
+        if (scheduler != null) {
+            switch(event.getType()) {
+            case Event.TYPE_NEW:
+                //scheduler.newIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
+                if (!startNodes.contains("" + event.getRelationDestinationNumber())) {
+                    scheduler.updateIndex("" + event.getRelationDestinationNumber(), MMBaseIndexDefinition.class);
                 }
+                break;
+            case Event.TYPE_CHANGE:
+            case Event.TYPE_DELETE:
+                if (!startNodes.contains("" + event.getRelationSourceNumber())) {
+                    scheduler.updateIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
+                }
+                if (!startNodes.contains("" + event.getRelationDestinationNumber())) {
+                    scheduler.updateIndex("" + event.getRelationDestinationNumber(), MMBaseIndexDefinition.class);
+                }
+                break;
             }
         }
     }
 
     public void notify(IdEvent event) {
-        if (incrementalUpdates) {
-            if (scheduler != null) {
-                switch(event.getType()) {
-                case Event.TYPE_DELETE:
-                    scheduler.deleteIndex(event.getId(), JdbcIndexDefinition.class);
-                    break;
-                default:
-                    scheduler.updateIndex(event.getId(), JdbcIndexDefinition.class);
-                    break;
-                }
+        if (scheduler != null) {
+            switch(event.getType()) {
+            case Event.TYPE_DELETE:
+                scheduler.deleteIndex(event.getId(), JdbcIndexDefinition.class);
+                break;
+            default:
+                scheduler.updateIndex(event.getId(), JdbcIndexDefinition.class);
+                break;
             }
         }
     }
@@ -1340,9 +1352,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                         status = BUSY_INDEX;
                         for (Indexer indexer : indexerMap.values()) {
                             current = indexer;
-                            int updated = indexer.newIndex(number, klass);
-                            if (updated > 0) {
-                                log.service(indexer.getName() + ": " + updated + " new index entr" + (updated > 1 ? "ies" : "y"));
+                            if (current.isIncrementalUpdating()) {
+                                int updated = indexer.newIndex(number, klass);
+                                if (updated > 0) {
+                                    log.service(indexer.getName() + ": " + updated + " new index entr" + (updated > 1 ? "ies" : "y"));
+                                }
                             }
                         }
                         current = null;
@@ -1367,12 +1381,14 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                         status = BUSY_INDEX;
                         for (Indexer indexer : indexerMap.values()) {
                             current = indexer;
-                            int updated = indexer.updateIndex(number, klass);
-                            if (updated > 0) {
-                                if (log.isDebugEnabled()) {
-                                    log.debug(indexer.getName() + ": Updated " + updated + " index entr" + (updated > 1 ? "ies" : "y"), getCause());
-                                } else if (log.isServiceEnabled()) {
-                                    log.service(indexer.getName() + ": Updated " + updated + " index entr" + (updated > 1 ? "ies" : "y"));
+                            if (current.isIncrementalUpdating()) {
+                                int updated = indexer.updateIndex(number, klass);
+                                if (updated > 0) {
+                                    if (log.isDebugEnabled()) {
+                                        log.debug(indexer.getName() + ": Updated " + updated + " index entr" + (updated > 1 ? "ies" : "y"), getCause());
+                                    } else if (log.isServiceEnabled()) {
+                                        log.service(indexer.getName() + ": Updated " + updated + " index entr" + (updated > 1 ? "ies" : "y"));
+                                    }
                                 }
                             }
                             current = null;
@@ -1398,7 +1414,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                         status = BUSY_INDEX;
                         for (Indexer indexer : indexerMap.values()) {
                             current = indexer;
-                            indexer.deleteIndex(number, klass);
+                            if (current.isIncrementalUpdating()) {
+                                indexer.deleteIndex(number, klass);
+                            }
                         }
                         current = null;
                     }
