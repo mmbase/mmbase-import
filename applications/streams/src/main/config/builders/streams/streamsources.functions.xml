@@ -10,10 +10,6 @@
     <class>org.mmbase.streams.CreateCachesFunction</class>
   </function>
 
-  <function name="triggerRecache">
-    <class>org.mmbase.streams.RecreateCacheFunction</class>
-  </function>
-
   <function name="waitUntilRecognized">
     <class>org.mmbase.streams.createcaches.WaitUntilRecognizedFunction</class>
   </function>
