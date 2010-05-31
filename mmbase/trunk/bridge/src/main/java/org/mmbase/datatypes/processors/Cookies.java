@@ -17,9 +17,31 @@ import javax.servlet.http.*;
 
 
 /**
- * This processor can be used on a field to return a certain function value of the node, if the
- * field is empty. Noticeably, this can be used on 'virtual' field, to map their value to a function
- * value, which can come in handy sometimes.
+ * Setter and Getter to make a virtual field which stores the actual value in a user's cookie.
+ * Also it can be used to store a default value for the next time a user creates on node of this type:
+ * <pre>
+    &lt;field name="from"&gt;
+      &lt;gui&gt;
+        &lt;guiname xml:lang="nl"&gt;Uw naam&lt;/guiname&gt;
+        &lt;guiname xml:lang="en"&gt;From&lt;/guiname&gt;
+      &lt;/gui&gt;
+      &lt;datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes"&gt;
+        &lt;required value="true" /&gt;
+        &lt;minLength value="3" /&gt;
+        &lt;maxLength value="32" /&gt;
+        &lt;defaultprocessor&gt;
+          &lt;class name="org.mmbase.datatypes.processors.Cookies$Getter"&gt;
+            &lt;param name="cookie"&gt;eo.miniforum.name&lt;/param&gt;
+          &lt;/class&gt;
+        &lt;/defaultprocessor&gt;
+        &lt;setprocessor&gt;
+          &lt;class name="org.mmbase.datatypes.processors.Cookies$Setter"&gt;
+            &lt;param name="cookie"&gt;eo.miniforum.name&lt;/param&gt;
+          &lt;/class&gt;
+        &lt;/setprocessor&gt;
+      &lt;/datatype&gt;
+    &lt;/field&gt;
+ </pre>
  *
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -37,6 +59,11 @@ public class Cookies  {
         protected String cookie;
         public void setCookie(String s) {
             cookie = s;
+        }
+
+        @Override
+        public String toString() {
+            return cookie;
         }
     }
 
