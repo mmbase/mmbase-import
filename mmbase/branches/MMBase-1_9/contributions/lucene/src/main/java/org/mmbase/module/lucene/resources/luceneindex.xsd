@@ -27,6 +27,7 @@
       </xsd:sequence>
       <xsd:attribute name="name"     type="xsd:NCName" />
       <xsd:attribute name="optimize" type="xsd:string" />
+      <xsd:attribute name="incrementalUpdate" type="xsd:string" />
     </xsd:complexType>
   </xsd:element>
 

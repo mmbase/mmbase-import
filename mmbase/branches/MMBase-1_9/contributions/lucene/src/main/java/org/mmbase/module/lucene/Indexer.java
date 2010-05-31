@@ -36,7 +36,7 @@ import java.text.DateFormat;
  * @author Michiel Meeuwissen
  * @version $Id$
  **/
-public class Indexer {
+public class Indexer implements Comparable<Indexer> {
 
     static private final Logger log = Logging.getLoggerInstance(Indexer.class);
 
@@ -91,6 +91,7 @@ public class Indexer {
 
 
     private boolean fullIndexing = false;
+    private final boolean incrementalUpdates;
 
     // of course life would be easier if we could used BoundedFifoBuffer of jakarta or so, but
     // actually it's ont very hard to simulate it:
@@ -120,11 +121,13 @@ public class Indexer {
      * @param index Name of the index
      * @param queries a collection of IndexDefinition objects that select the nodes to index, and contain options on the fields to index.
      */
-    Indexer(String path, String index, List<IndexDefinition> queries, Analyzer analyzer, boolean readOnly, Lucene.Scheduler scheduler) {
+    Indexer(String path, String index, List<IndexDefinition> queries, Analyzer analyzer, boolean readOnly, boolean incrementalUpdates, Lucene.Scheduler scheduler) {
         this.index = index;
         this.lucenePath = path;
         this.path =  path + File.separator + index;
+        this.incrementalUpdates = incrementalUpdates;
         boolean needfullindex = false;
+
 
         if (! readOnly) {
             try {
@@ -172,6 +175,10 @@ public class Indexer {
                 this.fullIndex();
             }
         }
+    }
+
+    public boolean isIncrementalUpdating() {
+        return incrementalUpdates;
     }
 
     protected Directory getDirectory() throws IOException {
@@ -660,6 +667,10 @@ public class Indexer {
         return getName() + " " + queries;
     }
 
+
+    public int compareTo(Indexer o) {
+        return getName().compareTo(o.getName());
+    }
 
 
 }
