@@ -120,7 +120,7 @@ public class Indexer {
      * @param index Name of the index
      * @param queries a collection of IndexDefinition objects that select the nodes to index, and contain options on the fields to index.
      */
-    Indexer(String path, String index, List<IndexDefinition> queries, Analyzer analyzer, boolean readOnly) {
+    Indexer(String path, String index, List<IndexDefinition> queries, Analyzer analyzer, boolean readOnly, Lucene.Scheduler scheduler) {
         this.index = index;
         this.lucenePath = path;
         this.path =  path + File.separator + index;
@@ -141,7 +141,7 @@ public class Indexer {
                         log.warn("" + this.path + " is not a directory !");
                     }
                 } else {
-                    log.info("The directory " + this.path + " does not exist! Full index probably never run.");
+                    log.info("The directory " + this.path + " does not exist! Full index probably never run. Will schedule a full index.");
                     d.mkdirs();
                     needfullindex = true;   // full index after complete init
                 }
@@ -163,9 +163,14 @@ public class Indexer {
             this.analyzer = analyzer;
         }
         description = new LocalizedString(index);
-        
+
         if (needfullindex) {
-            this.fullIndex();
+            if (scheduler != null) {
+                scheduler.fullIndex(index);
+            } else {
+                log.warn("No scheduler found for " + this);
+                this.fullIndex();
+            }
         }
     }
 
