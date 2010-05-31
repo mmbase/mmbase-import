@@ -44,6 +44,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @version $Id$
  */
+ 
 public class Job implements Iterable<Result> {
     private static final Logger LOG = Logging.getLoggerInstance(Job.class);
     private static long lastJobNumber = 0;
@@ -98,9 +99,9 @@ public class Job implements Iterable<Result> {
     }
 
     /**
-     * Defines the several Results by reading the JobDefinitions in the list.
-     * Creates streamsourcescaches for transcoders and asigns TranscoderResults to them or creates
-     * RecognizerResults for JobDefinitions of recognizers.
+     * Defines the several {@link Result}s by reading the {@link JobDefinition}s in the list.
+     * Creates streamsourcescaches for {@link Transcoder}s and asigns {@link TranscoderResult}s to 
+     * them or creates {@link RecognizerResult}s for {@link JobDefinition}s of recognizers.
      */
     protected void findResults() {
         int i = -1;
@@ -137,10 +138,8 @@ public class Job implements Iterable<Result> {
                 
                 } else {    // using a previously cached node
                     String inId = jd.getInId();
-                    LOG.info("inId: " + inId);
                     if (! jobdefs.containsKey(inId) && node.getCloud().hasNode(inId)) {
                         // use an existing cache node
-                        LOG.service("Using cache #" + inId + " as input");
                         
                         inNode = node.getCloud().getNode(inId);
                         String url = inNode.getStringValue("url");
@@ -150,7 +149,7 @@ public class Job implements Iterable<Result> {
                         }
 
                         File f = new File(processor.getDirectory(), url);
-                        LOG.service("Using (in)file: " + f);
+                        LOG.service("Using (in)file '" + f + "' of cache #" + inId + " as input");
                         
                         if (!f.exists() && !f.isFile()) {
                             LOG.error("NO INFILE! '" + f );
@@ -466,7 +465,7 @@ public class Job implements Iterable<Result> {
 
 
     /**
-     * The Thread in which this Job is running.
+     * Thread in which this Job is running.
      */
     public Thread getThread() {
         return thread;
@@ -481,7 +480,7 @@ public class Job implements Iterable<Result> {
     }
 
     /**
-     * The source Node on which this Job will run.
+     * Source Node on which this Job will run.
      */
     public void setNode(Node n) {
         node = n;
