@@ -194,7 +194,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      * This may take a while.
      * This function can be called through the function framework.
      */
-    //protected Function<Void> fullIndexFunction = new AbstractFunction<Void>("fullIndex", INDEX) {
     protected Function<Void> fullIndexFunction = new AbstractFunction<Void>("fullIndex", new Parameter[] {INDEX, MACHINES}, ReturnType.VOID) {
         private static final long serialVersionUID = 0L;
         public Void getFunctionValue(Parameters arguments) {
@@ -811,6 +810,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                             log.warn("Invalid value '" + time +" ' for property 'waittime'");
                         }
                     }
+                    if (!readOnly) {
+                        scheduler = new Scheduler();
+                    }
 
                     ResourceWatcher watcher = new ResourceWatcher() {
                             public void onChange(String resource) {
@@ -822,10 +824,10 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                     watcher.start();
 
                     if (!readOnly) {
-                        scheduler = new Scheduler();
                         log.service("Module Lucene started");
                         // full index ?
                         String fias = getInitParameter("fullindexatstartup");
+                        scheduler.start();
                         if ("true".equals(fias)) {
                             log.info("Configured to run a full index at startup, so doing that now");
                             scheduler.fullIndex();
@@ -1107,7 +1109,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                             }
                         }
 
-                        Indexer indexer = new Indexer(indexPath, indexName, queries, analyzer, readOnly);
+                        Indexer indexer = new Indexer(indexPath, indexName, queries, analyzer, readOnly, scheduler);
                         for (String s : configErrors) {
                             indexer.addError(url.toString() + ": " + s);
                         }
@@ -1232,7 +1234,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         Scheduler() {
             super(MMBaseContext.getThreadGroup(), null, MMBaseContext.getMachineName() + ":Lucene.Scheduler");
             setDaemon(true);
-            start();
         }
 
         public int getStatus() {
