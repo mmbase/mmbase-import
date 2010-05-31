@@ -248,6 +248,24 @@ public class NodeEvent extends Event {
         return nodeNumber;
     }
 
+    private static final Set<String> relationBuilders = new HashSet<String>();
+
+    /**
+     * Especially events of the type NEW can also be about relations. You may want to know this. This determines it efficiently without actually
+     * getting the node from the database.
+     * @since MMBase-1.9.4
+     */
+    public boolean isRelation() {
+        if (relationBuilders.isEmpty()) {
+            org.mmbase.bridge.NodeManager insrel = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null).getNodeManager("insrel");
+            relationBuilders.add("insrel");
+            for (org.mmbase.bridge.NodeManager desc : insrel.getDescendants()) {
+                relationBuilders.add(desc.getName());
+            }
+        }
+        return relationBuilders.contains(getBuilderName());
+    }
+
 
     @Override
     public String toString() {
