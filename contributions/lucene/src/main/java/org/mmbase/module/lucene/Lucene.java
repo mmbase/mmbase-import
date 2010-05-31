@@ -789,6 +789,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                     log.warn("Invalid value '" + time +" ' for property 'waittime'");
                 }
             }
+            if (!readOnly) {
+                scheduler = new Scheduler();
+            }
 
             ResourceWatcher watcher = new ResourceWatcher() {
                     public void onChange(String resource) {
@@ -800,7 +803,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             watcher.start();
 
             if (!readOnly) {
-                scheduler = new Scheduler();
+                scheduler.start();
                 log.service("Module Lucene started");
                 // full index ?
                 String fias = getInitParameter("fullindexatstartup");
@@ -1094,7 +1097,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                             }
                         }
 
-                        Indexer indexer = new Indexer(indexPath, indexName, queries, analyzer, readOnly);
+                        Indexer indexer = new Indexer(indexPath, indexName, queries, analyzer, readOnly, scheduler);
                         for (String s : configErrors) {
                             indexer.addError(url.toString() + ": " + s);
                         }
@@ -1219,7 +1222,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         Scheduler() {
             super(MMBaseContext.getThreadGroup(), null, MMBaseContext.getMachineName() + ":Lucene.Scheduler");
             setDaemon(true);
-            start();
         }
 
         public int getStatus() {
