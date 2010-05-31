@@ -18,7 +18,7 @@
     <title xml:lang="en">Lucene indexes</title>
     <title xml:lang="nl">Lucene indexen</title>
     <description xml:lang="en">
-      Tool to manage the Lucene application and indexes. 
+      Tool to manage the Lucene application and indexes.
     </description>
     <description xml:lang="nl">
       Tool om de Lucene applicatie en indexes te beheren.
@@ -30,6 +30,7 @@
       <param name="clearcopy" />
       <param name="reload" />
       <param name="logout" />
+      <param name="delete" />
     </body>
   </block>
 
