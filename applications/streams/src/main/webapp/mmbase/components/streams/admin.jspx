@@ -41,6 +41,14 @@
       </table>
     </mm:fieldlist>
 
+    <mm:listfunction set="streams" name="runningJobs" id="job">
+      <p class="msg">
+        <mm:link page="alljobs">
+          <a href="${_}">Jobs</a> running: <mm:size />
+        </mm:link>
+       </p>
+    </mm:listfunction>
+
     <table summary="mediafragments">
       <caption>Recent mediafragments</caption>
       <tr>
