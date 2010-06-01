@@ -12,6 +12,14 @@
 
   <title xml:lang="nl">Streams</title>
   <title xml:lang="en">Streams</title>
+  <description xml:lang="en">
+    The MMBase Streams application is designed to upload, transcode and manage media:
+    video, audio and images. 
+  </description>
+  <description xml:lang="nl">
+    Met de MMBase Streams applicatie kunnen media - video, audio en afbeeldingen - 
+    geuploaded, getranscodeerd en beheerd worden.
+  </description>
 
   <dependency component="media" version="1" />
 
@@ -20,7 +28,7 @@
   </action>
 
   <action name="retrigger_jobs" rank="administrator">
-    <description xml:lang="en">Whether you may cancel jobs</description>
+    <description xml:lang="en">Whether you may (re)trigger jobs</description>
   </action>
 
   <block name="recent"
@@ -44,8 +52,9 @@
     <description xml:lang="nl">Configuratie van streams applicatie, huidige streams en caches</description>
     <body jsp="admin.jspx">
       <param name="trigger" />
+      <param name="all" type="java.lang.Boolean" />
       <param name="interrupt" />
-      <param name="recache" />
+      <param name="cache" />
       <param name="page"  type="java.lang.Integer" />
     </body>
   </block>
@@ -55,12 +64,13 @@
          mimetype="text/html">
     <title xml:lang="en">My fragments</title>
     <title xml:lang="nl">Mijn fragmenten</title>
-    <description xml:lang="en">Streams of current users</description>
+    <description xml:lang="en">Streams of current user</description>
     <description xml:lang="nl">Streams van huidige user</description>
     <body jsp="myfragments.jspx">
       <param name="trigger" />
+      <param name="all" />
       <param name="interrupt" />
-      <param name="recache" />
+      <param name="cache" />
       <param name="page"  type="java.lang.Integer" />
     </body>
   </block>
@@ -74,7 +84,7 @@
       Displays your current, running media transcodings to other formats.
     </description>
     <description xml:lang="nl">
-      Toont jouw huidige, lopende transcoderingen van media naar andere formaten.
+      Toont je huidige, lopende transcoderingen van media naar andere formaten.
     </description>
     <body jsp="myjobs.jspx">
       <param name="cancel" />
@@ -87,10 +97,10 @@
     <title xml:lang="en">All jobs</title>
     <title xml:lang="nl">Alle jobs</title>
     <description xml:lang="en">
-      Displays current, running media transcodings to other formats.
+      Displays all current, running media transcodings to other formats.
     </description>
     <description xml:lang="nl">
-      Toont huidige, lopende transcoderingen van media naar andere formaten.
+      Toont alle huidige, lopende transcoderingen van media naar andere formaten.
     </description>
     <body jsp="alljobs.jspx">
       <param name="cancel" />

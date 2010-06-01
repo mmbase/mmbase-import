@@ -26,8 +26,10 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * To be used in a template, indicates when an uploaded file has been recognized and the user 
+ * can start editing associated data.
  *
- * @author André van Toly
+ * @author Andr&eacute; van Toly
  * @version $Id$
  */
 public class WaitUntilRecognizedFunction extends NodeFunction<Boolean> {

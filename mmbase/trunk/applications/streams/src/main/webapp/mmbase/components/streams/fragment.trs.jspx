@@ -15,7 +15,7 @@
     <mm:listfunction name="filteredurls">
       <c:if test="${_.main}">
         <c:set var="source"  value="${_.source.number}" />
-      <tr>
+        <tr class="odd">
           <td>${_.source.number}</td>
         <td>
             <strong><a href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a></strong>
@@ -40,11 +40,15 @@
                 <c:choose>
                   <c:when test="${trigger eq triggervalue}">
                     <mm:log> CALLING TRIGGER FOR ${trigger}</mm:log>
-                  <mm:voidfunction name="triggerCaches" />
+                  <mm:voidfunction name="triggerCaches" referids="all" />
                   <div class="msg">Triggered transcoding</div>
                   </c:when>
                   <c:otherwise>
                     <mm:link referids="triggervalue@trigger">
+                    <a href="${_}">Trigger</a>,
+                  </mm:link>
+                  <mm:link referids="triggervalue@trigger">
+                    <mm:param name="all">true</mm:param>
                     <a href="${_}">Trigger all</a>
                     </mm:link>
                   </c:otherwise>
@@ -67,7 +71,7 @@
     </mm:listfunction>
     <mm:listfunction name="filteredurls">
       <c:if test="${!_.main}">
-        <tr>
+        <tr class="odd">
           <td> ${_.source.number} </td>
           <td>
             <strong><a href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a></strong>
@@ -90,7 +94,7 @@
           <td>${_.state}</td>
         </tr><tr>
           <td />
-          <mm:node number="${_.source.number}" notfound="skip" id="cache">
+          <mm:node number="${_.source.number}" notfound="skip" id="recache">
             <td colspan="4">
               <mm:hasfield name="key">
                   <mm:field name="key" />
@@ -98,21 +102,28 @@
               </td>
             <td>
               <mm:hasfield name="id">
-                <c:set var="recachevalue" value="${fragment}:${cache}" />
+                <c:set var="recachevalue" value="${fragment}:${recache}" />
                 <c:choose>
-                  <c:when test="${recache eq recachevalue}">
+                  <c:when test="${cache eq recachevalue}">
                     <mm:field name="id">
                       <mm:node number="${source}">
-                        <mm:booleanfunction name="triggerRecache" referids="cache@recache">
+                        <mm:booleanfunction name="triggerCaches" referids="recache@cache">
                           <div class="msg">Triggered transcoding</div>
                         </mm:booleanfunction>
             </mm:node>
                     </mm:field>
                   </c:when>
                   <c:otherwise>
-                    <mm:link referids="recachevalue@recache">
+                    <c:choose>
+                      <c:when test="${_.state != 'BUSY'}">
+                        <mm:link referids="recachevalue@cache">
                       <a href="${_}">Retrigger cache</a>
                     </mm:link>
+                      </c:when>
+                      <c:otherwise>
+                        <div class="msg">Transcoding</div>
+                      </c:otherwise>
+                    </c:choose>
           </c:otherwise>
         </c:choose>
               </mm:hasfield>
@@ -122,6 +133,9 @@
       </c:if>
     </mm:listfunction>
   
+    <tr class="odd">
+      <td colspan="9"><jsp:text> </jsp:text></td>
+    </tr>
   </mm:listnodes>
   
   <tr cols="100">
