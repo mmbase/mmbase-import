@@ -46,7 +46,9 @@ import org.w3c.dom.Element;
  * This commit-processor is used on nodes of type 'streamsources' and is used to initiate the
  * conversions to other formats which are saved in 'streamsourcescaches'. Its analogy is derived
  * from the conversion of 'images' in MMBase to their resulting 'icaches' nodes.
- * Several transcodings of media files can be configured with recognizers and transcoders.
+ * Several transcodings of media files can be configured with 
+ * {@link org.mmbase.streams.transcoders.Recognizer}s and 
+ * {@link org.mmbase.streams.transcoders.Transcoder}s.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -66,7 +68,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
     }
 
     /**
-     * List with the configured JobDefinitions.
+     * List with the configured {@link JobDefinition}s.
      */
     protected final Map<String, JobDefinition> list = Collections.synchronizedMap(new LinkedHashMap<String, JobDefinition>());
 
@@ -83,6 +85,11 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
         } else {
             return fileServletDirectory;
         }
+    }
+
+    /* Job descriptions as in configFile (normally 'streams/createcaches.xml'). */
+    public final Map<String, JobDefinition> getCreatecachesList() {
+        return list;
     }
 
     public void setCacheManagers(String... cm) {
@@ -342,7 +349,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
      * Creates caches nodes when not existing (or recreate) by making a transcoding Job
      * @param ntCloud   a non transactional cloud
      * @param int       node number of a source node
-     * @param jdlist    jobdefinitions
+     * @param jdlist    job definitions
      * @return Job recognizing and/or transcoding the source stream
      */
     public Job createCaches(final Cloud ntCloud, final int node, final Map<String, JobDefinition> jdlist) {

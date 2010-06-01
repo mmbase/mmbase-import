@@ -40,7 +40,7 @@ import static org.mmbase.streams.transcoders.AnalyzerUtils.*;
  * </pre>
  *
  * @author Michiel Meeuwissen
- * @author Andre van Toly
+ * @author Andr&eacute; van Toly
  * @version $Id$
  */
 

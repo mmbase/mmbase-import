@@ -41,8 +41,10 @@ import org.mmbase.util.logging.*;
  * 'caches' nodes for it. Such a Job object is created everytime somebody creates a new source
  * object, or explicitly triggers the associated 'cache' objects to be (re)created.
  *
+ * @author Michiel Meeuwissen
  * @version $Id$
  */
+ 
 public class Job implements Iterable<Result> {
     private static final Logger LOG = Logging.getLoggerInstance(Job.class);
     private static long lastJobNumber = 0;
@@ -73,6 +75,15 @@ public class Job implements Iterable<Result> {
         this(processor, processor.list, cloud, chain);
     }
     
+    /**
+     * A Job is defined by several {@link JobDefinition}'s, the output is goes to loggers in 
+     * {@link ChainedLogger}
+     *
+     * @param processor reads config, is called by user etc.
+     * @param list      the definitions
+     * @param cloud     mmbase cloud nodes belong to
+     * @param chain     loggers
+     */
     public Job(Processor processor, Map<String, JobDefinition> list, Cloud cloud, ChainedLogger chain) {
         user = cloud.getUser().getIdentifier();
         logger = new BufferedLogger();
@@ -88,9 +99,9 @@ public class Job implements Iterable<Result> {
     }
 
     /**
-     * Defines the several Results by reading the JobDefinitions in the list.
-     * Creates streamsourcescaches for transcoders and asigns TranscoderResults to them or creates
-     * RecognizerResults for JobDefinitions of recognizers.
+     * Defines the several {@link Result}s by reading the {@link JobDefinition}s in the list.
+     * Creates streamsourcescaches for {@link Transcoder}s and asigns {@link TranscoderResult}s to 
+     * them or creates {@link RecognizerResult}s for {@link JobDefinition}s of recognizers.
      */
     protected void findResults() {
         int i = -1;
@@ -127,10 +138,8 @@ public class Job implements Iterable<Result> {
                 
                 } else {    // using a previously cached node
                     String inId = jd.getInId();
-                    
                     if (! jobdefs.containsKey(inId) && node.getCloud().hasNode(inId)) {
                         // use an existing cache node
-                        LOG.service("Using cache #" + inId + " as input");
                         
                         inNode = node.getCloud().getNode(inId);
                         String url = inNode.getStringValue("url");
@@ -140,7 +149,7 @@ public class Job implements Iterable<Result> {
                         }
 
                         File f = new File(processor.getDirectory(), url);
-                        LOG.service("Using (in)file: " + f);
+                        LOG.service("Using (in)file '" + f + "' of cache #" + inId + " as input");
                         
                         if (!f.exists() && !f.isFile()) {
                             LOG.error("NO INFILE! '" + f );
@@ -151,7 +160,7 @@ public class Job implements Iterable<Result> {
                         
                     } else {    // use inId from config
                         if (! jobdefs.containsKey(inId)) {
-                            LOG.warn("Configuration error, no such job definition with id '" + inId);
+                            LOG.warn("Configuration error, no such job definition with id: " + inId);
                         continue;
                     }
                         Result prevResult = lookup.get(inId);
@@ -359,7 +368,7 @@ public class Job implements Iterable<Result> {
     }
 
     /**
-     * Start actually executing this Jobs.
+     * Start actually executing this Job by submitting it at {@link JobCallable}.
      */
     public void submit(Cloud cloud, int n, ChainedLogger chain) {
         JobCallable callable = new JobCallable(this, cloud, chain, n);
@@ -397,7 +406,8 @@ public class Job implements Iterable<Result> {
     }
 
     /**
-     * Gets and/or creates the node representing the 'cached' stream.
+     * Gets and/or creates the node representing the 'cached' stream, uses this (source) node as
+     * infile to create cache from.
      *
      * @param key   representation of the way the stream was created from its source
      * @return cached stream node
@@ -409,7 +419,7 @@ public class Job implements Iterable<Result> {
     /**
      * Gets and/or creates the node representing the 'cached' stream (the result of a conversion),
      * see the builder property 'org.mmbase.streams.cachestype'. It first looks if it already
-     * exists in the cloud or otherwise will create one.
+     * exists, if not it creates a new one.
      *
      * @param src   source node to create cache stream from, can be another cache
      * @param key   representation of the way the stream was created from its source, f.e. transcoding parameters
@@ -455,7 +465,7 @@ public class Job implements Iterable<Result> {
 
 
     /**
-     * The Thread in which this Job is running.
+     * Thread in which this Job is running.
      */
     public Thread getThread() {
         return thread;
@@ -470,7 +480,7 @@ public class Job implements Iterable<Result> {
     }
 
     /**
-     * The source Node on which this Job will run.
+     * Source Node on which this Job will run.
      */
     public void setNode(Node n) {
         node = n;
