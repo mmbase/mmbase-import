@@ -14,11 +14,13 @@
 
     <mm:import from="request" externid="trigger" />
     <mm:import from="request" externid="interrupt" vartype="integer" />
-    <mm:import from="request" externid="recache" />
+    <mm:import from="request" externid="all" vartype="boolean">false</mm:import> 
+    <mm:import from="request" externid="cache" />
     <mm:import from="request" externid="page">0</mm:import>
 
     <mm:import id="pagesize" vartype="integer">50</mm:import>
     <mm:import externid="type">mediafragments</mm:import>
+    
     <mm:fieldlist nodetype="streamsources" fields="url" varStatus="status">
       <table summary="configuration">
         <caption>Configuration of creation of streamscaches</caption>
@@ -38,6 +40,14 @@
         </c:forEach>
       </table>
     </mm:fieldlist>
+
+    <mm:listfunction set="streams" name="runningJobs" id="job">
+      <p class="msg">
+        <mm:link page="alljobs">
+          <a href="${_}">Jobs</a> running: <mm:size />
+        </mm:link>
+       </p>
+    </mm:listfunction>
 
     <table summary="mediafragments">
       <caption>Recent mediafragments</caption>

@@ -59,9 +59,6 @@
     </mm:maycreate>
     <mm:maycreate type="streamsources" inverse="true">
       <fmt:message key="maynot" />
-
-      <mm:include page="/you.jspx" />
-
       <mm:cloudinfo type="rank" />
     </mm:maycreate>
   </mm:cloud>

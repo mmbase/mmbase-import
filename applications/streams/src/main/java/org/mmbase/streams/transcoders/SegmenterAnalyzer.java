@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * Analyzes <code>segmenter</code> output during its job, changes url field to m3u8 index file when 
  * ready and rewrites m3u8 to removed full paths.
  * 
- * @author André van Toly
+ * @author Andr&eacute; van Toly
  * @version $Id: SegmenterAnalyzer.java 40036 2009-11-30 20:27:39Z andre $
  */
 public class SegmenterAnalyzer implements Analyzer {

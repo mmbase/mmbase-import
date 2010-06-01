@@ -7,9 +7,22 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
+  <mm:cloud rank="basic user" jspvar="cloud">
+
+    <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+    <p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
+
+    <mm:import from="request" externid="trigger" />
+    <mm:import from="request" externid="interrupt" vartype="integer" />
+    <mm:import from="request" externid="all" vartype="boolean">false</mm:import> 
+    <mm:import from="request" externid="cache" />
+    <mm:import from="request" externid="page">0</mm:import>
+
+    <mm:import id="pagesize" vartype="integer">50</mm:import>
+    <mm:import externid="type">mediafragments</mm:import>
 
   <table summary="my fragments">
-    <caption><mm:cloudinfo type="user" id="currentuser" /></caption>
+      <caption>Recent mediafragments of <mm:cloudinfo type="user" id="currentuser" /></caption>
       <tr>
         <th>#</th>
         <th>title or url</th>
@@ -25,5 +38,5 @@
     </mm:listnodescontainer>
   </table>
 
-
+  </mm:cloud>
 </div>
