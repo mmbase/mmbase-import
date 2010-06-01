@@ -51,6 +51,8 @@ public class ContentTag extends LocaleTag  {
 
     public static final String ESCAPER_KEY = "org.mmbase.bridge.jsp.taglib.escaper";
 
+    public static final String ENCODEURLS_KEY = "org.mmbase.encodeUrls";
+
     static final ContentTag DEFAULT = new ContentTag() {
             public CharTransformer getWriteEscaper() { return COPY; }
             public String  getType()    { return "text/html"; }
@@ -283,6 +285,7 @@ public class ContentTag extends LocaleTag  {
     private Attribute unacceptable   = Attribute.NULL;
     private Attribute disposition    = Attribute.NULL;
     private Attribute varies         = Attribute.NULL;
+    private Attribute encodeUrls     = Attribute.NULL;
 
 
     public void setType(String ct) throws JspTagException {
@@ -334,6 +337,15 @@ public class ContentTag extends LocaleTag  {
      */
     public void setUnacceptable(String u) throws JspTagException {
         unacceptable = getAttribute(u);
+    }
+
+
+    private Object prevEncodeUrls = null;
+    /**
+     * @since MMBase-1.9.4
+     */
+    public void setEncodeurls(String u) throws JspTagException {
+        encodeUrls = getAttribute(u);
     }
 
     /*
@@ -506,9 +518,10 @@ public class ContentTag extends LocaleTag  {
         String type = getType();
 
         addedCacheHeaders = false;
+        HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+
         if (type.length() != 0) {
             HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-            HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
             String a = unacceptable.getString(this);
             if (! "".equals(a)) {
@@ -575,6 +588,15 @@ public class ContentTag extends LocaleTag  {
                 }
             }
         }
+
+        {
+            prevEncodeUrls = request.getAttribute(ENCODEURLS_KEY);
+
+            String s = encodeUrls.getString(this);
+            if (s.length() > 0) {
+                request.setAttribute(ENCODEURLS_KEY, Casting.toBoolean(s));
+            }
+        }
         CharTransformer post = getPostProcessor();
         if (post == null || post.equals(COPY)) {
             log.debug("no postprocessor " + (EVAL_BODY == EVAL_BODY_INCLUDE));
@@ -638,6 +660,8 @@ public class ContentTag extends LocaleTag  {
 
     public int doEndTag() throws JspTagException {
         unsetWriteEscaper();
+        HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+        request.setAttribute(ENCODEURLS_KEY, prevEncodeUrls);
         return super.doEndTag();
     }
 
