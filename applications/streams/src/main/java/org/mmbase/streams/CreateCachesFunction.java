@@ -163,6 +163,13 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
         }
     }
     
+    /**
+     * Compares configuration with already transcoded (cached) streamsourcescaches nodes.
+     *
+     * @param list      nodelist of related streamsourcescaches nodes
+     * @param jdlist    list based upon current configuration wit job descriptions 
+     * @return a new list with jobs matched against already existing nodes
+     */    
     private Map<String, JobDefinition> newJobList(NodeList list, Map<String, JobDefinition> jdlist) {
         Map<String, JobDefinition> new_jdlist = new LinkedHashMap<String, JobDefinition>();
         Map<String, String> caches = new HashMap<String, String>();
@@ -211,16 +218,19 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                     jd = new JobDefinition(config_id, in, label, tr, mt, Stage.TRANSCODER);
                     if (! new_jdlist.containsKey(config_id)) {
                         new_jdlist.put(config_id, jd);
+                        LOG.debug("Added id: " + config_id);
                     }
                     
                 } else {
                     // inId not yet cached
                     if (! new_jdlist.containsKey(inId)) {
                         new_jdlist.put(inId, jdlist.get(inId) );
+                        LOG.debug("Added inId: " + inId);
                     }
                     
                     if (! new_jdlist.containsKey(config_id)) {
                         new_jdlist.put(config_id, jdlist.get(config_id) );
+                        LOG.debug("Added id: " + config_id);
                     }
                 }
             }
