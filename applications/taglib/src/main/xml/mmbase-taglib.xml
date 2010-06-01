@@ -2507,6 +2507,34 @@ access the value of title:
 &lt;/mm:node&gt;
      </example>
   </tag>
+
+  <tag>
+    <name>nodemanager</name>
+    <extends>nodeprovider</extends>
+    <extends>nodereferrer</extends>
+    <extends>cloudreferrer</extends>
+    <extends>contextreader</extends>
+    <type>mmbase.basic</type>
+    <tagclass>org.mmbase.bridge.jsp.taglib.NodeManagerTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeManagerTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
+    <info>
+      <since>MMBase-1.9.4</since>
+      A tag to make a node available. Normally it will enclose some field tags, but it is also
+      possible to only write to the context, or to a JSP variable.
+    </info>
+    <attribute>
+      <name>name</name>
+      <required>true</required>
+      <requirednote>
+      </requirednote>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        The name of the requested node manager
+      </info>
+    </attribute>
+  </tag>
   <tag>
     <name>edit</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.editor.EditTag</tagclass>
@@ -7168,6 +7196,20 @@ The 0 is just counter, which starts at 0 on every page.
       > ...
       ]]>
       </example>
+    </attribute>
+    <attribute>
+      <name>encodeurls</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        <p>
+          Whether enclosed mm:url (and mm:link) tags should on default encode their URLs. If this page or block represents a block in which you know
+          the session is should not used, you can set this to 'false'. If this attribute is needed, people without cookies may loose session, because
+          it seems that is <em>was</em> used somewhere, but oftentimes the session is not actually used, and it was simply somewhere forgotten to add
+          a session=false page direction.
+        </p>
+        <since>MMBase-1.9.4</since>
+      </info>
     </attribute>
   </tag>
   <tag>
