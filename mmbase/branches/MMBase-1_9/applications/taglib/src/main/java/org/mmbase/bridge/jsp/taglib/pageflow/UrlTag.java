@@ -115,9 +115,17 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
             }
             excludeForEncoding = Pattern.compile(setting);
         }
-        boolean defaultEncode = true;
+        final boolean defaultEncode;
         if (excludeForEncoding.matcher(getPage()).matches()) {
             defaultEncode = false;
+        } else {
+            HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+            Object encodeUrls = request.getAttribute(ContentTag.ENCODEURLS_KEY);
+            if (encodeUrls == null) {
+                defaultEncode = true;
+            } else {
+                defaultEncode = Boolean.TRUE.equals(encodeUrls);
+            }
         }
         if (log.isDebugEnabled()) {
             log.debug("Default encode for " + getPage() + " " + defaultEncode + " so " + encode.getBoolean(this, defaultEncode));
