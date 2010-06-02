@@ -198,7 +198,20 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
             if (config_key != null && !caches.containsValue(config_key)) {
                 // not in caches, must be new config
                 JobDefinition jd = jdlist.get(config_id);
-                Transcoder tr = jd.getTranscoder(); 
+                Transcoder tr = jd.getTranscoder();
+                
+                if (tr == null) {
+                    try {
+                        tr = AbstractTranscoder.getInstance(key);
+                    } catch (ClassNotFoundException cnf) {
+                        LOG.error("Class not found, transcoder in key '" + key + "' does not exist? - " + cnf);
+                    } catch (InstantiationException ie) {
+                        LOG.error("Exception while instantiating transcoder for key '" + key + "' - " + ie);
+                    } catch (Exception e) {
+                        LOG.error("Exception while trying to (re)transcode - " + e);
+                    }                
+                }
+                
                 String label = jd.getLabel(); 
                 MimeType mt = jd.getMimeType();
                 
