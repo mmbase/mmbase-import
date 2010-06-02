@@ -202,13 +202,13 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
                 
                 if (tr == null) {
                     try {
-                        tr = AbstractTranscoder.getInstance(key);
+                        tr = AbstractTranscoder.getInstance(config_key);
                     } catch (ClassNotFoundException cnf) {
-                        LOG.error("Class not found, transcoder in key '" + key + "' does not exist? - " + cnf);
+                        LOG.error("Class not found, transcoder in key '" + config_key + "' does not exist? - " + cnf);
                     } catch (InstantiationException ie) {
-                        LOG.error("Exception while instantiating transcoder for key '" + key + "' - " + ie);
-                    } catch (Exception e) {
-                        LOG.error("Exception while trying to (re)transcode - " + e);
+                        LOG.error("Exception while instantiating transcoder for key '" + config_key + "' - " + ie);
+                    } catch (Exception ex) {
+                        LOG.error("Exception while trying to (re)transcode - " + ex);
                     }                
                 }
                 
