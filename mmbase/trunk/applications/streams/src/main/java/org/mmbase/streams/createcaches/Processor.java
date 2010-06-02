@@ -87,11 +87,6 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
         }
     }
 
-    /* Job descriptions as in configFile (normally 'streams/createcaches.xml'). */
-    public final Map<String, JobDefinition> getCreatecachesList() {
-        return list;
-    }
-
     public void setCacheManagers(String... cm) {
         cacheManagers = cm;
     }
