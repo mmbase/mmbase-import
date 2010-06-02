@@ -96,7 +96,7 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
             {
                 final Field url = node.getNodeManager().getField("url");
                 final Processor cc = getCacheCreator(url);                
-                Map<String, JobDefinition> jdlist = cc.getCreatecachesList();
+                Map<String, JobDefinition> jdlist = new LinkedHashMap<String, JobDefinition>();
 
                 if (cache != null && node.getCloud().hasNode(cache.getNumber())) {
                     // just one
