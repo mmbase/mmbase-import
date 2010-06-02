@@ -96,8 +96,8 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
             {
                 final Field url = node.getNodeManager().getField("url");
                 final Processor cc = getCacheCreator(url);                
-                Map<String, JobDefinition> jdlist = cc.getCreatecachesList();
-
+                Map<String, JobDefinition> jdlist = new LinkedHashMap<String, JobDefinition>();
+                
                 if (cache != null && node.getCloud().hasNode(cache.getNumber())) {
                     // just one
                     String in = null;
@@ -124,7 +124,6 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                     }
         
                     JobDefinition jd = new JobDefinition(id, in, label, tr, mt, Stage.TRANSCODER);
-                    jdlist.clear();
                     jdlist.put(id, jd);
                     LOG.info("Re-transcodig cache #" + cache.getNumber() + " : " + id + " [" + jd + "]");
                     
@@ -144,10 +143,14 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                     }
     
                     if ( list.size() > 0 && ! all ) {
-                        jdlist = newJobList(list, jdlist);
+                        jdlist = newJobList(list, cc.getConfiguration());
+                    } else {
+                        jdlist = cc.getConfiguration();
                     }
                     LOG.info("Re-transcoding caches for #" + node.getNumber() + ", doing all: " + all);
                 }
+                
+                LOG.info("jdlist: " + jdlist);
                 
                 if (cc != null) {
                     LOG.service("Calling " + cc);
