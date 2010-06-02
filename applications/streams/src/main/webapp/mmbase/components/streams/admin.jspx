@@ -42,11 +42,11 @@
     </mm:fieldlist>
 
     <mm:listfunction set="streams" name="runningJobs" id="job">
-      <p class="msg">
+      <mm:first>
         <mm:link page="alljobs">
-          <a href="${_}">Jobs</a> running: <mm:size />
+          <p class="msg"><a href="${_}">Jobs</a> running: <mm:size /></p>
         </mm:link>
-       </p>
+      </mm:first>
     </mm:listfunction>
 
     <table summary="mediafragments">
