@@ -124,7 +124,6 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
                     }
         
                     JobDefinition jd = new JobDefinition(id, in, label, tr, mt, Stage.TRANSCODER);
-                    jdlist.clear();
                     jdlist.put(id, jd);
                     LOG.info("Re-transcodig cache #" + cache.getNumber() + " : " + id + " [" + jd + "]");
                     
@@ -144,11 +143,15 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
                 }
                 
                     if ( list.size() > 0 && ! all ) {
-                        jdlist = newJobList(list, jdlist);
+                        jdlist = newJobList(list, cc.getConfiguration());
+                    } else {
+                        jdlist = cc.getConfiguration();
                 }
                     LOG.info("Re-transcoding caches for #" + node.getNumber() + ", doing all: " + all);
             }
 
+                LOG.info("jdlist: " + jdlist);
+                
                 if (cc != null) {
                     LOG.service("Calling " + cc);
                     cc.createCaches(node.getCloud().getNonTransactionalCloud(), node.getNumber(), jdlist);
