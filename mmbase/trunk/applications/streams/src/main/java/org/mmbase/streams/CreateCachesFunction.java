@@ -146,7 +146,7 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
                     if ( list.size() > 0 && ! all ) {
                         jdlist = newJobList(list, jdlist);
                 }
-                    LOG.info("Recreating caches for #" + node.getNumber() + ", doing all: " + all);
+                    LOG.info("Re-transcoding caches for #" + node.getNumber() + ", doing all: " + all);
             }
 
                 if (cc != null) {
@@ -198,20 +198,7 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
             if (config_key != null && !caches.containsValue(config_key)) {
                 // not in caches, must be new config
                 JobDefinition jd = jdlist.get(config_id);
-                Transcoder tr = jd.getTranscoder();
-                
-                if (tr == null) {
-                    try {
-                        tr = AbstractTranscoder.getInstance(config_key);
-                    } catch (ClassNotFoundException cnf) {
-                        LOG.error("Class not found, transcoder in key '" + config_key + "' does not exist? - " + cnf);
-                    } catch (InstantiationException ie) {
-                        LOG.error("Exception while instantiating transcoder for key '" + config_key + "' - " + ie);
-                    } catch (Exception ex) {
-                        LOG.error("Exception while trying to (re)transcode - " + ex);
-                    }                
-                }
-                
+                Transcoder tr = jd.getTranscoder(); 
                 String label = jd.getLabel(); 
                 MimeType mt = jd.getMimeType();
                 
@@ -231,19 +218,19 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
                     jd = new JobDefinition(config_id, in, label, tr, mt, Stage.TRANSCODER);
                     if (! new_jdlist.containsKey(config_id)) {
                         new_jdlist.put(config_id, jd);
-                        LOG.debug("Added id: " + config_id);
+                        LOG.info("Added for re-transcoding id: " + config_id + " [" + jd + "]");
                     }
                     
                 } else {
                     // inId not yet cached
                     if (! new_jdlist.containsKey(inId)) {
                         new_jdlist.put(inId, jdlist.get(inId) );
-                        LOG.debug("Added inId: " + inId);
+                        LOG.info("Added for re-transcoding inId: " + inId);
                     }
                     
                     if (! new_jdlist.containsKey(config_id)) {
                         new_jdlist.put(config_id, jdlist.get(config_id) );
-                        LOG.debug("Added id: " + config_id);
+                        LOG.info("Added for re-transcoding id: " + config_id);
                     }
                 }
             }
