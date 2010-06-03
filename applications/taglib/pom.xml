@@ -90,7 +90,7 @@
             </transformationSet>
             <!--
             <transformationSet>
-              <dir>${basedir}/src/org/mmbase/bridge/jsp/taglib</dir>
+              <dir>${basedir}/src/main/xml/</dir>
               <stylesheet>${basedir}/../share/xslt/xml2html.xslt</stylesheet>
               <includes>
                 <include>*.xml</include>
