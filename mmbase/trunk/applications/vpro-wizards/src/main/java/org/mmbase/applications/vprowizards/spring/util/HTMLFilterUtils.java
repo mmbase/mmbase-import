@@ -32,32 +32,36 @@ public class HTMLFilterUtils {
     private static final Logger log = Logging.getLoggerInstance(HTMLFilterUtils.class);
 
     public static final String ENCODING = "UTF-8";
-    private static Pattern htmlNewline = Pattern.compile("(<(br|/p){1}\\s*/?>)",Pattern.CASE_INSENSITIVE);
+    private static final Pattern htmlNewline = Pattern.compile("(<(br|/p){1}\\s*/?>)",Pattern.CASE_INSENSITIVE);
 
-    public static ElementRemover remover = new ElementRemover();
-    static {
-        // set which elements to accept
-        remover.acceptElement("p", null);
-        remover.acceptElement("i", null);
-        remover.acceptElement("b", null);
-        remover.acceptElement("strong", null);
-        remover.acceptElement("em", null);
-        remover.acceptElement("br", null);
-        remover.acceptElement("ul", null);
-        remover.acceptElement("ol", null);
-        remover.acceptElement("li", null);
-        remover.acceptElement("div", null);
-        //remover.acceptElement("span", new String[] { "style" });
-        remover.acceptElement("a", new String[] { "href", "target", "id", "name", "dir", "accesskey", "title", "charset", "class", "style"});
+    private static final ThreadLocal<ElementRemover> REMOVER = new ThreadLocal<ElementRemover>() {
+         protected synchronized ElementRemover initialValue() {
+                 // ElementRemover is not thread safe, so a new one must be instantiated for every thread
+                 ElementRemover remover = new ElementRemover();
+                 // set which elements to accept
+                 remover.acceptElement("p", null);
+                 remover.acceptElement("i", null);
+                 remover.acceptElement("b", null);
+                 remover.acceptElement("strong", null);
+                 remover.acceptElement("em", null);
+                 remover.acceptElement("br", null);
+                 remover.acceptElement("ul", null);
+                 remover.acceptElement("ol", null);
+                 remover.acceptElement("li", null);
+                 remover.acceptElement("div", null);
+                 //remover.acceptElement("span", new String[] { "style" });
+                 remover.acceptElement("a", new String[] { "href", "target", "id", "name", "dir", "accesskey", "title", "charset", "class", "style"});
 
-        // embedded video's
-        remover.acceptElement("object", new String[] { "width","height" });
-        remover.acceptElement("param",  new String[] { "name","value" });
-        remover.acceptElement("embed",  new String[] { "width", "height", "src", "type", "wmode", "style", "id", "flashvars", "quality", "bgcolor", "name", "align","allowscriptaccess", "type", "pluginspage", "allowFullScreen", "scale", "salign", "bgcolor", "resizeVideo", "FlashVars" });
+                 // embedded video's
+                 remover.acceptElement("object", new String[] { "width","height" });
+                 remover.acceptElement("param",  new String[] { "name","value" });
+                 remover.acceptElement("embed",  new String[] { "width", "height", "src", "type", "wmode", "style", "id", "flashvars", "quality", "bgcolor", "name", "align","allowscriptaccess", "type", "pluginspage", "allowFullScreen", "scale", "salign", "bgcolor", "resizeVideo", "FlashVars" });
 
-        // completely remove script elements
-        remover.removeElement("script"); // also removes content
-    }
+                 // completely remove script elements
+                 remover.removeElement("script"); // also removes content
+                 return remover;
+             }
+    };
 
     public static boolean isHTML(String input){
         Pattern p = Pattern.compile("<br|<li|<span|<p|<b|<i|<strong|<em|&quot;|&eacute;|<div|<font|<object|<param|<embed");
@@ -66,7 +70,7 @@ public class HTMLFilterUtils {
     }
 
     public static String filter(String input) throws XNIException, IOException{
-        return HTMLFilterUtils.filter(input,remover);
+        return HTMLFilterUtils.filter(input, REMOVER.get());
     }
 
     public static String filter(String input, ElementRemover remover) throws XNIException, IOException{
