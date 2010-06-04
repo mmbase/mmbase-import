@@ -53,7 +53,7 @@ public class HTMLFilterUtils {
                  remover.acceptElement("a", new String[] { "href", "target", "id", "name", "dir", "accesskey", "title", "charset", "class", "style"});
 
                  // embedded video's
-                 remover.acceptElement("object", new String[] { "width","height" });
+                 remover.acceptElement("object", new String[] { "width","height", "type", "data" });
                  remover.acceptElement("param",  new String[] { "name","value" });
                  remover.acceptElement("embed",  new String[] { "width", "height", "src", "type", "wmode", "style", "id", "flashvars", "quality", "bgcolor", "name", "align","allowscriptaccess", "type", "pluginspage", "allowFullScreen", "scale", "salign", "bgcolor", "resizeVideo", "FlashVars" });
 
