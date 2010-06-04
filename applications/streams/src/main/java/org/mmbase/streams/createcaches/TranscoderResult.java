@@ -81,7 +81,7 @@ class TranscoderResult extends Result {
             if (outFile.length() >= 1) {     // @TODO: there should maybe be other ways to detect if a transcoding failed
                 dest.setIntValue("state", State.DONE.getValue());
             } else {
-                LOG.warn("Filesize of " + outFile + " < 1, setting " + dest.getNumber() + " to failed");
+                LOG.warn("FAILED : filesize of " + outFile + " < 1, setting #" + dest.getNumber() + " to failed");
                 dest.setIntValue("state", State.FAILED.getValue());
             }
             if (definition.getLabel() != null && dest.getNodeManager().hasField("label")) {
