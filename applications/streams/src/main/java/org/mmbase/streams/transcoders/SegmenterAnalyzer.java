@@ -131,7 +131,7 @@ public class SegmenterAnalyzer implements Analyzer {
                     if (!index.delete()) log.error("Could not delete file: " + index.toString());
                     if (!temp.renameTo(index)) log.error("Could not rename file to: " + index.toString());
                     
-                    LOG.debug("Rewrote m3u8 indexfile: " + index);
+                    LOG.service("Rewrote m3u8 indexfile: " + index);
                 } catch (java.io.IOException ioe) {
                     LOG.error("Could not rewrite m3u8 indexfile: " + ioe);
                 }
