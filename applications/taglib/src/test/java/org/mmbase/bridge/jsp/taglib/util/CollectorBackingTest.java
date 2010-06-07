@@ -22,7 +22,7 @@ import static org.junit.Assume.*;
 
 
 /**
- * @version $Id: BasicBackingTest.java 39641 2009-11-11 12:03:48Z michiel $
+ * @version $Id$
  */
 
 public  class CollectorBackingTest {
