@@ -317,14 +317,28 @@ public class ImageTag extends FieldTag {
         return args;
     }
 
+
+    /**
+     * @since MMBase-1.9.4
+     */
+    protected String encodeURL(Node node, String servletPath) {
+        HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+        Object encodeUrls = request.getAttribute(ContentTag.ENCODEURLS_KEY);
+        if (Boolean.FALSE.equals(encodeUrls) || node.getCloud().getCloudContext().getCloud(node.getCloud().getName()).mayRead(node.getNumber())) {
+            return servletPath;
+        } else {
+            return ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
+        }
+    }
+
     protected String getOutputValue(int mode, Node node, String servletPath, Dimension dim) throws JspTagException {
         String outputValue = null;
         switch(mode) {
         case MODE_URL:
-            outputValue = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
+            outputValue = encodeURL(node, servletPath);
             break;
         case MODE_HTML_ATTRIBUTES: {
-            String url = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
+            String url = encodeURL(node, servletPath);
             if (dim.getHeight() > 0 && dim.getWidth() > 0) {
                 outputValue = getBaseAttributes(url, dim);
             } else {
@@ -334,7 +348,7 @@ public class ImageTag extends FieldTag {
             break;
         }
         case MODE_HTML_IMG: {
-            String url = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
+            String url = encodeURL(node, servletPath);
             if (dim.getHeight() > 0 && dim.getWidth() > 0) {
                 outputValue = "<img " + getBaseAttributes(url, dim) + getAltAttribute(node) + getOtherAttributes() + " />";
             } else {
