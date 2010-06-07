@@ -78,6 +78,9 @@ public class JobDefinition implements Serializable {
     public void addAnalyzer(Analyzer a) {
         analyzers.add(a);
     }
+    public void addAnalyzers(List<Analyzer> l) {
+        analyzers.addAll(l);
+    }
     public List<Analyzer> getAnalyzers() {
         return Collections.unmodifiableList(analyzers);
     }
