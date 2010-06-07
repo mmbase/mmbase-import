@@ -16,7 +16,7 @@ import java.util.*;
 /**
  * Mocks mm:import
  *
- * @version $Id: StringListTagTest.java 39651 2009-11-11 18:17:50Z michiel $
+ * @version $Id$
  */
 
 public  class Import {
