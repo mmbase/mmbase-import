@@ -46,6 +46,9 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
 
     public PageContextBacking(PageContext pc) {
         pageContext = pc;
+        if (pageContext.getRequest() == null) {
+            log.warn("PageContext " + pageContext + " has no request.", new Exception());
+        }
     }
 
     public void pushPageContext(PageContext pc) {
