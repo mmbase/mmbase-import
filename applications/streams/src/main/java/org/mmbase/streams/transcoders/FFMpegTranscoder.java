@@ -147,16 +147,14 @@ public class FFMpegTranscoder extends CommandTranscoder {
         format = Format.AVI;
     }
 
-    /* Saving values like width, height */
+    /* Saving values like width, height, normally when re-transcoding */
     public void init(Node dest) {
-        /*
         if (width != null && dest.getNodeManager().hasField("width")) {
             dest.setIntValue("width", width);
             if (height != null) {
                 dest.setIntValue("height", height);
             }        
         }
-        */
     }
 
     @Override
