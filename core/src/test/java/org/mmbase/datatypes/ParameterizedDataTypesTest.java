@@ -283,7 +283,7 @@ public class ParameterizedDataTypesTest  {
         Cloud cloud = getCloud();
         NodeManager nodeManager = cloud.getNodeManager("datatypes");
         Field field = nodeManager.getField(fieldName);
-        System.out.println("Testing " + fieldName + " "+ field.getDataType().getDefaultValue());
+        //System.out.println("Testing " + fieldName + " "+ field.getDataType().getDefaultValue());
         assertEquals("For " + fieldName + " " + field.getDataType(), field.getDataType().getDefaultValue(), nodeManager.createNode().getValue(fieldName));
     }
 
