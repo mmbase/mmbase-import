@@ -45,7 +45,7 @@ import org.mmbase.applications.media.Format;
  * The input file, output prefix and index prefix arguments are automatically filled,  
  * specify segment duration (default 10 sec.) and httpPrefix (hostname) in 'createcaches.xml'.
  *
- * @author André van Toly
+ * @author Andr&eacute; van Toly
  * @version $Id: SegmenterTranscoder.java 41564 2010-03-22 19:42:15Z andre $
  */
 @Settings({"duration", "httpPrefix"})
@@ -65,8 +65,7 @@ public class SegmenterTranscoder extends CommandTranscoder {
     String httpPrefix = "http://localhost:8080/";
 
     public SegmenterTranscoder() {
-        format = Format.TS;
-        codec  = Codec.H264;
+        format = Format.M3U8;
     }
     
     public void setDuration(int d) {
@@ -82,6 +81,17 @@ public class SegmenterTranscoder extends CommandTranscoder {
         return "segmenter";
     }
 
+    /**
+     * Saves mimetype (video/*) in destination node when not set.
+     * @param dest  destination node (streamsourcescaches)
+     */
+    public void init(Node dest) {
+        String mt = dest.getStringValue("mimetype");
+        if (mt == null || "".equals(mt)) { 
+            dest.setStringValue("mimetype", "video/*");
+        }
+    }
+    
     @Override
     protected String[] getArguments() {
         if (! in.getScheme().equals("file")) throw new UnsupportedOperationException();
