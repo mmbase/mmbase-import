@@ -48,6 +48,42 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <configuration>
+          <!--
+              <jettyEnvXml>${basedir}/jetty-env.xml</jettyEnvXml>
+          -->
+          <systemProperties>
+          </systemProperties>
+          <webXml>${basedir}/src/test/webapp/WEB-INF/web.xml</webXml>
+          <webAppConfig>
+            <contextPath>/mmbase-taglib-test</contextPath>
+            <baseResource implementation="org.mortbay.resource.ResourceCollection">
+              <resourcesAsCSV>src/main/webapp,${basedir}/target/classes,src/test/webapp</resourcesAsCSV>
+            </baseResource>
+          </webAppConfig>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.mmbase</groupId>
+            <artifactId>mmbase-rmmci</artifactId>
+            <version>${project.version}</version>
+            <classifier>client</classifier>
+          </dependency>
+          <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2.1</version>
+          </dependency>
+          <dependency>
+            <groupId>org.mmbase</groupId>
+            <artifactId>mmbase-bridge</artifactId>
+            <version>${mmbase.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
     </plugins>
   </build>
 
