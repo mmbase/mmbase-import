@@ -15,6 +15,8 @@ import org.mmbase.applications.media.builders.MediaSources;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.HashCodeUtil;
 import org.mmbase.util.MimeType;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.Codec;
 import org.mmbase.applications.media.State;
@@ -38,6 +40,9 @@ import java.util.*;
  * @version $Id$
  */
 public class URLComposer  {
+
+    private static final Logger log = Logging.getLoggerInstance(URLComposer.class);
+    
     protected MMObjectNode  source;
     protected MMObjectNode  provider;
     protected Map<String, Object>           info;
@@ -122,7 +127,13 @@ public class URLComposer  {
 
     public Dimension getDimension() {
         if (source.getBuilder().hasField("height")) {
-            return new Dimension(source.getIntValue("width"), source.getIntValue("height"));
+            int w = source.getIntValue("width");
+            int h = source.getIntValue("height");
+            if (w > 0 || h > 0) {
+                return new Dimension(w, h);
+            } else {
+                return null;
+            }
         } else {
             return null;
         }
