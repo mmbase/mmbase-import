@@ -5,7 +5,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
   <class name="org.mmbase.framework.BasicComponent">
-    
+
   </class>
   <description xml:lang="nl">Tools voor agenda's</description>
   <description xml:lang="en">Tools for a calendar</description>
@@ -15,8 +15,8 @@
 
 
   <block name="months" mimetype="text/html">
-    <head jsp="/calendar/head.jspx" />
-    <body jsp="/calendar/index.jspx">
+    <head jsp="head.jspx" />
+    <body jsp="index.jspx">
     </body>
   </block>
 
