@@ -65,6 +65,14 @@
 
 
   <field name="objecttype" state="virtual">
+    <descriptions>
+      <description xml:lang="nl">Status en beschikbaarheid van de source</description>
+      <description xml:lang="en">State and availability of the source</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="nl">Status</guiname>
+      <guiname xml:lang="en">State</guiname>
+    </gui>
     <datatype base="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <pattern value="videosources|audiosources" />
       <commitprocessor>
