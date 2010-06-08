@@ -44,7 +44,9 @@ refer e.g. to http://wiki.whatwg.org/wiki/Video_type_parameters for media types 
   <map format="mp3" codec="*">audio/mpeg</map>
   <map format="mpg" codec="*">video/mpeg</map>
   <map format="ts" codec="*">video/MP2T</map>
-  <map format="m3u8" codec="*">application/x-mpegURL</map>
+  
+  <map format="m3u" codec="*">audio/x-mpegurl</map>
+  <map format="m3u8" codec="*">application/x-mpegurl</map>
   
   <map format="3gp" codec="*">video/3gpp</map>
   
