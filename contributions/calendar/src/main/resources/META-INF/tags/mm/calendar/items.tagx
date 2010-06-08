@@ -5,12 +5,20 @@
     version="2.0"
     >
   <jsp:directive.tag import="java.util.*"
-                     description="Lists all calendar_items between two dates"
+                     description="Lists in an ul all calendar_items belonging to a certain day. The day can be provided by mm-cal:monthsOverview"
                      />
-  <jsp:directive.attribute name="day"     type="java.util.Date" required="true" />
+  <jsp:directive.attribute name="day"     type="java.util.Date" required="true" description="This may typically be provided by mm-cal:monthsOverview" />
   <jsp:directive.attribute name="dayend"  type="java.util.Date" />
   <jsp:directive.attribute name="stop"  description="if true, then the entry will also be shown if the start time is on a previous day, but the stop time is on this day or later" />
   <jsp:directive.attribute name="newItem" fragment="true"  />
+  <jsp:directive.attribute name="empty" fragment="true"  />
+
+  <jsp:directive.attribute name="role" type="java.lang.String" description="If this is not empty, related nodes will be used, in stead of all nodes"  />
+
+  <jsp:directive.attribute name="mode" type="java.lang.String" description="Defaults to 'ul', can also be 'spans' or 'empty'"  />
+  <jsp:directive.attribute name="max" type="java.lang.Integer" description="max number of items listed"  />
+  <jsp:directive.attribute name="type"  type="org.mmbase.bridge.Node"
+                           description="Limit calendar item to certain types"  />
 
 
   <jsp:scriptlet>
@@ -25,18 +33,52 @@
   </jsp:scriptlet>
   <mm:import id="dayend"><jsp:expression>dayend.getTime() / 1000</jsp:expression></mm:import>
   <mm:cloud method="asis">
+    <c:choose>
+      <c:when test="${empty role}">
+        <mm:relatednodescontainer type="calendar_items" role="${role}" id="container" />
+      </c:when>
+      <c:otherwise>
+        <mm:listnodescontainer type="calendar_items" id="container" />
+      </c:otherwise>
+    </c:choose>
 
-    <mm:listnodescontainer type="calendar_items">
+    <mm:listnodescontainer referid="container">
       <mm:typeconstraint name="calendar_items" descendants="false" />
       <mm:sortorder field="start" />
       <mm:constraint field="${empty stop ? 'start' : 'stop'}" operator="GREATER" value="${day}" />
       <mm:constraint field="start" operator="LESS" value="${dayend}" />
+      <c:if test="${! empty max}">
+        <mm:maxnumber value="${max}" />
+      </c:if>
+      <mm:size>
+        <mm:compare value="0">
+          <jsp:invoke fragment="empty" />
+        </mm:compare>
+      </mm:size>
       <mm:listnodes>
-        <mm:first>&lt;ul&gt;</mm:first>
-        <li class="ct${_node.type}">
-          <jsp:doBody />
-        </li>
-        <mm:last>&lt;/ul&gt;</mm:last>
+        <c:choose>
+          <c:when test="${mode eq 'empty'}">
+          </c:when>
+          <c:when test="${mode eq 'spans'}">
+          </c:when>
+          <c:when test="${empty mode or mode eq 'ul'}">
+            <mm:first>&lt;ul&gt;</mm:first>
+            <jsp:text>&lt;li class="ct${_node.type}"&gt;</jsp:text>
+          </c:when>
+          <c:otherwise>UNKNOWN mode ${mode}</c:otherwise>
+        </c:choose>
+        <jsp:doBody />
+        <c:choose>
+          <c:when test="${mode eq 'empty'}">
+          </c:when>
+          <c:when test="${mode eq 'spans'}">
+            <jsp:text>&lt;/span&gt;</jsp:text>
+          </c:when>
+          <c:when test="${empty mode or mode eq 'ul'}">
+            <jsp:text>&lt;/li&gt;</jsp:text>
+            <mm:last>&lt;/ul&gt;</mm:last>
+          </c:when>
+        </c:choose>
       </mm:listnodes>
     </mm:listnodescontainer>
     <jsp:invoke fragment="newItem" />

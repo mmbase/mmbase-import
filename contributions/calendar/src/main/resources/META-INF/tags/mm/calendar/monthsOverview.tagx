@@ -6,7 +6,7 @@
     version="2.0" >
   <!--
      This can be useful during development
-     xmlns:mm-cal="urn:jsptagdir:/WEB-INF/tags/mm/calendar"
+
 
 
   -->
@@ -29,9 +29,11 @@
   <jsp:directive.attribute name="prev"    fragment="true"  />
   <jsp:directive.attribute name="next"    fragment="true"  />
 
-  <jsp:directive.variable  name-given="day" />
-  <jsp:directive.variable  name-given="dayend" />
-  <jsp:directive.variable  name-given="noon" />
+  <jsp:directive.variable  name-given="day"         description="The day of the body. As a java.util.Date object" />
+  <jsp:directive.variable  name-given="dayend"      description="The end of the day of the body. As a java.util.Date object" />
+  <jsp:directive.variable  name-given="noon"        description="Noon of the day of the body. As a java.util.Date object" />
+  <jsp:directive.variable  name-given="timezoneoffset"  description="The time zone offset on the day of the body. In milliseconds." />
+  <jsp:directive.variable  name-given="day_since_epoch" description="The day of the body, as day number since the start of the epoch." />
 
   <mm:import id="o" externid="offset">${empty offset ? '-1' : offset}</mm:import>
   <jsp:scriptlet>
@@ -163,7 +165,8 @@
                         </c:if>
                         <th class="weeknr year"><mm:time referid="day" format="w"/></th>
                       </jsp:attribute>
-                      <td class="${dayofweek} ${monthname} ${whichmonth}_month">
+                      <mm:import id="day_since_epoch" vartype="integer" reset="true">${(day.time + timezoneoffset)/(1000*60*60*24)}</mm:import>
+                      <td class="${dayofweek} ${monthname} ${whichmonth}_month day_${day_since_epoch}">
                         <jsp:doBody />
                       </td>
                     </mm-cal:axis>
