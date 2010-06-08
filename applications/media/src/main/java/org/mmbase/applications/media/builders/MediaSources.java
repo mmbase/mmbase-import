@@ -11,15 +11,21 @@ package org.mmbase.applications.media.builders;
 
 import java.util.*;
 
-import org.mmbase.applications.media.*;
-import org.mmbase.applications.media.filters.MainFilter;
-import org.mmbase.applications.media.urlcomposers.URLComposer;
-import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.util.MimeType;
+import org.mmbase.module.core.MMObjectBuilder;
+
+import org.mmbase.bridge.Node;
+
 import org.mmbase.util.functions.*;
+import org.mmbase.util.MimeType;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import org.mmbase.applications.media.urlcomposers.URLComposer;
+import org.mmbase.applications.media.filters.MainFilter;
+import org.mmbase.applications.media.Format;
+import org.mmbase.applications.media.Codec;
+import org.mmbase.applications.media.State;
 
 
 
