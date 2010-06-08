@@ -10,7 +10,7 @@
   <class name="org.mmbase.framework.BasicComponent" />
 
   <title xml:lang="nl">Media</title>
-  <title xml:lang="en">Meda</title>
+  <title xml:lang="en">Media</title>
 
   <block name="media-documentation"
          classification="mmbase.documentation"
