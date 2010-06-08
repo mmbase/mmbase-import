@@ -73,6 +73,7 @@ public class ParameterizedDataTypesTest  {
             /*            {field,
                           {valid values},
                           {invalid values}} */
+
             new Object[] {"string",
                           new Object[] {"abcdefg", "ijklm\nopqrstx", null},
                           new Object[] {}},
@@ -100,6 +101,10 @@ public class ParameterizedDataTypesTest  {
             new Object[] {"required_stringlength",
                           new Object[] {"aaa", "0123456789",  "123456789\n", "\n123456789"},
                           new Object[] {null, "",  "bbbbbbbbbbb", "123456789\n\n"}},
+            new Object[] {"required_string",
+                          new Object[] {"aaa", "0123456789",  "123456789\n", "\n123456789", ""},
+                          new Object[] {null}}
+            ,
             new Object[] {"required_legacy",
                           new Object[] {"aaa", "0123456789",  "123456789\n", "\n123456789", ""},
                           new Object[] {null}}
@@ -185,14 +190,16 @@ public class ParameterizedDataTypesTest  {
                           new Object[] {"", "asjdlkf", node1}}
             ,
             new Object[] {"decimal",
-                          new Object[] {"22222222222222222222222222222222222.111111111111111111111111111111"/*35.30*/, "1", new Integer(100),
+                          new Object[] {"22222222222222222222222222222222222.111111111111111111111111111111", //35.30
+                          "1", new Integer(100),
                                         new BigDecimal("22222222222222222222222222222222222.1234")},
                           new Object[] {"333333333333333333333333333333333333", "asjdlkf"}}
             ,
             new Object[] {"currency",
-                          new Object[] {"222222222222222.11111"/*15.5*/, "1", new Integer(100),
+                          new Object[] {"222222222222222.11111",  //15.5
+                                        "1", new Integer(100),
                                         new BigDecimal("1.123456789"), "12345.1111111111"},
-                          new Object[] {"3333333333333333", "asjdlkf"}}
+            new Object[] {"3333333333333333", "asjdlkf"}}
             /*
               XML not very well supported yet
               new Object[] {"xml",
@@ -268,6 +275,18 @@ public class ParameterizedDataTypesTest  {
             throw new RuntimeException(toString() + ":" + t.getMessage(), t);
         }
     }
+    /**
+     * MMB-1901
+     */
+    @Test
+    public void defaultValue() {
+        Cloud cloud = getCloud();
+        NodeManager nodeManager = cloud.getNodeManager("datatypes");
+        Field field = nodeManager.getField(fieldName);
+        System.out.println("Testing " + fieldName + " "+ field.getDataType().getDefaultValue());
+        assertEquals("For " + fieldName + " " + field.getDataType(), field.getDataType().getDefaultValue(), nodeManager.createNode().getValue(fieldName));
+    }
+
 
     @Override
     public String toString() {
