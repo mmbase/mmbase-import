@@ -1,13 +1,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:c="http://java.sun.com/jsp/jstl/core" 
-      xmlns:jsp="http://java.sun.com/JSP/Page" 
-      xmlns:mm-cal="http://www.mmbase.org/tags/mm/calendar"       
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:mm-cal="http://www.mmbase.org/tags/mm/calendar"
       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <!--
       This can be useful during development
-      xmlns:mm-cal="urn:jsptagdir:/WEB-INF/tags/mm/calendar"     
+      xmlns:mm-cal="urn:jsptagdir:/WEB-INF/tags/mm/calendar"
 
-  -->      
+  -->
   <jsp:directive.page buffer="100kb" import="com.ibm.icu.text.*,java.util.*" />
   <mm:import externid="language">client</mm:import>
   <mm:import externid="timezone"></mm:import>
@@ -15,16 +15,16 @@
   <mm:write request="language" referid="language" />
   <mm:write request="timezone" referid="timezone" />
   <mm:content type="application/xhtml+xml"
-              language="$language" 
+              language="$language"
               timezone="$timezone"
               postprocessor="none" expires="0">
     <head>
        <link href="../style.css" rel="stylesheet" title="Normaal" type="text/css" media="screen" />
     </head>
     <body>
-      <mm:cloud method="asis">        
+      <mm:cloud method="asis">
         <mm-cal:localeSelector />
-        
+
         <mm:time id="date" time="now" vartype="date" write="false" />
 
         <table>
@@ -54,7 +54,7 @@
               </tr>
             </c:forEach>
           </tbody>
-        </table>        
+        </table>
         <hr />
         <table>
           <thead>
@@ -80,11 +80,11 @@
                     <mm:time referid="day" format="dd MMMM" />
                     <mm-cal:items day="${day}">
                       <jsp:attribute name="newItem">
-                        <mm:link page="../newItem.jspx" referids="day,language,timezone">
+                        <mm:link page="/mmbase/components/calendar/newItem.jspx" referids="day,language,timezone">
                           <a href="${_}">+</a>
                         </mm:link>
                       </jsp:attribute>
-                      <mm:include page="../item.jspx" />
+                      <mm:include page="/mmbase/components/calendar/item.jspx" />
                     </mm-cal:items>
                   </td>
                 </mm-cal:axis>
@@ -96,4 +96,3 @@
     </body>
   </mm:content>
 </html>
-  
