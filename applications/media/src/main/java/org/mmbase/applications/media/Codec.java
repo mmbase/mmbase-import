@@ -57,7 +57,8 @@ public enum Codec {
     WMV1(110),    // Windows Media Video 7
     WMV2(111),    // Windows Media Video 8
     WMV3(112),    // Windows Media Video 9
-    XVID(113);
+    XVID(113),
+    MP2T(114);
 
     private static Logger log = Logging.getLoggerInstance(Codec.class);
 
