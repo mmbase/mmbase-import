@@ -16,7 +16,9 @@
 
   <div class="mm_calendar" id="localeSelector">
     <form name="localeform" method="get">
-      <mm:hiddens context="${context}" except="language,timezone"  />
+      <c:if test="${! empty context}">
+        <mm:hiddens context="${context}" except="language,timezone"  />
+      </c:if>
       <mm:import id="languages" vartype="list">${empty languages ? 'en-US,en-GB,zh,ja,de-DE,fr-FR,fr-CA,it,es,pt-PT,pt-BR,nl-NL,nl-BE,da,cs,fi,el,sr,eo' : languages}</mm:import>
 
       <c:if test="${fn:length(languages) gt 1}">
