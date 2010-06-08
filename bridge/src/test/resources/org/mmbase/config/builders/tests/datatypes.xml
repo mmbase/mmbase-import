@@ -103,6 +103,17 @@
       </db>
     </field>
 
+
+    <field name="required_string">
+      <descriptions>
+        <description>Example of required string</description>
+      </descriptions>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="line">
+        <required value="true" />
+        <maxLength value="10" />
+      </datatype>
+    </field>
+
     <field name="required_legacy">
       <descriptions>
         <description>Required by db notnull</description>
