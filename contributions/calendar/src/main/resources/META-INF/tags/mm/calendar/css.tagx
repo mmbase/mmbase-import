@@ -4,6 +4,9 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     version="2.0"
     >
+  <jsp:directive.tag import="java.util.*"
+                     description="Produces the needed CSS"
+                     />
   <jsp:directive.attribute name="weekend"  />
   <jsp:directive.attribute name="months"  />
   <mm:cloud method="asis">
@@ -23,7 +26,7 @@
       }
 
     </mm:listnodes>
-    
+
   </mm:cloud>
   <c:choose>
     <c:when test="${empty weekend}">
@@ -36,7 +39,7 @@
     </c:when>
     <c:otherwise>
       .mm_calendar td.Saturday, .mm_calendar td.Sunday,
-      .mm_calendar th.Saturday, .mm_calendar th.Sunday { 
+      .mm_calendar th.Saturday, .mm_calendar th.Sunday {
       background-color: ${weekend} !important;
       }
     </c:otherwise>
