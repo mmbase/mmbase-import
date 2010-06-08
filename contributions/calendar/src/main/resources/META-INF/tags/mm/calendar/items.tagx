@@ -5,7 +5,7 @@
     version="2.0"
     >
   <jsp:directive.tag import="java.util.*"
-                     descripion="Lists all calendar_items between two dates"
+                     description="Lists all calendar_items between two dates"
                      />
   <jsp:directive.attribute name="day"     type="java.util.Date" required="true" />
   <jsp:directive.attribute name="dayend"  type="java.util.Date" />
