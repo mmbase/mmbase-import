@@ -22,16 +22,14 @@ import java.util.*;
 
 /**
  * This is the main class for the filter process. It maintains list of
- * Filters (which content can be configured by the 'filters.xml'
- * configuration file. It does not do any filtering itself, it is only
- * the access to the actual filters, so filtering is completably
- * configurable.
+ * Filters (which can be configured in the 'filters.xml' configuration file). 
+ * It does not do any filtering itself, it is only to access to the actual 
+ * filters, so filtering is completely configurable.
  *
  * Since there can be only one 'main' filter this class is a
- * Singleton, and its one instance can be gotten by the getInstance
- * function (and this is done by the Media builders when they need url
+ * Singleton, and its one instance can be gotten by the #getInstance()
+ * function (and this is done by Media builders when they need url
  * representations to the stream they describe).
- *
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
@@ -79,7 +77,8 @@ public class MainFilter {
 
 
     /**
-     * read the MainFilter configuration
+     * Read MainFilter configuration
+     * @param configFile    configuration file 'config/media/filters.xml'
      */
     private synchronized void readConfiguration(String configFile) {
         if (log.isServiceEnabled()) {
@@ -92,7 +91,7 @@ public class MainFilter {
             DocumentReader reader = new DocumentReader(ResourceLoader.getConfigurationRoot().getDocument(configFile, DocumentReader.validate(), getClass()));
             Element filterConfigs = reader.getElementByPath(MAIN_TAG + "." + FILTERCONFIGS_TAG);
 
-            // When chaining 'comparators' then they are combined to one comparator
+            // When chaining 'comparators' they are combined to one comparator.
             // Then only one 'sort' has to be done, which is more efficient.
 
             for(Element chainElement:reader.getChildElements(MAIN_TAG + "." + CHAIN_TAG, FILTER_TAG)) {
