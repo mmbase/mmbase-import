@@ -10,16 +10,15 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.urlcomposers;
 
-import java.util.*;
-
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.builders.MediaFragments;
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.DocumentReader;
+import org.mmbase.util.*;
 import org.w3c.dom.Element;
+import java.util.*;
 
 /**
  * The URLComposerFactory contains the code to decide which kind of
