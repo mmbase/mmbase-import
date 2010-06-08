@@ -23,6 +23,7 @@
   <jsp:directive.variable  name-given="monthname" />
   <jsp:directive.variable  name-given="formonthname" />
   <jsp:directive.variable  name-given="whichmonth" />
+  <jsp:directive.variable  name-given="timezoneoffset" />
 
   <jsp:scriptlet xmlns:jsp="http://java.sun.com/JSP/Page">
 
@@ -50,6 +51,7 @@
           cal.set(Calendar.MONTH, month - 1);
           cal.set(Calendar.WEEK_OF_MONTH, index);
           cal.set(Calendar.DAY_OF_WEEK, dayofweek);
+          jspContext.setAttribute("timezoneoffset", cal.getTimeZone().getOffset(cal.getTime().getTime()));
       </jsp:scriptlet>
       <mm:context>
         <mm:import id="whichmonth"><jsp:expression>cal.get(Calendar.MONTH) == month - 1 ? "same" : "other"</jsp:expression></mm:import>
@@ -85,6 +87,7 @@
           cal.set(Calendar.MONTH, month - 1);
           cal.set(Calendar.WEEK_OF_MONTH, week);
           cal.set(Calendar.DAY_OF_WEEK, indexOffset + index);
+          jspContext.setAttribute("timezoneoffset", cal.getTimeZone().getOffset(cal.getTime().getTime()));
       </jsp:scriptlet>
       <mm:context>
         <mm:import id="time"><jsp:expression>cal.getTime().getTime() / 1000</jsp:expression></mm:import>
