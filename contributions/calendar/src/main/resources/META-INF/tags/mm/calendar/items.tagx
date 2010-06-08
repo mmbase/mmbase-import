@@ -9,7 +9,7 @@
                      />
   <jsp:directive.attribute name="day"     type="java.util.Date" required="true" />
   <jsp:directive.attribute name="dayend"  type="java.util.Date" />
-  <jsp:directive.attribute name="stop"  /><!-- if true, then the entry will also be shown if the start time is on a previous day, but the stop time is on this day or later.-->
+  <jsp:directive.attribute name="stop"  description="if true, then the entry will also be shown if the start time is on a previous day, but the stop time is on this day or later" />
   <jsp:directive.attribute name="newItem" fragment="true"  />
 
 
