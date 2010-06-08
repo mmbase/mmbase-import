@@ -444,6 +444,16 @@ public class DataTypesTest  {
     }
 
     @Test
+    public void virtualField() {
+        NodeManager aa = MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("aa");
+        NodeManager insrel = MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("insrel");
+        assertEquals(aa.getField("security_context").getType(), Field.TYPE_STRING);
+        assertEquals(insrel.getField("security_context").getType(), Field.TYPE_STRING);
+        assertEquals(aa.getField("name").getType(), Field.TYPE_STRING);
+    }
+
+
+    @Test
     public void dataTypeOfAnotherField() {
         NodeManager aa = MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("aa");
         NodeManager datatypes = MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("datatypes");
@@ -471,6 +481,7 @@ public class DataTypesTest  {
 
 
     }
+
 
 
 
