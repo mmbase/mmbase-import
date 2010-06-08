@@ -17,6 +17,7 @@
   <block name="months" mimetype="text/html">
     <head jsp="head.jspx" />
     <body jsp="index.jspx">
+      <param name="offset" />
     </body>
   </block>
 
