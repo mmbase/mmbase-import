@@ -73,7 +73,10 @@ public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
         width = x;
     }
 
-    /* Saving values codec, acodec */
+    /**
+     * Saves values video codec in codec (Theora)) and audio codec in acodec (Vorbis) in destination node.
+     * @param dest  destination node (streamsourcescaches)
+     */
     public void init(Node dest) {
         dest.setIntValue("codec", Codec.THEORA.toInt() );
         if (dest.getNodeManager().hasField("acodec")) {
