@@ -1,15 +1,13 @@
 <jsp:root
-    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     version="2.0"
     >
-  <!--
-      Iterators an 'axis' of a month.
-      That is either all days of certain week of the month, or all certain weekdays of the month.
-
-  -->
-  <jsp:directive.tag import="java.util.*" />
+  <jsp:directive.tag import="java.util.*"
+                     description="Iterators an 'axis' of a month.
+    That is either all days of certain week of the month, or all certain weekdays of the month."
+                     />
   <jsp:directive.attribute name="name"   /><!-- either week or day -->
 
   <jsp:directive.attribute name="date"  type="java.util.Date" />
@@ -26,16 +24,16 @@
   <jsp:directive.variable  name-given="formonthname" />
   <jsp:directive.variable  name-given="whichmonth" />
 
-  <jsp:scriptlet xmlns:jsp="http://java.sun.com/JSP/Page"> 
-    
-    Calendar cal = Calendar.getInstance((TimeZone) request.getAttribute("org.mmbase.timezone"), 
-    (Locale) request.getAttribute("javax.servlet.jsp.jstl.fmt.locale.request")); 
+  <jsp:scriptlet xmlns:jsp="http://java.sun.com/JSP/Page">
+
+    Calendar cal = Calendar.getInstance((TimeZone) request.getAttribute("org.mmbase.timezone"),
+    (Locale) request.getAttribute("javax.servlet.jsp.jstl.fmt.locale.request"));
     if (date != null) {
     cal.setTime(date);
     month = cal.get(Calendar.MONTH) + 1;
     year  = cal.get(Calendar.YEAR);
-    }                                        
-    
+    }
+
   </jsp:scriptlet>
   <mm:locale language="en" country="US">
     <mm:time referid="date" format="MMMM" id="formonthname" write="false" />
@@ -88,7 +86,7 @@
           cal.set(Calendar.WEEK_OF_MONTH, week);
           cal.set(Calendar.DAY_OF_WEEK, indexOffset + index);
       </jsp:scriptlet>
-      <mm:context>        
+      <mm:context>
         <mm:import id="time"><jsp:expression>cal.getTime().getTime() / 1000</jsp:expression></mm:import>
         <mm:time id="day" time="${time}" write="false" vartype="date" />
         <mm:time id="noon" time="${time} noon" write="false" vartype="date" />
