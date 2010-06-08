@@ -17,6 +17,8 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.functions.*;
 
+import org.mmbase.util.logging.*;
+
 /**
  * Straight-forward implementation of NodeManager based on a Map with DataType's.
  *
@@ -26,6 +28,7 @@ import org.mmbase.util.functions.*;
  */
 
 public class MockNodeManager extends AbstractNodeManager  {
+    private static final  Logger log = Logging.getLoggerInstance(MockNodeManager.class);
 
     protected final Map<String, Field> map = new LinkedHashMap<String, Field>();
     protected final String name;
@@ -88,12 +91,43 @@ public class MockNodeManager extends AbstractNodeManager  {
         return name;
     }
 
+
+    // TODO This method is more or less copied from a method in AbstactNodeManager and should be generalized
+    protected void setDefaultsWithCloud(Node node) {
+        log.debug("Setting default values");
+        for (Iterator i = getFields().iterator(); i.hasNext(); ) {
+            Field field = (Field) i.next();
+            if (field.getName().equals("number"))      continue;
+            if (field.getName().equals("otype")) continue;
+
+            if (node.isNull(field.getName()) || "".equals(node.getStringValue(field.getName()))) { // required field are set to '', which would destroy the default value...
+                org.mmbase.datatypes.DataType dt = field.getDataType();
+                //log.info("" + field.getName() + " " + dt);
+                Object defaultValue = dt.getDefaultValue(getCloud().getLocale(), getCloud(), field);
+                if (defaultValue != null) {
+                    if (defaultValue instanceof Node) {
+                        defaultValue = ((Node) defaultValue).getNumber();
+                    }
+
+                    node.setValueWithoutProcess(field.getName(), defaultValue);
+                }
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("" + field.getName() + " is already non null, but " + node.getValue(field.getName()));
+                }
+            }
+        }
+    }
+
+
     @Override
     public Node createNode() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("otype", oType);
         map.put("owner", vcloud.getUser().getOwnerField());
-        return vcloud.getNode(map, this, true);
+        Node n = vcloud.getNode(map, this, true);
+        setDefaultsWithCloud(n);
+        return n;
     }
 
 
