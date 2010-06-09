@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -43,7 +43,14 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
 
     private CommandExecutor.Method method = new CommandExecutor.Method();
 
-    private String path = org.mmbase.util.ApplicationContextReader.getCachedProperties(getClass().getName()).get("path");
+    private String path = null;
+    {
+        Class clazz = getClass();
+        do {
+            path =  org.mmbase.util.ApplicationContextReader.getCachedProperties(getClass().getName()).get("path");
+            clazz = clazz.getSuperclass();
+        } while (path == null && clazz != null);
+    }
 
     private Map<String, String> moreOptions = new LinkedHashMap<String, String>();
 
@@ -79,7 +86,7 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
     }
 
     /**
-     * Overrides the generation of a key in {@link AbstractTranscoder} to add extra transcoding 
+     * Overrides the generation of a key in {@link AbstractTranscoder} to add extra transcoding
      * parameters that were not set by {@link Settings} annotations on the transcoders.
      */
     public final String getKey() {
@@ -88,7 +95,7 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
         if (key.indexOf(", ") > 0) {
             appendedSetting = true;
         }
-        
+
         for (Map.Entry<String, String> e : moreOptions.entrySet()) {
             if (appendedSetting) {
                 key.append(", ");
@@ -96,10 +103,10 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
             key.append(e.getKey()).append("=").append(e.getValue());
             appendedSetting = true;
         }
-        
+
         return key.toString();
     }
-    
+
     protected void transcode(final Logger log) throws Exception {
         OutputStream outStream = new WriterOutputStream(getOutputWriter(log), System.getProperty("file.encoding"));
         OutputStream errStream = new WriterOutputStream(getErrorWriter(log), System.getProperty("file.encoding"));
@@ -120,7 +127,7 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
         }
         int pos = args.size() - 2; // last argument is outfile
         if (pos > -1) {
-            if (!extra.isEmpty()) args.addAll(pos, extra); 
+            if (!extra.isEmpty()) args.addAll(pos, extra);
         } else {
             LOG.error("Not enough arguments, need at least in- and outfile.");
         }
@@ -131,7 +138,7 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
         outStream.close();
         errStream.close();
     }
-    
+
     public CommandTranscoder clone() {
         return  (CommandTranscoder) super.clone();
     }
