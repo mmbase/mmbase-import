@@ -33,7 +33,8 @@ import org.mmbase.util.logging.*;
 
 /**
  * Analyzes <code>segmenter</code> output during its job, changes url field to m3u8 index file when 
- * ready and rewrites m3u8 to removed full paths.
+ * ready and rewrites m3u8 to removed full paths. It can wait two minutes for the filesystem to be
+ * ready before starting to rewrite.
  * 
  * @author Andr&eacute; van Toly
  * @version $Id: SegmenterAnalyzer.java 40036 2009-11-30 20:27:39Z andre $
@@ -112,6 +113,18 @@ public class SegmenterAnalyzer implements Analyzer {
                 }
                 File index = new File(filesDirectory + url);
                 File temp  = new File(filesDirectory + url + ".tmp");
+                
+                int count = 0;
+                while ((!index.exists() || index.length() < 1) && count < 12) {
+                    LOG.service("Result ready, but file " + index + (index.exists() ? " is too small" : " doesn't exist") + ". Waiting 10 sec. to be sure filesystem is ready (" + count + ")");
+                    try {
+                        Thread.currentThread().sleep(10000);
+                        count++;
+                    } catch (InterruptedException ie) {
+                        LOG.info("Interrupted");
+                        return;
+                    }
+                }
                 
                 try {
                     BufferedReader in = new BufferedReader(new FileReader(index));
