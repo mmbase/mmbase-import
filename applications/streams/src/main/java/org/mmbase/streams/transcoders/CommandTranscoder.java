@@ -47,7 +47,7 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
     {
         Class clazz = getClass();
         do {
-            path =  org.mmbase.util.ApplicationContextReader.getCachedProperties(getClass().getName()).get("path");
+            path =  org.mmbase.util.ApplicationContextReader.getCachedProperties(clazz.getName()).get("path");
             clazz = clazz.getSuperclass();
         } while (path == null && clazz != null);
     }
