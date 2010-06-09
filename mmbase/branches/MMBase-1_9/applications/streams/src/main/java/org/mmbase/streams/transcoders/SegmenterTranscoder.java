@@ -45,7 +45,7 @@ import org.mmbase.applications.media.Format;
  * The input file, output prefix and index prefix arguments are automatically filled,  
  * specify segment duration (default 10 sec.) and httpPrefix (hostname) in 'createcaches.xml'.
  *
- * @author André van Toly
+ * @author Andr&eacute; van Toly
  * @version $Id: SegmenterTranscoder.java 41564 2010-03-22 19:42:15Z andre $
  */
 @Settings({"duration", "httpPrefix"})
