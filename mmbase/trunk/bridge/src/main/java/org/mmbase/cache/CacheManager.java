@@ -350,10 +350,15 @@ public class CacheManager implements CacheManagerMBean {
         public void onChange(String resource) {
             try {
                 org.xml.sax.InputSource is = ResourceLoader.getConfigurationRoot().getInputSource(resource);
-                log.service("Reading " + is.getSystemId());
-                configReader = new DocumentReader(is, Cache.class);
+                if (is == null) {
+                    log.warn("Not found " + resource + " in " + ResourceLoader.getConfigurationRoot());
+                    return;
+                } else {
+                    log.service("Reading " + is.getSystemId());
+                    configReader = new DocumentReader(is, Cache.class);
+                }
             } catch (Exception e) {
-                log.warn(e.getClass() + " " + e.getMessage());
+                log.warn(e.getClass() + " " + e.getMessage(), e);
                 return;
             }
             configure(configReader);
