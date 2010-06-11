@@ -84,7 +84,7 @@
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <enumeration>
           <entry basename="org.mmbase.datatypes.resources.states"
-                 javaconstants="org.mmbase.module.builders.MMServers" />
+                 javaconstants="org.mmbase.datatypes.resources.StateConstants" />
         </enumeration>
       </datatype>
     </field>
