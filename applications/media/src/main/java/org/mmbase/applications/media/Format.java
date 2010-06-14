@@ -63,6 +63,8 @@ public enum Format {
 
     OGV  (31),
     OGA  (32),
+    
+    WEBM (40),
 
     PODCAST(50),
     VODCAST(51),
@@ -83,7 +85,7 @@ public enum Format {
     /* a few more audio formats */
     AAC(200),
     FLAC(201),
-
+    
     /* others */
     M3U(501),
     M3U8(502),
@@ -169,7 +171,7 @@ public enum Format {
         {
             put("AIF", "AIFF");
             put("JPG", "JPEG");
-            put("TIF", "TIFF");
+            put("TIF", "TIFF");    
         }
     };
 
@@ -203,7 +205,7 @@ public enum Format {
     public boolean isWindowsMedia() {
         return windowsMedia.contains(this);
     }
-
+    
     public List<Format> getSimilar() {
         if (isReal()) {
             return real;
