@@ -12,6 +12,7 @@
   <jsp:directive.attribute name="stop"  description="if true, then the entry will also be shown if the start time is on a previous day, but the stop time is on this day or later" />
   <jsp:directive.attribute name="newItem" fragment="true"  />
   <jsp:directive.attribute name="empty" fragment="true"  />
+  <jsp:directive.attribute name="intro" fragment="true"  />
 
   <jsp:directive.attribute name="role" type="java.lang.String" description="If this is not empty, related nodes will be used, in stead of all nodes"  />
 
@@ -20,6 +21,7 @@
   <jsp:directive.attribute name="type"  type="org.mmbase.bridge.Node"
                            description="Limit calendar item to certain types"  />
 
+  <jsp:directive.variable  name-given="query"         description="The used Query" />
 
   <jsp:scriptlet>
     if (dayend == null) {
@@ -34,7 +36,7 @@
   <mm:import id="dayend"><jsp:expression>dayend.getTime() / 1000</jsp:expression></mm:import>
   <mm:cloud method="asis">
     <c:choose>
-      <c:when test="${empty role}">
+      <c:when test="${! empty role}">
         <mm:relatednodescontainer type="calendar_items" role="${role}" id="container" />
       </c:when>
       <c:otherwise>
@@ -42,7 +44,7 @@
       </c:otherwise>
     </c:choose>
 
-    <mm:listnodescontainer referid="container">
+    <mm:listnodescontainer id="query" referid="container">
       <mm:typeconstraint name="calendar_items" descendants="false" />
       <mm:sortorder field="start" />
       <mm:constraint field="${empty stop ? 'start' : 'stop'}" operator="GREATER" value="${day}" />
@@ -50,6 +52,7 @@
       <c:if test="${! empty max}">
         <mm:maxnumber value="${max}" />
       </c:if>
+      <jsp:invoke fragment="intro" />
       <mm:size>
         <mm:compare value="0">
           <jsp:invoke fragment="empty" />
