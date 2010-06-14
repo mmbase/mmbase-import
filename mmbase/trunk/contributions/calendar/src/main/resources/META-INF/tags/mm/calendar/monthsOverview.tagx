@@ -21,7 +21,7 @@
 
   <jsp:directive.attribute name="cols" required="true"  description="number of columns to show" />
   <jsp:directive.attribute name="rows" required="true"  description="number of rows to show" />
-                  <!-- total number of months shown is cols x rows -->
+  <!-- total number of months shown is cols x rows -->
 
   <jsp:directive.attribute name="layout"  />
   <jsp:directive.attribute name="weeklayout"  /> <!-- not yet supported -->
