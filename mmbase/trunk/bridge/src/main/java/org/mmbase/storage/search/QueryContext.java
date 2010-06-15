@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: Step.java 36486 2009-06-29 17:33:41Z michiel $
+ * @version $Id$
  * @since MMBase-2.0
  */
 public interface QueryContext {
