@@ -26,7 +26,7 @@ import org.w3c.dom.Element;
  * This version of {@link AbstractBuilderReader} implements every method besides a {@link #getNodeManagerDescription(String)}. This minimizes the effort to implement a BuilderReader.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: MockBuilderReader.java 39084 2009-10-13 08:01:36Z michiel $
+ * @version $Id$
  * @since   MMBase-1.9.2
  */
 

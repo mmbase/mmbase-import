@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java 35350 2009-05-21 15:59:15Z michiel $
+ * @version $Id$
  */
 public abstract class AbstractBuilderReader<F extends Field> extends DocumentReader {
 
@@ -83,6 +83,9 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
         EntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_0, DTD_BUILDER_1_0, AbstractBuilderReader.class);
         EntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_1, DTD_BUILDER_1_1, AbstractBuilderReader.class);
         //EntityResolver.registerPublicID("-//MMBase//DTD builder config 2.0//EN", "builder_2_0.dtd", BuilderReader.class);
+
+        System.out.println("Registered " + PUBLIC_ID_BUILDER_1_1 + " " +  DTD_BUILDER_1_1);
+
 
         // legacy public IDs (wrong, don't use these)
         EntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_0_FAULT, DTD_BUILDER_1_0, AbstractBuilderReader.class);
