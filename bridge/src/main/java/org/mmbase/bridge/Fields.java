@@ -17,7 +17,7 @@ import java.util.*;
 /**
 
  * @since MMBase-1.8
- * @version $Id: Fields.java 37864 2009-08-15 11:32:01Z michiel $
+ * @version $Id$
  */
 public class Fields {
     private static final boolean allowNonQueriedFields = true; // not yet configurable

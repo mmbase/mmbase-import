@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  * Node#setValueWithoutProcess} to acces the wrapped node.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeMap.java 35967 2009-06-11 06:57:24Z michiel $
+ * @version $Id$
  * @since   MMBase-1.9.2
  */
 

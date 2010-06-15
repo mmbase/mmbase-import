@@ -17,7 +17,7 @@ import org.mmbase.bridge.*;
  * Straight-forward implementation of NodeManager based on a Map with DataType's.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: MockNodeManager.java 40297 2009-12-26 15:50:20Z michiel $
+ * @version $Id$
  * @since   MMBase-2.0
  */
 

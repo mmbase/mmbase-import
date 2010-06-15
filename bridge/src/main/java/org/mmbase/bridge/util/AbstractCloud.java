@@ -23,7 +23,7 @@ import org.mmbase.util.functions.*;
  * themselves, like properties.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: MapNode.java 36154 2009-06-18 22:04:40Z michiel $
+ * @version $Id$
  * @since   MMBase-1.9.2
  */
 
