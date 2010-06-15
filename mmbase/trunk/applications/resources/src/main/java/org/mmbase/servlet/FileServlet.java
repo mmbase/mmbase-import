@@ -330,7 +330,7 @@ public class FileServlet extends BridgeServlet {
     }
 
     /**
-     * Implementation of Range simply staticn the first and last chars which are available, perhaps with a maximum too.
+     * Implementation of Range simply stating the first and last chars which are available, perhaps with a maximum too.
      * This only deals with <start>-<stop> entries in the Range specificiation.
      * @since MMBase-2.0
      */
@@ -362,7 +362,7 @@ public class FileServlet extends BridgeServlet {
         }
     }
     /**
-     * This implemtation of Range parses and combines a number of {@link FirstLastRange}s.
+     * This implementation of Range parses and combines a number of {@link FirstLastRange}s.
      * So, this deals with the entire Range specification then.
      * @since MMBase-2.0
      */
