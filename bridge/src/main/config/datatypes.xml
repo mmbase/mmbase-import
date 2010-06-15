@@ -499,10 +499,22 @@
         1970-01-01, but you can use this to indicate an hour of any day. Generic editors will not
         offer to edit the date parts of the date-time.
       </description>
+      <default value="100" />
+      <pattern value="HH:mm:ss" />
+    </specialization>
+
+
+    <specialization id="utctime">
+      <description xml:lang="en">
+        A date-time field that ignores the date part. Actually this is stored as a time on
+        1970-01-01, but you can use this to indicate an hour of any day. Generic editors will not
+        offer to edit the date parts of the date-time.
+      </description>
       <property name="timeZone" value="UTC" /><!-- The actual timezone is not relevant. Those are only relevant when dates are involved  [MMB-1958] -->
       <default value="100" />
       <pattern value="HH:mm:ss" />
     </specialization>
+
 
     <specialization id="date">
       <description xml:lang="en">
