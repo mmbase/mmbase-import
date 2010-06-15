@@ -76,7 +76,7 @@ public class BasicComponent implements Component {
     }
 
     /**
-     * EXPERIMENTAL. The Manifest of the jar in which this component is definied.
+     * EXPERIMENTAL. The Manifest of the jar in which this component is defined.
      * @since MMBase-1.9.1
      */
     public java.util.jar.Manifest getManifest() {
