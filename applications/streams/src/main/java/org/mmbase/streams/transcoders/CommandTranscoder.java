@@ -43,7 +43,14 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
 
     private CommandExecutor.Method method = new CommandExecutor.Method();
 
-    private String path = org.mmbase.util.ApplicationContextReader.getCachedProperties(getClass().getName()).get("path");
+    private String path = null;
+    {
+        Class clazz = getClass();
+        do {
+            path =  org.mmbase.util.ApplicationContextReader.getCachedProperties(clazz.getName()).get("path");
+            clazz = clazz.getSuperclass();
+        } while (path == null && clazz != null);
+    }
 
     private Map<String, String> moreOptions = new LinkedHashMap<String, String>();
 
