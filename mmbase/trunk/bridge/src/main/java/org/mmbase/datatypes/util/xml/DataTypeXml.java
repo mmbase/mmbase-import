@@ -85,6 +85,7 @@ public abstract class DataTypeXml {
             ((ChainedProcessor) processor).add(processor2);
         } else {
             ChainedProcessor chain = new ChainedProcessor();
+            assert ! processor1.equals(processor2);
             chain.add(processor1);
             chain.add(processor2);
             processor = chain;
