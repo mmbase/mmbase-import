@@ -454,6 +454,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
     }
 
     public static Codec libtoCodec(String str) {
+        if (str.equals("libvpx")) str = "vp8";
         if (str.equals("libx264")) str = "h264";
         if (str.equals("libfaac")) str = "aac";
         if (str.equals("libmp3lame")) str = "mp3";
