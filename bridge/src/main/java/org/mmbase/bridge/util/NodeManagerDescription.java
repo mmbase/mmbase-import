@@ -21,7 +21,7 @@ import org.mmbase.util.xml.ParentBuilderReader;
  * and hence cannot themselves be used to store in the CloudContext.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: MockCloudContext.java 39095 2009-10-13 09:14:33Z michiel $
+ * @version $Id$
  * @since   MMBase-1.9.2
  * @todo    EXPERIMENTAL
  */

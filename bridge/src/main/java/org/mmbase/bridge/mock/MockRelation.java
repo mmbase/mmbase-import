@@ -15,7 +15,7 @@ import org.mmbase.bridge.*;
 
 /**
  * @author  Michiel Meeuwissen
- * @version $Id: MockNode.java 40297 2009-12-26 15:50:20Z michiel $
+ * @version $Id$
  * @since   MMBase-2.0
  */
 
