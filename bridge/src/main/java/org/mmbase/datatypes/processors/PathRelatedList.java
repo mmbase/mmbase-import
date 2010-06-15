@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8.7
- * @version $Id: RelatedList.java 36281 2009-06-22 20:47:35Z michiel $
+ * @version $Id$
  */
 
 public class PathRelatedList {

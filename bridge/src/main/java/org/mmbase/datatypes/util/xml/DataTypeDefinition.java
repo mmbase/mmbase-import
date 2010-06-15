@@ -340,7 +340,9 @@ public class DataTypeDefinition {
     private void addProcessor(int action, int processingType, Processor newProcessor) {
 
         Processor oldProcessor = dataType.getProcessorWithoutDefault(action, processingType);
+        assert ! newProcessor.equals(oldProcessor) : "" + dataType;
         newProcessor = DataTypeXml.chainProcessors(oldProcessor, newProcessor);
+
         if (log.isDebugEnabled()) {
             log.debug("Adding processor to " + processingType + " " + dataType + " Found processor " + oldProcessor + "--> " + newProcessor);
         }
