@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  >]></pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: KeywordsProcessor.java 40288 2009-12-21 10:56:52Z michiel $
+ * @version $Id$
  * @since MMBase-1.9
  */
 
