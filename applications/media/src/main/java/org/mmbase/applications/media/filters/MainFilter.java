@@ -55,7 +55,7 @@ public class MainFilter {
     private final List<Filter> filters = new ArrayList<Filter>();
 
     /**
-     * Construct the MainFilter
+     * Constructs MainFilter
      */
     private MainFilter() {
         String configFile = CONFIG_FILE;
