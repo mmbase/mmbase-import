@@ -63,6 +63,8 @@ public enum Format {
 
     OGV  (31),
     OGA  (32),
+    
+    WEBM (40),
 
     PODCAST(50),
     VODCAST(51),
