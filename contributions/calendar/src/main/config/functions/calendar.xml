@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE functionset PUBLIC "//MMBase - functionset //" "http://www.mmbase.org/dtd/functionset_1_0.dtd">
+<functionset>
+
+  <description></description>
+
+  <function name="itemsController">
+    <type>class</type>
+    <class>org.mmbase.security.calendar.ItemsController</class>
+    <method>post</method>
+  </function>
+
+</functionset>
