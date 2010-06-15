@@ -442,7 +442,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
                 }
                 if (dest.getNodeManager().hasField("acodec") && dest.getIntValue("acodec") < 0) {
                     dest.setIntValue("acodec", libtoCodec(m.group(1)).toInt() );
-                } else if (source.getIntValue("codec") < 0) {
+                } else if (dest.getIntValue("codec") < 0) {
                     dest.setIntValue("codec", libtoCodec(m.group(1)).toInt() );
                 }
             }
