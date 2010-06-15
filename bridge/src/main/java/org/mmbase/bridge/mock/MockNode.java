@@ -110,4 +110,9 @@ public class MockNode extends MapNode<Object> implements Node  {
         nodeDescription.aliases.remove(aliasName);
     }
 
+    @Override
+    public void delete(boolean deleteRelations) {
+        cloud.cloudContext.nodes.remove(getNumber());
+    }
+
 }
