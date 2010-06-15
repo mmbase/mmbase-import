@@ -126,7 +126,7 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
                         list.clear();
                 }
                 
-                    LOG.info("Re-transcoding caches for #" + node.getNumber() + ", doing all: " + all);
+                    LOG.info("Re-transcoding caches for source #" + node.getNumber() + ", doing all: " + all);
                     if ( list.size() > 0 && ! all ) {
                         jdlist = newJobList(node, list, cc.getConfiguration());
                     } else {
@@ -134,7 +134,7 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
                 }
             }
 
-                LOG.info("jdlist: " + jdlist);
+                LOG.debug("jdlist: " + jdlist);
                 
                 if (cc != null) {
                     LOG.service("Calling " + cc);
