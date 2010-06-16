@@ -313,6 +313,11 @@ public class FileServlet extends BridgeServlet {
 
     /**
      * @TODO Ranges stuff can be generalized to also work e.g. with images and attachments.
+     *
+     * Tomcat has an implementation of these headers: Content-Range, Accep-Ranges, Range and If-Range.
+     * Use that? See org.apache.catalina.servlets.DefaultServlet
+     * http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/catalina/servlets/DefaultServlet.html
+     *
      * @since MMBase-2.0
      */
     protected static interface Range {
