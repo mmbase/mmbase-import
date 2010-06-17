@@ -10,8 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.logging;
 
 import java.io.PrintStream;
-import java.util.StringTokenizer;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -27,7 +26,19 @@ import java.text.SimpleDateFormat;
 public class SimpleTimeStampImpl extends AbstractSimpleImpl implements Logger {
 
     private static SimpleTimeStampImpl root = new SimpleTimeStampImpl("");
-    private static PrintStream ps = System.out;
+    private static Map<Level, PrintStream> ps = new HashMap<Level, PrintStream>();
+
+    static {
+        for (Level l : Level.getLevels()) {
+            if (l.toInt() >= Level.WARN.toInt()) {
+                ps.put(l, System.err);
+            } else {
+                ps.put(l, System.out);
+            }
+        }
+    }
+
+    private static int stacktraceLevel  = Level.FATAL_INT;
 
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS ");
     private static Map<String, SimpleTimeStampImpl> loggers  = new ConcurrentHashMap<String, SimpleTimeStampImpl>();
@@ -49,6 +60,10 @@ public class SimpleTimeStampImpl extends AbstractSimpleImpl implements Logger {
     }
 
 
+    protected PrintStream getStream(Level l) {
+        return ps.get(l);
+    }
+
     /**
      * The configure method of this Logger implemenation.
      *
@@ -66,10 +81,14 @@ public class SimpleTimeStampImpl extends AbstractSimpleImpl implements Logger {
         while (t.hasMoreTokens()) {
             String token = t.nextToken();
             if (token.equals("stderr")) {
-                ps = System.err;
+                for (Level l : Level.getLevels()) {
+                    ps.put(l, System.err);
+                }
             }
             if (token.equals("stdout")) {
-                ps = System.out;
+                for (Level l : Level.getLevels()) {
+                    ps.put(l, System.out);
+                }
             }
             if (token.equals("trace")) {
                 root.setLevel(Level.TRACE);
@@ -96,8 +115,13 @@ public class SimpleTimeStampImpl extends AbstractSimpleImpl implements Logger {
     }
 
     @Override
-    protected final void log (String s) {
-        ps.println(dateFormat.format(new java.util.Date()) + s);
+    protected final void log (String s, Level l) {
+        PrintStream stream = getStream(l);
+        stream.println(l.toString() + " " + dateFormat.format(new java.util.Date()) + s);
+        if (l.toInt() >= stacktraceLevel) {
+            Throwable t = new Throwable();
+            stream.println(Logging.stackTrace(t));
+        }
     }
 
 }
