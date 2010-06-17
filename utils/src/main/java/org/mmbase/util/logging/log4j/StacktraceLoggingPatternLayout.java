@@ -3,7 +3,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
 /**
  * This layout can be used in logging in order to print out a stacktrace
- * for a given logging event. THis is a very expensive call, but can be
+ * for a given logging event. This is a very expensive call, but can be
  * very useful when trying to find application bugs. Using this layout
  * you will see exactly which line of code (or which JSP) generated the
  * exception.
