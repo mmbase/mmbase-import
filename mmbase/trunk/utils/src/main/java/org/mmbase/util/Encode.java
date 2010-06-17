@@ -64,21 +64,25 @@ public class Encode {
         encodings = new HashMap<String,Config>();
 
         // a few Encoding are avaible by default:
-        try {
-            register("org.mmbase.util.transformers.MD5");
-            register("org.mmbase.util.transformers.Base64");
-            register("org.mmbase.util.transformers.Hex");
-            register("org.mmbase.util.transformers.Xml");
-            register("org.mmbase.util.transformers.Url");
-            register("org.mmbase.util.transformers.Sql");
-            register("org.mmbase.util.transformers.XmlField");
-            register("org.mmbase.util.transformers.LinkFinder");
-            register("org.mmbase.util.transformers.Censor");
-            register("org.mmbase.util.transformers.Rot13");
-            register("org.mmbase.util.transformers.Rot5");
-            register("org.mmbase.util.transformers.UnicodeEscaper");
-        } catch (IllegalArgumentException e) {
-            log.warn("", e);
+        for (String clazz :  new String[] {
+                "org.mmbase.util.transformers.MD5",
+                "org.mmbase.util.transformers.Base64",
+                "org.mmbase.util.transformers.Hex",
+                "org.mmbase.util.transformers.Xml",
+                "org.mmbase.util.transformers.Url",
+                "org.mmbase.util.transformers.Sql",
+                "org.mmbase.util.transformers.XmlField",
+                "org.mmbase.util.transformers.LinkFinder",
+                "org.mmbase.util.transformers.Censor",
+                "org.mmbase.util.transformers.Rot13",
+                "org.mmbase.util.transformers.Rot5",
+                "org.mmbase.util.transformers.UnicodeEscaper"
+            }) {
+            try {
+                register(clazz);
+            } catch (IllegalArgumentException e) {
+                log.warn(e.getMessage());
+            }
         }
     }
 
@@ -147,7 +151,7 @@ public class Encode {
                     throw new IllegalArgumentException("The class " + clazz + " does not implement " + Transformer.class.getName());
                 }
             } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException(e.toString());
+                throw new IllegalArgumentException(e.toString(), e);
             } catch (Exception e) { // yeah, yeah, it can throw a lot more.
                 // TODO perhaps make better distinction between exceptions...
                 throw new IllegalArgumentException(e.toString());
@@ -286,7 +290,6 @@ public class Encode {
     /**
      * Invocation of the class from the commandline for testing.
      */
-    /*
     public static void  main(String[] argv) {
         try {
             org.mmbase.module.core.MMBaseContext.init(System.getProperty("mmbase.config"), false);
@@ -361,5 +364,4 @@ public class Encode {
             }
         }
     }
-    */
 }
