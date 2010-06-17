@@ -48,6 +48,13 @@ public final class Level implements java.io.Serializable {
         FATAL   = new Level(FATAL_INT, "FATAL"),
         OFF     = new Level(OFF_INT, "OFF");
 
+    /**
+     * @since MMBase-2.0
+     */
+    public static Level[] getLevels() {
+        return new Level[] { TRACE, DEBUG, SERVICE, INFO, WARN,ERROR, FATAL, OFF};
+    }
+
     private int level;
     private String string;
 
