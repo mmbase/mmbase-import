@@ -143,7 +143,7 @@ public class RemoteMMCI extends Module {
                 log.debug("Module RemoteMMCI Running on (tcp port,name)=(" + registryPort + "," + bindName + ")");
             }
             else {
-                log.warn("Module RemoteMMCI MOT running and failed to bind " + bindName + ")");
+                log.warn("Module RemoteMMCI NOT running and failed to bind " + bindName + ")");
             }
         } catch (RemoteException rex) {
             log.fatal("RMI Registry not started because of exception :" + rex.getMessage(), rex);
@@ -226,7 +226,7 @@ public class RemoteMMCI extends Module {
 
     /**
      * unbinds the object bound to the registry in order to try to stop the registry
-     * this usualy fails(the regsitry keeps running and prevents the webapp to shutdown)
+     * this usualy fails(the registry keeps running and prevents the webapp to shutdown)
      */
     @Override
     protected void shutdown() {
