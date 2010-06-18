@@ -427,6 +427,16 @@ public class FileServlet extends BridgeServlet {
      * @since MMBase-2.0
      */
     protected ChainedRange getRange(HttpServletRequest req, File file) {
+        try {
+            long ifRange = req.getDateHeader("If-Range");
+            if (ifRange < file.lastModified()) {
+                // cannot use partial content, because the file was changed in the mean time
+                return null;
+            }
+        } catch (IllegalArgumentException ie) {
+            // never mind, it may be entity tag, which we don't support
+        }
+
         String range = req.getHeader("Range");
         if (range != null) {
             String r[] = range.split("=");
