@@ -67,7 +67,7 @@ public class HandleServlet extends BridgeServlet {
             // default: one hour
             expires = 60 * 60 * 1000;
         } else {
-            expires = Integer.valueOf(expiresParameter).intValue() * 1000;
+            expires = Long.valueOf(expiresParameter).longValue() * 1000;
         }
 
         String ieCompat = getInitParameter("IECompatibleJpeg");
