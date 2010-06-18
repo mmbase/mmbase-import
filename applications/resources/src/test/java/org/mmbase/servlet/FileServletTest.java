@@ -10,6 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.servlet;
 
 import java.util.*;
+import java.io.*;
+import org.apache.commons.io.FileUtils;
+
 import org.mmbase.util.*;
 
 import org.junit.*;
@@ -39,6 +42,30 @@ public class FileServletTest {
     public void testRangeLength() {
         assertEquals(500, new ChainedRange("0-200,101-499", 10000).getLength());
         assertEquals(400, new ChainedRange("0-200,101-499", 400).getLength());
+    }
+
+
+    public void stream(ChainedRange range) throws Exception {
+        File file = new File("src" + File.separator + "test" + File.separator + "images" + File.separator + "test.png");
+        InputStream in = new FileInputStream(file);
+        File outFile = File.createTempFile(FileServletTest.class.getName(), null);
+        //System.out.println("" + outFile);
+        OutputStream out = new FileOutputStream(outFile);
+        FileServlet.stream(null, in, out);
+        assertTrue(FileUtils.contentEquals(file, outFile));
+    }
+
+    @Test
+    public void stream() throws Exception {
+        stream(null);
+    }
+
+
+    @Test
+    public void streamRange() throws Exception {
+        File file = new File("src" + File.separator + "test" + File.separator + "images" + File.separator + "test.png");
+        ChainedRange range = new ChainedRange("0-100,101-499,500-", file.length());
+        stream(range);
     }
 
 }

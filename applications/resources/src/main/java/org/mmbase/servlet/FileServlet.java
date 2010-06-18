@@ -435,12 +435,8 @@ public class FileServlet extends BridgeServlet {
 
     }
 
-    protected void stream(HttpServletRequest req, HttpServletResponse resp, File file) throws IOException {
-        BufferedOutputStream out = new BufferedOutputStream(resp.getOutputStream());
-        BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
+    protected static void stream(ChainedRange range, InputStream in, OutputStream out) throws IOException {
         byte[] buf = new byte[1024];
-
-        final ChainedRange range = getRange(req, file);
         if (range != null) {
             long pos = 0;
             while (pos < range.max) {
@@ -466,6 +462,14 @@ public class FileServlet extends BridgeServlet {
         out.flush();
         in.close();
         out.close();
+    }
+
+
+    protected void stream(HttpServletRequest req, HttpServletResponse resp, File file) throws IOException {
+        BufferedOutputStream out = new BufferedOutputStream(resp.getOutputStream());
+        BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
+        final ChainedRange range = getRange(req, file);
+        stream(range, in, out);
     }
 
     private static final FormatFileSize formatFileSize = new FormatFileSize();
