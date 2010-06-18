@@ -424,10 +424,12 @@ public class FileServlet extends BridgeServlet {
 
     /**
      * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
+     * @return A ChainedRange object if Range header was present and If-Range did't provide useage. <code>null</code> otherwise.
      * @since MMBase-2.0
      */
     protected ChainedRange getRange(HttpServletRequest req, File file) {
         try {
+            // http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.27
             long ifRange = req.getDateHeader("If-Range");
             if (ifRange < file.lastModified()) {
                 // cannot use partial content, because the file was changed in the mean time
