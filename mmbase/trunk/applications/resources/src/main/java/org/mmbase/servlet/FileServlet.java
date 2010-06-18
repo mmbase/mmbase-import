@@ -271,6 +271,9 @@ public class FileServlet extends BridgeServlet {
             if (range != null) {
                 long length = range.getLength();
                 resp.setContentLength((int) length);
+                if (length < file.length()) {
+                    resp.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+                }
             } else {
                 resp.setContentLength((int) file.length());
             }
