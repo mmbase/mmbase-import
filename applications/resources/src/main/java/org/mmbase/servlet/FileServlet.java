@@ -435,6 +435,7 @@ public class FileServlet extends BridgeServlet {
             }
         } catch (IllegalArgumentException ie) {
             // never mind, it may be entity tag, which we don't support
+            log.warn("Could not parse " + req.getHeader("If-Range"));
         }
 
         String range = req.getHeader("Range");
