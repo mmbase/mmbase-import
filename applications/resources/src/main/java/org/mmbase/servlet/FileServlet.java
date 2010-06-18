@@ -424,7 +424,7 @@ public class FileServlet extends BridgeServlet {
 
     /**
      * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
-     * @return A ChainedRange object if Range header was present and If-Range did't provide useage. <code>null</code> otherwise.
+     * @return A ChainedRange object if Range header was present and If-Range didn't provide useage. <code>null</code> otherwise.
      * @since MMBase-2.0
      */
     protected ChainedRange getRange(HttpServletRequest req, File file) {
@@ -451,6 +451,9 @@ public class FileServlet extends BridgeServlet {
 
     }
 
+    /**
+     * @todo Generalize this stuff  with Ranges to HandleServlet, so that it also could work for images and attachments.
+     */
     protected static void stream(ChainedRange range, InputStream in, OutputStream out) throws IOException {
         byte[] buf = new byte[1024];
         if (range != null) {
