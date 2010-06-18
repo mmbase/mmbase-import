@@ -18,6 +18,7 @@ import org.mmbase.bridge.util.xml.query.*;
 import org.mmbase.util.xml.DocumentSerializable;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.functions.Function;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.*;
 
 /**
@@ -343,7 +344,9 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                                                     } else {
                                                         try {
                                                             Function function = next.getFunction("gui");
-                                                            String gui = function.getFunctionValue(function.createParameters()).toString();
+                                                            Parameters params = function.createParameters();
+                                                            params.set("locale", locale);
+                                                            String gui = function.getFunctionValue(params).toString();
                                                             return new Entry<C, String>((C) next, gui);
                                                         } catch (NotFoundException nfe) {
                                                             if (node == null) {
