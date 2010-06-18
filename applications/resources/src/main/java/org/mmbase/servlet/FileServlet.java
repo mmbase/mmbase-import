@@ -368,6 +368,10 @@ public class FileServlet extends BridgeServlet {
             if (i > last)  return max - last;
             return 0;
         }
+        @Override
+        public String toString() {
+            return "" + (first > 0 ? first : "")+ "-" + (last < Long.MAX_VALUE ? last : "");
+        }
     }
     /**
      * This implementation of Range parses and combines a number of {@link FirstLastRange}s.
@@ -420,6 +424,15 @@ public class FileServlet extends BridgeServlet {
             if (length > max) length = max;
             return length;
         }
+        @Override
+        public String toString() {
+            StringBuilder bul = new StringBuilder();
+            for (Range r : ranges) {
+                if (bul.length() > 0) bul.append(",");
+                bul.append(r.toString());
+            }
+            bul.append("/").append(max);
+        }
     }
 
     /**
@@ -457,6 +470,7 @@ public class FileServlet extends BridgeServlet {
     protected static void stream(ChainedRange range, InputStream in, OutputStream out) throws IOException {
         byte[] buf = new byte[1024];
         if (range != null) {
+
             long pos = 0;
             while (pos < range.max) {
                 long available = range.available(pos);
@@ -488,6 +502,9 @@ public class FileServlet extends BridgeServlet {
         BufferedOutputStream out = new BufferedOutputStream(resp.getOutputStream());
         BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
         final ChainedRange range = getRange(req, file);
+        if (range != null) {
+            resp.addHeader("Content-Range", "bytes " + range.toString());
+        }
         stream(range, in, out);
     }
 
