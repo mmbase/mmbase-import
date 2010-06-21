@@ -231,7 +231,7 @@ public class Casting {
                     return (C) new Locale(toString(value));
                 }
            } else if (type.equals(TimeZone.class)) {
-                if (value == null) return null;
+                if (value == null || "".equals(value)) return null;
                 if (value instanceof TimeZone) {
                     return (C) value;
                 } else {
