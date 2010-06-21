@@ -1,6 +1,6 @@
-<taglib xmlns="http://java.sun.com/xml/ns/j2ee" 
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
         version="2.0"
-        xmlns:ns0="http://www.w3.org/2001/XMLSchema-instance" 
+        xmlns:ns0="http://www.w3.org/2001/XMLSchema-instance"
         ns0:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
   <tlib-version>1.0</tlib-version>
   <short-name>mm-cal</short-name>
@@ -22,6 +22,10 @@
     <path>/META-INF/tags/mm/calendar/monthsOverview.tagx</path>
   </tag-file>
   <tag-file>
+    <name>days</name>
+    <path>/META-INF/tags/mm/calendar/days.tagx</path>
+  </tag-file>
+  <tag-file>
     <name>localeSelector</name>
     <path>/META-INF/tags/mm/calendar/localeSelector.tagx</path>
   </tag-file>
@@ -38,4 +42,4 @@
     <path>/META-INF/tags/mm/calendar/periods.tagx</path>
   </tag-file>
 -->
-</taglib> 
+</taglib>
