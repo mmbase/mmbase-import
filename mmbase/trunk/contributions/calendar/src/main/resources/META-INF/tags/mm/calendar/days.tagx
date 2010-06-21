@@ -5,11 +5,19 @@
     xmlns:mm-cal="http://www.mmbase.org/tags/mm/calendar"
     version="2.0" >
 
-  <jsp:directive.tag import="java.util.*" />
+  <jsp:directive.tag import="java.util.*"
+                     description="This tag is meant to show days in a sequential manner"
+                     />
 
-  <jsp:directive.attribute name="begin"       required="true" />
-  <jsp:directive.attribute name="end"         required="true" />
-  <jsp:directive.attribute name="items"        type="java.util.List" />
+  <jsp:directive.attribute name="begin"       required="true"
+                           description="First day to be shown"
+                           />
+  <jsp:directive.attribute name="end"         required="true"
+                           description="Last day to be shown"
+                           />
+  <jsp:directive.attribute name="items"        type="java.util.List"
+                           description="items to show for each day (can be a nodelist)"
+                           />
 
   <jsp:directive.attribute name="trth"    fragment="true"  />
   <jsp:directive.attribute name="trtd"      fragment="true"  />
