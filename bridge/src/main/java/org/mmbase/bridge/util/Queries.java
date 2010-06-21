@@ -15,6 +15,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.datatypes.*;
 import org.mmbase.bridge.implementation.BasicQuery;
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.legacy.ConstraintParser;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -194,6 +195,71 @@ abstract public class Queries {
             query.setConstraint(newConstraint);
         }
         return newConstraint;
+    }
+
+
+    /**
+     * @since MMBase-1.9.4
+     */
+    public static List<FieldConstraint> getConstraints(Constraint constraint, Step step) {
+        List<FieldConstraint> result = new ArrayList<FieldConstraint>();
+        if (constraint instanceof FieldConstraint) {
+            FieldConstraint fvc = (FieldConstraint) constraint;
+            if (fvc.getField().getStep().equals(step)) {
+                result.add(fvc);
+            }
+        } else if (constraint instanceof CompositeConstraint) {
+            CompositeConstraint composite = (CompositeConstraint) constraint;
+            if (composite.getLogicalOperator() == CompositeConstraint.LOGICAL_AND) {
+                for (Constraint cons : composite.getChilds()) {
+                    result.addAll(getConstraints(cons, step));
+                }
+            } else if (composite.getChilds().size() > 0) {
+                result.addAll(getConstraints(composite.getChilds().get(0), step));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @since MMBase-1.9.4
+     */
+    private static boolean removeConstraint(BasicCompositeConstraint compConstraint, Constraint cons) {
+        if (compConstraint.getChilds().contains(cons)) {
+            compConstraint.removeChild(cons);
+            return true;
+        } else {
+            for (Constraint child : compConstraint.getChilds()) {
+                if (child instanceof CompositeConstraint) {
+                    boolean r = removeConstraint((BasicCompositeConstraint) compConstraint, cons);
+                    if (r) return true;
+                } else {
+                }
+            }
+            return false;
+        }
+
+    }
+
+    /**
+     * @since MMBase-1.9.4
+     */
+    public static boolean removeConstraint(Query q, Constraint cons) {
+        if (cons == null) {
+            return false;
+        }
+        Constraint constraint = q.getConstraint();
+        // remove it from clone (by modifying the 'cloned' constraint)
+        if (cons.equals(constraint)) {
+            q.setConstraint(null);
+            return true;
+        } else { // must be part of the composite constraint
+            if (constraint instanceof CompositeConstraint) {
+                return removeConstraint((BasicCompositeConstraint) constraint, cons);
+            } else {
+                return false;
+            }
+        }
     }
 
     /**
@@ -1358,6 +1424,7 @@ abstract public class Queries {
     }
 
 
+
     /**
      * Explores a query object, and creates a certain new relation object, which would make the
      * given node appear in the query's result.
@@ -1433,6 +1500,39 @@ abstract public class Queries {
 
     }
 
+    /**
+     * @since MMBase-1.9.4
+     */
+    public static int applyConstraints(Query q, Step step, Node n) {
+        NodeManager stepManager = q.getCloud().getNodeManager(step.getTableName());
+        if (! (n.getNodeManager().equals(stepManager) || stepManager.getDescendants().contains(n.getNodeManager()))) {
+            throw new IllegalArgumentException("Node '" + n.getNumber() + "' of type " + n.getNodeManager().getName() + " cannot be part of " + step);
+        }
+        for (FieldConstraint constraint : getConstraints(q.getConstraint(), step)) {
+            if (constraint instanceof FieldValueConstraint) {
+                FieldValueConstraint fvc = (FieldValueConstraint) constraint;
+                boolean needsSet = true;
+                try {
+                    needsSet = ! fvc.matches(fvc.getValue());
+                } catch (UnsupportedOperationException ue) {
+                    log.warn(ue);
+                }
+                if (needsSet) {
+                    switch (fvc.getOperator()) {
+                    case FieldCompareConstraint.LESS_EQUAL:
+                    case FieldCompareConstraint.EQUAL:
+                    case FieldCompareConstraint.GREATER_EQUAL:
+                        n.setValue(fvc.getField().getFieldName(), fvc.getValue());
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Don't know how to apply " + fvc);
+                    }
+                }
+            }
+        }
+        return 0;
+
+    }
 
     /**
      * Deletes the relations with a node from a queries resulting relations list.
@@ -1450,6 +1550,41 @@ abstract public class Queries {
             r.delete();
         }
         return result;
+    }
+
+
+    /**
+     * @since MMBase-1.9.4
+     */
+    public static int applyConstraints(Query q, Step step, Node n) {
+        NodeManager stepManager = q.getCloud().getNodeManager(step.getTableName());
+        if (! (n.getNodeManager().equals(stepManager) || stepManager.getDescendants().contains(n.getNodeManager()))) {
+            throw new IllegalArgumentException("Node '" + n.getNumber() + "' of type " + n.getNodeManager().getName() + " cannot be part of " + step);
+        }
+        for (FieldConstraint constraint : getConstraints(q.getConstraint(), step)) {
+            if (constraint instanceof FieldValueConstraint) {
+                FieldValueConstraint fvc = (FieldValueConstraint) constraint;
+                boolean needsSet = true;
+                try {
+                    needsSet = ! fvc.matches(fvc.getValue());
+                } catch (UnsupportedOperationException ue) {
+                    log.warn(ue);
+                }
+                if (needsSet) {
+                    switch (fvc.getOperator()) {
+                    case FieldCompareConstraint.LESS_EQUAL:
+                    case FieldCompareConstraint.EQUAL:
+                    case FieldCompareConstraint.GREATER_EQUAL:
+                        n.setValue(fvc.getField().getFieldName(), fvc.getValue());
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Don't know how to apply " + fvc);
+                    }
+                }
+            }
+        }
+        return 0;
+
     }
 
     /**
