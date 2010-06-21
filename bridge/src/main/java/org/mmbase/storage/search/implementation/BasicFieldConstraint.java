@@ -57,6 +57,11 @@ public class BasicFieldConstraint extends BasicConstraint implements FieldConstr
     }
 
     @Override
+    public boolean matches(Object o) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public StepField getField() {
         return field;
     }

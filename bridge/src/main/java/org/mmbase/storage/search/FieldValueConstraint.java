@@ -20,12 +20,12 @@ package org.mmbase.storage.search;
  */
 public interface FieldValueConstraint extends FieldCompareConstraint {
     /**
-     * Gets the value to compare with. 
-     * Depending on the field type, the value is of type 
+     * Gets the value to compare with.
+     * Depending on the field type, the value is of type
      * <code>String</code> or <code>Number</code>.
      * <p>
-     * If the associated field type is of string type, when used in 
-     * combination with the operator <code>LIKE</code>, this may contain the 
+     * If the associated field type is of string type, when used in
+     * combination with the operator <code>LIKE</code>, this may contain the
      * following wildcard characters as well:
      * <ul>
      * <li>% for any string
@@ -35,16 +35,16 @@ public interface FieldValueConstraint extends FieldCompareConstraint {
     Object getValue();
 
     /**
-     * Returns a string representation of this FieldValueConstraint. 
-     * The string representation has the form 
-     * "FieldValueConstraint(inverse:&lt:inverse&gt;, field:&lt;field&gt;, 
+     * Returns a string representation of this FieldValueConstraint.
+     * The string representation has the form
+     * "FieldValueConstraint(inverse:&lt:inverse&gt;, field:&lt;field&gt;,
      *  casesensitive:&lt;casesensitive&gt;, operator:&lt;operator&gt;,
      *  value:&lt;value&gt;)"
-     * where 
+     * where
      * <ul>
      * <li><em>&lt;inverse&gt;</em>is the value returned by
      *      {@link #isInverse isInverse()}
-     * <li><em>&lt;field&gt;</em> is the field alias returned by 
+     * <li><em>&lt;field&gt;</em> is the field alias returned by
      *     <code>FieldConstraint#getField().getAlias()</code>, or
      *     <code>FieldConstraint#getField().getFieldName()</code>
      *      when the former is <code>null</code>.
@@ -60,5 +60,11 @@ public interface FieldValueConstraint extends FieldCompareConstraint {
      */
     @Override
     String toString();
+
+
+    /**
+     * @since MMBase-1.9.4
+     */
+    boolean matches(Object value);
 
 }

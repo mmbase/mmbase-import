@@ -28,4 +28,11 @@ public interface FieldConstraint extends Constraint {
     boolean isCaseSensitive();
 
 
+
+    /**
+     * Determines whether a certain given value would match this constraint.
+     * @since MMBase-1.9.4
+     */
+    boolean matches(Object value);
+
 }
