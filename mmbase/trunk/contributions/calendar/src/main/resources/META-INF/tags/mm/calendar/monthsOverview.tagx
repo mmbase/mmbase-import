@@ -108,7 +108,7 @@
           <thead>
             <!-- navigation for the complete table -->
             <tr>
-              <jsp:invoke fragment="trth" />
+              <mm:write referid="extra_ths" escape="none" />
               <th class="navigate" colspan="${cols * 9 + 1}">
                 <c:if test="${offset gt 0}">
                   <mm:link referids="${referids}">
@@ -140,8 +140,8 @@
                   <th />
                 </c:forEach>
               </c:if>
-              <th><!-- week of month --></th>
               <c:forEach begin="1" end="${cols}">
+                <th><!-- week of month --></th>
                 <th><!-- month name --></th>
                 <th>#</th>
                 <jsp:scriptlet>
@@ -163,25 +163,23 @@
 
 
           <tbody>
-            <c:if test="${! empty extra_th_count}">
-              <c:forEach begin="1" end="${extra_th_count}">
-                <th />
-              </c:forEach>
-            </c:if>
             <c:forEach begin="0" end="${rows - 1}" var="r">
               <jsp:scriptlet>
                 int firstWeek = 1;
                 int lastWeek = 4;
             </jsp:scriptlet>
             <tr>
-
-              <mm:write referid="extra_ths" escape="none" />
+              <c:if test="${! empty extra_th_count}">
+                <c:forEach begin="1" end="${extra_th_count}">
+                  <th />
+                </c:forEach>
+              </c:if>
               <c:forEach begin="0" end="${cols - 1}" var="c">
                 <mm:context>
                   <mm:import id="m">${cols * r + c + o}</mm:import>
                   <mm:time time="tomonth  ${m ge 0 ? '+' : ''} ${m} month" id="month" write="false" vartype="date" />
                   <mm:locale language="en" country="US"><mm:time referid="month" format="MMMM" id="monthname" write="false" /></mm:locale>
-                  <th colspan="${c eq 0 ? 10 : 9}" class="${monthname}">
+                  <th colspan="10" class="${monthname}">
                     <mm:time referid="month" format="MMMM yyyy" />
                   </th>
                   <mm:time referid="month" jspvar="month" vartype="date" write="false">
@@ -200,9 +198,9 @@
             <mm:import reset="true" id="lastWeek"><jsp:expression>lastWeek</jsp:expression></mm:import>
             <c:forEach begin="${firstWeek}" end="${lastWeek}" var="week">
               <tr>
-                <jsp fragment="trtd" />
-                <td class="weeknr month">${week}</td>
+                <jsp:invoke fragment="trtd" />
                 <c:forEach begin="0" end="${cols - 1}" var="c">
+                  <td class="weeknr month">${week}</td>
                   <mm:context>
                     <mm:import id="m">${cols * r + c + o}</mm:import>
                     <mm:time time="tomonth  ${m ge 0 ? '+' : ''} ${m} month" id="month" write="false" vartype="date" />
