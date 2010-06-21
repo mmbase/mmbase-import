@@ -43,6 +43,8 @@ public enum Codec {
     WAV(27),
     WMAV1(28),    // Windows Media Audio 1
     WMAV2(29),    // Windows Media Audio 2
+    QDMC(30),     // QDesign Music Codec (mostly found in mov)
+    QDM2(31),
 
     /* video */
     FLV(101),
@@ -58,7 +60,8 @@ public enum Codec {
     WMV2(111),    // Windows Media Video 8
     WMV3(112),    // Windows Media Video 9
     XVID(113),
-    VP8(114);
+    VP8(114),
+    SVQ3(115);    // Sorenson Video 3 codec (found in QuickTime and Flash ("allmost h.263"))
     
     private static Logger log = Logging.getLoggerInstance(Codec.class);
 
