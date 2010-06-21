@@ -39,6 +39,11 @@ public class SetFunction extends AbstractFunction<Object> {
          */
         INSTANCE,
         /**
+         * If type is 'bean' the method must not be static, and on every call to getFunctionValue, a new object is instantiated. There is not need to
+         * explicitely declare the parameters.
+         */
+        BEAN,
+        /**
          * If type is 'singleton', then the static method 'getInstance' will be called to get the one instance, unless the method is static.
          */
         SINGLETON
@@ -155,6 +160,7 @@ public class SetFunction extends AbstractFunction<Object> {
                     throw new RuntimeException("Can't create an function instance : " + functionMethod.getDeclaringClass().getName(), e);
                 }
                 break;
+            case BEAN:
             case INSTANCE:
                 functionInstance = null;
                 // one will be made on every calle
