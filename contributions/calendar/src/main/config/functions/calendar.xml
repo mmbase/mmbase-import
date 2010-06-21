@@ -5,8 +5,8 @@
   <description></description>
 
   <function name="itemsController">
-    <type>class</type>
-    <class>org.mmbase.security.calendar.ItemsController</class>
+    <type>bean</type>
+    <class>org.mmbase.calendar.ItemsController</class>
     <method>post</method>
   </function>
 

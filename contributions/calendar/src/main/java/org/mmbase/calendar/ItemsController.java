@@ -11,7 +11,9 @@ package org.mmbase.calendar;
 
 import java.util.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.functions.Required;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -28,7 +30,10 @@ public class ItemsController {
     private static final Logger LOG = Logging.getLoggerInstance(ItemsController.class);
 
     private NodeQuery query;
+    private NodeQuery abstractQuery;
     private boolean desiredValue;
+    private Date startForm;
+    private Date stopForm;
     private Date start;
     private Date stop;
     private String title;
@@ -50,20 +55,34 @@ public class ItemsController {
     @Required
     public void setQuery(NodeQuery query) {
         this.query = query;
+        abstractQuery = (NodeQuery) query.clone();
+        Queries.removeConstraint(abstractQuery, getDate(abstractQuery, abstractQuery.getConstraint(), "start"));
+        Queries.removeConstraint(abstractQuery, getDate(abstractQuery, abstractQuery.getConstraint(), "stop"));
+        abstractQuery.setMaxNumber(Integer.MAX_VALUE);
     }
 
+    public void setStartForm(Date start) {
+        this.startForm = start;
+    }
+
+
+    public void setStopForm(Date stop) {
+        this.stopForm = stop;
+    }
+
+    @Required
     public void setStart(Date start) {
         this.start = start;
     }
 
-
+    @Required
     public void setStop(Date stop) {
         this.stop = stop;
     }
 
-    protected static FieldValueConstraint getDate(NodeQuery q, Constraint constraint, String field) {
-        if (constraint instanceof FieldValueConstraint) {
-            FieldValueConstraint fvc = (FieldValueConstraint) constraint;
+    protected static BasicFieldValueConstraint getDate(NodeQuery q, Constraint constraint, String field) {
+        if (constraint instanceof BasicFieldValueConstraint) {
+            BasicFieldValueConstraint fvc = (BasicFieldValueConstraint) constraint;
             if (fvc.getField().getStep().equals(q.getNodeStep()) && fvc.getField().getFieldName().equals(field)) {
                 return fvc;
             } else {
@@ -72,7 +91,7 @@ public class ItemsController {
         } else if (constraint instanceof CompositeConstraint) {
             CompositeConstraint composite = (CompositeConstraint) constraint;
             for (Constraint cons : composite.getChilds()) {
-                FieldValueConstraint res = getDate(q, cons, field);
+                BasicFieldValueConstraint res = getDate(q, cons, field);
                 if (res != null) {
                     return res;
                 }
@@ -94,80 +113,119 @@ public class ItemsController {
     protected List<Node> getRelevantPeriods() {
 
         List<Node> result = new ArrayList<Node>();
-        if (start == null) {
-            start = getDate(query, "start");
+        if (startForm == null) {
+            // TODO should match one item before given item
+            LOG.debug("No start given");
+            startForm = start;
         }
-        if (stop == null) {
-            stop = getDate(query, "stop");
+        if (stopForm == null) {
+            LOG.debug("No stop given");
+            // TODO should match one item after given item
+            stopForm = stop;
         }
-        NodeQuery clone = (NodeQuery) query.clone();
+        result.addAll(abstractQuery.getNodeManager().getList(abstractQuery));
         return result;
     }
 
-    protected int addAndDelete(List<Node> periods) {
-        Date startDate = getDate(query, "start");
-        Date endDate   = getDate(query, "stop");
+    protected Node createNode() {
+        Cloud cloud = query.getCloud();
+        Node newNode = cloud.getNodeManager("calendar_items").createNode();
+        // TODO this supposes that the node belongs to the last step always
+        Queries.applyConstraints(abstractQuery, abstractQuery.getSteps().get(query.getSteps().size() - 1), newNode);
+        newNode.setStringValue("title", title);
+        return newNode;
+    }
 
+    protected int addAndDelete(List<Node> periods) {
+
+        if (desiredValue) {
+            LOG.debug("including " + "  " + start + " " + stop);
+        } else {
+            LOG.debug("execluding " + "  " + start + " " + stop);
+        }
         for (int i = 0 ; i < periods.size(); i++) {
             Node period = periods.get(i);
             if (desiredValue) {
-                if (period.getDateValue("start").getTime() <= startDate.getTime()) {
-                    if (period.getDateValue("stop").getTime() >= endDate.getTime()) {
-                        // already covered by a (longer) period
+                LOG.debug("include period " + period.getDateValue("start") + "-" + period.getDateValue("stop") + "  " + start + " " + stop);
+                if (period.getDateValue("start").getTime() <= start.getTime()) {
+                    if (period.getDateValue("stop").getTime() >= stop.getTime()) {
+                        LOG.debug("already covered by a (longer) period");
                         return 0;
-                    } else if (period.getDateValue("stop").getTime() >= startDate.getTime()) {
-                        // partially covered by a period that can be extended
-                        period.setDateValue("stop", endDate);
+                    } else if (period.getDateValue("stop").getTime() >= start.getTime()) {
+                        LOG.debug("partially covered by a period that can be extended");
+                        period.setDateValue("stop", stop);
+                        period.commit();
                         return 1;
                     } else {
-                        // period does not border or overlap
+                        LOG.debug("period does not border or overlap");
                         continue;
                     }
                 } else {
-                    if (period.getDateValue("start").getTime() <= endDate.getTime()) {
-                        if (period.getDateValue("stop").getTime() <= endDate.getTime()) {
-                            // period is completely included by desired period, extend on both sides.
-                            period.setDateValue("stop", endDate);
-                            period.setDateValue("start", startDate);
+                    if (period.getDateValue("start").getTime() <= stop.getTime()) {
+                        if (period.getDateValue("stop").getTime() <= stop.getTime()) {
+                            LOG.debug("period is completely included by desired period, extend on both sides.");
+                            period.setDateValue("stop", stop);
+                            period.setDateValue("start", start);
+                            period.commit();
                         } else {
-                            // desired perios is at the beginning of an existing item, extend at beginning
-                            period.setDateValue("start", startDate);
+                            LOG.debug("desired period is at the beginning of an existing item, extend at beginning");
+                            period.setDateValue("start", start);
+                            period.commit();
                         }
                         return 1;
                     }
                 }
             } else {
-                if (period.getDateValue("start").getTime() <= startDate.getTime()) {
-                    if (period.getDateValue("stop").getTime() > startDate.getTime()) {
-                        if (period.getDateValue("stop").getTime() <= endDate.getTime()) {
-                            // covered at the end of (longer) period
-                            if (period.getDateValue("start").getTime() == startDate.getTime()) {
+                LOG.debug("exclude period " + period.getDateValue("start") + "-" + period.getDateValue("stop") + "  " + start + " " + stop);
+                if (period.getDateValue("start").getTime() <= start.getTime()) {
+                    if (period.getDateValue("stop").getTime() > start.getTime()) {
+                        if (period.getDateValue("stop").getTime() <= stop.getTime()) {
+                            LOG.debug("covered at the end of (longer) period");
+                            if (period.getDateValue("start").getTime() == start.getTime()) {
                                 periods.remove(i);
                                 period.delete(true);
                                 return 1;
                             } else {
-                                period.setDateValue("stop", startDate);
+                                period.setDateValue("stop", start);
+                                period.commit();
                                 return 1;
                             }
-                        } else if (period.getDateValue("start").getTime() == startDate.getTime()) {
-                            // convered at the begin of a longer period
-                            period.setDateValue("start", endDate);
+                        } else if (period.getDateValue("start").getTime() == start.getTime()) {
+                            LOG.debug("covered at the begin of a longer period");
+                            period.setDateValue("start", stop);
+                            period.commit();
                             return 1;
+                        } else {
+                            LOG.debug("covered by a longer period");
+                            Date originalStop = period.getDateValue("stop");
+                            period.setDateValue("stop", start);
+                            period.commit();
+                            Node newNode = createNode();
+                            newNode.setDateValue("start", stop);
+                            newNode.setDateValue("stop", originalStop);
+                            newNode.commit();
+                            if (query.getSteps().size() > 1) {
+                                Queries.addToResult(query, newNode);
+                            }
+                            periods.add(newNode);
+                            return 2;
                         }
                     }
+                } else {
                 }
             }
 
         }
 
         if (desiredValue) {
-            // no matching period found, so create one
-            Cloud cloud = query.getCloud();
-            Node newNode = cloud.getNodeManager("calendar_items").createNode();
-            newNode.setStringValue("title", title);
-            newNode.setDateValue("start", startDate);
-            newNode.setDateValue("stop", endDate);
+            LOG.debug("no matching period found, so creating one");
+            Node newNode = createNode();
+            newNode.setDateValue("start", start);
+            newNode.setDateValue("stop", stop);
             newNode.commit();
+            if (query.getSteps().size() > 1) {
+                Queries.addToResult(query, newNode);
+            }
             periods.add(newNode);
             return 1;
         } else {
@@ -200,6 +258,7 @@ public class ItemsController {
     public int post() {
         int changes = 0;
         List<Node> periods = getRelevantPeriods();
+        LOG.service("Found " + startForm + "-" + stopForm + ": " + periods);
         changes += fix(periods);
         return changes;
     }
