@@ -192,7 +192,7 @@ public class FunctionSets {
         functionSets.put(setName, functionSet);
 
         for (Element element: reader.getChildElements("functionset", "function")) {
-            String functionName = reader.getElementAttributeValue(element, "name");
+            final String functionName = reader.getElementAttributeValue(element, "name");
             if (functionName != null) {
 
                 Element a = DocumentReader.getElementByPath(element, "function.type");
@@ -236,14 +236,23 @@ public class FunctionSets {
                 }
                 */
 
+                SetFunction.Type functionType = SetFunction.Type.valueOf(type.toUpperCase());
+
                 // read the parameters
 
                 Parameter<?>[] parameters = Parameter.readArrayFromXml(element);
-                for (Parameter param : parameters) {
-                    if (param.getClass().isPrimitive() && param.getDefaultValue() == null) {
-                        // that would give enigmatic IllegalArgumentExceptions, so fix that.
-                        param.setDefaultValue(Casting.toType(param.getClass(), -1));
-                        log.debug("Primitive parameter '" + param + "' had default value null, which is impossible for primitive types. Setting to " + param.getDefaultValue());
+
+                if (functionType != SetFunction.Type.BEAN) {
+                    for (Parameter param : parameters) {
+                        if (param.getClass().isPrimitive() && param.getDefaultValue() == null) {
+                            // that would give enigmatic IllegalArgumentExceptions, so fix that.
+                            param.setDefaultValue(Casting.toType(param.getClass(), -1));
+                            log.debug("Primitive parameter '" + param + "' had default value null, which is impossible for primitive types. Setting to " + param.getDefaultValue());
+                        }
+                    }
+                } else {
+                    if (parameters.length != 0) {
+                        throw new RuntimeException("Cannot define explicit parmeters for BEAN functions");
                     }
                 }
 
@@ -254,7 +263,17 @@ public class FunctionSets {
                     } catch(Exception e) {
                         throw new RuntimeException("Can't create an application function class : " + className + " " + e.getMessage(), e);
                     }
-                    SetFunction fun = new SetFunction(functionName, parameters, returnType, functionClass, methodName, SetFunction.Type.valueOf(type.toUpperCase()));
+                    Function fun;
+                    if (functionType == SetFunction.Type.BEAN) {
+                        fun = new WrappedFunction(BeanFunction.getFunction(functionClass, methodName)) {
+                                @Override
+                                public String getName() {
+                                    return functionName;
+                                }
+                            };
+                    } else {
+                        fun = new SetFunction(functionName, parameters, returnType, functionClass, methodName, functionType);
+                    }
                     fun.setDescription(description);
                     Function prev = functionSet.addFunction(fun);
                     if (prev != null && ! (prev.equals(fun))) {
