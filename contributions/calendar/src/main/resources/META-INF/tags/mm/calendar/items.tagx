@@ -47,7 +47,7 @@
     <mm:listnodescontainer id="query" referid="container">
       <mm:typeconstraint name="calendar_items" descendants="false" />
       <mm:sortorder field="start" />
-      <mm:constraint field="${empty stop ? 'start' : 'stop'}" operator="${empty stop ? 'GREATER_EQUAL' : 'GREATER'}" value="${day}" />
+      <mm:constraint field="${empty stop ? 'start' : 'stop'}" operator="${empty stop ? 'GREATER_EQUAL' : 'GREATER'}" referid="day" />
       <mm:constraint field="start" operator="LESS" value="${dayend}" />
       <c:if test="${! empty max}">
         <mm:maxnumber value="${max}" />
