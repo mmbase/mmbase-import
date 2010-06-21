@@ -56,6 +56,11 @@ public class BasicFieldConstraint extends BasicConstraint implements FieldConstr
         return this;
     }
 
+    public boolean matches(Object o) {
+        throw new UnsupportedOperationException();
+    }
+
+
     // javadoc is inherited
     public StepField getField() {
         return field;
