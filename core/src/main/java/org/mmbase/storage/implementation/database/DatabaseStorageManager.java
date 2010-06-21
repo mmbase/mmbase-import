@@ -161,12 +161,16 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             if (bufferSizeAttribute != null) {
                 try {
                     bufferSize = Integer.valueOf(bufferSizeAttribute.toString());
+                    if (bufferSize < 1) {
+                        log.warn("Found key invalid buffer size " + bufferSize + ". Setting to 1.");
+                        bufferSize = 1;
+                    }
                     log.info("Found key buffer size " + bufferSize);
                 } catch (NumberFormatException nfe) {
                     // remove the SEQUENCE_BUFFER_SIZE attribute (invalid value)
                     factory.setAttribute(Attributes.SEQUENCE_BUFFER_SIZE, null);
                     log.error("The attribute 'SEQUENCE_BUFFER_SIZE' has an invalid value(" +
-                        bufferSizeAttribute + "), will be ignored.");
+                              bufferSizeAttribute + "), will be ignored.");
                 }
             }
         }
