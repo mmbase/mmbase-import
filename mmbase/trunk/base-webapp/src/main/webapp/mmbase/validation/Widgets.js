@@ -9,9 +9,7 @@
  *  -  Widgets.instance.boxes(selector):  Makes select into a list of checkboxes (multiple) or radioboxes (single)
  *  -  Widgets.instance.twoMultiples(selector):  Splits up multiple selection into 2 boxes, the left one containing the selected values, the right one the optiosn which are not selected.
 
- *  -  Widgets.instance.labelsToInputs(selector):  Select a bunch of 'labels'. The text of the label will be put as
-       value of the associated text-input, and removed on focus. The label itself will be hidden.
-
+ *  -  Widgets.instance.labelsToInputs(selector):  Select a bunch of 'labels'. The text of the label will be put as value of the associated text-input, and removed on focus. The label itself will be hidden.
  *
  * @version $Id$   BETA
  * @author Michiel Meeuwissen
@@ -139,7 +137,8 @@ Widgets.prototype.singleBoxes = function(select, min, max) {
     }
     t.after(text);
     t.remove();
-}
+};
+
 Widgets.prototype.multipleBoxes = function(select) {
     var t = $(select);
     var text = $("<div class='mm_boxes' />");
@@ -195,7 +194,7 @@ Widgets.prototype.multipleBoxes = function(select) {
     hidden.attr("value", Widgets.prototype.setToString(hidden[0].values));
     t.after(text);
     t.remove();
-}
+};
 
 /**
  * Molds a select input to a list of checkboxes (for multiple selections) or radiobuttons (for single selections).
@@ -228,7 +227,7 @@ Widgets.prototype.moveFromAToB = function(option, a, b) {
     if (! appended) {
         b.append(option);
     }
-}
+};
 
 
 Widgets.prototype.twoMultiples = function(selector) {
@@ -263,7 +262,7 @@ Widgets.prototype.twoMultiples = function(selector) {
                 }
             }
             var nobr = $("<nobr />");
-            var buttonToLeft  = $("<input type='button' value=' &lt; ' />")
+            var buttonToLeft  = $("<input type='button' value=' &lt; ' />");
             buttonToLeft.click(function() {
                 for (var i = right[0].options.length - 1; i >= 0; i--) {
                     var o = right[0].options[i];
@@ -272,7 +271,7 @@ Widgets.prototype.twoMultiples = function(selector) {
                     }
                 }
             });
-            var buttonToRight = $("<input type='button' value=' &gt; ' />")
+            var buttonToRight = $("<input type='button' value=' &gt; ' />");
             buttonToRight.click(function() {
                 for (var i = left[0].options.length - 1; i >= 0; i--) {
                     var o = left[0].options[i];
@@ -308,8 +307,7 @@ Widgets.prototype.twoMultiples = function(selector) {
         });
 
     });
-}
-
+};
 
 
 
@@ -317,79 +315,84 @@ Widgets.prototype.twoMultiples = function(selector) {
 Widgets.prototype.labelsToInputs = function(selector, options) {
     var emptyisuntouched = options && options['emptyisuntouched'];
     //var ignornon         = options && options['emptyisuntouched'];
-    $(document).ready(function() {
-        $(selector).each(function() {
-            var labelText = $(this).text();
-            var labelFor = $(this).attr("for");
-            var input = $("#" + labelFor);
-            if (input.val() == "") {
-                if (input.attr("type") == 'password') {
-                    try {
-                        input.attr("type", "text");
-                    } catch (e) {
-                        // happens in text/html FF, never mind...
-                        var i = $("<input type='text' value='' id='" + input.attr("id") + " name='" + input.attr('name') + " class='" + input.attr("class") + "' />");
-                        input.before(i);
-                        input.hide();
-                        i[0].realInput = input;
-                        input = i;
 
-                    }
-                    input.addClass("password");
-                }
-                input.val(labelText);
-                input.addClass("untouched");
-                $(this).css("display", "none");
-                var focus = function() {
-                    // if entered for the first time, remove the label value
-                    if ($(this).hasClass("untouched")) {
-                        if (emptyisuntouched) {
-                            $(this).removeClass("untouched");
-                        }
-                        this.value = "";
-                        if ($(this).hasClass("password")) {
-                            try {
-                                $(this).attr("type", "password");
-                            } catch (e) {
-                                $(this.realInput).show().focus();
-                                $(this).hide();
-                                // happens in text/html FF, never mind...
+    $(document).ready(
+	function() {
+	    $(selector).each(
+		function() {
+		    var labelText = $(this).text();
+		    var labelFor = $(this).attr("for");
+		    var input = $("#" + labelFor);
+		    if (input.val().trim() == "") {
+			if (input.attr("type") == 'password') {
+			    try {
+				input.attr("type", "text");
+			    } catch (e) {
+				// happens in text/html FF, never mind...
+				var i = $("<input type='text' value='' id='" + input.attr("id") + " name='" + input.attr('name') + " class='" + input.attr("class") + "' />");
+				input.before(i);
+				input.hide();
+				i[0].realInput = input;
+				input = i;
 
-                            }
-                        }
-                    }
-                };
-                input.focus(focus);
-                input.select(focus);
-                input.blur(function() {
-                    // if leaving, the value is empty, and empty is equivalent to 'untouched', put the label back in.
-                    if ($(this).val() == "") {
-                        if (emptyisuntouched) {
-                            $(this).addClass("untouched");
-                        }
-                        if ($(this).hasClass("untouched")) {
-                            $(this).val(labelText);
-                            if ($(this).hasClass("password")) {
-                                try {
-                                    $(this).attr("type", "text");
-                                } catch (e) {
-                                    // happens in text/html FF, never mind...
-                                }
-                            }
-                        }
-                    }
-                });
-                if (! emptyisuntouched) {
-                    input.keyup(function() {
-                        $(this).removeClass("untouched");
-                    });
-                }
-            } else {
-                // value is not empty, so cant use it for the label
-            }
+			    }
+			    input.addClass("password");
+			}
+			input.val(labelText);
+			input.addClass("untouched");
+			$(this).css("display", "none");
+			var focus = function() {
+			    // if entered for the first time, remove the label value
+			    if ($(this).hasClass("untouched")) {
+				if (emptyisuntouched) {
+				    $(this).removeClass("untouched");
+				}
+				this.value = "";
+				if ($(this).hasClass("password")) {
+				    try {
+					$(this).attr("type", "password");
+				    } catch (e) {
+					$(this.realInput).show().focus();
+					$(this).hide();
+					// happens in text/html FF, never mind...
 
-        });
-    });
-}
+				    }
+				}
+			    }
+			};
+			input.focus(focus);
+			input.select(focus);
+			input.blur(
+			    function() {
+				// if leaving, the value is empty, and empty is equivalent to 'untouched', put the label back in.
+				if ($(this).val().trim() == "") {
+				    if (emptyisuntouched) {
+					$(this).addClass("untouched");
+				    }
+				    if ($(this).hasClass("untouched")) {
+					$(this).val(labelText);
+					if ($(this).hasClass("password")) {
+					    try {
+						$(this).attr("type", "text");
+					    } catch (e) {
+						// happens in text/html FF, never mind...
+					    }
+					}
+				    }
+				}
+			    });
+			if (! emptyisuntouched) {
+			    input.keyup(
+				function() {
+				    $(this).removeClass("untouched");
+				});
+			}
+		    } else {
+			// value is not empty, so cant use it for the label
+		    }
+
+		});
+	});
+};
 
 
