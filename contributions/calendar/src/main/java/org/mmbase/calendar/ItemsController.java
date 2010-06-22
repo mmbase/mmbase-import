@@ -136,6 +136,16 @@ public class ItemsController {
         return newNode;
     }
 
+    private static class NodeComparator implements Comparator<Node> {
+        public  int compare(Node o1, Node o2)  {
+            long diff = o1.getDateValue("start").getTime() - o2.getDateValue("start").getTime();
+            return diff == 0L ? 0 : (diff > 0L ? 1 : -1);
+        }
+        public boolean equals(Object o) {
+            return o != null && o instanceof NodeComparator;
+        }
+    }
+
     protected int addAndDelete(List<Node> periods) {
 
         if (desiredValue) {
@@ -208,6 +218,7 @@ public class ItemsController {
                                 Queries.addToResult(query, newNode);
                             }
                             periods.add(newNode);
+                            Collections.sort(periods, new NodeComparator());
                             return 2;
                         }
                     }
@@ -218,20 +229,22 @@ public class ItemsController {
         }
 
         if (desiredValue) {
-            LOG.debug("no matching period found, so creating one");
             Node newNode = createNode();
             newNode.setDateValue("start", start);
             newNode.setDateValue("stop", stop);
             newNode.commit();
+
             if (query.getSteps().size() > 1) {
                 Queries.addToResult(query, newNode);
             }
             periods.add(newNode);
+            Collections.sort(periods, new NodeComparator());
             return 1;
         } else {
             return 0;
         }
     }
+
 
     protected int merge(List<Node> periods) {
         int changes = 0;
