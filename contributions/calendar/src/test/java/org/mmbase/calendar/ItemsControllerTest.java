@@ -78,7 +78,7 @@ public  class ItemsControllerTest {
     }
 
 
-    //@Test
+    @Test
     public void addToEmpty() throws Exception {
         assertNotNull(items);
         setStartStop("today", "today + 1 day");
@@ -93,7 +93,7 @@ public  class ItemsControllerTest {
         assertEquals(1, periods.size());
     }
 
-    //@Test
+    @Test
     public void addToPeriod() throws Exception {
         // Add one day more
         setStartStop("today + 1 day", "today + 2 day");
@@ -105,7 +105,7 @@ public  class ItemsControllerTest {
         assertEquals(DynamicDate.eval("today + 2 day"), periods.get(0).getDateValue("stop"));
     }
 
-    //@Test
+    @Test
     public void addWithGap() throws Exception {
         // Yet another day, but leave a gap
         setStartStop("today + 3 day", "today + 4 day");
@@ -124,7 +124,7 @@ public  class ItemsControllerTest {
     }
 
 
-    //@Test
+    @Test
     public void removeAtBeginning() throws Exception {
         // remove first day again
         setStartStop("today", "today + 1 day", "toyear", "toyear + 1 year");
@@ -144,7 +144,7 @@ public  class ItemsControllerTest {
         assertEquals(2, periods.size());
     }
 
-    //@Test
+    @Test
     public void insertAtGap() throws Exception {
         setStartStop("today + 2 day", "today + 3 day");
         controller.setValue(true);
@@ -162,7 +162,7 @@ public  class ItemsControllerTest {
         assertEquals(1, periods.size());
     }
 
-    //@Test
+    @Test
     public void remove() throws Exception {
         List<Node> periods = getPeriods(new String[] {"today + 1 day", "today + 4 day"});
         setStartStop("today + 1 day", "today + 4 day");
@@ -172,6 +172,7 @@ public  class ItemsControllerTest {
         assertEquals(0, controller.fix(periods));
         assertEquals(0, periods.size());
     }
+
     @Test
     public void makeGap() throws Exception {
         List<Node> periods = getPeriods(new String[] {"today + 1 day", "today + 4 day"});
@@ -183,4 +184,18 @@ public  class ItemsControllerTest {
         assertEquals(2, periods.size());
 
     }
+
+    @Test
+    public void requireSorting() throws Exception {
+        List<Node> periods = getPeriods(new String[] {"2010-05-11", "2010-06-01"}, new String[]{"2010-09-25", "2010-10-01"});
+        setStartStop("2010-05-01", "2010-05-02", "2010-04-27", "2010-11-04");
+        controller.setValue(true);
+        assertEquals(2, periods.size());
+        assertEquals(1, controller.fix(periods));
+        assertEquals(3, periods.size());
+        assertEquals(0, controller.fix(periods));
+        assertEquals(3, periods.size());
+
+    }
+
 }
