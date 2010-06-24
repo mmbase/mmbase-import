@@ -8,51 +8,56 @@
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
 
-
+<link href="${mm:link('/sr/css/searchrelate.css')}" rel="stylesheet"  />
 <script type="text/javascript">
 var editor = '<mm:link page="/mmbase/edit/my_editors/edit_object.jsp" />';
 $(document).ready(function() {
-
+    $("div.mm_related").bind("mmsrPaged", function (e, status, relater, obj, a) { 
+        // [status, self.relater, self, anchor]
+        console.log("1. paged event: " + e + " st: " + status + " relater: " +  relater + " self: " + obj + " a: " + a);
+    });
+    
     /* when ready */
     $("div.mm_related").bind("mmsrRelaterReady", function (e, relater) { 
        
        $(relater.div).find('tr.relation').hide();
+       
        if (relater.canEditrelations) {
+           
            console.log("relater can edit");
-       }
+   
+           /* edit node */
+           $(relater.div).find('img.editnode').click(function(ev) {
+               ev.stopPropagation();
+               var img = ev.target;
+               var href = $(img).parent('a').attr("href");
+               var node = href.substring(href.lastIndexOf("_") + 1);   // edit.jsp#node_348
+               window.location = editor + "?nr=" + node;
+           });
+       
+          /* edit relation */
+          $(relater.div).find('img.editrelation').click(function(ev) {
+              ev.stopPropagation();
+              ev.preventDefault();
+              var img = ev.target;
+              var nr = $(img).parents('tr').find("td.node.number").text();
+              //console.log('clicked: ' + nr);
+              $('div.mm_relate_current').find("tr.node_" + nr).toggle();
+          });
+        }
 
-        /* edit node */
-        $(relater.div).find('img.editnode').click(function(ev) {
-            ev.stopPropagation();
-            var img = ev.target;
-            var href = $(img).parent('a').attr("href");
-            var node = href.substring(href.lastIndexOf("_") + 1);   // edit.jsp#node_348
-            window.location = editor + "?nr=" + node;
-        });
-    
-       /* edit relation */
-       $(relater.div).find('img.editrelation').click(function(ev) {
-           ev.stopPropagation();
-           ev.preventDefault();
-           var img = ev.target;
-           var nr = $(img).parents('tr').find("td.node.number").text();
-           console.log('clicked: ' + nr);
-           $('div.mm_relate_current').find("tr.node_" + nr).toggle();
-       });
 
     });
 
 
     /* commit */
     $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater, related, unrelated, relations) { 
-        //$(relater.div).find("div.submitbutton").hide();
-        console.log("committed");
 
         if (status == "failed") {
             $(relater.div).find('div.mm_relate_repository').prepend('<div class="error">Some error!</div>');
         }
+        
         if (status == "success") {
-
             var msg = "";
             if (unrelated) msg += " Removed relation(s) with node #" + unrelated + ". ";
             if (related) msg += " Saved new relation(s) with node #" + related + ". ";
@@ -61,6 +66,7 @@ $(document).ready(function() {
             $(relater.div).find('div.mm_relate_repository').prepend('<div class="message">' + msg + '</div>'); 
             
         }
+        
         $(relater.div).find('tr.relation').hide();
 
     });
@@ -97,6 +103,7 @@ $(document).ready(function() {
           create="true"
           relations="true"
           select="true"
+          customizedir="/editors/sr/"
           submit="#save"
           extracreate="">
         <jsp:attribute name="currentTitle"><b>News</b></jsp:attribute>
@@ -106,6 +113,6 @@ $(document).ready(function() {
     </form>
   </mm:node>
 
-  <mm:escape escape="links">$URL: https://andre@scm.mmbase.org/mmbase/branches/MMBase-1_9/applications/searchrelate/example-webapp/src/main/webapp/relate.jspx $</mm:escape>
+  <mm:escape escape="links">$URL: https://andre@scm.mmbase.org/mmbase/branches/MMBase-1_9/applications/searchrelate/example-webapp/src/main/webapp/relate-my_editors.jspx $</mm:escape>
 
 </mm-sre:html>
