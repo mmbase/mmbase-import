@@ -384,7 +384,11 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                                 for (int i = 1; i < bufferSize.intValue(); i++) {
                                     sequenceKeys.add(keynr + i);
                                 }
-                                log.service("Created key buffer " + sequenceKeys);
+                                if (log.isDebugEnabled()) {
+                                    if (sequenceKeys.size() > 0) {
+                                        log.debug("Created key buffer " + sequenceKeys);
+                                    }
+                                }
                                 return keynr;
                             } else {
                                 throw new StorageException("The sequence table is empty.");
