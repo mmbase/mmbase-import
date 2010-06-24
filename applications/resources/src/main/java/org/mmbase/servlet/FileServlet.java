@@ -431,7 +431,7 @@ public class FileServlet extends BridgeServlet {
                 if (bul.length() > 0) bul.append(",");
                 bul.append(r.toString());
             }
-            bul.append("/").append(max);
+            return bul.append("/").append(max).toString();
         }
     }
 
