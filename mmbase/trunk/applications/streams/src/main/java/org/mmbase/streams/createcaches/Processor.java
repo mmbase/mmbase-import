@@ -311,6 +311,10 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
         return Collections.unmodifiableMap(list);
     }
 
+    public List<CommandExecutor.Method> getExecutors() {
+        return executors;
+    }
+
 
     /**
      * Creates and submits a job transcoding everything as configured for one source object, this
