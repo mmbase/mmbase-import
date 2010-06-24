@@ -1554,40 +1554,6 @@ abstract public class Queries {
 
 
     /**
-     * @since MMBase-1.9.4
-     */
-    public static int applyConstraints(Query q, Step step, Node n) {
-        NodeManager stepManager = q.getCloud().getNodeManager(step.getTableName());
-        if (! (n.getNodeManager().equals(stepManager) || stepManager.getDescendants().contains(n.getNodeManager()))) {
-            throw new IllegalArgumentException("Node '" + n.getNumber() + "' of type " + n.getNodeManager().getName() + " cannot be part of " + step);
-        }
-        for (FieldConstraint constraint : getConstraints(q.getConstraint(), step)) {
-            if (constraint instanceof FieldValueConstraint) {
-                FieldValueConstraint fvc = (FieldValueConstraint) constraint;
-                boolean needsSet = true;
-                try {
-                    needsSet = ! fvc.matches(fvc.getValue());
-                } catch (UnsupportedOperationException ue) {
-                    log.warn(ue);
-                }
-                if (needsSet) {
-                    switch (fvc.getOperator()) {
-                    case FieldCompareConstraint.LESS_EQUAL:
-                    case FieldCompareConstraint.EQUAL:
-                    case FieldCompareConstraint.GREATER_EQUAL:
-                        n.setValue(fvc.getField().getFieldName(), fvc.getValue());
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Don't know how to apply " + fvc);
-                    }
-                }
-            }
-        }
-        return 0;
-
-    }
-
-    /**
      * Explores a query object, returns the relations the node has within the query.
      *
      * @throws UnsupportedOperationException If it cannot be determined how the node is related.
