@@ -169,20 +169,33 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         return noderef.getSize(fieldName);
     }
 
+
+    /**
+     * @since MMBase-1.9.4
+     */
+    private static class NodeAndField {
+        final Node node;
+        final Field field;
+        public NodeAndField(Node n, String f) {
+            node = n;
+            field = node.getNodeManager().getField(f);
+        }
+
+    }
+
     /**
      * @since MMBase-1.9.2
      */
-    protected Node getActualNodeForField(String fieldName) {
+    protected NodeAndField getActualNodeForField(String fieldName) {
         String[] parts = fieldName.split("\\.", 2);
         if (parts.length == 2) {
             if (log.isDebugEnabled()) {
                 log.debug("" + fieldName + " --> " + Arrays.asList(parts));
             }
-            log.debug("" + fieldName + " --> " + Arrays.asList(parts), new Exception());
             MMObjectNode mmobjectNode = getNode().getNodeValue(parts[0] + ".number");
             if (mmobjectNode != null) {
                 try {
-                    return cloud.getNode(mmobjectNode.getNumber());
+                    return new NodeAndField(cloud.getNode(mmobjectNode.getNumber()), parts[1]);
                 } catch (NotFoundException nfe) {
                     // don't know when this happens, perhaps the node was deleted in the mean time?
                     log.debug(nfe.getMessage());
@@ -192,7 +205,7 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
                 return null;
             }
         } else {
-            return this;
+            return new NodeAndField(this, fieldName);
         }
     }
 
@@ -214,9 +227,8 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
             log.debug("" + field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_STRING));
-            result = Casting.toBoolean(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_BOOLEAN).process(getActualNodeForField(fieldName)
-                                                                                                                          ,
-                                                                                                                          field, result));
+            NodeAndField actual = getActualNodeForField(fieldName);
+            result = Casting.toBoolean(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_BOOLEAN).process(actual.node, actual.field, result));
         }
         return result.booleanValue();
     }
@@ -226,7 +238,8 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         Date result =  noderef.getDateValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = Casting.toDate(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_DATETIME).process(getActualNodeForField(fieldName), field, result));
+            NodeAndField actual = getActualNodeForField(fieldName);
+            result = Casting.toDate(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_DATETIME).process(actual.node, actual.field, result));
         }
         return result;
     }
@@ -236,7 +249,8 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         List result =  noderef.getListValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = Casting.toList(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_LIST).process(getActualNodeForField(fieldName), field, result));
+            NodeAndField actual = getActualNodeForField(fieldName);
+            result = Casting.toList(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_LIST).process(actual.node, actual.field, result));
         }
 
         return result;
@@ -270,7 +284,8 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         }
         if (nodeManager.hasField(fieldName)) { // only if this is actually a field of this node-manager, otherewise it might be e.g. a request for an 'element' of a cluster node
             Field field = nodeManager.getField(fieldName);
-            result = Casting.toNode(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_NODE).process(getActualNodeForField(fieldName), field, result), getCloud());
+            NodeAndField actual = getActualNodeForField(fieldName);
+            result = Casting.toNode(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_NODE).process(actual.node, actual.field, result), getCloud());
         }
         return result;
     }
@@ -280,7 +295,8 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         Integer result = getNode().getIntValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result  = Casting.toInteger(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_INTEGER).process(getActualNodeForField(fieldName), field, result));
+            NodeAndField actual = getActualNodeForField(fieldName);
+            result  = Casting.toInteger(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_INTEGER).process(actual.node, actual.field, result));
             // Casting on this position. Should it not be done in all get<..>Value's?
         }
         return result.intValue();
@@ -292,7 +308,8 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         Float result = getNode().getFloatValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = Casting.toFloat(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_FLOAT).process(getActualNodeForField(fieldName), field, result));
+            NodeAndField actual = getActualNodeForField(fieldName);
+            result = Casting.toFloat(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_FLOAT).process(actual.node, actual.field, result));
         }
         return result.floatValue();
     }
@@ -302,7 +319,8 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         Long result = getNode().getLongValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = Casting.toLong(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_LONG).process(getActualNodeForField(fieldName), field, result));
+            NodeAndField actual = getActualNodeForField(fieldName);
+            result = Casting.toLong(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_LONG).process(actual.node, actual.field, result));
         }
         return result.longValue();
     }
@@ -312,7 +330,8 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         Double result = getNode().getDoubleValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = Casting.toDouble(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_DOUBLE).process(getActualNodeForField(fieldName), field, result));
+            NodeAndField actual = getActualNodeForField(fieldName);
+            result = Casting.toDouble(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_DOUBLE).process(actual.node, actual.field, result));
         }
         return result.doubleValue();
     }
@@ -322,7 +341,8 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         byte[] result = getNode().getByteValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = Casting.toByte(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_BINARY).process(getActualNodeForField(fieldName), field, result));
+            NodeAndField actual = getActualNodeForField(fieldName);
+            result = Casting.toByte(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_BINARY).process(actual.node, actual.field, result));
         }
         return result;
     }
@@ -331,7 +351,8 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         java.io.InputStream result = getNode().getInputStreamValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = Casting.toInputStream(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_BINARY).process(getActualNodeForField(fieldName), field, result));
+            NodeAndField actual = getActualNodeForField(fieldName);
+            result = Casting.toInputStream(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_BINARY).process(actual.node, actual.field, result));
         }
         return result;
     }
@@ -341,7 +362,8 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         String result = getNode().getStringValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = Casting.toString(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_STRING).process(getActualNodeForField(fieldName), field, result));
+            NodeAndField actual = getActualNodeForField(fieldName);
+            result = Casting.toString(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_STRING).process(actual.node, actual.field, result));
         }
         return result;
     }
@@ -351,7 +373,8 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         Document result = getNode().getXMLValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = Casting.toXML(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_XML).process(getActualNodeForField(fieldName), field, result));
+            NodeAndField actual = getActualNodeForField(fieldName);
+            result = Casting.toXML(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_XML).process(actual.node, actual.field, result));
         }
         return result;
     }
