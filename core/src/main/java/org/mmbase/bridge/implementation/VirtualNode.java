@@ -285,7 +285,8 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         }
         if (nodeManager.hasField(fieldName)) { // only if this is actually a field of this node-manager, otherewise it might be e.g. a request for an 'element' of a cluster node
             Field field = nodeManager.getField(fieldName);
-            result = BridgeCaster.toNode(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_NODE).process(getActualNodeForField(fieldName), field, result), getCloud());
+            NodeAndField actual = getActualNodeForField(fieldName);
+            result = BridgeCaster.toNode(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_NODE).process(actual.node, actual.field, result), getCloud());
         }
         return result;
     }
