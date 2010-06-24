@@ -7,7 +7,6 @@
     id="${requestScope.componentId}">
   <jsp:output omit-xml-declaration="true" />
   <h2>Editwizard tests</h2>
-  <h3><a href="http://www.mmbase.org/jira/browse/MMB-1248">MMB-1248</a></h3>
 
   <mm:import externid="wizards"><mm:setting name="location" /></mm:import>
   <mm:import id="jsps">${wizards}jsp</mm:import>
@@ -15,11 +14,31 @@
   <mm:import id="templates">/mmbase/components/editwizard/test/</mm:import>
   <mm:import id="referrer"><mm:url absolute="context" /></mm:import>
 
+
+  <h3><a href="http://www.mmbase.org/jira/browse/MMB-1248">MMB-1248</a></h3>
+
   <p>Make sure some objects of the type legacy_types exists, and click this link:
   <mm:link referids="referrer,templates" page="$jsps/list.jsp">
     <mm:param name="wizard">legacy_types</mm:param>
     <mm:param name="nodepath">legacy_types</mm:param>
     <a href="${_}">Event-Types</a>
+  </mm:link>
+
+  <h3><a href="http://www.mmbase.org/jira/browse/MMB-MMB-1960">MMB-1960</a></h3>
+
+  <mm:link referids="referrer,templates" page="$jsps/list.jsp">
+    <mm:param name="wizard">articles_origin</mm:param>
+    <mm:param name="startnodes">default.mags</mm:param>
+    <mm:param name="origin">default.mags</mm:param>
+    <mm:param name="relationOriginNode">default.mags</mm:param>
+    <mm:param name="relationRole">posrel</mm:param>
+    <mm:param name="relationCreatedir">destination</mm:param>
+    <mm:param name="nodepath">mags,posrel,news</mm:param>
+    <mm:param name="fields">news.title,news.date</mm:param>
+    <mm:param name="searchfields">news.title,news.date</mm:param>
+    <mm:param name="orderby">news.date</mm:param>
+    <mm:param name="directions">DOWN</mm:param>
+    <a href="${_}">News</a>
   </mm:link>
 
   </p>
