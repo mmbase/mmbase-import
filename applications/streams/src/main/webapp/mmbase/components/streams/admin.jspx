@@ -18,7 +18,7 @@
     <mm:import from="request" externid="cache" />
     <mm:import from="request" externid="page">0</mm:import>
 
-    <mm:import id="pagesize" vartype="integer">50</mm:import>
+    <mm:import id="pagesize" vartype="integer">25</mm:import>
     <mm:import externid="type">mediafragments</mm:import>
     
     <mm:fieldlist nodetype="streamsources" fields="url" varStatus="status">
@@ -36,6 +36,16 @@
             <td>${jobdef.value.label}</td>
             <td>${jobdef.value.mimeType}</td>
             <td>${jobdef.value.transcoder}</td>
+          </tr>
+        </c:forEach>
+          <tr>
+            <th> </th>
+            <th colspan="4"> command executors (LAUNCHER is localhost)</th>
+          </tr>
+        <c:forEach items="${status.current.dataType.commitProcessor.processors[2].executers}" var="exec">
+          <tr>
+            <td> </td>
+            <td colspan="3">${exec}</td>
           </tr>
         </c:forEach>
       </table>
