@@ -1,0 +1,321 @@
+/* css stylesheet */
+
+/*
+body
+{
+	font-family: "Lucida Grande", sans-serif;
+	font-size: small;
+}
+*/
+
+.searchresult caption, .searchresult thead tr, .searchresult tfoot tr {
+    background-color: #ddd;
+    color: #555;
+}
+
+
+.mm_related
+{
+	border: 1px #ccc solid;
+	max-width: 640px;
+	font-family: Helvetica, sans-serif;
+	font-size: 85%;
+}
+
+.searchable h1 { border: none; }
+.searchable .searchform { border: none; }
+
+.searchable strong
+{
+	padding: 4px;
+	display: block;
+}
+
+.searchable img
+{
+	float: right;
+	margin: 4px;
+}
+
+.searchable .searchform
+{
+	width: 100%;
+	background-color: #e8e8e8;
+	margin: 0;
+	border-top: 1px #CCC solid;
+	border-right: 0;
+	border-bottom: 0;
+	border-left: 0;
+}
+
+input.search { width: 60%; }
+
+a.search
+{
+	margin-left: 6px;
+	display: none;
+}
+
+.searching
+{
+	background-image: url("img/wwwait.gif");
+	background-color: #fff;
+	background-position: right 1px;
+	background-repeat: no-repeat;
+}
+
+.searchable fieldset
+{
+	border: none;
+	margin: 0;
+	padding: 4px;
+}
+
+.searchable legend { display: none; }
+.searchable input[type="submit"] { margin: 6px; }
+
+/* hide if not yet searched */
+.mm_relate_repository div.implicit { /*display: none;*/ }
+.mm_relate_repository img.editrelation { display: none; }
+.mm_related .searchable table tfoot.notneeded, 
+.mm_related .searchable table thead.notneeded { display: none; }
+.mm_relate_current caption { display: none; }
+
+.mm_related td.action
+{
+	text-align: right;
+	white-space: nowrap;
+}
+
+.mm_related td.action img
+{
+	margin: 2px;
+	border: 0;
+}
+
+.searchresult table
+{
+	border-collapse: collapse;
+	width: 100%;
+	background: #fff;
+	border: none;
+}
+
+.searchresult table caption
+{
+	background: #d4d4d4;
+	border-top: 1px solid #ccc;
+	margin: 0;
+	padding: 4px;
+	font-size: 0.9em;
+	font-weight: bold;
+}
+
+.searchresult table tbody { overflow: auto; }
+
+.searchresult table thead
+{
+	background-color: #E8E8E8;
+	color: #666;
+	font-size: 0.8em;
+}
+
+/* pager is tfoot */
+.searchresult table tfoot { background-color: #E8E8E8; }
+.searchresult table tfoot td { text-align: center; }
+
+.mm_related .searchable table tfoot a.navigate
+{
+	padding: 0 4px 0 4px;
+	text-decoration: none;
+}
+
+.mm_related .searchable table tfoot span.seperator { display: none; }
+
+.mm_related .searchable table tfoot span.current
+{
+	font-weight: bold;
+	padding: 0 4px 0 4px;
+}
+
+.searchresult th, .searchresult td
+{
+	margin: 0;
+	padding: 4px;
+	text-align: left;
+	vertical-align: top;
+}
+
+.searchresult thead tr, 
+.searchresult tbody tr { border-bottom: 1px solid #ccc; }
+.searchresult thead tr { border-top: 1px solid #ccc; }
+.searchresult table th.number, 
+.searchresult table td.number { text-align: right; }
+
+/* hide nodenumber */
+.searchresult table th.number, 
+.searchresult table td.number,
+.searchresult table th.relation, 
+.searchresult table td.relation,
+.searchresult table th.guitype, 
+.searchresult table td.guitype { display: none; }
+
+/* row colors */
+.searchresult table tbody tr.even
+{
+	color: #000;
+	background-color: #e6e9dd;
+}
+
+.searchresult table tbody tr.odd
+{
+	color: #000;
+	background-color: #fff;
+}
+.searchresult table tbody tr.even.new { background-color: #ded; }
+.searchresult table tbody tr.odd.new { background-color: #efe; }
+.searchresult tbody tr.even.removed { background-color: #edd; }
+.searchresult tbody tr.odd.removed { background-color: #fee; }
+.searchresult tbody tr.click:hover { cursor: pointer; }
+.searchresult table tbody tr.odd:hover { background-color: #e0f0e0; }
+.searchresult tbody tr.even:hover { background-color: #d8e8d8; }
+.searchresult tbody tr.odd.readonly:hover { background-color: #f0e0e0; }
+.searchresult tbody tr.even.readonly:hover { background-color: #e8d8d8; }
+.searchresult.delete tbody tr.selected.odd { background-color: #ffffaa; }
+.searchresult.delete tbody tr.selected.even { background-color: #ffff00; }
+.searchresult tbody tr.selected.odd
+{
+	background-color: #555;
+	color: #fff;
+}
+.searchresult tbody tr.selected.even
+{
+	background-color: #333;
+	color: #fff;
+}
+.searchresult tbody tr.selected.odd:hover
+{
+	background-color: #555;
+	color: #fff;
+}
+.searchresult tbody tr.selected.even:hover
+{
+	background-color: #333;
+	color: #fff;
+}
+.searchresult tbody tr.selected.odd.readonly:hover { background-color: #f0e0e0; }
+.searchresult tbody tr.selected.even.readonly:hover { background-color: #e8d8d8; }
+.mm_related .searchable table tfoot.paging.notneeded { display: none; }
+
+/*.failed { background-color: red; }*/
+/*.submitting { background-color: green; }*/
+/*.succeeded { background-color: yellow; }*/
+/* messages to user */
+.message,
+.error, 
+div.failed,
+.relation div.succeeded,
+div.mm_relate_repository div.succeeded
+{
+	padding: 4px;
+	margin: 4px 18px 4px 18px;
+}
+
+.message, 
+.relation div.succeeded,
+div.mm_relate_repository div.succeeded
+{
+	border: 2px #060 solid;
+	background-color: #CF9;
+	color: #330;
+}
+
+.error,
+div.failed
+{
+	border: 2px #900 solid;
+	background-color: #FCC;
+}
+
+/* editing relations */
+/*tr.relation { display: inline; }*/
+
+/*
+tr.relation:hover { cursor: default; }
+*/
+
+/*
+tr.relation { display: none; }
+*/
+
+tr.relation fieldset
+{
+	border: 2px solid #FC0;
+	background-color: #FFC;
+	padding: 4px;
+	margin: 0;
+}
+
+tr.relation label em
+{
+	display: block;
+	margin: 0;
+	padding: 0;
+	font-weight: bold;
+	font-style: normal;
+}
+
+tr.relation label
+{
+	width: 20%;
+	float: left;
+	text-align: right;
+	padding-right: 6px;
+}
+
+tr.relation input.small
+{
+	width: 240px;
+	min-width: 100px;
+}
+
+tr.relation div.relationrow
+{
+	padding-top: 6px;
+	clear: both;
+}
+
+tr.relation div.dir { display: none; }
+
+tr.relation div.submit
+{
+	margin-left: 20%;
+	padding-top: 2px;
+}
+
+/* create */
+input.search { float: left; }
+
+a.create
+{
+	background-image: url("img/new.png");
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	height: 21px;
+	width: 22px;
+	float: right;
+	color: transparent;
+}
+
+div.create th.node { text-align: right; }
+
+div.create input.small,
+div.create textarea.small,
+div.create textarea.big
+{
+	width: 240px;
+	min-width: 100px;
+}
+
+div.create table tfoot tr.buttons td { text-align: right; }
+div.create table tfoot tr.buttons td input { margin-right: 30px; }
