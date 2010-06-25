@@ -341,8 +341,10 @@ MMBaseRelater.prototype.getNewRelationTr = function(nodenr) {
     var url = "${mm:link('/mmbase/searchrelate/relations.tr.jspx')}";
     var queryid = this.repository.searcher.getQueryId();
     queryid = queryid.replace(/repository/i, "current");
-
-    var params = {id: queryid, node: nodenr, fields: this.repository.searcher.fields};
+    if (nodenr.match(/\d*/)) {
+        nodenr = parseInt(nodenr);
+    }
+    var params = {id: queryid, fields: this.repository.searcher.fields, node: nodenr};
     var result;
     $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
         error: function(res, status) {
