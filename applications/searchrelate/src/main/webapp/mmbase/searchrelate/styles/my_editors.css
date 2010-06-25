@@ -1,13 +1,5 @@
 /* css stylesheet */
 
-/*
-body
-{
-	font-family: "Lucida Grande", sans-serif;
-	font-size: small;
-}
-*/
-
 .searchresult caption, .searchresult thead tr, .searchresult tfoot tr {
     background-color: #ddd;
     color: #555;
@@ -16,10 +8,13 @@ body
 
 .mm_related
 {
-	border: 1px #ccc solid;
 	max-width: 640px;
 	font-family: Helvetica, sans-serif;
-	font-size: 85%;
+	font-size: 90%;
+	border-top: 1px #CCC solid;
+	border-right: 1px #CCC solid;
+	border-bottom: none;
+	border-left: 1px #CCC solid;
 }
 
 .searchable h1 { border: none; }
@@ -27,8 +22,9 @@ body
 
 .searchable strong
 {
-	padding: 4px;
+	padding: 8px 4px 4px 4px;
 	display: block;
+	background-color: #e8e8e8;
 }
 
 .searchable img
@@ -37,18 +33,20 @@ body
 	margin: 4px;
 }
 
-.searchable .searchform
+.searchable form.searchform
 {
 	width: 100%;
 	background-color: #e8e8e8;
 	margin: 0;
-	border-top: 1px #CCC solid;
-	border-right: 0;
-	border-bottom: 0;
-	border-left: 0;
+	/*border-top: 1px #ccc solid;*/
+	border-bottom: 1px #ccc solid;
 }
 
-input.search { width: 60%; }
+input.search
+{
+	width: 60%;
+	margin: 0;
+}
 
 a.search
 {
@@ -68,14 +66,14 @@ a.search
 {
 	border: none;
 	margin: 0;
-	padding: 4px;
+	padding: 0 4px 4px 4px;
 }
 
 .searchable legend { display: none; }
 .searchable input[type="submit"] { margin: 6px; }
 
 /* hide if not yet searched */
-.mm_relate_repository div.implicit { /*display: none;*/ }
+.mm_relate_repository div.implicit { display: none; }
 .mm_relate_repository img.editrelation { display: none; }
 .mm_related .searchable table tfoot.notneeded, 
 .mm_related .searchable table thead.notneeded { display: none; }
@@ -95,16 +93,18 @@ a.search
 
 .searchresult table
 {
-	border-collapse: collapse;
+	border: 0;
 	width: 100%;
 	background: #fff;
-	border: none;
 }
 
+.searchresult table th,
+.searchresult table td { border-bottom: 1px solid #ccc; }
+.searchresult table th { border-top: 1px solid #ccc; }
+.searchresult table tbody { border: none; }
 .searchresult table caption
 {
 	background: #d4d4d4;
-	border-top: 1px solid #ccc;
 	margin: 0;
 	padding: 4px;
 	font-size: 0.9em;
@@ -146,9 +146,6 @@ a.search
 	vertical-align: top;
 }
 
-.searchresult thead tr, 
-.searchresult tbody tr { border-bottom: 1px solid #ccc; }
-.searchresult thead tr { border-top: 1px solid #ccc; }
 .searchresult table th.number, 
 .searchresult table td.number { text-align: right; }
 
@@ -236,17 +233,6 @@ div.failed
 	border: 2px #900 solid;
 	background-color: #FCC;
 }
-
-/* editing relations */
-/*tr.relation { display: inline; }*/
-
-/*
-tr.relation:hover { cursor: default; }
-*/
-
-/*
-tr.relation { display: none; }
-*/
 
 tr.relation fieldset
 {
