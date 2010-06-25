@@ -58,7 +58,7 @@ a.search
 
 .searching
 {
-	background-image: url("img/wwwait.gif");
+	background-image: url("images/wwwait.gif");
 	background-color: #fff;
 	background-position: right 1px;
 	background-repeat: no-repeat;
@@ -296,16 +296,39 @@ tr.relation div.submit
 /* create */
 input.search { float: left; }
 
-a.create
+.mm_related a.create
 {
-	background-image: url("img/new.png");
+	background-image: url("images/c-new.png");
 	background-repeat: no-repeat;
-	background-position: 0 0;
 	height: 21px;
-	width: 22px;
 	float: right;
-	color: transparent;
+	padding-left: 24px;
+	padding-top: 3px;
+	text-decoration: none;
+	font-weight: bold;
+	line-height: 20px;
 }
+
+
+/*
+.mm_related a.move
+{
+	display: block;
+	width: 42px;
+	height: 26px;
+	font-weight: bold;
+	text-align: center;
+	color: #000;
+	line-height: 24px;
+	border-width: 0 6px;
+	border-image: url(images/whiteButton.png) 0 10 0 10 round round;
+	-webkit-border-image: url(images/whiteButton.png) 0 10 0 10;
+	-moz-border-image: url(images/whiteButton.png) 0 10 0 10;
+	float: left;
+	margin-left: 12px;
+	text-decoration: none;
+}
+*/
 
 div.create th.node { text-align: right; }
 
