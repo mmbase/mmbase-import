@@ -41,8 +41,7 @@ $(document).ready(
 	 * (between 'search' and 'close').
 	 */
 	 $("div.mm_related").
-	    //live("mmsrPaged",
-	    bind("mmsrPaged",
+	    live("mmsrPaged",
 		 function (e, status, relater, searcher) {
                      var anchor = $(searcher.div).find("a.search")[0];
                      anchor.searcher = searcher;
