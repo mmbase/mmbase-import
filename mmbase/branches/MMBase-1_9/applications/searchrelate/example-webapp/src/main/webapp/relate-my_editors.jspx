@@ -48,7 +48,7 @@ function bind(relater) {
             ev.preventDefault();
             var img = ev.target;
             var nr = $(img).parents('tr').find("td.node.number").text();
-            console.log('clicked: ' + nr);
+            //console.log('clicked: ' + nr);
             $('div.mm_relate_current').find("tr.node_" + nr).toggle();
         });
     }
@@ -57,11 +57,11 @@ function bind(relater) {
 
 
   <h2>mm-sr:relate my_editors style</h2>
-
+  <mm:import id="jquery_version" from="request" externid="org.mmbase.jquery" />
   <p>
     In this example the relations and their values are visible and editable.<br />
-    Make a selection in the 'current' or 'repository' list and press the button to submit the changes
-    and vise versa. 
+    Make a selection in the 'current' or 'repository' list, click 'move' to move them from one to
+    the other. Press the 'Save' button to commit all changes. 
   </p>
 
   <mm:node number="default.mags">
@@ -87,8 +87,8 @@ function bind(relater) {
           customizedir="/mmbase/searchrelate/styles/"
           submit="#save"
           extracreate="">
-        <jsp:attribute name="currentTitle"><b>News</b></jsp:attribute>
-        <jsp:attribute name="repositoryTitle"><b>Add other news</b></jsp:attribute>
+        <jsp:attribute name="currentTitle"><strong>News</strong></jsp:attribute>
+        <jsp:attribute name="repositoryTitle"><strong>Add other news</strong></jsp:attribute>
       </mm-srt:relate>
       <input id="save" type="submit" value="Save" />
     </form>
