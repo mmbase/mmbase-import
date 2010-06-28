@@ -351,7 +351,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                 show.append("\" class=\"mm_check_error\">");
                 Locale locale =  tag.getLocale();
                 for (LocalizedString error : col) {
-                    show.append("<span class='" + error.getKey() + "'>");
+                    show.append("<span class='" + error.getKey().replaceAll("\\.+", " ") + "'>");
                     Xml.XMLEscape(error.get(locale), show);
                     show.append("</span>");
                 }
