@@ -4,7 +4,7 @@
 /**
  * See test.jspx for example usage.
 
- * new MMBaseValidator(el): attaches events to all elements in elwhen ready.
+ * new MMBaseValidator(el): attaches events to all elements in el when ready.
  * new MMBaseValidator():       attaches no events yet. You could replace some functions, add hooks, set settings first or so.
  *                              then call validator.setup(el).
  *
@@ -17,6 +17,7 @@
 function MMBaseValidator(root, id) {
 
     this.uniqueId     = id == null ? new Date().getTime() : id;
+
 
     this.logEnabled   = false;
     this.traceEnabled = false;
@@ -43,6 +44,7 @@ function MMBaseValidator(root, id) {
     if (MMBaseValidator.validators.length == 1) {
         setTimeout(MMBaseValidator.watcher, 500);
     }
+    this.saveToForm    = null;
 
 
 }
@@ -1022,9 +1024,15 @@ MMBaseValidator.prototype.serverValidation = function(el) {
         var self = this;
         var key = this.getDataTypeKey(el);
         var value = this.getValue(el);
+        var params = this.getDataTypeArguments(key);
 
         var validationUrl = '<mm:url page="/mmbase/validation/valid.jspx" />';
-        var params = this.getDataTypeArguments(key);
+
+	if (this.saveToForm != null) {
+	    params.form = this.saveToForm;
+	}
+
+
         if (this.lang != null) params.lang = this.lang;
         if (this.sessionName != null) params.sessionname = this.sessionName;
         params.value = value;
@@ -1033,17 +1041,17 @@ MMBaseValidator.prototype.serverValidation = function(el) {
         var result;
         $.ajax({async: true, url: validationUrl, type: "GET", dataType: "xml", data: params,
 	            complete: function(res, status){
-                    var result;
-                    if (status == "success") {
-                        el.serverValidated = true;
-                        result = res.responseXML;
+			var result;
+			if (status == "success") {
+                            el.serverValidated = true;
+                            result = res.responseXML;
                         //console.log("" + res);
-                    } else {
-                        el.serverValidated = true;
-                        result = $("<result valid='true' />")[0];
+			} else {
+                            el.serverValidated = true;
+                            result = $("<result valid='true' />")[0];
+			}
+			self.showServerErrors(el, result);
                     }
-                    self.showServerErrors(el, result);
-                }
             });
     } catch (ex) {
         this.log(ex);
@@ -1118,21 +1126,24 @@ MMBaseValidator.prototype.showServerErrors = function(element, serverXml, id) {
 
 
                 for (var  i = 0; i < errors.length; i++) {
-                    var span = document.createElement("span");
-                    span.innerHTML = $(errors[i]).text();
-                    errorDiv.appendChild(span);
+		    if (errors[i].tagName == "error") {
+			var span = document.createElement("span");
+			span.innerHTML = $(errors[i]).text();
+			$(span).addClass($(errors[i]).attr("class"));
+			errorDiv.appendChild(span);
+		    }
                 }
             }
         } else {
-            console.log("No error div " + "mm_check_" + id.substring(3));
+            this.log("No error div " + "mm_check_" + id.substring(3));
         }
     } else {
-      console.log("No element " + id);
+	this.log("No element " + id);
     }
-    this.updateValidity(element, valid);
+    this.updateValidity(element, valid, true);
 };
 
-MMBaseValidator.prototype.updateValidity = function(element, valid) {
+MMBaseValidator.prototype.updateValidity = function(element, valid, server) {
     if (valid != element.prevValid) {
         if (valid) {
             this.invalidElements--;
@@ -1145,7 +1156,7 @@ MMBaseValidator.prototype.updateValidity = function(element, valid) {
     if (this.validateHook) {
         this.validateHook(valid, element);
     }
-    $(element).trigger("mmValidate", [this, valid]);
+    $(element).trigger("mmValidate", [this, valid, server]);
     return valid;
 };
 
@@ -1169,7 +1180,7 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
         return null; // don't know yet.
     } else {
         valid = this.valid(element);
-        this.updateValidity(element, valid);
+        this.updateValidity(element, valid, false);
         return valid;
     }
 
