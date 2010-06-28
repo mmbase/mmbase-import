@@ -364,7 +364,16 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                 show.append("\" class=\"mm_check_error\">");
                 Locale locale =  tag.getLocale();
                 for (LocalizedString error : col) {
-                    show.append("<span class='" + error.getKey() + "'>");
+                    // keys typically contain dots, which is used the
+                    // split the css class here.
+                    show.append("<span class='" + error.getKey().replaceAll("\\.+", " ") + "'>");
+                    // More specificly:
+                    // http://www.w3.org/TR/CSS21/grammar.html#scanner
+                    // Basically, a name may start with an underscore (_), a dash (-), or a letter(a–z), and then be immediately followed1) by a letter, or underscore, and THEN have any number of dashes, underscores, letters, or numbers2):
+
+                    //-?[_a-zA-Z]+[_a-zA-Z0-9-]*
+                    //
+
                     Xml.XMLEscape(error.get(locale), show);
                     show.append("</span>");
                 }
