@@ -47,8 +47,9 @@
       while (i.hasNext()) {
         LocalizedString s = (LocalizedString) i.next();
         pageContext.setAttribute("xmllang", LocalizedString.getXmlLang(locale));
+        pageContext.setAttribute("key", s.getKey().replaceAll("\\.+", " "));
     </jsp:scriptlet>
-    <error xml:lang="${xmllang}"><jsp:expression>s.get(locale)</jsp:expression></error>
+    <error xml:lang="${xmllang}" class="${key}"><jsp:expression>s.get(locale)</jsp:expression></error>
     <jsp:scriptlet>
       }
       if (errors.size() == 0) {
