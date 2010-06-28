@@ -178,7 +178,11 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         final Field field;
         public NodeAndField(Node n, String f) {
             node = n;
-            field = node.getNodeManager().getField(f);
+            if (node != null && f != null ) {
+                field = node.getNodeManager().getField(f);
+            } else {
+                field = null;
+            }
         }
 
     }
@@ -199,10 +203,10 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
                 } catch (NotFoundException nfe) {
                     // don't know when this happens, perhaps the node was deleted in the mean time?
                     log.debug(nfe.getMessage());
-                    return null;
+                    return new NodeAndField(this, fieldName);
                 }
             } else {
-                return null;
+                return new NodeAndField(this, fieldName);
             }
         } else {
             return new NodeAndField(this, fieldName);
