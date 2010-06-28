@@ -19,7 +19,7 @@
       />
   <jsp:directive.include file="get.datatype.jspxf" />
   <mm:import externid="value" required="true" vartype="string" jspvar="value"/>
-  <mm:cloud method="asis" sessionname="${param.sessionname}" uri="${param.uri}" name="${param.name}"><!-- cloud to provide locale -->
+  <mm:cloud method="asis" sessionname="${param.sessionname}" uri="${param.uri}" name="${param.name}">
   <jsp:scriptlet>
     if ("".equals(value) &amp;&amp; (! (dataType instanceof StringDataType))) {
       value = null;
@@ -47,11 +47,24 @@
       while (i.hasNext()) {
         LocalizedString s = (LocalizedString) i.next();
         pageContext.setAttribute("xmllang", LocalizedString.getXmlLang(locale));
+        pageContext.setAttribute("key", s.getKey().replaceAll("\\.+", " "));
     </jsp:scriptlet>
-    <error xml:lang="${xmllang}"><jsp:expression>s.get(locale)</jsp:expression></error>
+    <error xml:lang="${xmllang}" class="${key}"><jsp:expression>s.get(locale)</jsp:expression></error>
     <jsp:scriptlet>
       }
+      if (errors.size() == 0) {
     </jsp:scriptlet>
+    <mm:import externid="form" />
+    <mm:present referid="form">
+      <saved>
+        <mm:form name="${form}" jspvar="trans" mode="transaction">
+          <jsp:scriptlet>if (trans.hasNode(n)) { trans.getNode(n).setValue(field.getName(), value);</jsp:scriptlet>
+          <jsp:text>${form} </jsp:text><jsp:expression>field.getName()</jsp:expression>
+          <jsp:scriptlet>}</jsp:scriptlet>
+        </mm:form>
+      </saved>
+    </mm:present>
+    <jsp:scriptlet>}</jsp:scriptlet>
   </result>
   </mm:cloud>
 </mm:content>
