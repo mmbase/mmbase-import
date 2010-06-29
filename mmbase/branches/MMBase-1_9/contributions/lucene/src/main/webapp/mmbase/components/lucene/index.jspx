@@ -44,6 +44,7 @@
     <tr>
       <th rowspan="${readOnly ? '1' : '2'}">Name</th>
       <th rowspan="${readOnly ? '1' : '2'}">Description</th>
+      <th rowspan="${readOnly ? '1' : '2'}">Incremental updates</th>
       <th colspan="2" rowspan="1"># of entries in index</th>
       <th rowspan="${readOnly ? '1' : '2'}">Last full index (duration)</th>
       <th rowspan="${readOnly ? '1' : '2'}">Recent errors</th>
@@ -83,7 +84,6 @@
           </td>
           <td>
             <mm:write value="${mm:string(indexer.description)}" />
-            <mm:function module="lucene" referids="index" name="description" />
           </td>
           <td>
             ${indexer.incrementalUpdating}
