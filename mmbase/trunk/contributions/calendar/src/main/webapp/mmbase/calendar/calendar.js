@@ -30,6 +30,14 @@ MMCalendar.prototype.init = function() {
 	function(ev) {
 	    self.toggle($(this).parent("td")[0]);
 	    var newClickValue = parseInt($(ev.target).val());
+
+	    // every input representing the same value, should also be changed:
+	    if (ev.target.checked) {
+		$("td.day_" + newClickValue + " input[type=checkbox]").attr("checked", "checked");
+	    } else {
+		$("td.day_" + newClickValue + " input[type=checkbox]").removeAttr("checked");
+	    }
+
 	    if (ev.shiftKey) {
 		if (self.lastClick != null) {
 		    var newSelected = self.lastClick.checked;
