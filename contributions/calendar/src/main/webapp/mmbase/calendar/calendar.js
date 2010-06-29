@@ -42,14 +42,16 @@ MMCalendar.prototype.init = function() {
 		if (self.lastClick != null) {
 		    var newSelected = self.lastClick.checked;
 		    var lastClickValue = parseInt($(self.lastClick).val());
-		    var step = newClickValue > lastClickValue ? 1 : -1;
-		    for (var i = lastClickValue; i <= newClickValue; i += step) {
-			if (newSelected) {
-			    $("td.day_" + i + " input[type=checkbox]").attr("checked", "checked");
-			    $("td.day_" + i).addClass("checked");
-			} else {
-			    $("td.day_" + i + " input[type=checkbox]").removeAttr("checked");
-			    $("td.day_" + i).removeClass("checked");
+		    if (newClickValue != lastClickValue) {		
+			var step = newClickValue > lastClickValue ? 1 : -1;
+			for (var i = lastClickValue; i != newClickValue; i += step) {
+			    if (newSelected) {
+				$("td.day_" + i + " input[type=checkbox]").attr("checked", "checked");
+				$("td.day_" + i).addClass("checked");
+			    } else {
+				$("td.day_" + i + " input[type=checkbox]").removeAttr("checked");
+				$("td.day_" + i).removeClass("checked");
+			    }
 			}
 		    }
 		}
