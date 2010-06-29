@@ -203,10 +203,10 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
                 } catch (NotFoundException nfe) {
                     // don't know when this happens, perhaps the node was deleted in the mean time?
                     log.debug(nfe.getMessage());
-                    return new NodeAndField(this, fieldName);
+                    return new NodeAndField(null, fieldName);
                 }
             } else {
-                return new NodeAndField(this, fieldName);
+                return new NodeAndField(null, fieldName);
             }
         } else {
             return new NodeAndField(this, fieldName);
