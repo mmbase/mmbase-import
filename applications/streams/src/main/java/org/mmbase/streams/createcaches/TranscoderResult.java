@@ -67,8 +67,28 @@ class TranscoderResult extends Result {
         if (dest != null) {
             File outFile = new File(directory, dest.getStringValue("url").replace("/", File.separator));
             int count = 0;
+            
             while ((!outFile.exists() || outFile.length() < 1) && count < 12) {
                 LOG.service("Result ready, but file " + outFile + (outFile.exists() ? " is too small" : " doesn't exists") + ". Waiting 10 sec. to be sure filesystem is ready (" + count + ")");
+                
+                if (LOG.isDebugEnabled()) { // show files in same directory
+                    String myfile = dest.getStringValue("url").replace("/", File.separator);
+                    String mydir = myfile.substring(0, myfile.lastIndexOf('/'));
+                    
+                    String dirlist[] = directory.list();
+                    if (mydir.length() > 0) {
+                        File mydirFile = new File(directory, mydir.replace("/", File.separator) );
+                        dirlist = mydirFile.list();
+                    }
+                
+                    StringBuilder files = new StringBuilder("Files in same dir: ");
+                    for (int i = 0; i < dirlist.length; i++) {
+                        files.append(dirlist[i]).append(" ");
+                    }
+                    LOG.debug(files.toString());
+                }
+
+
                 try {
                     Thread.currentThread().sleep(10000);
                     count++;
