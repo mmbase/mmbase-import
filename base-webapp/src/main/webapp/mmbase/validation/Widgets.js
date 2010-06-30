@@ -323,7 +323,7 @@ Widgets.prototype.labelsToInputs = function(selector, options) {
 		    var labelText = $(this).text();
 		    var labelFor = $(this).attr("for");
 		    var input = $("#" + labelFor);
-		    if (input.val().trim() == "") {
+		    if ($.trim(input.val()) == "") {
 			if (input.attr("type") == 'password') {
 			    try {
 				input.attr("type", "text");
@@ -365,7 +365,7 @@ Widgets.prototype.labelsToInputs = function(selector, options) {
 			input.blur(
 			    function() {
 				// if leaving, the value is empty, and empty is equivalent to 'untouched', put the label back in.
-				if ($(this).val().trim() == "") {
+				if ($.trim($(this).val()) == "") {
 				    if (emptyisuntouched) {
 					$(this).addClass("untouched");
 				    }
