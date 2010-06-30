@@ -45,6 +45,6 @@
     </form>
   </mm:node>
 
-  <mm:escape escape="links">$URL: https://andre@scm.mmbase.org/mmbase/branches/MMBase-1_9/applications/searchrelate/example-webapp/src/main/webapp/relate.jspx $</mm:escape>
+  <mm:escape escape="links">$URL$</mm:escape>
 
 </mm-sre:html>
