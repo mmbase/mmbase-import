@@ -11,7 +11,7 @@
 
  *  -  Widgets.instance.labelsToInputs(selector):  Select a bunch of 'labels'. The text of the label will be put as value of the associated text-input, and removed on focus. The label itself will be hidden.
  *
- * @version $Id: Widgets.js,v 1.9 2008-12-30 17:54:06 michiel Exp $   BETA
+ * @version $Id$   BETA
  * @author Michiel Meeuwissen
 
  */
