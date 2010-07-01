@@ -31,6 +31,11 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @version $Id$
  */
 public class EventManager implements SystemEventListener {
+    /**
+     * the instance that this singleton will manage
+     */
+    private static final EventManager eventManager = new EventManager();
+
 
     private static final Logger log = Logging.getLoggerInstance(EventManager.class);
 
@@ -45,10 +50,6 @@ public class EventManager implements SystemEventListener {
         org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_EVENTMANAGER, DTD_EVENTMANAGER, EventManager.class);
     }
 
-    /**
-     * the instance that this singleton will manage
-     */
-    private static final EventManager eventManager = new EventManager();
 
     /**
      * The collection of event brokers. There is one for every event type that can be sent/received
@@ -57,11 +58,15 @@ public class EventManager implements SystemEventListener {
 
     private long numberOfPropagatedEvents = 0;
     private long duration = 0;
+    private boolean setup = false;
 
     /**
      * use this metod to get an instance of the event manager
      */
     public static EventManager getInstance() {
+        if (eventManager == null) {
+            throw new IllegalStateException();
+        }
         return eventManager;
     }
 
@@ -92,16 +97,9 @@ public class EventManager implements SystemEventListener {
     }
 
 
-    protected ResourceWatcher watcher = new ResourceWatcher() {
-            public void onChange(String w) {
-                configure(w);
-            }
-        };
+    protected ResourceWatcher watcher;
 
     private EventManager() {
-        watcher.add("eventmanager.xml");
-        watcher.onChange();
-        watcher.start();
     }
 
 
@@ -182,6 +180,21 @@ public class EventManager implements SystemEventListener {
      * @param listener
      */
     public synchronized void addEventListener(EventListener listener) {
+        if (! setup) {
+            setup = true;
+            // this is procrasted as long as possible to avoid
+            // circular dependencies on bootstrap
+            watcher = new ResourceWatcher() {
+                    public void onChange(String w) {
+                        configure(w);
+                    }
+                };
+            watcher.add("eventmanager.xml");
+            watcher.onChange();
+            watcher.start();
+
+        }
+
         BrokerIterator i =  findBrokers(listener);
         boolean notifiedReceived = false;
         while (i.hasNext()) {
