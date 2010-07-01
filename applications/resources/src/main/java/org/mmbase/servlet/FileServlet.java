@@ -305,11 +305,13 @@ public class FileServlet extends BridgeServlet {
         if (file == null) {
            return;
         }
+        OutputStream out = resp.getOutputStream();
         setHeaders(req, resp, file);
+
         if (file.isDirectory()) {
-            listing(req, resp, file);
+            listing(req, resp, out, file);
         } else {
-            stream(req, resp, file);
+            stream(req, resp, out, file);
         }
     }
 
@@ -370,7 +372,7 @@ public class FileServlet extends BridgeServlet {
         }
         @Override
         public String toString() {
-            return "" + (first > 0 ? first : "")+ "-" + (last < Long.MAX_VALUE ? last : "");
+            return "" + first + "-" + (last < Long.MAX_VALUE ? last : "");
         }
     }
     /**
@@ -444,9 +446,11 @@ public class FileServlet extends BridgeServlet {
         try {
             // http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.27
             long ifRange = req.getDateHeader("If-Range");
-            if (ifRange < file.lastModified()) {
-                // cannot use partial content, because the file was changed in the mean time
-                return null;
+            if (ifRange != -1) {
+                if (ifRange < file.lastModified()) {
+                    log.debug("cannot use partial content, because the file was changed in the mean time " + new Date(ifRange) + " < " + new Date(file.lastModified()));
+                    return null;
+                }
             }
         } catch (IllegalArgumentException ie) {
             // never mind, it may be entity tag, which we don't support
@@ -454,6 +458,7 @@ public class FileServlet extends BridgeServlet {
         }
 
         String range = req.getHeader("Range");
+        log.debug("Range: " + range);
         if (range != null) {
             String r[] = range.split("=");
             if (r.length == 2 && r[0].trim().toLowerCase().equals("bytes")) {
@@ -498,12 +503,15 @@ public class FileServlet extends BridgeServlet {
     }
 
 
-    protected void stream(HttpServletRequest req, HttpServletResponse resp, File file) throws IOException {
-        BufferedOutputStream out = new BufferedOutputStream(resp.getOutputStream());
+    protected void stream(HttpServletRequest req, HttpServletResponse resp, OutputStream o, File file) throws IOException {
+        BufferedOutputStream out = new BufferedOutputStream(o);
         BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
         final ChainedRange range = getRange(req, file);
         if (range != null) {
+            log.info("USING RANGE " + range);
             resp.addHeader("Content-Range", "bytes " + range.toString());
+        } else {
+            log.debug("No range in request found " + Collections.list(req.getHeaderNames()));
         }
         stream(range, in, out);
     }
@@ -578,10 +586,10 @@ public class FileServlet extends BridgeServlet {
             return result.toString().getBytes();
         }
     }
-    protected void listing(HttpServletRequest req, HttpServletResponse resp, File directory) throws IOException {
+    protected void listing(HttpServletRequest req, HttpServletResponse resp, OutputStream o, File directory) throws IOException {
         byte [] bytes = getListingBytes(req, resp, directory);
         resp.setContentLength(bytes.length);
-        BufferedOutputStream out = new BufferedOutputStream(resp.getOutputStream());
+        BufferedOutputStream out = new BufferedOutputStream(o);
         out.write(bytes);
         out.flush();
     }
