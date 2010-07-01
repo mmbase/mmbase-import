@@ -25,7 +25,7 @@ import org.mmbase.core.AbstractField;
 public class  DataTypeSetter  {
     private int type = -1;
     private int listItemType = -1;
-    protected AbstractField field;
+    protected final AbstractField field;
     public DataTypeSetter(AbstractField field) {
         this.field = field;
     }
