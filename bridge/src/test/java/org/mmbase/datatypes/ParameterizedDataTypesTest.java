@@ -35,6 +35,8 @@ public class ParameterizedDataTypesTest  {
 
     static final MockCloudContext CLOUD_CONTEXT = new MockCloudContext();
     static {
+        // Use on odd locale, this may make go wrong some things
+        LocalizedString.setDefault(new Locale("da"));
         DataTypes.initialize();
         try {
             CLOUD_CONTEXT.addCore();
@@ -113,7 +115,8 @@ public class ParameterizedDataTypesTest  {
             ,
             new Object[] {"languages",
                           new Object[] {"nl", "en", null},
-                          new Object[] {"c", "ababab", ""}},
+                          new Object[] {"c", "ababab", ""}}
+            ,
             new Object[] {"integer",
                           new Object[] {new Integer(-100), "-1", new Integer(100), "-100", new Float(10.0), "1234", "1234.4", "1e7",  null, ""},
                           new Object[] {new Long(Long.MAX_VALUE), "1e30",  "asdfe"}
@@ -157,11 +160,14 @@ public class ParameterizedDataTypesTest  {
                           new Object[] {new Double(Double.POSITIVE_INFINITY), "bla bla"
                           }},
             new Object[] {"handle",
-                          new Object[] {null, binary /* UNDETERMINED so valid, or at least unknnown*/},
-                          new Object[] {new byte[] {1, 2} /* too short */}
+                          new Object[] {null, binary // UNDETERMINED so valid, or at least unknnown
+                          },
+                          new Object[] {new byte[] {1, 2} //oo short
+                          }
             },
             new Object[] {"image",
-                          new Object[] {null, binary /* UNDTERMINED so valid (or at least unknown) */
+                          new Object[] {null, binary // UNDTERMINED so valid (or at least unknown)
+
                 },
                           new Object[] {new byte[] {1, 2}// TODO think of invalid binaries.
                           }
@@ -289,7 +295,7 @@ public class ParameterizedDataTypesTest  {
         Cloud cloud = getCloud();
         NodeManager nodeManager = cloud.getNodeManager("datatypes");
         Field field = nodeManager.getField(fieldName);
-        System.out.println("Testing " + fieldName + " "+ field.getDataType().getDefaultValue());
+        //System.out.println("Testing " + LocalizedString.getDefault() + " " + cloud.getLocale());
         assertEquals("For " + fieldName + " " + field.getDataType(), field.getDataType().getDefaultValue(), nodeManager.createNode().getValue(fieldName));
     }
 
