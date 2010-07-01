@@ -112,6 +112,7 @@ public abstract class ThreadPools {
      */
     public static final ThreadPoolExecutor jobsExecutor = new ThreadPoolExecutor(2, 2000, 1 * 60 , TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), new ThreadFactory() {
 
+            @Override
             public Thread newThread(Runnable r) {
                 return ThreadPools.newThread(r, "JobsThread-" + (jobsSeq++));
             }
@@ -151,38 +152,48 @@ public abstract class ThreadPools {
                 return ThreadPools.newThread(r, "SchedulerThread-" + (schedSeq++));
             }
         });
+
+    private static final Map<String, ExecutorService> threadPools = new ConcurrentHashMap<String, ExecutorService>();
+
     static {
         scheduler.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
 
 
-        EventManager.getInstance().addEventListener(new SystemEventListener() {
-                @Override
-                public void notify(SystemEvent systemEvent) {
-                    if (systemEvent instanceof SystemEvent.MachineName) {
+        try {
+            EventManager manager = EventManager.getInstance();
 
-                        String machineName = ((SystemEvent.MachineName) systemEvent).getName();
-                        for (WeakReference<Thread> tr : nameLess) {
-                            Thread t = tr.get();
-                            if (t != null) {
-                                String stringBefore = "" + t;
-                                t.setName(machineName + t.getName());
-                                log.debug("Fixed name of " + stringBefore + " -> " + t);
+            if (manager == null) {
+                log.fatal("No event manager!");
+
+            } else {
+
+                manager.addEventListener(new SystemEventListener() {
+                        @Override
+                        public void notify(SystemEvent systemEvent) {
+                            if (systemEvent instanceof SystemEvent.MachineName) {
+
+                                String machineName = ((SystemEvent.MachineName) systemEvent).getName();
+                                for (WeakReference<Thread> tr : nameLess) {
+                                    Thread t = tr.get();
+                                    if (t != null) {
+                                        String stringBefore = "" + t;
+                                        t.setName(machineName + t.getName());
+                                        log.debug("Fixed name of " + stringBefore + " -> " + t);
+                                    }
+                                }
+                                nameLess.clear();
+                            } else if (systemEvent instanceof SystemEvent.Shutdown) {
+                                ThreadPools.shutdown();
                             }
                         }
-                        nameLess.clear();
-                    } else if (systemEvent instanceof SystemEvent.Shutdown) {
-                        ThreadPools.shutdown();
-                    }
-                }
-            });
-    }
-
-
-    private static final Map<String, ExecutorService> threadPools = new ConcurrentHashMap<String, ExecutorService>();
-    static {
-        threadPools.put("jobs", jobsExecutor);
-        threadPools.put("filters", filterExecutor);
-        threadPools.put("schedules", scheduler);
+                    });
+            }
+            threadPools.put("jobs", jobsExecutor);
+            threadPools.put("filters", filterExecutor);
+            threadPools.put("schedules", scheduler);
+        } catch (Throwable t) {
+            log.fatal(t.getMessage(), t);
+        }
 
     }
 
@@ -192,6 +203,7 @@ public abstract class ThreadPools {
 
 
     static final UtilReader properties = new UtilReader("threadpools.xml", new Runnable() {
+            @Override
             public void run() {
                 configure();
             }
