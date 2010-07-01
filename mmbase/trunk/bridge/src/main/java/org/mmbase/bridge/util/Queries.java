@@ -1503,7 +1503,7 @@ abstract public class Queries {
     /**
      * @since MMBase-1.9.4
      */
-    public static int applyConstraints(Query q, Step step, Node n) {
+    public static int applyConstraint(Query q, Step step, Node n) {
         NodeManager stepManager = q.getCloud().getNodeManager(step.getTableName());
         if (! (n.getNodeManager().equals(stepManager) || stepManager.getDescendants().contains(n.getNodeManager()))) {
             throw new IllegalArgumentException("Node '" + n.getNumber() + "' of type " + n.getNodeManager().getName() + " cannot be part of " + step);
