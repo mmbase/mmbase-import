@@ -44,6 +44,7 @@ import org.mmbase.applications.media.Format;
  *   segmenter sample_low.ts 10 sample_low sample_low.m3u8 http://www.openimages.eu/
  * The input file, output prefix and index prefix arguments are automatically filled,  
  * specify segment duration (default 10 sec.) and httpPrefix (hostname) in 'createcaches.xml'.
+ * TODO: replace "/" with File.separator
  *
  * @author Andr&eacute; van Toly
  * @version $Id: SegmenterTranscoder.java 41564 2010-03-22 19:42:15Z andre $
@@ -82,7 +83,8 @@ public class SegmenterTranscoder extends CommandTranscoder {
     }
 
     /**
-     * Saves mimetype (video/*) in destination node when not set.
+     * Saves mimetype (video/*) in destination node when not set and deletes former segments when
+     * re-transcoding.
      * @param dest  destination node (streamsourcescaches)
      */
     public void init(Node dest) {
@@ -90,6 +92,43 @@ public class SegmenterTranscoder extends CommandTranscoder {
         if (mt == null || "".equals(mt)) { 
             dest.setStringValue("mimetype", "video/*");
         }
+        
+        // find and delete already existing segments
+        String filename = dest.getStringValue("url");
+        if (filename.length() < 1) {
+            log.error("Still empty fileName: '" + filename + "' of #" + dest.getNumber());
+        } else {
+            
+            String fileprefix = filename.substring(0, filename.lastIndexOf("."));
+            if (fileprefix.indexOf("/") > -1) {
+                fileprefix = fileprefix.substring(fileprefix.lastIndexOf("/") + 1, fileprefix.length());
+            }
+            
+            File file = new File(FileServlet.getDirectory(), filename);
+            String dir = file.toString();
+            dir = dir.substring(0, dir.lastIndexOf("/"));
+
+            if (log.isDebugEnabled()) {
+                log.debug("  filename: " + filename);
+                log.debug("fileprefix: " + fileprefix);
+                log.debug("       dir: " + dir);
+            }
+            
+            FilenameFilter filter = new FilterPrefix(fileprefix);
+            String[] dirlist = new File(dir).list(filter);
+            if (dirlist != null) {
+                for (int i = 0; i < dirlist.length; i++) {
+                    File f = new File(dir, dirlist[i]);
+                    if (f.delete()) {
+                        log.service("Deleted old version of '" + dirlist[i] + "'");
+                    } else {
+                        log.error("Could not delete old version of file '" + dirlist[i] + "'");
+                    }
+                }
+            }
+        }
+        
+        
     }
     
     @Override
@@ -151,4 +190,20 @@ public class SegmenterTranscoder extends CommandTranscoder {
         return (SegmenterTranscoder) super.clone();
     }
 
+}
+
+
+class FilterPrefix implements FilenameFilter {
+    
+    protected static String str;
+    public FilterPrefix(String s) {
+        str = s;
+    }
+    
+    public boolean accept(File dir, String name) {
+        if (name.startsWith(str)) {
+            return true;
+        }
+        return false;
+    }
 }
