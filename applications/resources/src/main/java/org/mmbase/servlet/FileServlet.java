@@ -458,11 +458,15 @@ public class FileServlet extends BridgeServlet {
         }
 
         String range = req.getHeader("Range");
-        log.debug("Range: " + range);
+
         if (range != null) {
             String r[] = range.split("=");
             if (r.length == 2 && r[0].trim().toLowerCase().equals("bytes")) {
-                return new ChainedRange(r[1], file.length());
+                ChainedRange parsed = new ChainedRange(r[1], file.length());
+                if (log.isDebugEnabled()) {
+                    log.debug("Range: " + range + " -> " + r[1] + " -> " + parsed);
+                }
+                return parsed;
             }
         }
         return null;
@@ -479,14 +483,25 @@ public class FileServlet extends BridgeServlet {
             long pos = 0;
             while (pos < range.max) {
                 long available = range.available(pos);
-                while(available > 0) {
+                while(available > 0L) {
+                    if (log.isTraceEnabled()) {
+                        log.trace("streaming " + available);
+                    }
                     int b = in.read(buf, 0, (int) Math.min(available, 1024L));
-                    out.write(buf, 0, b);
-                    pos += b;
-                    available -= b;
+                    if (b > 0) {
+                        out.write(buf, 0, b);
+                        pos += b;
+                        available -= b;
+                    } else {
+                        //log.warn(" buf " + b);
+                        available = 0;
+                    }
                 }
                 long notavailable = range.notavailable(pos);
-                if (notavailable > 0) {
+                if (log.isTraceEnabled()) {
+                    log.trace("skipping " + notavailable);
+                }
+                if (notavailable > 0L) {
                     in.skip(notavailable);
                     pos += notavailable;
                 }
