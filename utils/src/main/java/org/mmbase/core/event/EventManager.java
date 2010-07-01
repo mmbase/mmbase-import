@@ -224,7 +224,7 @@ public class EventManager implements SystemEventListener {
      */
     public void propagateEvent(Event event) {
         if (log.isTraceEnabled()) {
-            log.trace("Propagating events to " + eventBrokers);
+            log.trace("Propagating event '" + event + " to " + eventBrokers);
         }
         long startTime = System.nanoTime();
         for (EventBroker broker :  eventBrokers) {
