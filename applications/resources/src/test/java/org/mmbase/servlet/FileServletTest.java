@@ -64,8 +64,15 @@ public class FileServletTest {
     @Test
     public void streamRange() throws Exception {
         File file = new File("src" + File.separator + "test" + File.separator + "images" + File.separator + "test.png");
-        ChainedRange range = new ChainedRange("0-100,101-499,500-", file.length());
-        stream(range);
+        {
+            ChainedRange range = new ChainedRange("0-100,101-499,500-", file.length());
+            stream(range);
+        }
+        {
+            ChainedRange range = new ChainedRange("" + (file.length() - 2000) + "-", file.length());
+            System.out.println("" + range);
+            stream(range);
+        }
     }
 
 }
