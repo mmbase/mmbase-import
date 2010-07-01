@@ -12,6 +12,8 @@ package org.mmbase.util.xml;
 import org.xml.sax.*;
 import org.w3c.dom.*;
 import java.io.*;
+import org.mmbase.util.xml.ParentBuilderReader;
+import org.mmbase.bridge.util.NodeManagerDescription;
 
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -135,5 +137,16 @@ public class BuilderReaderTest {
         for (String element : cases) {
             testToDocument(element);
         }
+    }
+
+    @Test
+    public void legacy() throws IOException {
+        InputSource source = AbstractBuilderReader.getBuilderLoader().getInputSource("tests/legacy_types.xml");
+        ParentBuilderReader reader = new ParentBuilderReader(source) {
+                @Override
+                protected NodeManagerDescription getNodeManagerDescription(String parentBuilder) {
+                    return null;
+                }
+            };
     }
 }
