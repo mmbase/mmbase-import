@@ -31,7 +31,7 @@ public abstract class AbstractCloud implements Cloud {
 
     private final Map<Object, Object> properties = new ConcurrentHashMap<Object, Object>();
     protected final Map<String, Transaction> transactions = new HashMap<String, Transaction>();
-    private Locale locale = Locale.getDefault();
+    private Locale locale = org.mmbase.util.LocalizedString.getDefault();
 
     private final String name;
     private final UserContext userContext;
