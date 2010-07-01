@@ -250,6 +250,10 @@ public class BridgeCaster implements Caster {
 
     }
 
+    @Override
+    public String toString() {
+        return getClass().getName() + " for " + ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+    }
 
 
 
