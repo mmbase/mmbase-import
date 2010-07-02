@@ -53,6 +53,8 @@ See http://www.MMBase.org/license
     <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.text-limit-width>120</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.text-limit-width>
     <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.indentCasesFromSwitch>false</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.indentCasesFromSwitch>
 
+    <jar.mainClass></jar.mainClass>
+
   </properties>
 
   <build>
@@ -150,6 +152,7 @@ See http://www.MMBase.org/license
             <archive>
               <manifest>
                 <addClasspath>true</addClasspath>
+                <mainClass>${jar.mainClass}</mainClass>
               </manifest>
               <manifestEntries>
                 <url>${pom.url}</url>
@@ -321,6 +324,7 @@ See http://www.MMBase.org/license
           <showDeprecation>false</showDeprecation>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
