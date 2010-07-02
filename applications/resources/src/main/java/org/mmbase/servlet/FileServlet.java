@@ -518,7 +518,7 @@ public class FileServlet extends BridgeServlet {
         BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
         final ChainedRange range = getRange(req, file);
         if (range != null) {
-            log.info("USING RANGE " + range);
+            log.debug("using range " + range);
             resp.addHeader("Content-Range", "bytes " + range.toString());
         } else {
             log.debug("No range in request found " + Collections.list(req.getHeaderNames()));
