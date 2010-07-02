@@ -71,6 +71,19 @@ public class ImageCaches extends AbstractImages {
         return getNode(node.getIntValue(FIELD_ID));
     }
 
+    /**
+     * @since MMBase-1.9.4
+     */
+    protected void appendExtension(StringBuilder buf, String ext) {
+        int extensionIndex = buf.lastIndexOf(".");
+        if (extensionIndex > 0) {
+            buf.replace(extensionIndex + 1, buf.length(), ext);
+        } else {
+            buf.append('.').append(ext);
+        }
+    }
+
+    @Override
     public StringBuilder getFileName(MMObjectNode node, StringBuilder buf) {
         MMObjectNode originalImage = originalImage(node);
         ImagesInterface images = (ImagesInterface) originalImage.getBuilder();
@@ -78,10 +91,10 @@ public class ImageCaches extends AbstractImages {
         String ext = getImageFormat(node);
         if (! (images instanceof Images) || ((Images) images).storesImageType()) { // otherwise too expensive
             if (! ext.equals(images.getImageFormat(originalImage))) {
-                buf.append('.').append(ext);
+                appendExtension(buf, ext);
             }
         } else {
-            buf.append('.').append(ext);
+            appendExtension(buf, ext);
         }
         return buf;
     }
