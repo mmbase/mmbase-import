@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * @see    AttachmentServlet
  */
 public class FileServlet extends BridgeServlet {
-    private static Logger log;
+    private static Logger log = Logging.getLoggerInstance(FileServlet.class);
 
     private static final UrlEscaper URL = new UrlEscaper();
     private static final String SESSION_EXTENSION  = ".SESSION";
@@ -76,9 +76,7 @@ public class FileServlet extends BridgeServlet {
     @Override
     public void setMMBase(MMBase mmb) {
         super.setMMBase(mmb);
-        if (log == null) {
-            log = Logging.getLoggerInstance(FileServlet.class);
-        }
+        log = Logging.getLoggerInstance(FileServlet.class);
         if (files == null) {
             File dataDir = MMBase.getMMBase().getDataDir();
 
@@ -265,8 +263,18 @@ public class FileServlet extends BridgeServlet {
         if (file.isDirectory()) {
             resp.setContentType("application/xhtml+xml"); // We hate IE anyways.
         } else {
+            resp.addHeader("Accept-Ranges", "bytes");
             resp.setContentType(getServletContext().getMimeType(file.getName()));
-            resp.setContentLength((int) file.length());
+            final ChainedRange range = getRange(req, file);
+            if (range != null) {
+                long length = range.getLength();
+                resp.setContentLength((int) length);
+                if (length < file.length()) {
+                    resp.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+                }
+            } else {
+                resp.setContentLength((int) file.length());
+            }
             if (metaFiles) {
                 for (Map.Entry<String, String> e : getMetaHeaders(file).entrySet()) {
                     resp.setHeader(e.getKey(), e.getValue());
@@ -295,25 +303,227 @@ public class FileServlet extends BridgeServlet {
         if (file == null) {
            return;
         }
+        OutputStream out = resp.getOutputStream();
         setHeaders(req, resp, file);
+
         if (file.isDirectory()) {
-            listing(req, resp, file);
+            listing(req, resp, out, file);
         } else {
-            stream(req, resp, file);
+            stream(req, resp, out, file);
         }
     }
 
-    protected void stream(HttpServletRequest req, HttpServletResponse resp, File file) throws IOException {
-        BufferedOutputStream out = new BufferedOutputStream(resp.getOutputStream());
-        BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
+
+    /**
+     * @TODO Ranges stuff can be generalized to also work e.g. with images and attachments.
+     *
+     * Tomcat has an implementation of these headers: Content-Range, Accep-Ranges, Range and If-Range.
+     * Use that? See org.apache.catalina.servlets.DefaultServlet
+     * http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/catalina/servlets/DefaultServlet.html
+     *
+     * @since MMBase-2.0
+     */
+    protected static interface Range {
+        /**
+         * If we are at byte number i, how many are available from here until we encounter one which isn't?
+         * @return A number of bytes which are available, <code>0</code> if there are not bytes available. A large number near <code>Long.MAX_VALUE</code> if there is no limit any more.
+         */
+        long available(long i);
+
+        /**
+         * If we are at byte number i, how many are not available from here until we encounter one which is?
+         * @return Some number of bytes or <code>0</code> if the next character is availabe. A large number near <code>Long.MAX_VALUE</code> if all subsequent byes are unavailable.
+         */
+        long notavailable(long i);
+    }
+
+    /**
+     * Implementation of Range simply stating the first and last chars which are available, perhaps with a maximum too.
+     * This only deals with <start>-<stop> entries in the Range specificiation.
+     * @since MMBase-2.0
+     */
+    protected static class FirstLastRange implements Range {
+        private final long first;
+        private final long last;
+        private final long max;
+        FirstLastRange(long f, long l, long m) {
+            first = f; last = Math.min(m, l);
+            max = m;
+        }
+        FirstLastRange(String parse, long max) {
+            String[] fl = parse.split("-", 2);
+            String firstString = fl[0].trim();
+            String lastString = fl[1].trim();
+            if (firstString.length() == 0) {
+                first  = max - Long.parseLong(lastString);
+                last   = max - 1;
+            } else {
+                first = Long.parseLong(firstString);
+                last  = Math.min(max - 1, lastString.length() > 0 ? Long.parseLong(lastString) : Long.MAX_VALUE);
+            }
+            this.max = max;
+        }
+        public long available(long i) {
+            if (i < first) return 0;
+            if (i > last) return 0;
+            return last - i + 1;
+        }
+        public long notavailable(long i) {
+            if (i < first) return first - i;
+            if (i > last)  return max - last;
+            return 0;
+        }
+        @Override
+        public String toString() {
+            return "" + first + "-" + (last < Long.MAX_VALUE ? last : "");
+        }
+    }
+    /**
+     * This implementation of Range parses and combines a number of {@link FirstLastRange}s.
+     * So, this deals with the entire Range specification then.
+     * @since MMBase-2.0
+     */
+    protected static class ChainedRange implements Range {
+        final List<Range> ranges = new ArrayList<Range>();
+        final long max;
+        ChainedRange(String s, long max) {
+            String[] array = s.split(",");
+            for (String r : array) {
+                ranges.add(new FirstLastRange(r, max));
+            }
+            this.max = max;
+        }
+
+        public long available(long i) {
+            long available = 0;
+            for (Range r : ranges) {
+                long a = r.available(i);
+                available += a;
+                i         += a;
+            }
+            return available;
+        }
+        public long notavailable(long i) {
+            long notavailable = max;
+            for (Range r : ranges) {
+                long na = r.notavailable(i);
+                if (na < notavailable) notavailable = na;
+            }
+            return notavailable;
+        }
+
+        public long getLength() {
+            long pos = 0;
+            long length = 0;
+            while (pos < max) {
+                long available = available(pos);
+                if (available > 0) {
+                    length += available;
+                }
+                //System.out.println(pos + "/" + max + " available " + available);
+                pos += available;
+                long notavailable = notavailable(pos);
+                pos += notavailable;
+
+            }
+            if (length > max) length = max;
+            return length;
+        }
+        @Override
+        public String toString() {
+            StringBuilder bul = new StringBuilder();
+            for (Range r : ranges) {
+                if (bul.length() > 0) bul.append(",");
+                bul.append(r.toString());
+            }
+            return bul.append("/").append(max).toString();
+        }
+    }
+
+    /**
+     * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
+     * @return A ChainedRange object if Range header was present and If-Range didn't provide useage. <code>null</code> otherwise.
+     * @since MMBase-2.0
+     */
+    protected ChainedRange getRange(HttpServletRequest req, File file) {
+        try {
+            // http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.27
+            long ifRange = req.getDateHeader("If-Range");
+            if (ifRange != -1) {
+                if (ifRange < file.lastModified()) {
+                    log.debug("cannot use partial content, because the file was changed in the mean time " + new Date(ifRange) + " < " + new Date(file.lastModified()));
+                    return null;
+                }
+            }
+        } catch (IllegalArgumentException ie) {
+            // never mind, it may be entity tag, which we don't support
+            log.warn("Could not parse " + req.getHeader("If-Range"));
+        }
+
+        String range = req.getHeader("Range");
+
+        if (range != null) {
+            String r[] = range.split("=");
+            if (r.length == 2 && r[0].trim().toLowerCase().equals("bytes")) {
+                ChainedRange parsed = new ChainedRange(r[1], file.length());
+                if (log.isDebugEnabled()) {
+                    log.debug("Range: " + range + " -> " + r[1] + " -> " + parsed);
+                }
+                return parsed;
+            }
+        }
+        return null;
+
+    }
+
+    /**
+     * @todo Generalize this stuff  with Ranges to HandleServlet, so that it also could work for images and attachments.
+     */
+    protected static void stream(ChainedRange range, InputStream in, OutputStream out) throws IOException {
         byte[] buf = new byte[1024];
-        int b = 0;
-        while ((b = in.read(buf)) != -1) {
-            out.write(buf, 0, b);
+        if (range != null) {
+
+            long pos = 0;
+            while (pos < range.max) {
+                long available = range.available(pos);
+                if (log.isTraceEnabled()) {
+                    log.trace("streaming " + available);
+                }
+                while(available > 0L) {
+                    int b = in.read(buf, 0, (int) Math.min(available, 1024L));
+                    out.write(buf, 0, b);
+                    pos += b;
+                    available -= b;
+                }
+                long notavailable = range.notavailable(pos);
+                if (notavailable > 0L) {
+                    in.skip(notavailable);
+                    pos += notavailable;
+                }
+            }
+        } else {
+            int b = 0;
+            while ((b = in.read(buf)) != -1) {
+                out.write(buf, 0, b);
+            }
         }
         out.flush();
         in.close();
         out.close();
+    }
+
+
+    protected void stream(HttpServletRequest req, HttpServletResponse resp, OutputStream o, File file) throws IOException {
+        BufferedOutputStream out = new BufferedOutputStream(o);
+        BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
+        final ChainedRange range = getRange(req, file);
+        if (range != null) {
+            log.info("USING RANGE " + range);
+            resp.addHeader("Content-Range", "bytes " + range.toString());
+        } else {
+            log.debug("No range in request found " + Collections.list(req.getHeaderNames()));
+        }
+        stream(range, in, out);
     }
 
     private static final FormatFileSize formatFileSize = new FormatFileSize();
@@ -386,10 +596,10 @@ public class FileServlet extends BridgeServlet {
             return result.toString().getBytes();
         }
     }
-    protected void listing(HttpServletRequest req, HttpServletResponse resp, File directory) throws IOException {
+    protected void listing(HttpServletRequest req, HttpServletResponse resp, OutputStream o, File directory) throws IOException {
         byte [] bytes = getListingBytes(req, resp, directory);
         resp.setContentLength(bytes.length);
-        BufferedOutputStream out = new BufferedOutputStream(resp.getOutputStream());
+        BufferedOutputStream out = new BufferedOutputStream(o);
         out.write(bytes);
         out.flush();
     }
@@ -403,7 +613,7 @@ public class FileServlet extends BridgeServlet {
         }
         org.mmbase.bridge.Cloud cloud = getCloud(readQuery(req.getQueryString()));
         if (cloud.getUser().getRank() == org.mmbase.security.Rank.ANONYMOUS) {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "The file '" + req.getPathInfo() + "' already exists");
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Anonymous may not put files");
             return;
         }
         BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file));
