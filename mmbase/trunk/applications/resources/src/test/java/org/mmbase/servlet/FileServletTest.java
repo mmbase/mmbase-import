@@ -37,6 +37,9 @@ public class FileServletTest {
         assertEquals(500, new ChainedRange("0-100,101-499", 10000).available(0));
         assertEquals(0,   new ChainedRange("0-100,101-999", 10000).notavailable(0));
         assertEquals(500, new ChainedRange("0-200,101-499", 10000).available(0));
+        assertEquals(0, new ChainedRange("-500", 10000).available(0));
+        assertEquals(9500, new ChainedRange("-500", 10000).notavailable(0));
+        assertEquals(500, new ChainedRange("-500", 10000).available(9500));
     }
     @Test
     public void testRangeLength() {
@@ -51,7 +54,7 @@ public class FileServletTest {
         File outFile = File.createTempFile(FileServletTest.class.getName(), null);
         //System.out.println("" + outFile);
         OutputStream out = new FileOutputStream(outFile);
-        FileServlet.stream(null, in, out);
+        FileServlet.stream(range, in, out);
         assertTrue(FileUtils.contentEquals(file, outFile));
     }
 
@@ -65,12 +68,11 @@ public class FileServletTest {
     public void streamRange() throws Exception {
         File file = new File("src" + File.separator + "test" + File.separator + "images" + File.separator + "test.png");
         {
-            ChainedRange range = new ChainedRange("0-100,101-499,500-", file.length());
+            ChainedRange range = new ChainedRange("0-100,101-499,500-" + file.length(), file.length());
             stream(range);
         }
         {
-            ChainedRange range = new ChainedRange("" + (file.length() - 2000) + "-", file.length());
-            System.out.println("" + range);
+            ChainedRange range = new ChainedRange("0-100,101-499,500-", file.length());
             stream(range);
         }
     }
