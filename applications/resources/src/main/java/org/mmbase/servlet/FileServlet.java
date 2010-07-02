@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * @see    AttachmentServlet
  */
 public class FileServlet extends BridgeServlet {
-    private static Logger log;
+    private static Logger log = Logging.getLoggerInstance(FileServlet.class);
 
     private static final UrlEscaper URL = new UrlEscaper();
     private static final String SESSION_EXTENSION  = ".SESSION";
@@ -76,9 +76,7 @@ public class FileServlet extends BridgeServlet {
     @Override
     public void setMMBase(MMBase mmb) {
         super.setMMBase(mmb);
-        if (log == null) {
-            log = Logging.getLoggerInstance(FileServlet.class);
-        }
+        log = Logging.getLoggerInstance(FileServlet.class);
         if (files == null) {
             File dataDir = MMBase.getMMBase().getDataDir();
 
@@ -356,8 +354,13 @@ public class FileServlet extends BridgeServlet {
             String[] fl = parse.split("-", 2);
             String firstString = fl[0].trim();
             String lastString = fl[1].trim();
-            first = firstString.length() > 0 ? Long.parseLong(firstString) : 0L;
-            last  = Math.min(max, lastString.length() > 0 ? Long.parseLong(lastString) : Long.MAX_VALUE);
+            if (firstString.length() == 0) {
+                first  = max - Long.parseLong(lastString);
+                last   = max - 1;
+            } else {
+                first = Long.parseLong(firstString);
+                last  = Math.min(max - 1, lastString.length() > 0 ? Long.parseLong(lastString) : Long.MAX_VALUE);
+            }
             this.max = max;
         }
         public long available(long i) {
@@ -483,24 +486,16 @@ public class FileServlet extends BridgeServlet {
             long pos = 0;
             while (pos < range.max) {
                 long available = range.available(pos);
+                if (log.isTraceEnabled()) {
+                    log.trace("streaming " + available);
+                }
                 while(available > 0L) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("streaming " + available);
-                    }
                     int b = in.read(buf, 0, (int) Math.min(available, 1024L));
-                    if (b > 0) {
-                        out.write(buf, 0, b);
-                        pos += b;
-                        available -= b;
-                    } else {
-                        //log.warn(" buf " + b);
-                        available = 0;
-                    }
+                    out.write(buf, 0, b);
+                    pos += b;
+                    available -= b;
                 }
                 long notavailable = range.notavailable(pos);
-                if (log.isTraceEnabled()) {
-                    log.trace("skipping " + notavailable);
-                }
                 if (notavailable > 0L) {
                     in.skip(notavailable);
                     pos += notavailable;
