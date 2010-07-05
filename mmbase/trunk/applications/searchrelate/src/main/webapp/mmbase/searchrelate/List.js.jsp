@@ -28,7 +28,7 @@
 
 $(document).ready(
     function() {
-        List.prototype.init(document, false);
+        List.prototype.init(document);
 
         // we allow mm-sr:search to be used for your own implementation of searcher.
         // This arranges the version arranged by mm-sr:relatednodes itself
@@ -270,16 +270,7 @@ function List(d) {
 /**
  * Initializes every div.list in the given element to be a List
  */
-List.prototype.init = function(el, initSearchers) {
-    if (typeof initSearchers == "undefined" || initSearchers) {
-        if (typeof MMBaseRelater == "function") {
-            $(el).find("div.mm_related").each(function() {
-                    if (this.relater == null) {
-                        this.relater = new MMBaseRelater(this);
-                    }
-                });
-        }
-    }
+List.prototype.init = function(el) {
 
     var l = List; // hoping to make IE a bit faster
     $(el).find("div.list").each(function() {

@@ -40,6 +40,11 @@
   <jsp:directive.attribute name="pagesize"               type="java.lang.Integer"
                            description="Size of one page. Defaults to 10." />
 
+  <jsp:directive.attribute name="fields"               type="java.lang.String"
+                           description="Fields to show" />
+  <jsp:directive.attribute name="aliases"               type="java.lang.Boolean"
+                           description="Whether to add a collumn with aliases" />
+
   <mm:import id="_pagesize" vartype="integer">${empty pagesize ? 10 : pagesize}</mm:import>
 
   <mm:import externid="org.mmbase.in_form" id="in_form" vartype="boolean">false</mm:import>
@@ -58,5 +63,7 @@
       implicitRepository="${empty implicit ? settings['implicitRepository'] : implicit}"
       create="${create}"
       styleClass="${styleClass}"
+      fields="${fields}"
+      aliases="${aliases}"
       />
 </jsp:root>

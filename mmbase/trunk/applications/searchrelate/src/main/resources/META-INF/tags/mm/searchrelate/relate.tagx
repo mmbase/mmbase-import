@@ -56,6 +56,9 @@
   <jsp:directive.attribute name="fields"             type="java.lang.String"
                            description="Fields to show in both lists. Searching still occurs with 'fieldlist type=search' " />
 
+  <jsp:directive.attribute name="aliases"             type="java.lang.Boolean"
+                           description="Whether to add columns with aliases" />
+
   <jsp:directive.attribute name="styleClass"
                            description="Extra classes to be added to outer div"/>
 
@@ -102,6 +105,7 @@
   <c:if test="${seq eq 0 and (empty load ? true : 'true' eq load)}">
     <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
     <mm:include page="/mmbase/jquery/jquery.jspx" />
+    <mm:include page="/mmbase/jquery/jquery.form.jspx" />
     <mm:link page="/mmbase/searchrelate/Searcher.js.jsp">
       <mm:param name="locale">${repository.cloud.locale}</mm:param>
       <script type="text/javascript" src="${_}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
@@ -109,24 +113,10 @@
   </c:if>
   <jsp:directive.include file="/mmbase/searchrelate/settings.jspf" />
   <script type="text/javascript">
-    $(document).ready(function() {
     <c:if test="${! empty submit}"><!-- submit attribute given: commit search/relate on click of that element -->
-      $("${submit}").click(function(el) {
-        return $("#mm_related_${sid}")[0].relater.commit(el); });</c:if>
-      $("#mm_related_${sid}").each(function() {
-      if (this.relater != null) {
-    <c:if test="${! empty fields}"> this.relater.setFields('${fields}'); </c:if>
-    <c:if test="${! empty customizedir}"> this.relater.setCustomizedir('${customizedir}'); </c:if>
-    <c:if test="${! empty pagesize}"> this.relater.setPageSize(${pagesize}); </c:if>
-    <c:if test="${! empty maxpages}"> this.relater.setMaxPages(${maxpages}); </c:if>
-    <c:if test="${! empty context}"> this.relater.setContext('${context}'); </c:if>
-    this.relater.setSessionName('${mm:property('org.mmbase.cloud.sessionname')}');
-    <c:if test="${! empty current}">
-      if (this.relater.current != null) { this.relater.current.searcher.maxNumber = ${current.maxNumber}; }
+      $("${submit}").live("click", function(el) {
+        return $("#mm_related_${sid}")[0].relater.commit(el); });
     </c:if>
-    }
-      })
-    });
   </script>
 
   <fmt:bundle
@@ -134,9 +124,17 @@
       basename="org.mmbase.searchrelate.resources.searchrelate">
     <div id="mm_related_${sid}"
          class="mm_related ${empty unrelate or ! unrelate ? '' : 'can_unrelate'} ${empty relations or ! relations ? '' : 'can_editrelations'} ${empty submit ? 'instant' : ''} ${select ? 'select' : '' } ${styleClass}">
-      <c:if test="${! empty transaction}">
-        <span class="transactionname" style="display: none;">${transaction}</span>
-      </c:if>
+      <div class="settings" style="display: none;">
+        <c:if test="${! empty transaction}"><span class="transactionname" style="display: none;">${transaction}</span></c:if>
+        <c:if test="${! empty fields}"><span class="fields">${fields}</span></c:if>
+        <c:if test="${! empty aliases}"><span class="aliases">${aliases}</span></c:if>
+        <c:if test="${! empty customizedir}"><span class="customizedir">${customizedir}</span></c:if>
+        <c:if test="${! empty pagesize}"><span class="pagesize">${pagesize}</span></c:if>
+        <c:if test="${! empty maxpages}"><span class="maxpages">${maxpages}</span></c:if>
+        <c:if test="${! empty context}"><span class="context">${context}</span></c:if>
+        <c:if test="${! empty current}"><span class="currentMaxNumber">${current.maxNumber}</span></c:if>
+        <span class="sessionName">'${mm:property('org.mmbase.cloud.sessionname')}</span>
+      </div>
       <c:if test="${! empty current}">
         <div class="mm_relate_current searchable">
           <jsp:invoke fragment="currentTitle" />
@@ -161,7 +159,7 @@
               </mm:isgreaterthan>
             </mm:size>
           </mm:listnodescontainer>
-          <mm:include page="/mmbase/searchrelate/page.jspx" referids="customizedir?,fields?,relations?">
+          <mm:include page="/mmbase/searchrelate/page.jspx" referids="customizedir?,fields?,aliases?,relations?">
             <c:if test="${! empty pagesize}">
               <mm:param name="pagesize" referid="pagesize" />
             </c:if>
@@ -217,7 +215,7 @@
         <c:choose>
           <c:when test="${(empty implicitRepository and settings['implicitRepository'] eq 'true')  || implicitRepository}">
             <mm:include page="/mmbase/searchrelate/page.jspx"
-                        referids="customizedir?,relations?,fields?">
+                        referids="customizedir?,relations?,fields?,aliases?">
               <c:if test="${! empty pagesize}">
                 <mm:param name="pagesize" referid="pagesize" />
               </c:if>
