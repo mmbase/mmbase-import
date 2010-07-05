@@ -105,6 +105,7 @@
   <c:if test="${seq eq 0 and (empty load ? true : 'true' eq load)}">
     <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
     <mm:include page="/mmbase/jquery/jquery.jspx" />
+    <mm:include page="/mmbase/jquery/jquery.form.jspx" />
     <mm:link page="/mmbase/searchrelate/Searcher.js.jsp">
       <mm:param name="locale">${repository.cloud.locale}</mm:param>
       <script type="text/javascript" src="${_}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
