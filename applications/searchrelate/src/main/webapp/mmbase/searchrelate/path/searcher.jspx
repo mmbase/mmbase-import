@@ -24,7 +24,6 @@
 
       <mm:write referid="parameters.query" jspvar="q" vartype="org.mmbase.bridge.NodeQuery" write="false">
 
-
         <jsp:scriptlet>Node node = null;</jsp:scriptlet>
         <c:if test="${!empty nodeNumber}">
           <mm:node referid="nodeNumber" jspvar="n">
@@ -47,8 +46,19 @@
           create="false"
           >
         <jsp:attribute name="repositoryTitle">
+          <c:if test="${! empty param.intro}">
+            <div class="intro"><jsp:text>${param.intro}</jsp:text></div>
+          </c:if>
           <c:if test="${! empty nodeNumber}">
-            <mm:node number="${nodeNumber}"><mm:nodeinfo type="gui" /></mm:node>
+            <div class="intro">
+              <mm:node number="${nodeNumber}">
+                <span class="type">
+                  <mm:nodeinfo type="guitype" />
+                  <jsp:text>: </jsp:text>
+                </span>
+                <mm:nodeinfo type="gui" />
+              </mm:node>
+            </div>
           </c:if>
         </jsp:attribute>
       </mm-sr:relate>

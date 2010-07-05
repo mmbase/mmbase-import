@@ -40,6 +40,7 @@
         <title>${_title}</title>
         <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
         <jsp:directive.include file="/mmbase/jquery/jquery-ui.jspx" />
+        <jsp:directive.include file="/mmbase/jquery/jquery.form.jspx" />
         <jsp:directive.include file="/mmbase/upload/javascript.jspxf" />
         <mm:link page="/mmbase/searchrelate/page.css.jsp">
           <link rel="stylesheet" href="${_}" type="text/css" />

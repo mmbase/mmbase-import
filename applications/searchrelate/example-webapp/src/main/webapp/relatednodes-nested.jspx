@@ -3,14 +3,13 @@
     title="Nested"
     prefetch="news,urls,images,people"
     xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
-    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
 
   <mm:node number="default.mags">
     <h2><mm:field name="title" /></h2>
 
-    <mm-sr:relatednodes
+    <mm-srt:relatednodes
         idvar="rid"
         type="news"
         role="posrel"
@@ -19,7 +18,7 @@
         max="3"
         >
       <h3 class="debug">${rid}</h3>
-    </mm-sr:relatednodes>
+    </mm-srt:relatednodes>
   </mm:node>
   <hr />
   <p>

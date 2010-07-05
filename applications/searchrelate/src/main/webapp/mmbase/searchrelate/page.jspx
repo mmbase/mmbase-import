@@ -24,6 +24,7 @@
       <mm:import externid="customizedir" from="parameters"/>
       <mm:import externid="relations" id="editrelations" from="parameters" />
       <mm:import externid="fields" from="parameters" id="flds" />
+      <mm:import externid="aliases" from="parameters">false</mm:import>
 
       <mm:listnodescontainer id="b" clone="query" jspvar="bq">
         <c:if test="${! empty search}">
@@ -67,7 +68,10 @@
               <c:choose>
                 <c:when test="${!empty flds}">
                   <th class="node number" scope="col">#</th>
-                  <th class="node relation" scope="col">relation</th>
+                  <c:if test="${aliases eq 'true'}">
+                    <th class="node aliases" scope="col">alias</th>
+                  </c:if>
+                  <th class="node relation" scope="col">rel</th>
                   <th class="node guitype" scope="col"><fmt:message key="nodetype" /></th>
                   <mm:fieldlist nodetype="${query.nodeManager.name}" fields="$flds" varStatus="field">
                     <th class="fields ${field.current.name}" scope="col"><mm:fieldinfo type="guiname" /></th>
@@ -76,7 +80,10 @@
                 </c:when>
                 <c:otherwise>
                   <th class="node number" scope="col">#</th>
-                  <th class="node relation" scope="col">relation</th>
+                  <c:if test="${aliases eq 'true'}">
+                    <th class="node aliases" scope="col">alias</th>
+                  </c:if>
+                  <th class="node relation" scope="col">rel</th>
                   <th class="node guitype" scope="col"><fmt:message key="nodetype"  /></th>
                   <th class="node gui" scope="col"><jsp:text> </jsp:text></th>
                     <mm:fieldlist nodetype="${query.nodeManager.name}" type="list" varStatus="field">
@@ -148,7 +155,7 @@
                 </mm:isnotempty>
               </mm:compare>
 
-              <mm:include page="node.tr.jspx" attributes="status,_node@node,customizedir?,flds@fields?,editrelations?,relation?" />
+              <mm:include page="node.tr.jspx" attributes="status,_node@node,customizedir?,flds@fields?,editrelations?,relation?,aliases?" />
 
               <c:if test="${editrelations == true}">
                 <mm:compare referid="id" regexp="\w*current">

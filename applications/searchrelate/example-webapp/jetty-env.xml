@@ -15,6 +15,7 @@
           <Item>../src/main/webapp</Item>
           <Item>../target/war/work/org.mmbase.jquery/jquery-ui</Item>
           <Item>../target/war/work/org.mmbase.jquery/ajaxfileupload</Item>
+          <Item>../target/war/work/org.mmbase.jquery/jquery-form</Item>
           <Item>./target/war/work/org.mmbase.tinymce/tinymce-jquery</Item>
           <Item>../src/main/examples</Item>
           <Item>../../../base-webapp/src/main/webapp</Item>
