@@ -28,12 +28,66 @@
 
 $(document).ready(
     function(){
-        $("body").find("div.mm_related").each(
-            function() {
-                if (this.relater == null) {
+        $("div.mm_related").live(
+	    "click",
+	    function(ev) {
+		if (this.relater == null) {
                     this.relater = new MMBaseRelater(this);
-                }
+		    $(ev.target).click();
+		    return false;
+                } else {
+		    return true;
+		}
             });
+
+	/*
+	 * If you defined in your CSS that 'implicit' search results are not visible at all, then
+	 * this method arranges the texts on the search buttons accordingly
+	 * (between 'search' and 'close').
+	 */
+	 $("div.mm_related").
+	    live("mmsrPaged",
+		 function (e, status, relater, searcher) {
+                     var anchor = $(searcher.div).find("a.search")[0];
+                     anchor.searcher = searcher;
+                     var div = searcher.getResultDiv();
+		     if(! div.implicitIsVisible) {
+			 if (searcher.offset == 0 && ! $(div).hasClass("implicit")) {
+			     $(anchor).text('<fmt:message key="close" />');
+			 } else {
+			     $(anchor).text('<fmt:message key="search" />');
+			 }
+		     }
+		     // The onlick of mm_gui's are rather annoying
+		     // TODO, should this be configuable?
+                     $(relater.div).find("a.mm_gui").removeAttr("onclick");
+                     $(relater.div).find("a.mm_gui").click(
+			 function(ev) {
+			     ev.preventDefault();
+			 });
+                 }
+		);
+
+	$("input.search").
+	    live("keyup",
+		 function(e) {
+		     var target = e.target;
+		     var anchor = $(target).closest("div.searchable").find("a.search")[0];
+
+                     var searcher = anchor.searcher;
+                     if (searcher != null) {
+			 var div = searcher.getResultDiv();
+			 if(! div.implicitIsVisible) {
+			     if (searcher.offset == 0 && searcher.value == $(target).val() && ! $(div).hasClass("implicit")) {
+				 $(anchor).text('<fmt:message key="close" />');
+			     } else {
+				 $(anchor).text('<fmt:message key="search" />');
+			     }
+			 }
+                     }
+		 }
+		);
+
     });
 
 /**
@@ -90,6 +144,10 @@ function MMBaseRelater(d, validator) {
 
     if (this.current != null) {
         this.addSearcher(this.current, "current");
+	var maxNumber = $(d).find("div.settings span.currentMaxNumber").html();
+	if (maxNumber != null) {
+	    this.current.searcher.maxNumber = maxNumber;
+	}
     } else {
         this.logger.debug("No current rep found");
     }
@@ -124,6 +182,23 @@ function MMBaseRelater(d, validator) {
             }
         );
     }
+
+
+    $(d).find("div.settings span.transactioname").each(
+	function() {
+            this.transaction = this.nodeValue;
+	});
+    $(d).find("div.settings span.fields").each(
+	function() {
+	    this.fields = this.nodeValue;
+	});
+    this.setAliases($(d).find("div.settings span.aliases").html() || false);
+    this.setFields($(d).find("div.settings span.fields").html());
+    this.setCustomizedir($(d).find("div.settings span.customizedir").html());
+    this.setPageSize($(d).find("div.settings span.pagesize").html());
+    this.setMaxPages($(d).find("div.settings span.maxpages").html());
+    this.setContext($(d).find("div.settings span.context").html());
+
 
     $(this.div).trigger("mmsrRelaterReady", [self]);
 
@@ -592,56 +667,76 @@ MMBaseRelater.prototype.saverelation = function(ev) {
  * Set mmbase context for new objects
  */
 MMBaseRelater.prototype.setContext = function(context) {
-    if (this.current != null) {
-        this.current.searcher.context = context;
-    }
-    if (this.repository != null) {
-        this.repository.searcher.context = context;
+    if (context != null) {
+	if (this.current != null) {
+            this.current.searcher.context = context;
+	}
+	if (this.repository != null) {
+            this.repository.searcher.context = context;
+	}
     }
 };
 
 MMBaseRelater.prototype.setSessionName = function(sessionName) {
-    if (this.current != null) {
-        this.current.searcher.sessionName = sessionName;
-    }
-    if (this.repository != null) {
-        this.repository.searcher.sessionName = sessionName;
+    if (sessionName != null) {
+	if (this.current != null) {
+            this.current.searcher.sessionName = sessionName;
+	}
+	if (this.repository != null) {
+            this.repository.searcher.sessionName = sessionName;
+	}
     }
 };
 
 MMBaseRelater.prototype.setFields = function(fields) {
+    if (fields != null) {
+	if (this.current != null) {
+            this.current.searcher.setFields(fields);
+	}
+	if (this.repository != null) {
+            this.repository.searcher.setFields(fields);
+	}
+    }
+};
+MMBaseRelater.prototype.setAliases = function(a) {
     if (this.current != null) {
-        this.current.searcher.setFields(fields);
+        this.current.searcher.setAliases(a);
     }
     if (this.repository != null) {
-        this.repository.searcher.setFields(fields);
+        this.repository.searcher.setAliases(a);
     }
-}
+};
 
 MMBaseRelater.prototype.setCustomizedir = function(customizedir) {
-    if (this.current != null) {
-        this.current.searcher.setCustomizedir(customizedir);
-    }
-    if (this.repository != null) {
-        this.repository.searcher.setCustomizedir(customizedir);
+    if (customizedir != null) {
+	if (this.current != null) {
+            this.current.searcher.setCustomizedir(customizedir);
+	}
+	if (this.repository != null) {
+            this.repository.searcher.setCustomizedir(customizedir);
+	}
     }
 };
 
 MMBaseRelater.prototype.setPageSize = function(pagesize) {
-    if (this.current != null) {
-        this.current.searcher.setPageSize(pagesize);
-    }
-    if (this.repository != null) {
-        this.repository.searcher.setPageSize(pagesize);
+    if (pagesize != null) {
+	if (this.current != null) {
+            this.current.searcher.setPageSize(pagesize);
+	}
+	if (this.repository != null) {
+            this.repository.searcher.setPageSize(pagesize);
+	}
     }
 };
 
 MMBaseRelater.prototype.setMaxPages = function(maxpages) {
-    if (this.current != null) {
-        this.current.searcher.maxpages = maxpages;
-    }
-    if (this.repository != null) {
-        this.repository.searcher.maxpages = maxpages;
+    if (maxpages != null) {
+	if (this.current != null) {
+            this.current.searcher.maxpages = maxpages;
+	}
+	if (this.repository != null) {
+            this.repository.searcher.maxpages = maxpages;
+	}
     }
 };
 
@@ -658,6 +753,7 @@ function MMBaseSearcher(d, r, type, logger) {
     this.relater = r;
     this.type    = type;
     this.fields = "";
+    this.aliases = false;
     this.customizedir = "";
     this.pagesize = 10;
     this.maxpages = 20;
@@ -667,9 +763,7 @@ function MMBaseSearcher(d, r, type, logger) {
     this.transaction   = null;
     this.canEditrelations = $(r.div).hasClass("can_editrelations");
     var self = this;
-    $(d).find("span.transactioname").each(function() {
-        this.transaction = this.nodeValue;
-    });
+
     this.searchResults = {};
     this.bindEvents();
     // Arrange that pressing enter in the search-area works:
@@ -701,6 +795,10 @@ MMBaseSearcher.prototype.setCustomizedir = function(customizedir) {
 
 MMBaseSearcher.prototype.setFields = function(fields) {
     this.fields = fields;
+};
+MMBaseSearcher.prototype.setAliases = function(aliases) {
+    this.aliases = aliases;
+    console.log(this.aliases);
 };
 
 MMBaseSearcher.prototype.setPageSize = function(pagesize) {
@@ -738,6 +836,11 @@ MMBaseSearcher.prototype.search = function(val, offset, anchor) {
     var newSearch = val;
     var rep = this.getResultDiv();
 
+    if ($(rep).hasClass("implicit")) {
+	rep.implicitIsVisible = $(rep).is(":visible");
+    }
+
+
     if (newSearch != this.value) {
         $(rep).removeClass("implicit");
         this.searchResults = {};
@@ -756,12 +859,12 @@ MMBaseSearcher.prototype.search = function(val, offset, anchor) {
         this.offset = offset;
     }
 
-    var rep = this.getResultDiv();
     var params = {
         id: this.getQueryId(),
         offset: offset,
         search: "" + this.value,
         fields: this.fields,
+        aliases: this.aliases,
         pagesize: this.pagesize,
         maxpages: this.maxpages,
         customizedir: this.customizedir,
@@ -770,13 +873,14 @@ MMBaseSearcher.prototype.search = function(val, offset, anchor) {
 
     var result = this.searchResults["" + offset];
     this.logger.debug("Searching " + this.searchUrl + " " + params);
+    this.logger.debug(params);
 
     if (result == null) {
         var self = this;
         $.ajax({ url: this.searchUrl, type: "GET", dataType: "xml", data: params,
                  beforeSend: function() {
                     $(self.div).find("input.search").addClass("searching");
-                    $(rep).append($('<p><fmt:message key="searching" /></p>'));
+                    $(rep).append($('<p class=\'searching\'><fmt:message key="searching" /></p>'));
                  },
                  complete: function(res, status) {
                     if ( status == "success" || status == "notmodified" ) {
@@ -814,40 +918,10 @@ MMBaseSearcher.prototype.search = function(val, offset, anchor) {
 
 
 /**
- * If you defined in your CSS that 'implicit' search results are not visible at all, then
- * you can call this method to bind events to change the texts on the search buttons accordingly
- * (between 'search' and 'close').
+ @deprecated Arranged automaticly.
  */
 MMBaseSearcher.prototype.implicitsAreHidden = function() {
-    $(document).bind("mmsrPaged",
-                     function (e, status, relater, searcher) {
-                         var anchor = $(searcher.div).find("a.search")[0];
-                         anchor.searcher = searcher;
-                         var div = searcher.getResultDiv();
-                         if (searcher.offset == 0 && ! $(div).hasClass("implicit")) {
-                             $(anchor).text('<fmt:message key="close" />');
-                         } else {
-                             $(anchor).text('<fmt:message key="search" />');
-                         }
-
-                     });
-
-    $(document).keyup(function(e) {
-            var target = e.target;
-            if (target.tagName == "input" && $(target).hasClass("search")) {
-                var anchor = $(target).closest("fieldset").find("a")[0];
-                var searcher = anchor.searcher;
-                if (searcher != null) {
-                    var div = searcher.getResultDiv();
-                    if (searcher.offset == 0 && searcher.value == $(target).val() && ! $(div).hasClass("implicit")) {
-                        $(anchor).text('<fmt:message key="close" />');
-                    } else {
-                        $(anchor).text('<fmt:message key="search" />');
-                    }
-                }
-            }
-
-        });
+    //DEPRECETATEd
 };
 
 
@@ -936,7 +1010,11 @@ MMBaseSearcher.prototype.create = function () {
                             }
                         }
                     };
-                    $(rep).find("form.mm_form").ajaxForm(options);
+		    if ($(rep).find("form.mm_form").ajaxForm == undefined) {
+			alert("$.ajaxForm is not defined");
+		    } else {
+			$(rep).find("form.mm_form").ajaxForm(options);
+		    }
 
                 }
             }
