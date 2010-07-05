@@ -1012,7 +1012,11 @@ MMBaseSearcher.prototype.create = function () {
                             }
                         }
                     };
-                    $(rep).find("form.mm_form").ajaxForm(options);
+		    if ($(rep).find("form.mm_form").ajaxForm == undefined) {
+			alert("$.ajaxForm is not defined");
+		    } else {
+			$(rep).find("form.mm_form").ajaxForm(options);
+		    }
 
                 }
             }
