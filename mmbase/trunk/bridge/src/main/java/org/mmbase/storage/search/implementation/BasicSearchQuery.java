@@ -288,6 +288,12 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
             newConstraint.setInverse(constraint.isInverse());
             newConstraint.setCaseSensitive(constraint.isCaseSensitive());
             return newConstraint;
+        } else if (c instanceof FieldValueInQueryConstraint) {
+            FieldValueInQueryConstraint constraint = (FieldValueInQueryConstraint) c;
+            BasicFieldValueInQueryConstraint newConstraint = new BasicFieldValueInQueryConstraint(createNewStepField(q, constraint.getField()), constraint.getInQuery());
+            newConstraint.setInverse(constraint.isInverse());
+            newConstraint.setCaseSensitive(constraint.isCaseSensitive());
+            return newConstraint;
         } else if (c instanceof LegacyConstraint) {
             LegacyConstraint constraint = (LegacyConstraint) c;
             BasicLegacyConstraint newConstraint = new BasicLegacyConstraint(constraint.getConstraint());
