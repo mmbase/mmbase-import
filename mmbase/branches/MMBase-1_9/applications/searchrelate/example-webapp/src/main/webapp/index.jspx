@@ -19,10 +19,10 @@
 
       <head>
         <style>
-          li a {
+          ul li a {
           color: #500;
           }
-          li.done a {
+          ul li.done a {
           color: #050;
           }
           .todo .done {
