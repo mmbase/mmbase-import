@@ -69,7 +69,7 @@ public class BasicFieldValueInQueryConstraint extends BasicFieldConstraint imple
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("FieldValueInConstraint(inverse:").append(isInverse()).
+        StringBuilder sb = new StringBuilder("FieldValueInQueryConstraint(inverse:").append(isInverse()).
             append(", field:").append(getFieldName()).
             append(", casesensitive:").append(isCaseSensitive()).
             append(", query:").append(query.toString()).
