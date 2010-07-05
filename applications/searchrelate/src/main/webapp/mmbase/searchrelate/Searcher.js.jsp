@@ -144,8 +144,10 @@ function MMBaseRelater(d, validator) {
 
     if (this.current != null) {
         this.addSearcher(this.current, "current");
-	console.log($(this.div).find("div.settings span.currentMaxNumber").val());
-	//        if (relater.current != null) { this.relater.current.searcher.maxNumber = ${current.maxNumber}; }
+	var maxNumber = $(d).find("div.settings span.currentMaxNumber").html();
+	if (maxNumber != null) {
+	    this.current.searcher.maxNumber = maxNumber;
+	}
     } else {
         this.logger.debug("No current rep found");
     }
