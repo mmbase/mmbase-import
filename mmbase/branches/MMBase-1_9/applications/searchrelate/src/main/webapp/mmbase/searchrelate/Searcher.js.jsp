@@ -800,7 +800,6 @@ MMBaseSearcher.prototype.setFields = function(fields) {
 };
 MMBaseSearcher.prototype.setAliases = function(aliases) {
     this.aliases = aliases;
-    console.log(this.aliases);
 };
 
 MMBaseSearcher.prototype.setPageSize = function(pagesize) {
