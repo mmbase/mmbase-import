@@ -148,6 +148,7 @@ function MMBaseRelater(d, validator) {
 	if (maxNumber != null) {
 	    this.current.searcher.maxNumber = maxNumber;
 	}
+	this.current.searcher.nodeManager = $(d).find("div.settings span.currentManager").html();
     } else {
         this.logger.debug("No current rep found");
     }
@@ -164,6 +165,7 @@ function MMBaseRelater(d, validator) {
     this.logger.debug("found " + this.repository + " in ");
     if (this.repository != null) {
         this.addSearcher(this.repository, "repository");
+	this.repository.searcher.nodeManager = $(d).find("div.settings span.repositoryManager").html();
     }
     this.relateCallBack = null;
     for (var i = 0; i < MMBaseRelater.readyFunctions.length; i++) {
@@ -788,6 +790,7 @@ function MMBaseSearcher(d, r, type, logger) {
     }
     this.logger.debug("found url to use: " + this.searchUrl);
     this.maxNumber = -1;
+    this.nodeManager = "object";
 
 }
 
@@ -1026,7 +1029,7 @@ MMBaseSearcher.prototype.create = function () {
 
 MMBaseSearcher.prototype.getTr = function(node) {
     var url = "${mm:link('/mmbase/searchrelate/node.tr.jspx')}";
-    var params = {id: this.getQueryId(), node: node, fields: this.fields, customizedir: this.customizedir, editrelations: this.canEditrelations};
+    var params = {id: this.getQueryId(), nodemanager: this.nodeManager, node: node, fields: this.fields, customizedir: this.customizedir, editrelations: this.canEditrelations};
     var result;
     $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
             complete: function(res, status){
