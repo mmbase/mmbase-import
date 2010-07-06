@@ -20,7 +20,9 @@
         <tr class="click ${(! empty status and status.index % 2 eq 0) ? 'even' : 'odd'} ${nodemanager}">
           <td class="node number"><mm:field name="number" /></td>
           <c:if test="${aliases eq 'true'}">
-            <td class="node aliases" scope="col"><mm:aliaslist><mm:write /><mm:last inverse="true">, </mm:last></mm:aliaslist></td>
+            <td class="node aliases">
+              <mm:aliaslist><mm:write /><mm:last inverse="true">, </mm:last></mm:aliaslist>
+            </td>
           </c:if>
           <td class="node relation">
             <mm:compare referid="id" regexp="\w*current">${relation}</mm:compare>
