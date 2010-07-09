@@ -137,4 +137,9 @@ public class LoggerWrapper implements Logger {
         return log.isEnabledFor(l);
     }
 
+    @Override
+    public String toString() {
+        return "LoggerWrapper[" + log + "]";
+    }
+
 }
