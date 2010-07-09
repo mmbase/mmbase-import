@@ -22,6 +22,11 @@
     for communication between machines, including one which depends on the 'jgroups' software.
   </description>
 
+  <properties>
+    <jar.mainClass>org.mmbase.clustering.Converter</jar.mainClass>
+  </properties>
+
+
 
   <dependencies>
     <!-- TODO: Remove dependency on core -->

@@ -41,6 +41,8 @@ public class Unicast extends ClusterManager {
     /** Timeout of the connection.*/
     private int unicastTimeout = 10 * 1000;
 
+    private int version = 1;
+
 
     /** Sender which reads the nodesToSend Queue amd puts the message on the line */
     private ChangesSender ucs;
@@ -63,7 +65,7 @@ public class Unicast extends ClusterManager {
 
 
 
-    public Unicast(){
+    public Unicast() {
         readConfiguration(reader.getProperties());
         start();
     }
@@ -102,9 +104,26 @@ public class Unicast extends ClusterManager {
             } catch (Exception e) {}
         }
 
+        {
+
+            String tmpVersion = configuration.get("version");
+            if (tmpVersion != null && !tmpVersion.equals("")) {
+                try {
+                    version = Integer.parseInt(tmpVersion);
+                } catch (Exception e) {}
+            }
+            tmpVersion = configuration.get(org.mmbase.module.core.MMBase.getMMBase().getMachineName() + ".version");
+            if (tmpVersion != null && !tmpVersion.equals("")) {
+                try {
+                    version = Integer.parseInt(tmpVersion);
+                } catch (Exception e) {}
+            }
+        }
+
         log.info("unicast host: "    + unicastHost);
         log.info("unicast port: "    + unicastPort);
         log.info("unicast timeout: " + unicastTimeout);
+        log.info("unicast version: " + version + " (" + (version > 1 ? "multiple messages" : "single message") + ")");
 
     }
 
@@ -115,9 +134,9 @@ public class Unicast extends ClusterManager {
         if (unicastPort == -1) {
             log.service("Not starting unicast threads because port number configured to be -1");
         } else {
-            ucs = new ChangesSender(reader.getProperties(), unicastPort, unicastTimeout, nodesToSend, send);
+            ucs = new ChangesSender(reader.getProperties(), unicastPort, unicastTimeout, nodesToSend, send, version);
             try {
-                ucr = new ChangesReceiver(unicastHost, unicastPort, nodesToSpawn);
+                ucr = new ChangesReceiver(unicastHost, unicastPort, nodesToSpawn, version);
             } catch (java.io.IOException ioe) {
                 log.error(ioe);
             }

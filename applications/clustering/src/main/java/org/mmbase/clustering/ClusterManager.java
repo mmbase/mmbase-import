@@ -38,10 +38,14 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
     protected final Statistics receive = new Statistics();
     protected final Statistics send    = new Statistics();
 
-    /** Queue with messages to send to other MMBase instances */
-    protected BlockingQueue<byte[]> nodesToSend = new LinkedBlockingQueue<byte[]>(64);
-    /** Queue with received messages from other MMBase instances */
-    protected BlockingQueue<byte[]> nodesToSpawn = new LinkedBlockingQueue<byte[]>(64);
+    /**
+     * Queue with messages to send to other MMBase instances
+     */
+    protected final BlockingQueue<byte[]> nodesToSend = new LinkedBlockingQueue<byte[]>(64);
+    /**
+     * Queue with received messages from other MMBase instances
+     */
+    protected final BlockingQueue<byte[]> nodesToSpawn = new LinkedBlockingQueue<byte[]>(64);
 
     /** Thread which processes the messages */
     protected Thread kicker = null;

@@ -11,9 +11,10 @@ package org.mmbase.clustering.unicast;
 
 import java.io.*;
 import java.net.*;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.*;
 
-import org.mmbase.core.util.DaemonThread;
+
+import org.mmbase.util.ThreadPools;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -29,13 +30,14 @@ public class ChangesReceiver implements Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(ChangesReceiver.class);
 
-    /** Thread which sends the messages */
-    private Thread kicker = null;
+    private Future future = null;
 
     /** Queue with messages received from other MMBase instances */
     private final BlockingQueue<byte[]> nodesToSpawn;
 
     private final ServerSocket serverSocket;
+
+    private final int version;
 
     /**
      * Construct UniCast Receiver
@@ -44,29 +46,27 @@ public class ChangesReceiver implements Runnable {
      * @param nodesToSpawn Queue of received messages
      * @throws IOException when server socket failrf to listen
      */
-    ChangesReceiver(String unicastHost, int unicastPort, BlockingQueue<byte[]> nodesToSpawn) throws IOException {
+    public ChangesReceiver(String unicastHost, int unicastPort, BlockingQueue<byte[]> nodesToSpawn, int version) throws IOException {
         this.nodesToSpawn = nodesToSpawn;
         this.serverSocket = new ServerSocket();
         SocketAddress address = new InetSocketAddress(unicastHost, unicastPort);
         serverSocket.bind(address);
-        log.info("Listening to " + address);
+        this.version = version;
         this.start();
     }
 
     private void start() {
-        if (kicker == null) {
-            kicker = new DaemonThread(this, "UnicastReceiver");
-            kicker.start();
-            log.debug("UnicastReceiver started");
+        if (future == null) {
+            future = ThreadPools.jobsExecutor.submit(this);
+            ThreadPools.identify(future, "UnicastReceiver");
         }
     }
 
     void stop() {
-        if (kicker != null) {
+        if (future != null) {
             try {
-                kicker.interrupt();
-                kicker.setPriority(Thread.MIN_PRIORITY);
-                kicker = null;
+                future.cancel(true);
+                future = null;
             } catch (Throwable t) {
             }
             try {
@@ -80,35 +80,62 @@ public class ChangesReceiver implements Runnable {
     }
 
     public void run() {
+        log.info("Unicast listening started on " + serverSocket + " (v:" + version + ")");
         try {
-            while (kicker!=null) {
+            while (true) {
+                if (Thread.currentThread().isInterrupted()) break;
                 Socket socket = null;
-                InputStream reader = null;
+                DataInputStream reader = null;
                 try {
                     socket = serverSocket.accept();
-                    reader = new BufferedInputStream(socket.getInputStream());
-                    ByteArrayOutputStream writer = new ByteArrayOutputStream();
-                    int size = 0;
-                    //this buffer has nothing to do with the OS buffer
-                    byte[] buffer = new byte[1024];
+                    log.debug("" + socket);
 
-                    while ((size = reader.read(buffer)) != -1) {
-                        if (writer != null) {
-                          writer.write(buffer, 0, size);
-                          writer.flush();
-                       }
+                    reader = new DataInputStream(socket.getInputStream());
+
+                    if (version > 1) {
+                        int listSize = reader.readInt();
+                        log.debug("Will read " + listSize + " events");
+
+                        for (int i = 0; i < listSize; i++) {
+                            int arraySize = reader.readInt();
+                            log.debug("Size of event " + i + ": " + arraySize);
+                            ByteArrayOutputStream writer = new ByteArrayOutputStream();
+                            //this buffer has nothing to do with the OS buffer
+                            byte[] buffer = new byte[arraySize];
+                            reader.read(buffer);
+                            if (writer != null) {
+                                writer.write(buffer, 0, arraySize);
+                                writer.flush();
+                            }
+                            // maybe we should use encoding here?
+                            byte[] message = writer.toByteArray();
+                            if (log.isDebugEnabled()) {
+                                log.debug("unicase RECEIVED=>" + message);
+                            }
+                            nodesToSpawn.offer(message);
+                        }
+                    } else {
+                        ByteArrayOutputStream writer = new ByteArrayOutputStream();
+                        int size = 0;
+                        //this buffer has nothing to do with the OS buffer
+                        byte[] buffer = new byte[1024];
+                        while ((size = reader.read(buffer)) != -1) {
+                            if (writer != null) {
+                                writer.write(buffer, 0, size);
+                                writer.flush();
+                            }
+                        }
+                        byte[] message = writer.toByteArray();
+                        if (log.isDebugEnabled()) {
+                            log.debug("RECEIVED=>" + message);
+                        }
+                        nodesToSpawn.offer(message);
                     }
-                    // maybe we should use encoding here?
-                    byte[] message = writer.toByteArray();
-                    if (log.isDebugEnabled()) {
-                        log.debug("RECEIVED=>" + message);
-                    }
-                    nodesToSpawn.offer(message);
                 } catch (SocketException e) {
                     log.warn(e);
                     continue;
                 } catch (Exception e) {
-                    log.error(e);
+                    log.error(e.getMessage(), e);
                 } finally {
                     if (reader != null) {
                         try {

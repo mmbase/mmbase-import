@@ -42,7 +42,7 @@ public class ClusteringModule extends WatchedReloadableModule {
         if(clusterManagerClassName != null){
             clusterManager = findInstance(clusterManagerClassName);
             EventManager.getInstance().addEventListener(clusterManager);
-        }else{
+        } else {
             log.error("Parameter 'ClusterManagerImplementation' is missing from config file. can not load clustering");
         }
 
