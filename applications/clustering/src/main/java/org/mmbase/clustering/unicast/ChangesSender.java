@@ -57,6 +57,7 @@ public class ChangesSender implements Runnable {
     private long serverInterval;
 
     private int version = 1;
+    private Iterable<OtherMachine> otherMachines = null;
 
     /**
      * Construct UniCast Sender
@@ -75,6 +76,29 @@ public class ChangesSender implements Runnable {
         this.version = version;
         this.start();
     }
+
+    /**
+     * @since MMBase-2.0
+     */
+    protected void setOtherMachines(Iterable<OtherMachine> om) {
+        this.otherMachines = om;
+    }
+
+    /**
+     * @since MMBase-2.0
+     */
+    public void setOtherMachines(String s) {
+        final List<OtherMachine> unicastSenders = new ArrayList<ChangesSender.OtherMachine>();
+        String[] unicastHost = s.split(",");
+        for (String unicastString : unicastHost) {
+            if (unicastString.length() > 0) {
+                String[] unicastSend = unicastString.split(":", 3);
+                unicastSenders.add(new org.mmbase.clustering.unicast.ChangesSender.OtherMachine(unicastSend[0], unicastSend.length > 2 ? unicastSend[2] : null, Integer.parseInt(unicastSend[1]), 2));
+            }
+        }
+        setOtherMachines(unicastSenders);
+    }
+
 
     void start() {
         if (future == null) {
@@ -96,6 +120,9 @@ public class ChangesSender implements Runnable {
     }
 
 
+    /**
+     * @since MMBase-2.0
+     */
     public static class OtherMachine {
         public final String host;
         public final String machineName;
@@ -225,44 +252,57 @@ public class ChangesSender implements Runnable {
         return activeServers;
     }
 
+    /**
+     * @since MMBase-2.0
+     */
     protected int remove(OtherMachine remove) {
-        Iterator<MMObjectNode> i = activeServers.iterator();
-        while (i.hasNext()) {
-            MMObjectNode node = i.next();
-            String hostname    = node.getStringValue("host");
-            String machinename = node.getStringValue("name");
-            if (remove.host.equals(hostname) && remove.machineName.equals(machinename)) {
-                i.remove();
-                return 1;
+        if (otherMachines != null) {
+        } else {
+            Iterator<MMObjectNode> i = activeServers.iterator();
+            while (i.hasNext()) {
+                MMObjectNode node = i.next();
+                String hostname    = node.getStringValue("host");
+                String machinename = node.getStringValue("name");
+                if (remove.host.equals(hostname) && remove.machineName.equals(machinename)) {
+                    i.remove();
+                    return 1;
+                }
             }
         }
         return 0;
     }
 
 
+    /**
+     * @since MMBase-2.0
+     */
     protected Iterable<OtherMachine> getOtherMachines() {
-        List<OtherMachine> result = new ArrayList<OtherMachine>();
+        if (otherMachines != null) {
+            return otherMachines;
+        } else  {
+            List<OtherMachine> result = new ArrayList<OtherMachine>();
 
-        for (MMObjectNode node : getActiveServers()) {
-            if (node != null) {
-                String hostname    = node.getStringValue("host");
-                String machinename = node.getStringValue("name");
+            for (MMObjectNode node : getActiveServers()) {
+                if (node != null) {
+                    String hostname    = node.getStringValue("host");
+                    String machinename = node.getStringValue("name");
 
-                int unicastPort = defaultUnicastPort;
-                int version = 1;
-                if (configuration != null) {
-                    String specificPort = configuration.get(machinename + ".unicastport");
-                    if (specificPort != null) {
-                        unicastPort = Integer.parseInt(specificPort);
+                    int unicastPort = defaultUnicastPort;
+                    int version = 1;
+                    if (configuration != null) {
+                        String specificPort = configuration.get(machinename + ".unicastport");
+                        if (specificPort != null) {
+                            unicastPort = Integer.parseInt(specificPort);
+                        }
+                        String specificVersion = configuration.get(machinename + ".version");
+                        if (specificVersion != null) {
+                            version = Integer.parseInt(specificVersion);
+                        }
                     }
-                    String specificVersion = configuration.get(machinename + ".version");
-                    if (specificVersion != null) {
-                        version = Integer.parseInt(specificVersion);
-                    }
+                    result.add(new OtherMachine(hostname, machinename, unicastPort, version));
                 }
-                result.add(new OtherMachine(hostname, machinename, unicastPort, version));
             }
+            return result;
         }
-        return result;
     }
 }
