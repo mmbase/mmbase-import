@@ -10,9 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.clustering.multicast;
 
 import java.net.*;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.*;
 
-import org.mmbase.module.core.MMBaseContext;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -29,8 +29,7 @@ public class ChangesReceiver implements Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(ChangesReceiver.class);
 
-    /** Thread which sends the messages */
-    private Thread kicker = null;
+    private Future future = null;
 
     /** Queue with messages received from other MMBase instances */
     private final BlockingQueue<byte[]> nodesToSpawn;
@@ -55,7 +54,7 @@ public class ChangesReceiver implements Runnable {
      * @param nodesToSpawn Queue of received messages
      * @throws UnknownHostException when multicastHost is not found
      */
-    ChangesReceiver(String multicastHost, int mport, int dpsize, BlockingQueue<byte[]> nodesToSpawn)  throws UnknownHostException {
+    public ChangesReceiver(String multicastHost, int mport, int dpsize, BlockingQueue<byte[]> nodesToSpawn)  throws UnknownHostException {
         this.mport = mport;
         this.dpsize = dpsize;
         this.nodesToSpawn = nodesToSpawn;
@@ -63,8 +62,8 @@ public class ChangesReceiver implements Runnable {
         this.start();
     }
 
-    private  void start() {
-        if (kicker == null && ia != null) {
+    void start() {
+        if (future == null && ia != null) {
             try {
                 ms = new MulticastSocket(mport);
                 ms.joinGroup(ia);
@@ -72,7 +71,8 @@ public class ChangesReceiver implements Runnable {
                 log.error(e.getMessage(), e);
             }
             if (ms != null) {
-                kicker = MMBaseContext.startThread(this, "MulticastReceiver");
+                future = ThreadPools.jobsExecutor.submit(this);
+                ThreadPools.identify(future, "MulticastReceiver");
                 log.debug("MulticastReceiver started");
             }
         }
@@ -87,15 +87,20 @@ public class ChangesReceiver implements Runnable {
         } catch (Exception e) {
             // nothing
         }
-        if (kicker != null) {
-            kicker.interrupt();
-            kicker = null;
+        if (future != null) {
+            try {
+                future.cancel(true);
+                future = null;
+            } catch (Throwable t) {
+            }
         } else {
             log.service("Cannot stop thread, because it is null");
         }
     }
 
+
     public void run() {
+        log.info("MultiCast receiving on " + ms +  " " + ia + ":" + mport);
         // create a datapackage to receive all messages
         byte[] buffer = new byte[dpsize];
         DatagramPacket dp = new DatagramPacket(buffer, dpsize);
@@ -110,10 +115,10 @@ public class ChangesReceiver implements Runnable {
                 // That's not what we want. Especially when falling back to legacy, this is translated to a String.
                 // which otherwise gets dpsize length (64k!)
                 System.arraycopy(dp.getData(), 0, message, 0, dp.getLength());
-                if (log.isDebugEnabled()) {
-                    log.debug("RECEIVED=> " + dp.getLength() + " bytes from " + dp.getAddress());
-                }
                 nodesToSpawn.offer(message);
+                if (log.isDebugEnabled()) {
+                    log.debug("Multicast RECEIVED=> " + dp.getLength() + " bytes from " + dp.getAddress() + " queue " + nodesToSpawn.size());
+                }
             } catch (java.net.SocketException se) {
                 // generally happens on shutdown (ms==null)
                 // if not log it as an error

@@ -13,9 +13,9 @@ import org.mmbase.clustering.Statistics;
 
 import java.net.*;
 import java.io.*;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.*;
 
-import org.mmbase.module.core.MMBaseContext;
+import org.mmbase.util.ThreadPools;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -34,8 +34,7 @@ public class ChangesSender implements Runnable {
 
     private final Statistics send;
 
-    /** Thread which sends the messages */
-    private Thread kicker = null;
+    private Future future = null;
 
     /** Queue with messages to send to other MMBase instances */
     private final BlockingQueue<byte[]> nodesToSend;
@@ -60,7 +59,7 @@ public class ChangesSender implements Runnable {
      * @param send Statistics object in which to administer duration costs
      * @throws UnknownHostException when multicastHost is not found
      */
-    ChangesSender(String multicastHost, int mport, int mTTL, BlockingQueue<byte[]> nodesToSend, Statistics send) throws UnknownHostException  {
+    public ChangesSender(String multicastHost, int mport, int mTTL, BlockingQueue<byte[]> nodesToSend, Statistics send) throws UnknownHostException  {
         this.mport = mport;
         this.mTTL = mTTL;
         this.nodesToSend = nodesToSend;
@@ -69,17 +68,18 @@ public class ChangesSender implements Runnable {
         this.start();
     }
 
-    private void start() {
-        if (kicker == null && ia != null) {
+    void start() {
+        if (future == null && ia != null) {
             try {
                 ms = new MulticastSocket();
                 ms.joinGroup(ia);
                 ms.setTimeToLive(mTTL);
             } catch(Exception e) {
-                log.error(Logging.stackTrace(e));
+                log.error(e.getMessage(), e);
             }
 
-            kicker = MMBaseContext.startThread(this, "MulticastSender");
+            future = ThreadPools.jobsExecutor.submit(this);
+            ThreadPools.identify(future, "MulticastSender");
             log.debug("MulticastSender started");
         }
     }
@@ -92,17 +92,22 @@ public class ChangesSender implements Runnable {
             // nothing
         }
         ms = null;
-        if (kicker != null) {
-            kicker.interrupt();
-            kicker.setPriority(Thread.MIN_PRIORITY);
-            kicker = null;
+        if (future != null) {
+            try {
+                future.cancel(true);
+            } catch (Throwable t) {
+            }
+            future = null;
         } else {
             log.service("Cannot stop thread, because it is null");
         }
     }
+    public MulticastSocket getSocket() {
+        return ms;
+    }
 
     public void run() {
-        log.debug("Started sending");
+        log.info("MultiCast sending on " + ms + " " + ia + ":" + mport);
         while(ms != null) {
             try {
                 byte[] data = nodesToSend.take();

@@ -14,9 +14,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.*;
 
-import org.mmbase.core.util.DaemonThread;
+import org.mmbase.util.ThreadPools;
 import org.mmbase.module.builders.MMServers;
 import org.mmbase.module.core.*;
 
@@ -28,6 +28,7 @@ import org.mmbase.util.logging.Logging;
  * sending queue over unicast connections
  *
  * @author Nico Klasens
+ * @author Michiel Meeuwissen
  * @version $Id$
  */
 public class ChangesSender implements Runnable {
@@ -36,8 +37,7 @@ public class ChangesSender implements Runnable {
 
     private final Statistics send;
 
-    /** Thread which sends the messages */
-    private Thread kicker = null;
+    private Future future = null;
 
     /** Queue with messages to send to other MMBase instances */
     private final BlockingQueue<byte[]> nodesToSend;
@@ -56,6 +56,8 @@ public class ChangesSender implements Runnable {
     /** Interval of servers change their state */
     private long serverInterval;
 
+    private int version = 1;
+
     /**
      * Construct UniCast Sender
      * @param configuration configuration of unicast
@@ -64,87 +66,125 @@ public class ChangesSender implements Runnable {
      * @param nodesToSend Queue of messages to send
      * @param send Statistics
      */
-    ChangesSender(Map<String,String> configuration, int unicastPort, int unicastTimeout, BlockingQueue<byte[]> nodesToSend, Statistics send) {
+    public ChangesSender(Map<String,String> configuration, int unicastPort, int unicastTimeout, BlockingQueue<byte[]> nodesToSend, Statistics send, int version) {
         this.nodesToSend = nodesToSend;
         this.configuration = configuration;
         this.defaultUnicastPort = unicastPort;
         this.unicastTimeout = unicastTimeout;
         this.send = send;
+        this.version = version;
         this.start();
     }
 
-    private  void start() {
-        if (kicker == null) {
-            kicker = new DaemonThread(this, "UnicastSender");
-            kicker.start();
-            log.debug("UnicastSender started");
+    void start() {
+        if (future == null) {
+            future = ThreadPools.jobsExecutor.submit(this);
+            ThreadPools.identify(future, "UnicastSender");
         }
     }
 
     void stop() {
-        if (kicker != null) {
-            kicker.interrupt();
-            kicker.setPriority(Thread.MIN_PRIORITY);
-            kicker = null;
+        if (future != null) {
+            try {
+                future.cancel(true);
+                future = null;
+            } catch (Throwable t) {
+            }
         } else {
             log.service("Cannot stop thread, because it is null");
         }
     }
 
+
+    public static class OtherMachine {
+        public final String host;
+        public final String machineName;
+        public final int unicastPort;
+        public final int version;
+        public OtherMachine(String host, String machineName, int unicastPort, int version) {
+            this.host = host;
+            this.machineName = machineName;
+            this.unicastPort = unicastPort;
+            this.version = version;
+
+        }
+        @Override
+        public String toString() {
+            return host + ":" + unicastPort + " (v:" + version + ")";
+        }
+    }
+
     // javadoc inherited
     public void run() {
-        while(kicker != null) {
+        log.info("Unicast sending to " + getOtherMachines());
+        while(true) {
+            if (Thread.currentThread().isInterrupted()) break;
             try {
-                byte[] data = nodesToSend.take();
+                List<byte[]> data = new ArrayList<byte[]>();
+                data.add(nodesToSend.take()); // at least one
+                if (version > 1) {
+                    nodesToSend.drainTo(data);
+                }
                 long startTime = System.currentTimeMillis();
-                List<MMObjectNode> servers = getActiveServers();
-                for (int i = 0; i < servers.size(); i++) {
-                    MMObjectNode node = servers.get(i);
-                    if (node != null) {
-                        String hostname = node.getStringValue("host");
-                        String machinename = node.getStringValue("name");
-
-                        int unicastPort = defaultUnicastPort;
-                        String specificPort = configuration.get(machinename + ".unicastport");
-                        if (specificPort != null) {
-                            unicastPort = Integer.parseInt(specificPort);
-                        }
-                        Socket socket = null;
-                        DataOutputStream os = null;
-                        try {
+                log.debug("Send change to " + getOtherMachines());
+                for (OtherMachine machine : getOtherMachines()) {
+                    DataOutputStream os = null;
+                    Socket socket = null;
+                    try {
+                        if (machine.version > 1) {
                             socket = new Socket();
-                            socket.connect(new InetSocketAddress(hostname, unicastPort), unicastTimeout);
+                            socket.connect(new InetSocketAddress(machine.host, machine.unicastPort), unicastTimeout);
                             os = new DataOutputStream(socket.getOutputStream());
-                            os.write(data, 0, data.length);
+                            os.writeInt(data.size());
+                            send.bytes += 4;
+                            for (byte[] d : data) {
+                                os.writeInt(d.length);
+                                send.bytes += 4;
+                                os.write(d, 0, d.length);
+                                send.bytes += d.length;
+                            }
                             os.flush();
-                            if (log.isDebugEnabled()) {
-                                log.debug("SEND=>" + hostname + ":" + unicastPort);
+                        } else {
+                            for (byte[] d : data) {
+                                socket = new Socket();
+                                socket.connect(new InetSocketAddress(machine.host, machine.unicastPort), unicastTimeout);
+                                os = new DataOutputStream(socket.getOutputStream());
+                                os.write(d, 0, d.length);
+                                send.bytes += d.length;
+                                os.flush();
                             }
-                        } catch(SocketTimeoutException ste) {
-                            servers.remove(i);
-                            log.warn("Server timeout: " + hostname + ":" + unicastPort + " " + ste + ". Removed " + node + " from active server list.");
-                        } catch (ConnectException ce) {
-                            log.warn("Connect exception: " + hostname + ":" + unicastPort + " " + ce + ".");
-                        } catch (IOException e) {
-                            log.error("can't send message to " + hostname + ":" + unicastPort + " " + e.getMessage() , e);
-                        } finally {
-                            if (os != null) {
-                                try {
-                                    os.close();
-                                } catch (IOException e1) {
-                                }
+                        }
+
+                        if (log.isDebugEnabled()) {
+                            log.debug("SEND=>" + machine + " (" + data.size() + " events)");
+                        }
+                    } catch(SocketTimeoutException ste) {
+                        int removed = remove(machine);
+                        if (removed == 1) {
+                            log.warn("Server timeout: " + machine + " " + ste + ". Removed from active server list.");
+                        } else {
+                            log.error("Server timeout: " + machine + " " + ste + ". Remove from active server list: " + removed);
+                        }
+                    } catch (ConnectException ce) {
+                        log.warn("Connect exception: " + machine + " " + ce + ".");
+                    } catch (IOException e) {
+                        log.error("can't send message to " + machine + " " + e.getMessage() , e);
+                    } finally {
+                        if (os != null) {
+                            try {
+                                os.close();
+                            } catch (IOException e1) {
                             }
-                            if (socket != null) {
-                                try {
-                                    socket.close();
-                                } catch (IOException e1) {
-                                }
+                        }
+                        if (socket != null) {
+                            try {
+                                socket.close();
+                            } catch (IOException e1) {
                             }
                         }
                     }
                 }
                 send.count++;
-                send.bytes += data.length;
                 send.cost += (System.currentTimeMillis() - startTime);
 
             } catch (InterruptedException e) {
@@ -185,4 +225,44 @@ public class ChangesSender implements Runnable {
         return activeServers;
     }
 
+    protected int remove(OtherMachine remove) {
+        Iterator<MMObjectNode> i = activeServers.iterator();
+        while (i.hasNext()) {
+            MMObjectNode node = i.next();
+            String hostname    = node.getStringValue("host");
+            String machinename = node.getStringValue("name");
+            if (remove.host.equals(hostname) && remove.machineName.equals(machinename)) {
+                i.remove();
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+
+    protected Iterable<OtherMachine> getOtherMachines() {
+        List<OtherMachine> result = new ArrayList<OtherMachine>();
+
+        for (MMObjectNode node : getActiveServers()) {
+            if (node != null) {
+                String hostname    = node.getStringValue("host");
+                String machinename = node.getStringValue("name");
+
+                int unicastPort = defaultUnicastPort;
+                int version = 1;
+                if (configuration != null) {
+                    String specificPort = configuration.get(machinename + ".unicastport");
+                    if (specificPort != null) {
+                        unicastPort = Integer.parseInt(specificPort);
+                    }
+                    String specificVersion = configuration.get(machinename + ".version");
+                    if (specificVersion != null) {
+                        version = Integer.parseInt(specificVersion);
+                    }
+                }
+                result.add(new OtherMachine(hostname, machinename, unicastPort, version));
+            }
+        }
+        return result;
+    }
 }

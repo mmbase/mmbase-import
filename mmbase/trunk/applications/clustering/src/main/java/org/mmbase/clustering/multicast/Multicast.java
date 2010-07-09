@@ -33,17 +33,20 @@ public class Multicast extends ClusterManager {
 
     public static final String CONFIG_FILE = "multicast.xml";
 
+    public static final String HOST_DEFAULT = "ALL-SYSTEMS.MCAST.NET";
+    public static final int    PORT_DEFAULT = 16080;
+
     /**
      * Defines what 'channel' we are talking to when using multicast.
      */
-    private String multicastHost = "ALL-SYSTEMS.MCAST.NET";
+    private String multicastHost = HOST_DEFAULT;
 
     /**
      * Determines on what port does this multicast talking between nodes take place.
      * This can be set to any port but check if something else on
      * your network is allready using multicast when you have problems.
      */
-    private int multicastPort = 4243;
+    private int multicastPort = PORT_DEFAULT;
 
     /** Determines the Time To Live for a multicast datapacket */
     private int multicastTTL = 1;
@@ -123,11 +126,13 @@ public class Multicast extends ClusterManager {
         } else {
             try {
                 mcs = new ChangesSender(multicastHost, multicastPort, multicastTTL, nodesToSend, send);
+                mcs.start();
             } catch (java.net.UnknownHostException e) {
                 log.error(e);
             }
             try {
                 mcr = new ChangesReceiver(multicastHost, multicastPort, dpsize, nodesToSpawn);
+                mcr.start();
             } catch (java.net.UnknownHostException e) {
                 log.error(e);
             }
