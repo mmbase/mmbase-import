@@ -128,6 +128,7 @@ public class DocumentReader  {
      * You can pass a resolve class to this constructor, allowing you to indicate the package in which the dtd
      * of the document read is to be found. The dtd sould be in the resources package under the package of the class passed.
      * @param source the input source from which to read the document
+     * @param xsd the input source from which to read the document
      * @param validating whether to validate the document
      * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
      * @since MMBase-1.9.2
