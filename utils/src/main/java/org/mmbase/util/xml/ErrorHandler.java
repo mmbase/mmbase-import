@@ -74,7 +74,7 @@ public class ErrorHandler implements org.xml.sax.ErrorHandler {
     }
 
     public void error(SAXParseException ex) throws SAXException{
-        String message = getLocationString(ex)+": "+ ex.getClass() + " " + ex.getMessage();
+        String message = getLocationString(ex) + ": " + ex.getClass() + " " + ex.getMessage();
         if (isJava5AndXInclude(ex)) {
             // I get horrible validation exceptions in the log when doing xinclude in java 5.
             // It does not happen in java 6.
