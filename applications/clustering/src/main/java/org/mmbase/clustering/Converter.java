@@ -48,19 +48,6 @@ public class Converter {
         final int unicastListenVersion = 2;
 
 
-        final List<org.mmbase.clustering.unicast.ChangesSender.OtherMachine> unicastSenders
-            = new ArrayList<org.mmbase.clustering.unicast.ChangesSender.OtherMachine>();
-        {
-            String[] unicastHost = argMap.get("unicastSend").split(",");
-            for (String unicastString : unicastHost) {
-                if (unicastString.length() > 0) {
-                    String[] unicastSend = unicastString.split(":", 3);
-                    unicastSenders.add(new org.mmbase.clustering.unicast.ChangesSender.OtherMachine(unicastSend[0], unicastSend.length > 2 ? unicastSend[2] : null, Integer.parseInt(unicastSend[1]), 2));
-                }
-            }
-        }
-
-
         int dpsize = 64 * 1024;
         String[] multicast = argMap.get("multicast").split(":");
         final String multicastHost = multicast[0];
@@ -69,20 +56,11 @@ public class Converter {
 
         Statistics stats = new Statistics();
 
-        Runnable uniCastReceiver   = new org.mmbase.clustering.unicast.ChangesReceiver(unicastListenHost, unicastListenPort, uniToMultiNodes, 2);
-        Runnable uniCastSender     = new org.mmbase.clustering.unicast.ChangesSender(null, 4123, 10 * 1000, multiToUniNodes, stats, 2) {
-                @Override
-                protected Iterable<OtherMachine> getOtherMachines() {
-                    return unicastSenders;
-                }
-                @Override
-                protected int remove(OtherMachine mach) {
-                    return 0;
-                }
-            };
+        new org.mmbase.clustering.unicast.ChangesReceiver(unicastListenHost, unicastListenPort, uniToMultiNodes, 2);
+        org.mmbase.clustering.unicast.ChangesSender uniCastSender     = new org.mmbase.clustering.unicast.ChangesSender(null, 4123, 10 * 1000, multiToUniNodes, stats, 2);
+        uniCastSender.setOtherMachines(argMap.get("unicastSend"));
 
-
-        Runnable multiCastReceiver   = new org.mmbase.clustering.multicast.ChangesReceiver(multicastHost, multicastPort, dpsize, multiToUniNodes);
+        new org.mmbase.clustering.multicast.ChangesReceiver(multicastHost, multicastPort, dpsize, multiToUniNodes);
         org.mmbase.clustering.multicast.ChangesSender multiCastSender
             = new org.mmbase.clustering.multicast.ChangesSender(multicastHost, multicastPort, multicastTimeToLive, uniToMultiNodes, stats);
         multiCastSender.getSocket().setLoopbackMode(true);

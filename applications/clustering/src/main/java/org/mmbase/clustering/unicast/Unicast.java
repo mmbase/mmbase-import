@@ -43,6 +43,8 @@ public class Unicast extends ClusterManager {
 
     private int version = 1;
 
+    private String peers;
+
 
     /** Sender which reads the nodesToSend Queue amd puts the message on the line */
     private ChangesSender ucs;
@@ -120,10 +122,15 @@ public class Unicast extends ClusterManager {
             }
         }
 
+        peers = configuration.get("peers");
+
         log.info("unicast host: "    + unicastHost);
         log.info("unicast port: "    + unicastPort);
         log.info("unicast timeout: " + unicastTimeout);
         log.info("unicast version: " + version + " (" + (version > 1 ? "multiple messages" : "single message") + ")");
+        if (peers != null && peers.length() > 0) {
+            log.info("unicast peers: " + peers);
+        }
 
     }
 
@@ -135,6 +142,10 @@ public class Unicast extends ClusterManager {
             log.service("Not starting unicast threads because port number configured to be -1");
         } else {
             ucs = new ChangesSender(reader.getProperties(), unicastPort, unicastTimeout, nodesToSend, send, version);
+            if (peers != null && peers.length() > 0) {
+                ucs.setOtherMachines(peers);
+            }
+
             try {
                 ucr = new ChangesReceiver(unicastHost, unicastPort, nodesToSpawn, version);
             } catch (java.io.IOException ioe) {
