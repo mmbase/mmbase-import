@@ -18,7 +18,12 @@
 
 
   <dependencies>
-
+    <dependency>
+      <!-- silly dependency but I can't be bothered -->
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${mmbase.version}</version>
+    </dependency>
   </dependencies>
 
   <repositories>
