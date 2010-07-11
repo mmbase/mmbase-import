@@ -37,15 +37,15 @@ public class ASelectCloudContextUser extends org.mmbase.security.implementation.
 
     private static final Logger log = Logging.getLoggerInstance(ASelectCloudContextUser.class);
 
-    protected ASelectCloudContextUser(MMObjectNode node, long number, String app) {
-        super(node, number, app);
+    protected ASelectCloudContextUser(Authentication a, MMObjectNode node, long number, String app) {
+        super(a, node, number, app);
     }
 
     private String rank = null;
 
     // constructor, perhaps needs more argumetns
-    protected ASelectCloudContextUser(String userName, long number, String app, String rank) {
-        super(getUser(userName, rank), number, app);
+    protected ASelectCloudContextUser(Authentication a, String userName, long number, String app, String rank) {
+        super(a, getUser(userName, rank), number, app);
         if (! "".equals(rank)) {
             this.rank = rank;
         }
