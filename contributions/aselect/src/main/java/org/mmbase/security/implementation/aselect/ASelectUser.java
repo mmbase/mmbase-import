@@ -32,28 +32,21 @@ public class ASelectUser extends BasicUser {
     private static final Logger log = Logging.getLoggerInstance(ASelectUser.class);
 
     private static final long serialVersionUID = 1;
-    private String identifier;
     private Rank   rank;
     long key;
 
 
 
     // constructor, perhaps needs more argumetns
-    public ASelectUser(String name, Rank r, long uniqueNumber, String app) {
-        super(app);
+    public ASelectUser(Authentication a, String name, Rank r, long uniqueNumber, String app) {
+        super(a, app, name);
         if (log.isDebugEnabled()) {
             log.debug("Instantiating " + name);
         }
-        identifier = name;
         rank       = r;
         key = uniqueNumber;
     }
 
-
-    // javadoc inherited
-    public String getIdentifier() {
-        return identifier;
-    }
 
     // javadoc inherited
     public String getOwnerField() {
@@ -62,17 +55,6 @@ public class ASelectUser extends BasicUser {
 
     public Rank getRank() throws SecurityException {
         return rank;
-    }
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-        identifier = in.readUTF();
-        rank = (Rank)in.readObject();
-        key = in.readLong();
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-        out.writeUTF(identifier);
-        out.writeObject(rank);
-        out.writeLong(key);
     }
 
     public boolean equals(Object o) {
