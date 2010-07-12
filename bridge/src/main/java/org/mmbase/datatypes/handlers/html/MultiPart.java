@@ -87,15 +87,22 @@ public class MultiPart {
                 UploadListener listener = new UploadListener(req, log.isDebugEnabled() ? 1 : 0);
                 FileItemFactory factory = new MonitoredDiskFileItemFactory(listener);
                 ServletFileUpload fu = new ServletFileUpload(factory);
-                fu.setHeaderEncoding("ISO-8859-1"); // if incorrect, it will be fixed later.
+                if (req.getCharacterEncoding() == null) {
+                    // Never fall back on system default
+                    fu.setHeaderEncoding("ISO-8859-1"); // if incorrect, it will be fixed later.
+                }
                 List fileItems = fu.parseRequest(req);
                 for (Iterator i = fileItems.iterator(); i.hasNext(); ) {
                     FileItem fi = (FileItem)i.next();
                     log.debug("Found " + fi);
                     if (fi.isFormField()) {
                         String value;
+                        String enc = req.getCharacterEncoding();
+                        if (enc == null) {
+                            enc = "ISO-8859-1";
+                        }
                         try {
-                            value = fi.getString("ISO-8859-1");
+                            value = fi.getString(enc);
                         } catch(java.io.UnsupportedEncodingException uee) {
                             log.error("could not happen, ISO-8859-1 is supported");
                             value = fi.getString();
