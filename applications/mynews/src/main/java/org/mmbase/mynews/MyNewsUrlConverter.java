@@ -46,6 +46,8 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
     private static CharTransformer trans = new Identifier();
     private boolean useTitle = false;
     private int dateDepth  = 0;
+    private String renderJsp = "/mmbase/framework/render.jspx?component=mynews";
+    private boolean mmweb = false;
 
     public MyNewsUrlConverter(BasicFramework fw) {
         super(fw);
@@ -58,6 +60,12 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
     }
     public void setDateDepth(int d) {
         dateDepth = d;
+    }
+    public void setRenderJsp(String s) {
+        renderJsp = s;
+    }
+    public void setMmweb(boolean w) {
+        mmweb = w;
     }
 
     @Override
@@ -83,7 +91,7 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
             log.debug("" + parameters + frameworkParameters);
             log.debug("Found mynews block " + block);
         }
-        if(block.getName().equals("article")) {
+        if (block.getName().equals("article") || block.getName().equals("news")) {
             Node n = parameters.get(Framework.N);
             parameters.set(Framework.N, null);
             if (dateDepth > 0) {
@@ -115,12 +123,17 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
      */
     @Override
     public Url getFilteredInternalDirectoryUrl(List<String>  path, Map<String, ?> params, Parameters frameworkParameters) throws FrameworkException {
-        StringBuilder result = new StringBuilder("/mmbase/framework/render.jspx?component=mynews");
+        StringBuilder result = new StringBuilder(renderJsp);
+        result.append("?component=mynews");
         if (path.size() == 0) {
             result.append("&block=magazine");
         } else {
-            result.append("&block=article&n=");
             // article mode
+            if (mmweb) {
+                result.append("&block=news&n=");
+            } else {
+                result.append("&block=article&n=");
+            }
             String id = path.get(path.size() - 1); // last element in the list identifies the article
             String n;
             if (useTitle) {
