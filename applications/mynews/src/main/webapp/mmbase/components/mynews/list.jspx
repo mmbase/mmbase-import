@@ -1,0 +1,41 @@
+<div
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    class="mm_c c_mynews c_b_mmweb_home ${requestScope.componentClassName}"
+    id="${requestScope.componentId}">
+  
+  <jsp:output omit-xml-declaration="true" />
+  
+  <mm:import externid="mag">default.mags</mm:import>
+  <mm:import externid="max">3</mm:import>
+  <mm:import externid="offset">0</mm:import>
+  
+  <mm:cloud>
+
+    <h3 class="news"><a href="news.html">News</a></h3>
+  
+    <mm:node number="$mag">
+      <mm:relatednodescontainer type="news" role="posrel" searchdirs="destination">
+        <mm:sortorder field="date" direction="DOWN" />
+        <mm:maxnumber value="$max" />
+        <mm:offset value="$offset" />
+        <ul class="news nolist">
+          <mm:relatednodes>
+            <li>
+              <mm:link page="article" referids="_node@n">
+                <mm:frameworkparam name="component">mynews</mm:frameworkparam>
+                <a href="${_}"><mm:field name="title" escape="inline" /></a> 
+              </mm:link>
+              <mm:field name="date"><mm:time format="dd-MM-yyyy" /></mm:field> -
+              <mm:field name="intro" escape="inline" />
+            </li>
+          </mm:relatednodes>
+          <li><a href="#">More news »»</a></li>
+        </ul>
+      </mm:relatednodescontainer>
+    </mm:node>
+
+  </mm:cloud>
+</div>
