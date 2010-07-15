@@ -1,17 +1,19 @@
 package org.mmbase.storage.search.implementation;
 
-import junit.framework.*;
-import org.mmbase.module.core.*;
- import org.mmbase.core.CoreField;
+import org.junit.*;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.mock.*;
 import org.mmbase.storage.search.*;
+
+import static org.junit.Assert.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Id$
  */
-public class BasicSortOrderTest extends TestCase {
+public class BasicSortOrderTest  {
 
     /** Test instance. */
     private BasicSortOrder instance = null;
@@ -19,36 +21,28 @@ public class BasicSortOrderTest extends TestCase {
     /** Associated field. */
     private BasicStepField field = null;
 
-    /** MMBase instance. */
-    private MMBase mmbase = null;
 
-    public BasicSortOrderTest(java.lang.String testName) {
-        super(testName);
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        MockCloudContext.getInstance().addCore();
+        MockCloudContext.getInstance().addCoreModel();
+        MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
     }
-
-    public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
     /**
      * Sets up before each test.
      */
+    @Before
     public void setUp() throws Exception {
-        MMBaseContext.init();
-        mmbase = MMBase.getMMBase();
-        MMObjectBuilder builder = mmbase.getBuilder("images");
-        CoreField CoreField = builder.getField("title");
-        Step step = new BasicStep(builder);
-        field = new BasicStepField(step, CoreField);
+        NodeManager builder = MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("news");
+        Field f = builder.getField("title");
+        Step step = new BasicStep(builder.getName());
+        field = new BasicStepField(step, f);
         instance = new BasicSortOrder(field);
     }
 
-    /**
-     * Tears down after each test.
-     */
-    public void tearDown() throws Exception {}
-
     /** Test of setDirection method, of class org.mmbase.storage.search.implementation.BasicSortOrder. */
+    @Test
     public void testSetDirection() {
         // Default is SortOrder.ASCENDING.
         assertTrue(instance.getDirection() == SortOrder.ORDER_ASCENDING);
@@ -66,31 +60,28 @@ public class BasicSortOrderTest extends TestCase {
     }
 
     /** Test of getField method, of class org.mmbase.storage.search.implementation.BasicSortOrder. */
+    @Test
     public void testGetField() {
         assertTrue(instance.getField() == field);
     }
 
     /** Test of getDirection method, of class org.mmbase.storage.search.implementation.BasicSortOrder. */
+    //@Test
     public void testGetDirection() {
         // Same as:
         testSetDirection();
     }
 
     /** Test of equals method, of class org.mmbase.storage.search.implementation.BasicSortOrder. */
+    //@Test
     public void testEquals() {
         // TODO: implement test
     }
 
     /** Test of hashCode method, of class org.mmbase.storage.search.implementation.BasicSortOrder. */
+    //@Test
     public void testHashCode() {
         // TODO: implement test
-    }
-
-
-    public static Test suite() {
-        TestSuite suite = new TestSuite(BasicSortOrderTest.class);
-
-        return suite;
     }
 
 }
