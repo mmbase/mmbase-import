@@ -394,6 +394,9 @@ public class ConstraintParser {
     public static StepField getField(QueryContext queryContext, String token, List<? extends Step> steps) {
         return getField(queryContext, token, (List<BasicStep>) steps, null);
     }
+    public static StepField getField(String token, List<? extends Step> steps) {
+        return getField(BRIDGE, token, steps);
+    }
     /**
      * Creates <code>StepField</code> corresponding to field indicated by
      * token, of one of the specified steps.
