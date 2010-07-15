@@ -1,19 +1,22 @@
 package org.mmbase.storage.search.implementation;
 
-import junit.framework.*;
+import org.junit.*;
 
-import org.mmbase.module.core.*;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.mock.*;
 import org.mmbase.storage.search.*;
+
+import static org.junit.Assert.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Id$
  */
-public class BasicFieldValueConstraintTest extends TestCase {
+public class BasicFieldValueConstraintTest {
 
-    private final static String BUILDER_NAME = "images";
+    private final static String BUILDER_NAME = "news";
     private final static String FIELD_NAME1 = "title";
     private final static String FIELD_NAME2 = "number";
     private final static String STRING_VALUE1 = "value1";
@@ -27,35 +30,27 @@ public class BasicFieldValueConstraintTest extends TestCase {
     /** Test instance 2 (integer field). */
     private BasicFieldValueConstraint instance2 = null;
 
-    /** MMBase instance. */
-    private MMBase mmbase = null;
-
     /** Field instance 1 (string field). */
     private BasicStepField field1 = null;
 
-    /** Builder example. */
-    private MMObjectBuilder builder = null;
 
-    public BasicFieldValueConstraintTest(java.lang.String testName) {
-        super(testName);
-    }
-
-    public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
-        System.exit(0);
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        MockCloudContext.getInstance().addCore();
+        MockCloudContext.getInstance().addCoreModel();
+        MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
     }
 
     /**
      * Sets up before each test.
      */
+    @Before
     public void setUp() throws Exception {
-        MMBaseContext.init();
-        mmbase = MMBase.getMMBase();
-        builder = mmbase.getBuilder(BUILDER_NAME);
-        Step step = new BasicStep(builder);
+        NodeManager builder = MockCloudContext.getInstance().getCloud("mmbase").getNodeManager(BUILDER_NAME);
+        Step step = new BasicStep(builder.getName());
 
         // Create instance 1 (string field).
-        org.mmbase.core.CoreField field = builder.getField(FIELD_NAME1);
+        Field field = builder.getField(FIELD_NAME1);
         field1 = new BasicStepField(step, field);
         instance1 = new BasicFieldValueConstraint(field1, STRING_VALUE1);
 
@@ -65,12 +60,8 @@ public class BasicFieldValueConstraintTest extends TestCase {
         instance2 = new BasicFieldValueConstraint(field2, DOUBLE_VALUE1);
     }
 
-    /**
-     * Tears down after each test.
-     */
-    public void tearDown() throws Exception {}
-
     /** Test of setValue method, of class org.mmbase.storage.search.implementation.BasicFieldValueConstraint. */
+    @Test
     public void testSetValue() {
         assertTrue(instance1.getValue().equals(STRING_VALUE1));
         assertTrue(instance2.getValue().equals(DOUBLE_VALUE1));
@@ -115,31 +106,29 @@ public class BasicFieldValueConstraintTest extends TestCase {
     }
 
     /** Test of getValue method, of class org.mmbase.storage.search.implementation.BasicFieldValueConstraint. */
+    //@Test
     public void testGetValue() {
         // Same as:
         testSetValue();
     }
 
     /** Test of getBasicSupportLevel method. */
+    @Test
     public void testGetBasicSupportLevel() {
         // Returns SUPPORT_OPTIMAL.
         assertTrue(instance1.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
 
     /** Test of equals method, of class org.mmbase.storage.search.implementation.BasicFieldValueConstraint. */
+    //@Test
     public void testEquals() {
         // TODO: implement test
     }
 
     /** Test of hashCode method, of class org.mmbase.storage.search.implementation.BasicFieldValueConstraint. */
+    //@Test
     public void testHashCode() {
         // TODO: implement test
-    }
-
-    public static Test suite() {
-        TestSuite suite = new TestSuite(BasicFieldValueConstraintTest.class);
-
-        return suite;
     }
 
 }

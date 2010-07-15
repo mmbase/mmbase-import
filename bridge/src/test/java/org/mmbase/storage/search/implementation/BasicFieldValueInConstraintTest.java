@@ -1,21 +1,23 @@
 package org.mmbase.storage.search.implementation;
 
-import junit.framework.*;
+import org.junit.*;
 import java.util.*;
 
-import org.mmbase.core.CoreField;
-import org.mmbase.module.core.*;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.mock.*;
 import org.mmbase.storage.search.*;
+
+import static org.junit.Assert.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Id$
  */
-public class BasicFieldValueInConstraintTest extends TestCase {
+public class BasicFieldValueInConstraintTest  {
 
-    private final static String BUILDER_NAME = "images";
+    private final static String BUILDER_NAME = "news";
     private final static String STRING_FIELD_NAME = "title";
     private final static String INTEGER_FIELD_NAME = "number";
 
@@ -26,50 +28,42 @@ public class BasicFieldValueInConstraintTest extends TestCase {
     /** Test instance. */
     private BasicFieldValueInConstraint instance = null;
 
-    /** MMBase instance. */
-    private MMBase mmbase = null;
-
     /** Field instances. */
     private BasicStepField stringField = null;
     private StepField integerField = null;
 
-    /** Builder example. */
-    private MMObjectBuilder builder = null;
 
     /** CoreField examples. */
-    private CoreField stringCoreField = null;
-    private CoreField integerCoreField = null;
+    private Field stringCoreField = null;
+    private Field integerCoreField = null;
 
-    public BasicFieldValueInConstraintTest(java.lang.String testName) {
-        super(testName);
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        MockCloudContext.getInstance().addCore();
+        MockCloudContext.getInstance().addCoreModel();
+        MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
     }
 
-    public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
-        System.exit(0);
-    }
 
     /**
      * Sets up before each test.
      */
+    @Before
     public void setUp() throws Exception {
-        MMBaseContext.init();
-        mmbase = MMBase.getMMBase();
-        builder = mmbase.getBuilder(BUILDER_NAME);
+
+        NodeManager builder = MockCloudContext.getInstance().getCloud("mmbase").getNodeManager(BUILDER_NAME);
         stringCoreField = builder.getField(STRING_FIELD_NAME);
         integerCoreField = builder.getField(INTEGER_FIELD_NAME);
-        Step step = new BasicStep(builder);
+        Step step = new BasicStep(builder.getName());
         stringField = new BasicStepField(step, stringCoreField);
         integerField = new BasicStepField(step, integerCoreField);
         instance = new BasicFieldValueInConstraint(stringField);
     }
 
-    /**
-     * Tears down after each test.
-     */
-    public void tearDown() throws Exception {}
 
     /** Test of addValue method, of class org.mmbase.storage.search.implementation.BasicFieldValueInConstraint. */
+    @Test
     public void testAddValue() {
         // Null value, should throw IllegalArgumentException
         try {
@@ -113,6 +107,7 @@ public class BasicFieldValueInConstraintTest extends TestCase {
     }
 
     /** Test of getValues method, of class org.mmbase.storage.search.implementation.BasicFieldValueInConstraint. */
+    @Test
     public void testGetValues() {
         // See:
         testAddValue();
@@ -131,26 +126,22 @@ public class BasicFieldValueInConstraintTest extends TestCase {
    }
 
     /** Test of getBasicSupportLevel method. */
+    @Test
     public void testGetBasicSupportLevel() {
         // Returns SUPPORT_OPTIMAL.
-        assertTrue(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getBasicSupportLevel() == 3); // TODO SearchQueryHandler.SUPPORT_OPTIMAL);
     }
 
     /** Test of equals method, of class org.mmbase.storage.search.implementation.BasicFieldValueInConstraint. */
+    //@Test
     public void testEquals() {
         // TODO: implement test
     }
 
     /** Test of hashCode method, of class org.mmbase.storage.search.implementation.BasicFieldValueInConstraint. */
+    //@Test
     public void testHashCode() {
         // TODO: implement test
-    }
-
-
-    public static Test suite() {
-        TestSuite suite = new TestSuite(BasicFieldValueInConstraintTest.class);
-
-        return suite;
     }
 
 }
