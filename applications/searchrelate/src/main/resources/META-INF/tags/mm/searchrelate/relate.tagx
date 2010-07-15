@@ -112,12 +112,6 @@
     </mm:link>
   </c:if>
   <jsp:directive.include file="/mmbase/searchrelate/settings.jspf" />
-  <script type="text/javascript">
-    <c:if test="${! empty submit}"><!-- submit attribute given: commit search/relate on click of that element -->
-      $("${submit}").live("click", function(el) {
-        return $("#mm_related_${sid}")[0].relater.commit(el); });
-    </c:if>
-  </script>
 
   <fmt:bundle
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"

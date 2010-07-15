@@ -121,6 +121,7 @@ MMBaseLogger.prototype.debug = function (msg) {
  * The 'relater' encapsulated 1 or 2 'searchers', and is responsible for moving elements from one to the other.
  */
 function MMBaseRelater(d, validator) {
+    var self = this;
     this.div           = d;
     this.related       = {};    // related nodes
     this.unrelated     = {};    // unrelated nodes
@@ -199,7 +200,14 @@ function MMBaseRelater(d, validator) {
     this.setMaxPages($(d).find("div.settings span.maxpages").html());
     this.setContext($(d).find("div.settings span.context").html());
 
-
+    var  submit = $(d).find("div.settings span.submit").html();
+    if (submit != null) {
+	$(submit).click(
+	    function(el) {
+		return self.commit(el); 
+	    });
+    }
+    
     $(this.div).trigger("mmsrRelaterReady", [self]);
 
 }
