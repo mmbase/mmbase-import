@@ -25,7 +25,7 @@
     <mm:present referid="datatype">
       <jsp:scriptlet>
         DataTypeCollector collector;
-        if (origin.equals("datatypetag")) {
+        if ("datatypetag".equals(origin)) {
            collector = (DataTypeCollector) (((javax.servlet.http.HttpServletRequest) pageContext.getRequest()).getSession().getAttribute(DataTypeTag.KEY));
            if (collector == null) {
               throw new IllegalStateException("No collector found in session");
