@@ -112,12 +112,6 @@
     </mm:link>
   </c:if>
   <jsp:directive.include file="/mmbase/searchrelate/settings.jspf" />
-  <script type="text/javascript">
-    <c:if test="${! empty submit}"><!-- submit attribute given: commit search/relate on click of that element -->
-      $("${submit}").live("click", function(el) {
-        return $("#mm_related_${sid}")[0].relater.commit(el); });
-    </c:if>
-  </script>
 
   <fmt:bundle
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
@@ -132,6 +126,7 @@
         <c:if test="${! empty pagesize}"><span class="pagesize">${pagesize}</span></c:if>
         <c:if test="${! empty maxpages}"><span class="maxpages">${maxpages}</span></c:if>
         <c:if test="${! empty context}"><span class="context">${context}</span></c:if>
+        <c:if test="${! empty submit}"><span class="submit">${submit}</span></c:if>
         <span class="repositoryManager">${repository.nodeManager.name}</span>
         <c:if test="${! empty current}">
           <span class="currentMaxNumber">${current.maxNumber}</span>
