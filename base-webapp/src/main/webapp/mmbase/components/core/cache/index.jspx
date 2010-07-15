@@ -231,7 +231,14 @@
             <td class="center"> ${c.misses} </td>
             <td class="center"> ${c.puts} </td>
             <td class="center"> ${c.size} / ${c.maxSize} </td>
-            <td class="center"> <fmt:formatNumber value="${c.ratio}" maxFractionDigits="2" type="percent" /> </td>
+            <td class="center">
+              <c:choose>
+                <c:when test="${c.ratio ne 'NaN'}"> 
+                  <fmt:formatNumber value="${c.ratio}" maxFractionDigits="2" type="percent" />
+                </c:when>
+                <c:otherwise>-</c:otherwise>
+              </c:choose>
+            </td>
             <td class="view">
               <c:choose>
                 <c:when test="${c.active}">
