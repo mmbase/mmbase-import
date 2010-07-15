@@ -381,7 +381,10 @@ public abstract class BridgeCollections {
         @Override
         public Map<Object, Object> getProperties() { return Collections.emptyMap(); }
         @Override
-        public BridgeList<E> subList(int fromIndex, int toIndex) { throw new IndexOutOfBoundsException(); }
+        public BridgeList<E> subList(int fromIndex, int toIndex) {
+            if (fromIndex == 0 && toIndex == 0) return this;
+            throw new IndexOutOfBoundsException();
+        }
         @Override
         public void setProperty(Object key, Object value) { throw new UnsupportedOperationException(); }
         @Override
