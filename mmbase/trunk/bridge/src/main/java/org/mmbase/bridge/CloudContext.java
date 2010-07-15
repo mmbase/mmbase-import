@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 import java.util.Map;
+import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.security.AuthenticationData;
 import org.mmbase.security.ActionRepository;
 
@@ -34,7 +35,7 @@ public interface CloudContext {
      *
      * @return all available modules
      */
-    public ModuleList getModules();
+    ModuleList getModules();
 
     /**
      * Returns the module with the specified name.
@@ -43,7 +44,7 @@ public interface CloudContext {
      * @return                    the requested module
      * @throws NotFoundException  if the specified module could not be found
      */
-    public Module getModule(String name) throws NotFoundException;
+    Module getModule(String name) throws NotFoundException;
 
     /**
      * Returns whether the module with the specified name is available.
@@ -51,7 +52,7 @@ public interface CloudContext {
      * @param name                the name of the module
      * @return                    <code>true</code> if the module is available
      */
-    public boolean hasModule(String name);
+    boolean hasModule(String name);
 
     /**
      *
@@ -62,7 +63,7 @@ public interface CloudContext {
      * @throws NotFoundException  if the specified cloud could not be found
      * @throws SecurityException       if no anonymous user can be created
      */
-    public Cloud getCloud(String name);
+    Cloud getCloud(String name);
 
     /**
      * Returns the cloud with the specified name, with authentication
@@ -109,7 +110,7 @@ public interface CloudContext {
      * @throws NotFoundException thrown when cloud not found
      * @since MMBase-1.8
      */
-    public Cloud getCloud(String name, org.mmbase.security.UserContext user) throws NotFoundException;
+    Cloud getCloud(String name, org.mmbase.security.UserContext user) throws NotFoundException;
 
     /**
      * Returns the names of all the clouds known to the system. Most bridge implementations return a
@@ -117,7 +118,7 @@ public interface CloudContext {
      *
      * @return  A StringList of all clouds names known to our Context
      */
-    public StringList getCloudNames();
+    StringList getCloudNames();
 
     /**
      * Returns the default character encoding, which can be used as a default. E.g. 'UTF-8'.
@@ -128,7 +129,7 @@ public interface CloudContext {
      * @since   MMBase-1.6
      *
      */
-    public String getDefaultCharacterEncoding();
+    String getDefaultCharacterEncoding();
 
 
     /**
@@ -139,7 +140,7 @@ public interface CloudContext {
      * @return  A Locale object
      * @since   MMBase-1.6
      */
-    public java.util.Locale getDefaultLocale();
+    java.util.Locale getDefaultLocale();
 
 
     /**
@@ -149,7 +150,7 @@ public interface CloudContext {
      * @return the default time zone
      * @since MMBase-1.8
      */
-    public java.util.TimeZone getDefaultTimeZone();
+    java.util.TimeZone getDefaultTimeZone();
 
     /**
      * Returns a new, empty field list
@@ -157,7 +158,7 @@ public interface CloudContext {
      * @return  The empty list
      * @since   MMBase-1.6
      */
-    public FieldList createFieldList();
+    FieldList createFieldList();
 
     /**
      * Returns a new, empty node list.
@@ -167,7 +168,7 @@ public interface CloudContext {
      * @return  The empty list
      * @since   MMBase-1.6
      */
-    public NodeList createNodeList();
+    NodeList createNodeList();
 
     /**
      * Returns a new, empty relation list
@@ -176,7 +177,7 @@ public interface CloudContext {
      * @return  The empty list
      * @since   MMBase-1.6
      */
-    public RelationList createRelationList();
+    RelationList createRelationList();
 
     /**
      * Returns a new, empty node manager list
@@ -185,7 +186,7 @@ public interface CloudContext {
      * @return  The empty list
      * @since   MMBase-1.6
      */
-    public NodeManagerList createNodeManagerList();
+    NodeManagerList createNodeManagerList();
 
     /**
      * Returns a new, empty relation manager list
@@ -194,7 +195,7 @@ public interface CloudContext {
      * @return  The empty list
      * @since   MMBase-1.6
      */
-    public RelationManagerList createRelationManagerList();
+    RelationManagerList createRelationManagerList();
 
     /**
      * Returns a new, empty module list
@@ -202,7 +203,7 @@ public interface CloudContext {
      * @return  The empty list
      * @since   MMBase-1.6
      */
-    public ModuleList createModuleList();
+    ModuleList createModuleList();
 
     /**
      * Returns a new, empty string list
@@ -210,7 +211,7 @@ public interface CloudContext {
      * @return  The empty list
      * @since   MMBase-1.6
      */
-    public StringList createStringList();
+    StringList createStringList();
 
 
     /**
@@ -218,14 +219,14 @@ public interface CloudContext {
      * @return current Authentication information
      * @since MMBase-1.8
      */
-    public AuthenticationData getAuthentication();
+    AuthenticationData getAuthentication();
 
     /**
      * Returns the Repository with actions
      * @return Repository with actions
      * @since MMBase-1.9
      */
-    public ActionRepository getActionRepository();
+    ActionRepository getActionRepository();
 
 
     /**
@@ -233,17 +234,22 @@ public interface CloudContext {
      * @return <code>true</code> when mmbase is running
      * @since MMBase-1.8
      */
-    public boolean isUp();
+    boolean isUp();
 
     /**
      * Assert whether MMbase is up and running. This will wait until it is.
      * @since MMBase-1.8
      */
-    public CloudContext assertUp();
+    CloudContext assertUp();
 
     /**
      * The String which was usesd, and could be used again to acquire this cloud context using {@link ContextProvider#getCloudContext(String)}.
      * @since MMBase-1.9
      */
-    public String getUri();
+    String getUri();
+
+    /**
+     * @since MMBase-2.0
+     */
+    SearchQueryHandler getSearchQueryHandler();
  }
