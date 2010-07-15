@@ -97,7 +97,7 @@ public class NodeSearchQueryTest {
         Step step = instance.getSteps().get(0);
         Collection<Field> fields = images.getFields();
         for (Field field : fields) {
-            if (! field.isVirtual()) {
+            if (! field.isVirtual() && field.getType() != Field.TYPE_BINARY) {
                 StepField stepField = instance.getField(field);
                 assertTrue(stepField != null);
                 assertTrue(stepField.getFieldName().equals(field.getName()));
@@ -105,7 +105,7 @@ public class NodeSearchQueryTest {
                 assertTrue(stepField.getType() == field.getType());
                 assertTrue(stepField.getStep().equals(step));
             } else {
-                // Non-persistent field: should throw IllegalArgumentException.
+                // Non-persistent field or binary fields: should throw IllegalArgumentException.
                 try {
                     instance.getField(field);
                     fail("Non-persistent field: '" + field + "' should throw IllegalArgumentException.");
