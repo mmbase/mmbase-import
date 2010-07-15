@@ -1,105 +1,103 @@
 package org.mmbase.storage.search.implementation;
 
-import junit.framework.*;
+import org.junit.*;
 import java.util.*;
 
-import org.mmbase.bridge.Field;
-import org.mmbase.core.CoreField;
-import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.mock.*;
 import org.mmbase.storage.search.*;
+
+import static org.junit.Assert.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.11 $
+ * @version $Id$
  */
-public class NodeSearchQueryTest extends TestCase {
+public class NodeSearchQueryTest {
 
     /** Test instance. */
     private NodeSearchQuery instance = null;
 
-    /** MMBase instance. */
-    private MMBase mmbase = null;
-
     /** Exampler builders. */
-    private MMObjectBuilder images = null;
-    private MMObjectBuilder news = null;
-    private InsRel insrel = null;
+    private NodeManager images = null;
+    private NodeManager news = null;
+    private NodeManager insrel = null;
 
     /** Example fields. */
-    private CoreField imagesTitle = null;
-    private CoreField newsTitle = null;
+    private Field imagesTitle = null;
+    private Field newsTitle = null;
 
-    public NodeSearchQueryTest(java.lang.String testName) {
-        super(testName);
+    private Cloud cloud;
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        MockCloudContext.getInstance().addCore();
+        MockCloudContext.getInstance().addCoreModel();
+        MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
+        MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("resources"));
     }
-
-    public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
-    /**
+    /*
      * Sets up before each test.
      */
+    @Before
     public void setUp() throws Exception {
-        MMBaseContext.init();
-        mmbase = MMBase.getMMBase();
-        images = mmbase.getBuilder("images");
-        news = mmbase.getBuilder("news");
-        insrel = mmbase.getInsRel();
+        cloud = MockCloudContext.getInstance().getCloud("mmbase");
+        images = cloud.getNodeManager("images");
+        news = cloud.getNodeManager("news");
+        //insrel = mmbase.getInsRel();
         imagesTitle = images.getField("title");
         newsTitle = news.getField("title");
         instance = new NodeSearchQuery(images);
     }
 
-    /**
-     * Tears down after each test.
-     */
-    public void tearDown() throws Exception {}
 
     /** Test of constructor. */
+    @Test
     public void testConstructor() {
         try {
             // Null builder, should throw IllegalArgumentException.
-            new NodeSearchQuery((MMObjectBuilder) null);
+            new NodeSearchQuery((NodeManager) null);
             fail("Null builder, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
 
+        /* TODO
         try {
             // Virtual builder, should throw IllegalArgumentException.
             new NodeSearchQuery(new ClusterBuilder(mmbase));
             fail("Virtual builder, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
 
-        Collection<CoreField> fields = images.getFields();
+        */
+        Collection<Field> fields = images.getFields();
         List<StepField> stepFields = instance.getFields();
         Iterator<StepField> iStepFields = stepFields.iterator();
         // Test all elements in stepFields are persistent fields from images.
         while (iStepFields.hasNext()) {
             StepField stepField = iStepFields.next();
-            CoreField field = images.getField(stepField.getFieldName());
+            Field field = images.getField(stepField.getFieldName());
             //assertTrue("" + fields + " does not contain " + field, fields.contains(field));
             //assertTrue(field.getType() != Field.TYPE_BINARY); // NodeSearchQuery is not in 'database', so it should not whine!
-            assertTrue(field.inStorage());
+            assertTrue(! field.isVirtual());
         }
         // Test all persistent fields from images are in query.
-        Iterator<CoreField> iFields = fields.iterator();
+        Iterator<Field> iFields = fields.iterator();
         while (iFields.hasNext()) {
-            CoreField field = iFields.next();
-            if (field.getType() != Field.TYPE_BINARY && field.inStorage()) {
+            Field field = iFields.next();
+            if (field.getType() != Field.TYPE_BINARY && ! field.isVirtual()) {
                 assertTrue(instance.getField(field) != null);
             }
         }
     }
 
     /** Test of getField method, of class org.mmbase.storage.search.implementation.NodeSearchQuery. */
+    @Test
     public void testGetField() {
         Step step = instance.getSteps().get(0);
-        Collection<CoreField> fields = images.getFields();
-        for (CoreField field : fields) {
-            if (field.inStorage()) {
+        Collection<Field> fields = images.getFields();
+        for (Field field : fields) {
+            if (! field.isVirtual()) {
                 StepField stepField = instance.getField(field);
                 assertTrue(stepField != null);
                 assertTrue(stepField.getFieldName().equals(field.getName()));
@@ -123,24 +121,27 @@ public class NodeSearchQueryTest extends TestCase {
     }
 
     /** Test of addStep method, of class org.mmbase.storage.search.implementation.NodeSearchQuery. */
+    @Test
     public void testAddStep() {
         // Adding step, should throw UnsupportedOperationException.
         try {
-            instance.addStep(news);
+            instance.addStep(news.getName());
             fail("Adding step, should throw UnsupportedOperationException.");
         } catch (UnsupportedOperationException e) {}
     }
 
     /** Test of addRelationStep method, of class org.mmbase.storage.search.implementation.NodeSearchQuery. */
+    @Test
     public void testAddRelationStep() {
         // Adding relation step, should throw UnsupportedOperationException.
         try {
-            instance.addRelationStep(insrel, news);
+            instance.addRelationStep("insrel", news.getName());
             fail("Adding relation step, should throw UnsupportedOperationException.");
         } catch (UnsupportedOperationException e) {}
     }
 
     /** Test of addField method, of class org.mmbase.storage.search.implementation.NodeSearchQuery. */
+    @Test
     public void testAddField() {
         Step step = instance.getSteps().get(0);
 
@@ -152,6 +153,7 @@ public class NodeSearchQueryTest extends TestCase {
     }
 
     /** Test of addAggregatedField method, of class org.mmbase.storage.search.implementation.NodeSearchQuery. */
+    @Test
     public void testAddAggregatedField() {
         Step step = instance.getSteps().get(0);
 
@@ -164,15 +166,10 @@ public class NodeSearchQueryTest extends TestCase {
     }
 
     /** Test of getBuilder method, of class org.mmbase.storage.search.implementation.NodeSearchQuery. */
-    public void testGetBuilder() {
-        assertTrue(new NodeSearchQuery(images).getBuilder() == images);
-        assertTrue(new NodeSearchQuery(news).getBuilder() == news);
-    }
-
-    public static Test suite() {
-        TestSuite suite = new TestSuite(NodeSearchQueryTest.class);
-
-        return suite;
+    @Test
+    public void testGetTablename() {
+        assertEquals(images.getName(), new NodeSearchQuery(images).getTableName());
+        assertEquals(news.getName(), new NodeSearchQuery(news).getTableName());
     }
 
 }
