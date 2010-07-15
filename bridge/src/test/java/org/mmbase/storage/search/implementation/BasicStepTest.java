@@ -1,17 +1,17 @@
 package org.mmbase.storage.search.implementation;
 
-import junit.framework.*;
 import java.util.*;
-import org.mmbase.module.core.*;
+import org.junit.*;
+import static org.junit.Assert.*;
+import org.mmbase.bridge.mock.*;
 import org.mmbase.storage.search.Step;
 
 /**
- * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Id$
  */
-public class BasicStepTest extends TestCase {
+public class BasicStepTest  {
 
     private final static String TEST_ALIAS = "abcd";
 
@@ -20,37 +20,24 @@ public class BasicStepTest extends TestCase {
     /** Test instance. */
     private BasicStep instance;
 
-    /** MMBase instance. */
-    private MMBase mmbase = null;
-
-    /** Builder example. */
-    private MMObjectBuilder builder = null;
-
-    public BasicStepTest(java.lang.String testName) {
-        super(testName);
-    }
-
-    public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
-        System.exit(0);
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        MockCloudContext.getInstance().addCore();
+        MockCloudContext.getInstance().addCoreModel();
+        MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("resources"));
     }
 
     /**
      * Sets up before each test.
      */
+    @Before
     public void setUp() throws Exception {
-        MMBaseContext.init();
-        mmbase = MMBase.getMMBase();
-        builder = mmbase.getBuilder(BUILDER_NAME);
-        instance = new BasicStep(builder);
+        instance = new BasicStep(BUILDER_NAME);
     }
 
-    /**
-     * Tears down after each test.
-     */
-    public void tearDown() throws Exception {}
 
     /** Test of getTableName method, of class org.mmbase.storage.search.implementation.BasicStep. */
+    @Test
     public void testGetTableName() {
         String tableName = instance.getTableName();
         assertTrue(tableName != null);
@@ -58,6 +45,7 @@ public class BasicStepTest extends TestCase {
     }
 
     /** Test of setAlias method, of class org.mmbase.storage.search.implementation.BasicStep. */
+    @Test
     public void testSetAlias() {
         // Default is null.
         assertTrue(instance.getAlias() == null);
@@ -80,6 +68,7 @@ public class BasicStepTest extends TestCase {
     }
 
     /** Test of getAlias method, of class org.mmbase.storage.search.implementation.BasicStep. */
+    @Test
     public void testGetAlias() {
         // Same as:
         testSetAlias();
@@ -89,6 +78,7 @@ public class BasicStepTest extends TestCase {
 
 
     /** Test of addNode method, of class org.mmbase.storage.search.implementation.BasicStep. */
+    @Test
     public void testAddNode() {
         SortedSet<Integer> nodes = instance.getNodes();
         assertNull(nodes);  	//  MMB-1682
@@ -123,6 +113,7 @@ public class BasicStepTest extends TestCase {
     }
 
     /** Test of getNodes method, of class org.mmbase.storage.search.implementation.BasicStep. */
+    @Test
     public void testGetNodes() {
         // See:
         testAddNode();
@@ -144,16 +135,19 @@ public class BasicStepTest extends TestCase {
     }
 
     /** Test of equals method, of class org.mmbase.storage.search.implementation.BasicStep. */
+    @Test
     public void testEquals() {
         // TODO: implement test
     }
 
     /** Test of hashCode method, of class org.mmbase.storage.search.implementation.BasicStep. */
+    @Test
     public void testHashCode() {
         // TODO: implement test
     }
 
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicStep. */
+    @Test
     public void testToString() {
         // With default alias.
         assertTrue(instance.toString(),
@@ -178,14 +172,11 @@ public class BasicStepTest extends TestCase {
      }
 
     /** Test of getBuilder method, of class org.mmbase.storage.search.implementation.BasicStep. */
+    //@Test
     public void testGetBuilder() {
-        assertTrue(instance.getBuilder() == builder);
+        // Method was dropped
+        //assertTrue(instance.getBuilder() == builder);
     }
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite(BasicStepTest.class);
-
-        return suite;
-    }
 
 }
