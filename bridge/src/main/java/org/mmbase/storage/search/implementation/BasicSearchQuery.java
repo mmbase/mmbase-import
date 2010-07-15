@@ -347,19 +347,32 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         return this;
     }
 
+
+    private String getTableName(Object builder) {
+        try {
+            java.lang.reflect.Method m = builder.getClass().getMethod("getTableName");
+            String tableName = (String) m.invoke(builder);
+            return tableName;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
-     * Adds new step to this SearchQuery.
+     * Adds new step to this SearchQuery. This method used to have an
+     * MMObjectBuilder argument. This Object version is supplied for
+     * backwards compatibility (using reflection)
      *
      * @param builder The builder associated with the step.
      * @return The new step.
-     * @throws IllegalArgumentException when an invalid argument is supplied.
+     * @throws IllegalArgumentException when an invalid argument is
+     * supplied.
+     * @deprecated Use {@link #addStep(String).
      */
-/*
-  public BasicStep addStep(MMObjectBuilder builder) {
+    public BasicStep addStep(Object builder) {
         if (builder == null) throw new IllegalArgumentException();
-        return addStep(builder.getTableName());
-        }
-*/
+        return addStep(getTableName(builder));
+    }
 
     public BasicStep addStep(String name) {
         if (name == null) throw new IllegalArgumentException();
@@ -380,23 +393,11 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      * @return The new relationstep.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      * @throws IllegalStateException when there is no previous step.
+     * @deprecated Use {@link #addRelationStep(String, String).
      */
-    /*
-    public BasicRelationStep addRelationStep(InsRel builder, MMObjectBuilder nextBuilder) {
-        if (! modifiable) throw new IllegalStateException("Unmodifiable");
-        int nrOfSteps = steps.size();
-        if (nrOfSteps == 0) {
-           throw new IllegalStateException("No previous step.");
-        }
-        BasicStep previous = (BasicStep) steps.get(nrOfSteps - 1);
-        BasicStep next = new BasicStep(nextBuilder == null ? null : nextBuilder.getTableName());
-        BasicRelationStep relationStep = new BasicRelationStep(builder, previous, next);
-        steps.add(relationStep);
-        steps.add(next);
-        return relationStep;
-        }
-    */
-
+    public BasicRelationStep addRelationStep(Object builder, Object nextBuilder) {
+        return addRelationStep(getTableName(builder), getTableName(nextBuilder));
+    }
     /**
      * @since MMBase-1.9.2
      */
