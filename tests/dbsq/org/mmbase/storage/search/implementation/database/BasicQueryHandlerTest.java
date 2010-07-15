@@ -1,6 +1,7 @@
 package org.mmbase.storage.search.implementation.database;
 
- import org.mmbase.core.CoreField;
+import org.mmbase.core.CoreField;
+import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import junit.framework.*;

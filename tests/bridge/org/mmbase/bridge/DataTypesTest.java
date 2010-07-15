@@ -428,11 +428,11 @@ public class DataTypesTest extends BridgeTest {
         //Following few tests are failing, I think this may be considered a bug
         // http://www.mmbase.org/jira/browse/MMB-1901
 
-        //assertNull(n.getValueWithoutProcess("required_line")); // FAILS Storage layer makes it "" too
-        //assertNull(n.getValue("required_line"));
+        assertNull(n.getValueWithoutProcess("required_line")); // FAILS Storage layer makes it "" too
+        assertNull(n.getValue("required_line"));
         try {
             n.commit();
-            //fail("Default value of " + n + ".required_line is not valid, so this node could not have been committed");
+            fail("Default value of " + n + ".required_line is not valid, so this node could not have been committed");
         } catch (Exception e) {
             // ok
         }
