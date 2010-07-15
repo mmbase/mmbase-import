@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
  */
 public class ModifiableQueryTest  {
 
-    private final static String IMAGES = "mags";
+    private final static String IMAGES = "images";
     private final static String TITLE = "title";
     private final static String DESCRIPTION = "description";
     private final static String NEWS = "news";
@@ -48,6 +48,7 @@ public class ModifiableQueryTest  {
         MockCloudContext.getInstance().addCore();
         MockCloudContext.getInstance().addCoreModel();
         MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
+        MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("resources"));
     }
 
     /*
