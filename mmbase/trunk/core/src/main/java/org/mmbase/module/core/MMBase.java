@@ -23,7 +23,7 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.MMBaseCop;
 import org.mmbase.storage.*;
 import org.mmbase.storage.search.RelationStep;
-import org.mmbase.storage.search.SearchQueryHandler;
+import org.mmbase.storage.search.CoreSearchQueryHandler;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -1233,11 +1233,11 @@ public class MMBase extends ProcessorModule {
      * @return a StorageManager class
      * @throws StorageException if no storage manager could be instantiated
      */
-    public SearchQueryHandler getSearchQueryHandler() throws StorageException {
+    public CoreSearchQueryHandler getSearchQueryHandler() throws StorageException {
         if (storageManagerFactory == null) {
             throw new StorageConfigurationException("Storage manager factory not configured.");
         } else {
-            return storageManagerFactory.getSearchQueryHandler();
+            return (CoreSearchQueryHandler) storageManagerFactory.getSearchQueryHandler();
         }
     }
 
