@@ -1,46 +1,37 @@
 package org.mmbase.storage.search.implementation;
 
-import junit.framework.*;
+import org.junit.*;
 import java.util.*;
-import org.mmbase.module.core.*;
+import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
+
+import static org.junit.Assert.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Id$
  */
-public class BasicCompositeConstraintTest extends TestCase {
+public class BasicCompositeConstraintTest  {
 
     private final static int TEST_OPERATOR = CompositeConstraint.LOGICAL_AND;
 
     /** Test instance. */
     private BasicCompositeConstraint instance = null;
 
-    public BasicCompositeConstraintTest(java.lang.String testName) {
-        super(testName);
-    }
-
-    public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
 
     /**
      * Sets up before each test.
      */
+    @Before
     public void setUp() throws Exception {
-        MMBaseContext.init();
-        MMBase.getMMBase();
         instance = new BasicCompositeConstraint(TEST_OPERATOR);
     }
 
-    /**
-     * Tears down after each test.
-     */
-    public void tearDown() throws Exception {}
 
     /** Test of addChild method, of class org.mmbase.storage.search.implementation.BasicCompositeConstraint. */
+    @Test
     public void testAddChild() {
         // Null child, should throw IllegalArgumentException.
         try {
@@ -72,6 +63,7 @@ public class BasicCompositeConstraintTest extends TestCase {
     }
 
     /** Test of BasicCompositeConstraint(int) */
+    @Test
     public void testConstructor() {
         // Invalid logical operator value, should throw IllegalArgumentException.
         try {
@@ -81,6 +73,7 @@ public class BasicCompositeConstraintTest extends TestCase {
     }
 
     /** Test of getChilds method, of class org.mmbase.storage.search.implementation.BasicCompositeConstraint. */
+    @Test
     public void testGetChilds() {
         // See:
         testAddChild();
@@ -100,22 +93,26 @@ public class BasicCompositeConstraintTest extends TestCase {
     }
 
     /** Test of getLogicalOperator method, of class org.mmbase.storage.search.implementation.BasicCompositeConstraint. */
+    @Test
     public void testGetLogicalOperator() {
         assertTrue(instance.getLogicalOperator() == TEST_OPERATOR);
     }
 
 
     /** Test of equals method, of class org.mmbase.storage.search.implementation.BasicCompositeConstraint. */
+    //@Test
     public void testEquals() {
         // TODO: implement test
     }
 
     /** Test of hashCode method, of class org.mmbase.storage.search.implementation.BasicCompositeConstraint. */
+    //@Test
     public void testHashCode() {
         // TODO: implement test
     }
 
     /** Test of getBasicSupportLevel method, of class org.mmbase.storage.search.implementation.BasicCompositeConstraint. */
+    @Test
     public void testGetBasicSupportLevel() {
         // No childs: optimal support.
         assertTrue(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_OPTIMAL);
@@ -137,10 +134,5 @@ public class BasicCompositeConstraintTest extends TestCase {
     }
 
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite(BasicCompositeConstraintTest.class);
-
-        return suite;
-    }
 
 }
