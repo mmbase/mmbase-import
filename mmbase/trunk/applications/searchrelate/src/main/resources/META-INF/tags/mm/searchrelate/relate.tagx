@@ -126,7 +126,12 @@
         <c:if test="${! empty pagesize}"><span class="pagesize">${pagesize}</span></c:if>
         <c:if test="${! empty maxpages}"><span class="maxpages">${maxpages}</span></c:if>
         <c:if test="${! empty context}"><span class="context">${context}</span></c:if>
-        <c:if test="${! empty current}"><span class="currentMaxNumber">${current.maxNumber}</span></c:if>
+        <c:if test="${! empty submit}"><span class="submit">${submit}</span></c:if>
+        <span class="repositoryManager">${repository.nodeManager.name}</span>
+        <c:if test="${! empty current}">
+          <span class="currentMaxNumber">${current.maxNumber}</span>
+          <span class="currentManager">${current.nodeManager.name}</span>
+        </c:if>
         <span class="sessionName">'${mm:property('org.mmbase.cloud.sessionname')}</span>
       </div>
       <c:if test="${! empty current}">
