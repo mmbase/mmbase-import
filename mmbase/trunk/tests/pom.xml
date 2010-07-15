@@ -137,6 +137,12 @@ See http://www.MMBase.org/license
     </dependency>
     <dependency>
       <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-bridge</artifactId>
+      <version>${mmbase.version.test}</version>
+      <classifier>tests</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
       <artifactId>mmbase-resources</artifactId>
       <version>${mmbase.version}</version>
       <classifier>classes</classifier>

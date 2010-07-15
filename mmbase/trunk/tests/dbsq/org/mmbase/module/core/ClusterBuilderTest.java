@@ -19,7 +19,7 @@ import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.storage.search.implementation.BasicSearchQuery;
 import org.mmbase.storage.search.implementation.BasicStep;
 import org.mmbase.storage.search.implementation.BasicStepField;
-import org.mmbase.storage.search.implementation.NodeSearchQuery;
+import org.mmbase.module.core.NodeSearchQuery;
 
 /**
  * JUnit tests.
@@ -172,7 +172,7 @@ public class ClusterBuilderTest extends TestCase {
     public void testGetUniqueTableAlias() {
         List<String> originalAliases = Arrays.asList(new String[] {"test1", "test2"});
         Set<String> tableAliases = new HashSet<String>();
-        String alias = instance.clusterQueries.getUniqueTableAlias("test", tableAliases, originalAliases);
+        String alias = CoreClusterQueries.INSTANCE.getUniqueTableAlias("test", tableAliases, originalAliases);
         assertTrue(alias.equals("test"));
         assertTrue(tableAliases.size() == 1);
         assertTrue(tableAliases.contains("test"));
@@ -210,7 +210,7 @@ public class ClusterBuilderTest extends TestCase {
         try {
             // Can't generate another unique value for this string,
             // should throw IndexOutOfBoundsException.
-            instance.clusterQueries.getUniqueTableAlias("test", tableAliases, originalAliases);
+            CoreClusterQueries.INSTANCE.getUniqueTableAlias("test", tableAliases, originalAliases);
             fail("Can't generate another unique value for this string, "
                 + "should throw IndexOutOfBoundsException.");
         } catch (IndexOutOfBoundsException e) {}
