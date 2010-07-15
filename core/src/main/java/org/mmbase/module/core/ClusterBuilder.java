@@ -105,6 +105,10 @@ public class ClusterBuilder extends VirtualBuilder {
     private static final Logger log= Logging.getLoggerInstance(ClusterBuilder.class);
 
 
+    /**
+     * @deprecated Use {@link CoreClusterQueries.INSTANCE}
+     */
+    final CoreClusterQueries clusterQueries = CoreClusterQueries.INSTANCE;
 
     /**
      * Creates <code>ClusterBuilder</code> instance.
