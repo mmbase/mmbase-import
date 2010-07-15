@@ -314,7 +314,10 @@ public abstract class BridgeCollections {
         public Object getProperty(Object key) { return null; }
         public Map<Object, Object> getProperties() { return Collections.emptyMap(); }
         @Override
-        public BridgeList<E> subList(int fromIndex, int toIndex) { throw new IndexOutOfBoundsException(); }
+        public BridgeList<E> subList(int fromIndex, int toIndex) {
+            if (fromIndex == 0 && toIndex == 0) return this;
+            throw new IndexOutOfBoundsException();
+        }
         public void setProperty(Object key, Object value) { throw new UnsupportedOperationException(); }
         public void sort() { throw new UnsupportedOperationException(); }
         public void sort(Comparator<? super E> comparator) { throw new UnsupportedOperationException(); }
