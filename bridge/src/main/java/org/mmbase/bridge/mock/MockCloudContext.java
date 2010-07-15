@@ -15,6 +15,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.AbstractCloudContext;
 import org.mmbase.bridge.util.NodeManagerDescription;
 import org.mmbase.datatypes.DataType;
+import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.security.*;
 import org.mmbase.core.event.*;
 import org.mmbase.util.*;
@@ -309,6 +310,12 @@ public class MockCloudContext extends  AbstractCloudContext {
     public String toString() {
         return getUri() + "#" + hashCode() + "(" + nodes.size() + " nodes, nodemanagers: " + nodeManagers.keySet() + ", roles: " + roles.keySet() + ")";
     }
+
+    @Override
+    public SearchQueryHandler getSearchQueryHandler() {
+        throw new UnsupportedOperationException();
+    }
+
 
     public static class MockResolver extends ContextProvider.Resolver {
         {

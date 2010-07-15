@@ -470,7 +470,9 @@ public class BasicQuery implements Query, java.io.Serializable  {
         String stepAlias = fieldIdentifier.substring(0, dot);
         String fieldName = fieldIdentifier.substring(dot + 1);
         Step step = getStep(stepAlias);
-        if (step == null) throw new  NotFoundException("No step with alias '" + stepAlias + "' found in " + getSteps());
+        if (step == null) {
+            throw new  NotFoundException("No step with alias '" + stepAlias + "' found in " + getSteps());
+        }
         NodeManager nm = cloud.getNodeManager(step.getTableName());
         Field field = nm.getField(fieldName);
         return createStepField(step, field);
@@ -745,7 +747,8 @@ public class BasicQuery implements Query, java.io.Serializable  {
         return cloud.getList(this);
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         while (obj instanceof SearchQueryWrapper) {
             obj = ((SearchQueryWrapper)obj).unwrap();
         }
@@ -753,12 +756,14 @@ public class BasicQuery implements Query, java.io.Serializable  {
     }
 
     // javadoc is inherited
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return query.hashCode();
     }
 
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return query.toString() + (used ? " (used)" : "") + " INSECURE: " + insecureConstraint + " QUERYCHECK: " + queryCheck;
 
     }
@@ -773,14 +778,10 @@ public class BasicQuery implements Query, java.io.Serializable  {
     @Override
     public String toSql() {
         try {
-            //return MMBase.getMMBase().getSearchQueryHandler().createSqlString(query);
-            //return cloud.getCloudContext().getSearchQueryHandler().createSqlString(query);
-            // TODO
-            return "" + toString();
-            //        } catch (org.mmbase.storage.search.SearchQueryException sqe) {
-            //return sqe.getMessage() + ": " + toString();
-        } catch (Exception ise) {
-            return ise.getMessage() + ": " + toString();
+            return cloud.getCloudContext().getSearchQueryHandler().createSqlString(query);
+        } catch (org.mmbase.storage.search.SearchQueryException sqe) {
+            log.warn(sqe);
+            return query.toString();
         }
 
     }
