@@ -1,20 +1,21 @@
 package org.mmbase.storage.search.implementation;
 
-import junit.framework.*;
+import org.junit.*;
+import org.mmbase.bridge.*;
 
-import org.mmbase.core.CoreField;
-import org.mmbase.module.core.*;
+import org.mmbase.bridge.mock.*;
 import org.mmbase.storage.search.*;
+import static org.junit.Assert.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Id$
  */
-public class BasicCompareFieldsConstraintTest extends TestCase {
+public class BasicCompareFieldsConstraintTest  {
 
-    private final static String BUILDER_NAME = "images";
+    private final static String BUILDER_NAME = "mags";
     private final static String STRING_FIELD_NAME = "owner";
     private final static String INTEGER_FIELD_NAME = "number";
     private final static String BUILDER_NAME2 = "news";
@@ -24,58 +25,47 @@ public class BasicCompareFieldsConstraintTest extends TestCase {
     /** Test instance. */
     private BasicCompareFieldsConstraint instance = null;
 
-    /** MMBase instance. */
-    private MMBase mmbase = null;
-
     /** String type Field instance. */
     private BasicStepField stringField = null;
 
     /** Integer type Field instance. */
     private StepField integerField = null;
 
-    /** Builder example. */
-    private MMObjectBuilder builder = null;
-
     /** CoreField example (string type). */
-    private CoreField stringCoreField = null;
+    private Field stringCoreField = null;
 
     /** CoreField example (integer type). */
-    private CoreField integerCoreField = null;
+    private Field integerCoreField = null;
 
     /** Second string type Field instance. */
     private BasicStepField stringField2 = null;
 
-    /** Second builder example. */
-    private MMObjectBuilder builder2 = null;
-
     /** Second string CoreField example. */
-    private CoreField stringCoreField2 = null;
+    private Field stringCoreField2 = null;
 
     /** Second  integer CoreField example. */
-    private CoreField integerCoreField2 = null;
+    private Field integerCoreField2 = null;
 
-    public BasicCompareFieldsConstraintTest(java.lang.String testName) {
-        super(testName);
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        MockCloudContext.getInstance().addCore();
+        MockCloudContext.getInstance().addCoreModel();
+        MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
     }
-
-    public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
     /**
      * Sets up before each test.
      */
+    @Before
     public void setUp() throws Exception {
-        MMBaseContext.init();
-        mmbase = MMBase.getMMBase();
-        builder = mmbase.getBuilder(BUILDER_NAME);
-        Step step = new BasicStep(builder);
+        NodeManager builder = MockCloudContext.getInstance().getCloud("mmbase").getNodeManager(BUILDER_NAME);
+        Step step = new BasicStep(BUILDER_NAME);
         stringCoreField = builder.getField(STRING_FIELD_NAME);
         stringField = new BasicStepField(step, stringCoreField);
         integerCoreField = builder.getField(INTEGER_FIELD_NAME);
         integerField = new BasicStepField(step, integerCoreField);
-        builder2 = mmbase.getBuilder(BUILDER_NAME2);
-        Step step2 = new BasicStep(builder2);
+        Step step2 = new BasicStep(BUILDER_NAME2);
+        NodeManager builder2 = MockCloudContext.getInstance().getCloud("mmbase").getNodeManager(BUILDER_NAME2);
         stringCoreField2 = builder2.getField(STRING_FIELD_NAME2);
         stringField2 = new BasicStepField(step2, stringCoreField2);
         integerCoreField2 = builder2.getField(INTEGER_FIELD_NAME2);
@@ -83,12 +73,9 @@ public class BasicCompareFieldsConstraintTest extends TestCase {
         instance = new BasicCompareFieldsConstraint(stringField, stringField2);
     }
 
-    /**
-     * Tears down after each test.
-     */
-    public void tearDown() throws Exception {}
 
     /** Tests constructor. */
+    @Test
     public void testConstructor() {
         try {
             // Null field2, should throw IllegalArgumentException.
@@ -110,29 +97,29 @@ public class BasicCompareFieldsConstraintTest extends TestCase {
     }
 
     /** Test of getField2 method, of class org.mmbase.storage.search.implementation.BasicCompareFieldsConstraint. */
+    @Test
     public void testGetField2() {
         assertTrue(instance.getField2() == stringField2);
     }
 
     /** Test of getBasicSupportLevel method. */
+    @Test
     public void testGetBasicSupportLevel() {
         // Returns SUPPORT_OPTIMAL.
         assertTrue(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
 
     /** Test of equals method, of class org.mmbase.storage.search.implementation.BasicCompareFieldsConstraint. */
+    //@Test
     public void testEquals() {
         // TODO: implement test
     }
 
     /** Test of hashCode method, of class org.mmbase.storage.search.implementation.BasicCompareFieldsConstraint. */
+    //@Test
     public void testHashCode() {
         // TODO: implement test
     }
-    public static Test suite() {
-        TestSuite suite = new TestSuite(BasicCompareFieldsConstraintTest.class);
 
-        return suite;
-    }
 
 }

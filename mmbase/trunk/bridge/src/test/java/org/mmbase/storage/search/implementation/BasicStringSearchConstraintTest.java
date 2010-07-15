@@ -1,19 +1,20 @@
 package org.mmbase.storage.search.implementation;
 
-import junit.framework.*;
+import org.junit.*;
 import java.util.*;
-import org.mmbase.module.core.*;
+import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
-import org.mmbase.core.*;
+import org.mmbase.bridge.mock.*;
+import static org.junit.Assert.*;
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Id$
  */
-public class BasicStringSearchConstraintTest extends TestCase {
+public class BasicStringSearchConstraintTest  {
 
-    private final static String BUILDER_NAME = "images";
+    private final static String BUILDER_NAME = "news";
     private final static String FIELD_NAME1 = "title";
     private final static String FIELD_NAME2 = "number";
     private final static String SEARCHTERMS1 = "some search terms";
@@ -21,34 +22,30 @@ public class BasicStringSearchConstraintTest extends TestCase {
     /** Test instance. */
     private BasicStringSearchConstraint instance = null;
 
-    /** MMBase instance. */
-    private MMBase mmbase = null;
-
     /** Field instance 1 (string field). */
     private BasicStepField field1 = null;
 
     /** Field instance 2 (integer field). */
     private StepField field2 = null;
 
-    public BasicStringSearchConstraintTest(java.lang.String testName) {
-        super(testName);
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        MockCloudContext.getInstance().addCore();
+        MockCloudContext.getInstance().addCoreModel();
+        MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
     }
 
-    public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
 
     /**
      * Sets up before each test.
      */
+    @Before
     public void setUp() throws Exception {
-        MMBaseContext.init();
-        mmbase = MMBase.getMMBase();
-        MMObjectBuilder builder = mmbase.getBuilder(BUILDER_NAME);
-        Step step = new BasicStep(builder);
+        NodeManager builder = MockCloudContext.getInstance().getCloud("mmbase").getNodeManager(BUILDER_NAME);
+        Step step = new BasicStep(builder.getName());
 
         // Field1 (string field).
-        CoreField CoreField = builder.getField(FIELD_NAME1);
+        Field CoreField = builder.getField(FIELD_NAME1);
         field1 = new BasicStepField(step, CoreField);
 
         // Field2 (integer field).
@@ -60,12 +57,8 @@ public class BasicStringSearchConstraintTest extends TestCase {
         StringSearchConstraint.MATCH_TYPE_LITERAL, SEARCHTERMS1);
     }
 
-    /**
-     * Tears down after each test.
-     */
-    public void tearDown() throws Exception {}
-
     /** Tests constructor (with searchterms as string). */
+    @Test
     public void testConstructor1() {
         List<String> searchTerms
         = Arrays.asList(new String[] {"some", "search", "terms"});
@@ -87,6 +80,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
     }
 
     /** Tests constructor (with searchterms as list). */
+    @Test
     public void testConstructor2() {
         // Applied to integer field, should throw IllegalArgumentException.
         try {
@@ -106,6 +100,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
     }
 
     /** Test of getBasicSupportLevel method, of class org.mmbase.storage.search.implementation.BasicStringSearchConstraint. */
+    @Test
     public void testGetBasicSupportLevel() {
         // Not supported.
         assertTrue(
@@ -113,6 +108,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
     }
 
     /** Test of setMatchType method, of class org.mmbase.storage.search.implementation.BasicStringSearchConstraint. */
+    @Test
     public void testSetMatchType() {
         try {
             // Invalid value, should throw IllegalArgumentException.
@@ -166,6 +162,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
         assertTrue(result == instance);
     }
 
+    @Test
     public void testSetParameter() {
         try {
             // Invalid parameter name, should throw IllegalArgumentException.
@@ -261,18 +258,21 @@ public class BasicStringSearchConstraintTest extends TestCase {
     }
 
     /** Test of getMatchType method, of class org.mmbase.storage.search.implementation.BasicStringSearchConstraint. */
+    //@Test
     public void testGetMatchType() {
         // same as:
         testSetMatchType();
     }
 
     /** Test of getSearchType method, of class org.mmbase.storage.search.implementation.BasicStringSearchConstraint. */
+    //@Test
     public void testGetSearchType() {
         // same as:
         testSetSearchType();
     }
 
     /** Test of addSearchTerm method, of class org.mmbase.storage.search.implementation.BasicStringSearchConstraint. */
+    @Test
     public void testAddSearchTerm() {
         String newTerm = "skeukowkk";
         int nrTerms = instance.getSearchTerms().size();
@@ -295,6 +295,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
     }
 
     /** Test of setSearchTerms(List) method, of class org.mmbase.storage.search.implementation.BasicStringSearchConstraint. */
+    @Test
     public void testSetSearchTerms() {
         List<String> searchTerms = new ArrayList<String>();
         searchTerms.add("kjeid");
@@ -320,6 +321,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
     }
 
     /** Test of setSearchTerms(String) method, of class org.mmbase.storage.search.implementation.BasicStringSearchConstraint. */
+    @Test
     public void testSetSearchTerms2() {
         String searchTerm1 = "qwei";
         String searchTerm2 = "2838";
@@ -342,6 +344,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
     }
 
     /** Test of getSearchTerms method, of class org.mmbase.storage.search.implementation.BasicStringSearchConstraint. */
+    //@Test
     public void testGetSearchTerms() {
         // same as:
         testSetSearchTerms();
@@ -349,6 +352,7 @@ public class BasicStringSearchConstraintTest extends TestCase {
     }
 
     /** Test of getParameters method, of class org.mmbase.storage.search.implementation.BasicStringSearchConstraint. */
+    @Test
     public void testGetParameters() {
         // same as:
         testSetParameter();
@@ -362,18 +366,15 @@ public class BasicStringSearchConstraintTest extends TestCase {
     }
 
     /** Test of equals method, of class org.mmbase.storage.search.implementation.BasicStringSearchConstraint. */
+    //@Test
     public void testEquals() {
         // TODO: implement
     }
 
     /** Test of hashCode method, of class org.mmbase.storage.search.implementation.BasicStringSearchConstraint. */
+    //@Test
     public void testHashCode() {
         // TODO: implement
-    }
-    public static Test suite() {
-        TestSuite suite = new TestSuite(BasicStringSearchConstraintTest.class);
-
-        return suite;
     }
 
 }
