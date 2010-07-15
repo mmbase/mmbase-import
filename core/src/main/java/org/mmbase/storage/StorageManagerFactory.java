@@ -182,7 +182,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         int loadTries = 0;
 
 
-        while(! mmbase.isShutdown()) { // keep trying
+        while(! MMBaseContext.isShutdown()) { // keep trying
             try {
                 log.debug("loading Storage Manager factory " + this.getClass().getName());
                 loadTries++;
@@ -348,6 +348,9 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      */
     protected SM createStorageManager() throws StorageException {
         try {
+            if (storageManagerClass == null) {
+                throw new StorageException("No storageManagerClass");
+            }
             SM storageManager = storageManagerClass.newInstance();
             storageManager.init(this);
             return storageManager;

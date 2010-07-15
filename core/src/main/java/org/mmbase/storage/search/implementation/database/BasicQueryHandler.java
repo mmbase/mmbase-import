@@ -36,7 +36,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicQueryHandler implements SearchQueryHandler {
+public class BasicQueryHandler implements CoreSearchQueryHandler {
 
     /** Empty StepField array. */
     private static final StepField[] STEP_FIELD_ARRAY = new StepField[0];
