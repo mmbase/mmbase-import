@@ -1,20 +1,22 @@
 package org.mmbase.storage.search.implementation;
 
-import junit.framework.*;
+import org.junit.*;
 
-import org.mmbase.core.CoreField;
-import org.mmbase.module.core.*;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.mock.*;
 import org.mmbase.storage.search.*;
+
+import static org.junit.Assert.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Id$
  */
-public class BasicAggregatedFieldTest extends TestCase {
+public class BasicAggregatedFieldTest  {
 
-    private final static String IMAGES = "images";
+    private final static String BUILDER = "news";
     private final static String TITLE = "title";
 
     /** Test instance. */
@@ -23,43 +25,30 @@ public class BasicAggregatedFieldTest extends TestCase {
     /** Associated step. */
     private BasicStep step;
 
-    /** MMBase instance. */
-    private MMBase mmbase = null;
-
-    /** Builder. */
-    private MMObjectBuilder images = null;
-
     /** CoreField. */
-    private CoreField CoreField = null;
+    private Field field = null;
 
-    public BasicAggregatedFieldTest(java.lang.String testName) {
-        super(testName);
-    }
 
-    public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
-        System.exit(0);
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        MockCloudContext.getInstance().addCore();
+        MockCloudContext.getInstance().addCoreModel();
+        MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
     }
 
     /**
      * Sets up before each test.
      */
+    @Before
     public void setUp() throws Exception {
-        MMBaseContext.init();
-        mmbase = MMBase.getMMBase();
-        images = mmbase.getBuilder(IMAGES);
-        CoreField = images.getField(TITLE);
-        step = new BasicStep(images);
-        instance = new BasicAggregatedField(step, CoreField,
-        AggregatedField.AGGREGATION_TYPE_MAX);
+        NodeManager images = MockCloudContext.getInstance().getCloud("mmbase").getNodeManager(BUILDER);
+        field = images.getField(TITLE);
+        step = new BasicStep(BUILDER);
+        instance = new BasicAggregatedField(step, field,
+                                            AggregatedField.AGGREGATION_TYPE_MAX);
     }
-
-    /**
-     * Tears down after each test.
-     */
-    public void tearDown() throws Exception {}
-
     /** Test of setAggregationType method, of class org.mmbase.storage.search.implementation.BasicAggregatedField. */
+    @Test
     public void testSetAggregationType() {
         assertTrue(instance.getAggregationType()
         == AggregatedField.AGGREGATION_TYPE_MAX);
@@ -80,25 +69,23 @@ public class BasicAggregatedFieldTest extends TestCase {
     }
 
     /** Test of getAggregationType method, of class org.mmbase.storage.search.implementation.BasicAggregatedField. */
+    //@Test
     public void testGetAggregationType() {
         // Same as:
         testSetAggregationType();
     }
 
     /** Test of equals method, of class org.mmbase.storage.search.implementation.BasicAggregatedField. */
+    //@Test
     public void testEquals() {
         // TODO: implement
     }
 
     /** Test of hashCode method, of class org.mmbase.storage.search.implementation.BasicAggregatedField. */
+    //@Test
     public void testHashCode() {
         // TODO: implement
     }
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite(BasicAggregatedFieldTest.class);
-
-        return suite;
-    }
 
 }
