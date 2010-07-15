@@ -1,23 +1,24 @@
 package org.mmbase.storage.search.implementation;
 
-import junit.framework.*;
+import org.junit.*;
 
-import org.mmbase.bridge.Field;
-import org.mmbase.core.CoreField;
-import org.mmbase.module.core.*;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.mock.*;
 import org.mmbase.storage.search.*;
+
+import static org.junit.Assert.*;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.10 $
+ * @version $Id$
  */
-public class BasicStepFieldTest extends TestCase {
+public class BasicStepFieldTest  {
 
     private final static String TEST_ALIAS = "abcd";
 
-    private final static String BUILDER_NAME1 = "images";
+    private final static String BUILDER_NAME1 = "mags";
     private final static String BUILDER_NAME2 = "news";
     private final static String FIELD_NAME1 = "title";
 
@@ -27,55 +28,52 @@ public class BasicStepFieldTest extends TestCase {
     /** Associated step. */
     private BasicStep step;
 
-    /** MMBase instance. */
-    private MMBase mmbase = null;
 
     /** Builder examples. */
-    private MMObjectBuilder builder1 = null;
-    private MMObjectBuilder builder2 = null;
+    private NodeManager builder1 = null;
+    private NodeManager builder2 = null;
 
     /** CoreField example. */
-    private CoreField CoreField = null;
+    private Field field = null;
 
-    public BasicStepFieldTest(java.lang.String testName) {
-        super(testName);
+    private Cloud cloud;
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        MockCloudContext.getInstance().addCore();
+        MockCloudContext.getInstance().addCoreModel();
+        MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
+        MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("resources"));
     }
 
-    public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
-        System.exit(0);
-    }
 
     /**
      * Sets up before each test.
      */
+    @Before
     public void setUp() throws Exception {
-        MMBaseContext.init();
-        mmbase = MMBase.getMMBase();
-        builder1 = mmbase.getBuilder(BUILDER_NAME1);
-        builder2 = mmbase.getBuilder(BUILDER_NAME2);
-        CoreField = builder1.getField(FIELD_NAME1);
-        step = new BasicStep(builder1);
-        instance = new BasicStepField(step, CoreField);
+        cloud = MockCloudContext.getInstance().getCloud("mmbase");
+        builder1 = cloud.getNodeManager(BUILDER_NAME1);
+        builder2 = cloud.getNodeManager(BUILDER_NAME2);
+        field = builder1.getField(FIELD_NAME1);
+        step = new BasicStep(builder1.getName());
+        instance = new BasicStepField(step, field);
     }
 
-    /**
-     * Tears down after each test.
-     */
-    public void tearDown() throws Exception {}
 
     /** Test of constructor. **/
+    @Test
     public void testConstructor() {
-        Step step2 = new BasicStep(builder2);
+        Step step2 = new BasicStep(builder2.getName());
         // CoreField object does not belong to step, should throw IllegalArgumentException.
         try {
-            new BasicStepField(step2, CoreField);
+            new BasicStepField(step2, field);
             fail("CoreField object does not belong to step, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
 
         // Null step, should throw IllegalArgumentException.
         try {
-            new BasicStepField(null, CoreField);
+            new BasicStepField(null, field);
             fail("Null step, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
 
@@ -87,6 +85,7 @@ public class BasicStepFieldTest extends TestCase {
     }
 
     /** Test of setAlias method, of class org.mmbase.storage.search.implementation.BasicStepField. */
+    @Test
     public void testSetAlias() {
         // Default is null.
         assertTrue(instance.getAlias() == null);
@@ -109,6 +108,7 @@ public class BasicStepFieldTest extends TestCase {
     }
 
     /** Test of getFieldName method, of class org.mmbase.storage.search.implementation.BasicStepField. */
+    @Test
     public void testGetFieldName() {
         String fieldName = instance.getFieldName();
         assertTrue(fieldName != null);
@@ -116,29 +116,32 @@ public class BasicStepFieldTest extends TestCase {
     }
 
     /** Test of getAlias method, of class org.mmbase.storage.search.implementation.BasicStepField. */
+    //@Test
     public void testGetAlias() {
         // Same as:
         testSetAlias();
     }
 
     /** Test of getStep method, of class org.mmbase.storage.search.implementation.BasicStepField. */
+    @Test
     public void testGetStep() {
         assertTrue(instance.getStep() == step);
     }
 
     /** Test of getType method, of class org.mmbase.storage.search.implementation.BasicStepField.
      */
+    @Test
     public void testGetType() {
 
-        MMObjectBuilder images = mmbase.getBuilder("images");
-        CoreField imagesNumber = images.getField("number");
-        CoreField imagesOwner = images.getField("owner");
-        CoreField imagesTitle = images.getField("title");
-        CoreField imagesDescription = images.getField("description");
-        CoreField imagesHandle = images.getField("handle");
-        CoreField imagesItype = images.getField("itype");
+        NodeManager images = cloud.getNodeManager("images");
+        Field imagesNumber = images.getField("number");
+        Field imagesOwner = images.getField("owner");
+        Field imagesTitle = images.getField("title");
+        Field imagesDescription = images.getField("description");
+        Field imagesHandle = images.getField("handle");
+        Field imagesItype = images.getField("itype");
 
-        Step step = new BasicStep(images);
+        Step step = new BasicStep(images.getName());
         instance = new BasicStepField(step, imagesNumber);
         assertTrue(instance.getType() == Field.TYPE_NODE);
 
@@ -159,13 +162,14 @@ public class BasicStepFieldTest extends TestCase {
     }
 
     /** Test of testValue method, of class org.mmbase.storage.search.implementation.BasicStepField. */
+    @Test
     public void testTestValue() {
-        MMObjectBuilder images = mmbase.getBuilder("images");
-        CoreField imagesNumber = images.getField("number");
-        CoreField imagesHandle = images.getField("handle");
-        CoreField imagesOwner = images.getField("owner");
+        NodeManager images = cloud.getNodeManager("images");
+        Field imagesNumber = images.getField("number");
+        Field imagesHandle = images.getField("handle");
+        Field imagesOwner = images.getField("owner");
 
-        Step step = new BasicStep(images);
+        Step step = new BasicStep(images.getName());
         // NODE type field.
         instance = new BasicStepField(step, imagesNumber);
         BasicStepField.testValue(new Integer(123), instance);
@@ -237,6 +241,7 @@ public class BasicStepFieldTest extends TestCase {
     }
 
     /** Test of equalFieldValues method, of class org.mmbase.storage.search.implementation.BasicStepField. */
+    @Test
     public void testEqualFieldValues() {
         assertTrue(BasicStepField.equalFieldValues(null, null));
         assertTrue(!BasicStepField.equalFieldValues("abc def", null));
@@ -253,16 +258,19 @@ public class BasicStepFieldTest extends TestCase {
     }
 
     /** Test of equals method, of class org.mmbase.storage.search.implementation.BasicStepField. */
+    //@Test
     public void testEquals() {
         // TODO: implement test
     }
 
     /** Test of hashCode method, of class org.mmbase.storage.search.implementation.BasicStepField. */
+    //@Test
     public void testHashCode() {
         // TODO: implement test
     }
 
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicStepField. */
+    @Test
     public void testToString() {
         // Null alias.
         assertTrue(instance.toString(),
@@ -278,10 +286,5 @@ public class BasicStepFieldTest extends TestCase {
                    instance.toString().equals(step.getAlias() + "." + instance.getFieldName() + " as " + instance.getAlias()));
     }
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite(BasicStepFieldTest.class);
-
-        return suite;
-    }
 
 }
