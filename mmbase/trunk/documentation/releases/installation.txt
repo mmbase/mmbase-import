@@ -13,58 +13,65 @@ and get MMBase running, you must do the following:
    Servlet Engines. Apache Tomcat > version 5.5 is mostly used to run MMBase and
    tests are often performed with Jetty.
    Check if the Servlet Engine is up and running and if you can use its
-   jsp-examples. On default the distro needs web-app 2.4. If the application server 
-   does not  support that (e.g. Tomcat 4). then you need to replace 'web.xml' with 
+   jsp-examples 
+   On default MMBase needs web-app 2.4. If your application server does not support
+   that (f.e. Tomcat 4.x or Orion). then you need to replace 'web.xml' with 
    'web-2.3.xml' and 'mmbase-taglib-2.jar' with 'mmbase-taglib.jar'.
 
 3. Download and install ImageMagick. See note below if you're having
-   problems with Imagemagick or don't want to use it.
+   problems with ImageMagick or don't want to use it.
 
-4. Copy the subdirectory 'example-webapp' or the WAR 'example-webapp-2.0.war' into the 
-   Servlet Engine's webapps directory. When you're familiar with configuring your
-   Servlet Engine you can or point to it in a configuration file (e.g. server.xml 
-   of tomcat).
+4. Download the MMBase example-webapp WAR:
+   <http://www.mmbase.org/maven2/org/mmbase/example-webapp/2.0/example-webapp-2.0.war>
+   Copy the WAR into the Servlet Engine's webapps directory and rename it to something 
+   shorter and easier to remember, like f.e. 'example.war'.
 
-5. Start the Servlet Engine if you want to use the default MMBase configuration
-   (uses a hsqldb-database). You can change the configuration first when you are not 
-   installing the WAR, goto step 8 for changing default configuration. Otherwise you 
-   will need to run it first to unpack the WAR, most Servlet Engine's are default 
-   configured to do so.
+5. Start your servlet engine to have it unpack the WAR, most servlet engines are configured 
+   to do so. It unpacks the WAR and places a context configuration file with the same name
+   as the WAR in <[catalina-home]/conf/Catalina/localhost/example.xml>.
+   This file contains MMBase's default configuration, it uses a HSQLDB-database.
 
 6. Check if MMBase is running using the following url:
-   <http://localhost:port/example-webapp/version> 
+   <http://localhost:8080/example/version> 
 
-7. If this is running, goto <http://localhost:port/example-webapp/> to
-   see an information page about MMBase and links to editors, admin, examples,
-   etc. The administrator username is 'admin', the password is 'admin2k' (see 
-   notes below how to change this).
+7. If it is running, goto <http://localhost:8080/example/> to see an information page about
+   MMBase and links to editors, admin, examples etc. The administrator username is 'admin', 
+   the password is 'admin2k' (see notes below how to change this).
 
-8. Edit 'jdbc.xml' (in <example-webapp/WEB-INF/config/modules>) for using a different database (see
-   release notes for tested databases). If the database is explicitly mentioned in 'mmbaseroot.xml'
-   you should also change that.
+8. MMBase stores it configuration in several xml files in </WEB-INF/config/>. Which is virtually
+   empty since all configuration files are packaged with their appropriate appllications and
+   modules in JAR's in </WEB-INF/lib/>. Their default settings can be overriden in context.xml
+   - in this example in <[catalina-home]/conf/Catalina/localhost/example.xml>, which is easiest.
    
-   Other interesting settings can be found in
-   <example-webapp/WEB-INF/config/security/context/config.xml> (users, groups, and contextes), and in
-   <example-webapp/WEB-INF/config/log/log4j.xml> (logfile configuration and so on).
+   Or by unpacking the config files from their JAR's and placing them in their appropiate 
+   directories in </WEB-INF/config/>. You can f.e. unpack, edit 'jdbc.xml' and place it in 
+   <example/WEB-INF/config/modules> to use a different database (see release notes for tested
+   databases). 
+   
+   Other interesting settings can be found in:
+   <example/WEB-INF/config/modules/mmbaseroot.xml> (language, timezone, basename etc.), 
+   <example/WEB-INF/config/security/context/config.xml> (users, groups, and contextes), and
+   <example/WEB-INF/config/log/log4j.xml> (logfile configuration and so on).
 
 9. You may want to replace the security implementation by e.g. cloud context security. 
    Remove the entire 'config/security' and place 'mmbase-cloudcontextsecurity.jar' in 
    'WEB-INF/lib' to do that.
 
 10. For more information about installation en configuration see:
-    <http://localhost:8080/example-webapp/mmdocs/administrators/install-tomcat.html>
-    <http://localhost:8080/example-webapp/mmdocs/administrators/configuration.html>
+    <http://www.mmbase.org/mmdocs/administrators/install-tomcat.html>
+    <http://www.mmbase.org/mmdocs/administrators/configuration.html>
 
 11. If ImageMagick's convert isn't in your path, edit
-    <example-webapp/WEB-INF/config/applications/Resources/builders/images.xml>
+    <example/WEB-INF/config/applications/Resources/builders/images.xml>
     (if you haven't installed the Resources application) or 
-    <example-webapp/WEB-INF/config/builders/applications/builders/images.xml>
+    <example/WEB-INF/config/builders/applications/builders/images.xml>
     (if you already installed the Resources applications) for the
     location of this tool.
 
 12. If you have any kind of problem goto:
     website: <http://www.mmbase.org/>
-    irc: #mmbase at slashnet
+    irc: <irc://irc.slashnet.org/#mmbase> (#mmbase at slashnet)
+    Or send an e-mail to our Users of Developers mailing list.
 
 
 ===================================================================
@@ -73,7 +80,7 @@ and get MMBase running, you must do the following:
 
 MMBASE SECURITY
 ----------------------------------------------------------------------------------
-Check out the <example-webapp/WEB-INF/config/security> dir, to
+Check out the <example/WEB-INF/config/security> dir, to
 customize the security settings. You _SHOULD CHANGE THE ADMIN
 PASSWORD_, and also the other passwords, if your setup is more then
 just a try-out.
@@ -134,9 +141,9 @@ IMAGE MAGICK:
 Imagemagick does work with Windows 98/ME, but MMBase is not able to
 use it. You have to use Jai (Java Advanced Imaging API). You can do
 this by changing the properties in
-<example-webapp/WEB-INF/config/builders/applications/images.xml> (if
+<example/WEB-INF/config/builders/applications/images.xml> (if
 you've already installed the Resources application) or 
-<example-webapp/WEB-INF/config/applications/Resources/builders/images.xml>
+<example/WEB-INF/config/applications/Resources/builders/images.xml>
 (if you haven't installed the Resources applications) into:
 
 <properties> 
