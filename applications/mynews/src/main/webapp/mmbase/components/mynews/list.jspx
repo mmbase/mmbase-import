@@ -11,11 +11,10 @@
   <mm:import externid="mag">default.mags</mm:import>
   <mm:import externid="max">3</mm:import>
   <mm:import externid="offset">0</mm:import>
+  <mm:import externid="more">false</mm:import>
   
   <mm:cloud>
 
-    <h3 class="news"><a href="news.html">News</a></h3>
-  
     <mm:node number="$mag">
       <mm:relatednodescontainer type="news" role="posrel" searchdirs="destination">
         <mm:sortorder field="date" direction="DOWN" />
@@ -32,7 +31,12 @@
               <mm:field name="intro" escape="inline" />
             </li>
           </mm:relatednodes>
-          <li><a href="#">More news »»</a></li>
+          <c:if test="${more eq true}">
+            <mm:link page="list">
+              <mm:frameworkparam name="component">mynews</mm:frameworkparam>
+              <li><a href="${_}">More news »»</a></li>
+            </mm:link>
+          </c:if>
         </ul>
       </mm:relatednodescontainer>
     </mm:node>
