@@ -41,19 +41,20 @@
     </body>
   </block>
 
+  <!-- blocks for mmbase.org website -->
   <block name="list"
          classification="mynews"
          mimetype="text/html">
     <title xml:lang="en">List with articles</title>
     <title xml:lang="nl">Lijst met artikelen</title>
     <body jsp="list.jspx">
-      <param name="mag"   type="org.mmbase.bridge.Node" />
-      <param name="max"   type="java.lang.Integer" />
-      <param name="pager" type="java.lang.Boolean" />
+      <param name="mag"    type="org.mmbase.bridge.Node" />
+      <param name="max"    type="java.lang.Integer" />
+      <param name="offset" type="java.lang.Integer" />
+      <param name="more"   type="java.lang.Boolean" />
     </body>
   </block>
 
-  <!-- block for mmbase.org website -->
   <block name="news"
          classification="mynews"
          mimetype="text/html">
