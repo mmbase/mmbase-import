@@ -126,9 +126,12 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
         StringBuilder result = new StringBuilder(renderJsp);
         result.append("?component=mynews");
         if (path.size() == 0) {
-            result.append("&block=magazine");
-        } else {
-            // article mode
+            if (mmweb) {
+                result.append("&block=list");
+            } else {
+                result.append("&block=magazine");
+            }
+        } else {    // article mode
             if (mmweb) {
                 result.append("&block=news&n=");
             } else {
