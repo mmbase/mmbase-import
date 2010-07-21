@@ -17,9 +17,12 @@
 
     <mm:node number="$mag">
       <mm:relatednodescontainer type="news" role="posrel" searchdirs="destination">
+        
+        <mm:size id="total" write="false" />
         <mm:sortorder field="date" direction="DOWN" />
         <mm:maxnumber value="$max" />
         <mm:offset value="$offset" />
+        
         <ul class="news nolist">
           <mm:relatednodes>
             <li>
@@ -41,5 +44,7 @@
       </mm:relatednodescontainer>
     </mm:node>
 
+    <mm:write referid="total" request="mynews.total" />
+    
   </mm:cloud>
 </div>
