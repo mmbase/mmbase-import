@@ -38,6 +38,9 @@ See http://www.MMBase.org/license
 
     <buildnumber.doCheck>false</buildnumber.doCheck>
 
+    <java.version>1.6</java.version>
+    <java.source.version>${java.version}</java.source.version>
+    <java.target.version>${java.version}</java.target.version>
 
     <netbeans.hint.deploy.server>gfv3</netbeans.hint.deploy.server>
     <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
@@ -127,8 +130,8 @@ See http://www.MMBase.org/license
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <configuration>
-            <source>1.6</source>
-            <target>1.6</target>
+            <source>${java.source.version}</source>
+            <target>${java.target.version}</target>
             <maxmem>256M</maxmem>
             <fork>${compiler.fork}</fork>
             <showDeprecation>false</showDeprecation>
