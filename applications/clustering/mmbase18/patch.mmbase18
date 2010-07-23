@@ -31,7 +31,7 @@ Index: src/main/java/org/mmbase/clustering/ClusteringModule.java
 29a30,32
 >     public ClusteringModule() {
 >     }
-> 
+>
 106c109
 <         addFunction(new AbstractFunction<Statistics>("send", Parameter.emptyArray(), new ReturnType<Statistics>(Statistics.class, "Stat-structure")) {
 ---
@@ -93,7 +93,7 @@ Index: pom.xml
 ---
 >     <artifactId>mmbase-parent</artifactId>
 14a15,17
-> 
+>
 >   <version>mmbase18-${mmbase.version.number}${mmbase.version.postfix}</version>
 >   <!--
 15a19
@@ -109,7 +109,7 @@ Index: pom.xml
 ---
 >       <version>1.8.8-SNAPSHOT</version>
 44a50,56
-> 
+>
 >     <dependency>
 >       <groupId>backport-util-concurrent</groupId>
 >       <artifactId>backport-util-concurrent</artifactId>
@@ -124,82 +124,5 @@ Index: pom.xml
 >       <layout>legacy</layout>
 >     </repository>
 >   </repositories>
-> 
-> 
-Index: mmbase18/patch.mmbase18
-===================================================================
-35c35
-< 104c107
----
-> 106c109
-39c39
-< 114c117
----
-> 117c120
-43c43
-< 125c128
----
-> 129c132
-47c47
-< 135c138
----
-> 140c143
-51c51
-< 146c149
----
-> 152c155
-55c55
-< 157c160
----
-> 164c167
-59c59
-< 168c171
----
-> 176c179
-63c63
-< 175c178,179
----
-> 184c187
-67d66
-< >                 @Override
-130,166c129,130
-< 35c35
-< < 104c107
-< ---
-< > 106c109
-< 39c39
-< < 114c117
-< ---
-< > 117c120
-< 43c43
-< < 125c128
-< ---
-< > 129c132
-< 47c47
-< < 135c138
-< ---
-< > 140c143
-< 51c51
-< < 146c149
-< ---
-< > 152c155
-< 55c55
-< < 157c160
-< ---
-< > 164c167
-< 59c59
-< < 168c171
-< ---
-< > 176c179
-< 63c63
-< < 175c178,179
-< ---
-< > 184c187
-< 67d66
-< < >                 @Override
-< 129a129,130
-< > Index: mmbase18/patch.mmbase18
-< > ===================================================================
----
-> Index: mmbase18/patch.mmbase18
-> ===================================================================
+>
+>
