@@ -79,7 +79,10 @@ public class ChangesSender implements Runnable {
 
             kicker = new Thread(ThreadPools.threadGroup, this, "MulticastSender");
             kicker.setDaemon(true);
-            log.debug("MulticastSender started");
+            kicker.start();
+            log.trace("MulticastSender started");
+        } else {
+            log.debug("Not started");
         }
     }
 

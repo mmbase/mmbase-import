@@ -73,7 +73,7 @@ public class ChangesReceiver implements Runnable {
                 kicker = new Thread(ThreadPools.threadGroup, this, "MulticastReceiver");
                 kicker.setDaemon(true);
                 kicker.start();
-                log.debug("MulticastReceiver started");
+                log.trace("MulticastReceiver started");
             }
         }
     }
