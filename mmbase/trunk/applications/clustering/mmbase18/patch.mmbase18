@@ -1,3 +1,19 @@
+Index: src/main/java/org/mmbase/clustering/multicast/ChangesSender.java
+===================================================================
+18a19
+> import org.mmbase.module.core.MMBaseContext;
+80c81
+<             kicker = new Thread(ThreadPools.threadGroup, this, "MulticastSender");
+---
+>             kicker = new Thread(MMBaseContext.getThreadGroup(), this, "MulticastSender");
+Index: src/main/java/org/mmbase/clustering/multicast/ChangesReceiver.java
+===================================================================
+15a16
+> import org.mmbase.module.core.MMBaseContext;
+73c74
+<                 kicker = new Thread(ThreadPools.threadGroup, this, "MulticastReceiver");
+---
+>                 kicker = new Thread(MMBaseContext.getThreadGroup(), this, "MulticastReceiver");
 Index: src/main/java/org/mmbase/clustering/ClusteringModule.java
 ===================================================================
 29a30,32
@@ -40,18 +56,20 @@ Index: src/main/java/org/mmbase/clustering/unicast/ChangesSender.java
 ===================================================================
 17a18
 > import edu.emory.mathcs.backport.java.util.concurrent.Future;
-106c107
-<             ThreadPools.identify(future, "UnicastSender");
+107c108
+<             kicker = new Thread(ThreadPools.threadGroup, this, "UnicastSender");
 ---
->             //ThreadPools.identify(future, "UnicastSender");
+>             kicker = new Thread(MMBaseContext.getThreadGroup(), this, "UnicastSender");
 Index: src/main/java/org/mmbase/clustering/unicast/ChangesReceiver.java
 ===================================================================
 14a15
 > import edu.emory.mathcs.backport.java.util.concurrent.Future;
-61c62
-<             ThreadPools.identify(future, "UnicastReceiver");
+16a18
+> import org.mmbase.module.core.MMBaseContext;
+59c61
+<             kicker = new Thread(ThreadPools.threadGroup, this, "UnicastReceiver");
 ---
->             //ThreadPools.identify(future, "UnicastReceiver");
+>             kicker = new Thread(MMBaseContext.getThreadGroup(), this, "UnicastReceiver");
 Index: src/main/java/org/mmbase/clustering/Converter.java
 ===================================================================
 19c19
