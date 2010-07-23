@@ -110,7 +110,7 @@ public class ChangesReceiver implements Runnable {
                             // maybe we should use encoding here?
                             byte[] message = writer.toByteArray();
                             if (log.isDebugEnabled()) {
-                                log.debug("unicase RECEIVED=>" + message);
+                                log.debug("unicast RECEIVED=>" + message);
                             }
                             nodesToSpawn.offer(message);
                         }
