@@ -1,37 +1,9 @@
-Index: src/main/java/org/mmbase/clustering/multicast/ChangesSender.java
-===================================================================
-16a17
-> import edu.emory.mathcs.backport.java.util.concurrent.Future;
-40c41
-<     private final BlockingQueue<byte[]> nodesToSend;
----
->     private final BlockingQueue nodesToSend;
-62c63
-<     public ChangesSender(String multicastHost, int mport, int mTTL, BlockingQueue<byte[]> nodesToSend, Statistics send) throws UnknownHostException  {
----
->     public ChangesSender(String multicastHost, int mport, int mTTL, BlockingQueue nodesToSend, Statistics send) throws UnknownHostException  {
-82c83
-<             ThreadPools.identify(future, "MulticastSender");
----
->             //ThreadPools.identify(future, "MulticastSender");
-113c114
-<                 byte[] data = nodesToSend.take();
----
->                 byte[] data = (byte[]) nodesToSend.take();
-Index: src/main/java/org/mmbase/clustering/multicast/ChangesReceiver.java
-===================================================================
-13a14
-> import edu.emory.mathcs.backport.java.util.concurrent.Future;
-75c76
-<                 ThreadPools.identify(future, "MulticastReceiver");
----
->                 //ThreadPools.identify(future, "MulticastReceiver");
 Index: src/main/java/org/mmbase/clustering/ClusteringModule.java
 ===================================================================
 29a30,32
 >     public ClusteringModule() {
 >     }
->
+> 
 106c109
 <         addFunction(new AbstractFunction<Statistics>("send", Parameter.emptyArray(), new ReturnType<Statistics>(Statistics.class, "Stat-structure")) {
 ---
@@ -93,7 +65,7 @@ Index: pom.xml
 ---
 >     <artifactId>mmbase-parent</artifactId>
 14a15,17
->
+> 
 >   <version>mmbase18-${mmbase.version.number}${mmbase.version.postfix}</version>
 >   <!--
 15a19
@@ -109,7 +81,7 @@ Index: pom.xml
 ---
 >       <version>1.8.8-SNAPSHOT</version>
 44a50,56
->
+> 
 >     <dependency>
 >       <groupId>backport-util-concurrent</groupId>
 >       <artifactId>backport-util-concurrent</artifactId>
@@ -124,5 +96,5 @@ Index: pom.xml
 >       <layout>legacy</layout>
 >     </repository>
 >   </repositories>
->
->
+> 
+> 
