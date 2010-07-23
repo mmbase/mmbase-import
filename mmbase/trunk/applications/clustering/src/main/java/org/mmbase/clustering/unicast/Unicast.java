@@ -149,9 +149,9 @@ public class Unicast extends ClusterManager {
 
             try {
                 ucr = new ChangesReceiver(unicastHost, unicastPort, nodesToSpawn, version);
-                ucs.start();
+                ucr.start();
             } catch (java.io.IOException ioe) {
-                log.error(ioe);
+                log.error(ioe.getMessage(), ioe);
             }
         }
     }
