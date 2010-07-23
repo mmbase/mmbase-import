@@ -12,7 +12,7 @@ package org.mmbase.clustering.multicast;
 import java.net.*;
 import java.util.concurrent.*;
 
-import org.mmbase.util.*;
+import org.mmbase.util.ThreadPools;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -29,7 +29,7 @@ public class ChangesReceiver implements Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(ChangesReceiver.class);
 
-    private Future future = null;
+    private Thread kicker = null;
 
     /** Queue with messages received from other MMBase instances */
     private final BlockingQueue<byte[]> nodesToSpawn;
@@ -59,11 +59,10 @@ public class ChangesReceiver implements Runnable {
         this.dpsize = dpsize;
         this.nodesToSpawn = nodesToSpawn;
         this.ia = InetAddress.getByName(multicastHost);
-        this.start();
     }
 
-    void start() {
-        if (future == null && ia != null) {
+    public void start() {
+        if (kicker== null && ia != null) {
             try {
                 ms = new MulticastSocket(mport);
                 ms.joinGroup(ia);
@@ -71,8 +70,9 @@ public class ChangesReceiver implements Runnable {
                 log.error(e.getMessage(), e);
             }
             if (ms != null) {
-                future = ThreadPools.jobsExecutor.submit(this);
-                ThreadPools.identify(future, "MulticastReceiver");
+                kicker = new Thread(ThreadPools.threadGroup, this, "MulticastReceiver");
+                kicker.setDaemon(true);
+                kicker.start();
                 log.debug("MulticastReceiver started");
             }
         }
@@ -87,10 +87,11 @@ public class ChangesReceiver implements Runnable {
         } catch (Exception e) {
             // nothing
         }
-        if (future != null) {
+        if (kicker != null) {
             try {
-                future.cancel(true);
-                future = null;
+                kicker.interrupt();
+                kicker.setPriority(Thread.MIN_PRIORITY);
+                kicker = null;
             } catch (Throwable t) {
             }
         } else {

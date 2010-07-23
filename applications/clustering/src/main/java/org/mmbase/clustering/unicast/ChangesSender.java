@@ -16,9 +16,9 @@ import java.net.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-import org.mmbase.util.ThreadPools;
 import org.mmbase.module.builders.MMServers;
 import org.mmbase.module.core.*;
+import org.mmbase.util.ThreadPools;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -37,7 +37,7 @@ public class ChangesSender implements Runnable {
 
     private final Statistics send;
 
-    private Future future = null;
+    private Thread kicker = null;
 
     /** Queue with messages to send to other MMBase instances */
     private final BlockingQueue<byte[]> nodesToSend;
@@ -74,7 +74,7 @@ public class ChangesSender implements Runnable {
         this.unicastTimeout = unicastTimeout;
         this.send = send;
         this.version = version;
-        this.start();
+        log.debug("instantiated " + this);
     }
 
     /**
@@ -82,12 +82,14 @@ public class ChangesSender implements Runnable {
      */
     protected void setOtherMachines(Iterable<OtherMachine> om) {
         this.otherMachines = om;
+        log.debug("Other machines " + otherMachines);
     }
 
     /**
      * @since MMBase-2.0
      */
     public void setOtherMachines(String s) {
+        log.debug("Setting " + s);
         final List<OtherMachine> unicastSenders = new ArrayList<ChangesSender.OtherMachine>();
         String[] unicastHost = s.split(",");
         for (String unicastString : unicastHost) {
@@ -100,18 +102,22 @@ public class ChangesSender implements Runnable {
     }
 
 
-    void start() {
-        if (future == null) {
-            future = ThreadPools.jobsExecutor.submit(this);
-            ThreadPools.identify(future, "UnicastSender");
+    public void start() {
+        if (kicker == null) {
+            kicker = new Thread(ThreadPools.threadGroup, this, "UnicastSender");
+            kicker.setDaemon(true);
+            kicker.start();
         }
+        log.debug("Submitted " + kicker);
+
     }
 
     void stop() {
-        if (future != null) {
+        if (kicker != null) {
             try {
-                future.cancel(true);
-                future = null;
+                kicker.interrupt();
+                kicker.setPriority(Thread.MIN_PRIORITY);
+                kicker = null;
             } catch (Throwable t) {
             }
         } else {

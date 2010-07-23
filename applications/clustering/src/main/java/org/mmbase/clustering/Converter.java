@@ -56,13 +56,20 @@ public class Converter {
 
         Statistics stats = new Statistics();
 
-        new org.mmbase.clustering.unicast.ChangesReceiver(unicastListenHost, unicastListenPort, uniToMultiNodes, 2);
+        org.mmbase.clustering.unicast.ChangesReceiver uniCastReceiver = new org.mmbase.clustering.unicast.ChangesReceiver(unicastListenHost, unicastListenPort, uniToMultiNodes, 2);
+        uniCastReceiver.start();
+
+
         org.mmbase.clustering.unicast.ChangesSender uniCastSender     = new org.mmbase.clustering.unicast.ChangesSender(null, 4123, 10 * 1000, multiToUniNodes, stats, 2);
         uniCastSender.setOtherMachines(argMap.get("unicastSend"));
+        uniCastSender.start();
 
-        new org.mmbase.clustering.multicast.ChangesReceiver(multicastHost, multicastPort, dpsize, multiToUniNodes);
+        org.mmbase.clustering.multicast.ChangesReceiver multiCastReceiver = new org.mmbase.clustering.multicast.ChangesReceiver(multicastHost, multicastPort, dpsize, multiToUniNodes);
+        multiCastReceiver.start();
+
         org.mmbase.clustering.multicast.ChangesSender multiCastSender
             = new org.mmbase.clustering.multicast.ChangesSender(multicastHost, multicastPort, multicastTimeToLive, uniToMultiNodes, stats);
+        multiCastSender.start();
         multiCastSender.getSocket().setLoopbackMode(true);
 
         synchronized(Converter.class) {

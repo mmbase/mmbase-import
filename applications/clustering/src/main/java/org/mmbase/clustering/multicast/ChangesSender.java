@@ -34,7 +34,7 @@ public class ChangesSender implements Runnable {
 
     private final Statistics send;
 
-    private Future future = null;
+    private Thread kicker = null;
 
     /** Queue with messages to send to other MMBase instances */
     private final BlockingQueue<byte[]> nodesToSend;
@@ -65,11 +65,10 @@ public class ChangesSender implements Runnable {
         this.nodesToSend = nodesToSend;
         this.ia = InetAddress.getByName(multicastHost);
         this.send = send;
-        this.start();
     }
 
-    void start() {
-        if (future == null && ia != null) {
+    public void start() {
+        if (kicker == null && ia != null) {
             try {
                 ms = new MulticastSocket();
                 ms.joinGroup(ia);
@@ -78,8 +77,8 @@ public class ChangesSender implements Runnable {
                 log.error(e.getMessage(), e);
             }
 
-            future = ThreadPools.jobsExecutor.submit(this);
-            ThreadPools.identify(future, "MulticastSender");
+            kicker = new Thread(ThreadPools.threadGroup, this, "MulticastSender");
+            kicker.setDaemon(true);
             log.debug("MulticastSender started");
         }
     }
@@ -92,12 +91,13 @@ public class ChangesSender implements Runnable {
             // nothing
         }
         ms = null;
-        if (future != null) {
+        if (kicker != null) {
             try {
-                future.cancel(true);
+                kicker.interrupt();
+                kicker.setPriority(Thread.MIN_PRIORITY);
             } catch (Throwable t) {
             }
-            future = null;
+            kicker = null;
         } else {
             log.service("Cannot stop thread, because it is null");
         }
