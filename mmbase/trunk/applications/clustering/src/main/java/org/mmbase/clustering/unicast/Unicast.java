@@ -145,9 +145,11 @@ public class Unicast extends ClusterManager {
             if (peers != null && peers.length() > 0) {
                 ucs.setOtherMachines(peers);
             }
+            ucs.start();
 
             try {
                 ucr = new ChangesReceiver(unicastHost, unicastPort, nodesToSpawn, version);
+                ucs.start();
             } catch (java.io.IOException ioe) {
                 log.error(ioe);
             }

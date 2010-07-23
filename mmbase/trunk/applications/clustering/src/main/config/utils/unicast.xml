@@ -8,6 +8,8 @@
         name="unicastport" on what port does this multicast talking between nodes
         take place, This can be set to any port but check if something else on
         your network is allready using multicast when you have problems.
+
+       The default (if not specified or empty) is 4243
     -->
     <property name="unicastport">16080</property>
 
