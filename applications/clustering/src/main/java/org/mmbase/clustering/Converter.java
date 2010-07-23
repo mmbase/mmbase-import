@@ -70,7 +70,7 @@ public class Converter {
         org.mmbase.clustering.multicast.ChangesSender multiCastSender
             = new org.mmbase.clustering.multicast.ChangesSender(multicastHost, multicastPort, multicastTimeToLive, uniToMultiNodes, stats);
         multiCastSender.start();
-        multiCastSender.getSocket().setLoopbackMode(true);
+        //multiCastSender.getSocket().setLoopbackMode(true);
 
         synchronized(Converter.class) {
 
