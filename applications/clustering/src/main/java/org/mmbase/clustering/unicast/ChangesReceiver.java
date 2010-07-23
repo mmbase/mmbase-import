@@ -13,8 +13,8 @@ import java.io.*;
 import java.net.*;
 import java.util.concurrent.*;
 
-
 import org.mmbase.util.ThreadPools;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -30,7 +30,7 @@ public class ChangesReceiver implements Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(ChangesReceiver.class);
 
-    private Future future = null;
+    private Thread kicker = null;
 
     /** Queue with messages received from other MMBase instances */
     private final BlockingQueue<byte[]> nodesToSpawn;
@@ -52,21 +52,22 @@ public class ChangesReceiver implements Runnable {
         SocketAddress address = new InetSocketAddress(unicastHost, unicastPort);
         serverSocket.bind(address);
         this.version = version;
-        this.start();
     }
 
-    private void start() {
-        if (future == null) {
-            future = ThreadPools.jobsExecutor.submit(this);
-            ThreadPools.identify(future, "UnicastReceiver");
+    public void start() {
+        if (kicker == null) {
+            kicker = new Thread(ThreadPools.threadGroup, this, "UnicastReceiver");
+            kicker.setDaemon(true);
+            kicker.start();
         }
     }
 
     void stop() {
-        if (future != null) {
+        if (kicker != null) {
             try {
-                future.cancel(true);
-                future = null;
+                kicker.interrupt();
+                kicker.setPriority(Thread.MIN_PRIORITY);
+                kicker = null;
             } catch (Throwable t) {
             }
             try {
