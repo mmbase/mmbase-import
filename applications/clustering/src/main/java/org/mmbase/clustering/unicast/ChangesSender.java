@@ -74,7 +74,6 @@ public class ChangesSender implements Runnable {
         this.unicastTimeout = unicastTimeout;
         this.send = send;
         this.version = version;
-        log.debug("instantiated " + this);
     }
 
     /**
@@ -82,14 +81,12 @@ public class ChangesSender implements Runnable {
      */
     protected void setOtherMachines(Iterable<OtherMachine> om) {
         this.otherMachines = om;
-        log.debug("Other machines " + otherMachines);
     }
 
     /**
      * @since MMBase-2.0
      */
     public void setOtherMachines(String s) {
-        log.debug("Setting " + s);
         final List<OtherMachine> unicastSenders = new ArrayList<ChangesSender.OtherMachine>();
         String[] unicastHost = s.split(",");
         for (String unicastString : unicastHost) {
@@ -108,7 +105,7 @@ public class ChangesSender implements Runnable {
             kicker.setDaemon(true);
             kicker.start();
         }
-        log.debug("Submitted " + kicker);
+        log.trace("Submitted " + kicker);
 
     }
 
