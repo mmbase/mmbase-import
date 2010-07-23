@@ -30,13 +30,24 @@
     <!--
         Two protocols for encrypting the byte arrays are supported.
         Version 1 is the original way and will make a connection for every message
-        When using version 2, all quued messages will be send in one connection.
+        When using version 2, all queued messages will be send in one connection.
         They are not compatible, so your complete cluster must be configured with the same version.
         Or, you could prefix the property names to make sure the correct version is used for the correct server.
     -->
     <property name="version">1</property>
 
 
+    <!--
+        Normally it is determined using the mmservers table with which
+        other machines contact must be made. In some occasions, you
+        don't want that. E.g. if the clustering set up is made use of
+        the unicast/multicast converter tool
+        (org.mmbase.clustering.Converter).
+        Then, you may explicitely configure all peers, which then takes precedence.
+    -->
+    <!--
+    <property name="peers">twohigh.vpro.nl:4123</property>
+    -->
 
 
   </properties>
