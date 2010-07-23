@@ -32,39 +32,38 @@ Index: src/main/java/org/mmbase/clustering/ClusteringModule.java
 >     public ClusteringModule() {
 >     }
 > 
-104c107
+106c109
 <         addFunction(new AbstractFunction<Statistics>("send", Parameter.emptyArray(), new ReturnType<Statistics>(Statistics.class, "Stat-structure")) {
 ---
 >         addFunction(new AbstractFunction("send", Parameter.EMPTY, new ReturnType(Statistics.class, "Stat-structure")) {
-114c117
+117c120
 <         addFunction(new AbstractFunction<Statistics>("receive", Parameter.emptyArray(), new ReturnType<Statistics>(Statistics.class, "Stat-structure")) {
 ---
 >         addFunction(new AbstractFunction("receive", Parameter.EMPTY, new ReturnType(Statistics.class, "Stat-structure")) {
-125c128
+129c132
 <         addFunction(new AbstractFunction<Integer>("numbertosend", Parameter.emptyArray(), ReturnType.INTEGER) {
 ---
 >         addFunction(new AbstractFunction("numbertosend", Parameter.EMPTY, ReturnType.INTEGER) {
-135c138
+140c143
 <         addFunction(new AbstractFunction<Integer>("numbertoreceive", Parameter.emptyArray(), ReturnType.INTEGER) {
 ---
 >         addFunction(new AbstractFunction("numbertoreceive", Parameter.EMPTY, ReturnType.INTEGER) {
-146c149
+152c155
 <         addFunction(new AbstractFunction<Void>("shutdown", Parameter.emptyArray(), ReturnType.VOID) {
 ---
 >         addFunction(new AbstractFunction("shutdown", Parameter.EMPTY, ReturnType.VOID) {
-157c160
+164c167
 <         addFunction(new AbstractFunction<Void>("start", Parameter.emptyArray(), ReturnType.VOID) {
 ---
 >         addFunction(new AbstractFunction("start", Parameter.EMPTY, ReturnType.VOID) {
-168c171
+176c179
 <         addFunction(new AbstractFunction<Boolean>("active", Parameter.emptyArray(), ReturnType.BOOLEAN) {
 ---
 >         addFunction(new AbstractFunction("active", Parameter.EMPTY, ReturnType.BOOLEAN) {
-175c178,179
+184c187
 <         addFunction(new AbstractFunction<ClusterManager>("clusterManager", Parameter.emptyArray(), new ReturnType<ClusterManager>(ClusterManager.class, "cluster manager")) {
 ---
 >         addFunction(new AbstractFunction("clusterManager", Parameter.EMPTY, new ReturnType(ClusterManager.class, "cluster manager")) {
->                 @Override
 Index: src/main/java/org/mmbase/clustering/unicast/ChangesSender.java
 ===================================================================
 17a18
@@ -127,6 +126,8 @@ Index: pom.xml
 >   </repositories>
 > 
 > 
+Index: mmbase18/patch.mmbase18
+===================================================================
 35c35
 < 104c107
 ---
@@ -161,6 +162,44 @@ Index: pom.xml
 > 184c187
 67d66
 < >                 @Override
-129a129,130
+130,166c129,130
+< 35c35
+< < 104c107
+< ---
+< > 106c109
+< 39c39
+< < 114c117
+< ---
+< > 117c120
+< 43c43
+< < 125c128
+< ---
+< > 129c132
+< 47c47
+< < 135c138
+< ---
+< > 140c143
+< 51c51
+< < 146c149
+< ---
+< > 152c155
+< 55c55
+< < 157c160
+< ---
+< > 164c167
+< 59c59
+< < 168c171
+< ---
+< > 176c179
+< 63c63
+< < 175c178,179
+< ---
+< > 184c187
+< 67d66
+< < >                 @Override
+< 129a129,130
+< > Index: mmbase18/patch.mmbase18
+< > ===================================================================
+---
 > Index: mmbase18/patch.mmbase18
 > ===================================================================
