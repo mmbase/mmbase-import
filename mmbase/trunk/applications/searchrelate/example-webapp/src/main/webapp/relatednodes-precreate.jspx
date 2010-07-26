@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<mm-sre:html
+    xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <mm-sre:form>
+
+    <mm:node number="default.mags">
+      <mm-srt:relatednodes
+          type="news" orderby="posrel.pos" unlink="true" sortable="true" role="posrel"
+          precreate="/createrelation.jspx"
+          >
+
+      </mm-srt:relatednodes>
+    </mm:node>
+  </mm-sre:form>
+  <hr />
+  <mm:escape escape="links">$URL: https://scm.mmbase.org/mmbase/trunk/applications/searchrelate/example-webapp/src/main/webapp/relatednodes-search.jspx $</mm:escape>
+
+</mm-sre:html>
