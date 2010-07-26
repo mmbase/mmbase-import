@@ -41,15 +41,6 @@
       <body>
         <h1>Search and Relate examples/tests</h1>
 
-        <form method="POST">
-          <mm:node number="127">
-            <mm:field name="time">
-              <mm:fieldinfo type="input" />
-              <mm:fieldinfo type="errors" />
-            </mm:field>
-          </mm:node>
-          <input type="submit" name="submit" />
-        </form>
 
         <div class="session">
           <mm:import externid="invalidate" />
@@ -194,6 +185,11 @@
           <li class="done">
             <mm:link page="relatednodes-search.jspx" referids="${referids}">
               <a href="${_}">Using your own searcher implementation</a>
+            </mm:link>
+          </li>
+          <li class="done">
+            <mm:link page="relatednodes-precreate.jspx" referids="${referids}">
+              <a href="${_}">Using precreate attribute</a>
             </mm:link>
           </li>
         </ul>
