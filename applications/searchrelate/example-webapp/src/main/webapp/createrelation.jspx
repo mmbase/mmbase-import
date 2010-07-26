@@ -1,0 +1,14 @@
+<jsp:root
+    version="2.0"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+
+  <mm:listnodes type="people" max="1">
+    <mm:node id="person" />
+  </mm:listnodes>
+  <mm:createrelation source="_node" destination="person" role="related" />
+</jsp:root>
