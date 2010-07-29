@@ -38,6 +38,7 @@
       <listitem>
         <para><olink targetdoc="general-architecture-index" /></para>
       </listitem>
+
     </itemizedlist>
   </section>
 
@@ -67,6 +68,11 @@
 
       <listitem>
         <para><olink targetdoc="administrators-configuration-index" /></para>
+      </listitem>
+
+
+      <listitem>
+        <para><olink targetdoc="administrators-install_tomcat-index" /></para>
       </listitem>
     </itemizedlist>
 
