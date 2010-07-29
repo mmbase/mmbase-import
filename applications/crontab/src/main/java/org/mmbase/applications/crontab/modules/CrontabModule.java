@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 public class CrontabModule extends WatchedReloadableModule {
-  
+
     private static final Logger log = Logging.getLoggerInstance(CrontabModule.class);
     protected final CronDaemon cronDaemon;
 
@@ -146,7 +146,11 @@ public class CrontabModule extends WatchedReloadableModule {
 
     public void readMoreJobs() {
         for (Map.Entry<String, String> entry : utilProperties.entrySet()) {
-            addJob(entry);
+            try {
+                addJob(entry);
+            } catch (Throwable e) {
+                log.error("Could not add to CronDaemon " +  entry + ", because: " + e.getMessage(), e);
+            }
         }
 
     }
