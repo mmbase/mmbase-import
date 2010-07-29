@@ -71,7 +71,7 @@
     <title>The MMBase Security Framework</title>
     <section id="overview">
       <title>Overview of the MMBase Architecture</title>
-      <graphic fileref="media/architecture.png" />
+      <graphic fileref="http://scm.mmbase.org/view/*checkout*/mmbase/trunk/documentation/src/docbook/general/architecture/media/architecture.png" />
       <para>
         As the MMBase architecture image shows, the MMBase security framework forms a layer between
         the MMBase core and the MMCI - the MMBase Cloud Interface which is used for external programs and
