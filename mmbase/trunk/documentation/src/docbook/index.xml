@@ -209,6 +209,10 @@
       <listitem>
         <para><olink targetdoc="informationanalysts-applications-index" targetptr="introduction" />, how-to create a shipable package containing data, objectmodel (builders, relations) etc.</para>
       </listitem>
+
+      <listitem>
+        <para><olink targetdoc="administrators-security_framework-index">Authentication/Authorization framework</olink></para>
+      </listitem>
     </itemizedlist>
   </section>
 
