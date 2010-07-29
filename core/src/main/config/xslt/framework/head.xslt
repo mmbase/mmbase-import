@@ -8,6 +8,7 @@
 
       See https://scm.mmbase.org/mmbase/trunk/base-webapp/src/main/webapp/mmbase/admin/index.jsp for a usage example.
 
+
       @version $Id: head.xslt,v 1.6 2008-12-30 13:58:33 michiel Exp $
       @author Michiel Meeuwissen
       @since MMBase-1.9

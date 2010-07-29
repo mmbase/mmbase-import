@@ -12,13 +12,7 @@
     This is the BasicFramework, change my settings in 'config/framework.xml'.
   </description>
 
-  <urlconverter class="org.mmbase.framework.basic.MMBaseUrlConverter">
-    <description xml:lang="en">
-      The MMBase urlconverter handles about pretty URL's in /mmbase.
-    </description>
-    <param name="directory">mmbase</param>
-    <param name="renderJsp">/mmbase/admin/index.jsp</param> <!-- you can also do index_simple.jsp when debugging -->
-  </urlconverter>
+
 
   <urlconverter class="org.mmbase.mynews.MyNewsUrlConverter">
     <description xml:lang="en">
@@ -27,6 +21,14 @@
     <param name="directory">magazine</param>
     <param name="useTitle">true</param>
     <param name="dateDepth">2</param>
+  </urlconverter>
+
+  <urlconverter class="org.mmbase.framework.basic.MMBaseUrlConverter">
+    <description xml:lang="en">
+      The MMBase urlconverter handles about pretty URL's in /mmbase.
+    </description>
+    <param name="directory">mmbase</param>
+    <param name="renderJsp">/mmbase/admin/index.jsp</param> <!-- you can also do index_simple.jsp when debugging -->
   </urlconverter>
 
 

@@ -1,15 +1,15 @@
-<%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0"
-%><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"
-%><%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"
-%><%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util"
-%><%@ attribute name="relate" type="java.lang.Boolean" description="wether you can create relations (when there is a parent node). defalts to true."
-%><%@ attribute name="edit" type="java.lang.Boolean" description="wether you can edit the listed objects (when you are authorized and there is a wizardfile). defaults to true."
-%><%@ attribute name="delete" type="java.lang.Boolean" description="wether you can delete relations (unlink) objects (when there is a parent and you are authorized). Defaults to true."
-%><%@ attribute name="confirmdelete" type="java.lang.Boolean" description="wether you must confirm deleting nodes. default is true"
-%><%@ attribute name="harddelete" type="java.lang.Boolean" description="wether you can delete nodes in the list (when you are authorized). defautls to false."
-%><%@ attribute name="fields" required="true" description="the fields to show"
-%><%@ attribute name="constraints" description="Constraints on the the relation objects"
-%>
+<%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0"  %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util" %>
+
+<%@ attribute name="relate" type="java.lang.Boolean" description="wether you can create relations (when there is a parent node). defalts to true." %>
+<%@ attribute name="edit" type="java.lang.Boolean" description="wether you can edit the listed objects (when you are authorized and there is a wizardfile). defaults to true." %>
+<%@ attribute name="delete" type="java.lang.Boolean" description="wether you can delete relations (unlink) objects (when there is a parent and you are authorized). Defaults to true."%>
+<%@ attribute name="confirmdelete" type="java.lang.Boolean" description="wether you must confirm deleting nodes. default is true"%>
+<%@ attribute name="harddelete" type="java.lang.Boolean" description="wether you can delete nodes in the list (when you are authorized). defautls to false."%>
+<%@ attribute name="fields" required="true" description="the fields to show"%>
+<%@ attribute name="constraints" description="Constraints on the the relation objects"%>
 <%--
 <%@ attribute name="parenttype" description="when this is not empty, the $nodenr (attribute on list:wizard or list:searchlist) is taken as parent for nodes in the list, if it is set, the first node of given type that is related to a node in the list is taken as parent, so it translates into :'has any connections to..'. Don't quite see the use of it..." %>
 --%>
@@ -27,10 +27,9 @@
     you can access the number of the node of the row through the 'nodenrrow' variable
     you can access th url to the editor for that row through the 'wizardurl' variable
 --%>
-<%@ attribute name="headerfragment" fragment="true"
-%><%@ attribute name="rowfragment" fragment="true"
-%><%@ attribute name="buttonfragment" fragment="true"
-%>
+<%@ attribute name="headerfragment" fragment="true" %>
+<%@ attribute name="rowfragment" fragment="true" %>
+<%@ attribute name="buttonfragment" fragment="true" %>
 
 <%--  preconditions  --%>
 <c:if test="${empty confirmdelete}"><c:set var="confirmdelete" value="true"/></c:if>
@@ -47,7 +46,7 @@
     the mode must be set in the searchlist tag. modes are 'header' or 'row'
 --%>
 <c:if test="${empty mode}">
-  <util:throw message="list:searchrow tag: can not use the searchrow tag without a searchlist tag"/>
+    <util:throw message="list:searchrow tag: can not use the searchrow tag without a searchlist tag"/>
 </c:if>
 
 <c:set var="searchdir" value="${requestScope.searchdir}" />
@@ -199,6 +198,7 @@
                             <c:otherwise>
                                 <%--link to the parent if we can--%>
                                 <c:if test="${relate == 'true'}">
+                                    <mm:log>create link</mm:log>
                                     <mm:node number="${parentnodenr}" id="parentnode"/>
 
                                     <c:remove var="maycreate" />
@@ -214,29 +214,26 @@
                                     </c:if>
 
                                     <c:if test="${not empty maycreate}">
-                                      <c:set var="url" >
-                                        <mm:url page="/wizard/post">
-                                          <mm:param name="actions[createRelation][${nodenrrow}].sourceNodeNumber" value="${parentnodenr}" />
-                                          <mm:param name="actions[createRelation][${nodenrrow}].destinationNodeNumber" value="${nodenrrow}" />
-                                          <mm:param name="actions[createRelation][${nodenrrow}].searchDir" value="${searchdir}" />
-                                          <mm:param name="actions[createRelation][${nodenrrow}].role" value="${relationrole}" />
-                                          <mm:param name="actions[createRelation][${nodenrrow}].sortPosition" value="end" />
-                                          <mm:param name="actions[createRelation][${nodenrrow}].relationValues" value="${constraints}" />
-                                          <c:if test="${! empty sortfield}">
-                                            <mm:param name="actions[createRelation][${nodenrrow}].sortField" value="${sortfield}" />
-                                          </c:if>
-                                          <c:if test="${not empty flushname}">
-                                            <mm:param name="flushname" value="${flushname}" />
-                                          </c:if>
+                                        <c:set var="url" >
+                                            <mm:url page="/wizard/post">
+                                                <mm:param name="actions[createRelation][${nodenrrow}].sourceNodeNumber" value="${parentnodenr}" />
+                                                <mm:param name="actions[createRelation][${nodenrrow}].destinationNodeNumber" value="${nodenrrow}" />
 
-                                        </mm:url>
-                                      </c:set>
-                                      <a class="link" href="${url}">
-                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/link.png" class="icon" border="0" alt="" title="Koppel vast" />
-                                      </a>
+                                                <mm:param name="actions[createRelation][${nodenrrow}].role" value="${relationrole}" />
+                                                <mm:param name="actions[createRelation][${nodenrrow}].sortPosition" value="end" />
+                                                <mm:param name="actions[createRelation][${nodenrrow}].relationValues" value="${constraints}" />
+                                                <c:if test="${not empty flushname}">
+                                                    <mm:param name="flushname" value="${flushname}" />
+                                                </c:if>
+
+                                            </mm:url>
+                                        </c:set>
+                                        <a class="link" href="${url}">
+                                            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/link.png" class="icon" border="0" alt="" title="Koppel vast">
+                                        </a>
                                     </c:if>
                                     <c:if test="${empty maycreate}">
-                                      <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/link_soft.png" class="icon" border="0" alt="" title="Koppel vast" />
+                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/link_soft.png" class="icon" border="0" alt="" title="Koppel vast">
                                     </c:if>
                                 </c:if>
                             </c:otherwise>

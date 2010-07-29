@@ -69,6 +69,8 @@ public class EmailHandler {
             for (NodeRecipient to : toUsers) {
                 if (! sendMail(node, from, to, body, headers, messageFormatArguments)) {
                     success = false;
+                } else {
+                    mailed = true;
                 }
 
                 // make sure that CC and BCC are only on first mail, otherwise those poor people get a lot of mail.
@@ -78,16 +80,19 @@ public class EmailHandler {
         } else {
             // one simple mail
             NodeRecipient to = new NodeRecipient(-1, node.getStringValue("to"));
-            sendMail(node, from, to, body, headers, messageFormatArguments);
+            mailed = sendMail(node, from, to, body, headers, messageFormatArguments);
         }
         // set the new mailedtime, that can be used by admins
         // to see when it was mailed vs the requested mail
         // time
-        node.setValue("mailedtime", (int)(System.currentTimeMillis()/1000));
+        //node.setValue("mailedtime", (int)(System.currentTimeMillis()/1000));
+        node.setDateValue("mailedtime", new Date());
+        log.debug("Mail send? : " + mailed);
 
         // commit the changes to the cloud
         if (! node.isNew()) {
             node.commit();
+            log.debug("node.commit() ...");
         }
         return node;
     }

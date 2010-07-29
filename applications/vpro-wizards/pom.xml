@@ -5,13 +5,12 @@
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-application-parent</artifactId>
-    <version>2.0-SNAPSHOT</version>
+    <version>1.9-SNAPSHOT</version>
   </parent>
 
   <artifactId>mmbase-vpro-wizards</artifactId>
   <name>MMBase VPRO Wizards</name>
   <packaging>war</packaging>
-  <version>2.0-SNAPSHOT</version>
 
   <properties>
 
@@ -109,18 +108,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-          <maxmem>256M</maxmem>
-          <fork>${compiler.fork}</fork>
-          <showDeprecation>false</showDeprecation>
-          <encoding>iso-8859-1</encoding>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>

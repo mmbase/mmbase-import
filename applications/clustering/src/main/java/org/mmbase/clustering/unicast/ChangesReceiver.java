@@ -11,10 +11,9 @@ package org.mmbase.clustering.unicast;
 
 import java.io.*;
 import java.net.*;
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
 
-import org.mmbase.util.ThreadPools;
-
+import org.mmbase.core.util.DaemonThread;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -30,14 +29,13 @@ public class ChangesReceiver implements Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(ChangesReceiver.class);
 
+    /** Thread which sends the messages */
     private Thread kicker = null;
 
     /** Queue with messages received from other MMBase instances */
     private final BlockingQueue<byte[]> nodesToSpawn;
 
     private final ServerSocket serverSocket;
-
-    private final int version;
 
     /**
      * Construct UniCast Receiver
@@ -46,19 +44,20 @@ public class ChangesReceiver implements Runnable {
      * @param nodesToSpawn Queue of received messages
      * @throws IOException when server socket failrf to listen
      */
-    public ChangesReceiver(String unicastHost, int unicastPort, BlockingQueue<byte[]> nodesToSpawn, int version) throws IOException {
+    ChangesReceiver(String unicastHost, int unicastPort, BlockingQueue<byte[]> nodesToSpawn) throws IOException {
         this.nodesToSpawn = nodesToSpawn;
         this.serverSocket = new ServerSocket();
         SocketAddress address = new InetSocketAddress(unicastHost, unicastPort);
         serverSocket.bind(address);
-        this.version = version;
+        log.info("Listening to " + address);
+        this.start();
     }
 
-    public void start() {
+    private void start() {
         if (kicker == null) {
-            kicker = new Thread(ThreadPools.threadGroup, this, "UnicastReceiver");
-            kicker.setDaemon(true);
+            kicker = new DaemonThread(this, "UnicastReceiver");
             kicker.start();
+            log.debug("UnicastReceiver started");
         }
     }
 
@@ -81,62 +80,35 @@ public class ChangesReceiver implements Runnable {
     }
 
     public void run() {
-        log.info("Unicast listening started on " + serverSocket + " (v:" + version + ")");
         try {
-            while (true) {
-                if (Thread.currentThread().isInterrupted()) break;
+            while (kicker!=null) {
                 Socket socket = null;
-                DataInputStream reader = null;
+                InputStream reader = null;
                 try {
                     socket = serverSocket.accept();
-                    log.debug("" + socket);
+                    reader = new BufferedInputStream(socket.getInputStream());
+                    ByteArrayOutputStream writer = new ByteArrayOutputStream();
+                    int size = 0;
+                    //this buffer has nothing to do with the OS buffer
+                    byte[] buffer = new byte[1024];
 
-                    reader = new DataInputStream(socket.getInputStream());
-
-                    if (version > 1) {
-                        int listSize = reader.readInt();
-                        log.debug("Will read " + listSize + " events");
-
-                        for (int i = 0; i < listSize; i++) {
-                            int arraySize = reader.readInt();
-                            log.debug("Size of event " + i + ": " + arraySize);
-                            ByteArrayOutputStream writer = new ByteArrayOutputStream();
-                            //this buffer has nothing to do with the OS buffer
-                            byte[] buffer = new byte[arraySize];
-                            reader.read(buffer);
-                            if (writer != null) {
-                                writer.write(buffer, 0, arraySize);
-                                writer.flush();
-                            }
-                            // maybe we should use encoding here?
-                            byte[] message = writer.toByteArray();
-                            if (log.isDebugEnabled()) {
-                                log.debug("unicast RECEIVED=>" + message);
-                            }
-                            nodesToSpawn.offer(message);
-                        }
-                    } else {
-                        ByteArrayOutputStream writer = new ByteArrayOutputStream();
-                        int size = 0;
-                        //this buffer has nothing to do with the OS buffer
-                        byte[] buffer = new byte[1024];
-                        while ((size = reader.read(buffer)) != -1) {
-                            if (writer != null) {
-                                writer.write(buffer, 0, size);
-                                writer.flush();
-                            }
-                        }
-                        byte[] message = writer.toByteArray();
-                        if (log.isDebugEnabled()) {
-                            log.debug("RECEIVED=>" + message);
-                        }
-                        nodesToSpawn.offer(message);
+                    while ((size = reader.read(buffer)) != -1) {
+                        if (writer != null) {
+                          writer.write(buffer, 0, size);
+                          writer.flush();
+                       }
                     }
+                    // maybe we should use encoding here?
+                    byte[] message = writer.toByteArray();
+                    if (log.isDebugEnabled()) {
+                        log.debug("RECEIVED=>" + message);
+                    }
+                    nodesToSpawn.offer(message);
                 } catch (SocketException e) {
                     log.warn(e);
                     continue;
                 } catch (Exception e) {
-                    log.error(e.getMessage(), e);
+                    log.error(e);
                 } finally {
                     if (reader != null) {
                         try {

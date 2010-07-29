@@ -89,7 +89,7 @@ public class SegmenterTranscoder extends CommandTranscoder {
      */
     public void init(Node dest) {
         String mt = dest.getStringValue("mimetype");
-        if (mt == null || "".equals(mt)) { 
+        if (mt == null || "".equals(mt)) {
             dest.setStringValue("mimetype", "video/*");
         }
         
@@ -167,7 +167,7 @@ public class SegmenterTranscoder extends CommandTranscoder {
 
         return args.toArray(new String[args.size()]);
     }
-
+    
     private static final Pattern PROGRESS = Pattern.compile(".*time remaining.*");
 
     @Override

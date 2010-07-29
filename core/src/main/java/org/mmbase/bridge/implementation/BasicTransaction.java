@@ -97,7 +97,8 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         }
     }
 
-
+    /**
+     */
     @Override
     String getAccount() {
         // should be something different than for normal clouds, so use the transaction-name

@@ -47,7 +47,7 @@ import static org.mmbase.streams.transcoders.AnalyzerUtils.*;
 public class FFMpegAnalyzer implements Analyzer {
 
     private static final Logger LOG = Logging.getLoggerInstance(FFMpegAnalyzer.class);
-
+    
     private final ChainedLogger log = new ChainedLogger(LOG);
     private final AnalyzerUtils util = new AnalyzerUtils(log);
     private List<Throwable> errors = new ArrayList<Throwable>();

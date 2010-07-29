@@ -520,10 +520,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         pageContext.setAttribute(KEY, cloud, SCOPE);
         org.mmbase.bridge.util.CloudThreadLocal.bind(cloud);
 
-        //        if (cloud.getCloudContext() instanceof LocalContext) {
-        cloud.setProperty(Cloud.PROP_REQUEST, request);
-        cloud.setProperty(Cloud.PROP_RESPONSE, response);
-        //}
+        if (cloud.getCloudContext() instanceof LocalContext) {
+            cloud.setProperty(Cloud.PROP_REQUEST, request);
+            cloud.setProperty(Cloud.PROP_RESPONSE, response);
+        }
         cloud.setProperty(LocaleTag.TZ_KEY, getTimeZone());
 
         if (jspVar != null) {
@@ -1146,7 +1146,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             cloud = getDefaultCloudContext().getCloud(getName(), getAuthenticate(), user == null ? null : user.toMap());
             log.debug("Logged in " );
             if (!cloud.getUser().isValid()) {
-                log.warn("Just acquired user " + cloud.getUser().getClass() + " " + cloud.getUser().getIdentifier() + " is not valid!");
+                log.warn("Just acquired user " + cloud.getUser().getIdentifier() + " is not valid!");
                 return deny(DENYREASON_FAIL, "Just acquired user " + cloud.getUser().getIdentifier() + " is not valid!");
             }
             if (logon != null && pwd != Attribute.NULL) {

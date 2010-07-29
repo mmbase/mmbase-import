@@ -527,11 +527,12 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     public static Object fixEncoding(Object value, PageContext pageContext) throws TaglibException {
         HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
         String enc = req.getCharacterEncoding();
+
         if (enc == null) {
             enc = getDefaultCharacterEncoding(pageContext);
         } else {
             // I think this happens seldom, if ever.
-            log.debug("form encoding specified: " + enc);
+            log.debug("form encoding specified: " + enc + " no need to fix anything for " + value);
             // but _if_ it happens, don't try to be smarter then the servlet container. It would have handled it correctly then.
             return value;
         }
@@ -607,11 +608,13 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
             HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
             String[] resultvec = req.getParameterValues(referId);
             if (resultvec != null) {
-                if (log.isDebugEnabled()) log.debug("Found: " + resultvec);
                 if (resultvec.length > 1) {
                     result = fixEncoding(java.util.Arrays.asList(resultvec), pageContext);
                 } else {
                     result = fixEncoding(resultvec[0], pageContext);
+                }
+                if (log.isDebugEnabled()) {
+                    log.debug("Found: " + Arrays.asList(resultvec));
                 }
             }
         }

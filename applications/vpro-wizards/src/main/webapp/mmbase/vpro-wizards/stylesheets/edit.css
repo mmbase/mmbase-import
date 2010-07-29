@@ -1101,8 +1101,3 @@ ul#clock li{
     margin: 0px;
 
 }
-span.disallowed {
-  width: 20px;
-  display: inline-block;
-  background-repeat: no-repeat;
-}

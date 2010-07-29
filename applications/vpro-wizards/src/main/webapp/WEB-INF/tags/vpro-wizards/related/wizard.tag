@@ -26,7 +26,6 @@
 <c:if test="${not empty param.searchdir}"><util:addParam name="searchdir" parameter="searchdir"/></c:if>
 <c:if test="${not empty param.edit}"><util:addParam name="edit" parameter="edit"/></c:if>
 <c:if test="${not empty param.create}"><util:addParam name="create" parameter="create"/></c:if>
-<c:if test="${not empty param.constraints}"><util:addParam name="constraints" parameter="constraints"/></c:if>
 
 <%--
 <util:addParam name="editnodenr" parameter="editnodenr"/>

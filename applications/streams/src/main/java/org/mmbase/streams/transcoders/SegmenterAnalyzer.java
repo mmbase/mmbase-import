@@ -104,7 +104,7 @@ public class SegmenterAnalyzer implements Analyzer {
             String url = destNode.getStringValue("url");
             url = url.substring(0, url.lastIndexOf('.')) + ".m3u8";
             destNode.setStringValue("url", url);
-            
+
             if (FileServlet.getInstance() != null) {
                 
                 String filesDirectory = FileServlet.getDirectory().toString();
@@ -113,7 +113,7 @@ public class SegmenterAnalyzer implements Analyzer {
                 }
                 File index = new File(filesDirectory + url);
                 File temp  = new File(filesDirectory + url + ".tmp");
-                
+
                 int count = 0;
                 while ((!index.exists() || index.length() < 1) && count < 12) {
                     LOG.service("Result ready, but file " + index + (index.exists() ? " is too small" : " doesn't exist") + ". Waiting 10 sec. to be sure filesystem is ready (" + count + ")");

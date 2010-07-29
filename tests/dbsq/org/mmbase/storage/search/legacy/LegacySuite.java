@@ -31,6 +31,7 @@ public class LegacySuite extends TestCase {
 
     public static Test suite() {
         TestSuite suite = new TestSuite("LegacySuite");
+        suite.addTest(org.mmbase.storage.search.legacy.ConstraintParserTest.suite());
         suite.addTest(org.mmbase.storage.search.legacy.QueryConvertorTest.suite());
         return suite;
     }

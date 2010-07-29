@@ -46,6 +46,9 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
 
     public PageContextBacking(PageContext pc) {
         pageContext = pc;
+        if (pageContext.getRequest() == null) {
+            log.warn("PageContext " + pageContext + " has no request.", new Exception());
+        }
     }
 
     public void pushPageContext(PageContext pc) {
@@ -172,7 +175,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
             return value;
         }
         if (pageContext.getRequest() == null) {
-            log.warn("PageContext " + pageContext + " has no request.");
+            log.warn("PageContext " + pageContext + " has no request.", new Exception());
 
             // findAttribute would throw NPE. This is no good, you shouldn't have had the
             // pageContext in the first place. Probably it was stored in a the session or so?

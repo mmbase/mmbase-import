@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -86,7 +86,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
             return fileServletDirectory;
         }
     }
-
+    
     public void setCacheManagers(String... cm) {
         cacheManagers = cm;
     }

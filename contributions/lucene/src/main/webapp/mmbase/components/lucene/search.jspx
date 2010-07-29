@@ -28,46 +28,46 @@
 
   <form method="post">
     <fieldset>
-      <mm:write referid="value" escape="text/html/attribute">
-        <input name="value" value="${_}" />
-      </mm:write>
-      <mm:write referid="index" escape="text/html/attribute">
-        <input type="hidden" name="index" value="${_}" />
-      </mm:write>
-      <input type="submit" />
+    <mm:write referid="value" escape="text/html/attribute">
+      <input name="value" value="${_}" />
+    </mm:write>
+    <mm:write referid="index" escape="text/html/attribute">
+      <input type="hidden" name="index" value="${_}" />
+    </mm:write>
+    <input type="submit" />
       </fieldset>
     <fieldset>
-      <mm:write referid="fields" escape="text/html/attribute">
-        <jsp:text>fields: </jsp:text><input name="fields" value="${_}" />
-      </mm:write>
-      <select name="analyzer">
-        <mm:option value="" compare="${analyzer}">Default analyzer</mm:option>
-        <mm:option value="org.apache.lucene.analysis.KeywordAnalyzer" compare="${analyzer}">Keyword analyzer</mm:option>
-        <mm:option value="org.apache.lucene.analysis.StopAnalyzer" compare="${analyzer}">StopAnalyzer</mm:option>
-        <mm:option value="org.apache.lucene.analysis.SimpleAnalyzer" compare="${analyzer}">SimpleAnalyzer</mm:option>
-        <mm:option value="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" compare="${analyzer}">Standard Cleaning Analyzer (dutch)</mm:option>
-        <mm:option value="org.mmbase.module.lucene.analysis.en.StandardCleaningAnalyzer" compare="${analyzer}">Standard Cleaning Analyzer (english)</mm:option>
-      </select>
-      <br />
-      <mm:write referid="extraconstraints" escape="text/html/attribute">
-        <jsp:text>contraints: </jsp:text><input name="extraconstraints" value="${_}" />
-      </mm:write>
-      <mm:write referid="filter" escape="text/html/attribute">
-        <jsp:text>filter: </jsp:text><input name="filter" value="${_}" />
-      </mm:write>
-      <br />
-      <jsp:text>max: </jsp:text><input name="max" value="${max}" />
-      <jsp:text>offset: </jsp:text><input name="offset" value="${offset}" />
-      <mm:write referid="sortfields" escape="text/html/attribute">
-        <jsp:text>sort: </jsp:text><input name="sortfields" value="${_}" />
-      </mm:write>
-      <jsp:text>count: </jsp:text>
-      <mm:compare referid="count" value="on">
-        <input type="checkbox" name="count" checked="checked" />
-      </mm:compare>
-      <mm:compare referid="count" value="on" inverse="true">
-        <input type="checkbox" name="count" />
-      </mm:compare>
+    <mm:write referid="fields" escape="text/html/attribute">
+      <jsp:text>fields: </jsp:text><input name="fields" value="${_}" />
+    </mm:write>
+    <select name="analyzer">
+      <mm:option value="" compare="${analyzer}">Default analyzer</mm:option>
+      <mm:option value="org.apache.lucene.analysis.KeywordAnalyzer" compare="${analyzer}">Keyword analyzer</mm:option>
+      <mm:option value="org.apache.lucene.analysis.StopAnalyzer" compare="${analyzer}">StopAnalyzer</mm:option>
+      <mm:option value="org.apache.lucene.analysis.SimpleAnalyzer" compare="${analyzer}">SimpleAnalyzer</mm:option>
+      <mm:option value="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" compare="${analyzer}">Standard Cleaning Analyzer (dutch)</mm:option>
+      <mm:option value="org.mmbase.module.lucene.analysis.en.StandardCleaningAnalyzer" compare="${analyzer}">Standard Cleaning Analyzer (english)</mm:option>
+    </select>
+    <br />
+    <mm:write referid="extraconstraints" escape="text/html/attribute">
+      <jsp:text>contraints: </jsp:text><input name="extraconstraints" value="${_}" />
+    </mm:write>
+    <mm:write referid="filter" escape="text/html/attribute">
+      <jsp:text>filter: </jsp:text><input name="filter" value="${_}" />
+    </mm:write>
+    <br />
+    <jsp:text>max: </jsp:text><input name="max" value="${max}" />
+    <jsp:text>offset: </jsp:text><input name="offset" value="${offset}" />
+    <mm:write referid="sortfields" escape="text/html/attribute">
+      <jsp:text>sort: </jsp:text><input name="sortfields" value="${_}" />
+    </mm:write>
+    <jsp:text>count: </jsp:text>
+    <mm:compare referid="count" value="on">
+      <input type="checkbox" name="count" checked="checked" />
+    </mm:compare>
+    <mm:compare referid="count" value="on" inverse="true">
+      <input type="checkbox" name="count" />
+    </mm:compare>
     </fieldset>
   </form>
 

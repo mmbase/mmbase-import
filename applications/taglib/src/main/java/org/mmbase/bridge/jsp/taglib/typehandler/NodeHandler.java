@@ -98,7 +98,7 @@ public class NodeHandler extends AbstractTypeHandler {
 
 
             // args for gui function
-            Parameters args = node.getFunction("guil").createParameters();
+            Parameters args = new Parameters(org.mmbase.module.core.MMObjectBuilder.GUI_PARAMETERS);
             args.set("field",    "");
             args.set("locale",   tag.getLocale());
             args.set("response", tag.getPageContext().getResponse());

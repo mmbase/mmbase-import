@@ -45,7 +45,13 @@
      by the way, it is not necessary to indicate that
      enctype="multipart/form-data", this will be automatic if there is
      a input type="file". But lynx will also work like this (except for images) --%>
-   <form name="change" enctype="multipart/form-data" method="post" action='<mm:url referids="this_node@node_number" page="commit_node.jsp?pop=1" ><mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param></mm:url>'>
+   <form name="change" enctype="multipart/form-data" method="post" action='<mm:url page="commit_node.jsp" />'>
+     <input type="hidden" name="node_number" value="${this_node}" />
+     <mm:nodeinfo type="nodemanager">
+       <input type="hidden" name="node_type" value="${_}" />
+     </mm:nodeinfo>
+     <input type="hidden" name="pop" value="1" />
+
   <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
   <tr><th colspan="3">
 
@@ -63,7 +69,7 @@
      </a>
      <mm:present referid="hasmmxf">
        <mm:write cookie="mmjspeditors_xmlmode"       referid="config.xmlmode"      />
-       <mm:import id="xmlmodes" vartype="list">wiki,xml,prettyxml,kupu,docbook</mm:import>
+       <mm:import id="xmlmodes" vartype="list">xml,wiki,prettyxml,kupu,docbook</mm:import>
        <mm:stringlist referid="xmlmodes">
          <mm:compare referid2="config.xmlmode" inverse="true">
            <a href="<mm:url referids="this_node@node_number">
@@ -93,7 +99,6 @@
 <p>
 <input class="submit"  id="okbutton" type ="submit" name="ok" value="<%=m.getString("ok")%>" />
 <input class="submit"  id="savebutton" type ="submit" name="save" value="save" />
-<input class="submit"  id="saveanyway" type ="submit" name="save" value="force" />
 <input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
 <mm:maydelete>
    <!-- input class="submit"   type ="submit" name="delete" value="<%=m.getString("delete")%>" /-->

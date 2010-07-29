@@ -132,7 +132,6 @@ MMUploader.prototype.upload = function(fileid) {
                         alert(data.msg);
                     }
                 } else {
-                    console.log("UPLOADED");
                     try {
                         var fileItem = $("#" + fileid);
                         fileItem.val(null);

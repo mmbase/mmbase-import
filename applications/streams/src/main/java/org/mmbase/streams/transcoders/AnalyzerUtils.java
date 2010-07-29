@@ -143,11 +143,11 @@ public final class AnalyzerUtils implements java.io.Serializable {
         Cloud cloud = source.getCloud();
         fixMimeType("image", source);
         if (cloud != null) {
-            if (updateSource && cloud.hasNodeManager(IMAGE) 
+            if (updateSource && cloud.hasNodeManager(IMAGE)
                     && ! source.getNodeManager().getName().equals(IMAGE)) {
-            if (log.isDebugEnabled()) {
-                log.debug("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
-            }
+                if (log.isDebugEnabled()) {
+                    log.debug("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
+                }
                 source.setNodeManager(cloud.getNodeManager(IMAGE));
                 source.commit();
             }
@@ -249,7 +249,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
             if (! source.getNodeManager().hasField("length")) {
                 toVideo(source, dest);
             }
-            
+
             if (log.isDebugEnabled()) log.debug("duration: " + m.group(1));
             long length = getLength(m.group(1));
             if (updateSource) {
@@ -446,7 +446,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
                     dest.setIntValue("codec", libtoCodec(m.group(1)).toInt() );
                 }
             }
-
+            
             return true;
         } else {
             return false;

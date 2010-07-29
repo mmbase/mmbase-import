@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 
-public class CreateCachesFunction  extends NodeFunction<Boolean> {
+public class CreateCachesFunction extends NodeFunction<Boolean> {
 
     private static final Logger LOG = Logging.getLoggerInstance(CreateCachesFunction.class);
 
@@ -108,32 +108,32 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
                     
                 } else {
                     // list
-                Node mediafragment = node.getNodeValue("mediafragment");
-                String cachestype = node.getNodeManager().getProperty("org.mmbase.streams.cachestype");
-                NodeList list = SearchUtil.findRelatedNodeList(mediafragment, cachestype, "related"); 
-                
-                // when the streamsourcescaches are initially of the wrong type they don't get deleted, this helps a bit
-                if (list.size() < 1) {
-                    if (cachestype.startsWith("video")) {
-                        list = SearchUtil.findRelatedNodeList(mediafragment, "audiostreamsourcescaches", "related");
-                    } else if (cachestype.startsWith("audio")) {
-                        list = SearchUtil.findRelatedNodeList(mediafragment, "videostreamsourcescaches", "related");
-                    }
+                    Node mediafragment = node.getNodeValue("mediafragment");
+                    String cachestype = node.getNodeManager().getProperty("org.mmbase.streams.cachestype");
+                    NodeList list = SearchUtil.findRelatedNodeList(mediafragment, cachestype, "related"); 
+                    
+                    // when the streamsourcescaches are initially of the wrong type they don't get deleted, this helps a bit
+                    if (list.size() < 1) {
+                        if (cachestype.startsWith("video")) {
+                            list = SearchUtil.findRelatedNodeList(mediafragment, "audiostreamsourcescaches", "related");
+                        } else if (cachestype.startsWith("audio")) {
+                            list = SearchUtil.findRelatedNodeList(mediafragment, "videostreamsourcescaches", "related");
+                        }
                         for (Node n : list) {
                             n.delete(true);
                             LOG.service("Deleted " + n.getNumber());
                         }
                         list.clear();
-                }
-                
+                    }
+    
                     LOG.info("Re-transcoding caches for source #" + node.getNumber() + ", doing all: " + all);
                     if ( list.size() > 0 && ! all ) {
                         jdlist = newJobList(node, list, cc.getConfiguration());
                     } else {
                         jdlist = cc.getConfiguration();
+                    }
                 }
-            }
-
+                
                 LOG.debug("jdlist: " + jdlist);
                 
                 if (cc != null) {
@@ -149,7 +149,7 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
             return false;
         }
     }
-
+    
     /**
      * Compares configuration with already transcoded (cached) streamsourcescaches nodes and makes
      * a new list with {$link JobDefinition}s.
@@ -158,7 +158,7 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
      * @param list      streamsourcescaches nodes to re-transcode
      * @param jdlist    list with current configured job descriptions
      * @return a new list with jobs matched against already existing nodes if needed
-     */    
+     */
     private Map<String, JobDefinition> newJobList(Node src, NodeList list, Map<String, JobDefinition> jdlist) {
         Map<String, JobDefinition> new_jdlist = new LinkedHashMap<String, JobDefinition>();
         Map<Node, String> caches = new HashMap<Node, String>();
@@ -185,16 +185,16 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
         
         if (list.size() > 1) {
             // iterate config keys
-        Iterator<Map.Entry<String,String>> it = config.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<String,String> e = it.next();
-            String config_id  = e.getKey();
-            String config_key = e.getValue();
-            
+            Iterator<Map.Entry<String,String>> it = config.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<String,String> e = it.next();
+                String config_id  = e.getKey();
+                String config_key = e.getValue();
+                
                 if (! caches.containsValue(config_key)) {   // make new
                     //LOG.debug("Not found in caches: " + config_key);
                     
-                JobDefinition jd = jdlist.get(config_id);
+                    JobDefinition jd = jdlist.get(config_id);
                     new_jdlist.putAll( newJobDefsList(jd, jdlist, caches) );
 
                     LOG.info("New config, added for transcoding id: " + config_id + " [" + jd + "]");
@@ -277,22 +277,22 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
                 config.put(entry.getKey(), key);
             }
         }
-                
+        
         String id = jd.getId();
-                String inId = jd.getInId();
-                String inKey = config.get(inId);
+        String inId = jd.getInId();
+        String inKey = config.get(inId);
         //LOG.debug("This cache has inId: " + inId + " inKey: " + inKey);
-                
-                if (caches.containsValue(inKey)) {
+
+        if (caches.containsValue(inKey)) {
             Node inNode = null;
             Iterator<Map.Entry<Node,String>> ic = caches.entrySet().iterator();
             while (ic.hasNext()) {
                 Map.Entry<Node,String> e = ic.next();
                 if (inKey.equals(e.getValue())) {
                     inNode = e.getKey();
-                        }
-                    }
-                    
+                }
+            }
+            
             //LOG.debug("inId is cached as #" + inNode.getNumber());
             
             if (inNode.getIntValue("state") > State.BUSY.getValue()) {  // check if ready
@@ -301,26 +301,26 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
                 String label  = jd.getLabel(); 
                 MimeType mt   = jd.getMimeType();
                 List<Analyzer> analyzers = jd.getAnalyzers();
-                    
+        
                 jd = new JobDefinition(id, "" + inNode.getNumber(), label, tr, mt, Stage.TRANSCODER);
                 jd.addAnalyzers(analyzers);
                 jds.put(id, jd);
-                } else {
+            } else {
                 // in not ready, do everything based on config
                 LOG.debug("infile not ready " + inNode.getStringValue("state"));
                 jds.putAll(inJobList(jd, jdlist));
                 jds.put(id, jd);
-                    }
+            }
         } else {
             if (! jds.containsKey(inId)) {
                 jds.putAll(inJobList(jd, jdlist));
                 jds.put(id, jd);
-                    }
+            }
         
-                }
+        }
         
         return jds;
-            }
+    }
     
     /**
      * Makes a list with {$link JobDefinition}s of streams that are needed for this one just based on config.
@@ -342,7 +342,7 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
             c++;
             inId = jd.getInId();
         }
-
+        
         return injds;    
-    }    
+    }
 }

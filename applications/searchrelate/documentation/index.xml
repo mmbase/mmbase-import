@@ -36,17 +36,6 @@
     everthing.</para> <para>MMBase-taglib does not however provide a way to add simple 'relation'
     editors to this formalism. It can be made, but it is not simple, and needs a lot of customized
     code. This 'Search &amp; Relate Component fixes that.</para>
-    <note>
-      <para>
-        The used tag 'mm:input' does not (yet) exists. This is currently used:
-      </para>
-      <programlisting format="linespecific"><![CDATA[
-        <mm:fieldinfo type="input" />
-        <mm:fieldinfo type="errors" />
-        ]]></programlisting>
-      <para>mm:input will be about the same as this
-      </para>
-    </note>
   </section>
   <section id="installation">
     <title>Installation</title>
@@ -57,10 +46,6 @@
       those.
     </para>
     <para>After Installation this documentation and examples can be found in the MMBase admin pages /mmbase/admin</para>
-    <para>The taglib is available via the XML namespace <code>http://www.mmbase.org/tags/mm/searchrelate</code>
-    On this URL also the <ulink url="http://www.mmbase.org/tags/mm/searchrelate/">taglib's reference</ulink> can be found
-    </para>
-
   </section>
 
   <section id="configuration">

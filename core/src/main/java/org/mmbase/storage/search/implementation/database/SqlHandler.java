@@ -85,7 +85,7 @@ public interface SqlHandler {
      *        to be called on this handler, to generate the constraints in
      *        the query.
      */
-    void appendQueryBodyToSql(StringBuilder sb, SearchQuery query, SqlHandler firstInChain) throws SearchQueryException;
+    public void appendQueryBodyToSql(StringBuilder sb, SearchQuery query, SqlHandler firstInChain) throws SearchQueryException;
 
     /**
      * Represents Constraint object, that is not a CompositeConstraint,
@@ -115,7 +115,7 @@ public interface SqlHandler {
      * </ul>
      * Given the choice, the query handler with the highest level of support is prefered.
      */
-    int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException;
+    public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException;
 
     /**
      * Gets the level at which a constraint is supported for a query
@@ -128,7 +128,7 @@ public interface SqlHandler {
      * </ul>
      * Given the choice, the query handler with the highest level of support is prefered.
      */
-    int getSupportLevel(Constraint constraint, SearchQuery query) throws SearchQueryException;
+    public int getSupportLevel(Constraint constraint, SearchQuery query) throws SearchQueryException;
 
     /**
      * Maps string to value that is allowed as table or field name.
@@ -137,5 +137,5 @@ public interface SqlHandler {
      * @param value The string value.
      * @return The mapped value.
      */
-     String getAllowedValue(String value);
+    public String getAllowedValue(String value);
 }

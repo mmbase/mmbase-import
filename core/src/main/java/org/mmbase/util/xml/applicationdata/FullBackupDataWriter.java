@@ -15,7 +15,6 @@ import java.util.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.logging.*;
 

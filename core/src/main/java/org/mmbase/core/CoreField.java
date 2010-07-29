@@ -62,7 +62,7 @@ public class CoreField extends AbstractField<Object> implements Field, Storable 
         // obtain maxlength from datatype where applicable
         if (dataType instanceof LengthDataType) {
             // maxlength is an int, but LengthDataType stores longs.
-            // this ispart of the bridge, so the conflict may be hard to solve
+            // this is part of the bridge, so the conflict may be hard to solve
             // without breaking backward compatibility in the bridge
             long length = ((LengthDataType)dataType).getMaxLength();
             if (length > Integer.MAX_VALUE) {
@@ -72,6 +72,7 @@ public class CoreField extends AbstractField<Object> implements Field, Storable 
             }
         }
     }
+
 
     /**
      * Copy constructor.

@@ -9,18 +9,21 @@
       <mm:import externid="status" from="request" />
       <mm:import externid="id"     required="true" from="request,parameters" />
       <mm:import externid="node"   required="true" from="request,parameters" />
+      <mm:import id="searchnodemanager" externid="nodemanager"   required="true" from="request,parameters" />
       <mm:import externid="fields" from="request,parameters" />
       <mm:import externid="aliases" from="request,parameters" />
       <mm:import externid="editrelations" from="request,parameters" />
       <mm:import externid="customizedir"  from="request,parameters" />
       <mm:import externid="relation"      from="request,parameters" />
 
-      <mm:node referid="node" jspvar="n">
+      <mm:node referid="node">
         <mm:nodeinfo type="nodemanager" id="nodemanager" write="false" />
         <tr class="click ${(! empty status and status.index % 2 eq 0) ? 'even' : 'odd'} ${nodemanager}">
           <td class="node number"><mm:field name="number" /></td>
           <c:if test="${aliases eq 'true'}">
-            <td class="node aliases" scope="col"><mm:aliaslist><mm:write /><mm:last inverse="true">, </mm:last></mm:aliaslist></td>
+            <td class="node aliases">
+              <mm:aliaslist><mm:write /><mm:last inverse="true">, </mm:last></mm:aliaslist>
+            </td>
           </c:if>
           <td class="node relation">
             <mm:compare referid="id" regexp="\w*current">${relation}</mm:compare>
@@ -34,7 +37,7 @@
             </c:when>
             <c:otherwise>
               <td class="node gui"><mm:nodeinfo type="gui" /></td>
-              <mm:fieldlist type="list" varStatus="field">
+              <mm:fieldlist nodetype="${searchnodemanager}" type="list" varStatus="field">
                 <td class="fields ${field.current.name}"><mm:fieldinfo type="guivalue" /></td>
               </mm:fieldlist>
             </c:otherwise>

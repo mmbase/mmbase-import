@@ -53,7 +53,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     protected MMObjectBuilder builder;
 
     // field types
-    protected final Map<String, Field> fieldTypes = new HashMap<String, Field>();
+    protected Map<String, Field> fieldTypes = new HashMap<String, Field>();
 
     /**
      * Instantiates a new NodeManager (for insert) based on a newly created node which either represents or references a builder.
@@ -297,7 +297,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         cloud.add(result);
         return result;
     }
-    public final Node createNode() {
+    public final Node createNode(
+) {
         return createBasicNode();
     }
 
@@ -485,7 +486,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
             typerelNodes = BasicCloudContext.mmb.getTypeRel().getAllowedRelations(thisOType);
         }
 
-        List<Node> nodes = new ArrayList<Node>();
+        List<MMObjectNode> nodes = new ArrayList<MMObjectNode>();
         while (typerelNodes.hasMoreElements()) {
             MMObjectNode n = typerelNodes.nextElement();
             if ((requestedRole == -1) || (requestedRole == n.getIntValue("rnumber"))) {
@@ -502,7 +503,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
                         }
                     }
                 }
-                nodes.add(BasicNodeList.convertMMObjectNodeToBridgeNode(getCloud(), this, n));
+                nodes.add(n);
             }
         }
         return new BasicRelationManagerList(nodes, cloud);
@@ -639,7 +640,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     protected void finalize() {
         // http://www.fasterj.com/articles/finalizer1.shtml
         // Having a non-empty finalizer can be quite expensive.
-        // BasicNodeManagers can exist very many (every cloud object needs a bunch),
+        // BasicNodeManagers can exist very many (probably as virtual node manager).
         //
         // Probably it is not actually correct to skip the finalize() of super,
         // but I think only if the node is being edited, and commit or cancel is not called.

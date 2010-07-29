@@ -102,7 +102,7 @@ public class URLComposer  {
     public int getBitrate() {
         return source.getIntValue("bitrate");
     }
-    
+
     /**
      * The mime-type of the produced URL. This is not necessarily the mimetype of the source.
      * (Though it normally would be)
@@ -204,7 +204,7 @@ public class URLComposer  {
 
     /* The source */
     public boolean isMain() {
-        if (source != null && (source.getIntValue("state") == State.SOURCE.getValue() || 
+        if (source != null && (source.getIntValue("state") == State.SOURCE.getValue() ||
                 source.getIntValue("state") == State.SOURCE_UNSUPPORTED.getValue()) ) {
             return true;
         } else {

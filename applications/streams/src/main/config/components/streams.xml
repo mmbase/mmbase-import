@@ -10,16 +10,17 @@
 
   <class name="org.mmbase.framework.BasicComponent" />
 
-  <title xml:lang="nl">Streams</title>
-  <title xml:lang="en">Streams</title>
   <description xml:lang="en">
     The MMBase Streams application is designed to upload, transcode and manage media:
-    video, audio and images. 
+    video, audio and images.
   </description>
   <description xml:lang="nl">
-    Met de MMBase Streams applicatie kunnen media - video, audio en afbeeldingen - 
+    Met de MMBase Streams applicatie kunnen media - video, audio en afbeeldingen -
     geuploaded, getranscodeerd en beheerd worden.
   </description>
+
+  <title xml:lang="nl">Streams</title>
+  <title xml:lang="en">Streams</title>
 
   <dependency component="media" version="1" />
 
@@ -55,7 +56,7 @@
       <param name="all" type="java.lang.Boolean" />
       <param name="interrupt" />
       <param name="cache" />
-      <param name="page"  type="java.lang.Integer" />
+      <param name="page" type="java.lang.Integer" />
     </body>
   </block>
 
