@@ -55,13 +55,13 @@
     <title>Configuration</title>
 
     <para>You need to configure you webapplications server to send email. This
-    typically means installing Java MaIl: the 'mail.jar' and 'activation.jar'.
+    typically means installing Java Mail: the 'mail.jar' and 'activation.jar' (only for older versions).
     See the README with the email application for more specific instructions,
     but generally when using Tomcat (&gt; version 5.5) you need to add the
     folowing piece of configuration to your webapp's context:</para>
 
-    <programlisting format="linespecific">  &lt;Resource name="mail/Session" 
-    auth="Container" 
+    <programlisting format="linespecific">  &lt;Resource name="mail/Session"
+    auth="Container"
     type="javax.mail.Session"
     mail.smtp.host="smtp.somehost.org" /&gt;</programlisting>
 
