@@ -124,7 +124,7 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
     @Override
     public Url getFilteredInternalDirectoryUrl(List<String>  path, Map<String, ?> params, Parameters frameworkParameters) throws FrameworkException {
         StringBuilder result = new StringBuilder(renderJsp);
-        result.append("?component=mynews");
+        //result.append("?component=mynews");
         if (path.size() == 0) {
             if (mmweb) {
                 result.append("&block=list");
