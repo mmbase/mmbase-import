@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>org.mmbase.util.tranformers</title>
+  </head>
+  <body>
+    <p>
+      `Tranformers' define tranformations of Strings, byte arrays and streams.
+    </p>
+    <p>
+      Transformers are devided in three species. CharTransformers which transform some String to
+      another String (or Reader to a Writer). Then there are transformation which take a byte array
+      (or an InputStream) and transform that to a String (or a Writer), these are called
+      ByteToCharTransformers. And the last type are are the ByteTranformers, which tranform a byte
+      array to another byte array (or an InputStream to an OutputStream).
+    </p>
+    <p>
+      All Transformers can be specialized to 'ConfigurableTransformers'.
+    </p>
+    <p>
+      Several Abstract implemenations are present too. E.g. the 'ReaderTransformer' is nearly a
+      complete CharTransformer, only the function wich pipes a Reader to a Writer is
+      abstract. StringTranformer is a CharTransformer which' only abstract function is the one
+      taking a String argument.
+    </p>
+    <!-- version of package description $Id$ -->
+  </body>
+</html>

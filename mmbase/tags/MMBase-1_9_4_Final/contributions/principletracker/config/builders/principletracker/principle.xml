@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="principle" maintainer="mmbase.org" version="1" extends="object">
+
+  <names>
+    <singular xml:lang="en">Principle</singular>
+    <plural xml:lang="en">Principle</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">Princples</description>
+  </descriptions>
+
+  <fieldlist>
+    <field name="name">
+      <gui>
+        <guiname xml:lang="en">Principle</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>5</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type key="false" notnull="false" size="64000" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="theme">
+      <gui>
+        <guiname xml:lang="en">Theme</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>6</list>
+        </positions>
+      </editor>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type key="false" notnull="false" size="2048" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="principlenumber">
+      <gui>
+        <guiname xml:lang="en">principlenumber</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>7</list>
+        </positions>
+      </editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="createtime">
+      <gui>
+        <guiname xml:lang="en">createtime</guiname>
+      </gui>
+      <datatype base="created" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="version">
+      <gui>
+        <guiname xml:lang="en">version</guiname>
+      </gui>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type key="false" notnull="false" size="64" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="qualification">
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry value="Binding" />
+          <entry value="Strong rule" />
+          <entry value="Light Rule" />
+        </enumeration>
+      </datatype>
+      <db>
+        <type key="false" notnull="false" size="128" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="explanation">
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type key="false" notnull="false" size="64000" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="argumentation">
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type key="false" notnull="false" size="64000" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="consequence">
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type key="false" notnull="false" size="64000" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="allowedimpl">
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type key="false" notnull="false" size="64000" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="source">
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type key="false" notnull="false" size="1024" state="persistent">STRING</type>
+      </db>
+    </field>
+
+  </fieldlist>
+</builder>

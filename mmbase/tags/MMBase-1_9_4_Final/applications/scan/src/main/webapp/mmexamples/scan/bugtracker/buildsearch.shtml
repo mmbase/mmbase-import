@@ -1,0 +1,6 @@
+<IF $SESSION-SBUGID^=N>
+	<DO SESSION-S1=bugreports.number==$SESSION-SBUGID^>
+<ELSE>
+	<DO SESSION-S1=>
+</IF>
+<GOTO buildsearch2.shtml>

@@ -1,0 +1,49 @@
+<jsp:root
+    version="2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.include file="parameters.jspf" />
+
+  <mm:import externid="className"></mm:import>
+  <mm:import id="inform">false</mm:import>
+
+  <mm:locale language="${parameters.language}">
+    <li
+        id="node_${parameters.rid}_${_node}"
+        class="${className}"
+        xmlns="http://www.w3.org/1999/xhtml">
+
+      <mm:import id="fieldlistid">
+        <jsp:text>${parameters.fieldlistidprefix}_</jsp:text>
+        <mm:escape escape="identifier">${_node}</mm:escape>
+      </mm:import>
+      <mm:write request="org.mmbase.searchrelate.relatednodes" referid="parameters.rid" />
+      <c:choose>
+        <c:when test="${! parameters.autosubmit or ! empty parameters.formtag}">
+          <mm:include debug="html"
+                      page="${parameters.item}"
+                      referids="rid,fieldlistid">
+          </mm:include>
+        </c:when>
+        <c:otherwise>
+          <mm:import id="formtagid">${parameters.rid}_node${_node}_<mm:time time="now" /></mm:import>
+          <!-- The actual formtag id is not so important, the transaction will be cancelled immediately
+               In autosubmit mode a new transaction is created in save.jspx (which _is_ submitted)
+          -->
+          <mm:form name="${formtagid}" commitonclose="false">
+            <mm:include debug="html"
+                        page="${parameters.item}"
+                        referids="rid,fieldlistid">
+            </mm:include>
+            <mm:cancel  />
+          </mm:form>
+        </c:otherwise>
+      </c:choose>
+    </li>
+  </mm:locale>
+
+</jsp:root>

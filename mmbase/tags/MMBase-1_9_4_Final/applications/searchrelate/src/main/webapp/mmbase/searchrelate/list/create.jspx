@@ -1,0 +1,38 @@
+<jsp:root
+    version="2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+
+  <jsp:directive.include file="parameters.jspf" />
+  <c:if test="${! empty parameters.config}">
+    <mm:write  request="org.mmbase.searchrelate.config" value="${parameters.config}" />
+  </c:if>
+
+  <mm:content expires="0" type="application/xml">
+    <mm:cloud method="asis">
+
+      <!-- Make sure the 'current' list is identified on the request -->
+      <mm:write request="org.mmbase.searchrelate.relatednodes" value="${parameters.rid}" />
+
+      <c:choose>
+        <c:when test="${parameters.autosubmit}">
+          <jsp:directive.include file="create.body.jspx" />
+        </c:when>
+        <c:otherwise>
+          <mm:log level="debug">Cloud:  ${parameters.formtag} </mm:log>
+          <jsp:text>&lt;!-- transaction: <mm:escape>${parameters.formtag}</mm:escape> --&gt;</jsp:text>
+          <mm:form
+              mode="transaction"
+              name="${parameters.formtag}"
+              commitonclose="false"
+              >
+            <jsp:directive.include file="create.body.jspx" />
+          </mm:form>
+        </c:otherwise>
+      </c:choose>
+    </mm:cloud>
+  </mm:content>
+</jsp:root>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    <!-- spring mvc global definitions -->
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver">
+        <property name="defaultLocale">
+            <bean class="java.util.Locale">
+                <constructor-arg value="nl" />
+                <constructor-arg value="NL" />
+            </bean>
+        </property>
+    </bean>
+</beans>

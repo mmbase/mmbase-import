@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
+<util>
+  <properties>
+    <!--
+         If the crontab module is active, you can also add cronjobs in this resource
+         (Applications can add their own cronjobs, because this resource is 'merged'.)
+    -->
+    <!--
+        Every 5 minutes pop mail from a certain account
+    -->
+    <property name="popmail">*/5 * * * *|org.mmbase.module.smtp.PopFetcher||pop3,pop.gmail.com,mihxiltest,mmbase,,pop/gmail.properties||mitulo/</property>
+
+  </properties>
+</util>

@@ -1,0 +1,23 @@
+<jsp:root
+    version="2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <mm:node id="source" referid="parameters.source" commitonclose="${parameters.autosubmit}" />
+
+  <mm:createnode type="${parameters.type}" id="d"  commitonclose="${parameters.autosubmit}">
+    <c:if test="${! empty parameters.precreate}">
+      <mm:include page="${parameters.precreate}" />
+    </c:if>
+  </mm:createnode>
+
+  <mm:node referid="d" jspvar="d" commitonclose="${parameters.autosubmit}">
+    <jsp:scriptlet>org.mmbase.bridge.util.Queries.addToResult(query, d);</jsp:scriptlet>
+  </mm:node>
+  <mm:node referid="d" commitonclose="${parameters.autosubmit}">
+    <mm:include page="/mmbase/searchrelate/list/li.jspx" referids="rid">
+      <mm:param name="new">true</mm:param>
+    </mm:include>
+  </mm:node>
+</jsp:root>

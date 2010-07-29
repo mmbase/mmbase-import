@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" []>
+<article id="frontenddevelopers-editwizard-index">
+  <articleinfo>
+    <title>MMBase Search &amp; Relate Tags</title>
+    <date>2009-08-08</date>
+    <edition>$Id: index.xml 35281 2009-05-18 18:45:35Z michiel $</edition>
+    <authorgroup>
+      <author>
+        <firstname>Michiel</firstname>
+        <surname>Meeuwissen</surname>
+      </author>
+    </authorgroup>
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+  </articleinfo>
+  <section id="introduction">
+    <title>Introduction</title>
+    <para>The Search &amp; Relate tags are an addition to the MMBase taglib, and add more sophisticated functionality mainly target at interaction with users who want to create <emphasis>relations</emphasis> between MMBase nodes</para>
+
+    <para>The creation of simple form based editors is quite simple</para>
+    <programlisting format="linespecific"><![CDATA[
+    <mm:form>
+     <mm:node>
+      <mm:field name="title">
+         <mm:input />
+      </mm:field>
+      </mm:node>
+      <mm:valid>
+         <mm:commit />
+      </mm:valid>
+    ]]></programlisting>
+    <para>So there is no need for some extra servlet receiving the post. The JSP itself can handle
+    everthing.</para> <para>MMBase-taglib does not however provide a way to add simple 'relation'
+    editors to this formalism. It can be made, but it is not simple, and needs a lot of customized
+    code. This 'Search &amp; Relate Component fixes that.</para>
+  </section>
+  <section id="installation">
+    <title>Installation</title>
+    <para>
+      Search &amp; Relate is distributed as a 'war
+      overlay'. Installation only requires overlaying this war. The only prequisite is the 'base'
+      mmbase war, i.e. mmbase and mmbase taglib, and the templates of /mmbase which belong to
+      those.
+    </para>
+    <para>After Installation this documentation and examples can be found in the MMBase admin pages /mmbase/admin</para>
+  </section>
+
+  <section id="configuration">
+    <title>Configuration</title>
+    <para>
+      Some things can be configured using WEB-INF/config/utils/searchrelate.xml (defaults are
+      present in the searchrelate.jar) The request property 'org.mmbase.searchrelate.config' can be
+      set to override it with a <emphasis>different</emphasis> XML. For example if you set it to
+      'myconfiguration' then first the default 'searchrelate.xml' is read in, and then the values
+      from '/WEB-INF/config/util/myconfiguration.xml are overwritten. Most tags also have a 'config'
+      attribute to point to a different configuration file. All this makes it possible to configure
+      some behaviour of the Search &amp; Relate tags for the entire application (using
+      WEB-INF/config/utils/searchrelate.xml), for a certain sub-domain of this application (arrange
+      the request property 'org.mmbase.searchrelate.config' to point to a certain other file in
+      WEB-INF/config/utils) or for a certain instance of the tag (using the 'config' attribute to
+      point to a certain fil in WEB-INF/config/utils).
+    </para>
+    <para>
+      Normally the behaviour for individual properties can also be set with attributes. E.g. the 'icondir' property of mm-sr:relatednodes can be set in the following ways:
+      <orderedlist>
+        <listitem><para>The icondir attribute</para></listitem>
+        <listitem><para>The config attribute, pointing to a 'utils' configuration XML with a 'icondir' property</para></listitem>
+        <listitem><para>The 'org.mmbase.searchrelate.config' request attribute, pointing to a 'utils' configuration XML with a 'icondir' property</para></listitem>
+        <listitem><para>The 'icondir' property in '&lt;config dir &gt;/utils/searchrelate.xml</para></listitem>
+        <listitem><para>The 'icondir' property in org/mmbase/config/utils/searchrelate.xml in the search-relate jar.</para></listitem>
+      </orderedlist>
+    </para>
+    <para>After Installation this documentation and examples can be found in the MMBase admin pages /mmbase/admin</para>
+  </section>
+  <section id="ajax">
+    <title>AJAX &amp; JQuery</title>
+    <para>
+      In contradiction to the tags of the mmbase taglib itself - which are all completely self contained -
+      most, if not all, the functionality of the tags of this application heavily depends on AJAX
+      calls. This means that a bunch of server side JSP servlets and javascript libraries (based on
+      JQuery and JQuery-UI) are needed. After installation those can be found in the /mmbase/searchrelate
+      directory.
+    </para>
+
+  </section>
+  <section id="relatednodes">
+    <title>mm-sr:relatednodes</title>
+    <para>
+      The relatednodes tag is a bit like the mm:relatednodes tag, but it produces a list of to the
+      current node related nodes which can be <emphasis>edited</emphasis>. It can work in 2 different modes. It
+      can work stand alone, and then it is completely 'transactionless'. Every change is
+      submitted implicetely. If you use it inside an mm:form, it will also submit implicitely to the
+      server, but <emphasis>to the transaction</emphasis>, which means that to actually store the
+      information this form/transaction must be submitted with a mm:commit.
+    </para>
+    <para>
+      The must basic use is exactly like you would use an mm:relatednodes tag.
+    </para>
+    <programlisting format="linespecific"><![CDATA[
+    <mm:node>
+       <mm-sr:relatednodes role="posrel" type="news" orderby="posrel.pos" />
+       ...
+]]></programlisting>
+    <para>
+      There are however a few extra attributes, and a few which behave a bit differently. They can be found in the
+      <ulink url="http://www.mmbase.org/tags/mm/searchrelate/">reference</ulink>.
+    </para>
+    <section id="items">
+      <title>mm-sr:relatednodes items</title>
+      <para>
+        We must say a bit more about the 'item' attribute.  The item attribute is used if you want to customize one item in the list beyond the options provided by e.g. the 'fields', 'delete', and 'unlink' attributes.
+        Noticeably, it can be used to make <emphasis>nested</emphasis> lists.
+      </para>
+      <para>
+        The idea is that you point with this attribute to your own JSP which is to be used in stead of the default one in /mmbase/searchrelate/list/item.jspx.
+      </para>
+      <para>
+        You can suppose a current node ("${_node}" in EL) in this JSP, which means that you can
+        directly start with mm:field and so on. Furthermore the JSP will receive the parameters 'rid'
+        and 'fieldlistid'. The 'rid' can be used to pick up all settings of the current
+        mm-sr:relatednodes which you might need from the session. This goes easiest by including
+        a provided jsp sniplet (parameters.jspf).
+      </para>
+      <programlisting format="linespecific"><![CDATA[
+
+      <jsp:output omit-xml-declaration="true" />
+
+      <jsp:directive.include file="/mmbase/searchrelate/list/parameters.jspf" />
+
+      Now I can use ${parameters.source}, ${parameters.search} etc.
+     <mm:import externid="fieldlistid" />
+
+     <mm:fieldlist id="${fieldlistid}"
+      ...
+]]></programlisting>
+      <para>
+        The fieldlistid can help you to produce unique names on the input widgets, which is important if the form gets complicated.
+      </para>
+      <note>
+        <para>Your item is not a standalone XML, (it is included by
+        /mmbase/searchrelate/list/li.jspx) so it should omit the xml-declaration. This practicly (if
+        JSPx) means that you may have to add a jsp:output.
+        </para>
+      </note>
+      <note>
+        <title>Backwards compatibility</title>
+        <para>Previously these item jsps received other parameters, like 'source', 'fields',
+        'confirm' and 'icondir'. This is currently dropped, because they were getting more and more,
+        and it was decided to summarize everything in 'rid'. This is backwards incompatible, we may
+        add some of these parameters again, to fix that.
+        </para>
+      </note>
+    </section>
+    <section id="transactionless">
+      <title>Transactionless editing</title>
+      <para>
+        When you don't use this tag in some kind of transaction tag (mm:transaction or mm:form), it
+        will be 'transactionless'. Every change the user makes, will implicetely and automaticly be
+        commited to the server. There is little to think of, the necessary javascript events are bound automaticly.
+
+      </para>
+    </section>
+    <section id="delete">
+      <title>mm-sr:delete and mm-sr:unlink</title>
+      <para>
+        If you use the 'item' attribute, you must also in this item JSP take care of the the
+        'delete' and/or 'unlink' buttons yourself. So the corresponding attributes are basicly irrelevant
+        then (though you can aquire their values via ${parameters.unlink} and
+        ${parameters.delete}). On the spot where you want a delete or unlink button to appear, use
+        the mm-sr:delete or mm-sr:unlink tag respectively.
+      </para>
+    </section>
+    <section id="transaction">
+      <title>Using a transaction (mm:form)</title>
+      <para>
+        If this tag detects that it is used in a MMBase transaction, it will take this into
+        account. This means normally that nodes must not be committed (because they can be
+        invalid). Sort-order changes are delayed until the transaction is committed.
+      </para>
+      <para>
+        In principle it boils down to the idea that you should be able to make a transaction based
+        editor as naively as possible, and that useage of this tag does not impose further
+        difficulties. Be aware though that creating a transaction based editor (with mm:form) is not
+        very simple. It requires little code, but it has to be done just right.
+      </para>
+    </section>
+    <section id="listjs">
+      <title>List</title>
+      <para>The javascript associated with mm-sr:relatednodes can be found in /mmbase/searchrelate/List.js.jsp, and the jsps associated with that, are found
+      in /mmbase/searchrelate/list/.
+      </para>
+    </section>
+  </section>
+  <section id="search">
+    <title>mm-sr:search</title>
+    <para>mm-sr:search is actually just a simplified version of mm-sr:relate (it only shows the 'search' part).</para>
+    <para>This can be used to make very straigh-forward editors</para>
+    <programlisting format="linespecific"><![CDATA[
+    <mm:cloud
+       xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
+      <head>
+        ...
+        <mm:link page="/mmbase/searchrelate/page.css.jsp">
+          <link rel="stylesheet" href="${_}" type="text/css" />
+        </mm:link>
+     </head>
+     <body>
+        <mm-sr:search type="pages" create="true" />
+
+        ..
+
+     </body>
+    ]]></programlisting>
+    <para>Using event binders, you can define what must happen if an item from such a seach result is clicked</para>
+    <programlisting format="linespecific"><![CDATA[
+    <script type="text/javascript">
+      $(document).bind("mmsrRelate", function (e, tr, relater) {
+         alert("Clicked on node " + relater.getNumber(tr));
+       });
+    </script>
+    ]]></programlisting>
+    <para>For example you could go edit the node or so</para>
+  </section>
+  <section id="relate">
+    <title>mm-sr:relate</title>
+    <para>
+      The idea of this tag is to show 2 lists of nodes, based on two MMBase NodeQuery's. Both lists are pageable and searchable. One of the lists is called 'current' and the other 'repository'.
+      Normally you associate the query representing all related nodes of a certain node to the 'current' list and a query which finds all nodes of a certain type is attributed to the 'repository'.
+      This tag then allows you to move nodes from one list to the other, and in that way you modify the 'current' list, hence you create and delete relations.
+    </para>
+    <section id="searcherjs">
+      <title>Javascript</title>
+      <para>The javascript associated with mm-sr:relate can be found in /mmbase/searchrelate/Searcher.js.jsp, and the jsps associated with that, are found
+      in /mmbase/searchrelate/.
+      </para>
+      <section id="searcherjs1">
+        <title>MMBaseSearcher</title>
+        <para>
+          The relater tag combines 2 Searcher javascript objects. This searcher functionality is also used in mmsr-relatednodes (if search=true).
+        </para>
+      </section>
+      <section id="searcherjs2">
+        <title>MMBaseRelater</title>
+        <para>
+          The
+        </para>
+      </section>
+    </section>
+  </section>
+  <section id="tabs">
+    <title>mm-sr:tabs</title>
+    <para>
+      This is an experimental tag  which could be used to easily make an editors consisting of serveral steps (like the tabs of editwizards).
+    </para>
+  </section>
+</article>
+

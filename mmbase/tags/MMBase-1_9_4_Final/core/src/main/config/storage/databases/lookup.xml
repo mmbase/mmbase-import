@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE database-filters PUBLIC "-//MMBase//DTD database storage lookup 1.0//EN" "http://www.mmbase.org/dtd/database-storage-lookup_1_0.dtd" >
+<database-filters>
+  <!--
+    The database-config is the name referencing the database-config-xml.
+    The first filter where all the rules apply, will be selected.
+  -->
+
+  <!-- left over jdbc-drivers for mysql -->
+  <filter resource="storage/databases/mysql.xml">
+    <driver-class>org.gjt.mm.mysql.</driver-class>
+  </filter>
+
+  <!-- newer version of mysql uses relational? -->
+  <filter resource="storage/databases/mysql.xml">
+    <driver-class>com.mysql.</driver-class>
+  </filter>
+
+  <!-- hsql -->
+  <filter resource="storage/databases/hypersonic.xml">
+    <driver-class>org.hsql.</driver-class>
+  </filter>
+
+  <!-- hsqldb -->
+  <filter resource="storage/databases/hsqldb.xml">
+    <driver-class>org.hsqldb.</driver-class>
+  </filter>
+
+  <!-- postgresql -->
+  <filter resource="storage/databases/postgresql.xml">
+    <driver-class>org.postgresql.</driver-class>
+  </filter>
+
+  <!-- postgresql with the jxdbcon driver -->
+  <filter resource="storage/databases/postgresql.xml">
+    <driver-class>org.sourceforge.jxdbcon</driver-class>
+  </filter>
+
+  <!-- M$ SQL Server -->
+  <filter resource="storage/databases/mssql.xml">
+    <driver-class>com.microsoft.jdbc.sqlserver</driver-class>
+  </filter>
+
+  <!-- Oracle -->
+  <filter resource="storage/databases/oracle.xml">
+    <driver-class>oracle.jdbc.driver.OracleDriver</driver-class>
+  </filter>
+
+  <!-- Informix -->
+  <filter resource="storage/databases/informix.xml">
+    <driver-class>com.informix.</driver-class>
+  </filter>
+
+  <!-- Derby -->
+  <filter resource="storage/databases/derby.xml">
+    <driver-class>org.apache.derby.</driver-class>
+  </filter>
+
+  <!-- H2 -->
+  <filter resource="storage/databases/h2.xml">
+    <driver-class>org.h2.</driver-class>
+  </filter>
+
+  <!--
+       During boottrap a connection is gotten. If for some reason this must be done with a different URL,
+       then this can be configured, based on the driver-class.
+  -->
+  <url driver-class="org.hsqldb.">jdbc:hsqldb:mem:$DBM;shutdown=true</url>
+
+</database-filters>

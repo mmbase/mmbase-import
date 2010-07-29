@@ -1,0 +1,105 @@
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xml:lang="en"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+
+  <jsp:directive.tag
+      example="See /mmexamples/searchrelate" />
+
+
+  <jsp:directive.attribute name="title"        type="java.lang.String"
+                           description=""/>
+
+  <jsp:directive.attribute name="cancel"        type="java.lang.Boolean"
+                           description=""/>
+
+  <jsp:directive.attribute name="prefetch"        type="java.lang.String"
+                           description=""/>
+
+  <jsp:directive.attribute name="styleClass"        type="java.lang.String"
+                           description=""/>
+
+  <mm:import externid="ct" />
+  <mm:import externid="debug" />
+  <mm:import externid="type" />
+
+  <mm:content
+      type="${empty ct ? 'application/xhtml+xml' : ct}"
+      expires="0"
+      language="nl">
+    <mm:cloud
+        rank="administrator">
+
+      <head>
+        <mm:import id="_title">
+          <jsp:text>Search and Relate examples/tests.</jsp:text>
+          <c:if test="${! empty title}"> ${title}.</c:if>
+        </mm:import>
+        <title>${_title}</title>
+        <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
+        <jsp:directive.include file="/mmbase/jquery/jquery-ui.jspx" />
+        <jsp:directive.include file="/mmbase/jquery/jquery.form.jspx" />
+        <jsp:directive.include file="/mmbase/upload/javascript.jspxf" />
+        <mm:link page="/mmbase/searchrelate/page.css.jsp">
+          <link rel="stylesheet" href="${_}" type="text/css" />
+        </mm:link>
+        <mm:link page="/style.css">
+          <link rel="stylesheet" href="${_}" type="text/css" />
+        </mm:link>
+
+        <meta name="ContentRoot" content="${mm:link('/')}" />
+
+        <c:if test="${! empty prefetch}">
+          <script type="text/javascript">
+            MMBaseValidator.prototype.prefetchNodeManager('${prefetch}');
+          </script>
+        </c:if>
+        <c:if test="${empty debug or debug eq 'false'}">
+          <style type="text/css">.debug { display: none; }</style>
+        </c:if>
+      </head>
+
+      <mm:import externid="config" />
+      <mm:write request="org.mmbase.searchrelate.config" referid="config" />
+
+      <body class="${styleClass} ${requestScope['org.mmbase.searchrelate.config']}">
+        <h1>${_title}</h1>
+        <mm:link page="/mmbase/upload/upload.js">
+          <script type="text/javascript" src="${_}">
+            <jsp:text> </jsp:text>
+          </script>
+        </mm:link>
+        <mm:link page="/example.js">
+          <script type="text/javascript" src="${_}">
+            <jsp:text> </jsp:text>
+          </script>
+        </mm:link>
+
+        <div class="progressInfo" />
+
+        <jsp:doBody />
+
+        <hr />
+        <c:if test="${cancel}">
+          <mm:link referids="ct?,debug?,config?,type?">
+            <mm:param name="cancel"></mm:param>
+            <a href="${_}">cancel</a>
+          </mm:link>
+          <jsp:text> | </jsp:text>
+        </c:if>
+        <mm:link referids="ct?,debug?,config?,type?">
+          <a href="${_}">reload</a>
+        </mm:link>
+        <jsp:text> | </jsp:text>
+        <mm:link page="." referids="ct?,debug?,config?">
+          <a href="${_}">back</a>
+        </mm:link>
+
+
+      </body>
+    </mm:cloud>
+
+  </mm:content>
+</html>

@@ -1,0 +1,167 @@
+<?xml version="1.0" ?>
+<fieldlist
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd">
+
+  <field name="title">
+    <descriptions>
+      <description xml:lang="en">Title of this object</description>
+      <description xml:lang="nl">Titel van dit object</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="en">Title</guiname>
+      <guiname xml:lang="fr">Titre</guiname>
+      <guiname xml:lang="nl">Titel</guiname>
+      <guiname xml:lang="eo">Titolo</guiname>
+    </gui>
+    <editor>
+      <positions>
+        <list>1</list>
+      </positions>
+    </editor>
+    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <default value="Titel" />
+      <minLength value="2" />
+      <maxLength value="255" />
+    </datatype>
+  </field>
+
+  <field name="subtitle">
+    <descriptions>
+      <description xml:lang="en">Subtitle of the object</description>
+      <description xml:lang="nl">Sub hoofd van het object</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="en">SubTitle</guiname>
+      <guiname xml:lang="fr">Sous-titre</guiname>
+      <guiname xml:lang="nl">SubTitel</guiname>
+      <guiname xml:lang="eo">Subtitolo</guiname>
+    </gui>
+    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <maxLength value="255" />
+    </datatype>
+  </field>
+
+  <field name="intro">
+    <descriptions>
+      <description xml:lang="en">Introduction text or teaser</description>
+      <description xml:lang="nl">Introductietekst of teaser</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="en">Intro</guiname>
+      <guiname xml:lang="fr">Intro</guiname>
+      <guiname xml:lang="nl">Intro</guiname>
+      <guiname xml:lang="eo">Enkonduko</guiname>
+    </gui>
+    <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <maxLength value="2048" />
+    </datatype>
+  </field>
+
+  <field name="body">
+    <descriptions>
+      <description xml:lang="en">Main text of the object</description>
+      <description xml:lang="nl">Hoofdtekst van het object</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="en">Text</guiname>
+      <guiname xml:lang="fr">Texte</guiname>
+      <guiname xml:lang="nl">Tekst</guiname>
+      <guiname xml:lang="eo">Teksto</guiname>
+    </gui>
+    <datatype base="mmxf" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <maxLength value="64000" />
+    </datatype>
+  </field>
+  <field name="begin">
+    <gui>
+      <guiname xml:lang="nl">Online op</guiname>
+      <guiname xml:lang="en">Online on</guiname>
+    </gui>
+    <editor>
+      <positions>
+        <list>10</list>
+      </positions>
+    </editor>
+    <datatype base="date" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <default value="today" />
+      <minInclusive value="yesterday"  enforce="oncreate" />
+      <maxInclusive value="today + 150 year" enforce="never" />
+    </datatype>
+  </field>
+  <field name="end">
+    <gui>
+      <guiname xml:lang="nl">Offline op</guiname>
+      <guiname xml:lang="en">Offline on</guiname>
+    </gui>
+    <editor>
+      <positions>
+        <input>11</input>
+      </positions>
+    </editor>
+    <datatype base="date" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <default value="next month" />
+      <minInclusive value="yesterday"        enforce="oncreate" />
+      <maxInclusive value="today + 150 year" enforce="never" />
+    </datatype>
+  </field>
+  <field name="lastmodifiedby" state="system" readonly="true">
+    <descriptions>
+      <description xml:lang="en">Last modified by</description>
+      <description xml:lang="nl">Laatst veranderd door</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="en">Last modifier</guiname>
+      <guiname xml:lang="nl">Laatste veranderaar</guiname>
+      <guiname xml:lang="eo">Lasta ŝanĝinto</guiname>
+    </gui>
+    <datatype base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <maxLength value="255" />
+    </datatype>
+  </field>
+  <field name="lastmodified" state="system" readonly="true">
+    <descriptions>
+      <description xml:lang="en">Last modified on</description>
+      <description xml:lang="nl">Laatst veranderd op</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="en">Last modified time</guiname>
+      <guiname xml:lang="nl">Laatste verandering</guiname>
+      <guiname xml:lang="eo">Lasta ŝanĝo</guiname>
+    </gui>
+    <datatype base="lastmodified" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+  </field>
+  <field name="creator" state="system" readonly="true">
+    <descriptions>
+      <description xml:lang="en">Created by</description>
+      <description xml:lang="nl">Gecreëerd door</description>
+      <description xml:lang="nl">Kreinto</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="en">Creator</guiname>
+      <guiname xml:lang="nl">Creëerder</guiname>
+      <guiname xml:lang="eo">Kreinto</guiname>
+    </gui>
+    <datatype base="creator" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <maxLength value="255" />
+    </datatype>
+  </field>
+  <field name="created" state="system" readonly="true">
+    <descriptions>
+      <description xml:lang="en">Created on</description>
+      <description xml:lang="nl">Gecreëeerd op</description>
+      <description xml:lang="nl">Kreita je</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="en">Created time</guiname>
+      <guiname xml:lang="nl">Creëertijd</guiname>
+      <guiname xml:lang="eo">Kretempo</guiname>
+    </gui>
+    <datatype base="created" xmlns="http://www.mmbase.org/xmlns/datatypes"  />
+  </field>
+
+</fieldlist>
+

@@ -1,0 +1,22 @@
+<jsp:root
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    version="2.0"
+    >
+  <jsp:directive.attribute name="type" type="java.lang.String"  required="true" />
+  <jsp:directive.attribute name="field" type="java.lang.String"  />
+  <jsp:directive.attribute name="value" type="java.lang.Object"    />
+  <jsp:directive.attribute name="notfound" type="java.lang.String"   />
+  <mm:listnodescontainer type="${type}">
+    <c:if test="${! empty field}">
+      <mm:constraint field="${field}" value="${value}" />
+    </c:if>
+    <mm:listnodes max="1">
+      <mm:node id="thenode" />
+    </mm:listnodes>
+    <mm:node number="${thenode}" notfound="${notfound}" >
+      <jsp:doBody />
+    </mm:node>
+  </mm:listnodescontainer>
+</jsp:root>

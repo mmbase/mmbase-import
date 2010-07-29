@@ -1,0 +1,24 @@
+<jsp:root
+    version="2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+
+  <mm:node id="d" number="${destination}" />
+  <mm:node referid="d" jspvar="d" commitonclose="false">
+    <jsp:scriptlet>org.mmbase.bridge.NodeList newNodes = org.mmbase.bridge.util.Queries.addToResult(query, d);</jsp:scriptlet>
+    &lt;!--
+    query: <mm:escape escape="text/xml"><jsp:expression>query.toSql()</jsp:expression></mm:escape>
+    count: <jsp:expression>newNodes.size()</jsp:expression>
+    relations: <mm:escape escape="text/xml"><jsp:expression>newNodes</jsp:expression></mm:escape>
+    --&gt;
+  </mm:node>
+  <mm:node referid="d" commitonclose="false">
+    <mm:include page="/mmbase/searchrelate/list/li.jspx" referids="rid">
+      <mm:param name="new">true</mm:param>
+    </mm:include>
+  </mm:node>
+
+</jsp:root>

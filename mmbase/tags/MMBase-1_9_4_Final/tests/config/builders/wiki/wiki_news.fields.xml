@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<fieldlist
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    >
+
+  <xi:include href="title.field.xml" />           <!--from wiki_objects -->
+  <xi:include href="intro.field.xml" />
+  <xi:include href="body.field.xml" />
+  <xi:include href="createdby.field.xml" />       <!--from wiki_objects -->
+  <xi:include href="lastmodifiedby.field.xml" />  <!--from wiki_objects -->
+
+  <field name="publishdate" state="system">
+    <gui>
+      <guiname xml:lang="nl">Publicatie datum</guiname>
+      <guiname xml:lang="en">Publish date</guiname>
+    </gui>
+    <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <default value="now" />
+    </datatype>
+  </field>
+</fieldlist>

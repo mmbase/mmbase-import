@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<article id="frontenddevelopers-taglib-include">
+  <articleinfo>
+	<title>Include mechanisms with the MMBase Taglibs</title>
+	<date>2003-07</date>
+   	<edition>$Id$</edition>
+    <copyright>
+      <year>This document is created under the Mozilla Public License</year>
+    </copyright>
+
+    <authorgroup>
+      <author>
+        <firstname>Johannes</firstname>
+        <surname>Verelst</surname>
+      </author>
+      <author>
+        <firstname>Michiel</firstname>
+        <surname>Meeuwissen</surname>
+      </author>
+    </authorgroup>
+
+    <revhistory>
+      <revision>
+        <revnumber>0.1</revnumber>
+        <date>2003-07</date>
+        <revremark>First draft</revremark>
+      </revision>
+      <revision>
+        <revnumber>0.2</revnumber>
+        <date>2006-07</date>
+      </revision>
+    </revhistory>
+
+    <abstract>
+      <para>This document describes all possible mechanisms for JSP pages to
+      include other pages. These mechanisms (of which 3 are MMBase specific)
+      can be used to build modular sites.
+      </para>
+    </abstract>
+  </articleinfo>
+
+  <section>
+    <title>Introduction</title>
+    <para>
+      Since the release of MMBase 1.5 there are two tags within the MMBase
+      taglib which are introduced in this document:
+      <computeroutput>&lt;mm:treeinclude&gt;</computeroutput> and
+      <computeroutput>&lt;mm:leafinclude&gt;</computeroutput>. These tags
+      allow a site to be set up in a very modular way; this documentation
+      is meant to aid templaters to use these tags efficiently.
+    </para>
+    <para>
+      In the next sections we will first describe the existing include
+      mechanisms, and later on elaborate on the specifics of the two
+      newly introduced tags.
+    </para>
+  </section>
+  <section>
+    <title>JSP Include Directive</title>
+    <para>
+      With a JSP Include Directive, one can directly insert the content
+      of another JSP as if it was part of the calling JSP. The servlet
+      engine will combine these JSPs before compilation; one big
+      JSP file is the result. The following syntax is used for this
+      directive:
+<programlisting><![CDATA[<%@ include file="includes/header.jsp" %>]]></programlisting>
+      If a page 'A' does an include of page 'B', this means that all
+      information defined in page 'A' (most importantly: methods and variables)
+      are available in page 'B'. This means that all methods and
+      variables need to have unique names, otherwise conflicts will occur.
+    </para>
+    <note>
+      <para>
+        You can (and must if using JSPX) also use the following syntax:
+        <programlisting><![CDATA[<jsp:directive.include file="includes/header.jsp" />]]></programlisting>
+      </para>
+    </note>
+    <para>
+      The main benefit of using this directive is speed: inclusion is
+      done at compile-time and it has no cost on execution time. The disadvantage
+      is that the name of the page to be included needs to be known at
+      compile-time; dynamic inclusion of pages is not possible.
+    </para>
+  </section>
+  <section>
+    <title>JSP Include Action</title>
+    <para>
+      Another way of inclusion of another JSP page is by using the JSP Include
+      Action. The difference with the Include Directive is that not the source
+      of the JSP, but it's output is included. The include JSP page is being
+      executed within the servlet engine and it's output is returned to the
+      calling page. The following syntax is used:
+<programlisting><![CDATA[<jsp:include page="includes/page.jsp?param1=value">
+   <jsp:param name="param2" value="value2" />
+</jsp:include>]]></programlisting>
+      The example shows that there are two ways of passing named variables:
+      either pass them on directly in the URL, or add them using
+      <computeroutput>&lt;jsp:param&gt;</computeroutput> tags.
+    </para>
+    <para>
+      The main benefit of using the Include Action is that the URL to include
+      can be constructed during execution of the page; and that double variable
+      names in pages are no problem. However, every included page results in a
+      new request to the servlet engine, which means there is a bit of a
+      performance impact when compared to the include directive.
+    </para>
+    <note>
+      <para>
+        Actually not a complete new request is done. The same request is reused. The performance
+        overhead is probably neclectible.
+      </para>
+    </note>
+  </section>
+  <section>
+    <title>MMBase Include</title>
+    <para>
+      The MMBase Include has great resemblance with the JSP Include Action,
+      parameter names and subtags have the same names:
+<programlisting><![CDATA[<mm:include page="includes/page.jsp?param1=value">
+  <mm:param name="param2" value="value2" />
+</mm:include>]]></programlisting>
+      The advantage of using the MMBase Include instead of the JSP Include
+      Action is that contextvariables can be used. By using
+      the <computeroutput>referids</computeroutput> parameter you can
+      easily pass on any variables that were given to this page. For example,
+      in the <computeroutput>includes/page.jsp</computeroutput> file one
+      could use the following code snippet:
+<programlisting><![CDATA[<mm:include page="subinclude.jsp" referids="param1,param2" />]]></programlisting>
+    </para>
+  </section>
+  <section>
+    <title>MMBase TreeInclude</title>
+    <para>
+      TreeInclude is an extension to the MMBase Include, which chooses a
+      page from a list of possible pages; and then includes the one
+      best suited. The general idea is that TreeInclude receives a path
+      of objects that are used to find a file on disk that fits the given
+      objects most closely.
+    </para>
+    <section>
+      <title>SmartPath</title>
+      <para>
+        The functionality that finds a template for a given list of
+        objects is called smartpath. Smartpath is a function on a node,
+        which returns the best possible path for that node. The standard
+        behavior of Smartpath is to return a path that exists of the
+        node numbers, possibly postfixed by a random string. So, if
+        <computeroutput>getSmartPath()</computeroutput> is called on
+        node number 138, in a directory where one of the subdirectories
+        is <computeroutput>138something</computeroutput>, <computeroutput>getSmartPath()</computeroutput>
+        will return this path. If there is no matching path, a <computeroutput>null</computeroutput>
+        value is returned.
+      </para>
+      <para>
+        The default behavior described here can be overridden by a
+        developer by creating a new builder class for a nodemanager.
+        For all following examples, we assume that such a special class
+        has been written, that uses the value of the <computeroutput>title</computeroutput>
+        field of the node as the path to return.
+      </para>
+      <para>
+        NOTE: when <computeroutput>getSmartPath()</computeroutput> is called,
+        it always operates by default from the <computeroutput>HTML root</computeroutput>
+        of the servlet context. That means that TreeInclude does NOT include files from the
+        current working directory.
+      </para>
+    </section>
+    <section>
+      <title>TreeInclude workings</title>
+      <para>
+        When doing a TreeInclude, you need to specify a list of objects. These are then
+        used to create a list of possible pages to include. First, <computeroutput>getSmartPath()</computeroutput>
+        is called on the first object. Then, it is called on the second object from the directory that
+        was just found; this procedure continues until all objects are used,
+        or until one of the <computeroutput>getSmartPath()</computeroutput>s returns
+        a <computeroutput>null</computeroutput> value. The following example will make this
+        a bit more clear:
+<programlisting><![CDATA[<mm:treeinclude page="includes/page.jsp?param1=value" objectlist="100,140,321">
+  <mm:param name="param2" value="value2" />
+</mm:include>]]></programlisting>
+        The three objects mentioned in the <computeroutput>objectlist</computeroutput>
+        parameter have the following properties:
+        <itemizedlist>
+          <listitem>
+            <para>100; this is an object of type <computeroutput>portals</computeroutput> with
+             title 'mmbase'</para>
+          </listitem>
+          <listitem>
+            <para>140; this is an object of type <computeroutput>events</computeroutput> with
+             title 'mmevent3'</para>
+          </listitem>
+          <listitem>
+            <para>321; this is an object of type <computeroutput>news</computeroutput> with
+            title 'introduction'</para>
+          </listitem>
+        </itemizedlist>
+        TreeInclude will now call the <computeroutput>getSmartPath()</computeroutput> method
+        on all objects; it stops as soon as a <computeroutput>null</computeroutput> value
+        is returned. All possible pages that could be included are:
+        <itemizedlist>
+          <listitem>
+            <para>/mmbase/mmevent3/introduction/includes/page.jsp</para>
+          </listitem>
+          <listitem>
+            <para>/mmbase/mmevent3/includes/page.jsp</para>
+          </listitem>
+          <listitem>
+            <para>/mmbase/includes/page.jsp</para>
+          </listitem>
+          <listitem>
+            <para>/includes/page.jsp</para>
+          </listitem>
+        </itemizedlist>
+        The most specific one of these shall be included; this means this list
+        is being evaluated from top to bottom; the first file that exists will
+        be included.
+      </para>
+    </section>
+  </section>
+  <section>
+    <title>MMBase LeafInclude</title>
+    <para>
+      The LeafInclude and TreeInclude tags bear great similarities: they both
+      use <computeroutput>getSmartPath()</computeroutput> on the objects passed
+      in the <computeroutput>objectlist</computeroutput> parameter in order
+      to find a page to include. The difference is that when TreeInclude discards
+      objects that return a <computeroutput>null</computeroutput> value, while
+      the LeafInclude continues with substituting this <computeroutput>null</computeroutput>
+      value with the builder name of the object. An example will shed some light
+      on this:
+<programlisting><![CDATA[<mm:leafinclude page="includes/page.jsp?param1=value" objectlist="100,140,321">
+  <mm:param name="param2" value="value2" />
+</mm:include>]]></programlisting>
+      The three objects mentioned in the <computeroutput>objectlist</computeroutput>
+      parameter have the following properties:
+      <itemizedlist>
+        <listitem>
+          <para>100; this is an object of type <computeroutput>portals</computeroutput> with
+           title 'mmbase'</para>
+        </listitem>
+        <listitem>
+          <para>140; this is an object of type <computeroutput>events</computeroutput> with
+           title 'mmevent3'</para>
+        </listitem>
+        <listitem>
+          <para>321; this is an object of type <computeroutput>news</computeroutput> with
+          title 'introduction'</para>
+        </listitem>
+      </itemizedlist>
+      LeafInclude will now call the <computeroutput>getSmartPath()</computeroutput> method
+      on all objects; if this yields a <computeroutput>null</computeroutput> value, the
+      name of the builder will be used. The following list of possible pages is compiled:
+      <itemizedlist>
+        <listitem>
+          <para>/mmbase/mmevent3/introduction/includes/page.jsp</para>
+        </listitem>
+        <listitem>
+          <para>/mmbase/mmevent3/news/includes/page.jsp</para>
+        </listitem>
+        <listitem>
+          <para>/mmbase/events/news/includes/page.jsp</para>
+        </listitem>
+        <listitem>
+          <para>/portals/events/news/includes/page.jsp</para>
+        </listitem>
+      </itemizedlist>
+      The most specific one of these shall be included; this means this list
+      is being evaluated from top to bottom; the first file that exists will
+      be included.
+    </para>
+  </section>
+  <section>
+    <title>Tag files</title>
+    <para>
+      In newer servlet containers, also the possibilities to use tag-files exists. These are very
+      similar to dynamic includes like jsp:include and mm:include but provide a nicer syntax, and
+      better way of packaging for general reuse (they can be included in jars).
+    </para>
+    <para>
+      An example of a custom image-tag. A file WEB-INF/tags/my/image.tagx was placed, containing this:
+    <programlisting><![CDATA[
+<jsp:root
+ version="1.2"
+ xmlns:jsp="http://java.sun.com/JSP/Page"
+ xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:directive.attribute name="template"   />
+  <mm:node>
+    <mm:image template="s(800x800&gt;)+f(png)">
+      <a
+       title="${_node.title}"
+       href="${_}" onclick="window.open(this.href, '${mm:escape('identifier', _node.title)}', 'width=${dimension.width + 20},height=${dimension.height + 20}'); return false;">
+        <mm:image template="$template" mode="img" />
+      </a>
+    </mm:image>
+  </mm:node>
+</jsp:root>
+]]></programlisting>
+    </para>
+    <para>
+      Now it can be used as follows (in a JSPX):
+    <programlisting><![CDATA[
+<sometag xmlns:vl="urn:jsptagdir:/WEB-INF/tags/my">
+  ...
+  <mm:listnodes type="images" max="5">
+    <my:image template="s(x200)" />
+  </mm:listnodes>
+  ....
+]]></programlisting>
+
+     Which creates (maximal) 5 images in the HTML which are clickable, and produce a pop-up window
+     with a bigger version of the same image if you click on them.
+    </para>
+  </section>
+  <section>
+    <title>Dynamic includes and the REQUEST scope</title>
+    <para>
+      When using dynamic includes (like tag-files, mm:include or mm:leafinclude), you may want to
+      use the REQUEST scope to pass stuff around to this included page.
+    </para>
+    <para>
+      MMBase variables can be explicitely written to the request scope:
+      <programlisting><![CDATA[
+<mm:write referid="foo" request="bar" />
+]]></programlisting>
+    </para>
+    <para>
+      And also be explictely picked up:
+      <programlisting><![CDATA[
+<mm:import from="request" externid="bar" />
+]]></programlisting>
+      Though that is not even necessary, because EL also expresses variables on the request.
+    </para>
+    <section>
+      <title>Implicit REQUEST scope variables</title>
+      <para>
+        Since MMBase-1.8.1 several implicit variables are on default scoped in the request, which
+        makes dynamic include even easier to use. These are:
+      </para>
+      <itemizedlist>
+        <listitem>
+          <para>
+            The locale settings of mm:locale and mm:content. Effectively included pages have the
+            same locale a the including page, which makes much sense.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            The escaper parameter of the mm:content tag. No need to use a mm:content on all included
+            pages.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            The _node implicit 'current' node variable. This is also picked up by a mm:node tag with
+            no parents. The effect is that you can easily refer to the 'current' node in a include
+            page, simply by surrounding an empty mm:node. The tag-file example makes use of this.
+          </para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+  </section>
+</article>
+

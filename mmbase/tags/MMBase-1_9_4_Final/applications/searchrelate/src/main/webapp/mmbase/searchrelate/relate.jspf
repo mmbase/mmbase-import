@@ -1,0 +1,19 @@
+
+<mm:listnodes referid="related" jspvar="n">
+  <jsp:expression>Queries.addToResult(current, n)</jsp:expression>
+</mm:listnodes>
+<mm:listnodes referid="unrelated" jspvar="n">
+  R:<jsp:expression>n.getNumber()</jsp:expression>
+ <jsp:expression>Queries.removeFromResult(current, n)</jsp:expression>
+</mm:listnodes>
+
+
+<mm:present referid="deleted">
+  <mm:listnodes referid="deleted">
+    <mm:maydelete>
+      <mm:hasfield name="dnumber">
+        <mm:field name="dnumber" /> <mm:deletenode />
+      </mm:hasfield>
+    </mm:maydelete>
+  </mm:listnodes>
+</mm:present>

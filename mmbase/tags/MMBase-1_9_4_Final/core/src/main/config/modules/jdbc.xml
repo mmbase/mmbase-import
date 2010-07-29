@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
+<!--
+   The JDBC module is used to configure the database access for MMBase. 
+   This module is not essential.
+-->
+<module maintainer="mmbase.org" version="0">
+
+  <!--
+      This module  sets up mmbase jdbc connection pooling.
+      It remains unused if you set up a datasource in mmbaseroot.xml
+
+  -->
+  <class>org.mmbase.module.database.JDBC</class>
+  <properties>
+
+    <!-- <properties>
+    name="url"  defines the jdbc url MMBase will use to connect to your database.
+    It can use the following vars:
+
+    $HOST , set by <host>
+    $PORT , set by <port>
+    $DBM  , set by <database>
+
+    this way we can provide the url for several databases and you only need to
+    set the above variables.
+    -->
+    <!-- MySQL
+    <property name="url">jdbc:mysql://$HOST:$PORT/$DBM</property>
+    -->
+    <!-- MySQL when it is configured to use utf-8. The data in the database will also be readable by other programs tested on mysql 4.1
+    <property name="url">jdbc:mysql://$HOST:$PORT/$DBM?useUnicode=true&amp;characterEncoding=UTF-8</property>
+    -->
+    <!-- Oracle
+         MM: I don' think this is regularly tested.
+    <property name="url">jdbc:oracle:oci8:@$DBM</property>
+    -->
+    <!-- Informix
+    <property name="url">jdbc:informix-sqli://$HOST:$PORT/$DBM:informixserver=[DBSERVERNAME]</property>
+    -->
+    <!-- Postgresql using the official postgresql driver
+    <property name="url">jdbc:postgresql://$HOST:$PORT/$DBM</property>
+    -->
+    <!-- Postgresql using the http://jxdbcon.sourceforge.net/ dirver
+         MM: I don' think this is regularly tested
+    <property name="url">jdbc:pgsql:net//$HOST:$PORT/$DBM</property>
+    -->
+    <!-- MS Sql Server
+         MM: I don' think this is regularly tested.
+    <property name="url">jdbc:microsoft:sqlserver://$HOST:$PORT;DatabaseName=$DBM</property>
+    -->
+
+    <!--
+         HSQL
+
+         Stand alone HSQL which was started with:
+         java -cp ~/mmbase/head/mmbase/mmbase-webapp/WEB-INF/lib/hsqldb.jar org.hsqldb.Server -database.0 /tmp/test -dbname.0 mmbase
+
+         <property name="url">jdbc:hsqldb:hsql://$HOST/$DBM</property>
+
+         HSQL with files under WEB-INF/data
+         <property name="url">jdbc:hsqldb:file:$DATADIR$DBM;shutdown=true</property>
+
+         HSQL with files in directory of startup
+         <property name="url">jdbc:hsqldb:file:$DBM;shutdown=true</property>
+
+         HSQL can also work with tab-separated files, see config/storage/databases/hsql.xml for that.
+    -->
+    <!-- Default.
+         HSQL, memory only. This means that your MMBase is empty again after every restart.
+    -->
+    <property name="url">jdbc:hsqldb:mem:$DBM;shutdown=true</property>
+
+    <!--
+    name="user", what is the user we will use to login to the database
+    -->
+    <property name="user">sa</property>
+
+    <!--
+    name="password", what is the password we will use to login to the database
+    -->
+    <property name="password"></property>
+
+    <!--
+    name="supportclass"
+    The jdbc module will use this class to do database specific things to a connection (ie for informix it sets the lockmode)
+    -->
+		<!-- Informix, the rest of the database can use the default org.mmbase.module.database.DatabaseSupportShim
+      <property name="supportclass">org.mmbase.module.database.DatabaseSupportInformix</property>
+    -->
+    <property name="supportclass">org.mmbase.module.database.DatabaseSupportShim</property>
+
+    <!--
+    name="database",
+    Most database engines allow you to store multiple databases in one engine.
+    We need to select the database we want to use within this engine.
+    Make sure you are using a 'empty' database when you start using mmbase to
+    ensure you don't create problems for other users.
+    -->
+    <property name="database">mmbase</property>
+
+    <!--
+    name="connections"
+    MMBase does its own database connection pooling  (keeping connections to the database open
+    over several database queries, to speed up queries by not logging in and closing
+    the connection on every query). 'connections' allows you to set
+    the number of connections MMBase keeps open to the database.
+    -->
+    <property name="connections">20</property>
+
+    <!--
+    name="host", what host will we connect to (that is running the database)
+    when you run mmbase on the same machine as this mmbase node it can
+    be set to 'localhost'
+    -->
+    <property name="host">localhost</property>
+
+    <!--
+    name="driver", defines the classname for the used jdbc driver this can be
+    obtained from the documentation from the jdbc driver you use.
+    -->
+    <!--
+    MySQL:          com.mysql.jdbc.Driver                   (http://www.mysql.com/downloads/api-jdbc.html)
+    PostgreSQL:     org.postgresql.Driver                   (http://jdbc.postgresql.org/download.html)
+                    org.sourceforge.jxdbcon.JXDBConDriver   (http://jxdbcon.sourceforge.net/)
+    Hypersonic:     org.hsql.jdbcDriver                     (http://hsqldb.sourceforge.net/)
+    HsqlDB:         org.hsqldb.jdbcDriver                   (http://hsqldb.sourceforge.net/)
+    Oracle:         oracle.jdbc.driver.OracleDriver
+    Informix:       com.informix.jdbc.IfxDriver
+    M$ SQL Server   com.microsoft.jdbc.sqlserver.SQLServerDriver    (http://search.microsoft.com/search/results.aspx?st=b&na=88&View=en-us&qu=jdbc+sql+server+download)
+    -->
+    <property name="driver">org.hsqldb.jdbcDriver</property>
+
+    <!--
+    name="port" what port is this database engine running on ? you can find the port in
+    your database manual or ask the database admin. default ports for
+    supported databases are :
+
+    MySQL:          3306
+    PostgreSQL      5432
+    Informix        1527
+    M$ SQL Server   1433
+    Oracle          1521
+    HSQL            0
+    -->
+    <property name="port">0</property>
+
+    <!--
+    name="queries", mmbase will replace these connections every x queries
+    because alot of the databases drivers, jdbc drivers etc etc have
+    memory leaks or other possible problems. with 'queries' you can set
+    the number that will be done per connection before it gets replaced
+    with a new connection.
+    -->
+    <property name="queries">256</property>
+
+    <!--
+    sometime connections take a long time, every now and then the
+    database connection pooling has to check/kill queries that take to long
+    probetime is the time in seconds between the checks. Connections that are
+    running for more than <maxlifetime> (defaults to 120) seconds will be killed
+    -->
+    <property name="probetime">30</property>
+
+
+    <!-- max life time of a query (in s)
+         If a query runs langer than this, MMBase will attempt to 'kill' it.
+    -->
+    <property name="maxlifetime">120</property>
+
+  </properties>
+</module>

@@ -1,0 +1,142 @@
+<createcaches
+    xmlns="http://www.mmbase.org/xmlns/createcaches"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/createcaches http://www.mmbase.org/xmlns/createcaches.xsd"
+    >
+
+  <!--
+     Example configuration
+    -->
+  <!--
+  <server max_simultaneous_transcoders="2" host="localhost" port="1679" />
+  -->
+  <localhost max_simultaneous_transcoders="1"  stage="recognizer" />
+  <localhost max_simultaneous_transcoders="1"  stage="transcoder" />
+  <!--
+  <server max_simultaneous_transcoders="2" host="openbeelden2.tuxic.nl" port="1679" />
+  -->
+
+  <!--
+  <transcoder>
+    <class name="org.mmbase.streams.transcoders.InfiniteTranscoder">
+
+    </class>
+  </transcoder>
+  -->
+
+
+  <recognizer id="recognizer">
+    <class name="org.mmbase.streams.transcoders.FFMpegRecognizer">
+    </class>
+    <loganalyzer name="org.mmbase.streams.transcoders.FFMpegAnalyzer" />
+  </recognizer>
+
+  <transcoder mimetype="video/*" id="v1">
+    <class name="org.mmbase.streams.transcoders.FFMpeg2TheoraTranscoder">
+      <param name="videoQuality">5</param>
+      <param name="width">320</param>
+    </class>
+    <loganalyzer name="org.mmbase.streams.transcoders.FFMpeg2TheoraAnalyzer" />
+  </transcoder>
+
+  <transcoder mimetype="video/*"  id="v2">
+    <class name="org.mmbase.streams.transcoders.FFMpeg2TheoraTranscoder">
+      <param name="videoQuality">8</param>
+    </class>
+    <loganalyzer name="org.mmbase.streams.transcoders.FFMpeg2TheoraAnalyzer" />
+  </transcoder>
+
+
+  <!-- example config for ts streams over cellular networks (for iPhone etc.) -->
+<!-- 
+  <transcoder
+      label="lo"
+      mimetype="video/*" id="v1">
+    <class name="org.mmbase.streams.transcoders.FFMpegTranscoder">
+      
+      <param name="format">ts</param>
+      <param name="forceFormat">mpegts</param>
+      <param name="vcodec">libx264</param>
+      <param name="framesPerSecond">25</param>
+      <param name="bitrate">96k</param>
+      <param name="acodec">libmp3lame</param>
+      <param name="abitrate">48000</param>
+      <param name="audioChannels">2</param>
+      <param name="async">2</param>
+      <param name="width">320</param>
+      <param name="height">240</param>
+
+      <param name="-flags">+loop</param>
+      <param name="-cmp">+chroma</param>
+      <param name="-partitions">+parti4x4+partp8x8+partb8x8</param>
+      <param name="-subq">5</param>
+      <param name="-trellis">1</param>
+      <param name="-refs">1</param>
+      <param name="-coder">0</param>
+      <param name="-me_range">16</param>
+      <param name="-keyint_min">25</param>
+      <param name="-sc_threshold">40</param>
+      <param name="-i_qfactor">0.71</param>
+      <param name="-bt">200k</param>
+      <param name="-maxrate">96k</param>
+      <param name="-bufsize">96k</param>
+      <param name="-rc_eq">'blurCplx^(1-qComp)'</param>
+      <param name="-qcomp">0.6</param>
+      <param name="-qmin">10</param>
+      <param name="-qmax">51</param>
+      <param name="-qdiff">4</param>
+      <param name="-level">30</param>
+      <param name="-aspect">320:240</param>
+      <param name="-g">30</param>
+      
+    </class>
+    <loganalyzer name="org.mmbase.streams.transcoders.FFMpegAnalyzer" />
+  </transcoder>
+
+  <transcoder
+      label="lo"
+      mimetype="video/*" in="v1" id="v2">
+    <class name="org.mmbase.streams.transcoders.SegmenterTranscoder">
+      <param name="format">ts</param>
+      <param name="duration">10</param>
+      <param name="httpPrefix">http://www.openimages.eu/</param>
+    </class>
+    <loganalyzer name="org.mmbase.streams.transcoders.SegmenterAnalyzer" />
+  </transcoder>
+ -->
+ 
+  <!--
+  <transcoder mimetype="audio/*" in="v1" id="v3">
+    <class name="org.mmbase.streams.transcoders.FFMpeg2TheoraTranscoder">
+      <param name="videoQuality">8</param>
+    </class>
+    <loganalyzer name="org.mmbase.streams.transcoders.FFMpeg2TheoraAnalyzer" />
+  </transcoder>
+  -->
+
+  <!--
+  <transcoder mimetype="image/*" id="v4">
+    <class name="org.mmbase.streams.transcoders.FFMpeg2TheoraTranscoder">
+      <param name="videoQuality">8</param>
+    </class>
+    <loganalyzer name="org.mmbase.streams.transcoders.FFMpeg2TheoraAnalyzer" />
+  </transcoder>
+  -->
+
+  <!--
+  <transcoder>
+    <class name="org.mmbase.streams.transcoders.FFMpegTranscoder">
+      <param name="codec">mp4</param>
+    </class>
+
+    <loganalyzer name="org.mmbase.streams.transcoders.FFMpegAnalyzer" />
+  </transcoder>
+  -->
+  <!--
+  <transcoder>
+    <class name="org.mmbase.streams.transcoders.InfiniteTranscoder">
+
+    </class>
+  </transcoder>
+  -->
+</createcaches>

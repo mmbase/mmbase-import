@@ -1,0 +1,60 @@
+<mm:cloud
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+          >
+  <jsp:output omit-xml-declaration="true" />
+  <div
+      class="mm_c c_mmexamples b_index ${requestScope['org.mmbase.componentClassName']}"
+      id="${requestScope['org.mmbase.componentId']}">
+    <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+	<p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
+
+    <p>
+     MMBase is based on the single idea of creating a object cloud that represents
+     what you want to share with people. We create objects like images, newsitems, or
+     urls and store them as objects in MMBase. We then create relations between them.
+     This makes it possible for MMBase to generate basic (generic) editors, since
+     they all have the same basic idea of how an object is represented, as well as
+     the relations to other objects.
+    </p><p>
+     Generic editors are meant primarily for site administrators. For your users you
+     are encouraged to set up the task-based (specific) editwizards. In the urls
+     given below we have setup an admin account so you can edit/change the objects
+     within the installed cloud. 
+    </p>
+
+    <dl>
+      <dt>
+        <mm:link page="/mmbase/edit/basic/"><a href="${_}">The MMBase Editors</a></mm:link>
+      </dt>
+      <dd>
+        Also known as the 'basic' editors: 
+        <mm:link page="/mmbase/edit/basic/" absolute="true"><a href="${_}">${_}</a></mm:link>
+       </dd>
+       <dt>
+         <mm:link page="/mmbase/edit/my_editors/"><a href="${_}">my_editors</a></mm:link>
+       </dt>
+       <dd>
+        Alternative editors:
+        <mm:link page="/mmbase/edit/my_editors/" absolute="true"><a href="${_}">${_}</a></mm:link>
+       </dd>
+       <dt>
+         <mm:link page="/mmbase/edit/mmeditors/"><a href="${_}">The MMEditors</a></mm:link>
+       </dt>
+       <dd>
+         Classic style generic editors ('mmeditors'). These are based on the lay-out of the very
+         first generic editors know as the 'SCAN editors':
+        <mm:link page="/mmbase/edit/mmeditors/" absolute="true"><a href="${_}">${_}</a></mm:link>
+      </dd>
+      <dt>
+        <mm:link page="/mmbase/edit/x/"><a href="${_}">The experimental x editors</a></mm:link>
+      </dt>
+      <dd>
+        'New technology' editors with JSPX, CSS, Javascript, MMBase taglib 2:
+        <mm:link absolute="true" page="/mmbase/edit/x/"><a href="${_}">${_}</a></mm:link>
+        Still experimental, and don't not work in all browers.      
+      </dd>
+    </dl>
+    
+  </div>
+</mm:cloud>

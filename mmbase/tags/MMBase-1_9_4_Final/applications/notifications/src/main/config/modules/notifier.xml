@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
+<module>
+  <class>org.mmbase.notifications.Notifier</class>
+  <properties>
+
+    <!--
+        Regular expression for the mmbase machine name on which this must active.
+    -->
+    <property name="active">host:/e/as/teleac@morph\.omroep\.nl|.*localhost</property>
+
+    <!--
+        Default schedule notifications a week ahead.
+    -->
+    <property name="future">604800</property>
+    <!--
+        Changes on which builders lead to a reload of the notifications
+    -->
+    <property name="builders">t_programme,t_episode,t_transmission</property>
+  </properties>
+</module>

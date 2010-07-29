@@ -1,0 +1,72 @@
+<mm:import id="nodenr" jspvar="nodenr" reset="true">${param.nodenr}</mm:import>
+<c:if test="${not empty param.nodenr}"><util:addParam name="nodenr" value="${nodenr}"/></c:if>
+<util:getParams var="params"/>
+<div class="paging">
+    <mm:context>
+        <mm:import jspvar="ioffset" vartype="Integer" externid="offset">0</mm:import>
+        <mm:import jspvar="pageSize" id="pageSize" vartype="Integer" >${numberofitems}</mm:import>
+        <%--only when there is any result--%>
+        <mm:size id="size">
+            <mm:isgreaterthan value="0">
+            <div class="paginginfo">
+                <%--do we have to show this information?--%>
+                <c:if test="${empty skippaginginfo}">
+                    <mm:import jspvar="offset" vartype="Integer"><%=ioffset.intValue()+1%></mm:import>
+                    <mm:import jspvar="lastitem" vartype="Integer"><%=(ioffset.intValue()+pageSize.intValue())%></mm:import>
+                    <mm:import jspvar="totalitems" vartype="Integer"><mm:write referid="maxsize"/></mm:import>
+                    <mm:import jspvar="test" vartype="Integer"><c:choose><c:when test="${lastitem < totalitems}">${lastitem}</c:when><c:otherwise>${totalitems}</c:otherwise></c:choose></mm:import>
+                    <c:set var="test2">
+                        <c:choose>
+                            <c:when test="${test == 1}"></c:when>
+                            <c:otherwise>- ${test}</c:otherwise>
+                        </c:choose>
+                    </c:set>
+                    <c:if test="${empty typeguiname}"><div class="error">No parent search tag found!</div></c:if>
+                     ${typeguiname}: <b> ${offset} ${test2}</b> van de <b>${totalitems}</b>
+                </c:if>
+            </div>
+
+            <div class="pagingnumbers">
+                pagina:
+                <mm:previousbatches maxtotal="11" indexoffset="1">
+                    <mm:first>
+                        <mm:compare value="0" referid="offset" inverse="true">
+                            <mm:context>
+                                <mm:import id="offset"><mm:write vartype="Integer" jspvar="ps" referid="pageSize"><%=-ps.intValue()+ioffset.intValue()%></mm:write></mm:import>
+                                <c:set var="url"><mm:url referids="offset" />${searchurl}&${params}</c:set>
+                                <a onclick="return checkSearch(this);" href="${url}" class="previous">
+                                    <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/back.png" class="icon" border="0" alt="">
+                                </a>
+                            </mm:context>
+                        </mm:compare>
+                    </mm:first>
+                        <c:set var="url"><mm:url referids="_@offset" />${searchurl}&${params}</c:set>
+                        <a onclick="return checkSearch(this);" href="${url}"><mm:index /></a>
+                </mm:previousbatches>
+
+                <b><mm:index offset="1" jspvar="current" vartype="Integer" write="true"></b>
+                <mm:nextbatches maxtotal="11" indexoffset="1" >
+                    <a onclick="return checkSearch(this);" href="<mm:url referids="_@offset" />${searchurl}&${params}"><mm:index /></a>
+                    <mm:last>
+                        <mm:context>
+                            <mm:write jspvar="pagesize" referid="pageSize" vartype="Integer">
+                                <mm:isgreaterthan value="0">
+                                    <mm:import id="offset"><%=current.intValue()*pagesize.intValue()%></mm:import>
+
+                                    <c:set var="url"><mm:url referids="offset" />${searchurl}&${params}</c:set>
+                                    <a onclick="return checkSearch(this);" href="${url}" class="next">
+                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/forward.png" class="icon" border="0" alt="">
+                                    </a>
+                                </mm:isgreaterthan>
+                            </mm:write>
+                        </mm:context>
+                    </mm:last>
+                </mm:nextbatches>
+                </mm:index>
+            </div>
+
+            </mm:isgreaterthan>
+        </mm:size>
+    </mm:context>
+</div>
+<c:if test="${not empty param.nodenr}"><util:removeParam name="nodenr"/></c:if>

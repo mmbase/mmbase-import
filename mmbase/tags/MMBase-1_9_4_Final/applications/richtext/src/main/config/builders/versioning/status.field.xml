@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<field
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="status"
+    state="system"
+    readonly="false">
+  <!--
+      The status field is a small refinement on versioning.
+      With it, versioned objects can be marked 'new' (~ version==0), 'invisible', 'online', 'locked').
+
+  -->
+  <gui>
+    <guiname xml:lang="nl">Status</guiname>
+    <guiname xml:lang="en">Status</guiname>
+  </gui>
+  <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="integer">
+    <default value="0" />
+    <required value="true" />
+    <enumeration>
+      <entry
+        javaconstants="org.mmbase.versioning.Status"
+        basename="org.mmbase.versioning.resources.status" />
+    </enumeration>
+   </datatype>
+</field>

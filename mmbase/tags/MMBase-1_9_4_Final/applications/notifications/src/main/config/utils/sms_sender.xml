@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
+<util>
+  <properties>
+    <property name="class">org.mmbase.sms.cmtelecom.CMTelecomSender</property>
+    <!--
+        possible values
+
+        true|false
+        host:<regular expression matching host name or catalina.base@hostname
+        machinename:<regular expression matching MMBase.getMMBase().getMachineName()
+        system:<name of system property which value must be evalutated. Recursive.>
+
+        Regular expression for the mmbase machine name on which this must active.
+    -->
+    <property name="active">host:\.*</property>
+  </properties>
+</util>

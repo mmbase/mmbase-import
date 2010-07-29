@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xml:lang="nl"
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <mm:content
+      type="application/xhtml+xml"
+      expires="0"
+      language="en">
+    <mm:cloud rank="administrator">
+
+      <head>
+        <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
+      </head>
+      <body>
+        <h1>Search and Relate examples/tests</h1>
+
+        <mm:form name="testform123">
+
+          <mm:cancel />
+
+          <mm:refresh />
+
+
+          <mm:node number="default.mags">
+            <mm:relatednodes type="news" max="1">
+              <mm:setfield name="title">aaa</mm:setfield>
+            </mm:relatednodes>
+          </mm:node>
+
+          <mm:commit />
+        </mm:form>
+
+
+      </body>
+    </mm:cloud>
+
+  </mm:content>
+</html>

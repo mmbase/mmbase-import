@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mmbaseusers   exportsource="mmbase://www.mmbase.org/cloudcontextsecurity" timestamp="20020516170724">
+	<node number="415" owner="admin" alias="user.admin">
+		<status>1</status>
+		<username>admin</username>
+		<defaultcontext>1000</defaultcontext>
+		<password>4bf82f899b3783075c2c5598d71e6ff3</password><!-- admin2k -->
+    <rank>3003</rank>
+	</node>
+
+	<node number="777" owner="admin">
+		<status>0</status>
+		<username>foo</username>
+		<defaultcontext>1000</defaultcontext>
+		<password>37b51d194a7513e45b56f6524f2d51f2</password><!-- bar -->
+    <rank>3001</rank>
+	</node>
+
+
+	<node number="2002" owner="security">
+		<status>1</status>
+		<username>anonymous</username>
+		<defaultcontext>1000</defaultcontext>
+		<password></password> <!-- no password needed for anonymous -->
+    <rank>3000</rank>
+	</node>
+
+</mmbaseusers>

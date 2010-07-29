@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    version="1" name="wiki_objects" maintainer="eo.nl" extends="object">
+  <!--
+      ABSTRACT
+  -->
+  <names>
+    <singular xml:lang="en">Wiki object</singular>
+    <singular xml:lang="nl">Wikiobject</singular>
+    <plural xml:lang="en">Wiki objects</plural>
+    <plural xml:lang="nl">Wikiobjecten</plural>
+  </names>
+
+  <properties>
+    <property name="wiki_idrelated">urls,videofragments,images,wiki_artists,wiki_albums,wiki_concerts,wiki_news</property>
+    <property name="wiki_inlinecreate">false</property>
+  </properties>
+
+  <xi:include href="http://www.mmbase.org/builders/wiki/wiki_objects.fields.xml" />
+
+  <xi:include href="http://www.mmbase.org/builders/versioning/object.fields.xml" />
+
+</builder>

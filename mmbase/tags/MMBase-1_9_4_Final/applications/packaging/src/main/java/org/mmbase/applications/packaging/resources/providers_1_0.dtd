@@ -1,0 +1,15 @@
+<!--
+    providers.dtd
+-->
+
+<!ELEMENT providers (provider*)>
+
+<!ELEMENT provider (path,account*,password*,description*)>
+<!ELEMENT path (#PCDATA)>
+<!ELEMENT account (#PCDATA)>
+<!ELEMENT password (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ATTLIST provider name CDATA #IMPLIED>
+<!ATTLIST provider maintainer CDATA #IMPLIED>
+<!ATTLIST provider method CDATA #IMPLIED>
+
