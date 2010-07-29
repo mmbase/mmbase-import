@@ -71,7 +71,7 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
     @Override
     public int getDefaultWeight() {
         int q = super.getDefaultWeight();
-        return Math.max(q, q + 1000);
+        return Math.max(q, q + 2000);
     }
 
     /**
