@@ -444,6 +444,10 @@ public abstract class Module extends DescribedFunctionProvider {
                     mod.startModule();
                 } catch (Exception f) {
                     log.error("Exception in startModule of module '" + mod + "' ! " + f.getMessage(), f);
+                } catch (Error e) {
+                    // catching errors is perhaps a bit evil, but  e.g. we don't NoClassDefErrors in certain
+                    // modules to fail the complete bootstrap
+                    log.fatal("Error in startModule of module '" + mod + "' ! " + e.getMessage(), e);
                 }
             }
         }
