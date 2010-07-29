@@ -14,8 +14,6 @@ import java.util.*;
 import javax.servlet.http.*;
 import javax.servlet.jsp.*;
 import javax.servlet.*;
-import javax.mail.*;
-import javax.mail.internet.*;
 import java.io.*;
 import org.mmbase.bridge.NotFoundException;
 import org.mmbase.util.functions.*;
@@ -238,18 +236,23 @@ public class ErrorRenderer extends AbstractRenderer {
             if (status == 500) {
                 try {
                     Map<String, String> props = org.mmbase.util.ApplicationContextReader.getProperties("mmbase_errorpage");
-                    if (props.get("to") != null) {
+                    if (props.get("to") != null && props.get("to").length() > 0) {
                         javax.naming.Context initCtx = new javax.naming.InitialContext();
                         javax.naming.Context envCtx = (javax.naming.Context)initCtx.lookup("java:comp/env");
-                        Session mailSession = (Session) envCtx.lookup("mail/Session");
-                        MimeMessage mail = new MimeMessage(mailSession);
-                        mail.addRecipients(Message.RecipientType.TO, InternetAddress.parse(props.get("to")));
-                        mail.setSubject(ticket);
-                        mail.setText(logMsg.toString());
-                        Transport.send(mail);
+                        Object mailSession = envCtx.lookup("mail/Session");
+
+                        Class sessionClass = Class.forName("javax.mail.Session");
+                        Class recipientTypeClass = Class.forName("javax.mail.Message$RecipientType");
+                        Class messageClass = Class.forName("javax.mail.internet.MimeMessage");
+                        Object mail = messageClass.getConstructor(sessionClass).newInstance(mailSession);
+                        messageClass.getMethod("addRecipients", recipientTypeClass, String.class).invoke(mail, recipientTypeClass.getDeclaredField("TO").get(null), props.get("to"));
+                        messageClass.getMethod("setSubject", String.class).invoke(mail, ticket);
+                        mail.getClass().getMethod("setText", String.class).invoke(mail, logMsg.toString());
+                        Class.forName("javax.mail.Transport").getMethod("send", Class.forName("javax.mail.Message")).invoke(null, mail);
                         tee.append("\nmailed to (" + props + ")");
                     }
-                } catch (Throwable nnfe) {
+
+                } catch (Exception nnfe) {
                     tee.append("\nnot mailed (" + nnfe + ")");
                 }
                 log.error("TICKET " + ticket + ":\n" + logMsg);
