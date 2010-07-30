@@ -30,7 +30,7 @@
         <required value="true" />
         <minLength value="2" />
         <maxLength value="255" />
-        <pattern value="\A\s*+[^\n\r]{1,}\S\s*\z"  />
+        <pattern value="\A\s*[^\n\r]{1,}\S\s*\z"  />
       </datatype>
     </field>
     <field name="body">
