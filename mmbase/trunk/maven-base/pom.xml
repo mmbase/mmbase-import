@@ -349,6 +349,11 @@ See http://www.MMBase.org/license
       </plugin>
 
       <plugin>
+        <groupId>org.mmbase.maven</groupId>
+        <artifactId>maven-mmbase-plugin</artifactId>
+      </plugin>
+
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
