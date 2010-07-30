@@ -59,6 +59,7 @@
             <include>org/mmbase/storage/search/SearchQuery.class</include>
             <include>org/mmbase/storage/search/SearchQueryWrapper.class</include>
             <include>org/mmbase/storage/search/FieldCompareConstraint.class</include>
+            <include>org/mmbase/storage/search/SearchQueryHandler.class</include>
 
             <include>org/mmbase/cache/Cacheable.class</include>
             <include>org/mmbase/security/UserContext.class</include>
