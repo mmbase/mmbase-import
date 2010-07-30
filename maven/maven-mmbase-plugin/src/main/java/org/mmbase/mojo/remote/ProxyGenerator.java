@@ -84,7 +84,7 @@ public class ProxyGenerator extends AbstractClassGenerator {
                     remoteName = "wrapped_" + name;
                 }
                 int paramCounter = 0;
-                for (Type t:m.getGenericParameterTypes()) {
+                for (Type t : m.getGenericParameterTypes()) {
                     //
                     Type ct = getComponentType(t);
                     if (ct instanceof TypeVariable) {
