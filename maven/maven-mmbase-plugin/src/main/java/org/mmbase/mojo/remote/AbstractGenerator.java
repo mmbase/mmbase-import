@@ -58,7 +58,7 @@ abstract public class AbstractGenerator {
     public void indent8() {
         buffer.append("        ");
     }
-   
+
     public String getShortName(Class<?> c) {
         String className = c.getName();
         int shortIndex = className.lastIndexOf(".");
@@ -90,7 +90,7 @@ abstract public class AbstractGenerator {
          return c.getName().startsWith("org.mmbase")
                && c.isInterface()
                && (!java.io.Serializable.class.isAssignableFrom(c)
-                     || "org.mmbase.bridge.Cloud".equals(c.getName()) 
+                     || "org.mmbase.bridge.Cloud".equals(c.getName())
                      || "org.mmbase.security.UserContext".equals(c.getName()));
       }
 
