@@ -163,7 +163,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @deprecated use Wizard(String, URIResolver, Config.WizardConfig, Cloud)
      * @param request Associated servlet request, sometimes needed for URL generation
      * @param uri  the URIResolver with which the wizard schema's and the xsl's will be loaded
-     * @param wizardname name of teh wizard
+     * @param wizardname name of the wizard
      * @param dataid the objectnumber
      * @param cloud the Cloud to use
      * @throws WizardException when wizard creation failed
@@ -361,7 +361,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     }
 
     /**
-     * Stores configuration variables as attributes in the variabless set.
+     * Stores configuration variables as attributes in the variables set.
      * @param wizardConfig the config with the parameters
      */
     protected void storeConfigurationAttributes(Config.WizardConfig wizardConfig) {
@@ -1228,13 +1228,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         if (externalReferences != null) {
             for (int i = 0; i < externalReferences.getLength(); i++) {
                 Node referer = externalReferences.item(i);
-                boolean inherits = !Utils.getAttribute(referer, "extends", "")
-                    .equals("");
+                boolean inherits = !Utils.getAttribute(referer, "extends", "").equals("");
                 String includeUrl = Utils.getAttribute(referer, "include");
-
                 if (inherits) {
                     includeUrl = Utils.getAttribute(referer, "extends");
                 }
+                // transform attribute, but ignore xpaths
+                includeUrl = Utils.transformAttribute(null,includeUrl,false,variables);
 
                 try {
                     // Resolve the filename and form-schema id.
