@@ -299,28 +299,28 @@ public class Utils {
      * @return The text string.
      */
     public static String selectSingleNodeText(Node node, String xpath, String defaultvalue, Cloud cloud) {
-        try {
-            XPathFactory xf = XPathFactory.newInstance();
-            String xs = "";
-            // select based on cloud locale setting
-            if (cloud != null) {
-                XPath xp = xf.newXPath();
-                xs = xp.evaluate(xpath + "[lang('" + cloud.getLocale().getLanguage() + "')]", node);
-            }
-
-            // if not found or n.a., just grab the first you can find
-            if (xs.equals("")) {
-                XPath xp = xf.newXPath();
-                xs = xp.evaluate(xpath, node);
-                if (xs.equals("")) {
-                    xs =  defaultvalue;
+        if (node != null) {
+            try {
+                XPathFactory xf = XPathFactory.newInstance();
+                String xs = "";
+                // select based on cloud locale setting
+                if (cloud != null) {
+                    XPath xp = xf.newXPath();
+                    xs = xp.evaluate(xpath + "[lang('" + cloud.getLocale().getLanguage() + "')]", node);
                 }
+                // if not found or n.a., just grab the first you can find
+                if (xs.equals("")) {
+                    XPath xp = xf.newXPath();
+                    xs = xp.evaluate(xpath, node);
+                    if (xs.equals("")) {
+                        xs =  defaultvalue;
+                    }
+                }
+                return xs;
+            } catch (Exception e) {
+                // generally, this means a passed (expandin) attribute doesn't exist.
+                log.warn(e.getMessage() + ", evaluating xpath:" + xpath, e);
             }
-            return xs;
-
-        } catch (Exception e) {
-            // generally, this means a passed (expandin) attribute doesn't exist.
-            log.warn(e.getMessage() + ", evaluating xpath:" + xpath, e);
         }
         return defaultvalue;
     }
@@ -693,8 +693,9 @@ public class Utils {
     public static String fillInParams(String text, Map<String, ?> params) {
         if (params == null) return text;
         for (Map.Entry<String, ?> entry : params.entrySet()) {
-            // accept both $xxx and {$xxx}
+            // accept both $xxx, ${xxx} and {$xxx}
             text = multipleReplace(text, "{$" + entry.getKey() + "}", org.mmbase.util.Casting.toString(entry.getValue()));
+            text = multipleReplace(text, "${" + entry.getKey() + "}", org.mmbase.util.Casting.toString(entry.getValue()));
             text = multipleReplace(text, "$" + entry.getKey(), org.mmbase.util.Casting.toString(entry.getValue()));
         }
         return text;
