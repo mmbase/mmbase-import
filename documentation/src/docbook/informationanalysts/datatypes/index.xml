@@ -541,7 +541,7 @@ SATURDAY=saturday</programlisting>
         string ('getStringValue'), something else happens then when it is
         gotten otherwise ('getDateValue'). In this case the creation time is
         nicely formatted when the value is requested as a string.</para>
-
+        <graphic fileref="MMBase-SetValue.png"/>
         <para>The CreationTimeGuesser processor arranges that if the value is
         empty, it guesses an actual value using the MMBase 'day
         markers'.</para>
@@ -551,6 +551,9 @@ SATURDAY=saturday</programlisting>
         effectively leading to a read-only field. (The CreationTimeGuesser
         itself can use 'setObjectValue' to bypass all set-processors, if it
         wants to store its guessed value for efficiency).</para>
+        <para>
+          <graphic fileref="MMBase-SetValue.png"/>
+        </para>
 
         <note>
           <para>You can specify more than one class for a certain processor.
@@ -571,11 +574,11 @@ SATURDAY=saturday</programlisting>
       </section>
 
       <section id="commitprocessors">
-        <title>Commit-processors</title>
+        <title>Commit-processors and delete-processors</title>
 
         <para>Commit-processors are effectively called on commit of the node
         which contains the field with this data type (for other datatypes the
-        behavior is as yet undefined). For example<programlisting>
+        behavior is as yet undefined). For example.<programlisting>
 &lt;specialization id="lastmodified"&gt;
   &lt;description xml:lang="en"&gt;
     Read-only date-time field that contains the most recent time at which this node was changed .
@@ -590,6 +593,12 @@ SATURDAY=saturday</programlisting>
   </programlisting> So, on commit, the 'LastModified' processor is called,
         which simply fills the current time into the value of the field with
         this data type.</para>
+      </section>
+
+      <section id="lifetime">
+        <title>The life time of a value</title>
+        <para>
+        </para>
       </section>
     </section>
   </section>
