@@ -95,17 +95,19 @@ public class ChangesReceiver implements Runnable {
                 DataInputStream reader = null;
                 try {
                     socket = serverSocket.accept();
-                    log.debug("" + socket);
+                    if (log.isTraceEnabled()) {
+                        log.trace("" + socket);
+                    }
 
                     reader = new DataInputStream(socket.getInputStream());
 
                     if (version > 1) {
                         int listSize = reader.readInt();
-                        log.debug("Will read " + listSize + " events");
+                        log.trace("Will read " + listSize + " events");
 
                         for (int i = 0; i < listSize; i++) {
                             int arraySize = reader.readInt();
-                            log.debug("Size of event " + i + ": " + arraySize);
+                            log.trace("Size of event " + i + ": " + arraySize);
                             ByteArrayOutputStream writer = new ByteArrayOutputStream();
                             //this buffer has nothing to do with the OS buffer
                             byte[] buffer = new byte[arraySize];
@@ -117,7 +119,7 @@ public class ChangesReceiver implements Runnable {
                             // maybe we should use encoding here?
                             byte[] message = writer.toByteArray();
                             if (log.isDebugEnabled()) {
-                                log.debug("unicast (" + version + ") RECEIVED=>" + message);
+                                log.debug("unicast(v" + version + ") RECEIVED=>" + message);
                             }
                             nodesToSpawn.offer(message);
                         }
@@ -134,7 +136,7 @@ public class ChangesReceiver implements Runnable {
                         }
                         byte[] message = writer.toByteArray();
                         if (log.isDebugEnabled()) {
-                            log.debug("unicast (1) RECEIVED=>" + message);
+                            log.debug("unicast(v1) RECEIVED=>" + message);
                         }
                         nodesToSpawn.offer(message);
                     }
