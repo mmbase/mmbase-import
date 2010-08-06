@@ -102,12 +102,18 @@ public class ChangesSender implements Runnable {
     }
 
     /**
-     *
+     * The maximum time (in second) to collect events before starting
+     * to send (only if version >= 2)
      * @since MMBase-2.0
      */
     public void setCollectTime(int ct) {
         collectTime = ct;
     }
+    /**
+     * The maximum number of events to collect before starting
+     * to send (only if version >= 2)
+     * @since MMBase-2.0
+     */
     public void setCollectCount(int cc) {
         collectCount = cc;
     }
@@ -159,7 +165,7 @@ public class ChangesSender implements Runnable {
         }
     }
 
-    // javadoc inherited
+    @Override
     public void run() {
         log.info("Unicast sending to " + getOtherMachines());
         long lastTime = System.currentTimeMillis();
