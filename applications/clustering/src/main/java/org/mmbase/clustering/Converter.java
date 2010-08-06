@@ -16,13 +16,17 @@ public class Converter {
     public static void main(String[] argv) throws Exception {
 
 
-        org.mmbase.util.logging.SimpleTimeStampImpl.configure("org.mmbase.clustering", "stdout,debug");
 
         Map<String, String> argMap = new HashMap<String, String>();
-        argMap.put("unicastListen", InetAddress.getLocalHost().getHostName() + ":4123");
+        //argMap.put("unicastListen", InetAddress.getLocalHost().getHostName() + ":4123");
+        argMap.put("unicastListen", "*:4123");
         argMap.put("unicastSend", "otherhost:4123:mmbase");
-
+        argMap.put("unicastSendCollectTime", "5");
+        argMap.put("unicastSendCollectCount", "50");
         argMap.put("multicast", org.mmbase.clustering.multicast.Multicast.HOST_DEFAULT + ":" + org.mmbase.clustering.multicast.Multicast.PORT_DEFAULT);
+        argMap.put("log", "stdout,debug");
+
+
         for (String arg : argv) {
             String[] split = arg.split("=", 2);
             if (split.length == 2) {
@@ -37,6 +41,8 @@ public class Converter {
                 System.exit(2);
             }
         }
+
+        org.mmbase.util.logging.SimpleTimeStampImpl.configure("org.mmbase.clustering", argMap.get("log"));
 
 
         final BlockingQueue<byte[]> uniToMultiNodes =  new LinkedBlockingQueue<byte[]>(64);
@@ -62,6 +68,8 @@ public class Converter {
 
         org.mmbase.clustering.unicast.ChangesSender uniCastSender     = new org.mmbase.clustering.unicast.ChangesSender(null, 4123, 10 * 1000, multiToUniNodes, stats, 2);
         uniCastSender.setOtherMachines(argMap.get("unicastSend"));
+        uniCastSender.setCollectTime(Integer.parseInt(argMap.get("unicastSendCollectTime")));
+        uniCastSender.setCollectCount(Integer.parseInt(argMap.get("unicastSendCollectCount")));
         uniCastSender.start();
 
         org.mmbase.clustering.multicast.ChangesReceiver multiCastReceiver = new org.mmbase.clustering.multicast.ChangesReceiver(multicastHost, multicastPort, dpsize, multiToUniNodes);
