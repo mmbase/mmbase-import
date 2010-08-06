@@ -59,6 +59,9 @@ public class ChangesSender implements Runnable {
     private int version = 1;
     private Iterable<OtherMachine> otherMachines = null;
 
+    private int collectTime = 0;
+    private int collectCount = 100;
+
     /**
      * Construct UniCast Sender
      * @param configuration configuration of unicast
@@ -97,6 +100,18 @@ public class ChangesSender implements Runnable {
         }
         setOtherMachines(unicastSenders);
     }
+
+    /**
+     *
+     * @since MMBase-2.0
+     */
+    public void setCollectTime(int ct) {
+        collectTime = ct;
+    }
+    public void setCollectCount(int cc) {
+        collectCount = cc;
+    }
+
 
 
     public void start() {
@@ -147,16 +162,32 @@ public class ChangesSender implements Runnable {
     // javadoc inherited
     public void run() {
         log.info("Unicast sending to " + getOtherMachines());
+        long lastTime = System.currentTimeMillis();
         while(true) {
             if (Thread.currentThread().isInterrupted()) break;
+
             try {
                 List<byte[]> data = new ArrayList<byte[]>();
+
                 data.add(nodesToSend.take()); // at least one
                 if (version > 1) {
+                    if (collectTime > 0) {
+                        long leftTime = lastTime + (1000L * collectTime) - System.currentTimeMillis();
+                        while (leftTime > 0 && data.size() < collectCount) {
+                            byte[] next = nodesToSend.poll(collectTime, TimeUnit.MILLISECONDS);
+                            if (next != null) {
+                                data.add(next);
+                            }
+                            leftTime = lastTime + (1000L * collectTime) - System.currentTimeMillis();
+                        }
+                    }
                     nodesToSend.drainTo(data);
                 }
                 long startTime = System.currentTimeMillis();
-                log.debug("Send change to " + getOtherMachines());
+                lastTime = startTime;
+                if (log.isTraceEnabled()) {
+                    log.trace("Send change to " + getOtherMachines());
+                }
                 for (OtherMachine machine : getOtherMachines()) {
                     DataOutputStream os = null;
                     Socket socket = null;
@@ -186,7 +217,7 @@ public class ChangesSender implements Runnable {
                         }
 
                         if (log.isDebugEnabled()) {
-                            log.debug("unicast SEND=>" + machine + " (" + data.size() + " events)");
+                            log.debug("unicast(v" + version + ") SEND=>" + machine + " (" + data.size() + " events, " + send.bytes + " byte)");
                         }
                     } catch(SocketTimeoutException ste) {
                         int removed = remove(machine);
