@@ -118,7 +118,7 @@ public class ChangesSender implements Runnable {
                 DatagramPacket dp = new DatagramPacket(data, data.length, ia, mport);
                 try {
                     if (log.isDebugEnabled()) {
-                        log.debug("SEND=> " + dp.getLength() + " bytes to " + dp.getAddress() + ":" + mport);
+                        log.debug("multicast SEND=> " + dp.getLength() + " bytes to " + dp.getAddress() + ":" + mport);
                     }
                     ms.send(dp);
                 } catch (IOException e) {
