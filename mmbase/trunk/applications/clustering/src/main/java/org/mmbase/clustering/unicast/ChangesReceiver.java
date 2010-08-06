@@ -46,10 +46,16 @@ public class ChangesReceiver implements Runnable {
      * @param nodesToSpawn Queue of received messages
      * @throws IOException when server socket failrf to listen
      */
-    public ChangesReceiver(String unicastHost, int unicastPort, BlockingQueue<byte[]> nodesToSpawn, int version) throws IOException {
+    public ChangesReceiver(final String unicastHost, int unicastPort, BlockingQueue<byte[]> nodesToSpawn, int version) throws IOException {
         this.nodesToSpawn = nodesToSpawn;
         this.serverSocket = new ServerSocket();
-        SocketAddress address = new InetSocketAddress(unicastHost, unicastPort);
+        final InetAddress ia;
+        if (unicastHost.equals("*")) {
+            ia = null;
+        } else {
+            ia = InetAddress.getByName(unicastHost);
+        }
+        SocketAddress address = new InetSocketAddress(ia, unicastPort);
         serverSocket.bind(address);
         this.version = version;
     }
