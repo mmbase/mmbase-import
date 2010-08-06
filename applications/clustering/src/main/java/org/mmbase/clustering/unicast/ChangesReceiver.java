@@ -117,7 +117,7 @@ public class ChangesReceiver implements Runnable {
                             // maybe we should use encoding here?
                             byte[] message = writer.toByteArray();
                             if (log.isDebugEnabled()) {
-                                log.debug("unicast RECEIVED=>" + message);
+                                log.debug("unicast (" + version + ") RECEIVED=>" + message);
                             }
                             nodesToSpawn.offer(message);
                         }
@@ -134,7 +134,7 @@ public class ChangesReceiver implements Runnable {
                         }
                         byte[] message = writer.toByteArray();
                         if (log.isDebugEnabled()) {
-                            log.debug("RECEIVED=>" + message);
+                            log.debug("unicast (1) RECEIVED=>" + message);
                         }
                         nodesToSpawn.offer(message);
                     }

@@ -118,7 +118,7 @@ public class ChangesReceiver implements Runnable {
                 System.arraycopy(dp.getData(), 0, message, 0, dp.getLength());
                 nodesToSpawn.offer(message);
                 if (log.isDebugEnabled()) {
-                    log.debug("Multicast RECEIVED=> " + dp.getLength() + " bytes from " + ia + ": " + mport + "/" + dp.getAddress() + " queue " + nodesToSpawn.size());
+                    log.debug("Multicast RECEIVED=> " + dp.getLength() + " bytes from " + ia + ":" + mport + " " + dp.getAddress() + " queue " + nodesToSpawn.size());
                 }
             } catch (java.net.SocketException se) {
                 // generally happens on shutdown (ms==null)

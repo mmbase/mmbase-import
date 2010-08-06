@@ -186,7 +186,7 @@ public class ChangesSender implements Runnable {
                         }
 
                         if (log.isDebugEnabled()) {
-                            log.debug("SEND=>" + machine + " (" + data.size() + " events)");
+                            log.debug("unicast SEND=>" + machine + " (" + data.size() + " events)");
                         }
                     } catch(SocketTimeoutException ste) {
                         int removed = remove(machine);
