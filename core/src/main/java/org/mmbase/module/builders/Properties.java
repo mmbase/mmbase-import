@@ -187,11 +187,14 @@ public class Properties extends MMObjectBuilder {
             }
             if (event.getType() == NodeEvent.TYPE_CHANGE || event.getType() == NodeEvent.TYPE_NEW ) {
                 // The passed node number is node of prop node
-                int parent = getNode(event.getNodeNumber()).getIntValue("parent");
-                if (isNodeCached(parent)) {
-                    log.debug("nodeChanged(): Zapping node properties cache for " + parent);
-                    MMObjectNode pnode = getNode(parent);
-                    if (pnode != null) pnode.delPropertiesCache();
+                MMObjectNode propNode = getNode(event.getNodeNumber());
+                if (propNode != null) {
+                    int parent = propNode.getIntValue("parent");
+                    if (isNodeCached(parent)) {
+                        log.debug("nodeChanged(): Zapping node properties cache for " + parent);
+                        MMObjectNode pnode = getNode(parent);
+                        if (pnode != null) pnode.delPropertiesCache();
+                    }
                 }
             }
         }
