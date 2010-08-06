@@ -17,7 +17,7 @@ public class Converter {
 
 
 
-        Map<String, String> argMap = new HashMap<String, String>();
+        Map<String, String> argMap = new LinkedHashMap<String, String>();
         //argMap.put("unicastListen", InetAddress.getLocalHost().getHostName() + ":4123");
         argMap.put("unicastListen", "*:4123");
         argMap.put("unicastSend", "otherhost:4123:mmbase");
@@ -33,11 +33,11 @@ public class Converter {
                 if (argMap.containsKey(split[0])) {
                     argMap.put(split[0], split[1]);
                 } else {
-                    System.err.println("Unrecognized option " + arg + " Options are " + argMap);
+                    System.err.println("Unrecognized option '" + arg + "'. Options are " + argMap);
                     System.exit(1);
                 }
             } else {
-                System.err.println("Unrecognized option " + arg + " Options are " + argMap);
+                System.err.println("Unrecognized option '" + arg + "'. Options are " + argMap);
                 System.exit(2);
             }
         }
