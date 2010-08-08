@@ -12,6 +12,12 @@ caption
 	padding: 3px;
 }
 
+label
+{
+	display: block;
+	font-weight: bold;
+}
+
 #top
 {
 	margin: 10px 0 10px 0;
@@ -39,3 +45,29 @@ caption
 	width: 50%;
 }
 
+.msg, .err
+{
+	font-family: Helvetica, sans-serif;
+	width: auto;
+	text-align: center;
+	color: #000;
+	clear: both;
+}
+
+.msg
+{
+	border: 2px solid #679911;
+	background-color: #CEFFCD;
+}
+
+.err
+{
+	border: 2px #F93537 solid;
+	background-color: #FDD3C7;
+}
+
+p.msg, p.err
+{
+	margin: 4px 0 4px 0;
+	padding: 0.5em;
+}

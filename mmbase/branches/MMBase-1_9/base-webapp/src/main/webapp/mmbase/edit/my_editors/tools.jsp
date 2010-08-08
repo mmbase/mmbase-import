@@ -14,6 +14,7 @@
 <ul>
  <li><a href="tools/delete_morenodes.jsp">Delete more nodes</a></li>
  <li><a href="tools/changecontext.jsp">Change security context of a lot of nodes</a></li>
+ <li><a href="tools/change_value.jsp">Change field values of a lot of nodes</a></li>
 </ul>
 </body>
 </html>
