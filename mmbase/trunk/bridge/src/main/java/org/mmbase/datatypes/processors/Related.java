@@ -28,7 +28,6 @@ import org.mmbase.util.logging.*;
  */
 
 public class Related {
-
     private static final Logger log = Logging.getLoggerInstance(Related.class);
 
     public abstract static class  AbstractProcessor implements Processor {
@@ -39,6 +38,9 @@ public class Related {
         private String createType = null;
         private String createTypeProperty = null;
         protected String searchDir = "destination";
+        protected boolean relateDefaultIfNull = false;
+
+
         protected final Map<String, String> relationConstraints = new HashMap<String, String>();
         public void setRole(String r) {
             role = r;
@@ -63,6 +65,11 @@ public class Related {
         public void setRelationConstraints(Map<String, String> map) {
             relationConstraints.putAll(map);
         }
+
+        public void setRelateDefaultIfNull(boolean b) {
+            relateDefaultIfNull = b;
+        }
+
 
         protected NodeManager getRelatedType(Node node) {
             Cloud cloud = node.getCloud();
@@ -156,16 +163,67 @@ public class Related {
             }
         }
 
+        protected void createRelation(final Node node, final Node dest, final NodeList rl) {
+            boolean related = false;
+            if (rl.size() == 1) {
+                Relation r = rl.getNode(0).toRelation();
+                try {
+                    if (r.getDestination().getNumber() == dest.getNumber() ||
+                        r.getSource().getNumber() == dest.getNumber()) {
+                        related = true;
+                    }
+                } catch (NotFoundException nfe) {
+                    log.warn(nfe.getMessage(), nfe);
+                    log.warn("Inconsistent db?, Deleting this relation");
+                    r.delete();
+                }
+            } else if (rl.size() > 1) {
+                log.warn("More than one correct relations between " + node + " and " + getRelatedType(node) + " " + rl + ". Will fix this now");
+            }
+            if (related) {
+                log.debug("" + dest + " already correctly related");
+                // nothing changed
+            } else {
+                log.debug("" + dest + " not correctly related");
+                RelationManager rel = getRelationManager(node);
+                if (node.isNew()) {
+                    log.debug("Cannot make relations to new nodes");
+                    node.commit(); // Silly, but you cannot make relations to new nodes.
+                } else {
+                    log.debug("Deleting " + rl.size() + " existing relations");
+                    for (Node r : rl) {
+                        log.debug("Deleting " + r);
+                        r.delete();
+                    }
+                }
+                log.debug("Creating new relation ");
+                Relation newrel = node.createRelation(dest, rel);
 
+                try {
+                    for (Map.Entry<String, String> entry : relationConstraints.entrySet()) {
+                        log.debug("Setting " + entry);
+                        String key = entry.getKey();
+                        int dot = key.indexOf(".");
+                        if (dot >= 0) {
+                            key = key.substring(dot + 1, key.length());
+                        }
+                        newrel.setStringValue(key, entry.getValue());
+                    }
+                } catch (Throwable e) {
+                    log.warn(e.getMessage(), e);
+                }
+                log.debug("Created " + newrel);
+                newrel.commit();
+            }
+
+        }
     }
-
 
     /**
      * This get-processor can be used to implicitly create the wanted related node too.
      */
     public static class Creator extends AbstractProcessor {
         private static final long serialVersionUID = 1L;
-        @Override
         public Object process(final Node node, final Field field, final Object value) {
             Node relatedNode = getRelatedNode(node, field);
             if (relatedNode == null) {
@@ -195,7 +253,8 @@ public class Related {
     public static class Setter extends AbstractProcessor {
 
         private static final long serialVersionUID = 1L;
-        @Override
+
+
         public Object process(final Node node, final Field field, final Object value) {
             if (log.isDebugEnabled()) {
                 log.debug("Setting "  + value);
@@ -206,59 +265,8 @@ public class Related {
             log.debug("Found " + rl.size() + " existing relations");
             if (value != null) {
                 Cloud cloud = node.getCloud();
-                Node dest = BridgeCaster.toNode(value, cloud);
-
-                boolean related = false;
-                if (rl.size() == 1) {
-                    Relation r = rl.getNode(0).toRelation();
-                    try {
-                        if (r.getDestination().getNumber() == dest.getNumber() ||
-                            r.getSource().getNumber() == dest.getNumber()) {
-                            related = true;
-                        }
-                    } catch (NotFoundException nfe) {
-                        log.warn(nfe.getMessage(), nfe);
-                        log.warn("Inconsistent db?, Deleting this relation");
-                        r.delete();
-                    }
-                } else if (rl.size() > 1) {
-                    log.warn("More than one correct relations between " + node + " and " + getRelatedType(node) + " " + rl + ". Will fix this now");
-                }
-                if (related) {
-                    log.debug("" + dest + " already correctly related");
-                    // nothing changed
-                } else {
-                    log.debug("" + dest + " not correctly related");
-                    RelationManager rel = getRelationManager(node);
-                    if (node.isNew()) {
-                        log.debug("Cannot make relations to new nodes");
-                        node.commit(); // Silly, but you cannot make relations to new nodes.
-                    } else {
-                        log.debug("Deleting " + rl.size() + " existing relations");
-                        for (Node r : rl) {
-                            log.debug("Deleting " + r);
-                            r.delete();
-                        }
-                    }
-                    log.debug("Creating new relation ");
-                    Relation newrel = node.createRelation(dest, rel);
-
-                    try {
-                        for (Map.Entry<String, String> entry : relationConstraints.entrySet()) {
-                            log.debug("Setting " + entry);
-                            String key = entry.getKey();
-                            int dot = key.indexOf(".");
-                            if (dot >= 0) {
-                                key = key.substring(dot + 1, key.length());
-                            }
-                            newrel.setStringValue(key, entry.getValue());
-                        }
-                    } catch (Throwable e) {
-                        log.warn(e.getMessage(), e);
-                    }
-                    log.debug("Created " + newrel);
-                    newrel.commit();
-                }
+                Node dest = Casting.toNode(value, cloud);
+                createRelation(node, dest, rl);
                 return dest;
             } else {
                 log.debug("value is null, deleting existing relations");
@@ -274,7 +282,7 @@ public class Related {
     public static class Getter extends AbstractProcessor {
         private static final long serialVersionUID = 1L;
 
-        @Override
+
         public Object process(final Node node, final Field field, final Object value) {
             if (log.isDebugEnabled()) {
                 log.debug("getting "  + node);
@@ -283,7 +291,15 @@ public class Related {
                 // null cannot be related to anything
                 return null;
             }
-            return getRelatedNode(node, field);
+            Node result = getRelatedNode(node, field);
+            if (relateDefaultIfNull && result == null && field != null) {
+                Object defaultValue = field.getDataType().getDefaultValue(node.getCloud().getLocale(), node.getCloud(), field);
+                if (defaultValue != null) {
+                    Node defaultNode = Casting.toNode(defaultValue, node.getCloud());
+                    createRelation(node, defaultNode, BridgeCollections.EMPTY_NODELIST);
+                }
+            }
+            return result;
         }
     }
 
