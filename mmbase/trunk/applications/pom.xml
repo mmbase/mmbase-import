@@ -159,17 +159,17 @@
     <repository>
       <id>mmbase</id>
       <name>MMBase maven 2 repository</name>
-      <url>scp://mmbase.org/home/mmweb/web/maven2</url>
+      <url>scp://mmbase.org/home/tomcat/download/maven2</url>
     </repository>
     <snapshotRepository>
       <id>mmbase-snapshots</id>
       <name>MMBase Maven2 Snapshot Repository</name>
-      <url>scp://mmbase.org/home/mmweb/web/snapshots</url>
+      <url>scp://mmbase.org/home/tomcat/download/snapshots</url>
       <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
     <site>
       <id>mmbase-website</id>
-      <url>scp://mmbase.org/home/mmweb/web/mm2/</url>
+      <url>scp://mmbase.org/home/tomcat/download/mm2/</url>
     </site>
   </distributionManagement>
 
