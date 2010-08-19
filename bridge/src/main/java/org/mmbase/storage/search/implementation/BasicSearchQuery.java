@@ -401,8 +401,10 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
     /**
      * @since MMBase-1.9.2
      */
-    public BasicRelationStep addRelationStep(String builder, String nextBuilder) {
-        if (! modifiable) throw new IllegalStateException("Unmodifiable");
+    public BasicRelationStep addRelationStep(final String builder, final String nextBuilder) {
+        if (! modifiable) {
+            throw new IllegalStateException("Unmodifiable");
+        }
         int nrOfSteps = steps.size();
         if (nrOfSteps == 0) {
            throw new IllegalStateException("No previous step.");

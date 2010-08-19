@@ -40,7 +40,7 @@ public class BasicStep implements Step, java.io.Serializable {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     // package visibility!
-    BasicStep(String builder) {
+    BasicStep(final String builder) {
         if (builder == null) {
             throw new IllegalArgumentException("Invalid builder value: " + builder);
         }
