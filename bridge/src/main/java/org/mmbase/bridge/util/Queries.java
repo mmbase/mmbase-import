@@ -1131,7 +1131,7 @@ abstract public class Queries {
      * @param direction direction of the relation
      * @return A new NodeQuery object
      */
-    public static NodeQuery createRelationNodesQuery(Node node, NodeManager otherNodeManager, String role, String direction) {
+    public static NodeQuery createRelationNodesQuery(final Node node, NodeManager otherNodeManager, final String role, final String direction) {
         NodeQuery query = createNodeQuery(node);
         if (otherNodeManager == null) {
             otherNodeManager = node.getCloud().getNodeManager("object");
