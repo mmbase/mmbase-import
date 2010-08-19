@@ -52,7 +52,7 @@ public class BasicRelationStep extends BasicStep implements RelationStep, java.i
         this(builder == null ? null : builder.getTableName(), previous, next);
     }
     */
-    BasicRelationStep(String builder, Step previous, Step next) {
+    BasicRelationStep(final String builder, final Step previous, final Step next) {
         super(builder);
         if (previous == null) {
             throw new IllegalArgumentException("Invalid previous value: " + previous);
