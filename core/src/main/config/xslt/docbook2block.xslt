@@ -56,12 +56,12 @@
       <h1><xsl:value-of select="articleinfo/title" /></h1>
       <xsl:for-each select="articleinfo/authorgroup/author">
         <div class="name">
+          <span class="firstname">
+            <xsl:value-of select="firstname" />
+            <xsl:text> </xsl:text>
+          </span>
           <span class="surname">
             <xsl:value-of select="surname" />
-          </span>
-          <span class="firstname">
-            <xsl:text> </xsl:text>
-            <xsl:value-of select="firstname" />
           </span>
         </div>
       </xsl:for-each>
@@ -272,9 +272,16 @@
   <xsl:template match="graphic">
     <img>
       <xsl:attribute name="src">
+        <xsl:choose>
+          <xsl:when test="starts-with(@fileref, 'http:')">
+            <xsl:value-of select="@fileref" />
+          </xsl:when>
+          <xsl:otherwise>
         <xsl:value-of select="$baseurl" />
         <xsl:call-template name="currentdir" />
         <xsl:value-of select="@fileref" />
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:attribute>
     </img>
   </xsl:template>
