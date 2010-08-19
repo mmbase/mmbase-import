@@ -249,14 +249,16 @@ public class FrameworkFilter implements Filter { //, MMBaseStarter  {
                             log.debug("** response committed, including");
                             included++;
                             rd.include(request, response);
-                        }else{
+                        } else {
                             log.debug("** response not committed, forwarding");
                             forwarded++;
                             rd.forward(request, response);
                         }
                         log.debug("Ready");
                     } else {
-                        if (log.isDebugEnabled()) log.debug("No matching technical URL, just forwarding: " + path);
+                        if (log.isDebugEnabled()) {
+                            log.debug("No matching technical URL, just forwarding: " + path);
+                        }
                         chained++;
                         chain.doFilter(request, response);
                     }
@@ -274,7 +276,9 @@ public class FrameworkFilter implements Filter { //, MMBaseStarter  {
                     throw re;
                 }
             } else {
-                if (log.isDebugEnabled()) log.debug("Request not an instance of HttpServletRequest, therefore no url forwarding");
+                if (log.isDebugEnabled()) {
+                    log.debug("Request not an instance of HttpServletRequest, therefore no url forwarding");
+                }
                 chained++;
                 chain.doFilter(request, response);
             }
