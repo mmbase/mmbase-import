@@ -104,7 +104,7 @@ public class ObjectWrapperGenerator extends AbstractGenerator {
         generateHeader();
         buffer.append("public abstract class ObjectWrapperHelper {\n");
 
-        buffer.append("    public static Object localToRMIObject(Object o) throws RemoteException {\n");
+        buffer.append("    public static Object localToRMIObject(Object o, int port) throws RemoteException {\n");
         buffer.append("        Object retval = null;\n");
 
         boolean isFirst = true;
@@ -115,7 +115,7 @@ public class ObjectWrapperGenerator extends AbstractGenerator {
             String name = getShortName(c);
             String remoteName = "Remote" + name;
             buffer.append("    if (o instanceof " + name + ") {\n");
-            buffer.append("        retval = new " + remoteName + "_Rmi((" + name + ")o);\n");
+            buffer.append("        retval = new " + remoteName + "_Rmi((" + name + ")o, port);\n");
             isFirst = false;
         }
         buffer.append("    }\n    return retval;\n  }\n\n");
