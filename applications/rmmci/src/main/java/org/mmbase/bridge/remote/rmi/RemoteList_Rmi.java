@@ -20,8 +20,8 @@ import org.mmbase.bridge.remote.util.ObjectWrapper;
  */
 public class RemoteList_Rmi<R, L> extends ServerMappedObject_Rmi<List<L>> implements RemoteList<R> {
 
-    public RemoteList_Rmi(List<L> originalObject) throws RemoteException {
-        super(originalObject);
+    public RemoteList_Rmi(List<L> originalObject, int port) throws RemoteException {
+        super(originalObject, port);
     }
 
     public R set(int arg0, R arg1) throws RemoteException {
@@ -75,7 +75,7 @@ public class RemoteList_Rmi<R, L> extends ServerMappedObject_Rmi<List<L>> implem
     }
 
     private R convertToRemote(L local) throws RemoteException {
-        R retval = (R) ObjectWrapper.localToRMIObject(local);
+        R retval = (R) ObjectWrapper.localToRMIObject(local, getPort());
         return retval;
     }
 

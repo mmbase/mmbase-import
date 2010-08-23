@@ -20,8 +20,8 @@ import org.mmbase.bridge.remote.util.ObjectWrapper;
  */
 public class RemoteIterator_Rmi<R, L> extends ServerMappedObject_Rmi<ListIterator<L>> implements RemoteIterator<R> {
 
-    public RemoteIterator_Rmi(ListIterator<L> originalObject) throws RemoteException {
-        super(originalObject);
+    public RemoteIterator_Rmi(ListIterator<L> originalObject, int port) throws RemoteException {
+        super(originalObject, port);
     }
 
     public boolean hasNext() {
@@ -72,7 +72,7 @@ public class RemoteIterator_Rmi<R, L> extends ServerMappedObject_Rmi<ListIterato
     }
 
     private R convertToRemote(L local) throws RemoteException {
-        R retval = (R) ObjectWrapper.localToRMIObject(local);
+        R retval = (R) ObjectWrapper.localToRMIObject(local, getPort());
         return retval;
     }
 
