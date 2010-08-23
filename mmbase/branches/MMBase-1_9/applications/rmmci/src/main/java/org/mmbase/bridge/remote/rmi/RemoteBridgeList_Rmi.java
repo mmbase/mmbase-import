@@ -26,8 +26,8 @@ import org.mmbase.util.logging.Logging;
 public class RemoteBridgeList_Rmi<R, L> extends RemoteList_Rmi<R, L> implements RemoteBridgeList<R>, Unreferenced  {
     private static Logger log = Logging.getLoggerInstance(RemoteBridgeList_Rmi.class);
 
-    public RemoteBridgeList_Rmi(BridgeList<L> originalObject) throws RemoteException{
-        super(originalObject);
+    public RemoteBridgeList_Rmi(BridgeList<L> originalObject, int port) throws RemoteException{
+        super(originalObject, port);
         log.debug("new RemoteBridgeList_Rmi");
     }
     public void setProperty(Object arg0,Object arg1) throws RemoteException {
@@ -35,17 +35,17 @@ public class RemoteBridgeList_Rmi<R, L> extends RemoteList_Rmi<R, L> implements 
     }
 
     public Object getProperty(Object arg0) throws RemoteException {
-        Object retval = ObjectWrapper.localToRMIObject(getOriginalObject().getProperty(ObjectWrapper.rmiObjectToLocal(arg0)));
+        Object retval = ObjectWrapper.localToRMIObject(getOriginalObject().getProperty(ObjectWrapper.rmiObjectToLocal(arg0)), getPort());
         return retval;
     }
     public java.util.Map<Object, Object> getProperties() throws RemoteException {
-        Object retval = ObjectWrapper.localToRMIObject(getOriginalObject().getProperties());
+        Object retval = ObjectWrapper.localToRMIObject(getOriginalObject().getProperties(), getPort());
         return (java.util.Map<Object, Object>) retval;
     }
 
     public RemoteBridgeList<R> subList(int arg0,int arg1) throws RemoteException {
         BridgeList<L> list = getOriginalObject().subList(arg0, arg1);
-        RemoteBridgeList<R> retval = (RemoteBridgeList<R>) ObjectWrapper.localToRMIObject(list);
+        RemoteBridgeList<R> retval = (RemoteBridgeList<R>) ObjectWrapper.localToRMIObject(list, getPort());
         return retval;
     }
 

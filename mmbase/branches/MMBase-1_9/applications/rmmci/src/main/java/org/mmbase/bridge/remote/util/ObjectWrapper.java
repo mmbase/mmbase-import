@@ -17,10 +17,10 @@ public abstract class ObjectWrapper {
     /*
      * Called to create a RMI object based on a "local" object.
      */
-    public static Object localToRMIObject(Object o) throws RemoteException {
+    public static Object localToRMIObject(Object o, int port) throws RemoteException {
         Object retval = o;
         if (o != null) {
-            Object mapObject = ObjectWrapperHelper.localToRMIObject(o);
+            Object mapObject = ObjectWrapperHelper.localToRMIObject(o, port);
             if (mapObject != null) {
                 retval = mapObject;
             } else if (o instanceof SortedSet) {
@@ -28,7 +28,7 @@ public abstract class ObjectWrapper {
                 log.debug("convert treeset from "+ in);
                 SortedSet<Object> set = new TreeSet<Object>();
                 for (Object object : in) {
-                    set.add(localToRMIObject(object));
+                    set.add(localToRMIObject(object, port));
                 }
                 log.debug("convert treeset to "+ set);
                 retval = set;
@@ -36,14 +36,14 @@ public abstract class ObjectWrapper {
                 List<?> source = (List<?>)o;
                 List<Object> list = new Vector<Object>();
                 for (Object object : source) {
-                    list.add(localToRMIObject(object));
+                    list.add(localToRMIObject(object, port));
                 }
                 retval = list;
             } else if (o instanceof Map) {
                Map<?,?> source = (Map<?,?>)o;
                Map<Object, Object> map = new HashMap<Object, Object>();
                for (Map.Entry<?, ?> entry : source.entrySet()) {
-                  map.put(entry.getKey(), localToRMIObject(entry.getValue()));
+                  map.put(entry.getKey(), localToRMIObject(entry.getValue(), port));
                }
                retval = map;
             }
