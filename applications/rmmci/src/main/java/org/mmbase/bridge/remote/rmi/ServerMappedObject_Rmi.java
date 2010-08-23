@@ -27,14 +27,18 @@ public abstract class ServerMappedObject_Rmi<O> extends UnicastRemoteObject impl
     private O originalObject;
 
     //mapper code
-    String mapperCode = null;
+    private String mapperCode = null;
 
-    public ServerMappedObject_Rmi(O originalObject) throws RemoteException{
-       super();
+    //stub port
+    private int port = 1100;
+
+    public ServerMappedObject_Rmi(O originalObject, int port) throws RemoteException{
+       super(port);
        this.originalObject = originalObject;
-       mapperCode = StubToLocalMapper.add(this.originalObject);
+       this.mapperCode = StubToLocalMapper.add(this.originalObject);
+       this.port = port;
     }
-
+    
     public String getMapperCode() {
        return mapperCode;
     }
@@ -43,6 +47,10 @@ public abstract class ServerMappedObject_Rmi<O> extends UnicastRemoteObject impl
         return originalObject;
     }
 
+    protected int getPort() {
+       return port;
+    }
+    
     //clean up StubToLocalMapper when the class is unreferenced
     public void unreferenced() {
        if (StubToLocalMapper.remove(mapperCode)){

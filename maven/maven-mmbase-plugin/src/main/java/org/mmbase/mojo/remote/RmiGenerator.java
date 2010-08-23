@@ -138,7 +138,7 @@ public class RmiGenerator extends AbstractClassGenerator {
         // TODO: should also wrap if the result is an array?
 
         if (needToWrap) {
-            buffer.append(")");
+            buffer.append("), getPort()");
         }
         buffer.append(");\n");
 
@@ -205,8 +205,8 @@ public class RmiGenerator extends AbstractClassGenerator {
         buffer.append("   private static Logger log = Logging.getLoggerInstance(" + rmiName + ".class);\n");
 
         //constructor
-        buffer.append("   public " + rmiName + "(" + originalName + " originalObject) throws RemoteException{\n");
-        buffer.append("    super(originalObject);\n");
+        buffer.append("   public " + rmiName + "(" + originalName + " originalObject, int port) throws RemoteException{\n");
+        buffer.append("    super(originalObject, port);\n");
         buffer.append("      log.debug(\"new " + rmiName + "\");\n");
         buffer.append("   }\n");
 
