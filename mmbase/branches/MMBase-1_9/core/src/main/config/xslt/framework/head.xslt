@@ -51,7 +51,6 @@
       <xsl:for-each select="$unique-links">
         <link>
           <xsl:copy-of select="@*" />
-          <xsl:text> </xsl:text>
         </link>
       </xsl:for-each>
 
