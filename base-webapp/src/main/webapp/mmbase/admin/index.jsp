@@ -110,7 +110,7 @@
                                   <li class="${b.name eq block and subcat.component.name eq component ? 'current' : ''}">
                                     <a title="${mm:string(b.description)}" href="${_}">
                                       <mm:escape escape="text/xml">${mm:string(b.title)}</mm:escape>
-                                      <span class="component">(${b.component.name})</span>
+                                      <span class="component"> (${b.component.name})</span>
                                     </a>
                                   </li>
                                 </mm:link>
