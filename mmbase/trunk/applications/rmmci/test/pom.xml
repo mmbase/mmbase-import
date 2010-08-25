@@ -15,6 +15,11 @@
     with the minimalistic class path provided by the rmmci client jar.
   </description>
 
+  <properties>
+    <mmbase.repos>scp://mmbase.org/home/tomcat/downloads/</mmbase.repos>
+  </properties>
+
+
   <build>
     <defaultGoal>test</defaultGoal>
     <pluginManagement>
@@ -109,17 +114,17 @@
     <repository>
       <id>mmbase</id>
       <name>MMBase maven 2 repository</name>
-      <url>scp://mmbase.org/home/tomcat/download/maven2</url>
+      <url>${mmbase.repos}maven2</url>
     </repository>
     <snapshotRepository>
       <id>mmbase-snapshots</id>
       <name>MMBase Maven2 Snapshot Repository</name>
-      <url>scp://mmbase.org/home/tomcat/download/snapshots</url>
+      <url>${mmbase.repos}snapshots</url>
       <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
     <site>
       <id>mmbase-website</id>
-      <url>scp://mmbase.org/home/tomcat/download/web/mm2/</url>
+      <url>${mmbase.repos}mm2/</url>
     </site>
   </distributionManagement>
 </project>
