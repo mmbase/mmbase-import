@@ -342,6 +342,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
 
     private static final Pattern PATTERN_DIMENSIONS = Pattern.compile(".*?\\sVideo: (.*?), (.*?), ([0-9]+)x([0-9]+).*");
     private static final Pattern VIDEOBITRATE2_PATTERN = Pattern.compile(".*?\\sVideo: .*, (.*?) kb/s.*");
+    private static final Pattern VIDEOFPS_PATTERN      = Pattern.compile(".*?\\sVideo: .*, (.*?) fps.*");
 
     /**
      * Looks for width and height when it finds a match for Video, and looks for bitrate after that.
@@ -382,11 +383,12 @@ public final class AnalyzerUtils implements java.io.Serializable {
             Matcher m2 = VIDEOBITRATE2_PATTERN.matcher(l);
             if (m.matches()) {
                 if (log.isDebugEnabled()) log.debug("bitrate: " + m.group(1));
+                int bitrate = 1000 * Integer.parseInt(m.group(1));
                 if (updateSource) {
-                    source.setIntValue("bitrate", Integer.parseInt(m.group(1)));
+                    source.setIntValue("bitrate", bitrate);
                 }
                 if (updateDestination && dest != null) {
-                    dest.setIntValue("bitrate", Integer.parseInt(m.group(1)));
+                    dest.setIntValue("bitrate", bitrate);
                 }
             } else if (m2.matches()) {
                 if (log.isDebugEnabled()) log.debug("bitrate: " + m2.group(1));
@@ -399,6 +401,17 @@ public final class AnalyzerUtils implements java.io.Serializable {
                 }
             }
 
+            m = VIDEOFPS_PATTERN.matcher(l);
+            if (m.matches()) {
+                if (log.isDebugEnabled()) log.debug("fps: " + m.group(1));
+                if (updateSource) {
+                    source.setIntValue("fps", Integer.parseInt(m.group(1)) );
+                }
+                if (updateDestination && dest != null) {
+                    dest.setIntValue("fps", Integer.parseInt(m.group(1)) );
+                }
+            }
+
             return true;
         } else {
             return false;
@@ -406,6 +419,8 @@ public final class AnalyzerUtils implements java.io.Serializable {
     }
 
     private static final Pattern PATTERN_AUDIO = Pattern.compile(".*?\\sAudio: (.*?), (.*?) Hz, (stereo|mono|([0-9]+) channels), .*?");
+    private static final Pattern AUDIOBITRATE_PATTERN  = Pattern.compile(".*?\\sAudio: .* bitrate: (.*?) kb/s.*");
+    private static final Pattern AUDIOBITRATE2_PATTERN = Pattern.compile(".*?\\sAudio: .*, (.*?) kb/s.*");
 
     /**
      * Looks for audio channel(s).
@@ -440,13 +455,37 @@ public final class AnalyzerUtils implements java.io.Serializable {
                 if (dest.getIntValue("channels") < 0) {
                     dest.setIntValue("channels", ch);
                 }
-                if (dest.getNodeManager().hasField("acodec") && dest.getIntValue("acodec") < 0) {
+                if (dest.getNodeManager().hasField("acodec")) {
                     dest.setIntValue("acodec", libtoCodec(m.group(1)).toInt() );
-                } else if (dest.getIntValue("codec") < 0) {
+                } else {
                     dest.setIntValue("codec", libtoCodec(m.group(1)).toInt() );
                 }
             }
 
+            if (source.getNodeManager().getName().equals(AUDIO) || dest.getNodeManager().getName().equals(AUDIOC)) {
+                m = AUDIOBITRATE_PATTERN.matcher(l);
+                Matcher m2 = AUDIOBITRATE2_PATTERN.matcher(l);
+                if (m.matches()) {
+                    if (log.isDebugEnabled()) log.debug("bitrate: " + m.group(1));
+                    int bitrate = 1000 * Integer.parseInt(m2.group(1));
+                    if (updateSource) {
+                        source.setIntValue("bitrate", Integer.parseInt(m.group(1)));
+                    }
+                    if (updateDestination && dest != null) {
+                        dest.setIntValue("bitrate", Integer.parseInt(m.group(1)));
+                    }
+                } else if (m2.matches()) {
+                    if (log.isDebugEnabled()) log.debug("bitrate: " + m2.group(1));
+                    int bitrate = 1000 * Integer.parseInt(m2.group(1));
+                    if (updateSource) {
+                        source.setIntValue("bitrate", bitrate);
+                    }
+                    if (updateDestination && dest != null) {
+                        dest.setIntValue("bitrate", bitrate);
+                    }
+                }
+            }
+            
             return true;
         } else {
             return false;
