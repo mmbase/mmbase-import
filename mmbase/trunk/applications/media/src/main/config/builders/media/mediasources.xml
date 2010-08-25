@@ -66,13 +66,13 @@
     <field name="codec">
       <descriptions>
         <description xml:lang="en">
-          Codec stands for Coder/Decoder. Basically it is a piece of software or a driver that adds
+          Codec stands for coder/decoder. Basically it is a piece of software or a driver that adds
           a support for certain video/audio format for your operating system. With codec, your system
           recognizes the format the codec is built for and allows you to play the audio/video file (=decode)
           or in some cases, to change another audio/video file into that format (=(en)code).
         </description>
         <description xml:lang="nl">
-          Codec is kort voor Coder/Decoder, de software die is gebruikt om een video of audio bestand
+          Codec is kort voor coder/decoder, de software die is gebruikt om een video of audio bestand
           te encoderen. Aan de hand van de codec kan een systeem makkelijker herkennen of het een
           bestand kan afspelen of niet.
         </description>
@@ -100,10 +100,10 @@
     <field name="bitrate">
       <descriptions>
         <description xml:lang="en">
-          Defines how much physical space one second of audio or video takes in bits per second.
+          Number of bits used per second in which a media source is transcoded.
         </description>
         <description xml:lang="nl">
-          Hoeveel bit opslagcapaciteit per seconde.
+          Aantal bits per seconde waarin het media bestand is getranscodeerd.
         </description>
       </descriptions>
       <gui>
@@ -124,8 +124,12 @@
 
     <field name="channels">
       <descriptions>
-        <description xml:lang="en">Number of channels in this stream.</description>
-        <description xml:lang="nl">Aantal kanalen in de stream.</description>
+        <description xml:lang="en">
+          Number of audio channels used in this stream, in most cases mono (1) or stereo (2).
+        </description>
+        <description xml:lang="nl">
+          Aantal audiokanalen in de stream, in de meeste gevallen mono (1) of stereo (2).
+        </description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Channels</guiname>
