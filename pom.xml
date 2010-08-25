@@ -24,6 +24,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
     <mmbase.version.postfix>-SNAPSHOT</mmbase.version.postfix>
     <mmbase.version>${mmbase.version.number}${mmbase.version.postfix}</mmbase.version>
     <!-- Cannot be project.version, because then an extension of this cannot have it's own version any more -->
+    <mmbase.repos>scp://mmbase.org/home/tomcat/downloads/</mmbase.repos>
 
     <surefire.fork.mode>once</surefire.fork.mode>
     <surefire.format>brief</surefire.format>
@@ -550,17 +551,17 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
     <repository>
       <id>mmbase</id>
       <name>MMBase maven 2 repository</name>
-      <url>scp://mmbase.org/home/tomcat/download/maven2</url>
+      <url>${mmbase.repos}maven2</url>
     </repository>
     <snapshotRepository>
       <id>mmbase-snapshots</id>
       <name>MMBase Maven2 Snapshot Repository</name>
-      <url>scp://mmbase.org/home/tomcat/download/snapshots</url>
+      <url>${mmbase.repos}snapshots</url>
       <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
     <site>
       <id>mmbase-website</id>
-      <url>scp://mmbase.org/home/tomcat/download/mm2/</url>
+      <url>${mmbase.repos}mm2/</url>
     </site>
   </distributionManagement>
 
