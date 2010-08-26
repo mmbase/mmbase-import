@@ -138,22 +138,43 @@
     </tr>
   </mm:listnodes>
   
-  <tr cols="100">
-    <mm:previousbatches id="pb">
-      <mm:link>
-        <mm:param name="page"><mm:index  /></mm:param>
-        <a href="${_}"><mm:index /></a>
-      </mm:link>
-      <jsp:text>, </jsp:text>
-    </mm:previousbatches>
-    <mm:index />
-    <mm:nextbatches id="nb">
-      <jsp:text>, </jsp:text>
-      <mm:link>
-        <mm:param name="page"><mm:index /></mm:param>
-        <a href="${_}"><mm:index /></a>
-      </mm:link>
-    </mm:nextbatches>
-  </tr>
+  <tfoot>
+    <tr cols="100">
+      <th colspan="9">
+        <mm:previousbatches >
+          <mm:last>
+            <mm:link>
+              <mm:param name="page"><mm:index  /></mm:param>
+              <a href="${_}">«« previous</a> -
+            </mm:link>
+          </mm:last>
+        </mm:previousbatches>
+        <mm:previousbatches >
+          <mm:link>
+            <mm:param name="page"><mm:index  /></mm:param>
+            <a href="${_}"><mm:index offset="1" /></a>
+          </mm:link>
+          <jsp:text> - </jsp:text>
+        </mm:previousbatches>
+        <mm:index offset="1" />
+        <mm:nextbatches>
+          <jsp:text> - </jsp:text>
+          <mm:link>
+            <mm:param name="page"><mm:index /></mm:param>
+            <a href="${_}"><mm:index offset="${page + 2}" /></a>
+          </mm:link>
+        </mm:nextbatches>
+        <mm:nextbatches>
+          <mm:first>
+            <mm:link>
+              <mm:param name="page"><mm:index  /></mm:param>
+              - <a href="${_}">next »»</a>
+            </mm:link>
+          </mm:first>
+        </mm:nextbatches>
+      </th>
+    </tr>
+  </tfoot>
+
 
 </jsp:root>
