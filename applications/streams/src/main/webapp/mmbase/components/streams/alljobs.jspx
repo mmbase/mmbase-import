@@ -20,6 +20,7 @@
   </c:if>
 
     <mm:listfunction set="streams" name="runningJobs" id="job">
+      <mm:first><h3><mm:size /> jobs running</h3></mm:first>
       <jsp:directive.include file="job.jspx" />
     </mm:listfunction>
 

@@ -17,9 +17,9 @@
         <c:set var="source"  value="${_.source.number}" />
         <tr class="odd">
           <td>${_.source.number}</td>
-        <td>
+          <td>
             <strong><a href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a></strong>
-        </td>
+          </td>
           <td> ${_.mimeType} </td>
           <td> ${_.dimension} </td>
           <td> ${_.source.builder.tableName}  </td>
@@ -27,45 +27,45 @@
         </tr><tr>
           <td />
           <td colspan="4">
-              <mm:function set="streams" name="getJob" referids="_node@node">
+            <mm:function set="streams" name="getJob" referids="_node@node">
               JOB: ${_.class}<br />  
-              </mm:function>
-              <mm:function set="streams" name="runningJobs">
-                JOB: ${_.class}
-              </mm:function>
+            </mm:function>
+            <mm:function set="streams" name="runningJobs">
+              JOB: ${_.class} 
+            </mm:function>
           </td>
           <td>
-              <mm:node number="${_.source.number}">
-                <c:set var="triggervalue" value="${fragment}:${_node}" />
-                <c:choose>
-                  <c:when test="${trigger eq triggervalue}">
-                    <mm:log> CALLING TRIGGER FOR ${trigger}</mm:log>
+            <mm:node number="${_.source.number}">
+              <c:set var="triggervalue" value="${fragment}:${_node}" />
+              <c:choose>
+                <c:when test="${trigger eq triggervalue}">
+                  <mm:log> CALLING TRIGGER FOR ${trigger}</mm:log>
                   <mm:voidfunction name="triggerCaches" referids="all" />
                   <div class="msg">Triggered transcoding</div>
-                  </c:when>
-                  <c:otherwise>
-                    <mm:link referids="triggervalue@trigger">
+                </c:when>
+                <c:otherwise>
+                  <mm:link referids="triggervalue@trigger">
                     <a href="${_}">Trigger</a>,
                   </mm:link>
                   <mm:link referids="triggervalue@trigger">
                     <mm:param name="all">true</mm:param>
                     <a href="${_}">Trigger all</a>
-                    </mm:link>
-                  </c:otherwise>
-                </c:choose>
-                <jsp:text>, </jsp:text>
-                <c:choose>
-                  <c:when test="${interrupt eq _node.number}">
-                    <mm:function set="streams" name="cancelJob" referids="interrupt@node" />
-                  </c:when>
-                  <c:otherwise>
-                    <mm:link referids="_node@interrupt">
-                      <a href="${_}">interrupt</a>
-                    </mm:link>
-                  </c:otherwise>
-                </c:choose>
-              </mm:node>
-            </td>
+                  </mm:link>
+                </c:otherwise>
+              </c:choose>
+              <jsp:text>, </jsp:text>
+              <c:choose>
+                <c:when test="${interrupt eq _node.number}">
+                  <mm:function set="streams" name="cancelJob" referids="interrupt@node" />
+                </c:when>
+                <c:otherwise>
+                  <mm:link referids="_node@interrupt">
+                    <a href="${_}">interrupt</a>
+                  </mm:link>
+                </c:otherwise>
+              </c:choose>
+            </mm:node>
+          </td>
         </tr>
       </c:if>
     </mm:listfunction>
@@ -73,19 +73,19 @@
       <c:if test="${!_.main}">
         <tr class="odd">
           <td> ${_.source.number} </td>
-          <td>
+          <td> 
             <strong><a href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a></strong>
           </td>
           <td> ${_.mimeType} </td>
-          <td>
+          <td> 
             ${_.dimension}
             <mm:node number="${_.source.number}" notfound="skip">
               <mm:hasfield name="label">
                 <mm:field name="label"><mm:isnotempty>${_}</mm:isnotempty></mm:field>
-                </mm:hasfield>
+              </mm:hasfield>
             </mm:node>
-              </td>
-              <td>
+          </td>
+          <td> 
             <mm:node number="${_.source.number}" notfound="skip">
               <mm:hasfield name="id"><mm:field name="id" />, </mm:hasfield>
             </mm:node>
@@ -97,9 +97,9 @@
           <mm:node number="${_.source.number}" notfound="skip" id="recache">
             <td colspan="4">
               <mm:hasfield name="key">
-                  <mm:field name="key" />
-                </mm:hasfield>
-              </td>
+                <mm:field name="key" />
+              </mm:hasfield>
+            </td>
             <td>
               <mm:hasfield name="id">
                 <c:set var="recachevalue" value="${fragment}:${recache}" />
@@ -110,26 +110,26 @@
                         <mm:booleanfunction name="triggerCaches" referids="recache@cache">
                           <div class="msg">Triggered transcoding</div>
                         </mm:booleanfunction>
-            </mm:node>
+                      </mm:node>
                     </mm:field>
                   </c:when>
                   <c:otherwise>
                     <c:choose>
                       <c:when test="${_.state != 'BUSY'}">
                         <mm:link referids="recachevalue@cache">
-                      <a href="${_}">Retrigger cache</a>
-                    </mm:link>
+                          <a href="${_}">Retrigger cache</a>
+                        </mm:link>
                       </c:when>
                       <c:otherwise>
                         <div class="msg">Transcoding</div>
                       </c:otherwise>
                     </c:choose>
-          </c:otherwise>
-        </c:choose>
+                  </c:otherwise>
+                </c:choose>
               </mm:hasfield>
             </td>
           </mm:node>
-      </tr>
+        </tr>
       </c:if>
     </mm:listfunction>
   
@@ -138,22 +138,43 @@
     </tr>
   </mm:listnodes>
   
-  <tr cols="100">
-    <mm:previousbatches id="pb">
-      <mm:link>
-        <mm:param name="page"><mm:index  /></mm:param>
-        <a href="${_}"><mm:index /></a>
-      </mm:link>
-      <jsp:text>, </jsp:text>
-    </mm:previousbatches>
-    <mm:index />
-    <mm:nextbatches id="nb">
-      <jsp:text>, </jsp:text>
-      <mm:link>
-        <mm:param name="page"><mm:index /></mm:param>
-        <a href="${_}"><mm:index /></a>
-      </mm:link>
-    </mm:nextbatches>
-  </tr>
+  <tfoot>
+    <tr cols="100">
+      <th colspan="9">
+        <mm:previousbatches >
+          <mm:last>
+            <mm:link>
+              <mm:param name="page"><mm:index  /></mm:param>
+              <a href="${_}">«« previous</a> -
+            </mm:link>
+          </mm:last>
+        </mm:previousbatches>
+        <mm:previousbatches >
+          <mm:link>
+            <mm:param name="page"><mm:index  /></mm:param>
+            <a href="${_}"><mm:index offset="1" /></a>
+          </mm:link>
+          <jsp:text> - </jsp:text>
+        </mm:previousbatches>
+        <mm:index offset="1" />
+        <mm:nextbatches>
+          <jsp:text> - </jsp:text>
+          <mm:link>
+            <mm:param name="page"><mm:index /></mm:param>
+            <a href="${_}"><mm:index offset="${page + 2}" /></a>
+          </mm:link>
+        </mm:nextbatches>
+        <mm:nextbatches>
+          <mm:first>
+            <mm:link>
+              <mm:param name="page"><mm:index  /></mm:param>
+              - <a href="${_}">next »»</a>
+            </mm:link>
+          </mm:first>
+        </mm:nextbatches>
+      </th>
+    </tr>
+  </tfoot>
+
 
 </jsp:root>
