@@ -107,6 +107,39 @@
     </body>
   </block>
 
+  <block name="batch"
+         classification="mmbase.streams"
+         mimetype="text/html">
+    <title xml:lang="en">Batch transcode</title>
+    <title xml:lang="nl">Batch transcodeer</title>
+    <description xml:lang="en">
+      Batch transcode all newly configured streams of these mediafragments.
+      The button 'Submit' with save your settings. 
+      The button 'Batch' will start batch transcoding with the selected settings.
+      For example: choosing a maximum of 5 and as preferred source 'MPEG', will start transcoding new streams
+      (not already present recently configured streamsourcescaches) while using MPEG as its source
+      when there are multiple sources available.
+    </description>
+    <description xml:lang="nl">
+      Batch transcodeer voor deze media alle nieuw geconfigureerde streams.
+      De button 'Submit' bewaart je settings.
+      De button 'Batch' start het transcoderen van meerdere streams met de geselecteerde voorkeuren.
+      Bijvoorbeeld: met een max van 5 en als source 'MPEG' worden er per keer maximaal 5 transcoderingen
+      in de queue gezet waarbij MPEG als voorkeursbestand wordt gebruikt als er meerdere sources worden
+      gevonden.
+    </description>
+    <body jsp="batch.jspx">
+      <param name="trigger" />
+      <param name="all" type="java.lang.Boolean" />
+      <param name="interrupt" />
+      <param name="cache" />
+      <param name="page" type="java.lang.Integer" />
+      <param name="max"  type="java.lang.Integer" />
+      <param name="format" />
+      <param name="batch" />
+    </body>
+  </block>
+
   <block name="upload"
          classification="mmbase.streams"
          mimetype="text/html">
