@@ -1,0 +1,271 @@
+<div
+    class="mm_c c_streams b_admin ${requestScope.componentClassName}"
+    id="${requestScope.componentId}"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-res="urn:jsptagdir:/WEB-INF/tags/mm/resources"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:cloud rank="basic user" jspvar="cloud">
+    
+    <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+    <p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
+
+    <mm:import  externid="batch" />
+    <mm:import from="request" externid="trigger" />
+    <mm:import from="request" externid="interrupt" vartype="integer" />
+    <mm:import from="request" externid="all" vartype="boolean">false</mm:import> 
+    <mm:import from="request" externid="cache" />
+    <mm:import externid="format">mpeg</mm:import>
+    
+    <mm:import externid="page" vartype="integer">0</mm:import>
+    <mm:import externid="max" vartype="integer">10</mm:import>
+    
+    <mm:import externid="type">mediafragments</mm:import>
+    
+    <!-- fill list with jobs if runnning -->
+    <mm:import id="joblist" jspvar="joblist" vartype="List" />
+    <mm:listfunction set="streams" name="runningJobs">
+      <mm:first>
+        <mm:link page="alljobs">
+          <h4><a href="${_}"><mm:size /> jobs</a> running</h4>
+        </mm:link>
+      </mm:first>
+      <mm:import jspvar="job" reset="true">${_.node.number}</mm:import>
+      <jsp:scriptlet>
+        if (!joblist.contains(job)) { joblist.add(job); }
+      </jsp:scriptlet>
+    </mm:listfunction>
+
+    
+    <mm:form>
+
+      <p>
+        Convert <strong>max </strong>
+        <input name="max" id="max" type="text" value="${max}" size="6" maxlength="20" />
+        (page size) sources.<br />
+        When a mediafragments has multiple sources use <strong>the </strong>
+        <select id="format" name="format">
+          <c:choose>
+            <c:when test="${format eq 'mpeg'}">
+              <option label="mpeg" value="mpeg" selected="selected">MPEG</option>
+            </c:when>
+            <c:otherwise>
+              <option label="mpeg" value="mpeg">MPEG</option>
+            </c:otherwise>
+          </c:choose>
+          <c:choose>
+            <c:when test="${format eq 'mp4'}">
+              <option label="mp4" value="mp4" selected="selected">MP4</option>
+            </c:when>
+            <c:otherwise>
+              <option label="mp4" value="mp4">MP4</option>
+            </c:otherwise>
+          </c:choose>
+          <c:choose>
+            <c:when test="${format eq 'ogg'}">
+              <option label="ogg" value="ogg" selected="selected">OGG</option>
+            </c:when>
+            <c:otherwise>
+              <option label="ogg" value="ogg">OGG</option>
+            </c:otherwise>
+          </c:choose>
+          <c:choose>
+            <c:when test="${format eq 'ogv'}">
+              <option label="ogv" value="ogv" selected="selected">OGV</option>
+            </c:when>
+            <c:otherwise>
+              <option label="ogv" value="ogv">OGV</option>
+            </c:otherwise>
+          </c:choose>
+          <c:choose>
+            <c:when test="${format eq 'webm'}">
+              <option label="webm" value="webm" selected="selected">WebM</option>
+            </c:when>
+            <c:otherwise>
+              <option label="webm" value="webm">WebM</option>
+            </c:otherwise>
+          </c:choose>
+          <c:choose>
+            <c:when test="${format eq 'ts'}">
+              <option label="ts" value="ts" selected="selected">TS</option>
+            </c:when>
+            <c:otherwise>
+              <option label="ts" value="ts">TS</option>
+            </c:otherwise>
+          </c:choose>
+        </select>
+        <strong> source</strong> for new streams.<br />
+      </p>
+      <p>
+        <input name="action" type="submit" value="Submit" />
+        <jsp:text> </jsp:text>
+        <input name="batch" type="submit" value="Batch" />
+      </p>
+      <table summary="mediafragments">
+        <caption>Mediafragments</caption>
+        <tr>
+          <th>#</th>
+          <th colspan="2">title</th>
+          <th>transcode</th>
+        </tr>
+        <mm:listnodescontainer type="${type}">
+          <mm:sortorder field="number" direction="down" />
+          <mm:offset value="${page * max}" />
+          <mm:maxnumber value="${max}" />
+          <mm:listnodes id="fragment">
+            <tr>
+              <td><strong><mm:field name="number" /></strong></td>
+              <td colspan="3"><strong><mm:nodeinfo type="gui" /></strong></td>
+            </tr>
+            
+            <c:set var="sources" value="0" />
+            <c:set var="the_source" value="" />
+            
+            <mm:listfunction name="filteredurls">
+              <c:if test="${_.main}">
+                
+                <c:set var="sources" value="${sources + 1}" />
+                <c:set var="source" value="${_.source.number}" />
+                <c:if test="${fn:indexOf(_.mimeType, format) gt -1}">
+                  <c:set var="the_source" value="${_.source.number}" />
+                </c:if>
+                
+                <tr>
+                  <td>${fn:toLowerCase(_.state)}</td>
+                  <td>
+                    <a href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a>
+                  </td>
+                  <td>
+                    ${_.mimeType}
+                  </td>
+                  <td>
+                    <mm:node number="${_.source.number}">
+                      <c:set var="triggervalue" value="${fragment}:${_node}" />
+                    
+                      <c:choose>
+                        <c:when test="${interrupt eq _node.number}">
+                          <mm:function set="streams" name="cancelJob" referids="interrupt@node" />
+                        </c:when>
+                        <c:otherwise>
+                    
+                          <c:choose>
+                            <c:when test="${mm:contains(joblist, _.source.number)}">
+                              <mm:link referids="_node@interrupt">
+                                <div class="msg">Transcoding: <a href="${_}">interrupt</a></div>
+                              </mm:link>
+                            </c:when>
+                            <!-- c:when test="${batch eq 'Batch' and fn:indexOf(mime, format) gt -1}">
+                              <mm:voidfunction name="triggerCaches" referids="all" />
+                              <mm:link referids="_node@interrupt">
+                                <div class="msg">Transcoding: <a href="${_}">interrupt</a></div>
+                              </mm:link>
+                            </c:when -->
+                            <c:when test="${trigger eq triggervalue}">
+                              <mm:voidfunction name="triggerCaches" referids="all" />
+                              <mm:link referids="_node@interrupt">
+                                <div class="msg">Transcoding: <a href="${_}">interrupt</a></div>
+                              </mm:link>
+                            </c:when>
+                            <c:otherwise>
+                              <mm:link referids="triggervalue@trigger">
+                                <mm:param name="all">true</mm:param>
+                                <a href="${_}">all</a> |
+                              </mm:link>
+                              <mm:link referids="triggervalue@trigger">
+                                <a href="${_}">only new</a>
+                              </mm:link>
+                            </c:otherwise>
+                          </c:choose>
+                    
+                        </c:otherwise>
+                      </c:choose>
+                    
+                    </mm:node>
+                  </td>
+                </tr>
+              </c:if>
+            </mm:listfunction>
+
+            <mm:listfunction name="filteredurls">
+              <c:if test="${!_.main}">
+                <tr>
+                  <td>${fn:toLowerCase(_.state)}</td>
+                  <td>
+                    <mm:node number="${_.source.number}">
+                      <mm:hasfield name="key">
+                        <mm:import id="key" reset="true"><mm:field name="key" /></mm:import>
+                      </mm:hasfield>
+                    </mm:node>
+                    <a title="${key}" href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a>
+                  </td>
+                  <td>${_.mimeType}</td>
+                  <td><jsp:text> </jsp:text></td>
+                </tr>
+              </c:if>
+            </mm:listfunction>
+
+            <tr>
+              <td colspan="4">
+                <c:if test="${sources lt 2}">
+                  <c:set var="the_source" value="${source}" />
+                </c:if>
+                <c:if test="${batch eq 'Batch' and !empty the_source}">
+                  <mm:node number="${the_source}">
+                    <mm:voidfunction name="triggerCaches" referids="all" />
+                    <div class="msg">
+                      Transcoding from #${the_source}
+                      <mm:field name="format"><mm:fieldinfo type="guivalue" /></mm:field> :
+                      <mm:link referids="_node@interrupt"><a href="${_}">interrupt</a></mm:link>
+                    </div>
+                  </mm:node>
+                </c:if>
+              </td>
+            </tr>
+            
+          </mm:listnodes>
+          
+          <tfoot>
+            <tr cols="100">
+              <th colspan="9">
+                <mm:previousbatches >
+                  <mm:last>
+                    <mm:link referids="format,max">
+                      <mm:param name="page"><mm:index  /></mm:param>
+                      <a href="${_}">«« previous</a> -
+                    </mm:link>
+                  </mm:last>
+                </mm:previousbatches>
+                <mm:previousbatches >
+                  <mm:link referids="format,max">
+                    <mm:param name="page"><mm:index  /></mm:param>
+                    <a href="${_}"><mm:index offset="1" /></a>
+                  </mm:link>
+                  <jsp:text> - </jsp:text>
+                </mm:previousbatches>
+                <mm:index offset="1" />
+                <mm:nextbatches>
+                  <jsp:text> - </jsp:text>
+                  <mm:link referids="format,max">
+                    <mm:param name="page"><mm:index /></mm:param>
+                    <a href="${_}"><mm:index offset="${page + 2}" /></a>
+                  </mm:link>
+                </mm:nextbatches>
+                <mm:nextbatches>
+                  <mm:first>
+                    <mm:link referids="format,max">
+                      <mm:param name="page"><mm:index  /></mm:param>
+                      - <a href="${_}">next »»</a>
+                    </mm:link>
+                  </mm:first>
+                </mm:nextbatches>
+              </th>
+            </tr>
+          </tfoot>
+          
+        </mm:listnodescontainer>
+      </table>
+    </mm:form>
+  </mm:cloud>
+</div>
