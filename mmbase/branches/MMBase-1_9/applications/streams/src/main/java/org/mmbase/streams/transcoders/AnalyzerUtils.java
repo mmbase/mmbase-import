@@ -404,11 +404,13 @@ public final class AnalyzerUtils implements java.io.Serializable {
             m = VIDEOFPS_PATTERN.matcher(l);
             if (m.matches()) {
                 if (log.isDebugEnabled()) log.debug("fps: " + m.group(1));
+                double d = Double.parseDouble(m.group(1));
+                int fps = (int)Math.round(d);
                 if (updateSource) {
-                    source.setIntValue("fps", Integer.parseInt(m.group(1)) );
+                    source.setIntValue("fps", fps );
                 }
                 if (updateDestination && dest != null) {
-                    dest.setIntValue("fps", Integer.parseInt(m.group(1)) );
+                    dest.setIntValue("fps", fps );
                 }
             }
 
@@ -462,7 +464,8 @@ public final class AnalyzerUtils implements java.io.Serializable {
                 }
             }
 
-            if (source.getNodeManager().getName().equals(AUDIO) || dest.getNodeManager().getName().equals(AUDIOC)) {
+            if (source.getNodeManager().getName().equals(AUDIO) || 
+                    (dest != null && dest.getNodeManager().getName().equals(AUDIOC))) {
                 m = AUDIOBITRATE_PATTERN.matcher(l);
                 Matcher m2 = AUDIOBITRATE2_PATTERN.matcher(l);
                 if (m.matches()) {
