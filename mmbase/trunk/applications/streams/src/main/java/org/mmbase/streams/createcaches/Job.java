@@ -55,7 +55,7 @@ public class Job implements Iterable<Result> {
     private Node mediaprovider;
     private Node mediafragment;
     final BufferedLogger logger;
-    private static Map<String, JobDefinition> jobdefs = new LinkedHashMap<String, JobDefinition>();
+    private Map<String, JobDefinition> jobdefs = new LinkedHashMap<String, JobDefinition>();
     private final Map<String, Result> lookup = new LinkedHashMap<String, Result>();
     private final List<Result>        results = new ArrayList<Result>();
     private final long number = lastJobNumber++;
