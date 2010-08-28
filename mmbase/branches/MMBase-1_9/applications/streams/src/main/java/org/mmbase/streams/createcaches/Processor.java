@@ -318,7 +318,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
 
     /**
      * Creates and submits a job transcoding everything as configured for one source object, this
-     * produces all new 'streamssourcescaches' as configured in createcaches.xml.
+     * produces all new 'streamsourcescaches' as configured in createcaches.xml.
      * @param ntCloud   a non transactional cloud
      * @param node      node number of a source stream
      * @param logger    a logger that keeps track
@@ -355,7 +355,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
         final ChainedLogger logger = new ChainedLogger(LOG);
         final Job thisJob = createJob(ntCloud, node, jdlist, logger);
 
-        LOG.info("Triggering caches for " + jdlist + "  -> " + thisJob);
+        LOG.info("Triggering caches for #" + node + ":" + jdlist + "  -> " + thisJob);
         if (thisJob != null) {
             // If the node happens to be deleted before the future with cache creations is ready, cancel the future
             EventManager.getInstance().addEventListener(new WeakNodeEventListener() {
