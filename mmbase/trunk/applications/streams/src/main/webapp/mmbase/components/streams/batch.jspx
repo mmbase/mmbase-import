@@ -146,7 +146,9 @@
                     
                       <c:choose>
                         <c:when test="${interrupt eq _node.number}">
+                          <div class="msg">
                           <mm:function set="streams" name="cancelJob" referids="interrupt@node" />
+                          </div>
                         </c:when>
                         <c:otherwise>
                     
