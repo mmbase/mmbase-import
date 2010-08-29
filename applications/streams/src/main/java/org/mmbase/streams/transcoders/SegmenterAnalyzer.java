@@ -2,7 +2,7 @@
 
 This file is part of the MMBase Streams application, 
 which is part of MMBase - an open source content management system.
-    Copyright (C) 2009 André van Toly, Michiel Meeuwissen
+    Copyright (C) 2010 André van Toly, Michiel Meeuwissen
 
 MMBase Streams is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -32,9 +32,9 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * Analyzes <code>segmenter</code> output during its job, changes url field to m3u8 index file when 
- * ready and rewrites m3u8 to removed full paths. It can wait two minutes for the filesystem to be
- * ready before starting to rewrite.
+ * Analyzes <code>segmenter</code> output after doing its job, changes url field to m3u8 index file 
+ * when ready and rewrites m3u8 to removed full paths. It can wait two minutes for the filesystem to
+ * be ready before starting to rewrite.
  * 
  * @author Andr&eacute; van Toly
  * @version $Id: SegmenterAnalyzer.java 40036 2009-11-30 20:27:39Z andre $
@@ -64,40 +64,7 @@ public class SegmenterAnalyzer implements Analyzer {
         log.addLogger(logger);
     }
 
-    public void analyze(String l, Node source, Node des) {
-        synchronized(util) {
-            /*
-            Cloud cloud = source.getCloud();
-            
-            if (util.duration(l, source, des)) {
-                return;
-            }
-    
-            if (util.dimensions(l, source, des)) {
-                return;
-            }
-    
-            if (util.audio(l, source, des)) {
-                return;
-            }
-            */
-            // TODO: progress matcher
-            /*
-            {
-                Matcher m = PROGRESS.matcher(l);
-                if (m.matches()) {
-                    long pos = util.getLength(m.group(1));
-                    long audioBitrate = Integer.parseInt(m.group(2));
-                    long videoBitrate = Integer.parseInt(m.group(3));
-                    bits += ((double) (audioBitrate + videoBitrate)) * ((double) pos - prevPos) * 1000;
-                    //System.out.println("" + pos + "ms "  + (audioBitrate + videoBitrate) + " -> " + (bits / pos) + " " + (100 * pos / length) + " %");
-    
-                    prevPos = pos;
-                }
-            }
-            */
-        }
-    }
+    public void analyze(String l, Node source, Node des) { }
 
     public void ready(Node sourceNode, Node destNode) {
         synchronized(util) {
