@@ -86,12 +86,15 @@ public class ReferredAttachments extends Attachments {
                 String fileName = getFileName(node, new StringBuilder()).toString();
                 String title;
                 if (fileName == null || fileName.equals("")) {
-                title = "[*]";
+                    title = "[*]";
                 } else {
                     title = "[" + fileName + "]";
                 }
-                HttpServletResponse res = (HttpServletResponse) a.get("response");
-                return "<a href=\"" + res.encodeURL(url) + "\" onclick=\"window.open(this.href);return false;\" >" + title + "</a>";
+                HttpServletResponse res = a.get(Parameter.RESPONSE);
+                if (res != null) {
+                    url = res.encodeURL(url);
+                }
+                return "<a class='mm_gui' href=\"" + url + "\" onclick=\"window.open(this.href);return false;\" >" + title + "</a>";
             }
         }
         return super.getSGUIIndicator(node, a);
