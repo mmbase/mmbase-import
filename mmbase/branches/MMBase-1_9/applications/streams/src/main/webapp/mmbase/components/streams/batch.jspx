@@ -10,7 +10,8 @@
   <mm:cloud rank="basic user" jspvar="cloud">
     
     <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
-    <p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
+    <mm:import id="blockdescription">${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</mm:import>
+    <mm:write referid="blockdescription" escape="p" />
 
     <mm:import  externid="batch" />
     <mm:import from="request" externid="trigger" />
@@ -192,19 +193,46 @@
 
             <mm:listfunction name="filteredurls">
               <c:if test="${!_.main}">
+                <mm:node number="${_.source.number}" notfound="skip" id="recache">
                 <tr>
                   <td>${fn:toLowerCase(_.state)}</td>
                   <td>
-                    <mm:node number="${_.source.number}">
                       <mm:hasfield name="key">
                         <mm:import id="key" reset="true"><mm:field name="key" /></mm:import>
                       </mm:hasfield>
-                    </mm:node>
                     <a title="${key}" href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a>
                   </td>
                   <td>${_.mimeType}</td>
-                  <td><jsp:text> </jsp:text></td>
+                  <td>
+                    <mm:hasfield name="id">
+                      <c:set var="recachevalue" value="${fragment}:${recache}" />
+                      <c:choose>
+                        <c:when test="${cache eq recachevalue}">
+                          <mm:field name="id">
+                            <mm:node number="${source}">
+                              <mm:booleanfunction name="triggerCaches" referids="recache@cache">
+                                <div class="msg">Triggered transcoding</div>
+                              </mm:booleanfunction>
+                            </mm:node>
+                          </mm:field>
+                        </c:when>
+                        <c:otherwise>
+                          <c:choose>
+                            <c:when test="${_.state != 'BUSY'}">
+                              <mm:link referids="recachevalue@cache">
+                                <a href="${_}">recache</a>
+                              </mm:link>
+                            </c:when>
+                            <c:otherwise>
+                              <strong>busy</strong>
+                            </c:otherwise>
+                          </c:choose>
+                        </c:otherwise>
+                      </c:choose>
+                    </mm:hasfield>
+                  </td>
                 </tr>
+                </mm:node>
               </c:if>
             </mm:listfunction>
 
