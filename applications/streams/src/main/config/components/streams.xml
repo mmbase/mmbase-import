@@ -113,20 +113,26 @@
     <title xml:lang="en">Batch transcode</title>
     <title xml:lang="nl">Batch transcodeer</title>
     <description xml:lang="en">
-      Batch transcode all newly configured streams of these mediafragments.
+      Batch transcode all newly configured streams of these mediafragments, similar to 'only new'.
       The button 'Submit' with save your settings. 
       The button 'Batch' will start batch transcoding with the selected settings.
       For example: choosing a maximum of 5 and as preferred source 'MPEG', will start transcoding new streams
       (not already present recently configured streamsourcescaches) while using MPEG as its source
       when there are multiple sources available.
+      'only new' generates all new configured streams.
+      'all' removes all existing and generates them new.
+      'recache' retranscodes an individual stream.
     </description>
     <description xml:lang="nl">
-      Batch transcodeer voor deze media alle nieuw geconfigureerde streams.
+      Batch transcodeer voor deze media alle nieuw geconfigureerde streams, gelijk aan 'only new'.
       De button 'Submit' bewaart je settings.
       De button 'Batch' start het transcoderen van meerdere streams met de geselecteerde voorkeuren.
       Bijvoorbeeld: met een max van 5 en als source 'MPEG' worden er per keer maximaal 5 transcoderingen
       in de queue gezet waarbij MPEG als voorkeursbestand wordt gebruikt als er meerdere sources worden
       gevonden.
+      'only new' genereert alleen nieuw geconfigureerde streams.
+      'all' verwijdert alle bestaande en genereert alle geconfigureerde streams opnieuw.
+      'recache' genereert een enkele stream opnieuw.
     </description>
     <body jsp="batch.jspx">
       <param name="trigger" />
