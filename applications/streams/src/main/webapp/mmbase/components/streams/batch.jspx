@@ -19,6 +19,7 @@
     <mm:import from="request" externid="all" vartype="boolean">false</mm:import> 
     <mm:import from="request" externid="cache" />
     <mm:import externid="format">mpeg</mm:import>
+    <c:if test="${format eq 'mpg'}"><mm:import id="format" reset="true">mpeg</mm:import></c:if>
     
     <mm:import externid="page" vartype="integer">0</mm:import>
     <mm:import externid="max" vartype="integer">10</mm:import>
@@ -155,7 +156,7 @@
                     
                           <c:choose>
                             <c:when test="${mm:contains(joblist, _.source.number)}">
-                              <mm:link referids="_node@interrupt">
+                              <mm:link referids="_node@interrupt,format?,max?,page?">
                                 <div class="msg">Transcoding: <a href="${_}">interrupt</a></div>
                               </mm:link>
                             </c:when>
@@ -167,16 +168,16 @@
                             </c:when -->
                             <c:when test="${trigger eq triggervalue}">
                               <mm:voidfunction name="triggerCaches" referids="all" />
-                              <mm:link referids="_node@interrupt">
+                              <mm:link referids="_node@interrupt,format?,max?,page?">
                                 <div class="msg">Transcoding: <a href="${_}">interrupt</a></div>
                               </mm:link>
                             </c:when>
                             <c:otherwise>
-                              <mm:link referids="triggervalue@trigger">
+                              <mm:link referids="triggervalue@trigger,format?,max?,page?">
                                 <mm:param name="all">true</mm:param>
                                 <a href="${_}">all</a> |
                               </mm:link>
-                              <mm:link referids="triggervalue@trigger">
+                              <mm:link referids="triggervalue@trigger,format?,max?,page?">
                                 <a href="${_}">only new</a>
                               </mm:link>
                             </c:otherwise>
@@ -219,7 +220,7 @@
                         <c:otherwise>
                           <c:choose>
                             <c:when test="${_.state != 'BUSY'}">
-                              <mm:link referids="recachevalue@cache">
+                              <mm:link referids="recachevalue@cache,format?,max?,page?">
                                 <a href="${_}">recache</a>
                               </mm:link>
                             </c:when>
@@ -247,7 +248,9 @@
                     <div class="msg">
                       Transcoding from #${the_source}
                       <mm:field name="format"><mm:fieldinfo type="guivalue" /></mm:field> :
-                      <mm:link referids="_node@interrupt"><a href="${_}">interrupt</a></mm:link>
+                      <mm:link referids="_node@interrupt,format?,max?,page?">
+                        <a href="${_}">interrupt</a>
+                      </mm:link>
                     </div>
                   </mm:node>
                 </c:if>
