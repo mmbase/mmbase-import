@@ -67,7 +67,9 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
     }
 
     public void setJspVar(PageContext pc, String jspvar, int vartype, Object value) {
-        if (jspvar == null) return;
+        if (jspvar == null) {
+            return;
+        }
         if (value == null) return;
         jspvars.add(jspvar);
         // When it doesn't, it goes ok. (at least I think that this is the difference between orion and tomcat)
