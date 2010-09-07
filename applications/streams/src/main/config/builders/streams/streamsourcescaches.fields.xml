@@ -51,7 +51,7 @@
   </field>
 
 
-  <field name="id">
+  <field name="id" readonly="true">
     <descriptions>
       <description xml:lang="en">Reference to the original this cache was transcoded from.</description>
       <description xml:lang="nl">Referentie naar het origineele waarvan deze cache getranscodeerd is.</description>
@@ -70,12 +70,7 @@
         <search>9</search>
       </positions>
     </editor>
-    <datatype base="nodenumber" xmlns="http://www.mmbase.org/xmlns/datatypes">
-      <required value="true" enforce="never" />
-      <enumeration enforce="never"> <!-- enforcing is very bad for performance -->
-        <query type="mediasources" xmlns="http://www.mmbase.org/xmlns/searchquery" />
-      </enumeration>
-    </datatype>
+    <datatype base="nodenumber" xmlns="http://www.mmbase.org/xmlns/datatypes" />
   </field>
 
   <field name="mimetype" state="system">
