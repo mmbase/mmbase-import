@@ -273,13 +273,9 @@ public class MediaFragments extends MMObjectBuilder {
         addFunction(new NodeFunction<List<URLWrapper>>("filteredurls_wrapped", FILTEREDURLS_PARAMETERS) {
                 @Override
                 public List<URLWrapper> getFunctionValue(Node node, Parameters params) {
-                    log.warn("A " + node.getNumber() + " " + params);
                     List<URLWrapper> result = new ArrayList<URLWrapper>();
                     MMObjectNode mm = MediaFragments.this.getNode(node.getNumber());
-                    log.warn("B " + mm);
                     List<URLComposer> list = getFilteredURLs(mm, translateURLArguments(params, null), null);
-                    System.out.println("C " + list);
-
                     for (URLComposer uc :list) {
                         result.add(new URLWrapper(uc));
                     }
