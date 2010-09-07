@@ -7,7 +7,7 @@
 <mm:import externid="nodemanager" jspvar="nodemanager" vartype="list" />
 <mm:import externid="maxdistance" jspvar="maxdistance" vartype="integer">2</mm:import>
 <mm:import id="baseurl" jspvar="url"><mm:url page="model.svg.jsp" /></mm:import>
-<mm:cloud jspvar="cloud">
+<mm:cloud jspvar="cloud" method="asis">
 
 Digraph "MMBase<%= nodemanager == null ? "" : " " + nodemanager %>" {
   edge [fontsize=8.0];
