@@ -11,12 +11,14 @@ package org.mmbase.applications.media.builders;
 
 import org.mmbase.applications.media.filters.MainFilter;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
+import org.mmbase.applications.media.urlcomposers.URLWrapper;
 import org.mmbase.applications.media.cache.URLCache;
 
 import java.util.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.bridge.Node;
 import org.mmbase.util.*;
 import org.mmbase.util.transformers.Xml;
 import org.mmbase.util.functions.*;
@@ -264,6 +266,37 @@ public class MediaFragments extends MMObjectBuilder {
         }
         List<URLComposer> urls =  getURLs(fragment, info, null,cacheExpireObjects);
         return MainFilter.getInstance().filter(urls);
+    }
+
+
+    {
+        addFunction(new NodeFunction<List<URLWrapper>>("filteredurls_wrapped", FILTEREDURLS_PARAMETERS) {
+                @Override
+                public List<URLWrapper> getFunctionValue(Node node, Parameters params) {
+                    log.warn("A " + node.getNumber() + " " + params);
+                    List<URLWrapper> result = new ArrayList<URLWrapper>();
+                    MMObjectNode mm = MediaFragments.this.getNode(node.getNumber());
+                    log.warn("B " + mm);
+                    List<URLComposer> list = getFilteredURLs(mm, translateURLArguments(params, null), null);
+                    System.out.println("C " + list);
+
+                    for (URLComposer uc :list) {
+                        result.add(new URLWrapper(uc));
+                    }
+                    return result;
+                };
+            });
+    }
+
+
+
+    {
+        addFunction(new NodeFunction<String>("test", FILTEREDURLS_PARAMETERS) {
+                @Override
+                public String getFunctionValue(Node node, Parameters params) {
+                    return "HOI";
+                };
+            });
     }
 
 
