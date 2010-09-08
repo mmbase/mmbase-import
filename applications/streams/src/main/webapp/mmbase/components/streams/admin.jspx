@@ -26,6 +26,7 @@
         <caption>Configuration of creation of streamscaches</caption>
           <tr>
             <th>id</th>
+            <th>source</th>
             <th>label</th>
             <th>mimetype</th>
             <th>transcoder</th>
@@ -33,6 +34,7 @@
         <c:forEach items="${status.current.dataType.commitProcessor.processors[2].configuration}" var="jobdef">
           <tr>
             <td>${jobdef.key}</td>
+            <td>${jobdef.value.inId}</td>
             <td>${jobdef.value.label}</td>
             <td>${jobdef.value.mimeType}</td>
             <td>${jobdef.value.transcoder}</td>
