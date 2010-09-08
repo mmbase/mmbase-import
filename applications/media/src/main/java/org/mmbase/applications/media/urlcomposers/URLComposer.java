@@ -42,7 +42,7 @@ import java.util.*;
 public class URLComposer  {
 
     private static final Logger log = Logging.getLoggerInstance(URLComposer.class);
-    
+
     protected MMObjectNode  source;
     protected MMObjectNode  provider;
     protected Map<String, Object>           info;
@@ -85,10 +85,10 @@ public class URLComposer  {
     public Codec getCodec() {
         return Codec.get(source.getIntValue("codec"));
     }
-    
+
     /**
-     * Audio codec if its field is present, returns 'UNKNOWN' (-1) if no such field or codec is 
-     * unknown. Videosources have both codec and acodec (audio codec) fields, audiosources have 
+     * Audio codec if its field is present, returns 'UNKNOWN' (-1) if no such field or codec is
+     * unknown. Videosources have both codec and acodec (audio codec) fields, audiosources have
      * just one codec field.
      */
     public Codec getAcodec() {
@@ -98,7 +98,7 @@ public class URLComposer  {
             return Codec.get(-1);
         }
     }
-    
+
     public int getBitrate() {
         return source.getIntValue("bitrate");
     }
