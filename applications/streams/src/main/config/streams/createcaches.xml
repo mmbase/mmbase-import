@@ -46,6 +46,23 @@
     <loganalyzer name="org.mmbase.streams.transcoders.FFMpeg2TheoraAnalyzer" />
   </transcoder>
 
+  <!-- example for vp8 -->
+<!-- 
+  <transcoder mimetype="video/*" id="v8">
+    <class name="org.mmbase.streams.transcoders.FFMpegTranscoder">
+      <param name="format">webm</param>
+      <param name="vcodec">libvpx</param>
+      <param name="bitrate">1024k</param>
+      <param name="acodec">libvorbis</param>
+      <param name="abitrate">128k</param>
+      <param name="-ar">44100</param>
+      <param name="-threads">0</param>
+      <param name="audioChannels">2</param>
+      <param name="async">1</param>
+    </class>
+    <loganalyzer name="org.mmbase.streams.transcoders.FFMpegAnalyzer" />
+  </transcoder>
+ -->
 
   <!-- example config for ts streams over cellular networks (for iPhone etc.) -->
 <!-- 
