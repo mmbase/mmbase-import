@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
 */
 
 package org.mmbase.applications.media.filters;
@@ -27,13 +27,12 @@ public class AvailableFilter implements Filter {
         ListIterator<URLComposer> i = urlcomposers.listIterator();
         while (i.hasNext()) {
             URLComposer uc = i.next();
-            /* TODO: do something here with State SOURCE_UNSUPPORTED ? */
             if (! uc.isAvailable()) {
                 i.remove();
             }
         }
         return urlcomposers;
-        
+
     }
     public void configure(DocumentReader reader, Element e) {
         // not needed
