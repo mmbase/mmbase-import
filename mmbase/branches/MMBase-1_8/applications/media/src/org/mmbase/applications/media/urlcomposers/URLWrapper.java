@@ -10,12 +10,10 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.urlcomposers;
 
-import org.mmbase.util.MimeType;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.applications.media.Format;
-import org.mmbase.applications.media.Codec;
-import org.mmbase.applications.media.State;
+import org.mmbase.applications.media.*;
 import org.mmbase.util.images.Dimension;
 
 import java.util.*;
@@ -34,34 +32,34 @@ public class URLWrapper implements java.io.Serializable  {
     protected final int  provider;
     protected final Map<String, Object>           info;
     protected final Format    format;
-    protected final Codec    codec;
-    protected final Codec    acodec;
-    protected final int      bitrate;
+    //protected final Codec    codec;
+    //protected final Codec    acodec;
+    //protected final int      bitrate;
     protected final MimeType    mimeType;
-    protected final Dimension dimension;
-    protected final int fileSize;
+    //protected final Dimension dimension;
+    //protected final int fileSize;
     protected final String url;
-    protected final String fileName;
+    //protected final String fileName;
     protected final boolean available;
-    protected final boolean main;
-    protected final State state;
+    //protected final boolean main;
+    //protected final State state;
 
     public URLWrapper(URLComposer uc) {
         source = uc.getSource().getNumber();
         provider = uc.getProvider().getNumber();
         info = null; //uc.getInfo();
         format = uc.getFormat();
-        codec = uc.getCodec();
-        acodec = uc.getAcodec();
-        bitrate = uc.getBitrate();
-        mimeType = uc.getMimeType();
-        dimension = uc.getDimension();
-        fileSize = uc.getFilesize();
+        //codec = uc.getCodec();
+        //acodec = uc.getAcodec();
+        //bitrate = uc.getBitrate();
+        mimeType = new MimeType(uc.getMimeType());
+        //dimension = uc.getDimension();
+        //fileSize = uc.getFilesize();
         url = uc.getURL();
-        fileName = uc.getFilename();
+        //fileName = uc.getFilename();
         available = uc.isAvailable();
-        main = uc.isMain();
-        state = uc.getState();
+        //main = uc.isMain();
+        //state = uc.getState();
     }
 
 
@@ -79,6 +77,7 @@ public class URLWrapper implements java.io.Serializable  {
         return format;
     }
 
+    /*
     public Codec getCodec() {
         return codec;
     }
@@ -87,8 +86,9 @@ public class URLWrapper implements java.io.Serializable  {
         return acodec;
     }
 
+    */
     public int getBitrate() {
-        return bitrate;
+        throw new UnsupportedOperationException("Only supported in mmbase >= 1.9)");
     }
 
     public MimeType       getMimeType() {
@@ -97,11 +97,11 @@ public class URLWrapper implements java.io.Serializable  {
 
 
     public Dimension getDimension() {
-        return dimension;
+        throw new UnsupportedOperationException("Only supported in mmbase >= 1.9)");
     }
 
     public int getFilesize() {
-        return fileSize;
+        throw new UnsupportedOperationException("Only supported in mmbase >= 1.9)");
     }
 
     public final String getURL() {
@@ -109,7 +109,7 @@ public class URLWrapper implements java.io.Serializable  {
     }
 
     public final String getFilename() {
-        return fileName;
+        throw new UnsupportedOperationException("Only supported in mmbase >= 1.9)");
     }
 
     /**
@@ -122,13 +122,14 @@ public class URLWrapper implements java.io.Serializable  {
     }
 
     public boolean isMain() {
-        return main;
-
+        throw new UnsupportedOperationException("Only supported in mmbase >= 1.9)");
     }
 
+    /*
     public State getState() {
         return state;
     }
+    */
 
     @Override
     public String toString() {
