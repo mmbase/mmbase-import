@@ -185,12 +185,12 @@ public class Job implements Iterable<Result> {
 
                 // mimetype: skip when there is no match between current jd and inNode
                 if (! jd.getMimeType().matches(new MimeType(inNode.getStringValue("mimetype")))) {
-                    LOG.debug("SKIPPING " + jd);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("SKIPPING " + jd);
+                    }
                     results.set(i, new SkippedResult(jd, inURI));
                     skipped++;
                     continue;
-                } else {
-                    LOG.service("NOT SKIPPING " + jd);
                 }
 
                 assert inURI != null;
@@ -310,7 +310,9 @@ public class Job implements Iterable<Result> {
             public boolean hasNext() {
                 for (int j = i; j < results.size(); j++) {
                     if (results.get(j) != null && ! results.get(j).isReady()) {
-                        LOG.debug("Found to do at " + j + " -> " + results.get(j));
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Found to do at " + j + " -> " + results.get(j));
+                        }
                         return true;
                     }
                 }
@@ -352,7 +354,9 @@ public class Job implements Iterable<Result> {
                 Node destination = current.getDestination();
                 if (destination != null) {
                     try {
-                        LOG.debug("Setting " + destination.getNodeManager().getName() + " " + destination.getNumber() + " " + destination.getStringValue("id") + "/" + destination.getStringValue("key") + " to BUSY " + i);
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Setting " + destination.getNodeManager().getName() + " " + destination.getNumber() + " " + destination.getStringValue("id") + "/" + destination.getStringValue("key") + " to BUSY " + i);
+                        }
                         destination.setIntValue("state", State.BUSY.getValue());
                         destination.commit();
                     } catch (Exception e) {
@@ -360,7 +364,9 @@ public class Job implements Iterable<Result> {
                     }
                 }
                 busy++;
-                LOG.debug(" Returning at " + i + " " + current + " (" + current.isReady() + ")");
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(" Returning at " + i + " " + current + " (" + current.isReady() + ")");
+                }
                 return current;
             }
 
@@ -435,7 +441,9 @@ public class Job implements Iterable<Result> {
                     Queries.addConstraint(q, Queries.createConstraint(q, "id",  FieldCompareConstraint.EQUAL, src));
                     Queries.addConstraint(q, Queries.createConstraint(q, "key", FieldCompareConstraint.EQUAL, key));
 
-                    LOG.debug("Execute query " + q.toSql());
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Execute query " + q.toSql());
+                    }
                     NodeList nodes = caches.getList(q);
                     if (nodes.size() > 0) {
                         logger.service("Found existing node for " + key + "(" + src.getNumber() + "): " + nodes.getNode(0).getNumber());
@@ -509,7 +517,7 @@ public class Job implements Iterable<Result> {
         return interrupted;
     }
     public boolean reached(Stage s) {
-        LOG.debug("Comparing for " + getStage() + ">=" + s);
+        if (LOG.isDebugEnabled()) LOG.debug("Comparing for " + getStage() + ">=" + s);
         return getStage().ordinal() >= s.ordinal();
     }
 
