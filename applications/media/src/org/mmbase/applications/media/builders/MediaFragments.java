@@ -261,14 +261,15 @@ public class MediaFragments extends MMObjectBuilder {
 
 
     {
-        addFunction(new NodeFunction<List<URLWrapper>>("filteredurls_wrapped", FILTEREDURLS_PARAMETERS) {
+        addFunction(new NodeFunction/*<List<URLWrapper>>*/("filteredurls_wrapped", FILTEREDURLS_PARAMETERS, ReturnType.LIST) {
                 @Override
-                public List<URLWrapper> getFunctionValue(Node node, Parameters params) {
-                    List<URLWrapper> result = new ArrayList<URLWrapper>();
+	        public Object getFunctionValue(Node node, Parameters params) {
+                    List result = new ArrayList();
                     MMObjectNode mm = MediaFragments.this.getNode(node.getNumber());
-                    List<URLComposer> list = getFilteredURLs(mm, translateURLArguments(params, null), null);
-                    for (URLComposer uc :list) {
-                        result.add(new URLWrapper(uc));
+                    List list = getFilteredURLs(mm, translateURLArguments(params, null), null);
+		    Iterator i = list.iterator();
+		    while (i.hasNext()) {
+                        result.add(new URLWrapper((URLComposer) i.next()));
                     }
                     return result;
                 };
@@ -276,15 +277,6 @@ public class MediaFragments extends MMObjectBuilder {
     }
 
 
-
-    {
-        addFunction(new NodeFunction<String>("test", FILTEREDURLS_PARAMETERS) {
-                @Override
-                public String getFunctionValue(Node node, Parameters params) {
-                    return "HOI";
-                };
-            });
-    }
 
 
     /**
