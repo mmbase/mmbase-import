@@ -116,7 +116,9 @@ public class FileServlet extends BridgeServlet {
         if (pathInfo == null) {
             return getDirectory();
         } else {
-            return new File(getDirectory(), URL.transformBack(pathInfo).replace("/", File.separator));
+            //final String fileName = URL.transformBack(pathInfo).replace("/", File.separator); // fucks up UTF8
+            final File f = new File(getDirectory(), pathInfo.replace("/", File.separator));
+            return f;
         }
     }
 
@@ -236,9 +238,10 @@ public class FileServlet extends BridgeServlet {
         }
 
         File file = getFile(pi, resp);
+        log.debug(" " + file);
         if (! file.exists()) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "The file '" + pi + "' does not exist");
-            log.debug("" + file + " does not exist");
+            log.debug("" + pi + " "  + file + " does not exist");
             return null;
         }
         if (! canRead(req, file)) {
