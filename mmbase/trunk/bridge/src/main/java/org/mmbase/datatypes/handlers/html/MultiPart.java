@@ -89,7 +89,10 @@ public class MultiPart {
                 ServletFileUpload fu = new ServletFileUpload(factory);
                 if (req.getCharacterEncoding() == null) {
                     // Never fall back on system default
-                    fu.setHeaderEncoding("ISO-8859-1"); // if incorrect, it will be fixed later.
+                    fu.setHeaderEncoding("UTF-8"); // if incorrect, it will be fixed later.
+                    log.debug("fileupload's header encoding set to UTF-8");
+                } else {
+                    log.debug("fileupload's header encoding set to: " + req.getCharacterEncoding() );
                 }
                 List fileItems = fu.parseRequest(req);
                 for (Iterator i = fileItems.iterator(); i.hasNext(); ) {
@@ -101,6 +104,7 @@ public class MultiPart {
                         if (enc == null) {
                             enc = "ISO-8859-1";
                         }
+                        log.debug("using encoding: " + enc);
                         try {
                             value = fi.getString(enc);
                         } catch(java.io.UnsupportedEncodingException uee) {
