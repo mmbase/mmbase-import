@@ -209,8 +209,6 @@ public class Job implements Iterable<Result> {
                     dest.setNodeValue("mediaprovider", mediaprovider);
                     dest.setNodeValue("mediafragment", mediafragment);
 
-                    jd.transcoder.init(dest);
-
                     File inFile  = new File(processor.getDirectory(), Job.this.node.getStringValue("url").replace("/", File.separator));
 
                     StringBuilder buf = new StringBuilder();
@@ -226,6 +224,7 @@ public class Job implements Iterable<Result> {
                     assert outFileName != null;
                     assert outFileName.length() > 0;
                     dest.setStringValue("url", outFileName);
+                    jd.transcoder.init(dest);
 
                     dest.commit();
                     
