@@ -82,7 +82,8 @@ public class Users extends MMObjectBuilder {
     private boolean userNameCaseSensitive = false;
 
     private final UserProvider provider = new BasicUserProvider(Users.this) {
-            @Override protected boolean getUserNameCaseSensitive() {
+            @Override
+            protected boolean getUserNameCaseSensitive() {
                 return Users.this.userNameCaseSensitive;
             }
         };
@@ -129,13 +130,14 @@ public class Users extends MMObjectBuilder {
     }
 
 
-    @Override public boolean setValue(MMObjectNode node, String field, Object originalValue) {
+    @Override
+    public boolean setValue(MMObjectNode node, String field, Object originalValue) {
         if (field.equals(FIELD_USERNAME)) {
             Object value = node.getValue(field);
             if (node.getIntValue(FIELD_STATUS) >= 0) {
                 if (originalValue != null && ! originalValue.equals(value)) {
                     /*
-                    node.values.put(field, value);
+                      node.values.put(field, value);
                     log.warn("Cannot change username (unless account is blocked)");
                     return false; // hmm?
                     */
@@ -187,7 +189,7 @@ public class Users extends MMObjectBuilder {
         String userName = node.getStringValue(FIELD_USERNAME);
         if (!userNameCaseSensitive && userName!=null) {
             userName = userName.toLowerCase();
-            node.setValue(FIELD_USERNAME,userName);
+            node.setValue(FIELD_USERNAME, userName);
         }
         int res = super.insert(owner, node);
         NodeSearchQuery nsq = new NodeSearchQuery(this);
@@ -246,10 +248,10 @@ public class Users extends MMObjectBuilder {
     /**
      * Makes sure unique values and not-null's are filed
      */
-    /*
+    @Override
     public void setDefaults(MMObjectNode node) {
         super.setDefaults(node);
-        MMObjectNode defaultDefaultContext = Contexts.getBuilder().getContextNode(node.getStringValue("owner"));
+        MMObjectNode defaultDefaultContext = Verify.getInstance().getContextProvider().getContextNode(node.getStringValue("owner"));
         node.setValue(FIELD_DEFAULTCONTEXT, defaultDefaultContext);
         node.setValue(FIELD_PASSWORD, "");
         node.setValue(FIELD_STATUS, 0);
@@ -260,7 +262,6 @@ public class Users extends MMObjectBuilder {
         setUniqueValue(node, FIELD_USERNAME, currentUserName);
 
      }
-    */
 
    protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (function.equals("info")) {
