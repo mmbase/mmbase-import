@@ -32,6 +32,9 @@ import org.mmbase.bridge.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.servlet.FileServlet;
 
+import org.mmbase.util.transformers.CharTransformer;
+import org.mmbase.util.transformers.Identifier;
+
 import org.mmbase.applications.media.Codec;
 import org.mmbase.applications.media.Format;
 
@@ -53,7 +56,7 @@ import org.mmbase.applications.media.Format;
 public class SegmenterTranscoder extends CommandTranscoder {
 
     private static final Logger log = Logging.getLoggerInstance(SegmenterTranscoder.class);
-
+    private static CharTransformer trans = new Identifier();
 
     @Override
     protected LoggerWriter getErrorWriter(Logger log) {
@@ -83,33 +86,55 @@ public class SegmenterTranscoder extends CommandTranscoder {
     }
 
     /**
-     * Saves mimetype (video/*) in destination node when not set and deletes former segments when
-     * re-transcoding.
+     * Saves mimetype (application/x-mpegurl) in destination node when not set, deletes former 
+     * segments when re-transcoding and removes punctuation, whitespace etc from filename.
      * @param dest  destination node (streamsourcescaches)
      */
     public void init(Node dest) {
         String mt = dest.getStringValue("mimetype");
         if (mt == null || "".equals(mt)) { 
-            dest.setStringValue("mimetype", "video/*");
+            dest.setStringValue("mimetype", "application/x-mpegurl");
         }
         
-        // find and delete already existing segments
-        String filename = dest.getStringValue("url");
-        if (filename.length() < 1) {
-            log.error("Still empty fileName: '" + filename + "' of #" + dest.getNumber());
+        String fileName = dest.getStringValue("url");
+        if (fileName.length() < 1) {
+            log.warn("Still empty fileName: '" + fileName + "' of #" + dest.getNumber());
         } else {
             
-            String fileprefix = filename.substring(0, filename.lastIndexOf("."));
+            // remove punctuation from fileName
+            StringBuilder m3u8 = new StringBuilder();
+            if (fileName.indexOf('.') > -1) {
+                String base = fileName.substring(0, fileName.lastIndexOf('.'));
+                String ext = fileName.substring(fileName.lastIndexOf('.'), fileName.length());
+                String begin = "";
+                
+                if (base.indexOf('.') > -1) {
+                    begin = base.substring(0, base.lastIndexOf('.') + 1);
+                    base = base.substring(base.lastIndexOf('.') + 1, base.length());
+                    m3u8.append(begin);
+                } else if (base.indexOf('/') > -1) {
+                    begin = base.substring(0, base.lastIndexOf('/') + 1);
+                    base = base.substring(base.lastIndexOf('/') + 1, base.length());
+                    m3u8.append(begin);
+                }
+                m3u8.append(trans.transform(base)).append(ext); 
+            }
+            
+            fileName = m3u8.toString();
+            dest.setStringValue("url", fileName);
+            
+            // get arguments to delete ts segements
+            String fileprefix = fileName.substring(0, fileName.lastIndexOf("."));
             if (fileprefix.indexOf("/") > -1) {
                 fileprefix = fileprefix.substring(fileprefix.lastIndexOf("/") + 1, fileprefix.length());
             }
             
-            File file = new File(FileServlet.getDirectory(), filename);
+            File file = new File(FileServlet.getDirectory(), fileName);
             String dir = file.toString();
             dir = dir.substring(0, dir.lastIndexOf("/"));
 
             if (log.isDebugEnabled()) {
-                log.debug("  filename: " + filename);
+                log.debug("  fileName: " + fileName);
                 log.debug("fileprefix: " + fileprefix);
                 log.debug("       dir: " + dir);
             }
