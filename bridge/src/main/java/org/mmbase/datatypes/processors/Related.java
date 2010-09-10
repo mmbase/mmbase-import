@@ -265,7 +265,7 @@ public class Related {
             log.debug("Found " + rl.size() + " existing relations");
             if (value != null) {
                 Cloud cloud = node.getCloud();
-                Node dest = Casting.toNode(value, cloud);
+                Node dest = BridgeCaster.toNode(value, cloud);
                 createRelation(node, dest, rl);
                 return dest;
             } else {
@@ -295,7 +295,7 @@ public class Related {
             if (relateDefaultIfNull && result == null && field != null) {
                 Object defaultValue = field.getDataType().getDefaultValue(node.getCloud().getLocale(), node.getCloud(), field);
                 if (defaultValue != null) {
-                    Node defaultNode = Casting.toNode(defaultValue, node.getCloud());
+                    Node defaultNode = BridgeCaster.toNode(defaultValue, node.getCloud());
                     createRelation(node, defaultNode, BridgeCollections.EMPTY_NODELIST);
                 }
             }
