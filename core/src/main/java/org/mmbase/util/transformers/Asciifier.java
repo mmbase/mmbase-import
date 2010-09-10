@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Andr&eacute; van Toly
  * @since MMBase-1.9.5
- * @version $Id: Asciifier.java 42169 2010-05-16 17:14:51Z michiel $
+ * @version $Id$
  */
 
 public class Asciifier extends StringTransformer {
