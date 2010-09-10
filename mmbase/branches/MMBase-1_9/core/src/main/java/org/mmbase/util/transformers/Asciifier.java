@@ -113,7 +113,7 @@ public class Asciifier extends StringTransformer {
                 str = replaceQuestionMark(str, r);
             }
             
-            log.debug("Finished identifier");
+            log.debug("Finished asciifier");
             
         } catch (Exception exc) {
             log.error(exc.toString());
