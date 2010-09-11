@@ -10,8 +10,6 @@
 
   <class name="org.mmbase.framework.BasicComponent" />
 
-  <title xml:lang="nl">Streams</title>
-  <title xml:lang="en">Streams</title>
   <description xml:lang="en">
     The MMBase Streams application is designed to upload, transcode and manage media:
     video, audio and images. 
@@ -21,6 +19,9 @@
     geuploaded, getranscodeerd en beheerd worden.
   </description>
 
+  <title xml:lang="nl">Streams</title>
+  <title xml:lang="en">Streams</title>
+
   <dependency component="media" version="1" />
 
   <action name="cancel_jobs" rank="administrator">
@@ -29,6 +30,10 @@
 
   <action name="retrigger_jobs" rank="administrator">
     <description xml:lang="en">Whether you may (re)trigger jobs</description>
+  </action>
+
+  <action name="update_sources" rank="basic user">
+    <description xml:lang="en">Whether you can automatically update information stored in a stream node</description>
   </action>
 
   <block name="recent"
