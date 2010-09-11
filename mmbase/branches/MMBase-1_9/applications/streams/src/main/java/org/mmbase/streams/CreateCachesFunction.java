@@ -65,7 +65,7 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
      * @param url   field url of source node
      * @return Processor to (re)create caches nodes
      */
-    Processor getCacheCreator(final Field url) {
+    protected static Processor getCacheCreator(final Field url) {
         CommitProcessor commitProcessor = url.getDataType().getCommitProcessor();
         if (commitProcessor instanceof ChainedCommitProcessor) {
             ChainedCommitProcessor chain = (ChainedCommitProcessor) commitProcessor;
@@ -98,7 +98,7 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
 
             {
                 final Field url = node.getNodeManager().getField("url");
-                final Processor cc = getCacheCreator(url);                
+                final Processor cc = getCacheCreator(url);
                 Map<String, JobDefinition> jdlist = new LinkedHashMap<String, JobDefinition>();
 
                 if (cache != null && node.getCloud().hasNode(cache.getNumber())) {
