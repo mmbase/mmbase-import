@@ -56,6 +56,10 @@ public class FFMpegAnalyzer implements Analyzer {
         util.setUpdateSource(b);
     }
 
+    public void setUpdateDestionation(boolean b) {
+        util.setUpdateDestination(b);
+    }
+
     public void addThrowable(Throwable t) {
         errors.add(t);
     }
