@@ -65,7 +65,7 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
      * @param url   field url of source node
      * @return Processor to (re)create caches nodes
      */
-    Processor getCacheCreator(final Field url) {
+    protected static Processor getCacheCreator(final Field url) {
         CommitProcessor commitProcessor = url.getDataType().getCommitProcessor();
         if (commitProcessor instanceof ChainedCommitProcessor) {
             ChainedCommitProcessor chain = (ChainedCommitProcessor) commitProcessor;
