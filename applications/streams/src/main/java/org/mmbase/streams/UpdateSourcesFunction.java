@@ -92,8 +92,8 @@ public class UpdateSourcesFunction extends NodeFunction<Boolean> {
                 
                 recognizer.analyze(f.toURI(), chain);
                 a.ready(source, cache);
-                source.commit();
-                if (cache != null) { cache.commit(); }
+                //source.commit();
+                //if (cache != null) { cache.commit(); }
                 
                 return true;
                 
