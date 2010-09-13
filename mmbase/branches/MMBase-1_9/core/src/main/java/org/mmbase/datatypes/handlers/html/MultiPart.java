@@ -92,7 +92,7 @@ public class MultiPart {
                     fu.setHeaderEncoding("UTF-8"); // if incorrect, it will be fixed later.
                     log.debug("fileupload's header encoding set to UTF-8");
                 } else {
-                    log.debug("fileupload's header encoding unchanged" );
+                    log.debug("fileupload's header encoding unchanged: " + fu.getHeaderEncoding());
                 }
                 List fileItems = fu.parseRequest(req);
                 for (Iterator i = fileItems.iterator(); i.hasNext(); ) {
