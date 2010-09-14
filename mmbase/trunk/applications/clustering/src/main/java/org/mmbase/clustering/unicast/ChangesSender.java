@@ -94,8 +94,11 @@ public class ChangesSender implements Runnable {
         String[] unicastHost = s.split(",");
         for (String unicastString : unicastHost) {
             if (unicastString.length() > 0) {
-                String[] unicastSend = unicastString.split(":", 3);
-                unicastSenders.add(new org.mmbase.clustering.unicast.ChangesSender.OtherMachine(unicastSend[0], unicastSend.length > 2 ? unicastSend[2] : null, Integer.parseInt(unicastSend[1]), 2));
+                String[] unicastSend = unicastString.split(":", 4);
+                unicastSenders.add(new org.mmbase.clustering.unicast.ChangesSender.OtherMachine(unicastSend[0],
+                                                                                                unicastSend.length > 2 ? unicastSend[2] : null,
+                                                                                                Integer.parseInt(unicastSend[1]),
+                                                                                                unicastSend.length > 3 ? Integer.parseInt(unicastSend[3]) : 2));
             }
         }
         setOtherMachines(unicastSenders);
