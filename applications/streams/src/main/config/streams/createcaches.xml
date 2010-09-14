@@ -5,25 +5,15 @@
     >
 
   <!--
-     Example configuration
-    -->
-  <!--
-  <server max_simultaneous_transcoders="2" host="localhost" port="1679" />
+     Example configuration: you will always need one recognizer and at least one transcoder.
+     Transcoders can be on localhost but can call org.mmbase.util.CommandServer on a remote server
+     to distribute tasks among multiple machines.
   -->
   <localhost max_simultaneous_transcoders="1"  stage="recognizer" />
   <localhost max_simultaneous_transcoders="1"  stage="transcoder" />
   <!--
-  <server max_simultaneous_transcoders="2" host="openbeelden2.tuxic.nl" port="1679" />
+  <server max_simultaneous_transcoders="2" host="someotherhost.org" port="1679" stage="transcoder" />
   -->
-
-  <!--
-  <transcoder>
-    <class name="org.mmbase.streams.transcoders.InfiniteTranscoder">
-
-    </class>
-  </transcoder>
-  -->
-
 
   <recognizer id="recognizer">
     <class name="org.mmbase.streams.transcoders.FFMpegRecognizer">
@@ -50,7 +40,7 @@
 <!-- 
   <transcoder mimetype="video/*" id="v8">
     <class name="org.mmbase.streams.transcoders.FFMpegTranscoder">
-      <param name="forceFormat">webm</param>
+      <param name="format">webm</param>
       <param name="vcodec">libvpx</param>
       <param name="bitrate">1024k</param>
       <param name="acodec">libvorbis</param>
@@ -71,6 +61,7 @@
       mimetype="video/*" id="v1">
     <class name="org.mmbase.streams.transcoders.FFMpegTranscoder">
       
+      <param name="format">ts</param>
       <param name="forceFormat">mpegts</param>
       <param name="vcodec">libx264</param>
       <param name="framesPerSecond">25</param>
@@ -113,7 +104,7 @@
       label="lo"
       mimetype="video/*" in="v1" id="v2">
     <class name="org.mmbase.streams.transcoders.SegmenterTranscoder">
-      <param name="forceFormat">ts</param>
+      <param name="format">ts</param>
       <param name="duration">10</param>
       <param name="httpPrefix">http://www.openimages.eu/</param>
     </class>
@@ -121,33 +112,18 @@
   </transcoder>
  -->
  
-  <!--
-  <transcoder mimetype="audio/*" in="v1" id="v3">
-    <class name="org.mmbase.streams.transcoders.FFMpeg2TheoraTranscoder">
-      <param name="videoQuality">8</param>
-    </class>
-    <loganalyzer name="org.mmbase.streams.transcoders.FFMpeg2TheoraAnalyzer" />
-  </transcoder>
-  -->
-
-  <!--
-  <transcoder mimetype="image/*" id="v4">
-    <class name="org.mmbase.streams.transcoders.FFMpeg2TheoraTranscoder">
-      <param name="videoQuality">8</param>
-    </class>
-    <loganalyzer name="org.mmbase.streams.transcoders.FFMpeg2TheoraAnalyzer" />
-  </transcoder>
-  -->
-
-  <!--
-  <transcoder>
+  <!-- audio example -->
+  <transcoder mimetype="audio/*" id="a1" in="recognizer">
     <class name="org.mmbase.streams.transcoders.FFMpegTranscoder">
-      <param name="codec">mp4</param>
+      <param name="format">ogg</param>
+      <param name="acodec">libvorbis</param>
+      <param name="aq">32</param> <!-- 0-255 (0 = highest quality, 255 = lowest) -->
+      <param name="ab">192k</param>
     </class>
-
     <loganalyzer name="org.mmbase.streams.transcoders.FFMpegAnalyzer" />
   </transcoder>
-  -->
+  
+  <!-- InfiniteTranscoder is for testing purposes -->
   <!--
   <transcoder>
     <class name="org.mmbase.streams.transcoders.InfiniteTranscoder">
@@ -155,4 +131,5 @@
     </class>
   </transcoder>
   -->
+
 </createcaches>
