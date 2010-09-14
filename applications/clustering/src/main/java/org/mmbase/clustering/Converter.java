@@ -45,7 +45,7 @@ public class Converter {
         }
 
         try {
-            java.lang.reflect.Method m = org.mmbase.util.logging.SimpleTimeStampImpl.class.getMethod("configure");
+            java.lang.reflect.Method m = org.mmbase.util.logging.SimpleTimeStampImpl.class.getMethod("configure", String.class, String.class);
             m.invoke(null, "org.mmbase.clustering", argMap.get("log"));
         } catch (Exception t) {
             System.err.println(t.getMessage());
