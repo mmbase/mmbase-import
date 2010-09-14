@@ -56,7 +56,7 @@ Index: src/main/java/org/mmbase/clustering/unicast/ChangesSender.java
 ===================================================================
 17a18
 > import edu.emory.mathcs.backport.java.util.concurrent.Future;
-104c105
+128c129
 <             kicker = new Thread(ThreadPools.threadGroup, this, "UnicastSender");
 ---
 >             kicker = new Thread(MMBaseContext.getThreadGroup(), this, "UnicastSender");
@@ -70,12 +70,6 @@ Index: src/main/java/org/mmbase/clustering/unicast/ChangesReceiver.java
 <             kicker = new Thread(ThreadPools.threadGroup, this, "UnicastReceiver");
 ---
 >             kicker = new Thread(MMBaseContext.getThreadGroup(), this, "UnicastReceiver");
-Index: src/main/java/org/mmbase/clustering/Converter.java
-===================================================================
-19c19
-<         org.mmbase.util.logging.SimpleTimeStampImpl.configure("org.mmbase.clustering", "stdout,debug");
----
->         //org.mmbase.util.logging.SimpleTimeStampImpl.configure("org.mmbase.clustering", "stdout,debug");
 Index: pom.xml
 ===================================================================
 8c8
