@@ -99,7 +99,6 @@ public class ChangesReceiver implements Runnable {
         }
     }
 
-
     public void run() {
         log.info("MultiCast receiving on " + ms +  " " + ia + ":" + mport);
         // create a datapackage to receive all messages

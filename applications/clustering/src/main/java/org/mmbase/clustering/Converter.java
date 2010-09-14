@@ -21,7 +21,7 @@ public class Converter {
         //argMap.put("unicastListen", InetAddress.getLocalHost().getHostName() + ":4123");
         argMap.put("unicastListen", "*:4123");
         argMap.put("unicastListenVersion", "2");
-        argMap.put("unicastSend", "otherhost:4123:mmbase");
+        argMap.put("unicastSend", "otherhost:4123:mmbase:2");
         argMap.put("unicastSendCollectTime", "5");
         argMap.put("unicastSendCollectCount", "50");
         argMap.put("unicastSendVersion", "2");
