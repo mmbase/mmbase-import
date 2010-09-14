@@ -20,9 +20,11 @@ public class Converter {
         Map<String, String> argMap = new LinkedHashMap<String, String>();
         //argMap.put("unicastListen", InetAddress.getLocalHost().getHostName() + ":4123");
         argMap.put("unicastListen", "*:4123");
+        argMap.put("unicastListenVersion", "2");
         argMap.put("unicastSend", "otherhost:4123:mmbase");
         argMap.put("unicastSendCollectTime", "5");
         argMap.put("unicastSendCollectCount", "50");
+        argMap.put("unicastSendVersion", "2");
         argMap.put("multicast", org.mmbase.clustering.multicast.Multicast.HOST_DEFAULT + ":" + org.mmbase.clustering.multicast.Multicast.PORT_DEFAULT);
         argMap.put("log", "stdout,debug");
 
@@ -51,8 +53,8 @@ public class Converter {
         String[] unicast = argMap.get("unicastListen").split(":");
         final String unicastListenHost = unicast[0];
         final int unicastListenPort    = Integer.parseInt(unicast[1]);
-        final int unicastListenVersion = 2;
-
+        final int unicastListenVersion = Integer.parseInt(argMap.get("unicastListenVersion"));
+        final int unicastSendVersion = Integer.parseInt(argMap.get("unicastSendVersion"));
 
         int dpsize = 64 * 1024;
         String[] multicast = argMap.get("multicast").split(":");
@@ -62,11 +64,11 @@ public class Converter {
 
         Statistics stats = new Statistics();
 
-        org.mmbase.clustering.unicast.ChangesReceiver uniCastReceiver = new org.mmbase.clustering.unicast.ChangesReceiver(unicastListenHost, unicastListenPort, uniToMultiNodes, 2);
+        org.mmbase.clustering.unicast.ChangesReceiver uniCastReceiver = new org.mmbase.clustering.unicast.ChangesReceiver(unicastListenHost, unicastListenPort, uniToMultiNodes, unicastListenVersion);
         uniCastReceiver.start();
 
 
-        org.mmbase.clustering.unicast.ChangesSender uniCastSender     = new org.mmbase.clustering.unicast.ChangesSender(null, 4123, 10 * 1000, multiToUniNodes, stats, 2);
+        org.mmbase.clustering.unicast.ChangesSender uniCastSender     = new org.mmbase.clustering.unicast.ChangesSender(null, 4123, 10 * 1000, multiToUniNodes, stats, unicastSendVersion);
         uniCastSender.setOtherMachines(argMap.get("unicastSend"));
         uniCastSender.setCollectTime(Integer.parseInt(argMap.get("unicastSendCollectTime")));
         uniCastSender.setCollectCount(Integer.parseInt(argMap.get("unicastSendCollectCount")));
