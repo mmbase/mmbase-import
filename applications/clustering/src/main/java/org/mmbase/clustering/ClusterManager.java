@@ -226,7 +226,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         if (log.isDebugEnabled()) {
             log.debug("RECEIVE=>" + message);
         }
-        StringTokenizer tok = new StringTokenizer(message,",");
+        StringTokenizer tok = new StringTokenizer(message, ",");
         if (tok.hasMoreTokens()) {
             String machine = tok.nextToken();
             if (tok.hasMoreTokens()) {
