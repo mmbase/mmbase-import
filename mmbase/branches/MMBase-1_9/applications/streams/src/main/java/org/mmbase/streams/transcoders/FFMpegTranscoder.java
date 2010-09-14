@@ -34,7 +34,7 @@ import java.util.regex.*;
 
 /**
  * Transcoder that uses <code>ffmpeg</code> to transcode media. Possible parameters to be set in 
- * 'createcaches.xml' are: format, forceFormat (-f), acodec (-acodec), vcodec (-vcodec), 
+ * 'createcaches.xml' are: forceFormat (-f), acodec (-acodec), vcodec (-vcodec), 
  * vpre (-vpre), aq (-aq), ab (-ab), bitrate or b (-b), async (-async), framesPerSecond or 
  * r (-r), audioChannels or ac (-ac), width and height (combined to -s). 
  * Others can be added as extra parameters but will be at the end of the commands parameters. See the
@@ -43,7 +43,7 @@ import java.util.regex.*;
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-@Settings({"format", "forceFormat", "acodec", "vcodec", "vpre", "aq", "ab", "b", "async", "r", "ac", "width", "height"})
+@Settings({"forceFormat", "acodec", "vcodec", "vpre", "aq", "ab", "b", "async", "r", "ac", "width", "height"})
 public class FFMpegTranscoder extends CommandTranscoder {
 
     private static final Logger log = Logging.getLoggerInstance(FFMpegTranscoder.class);
