@@ -44,7 +44,13 @@ public class Converter {
             }
         }
 
-        org.mmbase.util.logging.SimpleTimeStampImpl.configure("org.mmbase.clustering", argMap.get("log"));
+        try {
+            java.lang.reflect.Method m = org.mmbase.util.logging.SimpleTimeStampImpl.class.getMethod("configure");
+            m.invoke(null, "org.mmbase.clustering", argMap.get("log"));
+        } catch (Exception t) {
+            System.err.println(t.getMessage());
+        }
+
 
 
         final BlockingQueue<byte[]> uniToMultiNodes =  new LinkedBlockingQueue<byte[]>(64);
