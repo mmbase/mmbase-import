@@ -43,7 +43,7 @@ import java.util.regex.*;
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-@Settings({"forceFormat", "acodec", "vcodec", "vpre", "aq", "ab", "b", "async", "r", "ac", "width", "height"})
+@Settings({"format", "forceFormat", "acodec", "vcodec", "vpre", "aq", "ab", "b", "async", "r", "ac", "width", "height"})
 public class FFMpegTranscoder extends CommandTranscoder {
 
     private static final Logger log = Logging.getLoggerInstance(FFMpegTranscoder.class);
