@@ -20,6 +20,7 @@
 
   <xi:include href="streamsources.fields.xml" />
   <xi:include href="http://www.mmbase.org/builders/media/mediasources.virtual.fields.xml" />
+  <xi:include href="streamsources.virtual.fields.xml" />
   <xi:include href="http://www.mmbase.org/builders/media/mediasources.main.virtual.fields.xml" />
   <xi:include href="streamsources.functions.xml" />
 
