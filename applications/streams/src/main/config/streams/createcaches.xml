@@ -50,7 +50,7 @@
 <!-- 
   <transcoder mimetype="video/*" id="v8">
     <class name="org.mmbase.streams.transcoders.FFMpegTranscoder">
-      <param name="format">webm</param>
+      <param name="forceFormat">webm</param>
       <param name="vcodec">libvpx</param>
       <param name="bitrate">1024k</param>
       <param name="acodec">libvorbis</param>
@@ -71,7 +71,6 @@
       mimetype="video/*" id="v1">
     <class name="org.mmbase.streams.transcoders.FFMpegTranscoder">
       
-      <param name="format">ts</param>
       <param name="forceFormat">mpegts</param>
       <param name="vcodec">libx264</param>
       <param name="framesPerSecond">25</param>
@@ -114,7 +113,7 @@
       label="lo"
       mimetype="video/*" in="v1" id="v2">
     <class name="org.mmbase.streams.transcoders.SegmenterTranscoder">
-      <param name="format">ts</param>
+      <param name="forceFormat">ts</param>
       <param name="duration">10</param>
       <param name="httpPrefix">http://www.openimages.eu/</param>
     </class>
