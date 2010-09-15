@@ -169,6 +169,13 @@ public class ChangesSender implements Runnable {
     }
 
 
+    /**
+     * Writes a number of messages to an output stream.
+     * The encoding is as such. using a DataOutputStream:
+     <pre>
+     &lt;number of message&gt;&lt;size of first message&gt;&lt;first message&gt;&lt;size second message&gt;&lt;second message&gt;....
+     </pre>
+    */
     protected void writeVersion2(java.io.OutputStream out, Collection<byte[]> data) throws IOException {
         DataOutputStream os = null;
         try {
@@ -191,6 +198,25 @@ public class ChangesSender implements Runnable {
             }
         }
     }
+
+    protected void sendVersion2(InetSocketAddress address, Collection<byte[]> data)  throws IOException {
+        Socket socket = null;
+        try {
+            socket = new Socket();
+            socket.connect(address, unicastTimeout);
+            writeVersion2(socket.getOutputStream(), data);
+        } finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (IOException e1) {
+                }
+            }
+        }
+    }
+    /**
+     * Simply writes one message to an output stream. Version 1 does not support multiple messages.
+     */
     protected void writeVersion1(java.io.OutputStream out, byte[] d) throws IOException {
         DataOutputStream os = null;
         try {
@@ -208,6 +234,23 @@ public class ChangesSender implements Runnable {
         }
     }
 
+    protected void sendVersion1(InetSocketAddress address, Collection<byte[]> data) throws IOException {
+        for (byte[] d : data) {
+            Socket socket = null;
+            try {
+                socket = new Socket();
+                socket.connect(address, unicastTimeout);
+                writeVersion1(socket.getOutputStream(), d);
+            } finally {
+                if (socket != null) {
+                    try {
+                        socket.close();
+                    } catch (IOException e1) {
+                    }
+                }
+            }
+        }
+    }
 
     @Override
     public void run() {
@@ -239,18 +282,12 @@ public class ChangesSender implements Runnable {
                     log.trace("Send " + data.size() + " changes to " + getOtherMachines());
                 }
                 for (OtherMachine machine : getOtherMachines()) {
-                    Socket socket = null;
                     try {
+                        final InetSocketAddress address = new InetSocketAddress(machine.host, machine.unicastPort);
                         if (machine.version > 1) {
-                            socket = new Socket();
-                            socket.connect(new InetSocketAddress(machine.host, machine.unicastPort), unicastTimeout);
-                            writeVersion2(socket.getOutputStream(), data);
+                            sendVersion2(address, data);
                         } else {
-                            for (byte[] d : data) {
-                                socket = new Socket();
-                                socket.connect(new InetSocketAddress(machine.host, machine.unicastPort), unicastTimeout);
-                                writeVersion1(socket.getOutputStream(), d);
-                            }
+                            sendVersion1(address, data);
                         }
 
                         if (log.isDebugEnabled()) {
@@ -267,13 +304,6 @@ public class ChangesSender implements Runnable {
                         log.warn("Connect exception: " + machine + " " + ce + ".");
                     } catch (IOException e) {
                         log.error("can't send message to " + machine + " " + e.getMessage() , e);
-                    } finally {
-                        if (socket != null) {
-                            try {
-                                socket.close();
-                            } catch (IOException e1) {
-                            }
-                        }
                     }
                 }
                 send.count++;

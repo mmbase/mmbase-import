@@ -88,7 +88,7 @@ public class ChangesReceiver implements Runnable {
             try {
                 serverSocket.close();
             } catch (IOException ioe) {
-                log.warn(ioe);
+                log.warn(ioe.getMessage(), ioe);
             }
         } else {
             log.service("Cannot stop thread, because it is null");
@@ -105,7 +105,7 @@ public class ChangesReceiver implements Runnable {
             for (int i = 0; i < listSize; i++) {
                 int arraySize = reader.readInt();
                 if (arraySize > maxMessageSize) {
-                    log.warn("Size of event " + i + ": " + arraySize + " too big, ignoring the rest (" + (listSize - i) + " message remaining).");
+                    log.warn("Size of event " + i + ": " + arraySize + " too big, ignoring the rest (" + (listSize - i) + " messages remaining).");
                     break;
                 } else {
                     log.trace("Size of event " + i + ": " + arraySize);
@@ -172,7 +172,6 @@ public class ChangesReceiver implements Runnable {
             while (true) {
                 if (Thread.currentThread().isInterrupted()) break;
                 Socket socket = null;
-                DataInputStream reader = null;
                 try {
                     socket = serverSocket.accept();
                     if (log.isTraceEnabled()) {
@@ -185,7 +184,7 @@ public class ChangesReceiver implements Runnable {
                         readStreamVersion1(socket.getInputStream(), nodesToSpawn);
                     }
                 } catch (SocketException e) {
-                    log.warn(e);
+                    log.warn(e.getMessage(), e);
                     continue;
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
