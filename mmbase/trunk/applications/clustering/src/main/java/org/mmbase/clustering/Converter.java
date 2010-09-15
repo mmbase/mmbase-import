@@ -21,6 +21,7 @@ public class Converter {
         //argMap.put("unicastListen", InetAddress.getLocalHost().getHostName() + ":4123");
         argMap.put("unicastListen", "*:4123");
         argMap.put("unicastListenVersion", "2");
+        argMap.put("unicastListenMaxMessageSize", "" + (5 * 1024 * 1024));
         argMap.put("unicastSend", "otherhost:4123:mmbase:2");
         argMap.put("unicastSendCollectTime", "5");
         argMap.put("unicastSendCollectCount", "50");
@@ -71,6 +72,7 @@ public class Converter {
         Statistics stats = new Statistics();
 
         org.mmbase.clustering.unicast.ChangesReceiver uniCastReceiver = new org.mmbase.clustering.unicast.ChangesReceiver(unicastListenHost, unicastListenPort, uniToMultiNodes, unicastListenVersion);
+        uniCastReceiver.setMaxMessageSize(Integer.parseInt(argMap.get("unicastListenMaxMessageSize")));
         uniCastReceiver.start();
 
 

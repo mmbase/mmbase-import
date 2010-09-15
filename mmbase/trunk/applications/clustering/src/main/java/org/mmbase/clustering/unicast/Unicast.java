@@ -45,6 +45,8 @@ public class Unicast extends ClusterManager {
 
     private String peers;
 
+    private int maxMessageSize = 5 * 1025 * 1024;
+
 
     /** Sender which reads the nodesToSend Queue amd puts the message on the line */
     private ChangesSender ucs;
@@ -124,6 +126,11 @@ public class Unicast extends ClusterManager {
 
         peers = configuration.get("peers");
 
+        String maxMessageSizeString = configuration.get("maxMessageSize");
+        if (maxMessageSizeString != null && maxMessageSizeString.length() > 0) {
+            maxMessageSize = Integer.parseInt(maxMessageSizeString);
+        }
+
         log.info("unicast host: "    + unicastHost);
         log.info("unicast port: "    + unicastPort);
         log.info("unicast timeout: " + unicastTimeout);
@@ -149,6 +156,7 @@ public class Unicast extends ClusterManager {
 
             try {
                 ucr = new ChangesReceiver(unicastHost, unicastPort, nodesToSpawn, version);
+                ucr.setMaxMessageSize(maxMessageSize);
                 ucr.start();
             } catch (java.io.IOException ioe) {
                 log.error(ioe.getMessage(), ioe);
