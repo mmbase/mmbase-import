@@ -205,7 +205,14 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             // not sure that this can happen, now, because of the while(c>0) trick.
             log.debug(scc.getClass() + " " + scc.getMessage() + ". Supposing old style message of " + message.length + " byte ", scc);
             // Possibly, it is a message from an 1.7 system
-            String mes = new String(message);
+            String mes;
+            try {
+                mes = new String(message, "ISO-8859-1");
+            } catch (java.io.UnsupportedEncodingException uee) {
+                log.warn(uee);
+                mes = new String(message);
+            }
+
             NodeEvent event = parseMessageBackwardCompatible(mes);
             if (log.isDebugEnabled()) {
                 log.debug("Old style message " + event);
@@ -213,7 +220,13 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             return event;
         } catch (EOFException eofe) {
             // suppose that this is a 1.7 message
-            String mes = new String(message);
+            String mes;
+            try {
+                mes = new String(message, "ISO-8859-1");
+            } catch (java.io.UnsupportedEncodingException uee) {
+                log.warn(uee);
+                mes = new String(message);
+            }
             NodeEvent event = parseMessageBackwardCompatible(mes);
             if (log.isDebugEnabled()) {
                 log.debug("Old style message " + event + " of " + message.length + " byte");
