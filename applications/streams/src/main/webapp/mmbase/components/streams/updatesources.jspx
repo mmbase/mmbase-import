@@ -77,7 +77,7 @@
                           
                         </c:when>
                         <c:otherwise>
-                          <mm:link referids="updatevalue@update,format?,max?,page?">
+                          <mm:link referids="updatevalue@update,max?,page?">
                             <a href="${_}">update</a>
                           </mm:link>
                         </c:otherwise>
@@ -121,7 +121,7 @@
                           
                         </c:when>
                         <c:otherwise>
-                          <mm:link referids="recachevalue@cache,format?,max?,page?">
+                          <mm:link referids="recachevalue@cache,max?,page?">
                             <a href="${_}">update</a>
                           </mm:link>
                         </c:otherwise>
@@ -141,14 +141,14 @@
               <th colspan="6">
                 <mm:previousbatches >
                   <mm:last>
-                    <mm:link referids="format,max">
+                    <mm:link referids="max">
                       <mm:param name="page"><mm:index  /></mm:param>
                       <a href="${_}">«« previous</a> -
                     </mm:link>
                   </mm:last>
                 </mm:previousbatches>
                 <mm:previousbatches >
-                  <mm:link referids="format,max">
+                  <mm:link referids="max">
                     <mm:param name="page"><mm:index  /></mm:param>
                     <a href="${_}"><mm:index offset="1" /></a>
                   </mm:link>
@@ -157,14 +157,14 @@
                 <mm:index offset="1" />
                 <mm:nextbatches>
                   <jsp:text> - </jsp:text>
-                  <mm:link referids="format,max">
+                  <mm:link referids="max">
                     <mm:param name="page"><mm:index /></mm:param>
                     <a href="${_}"><mm:index offset="${page + 2}" /></a>
                   </mm:link>
                 </mm:nextbatches>
                 <mm:nextbatches>
                   <mm:first>
-                    <mm:link referids="format,max">
+                    <mm:link referids="max">
                       <mm:param name="page"><mm:index  /></mm:param>
                       - <a href="${_}">next »»</a>
                     </mm:link>
