@@ -15,8 +15,8 @@ public class UnicastTest {
         ChangesSender   sender   = new ChangesSender(new HashMap<String, String>(),
                                                      -1, 100, null, new Statistics(), 2);
 
-        // not test if we can send
-        // make up some bytes
+
+        // Make up a bunch of random byte arrays
         Random random = new Random(2);
         List<byte[]> testSet = new ArrayList<byte[]>();
 
@@ -25,13 +25,19 @@ public class UnicastTest {
             random.nextBytes(message);
             testSet.add(message);
         }
+
+        // write them to one giant byte array in memory
         System.out.println("Test set: " + testSet);
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         sender.writeVersion2(buffer, testSet);
 
+
+        // Read the byte array in again
         LinkedList<byte[]> queue = new LinkedList<byte[]>();
         InputStream in = new ByteArrayInputStream(buffer.toByteArray());
         receiver.readStreamVersion2(in, queue);
+
+        // And check if the result is the same as what went in
 
         assertEquals(testSet.size(), queue.size());
         for (int i = 0 ; i < testSet.size(); i++) {
