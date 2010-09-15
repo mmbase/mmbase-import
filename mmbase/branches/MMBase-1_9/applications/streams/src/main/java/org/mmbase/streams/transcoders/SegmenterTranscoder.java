@@ -33,6 +33,8 @@ import org.mmbase.util.logging.*;
 import org.mmbase.servlet.FileServlet;
 
 import org.mmbase.util.transformers.CharTransformer;
+import org.mmbase.util.transformers.StringTransformer;
+import org.mmbase.util.transformers.Asciifier;
 import org.mmbase.util.transformers.Identifier;
 
 import org.mmbase.applications.media.Codec;
@@ -56,7 +58,8 @@ import org.mmbase.applications.media.Format;
 public class SegmenterTranscoder extends CommandTranscoder {
 
     private static final Logger log = Logging.getLoggerInstance(SegmenterTranscoder.class);
-    private static CharTransformer trans = new Identifier();
+    private static CharTransformer identifier = new Identifier();
+    private static StringTransformer asciifier = new Asciifier();
 
     @Override
     protected LoggerWriter getErrorWriter(Logger log) {
@@ -117,7 +120,8 @@ public class SegmenterTranscoder extends CommandTranscoder {
                     base = base.substring(base.lastIndexOf('/') + 1, base.length());
                     m3u8.append(begin);
                 }
-                m3u8.append(trans.transform(base)).append(ext); 
+                base = asciifier.transform(base);
+                m3u8.append(identifier.transform(base)).append(ext); 
             }
             
             fileName = m3u8.toString();
