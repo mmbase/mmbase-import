@@ -143,6 +143,7 @@ class JobCallable implements Callable<Integer> {
                 LOG.info("NOW doing " + result);
                 URI in  = result.getIn();
                 URI out = result.getOut();
+                LOG.info("in -> out: " + in.toString() + " -> " + out.toString());
 
                 JobDefinition jd = result.getJobDefinition();
                 final List<AnalyzerLogger> analyzerLoggers = new ArrayList<AnalyzerLogger>();
