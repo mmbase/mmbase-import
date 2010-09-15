@@ -195,7 +195,7 @@ public class ChangesSender implements Runnable {
                 long startTime = System.currentTimeMillis();
                 lastTime = startTime;
                 if (log.isTraceEnabled()) {
-                    log.trace("Send change to " + getOtherMachines());
+                    log.trace("Send " + data.size() + " changes to " + getOtherMachines());
                 }
                 for (OtherMachine machine : getOtherMachines()) {
                     DataOutputStream os = null;
@@ -256,7 +256,9 @@ public class ChangesSender implements Runnable {
                 }
                 send.count++;
                 send.cost += (System.currentTimeMillis() - startTime);
-
+                if (log.isTraceEnabled()) {
+                    log.trace("Send statistics: " + send);
+                }
             } catch (InterruptedException e) {
                 log.debug(Thread.currentThread().getName() +" was interruped.");
                 break;

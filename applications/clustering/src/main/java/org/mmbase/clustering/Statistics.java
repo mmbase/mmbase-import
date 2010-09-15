@@ -33,5 +33,9 @@ public class Statistics {
     public long getBytes() {
         return bytes;
     }
+
+    public String toString() {
+        return "#:" + count + " bytes: " + bytes + " cost: " + parseCost + "/" + cost + " ms";
+    }
 }
 
