@@ -105,7 +105,32 @@ public class SegmenterTranscoder extends CommandTranscoder {
         } else {
             
             // remove punctuation from fileName
-            StringBuilder m3u8 = new StringBuilder();
+            String regex = "^((.*\\/)?([0-9]+\\.?[0-9]*)?\\.)(.*)\\.m3u8";
+            Pattern FILE_PATTERN = Pattern.compile(regex);
+            Matcher m = FILE_PATTERN.matcher(fileName);
+            
+            StringBuilder m3u8 = new StringBuilder(fileName);
+
+            if (m.matches()) {
+                log.debug("match 1: " + m.group(1));
+                log.debug("match 2: " + m.group(2));
+                log.debug("match 3: " + m.group(3));
+                log.debug("match 4: " + m.group(4));
+
+                String begin = m.group(1);
+                String base = m.group(4);
+                String ext = fileName.substring(fileName.lastIndexOf('.'), fileName.length());
+                
+                log.debug("begin: " + begin);
+                log.debug("base : " + base);
+                log.debug("ext  : " + ext);
+                
+                m3u8 = new StringBuilder(begin);
+                base = asciifier.transform(base);
+                m3u8.append(identifier.transform(base)).append(ext); 
+            }
+
+            /*
             if (fileName.indexOf('.') > -1) {
                 String base = fileName.substring(0, fileName.lastIndexOf('.'));
                 String ext = fileName.substring(fileName.lastIndexOf('.'), fileName.length());
@@ -123,6 +148,7 @@ public class SegmenterTranscoder extends CommandTranscoder {
                 base = asciifier.transform(base);
                 m3u8.append(identifier.transform(base)).append(ext); 
             }
+            */
             
             fileName = m3u8.toString();
             dest.setStringValue("url", fileName);
