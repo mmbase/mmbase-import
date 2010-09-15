@@ -89,11 +89,12 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
                     log.debug("Sending an event to the cluster");
                 }
                 nodesToSend.offer(message);
+                log.debug("send queue: " + nodesToSend.size());
             } else {
-                log.debug("MEssage was null");
+                log.debug("Message was null");
             }
         } else {
-            log.trace("Ignoring remote event from " + event.getMachine() + " it will not be propagated");
+            log.trace("Ignoring remote event from  " + event.getMachine() + " it will not be propagated");
         }
     }
 
@@ -120,7 +121,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
     /**
      * Format of a message:
      *
-     [<17 style message>,0[<another 17 style message>,0]..],0<serialization of event object>
+     [<17 style message>],0<serialization of event object>
     */
     protected byte[] createMessage(Event event) {
         if (log.isDebugEnabled()) {
@@ -130,6 +131,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             long startTime = System.currentTimeMillis();
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             if (compatible17) {
+                /// this is odd, it offers events, but this method is not about that.
                 if (event instanceof  NodeEvent || event instanceof RelationEvent) {
                     NodeEvent ne;
                     if (event instanceof RelationEvent) {
@@ -297,8 +299,8 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
                 byte[] message = nodesToSpawn.take();
                 if (message == null) continue;
                 long startTime = System.currentTimeMillis();
-                if (log.isDebugEnabled()) {
-                    log.trace("RECEIVED =>" + message.length + " bytes");
+                if (log.isTraceEnabled()) {
+                    log.trace("RECEIVED =>" + message.length + " bytes, queue: " + nodesToSpawn.size());
                 }
                 receive.count++;
                 receive.bytes += message.length;
