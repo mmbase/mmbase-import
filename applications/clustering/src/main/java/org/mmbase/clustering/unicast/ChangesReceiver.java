@@ -40,6 +40,8 @@ public class ChangesReceiver implements Runnable {
 
     private final int version;
 
+    private int maxMessageSize = 5 * 1024 * 1024;
+
     /**
      * Construct UniCast Receiver
      * @param unicastHost host of unicast connection
@@ -61,6 +63,10 @@ public class ChangesReceiver implements Runnable {
             serverSocket.bind(address);
         }
         this.version = version;
+    }
+
+    public void setMaxMessageSize(int m) {
+        maxMessageSize = m;
     }
 
     public void start() {
@@ -98,9 +104,15 @@ public class ChangesReceiver implements Runnable {
 
             for (int i = 0; i < listSize; i++) {
                 int arraySize = reader.readInt();
-                log.trace("Size of event " + i + ": " + arraySize);
+                if (arraySize > maxMessageSize) {
+                    log.warn("Size of event " + i + ": " + arraySize + " too big, ignoring the rest (" + (listSize - i) + " message remaining).");
+                    break;
+                } else {
+                    log.trace("Size of event " + i + ": " + arraySize);
+                }
                 ByteArrayOutputStream writer = new ByteArrayOutputStream();
                 //this buffer has nothing to do with the OS buffer
+
                 byte[] buffer = new byte[arraySize];
                 reader.read(buffer);
                 if (writer != null) {
