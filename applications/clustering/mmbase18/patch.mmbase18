@@ -66,7 +66,7 @@ Index: src/main/java/org/mmbase/clustering/unicast/ChangesReceiver.java
 > import edu.emory.mathcs.backport.java.util.concurrent.Future;
 16a18
 > import org.mmbase.module.core.MMBaseContext;
-65c67
+68c70
 <             kicker = new Thread(ThreadPools.threadGroup, this, "UnicastReceiver");
 ---
 >             kicker = new Thread(MMBaseContext.getThreadGroup(), this, "UnicastReceiver");
@@ -100,7 +100,8 @@ Index: pom.xml
 >       <version>3.1</version>
 >       <scope>compile</scope>
 >     </dependency>
-46a59,67
+51a64,73
+> 
 >   <repositories>
 >     <repository>
 >       <id>mmbase8</id>
