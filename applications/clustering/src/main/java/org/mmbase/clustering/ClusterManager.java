@@ -197,7 +197,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             return event;
         } catch (StreamCorruptedException scc) {
             // not sure that this can happen, now, because of the while(c>0) trick.
-            log.debug(scc.getMessage() + ". Supposing old style message.");
+            log.debug(scc.getClass() + " " + scc.getMessage() + ". Supposing old style message.");
             // Possibly, it is a message from an 1.7 system
             String mes = new String(message);
             NodeEvent event = parseMessageBackwardCompatible(mes);
