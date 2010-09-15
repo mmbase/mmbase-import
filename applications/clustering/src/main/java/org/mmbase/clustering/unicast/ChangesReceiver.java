@@ -114,7 +114,7 @@ public class ChangesReceiver implements Runnable {
                 //this buffer has nothing to do with the OS buffer
 
                 byte[] buffer = new byte[arraySize];
-                reader.read(buffer);
+                reader.readFully(buffer);
                 if (writer != null) {
                     writer.write(buffer, 0, arraySize);
                     writer.flush();
