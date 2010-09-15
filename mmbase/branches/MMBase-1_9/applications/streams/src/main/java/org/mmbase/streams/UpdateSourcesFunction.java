@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  * in its node.
  * 
  * @author Andr&eacute; van Toly
- * @version $Id: UpdateSourcesFunction.java 43186 2010-08-28 14:48:27Z andre $
+ * @version $Id$
  */
 
 public class UpdateSourcesFunction extends NodeFunction<Boolean> {
@@ -82,7 +82,6 @@ public class UpdateSourcesFunction extends NodeFunction<Boolean> {
                 FFMpegAnalyzer a = new FFMpegAnalyzer();
                 if (cache != null) {
                     a.setUpdateDestination(true);
-                    LOG.debug("only cache");
                 } else {
                     a.setUpdateSource(true);
                 }
@@ -92,8 +91,12 @@ public class UpdateSourcesFunction extends NodeFunction<Boolean> {
                 
                 recognizer.analyze(f.toURI(), chain);
                 a.ready(source, cache);
-                //source.commit();
-                //if (cache != null) { cache.commit(); }
+                
+                source.commit();
+                if (cache != null) { cache.commit(); }
+                log.debug("source: " + source);
+                log.debug(" cache: " + cache);
+
                 
                 return true;
                 
