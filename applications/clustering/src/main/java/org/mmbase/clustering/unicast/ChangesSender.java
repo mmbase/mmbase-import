@@ -168,6 +168,47 @@ public class ChangesSender implements Runnable {
         }
     }
 
+
+    protected void writeVersion2(java.io.OutputStream out, Collection<byte[]> data) throws IOException {
+        DataOutputStream os = null;
+        try {
+            os = new DataOutputStream(out);
+            os.writeInt(data.size());
+            send.bytes += 4;
+            for (byte[] d : data) {
+                os.writeInt(d.length);
+                send.bytes += 4;
+                os.write(d, 0, d.length);
+                send.bytes += d.length;
+            }
+            os.flush();
+        } finally {
+            if (os != null) {
+                try {
+                    os.close();
+                } catch (IOException e1) {
+                }
+            }
+        }
+    }
+    protected void writeVersion1(java.io.OutputStream out, byte[] d) throws IOException {
+        DataOutputStream os = null;
+        try {
+            os = new DataOutputStream(out);
+            os.write(d, 0, d.length);
+            send.bytes += d.length;
+            os.flush();
+        } finally {
+            if (os != null) {
+                try {
+                    os.close();
+                } catch (IOException e1) {
+                }
+            }
+        }
+    }
+
+
     @Override
     public void run() {
         log.info("Unicast sending to " + getOtherMachines());
@@ -198,30 +239,17 @@ public class ChangesSender implements Runnable {
                     log.trace("Send " + data.size() + " changes to " + getOtherMachines());
                 }
                 for (OtherMachine machine : getOtherMachines()) {
-                    DataOutputStream os = null;
                     Socket socket = null;
                     try {
                         if (machine.version > 1) {
                             socket = new Socket();
                             socket.connect(new InetSocketAddress(machine.host, machine.unicastPort), unicastTimeout);
-                            os = new DataOutputStream(socket.getOutputStream());
-                            os.writeInt(data.size());
-                            send.bytes += 4;
-                            for (byte[] d : data) {
-                                os.writeInt(d.length);
-                                send.bytes += 4;
-                                os.write(d, 0, d.length);
-                                send.bytes += d.length;
-                            }
-                            os.flush();
+                            writeVersion2(socket.getOutputStream(), data);
                         } else {
                             for (byte[] d : data) {
                                 socket = new Socket();
                                 socket.connect(new InetSocketAddress(machine.host, machine.unicastPort), unicastTimeout);
-                                os = new DataOutputStream(socket.getOutputStream());
-                                os.write(d, 0, d.length);
-                                send.bytes += d.length;
-                                os.flush();
+                                writeVersion1(socket.getOutputStream(), d);
                             }
                         }
 
@@ -240,12 +268,6 @@ public class ChangesSender implements Runnable {
                     } catch (IOException e) {
                         log.error("can't send message to " + machine + " " + e.getMessage() , e);
                     } finally {
-                        if (os != null) {
-                            try {
-                                os.close();
-                            } catch (IOException e1) {
-                            }
-                        }
                         if (socket != null) {
                             try {
                                 socket.close();
