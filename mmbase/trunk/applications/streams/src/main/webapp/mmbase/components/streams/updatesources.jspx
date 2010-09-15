@@ -1,0 +1,171 @@
+<div
+    class="mm_c c_streams b_admin ${requestScope.componentClassName}"
+    id="${requestScope.componentId}"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-res="urn:jsptagdir:/WEB-INF/tags/mm/resources"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:cloud rank="basic user" jspvar="cloud">
+    
+    <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+    <mm:import id="blockdescription">${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</mm:import>
+    <mm:write referid="blockdescription" escape="p" />
+
+    <mm:import externid="batch" />
+    <mm:import from="request" externid="update" />
+    <mm:import from="request" externid="cache" />
+    
+    <mm:import externid="page" vartype="integer">0</mm:import>
+    <mm:import externid="max" vartype="integer">10</mm:import>
+    
+    <mm:import externid="type">mediafragments</mm:import>
+    
+    <mm:form>
+
+      <p>
+        <input name="batch" type="submit" value="Batch" /> update
+      </p>
+      <table summary="mediafragments">
+        <caption>Mediafragments</caption>
+        <tr>
+          <th>#</th>
+          <th colspan="2">title</th>
+          <th>update info</th>
+        </tr>
+        <mm:listnodescontainer type="${type}">
+          <mm:sortorder field="number" direction="down" />
+          <mm:offset value="${page * max}" />
+          <mm:maxnumber value="${max}" />
+          <mm:listnodes id="fragment">
+            <tr>
+              <td><strong><mm:field name="number" /></strong></td>
+              <td colspan="4"><strong><mm:nodeinfo type="gui" /></strong></td>
+            </tr>
+            
+            <mm:listfunction name="filteredurls">
+              <c:if test="${_.main}">
+                
+                <tr>
+                  <td>${fn:toLowerCase(_.state)}</td>
+                  <td>
+                    <a href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a>
+                  </td>
+                  <td>
+                    ${_.mimeType}
+                  </td>
+                  <td>
+                    <mm:node number="${_.source.number}">
+                      
+                      <c:set var="updatevalue" value="${fragment}:${_.source.number}" />
+                      <c:set var="source" value="${_.source.number}" />
+                    
+                      <c:choose>
+                        <c:when test="${update eq updatevalue or batch eq 'Batch'}">
+                          
+                          <mm:booleanfunction name="updateSources">
+                            <div class="msg">Updated #${updatevalue}</div>
+                          </mm:booleanfunction>
+                          
+                        </c:when>
+                        <c:otherwise>
+                          <mm:link referids="updatevalue@update,format?,max?,page?">
+                            <a href="${_}">update</a>
+                          </mm:link>
+                        </c:otherwise>
+                      </c:choose>
+                    
+                    
+                    </mm:node>
+                  
+                  </td>
+                </tr>
+              </c:if>
+            </mm:listfunction>
+
+            <mm:listfunction name="filteredurls">
+              <c:if test="${!_.main}">
+                <mm:node number="${_.source.number}" notfound="skip" id="recache">
+                <tr>
+                  <td>${fn:toLowerCase(_.state)}</td>
+                  <td>
+                      <mm:hasfield name="key">
+                        <mm:import id="key" reset="true"><mm:field name="key" /></mm:import>
+                      </mm:hasfield>
+                    <a title="${key}" href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a>
+                  </td>
+                  <td>${_.mimeType} ${_.dimension}</td>
+                  <td>
+                    <mm:hasfield name="id">
+                      
+                      <c:set var="recachevalue" value="${fragment}:${recache}" />
+                      <c:choose>
+                        <c:when test="${cache eq recachevalue or batch eq 'Batch'}">
+                          
+                          <mm:node number="${source}">
+                            <mm:booleanfunction name="updateSources" referids="recache@cache">
+                              <div class="msg">Updated #${recachevalue} (of source #${source})</div>
+                            </mm:booleanfunction>
+                          </mm:node>
+                          
+                        </c:when>
+                        <c:otherwise>
+                          <mm:link referids="recachevalue@cache,format?,max?,page?">
+                            <a href="${_}">update</a>
+                          </mm:link>
+                        </c:otherwise>
+                      </c:choose>
+                      
+                    </mm:hasfield>
+                  </td>
+                </tr>
+                </mm:node>
+              </c:if>
+            </mm:listfunction>
+
+          </mm:listnodes>
+          
+          <tfoot>
+            <tr cols="100">
+              <th colspan="9">
+                <mm:previousbatches >
+                  <mm:last>
+                    <mm:link referids="format,max">
+                      <mm:param name="page"><mm:index  /></mm:param>
+                      <a href="${_}">«« previous</a> -
+                    </mm:link>
+                  </mm:last>
+                </mm:previousbatches>
+                <mm:previousbatches >
+                  <mm:link referids="format,max">
+                    <mm:param name="page"><mm:index  /></mm:param>
+                    <a href="${_}"><mm:index offset="1" /></a>
+                  </mm:link>
+                  <jsp:text> - </jsp:text>
+                </mm:previousbatches>
+                <mm:index offset="1" />
+                <mm:nextbatches>
+                  <jsp:text> - </jsp:text>
+                  <mm:link referids="format,max">
+                    <mm:param name="page"><mm:index /></mm:param>
+                    <a href="${_}"><mm:index offset="${page + 2}" /></a>
+                  </mm:link>
+                </mm:nextbatches>
+                <mm:nextbatches>
+                  <mm:first>
+                    <mm:link referids="format,max">
+                      <mm:param name="page"><mm:index  /></mm:param>
+                      - <a href="${_}">next »»</a>
+                    </mm:link>
+                  </mm:first>
+                </mm:nextbatches>
+              </th>
+            </tr>
+          </tfoot>
+          
+        </mm:listnodescontainer>
+      </table>
+    </mm:form>
+  </mm:cloud>
+</div>
