@@ -44,7 +44,6 @@
               <td colspan="4"><strong><mm:nodeinfo type="gui" /></strong></td>
             </tr>
             
-            <mm:functioncontainer>
             <mm:listfunction name="filteredurls">
               <c:if test="${_.main}">
                 
@@ -59,14 +58,14 @@
                   <td>
                     <mm:node number="${_.source.number}">
                       
-                      <c:set var="updatevalue" value="${fragment}:${_node}" />
+                      <c:set var="updatevalue" value="${fragment}:${_.source.number}" />
                       <c:set var="source" value="${_.source.number}" />
                     
                       <c:choose>
-                        <c:when test="${update eq updatevalue}">
-
+                        <c:when test="${update eq updatevalue or batch eq 'Batch'}">
+                          
                           <mm:booleanfunction name="updateSources">
-                            <div class="msg">Updating #${updatevalue}</div>
+                            <div class="msg">Updated #${updatevalue}</div>
                           </mm:booleanfunction>
                           
                         </c:when>
@@ -84,9 +83,7 @@
                 </tr>
               </c:if>
             </mm:listfunction>
-            </mm:functioncontainer>
 
-            <mm:functioncontainer>
             <mm:listfunction name="filteredurls">
               <c:if test="${!_.main}">
                 <mm:node number="${_.source.number}" notfound="skip" id="recache">
@@ -98,24 +95,20 @@
                       </mm:hasfield>
                     <a title="${key}" href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a>
                   </td>
-                  <td>${_.mimeType}</td>
+                  <td>${_.mimeType} ${_.dimension}</td>
                   <td>
                     <mm:hasfield name="id">
                       
                       <c:set var="recachevalue" value="${fragment}:${recache}" />
                       <c:choose>
-                        <c:when test="${cache eq recachevalue}">
-                          <mm:hasfield name="id">
-                              
-                            <mm:node number="${source}">
-                              <mm:functioncontainer>
-                                <mm:booleanfunction name="updateSources" referids="recache@cache">
-                                  <div class="msg">Updating #${recache} (of source #${source})</div>
-                                </mm:booleanfunction>
-                              </mm:functioncontainer>
-                            </mm:node>
-
-                          </mm:hasfield>
+                        <c:when test="${cache eq recachevalue or batch eq 'Batch'}">
+                          
+                          <mm:node number="${source}">
+                            <mm:booleanfunction name="updateSources" referids="recache@cache">
+                              <div class="msg">Updated #${recachevalue} (of source #${source})</div>
+                            </mm:booleanfunction>
+                          </mm:node>
+                          
                         </c:when>
                         <c:otherwise>
                           <mm:link referids="recachevalue@cache,format?,max?,page?">
@@ -130,7 +123,6 @@
                 </mm:node>
               </c:if>
             </mm:listfunction>
-            </mm:functioncontainer>
 
           </mm:listnodes>
           
