@@ -23,15 +23,19 @@
     <mm:import externid="type">mediafragments</mm:import>
     
     <mm:form>
-
       <p>
         <input name="batch" type="submit" value="Batch" /> update
       </p>
+    </mm:form>
+    
       <table summary="mediafragments">
         <caption>Mediafragments</caption>
         <tr>
           <th>#</th>
-          <th colspan="2">title</th>
+          <th>title</th>
+          <th>mimetype</th>
+          <th>size</th>
+          <th>bitrate/fps</th>
           <th>update info</th>
         </tr>
         <mm:listnodescontainer type="${type}">
@@ -41,22 +45,25 @@
           <mm:listnodes id="fragment">
             <tr>
               <td><strong><mm:field name="number" /></strong></td>
-              <td colspan="4"><strong><mm:nodeinfo type="gui" /></strong></td>
+              <td colspan="5"><strong><mm:nodeinfo type="gui" /></strong></td>
             </tr>
             
             <mm:listfunction name="filteredurls">
               <c:if test="${_.main}">
+                <mm:node number="${_.source.number}">
                 
                 <tr>
                   <td>${fn:toLowerCase(_.state)}</td>
                   <td>
                     <a href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a>
                   </td>
-                  <td>
-                    ${_.mimeType}
+                  <td>${_.mimeType}</td>
+                  <td>${_.dimension}</td>
+                  <td> 
+                    <mm:hasfield name="bitrate"><mm:field name="bitrate" /></mm:hasfield>
+                    <mm:hasfield name="fps">/<mm:field name="fps" /></mm:hasfield> 
                   </td>
                   <td>
-                    <mm:node number="${_.source.number}">
                       
                       <c:set var="updatevalue" value="${fragment}:${_.source.number}" />
                       <c:set var="source" value="${_.source.number}" />
@@ -75,12 +82,10 @@
                           </mm:link>
                         </c:otherwise>
                       </c:choose>
-                    
-                    
-                    </mm:node>
                   
                   </td>
                 </tr>
+                </mm:node>
               </c:if>
             </mm:listfunction>
 
@@ -95,7 +100,12 @@
                       </mm:hasfield>
                     <a title="${key}" href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a>
                   </td>
-                  <td>${_.mimeType} ${_.dimension}</td>
+                  <td>${_.mimeType}</td>
+                  <td>${_.dimension}</td>
+                  <td> 
+                    <mm:hasfield name="bitrate"><mm:field name="bitrate" /></mm:hasfield>
+                    <mm:hasfield name="fps">/<mm:field name="fps" /></mm:hasfield> 
+                  </td>
                   <td>
                     <mm:hasfield name="id">
                       
@@ -128,7 +138,7 @@
           
           <tfoot>
             <tr cols="100">
-              <th colspan="9">
+              <th colspan="6">
                 <mm:previousbatches >
                   <mm:last>
                     <mm:link referids="format,max">
@@ -166,6 +176,6 @@
           
         </mm:listnodescontainer>
       </table>
-    </mm:form>
+
   </mm:cloud>
 </div>
