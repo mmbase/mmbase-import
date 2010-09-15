@@ -11,6 +11,7 @@ public class UnicastTest {
     @Test
     public void basic() throws IOException {
         ChangesReceiver receiver = new ChangesReceiver(null, -1, null, 2);
+        //receiver.setMaxMessageSize(90000);
         ChangesSender   sender   = new ChangesSender(new HashMap<String, String>(),
                                                      -1, 100, null, new Statistics(), 2);
 
@@ -19,11 +20,12 @@ public class UnicastTest {
         Random random = new Random(2);
         List<byte[]> testSet = new ArrayList<byte[]>();
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 100; i++) {
             byte[] message = new byte[1 + i * 1000];
             random.nextBytes(message);
             testSet.add(message);
         }
+        System.out.println("Test set: " + testSet);
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         sender.writeVersion2(buffer, testSet);
 
