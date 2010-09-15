@@ -12,6 +12,7 @@ package org.mmbase.clustering.unicast;
 import java.io.*;
 import java.net.*;
 import java.util.concurrent.*;
+import java.util.Queue;
 
 import org.mmbase.util.ThreadPools;
 
@@ -50,13 +51,15 @@ public class ChangesReceiver implements Runnable {
         this.nodesToSpawn = nodesToSpawn;
         this.serverSocket = new ServerSocket();
         final InetAddress ia;
-        if (unicastHost.equals("*")) {
+        if ("*".equals(unicastHost)) {
             ia = null;
         } else {
             ia = InetAddress.getByName(unicastHost);
         }
-        SocketAddress address = new InetSocketAddress(ia, unicastPort);
-        serverSocket.bind(address);
+        if (unicastPort > 0) {
+            SocketAddress address = new InetSocketAddress(ia, unicastPort);
+            serverSocket.bind(address);
+        }
         this.version = version;
     }
 
@@ -86,6 +89,71 @@ public class ChangesReceiver implements Runnable {
         }
     }
 
+    protected void readStreamVersion2(InputStream in, Queue<byte[]> queue) throws IOException {
+        DataInputStream reader = null;
+        try {
+            reader = new DataInputStream(in);
+            int listSize = reader.readInt();
+            log.trace("Will read " + listSize + " events");
+
+            for (int i = 0; i < listSize; i++) {
+                int arraySize = reader.readInt();
+                log.trace("Size of event " + i + ": " + arraySize);
+                ByteArrayOutputStream writer = new ByteArrayOutputStream();
+                //this buffer has nothing to do with the OS buffer
+                byte[] buffer = new byte[arraySize];
+                reader.read(buffer);
+                if (writer != null) {
+                    writer.write(buffer, 0, arraySize);
+                    writer.flush();
+                }
+                // maybe we should use encoding here?
+                byte[] message = writer.toByteArray();
+                queue.offer(message);
+                if (log.isDebugEnabled()) {
+                    log.debug("unicast(v" + version + ") RECEIVED=>" + message + " queue: " + queue.size());
+                }
+            }
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+    }
+
+    protected void readStreamVersion1(InputStream in, Queue<byte[]> queue) throws IOException {
+        DataInputStream reader = null;
+        try {
+            reader = new DataInputStream(in);
+            ByteArrayOutputStream writer = new ByteArrayOutputStream();
+            int size = 0;
+            //this buffer has nothing to do with the OS buffer
+            byte[] buffer = new byte[1024];
+            while ((size = reader.read(buffer)) != -1) {
+                if (writer != null) {
+                    writer.write(buffer, 0, size);
+                    writer.flush();
+                }
+            }
+            byte[] message = writer.toByteArray();
+            nodesToSpawn.offer(message);
+            if (log.isDebugEnabled()) {
+                log.debug("unicast(v1) RECEIVED=>" + message + " queue: " + nodesToSpawn.size());
+            }
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+    }
+
+    @Override
     public void run() {
         log.info("Unicast listening started on " + serverSocket + " (v:" + version + ")");
         try {
@@ -99,46 +167,10 @@ public class ChangesReceiver implements Runnable {
                         log.trace("" + socket);
                     }
 
-                    reader = new DataInputStream(socket.getInputStream());
-
                     if (version > 1) {
-                        int listSize = reader.readInt();
-                        log.trace("Will read " + listSize + " events");
-
-                        for (int i = 0; i < listSize; i++) {
-                            int arraySize = reader.readInt();
-                            log.trace("Size of event " + i + ": " + arraySize);
-                            ByteArrayOutputStream writer = new ByteArrayOutputStream();
-                            //this buffer has nothing to do with the OS buffer
-                            byte[] buffer = new byte[arraySize];
-                            reader.read(buffer);
-                            if (writer != null) {
-                                writer.write(buffer, 0, arraySize);
-                                writer.flush();
-                            }
-                            // maybe we should use encoding here?
-                            byte[] message = writer.toByteArray();
-                            nodesToSpawn.offer(message);
-                            if (log.isDebugEnabled()) {
-                                log.debug("unicast(v" + version + ") RECEIVED=>" + message + " queue: " + nodesToSpawn.size());
-                            }
-                        }
+                        readStreamVersion2(socket.getInputStream(), nodesToSpawn);
                     } else {
-                        ByteArrayOutputStream writer = new ByteArrayOutputStream();
-                        int size = 0;
-                        //this buffer has nothing to do with the OS buffer
-                        byte[] buffer = new byte[1024];
-                        while ((size = reader.read(buffer)) != -1) {
-                            if (writer != null) {
-                                writer.write(buffer, 0, size);
-                                writer.flush();
-                            }
-                        }
-                        byte[] message = writer.toByteArray();
-                        nodesToSpawn.offer(message);
-                        if (log.isDebugEnabled()) {
-                            log.debug("unicast(v1) RECEIVED=>" + message + " queue: " + nodesToSpawn.size());
-                        }
+                        readStreamVersion1(socket.getInputStream(), nodesToSpawn);
                     }
                 } catch (SocketException e) {
                     log.warn(e);
@@ -146,12 +178,6 @@ public class ChangesReceiver implements Runnable {
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 } finally {
-                    if (reader != null) {
-                        try {
-                            reader.close();
-                        } catch (IOException e) {
-                        }
-                    }
                     if (socket != null) {
                         try {
                             socket.close();
