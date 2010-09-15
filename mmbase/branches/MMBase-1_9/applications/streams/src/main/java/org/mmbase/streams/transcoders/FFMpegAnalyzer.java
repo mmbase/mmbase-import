@@ -140,7 +140,7 @@ public class FFMpegAnalyzer implements Analyzer {
                 destNode.commit();
             }
 
-            log.info("READY for " + sourceNode.getNodeManager().getName() + " " + sourceNode.hashCode() + " " + sourceNode.getNumber());
+            log.info("READY for " + sourceNode.getNodeManager().getName() + " " + sourceNode.hashCode() + " " + sourceNode.getNumber() + " - updateSource: " + util.getUpdateSource());
         }
 
     }
