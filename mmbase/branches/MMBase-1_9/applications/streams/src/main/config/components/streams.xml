@@ -167,4 +167,25 @@
     <body jsp="test_upload.jspx" />
   </block>
 
+  <block name="update"
+         classification="mmbase.streams"
+         mimetype="text/html">
+    <title xml:lang="en">Update stream info</title>
+    <title xml:lang="nl">Update stream info</title>
+    <description xml:lang="en">
+      This tool uses ffmpeg -i to update stream file information in mmbase
+    </description>
+    <description xml:lang="nl">
+      Deze tool gebruikt ffmpeg -i voor een update van de stream informatie in mmbase
+    </description>
+    <body jsp="updatesources.jspx">
+      <param name="update" />
+      <param name="all" type="java.lang.Boolean" />
+      <param name="cache" />
+      <param name="page" type="java.lang.Integer" />
+      <param name="max"  type="java.lang.Integer" />
+      <param name="batch" />
+    </body>
+  </block>
+
 </component>
