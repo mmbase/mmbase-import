@@ -69,8 +69,6 @@ public class SegmenterAnalyzer implements Analyzer {
     public void ready(Node sourceNode, Node destNode) {
         synchronized(util) {
             String url = destNode.getStringValue("url");
-            url = url.substring(0, url.lastIndexOf('.')) + ".m3u8";
-            destNode.setStringValue("url", url);
             
             if (FileServlet.getInstance() != null) {
                 
