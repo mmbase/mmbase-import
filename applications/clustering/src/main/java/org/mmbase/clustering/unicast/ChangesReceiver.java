@@ -118,10 +118,10 @@ public class ChangesReceiver implements Runnable {
                             }
                             // maybe we should use encoding here?
                             byte[] message = writer.toByteArray();
-                            if (log.isDebugEnabled()) {
-                                log.debug("unicast(v" + version + ") RECEIVED=>" + message);
-                            }
                             nodesToSpawn.offer(message);
+                            if (log.isDebugEnabled()) {
+                                log.debug("unicast(v" + version + ") RECEIVED=>" + message + " queue: " + nodesToSpawn.size());
+                            }
                         }
                     } else {
                         ByteArrayOutputStream writer = new ByteArrayOutputStream();
@@ -135,10 +135,10 @@ public class ChangesReceiver implements Runnable {
                             }
                         }
                         byte[] message = writer.toByteArray();
-                        if (log.isDebugEnabled()) {
-                            log.debug("unicast(v1) RECEIVED=>" + message);
-                        }
                         nodesToSpawn.offer(message);
+                        if (log.isDebugEnabled()) {
+                            log.debug("unicast(v1) RECEIVED=>" + message + " queue: " + nodesToSpawn.size());
+                        }
                     }
                 } catch (SocketException e) {
                     log.warn(e);
