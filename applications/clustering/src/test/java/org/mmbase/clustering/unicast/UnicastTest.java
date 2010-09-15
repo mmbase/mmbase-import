@@ -27,7 +27,7 @@ public class UnicastTest {
     public static void setup() {
         try {
             java.lang.reflect.Method m = org.mmbase.util.logging.SimpleTimeStampImpl.class.getMethod("configure", String.class, String.class);
-            m.invoke(null, "org.mmbase.clustering", "trace");
+            m.invoke(null, "org.mmbase.clustering", "service");
         } catch (Exception t) {
             System.err.println(t.getMessage());
         }
@@ -103,7 +103,6 @@ public class UnicastTest {
         synchronized(state) {
             while(state.size() == 0) {
                 state.wait();
-                System.out.println("" + state.size());
             }
         }
 
