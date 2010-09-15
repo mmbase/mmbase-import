@@ -131,9 +131,7 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
         } else {
             LOG.error("Not enough arguments, need at least in- and outfile.");
         }
-        if (LOG.isServiceEnabled()) {
-            LOG.service("Calling (" + method + ") " + p + getCommand() + " " + args);
-        }
+        LOG.info("Calling (" + method + ") " + p + getCommand() + " " + args);
         CommandExecutor.execute(outStream, errStream, method, p + getCommand(), args.toArray(new String[args.size()]));
         outStream.close();
         errStream.close();

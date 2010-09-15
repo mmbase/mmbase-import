@@ -197,7 +197,7 @@ public class Job implements Iterable<Result> {
                
                 if (jd.transcoder.getKey() != null) {  // not a recognizer (it has a transcoder key)
                     LOG.service(jd.getMimeType());
-                    LOG.service("inNode: " + inNode);
+                    //LOG.service("inNode: " + inNode);
                     Node dest = getCacheNode(inNode, jd.transcoder.getKey());   // gets node (and creates when yet not present)
                     if (dest == null) {
                         LOG.warn("Could not create cache node from " + node.getNodeManager().getName() + " " + node.getNumber() + " for " + jd.transcoder.getKey());
@@ -299,7 +299,7 @@ public class Job implements Iterable<Result> {
 
             }
         }
-        LOG.info("RESULTS now " + results);
+        LOG.service("RESULTS now " + results);
 
     }
 
