@@ -117,6 +117,11 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         }
     }
 
+    /**
+     * Format of a message:
+     *
+     [<17 style message>,0[<another 17 style message>,0]..],0<serialization of event object>
+    */
     protected byte[] createMessage(Event event) {
         if (log.isDebugEnabled()) {
             log.debug("Serializing " + event);
@@ -187,7 +192,8 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             int c = 1;
             while (c > 0) {
                 // ignore backwards compatibility message
-                c = stream.read();
+                c = stream.read(); // first time read a , then later a 0
+                log.trace("Found " + c);
             }
             ObjectInputStream in = new ObjectInputStream(stream);
             Event event = (Event) in.readObject();
@@ -197,7 +203,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             return event;
         } catch (StreamCorruptedException scc) {
             // not sure that this can happen, now, because of the while(c>0) trick.
-            log.debug(scc.getClass() + " " + scc.getMessage() + ". Supposing old style message.");
+            log.debug(scc.getClass() + " " + scc.getMessage() + ". Supposing old style message of " + message.length + " byte ", scc);
             // Possibly, it is a message from an 1.7 system
             String mes = new String(message);
             NodeEvent event = parseMessageBackwardCompatible(mes);
@@ -210,7 +216,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             String mes = new String(message);
             NodeEvent event = parseMessageBackwardCompatible(mes);
             if (log.isDebugEnabled()) {
-                log.debug("Old style message " + event);
+                log.debug("Old style message " + event + " of " + message.length + " byte");
             }
             return event;
         } catch (IOException ioe) {
@@ -224,7 +230,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
 
     protected NodeEvent parseMessageBackwardCompatible(String message) {
         if (log.isDebugEnabled()) {
-            log.debug("RECEIVE=>" + message);
+            log.debug("RECEIVE=>" + new org.mmbase.util.transformers.UnicodeEscaper().transform(message));
         }
         StringTokenizer tok = new StringTokenizer(message, ",");
         if (tok.hasMoreTokens()) {
