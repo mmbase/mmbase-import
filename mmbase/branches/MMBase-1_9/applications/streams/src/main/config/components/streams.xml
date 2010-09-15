@@ -180,7 +180,6 @@
     </description>
     <body jsp="updatesources.jspx">
       <param name="update" />
-      <param name="all" type="java.lang.Boolean" />
       <param name="cache" />
       <param name="page" type="java.lang.Integer" />
       <param name="max"  type="java.lang.Integer" />
