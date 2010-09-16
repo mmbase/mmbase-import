@@ -54,7 +54,7 @@ public class ChangesSender implements Runnable {
     private List<MMObjectNode> activeServers = new ArrayList<MMObjectNode>();
 
     /** Interval of servers change their state */
-    private long serverInterval;
+    private long serverInterval = -1;
 
     private int version = 1;
     private Iterable<OtherMachine> otherMachines = null;
@@ -248,7 +248,7 @@ public class ChangesSender implements Runnable {
     }
     /**
      * Sends a collection of messages to the given address. It uses {@link #writeVersion1} to
-     * sent the messages. The version 1 protocol supports only one message per session, so this method opens a new
+     * send the messages. The version 1 protocol supports only one message per session, so this method opens a new
      * connection for every message in the given collection.
      *
      * @param address The address to send to.
@@ -285,7 +285,9 @@ public class ChangesSender implements Runnable {
 
                 data.add(nodesToSend.take()); // at least one
                 if (version > 1) {
+                    // we can collect more messages
                     if (collectTime > 0) {
+                        // wait a bit until more become available
                         long leftTime = lastTime + (1000L * collectTime) - System.currentTimeMillis();
                         while (leftTime > 0 && data.size() < collectCount) {
                             byte[] next = nodesToSend.poll(collectTime, TimeUnit.MILLISECONDS);
@@ -295,6 +297,7 @@ public class ChangesSender implements Runnable {
                             leftTime = lastTime + (1000L * collectTime) - System.currentTimeMillis();
                         }
                     }
+                    // collect everthing what's left too (if collectTime was indicated, that would probably be none)
                     nodesToSend.drainTo(data);
                 }
                 long startTime = System.currentTimeMillis();
@@ -302,6 +305,7 @@ public class ChangesSender implements Runnable {
                 if (log.isTraceEnabled()) {
                     log.trace("Send " + data.size() + " changes to " + getOtherMachines());
                 }
+                // Now send all messages to all peers
                 for (OtherMachine machine : getOtherMachines()) {
                     try {
                         final InetSocketAddress address = new InetSocketAddress(machine.host, machine.unicastPort);
@@ -342,7 +346,10 @@ public class ChangesSender implements Runnable {
     }
 
     /**
-     * Get Active server list
+     * Get active server list. It looks in the 'mmservers' table for every server that is 'active', and returns all
+     * those nodes. The result is cached during a 'serverInterval' period of milliseconds (see {@link
+     * MMServers#getIntervalTime}) (so this is a property of the mmservers builder).
+     *
      * @return server list
      */
     private List<MMObjectNode> getActiveServers() {
@@ -392,6 +399,8 @@ public class ChangesSender implements Runnable {
 
 
     /**
+     * Returns the peers to which must be connected. This can be a fixed list (using the 'peers' setting), or it can be
+     * actively determined using the database (see {@link #getActiveServers}).
      * @since MMBase-2.0
      */
     protected Iterable<OtherMachine> getOtherMachines() {
