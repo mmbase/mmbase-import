@@ -136,7 +136,7 @@
               </div>
             </xsl:if>
             <a
-              href="{$wizardpage}&amp;wizard={$wizard}&amp;objectnumber=new&amp;origin={$origin}"
+              href="{$wizardpage}&amp;wizard={$createwizard}&amp;objectnumber=new&amp;origin={$origin}"
               title="{$tooltip_new}">
               <xsl:call-template name="prompt_new" />
             </a>
@@ -179,7 +179,7 @@
                       <xsl:value-of select="$createprompt" />
                     </div>
                   </xsl:if>
-                  <a href="{$wizardpage}&amp;referrer={$referrer_encoded}&amp;wizard={$wizard}&amp;objectnumber=new&amp;origin={$origin}">
+                  <a href="{$wizardpage}&amp;referrer={$referrer_encoded}&amp;wizard={$createwizard}&amp;objectnumber=new&amp;origin={$origin}">
                     <xsl:call-template name="prompt_new" />
                   </a>
                 </td>
