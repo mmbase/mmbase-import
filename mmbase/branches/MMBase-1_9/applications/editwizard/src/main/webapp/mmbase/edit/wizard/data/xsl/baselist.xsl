@@ -14,7 +14,7 @@
 
   <xsl:import href="xsl/base.xsl" />
   <xsl:param name="wizard" />
-  <xsl:param name="createwizard" >{$wizard}</xsl:param>
+  <xsl:param name="createwizard" ><xsl:value-of select="$wizard" disable-output-escaping="yes" /></xsl:param>
   <!-- known list attributes -->
   <xsl:param name="origin" />
 
