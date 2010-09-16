@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
+import org.mmbase.bridge.util.TreeHelper;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.Logging;
 public class LeafIncludeTag extends IncludeTag {
 
     private static final Logger log = Logging.getLoggerInstance(LeafIncludeTag.class);
-   
+
     protected Attribute objectList = Attribute.NULL;
     private TreeHelper th = new TreeHelper();
 
@@ -47,7 +48,7 @@ public class LeafIncludeTag extends IncludeTag {
             throw new TaglibException(ioe);
         }
     }
-    
+
     protected void initTag(boolean internal) throws JspTagException {
         th.setCloud(getCloudVar());
         th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
