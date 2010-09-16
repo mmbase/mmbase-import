@@ -153,7 +153,7 @@
             <para>The wizard to use. This is a relative reference to the xml
             schema file. Do not specify the ".xml" prefix.</para>
 
-            <programlisting format="linespecific">wizard=data/simple.xml</programlisting>
+            <programlisting format="linespecific">wizard=data/simple</programlisting>
           </listitem>
         </varlistentry>
 
@@ -175,6 +175,19 @@
 
       <variablelist>
         <title>The following parameters MAY be specified:</title>
+
+        <varlistentry>
+          <term>createwizard</term>
+
+          <listitem>
+            <para>The wizard to use to craete item a in a list using the create button. This is a relative reference to the xml
+            schema file. Do not specify the ".xml" prefix.</para>
+
+            <para>Use this paramter when you have different requirements when creatign items than wehene diting them. for instance, it can be used when you have fields a user may only specify at creation.</para>
+
+            <programlisting format="linespecific">createwizard=data/simple_create</programlisting>
+          </listitem>
+        </varlistentry>
 
         <varlistentry>
           <term>startnodes</term>
