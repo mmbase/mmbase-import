@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
+import org.mmbase.bridge.util.TreeHelper;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -44,7 +45,7 @@ public class LeafFileTag extends UrlTag {
     public void setNotfound(String n) throws JspTagException {
         notFound = getAttribute(n);
     }
-    
+
     protected String getPage(String p) throws JspTagException {
         try {
             return th.findLeafFile(p, objectList.getValue(this).toString(),
