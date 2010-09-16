@@ -95,6 +95,14 @@ public class ChangesReceiver implements Runnable {
         }
     }
 
+    /**
+     * Reads a number of 'messages' from a stream, according to the 'version 2' protocol (i.e. supporting multiple
+     * messages in one session).
+     * When ready, closes the stream.
+     * @param in The stream to read from
+     * @param queue The collection of messages to add the newly read messages to
+     * @since MMBase-2.0
+     */
     protected void readStreamVersion2(InputStream in, Queue<byte[]> queue) throws IOException {
         DataInputStream reader = null;
         try {
@@ -136,6 +144,14 @@ public class ChangesReceiver implements Runnable {
         }
     }
 
+    /**
+     * Reads one  'message' from a stream, according to the 'version 1' protocol (i.e. supporting only one
+     * message in one session)
+     * When ready, closes the stream.
+     * @param in The stream to read from
+     * @param queue The collection of messages to add the newly read message to
+     * @since MMBase-2.0
+     */
     protected void readStreamVersion1(InputStream in, Queue<byte[]> queue) throws IOException {
         DataInputStream reader = null;
         try {

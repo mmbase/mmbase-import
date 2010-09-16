@@ -148,6 +148,7 @@ public class ChangesSender implements Runnable {
 
 
     /**
+     * On object to represent a peer in unicast.
      * @since MMBase-2.0
      */
     public static class OtherMachine {
@@ -170,11 +171,15 @@ public class ChangesSender implements Runnable {
 
 
     /**
-     * Writes a number of messages to an output stream.
+     * Writes a number of messages to an output stream, according to 'version 2'protocol of unicast (supporting multiple
+     * messages per session)
      * The encoding is as such. using a DataOutputStream:
      <pre>
      &lt;number of message&gt;&lt;size of first message&gt;&lt;first message&gt;&lt;size second message&gt;&lt;second message&gt;....
      </pre>
+     * @param out The stream to write the messages to
+     * @param data The messages to write.
+     * @since MMBase-2.0
     */
     protected void writeVersion2(java.io.OutputStream out, Collection<byte[]> data) throws IOException {
         DataOutputStream os = null;
@@ -199,6 +204,13 @@ public class ChangesSender implements Runnable {
         }
     }
 
+    /**
+     * Sends a collection of messages to the given address. So, it opens a socket and uses {@link #writeVersion2} to
+     * sent the messages
+     * @param address The address to send to.
+     * @param data The message to send
+     * @since MMBase-2.0
+     */
     protected void sendVersion2(InetSocketAddress address, Collection<byte[]> data)  throws IOException {
         Socket socket = null;
         try {
@@ -216,6 +228,7 @@ public class ChangesSender implements Runnable {
     }
     /**
      * Simply writes one message to an output stream. Version 1 does not support multiple messages.
+     * @since MMBase-2.0
      */
     protected void writeVersion1(java.io.OutputStream out, byte[] d) throws IOException {
         DataOutputStream os = null;
@@ -233,7 +246,15 @@ public class ChangesSender implements Runnable {
             }
         }
     }
-
+    /**
+     * Sends a collection of messages to the given address. It uses {@link #writeVersion1} to
+     * sent the messages. The version 1 protocol supports only one message per session, so this method opens a new
+     * connection for every message in the given collection.
+     *
+     * @param address The address to send to.
+     * @param data The message to send
+     * @since MMBase-2.0
+     */
     protected void sendVersion1(InetSocketAddress address, Collection<byte[]> data) throws IOException {
         for (byte[] d : data) {
             Socket socket = null;
