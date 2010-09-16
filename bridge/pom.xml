@@ -152,21 +152,20 @@ See http://www.MMBase.org/license
     </dependency>
 
     <!--
-        Spring has a mock imlementation of PageContext, which is used for testing some parts of this taglib.
+        Spring has a mock imlementation of javax.servlet stuff
     -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-mock</artifactId>
-      <version>2.0-rc3</version>
-      <scope>test</scope>
+      <version>2.0.8</version>
+
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
-      <version>2.0-m4</version>
+      <version>2.0.8</version>
       <scope>test</scope>
     </dependency>
-
 
   </dependencies>
 

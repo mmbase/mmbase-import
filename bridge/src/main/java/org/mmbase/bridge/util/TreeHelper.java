@@ -55,7 +55,7 @@ public class TreeHelper {
     private Cloud cloud;
     private boolean backwardsCompatible = true;
     private static final Logger log = Logging.getLoggerInstance(TreeHelper.class);
-    private static final ResourceLoader htmlRoot = ResourceLoader.getWebRoot();
+    static final ResourceLoader htmlRoot = ResourceLoader.getWebRoot();
 
     public void setCloud(Cloud cl) {
         cloud = cl;
@@ -71,7 +71,7 @@ public class TreeHelper {
      * @param session The session context can contain version information (used in getVerion).
      */
     public String findLeafFile(String includePage, String objectlist, HttpSession session) throws JspTagException, IOException {
-        if ("".equals(objectlist)) {
+        if ("".equals(objectlist) || objectlist == null) {
             return encodedPath(includePage);
         }
         String lf = getLeafFile("/", objectlist, includePage, true, session);
@@ -96,7 +96,7 @@ public class TreeHelper {
         if (log.isDebugEnabled()) {
             log.debug("prefix: " + prefix + " objectlist: " + objectlist + " includePage " + includePage);
         }
-        if (objectlist.length() == 0) {
+        if (objectlist == null || objectlist.length() == 0) {
             String nudePage = includePage;
             if (nudePage.indexOf('?') != -1) {
                 nudePage = nudePage.substring(0, nudePage.indexOf('?'));
@@ -276,7 +276,7 @@ public class TreeHelper {
             // No session variable set
             return "";
         }
-        String versionnumber = (String)session.getAttribute(getBuilderName(objectnumber) + "version");
+        String versionnumber = session == null ? null : (String)session.getAttribute(getBuilderName(objectnumber) + "version");
         if (versionnumber == null) {
             // The session variable was not set.
             return "";
