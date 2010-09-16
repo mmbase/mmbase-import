@@ -24,12 +24,13 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * ChangesSender is a thread object sending the nodes found in the
- * sending queue over unicast connections
+ * ChangesSender is a runnable object sending the nodes found in the sending queue over unicast connections. Using
+ * {@link #start} (and {@link #stop}) it can run itself in a dedicated thread.
  *
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @version $Id$
+ * @see Unicast
  */
 public class ChangesSender implements Runnable {
 
@@ -87,6 +88,10 @@ public class ChangesSender implements Runnable {
     }
 
     /**
+     * Sets the other machines (the 'peers') using a string to be parsed
+     <pre>
+     &lt;hostname&gt;:&lt;portnumber&gt;[:&lt;name&gt;[:&lt;version&gt;]],[&lt;hostname&gt;:&lt;portnumber&gt;[:&lt;name&gt;[:&lt;version&gt;]]...]
+     </pre>
      * @since MMBase-2.0
      */
     public void setOtherMachines(String s) {
@@ -206,7 +211,7 @@ public class ChangesSender implements Runnable {
 
     /**
      * Sends a collection of messages to the given address. So, it opens a socket and uses {@link #writeVersion2} to
-     * sent the messages
+     * send the messages
      * @param address The address to send to.
      * @param data The message to send
      * @since MMBase-2.0
