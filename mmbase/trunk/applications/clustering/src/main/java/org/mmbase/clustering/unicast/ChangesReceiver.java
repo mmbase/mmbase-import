@@ -21,11 +21,11 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * ChangesReceiver is a thread object that builds a Unicast Thread
- * to receive changes from other MMBase Servers.
+ * ChangesReceiver is a running object that (can) build(s) a Unicast Thread  to receive changes from other MMBase Servers.
  *
  * @author Nico Klasens
  * @version $Id$
+ * @see Unicast
  */
 public class ChangesReceiver implements Runnable {
 
