@@ -129,6 +129,12 @@
       <type state="persistent" size="255" notnull="false" key="false">STRING</type>
     </db>
   </field>
+  <!--
+    This field is completely not implemented.
+    I think the meant functinality is available by starting the value of the body feidl with 'http:'.
+    (would also work for the subject btw).
+    -->
+    <!--
   <field name="bodyurl">
     <descriptions>
       <description xml:lang="en">URL to a script that generates the message to send</description>
@@ -144,6 +150,7 @@
       <type state="persistent" size="255" notnull="false" key="false">STRING</type>
     </db>
   </field>
+  -->
   <field name="body">
     <descriptions>
       <description xml:lang="en">Main message text</description>
@@ -159,6 +166,16 @@
       <type state="persistent" size="32000" notnull="false" key="false">STRING</type>
     </db>
   </field>
+  <field name="mailtype">
+      <gui>
+        <guiname xml:lang="en">Type</guiname>
+        <guiname xml:lang="nl">Type</guiname>
+        <guiname xml:lang="eo">Tipo</guiname>
+      </gui>
+      <editor><positions><list>4</list></positions></editor>
+      <datatype base="email_type" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+
+    </field>
   <field name="mailstatus">
     <descriptions>
       <description xml:lang="en">State of the message: 0:waiting to be scheduled, 1:delivered, 2:delivery failed, 3:marked as SPAM, 4:scheduled, wating to bedelivered</description>
