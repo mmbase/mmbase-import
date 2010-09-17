@@ -71,7 +71,6 @@ public class JumpersFilter implements Filter, MMBaseStarter {
         log.info("Starting JumpersFilter with " + filterConfig);
         name = filterConfig.getFilterName();
         MMBaseContext.init(filterConfig.getServletContext());
-        MMBaseContext.initHtmlRoot();
         // stuff that can take indefinite amount of time (database down and so on) is done in separate thread
         initThread = new MMBaseStartThread(this);
         initThread.start();
