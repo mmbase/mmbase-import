@@ -58,7 +58,7 @@ ResourceLoader builderLoader = new ResourceLoader("builders");
 List list = builderLoader.getResourcePaths(ResourceLoader.XML_PATTERN, true)
 </pre>
 
-When you want to place a configuration file then you have several options, wich are in order of preference:
+When you want to place a configuration file then you have several options, which are in order of preference:
 <ol>
   <li>Place it as on object in 'resources' builder (if such a builder is present)</li>
   <li>Place it in the directory identified by the 'mmbase.config' setting (A system property or web.xml setting).</li>
@@ -370,7 +370,7 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
-     * Singleton that returns the ResourceLoader for witch the base path is the web root
+     * Singleton that returns the ResourceLoader for which the base path is the web root
      */
     public static synchronized ResourceLoader getWebRoot() {
         if (webRootNeedsInit) {
@@ -1825,7 +1825,7 @@ public class ResourceLoader extends ClassLoader {
         private final String root;
 
 
-        // Some arrangment to remember wich subdirs were possible
+        // Some arrangment to remember which subdirs were possible
         //private Set subDirs = new HashSet();
 
         ClassLoaderURLStreamHandler(ResourceLoader parent, String r) {
