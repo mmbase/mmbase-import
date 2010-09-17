@@ -141,7 +141,7 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                 }
                 
                 if (cc != null) {
-                    LOG.service("Calling " + cc);
+                    LOG.debug("Calling " + cc);
                     cc.createCaches(node.getCloud().getNonTransactionalCloud(), node.getNumber(), jdlist);
                     return true;
                 } else {
@@ -214,11 +214,33 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
             
             
         } else {    // just one node: do always
-            Node stream = list.get(0);
-            String key = stream.getStringValue("key");
+            Node cache = list.get(0);
+            String key  = cache.getStringValue("key");
+            Node inNode = cache.getNodeValue("id");
+            String in = "" + inNode.getNumber();
             
-            if (configKeys.containsValue(key)) {
-                LOG.debug("Found for #" + stream.getNumber() + " in config: " + key);
+            if (src.getCloud().hasNode(in)) {   // look if inNode (still) exists
+
+                String label  = cache.getStringValue("label");
+                MimeType mt   = new MimeType( cache.getStringValue("mimetype") );
+                Transcoder tr = null;
+                try {
+                    tr = AbstractTranscoder.getInstance(key);
+                } catch (ClassNotFoundException cnf) {
+                    LOG.error("Class not found, transcoder in key '" + key + "' does not exist? - " + cnf);
+                } catch (InstantiationException ie) {
+                    LOG.error("Exception while instantiating transcoder for key '" + key + "' - " + ie);
+                } catch (Exception e) {
+                    LOG.error("Exception while trying to (re)transcode - " + e);
+                }
+                
+                JobDefinition jd = new JobDefinition("re-cache", in, label.length() > 0 ? label : null, tr, mt, Stage.TRANSCODER);
+                new_jdlist.put("re-cache", jd);
+                LOG.info("Added for re-transcoding id 're-cache' [" + jd + "] from existing inNode #" + in);
+            
+            } else if (configKeys.containsValue(key)) { // else re-transcode it based on config
+            
+                LOG.debug("Found for #" + cache.getNumber() + " in config: " + key);
                 
                 // get config id
                 Iterator<Map.Entry<String,String>> it = configKeys.entrySet().iterator();
@@ -239,36 +261,6 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
             } 
         }
         
-        /* last resort (for just 1 node): re-transcode based on cache key
-           nothing matched in config but we have a cache to re-transcode */
-        if (new_jdlist.isEmpty() && list.size() == 1) {
-            Node cache = list.getNode(0);
-            String in = "";
-            Node inNode = cache.getNodeValue("id");
-            if (inNode.getNumber() != src.getNumber()) {
-                in = "" + inNode.getNumber();
-            }
-            String id     = "re-cache";
-            String key    = cache.getStringValue("key");
-            String label  = cache.getStringValue("label");
-            MimeType mt   = new MimeType( cache.getStringValue("mimetype") );
-            
-            Transcoder tr = null;
-            try {
-                tr = AbstractTranscoder.getInstance(key);
-            } catch (ClassNotFoundException cnf) {
-                LOG.error("Class not found, transcoder in key '" + key + "' does not exist? - " + cnf);
-            } catch (InstantiationException ie) {
-                LOG.error("Exception while instantiating transcoder for key '" + key + "' - " + ie);
-            } catch (Exception e) {
-                LOG.error("Exception while trying to (re)transcode - " + e);
-            }
-            
-            JobDefinition jd = new JobDefinition(id, in.length() > 0 ? in : null, label.length() > 0 ? label : null, tr, mt, Stage.TRANSCODER);
-            new_jdlist.put(id, jd);
-            LOG.info("Added for re-transcoding (based on key) id: " + id + "[" + jd + "]");
- 
-        }
         return new_jdlist;
     }
     
@@ -315,9 +307,11 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                     String label  = jobdef.getLabel(); 
                     MimeType mt   = jobdef.getMimeType();
                     List<Analyzer> analyzers = jobdef.getAnalyzers();
-                    LOG.debug("analyzers: "  + analyzers);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("analyzers: "  + analyzers);
+                    }
             
-                    jobdef = new JobDefinition(id, "" + inNode.getNumber(), label, tr, mt, Stage.TRANSCODER);
+                    jobdef = new JobDefinition(id, "" + inNode.getNumber(), label.length() > 0 ? label : null, tr, mt, Stage.TRANSCODER);
                     jobdef.addAnalyzers(analyzers);
                     injds.put(id, jobdef);
                     
