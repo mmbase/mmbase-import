@@ -114,7 +114,6 @@ public class FrameworkFilter implements Filter { //, MMBaseStarter  {
         /* initialize MMBase if its not started yet */
         if (! MMBaseContext.isInitialized()) {
             MMBaseContext.init(ctx);
-            MMBaseContext.initHtmlRoot();
         }
 
         /*
