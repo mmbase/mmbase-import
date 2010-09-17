@@ -1,10 +1,10 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+  This software is OSI Certified Open Source Software.
+  OSI Certified is a certification mark of the Open Source Initiative.
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+  The license (Mozilla version 1.0) can be read at the MMBase site.
+  See http://www.MMBase.org/license
 
 */
 
@@ -23,7 +23,7 @@ import static org.junit.Assume.*;
 
 
 /**
-   *
+ *
  * @author Michiel Meeuwissen
  * @version $Id: QueriesTest.java 41584 2010-03-23 18:05:29Z michiel $
  */
@@ -35,7 +35,12 @@ public class TreeHelperTest  {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ServletContext sx = new MockServletContext("/src/test/files/treetests",  new FileSystemResourceLoader());
+        ServletContext sx = new MockServletContext("/src/test/files/treetests",  new FileSystemResourceLoader()) {
+                @Override
+                public ServletContext getContext(String uriPath) {
+                    return this;
+                }
+            };
         org.mmbase.module.core.MMBaseContext.init(sx);
         org.mmbase.util.logging.SimpleTimeStampImpl.configure(org.mmbase.bridge.util.TreeHelper.class.getName(), "debug");
         MockCloudContext cc =  MockCloudContext.getInstance();
@@ -63,7 +68,7 @@ public class TreeHelperTest  {
         assertEquals("test", helper.findLeafFile("test", null, null));
         assertEquals("test?a=a a", helper.findLeafFile("test?a=a a", null, null));
         assertEquals("", helper.findLeafFile("test", "50000", null));
-        assertEquals("/5/test", helper.findLeafFile("test", "" + node.getNumber(), null));
+        assertEquals("/" + node.getNumber() + "/test", helper.findLeafFile("test", "" + node.getNumber(), null)); // fails?
     }
 
 
