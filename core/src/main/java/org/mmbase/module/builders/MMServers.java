@@ -342,7 +342,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, org.mm
     }
 
     /**
-     * @return Returns the intervalTime.
+     * @return Returns the intervalTime in ms.
      */
     public long getIntervalTime() {
         return intervalTime * 1000;
