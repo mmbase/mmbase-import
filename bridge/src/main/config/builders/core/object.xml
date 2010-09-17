@@ -184,7 +184,7 @@
 
   <functionlist>
     <function name="smartpath">
-      <class>org.mmbase.module.core.SmartPathFunction</class>
+      <class>org.mmbase.util.functions.SmartPathFunction</class>
     </function>
     <function name="clone">
       <class>org.mmbase.util.functions.CloneNodeFunction</class>

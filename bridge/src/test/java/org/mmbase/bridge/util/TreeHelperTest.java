@@ -38,6 +38,10 @@ public class TreeHelperTest  {
         org.mmbase.util.logging.SimpleTimeStampImpl.configure(org.mmbase.bridge.util.TreeHelper.class.getName(), "debug");
         ServletContext sx = new MockServletContext("/src/test/files/treetests",  new FileSystemResourceLoader());
         ResourceLoader.init(sx);
+        MockCloudContext cc =  MockCloudContext.getInstance();
+        cc.addCore();
+        cc.addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
+
     }
 
 
@@ -51,12 +55,15 @@ public class TreeHelperTest  {
     @Test
     public void findLeafFile() throws Exception {
         Cloud cloud = getCloudContext().getCloud("mmbase", "class", null);
+        Node node = cloud.getNodeManager("news").createNode();
+        node.setStringValue("title", "foo");
+        node.commit();
         TreeHelper helper = new TreeHelper();
         helper.setCloud(cloud);
         assertEquals("test", helper.findLeafFile("test", null, null));
         assertEquals("test?a=a a", helper.findLeafFile("test?a=a a", null, null));
         assertEquals("", helper.findLeafFile("test", "50000", null));
-        assertEquals("/5/test", helper.findLeafFile("test", "5", null));
+        assertEquals("/5/test", helper.findLeafFile("test", "" + node.getNumber(), null));
     }
 
 
