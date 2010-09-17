@@ -202,7 +202,6 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
         if (! MMBaseContext.isInitialized()) {
             MMBaseContext.init(servletContext);
-            MMBaseContext.initHtmlRoot();
         }
 
         log.info("Init of servlet " + getServletName() + ".");
@@ -216,7 +215,6 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             // used to determine the accurate way to access a servlet
             try {
 
-                MMBaseContext.initHtmlRoot();
                 // get config and do stuff.
                 java.net.URL url;
                 try {
