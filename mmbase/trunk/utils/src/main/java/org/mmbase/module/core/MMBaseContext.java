@@ -65,7 +65,6 @@ public class MMBaseContext {
      *
      */
     public synchronized static void init(ServletContext servletContext) {
-        System.out.println("Init " + servletContext);
         if (!initialized ||
             (initialized && sx == null)) { // initialized, but with init(configPath)
 
