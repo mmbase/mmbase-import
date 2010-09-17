@@ -23,6 +23,10 @@ package org.mmbase.module.core;
  */
 public class SmartPathFunction extends org.mmbase.util.functions.SmartPathFunction {
 
+    public SmartPathFunction(MMObjectBuilder p) {
+        super(p);
+    }
+
 }
 
 

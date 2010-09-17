@@ -422,7 +422,7 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
     /**
      * @since MMBase-1.8
      */
-    public Set<Function> getFunctions(final MMObjectBuilder builder) {
+    public Set<Function<?>> getFunctions(final MMObjectBuilder builder) {
         return super.getFunctions(builder);
     }
     /**
