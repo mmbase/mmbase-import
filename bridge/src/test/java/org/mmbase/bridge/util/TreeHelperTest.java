@@ -35,9 +35,9 @@ public class TreeHelperTest  {
 
     @BeforeClass
     public static void setup() throws Exception {
-        org.mmbase.util.logging.SimpleTimeStampImpl.configure(org.mmbase.bridge.util.TreeHelper.class.getName(), "debug");
         ServletContext sx = new MockServletContext("/src/test/files/treetests",  new FileSystemResourceLoader());
-        ResourceLoader.init(sx);
+        org.mmbase.module.core.MMBaseContext.init(sx);
+        org.mmbase.util.logging.SimpleTimeStampImpl.configure(org.mmbase.bridge.util.TreeHelper.class.getName(), "debug");
         MockCloudContext cc =  MockCloudContext.getInstance();
         cc.addCore();
         cc.addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
