@@ -51,6 +51,10 @@ public class MockNodeManager extends AbstractNodeManager  {
         if (e != null && e.length() == 0) e = null;
         this.parent = e;
 
+        if (desc.reader != null) {
+            functions.addAll(desc.reader.getFunctions(this));
+        }
+
         // it should behave as a proper node
         values.put("number", desc.oType);
         values.put("name",   desc.name);
