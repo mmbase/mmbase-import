@@ -468,6 +468,23 @@ See http://www.MMBase.org/license
         <version>${junit.version}</version>
         <scope>test</scope>
       </dependency>
+
+      <!--
+          Spring has a mock imlementation of javax.servlet stuff
+      -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-mock</artifactId>
+        <version>2.0.8</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>2.0.8</version>
+        <scope>test</scope>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
