@@ -65,6 +65,7 @@ public class MMBaseContext {
      *
      */
     public synchronized static void init(ServletContext servletContext) {
+        System.out.println("Init " + servletContext);
         if (!initialized ||
             (initialized && sx == null)) { // initialized, but with init(configPath)
 
@@ -115,6 +116,12 @@ public class MMBaseContext {
             // Init logging.
             initLogging();
             initialized = true;
+            try {
+                initHtmlRoot();
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+
         }
     }
 
@@ -253,9 +260,8 @@ public class MMBaseContext {
     }
 
     /**
-     * Initialize mmbase.htmlroot parameter. This method is only needed for
-     * SCAN related servlets and should be called after the init(ServletContext)
-     * method. If the mmbase.htmlroot parameter is not found in the servlet
+     * Initialize mmbase.htmlroot parameter.
+     * If the mmbase.htmlroot parameter is not found in the servlet
      * context or system prooperties this method will try to set it to the
      * root directory of the webapp.
      *
@@ -263,7 +269,7 @@ public class MMBaseContext {
      *                           directory
      *
      */
-    public synchronized static void initHtmlRoot() throws ServletException {
+    protected synchronized static void initHtmlRoot() throws ServletException {
         if (!initialized) {
             throw new RuntimeException("The init(ServletContext) method should be called first. (Not initalized)");
         }

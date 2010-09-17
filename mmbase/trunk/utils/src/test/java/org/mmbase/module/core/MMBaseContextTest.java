@@ -29,7 +29,12 @@ public class MMBaseContextTest  {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ServletContext sx = new MockServletContext("/src/test/files/",  new FileSystemResourceLoader());
+        ServletContext sx = new MockServletContext("/src/test/files/",  new FileSystemResourceLoader()) {
+                @Override
+                public ServletContext getContext(String uriPath) {
+                    return this;
+                }
+            };
         org.mmbase.module.core.MMBaseContext.init(sx);
     }
 
