@@ -33,6 +33,7 @@ public class MMBaseLogger implements Log {
     /**
      * @return if debug is enabled in the MMBaseLogger
      */
+    @Override
     public boolean isDebugEnabled() {
         return logger.isDebugEnabled();
     }
@@ -40,6 +41,7 @@ public class MMBaseLogger implements Log {
     /**
      * @return if service is enabled in the MMBaseLogger
      */
+    @Override
     public boolean isErrorEnabled() {
         return logger.isServiceEnabled();
     }
@@ -47,12 +49,14 @@ public class MMBaseLogger implements Log {
     /**
      * @return is service is enabled in the MMBase logger
      */
+    @Override
     public boolean isFatalEnabled() {
         return logger.isServiceEnabled();
     }
     /**
      * @return is service is enabled in the MMBase logger
      */
+    @Override
     public boolean isInfoEnabled() {
         return logger.isServiceEnabled();
     }
@@ -60,6 +64,7 @@ public class MMBaseLogger implements Log {
     /**
      * @return if debug is enabled in the MMBaseLogger
      */
+    @Override
     public boolean isTraceEnabled() {
         return logger.isDebugEnabled();
     }
@@ -67,6 +72,7 @@ public class MMBaseLogger implements Log {
     /**
      * @return is service is enabled in the MMBaseLogger
      */
+    @Override
     public boolean isWarnEnabled() {
         return logger.isServiceEnabled();
     }
@@ -74,6 +80,7 @@ public class MMBaseLogger implements Log {
     /**
      * calls {@link org.mmbase.util.logging.Logger#trace(java.lang.Object)}
      */
+    @Override
     public void trace(Object object) {
         logger.trace(object);
     }
@@ -81,6 +88,7 @@ public class MMBaseLogger implements Log {
     /**
      * calls {@link org.mmbase.util.logging.Logger#debug(java.lang.Object)}
      */
+    @Override
     public void debug(Object object) {
         logger.debug(object);
     }
@@ -88,6 +96,7 @@ public class MMBaseLogger implements Log {
     /**
      * calls {@link org.mmbase.util.logging.Logger#info(java.lang.Object)}
      */
+    @Override
     public void info(Object object) {
         logger.info(object);
     }
@@ -95,6 +104,7 @@ public class MMBaseLogger implements Log {
     /**
      * calls {@link org.mmbase.util.logging.Logger#warn(java.lang.Object)}
      */
+    @Override
     public void warn(Object object) {
         logger.warn(object);
     }
@@ -102,6 +112,7 @@ public class MMBaseLogger implements Log {
     /**
      * calls {@link org.mmbase.util.logging.Logger#error(java.lang.Object)} 
      */
+    @Override
     public void error(Object object) {
         logger.error(object);
     }
@@ -109,51 +120,58 @@ public class MMBaseLogger implements Log {
     /**
      * calls {@link org.mmbase.util.logging.Logger#fatal(java.lang.Object)} 
      */
+    @Override
     public void fatal(Object object) {
         logger.fatal(object);
 
     }
 
-	/**
-	 * calls {@link org.mmbase.util.logging.Logger#debug(java.lang.Object, java.lang.Throwable)}
-	 */
-	public void debug(Object object, Throwable throwable) {
-		logger.debug(object, throwable);
-	}
+    /**
+     * calls {@link org.mmbase.util.logging.Logger#debug(java.lang.Object, java.lang.Throwable)}
+     */
+    @Override
+    public void debug(Object object, Throwable throwable) {
+        logger.debug(object, throwable);
+    }
 
-	/**
-	 * calls {@link org.mmbase.util.logging.Logger#error(java.lang.Object, java.lang.Throwable)}
-	 */
-	public void error(Object object, Throwable throwable) {
-		logger.error(object, throwable);
-	}
-	
-	/**
-	 * calls {@link org.mmbase.util.logging.Logger#fatal(java.lang.Object, java.lang.Throwable)}
-	 */
-	public void fatal(Object object, Throwable throwable) {
-		logger.fatal(object, throwable);
-	}
+    /**
+     * calls {@link org.mmbase.util.logging.Logger#error(java.lang.Object, java.lang.Throwable)}
+     */
+    @Override
+    public void error(Object object, Throwable throwable) {
+        logger.error(object, throwable);
+    }
 
-	/**
-	 * calls {@link org.mmbase.util.logging.Logger#info(java.lang.Object, java.lang.Throwable)}
-	 */
-	public void info(Object object, Throwable throwable) {
-		logger.info(object, throwable);
-	}
+    /**
+     * calls {@link org.mmbase.util.logging.Logger#fatal(java.lang.Object, java.lang.Throwable)}
+     */
+    @Override
+    public void fatal(Object object, Throwable throwable) {
+        logger.fatal(object, throwable);
+    }
 
-	/**
-	 * calls {@link org.mmbase.util.logging.Logger#trace(java.lang.Object, java.lang.Throwable)}
-	 */
-	public void trace(Object object, Throwable throwable) {
-		logger.trace(object, throwable);
-	}
-	
-	/**
-	 * calls {@link org.mmbase.util.logging.Logger#warn(java.lang.Object, java.lang.Throwable)}
-	 */
-	public void warn(Object object, Throwable throwable) {
-		logger.warn(object, throwable);
-	}
+    /**
+     * calls {@link org.mmbase.util.logging.Logger#info(java.lang.Object, java.lang.Throwable)}
+     */
+    @Override
+    public void info(Object object, Throwable throwable) {
+        logger.info(object, throwable);
+    }
+
+    /**
+     * calls {@link org.mmbase.util.logging.Logger#trace(java.lang.Object, java.lang.Throwable)}
+     */
+    @Override
+    public void trace(Object object, Throwable throwable) {
+        logger.trace(object, throwable);
+    }
+
+    /**
+     * calls {@link org.mmbase.util.logging.Logger#warn(java.lang.Object, java.lang.Throwable)}
+     */
+    @Override
+    public void warn(Object object, Throwable throwable) {
+        logger.warn(object, throwable);
+    }
 
 }

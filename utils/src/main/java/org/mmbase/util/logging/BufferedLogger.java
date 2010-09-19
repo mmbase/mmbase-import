@@ -28,19 +28,20 @@ public class BufferedLogger extends AbstractSimpleImpl {
 
     static {
         org.mmbase.util.ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
-                public void run() {
-                    for (WeakReference<BufferedLogger> ref : instances) {
-                        BufferedLogger buffer = ref.get();
-                        if (buffer != null) {
-                            int cleaned = buffer.cleanup();
-                            LOG.debug("Cleaned up " + cleaned + " log entry from " + buffer);
+            @Override
+            public void run() {
+                for (WeakReference<BufferedLogger> ref : instances) {
+                    BufferedLogger buffer = ref.get();
+                    if (buffer != null) {
+                        int cleaned = buffer.cleanup();
+                        LOG.debug("Cleaned up " + cleaned + " log entry from " + buffer);
 
-                        }
                     }
                 }
-            },
-            10,
-            10, TimeUnit.SECONDS);
+            }
+        },
+                10,
+                10, TimeUnit.SECONDS);
     }
 
     private final List<LogEntry> history = Collections.synchronizedList(new LinkedList<LogEntry>());

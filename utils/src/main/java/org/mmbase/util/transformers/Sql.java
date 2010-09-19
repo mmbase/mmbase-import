@@ -93,12 +93,14 @@ public class Sql extends ConfigurableReaderTransformer implements CharTransforme
      * Used when registering this class as a possible Transformer
      */
 
+    @Override
     public Map<String,Config> transformers() {
         Map<String,Config> h = new HashMap<String,Config>();
         h.put(ENCODING, new Config(Sql.class, ESCAPE_QUOTES, "Escape single quotes for SQL statements"));
         return h;
     }
 
+    @Override
     public Writer transform(Reader r, Writer w) {
         switch(to){
         case ESCAPE_QUOTES:           return singleQuote(r, w);
@@ -106,6 +108,7 @@ public class Sql extends ConfigurableReaderTransformer implements CharTransforme
         }    
     }
 
+    @Override
     public Writer transformBack(Reader r, Writer w) {
         switch(to){
         case ESCAPE_QUOTES:           return singleQuoteBack(r, w);
@@ -113,6 +116,7 @@ public class Sql extends ConfigurableReaderTransformer implements CharTransforme
         }
     } 
 
+    @Override
     public String getEncoding() {
         return ENCODING;
     }

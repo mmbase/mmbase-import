@@ -25,6 +25,7 @@ public class SpaceRemover extends ReaderTransformer implements CharTransformer {
 
     private static final Logger log = Logging.getLoggerInstance(SpaceRemover.class);
 
+    @Override
     public Writer transform(Reader r, Writer w) {
 
         try {
@@ -57,6 +58,7 @@ public class SpaceRemover extends ReaderTransformer implements CharTransformer {
         return w;
     }
 
+    @Override
     public String toString() {
         return "SPACEREMOVER";
     }

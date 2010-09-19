@@ -97,6 +97,7 @@ public class UtilReader {
             wrappedWatcher = f;
         }
 
+        @Override
         public void onChange(String f) {
             readProperties(f);
             if (wrappedWatcher != null) {
@@ -150,6 +151,7 @@ public class UtilReader {
      */
     public UtilReader(String resourceName, final Runnable onChange) {
         this(resourceName, new ResourceWatcher(ResourceLoader.getConfigurationRoot(), false) {
+            @Override
                 public void onChange(String name) {
                     onChange.run();
                 }
@@ -306,6 +308,7 @@ public class UtilReader {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Set<Map.Entry<String, E>> entrySet() {
             return new EntrySet();
 
@@ -321,9 +324,11 @@ public class UtilReader {
 
         private class  EntrySet extends AbstractSet<Map.Entry<String, E>> {
             EntrySet() {}
+            @Override
             public int size() {
                 return PropertiesMap.this.wrappedMap.size();
             }
+            @Override
             public Iterator<Map.Entry<String, E>> iterator() {
                 return new EntrySetIterator();
             }
@@ -333,12 +338,15 @@ public class UtilReader {
             EntrySetIterator() {
                 i = PropertiesMap.this.wrappedMap.entrySet().iterator();
             }
+            @Override
             public boolean hasNext() {
                 return i.hasNext();
             }
+            @Override
             public Map.Entry<String, E> next() {
                 return i.next();
             }
+            @Override
             public void remove() {
                 throw new UnsupportedOperationException("Unmodifiable");
             }

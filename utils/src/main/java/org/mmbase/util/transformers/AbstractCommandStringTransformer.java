@@ -36,6 +36,7 @@ public abstract class AbstractCommandStringTransformer extends StringTransformer
 
 
     // javadoc inherited
+    @Override
     public final String transform(String s) {
         try {
             String encoding = System.getProperty("file.encoding");
@@ -58,6 +59,7 @@ public abstract class AbstractCommandStringTransformer extends StringTransformer
         return s;
     }
 
+    @Override
     public String toString() {
         return getCommand()[0].toUpperCase();
     }

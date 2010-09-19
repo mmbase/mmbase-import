@@ -43,6 +43,7 @@ public class Identifier extends ReaderTransformer implements CharTransformer {
         return whitespace;
     }
 
+    @Override
     public Writer transform(Reader r, Writer w) {
         try {
             log.debug("Starting identifier");

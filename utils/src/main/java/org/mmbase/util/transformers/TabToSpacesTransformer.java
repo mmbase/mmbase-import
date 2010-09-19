@@ -43,6 +43,7 @@ public class TabToSpacesTransformer extends ReaderTransformer implements CharTra
         }
     }
 
+    @Override
     public Writer transform(Reader r, Writer w) {
         try {
             while (true) {
@@ -59,6 +60,7 @@ public class TabToSpacesTransformer extends ReaderTransformer implements CharTra
         }
         return w;
     }
+    @Override
     public Writer transformBack(Reader r, Writer w) {
         int spaces = 1;
         try {
@@ -86,6 +88,7 @@ public class TabToSpacesTransformer extends ReaderTransformer implements CharTra
     }
 
 
+    @Override
     public String toString() {
         return "tab2spacestransformer";
     }

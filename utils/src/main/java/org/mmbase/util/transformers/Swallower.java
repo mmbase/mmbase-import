@@ -23,20 +23,22 @@ import java.io.Writer;
 
 public class Swallower extends ReaderTransformer implements CharTransformer {
 
-    // implementation, javadoc inherited
+    @Override
     public Writer transform(Reader r, Writer w) {
         return w;
     } 
 
-    // implementation, javadoc inherited
+    @Override
     public Writer transformBack(Reader r, Writer w) {
         throw new UnsupportedOperationException("This is utterly impossible :-)");
     }
 
     // overridden for performance.
+    @Override
     public String transform(String s) {
         return "";
     }
+    @Override
     public String toString() {
         return "SWALLOW";
     }

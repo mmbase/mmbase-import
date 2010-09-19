@@ -58,6 +58,7 @@ public class Base64 implements ByteToCharTransformer, ConfigurableTransformer {
 
     int to = BASE_64;
 
+    @Override
     public void configure(int t) {
         to = t;
     }
@@ -66,6 +67,7 @@ public class Base64 implements ByteToCharTransformer, ConfigurableTransformer {
      * Used when registering this class as a possible Transformer
      */
 
+    @Override
     public Map<String,Config> transformers() {
         Map<String,Config> h = new HashMap<String,Config>();
         h.put(ENCODING, new Config(Base64.class, BASE_64, "Base 64 encoding base on sun.misc.BASE64* classes"));
@@ -73,6 +75,7 @@ public class Base64 implements ByteToCharTransformer, ConfigurableTransformer {
     }
 
 
+    @Override
     public String transform(byte[] in) {
         int iLen = in.length;
         int oDataLen = (iLen*4+2)/3;       // output length without padding
@@ -97,6 +100,7 @@ public class Base64 implements ByteToCharTransformer, ConfigurableTransformer {
         }
         return new String(out);
     }
+    @Override
     public Writer transform(InputStream in, Writer w)  {
         int iLen = 0;
         int op = 0;
@@ -128,6 +132,7 @@ public class Base64 implements ByteToCharTransformer, ConfigurableTransformer {
     }
 
 
+    @Override
     public byte[] transformBack(String r) {
         char[] in = r.toCharArray();
         int iLen = in.length;
@@ -162,6 +167,7 @@ public class Base64 implements ByteToCharTransformer, ConfigurableTransformer {
             if (op<oLen) out[op++] = (byte)o2; }
         return out;
     }
+    @Override
     public OutputStream transformBack(Reader in, OutputStream out)  {
         try {
             StringWriter sw = new StringWriter();
@@ -177,15 +183,18 @@ public class Base64 implements ByteToCharTransformer, ConfigurableTransformer {
         return out;
     }
     // javadoc inherited
+    @Override
     public final OutputStream transformBack(Reader r) {
         return transformBack(r, new ByteArrayOutputStream());
     }
 
     // javadoc inherited
+    @Override
     public final Writer transform(InputStream in) {
         return transform(in, new StringWriter());
     }
 
+    @Override
     public String getEncoding() {
         return ENCODING;
     }

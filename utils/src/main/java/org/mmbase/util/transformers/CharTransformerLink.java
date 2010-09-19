@@ -39,6 +39,7 @@ public class CharTransformerLink implements Runnable {
         closeWriter = cw;
     }
     
+    @Override
     synchronized public  void run() {            
         try {
             charTransformer.transform(reader, writer);       

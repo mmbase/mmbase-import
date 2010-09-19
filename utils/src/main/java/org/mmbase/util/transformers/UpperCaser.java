@@ -25,6 +25,7 @@ import org.mmbase.util.logging.*;
 public class UpperCaser extends ReaderTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(UpperCaser.class);
 
+    @Override
     public Writer transform(Reader r, Writer w) {
         try {
             log.debug("Starting uppercasing");
@@ -41,6 +42,7 @@ public class UpperCaser extends ReaderTransformer implements CharTransformer {
     }
 
 
+    @Override
     public String toString() {
         return "uppercaser";
     }

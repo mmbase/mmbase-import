@@ -31,11 +31,14 @@ public abstract class ConfigurableStringTransformer extends StringTransformer im
         configure(conf);
     }
 
+    @Override
     public void configure(int t) {
         //log.info("Setting config to " + t);
         to = t;
     }
+    @Override
     abstract public Map<String,Config> transformers();
+    @Override
     abstract public String getEncoding();
 
     @Override

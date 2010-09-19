@@ -26,6 +26,7 @@ import org.mmbase.util.logging.Logging;
 public class XmlEntities extends ReaderTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(XmlEntities.class);
       
+    @Override
     public Writer transform(Reader r, Writer w) {
         try {
             while (true) {
@@ -43,6 +44,7 @@ public class XmlEntities extends ReaderTransformer implements CharTransformer {
         }
         return w;
     }
+    @Override
     public String toString() {
         return "XMLENTITIES";
     }

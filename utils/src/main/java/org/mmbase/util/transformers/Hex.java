@@ -28,6 +28,7 @@ public class Hex extends ByteArrayToCharTransformer implements ByteToCharTransfo
 
     int to = HEX;
 
+    @Override
     public void configure(int t) {
         to = t;
     }
@@ -36,6 +37,7 @@ public class Hex extends ByteArrayToCharTransformer implements ByteToCharTransfo
      * Used when registering this class as a possible Transformer
      */
 
+    @Override
     public Map<String,Config> transformers() {
         Map<String,Config> h = new HashMap<String,Config>();
         h.put(ENCODING, new Config(Hex.class, HEX, "Encoding bytearrays to and from a hexidecimal string"));
@@ -46,6 +48,7 @@ public class Hex extends ByteArrayToCharTransformer implements ByteToCharTransfo
     /**
      * Transform a bytearray to a string of hexadecimal digits.
      */
+    @Override
     public String transform(byte[] bytes) {
         StringBuilder strbuf = new StringBuilder(bytes.length * 2);
         for (byte element : bytes) {
@@ -92,6 +95,7 @@ public class Hex extends ByteArrayToCharTransformer implements ByteToCharTransfo
         }
     }
 
+    @Override
     public String getEncoding() {
         return ENCODING;
     }

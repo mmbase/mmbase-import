@@ -33,6 +33,7 @@ public class Graphviz extends AbstractCommandStringTransformer implements CharTr
         type = t;
     }
 
+    @Override
     protected String[] getCommand() {
         return new String[] {command, "-T" + type };
     }

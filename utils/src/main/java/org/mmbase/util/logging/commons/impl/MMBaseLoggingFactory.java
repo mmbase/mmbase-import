@@ -48,6 +48,7 @@ public class MMBaseLoggingFactory extends LogFactory {
      * or <code>null</code> if there is no such attribute.
      *
      */
+    @Override
     public Object getAttribute(String name) {
         return attributes.get(name);
     }
@@ -57,6 +58,7 @@ public class MMBaseLoggingFactory extends LogFactory {
      * configuration attributes.  If there are no such attributes, a zero
      * length array is returned.
      */
+    @Override
     public String[] getAttributeNames() {
         Vector<String> names = new Vector<String>();
         names.addAll(attributes.keySet());
@@ -75,6 +77,7 @@ public class MMBaseLoggingFactory extends LogFactory {
      * @param clazz the class for witch to create a logger
      * @return a mmbase backed Log implementationfor the given class
      */
+    @Override
     public Log getInstance(Class clazz) throws LogConfigurationException {
         Log instance = instances.get(clazz);
         if (instance != null)
@@ -93,6 +96,7 @@ public class MMBaseLoggingFactory extends LogFactory {
      * @return a mmbase backed Log implementation for the given log
      */
 
+    @Override
     public Log getInstance(String category) throws LogConfigurationException {
         Log instance = instances.get(category);
         if (instance != null)
@@ -110,6 +114,7 @@ public class MMBaseLoggingFactory extends LogFactory {
       * throwing away a ClassLoader.  Dangling references to objects in that
       * class loader would prevent garbage collection.
       */
+    @Override
     public void release() {
 
         instances.clear();
@@ -122,6 +127,7 @@ public class MMBaseLoggingFactory extends LogFactory {
      *
      * @param name Name of the attribute to remove
      */
+    @Override
     public void removeAttribute(String name) {
         attributes.remove(name);
     }
@@ -135,6 +141,7 @@ public class MMBaseLoggingFactory extends LogFactory {
      * @param value Value of the attribute to set, or <code>null</code>
      *  to remove any setting for this attribute
      */
+    @Override
     public void setAttribute(String name, Object value) {
         if (value == null) {
             attributes.remove(name);

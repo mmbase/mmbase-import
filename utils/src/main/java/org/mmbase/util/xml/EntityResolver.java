@@ -71,6 +71,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
         StringResource(String s) {
             string = s;
         }
+        @Override
         InputStream getStream() {
             try {
                 return new ByteArrayInputStream(string.getBytes(encoding));
@@ -94,6 +95,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
         String getFileName() {
             return file;
         }
+        @Override
         InputStream getStream() {
             InputStream stream = null;
             if (file != null) {
@@ -112,6 +114,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
             return stream;
         }
 
+        @Override
         public String toString() {
             return file + ": " + clazz;
         }
@@ -282,6 +285,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
     /**
      * Takes the systemId and returns the local location of the dtd/xsd
      */
+    @Override
     public InputSource resolveEntity(final String publicId, final String systemId) {
         if (log.isDebugEnabled()) {
             log.debug("resolving PUBLIC " + publicId + " SYSTEM " + systemId);
@@ -294,12 +298,12 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
             log.debug("Reding mmbase entities for " + systemId + " " + publicId);
             //StringBuilder sb = new StringBuilder();
             //Class c = org.mmbase.framework.Framework.class;
-            String ents = getMMEntities();
-            if (ents != null) {
+            String entitities = getMMEntities();
+            if (entitities != null) {
                 if (log.isDebugEnabled()) {
-                    log.debug("Using entities\n" + ents);
+                    log.debug("Using entities\n" + entitities);
                 }
-                definitionStream = new StringResource(ents).getStream();
+                definitionStream = new StringResource(entitities).getStream();
             } else {
                 definitionStream = null;
             }
