@@ -57,12 +57,18 @@ public class MagicFileTest  {
         this.mimeType = mimeType;
     }
 
+    /**
+     * Test whether mime type is correctly determined.
+     */
     @Test
     public void test() throws IOException  {
         assertEquals(file.getName(), mimeType, MagicFile.getInstance().getMimeType(file));
     }
 
 
+    /**
+     * It may use the filename as a fall back. But not in these test-cases. So it should still work if the files as an unreccognized extension.
+     */
     @Test
     public void noExtension() throws IOException  {
         File tempFile = File.createTempFile(MagicFileTest.class.getName(), ".tmp");
@@ -71,6 +77,9 @@ public class MagicFileTest  {
     }
 
 
+    /**
+     * It should also still work if the file has a proper extension, but it is uppercased.
+     */
     @Test
     public void uppercase() throws IOException  {
         File tempFile = File.createTempFile("uppered", file.getName().toUpperCase());
