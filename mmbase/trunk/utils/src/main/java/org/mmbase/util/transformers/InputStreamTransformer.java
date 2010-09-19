@@ -22,18 +22,22 @@ import java.io.*;
 public abstract class InputStreamTransformer implements ByteTransformer {
 
 
+    @Override
     public abstract OutputStream transform(InputStream r, OutputStream o);
 
+    @Override
     public OutputStream transformBack(InputStream r, OutputStream o) {
         throw new UnsupportedOperationException("transformBack is not supported for this transformer");
     }
 
+    @Override
     public byte[] transform(byte[] r) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         transform(new ByteArrayInputStream(r), out);
         return out.toByteArray();
     }
 
+    @Override
     public byte[] transformBack(byte[]  r) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         transformBack(new ByteArrayInputStream(r), out);

@@ -23,20 +23,20 @@ import org.mmbase.util.logging.*;
 public abstract class StringTransformer implements CharTransformer {
     private static final Logger log = Logging.getLoggerInstance(StringTransformer.class);
 
-    // javadoc inherited
+    @Override
     public abstract String transform(String r);
         
-    // javadoc inherited
+    @Override
     public final Writer transformBack(Reader r) {
         return transformBack(r, new StringWriter());
     }
 
-    // javadoc inherited
+    @Override
     public final Writer transform(Reader r) {
         return transform(r, new StringWriter());
     }
 
-    // javadoc inherited
+    @Override
     public String transformBack(String r) {
         throw new UnsupportedOperationException("transformBack is not supported for this transformer");
     }
@@ -45,6 +45,7 @@ public abstract class StringTransformer implements CharTransformer {
      * An implemention for tranform(Reader, Writer) based on transform(String).
      * These functions can be used by extensions to implement transform and transformBack
      */
+    @Override
     public Writer transform(Reader r, Writer w)  {
         try {
             StringWriter sw = new StringWriter();
@@ -62,6 +63,7 @@ public abstract class StringTransformer implements CharTransformer {
         return w;
     }
 
+    @Override
     public Writer transformBack(Reader r, Writer w)  {
         try {
             StringWriter sw = new StringWriter();

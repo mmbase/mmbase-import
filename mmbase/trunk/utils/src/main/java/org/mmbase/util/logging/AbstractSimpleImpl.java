@@ -35,6 +35,7 @@ abstract public class AbstractSimpleImpl  implements Logger {
      */
     public static MDC getMDC() {
         return new MDC() {
+            @Override
             public void put(String key, Object value) {
                 if (value != null) {
                     MDC_VALUES.get().put(key, value);
@@ -43,6 +44,7 @@ abstract public class AbstractSimpleImpl  implements Logger {
                 }
             }
 
+            @Override
             public Object get(String key) {
                 return MDC_VALUES.get().get(key);
             }
@@ -54,6 +56,7 @@ abstract public class AbstractSimpleImpl  implements Logger {
      */
     protected int level = Level.INFO_INT;
 
+    @Override
     public void setLevel(Level p) {
         level = p.toInt();
     }
@@ -90,101 +93,119 @@ abstract public class AbstractSimpleImpl  implements Logger {
         log(s + "\n" + Logging.stackTrace(t), level);
     }
 
+    @Override
     public void trace (Object m) {
         if (level <= Level.TRACE_INT) {
             log(m,  Level.TRACE);
         }
     }
 
+    @Override
     public void trace (Object m, Throwable t) {
         if (level <= Level.TRACE_INT) {
             log(m,  Level.TRACE, t);
         }
     }
 
+    @Override
     public void debug (Object m) {
         if (level <= Level.DEBUG_INT) {
             log(m, Level.DEBUG);
         }
     }
+    @Override
     public void debug (Object m, Throwable t) {
         if (level <= Level.DEBUG_INT) {
             log(m, Level.DEBUG, t);
         }
     }
 
+    @Override
     public void service (Object m) {
         if (level <= Level.SERVICE_INT) {
             log(m, Level.SERVICE);
         }
     }
 
+    @Override
     public void service (Object m, Throwable t) {
         if (level <= Level.SERVICE_INT) {
             log(m, Level.SERVICE, t);
         }
     }
 
+    @Override
     public void info    (Object m) {
         if (level <= Level.INFO_INT) {
             log(m, Level.INFO);
         }
     }
 
+    @Override
     public void info    (Object m, Throwable t) {
         if (level <= Level.INFO_INT) {
             log(m, Level.INFO, t);
         }
     }
 
+    @Override
     public void warn    (Object m) {
         if (level <= Level.WARN_INT) {
             log(m, Level.WARN);
         }
     }
 
+    @Override
     public void warn    (Object m, Throwable t) {
         if (level <= Level.WARN_INT) {
             log(m, Level.WARN, t);
         }
     }
 
+    @Override
     public void error   (Object m) {
         if (level <= Level.ERROR_INT) {
             log(m, Level.ERROR);
         }
     }
 
+    @Override
     public void error   (Object m, Throwable t) {
         if (level <= Level.ERROR_INT) {
             log(m, Level.ERROR, t);
         }
     }
 
+    @Override
     public void fatal   (Object m) {
         if (level <= Level.FATAL_INT) {
             log(m, Level.FATAL);
         }
     }
 
+    @Override
     public void fatal   (Object m, Throwable t) {
         if (level <= Level.FATAL_INT) {
             log(m, Level.FATAL, t);
         }
     }
 
+    @Override
     public boolean isTraceEnabled() {
         return level <= Level.TRACE_INT;
     }
 
+    @Override
     public boolean isDebugEnabled() {
         return level <= Level.DEBUG_INT;
     }
 
+    @Override
     public boolean isServiceEnabled() {
         return level <= Level.SERVICE_INT;
     }
 
+    @Override
     public boolean isEnabledFor(Level l) {
         return level <= l.toInt();
     }

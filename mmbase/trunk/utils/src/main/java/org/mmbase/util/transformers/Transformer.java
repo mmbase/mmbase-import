@@ -22,5 +22,6 @@ package org.mmbase.util.transformers;
 
 public interface Transformer extends java.io.Serializable {
 
+    @Override
     String toString();
 }

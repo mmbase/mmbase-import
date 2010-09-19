@@ -77,6 +77,7 @@ public class UrlEscaper extends ReaderTransformer{
      * Replaces 'invalid characters' with their Escaped code, i.e.
      * the questionmark (?) is escaped with %3F.
      */
+    @Override
     public Writer transform(Reader r, Writer w) {
         escape(new BufferedInputStream(new org.mmbase.util.ReaderInputStream(r, "UTF-8")), w);
         return w;
@@ -122,6 +123,7 @@ public class UrlEscaper extends ReaderTransformer{
      * i.e %3F is replaced with the the question mark (?).
      * @return the unescaped url.
      */
+    @Override
     public Writer transformBack(Reader reader, Writer writer) {
         BufferedReader br = new BufferedReader(reader, BUF_SIZE);
         // can do something with using a buffer and anticipate that you can need a few chars more

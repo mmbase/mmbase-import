@@ -37,6 +37,7 @@ public class Url extends ConfigurableStringTransformer implements CharTransforme
      * Used when registering this class as a possible Transformer
      */
 
+    @Override
     public Map<String,Config> transformers() {
         Map<String,Config> h = new HashMap<String,Config>();
         h.put("escape_url".toUpperCase(), new Config(Url.class, ESCAPE));
@@ -44,6 +45,7 @@ public class Url extends ConfigurableStringTransformer implements CharTransforme
         return h;
     }
 
+    @Override
     public String transform(String r) {
         switch(to){
         case PARAM_ESCAPE:
@@ -56,6 +58,7 @@ public class Url extends ConfigurableStringTransformer implements CharTransforme
         default: throw new UnknownCodingException(getClass(), to);
         }
     }
+    @Override
     public String transformBack(String r) {
         switch(to){
         case ESCAPE:
@@ -68,6 +71,7 @@ public class Url extends ConfigurableStringTransformer implements CharTransforme
         default: throw new UnknownCodingException(getClass(), to);
         }
     }
+    @Override
     public String getEncoding() {
         switch(to){
         case ESCAPE:        return "ESCAPE_URL";

@@ -48,6 +48,7 @@ public class ErrorHandler implements org.xml.sax.ErrorHandler {
         this.exceptionLevel = exceptionLevel;
     }
 
+    @Override
     public void warning(SAXParseException ex) throws SAXException {
         String message = getLocationString(ex)+": "+ ex.getMessage();
         messages.append(message + "\n");
@@ -73,6 +74,7 @@ public class ErrorHandler implements org.xml.sax.ErrorHandler {
         }
     }
 
+    @Override
     public void error(SAXParseException ex) throws SAXException{
         String message = getLocationString(ex) + ": " + ex.getClass() + " " + ex.getMessage();
         if (isJava5AndXInclude(ex)) {
@@ -97,6 +99,7 @@ public class ErrorHandler implements org.xml.sax.ErrorHandler {
         }
     }
 
+    @Override
     public void fatalError(SAXParseException ex) throws SAXException {
         String message = getLocationString(ex)+": "+ ex.getMessage();
         messages.append(message + "\n");

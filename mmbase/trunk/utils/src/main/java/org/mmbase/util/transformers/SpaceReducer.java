@@ -184,6 +184,7 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         public boolean hasClosed(){
             return hasClosed;
         }
+        @Override
         public String toString() {
             return name;
         }

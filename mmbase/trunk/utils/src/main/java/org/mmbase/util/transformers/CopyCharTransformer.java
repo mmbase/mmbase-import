@@ -33,6 +33,7 @@ public class CopyCharTransformer extends ReaderTransformer implements CharTransf
     }
 
     // implementation, javadoc inherited
+    @Override
     public Writer transform(Reader r, Writer w) {
         try {
             IOUtil.copy(r, w);

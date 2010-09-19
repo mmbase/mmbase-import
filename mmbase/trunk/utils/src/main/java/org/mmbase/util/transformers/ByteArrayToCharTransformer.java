@@ -26,19 +26,23 @@ public abstract class ByteArrayToCharTransformer implements ByteToCharTransforme
     private static Logger log = Logging.getLoggerInstance(ByteArrayToCharTransformer.class);
 
     // javadoc inherited
+    @Override
     public abstract String transform(byte[] r);
 
     // javadoc inherited
+    @Override
     public final OutputStream transformBack(Reader r) {
         return transformBack(r, new ByteArrayOutputStream());
     }
 
     // javadoc inherited
+    @Override
     public final Writer transform(InputStream in) {
         return transform(in, new StringWriter());
     }
 
     // javadoc inherited
+    @Override
     public byte[] transformBack(String r) {
         throw new UnsupportedOperationException("transformBack is not supported for this transformer");
     }
@@ -47,6 +51,7 @@ public abstract class ByteArrayToCharTransformer implements ByteToCharTransforme
      * An implementation for transform(Reader, Writer) based on transform(String).
      * These functions can be used by extensions to implement transform and transformBack
      */
+    @Override
     public Writer transform(InputStream in, Writer w)  {
         try {
             ByteArrayOutputStream sw = new ByteArrayOutputStream();
@@ -59,6 +64,7 @@ public abstract class ByteArrayToCharTransformer implements ByteToCharTransforme
         return w;
     }
 
+    @Override
     public OutputStream transformBack(Reader in, OutputStream out)  {
         try {
             StringWriter sw = new StringWriter();

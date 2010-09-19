@@ -107,6 +107,7 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
     }
 
     // javadoc inherited
+    @Override
     public Writer transform(Reader startReader, Writer endWriter) {
         try {
             PipedReader r = null; 

@@ -26,10 +26,12 @@ public class Trimmer extends ReaderTransformer implements CharTransformer {
     private static final Logger log = Logging.getLoggerInstance(Trimmer.class);
 
 
+    @Override
     public String transform(String s) {
         return s.trim();
     }
 
+    @Override
     public Writer transform(Reader r, Writer w) {
         StringBuilder word = new StringBuilder();  // current word
         StringBuilder space = new StringBuilder();

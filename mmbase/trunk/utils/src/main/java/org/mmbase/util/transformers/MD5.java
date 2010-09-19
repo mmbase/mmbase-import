@@ -33,6 +33,7 @@ public class MD5 extends StringTransformer implements CharTransformer {
         return ENCODING;
     }
 
+    @Override
     public String transform(String r) {
         return transformer.calcMD5(r);
     }

@@ -122,6 +122,7 @@ public class Logging {
     public  static void configure (ResourceLoader rl, String configFile) {
         resourceLoader = rl;
         configWatcher = new ResourceWatcher(rl) {
+            @Override
             public void onChange(String s) {
                 configure(resourceLoader, s);
             }
@@ -285,6 +286,7 @@ public class Logging {
             } catch (Exception e) {
                 log.warn(e);
                 mdc = new MDC() {
+                    @Override
                         public void put(String key, Object value) {
                             if (value != null) {
                                 MDC_MAP.get().put(key, value);
@@ -293,6 +295,7 @@ public class Logging {
                             }
                         }
 
+                    @Override
                         public Object get(String key) {
                             return MDC_MAP.get().get(key);
                         }

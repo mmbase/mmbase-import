@@ -54,90 +54,105 @@ public class ChainedLogger implements Logger, Externalizable {
     }
 
 
+    @Override
     public void trace (Object m) {
         for (Logger log : loggers) {
             log.trace(m);
         }
     }
 
+    @Override
     public void trace (Object m, Throwable t) {
         for (Logger log : loggers) {
             log.trace(m, t);
         }
     }
 
+    @Override
     public void debug (Object m) {
         for (Logger log : loggers) {
             log.debug(m);
         }
     }
 
+    @Override
     public void debug (Object m, Throwable t) {
         for (Logger log : loggers) {
             log.debug(m, t);
         }
     }
 
+    @Override
     public void service (Object m) {
         for (Logger log : loggers) {
             log.service(m);
         }
     }
 
+    @Override
     public void service (Object m, Throwable t) {
         for (Logger log : loggers) {
             log.service(m, t);
         }
     }
 
+    @Override
     public void info (Object m) {
         for (Logger log : loggers) {
             log.info(m);
         }
     }
 
+    @Override
     public void info (Object m, Throwable t) {
         for (Logger log : loggers) {
             log.info(m, t);
         }
     }
 
+    @Override
     public void warn (Object m) {
         for (Logger log : loggers) {
             log.warn(m);
         }
     }
 
+    @Override
     public void warn (Object m, Throwable t) {
         for (Logger log : loggers) {
             log.warn(m, t);
         }
     }
 
+    @Override
     public void error (Object m) {
         for (Logger log : loggers) {
             log.error(m);
         }
     }
 
+    @Override
     public void error (Object m, Throwable t) {
         for (Logger log : loggers) {
             log.error(m, t);
         }
     }
 
+    @Override
     public void fatal (Object m) {
         for (Logger log : loggers) {
             log.fatal(m);
         }
     }
 
+    @Override
     public void fatal (Object m, Throwable t) {
         for (Logger log : loggers) {
             log.fatal(m, t);
         }
     }
 
+    @Override
     public boolean isTraceEnabled() {
         for (Logger log : loggers) {
             if (log.isTraceEnabled()) return true;
@@ -145,6 +160,7 @@ public class ChainedLogger implements Logger, Externalizable {
         return false;
     }
 
+    @Override
     public boolean isDebugEnabled() {
         for (Logger log : loggers) {
             if (log.isDebugEnabled()) return true;
@@ -152,6 +168,7 @@ public class ChainedLogger implements Logger, Externalizable {
         return false;
     }
 
+    @Override
     public boolean isServiceEnabled() {
         for (Logger log : loggers) {
             if (log.isServiceEnabled()) return true;
@@ -159,6 +176,7 @@ public class ChainedLogger implements Logger, Externalizable {
         return false;
     }
 
+    @Override
     public boolean isEnabledFor(Level l) {
         for (Logger log : loggers) {
             if (log.isEnabledFor(l)) return true;
@@ -166,6 +184,7 @@ public class ChainedLogger implements Logger, Externalizable {
         return false;
     }
 
+    @Override
     public void setLevel(Level p) {
         for (Logger log : loggers) {
             log.setLevel(p);
@@ -176,11 +195,13 @@ public class ChainedLogger implements Logger, Externalizable {
         return "" + loggers;
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         List<Logger> serializableLoggers = (List<Logger>) in.readObject();
         loggers.addAll(serializableLoggers);
     }
 
+    @Override
     public void writeExternal(ObjectOutput stream) throws IOException {
         List<Logger> serializableLoggers = new ArrayList<Logger>();
         for (Logger l : loggers) {
