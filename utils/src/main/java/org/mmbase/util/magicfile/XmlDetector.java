@@ -9,15 +9,13 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.util.magicfile;
-import java.util.*;
 import java.io.*;
 import org.w3c.dom.Element;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 import java.util.regex.*;
-import org.mmbase.util.xml.ErrorHandler;
-import org.mmbase.util.xml.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.ErrorHandler;
 
 /**
  * A detector which can match on XML namespaces, publicId.
@@ -45,6 +43,7 @@ public class XmlDetector extends AbstractDetector {
     /**
      * @return Whether detector matches the prefix/lithmus of the file
      */
+    @Override
     public boolean test(byte[] lithmus) {
         try {
             XMLReader parser = XMLReaderFactory.createXMLReader();

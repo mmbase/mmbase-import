@@ -65,9 +65,10 @@ public class MagicParser implements DetectorProvider {
             }
         } catch (Exception e) {
             log.error("" + e.getMessage() + "}", e);
-        };
+        }
     }
 
+    @Override
     public List<Detector> getDetectors() {
         return detectors;
     }

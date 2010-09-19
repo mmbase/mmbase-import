@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.magicfile;
 import java.util.*;
-import java.io.*;
 import org.w3c.dom.Element;
 import org.mmbase.util.xml.*;
 import org.mmbase.util.logging.*;
@@ -44,6 +43,7 @@ public abstract class AbstractDetector implements Detector {
     /**
      * Add an embedded detector object that searches for more details after an initial match.
      */
+    @Override
     public void addChild(Detector detector, int level) {
         if (level == 1) {
             childList.add(detector);
@@ -59,9 +59,11 @@ public abstract class AbstractDetector implements Detector {
     /**
      * Adds a possible extension. The last added one is the default (returned by 'getExtension').
      */
+    @Override
     public void setExtension(String extension) {
         extensions.add(0, extension);
     }
+    @Override
     public String getExtension() {
         if (extensions.size() == 0) {
             return "";
@@ -75,6 +77,7 @@ public abstract class AbstractDetector implements Detector {
     public void setMimeType(String mimetype) {
         this.mimetype = mimetype;
     }
+    @Override
     public String getMimeType() {
         if (mimetype.equals("???")) {
             return "application/octet-stream";
@@ -85,10 +88,12 @@ public abstract class AbstractDetector implements Detector {
     public void setDesignation(String designation) {
         this.message = designation;
     }
+    @Override
     public String getDesignation() {
         return message;
     }
 
+    @Override
     public void setValid(boolean v) {
         valid = v;
     }
@@ -96,12 +101,14 @@ public abstract class AbstractDetector implements Detector {
     /**
      * @return Whether parsing of magic line for this detector succeeded
      */
+    @Override
     public boolean valid() {
         return valid;
     }
 
 
 
+    @Override
     public void configure(Element e) {
 
         {
