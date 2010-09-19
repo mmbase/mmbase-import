@@ -325,6 +325,7 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
     }
 
 
+    @Override
     public Writer transform(Reader r, Writer w) {
         switch(to) {
         case XMLTEXT_WORDS: return transformXmlTextWords(r, w);
@@ -338,6 +339,7 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
 
     abstract protected String base();
 
+    @Override
     public String getEncoding() {
         switch (to) {
         case XMLTEXT_WORDS:
@@ -355,6 +357,7 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
         }
     }
 
+    @Override
     public Map<String,Config> transformers() {
         Map<String,Config> h = new HashMap<String,Config>();
         h.put(base() + "_XMLTEXT_WORDS",  new Config(RegexpReplacer.class, XMLTEXT_WORDS,  "Search and replaces regexps word-by-word, only in XML text() blocks."));
@@ -368,10 +371,12 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
 
     public static void main(String [] argv) {
         CharTransformer trans = new ChunkedTransformer(XMLTEXT) {
+            @Override
                 protected boolean replace(String string, Writer w, Status status) throws IOException {
                     w.write(string);
                     return false;
                 }
+            @Override
                 protected String base() {
                     return "test";
                 }

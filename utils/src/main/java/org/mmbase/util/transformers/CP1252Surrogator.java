@@ -42,6 +42,7 @@ public class CP1252Surrogator extends ConfigurableReaderTransformer implements C
     }
 
 
+    @Override
     public Writer transform(Reader r, Writer w) {
         try {
             while (true) {
@@ -97,6 +98,7 @@ public class CP1252Surrogator extends ConfigurableReaderTransformer implements C
     }
 
 
+    @Override
     public Map<String,Config> transformers() {
         Map<String,Config> h = new HashMap<String,Config>();
         h.put("CP1252_SURROGATOR",  new Config(CP1252Surrogator.class, WELL_ENCODED,  "Takes the java String, and surrogates the 32 characters of it which are in CP1252 but not in ISO-8859-1"));
@@ -105,6 +107,7 @@ public class CP1252Surrogator extends ConfigurableReaderTransformer implements C
     }
 
 
+    @Override
     public String getEncoding() {
         switch (to) {
         case WELL_ENCODED:

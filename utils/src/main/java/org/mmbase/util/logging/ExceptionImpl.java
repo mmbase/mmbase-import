@@ -74,6 +74,7 @@ public class ExceptionImpl extends AbstractSimpleImpl implements Logger {
         }
     }
 
+    @Override
     protected final void log (String s, Level l) {
         if (l.toInt() >= level) {
             Throwable t = new Throwable();

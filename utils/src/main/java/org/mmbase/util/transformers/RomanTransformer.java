@@ -120,7 +120,7 @@ public class RomanTransformer extends StringTransformer {
     }
 
 
-    // javadoc inherited
+    @Override
     public  String transform(String r) {
         try {
             int i = Integer.parseInt(r);
@@ -130,11 +130,12 @@ public class RomanTransformer extends StringTransformer {
         }
     }
 
-    // javadoc inherited
+    @Override
     public String transformBack(String r) {
         return "" + romanToDecimal(r);
     }
 
+    @Override
     public String toString() {
         return "ROMAN";
     }

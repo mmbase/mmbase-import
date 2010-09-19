@@ -35,6 +35,7 @@ public class ByteCharTransformer extends ReaderTransformer implements CharTransf
     }
 
     // javadoc inherited
+    @Override
     public Writer transform(Reader reader, Writer writer) {
         return byteToChars.transform(new ReaderInputStream(reader, encoding), writer);
     }

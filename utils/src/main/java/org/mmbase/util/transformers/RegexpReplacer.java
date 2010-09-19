@@ -48,6 +48,7 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
         PatternWatcher(Collection<Entry<Pattern, String>> p) {
             patterns = p;
         }
+        @Override
         public void onChange(String file) {
             RegexpReplacer.this.readPatterns(patterns);
         }
@@ -230,6 +231,7 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
         }
 
     }
+    @Override
     protected final String base() {
         return "REGEXPS";
     }

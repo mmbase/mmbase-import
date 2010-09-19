@@ -95,6 +95,7 @@ public class Latin3Surrogator extends ConfigurableReaderTransformer implements C
         return w;
     }
 
+    @Override
     public Writer transform(Reader r, Writer w) {
         switch(to){
         case XMETODO: return iksoj(r, w);
@@ -103,6 +104,7 @@ public class Latin3Surrogator extends ConfigurableReaderTransformer implements C
         }
     }
 
+    @Override
     public String getEncoding() {
         switch(to){
         case XMETODO: return "xmetodo";
@@ -112,6 +114,7 @@ public class Latin3Surrogator extends ConfigurableReaderTransformer implements C
     }
 
 
+    @Override
     public Map<String,Config> transformers() {
         Map<String,Config> h = new HashMap<String,Config>();
         h.put("xmetodo".toUpperCase(), new Config(getClass(), XMETODO));

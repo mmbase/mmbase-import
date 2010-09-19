@@ -21,32 +21,32 @@ import java.io.*;
 
 public abstract class ReaderTransformer implements CharTransformer {
 
-    // javadoc inherited
+    @Override
     public abstract Writer transform(Reader r, Writer w);
 
-    // javadoc inherited
+    @Override
     public Writer transformBack(Reader r, Writer w) {
         throw new UnsupportedOperationException("transformBack is not supported for this transformer");
     }
 
-    // javadoc inherited
+    @Override
     public final Writer transformBack(Reader r) {
         return transformBack(r, new StringWriter());
     }
 
-    // javadoc inherited
+    @Override
     public final Writer transform(Reader r) {
         return transform(r, new StringWriter());
     }
 
-    // javadoc inherited
+    @Override
     public String transform(String r) {
         if (r == null) return null;
         Writer sw = transform(new StringReader(r));
         return sw.toString();
     }
 
-    // javadoc inherited
+    @Override
     public String transformBack(String r) {
         if (r == null) return null;
         Writer sw = transformBack(new StringReader(r));

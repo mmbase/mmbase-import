@@ -45,6 +45,7 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
      * Used when registering this class as a possible Transformer
      */
 
+    @Override
     public Map<String,Config> transformers() {
         HashMap<String,Config> h = new HashMap<String,Config>();
         h.put("escape_xml".toUpperCase(),  new Config(Xml.class, ESCAPE, "Escapes >, < & and \""));
@@ -218,6 +219,7 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
     }
 
 
+    @Override
     public String transform(String r) {
         switch(to){
         case ESCAPE:           return XMLEscape(r);
@@ -228,6 +230,7 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
         default: throw new UnknownCodingException(getClass(), "transform", to);
         }
     }
+    @Override
     public String transformBack(String r) {
         // the attribute unescape will do a little to much, I think.
         switch(to){
@@ -241,6 +244,7 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
         default: throw new UnknownCodingException(getClass(), "transformBack",  to);
         }
     }
+    @Override
     public String getEncoding() {
         switch(to){
         case ESCAPE:                    return "ESCAPE_XML";

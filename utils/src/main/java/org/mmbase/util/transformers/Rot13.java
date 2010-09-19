@@ -48,6 +48,7 @@ public class Rot13 extends ReaderTransformer implements CharTransformer {
         return w;
     }
 
+    @Override
     public Writer transform(Reader r, Writer w) {
         return rot13(r, w);
     }
@@ -55,10 +56,12 @@ public class Rot13 extends ReaderTransformer implements CharTransformer {
     /**
      * For Rot13, transformBack does the same as {@link #transform}
      **/
+    @Override
     public Writer transformBack(Reader r, Writer w) {
         return rot13(r, w);
     }
 
+    @Override
     public String toString() {
         return "ROT-13";
     }

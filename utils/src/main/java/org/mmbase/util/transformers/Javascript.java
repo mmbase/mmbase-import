@@ -112,6 +112,7 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
      * Used when registering this class as a possible Transformer
      */
 
+    @Override
     public Map<String,Config> transformers() {
         Map<String,Config> h = new HashMap<String,Config>();
         h.put(SINGLE_QUOTES, new Config(Sql.class, ESCAPE_SINGLE_QUOTES, "Escape single quotes for Javascript statements"));
@@ -120,6 +121,7 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
         return h;
     }
 
+    @Override
     public Writer transform(Reader r, Writer w) {
         switch(to){
         case ESCAPE_SINGLE_QUOTES:           return escapeChar(r, w, '\'');
@@ -141,6 +143,7 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
         }
     }
 
+    @Override
     public String getEncoding() {
         switch(to){
         case ESCAPE_SINGLE_QUOTES: return SINGLE_QUOTES;

@@ -54,8 +54,8 @@ abstract public class DocumentWriter extends DocumentReader {
     private ResourceBundle messageRB;
 
     // keep public and system id
-    String publicId ="";
-    String systemId ="";
+    String publicId = "";
+    String systemId = "";
 
     /**
      * Constructs the document writer.
@@ -85,11 +85,10 @@ abstract public class DocumentWriter extends DocumentReader {
     public DocumentWriter(String qualifiedName, String publicId, String systemId, boolean schema) throws DOMException {
         DOMImplementation domImpl = DocumentReader.getDocumentBuilder().getDOMImplementation();
         if (schema) {
-            Document document = domImpl.createDocument(publicId, qualifiedName, null);
+            document = domImpl.createDocument(publicId, qualifiedName, null);
             document.getDocumentElement().setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
             document.getDocumentElement().setAttribute("xsi:schemaLocation", publicId + " " + systemId);
-        }
-        else {
+        } else {
             this.publicId = publicId;
             this.systemId = systemId;
             DocumentType doctype = domImpl.createDocumentType(qualifiedName, this.publicId, this.systemId);

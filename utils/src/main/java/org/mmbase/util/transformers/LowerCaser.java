@@ -26,6 +26,7 @@ public class LowerCaser extends ReaderTransformer implements CharTransformer {
     private static final long serialVersionUID = 0L;
     private static Logger log = Logging.getLoggerInstance(LowerCaser.class);
 
+    @Override
     public Writer transform(Reader r, Writer w) {
         try {
             log.debug("Starting lowercasing");

@@ -9,10 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-import java.lang.reflect.*;
 
-import java.io.Reader;
-import java.io.Writer;
 
 import org.mmbase.util.logging.*;
 
@@ -60,6 +57,7 @@ public class Asciifier extends StringTransformer {
         return sb.toString();
     }
     
+    @Override
     public String transform(String s) {
         return normalize(s, replacer);
     }

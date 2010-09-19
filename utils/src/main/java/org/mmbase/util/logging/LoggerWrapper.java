@@ -62,77 +62,96 @@ public class LoggerWrapper implements Logger {
     }
 
 
+    @Override
     final public void trace   (Object m) {
         if (log != null) log.trace(m);
     }
 
+    @Override
     final public void trace   (Object m, Throwable t) {
         if (log != null) log.trace(m, t);
     }
 
+    @Override
     final public void debug   (Object m) {
         if (log != null) log.debug(m);
     }
 
+    @Override
     final public void debug   (Object m, Throwable t) {
         if (log != null) log.debug(m, t);
     }
 
+    @Override
     final public void service (Object m) {
         log.service(m);
     }
 
+    @Override
     final public void service (Object m, Throwable t) {
         log.service(m, t);
     }
 
+    @Override
     final public void info    (Object m) {
         log.info(m);
     }
 
+    @Override
     final public void info    (Object m, Throwable t) {
         log.info(m, t);
     }
 
+    @Override
     final public void warn    (Object m) {
         log.warn(m);
     }
 
+    @Override
     final public void warn    (Object m, Throwable t) {
         log.warn(m, t);
     }
 
+    @Override
     final public void error   (Object m) {
         log.error(m);
     }
 
+    @Override
     final public void error   (Object m, Throwable t) {
         log.error(m, t);
     }
 
+    @Override
     final public void fatal   (Object m) {
         log.fatal(m);
     }
 
+    @Override
     final public void fatal   (Object m, Throwable t) {
         log.fatal(m, t);
     }
 
+    @Override
     final public boolean isTraceEnabled() {
         return log.isTraceEnabled();
     }
 
+    @Override
     final public boolean isDebugEnabled() {
         return log.isDebugEnabled();
     }
 
+    @Override
     final public boolean isServiceEnabled() {
         return log.isServiceEnabled();
     }
 
+    @Override
     final public void setLevel(Level p) {
         log.setLevel(p);
     }
+    @Override
     final public boolean isEnabledFor(Level l) {
         return log.isEnabledFor(l);
     }

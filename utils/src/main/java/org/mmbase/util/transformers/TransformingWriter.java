@@ -43,8 +43,8 @@ public class TransformingWriter extends PipedWriter {
 
     private static final Logger log = Logging.getLoggerInstance(TransformingWriter.class);
 
-    private Writer out;
-    private CharTransformerLink link;
+    private final Writer out;
+    private final CharTransformerLink link;
 
 
     public TransformingWriter(Writer out, CharTransformer charTransformer)  {
@@ -52,13 +52,16 @@ public class TransformingWriter extends PipedWriter {
         this.out = out;
 
         PipedReader r = new PipedReader();
+        CharTransformerLink l;
         try {
             connect(r);
-            link = new CharTransformerLink(charTransformer, r, out, false);
-            org.mmbase.util.ThreadPools.filterExecutor.execute(link);
+            l = new CharTransformerLink(charTransformer, r, out, false);
+            org.mmbase.util.ThreadPools.filterExecutor.execute(l);
         } catch (IOException ioe) {
             log.error(ioe.getMessage());
+            l = null;
         }
+        link = l;
     }
 
     protected void waitUntilReady() throws IOException {
@@ -78,6 +81,7 @@ public class TransformingWriter extends PipedWriter {
      * {@inheritDoc}
      * Also closes the wrapped Writer.
      */
+    @Override
     public void close() throws IOException {
         waitUntilReady();
         out.close();

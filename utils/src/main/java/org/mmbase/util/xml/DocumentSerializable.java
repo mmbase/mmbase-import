@@ -69,13 +69,16 @@ public class DocumentSerializable implements Serializable, org.mmbase.util.Publi
         return document;
     }
 
+    @Override
     public String toString() {
         return XMLWriter.write(document, false, true);
     }
 
+    @Override
     public int hashCode() {
         return document.hashCode();
     }
+    @Override
     public boolean equals(Object o) {
         return 
             o != null &&
@@ -83,6 +86,7 @@ public class DocumentSerializable implements Serializable, org.mmbase.util.Publi
             document.isEqualNode(((DocumentSerializable) o).document);
     }
 
+    @Override
     public Object clone() {
         Document newDocument = DocumentReader.getDocumentBuilder(false, null, null).newDocument();        
         Node root = newDocument.importNode(document.getDocumentElement(), true);

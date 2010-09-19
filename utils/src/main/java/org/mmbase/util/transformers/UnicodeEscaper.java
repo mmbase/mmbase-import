@@ -31,6 +31,7 @@ public class UnicodeEscaper extends ReaderTransformer implements CharTransformer
         escapeLow = e;
     }
 
+    @Override
     public Writer transform(Reader r, Writer w) {
         try {
             while (true) {
@@ -54,6 +55,7 @@ public class UnicodeEscaper extends ReaderTransformer implements CharTransformer
         return w;
     }
 
+    @Override
     public Writer transformBack(Reader r, Writer w) {
         try {
             while (true) {
@@ -83,6 +85,7 @@ public class UnicodeEscaper extends ReaderTransformer implements CharTransformer
         return w;
     }
 
+    @Override
     public String toString() {
         return "UnicodeEscaper";
     }

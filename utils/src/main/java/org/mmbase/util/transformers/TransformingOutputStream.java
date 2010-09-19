@@ -69,6 +69,7 @@ public class TransformingOutputStream extends PipedOutputStream {
      * {@inheritDoc}
      * Also closes the wrapped Writer.
      */
+    @Override
     public void close() throws IOException {
         waitUntilReady();
         out.close();

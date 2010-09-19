@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-import java.util.regex.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -36,6 +35,7 @@ public class RadixTransformer extends StringTransformer {
         return radix;
     }
 
+    @Override
     public  String transform(String r) {
         try {
             long l = Long.parseLong(r);
@@ -46,10 +46,12 @@ public class RadixTransformer extends StringTransformer {
         }
     }
 
+    @Override
     public String transformBack(String r) {
         return "" + Long.parseLong(r, radix);
     }
 
+    @Override
     public String toString() {
         return "RADIX" + radix;
     }

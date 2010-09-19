@@ -85,6 +85,7 @@ public final class Impl implements Logger {
 
                 log.info("using " + rl + " for resolving " + s);
                 configWatcher = new ResourceWatcher (rl) {
+                    @Override
                         public void onChange(String s) {
                             try {
                                 log.info("Reading configuration file : " + s);
@@ -118,52 +119,66 @@ public final class Impl implements Logger {
         }
     }
 
-    // javadoc inherited
+    @Override
     public void setLevel(Level p) {
         logger.setLevel(getJavaLevel(p));
     }
 
 
+    @Override
     public void trace (Object m) {
         logger.log(java.util.logging.Level.FINER, "" + m);
     }
+    @Override
     public void trace (Object m, Throwable t) {
         logger.log(java.util.logging.Level.FINER, "" + m, t);
     }
+    @Override
     public void debug (Object m) {
         logger.log(java.util.logging.Level.FINE, "" + m);
     }
+    @Override
     public void debug (Object m, Throwable t) {
         logger.log(java.util.logging.Level.FINE, "" + m, t);
     }
 
+    @Override
     public void service (Object m) {
         logger.log(java.util.logging.Level.CONFIG, "" + m);
     }
+    @Override
     public void service (Object m, Throwable t) {
         logger.log(java.util.logging.Level.CONFIG, "" + m, t);
     }
+    @Override
     public void info    (Object m) {
         logger.log(java.util.logging.Level.INFO, "" + m);
     }
+    @Override
     public void info    (Object m, Throwable t) {
         logger.log(java.util.logging.Level.INFO, "" + m, t);
     }
+    @Override
     public void warn    (Object m) {
         logger.log(java.util.logging.Level.WARNING, "" + m);
     }
+    @Override
     public void warn    (Object m, Throwable t) {
         logger.log(java.util.logging.Level.WARNING, "" + m, t);
     }
+    @Override
     public void error   (Object m) {
         logger.log(java.util.logging.Level.SEVERE, "" + m);
     }
+    @Override
     public void error   (Object m, Throwable t) {
         logger.log(java.util.logging.Level.SEVERE, "" + m, t);
     }
+    @Override
     public void fatal   (Object m) {
         logger.log(java.util.logging.Level.SEVERE, "" + m);
     }
+    @Override
     public void fatal   (Object m, Throwable t) {
         logger.log(java.util.logging.Level.SEVERE, "" + m, t);
     }
@@ -178,18 +193,22 @@ public final class Impl implements Logger {
         return level;
     }
 
+    @Override
     public boolean isTraceEnabled() {
         return (getLevel().intValue() <= java.util.logging.Level.FINER.intValue());
     }
 
+    @Override
     public boolean isDebugEnabled() {
         return (getLevel().intValue() <= java.util.logging.Level.FINE.intValue());
     }
 
+    @Override
     public boolean isServiceEnabled() {
         return (getLevel().intValue() <= java.util.logging.Level.CONFIG.intValue());
     }
 
+    @Override
     public boolean isEnabledFor(Level l) {
         return (getLevel().intValue() <= getJavaLevel(l).intValue());
     }

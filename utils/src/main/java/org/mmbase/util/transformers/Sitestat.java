@@ -27,6 +27,7 @@ public class Sitestat extends ReaderTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(Sitestat.class);
     private static String alowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-.";
 
+    @Override
     public Writer transform(Reader r, Writer w) {
         try {
             if (log.isDebugEnabled()) log.debug("Starting transforming string for Sitestat");
@@ -50,6 +51,7 @@ public class Sitestat extends ReaderTransformer implements CharTransformer {
     }
 
 
+    @Override
     public String toString() {
         return "sitestat";
     }

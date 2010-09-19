@@ -19,6 +19,7 @@ package org.mmbase.util.transformers;
  */
 
 public class Perl extends AbstractCommandStringTransformer implements CharTransformer {
+    @Override
     protected String[] getCommand() {
         return new String[] {"perl"};
     }

@@ -297,6 +297,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      * @see javax.xml.transform.URIResolver
      **/
 
+    @Override
     public Source resolve(String href,  String base) throws TransformerException {
         try {
             URL u = resolveToURL(href, base);
@@ -313,6 +314,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
     /**
      *  URIResolver can be used as a key in Maps (Caches).
      */
+    @Override
     public int hashCode() {
         return hashCode;
     }
@@ -320,6 +322,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
     /**
      *  URIResolver can be used as a key in Maps (Caches).
      */
+    @Override
     public boolean equals(Object o) {
         if (o != null && (o instanceof URIResolver)) {
             URIResolver res = (URIResolver) o;
@@ -332,13 +335,16 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
     }
 
 
+    @Override
     public int getByteSize() {
         return getByteSize(new org.mmbase.util.SizeOf());
     }
 
+    @Override
     public int getByteSize(org.mmbase.util.SizeOf sizeof) {
         return sizeof.sizeof(dirs);
     }
+    @Override
     public String toString() {
         return getPrefixPath().toString();
     }
@@ -474,9 +480,11 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
         int getPrefixLength() {
             return prefixLength;
         }
+        @Override
         public String toString() {
             return prefix + ":" + (dir != null ? (dir.getClass() + " " + dir.toString()) : (classLoader.getClass() + " " + classLoader.toString()));
         }
+        @Override
         public boolean equals(Object o) {
             if (o instanceof File) {
                 return dir != null && dir.equals(o);
@@ -490,6 +498,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
             }
         }
 
+        @Override
         public int hashCode() {
             if (dir != null) {
                 return dir.hashCode();

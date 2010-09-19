@@ -27,6 +27,7 @@ public abstract class BufferedReaderTransformer extends ReaderTransformer implem
     /**
      * Override {@link ReaderTransformer#transform(Reader, Writer)}
      */
+    @Override
     public final Writer transform(Reader r, Writer w) {
         try {
             BufferedReader br = new BufferedReader(r);

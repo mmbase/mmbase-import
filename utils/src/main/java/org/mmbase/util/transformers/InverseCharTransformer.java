@@ -35,24 +35,30 @@ public class InverseCharTransformer implements CharTransformer {
         ct = c;
     }
 
+    @Override
     public String transform(String s) {
         return ct.transformBack(s);
     }
 
+    @Override
     public String transformBack(String s) {
         return ct.transform(s);
     }
 
+    @Override
     public Writer transform(Reader r) {
         return ct.transformBack(r);
     }
+    @Override
     public Writer transformBack(Reader r) {
         return ct.transform(r);
     }
 
+    @Override
     public Writer transform(Reader r, Writer w) {
         return ct.transformBack(r, w);
     }
+    @Override
     public Writer transformBack(Reader r, Writer w) {
         return ct.transform(r, w);
     }
