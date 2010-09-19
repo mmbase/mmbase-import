@@ -32,7 +32,7 @@ import org.mmbase.util.logging.AbstractSimpleImpl;
  * @author Michiel Meeuwissen
  */
 
-public abstract class Logger  extends AbstractSimpleImpl {
+public abstract class AnalyzerTestLogger  extends AbstractSimpleImpl {
 
     static Node getMockNode() {
         Map<String, Object> mock = new HashMap<String, Object>();
@@ -56,7 +56,7 @@ public abstract class Logger  extends AbstractSimpleImpl {
 
     protected final AnalyzerUtils util = new AnalyzerUtils();
 
-    public Logger() {
+    public AnalyzerTestLogger() {
         setLevel(Level.DEBUG);
         util.setUpdateSource(true);
     }

@@ -46,7 +46,7 @@ public class AnalyzerUtilsTest {
         File testFile = new File(System.getProperty("user.dir"), "samples" + File.separator + "basic.mp4");
         assumeTrue(testFile.exists());
 
-        Logger test = new Logger() {
+        AnalyzerTestLogger test = new AnalyzerTestLogger() {
                 @Override
                  protected void log(String s) {
                     if (util.duration(s, source, destination)) {
@@ -64,7 +64,7 @@ public class AnalyzerUtilsTest {
         File testFile = new File(System.getProperty("user.dir"), "samples" + File.separator + "unknown.wav");
         assumeTrue(testFile.exists());
 
-        Logger test = new Logger() {
+        AnalyzerTestLogger test = new AnalyzerTestLogger() {
                 @Override
                 protected void log(String s) {
                     if (util.unsupported(s, source, destination)) {
@@ -86,7 +86,7 @@ public class AnalyzerUtilsTest {
         File testFile = new File(System.getProperty("user.dir"), "samples" + File.separator + "basic.wav");
         assumeTrue(testFile.exists());
 
-        Logger test = new Logger() {
+        AnalyzerTestLogger test = new AnalyzerTestLogger() {
                 @Override
                 protected void log(String s) {
                     if (util.unsupported(s, source, destination)) {
@@ -105,7 +105,7 @@ public class AnalyzerUtilsTest {
         File testFile = new File(System.getProperty("user.dir"), "samples" + File.separator + "unsupported.rm");
         assumeTrue(testFile.exists());
 
-        Logger test = new Logger() {
+        AnalyzerTestLogger test = new AnalyzerTestLogger() {
                 @Override
                 protected void log(String s) {
                     if (util.unsupported(s, source, destination)) {
