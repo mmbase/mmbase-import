@@ -268,7 +268,7 @@ public class MMBaseContext {
      *                           directory
      *
      */
-    protected synchronized static void initHtmlRoot() throws ServletException {
+    public synchronized static void initHtmlRoot() throws ServletException {
         if (!initialized) {
             throw new RuntimeException("The init(ServletContext) method should be called first. (Not initalized)");
         }
