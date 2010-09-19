@@ -1,6 +1,4 @@
 package org.mmbase.util.transformers;
-import org.mmbase.util.*;
-import java.util.*;
 import org.junit.*;
 import static org.junit.Assert.*;
 

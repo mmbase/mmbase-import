@@ -11,7 +11,6 @@ package org.mmbase.util;
 
 
 import java.io.*;
-import java.util.*;
 
 import junit.framework.TestCase;
 
@@ -36,10 +35,11 @@ public class FileWatcherTest extends TestCase {
         int baseSize = FileWatcher.getFileWatchers().size();
 
         FileWatcher watcher = new FileWatcher() {
-                public void onChange(File file) {
-                    System.out.println("Changed " + file);
-                }
-            };
+            @Override
+            public void onChange(File file) {
+                System.out.println("Changed " + file);
+            }
+        };
         watcher.setDelay(100);
         watcher.start();
         assertEquals("Found " + FileWatcher.getFileWatchers(), baseSize + 1, FileWatcher.getFileWatchers().size());

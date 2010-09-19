@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.util.magicfile;
-import java.util.*;
 import java.io.*;
 import org.w3c.dom.Element;
 import org.mmbase.util.xml.DocumentReader;
@@ -108,6 +107,7 @@ public class BasicDetector extends AbstractDetector {
     /**
      * @return Whether detector matches the prefix/lithmus of the file
      */
+    @Override
     public boolean test(byte[] lithmus) {
         if (lithmus == null || lithmus.length == 0 || offset == -1) {
             return false;
