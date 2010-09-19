@@ -29,6 +29,7 @@
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-dove</artifactId>
       <version>${mmbase.version}</version>
+      <scope>provided</scope>
     </dependency>
 
 <!-- html editors or versions
