@@ -10,9 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.magicfile;
 import java.util.*;
-import java.io.*;
 import org.w3c.dom.Element;
-import org.mmbase.util.logging.*;
 
 /**
  * A Detector stores one entry from the magic.xml file, and contains

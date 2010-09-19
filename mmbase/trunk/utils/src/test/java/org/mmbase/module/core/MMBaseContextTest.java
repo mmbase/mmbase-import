@@ -10,13 +10,10 @@
 
 package org.mmbase.module.core;
 
-import java.util.*;
 import org.junit.*;
 import org.springframework.mock.web.*;
 import org.springframework.core.io.*;
 import javax.servlet.ServletContext;
-import static org.junit.Assert.*;
-import static org.junit.Assume.*;
 
 
 /**

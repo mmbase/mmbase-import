@@ -36,12 +36,13 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
                    log.info("Magic XML file is: " + reader.getSystemId());
                     final List<Detector> detectors = new ArrayList<Detector>(reader.getDetectors());
                     DetectorProvider dp = new DetectorProvider() {
-                            public List<Detector> getDetectors() {
-                                return detectors;
-                            }
-                        };
-                    provider = dp;
-               }
+                        @Override
+                        public List<Detector> getDetectors() {
+                            return detectors;
+                        }
+                   };
+                   provider = dp;
+                }
             }
         } catch (IOException ie) {
             log.warn(ie);
@@ -59,11 +60,12 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
            loadDetectorProvider(MAGICXMLFILE);
 
            ResourceWatcher watcher = new ResourceWatcher() {
-                   public void onChange(String file) {
-                       // reader is replaced on every change of magic.xml
-                       loadDetectorProvider(file);
-                   }
-               };
+               @Override
+               public void onChange(String file) {
+                    // reader is replaced on every change of magic.xml
+                    loadDetectorProvider(file);
+               }
+           };
            watcher.start();
            watcher.add(MAGICXMLFILE);
 
@@ -91,6 +93,7 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
     /**
      * Returns all 'Detectors'.
      */
+    @Override
     public List<Detector> getDetectors()  {
         List<Detector> detectors = new CopyOnWriteArrayList<Detector>();
         Element e = getElementByPath("magic.detectorlist");

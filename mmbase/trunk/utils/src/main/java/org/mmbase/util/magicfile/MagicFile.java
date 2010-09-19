@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util.magicfile;
 
 import java.io.*;
-import java.util.Iterator;
 import java.util.List;
 import org.mmbase.util.logging.*;
 

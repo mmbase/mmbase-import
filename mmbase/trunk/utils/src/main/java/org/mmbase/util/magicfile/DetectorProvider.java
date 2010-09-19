@@ -18,6 +18,6 @@ package org.mmbase.util.magicfile;
  */
 
 public interface DetectorProvider {
-    public java.util.List<Detector> getDetectors();
+    java.util.List<Detector> getDetectors();
 }
 

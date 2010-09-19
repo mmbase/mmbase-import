@@ -8,9 +8,6 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.util;
-import org.mmbase.util.xml.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
 import java.io.*;
 import java.util.*;
 import org.junit.*;
