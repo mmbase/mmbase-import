@@ -186,9 +186,10 @@ public class ChangesSender implements Runnable {
      * @param data The messages to write.
      * @since MMBase-2.0
     */
-    protected void writeVersion2(java.io.OutputStream out, Collection<byte[]> data) throws IOException {
+    protected long writeVersion2(java.io.OutputStream out, Collection<byte[]> data) throws IOException {
         DataOutputStream os = null;
         try {
+            long prevCount = send.bytes;
             os = new DataOutputStream(out);
             os.writeInt(data.size());
             send.bytes += 4;
@@ -199,6 +200,7 @@ public class ChangesSender implements Runnable {
                 send.bytes += d.length;
             }
             os.flush();
+            return send.bytes - prevCount;
         } finally {
             if (os != null) {
                 try {
@@ -216,12 +218,12 @@ public class ChangesSender implements Runnable {
      * @param data The message to send
      * @since MMBase-2.0
      */
-    protected void sendVersion2(InetSocketAddress address, Collection<byte[]> data)  throws IOException {
+    protected long sendVersion2(InetSocketAddress address, Collection<byte[]> data)  throws IOException {
         Socket socket = null;
         try {
             socket = new Socket();
             socket.connect(address, unicastTimeout);
-            writeVersion2(socket.getOutputStream(), data);
+            return writeVersion2(socket.getOutputStream(), data);
         } finally {
             if (socket != null) {
                 try {
@@ -235,13 +237,14 @@ public class ChangesSender implements Runnable {
      * Simply writes one message to an output stream. Version 1 does not support multiple messages.
      * @since MMBase-2.0
      */
-    protected void writeVersion1(java.io.OutputStream out, byte[] d) throws IOException {
+    protected long writeVersion1(java.io.OutputStream out, byte[] d) throws IOException {
         DataOutputStream os = null;
         try {
             os = new DataOutputStream(out);
             os.write(d, 0, d.length);
             send.bytes += d.length;
             os.flush();
+            return d.length;
         } finally {
             if (os != null) {
                 try {
@@ -260,13 +263,14 @@ public class ChangesSender implements Runnable {
      * @param data The message to send
      * @since MMBase-2.0
      */
-    protected void sendVersion1(InetSocketAddress address, Collection<byte[]> data) throws IOException {
+    protected long sendVersion1(InetSocketAddress address, Collection<byte[]> data) throws IOException {
+        long count = 0;
         for (byte[] d : data) {
             Socket socket = null;
             try {
                 socket = new Socket();
                 socket.connect(address, unicastTimeout);
-                writeVersion1(socket.getOutputStream(), d);
+                count += writeVersion1(socket.getOutputStream(), d);
             } finally {
                 if (socket != null) {
                     try {
@@ -276,6 +280,7 @@ public class ChangesSender implements Runnable {
                 }
             }
         }
+        return count;
     }
 
     @Override
@@ -314,14 +319,15 @@ public class ChangesSender implements Runnable {
                 for (OtherMachine machine : getOtherMachines()) {
                     try {
                         final InetSocketAddress address = new InetSocketAddress(machine.host, machine.unicastPort);
+                        long sendSize;
                         if (machine.version > 1) {
-                            sendVersion2(address, data);
+                            sendSize = sendVersion2(address, data);
                         } else {
-                            sendVersion1(address, data);
+                            sendSize = sendVersion1(address, data);
                         }
 
                         if (log.isDebugEnabled()) {
-                            log.debug("unicast(v" + version + ") SEND=>" + machine + " (" + data.size() + " events, " + send.bytes + " byte)");
+                            log.debug("unicast(v" + version + ") SEND=>" + machine + " (" + data.size() + " events, " + sendSize + " byte)");
                         }
                     } catch(SocketTimeoutException ste) {
                         int removed = remove(machine);
