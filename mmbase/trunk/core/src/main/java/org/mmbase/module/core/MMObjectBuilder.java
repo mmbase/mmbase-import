@@ -127,7 +127,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      * Default output when no data is available to determine a node's GUI description
      */
-    public static final String GUI_INDICATOR = "no info";
+    public static final String GUI_INDICATOR = GuiFunction.GUI_INDICATOR;
 
     /**
      * The cache for all blobs.
