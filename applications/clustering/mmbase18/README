@@ -1,0 +1,4 @@
+The VPRO runs MMBase 1.8. Since I don't feel like making every improvement trice, these are patches to apply to compile the trunk of clustering against
+MMBase 1.8 classes (a few details need to be different).
+
+Also the version in the pom is changed to reflect that this is clustering 2.0 combined with mmbase18.
