@@ -101,7 +101,7 @@ public class ContextProvider {
                         line = reader.readLine();
                     }
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 log.error("During parsing of " + url + ": " + e.getMessage(), e);
             }
         }
@@ -265,6 +265,12 @@ public class ContextProvider {
         @Override
         public String toString() {
             return "local";
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            return hash;
         }
     }
 
