@@ -77,7 +77,10 @@ public class SimpleTimeStampImpl extends AbstractSimpleImpl implements Logger {
 
 
     public static  void configure(String c) {
-        configure("", c);
+        for (String line : c.split("\\s+")) {
+            String[] e = line.trim().split(":", 2);
+            configure(e[0], e[1]);
+        }
     }
 
     private void conf(String c) {
