@@ -60,8 +60,7 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
     */
     public static final int STATUS_ERROR = 5;
 
-    // Logger class
-    private static Logger log = Logging.getLoggerInstance(Vwmtasks.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(Vwmtasks.class);
 
     /**
     * The interval (in seconds) between checks for new nodes by the task scheduler.
@@ -202,18 +201,24 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
      * The tasks are passed to the VWM that is associated with the task.
      */
     protected void getVwmTasks() {
+        if (mmb == null) {
+            log.warn("No MMBase ");
+            return;
+        }
         String vwm,task;
         // get out alter ego Vwms Builder to pass the new tasks
-        if (vwms==null) {
+        if (vwms == null) {
             vwms = (Vwms)mmb.getMMObject("vwms");
             vwms.init(); // make sure it is initialized
         }
         int checktime = lastchecked;
         lastchecked= (int)(System.currentTimeMillis()/1000);
         //Enumeration e=search("WHERE changedtime>"+checktime+" AND wantedcpu='"+getMachineName()+"' AND status=1");
-        log.debug("Search vwmtasks  WHERE changedtime>" + checktime
-                  + " AND wantedcpu='" + getMachineName() + "'"
-                  + " AND " + mmb.getStorageManagerFactory().getStorageIdentifier("status") + "=" + STATUS_REQUEST);
+        if (log.isDebugEnabled()) {
+            log.debug("Search vwmtasks  WHERE changedtime>" + checktime
+                      + " AND wantedcpu='" + getMachineName() + "'"
+                      + " AND " + mmb.getStorageManagerFactory().getStorageIdentifier("status") + "=" + STATUS_REQUEST);
+        }
         Enumeration e = search("WHERE changedtime>" + checktime
                                + " AND wantedcpu='" + getMachineName() + "'"
                                + " AND " + mmb.getStorageManagerFactory().getStorageIdentifier("status") + "=" + STATUS_REQUEST);
