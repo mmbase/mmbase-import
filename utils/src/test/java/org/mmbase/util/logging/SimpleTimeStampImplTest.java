@@ -43,10 +43,14 @@ public class SimpleTimeStampImplTest {
         B.service("b2");
         SimpleTimeStampImpl.configure("A:stdout,debug B:stdout,debug");
         B.debug("b3");
+        SimpleTimeStampImpl.configure("A:service B:stdout,debug");
+        A.debug("a2");
+        A.service("a3");
         String result = new String(stdout.toByteArray());
         Pattern p = Pattern.compile("DEBUG \\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} a1\\n" +
                                     "SERVICE \\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} b2\\n" +
-                                    "DEBUG \\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} b3\\n"
+                                    "DEBUG \\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} b3\\n" +
+                                    "SERVICE \\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} a3\\n"
                                     );
         assertTrue(p + ":" + result, p.matcher(result).matches());
 
