@@ -1988,12 +1988,6 @@
       <mimetype>application/msword</mimetype>
       <extension>doc</extension>
       <designation>Microsoft Office Document</designation>
-      <test offset="0" type="string" comparator="=">\320\317\021\340\241\261</test>
-    </detector>
-    <detector>
-      <mimetype>application/msword</mimetype>
-      <extension>doc</extension>
-      <designation>Microsoft Office Document</designation>
       <test offset="0" type="string" comparator="=">\333\245\000\000\000</test>
     </detector>
     <detector>
@@ -2017,6 +2011,7 @@
       <mimetype>application/vnd.ms-powerpoint</mimetype>
       <extension>ppt</extension>
       <designation>Microsoft Powerpoint Document</designation>
+      <test offset="512" type="string" comparator="=">\375\377\377\377</test>
     </detector>
     <detector>
       <mimetype>???</mimetype>
