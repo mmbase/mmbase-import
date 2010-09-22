@@ -36,6 +36,7 @@ public class MagicFileTest  {
             new Object[] {"test.xhtml", "application/xml+xhtml"},
             new Object[] {"test.html", "text/html"},
             new Object[] {"test.xml", "text/xml"},
+            new Object[] {"h-friendship-work.ppt", "application/vnd.ms-powerpoint"},
             new Object[] {"dot.", MagicFile.FAILED
             }
         };
@@ -67,7 +68,7 @@ public class MagicFileTest  {
 
 
     /**
-     * It may use the filename as a fall back. But not in these test-cases. So it should still work if the files as an unreccognized extension.
+     * It may use the filename as a fall back. But not in these test-cases. So it should still work if the files as an unrecognized extension.
      */
     @Test
     public void noExtension() throws IOException  {
@@ -86,8 +87,6 @@ public class MagicFileTest  {
         IOUtil.copy(new FileInputStream(file), new FileOutputStream(tempFile));
         assertEquals(tempFile.getName(), mimeType, MagicFile.getInstance().getMimeType(tempFile));
     }
-
-
 
 
 }
