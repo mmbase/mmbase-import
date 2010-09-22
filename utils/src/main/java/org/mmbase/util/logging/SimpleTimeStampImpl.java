@@ -77,9 +77,14 @@ public class SimpleTimeStampImpl extends AbstractSimpleImpl implements Logger {
 
 
     public static  void configure(String c) {
-        for (String line : c.split("\\s+")) {
+        for (String line : c.trim().split("\\s+")) {
+            if (line.startsWith("#")) continue;
             String[] e = line.trim().split(":", 2);
-            configure(e[0], e[1]);
+            if (e.length == 2) {
+                configure(e[0].trim(), e[1].trim());
+            } else {
+                configure("", e[0].trim());
+            }
         }
     }
 
@@ -153,4 +158,8 @@ public class SimpleTimeStampImpl extends AbstractSimpleImpl implements Logger {
         }
     }
 
+    @Override
+    public String toString() {
+        return name + ":" + level;
+    }
 }

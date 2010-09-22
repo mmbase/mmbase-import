@@ -35,12 +35,16 @@ public class SimpleTimeStampImplTest {
 
     @Test
     public void configure() throws IOException  {
-        SimpleTimeStampImpl.configure("A:stdout,debug B:stdout,service");
+
+        SimpleTimeStampImpl.configure("\n:stdout,warn\nA:stdout,debug B:stdout,service");
         Logger A = SimpleTimeStampImpl.getLoggerInstance("A");
         Logger B = SimpleTimeStampImpl.getLoggerInstance("B");
+        Logger C = SimpleTimeStampImpl.getLoggerInstance("C");
         A.debug("a1");
         B.debug("b1");
         B.service("b2");
+        C.service("c1");
+        C.warn("c2");
         SimpleTimeStampImpl.configure("A:stdout,debug B:stdout,debug");
         B.debug("b3");
         SimpleTimeStampImpl.configure("A:service B:stdout,debug");
@@ -49,10 +53,11 @@ public class SimpleTimeStampImplTest {
         String result = new String(stdout.toByteArray());
         Pattern p = Pattern.compile("DEBUG \\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} a1\\n" +
                                     "SERVICE \\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} b2\\n" +
+                                    "WARN \\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} c2\\n" +
                                     "DEBUG \\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} b3\\n" +
                                     "SERVICE \\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} a3\\n"
                                     );
-        assertTrue(p + ":" + result, p.matcher(result).matches());
+        assertTrue(p + "\n" + result, p.matcher(result).matches());
 
     }
 
