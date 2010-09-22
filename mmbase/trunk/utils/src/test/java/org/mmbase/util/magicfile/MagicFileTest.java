@@ -33,6 +33,9 @@ public class MagicFileTest  {
 
             new Object[] {"cx.png", "image/png"},
             new Object[] {"wordxml.doc", "application/msword"},
+            new Object[] {"msword2007.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"},
+            new Object[] {"msexcel2007.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+            new Object[] {"mspowerpoint2007.pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation"},
             new Object[] {"test.xhtml", "application/xml+xhtml"},
             new Object[] {"test.html", "text/html"},
             new Object[] {"test.xml", "text/xml"},
