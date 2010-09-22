@@ -2014,6 +2014,21 @@
       <test offset="512" type="string" comparator="=">\375\377\377\377</test>
     </detector>
     <detector>
+      <mimetype>application/vnd.openxmlformats-officedocument.wordprocessingml.document</mimetype>
+      <extension>docx</extension>
+      <designation>Microsoft Office Word 2007</designation>
+    </detector>
+    <detector>
+      <mimetype>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</mimetype>
+      <extension>xlsx</extension>
+      <designation>Microsoft Office Excel 2007</designation>
+    </detector>
+    <detector>
+      <mimetype>application/vnd.openxmlformats-officedocument.presentationml.presentation</mimetype>
+      <extension>pptx</extension>
+      <designation>Microsoft Office Powerpoint 2007</designation>
+    </detector>
+    <detector>
       <mimetype>???</mimetype>
       <extension>???</extension>
       <designation>Lotus 1-2-3</designation>
