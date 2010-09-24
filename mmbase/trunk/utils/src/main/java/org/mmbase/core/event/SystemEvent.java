@@ -50,6 +50,30 @@ public abstract class SystemEvent extends Event {
         }
     }
 
+    /**
+     * Notifies that the database is now usable
+     */
+    public static class DataSourceAvailable extends Collectable {
+        private final javax.sql.DataSource dataSource;
+        private final String prefix;
+        public DataSourceAvailable(javax.sql.DataSource ds, String pref) {
+            dataSource = ds;
+            prefix = pref;
+        }
+        public javax.sql.DataSource getDataSource() {
+            return dataSource;
+        }
+        public String getPrefix() {
+            return prefix;
+        }
+        @Override
+        public String toString() {
+            return dataSource + " p:" + prefix;
+        }
+    }
+
+
+
     public static class ServletContext extends Collectable  {
         private final javax.servlet.ServletContext servletContext;
         public ServletContext(javax.servlet.ServletContext sc) {
