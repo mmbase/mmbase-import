@@ -1,6 +1,15 @@
 <!-- Author: Ernst Bunders -->
 
-<!ELEMENT eventmanager (brokers+) >
-<!ELEMENT brokers (broker+ ) >
-<!ELEMENT broker EMPTY >
+<!ELEMENT eventmanager (brokers*,listeners*) >
+
+<!ELEMENT brokers (broker* ) >
+<!ELEMENT broker (param*) >
 <!ATTLIST broker class  CDATA  #REQUIRED >
+
+<!ELEMENT listeners (listener* ) >
+<!ELEMENT listener (param*) >
+<!ATTLIST listener class  CDATA  #REQUIRED >
+
+<!ELEMENT param (#PCDATA)>
+
+<!ATTLIST param name CDATA #REQUIRED>
