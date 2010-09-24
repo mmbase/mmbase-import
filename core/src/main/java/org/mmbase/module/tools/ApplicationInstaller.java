@@ -261,7 +261,7 @@ class ApplicationInstaller {
     /**
      * @since MMBase-1.9.2
      */
-    private boolean runAfterDeployment(Map<Integer, Runnable> runnables, int installedVersion, int version, ApplicationResult result) {
+    private boolean runAfterDeployment(Map<Integer, ? extends Runnable> runnables, int installedVersion, int version, ApplicationResult result) {
         for (int i = installedVersion; i <= version; i++) {
             Runnable runnable = runnables.get(i);
             if (runnable != null) {
