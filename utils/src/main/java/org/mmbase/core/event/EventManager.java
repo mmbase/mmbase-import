@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.*;
 
 /**
  * This class manages all event related stuff. it is the place to register event brokers, and it
@@ -60,6 +60,8 @@ public class EventManager implements SystemEventListener {
     private long duration = 0;
     private boolean setup = false;
 
+    private final Set<EventListener> listenersFromResources = new CopyOnWriteArraySet<EventListener>();
+
     /**
      * use this metod to get an instance of the event manager
      */
@@ -94,20 +96,30 @@ public class EventManager implements SystemEventListener {
         if (se instanceof SystemEvent.Collectable) {
             receivedSystemEvents.add((SystemEvent.Collectable) se);
         }
+        if (se instanceof SystemEvent.ResourceLoaderChange) {
+            log.service("Reconfiguring event managers, because " + se);
+            watcher.onChange();
+        }
     }
 
 
     protected ResourceWatcher watcher;
 
     private EventManager() {
+        addEventListener(this);
+
     }
 
 
     protected synchronized void configure(String resource) {
         log.service("Configuring the event manager");
+        Set<EventBroker> originalEventBrokers = new HashSet<EventBroker>();
+        Set<EventListener> newListeners = new HashSet<EventListener>();
+        originalEventBrokers.addAll(eventBrokers);
         eventBrokers.clear();
         for (URL url : ResourceLoader.getConfigurationRoot().getResourceList(resource)) {
             try {
+                log.debug("listeners of " + url);
                 if (url.openConnection().getDoInput()) {
 
                     Document config = ResourceLoader.getDocument(url, true, EventManager.class);
@@ -135,11 +147,48 @@ public class EventManager implements SystemEventListener {
 
             }
         }
-        if (eventBrokers.size() == 0) {
-            log.fatal("No event brokers could not be found. This means that query-invalidation does not work correctly now. Proceeding anyway.");
-            return;
+        log.debug("Found brokers " + getBrokers());
+        for (URL url : ResourceLoader.getConfigurationRoot().getResourceList(resource)) {
+            try {
+                log.debug("listeners of " + url);
+                if (url.openConnection().getDoInput()) {
+
+                    Document config = ResourceLoader.getDocument(url, true, EventManager.class);
+                    DocumentReader configReader = new DocumentReader(config);
+                    // And also  listeners (they are also often added programmatically)
+                    for (Element element: configReader.getChildElements("eventmanager.listeners", "listener")) {
+                        try {
+                            EventListener listener = (EventListener) org.mmbase.util.xml.Instantiator.getInstance(element);
+                            log.debug(" " + listener);
+                            addEventListener(listener);
+                            newListeners.add(listener);
+                        } catch (Throwable ee) {
+                            log.warn(ee.getMessage(), ee);
+                        }
+                    }
+                }
+            } catch (SAXException e1) {
+                log.debug("Something went wrong configuring the event system (" + url + "): " + e1.getMessage(), e1);
+            } catch (IOException e1) {
+                log.debug("something went wrong configuring the event system (" + url + "): " + e1.getMessage(), e1);
+            }
         }
-        addEventListener(this);
+
+        if (eventBrokers.size() == 0) {
+            log.debug("No event brokers could not be found. This means that query-invalidation does not work correctly now. Proceeding anyway.");
+        }
+        for (EventBroker original :  originalEventBrokers) {
+            for (EventListener el : original.getListeners()) {
+                log.debug("Readding " + el);
+                if (! listenersFromResources.remove(el)) {
+                    addEventListener(el, false);
+                }
+            }
+        }
+        listenersFromResources.clear();
+        listenersFromResources.addAll(newListeners);
+        log.debug("Ready ");
+
     }
 
     /**
@@ -176,10 +225,14 @@ public class EventManager implements SystemEventListener {
         eventBrokers.remove(broker);
     }
 
+
+    public synchronized void addEventListener(EventListener listener) {
+        addEventListener(listener, true);
+    }
     /**
      * @param listener
      */
-    public synchronized void addEventListener(EventListener listener) {
+    protected synchronized void addEventListener(EventListener listener, boolean propagateToCollected) {
         if (! setup) {
             setup = true;
             // this is procrasted as long as possible to avoid
@@ -196,7 +249,7 @@ public class EventManager implements SystemEventListener {
         }
 
         BrokerIterator i =  findBrokers(listener);
-        boolean notifiedReceived = false;
+        boolean notifiedReceived = ! propagateToCollected;
         while (i.hasNext()) {
             EventBroker broker = i.next();
             if (broker.addListener(listener)) {
@@ -324,7 +377,7 @@ public class EventManager implements SystemEventListener {
         watcher.exit();
     }
 
-    private static class BrokerIterator implements Iterator<EventBroker> {
+    private static class BrokerIterator implements Iterator<EventBroker>, Iterable<EventBroker> {
         EventBroker next;
         final Iterator<EventBroker> i;
         final EventListener listener;
@@ -336,6 +389,9 @@ public class EventManager implements SystemEventListener {
         }
         public void remove() {
             throw new UnsupportedOperationException();
+        }
+        public Iterator<EventBroker> iterator() {
+            return this;
         }
         public EventBroker next() {
             if (next == null) throw new NoSuchElementException();
