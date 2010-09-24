@@ -12,6 +12,7 @@ package org.mmbase.util.xml.applicationdata;
 import java.util.*;
 import org.w3c.dom.*;
 import org.mmbase.util.xml.EntityResolver;
+import org.mmbase.util.ChainedRunnable;
 
 /**
  * @javadoc
@@ -226,14 +227,19 @@ public class ApplicationReader extends org.mmbase.util.xml.DocumentReader {
     /**
      * @since MMBase-1.9.2
      */
-    public Map<Integer, Runnable> getAfterDeployment() {
-        final Map<Integer, Runnable> result = new TreeMap<Integer, Runnable>();
+    public Map<Integer, ? extends Runnable> getAfterDeployment() {
+        final Map<Integer, ChainedRunnable> result = new TreeMap<Integer, ChainedRunnable>();
         for (Element element: getChildElements("application.afterdeployment", "runnable")) {
             String v = element.getAttribute("version");
             int version = "".equals(v) ? Integer.MAX_VALUE : Integer.parseInt(v);
             try {
                 Runnable runnable = (Runnable) org.mmbase.util.xml.Instantiator.getInstance(element);
-                result.put(version, runnable);
+                ChainedRunnable chain = result.get(version);
+                if (chain == null) {
+                    chain = new ChainedRunnable();
+                    result.put(version, chain);
+                }
+                chain.add(runnable);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
