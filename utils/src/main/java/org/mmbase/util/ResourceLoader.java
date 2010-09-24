@@ -227,6 +227,9 @@ public class ResourceLoader extends ClassLoader {
         // reset both roots, they will be redetermined using servletContext.
         configRootNeedsInit = true;
         webRootNeedsInit    = true;
+        if (sc != null) {
+            EventManager.getInstance().propagateEvent(new SystemEvent.ResourceLoaderChange());
+        }
     }
 
 
