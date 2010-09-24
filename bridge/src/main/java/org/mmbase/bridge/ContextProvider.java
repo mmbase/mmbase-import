@@ -101,7 +101,7 @@ public class ContextProvider {
                             line = reader.readLine();
                         }
                     }
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     log.error("During parsing of " + url + ": " + e.getMessage(), e);
                 }
             }
