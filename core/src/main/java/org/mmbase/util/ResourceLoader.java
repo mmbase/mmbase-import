@@ -26,6 +26,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.core.event.*;
 
 // XML stuff
 import org.w3c.dom.Document;
@@ -258,6 +259,9 @@ public class ResourceLoader extends ClassLoader {
         configRootNeedsInit = true;
         webRootNeedsInit    = true;
         ResourceWatcher.reinitWatchers();
+        if (sc != null) {
+            EventManager.getInstance().propagateEvent(new SystemEvent.ResourceLoaderChange());
+        }
     }
 
     /**
@@ -279,6 +283,7 @@ public class ResourceLoader extends ClassLoader {
         } else {
             log.debug("No resources builder");
         }
+        EventManager.getInstance().propagateEvent(new SystemEvent.ResourceLoaderChange());
     }
 
     private static NodeManager resourceNodeManager;
