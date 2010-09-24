@@ -605,7 +605,7 @@ public abstract class Module extends DescribedFunctionProvider {
                 String className = parser.getClassName();
                 // try starting the module and give it its properties
                 try {
-                    log.service("Loading module " + moduleName + " with class " + className);
+                    log.service("Loading module " + moduleName + " with class " + className + " from " + parser.getSystemId());
                     Module mod;
                     if (parser.getURLString() != null){
                         log.service("loading module from jar " + parser.getURLString());
@@ -621,14 +621,24 @@ public abstract class Module extends DescribedFunctionProvider {
                             mod.setName(moduleName);
                         }
                     } else {
-                        Class<?> newClass = Class.forName(className);
                         try {
-                            Constructor<?> constructor = newClass.getConstructor(String.class);
-                            mod =  (Module) constructor.newInstance(moduleName);
-                        } catch (NoSuchMethodException nsme) {
-                            log.service("Constructor with no name-argument is deprecated " + nsme.getMessage());
-                            mod = (Module) newClass.newInstance();
-                            mod.setName(moduleName); // I think a module has one name.
+                            Class<?> newClass = Class.forName(className);
+                            try {
+                                Constructor<?> constructor = newClass.getConstructor(String.class);
+                                mod =  (Module) constructor.newInstance(moduleName);
+                            } catch (NoSuchMethodException nsme) {
+                                log.service("Constructor with no name-argument is deprecated " + nsme.getMessage());
+                                mod = (Module) newClass.newInstance();
+                                mod.setName(moduleName); // I think a module has one name.
+                            }
+                        } catch (Throwable t) {
+                            if (t instanceof RuntimeException) {
+                                log.error("During instantation of '" + className + "' for '" + moduleName + "': " + t.getMessage());
+                                throw (RuntimeException) t;
+                            } else {
+                                log.error("During instantation of '" + className + "' for '" + moduleName + "': " + t.getMessage(), t);
+                                return null;
+                            }
                         }
                     }
 
