@@ -404,7 +404,7 @@ public class MMBase extends ProcessorModule {
 
         log.service("Initializing  storage");
         initializeStorage();
-
+        EventManager.getInstance().propagateEvent(new SystemEvent.DataSourceAvailable(getDataSource(), getBaseName()));
         mmbaseState = STATE_LOAD;
 
         log.debug("Loading builders:");
