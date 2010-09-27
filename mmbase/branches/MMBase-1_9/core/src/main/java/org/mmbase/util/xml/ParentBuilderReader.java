@@ -14,6 +14,7 @@ import org.mmbase.datatypes.DataType;
 import org.mmbase.datatypes.Constants;
 import org.mmbase.core.util.DataTypeSetter;
 import org.mmbase.core.util.Fields;
+import org.mmbase.util.xml.AbstractBuilderReader;
 import org.mmbase.bridge.mock.MockField;
 import org.mmbase.bridge.util.NodeManagerDescription;
 import java.util.*;
@@ -31,6 +32,11 @@ import org.w3c.dom.Element;
  */
 
 public abstract class ParentBuilderReader extends AbstractBuilderReader<Field>  {
+
+
+    static {
+        org.mmbase.datatypes.DataTypes.initialize();
+    }
 
 
     public ParentBuilderReader(InputSource is) {
