@@ -190,7 +190,7 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
         Map<String, CoreField> oldset = new HashMap<String, CoreField>();
         int pos = 1;
         if (parentBuilder != null) {
-            Collection<CoreField> parentfields = parentBuilder.getFields();
+            Collection<CoreField> parentfields = parentBuilder.getFields(NodeManager.ORDER_CREATE);
             if (parentfields != null) {
                 // have to clone the parent fields
                 // need clone()!
@@ -219,11 +219,16 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
                         DataTypeSetter setter = new DataTypeSetter(def) {
                                 @Override
                                 public void set(DataType dt) {
+                                    assert def == field;
                                     if (dt != null) {
                                         field.setDataType(dt); // replace datatype
                                     }
                                     decodeFieldDef(fieldElement, def, collector);
                                     decodeFieldAttributes(fieldElement, def);
+                                    if (def.getType() == -1) {
+                                        log.error(org.mmbase.util.xml.XMLWriter.write(fieldElement) + " " + dt);
+                                        System.exit(0);
+                                    }
                                     def.finish();
                                 }
 
@@ -423,7 +428,7 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
                     results.put(key, function);
                     log.debug("functions are now: " + results);
                 } catch (ClassNotFoundException cnfe) {
-                    log.warn(functionClass + " " + cnfe.getClass() + " " + getSystemId() + " '" + cnfe.getMessage() + "'");
+                    log.warn("'" + functionClass + "' " + cnfe.getClass() + " " + getSystemId() + " '" + cnfe.getMessage() + "'");
                 } catch (Throwable e) {
                     log.error(e.getClass() + " " + getSystemId() + " " + e.getMessage(), e);
                 }
