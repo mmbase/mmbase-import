@@ -50,6 +50,9 @@ public abstract class SystemEvent extends Event {
         }
     }
 
+    public static class ResourceLoaderChange extends Collectable {
+    }
+
     /**
      * Notifies that the database is now usable
      */
