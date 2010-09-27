@@ -75,6 +75,7 @@
       </positions>
     </editor>
     <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <required value="true" enforce="never" />
       <enumeration>
         <query type="mmbasecontexts" xmlns="http://www.mmbase.org/xmlns/searchquery" >
           <sortorder field="name" />
@@ -97,6 +98,7 @@
     </editor>
     <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <default value="0" />
+      <required value="true" enforce="never" />
       <enumeration>
         <entry
             javaconstants="org.mmbase.security.implementation.cloudcontext.UserStatus"
@@ -120,6 +122,7 @@
     </editor>
     <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <default value="today" />
+      <required value="true" enforce="never" />
       <minInclusive enforce="never" value="yesterday"  />
       <maxInclusive enforce="never" value="today + 10 year"  />
     </datatype>
@@ -140,6 +143,7 @@
     </editor>
     <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <default value="today + 100 year" />
+      <required value="true" enforce="never" />
       <minInclusive enforce="never" value="yesterday"  />
       <maxInclusive enforce="never" value="today + 199 year"  />
     </datatype>
