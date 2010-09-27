@@ -164,6 +164,7 @@
     </editor>
     <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <default value="toyear - 100 year" />
+      <required value="true" enforce="never" />
       <minInclusive enforce="never" value="toyear - 100 year"  />
       <maxInclusive enforce="never" value="now"  />
     </datatype>
