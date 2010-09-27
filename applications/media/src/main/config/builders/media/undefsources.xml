@@ -15,8 +15,8 @@
 
   <descriptions>
     <description xml:lang="en">
-      Descriptions of the physical media source (not determined wehter it is audio of video). This
-      extends mediaousces, because postgresql is not always very good in selecting from tables which have
+      Descriptions of the physical media source (not determined yet whether it is audio of video). This
+      extends mediasources, because postgresql is not always very good in selecting from tables which have
       extensions.
     </description>
     <description xml:lang="nl">Beschrijving van het daadwerkelijke media bestand</description>
