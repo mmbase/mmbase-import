@@ -102,9 +102,8 @@
       psql 7.2). <programlisting>
           alter table mm_content rename begin to begin_;
           alter table mm_content add column begin timestamp;
-          update mm_content set begin = 'epoch';
-          update mm_content set begin  = begin + CAST(begin_||'s' AS interval);
-          # alter table drop column begin_; (not supported in 7.2)
+          update mm_content set begin  = 'epoch'::timestamp + (CASE WHEN begin_ > 2000000000 THEN CAST(begin_/3600||'h' AS interval) ELSE  CAST(begin_||'s' AS interval) END);
+          alter table mm_content drop column begin_;
         </programlisting></para>
 
       <para>Because the column cannot be dropped MMBase will issue a warning
