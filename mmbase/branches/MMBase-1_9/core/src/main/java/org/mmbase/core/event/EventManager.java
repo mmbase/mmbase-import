@@ -57,6 +57,7 @@ public class EventManager implements SystemEventListener {
     private long duration = 0;
 
     private final Set<EventListener> listenersFromResources = new CopyOnWriteArraySet<EventListener>();
+    private final Set<URL>           usedResources          = new CopyOnWriteArraySet<URL>();
 
     /**
      * use this metod to get an instance of the event manager
@@ -133,7 +134,7 @@ public class EventManager implements SystemEventListener {
             try {
                 log.debug("listeners of " + url);
                 if (url.openConnection().getDoInput()) {
-
+                    boolean usedAlready = usedResources.contains(url);
                     Document config = ResourceLoader.getDocument(url, true, EventManager.class);
                     DocumentReader configReader = new DocumentReader(config);
                     // And also  listeners (they are also often added programmatically)
@@ -141,12 +142,14 @@ public class EventManager implements SystemEventListener {
                         try {
                             EventListener listener = (EventListener) org.mmbase.util.xml.Instantiator.getInstance(element);
                             log.debug(" " + listener);
-                            addEventListener(listener);
+                            addEventListener(listener, ! usedAlready);
                             newListeners.add(listener);
                         } catch (Throwable ee) {
                             log.warn(ee.getMessage(), ee);
                         }
                     }
+                    usedResources.add(url);
+
                 }
             } catch (SAXException e1) {
                 log.debug("Something went wrong configuring the event system (" + url + "): " + e1.getMessage(), e1);
