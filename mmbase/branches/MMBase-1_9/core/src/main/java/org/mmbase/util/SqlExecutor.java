@@ -117,7 +117,7 @@ public class SqlExecutor implements Runnable {
         try {
             stmt = con.createStatement();
             q = q.replace("$PREFIX", getPrefix());
-            LOG.service(" Executing query " + q);
+            LOG.debug(" Executing query " + q);
             ResultSet rs = stmt.executeQuery(q);
             rs.next();
             boolean res = rs.getBoolean(1);
@@ -153,7 +153,7 @@ public class SqlExecutor implements Runnable {
                     throw new IllegalStateException("Both query and update properties are unset");
                 }
             } else {
-                LOG.service("Skipped because of " + onlyIfQuery);
+                LOG.debug("Skipped because of " + onlyIfQuery);
             }
         } catch (RuntimeException e) {
             throw e;
