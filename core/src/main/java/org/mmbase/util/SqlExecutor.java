@@ -108,7 +108,7 @@ public class SqlExecutor implements Runnable {
         u = u.replace("$PREFIX", getPrefix());
         LOG.info(" Executing update " + u);
         int result = stmt.executeUpdate(u);
-        LOG.info("Result :" + result);
+        LOG.service("Result :" + result);
    }
 
     protected boolean executeOnlyIf(Connection con, String q) throws SQLException {
@@ -117,11 +117,11 @@ public class SqlExecutor implements Runnable {
         try {
             stmt = con.createStatement();
             q = q.replace("$PREFIX", getPrefix());
-            LOG.info(" Executing query " + q);
+            LOG.service(" Executing query " + q);
             ResultSet rs = stmt.executeQuery(q);
             rs.next();
             boolean res = rs.getBoolean(1);
-            LOG.info("Result: " + res);
+            LOG.debug("Result: " + res);
             return res;
         } catch (SQLException sqe) {
             LOG.error(sqe.getMessage() + " from " + q);
