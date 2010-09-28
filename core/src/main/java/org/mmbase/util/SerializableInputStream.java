@@ -116,11 +116,38 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         }
     }
 
+
+    /**
+     * Removed directory information that may be present in some browsers.
+     * @since MMBase-1.9.5
+     */
+    private static String getFileName(FileItem fi) throws IOException {
+        String fileName = fi.getName();
+        if (fileName == null) {
+            return "NULL";
+        }
+        int pos = fileName.lastIndexOf("\\");
+        if (pos > 0) {
+            fileName = fileName.substring(pos + 1);
+        }
+        pos = fileName.lastIndexOf("/");
+        if (pos > 0) {
+            fileName = fileName.substring(pos + 1);
+        }
+        return fileName;
+    }
+
+
     public SerializableInputStream(FileItem fi) throws IOException {
         this.size = fi.getSize();
-        this.name = fi.getName();
+        this.name = getFileName(fi);
         this.contentType = new MimeType(fi.getContentType());
-        file = File.createTempFile(getClass().getName(), this.name);
+        try {
+            file = File.createTempFile(getClass().getName(), this.name);
+        } catch (IOException ioe) {  //MMB-1987 ?
+            log.error(ioe.getMessage(), ioe);
+            file = File.createTempFile(getClass().getName(), "nofilename");
+        }
         file.deleteOnExit();
         try {
             fi.write(file);
