@@ -40,7 +40,7 @@ public class FunctionValueIfEmptyGetter implements Processor {
         }
         if (value == null) {
             return Casting.toType(field.getDataType().getTypeAsClass(), node.getFunctionValue(functionName, null).get());
-        } else if ("".equals("")) {
+        } else if ("".equals(value)) {
             return Casting.toString(node.getFunctionValue(functionName, null).get());
         } else {
             return value;
