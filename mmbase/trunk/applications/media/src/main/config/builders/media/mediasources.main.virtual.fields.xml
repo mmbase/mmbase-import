@@ -13,6 +13,10 @@
       name="title"
       state="virtual"
       readonly="false">
+    <descriptions>
+      <description xml:lang="nl">Een beschrijvende titel.</description>
+      <description xml:lang="en">A descriptive title.</description>
+    </descriptions>
     <gui>
       <guiname xml:lang="nl">Titel</guiname>
       <guiname xml:lang="en">Title</guiname>
