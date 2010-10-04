@@ -12,7 +12,7 @@ package org.mmbase.datatypes.processors;
 import org.mmbase.bridge.*;
 
 /**
- * This processor can be used as a 'set' processor on a (datetime) field. The field will then be set
+ * This processor can be used as a 'set' processor on a field. The field will be set
  * to the current user id when this field is not yet set.
  *
  * @author Michiel Meeuwissen
@@ -26,12 +26,14 @@ public class Creator implements CommitProcessor {
 
     private static final long serialVersionUID = 1L;
 
+    @Override
     public void commit(Node node, Field field) {
         if (node.mayWrite() && node.isNull(field.getName())) {
             node.setValueWithoutProcess(field.getName(), node.getCloud().getUser().getIdentifier());
         }
     }
 
+    @Override
     public String toString() {
         return "creator";
     }
