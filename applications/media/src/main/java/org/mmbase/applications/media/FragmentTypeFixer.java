@@ -54,7 +54,7 @@ public class FragmentTypeFixer implements CommitProcessor {
                 log.debug("Fragment of " + node.getNumber() + " has correct fragment already");
             }
         } else {
-            log.warn("Fragment negative number" + fragment);
+            log.warn("Fragment negative number: " + fragment);
         }
     }
 
