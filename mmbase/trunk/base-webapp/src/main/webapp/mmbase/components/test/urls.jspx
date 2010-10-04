@@ -106,6 +106,28 @@
       <p>${_ eq 'http://www.google.com' ? 'ok' : 'NOT ok'}: ${_}</p>
     </mm:link>
 
+    <h2>URL tag</h2>
+    <mm:url page="/A" absolute="context">
+      <mm:param name="a">A</mm:param>
+      <mm:param name="b">B</mm:param>
+    </mm:url>
+
+    <mm:url id="mmurl1" write="false" page="/A" absolute="context">
+      <mm:param name="a">A</mm:param>
+      <mm:param name="b">B</mm:param>
+    </mm:url>
+    <p>${mmurl1 eq '/A?a=A&amp;amp;b=B' ? 'ok' : 'NOT ok'} : ${mmurl1}</p>
+
+    <mm:import id="mmurl2" escape="none">
+      <mm:url page="/A" absolute="context">
+        <mm:param name="a">A</mm:param>
+        <mm:param name="b">B</mm:param>
+      </mm:url>
+    </mm:import>
+    <p>${mmurl2 eq '/A?a=A&amp;amp;b=B' ? 'ok' : 'NOT ok'} : ${mmurl2}</p>
+    <mm:import id="mmurl3" escape="none">/A?a=A&amp;amp;b=B</mm:import>
+    <p>${mm:escape('text/plain', mmurl3)  eq '/A?a=A&amp;amp;b=B' ? 'ok' : 'NOT ok'} : ${mmurl3}</p>
+
     <h2>Framework params</h2>
 
     <mm:link absolute="context">
@@ -215,6 +237,7 @@
         <a href="${_}">Redirect to google.com</a>  (MMB-1847)
       </mm:link>
     </p>
+
 
     <h3>Unfiltered rendering</h3>
     <mm:link page="/mmbase/components/test/unfilteredurls.jspx" referids="x?">
