@@ -15,7 +15,8 @@ import org.mmbase.util.logging.*;
 
 
 /**
-
+ * Fills field with a owner value per default.
+ *
  * @author Michiel Meeuwissen
  * @version $Id$
  * @since MMBase-1.9.4
