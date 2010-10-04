@@ -107,6 +107,8 @@
     </mm:link>
 
     <h2>URL tag</h2>
+
+    An url:
     <mm:url page="/A" absolute="context">
       <mm:param name="a">A</mm:param>
       <mm:param name="b">B</mm:param>
@@ -124,9 +126,10 @@
         <mm:param name="b">B</mm:param>
       </mm:url>
     </mm:import>
-    <p>${mmurl2 eq '/A?a=A&amp;amp;b=B' ? 'ok' : 'NOT ok'} : ${mmurl2}</p>
+
+    <p>${mmurl2 eq '/A?a=A&amp;amp;b=B' ? 'ok' : 'NOT ok'} : ${mmurl2}  (fails)</p>
     <mm:import id="mmurl3" escape="none">/A?a=A&amp;amp;b=B</mm:import>
-    <p>${mm:escape('text/plain', mmurl3)  eq '/A?a=A&amp;amp;b=B' ? 'ok' : 'NOT ok'} : ${mmurl3}</p>
+    <p>${mm:escape('text/plain', mmurl3)  eq '/A?a=A&amp;amp;b=B' ? 'ok' : 'NOT ok'} : ${mmurl3} (fails)</p>
 
     <h2>Framework params</h2>
 
