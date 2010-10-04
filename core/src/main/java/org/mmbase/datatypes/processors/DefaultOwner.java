@@ -15,13 +15,14 @@ import org.mmbase.util.logging.*;
 
 
 /**
-
+ * Fills field with a owner value per default.
+ *
  * @author Michiel Meeuwissen
  * @version $Id$
  * @since MMBase-1.9.4
  */
 
-public class DefaultOwner  implements Processor {
+public class DefaultOwner implements Processor {
     private static final Logger LOG = Logging.getLoggerInstance(DefaultOwner.class);
 
     public Object process(Node node, Field field, Object value) {
