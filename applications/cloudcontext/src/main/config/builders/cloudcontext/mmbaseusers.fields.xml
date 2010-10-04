@@ -4,6 +4,10 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     >
   <field name="username">
+    <descriptions>
+      <description xml:lang="en">Username or account.</description>
+      <description xml:lang="nl">Gebruikersnaam of accountnaam.</description>
+    </descriptions>
     <gui>
       <guiname xml:lang="nl">Account</guiname>
       <guiname xml:lang="eo">Uzulo</guiname>
@@ -24,6 +28,11 @@
     </datatype>
   </field>
   <field  name="password">
+    <descriptions>
+      <description xml:lang="en">Password for this account.</description>
+      <description xml:lang="eo">Pasvorto</description>
+      <description xml:lang="nl">Wachtwoord voor dit account.</description>
+    </descriptions>
     <gui>
       <guiname xml:lang="nl">Wachtwoord</guiname>
       <guiname xml:lang="eo">Pasvorto</guiname>
@@ -48,6 +57,11 @@
     </datatype>
   </field>
   <field name="confirmpassword" state="virtual">
+    <descriptions>
+      <description xml:lang="en">Confirm your password to check if its identicall.</description>
+      <description xml:lang="eo">Konfirmu pasvorton</description>
+      <description xml:lang="nl">Bevestig het wachtwoord ter controle.</description>
+    </descriptions>
     <gui>
       <guiname xml:lang="nl">Bevestig wachtwoord</guiname>
       <guiname xml:lang="eo">Konfirmu pasvorton</guiname>
