@@ -10,7 +10,10 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib;
 
+import org.mmbase.bridge.jsp.taglib.util.*;
+
 import javax.servlet.jsp.*;
+import javax.servlet.http.*;
 import org.springframework.mock.web.*;
 
 import org.junit.*;
@@ -47,6 +50,65 @@ public  class ContextTagTest {
         tag.doEndTag();
 
         assertEquals(null, pageContext.getAttribute("a"));
+    }
+
+
+    @Test
+    public void scope() throws Exception {
+
+        PageContext pageContext = new MockPageContext();
+        ContextTag tag = new ContextTag();
+        tag.setScope("session");
+        tag.setId("foobar");
+        tag.setPageContext(pageContext);
+        tag.doStartTag();
+
+        tag.register("a", "A");
+        try {
+            tag.register("a", "B");
+            fail("Should have thrown exception");
+        } catch (JspTagException te) {
+            // ok
+        }
+        assertEquals("A", pageContext.getAttribute("a"));
+        assertEquals("A", tag.getObject("a"));
+
+        tag.doAfterBody();
+        tag.doEndTag();
+
+        assertEquals(null, pageContext.getAttribute("a"));
+
+        HttpSession ses = pageContext.getSession();
+        pageContext.release();
+
+        PageContext pageContext2 = new MockPageContext(pageContext.getServletContext());
+        HttpSession ses2 = pageContext2.getSession();
+        ses2.setAttribute("foobar", ses.getAttribute("foobar"));
+
+
+        ContextTag tag2 = new ContextTag();
+        tag2.setScope("session");
+        tag2.setId("foobar");
+        tag2.setPageContext(pageContext2);
+        tag2.doStartTag();
+        try {
+            tag2.register("a", "B");
+            fail("Should have thrown exception");
+        } catch (JspTagException te) {
+            // ok
+        }
+        assertEquals("A", pageContext2.getAttribute("a"));
+        assertEquals("A", tag2.getObject("a"));
+        tag2.doAfterBody();
+        tag2.doEndTag();
+
+        assertEquals("A", ((ContextContainer) ses.getAttribute("foobar")).get("a"));
+        assertEquals(null, ((ContextContainer) ses.getAttribute("foobar")).get("b"));
+        assertEquals("A", ((ContextContainer) ses2.getAttribute("foobar")).get("a"));
+        assertEquals(null, ((ContextContainer) ses2.getAttribute("foobar")).get("b"));
+
+
+
     }
 
 
