@@ -72,6 +72,10 @@
       name="intro"
       state="virtual"
       readonly="false">
+    <descriptions>
+      <description xml:lang="nl">Korte inleidende beschrijving</description>
+      <description xml:lang="en">An introduction, short preliminary description</description>
+    </descriptions>
     <gui>
       <guiname xml:lang="nl">Introductie</guiname>
       <guiname xml:lang="en">Introduction</guiname>
