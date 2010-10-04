@@ -186,7 +186,6 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
 
             result.append(n);
         }
-        //log.info("url " + result);
         return new BasicUrl(this, result.toString());
     }
 
