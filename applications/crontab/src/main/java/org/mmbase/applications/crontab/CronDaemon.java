@@ -68,7 +68,7 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
                     } else {
                         log.debug("Will prefer " + event.getMachine());
                     }
-                    // remove any way, to readd later after the loop.
+                    // remove any way, to read later after the loop.
                     i.remove();
                     break; //can be only one
                 } else {
@@ -142,8 +142,8 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
                     }
                 } else {
                     log.service("Consuming " + event + " by ignoring it, because it is executed on " + event.getMachine());
-                    /// event will be execute somewhere else
-                    /// could administrate this, and perhaps watch if it sucessfully succeeds
+                    // event will be execute somewhere else
+                    // could administrate this, and perhaps watch if it successfully succeeds
                 }
             }
         }
@@ -192,7 +192,7 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
         if (containing != null) {
             if (removedCronEntries.contains(containing)) {
                 addedCronEntries.add(entry);
-                // do copy the 'crontime' allready.
+                // do copy the 'crontime' already.
                 containing.setCronTime(entry.getCronTime());
                 return;
             } else {
