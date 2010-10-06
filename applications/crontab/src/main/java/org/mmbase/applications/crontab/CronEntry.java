@@ -40,13 +40,13 @@ public class CronEntry implements java.io.Serializable {
          * extremely short-living, and used with care (only if you have a lot of those which must run
          * very often)
          *
-         * Since we use a thread-pool for other types of jobs now any way, it is doubtfull if it is
-         * ever usefull to opt for this type.
+         * Since we use a thread-pool for other types of jobs now any way, it is doubtful if it is
+         * ever useful to opt for this type.
          */
         SHORT, //0
         /**
          * The default job type is the 'must be one' job. Such jobs are not started if the same job is
-         * still running. They are wrapped in a seperate thread, so other jobs can be started during the
+         * still running. They are wrapped in a separate thread, so other jobs can be started during the
          * execution of this one.
          */
          MUSTBEONE, //1
@@ -195,7 +195,7 @@ public class CronEntry implements java.io.Serializable {
     }
 
     /**
-     * Wether a job associated with this cron entry is currently alive on this machine.
+     * Whether a job associated with this cron entry is currently alive on this machine.
      * @since MMBase-1.8
      */
     public boolean isAlive(int i) {
@@ -220,7 +220,7 @@ public class CronEntry implements java.io.Serializable {
         return type == Type.MUSTBEONE || type == Type.BALANCE_MUSTBEONE;
     }
     /**
-     * A String indicating on the servers on wich this Job must run. This may be regular expression
+     * A String indicating on the servers on which this Job must run. This may be regular expression
      * and used in the implementation of {@link #isActive}, but this is not required.
      */
     public String getServers() {
@@ -283,7 +283,7 @@ public class CronEntry implements java.io.Serializable {
     protected void setCronTime(String cronTime) {
         StringTokenizer st = new StringTokenizer(cronTime, " ");
         if (st.countTokens() != 5) {
-            throw new RuntimeException("A crontime must contain 5 field  please refer to the UNIX man page http://www.rt.com/man/crontab.5.html");
+            throw new RuntimeException("A crontime must contain 5 fields,  please refer to the UNIX man page http://www.rt.com/man/crontab.5.html");
         }
 
         minute.setTimeVal(st.nextToken());
@@ -389,7 +389,7 @@ public class CronEntry implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return id + ":" + cronTime + ":" + name + ": " + className + ":" + configuration + ": count" + count + " type " + type + " on servers " + servers;
+        return id + ":" + cronTime + ":" + name + ": " + className + ":" + configuration + ": count=" + count + " type=" + type + " on servers " + servers;
     }
 
     @Override
@@ -417,8 +417,6 @@ public class CronEntry implements java.io.Serializable {
             className.equals(other.className) && cronTime.equals(other.cronTime) &&
             (configuration == null ? other.configuration == null : configuration.equals(other.configuration));
     }
-
-
 
 
 }
