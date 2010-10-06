@@ -68,7 +68,7 @@ public class CronJobs extends MMObjectBuilder {
                 myJobs.add(entry);
                 cronDaemon.add(entry);
             } catch (Exception e) {
-                log.warn("did not add cronjob with id " + node.getNumber() + " because of error " + e.getMessage());
+                log.warn("did not add cronjob with id " + node.getNumber() + " because of error '" + e + "'.");
             }
         }
     }
@@ -154,7 +154,5 @@ public class CronJobs extends MMObjectBuilder {
         LocalContext.getCloudContext().assertUp();
         return LocalContext.getCloudContext().getCloud("mmbase", "class", null);
     }
-
-
 
 }
