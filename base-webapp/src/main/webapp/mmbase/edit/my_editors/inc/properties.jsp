@@ -1,17 +1,19 @@
 <div class="row">
   <label><strong>Properties</strong></label>
   <div class="properties">
-    <mm:present referid="change">
-      <c:if test="${!empty property_key && !empty property_value}">
-        <mm:function nodemanager="properties" name="set" referids="_node@node,property_key@key,property_value@value" />
-      </c:if>
-    </mm:present>
-    <mm:nodelistfunction nodemanager="properties" name="list" referids="_node@node">
-      <mm:maydelete>
-        <mm:link page="delete_object.jsp" referids="_node@nr"><a href="${_}" title="delete property"><img src="img/mmbase-delete.png" alt="delete" width="21" height="20" /></a></mm:link>
-      </mm:maydelete>
-      <mm:maywrite><mm:link page="edit_object.jsp" referids="_node@nr"><a href="${_}" title="edit property"></mm:link></mm:maywrite><mm:field name="key" /><mm:maywrite></a></mm:maywrite>:<mm:field name="value" />
-    </mm:nodelistfunction>
+    <mm:hasfunction name="list">
+       <mm:present referid="change">
+         <c:if test="${!empty property_key && !empty property_value}">
+           <mm:function nodemanager="properties" name="set" referids="_node@node,property_key@key,property_value@value" />
+         </c:if>
+       </mm:present>
+       <mm:nodelistfunction nodemanager="properties" name="list" referids="_node@node">
+         <mm:maydelete>
+           <mm:link page="delete_object.jsp" referids="_node@nr"><a href="${_}" title="delete property"><img src="img/mmbase-delete.png" alt="delete" width="21" height="20" /></a></mm:link>
+         </mm:maydelete>
+         <mm:maywrite><mm:link page="edit_object.jsp" referids="_node@nr"><a href="${_}" title="edit property"></mm:link></mm:maywrite><mm:field name="key" /><mm:maywrite></a></mm:maywrite>:<mm:field name="value" />
+       </mm:nodelistfunction>
+    </mm:hasfunction>
   </div>
 </div>
 <div class="row">
