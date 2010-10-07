@@ -114,6 +114,12 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     private transient Document data;
     private transient Document originalData;
 
+
+    /**
+     * @since MMBase 1.9.5
+     */
+    private transient Map<Document, Map<String, List<Element>>> indexes = new HashMap<Document, Map<String, List<Element>>>();
+
     /**
      *  document where loaded data will be stored in when added by wizard actions
      */
@@ -306,10 +312,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         Node node = nodePermissionCache.get(objectNumber);
 
         if (node == null) {
-            NodeList nodes = Utils.selectNodeList(data, ".//*[@number='" + objectNumber + "']");
+            List<Element> nodes = getElementsByNumber(data, objectNumber);
 
-            if ((nodes != null) && (nodes.getLength() > 0)) {
-                node = nodes.item(0);
+            if (nodes.size() > 0) {
+                node = nodes.get(0);
             } else {
                 if (objectNumber == null || objectNumber.equals("")) {
                     log.debug("Checking security for objectNumber '" + objectNumber + "'  "); // + Logging.stackTrace(5));
@@ -2213,13 +2219,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             // retrieved from MMbase
             // The command parameters is a value indicating the number of the node(s) to update.
             String value = cmd.getValue();
-            NodeList nodesToUpdate = Utils.selectNodeList(data, ".//*[@number='" + value + "']");
-            NodeList originalNodesToUpdate = Utils.selectNodeList(originalData, ".//*[@number='" + value + "']");
-            if (Utils.isEmptyNodeList(originalNodesToUpdate) ) {
-                originalNodesToUpdate = Utils.selectNodeList(loadedData, ".//*[@number='" + value + "']");
+            List<Element> nodesToUpdate = getElementsByNumber(data, value);
+            List<Element> originalNodesToUpdate = getElementsByNumber(originalData, value);
+            if (originalNodesToUpdate.isEmpty()) {
+                originalNodesToUpdate = getElementsByNumber(loadedData, value);
             }
 
-            if (Utils.isNotEmptyNodeList(nodesToUpdate) || Utils.isNotEmptyNodeList(originalNodesToUpdate)) {
+            if (! nodesToUpdate.isEmpty() || ! originalNodesToUpdate.isEmpty()) {
                 Node updatedNode = null;
 
                 try {
@@ -2240,8 +2246,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                     fieldValues.put(fieldName, fieldValue);
                 }
 
-                for (int i = 0; i < nodesToUpdate.getLength(); i++) {
-                    Node dataNode = nodesToUpdate.item(i);
+                for (Element dataNode : nodesToUpdate) {
                     NodeList fieldsToUpdate = Utils.selectNodeList(dataNode, "./field");
 
                     for (int j = 0; j < fieldsToUpdate.getLength(); j++) {
@@ -2252,8 +2257,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                     }
                 }
 
-                for (int i = 0; i < originalNodesToUpdate.getLength(); i++) {
-                    Node dataNode = originalNodesToUpdate.item(i);
+                for (Element dataNode : originalNodesToUpdate) {
                     NodeList fieldsToUpdate = Utils.selectNodeList(dataNode, "./field");
 
                     for (int j = 0; j < fieldsToUpdate.getLength(); j++) {
@@ -2921,6 +2925,43 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
         return fieldcon;
     }
+
+    /**
+     * @since MMBase 1.9.5
+     */
+    protected List<Element> getElementsByNumber(Document d, String number) {
+        Map<String, List<Element>> index = indexes.get(d);
+        if (index == null) {
+            index = new HashMap<String, List<Element>>();
+            NodeList nl = Utils.selectNodeList(d, "//object|//relation");
+            for (int i = 0; i < nl.getLength(); i++) {
+                Element n = (Element) nl.item(i);
+                String atvalue = n.getAttribute("number");
+                if (atvalue.length() > 0) {
+                    List<Element> list = index.get(atvalue);
+                    if (list == null) {
+                        list = new ArrayList<Element>();
+                        index.put(atvalue, list);
+                    }
+                    list.add(n);
+                }
+            }
+
+            indexes.put(d, index);
+        }
+        List<Element> result = index.get(number);
+        if (result == null) {
+            // happens for new nodes.
+            result = new ArrayList<Element>();
+            NodeList nl = Utils.selectNodeList(d, "//object[@number='" + number + "']|//relation[@number='" + number + "']");
+            for (int i = 0; i < nl.getLength(); i++) {
+                result.add((Element)nl.item(i));
+            }
+            index.put(number, result);
+        }
+        return result;
+    }
+
 
     class OrderByComparator implements Comparator<Element> {
         final boolean compareByNumber;

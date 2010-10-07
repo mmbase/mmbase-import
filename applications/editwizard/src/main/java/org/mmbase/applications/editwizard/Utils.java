@@ -21,12 +21,14 @@ import javax.xml.parsers.DocumentBuilder;
 import org.xml.sax.*;
 
 import javax.xml.xpath.*;
+import javax.xml.namespace.QName;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.ResourceLoader;
 
 import org.mmbase.cache.xslt.*;
+import org.mmbase.cache.*;
 import org.mmbase.util.xml.URIResolver;
 
 /**
@@ -45,6 +47,18 @@ import org.mmbase.util.xml.URIResolver;
 public class Utils {
 
     private static final Logger log = Logging.getLoggerInstance(Utils.class);
+
+    protected static final XPathFactory xpathFactory = XPathFactory.newInstance();
+
+    protected static final Cache<String, XPathExpression> xpathCache = new Cache<String, XPathExpression>(200) {
+        @Override
+        public String getName() {
+            return "Editwizard XPaths";
+        }
+    };
+    static {
+        xpathCache.putCache();
+    }
     /**
      * This method returns a new instance of a DocumentBuilder.
      *
@@ -301,17 +315,14 @@ public class Utils {
     public static String selectSingleNodeText(Node node, String xpath, String defaultvalue, Cloud cloud) {
         if (node != null) {
             try {
-                XPathFactory xf = XPathFactory.newInstance();
                 String xs = "";
                 // select based on cloud locale setting
                 if (cloud != null) {
-                    XPath xp = xf.newXPath();
-                    xs = xp.evaluate(xpath + "[lang('" + cloud.getLocale().getLanguage() + "')]", node);
+                    xs = evaluateXPath(xpath + "[lang('" + cloud.getLocale().getLanguage() + "')]", node);
                 }
                 // if not found or n.a., just grab the first you can find
                 if (xs.equals("")) {
-                    XPath xp = xf.newXPath();
-                    xs = xp.evaluate(xpath, node);
+                    xs = evaluateXPath(xpath, node);
                     if (xs.equals("")) {
                         xs =  defaultvalue;
                     }
@@ -644,6 +655,57 @@ public class Utils {
         return result.toString();
     }
 
+
+    protected static XPathExpression getExpression(final String xpath) {
+        try {
+            XPathExpression expression = xpathCache.get(xpath);
+            if (expression == null) {
+                XPath xp = xpathFactory.newXPath();
+                expression = xp.compile(xpath);
+                xpathCache.put(xpath, expression);
+            }
+            return expression;
+        } catch (XPathExpressionException xe) {
+            throw new RuntimeException(xe.getMessage(), xe);
+        }
+    }
+    /**
+     * @since MMBase 1.9.5
+     */
+    private static void logDuration(String xpath, Node contextNode, long duration) {
+        if (log.isDebugEnabled()) {
+            log.debug(duration + " ns. " + xpath);
+        }
+    }
+    /**
+     * @since MMBase 1.9.5
+     */
+    protected static Object evaluateXPath(final String xpath, final Node contextNode, final QName returnType) {
+        try {
+            long startTime = System.nanoTime();
+            Object result = getExpression(xpath).evaluate(contextNode, returnType);
+            long duration = System.nanoTime() - startTime;
+            logDuration(xpath, contextNode, duration);
+            return result;
+        } catch (XPathExpressionException xe) {
+            throw new RuntimeException(xe.getMessage(), xe);
+        }
+    }
+    /**
+     * @since MMBase 1.9.5
+     */
+    protected static String evaluateXPath(final String xpath, final Node contextNode) {
+        try {
+            long startTime = System.nanoTime();
+            String result = getExpression(xpath).evaluate(contextNode);
+            long duration = System.nanoTime() - startTime;
+            logDuration(xpath, contextNode, duration);
+            return result;
+        } catch (XPathExpressionException xe) {
+            throw new RuntimeException(xe.getMessage(), xe);
+        }
+    }
+
     /**
      * This method selects a single node using the given contextNode and xpath.
      * @param contextNode
@@ -652,12 +714,7 @@ public class Utils {
      */
     public static Node selectSingleNode(Node contextNode, String xpath) {
         if (contextNode == null) throw new RuntimeException("Cannot execute xpath '" + xpath + "' on dom.Node that is null");
-        try {
-            XPath xp = XPathFactory.newInstance().newXPath();
-            return (Node) xp.evaluate(xpath, contextNode, XPathConstants.NODE);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        return (Node) evaluateXPath(xpath, contextNode, XPathConstants.NODE);
     }
 
     /**
@@ -668,12 +725,7 @@ public class Utils {
      */
     public static NodeList selectNodeList(Node contextNode, String xpath) {
         if (contextNode == null) throw new RuntimeException("Cannot execute xpath '" + xpath + "' on dom.Node that is null");
-        try {
-            XPath xp = XPathFactory.newInstance().newXPath();
-            return (NodeList) xp.evaluate(xpath, contextNode, XPathConstants.NODESET);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        return (NodeList) evaluateXPath(xpath, contextNode, XPathConstants.NODESET);
     }
 
 
