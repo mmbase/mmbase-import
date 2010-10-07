@@ -35,6 +35,7 @@ public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
     private static int cacheSize = 50;
     private static FactoryCache cache;
     private static File defaultDir = new File("");
+    private static boolean loggedImplementation = false;
 
     public static FactoryCache getCache() {
         return cache;
@@ -92,6 +93,10 @@ public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
             tf.setURIResolver(uri);
             // you must set the URIResolver in the tfactory, because it will not be called everytime, when you use Templates-caching.
             put(uri, tf);
+        }
+        if (! loggedImplementation) {
+            log.info("XSLT TransformerFactory implementation " + tf.getClass().getName());
+            loggedImplementation = true;
         }
         return tf;
     }
