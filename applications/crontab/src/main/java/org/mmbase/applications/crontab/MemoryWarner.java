@@ -60,8 +60,8 @@ public class MemoryWarner extends AbstractCronJob  {
                     }
                     message.setValue("from", from);
                     message.setValue("to", config[1]);
-                    message.setValue("subject", "Out of memory warning: more than " + limitPerc + " in use, for " +
-                                     org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() + "@" +
+                    message.setValue("subject", "Out of memory warning: more than " + limitPerc + " in use (" + usePerc + 
+                                     "), for " + org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() + "@" +
                                      java.net.InetAddress.getLocalHost().getHostName());
                     message.setValue("body", "Memory use " + usePerc + " > " + limitPerc);
                     message.commit();
