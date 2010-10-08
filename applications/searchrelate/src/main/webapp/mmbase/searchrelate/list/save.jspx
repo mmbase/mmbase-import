@@ -63,4 +63,8 @@
       </div>
     </mm:cloud>
   </mm:locale>
+  <mm:import externid="org.mmbase.searchrelate.leavePage" id="leavePage" />
+  <mm:compare referid="leavePage" value="true">
+    <mm:remove  referid="${rid}_context" from="session" />
+  </mm:compare>
 </jsp:root>
