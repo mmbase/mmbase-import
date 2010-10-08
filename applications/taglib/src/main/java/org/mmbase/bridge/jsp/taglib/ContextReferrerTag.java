@@ -552,7 +552,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
             contextTag.getContextContainer().getPageContext() != pageContext) {
 
             contextTag = (E) getPageContextTag();
-            if (contextTag == null) {
+            if (contextid != null && contextid.length() > 0) {
                 throw new RuntimeException("Did not find pageContextTag!");
             }
             if (contextid != null) {
