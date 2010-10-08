@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * SessionCleaners are added to {@link OrderSubmitter#addCallbackForEnd} by order.jspx of mm-sr:relatednodes.  The new order is temporary
- * stored in the User's session. After commit, it can (and must) be removed again, for which this object ios used.
+ * stored in the User's session. After commit, it can (and must) be removed again, for which this object is used.
  *
  * @author  Michiel Meeuwissen
  * @version $Id$

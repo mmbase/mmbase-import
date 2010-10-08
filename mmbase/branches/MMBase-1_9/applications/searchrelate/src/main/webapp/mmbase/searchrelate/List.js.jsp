@@ -228,7 +228,8 @@ function List(d) {
 			   $(document).find(":input").attr("disabled", "disabled");
 			   $(document).find("a").unbind().click( 
 			       function() { 
-				   return false; }
+				   return false; 
+			       }
 			   );
 		       }
 		       List.prototype.leftPage = true;
@@ -756,6 +757,8 @@ List.prototype.commit = function(stale, leavePage) {
                 this.loader();
                 $(self.div).trigger("mmsrStartSave", [self]);
                 result = null;
+
+		params['org.mmbase.searchrelate.leavePage'] = leavePage;
 
                 // console.log("ASYNC " + (leavePage == null ? true : !leavePage));
                 $.ajax({ type: "POST",
