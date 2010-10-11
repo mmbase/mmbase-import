@@ -782,7 +782,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
                     if (node.getBuilder().hasField(fn)) {
                         nodenr = node.getIntValue(pref + ".number");
                     } else {
-                        log.warn("Could not check step " + step + ". Because, the field '" + fn + "' is not found in the node " + node + " which is in the result of " + query.toSql());
+                        // This is likely the start-node
+                        log.debug("Could not check step " + step + ". Because, the field '" + fn + "' is not found in the node " + node + " which is in the result of " + query.toSql());
                         nodenr = -1;
                     }
                 }
