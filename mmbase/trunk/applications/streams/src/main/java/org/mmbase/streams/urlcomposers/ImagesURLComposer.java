@@ -22,6 +22,8 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.urlcomposers;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.mmbase.applications.media.Format;
 import org.mmbase.util.MimeType;
 import org.mmbase.applications.media.State;
@@ -29,6 +31,7 @@ import org.mmbase.applications.media.urlcomposers.FragmentURLComposer;
 import org.mmbase.module.builders.ImageCaches;
 import org.mmbase.module.builders.Images;
 import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.streams.builders.ImageSources;
 import org.mmbase.util.images.Dimension;
@@ -36,6 +39,8 @@ import org.mmbase.util.images.Factory;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.ContextProvider;
 
 /**
  * The FragmentURLComposer to make images urls available the same way as audio and video.
@@ -123,13 +128,36 @@ public class ImagesURLComposer extends FragmentURLComposer {
             icacheNode.insert("imagesurlcomposer");
         }
 
+
+        /* hackery to get server, context etc. */
+        Cloud cloud = org.mmbase.bridge.util.CloudThreadLocal.currentCloud();
+        if (cloud == null) {
+            cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+            if (log.isDebugEnabled()) {
+                log.debug("No cloud found ", new Exception());
+            }
+        }
+        HttpServletRequest req = (HttpServletRequest) cloud.getProperty(org.mmbase.bridge.Cloud.PROP_REQUEST);
         StringBuilder buf = new StringBuilder();
+        if (req != null) {
+            String prot = req.getScheme();
+            String host = req.getServerName();
+            int port = req.getServerPort();
+            
+            buf.append(prot).append("://").append(host);
+            if (port > -1) {
+                if (("http".equals(prot) && port != 80) || ("https".equals(prot) && port != 443)) {
+                    buf.append(':').append(port);
+                }
+            }
+        }
+        
         buf.append(imageCaches.getFunctionValue("servletpath", null));
         buf.append(icacheNode.getNumber());
         buf.append('/');
         buf.append(source.getStringValue("url"));
-        return buf;
 
+        return buf;
     }
 
     @Override
