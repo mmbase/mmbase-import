@@ -39,7 +39,15 @@ public class XMLWriter {
      * @param indent if true the document wil be indented
      * @param omitxml
      **/
-    public static void write(Node node, Writer writer, boolean indent, boolean omitxml) throws TransformerConfigurationException, TransformerException {
+    public static void write(final Node node, final Writer writer, final boolean indent, final boolean omitxml) throws TransformerConfigurationException, TransformerException {
+        if (node == null) {
+            try {
+                writer.write("<null />");
+            } catch (IOException ioe) {
+                log.warn(ioe.getMessage());
+            }
+            return;
+        }
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         try {
             transformerFactory.setAttribute("http://saxon.sf.net/feature/version-warning", false);
