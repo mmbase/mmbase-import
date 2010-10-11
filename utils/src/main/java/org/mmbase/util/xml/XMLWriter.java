@@ -40,6 +40,14 @@ public class XMLWriter {
      * @param omitxml
      **/
     public static void write(Node node, Writer writer, boolean indent, boolean omitxml) throws TransformerConfigurationException, TransformerException {
+        if (node == null) {
+            try {
+                writer.write("<null />");
+            } catch (IOException ioe) {
+                log.warn(ioe.getMessage());
+            }
+            return;
+        }
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         try {
             transformerFactory.setAttribute("http://saxon.sf.net/feature/version-warning", false);
