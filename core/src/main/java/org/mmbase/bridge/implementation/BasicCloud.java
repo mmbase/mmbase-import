@@ -501,7 +501,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         return createTransaction(name, false);
     }
 
-    public BasicTransaction createTransaction(String name, boolean overwrite) throws AlreadyExistsException {
+    public synchronized BasicTransaction createTransaction(String name, boolean overwrite) throws AlreadyExistsException {
         if (name == null) {
             name = "Tran" + uniqueId();
         } else {
@@ -519,7 +519,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         return transaction;
     }
 
-    public Transaction getTransaction(String name) {
+    public synchronized Transaction getTransaction(String name) {
         BasicTransaction tran = transactions.get(name);
         if (tran != null) {
             if (! tran.verify()) {
