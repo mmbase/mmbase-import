@@ -61,11 +61,14 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                 // same name for different users
                 // We solved this here, but this should really be handled in the Transactionmanager.
                 log.debug("using transaction " + transactionName);
-                Collection<MMObjectNode> cn = BasicCloudContext.transactionManager.getTransactions().get(transactionName);
-                if (cn == null) {
-                    cn = BasicCloudContext.transactionManager.createTransaction(transactionName);
+                final TransactionManager manager = BasicCloudContext.transactionManager;
+                synchronized(manager) {
+                    Collection<MMObjectNode> cn = manager.getTransactions().get(transactionName);
+                    if (cn == null) {
+                        cn = manager.createTransaction(transactionName);
+                    }
+                    return cn;
                 }
-                return cn;
             } catch (TransactionManagerException e) {
                 throw new BridgeException(e.getMessage(), e);
             }
