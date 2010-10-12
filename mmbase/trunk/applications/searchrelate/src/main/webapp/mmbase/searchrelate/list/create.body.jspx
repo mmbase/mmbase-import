@@ -7,6 +7,8 @@
   <mm:node id="source" referid="parameters.source" commitonclose="${parameters.autosubmit}" />
 
   <mm:createnode type="${parameters.type}" id="d"  commitonclose="${parameters.autosubmit}">
+
+    <mm:log>Including ${requestScope['org.mmbase.includePath']} / ${parameters.precreate}</mm:log>
     <c:if test="${! empty parameters.precreate}">
       <mm:include page="${parameters.precreate}" />
     </c:if>
