@@ -14,7 +14,7 @@
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.page import="org.mmbase.bridge.util.Queries,org.mmbase.bridge.NodeList" />
   <mm:import externid="id" from="parameters" required="true" />
-  <mm:import from="session" externid="${id}" id="query" jspvar="q" required="true" vartype="org.mmbase.bridge.NodeQuery" />
+  <mm:import from="session" externid="${id}" id="query" jspvar="q" required="true" vartype="org.mmbase.bridge.Query" />
   <mm:content expires="0" type="application/xml" language="${query.cloud.locale}">
     <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
       <mm:import externid="search" from="parameters" />
@@ -136,7 +136,6 @@
               <mm:import id="relations" vartype="List" />
             </mm:compare>
 
-
             <mm:listnodes varStatus="status" jspvar="n">
 
               <mm:compare referid="id" regexp="\w*current">
@@ -156,9 +155,7 @@
                 </mm:isnotempty>
               </mm:compare>
 
-              <mm:include page="node.tr.jspx" attributes="status,_node@node,customizedir?,flds@fields?,editrelations?,relation?,aliases?">
-                <mm:param name="nodemanager">${query.nodeManager.name}</mm:param>
-              </mm:include>
+              <mm:include page="node.tr.jspx" attributes="status,_node@node,customizedir?,flds@fields?,editrelations?,relation?,aliases?" />
 
               <c:if test="${editrelations == true}">
                 <mm:compare referid="id" regexp="\w*current">
