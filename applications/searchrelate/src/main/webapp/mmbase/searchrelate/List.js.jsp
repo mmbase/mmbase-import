@@ -88,7 +88,7 @@ function List(d) {
     this.sortable   = this.sortable   == 'true';
     this.autosubmit = this.autosubmit == 'true';
     this.search     = this.search     == 'true';
-    this.committing = false;
+
 
     // Whether every user input is currently valid (whith respect of both the list's length and  MMBaseValidator information).
     this.valid = true;
@@ -222,22 +222,18 @@ function List(d) {
 
     // Before the page is left, we need to save. Arrange that here.
     $(window).bind("beforeunload",
-                   function(ev) {                       
-		       if (!List.prototype.leftPage) {
-			   // avoid changes and leave during save;
-			   $(document).find(":input").attr("disabled", "disabled");
-			   $(document).find("a").unbind().click( 
-			       function() { 
-				   return false; 
-			       }
-			   );
+                   function(ev) {
+		       try {
+			   List.prototype.leftPage = true;
+			   $(self.div).find(":input").attr("disabled", true);
+			   var result = self.commit(0, true);
+			   if (result != null) {
+                               ev.returnValue = confirm(result); //'<fmt:message key="invalid" />';
+                               return ev.returnValue;
+			   }
+		       } catch (ex) {
+			   alert(ex);
 		       }
-		       List.prototype.leftPage = true;
-                       var result = self.commit(0, true);
-                       if (result != null) {
-                           ev.returnValue = confirm(result); //'<fmt:message key="invalid" />';
-                           return ev.returnValue;
-                       }
                        // IE wants no return here
                    });
     // automaticly make the entries empty on focus if they evidently contain the default value only
@@ -725,14 +721,14 @@ List.prototype.getListParameters = function() {
 List.prototype.commit = function(stale, leavePage) {
     var result;
     var self = this;
-    if(this.needsCommit() && (! List.prototype.leftPage || leavePage) && (! self.saving)) {
+    if(this.needsCommit() && (! List.prototype.leftPage || leavePage)) {
         // if triggered unload prototype.leftPage is true, so normal commits are cancelled. But the last 'leavePage' (which will happen asynchronously)
         // does proceed. This is because we want this last commit to delay actually leaving the page.
+
         if (this.valid) {
             var now = new Date();
             if (stale == null) stale = this.defaultStale; //
             if (now.getTime() - this.lastChange.getTime() > stale) {
-                self.saving = true;
                 var params = this.getListParameters();
                 params.leavePage = leavePage ? true : false;
 
@@ -757,9 +753,7 @@ List.prototype.commit = function(stale, leavePage) {
                 this.loader();
                 $(self.div).trigger("mmsrStartSave", [self]);
                 result = null;
-
-		params['org.mmbase.searchrelate.leavePage'] = leavePage;
-
+                self.saving = true;
                 // console.log("ASYNC " + (leavePage == null ? true : !leavePage));
                 $.ajax({ type: "POST",
                          async: leavePage == null ? true : !leavePage,
@@ -798,12 +792,11 @@ List.prototype.commit = function(stale, leavePage) {
         }
     } else {
         result = null;
-	return result;
     }
     if (leavePage) {
 
 	// put a maximum on the duration time of the next while loop. Just to be sure.
-	$.timer(5000,
+	$.timer(10000,
 		function(timer) {
 		    self.saving = false;
 		    timer.stop();
@@ -811,7 +804,6 @@ List.prototype.commit = function(stale, leavePage) {
                );
 
 	while(self.saving) {
-	    //	    console.log("Still saving");
 	    // waiting a bit for that.
 	    // There is no proper wait or join method  in javascript.
 	}
