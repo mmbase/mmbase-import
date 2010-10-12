@@ -143,6 +143,11 @@
                            description="Configuration file. Defaults to 'searchrelate'." />
 
 
+  <jsp:scriptlet>
+    synchronized(session) {
+  </jsp:scriptlet>
+
+
   <mm:import id="previousParameters" from="request" externid="org.mmbase.sr.relatednodes.parameters" />
   <!-- this is set by parameters.jspf.
        TODO.
@@ -164,7 +169,7 @@
       <mm:import from="session" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
     </c:otherwise>
   </c:choose>
-
+  <mm:log level="warn">seq: ${seq}</mm:log>
   <mm:write session="${requestid}_sequence" value="${seq + 1}" />
   <mm:write request="${requestid}_sequence" value="${seq + 1}" />
 
@@ -231,6 +236,8 @@
     <mm:sortorder field="number" direction="UP" />
   </mm:relatednodescontainer>
 
+  <mm:import id="sessionid">${rid}_context</mm:import>
+  <mm:remove from="session" referid="${rid}_context" /> <!-- make sure no accidental shit from a previous call is lingering around -->
 
   <mm:context scope="session" id="${rid}_context">
 
@@ -282,20 +289,18 @@
     <mm:import id="source_was_new">${_node.number lt 0}</mm:import>
     <mm:import id="_number">${_node._number}</mm:import>
 
-  </mm:context>
-
-  <mm:import from="session" id="parameters" externid="${rid}_context" />
-
-  <mm:relatednodescontainer id="clonedquery" clone="query">
-    <mm:context referid="parameters">
+    <mm:relatednodescontainer context="" id="clonedquery" clone="query">
       <mm:relatednodes usetransaction="true" commitonclose="false">
         <mm:last><mm:index id="cursize" write="false"/></mm:last>
       </mm:relatednodes>
       <mm:notpresent referid="cursize">
         <mm:import id="cursize">0</mm:import>
       </mm:notpresent>
-    </mm:context>
-  </mm:relatednodescontainer>
+    </mm:relatednodescontainer>
+  </mm:context>
+
+  <mm:import from="this" id="parameters" externid="${rid}_context" />
+
 
   <mm:import from="request" id="javascript_loaded" externid="mm_list_javascript" />
 
@@ -447,4 +452,5 @@
   </fmt:bundle>
   <mm:write request="org.mmbase.searchrelate.relatednodes" referid="parameters.parent" />
   <mm:write request="org.mmbase.sr.relatednodes.parameters" referid="previousParameters" />
+  <jsp:scriptlet>}</jsp:scriptlet>
 </jsp:root>

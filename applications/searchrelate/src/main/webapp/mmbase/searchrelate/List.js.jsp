@@ -223,13 +223,17 @@ function List(d) {
     // Before the page is left, we need to save. Arrange that here.
     $(window).bind("beforeunload",
                    function(ev) {
-                       List.prototype.leftPage = true;
-                       $(self.div).find(":input").attr("disabled", true);
-                       var result = self.commit(0, true);
-                       if (result != null) {
-                           ev.returnValue = confirm(result); //'<fmt:message key="invalid" />';
-                           return ev.returnValue;
-                       }
+		       try {
+			   List.prototype.leftPage = true;
+			   $(self.div).find(":input").attr("disabled", true);
+			   var result = self.commit(0, true);
+			   if (result != null) {
+                               ev.returnValue = confirm(result); //'<fmt:message key="invalid" />';
+                               return ev.returnValue;
+			   }
+		       } catch (ex) {
+			   alert(ex);
+		       }
                        // IE wants no return here
                    });
     // automaticly make the entries empty on focus if they evidently contain the default value only
