@@ -169,7 +169,6 @@
       <mm:import from="session" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
     </c:otherwise>
   </c:choose>
-  <mm:log level="warn">seq: ${seq}</mm:log>
   <mm:write session="${requestid}_sequence" value="${seq + 1}" />
   <mm:write request="${requestid}_sequence" value="${seq + 1}" />
 
