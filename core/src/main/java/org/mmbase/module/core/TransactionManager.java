@@ -196,8 +196,12 @@ public class TransactionManager {
         return tmpnumber;
     }
 
-    public String cancel(Object user, String transactionName) throws TransactionManagerException {
-        Collection<MMObjectNode> transaction = getTransaction(transactionName);
+    public String cancel(final Object user, final String transactionName) throws TransactionManagerException {
+        final Collection<MMObjectNode> transaction =  transactions.get(transactionName);
+        if (transaction == null) {
+            log.warn("Transaction '" + transactionName + "' does not exist (already cancelled?)", new Exception());
+            return transactionName;
+        }
         // remove nodes from the temporary node cache
         MMObjectBuilder builder = MMBase.getMMBase().getTypeDef();
         synchronized(transaction) {
@@ -207,7 +211,7 @@ public class TransactionManager {
         }
         deleteTransaction(transactionName);
         if (log.isDebugEnabled()) {
-            log.debug("Removed transaction (after cancel) " + transactionName + "\n" + transaction);
+            log.debug("Removed transaction (after cancel) " + transactionName + "\n" + transaction, new Exception());
         }
         EventManager.getInstance().propagateEvent(new TransactionEvent.Cancel(transactionName));
         return transactionName;
@@ -242,7 +246,7 @@ public class TransactionManager {
         return true;
     }
 
-    public String commit(Object user, String transactionName) throws TransactionManagerException {
+    public synchronized String commit(Object user, String transactionName) throws TransactionManagerException {
         Collection<MMObjectNode> transaction = getTransaction(transactionName);
         try {
             resolve(transactionName);
