@@ -36,6 +36,23 @@
   </mm:stringlist>
   <mm:remove referid="main" />
   [${main}.${sub}.${subsub}] : Should be [..]
+  <h3>MMB-1866</h3>
+  <mm:hasnode number="default.mags">
+    <mm:import id="value">MMB-1866 test <mm:time time="now" /></mm:import>
+    <mm:escape escape="swallow">
+      <mm:node number="default.mags">
+        <mm:setfield name="subtitle">${value}</mm:setfield>
+        <mm:relatednodes type="news"><mm:field name="number" /></mm:relatednodes>
+        <mm:relatednodes type="news" role="posrel" ><mm:field name="number" /></mm:relatednodes>
+      </mm:node>
+    </mm:escape>
+    <mm:node number="default.mags">
+      <mm:field name="subtitle">
+        ${_ eq value ? 'OK' : 'NOT OK'} ${_}
+      </mm:field>
+    </mm:node>
+  </mm:hasnode>
+
 </div>
 
 
