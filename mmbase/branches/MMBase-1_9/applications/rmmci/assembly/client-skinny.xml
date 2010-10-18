@@ -14,9 +14,11 @@
         <exclude>org/mmbase/config/**</exclude>
       </excludes>
     </fileSet>
+    <!--
     <fileSet>
-      <directory>${project.basedir}/src/main/client-resources</directory>
+      <directory>${project.basedir}/src/main/resources</directory>
       <outputDirectory>/</outputDirectory>
     </fileSet>
+    -->
   </fileSets>
 </assembly>
