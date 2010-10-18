@@ -1,0 +1,67 @@
+<?xml version="1.0" ?>
+<!DOCTYPE mainFilter SYSTEM "http://www.mmbase.org/dtd/mediafilter_1_0.dtd" [
+ <!ENTITY % format SYSTEM "http://www.mmbase.org/dtd/formatcomparator_1_0.dtd" >
+ <!ENTITY % dimension SYSTEM "http://www.mmbase.org/dtd/dimensioncomparator_1_0.dtd" >
+ <!ENTITY % bitrate SYSTEM  "http://www.mmbase.org/dtt/clientbitratefilter_1_0.dtd" >
+ <!ENTITY % configSubTags "preferredSource|preferredDimension|bitrates|property*">
+ %format;
+ %dimension;
+ %bitrate;
+]>
+
+<mainFilter>
+  <chain>
+    <filter id="client">org.mmbase.applications.media.filters.ClientFormatFilter</filter>
+    <filter id="intermediatesorter">org.mmbase.applications.media.filters.FieldValueSorter</filter>
+    <filter>org.mmbase.applications.media.filters.AvailableSorter</filter>
+    <filter id="format">org.mmbase.applications.media.filters.ServerFormatSorter</filter>
+    <filter id="nodetype">org.mmbase.applications.media.filters.NodeTypeSorter</filter>
+    <filter id="dimensions">org.mmbase.applications.media.filters.ServerDimensionSorter</filter>
+    <filter id="hilabeler">org.mmbase.applications.media.filters.FieldValueLabeler</filter>
+    <filter id="lolabeler">org.mmbase.applications.media.filters.FieldValueLabeler</filter>
+    <filter id="bitratelabeler">org.mmbase.applications.media.filters.BitrateLabeler</filter>
+  </chain>
+
+  <filterConfigs>
+     <config filter="bitratelabeler">
+      <bitrates>
+        <bitrate name="lo" min="-1"     max="128000" />
+        <bitrate name="hi" min="128001" max="" />
+      </bitrates>
+    </config>
+    <config filter="hilabeler">
+      <property name="label">hi</property>
+      <property name="pattern">.*\bhi\b.*</property>
+    </config>
+    <config filter="lolabeler">
+      <property name="label">lo</property>
+      <property name="pattern">.*\blo\b.*</property>
+    </config>
+    <config filter="format">
+      <preferredSource>
+        <source format="webm" />
+        <source format="ogv" />
+        <source format="ogg" />
+        <source format="mp4" />
+        <source format="m3u8" />
+        <source format="mp3" />
+        <source format="flv" />
+        <source format="avi" />
+      </preferredSource>
+    </config>
+    <config filter="dimensions">
+      <preferredDimension>
+        <dimension x="320" y="240" />
+      </preferredDimension>
+    </config>
+    <config filter="nodetype">
+      <property name="list">videostreamsourcescaches,audiostreamsourcescaches</property>
+    </config>
+    <config filter="intermediatesorter">
+      <property name="pattern">.*\bintermediate\b.*</property>
+      <property name="inverse">true</property>
+    </config>
+
+  </filterConfigs>
+
+</mainFilter>
