@@ -68,6 +68,11 @@ public class ImagesURLComposer extends FragmentURLComposer {
         return State.DONE;
     }
 
+    @Override
+    public boolean isMain() {
+        return false;
+    }
+
     ImageSources getBuilder() {
         ImageSources builder = (ImageSources) MMBase.getMMBase().getBuilder("imagesources");
         return builder;
