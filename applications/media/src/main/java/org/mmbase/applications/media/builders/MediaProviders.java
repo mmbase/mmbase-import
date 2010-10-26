@@ -99,9 +99,14 @@ public class MediaProviders extends MMObjectBuilder {
         addFunction(new GuiFunction() {
                 @Override
                 public String getFunctionValue(Node node, Parameters parameters) {
-                    Parameters urlParams = urlFunction.createParameters();
-                    urlParams.setAllIfDefined(parameters);
-                    return node.getStringValue("name") + " " + urlFunction.getFunctionValue(urlParams);
+                    String fieldName = parameters.get(Parameter.FIELD);
+                    if (fieldName == null || fieldName.length() == 0) {
+                        Parameters urlParams = urlFunction.createParameters();
+                        urlParams.setAllIfDefined(parameters);
+                        return node.getStringValue("name") + " " + urlFunction.getFunctionValue(urlParams);
+                    } else {
+                        return super.getFunctionValue(node, parameters);
+                    }
                 }
             });
     }

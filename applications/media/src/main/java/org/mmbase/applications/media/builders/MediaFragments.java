@@ -251,6 +251,7 @@ public class MediaFragments extends MMObjectBuilder {
         Iterator<MMObjectNode> i = getSources(fragment).iterator();
         while (i.hasNext()) {
             MMObjectNode source = i.next();
+            log.debug("Source for " + fragment.getNumber() + " " + source);
             if (source != null) {
                 MediaSources bul    =
                     (MediaSources) source.getBuilder();
@@ -258,6 +259,35 @@ public class MediaFragments extends MMObjectBuilder {
             }
         }
         return urls;
+    }
+    {
+        addFunction(new NodeFunction<List<URLWrapper>>("urls_wrapped", URLS_PARAMETERS) {
+                @Override
+                public List<URLWrapper> getFunctionValue(Node node, Parameters params) {
+                    List<URLWrapper> result = new ArrayList<URLWrapper>();
+                    MMObjectNode mm = MediaFragments.this.getNode(node.getNumber());
+                    List<URLComposer> list = getURLs(mm, translateURLArguments(params, null), null, null);
+                    for (URLComposer uc :list) {
+                        result.add(new URLWrapper(uc));
+                    }
+                    return result;
+                };
+            });
+    }
+
+    {
+        addFunction(new NodeFunction<List<URLWrapper>>("urls_wrapped", URLS_PARAMETERS) {
+                @Override
+                public List<URLWrapper> getFunctionValue(Node node, Parameters params) {
+                    List<URLWrapper> result = new ArrayList<URLWrapper>();
+                    MMObjectNode mm = MediaFragments.this.getNode(node.getNumber());
+                    List<URLComposer> list = getURLs(mm, translateURLArguments(params, null), null, null);
+                    for (URLComposer uc :list) {
+                        result.add(new URLWrapper(uc));
+                    }
+                    return result;
+                };
+            });
     }
 
     protected List<URLComposer> getFilteredURLs(MMObjectNode fragment, Map<String, Object> info, Set<MMObjectNode> cacheExpireObjects) {
