@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packaging_config_basic PUBLIC "-//MMBase/DTD packaging_config_basic config 1.0//EN" "http://www.mmbase.org/dtd/packaging_config_basic_1_0.dtd">
+<packaging_config_basic>
+	<lastversion>2</lastversion>
+	<lastdate>Fri Oct 15 16:04:31 CEST 2004</lastdate>
+	<name>MultiLanguageGui config</name>
+	<maintainer>Submarine</maintainer>
+	<description>Config files needed for Multilanguage gui, among them the real mapping files that are used.</description>
+	<license type="MPL" version="1.0" name="Mozzila Public License" />
+	<releasenotes></releasenotes>
+	<installationnotes></installationnotes>
+	<basedir>config/</basedir>
+	<include>config/multilanguagegui/</include>
+	<exclude>CVS</exclude>
+	<packagedepends>
+	</packagedepends>
+	<initiators>
+		<initiator name="Daniel Ockeloen" company="Submarine" />
+	</initiators>
+	<supporters>
+	</supporters>
+	<developers>
+		<developer name="Daniel Ockeloen" company="Submarine" />
+	</developers>
+	<contacts>
+		<contact name="Daniel Ockeloen" reason="Bugs Reports" mailto="daniel@submarine.nl" />
+	</contacts>
+</packaging_config_basic>

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<div
+    class="mm_c c_editwizard b_components.example ${requestScope.componentClassName}"
+    id="${requestScope.componentId}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:import id="jsps"><mm:setting name="location" />/jsp</mm:import>
+  <mm:import id="templates">/mmbase/components/editwizard/</mm:import>
+  <mm:import id="referrer"><mm:url absolute="context" /></mm:import>
+  <table>
+    <tr>
+      <td>
+        <mm:link referids="referrer,templates" page="$jsps/list.jsp">
+          <mm:param name="wizard">samples/news_blocks</mm:param>
+          <mm:param name="nodepath">news</mm:param>
+          <a href="${_}">Nieuws</a>
+        </mm:link>
+      </td>
+      <td>
+       <mm:link page="view_source">
+          <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <mm:param name="page">${templates}/samples/news_blocks.xml</mm:param>
+          <a href="${_}">See XML</a>
+       </mm:link>
+      </td>
+    </tr>
+  </table>
+  <hr />
+  <div class="link">
+    <mm:link page="examples">
+      <a href="${_}"><img alt="back" src="${mm:link('/mmbase/style/images/back.png')}" /></a>
+    </mm:link>
+  </div>
+</div>

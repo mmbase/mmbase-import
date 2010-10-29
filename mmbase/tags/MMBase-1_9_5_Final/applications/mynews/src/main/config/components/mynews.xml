@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="mynews"
+    version="1"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+
+  <class name="org.mmbase.framework.BasicComponent" />
+
+  <title xml:lang="nl">MyNews</title>
+  <title xml:lang="en">MyNews</title>
+
+  <dependency component="resources" version="1" />
+
+  <block name="magazine"
+         classification="mynews entrance mmbase.examples"
+         mimetype="text/html">
+    <title xml:lang="en">MyNews</title>
+    <title xml:lang="nl">MyNews</title>
+    <description xml:lang="en">
+      The famous 'MyNews' example, but as a component.
+    </description>
+    <description xml:lang="en">
+      Het beroemde 'MyNews' voorbeeld, nu als een component.
+    </description>
+    <head jsp="head.jspx" />
+    <body jsp="magazine.jspx">
+      <param name="mag" type="org.mmbase.bridge.Node" />
+    </body>
+  </block>
+
+  <block name="article"
+         classification="mynews"
+         mimetype="text/html">
+    <title xml:lang="en">MyNews article</title>
+    <title xml:lang="nl">MyNews artikel</title>
+    <head jsp="head.jspx" />
+    <body jsp="article.jspx">
+      <param name="n" type="org.mmbase.bridge.Node" />
+    </body>
+  </block>
+
+  <!-- blocks for mmbase.org website -->
+  <block name="list"
+         classification="mynews"
+         mimetype="text/html">
+    <title xml:lang="en">List with articles</title>
+    <title xml:lang="nl">Lijst met artikelen</title>
+    <body jsp="list.jspx">
+      <param name="mag"   type="org.mmbase.bridge.Node" />
+      <param name="max"   type="java.lang.Integer" />
+      <param name="offset" type="java.lang.Integer" />
+      <param name="more"   type="java.lang.Boolean" />
+    </body>
+  </block>
+
+  <block name="news"
+         classification="mynews"
+         mimetype="text/html">
+    <title xml:lang="en">Article</title>
+    <title xml:lang="nl">Artikel</title>
+    <body jsp="news.jspx">
+      <param name="n"   type="org.mmbase.bridge.Node" />
+      <param name="mag" type="org.mmbase.bridge.Node" />
+    </body>
+  </block>
+
+</component>

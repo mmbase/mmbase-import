@@ -1,0 +1,46 @@
+.mm_docbook .surname { font-weight: bold; }
+
+.mm_docbook li p { margin-bottom: 0.4em; }
+
+.mm_docbook di
+{
+	display: block;
+	margin-bottom: 1ex;
+	padding: 1ex;
+}
+
+.mm_docbook di dt
+{
+	font-weight: bold;
+	font-size: 1.2em;
+	border-bottom: 1px solid #aaa;
+	padding: 0 0 2px 2px;
+}
+
+.mm_docbook di dd { 
+    -webkit-margin-start: 0;
+    -moz-margin-start: 0;
+    margin-left: 0;
+}
+
+.mm_docbook .seealso
+{
+	font-style: italic;
+	margin-bottom: 0;
+	margin-top: 0;
+}
+
+.mm_docbook div#glossary h2
+{
+	margin-top: 1em;
+	font-size: 1.1em;
+}
+
+
+.mm_docbook .name { font-style: italic; }
+.mm_docbook pre
+{
+	background-color: #ddd;
+	overflow: auto;
+	padding: 3px;
+}

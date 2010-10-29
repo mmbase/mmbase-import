@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="notifications"
+    version="0"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component
+                        http://www.mmbase.org/xmlns/component.xsd">
+
+  <description xml:lang="en">MMBase Notifications</description>
+  <description xml:lang="nl">MMBase Notificaties</description>
+
+
+  <block name="notifications-documentation"
+         classification="mmbase.documentation"
+         mimetype="text/html">
+    <title xml:lang="en">Notifications</title>
+    <title xml:lang="nl">Notificaties</title>
+    <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
+    <body>
+      <class name="org.mmbase.framework.DocumentationRenderer">
+        <param name="docbook">notifications.xml</param>
+        <param name="module">applications/notifications/documentation</param>
+        <param name="includeRenderTime">xml-comments</param>
+      </class>
+    </body>
+  </block>
+
+
+</component>

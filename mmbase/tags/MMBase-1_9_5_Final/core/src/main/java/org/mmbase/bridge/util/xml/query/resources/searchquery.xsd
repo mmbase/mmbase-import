@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   targetNamespace="http://www.mmbase.org/xmlns/searchquery"
+   xmlns="http://www.mmbase.org/xmlns/searchquery"
+   version="1.0">
+  <!--
+      Version: $Id: searchquery.xsd,v 1.7 2009-03-04 13:36:22 michiel Exp $
+  -->
+    <xsd:annotation>
+      <xsd:documentation>
+        This scheme defines a xml for the description of MMBase search queries.
+        The scheme can be embedded (imported) in other schemas, which can then override elements or types and add expansions or restrictions where needed.
+        Xml that follows this schema can be passed to the org.mmbase.bridge.util.xml.query.XMLQueryParser class to create a MMBase SearchQuery object.
+        The format of the xml is similar to the format used by the MMBase taglibs.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType name="SearchQuery">
+      <xsd:sequence >
+        <xsd:group ref="queryelements" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string" />
+      <xsd:attribute name="type" type="xsd:string"/>
+      <xsd:attribute name="path" type="xsd:string"/>
+      <xsd:attribute name="fields" type="xsd:string"/>
+      <xsd:attribute name="element" type="xsd:string"/>
+      <xsd:attribute name="searchdirs" type="xsd:string"/>
+      <xsd:attribute name="startnodes" type="xsd:string"/>
+    </xsd:complexType>
+
+    <xsd:group name="queryelements">
+      <xsd:choice>
+        <xsd:group   ref="constraints" />
+        <xsd:element ref="maxnumber"/>
+        <xsd:element ref="offset"/>
+        <xsd:element ref="field"/>
+        <xsd:element ref="distinct"/>
+        <xsd:element ref="sortorder"/>
+      </xsd:choice>
+    </xsd:group>
+
+    <xsd:complexType name="Constraint">
+      <xsd:complexContent>
+        <xsd:extension base="BaseConstraint">
+          <xsd:attribute name="value" type="xsd:string"/>
+          <xsd:attribute name="operator" type="type_operator" default="equal"/>
+          <xsd:attribute name="field2" type="xsd:string"/>
+          <xsd:attribute name="value2" type="xsd:string"/>
+          <xsd:attribute name="part" type="type_part"/>
+          <xsd:attribute name="casesensitive" type="xsd:boolean"/>
+          <xsd:attribute name="field" type="xsd:string" use="required"/>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Field">
+      <xsd:attribute name="name" type="xsd:token" use="required"/>
+      <xsd:attribute name="optional" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="Limiter">
+      <xsd:attribute name="value" type="xsd:unsignedLong"/>
+    </xsd:complexType>
+
+    <xsd:simpleType name="type_operator">
+      <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="less"/>
+        <xsd:enumeration value="less_equal"/>
+        <xsd:enumeration value="equal"/>
+        <xsd:enumeration value="greater"/>
+        <xsd:enumeration value="greater_equal"/>
+        <xsd:enumeration value="like"/>
+        <xsd:enumeration value="between"/>
+        <xsd:enumeration value="in"/>
+        <xsd:enumeration value="lt"/>
+        <xsd:enumeration value="le"/>
+        <xsd:enumeration value="eq"/>
+        <xsd:enumeration value="gt"/>
+        <xsd:enumeration value="ge"/>
+        <xsd:enumeration value="null"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:element name="constraint" type="Constraint"/>
+    <xsd:element name="query" type="SearchQuery"/>
+    <xsd:element name="maxnumber" type="Limiter"/>
+    <xsd:element name="offset" type="Limiter"/>
+    <xsd:element name="field" type="Field"/>
+
+    <xsd:simpleType name="type_part">
+      <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="second"/>
+        <xsd:enumeration value="minute"/>
+        <xsd:enumeration value="hour"/>
+        <xsd:enumeration value="day"/>
+        <xsd:enumeration value="dayofweek"/>
+        <xsd:enumeration value="dayofmonth"/>
+        <xsd:enumeration value="dayofyear"/>
+        <xsd:enumeration value="week"/>
+        <xsd:enumeration value="month"/>
+        <xsd:enumeration value="quarter"/>
+        <xsd:enumeration value="year"/>
+        <xsd:enumeration value="century"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:element name="ageconstraint" type="AgeConstraint"/>
+
+    <xsd:complexType name="AgeConstraint">
+      <xsd:complexContent>
+        <xsd:extension base="BaseConstraint">
+          <xsd:attribute name="field" type="xsd:string"/>
+          <xsd:attribute name="element" type="xsd:string"/>
+          <xsd:attribute name="minage" type="xsd:unsignedLong"/>
+          <xsd:attribute name="maxage" type="xsd:unsignedLong"/>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="BaseConstraint">
+      <xsd:attribute name="inverse" type="xsd:boolean" use="optional" default="false"/>
+    </xsd:complexType>
+
+    <xsd:group name="constraints">
+      <xsd:choice>
+        <xsd:element ref="constraint"/>
+        <xsd:element ref="ageconstraint"/>
+        <xsd:element ref="aliasconstraint"/>
+        <xsd:element ref="typeconstraint"/>
+        <xsd:element ref="compositeconstraint"/>
+      </xsd:choice>
+    </xsd:group>
+
+    <xsd:element name="aliasconstraint" type="AliasConstraint"/>
+    <xsd:element name="typeconstraint" type="TypeConstraint"/>
+    <xsd:element name="compositeconstraint" type="CompositeConstraint"/>
+    <xsd:complexType name="CompositeConstraint">
+      <xsd:complexContent>
+        <xsd:extension base="BaseConstraint">
+          <xsd:sequence minOccurs="2" maxOccurs="unbounded">
+            <xsd:group ref="constraints"></xsd:group>
+          </xsd:sequence>
+          <xsd:attribute name="operator" type="type_logical_operator"/>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="type_logical_operator">
+      <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="and"/>
+        <xsd:enumeration value="or"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="AliasConstraint">
+      <xsd:complexContent>
+        <xsd:extension base="BaseConstraint">
+          <xsd:sequence></xsd:sequence>
+          <xsd:attribute name="element" type="xsd:string"/>
+          <xsd:attribute name="name" type="xsd:string" use="required"/>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="TypeConstraint">
+      <xsd:complexContent>
+        <xsd:extension base="BaseConstraint">
+          <xsd:sequence></xsd:sequence>
+          <xsd:attribute name="name" type="xsd:string" use="required"/>
+          <xsd:attribute name="element" type="xsd:string"/>
+          <xsd:attribute name="descendants" type="xsd:boolean" default="false"/>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:element name="distinct" type="Distinct"/>
+    <xsd:element name="sortorder" type="SortOrder"/>
+
+    <xsd:complexType name="Distinct">
+      <xsd:attribute name="value" type="xsd:boolean" default="true"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="SortOrder">
+      <xsd:attribute name="field" type="xsd:string" use="required"/>
+      <xsd:attribute name="direction" type="type_direction" default="up"/>
+    </xsd:complexType>
+
+    <xsd:simpleType name="type_direction">
+      <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="up" />
+        <xsd:enumeration value="down" />
+      </xsd:restriction>
+    </xsd:simpleType>
+
+</xsd:schema>

@@ -1,0 +1,109 @@
+<mm:content
+    type="application/xhtml+xml" language="client" expires="0" postprocessor="none" jspvar="locale"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-im="urn:jsptagdir:/WEB-INF/tags/mm/images"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:directive.page session="true" import="java.util.*" buffer="200kb" />
+  <jsp:output doctype-root-element="html"
+              doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
+              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+
+  <html lang="${locale}" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+      <jsp:directive.include file="head.jspx" />
+      <script type="text/javascript" src="crop/image_cropper.js">
+      </script>
+      <style type="text/css">
+        #imgJSselbox{
+        position: absolute;
+            margin: 0px;
+            padding: 0px;
+            visibility: hidden;
+            width: 0px;
+            height: 0px;
+            border: 1px solid #006;
+            color: #fff;
+            background-image: url(crop/selection_area.gif);
+            z-index: 20;
+        }
+        img {
+         border: 0 0 0 0;
+         margin: 0 0 0 0;
+         padding: 0 0 0 0;
+        }
+        body.basic {
+         border: 0 0 0 0;
+         margin: 0 0 0 0;
+         padding: 0 0 0 0;
+        }
+    </style>
+
+    </head>
+    <body class="basic">
+      <div id="imgJSselbox"> </div>
+      <jsp:scriptlet>
+        Map&lt;String, String&gt; transformations = (Map) session.getAttribute("transformations");
+        if (transformations == null) {
+          transformations = new HashMap();
+          session.setAttribute("transformations", transformations);
+        }
+      </jsp:scriptlet>
+      <mm:import externid="file" required="true" />
+      <mm:import externid="import" />
+      <mm:present referid="import">
+        <mm:import externid="template" />
+        template=${template}${! empty template and ! empty transformations[file] ? '+' : ''}${transformations[file]}
+        <mm-im:import  file="${file}" template="${template}${! empty template and ! empty transformations[file] ? '+' : ''}${transformations[file]}">
+          Imported. 
+          <mm:node id="newimage" notfound="skip">
+            <mm:fieldlist fields="handle" id="handle" />
+            <mm:fieldlist  type="edit" remove="handle" >
+              <mm:fieldinfo type="useinput" />
+            </mm:fieldlist>
+            <mm:field name="filesize" />
+          </mm:node>
+          <!--
+          <mm:redirect page="/mmbase/edit/x/change.jspx" referids="newimage@node">
+            <mm:param name="back"><mm:url absolute="context" page="." /></mm:param>
+          </mm:redirect>
+          -->
+        </mm-im:import>
+      </mm:present>
+      <mm-im:thumb file="${file}" mode="url">
+        <script type="text/javascript">
+          var totalx = ${dimension.width};
+          var totaly = ${dimension.height};
+        </script>
+      </mm-im:thumb>
+      <mm-im:thumb  file="${file}" id="image"
+                    onclick="getImageCropSelectionPoint('image', event);
+                             document.getElementById('template').value = x1 == -1 ? '' :  ('part(' + Math.round(xfactor * x1) + 'x' + Math.round(yfactor * y1) + 'x' + Math.round(xfactor * x2) + 'x' + Math.round(yfactor * y2) +')');"
+                    template="s(800x800&gt;)+s(50x50&lt;)${! empty transformations[file] ? '+' : ''}${transformations[file]}" lifetime="1 year">
+        <script type="text/javascript">
+          var xfactor = ${dimension.width} / totalx;
+          var yfactor = ${dimension.height} / totaly;
+        </script>
+      </mm-im:thumb>
+      <form action="image.jspx">
+        <p>Template: <input id="template" name="template" value="" /></p>
+        <input name="file" value="${file}" type="hidden" />
+        <mm:cloud>
+          <mm:fieldlist nodetype="images" fields="handle" id="handle" />
+          <mm:fieldlist nodetype="images" type="edit" remove="handle" >
+            <p><mm:fieldinfo type="guiname" />: <mm:fieldinfo type="input" /></p>
+          </mm:fieldlist>
+        </mm:cloud>
+        <input type="submit" name="import" value="IMPORT"/>
+      </form>
+      <hr />
+      <mm:cloud method="asis">
+        <mm:cloudinfo type="user" />
+      </mm:cloud>
+      <a href=".#${file}">
+        BACK
+      </a>
+    </body>
+  </html>
+</mm:content>

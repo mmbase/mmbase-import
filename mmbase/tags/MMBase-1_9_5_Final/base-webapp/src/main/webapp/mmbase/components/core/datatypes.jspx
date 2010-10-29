@@ -1,0 +1,103 @@
+<mm:content
+    type="application/xml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.page import="org.mmbase.datatypes.*,java.util.*" />
+  <mm:cloud rank="administrator">
+  <div
+      class="mm_c c_core b_datatypes ${requestScope.className}"
+      id="${requestScope['org.mmbase.componentId']}">
+
+      <table>
+        <mm:cloud>
+          <mm:import externid="nodemanager">object</mm:import>
+          <mm:import externid="field">otype</mm:import>
+
+          <tr>
+            <th>
+              Datatype of Field
+              <form method="post">
+                <select name="field"
+                        onchange="document.getElementById('fielddatatype').href='test.jspx?field=' + this.value + '&amp;amp;nodemanager=${nodemanager}';">
+                  <mm:fieldlist type="all" jspvar="fieldvar" nodetype="$nodemanager">
+                    <c:choose>
+                      <c:when test="${field eq fieldvar.name}">
+                        <option value="${fieldvar.name}" selected="selected">${fieldvar.name}</option>
+                      </c:when>
+                      <c:otherwise>
+                        <option value="${fieldvar.name}">${fieldvar.name}</option>
+                      </c:otherwise>
+                    </c:choose>
+                  </mm:fieldlist>
+                </select>
+                of nodemanager
+                <select name="nodemanager" onchange="this.form.submit();">
+                <mm:listnodes type="typedef" comparator="NATURAL">
+                  <mm:hasnodemanager name="${_node.name}">
+                    <c:choose>
+                      <c:when test="${nodemanager eq _node.name}">
+                        <option value="${_node.name}" selected="selected"><mm:nodeinfo type="gui" /></option>
+                      </c:when>
+                      <c:otherwise>
+                        <option value="${_node.name}" ><mm:nodeinfo type="gui" /></option>
+                      </c:otherwise>
+                    </c:choose>
+                  </mm:hasnodemanager>
+                </mm:listnodes>
+              </select>
+              </form>
+            </th>
+            <td>
+              <mm:link page="datatype" referids="nodemanager,field">
+                <a id="fielddatatype" href="${_}" class="navigate">
+                  <img alt="global datatype" src="${next}" />
+                </a>
+              </mm:link>
+            </td>
+          </tr>
+        </mm:cloud>
+      <jsp:scriptlet>
+
+        Set list = new TreeSet(DataTypes.getSystemCollector().getDataTypes().keySet());
+        Iterator i = list.iterator();
+        while (i.hasNext()) {
+           String key = (String) i.next();
+           DataType dataType = DataTypes.getSystemCollector().getDataType(key);
+      </jsp:scriptlet>
+      <tr>
+        <td>
+          <jsp:expression>key</jsp:expression>
+        </td>
+        <td>
+          <mm:link page="/mmbase/validation/datatype.jspx">
+            <mm:param name="datatype"><jsp:expression>key</jsp:expression></mm:param>
+            <a href="${_}" class="navigate">
+              <img src="${next}" alt="see" class="navigate" />
+            </a>
+          </mm:link>
+        </td>
+        <td>
+          <mm:link page="datatype">
+            <mm:param name="datatype"><jsp:expression>key</jsp:expression></mm:param>
+            <a href="${_}" class="navigate">
+              <img src="${next}" alt="test" class="navigate" />
+            </a>
+          </mm:link>
+        </td>
+        <td>
+          <jsp:expression>dataType.getDescription(Locale.US)</jsp:expression>
+        </td>
+      </tr>
+      <jsp:scriptlet>}</jsp:scriptlet>
+      </table>
+
+
+  </div>
+  </mm:cloud>
+</mm:content>
+

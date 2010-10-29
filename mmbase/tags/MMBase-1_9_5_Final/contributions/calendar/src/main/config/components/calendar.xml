@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="calendar"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+  <class name="org.mmbase.framework.BasicComponent">
+    
+  </class>
+  <description xml:lang="nl">Tools voor agenda's</description>
+  <description xml:lang="en">Tools for a calendar</description>
+  <!--
+      No dependencies.
+  -->
+
+
+  <block name="months" mimetype="text/html">
+    <head jsp="/calendar/head.jspx" />
+    <body jsp="/calendar/index.jspx">
+    </body>
+  </block>
+
+</component>

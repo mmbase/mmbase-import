@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<field
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="version" state="system">
+  <gui>
+    <guiname xml:lang="nl">Versie</guiname>
+    <guiname xml:lang="en">Version</guiname>
+  </gui>
+  <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="integer">
+    <default value="0" />
+    <commitprocessor>
+      <class name="org.mmbase.versioning.VersioningCommitProcessor">
+        <param name="statusField">status</param>
+      </class>
+      <class name="org.mmbase.versioning.IdRelVersioningCommitProcessor">
+        <param name="fields">body</param>
+      </class>
+    </commitprocessor>
+  </datatype>
+</field>

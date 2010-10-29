@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="Calendar" maintainer="mmbase.org" version="4" auto-deploy="true">
+
+  <neededbuilderlist>
+    <builder maintainer="mmbase.org" version="0">calendar_items</builder>
+    <builder maintainer="mmbase.org" version="0">special_days</builder>
+  </neededbuilderlist>
+
+  <neededreldeflist>
+  </neededreldeflist>
+
+  <allowedrelationlist>
+  </allowedrelationlist>
+
+  <datasourcelist>
+    <datasource builder="calendar_items" path="Calendar/calendar_items.xml" />
+    <datasource builder="special_days" path="Calendar/special_days.xml" />
+  </datasourcelist>
+
+  <relationsourcelist />
+
+  <contextsourcelist />
+
+  <description />
+
+  <install-notice/>
+
+</application>

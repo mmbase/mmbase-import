@@ -1,0 +1,35 @@
+<!-- Include file for the editwizard reference docbook: 
+     '$pos' variable
+-->
+<section id="pos">
+	<title>{$pos}</title>
+	<formalpara>
+		<title>Usage</title>
+		<para>The $pos variable identifies the index of an object in a list of objects returned by the search command.</para>
+	</formalpara>
+	<para>The list of objects is inserted at the end of the list that called the search command. Some relations have fields whose values are initialized by the wizard a they are inserted. In a few cases, the value inserted may be calculated based on values of the current list.	For instance, the pos field of a posrel relation will often need to be filled with a sequentially increasing number.
+	This can be done by including an xpath in the field tag of the relation's create action. For the posrel field, this can be:
+	</para>
+	<para><programlisting format="linespecific"><![CDATA[
+<action type="create">
+	<relation role="posrel" type="news">
+		<field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and object/@type='news']/field[@name='pos'])+1}</field>
+	</relation>
+</action
+]]></programlisting></para>	
+	<para>
+	Which gets the highest number in the original list, and increases it by 1. (Note how we use 'sum' so we get a value of 0 if there are no items in the list)</para>
+	<para>However, this code will not always do what we want: if a search result returns more than one object, all the pos fields are assigned the same number (as the xpath runs on the original data).</para>
+	<para>In that case, you can make use of the $pos variable. The $pos variable, on creating a relation to a searched object, contains the index of that object in the resultlist, starting with 0 for the first item in the list. Including the $pos variable in the xpath gives:
+	</para>
+	<para><programlisting format="linespecific"><![CDATA[
+<action type="create">
+	<relation role="posrel" type="news">
+		<field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and object/@type='news']/field[@name='pos'])+{$pos}}</field>
+	</relation>
+</action
+]]></programlisting></para>	
+	<para>This creates a value that is equal to the highest number in the original list, increased by the object's index in the list + 1. The result is that the 'pos' fields of each new relation are guaranteed to be uniquely numbered (and all higher than the original highest number).</para>
+	<para>Note that this manner of initializing fields only really works when combining it with sorted lists.</para>
+</section>
+

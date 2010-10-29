@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE logging PUBLIC "-//MMBase//DTD logging config 1.0//EN" "http://www.mmbase.org/dtd/logging_1_0.dtd">
+<logging>
+  <!--
+  <class>org.mmbase.util.logging.SimpleImpl</class>
+  <configuration>warn,stdout</configuration>
+  -->
+  <!-- if errors get logged, you may want to have linenumber information.-->
+  <class>org.mmbase.util.logging.log4j.Log4jImpl</class>
+  <configuration>log4j.xml</configuration>
+</logging>

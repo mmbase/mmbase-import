@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<mm-sre:html
+    prefetch="people,urls,images"
+    title="Nested"
+    xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+
+
+  <div id="test">
+  </div>
+
+  <!--
+  <script type="text/javascript">
+    $(document).ready(function() {
+    console.log("Testing sortable on new thing");
+    var t = "<ol><li>a</li><li>b</li></ol>";
+     var a = $(t);
+     $("#test").append(a);
+     a.sortable();
+    });
+  </script>
+  -->
+
+  <mm-sre:form>
+    <h2><mm:field name="title" /></h2>
+
+    <mm-sr:relatednodes
+        idvar="rid"
+        type="news"
+        role="posrel"
+        item="news-item.jspx"
+        delete="true"
+        search="true"
+        sortable="true"
+        max="6"
+        >
+      <h3 class="debug">${rid}</h3>
+    </mm-sr:relatednodes>
+  </mm-sre:form>
+
+  <hr />
+  <mm:escape escape="links">$URL$</mm:escape>
+</mm-sre:html>

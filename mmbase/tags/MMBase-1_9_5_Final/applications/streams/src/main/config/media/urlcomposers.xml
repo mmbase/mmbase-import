@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE urlcomposers SYSTEM "http://www.mmbase.org/dtd/urlcomposers_1_0.dtd">
+<urlcomposers>
+  <default>org.mmbase.applications.media.urlcomposers.URLComposer</default>
+
+  <urlcomposer format="*">org.mmbase.applications.media.urlcomposers.URLComposer</urlcomposer>
+
+  <urlcomposer mimetype="image/*"
+               format="*"
+               protocol="http" class="org.mmbase.streams.urlcomposers.ImagesURLComposer">
+    <param name="template">colorspace(Gray)</param>
+    <param name="description">black/white</param>
+  </urlcomposer>
+
+  <urlcomposer mimetype="image/*"
+               format="*"
+               protocol="http" class="org.mmbase.streams.urlcomposers.ImagesURLComposer">
+    <param name="template">f(png)</param>
+    <param name="description">Original size but as png</param>
+  </urlcomposer>
+
+</urlcomposers>

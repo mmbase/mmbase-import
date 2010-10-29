@@ -1,0 +1,33 @@
+<jsp:root
+    version="2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <mm:hasnode number="$n">
+    <mm:node referid="n" id="n" commitonclose="false" />
+    <try>${parameters.source} -${parameters.role} - ${n}</try>
+    <mm:node id="source" referid="parameters.source" commitonclose="false">
+      <mm:listrelationscontainer
+          type="object"
+          searchdir="${parameters.searchdirs}"
+          role="${parameters.role}"
+          id="ul">
+        <mm:constraint field="object.number" value="${n}" />
+        <mm:maxnumber value="1" />
+        <mm:size>
+          <c:if test="${_ eq 0}">
+            <notfound>${parameters.source} -${parameters.role}- ${n}</notfound>
+          </c:if>
+        </mm:size>
+        <mm:listrelations usetransaction="true">
+          <jsp:text>Deleting <mm:nodeinfo type="gui" /></jsp:text>
+          <mm:deletenode />
+        </mm:listrelations>
+      </mm:listrelationscontainer>
+    </mm:node>
+  </mm:hasnode>
+  <mm:hasnode number="$n" inverse="true">
+    <notfound>${n}</notfound>
+  </mm:hasnode>
+</jsp:root>
