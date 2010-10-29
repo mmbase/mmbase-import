@@ -40,7 +40,7 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
         return Integer.MAX_VALUE;
     }
 
-    private static final Pattern NORESIZE   = Pattern.compile("\\s*Resize: ([0-9]+)x([0-9]+).*");
+    private static final Pattern NORESIZE = Pattern.compile("\\s*Resize: ([0-9]+)x([0-9]+).*");
     private static final Pattern RESIZE   = Pattern.compile("\\s*Resize: ([0-9]+)x([0-9]+) => ([0-9]+)x([0-9]+).*");
     private static final Pattern PROGRESS = Pattern.compile("\\s*(.*?) audio: ([0-9]+)kbps video: ([0-9]+)kbps, time remaining: .*");
 
@@ -69,14 +69,14 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
                 length = source.getLongValue("length");
                 return;
             }
-    
+
             if (util.audio(l, source, des)) {
                 util.setUpdateDestination(true);
                 util.audio(l, source, des);
                 util.setUpdateDestination(false);
                 return;
             }
-
+            
             {
                 Matcher m = RESIZE.matcher(l);
                 if (m.matches()) {

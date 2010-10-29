@@ -260,20 +260,6 @@ public class MediaFragments extends MMObjectBuilder {
         }
         return urls;
     }
-    {
-        addFunction(new NodeFunction<List<URLWrapper>>("urls_wrapped", URLS_PARAMETERS) {
-                @Override
-                public List<URLWrapper> getFunctionValue(Node node, Parameters params) {
-                    List<URLWrapper> result = new ArrayList<URLWrapper>();
-                    MMObjectNode mm = MediaFragments.this.getNode(node.getNumber());
-                    List<URLComposer> list = getURLs(mm, translateURLArguments(params, null), null, null);
-                    for (URLComposer uc :list) {
-                        result.add(new URLWrapper(uc));
-                    }
-                    return result;
-                };
-            });
-    }
 
     {
         addFunction(new NodeFunction<List<URLWrapper>>("urls_wrapped", URLS_PARAMETERS) {

@@ -20,8 +20,8 @@
 
     <mm:import id="pagesize" vartype="integer">50</mm:import>
     <mm:import externid="type">mediafragments</mm:import>
-
-  <table summary="my fragments">
+    
+    <table summary="my fragments">
       <caption>Recent mediafragments of <mm:cloudinfo type="user" id="currentuser" /></caption>
       <tr>
         <th>#</th>
@@ -31,12 +31,12 @@
         <th>sourcenode, builder</th>
         <th>action</th>
       </tr>
-    <mm:listnodescontainer type="mediafragments">
-      <mm:constraint field="owner" value="${requestScope['org.mmbase.cloud'].user.ownerField}" />
-      <mm:maxnumber value="100" />
-      <jsp:directive.include file="fragment.trs.jspx" />
-    </mm:listnodescontainer>
-  </table>
-
+      <mm:listnodescontainer type="mediafragments">
+        <mm:constraint field="owner" value="${requestScope['org.mmbase.cloud'].user.ownerField}" />
+        <mm:maxnumber value="100" />
+        <jsp:directive.include file="fragment.trs.jspx" />
+      </mm:listnodescontainer>
+    </table>
+  
   </mm:cloud>
 </div>

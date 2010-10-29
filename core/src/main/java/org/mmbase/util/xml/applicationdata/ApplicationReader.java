@@ -53,10 +53,6 @@ public class ApplicationReader extends org.mmbase.util.xml.DocumentReader {
         EntityResolver.registerPublicID(PUBLIC_ID_APPLICATION_1_0_FAULT, DTD_APPLICATION_1_0, ApplicationReader.class);
     }
 
-    static {
-        registerPublicIDs();
-    }
-
     private Element root;
 
     public ApplicationReader(org.xml.sax.InputSource is) {

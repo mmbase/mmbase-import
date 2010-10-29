@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
 import org.mmbase.security.*;
-import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.module.core.*;
 import java.util.*;
 import org.mmbase.util.logging.*;
@@ -270,11 +269,6 @@ public abstract class BasicCloudContext implements CloudContext {
             }
         }
         return this;
-    }
-
-
-    public SearchQueryHandler getSearchQueryHandler() {
-        return mmb.getSearchQueryHandler();
     }
 
 

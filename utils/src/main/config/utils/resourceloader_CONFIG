@@ -1,6 +1,0 @@
-200:org.mmbase.util.ResourceLoader$ApplicationContextFileURLStreamHandlerFactory
-300:org.mmbase.util.ResourceLoader$MMBaseConfigSettingFileURLStreamHandlerFactory
-400:org.mmbase.util.ResourceLoader$ConfigServletResourceURLStreamHandlerFactory
-500:org.mmbase.util.ResourceLoader$ClassesFileURLStreamHandlerFactory
-600:org.mmbase.util.ResourceLoader$ConfigClassLoaderURLStreamHandlerFactory
-700:org.mmbase.util.ResourceLoader$FullyClassifiedClassLoaderURLStreamHandlerFactory

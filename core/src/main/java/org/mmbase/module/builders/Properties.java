@@ -190,7 +190,7 @@ public class Properties extends MMObjectBuilder {
                 MMObjectNode propNode = getNode(event.getNodeNumber());
                 if (propNode != null) {
                     int parent = propNode.getIntValue("parent");
-                    if (isNodeCached(parent)) {
+                    if (isNodeCached(new Integer(parent))) {
                         log.debug("nodeChanged(): Zapping node properties cache for " + parent);
                         MMObjectNode pnode = getNode(parent);
                         if (pnode != null) pnode.delPropertiesCache();

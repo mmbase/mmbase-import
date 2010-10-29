@@ -34,7 +34,6 @@ public class ClusteringModule extends WatchedReloadableModule {
     /* (non-Javadoc)
      * @see org.mmbase.module.Module#init()
      */
-    @Override
     public void init() {
         // first start MMBase!
         org.mmbase.module.core.MMBase.getMMBase();
@@ -43,7 +42,7 @@ public class ClusteringModule extends WatchedReloadableModule {
         if(clusterManagerClassName != null){
             clusterManager = findInstance(clusterManagerClassName);
             EventManager.getInstance().addEventListener(clusterManager);
-        } else {
+        }else{
             log.error("Parameter 'ClusterManagerImplementation' is missing from config file. can not load clustering");
         }
 
@@ -80,7 +79,6 @@ public class ClusteringModule extends WatchedReloadableModule {
     /* (non-Javadoc)
      * @see org.mmbase.module.Module#shutdown()
      */
-    @Override
     protected void shutdown() {
         if(clusterManager != null) {
             clusterManager.shutdown();
@@ -89,7 +87,7 @@ public class ClusteringModule extends WatchedReloadableModule {
         }
     }
 
-    @Override
+
     public void reload() {
         try {
             shutdown();
@@ -104,7 +102,6 @@ public class ClusteringModule extends WatchedReloadableModule {
      */
     {
         addFunction(new AbstractFunction<Statistics>("send", Parameter.emptyArray(), new ReturnType<Statistics>(Statistics.class, "Stat-structure")) {
-                @Override
                 public Statistics getFunctionValue(Parameters arguments) {
                     return clusterManager == null ? new Statistics() : clusterManager.send;
                 }
@@ -115,7 +112,6 @@ public class ClusteringModule extends WatchedReloadableModule {
      */
     {
         addFunction(new AbstractFunction<Statistics>("receive", Parameter.emptyArray(), new ReturnType<Statistics>(Statistics.class, "Stat-structure")) {
-                @Override
                 public Statistics getFunctionValue(Parameters arguments) {
                     return clusterManager == null ? new Statistics() : clusterManager.receive;
                 }
@@ -127,7 +123,6 @@ public class ClusteringModule extends WatchedReloadableModule {
      */
     {
         addFunction(new AbstractFunction<Integer>("numbertosend", Parameter.emptyArray(), ReturnType.INTEGER) {
-                @Override
                 public Integer getFunctionValue(Parameters arguments) {
                     return new Integer(clusterManager == null ? -1 : clusterManager.nodesToSend.size());
                 }
@@ -138,7 +133,6 @@ public class ClusteringModule extends WatchedReloadableModule {
      */
     {
         addFunction(new AbstractFunction<Integer>("numbertoreceive", Parameter.emptyArray(), ReturnType.INTEGER) {
-                @Override
                 public Integer getFunctionValue(Parameters arguments) {
                     return new Integer(clusterManager == null ? -1 : clusterManager.nodesToSpawn.size());
                 }
@@ -150,7 +144,6 @@ public class ClusteringModule extends WatchedReloadableModule {
      */
     {
         addFunction(new AbstractFunction<Void>("shutdown", Parameter.emptyArray(), ReturnType.VOID) {
-                @Override
                 public Void getFunctionValue(Parameters arguments) {
                     shutdown();
                     return null;
@@ -162,7 +155,6 @@ public class ClusteringModule extends WatchedReloadableModule {
      */
     {
         addFunction(new AbstractFunction<Void>("start", Parameter.emptyArray(), ReturnType.VOID) {
-                @Override
                 public Void getFunctionValue(Parameters arguments) {
                     init();
                     return null;
@@ -174,7 +166,6 @@ public class ClusteringModule extends WatchedReloadableModule {
      */
     {
         addFunction(new AbstractFunction<Boolean>("active", Parameter.emptyArray(), ReturnType.BOOLEAN) {
-                @Override
                 public Boolean getFunctionValue(Parameters arguments) {
                     return Boolean.valueOf(clusterManager != null && clusterManager.kicker != null);
                 }
@@ -182,7 +173,6 @@ public class ClusteringModule extends WatchedReloadableModule {
     }
     {
         addFunction(new AbstractFunction<ClusterManager>("clusterManager", Parameter.emptyArray(), new ReturnType<ClusterManager>(ClusterManager.class, "cluster manager")) {
-                @Override
                 public ClusterManager getFunctionValue(Parameters arguments) {
                     return clusterManager;
                 }

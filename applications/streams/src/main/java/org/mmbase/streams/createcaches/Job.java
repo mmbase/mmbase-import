@@ -161,15 +161,15 @@ public class Job implements Iterable<Result> {
                     } else {    // use inId from config
                         if (! jobdefs.containsKey(inId)) {
                             LOG.warn("Configuration error, no such job definition with id: " + inId);
-                        continue;
-                    }
+                            continue;
+                        }
                         Result prevResult = lookup.get(inId);
-                    if (prevResult == null || ! prevResult.isReady()) {
-                        // no result possible yet.
-                        continue;
-                    }
-                    inURI = prevResult.getOut();
-                    inNode = prevResult.getDestination();
+                        if (prevResult == null || ! prevResult.isReady()) {
+                            // no result possible yet.
+                            continue;
+                        }
+                        inURI = prevResult.getOut();
+                        inNode = prevResult.getDestination();
                     
                     }
                     
@@ -441,7 +441,7 @@ public class Job implements Iterable<Result> {
                     Queries.addConstraint(q, Queries.createConstraint(q, "key", FieldCompareConstraint.EQUAL, key));
 
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug("Execute query " + q.toSql());
+                    LOG.debug("Execute query " + q.toSql());
                     }
                     NodeList nodes = caches.getList(q);
                     if (nodes.size() > 0) {

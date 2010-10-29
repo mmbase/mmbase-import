@@ -28,7 +28,6 @@ import org.mmbase.util.logging.Logging;
  */
 public class CreateNodeAction extends AbstractNodeAction {
     private static final Logger log = Logging.getLoggerInstance(CreateNodeAction.class);
-
     private String nodeType;
 
     private String nodeAsParam = "";
@@ -42,7 +41,7 @@ public class CreateNodeAction extends AbstractNodeAction {
     }
 
 
-    public final String getNodeType() {
+    public final String getNodenType() {
         return this.nodeType;
     }
 
@@ -60,13 +59,10 @@ public class CreateNodeAction extends AbstractNodeAction {
             return null;
         } else {
             if(mayCreate(nodeManager)){
-                log.service("Creating new node of type '" + nodeManager.getName() + "'");
-                Node n = nodeManager.createNode();
-                return n;
-            }  else {
-                log.info("Not allowed to create a new node of type '" +  nodeManager.getName() + "'. " + transaction);
-                return null;
+                log.info(String.format("Creating new node of type '%s'", nodeManager.getName()));
+                return nodeManager.createNode();
             }
+            return null;
         }
     }
 

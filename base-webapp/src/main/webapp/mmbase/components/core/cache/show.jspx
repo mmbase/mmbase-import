@@ -23,8 +23,7 @@
           <div class="msg">
             <mm:functioncontainer>
               <mm:param name="cache">${cache.name}</mm:param>
-              <mm:voidfunction set="caches" name="remove"  referids="key" />
-              Removed key '${deletekey}' from cache '${cache}'.
+              Removed '<mm:function set="caches" name="remove"  referids="key" />' from cache '${cache}' with key '${deletekey}'.
             </mm:functioncontainer>
           </div>
         </c:if>

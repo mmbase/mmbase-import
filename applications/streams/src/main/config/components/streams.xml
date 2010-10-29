@@ -12,10 +12,10 @@
 
   <description xml:lang="en">
     The MMBase Streams application is designed to upload, transcode and manage media:
-    video, audio and images. 
+    video, audio and images.
   </description>
   <description xml:lang="nl">
-    Met de MMBase Streams applicatie kunnen media - video, audio en afbeeldingen - 
+    Met de MMBase Streams applicatie kunnen media - video, audio en afbeeldingen -
     geuploaded, getranscodeerd en beheerd worden.
   </description>
 
@@ -31,7 +31,7 @@
   <action name="retrigger_jobs" rank="administrator">
     <description xml:lang="en">Whether you may (re)trigger jobs</description>
   </action>
-
+  
   <action name="update_sources" rank="basic user">
     <description xml:lang="en">Whether you can automatically update information stored in a stream node</description>
   </action>
@@ -60,7 +60,7 @@
       <param name="all" type="java.lang.Boolean" />
       <param name="interrupt" />
       <param name="cache" />
-      <param name="page"  type="java.lang.Integer" />
+      <param name="page" type="java.lang.Integer" />
     </body>
   </block>
 

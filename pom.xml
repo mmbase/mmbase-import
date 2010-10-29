@@ -13,18 +13,17 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
 
   <groupId>org.mmbase</groupId>
   <artifactId>mmbase-cms</artifactId>
-  <version>2.0-SNAPSHOT</version>
+  <version>1.9-SNAPSHOT</version>
   <name>MMBase</name>
 
   <packaging>pom</packaging>
 
   <properties>
     <compiler.fork>false</compiler.fork>
-    <mmbase.version.number>2.0</mmbase.version.number>
+    <mmbase.version.number>1.9</mmbase.version.number>
     <mmbase.version.postfix>-SNAPSHOT</mmbase.version.postfix>
     <mmbase.version>${mmbase.version.number}${mmbase.version.postfix}</mmbase.version>
     <!-- Cannot be project.version, because then an extension of this cannot have it's own version any more -->
-    <mmbase.repos>scp://mmbase.org/home/tomcat/downloads/</mmbase.repos>
 
     <surefire.fork.mode>once</surefire.fork.mode>
     <surefire.format>brief</surefire.format>
@@ -58,7 +57,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
   </licenses>
 
   <scm>
-    <url>https://scm.mmbase.org/mmbase/trunk</url>
+    <url>https://scm.mmbase.org/mmbase/branches/MMBase-1_9</url>
     <connection>scm:svn:${project.scm.url}</connection>
     <developerConnection>${project.scm.connection}</developerConnection>
 
@@ -265,8 +264,8 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
           <show>package</show>
           <links>
             <link>http://download.java.net/jdk7/docs/api/</link>
-            <link>http://download-llnw.oracle.com/javaee/5/api/</link>
-            <link>http://download.oracle.com/docs/cd/E17802_01/products/products/jsp/jstl/1.1/docs/api/</link>
+            <link>http://java.sun.com/javaee/5/docs/api/</link>
+            <link>http://java.sun.com/products/jsp/jstl/1.1/docs/api/</link>
             <link>http://logging.apache.org/log4j/docs/api/</link>
             <link>http://commons.apache.org/fileupload/apidocs/</link>
             <link>http://lucene.apache.org/java/2_4_1/api/</link>
@@ -551,17 +550,17 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
     <repository>
       <id>mmbase</id>
       <name>MMBase maven 2 repository</name>
-      <url>${mmbase.repos}maven2</url>
+      <url>scp://mmbase.org/home/tomcat/downloads/maven2</url>
     </repository>
     <snapshotRepository>
       <id>mmbase-snapshots</id>
       <name>MMBase Maven2 Snapshot Repository</name>
-      <url>${mmbase.repos}snapshots</url>
+      <url>scp://mmbase.org/home/tomcat/downloads/snapshots</url>
       <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
     <site>
       <id>mmbase-website</id>
-      <url>${mmbase.repos}mm2/</url>
+      <url>scp://mmbase.org/home/tomcat/downloads/mm2/</url>
     </site>
   </distributionManagement>
 
@@ -609,8 +608,6 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
         <module>maven</module>
         <module>maven-base</module>
         <module>maven-base/applications</module>
-        <module>utils</module>
-        <module>bridge</module>
         <module>core</module>
         <module>applications</module>
         <module>contributions</module>
@@ -625,10 +622,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       -->
       <modules>
         <module>maven/assembly-descriptors</module>
-        <module>utils</module>
-        <module>bridge</module>
         <module>core</module>
-
         <module>applications</module>
         <module>contributions</module>
         <module>base-webapp</module>
@@ -694,6 +688,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
           <version>${umlgraph.version}</version>
         </dependency>
       </dependencies>
+
     </profile>
 
 

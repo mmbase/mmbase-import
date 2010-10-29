@@ -98,7 +98,7 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
 
             {
                 final Field url = node.getNodeManager().getField("url");
-                final Processor cc = getCacheCreator(url);                
+                final Processor cc = getCacheCreator(url);
                 Map<String, JobDefinition> jdlist = new LinkedHashMap<String, JobDefinition>();
 
                 if (cache != null && node.getCloud().hasNode(cache.getNumber())) {
@@ -239,7 +239,7 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                 LOG.info("Added for re-transcoding id 're-cache' [" + jd + "] from existing inNode #" + in);
             
             } else if (configKeys.containsValue(key)) { // else re-transcode it based on config
-            
+
                 LOG.debug("Found for #" + cache.getNumber() + " in config: " + key);
                 
                 // get config id
@@ -260,7 +260,7 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
 
             } 
         }
-        
+
         return new_jdlist;
     }
     

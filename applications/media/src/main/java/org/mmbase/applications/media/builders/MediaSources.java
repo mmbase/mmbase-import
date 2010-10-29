@@ -501,7 +501,7 @@ public class MediaSources extends MMObjectBuilder {
         checkFields(node);
         return super.commit(node);
     }
-    
+
     @Override
     public synchronized int insert(String owner, MMObjectNode node) {
         checkFields(node);

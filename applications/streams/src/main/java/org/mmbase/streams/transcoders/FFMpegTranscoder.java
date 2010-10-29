@@ -39,7 +39,7 @@ import java.util.regex.*;
  * r (-r), audioChannels or ac (-ac), width and height (combined to -s). 
  * Others can be added as extra parameters but will be at the end of the commands parameters. See the
  * documentation for FFmpeg for more information.
- *
+ * 
  * @author Michiel Meeuwissen
  * @version $Id$
  */
@@ -156,7 +156,7 @@ public class FFMpegTranscoder extends CommandTranscoder {
             }        
         }
     }
-
+    
     @Override
     protected  String getCommand() {
         return "ffmpeg";
@@ -223,7 +223,7 @@ public class FFMpegTranscoder extends CommandTranscoder {
             args.add(async);
         }
         args.add("-y"); // overwrite
-
+        
         args.add(outFile.toString());
 
         return args.toArray(new String[args.size()]);

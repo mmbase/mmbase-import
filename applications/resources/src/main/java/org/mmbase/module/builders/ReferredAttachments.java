@@ -86,7 +86,7 @@ public class ReferredAttachments extends Attachments {
                 String fileName = getFileName(node, new StringBuilder()).toString();
                 String title;
                 if (fileName == null || fileName.equals("")) {
-                title = "[*]";
+                    title = "[*]";
                 } else {
                     title = "[" + fileName + "]";
                 }

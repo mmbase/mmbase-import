@@ -27,6 +27,7 @@
 
   <mm:form
       name="${name}" jspvar="trans">
+    <input type="hidden" name="mm_form_name" value="${requestScope['org.mmbase.cloud'].name}" />
 
     <mm:import externid="debug" />
     <mm:present referid="debug">
@@ -38,8 +39,6 @@
     </mm:present>
 
     <mm:import externid="cancel" />
-    <mm:import externid="type" />
-    <mm:import externid="config" />
 
     <mm:present referid="cancel">
       <mm:log level="info"> CANCELLING</mm:log>
@@ -57,7 +56,7 @@
 
     <input type="submit" name="submit" value="submit" />
     <jsp:text> | </jsp:text>
-    <mm:link referids="debug?,ct?,config?,type?">
+    <mm:link referids="debug?,ct?">
       <mm:param name="cancel"></mm:param>
       <a href="${_}">cancel</a>
     </mm:link>

@@ -1042,7 +1042,6 @@ public class BasicSqlHandler implements SqlHandler {
 
         // Test for at least 1 child.
         if (childs.isEmpty()) {
-            // See MMB-1919
             if ((compositeConstraint.getLogicalOperator() == CompositeConstraint.LOGICAL_AND && ! compositeConstraint.isInverse())
                 || (compositeConstraint.getLogicalOperator() == CompositeConstraint.LOGICAL_OR &&  compositeConstraint.isInverse())
                 ) {

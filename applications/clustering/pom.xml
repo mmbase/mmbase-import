@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-application-parent</artifactId>
-    <version>2.0-SNAPSHOT</version>
+    <version>1.9-SNAPSHOT</version>
   </parent>
 
   <artifactId>mmbase-clustering</artifactId>
@@ -22,31 +22,14 @@
     for communication between machines, including one which depends on the 'jgroups' software.
   </description>
 
-  <properties>
-    <jar.mainClass>org.mmbase.clustering.Converter</jar.mainClass>
-  </properties>
-
-
 
   <dependencies>
-    <!-- TODO: Remove dependency on core -->
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>jgroups</groupId>
       <artifactId>jgroups-all</artifactId>
       <version>2.2.7</version>
       <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
-
   </dependencies>
 
 </project>

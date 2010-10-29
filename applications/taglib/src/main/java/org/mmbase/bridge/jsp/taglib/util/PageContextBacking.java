@@ -46,6 +46,9 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
 
     public PageContextBacking(PageContext pc) {
         pageContext = pc;
+        if (pageContext.getRequest() == null) {
+            log.warn("PageContext " + pageContext + " has no request.", new Exception());
+        }
     }
 
     public void pushPageContext(PageContext pc) {
@@ -64,7 +67,9 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
     }
 
     public void setJspVar(PageContext pc, String jspvar, int vartype, Object value) {
-        if (jspvar == null) return;
+        if (jspvar == null) {
+            return;
+        }
         if (value == null) return;
         jspvars.add(jspvar);
         // When it doesn't, it goes ok. (at least I think that this is the difference between orion and tomcat)
@@ -172,7 +177,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
             return value;
         }
         if (pageContext.getRequest() == null) {
-            log.warn("PageContext " + pageContext + " has no request.");
+            log.debug("PageContext " + pageContext + " has no request.", new Exception());
 
             // findAttribute would throw NPE. This is no good, you shouldn't have had the
             // pageContext in the first place. Probably it was stored in a the session or so?

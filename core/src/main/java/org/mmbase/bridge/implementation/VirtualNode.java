@@ -15,7 +15,6 @@ import java.io.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
-import org.mmbase.util.BridgeCaster;
 import org.mmbase.bridge.util.*;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.module.core.VirtualBuilder;
@@ -179,7 +178,11 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         final Field field;
         public NodeAndField(Node n, String f) {
             node = n;
-            field = node.getNodeManager().getField(f);
+            if (node != null && f != null ) {
+                field = node.getNodeManager().getField(f);
+            } else {
+                field = null;
+            }
         }
 
     }
@@ -200,10 +203,10 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
                 } catch (NotFoundException nfe) {
                     // don't know when this happens, perhaps the node was deleted in the mean time?
                     log.debug(nfe.getMessage());
-                    return null;
+                    return new NodeAndField(null, fieldName);
                 }
             } else {
-                return null;
+                return new NodeAndField(null, fieldName);
             }
         } else {
             return new NodeAndField(this, fieldName);
@@ -286,7 +289,7 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         if (nodeManager.hasField(fieldName)) { // only if this is actually a field of this node-manager, otherewise it might be e.g. a request for an 'element' of a cluster node
             Field field = nodeManager.getField(fieldName);
             NodeAndField actual = getActualNodeForField(fieldName);
-            result = BridgeCaster.toNode(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_NODE).process(actual.node, actual.field, result), getCloud());
+            result = Casting.toNode(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_NODE).process(actual.node, actual.field, result), getCloud());
         }
         return result;
     }

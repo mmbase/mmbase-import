@@ -93,19 +93,11 @@ public class RmiGenerator extends AbstractClassGenerator {
             paramCounter++;
         }
 
-
         indent4();
         Type returnType = m.getGenericReturnType();
         if (!returnType.equals(Void.TYPE)) {
-            buffer.append("final ");
             appendTypeInfo(returnType,true);
-            buffer.append(" retval;\n");
-        }
-        indent4();
-        buffer.append("try {\n");
-        indent6();
-        if (!returnType.equals(Void.TYPE)) {
-            buffer.append("retval = (");
+            buffer.append(" retval = (");
             appendTypeInfo(returnType,true);
             buffer.append(")");
         }
@@ -142,13 +134,6 @@ public class RmiGenerator extends AbstractClassGenerator {
         }
         buffer.append(");\n");
 
-        indent4();
-        buffer.append("}\n");
-        indent4();
-        buffer.append("catch (RuntimeException rte) { throw rte; }\n");
-        indent4();
-        buffer.append("catch (Exception ex) { throw new RemoteException(ex.getMessage(), ex); }\n");
-
         if (!returnType.equals(Void.TYPE)) {
             indent4();
             buffer.append("return retval;\n");
@@ -174,13 +159,15 @@ public class RmiGenerator extends AbstractClassGenerator {
             Type[] typeParameters = getListIteratorTypeParameters(currentClass);
             appendListTypeParameters(typeParameters, true, false);
             isExtendingRemote = true;
-        } else {
+        }
+        else {
             if (isList(currentClass)) {
                 buffer.append(" extends RemoteBridgeList_Rmi");
                 Type[] typeParameters = getListTypeParameters(currentClass);
                 appendListTypeParameters(typeParameters, true, false);
                 isExtendingRemote = true;
-            } else {
+            }
+            else {
                 buffer.append(" extends ServerMappedObject_Rmi<");
                 buffer.append(originalName);
                 buffer.append("> ");

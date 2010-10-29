@@ -13,9 +13,9 @@ import org.mmbase.clustering.Statistics;
 
 import java.net.*;
 import java.io.*;
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
 
-import org.mmbase.util.ThreadPools;
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -34,6 +34,7 @@ public class ChangesSender implements Runnable {
 
     private final Statistics send;
 
+    /** Thread which sends the messages */
     private Thread kicker = null;
 
     /** Queue with messages to send to other MMBase instances */
@@ -59,30 +60,27 @@ public class ChangesSender implements Runnable {
      * @param send Statistics object in which to administer duration costs
      * @throws UnknownHostException when multicastHost is not found
      */
-    public ChangesSender(String multicastHost, int mport, int mTTL, BlockingQueue<byte[]> nodesToSend, Statistics send) throws UnknownHostException  {
+    ChangesSender(String multicastHost, int mport, int mTTL, BlockingQueue<byte[]> nodesToSend, Statistics send) throws UnknownHostException  {
         this.mport = mport;
         this.mTTL = mTTL;
         this.nodesToSend = nodesToSend;
         this.ia = InetAddress.getByName(multicastHost);
         this.send = send;
+        this.start();
     }
 
-    public void start() {
+    private void start() {
         if (kicker == null && ia != null) {
             try {
                 ms = new MulticastSocket();
                 ms.joinGroup(ia);
                 ms.setTimeToLive(mTTL);
             } catch(Exception e) {
-                log.error(e.getMessage(), e);
+                log.error(Logging.stackTrace(e));
             }
 
-            kicker = new Thread(ThreadPools.threadGroup, this, "MulticastSender");
-            kicker.setDaemon(true);
-            kicker.start();
-            log.trace("MulticastSender started");
-        } else {
-            log.debug("Not started");
+            kicker = MMBaseContext.startThread(this, "MulticastSender");
+            log.debug("MulticastSender started");
         }
     }
 
@@ -95,22 +93,16 @@ public class ChangesSender implements Runnable {
         }
         ms = null;
         if (kicker != null) {
-            try {
-                kicker.interrupt();
-                kicker.setPriority(Thread.MIN_PRIORITY);
-            } catch (Throwable t) {
-            }
+            kicker.interrupt();
+            kicker.setPriority(Thread.MIN_PRIORITY);
             kicker = null;
         } else {
             log.service("Cannot stop thread, because it is null");
         }
     }
-    public MulticastSocket getSocket() {
-        return ms;
-    }
 
     public void run() {
-        log.info("MultiCast sending on " + ms + " " + ia + ":" + mport);
+        log.debug("Started sending");
         while(ms != null) {
             try {
                 byte[] data = nodesToSend.take();
@@ -118,7 +110,7 @@ public class ChangesSender implements Runnable {
                 DatagramPacket dp = new DatagramPacket(data, data.length, ia, mport);
                 try {
                     if (log.isDebugEnabled()) {
-                        log.debug("multicast SEND=> " + dp.getLength() + " bytes to " + dp.getAddress() + ":" + mport);
+                        log.debug("SEND=> " + dp.getLength() + " bytes to " + dp.getAddress());
                     }
                     ms.send(dp);
                 } catch (IOException e) {

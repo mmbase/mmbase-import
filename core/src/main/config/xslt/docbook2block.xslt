@@ -277,9 +277,9 @@
             <xsl:value-of select="@fileref" />
           </xsl:when>
           <xsl:otherwise>
-        <xsl:value-of select="$baseurl" />
-        <xsl:call-template name="currentdir" />
-        <xsl:value-of select="@fileref" />
+            <xsl:value-of select="$baseurl" />
+            <xsl:call-template name="currentdir" />
+            <xsl:value-of select="@fileref" />
           </xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>

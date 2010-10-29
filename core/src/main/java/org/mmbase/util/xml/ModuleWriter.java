@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import org.mmbase.module.Module;
+import org.mmbase.util.xml.EntityResolver;
 
 import org.w3c.dom.*;
 

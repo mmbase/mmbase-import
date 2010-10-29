@@ -31,7 +31,6 @@ public class RunnableCronJob extends AbstractCronJob {
     public RunnableCronJob(Runnable run) {
         runnable = run;
     }
-    @Override
     public void run() {
         runnable.run();
     }

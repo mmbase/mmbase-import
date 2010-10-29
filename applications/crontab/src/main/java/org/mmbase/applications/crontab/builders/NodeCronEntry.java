@@ -1,10 +1,10 @@
 /*
- This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+  This software is OSI Certified Open Source Software.
+  OSI Certified is a certification mark of the Open Source Initiative.
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
- */
+  The license (Mozilla version 1.0) can be read at the MMBase site.
+  See http://www.MMBase.org/license
+*/
 package org.mmbase.applications.crontab.builders;
 
 import  org.mmbase.applications.crontab.CronEntry;
@@ -153,9 +153,8 @@ public class NodeCronEntry extends CronEntry {
     }
 
 
-
     /**
-     * Two NodeCronEntry's as considered equal if they have the same id
+     * Two CronEntrys as considered equal if they have the same id, name, classname and configuration.
      */
     @Override
     public boolean equals(Object o) {
@@ -165,5 +164,6 @@ public class NodeCronEntry extends CronEntry {
         CronEntry other = (CronEntry)o;
         return getId().equals(other.getId());
     }
+
 
 }

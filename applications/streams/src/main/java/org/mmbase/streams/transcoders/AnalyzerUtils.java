@@ -143,11 +143,11 @@ public final class AnalyzerUtils implements java.io.Serializable {
         Cloud cloud = source.getCloud();
         fixMimeType("image", source);
         if (cloud != null) {
-            if (updateSource && cloud.hasNodeManager(IMAGE) 
+            if (updateSource && cloud.hasNodeManager(IMAGE)
                     && ! source.getNodeManager().getName().equals(IMAGE)) {
-            if (log.isDebugEnabled()) {
-                log.debug("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
-            }
+                if (log.isDebugEnabled()) {
+                    log.debug("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
+                }
                 source.setNodeManager(cloud.getNodeManager(IMAGE));
                 source.commit();
             }
@@ -249,7 +249,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
             if (! source.getNodeManager().hasField("length")) {
                 toVideo(source, dest);
             }
-            
+
             if (log.isDebugEnabled()) log.debug("duration: " + m.group(1));
             long length = getLength(m.group(1));
             if (updateSource) {
@@ -340,7 +340,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
 
     }
 
-    private static final Pattern PATTERN_DIMENSIONS = Pattern.compile(".*?\\sVideo: (.*?), (.*?), ([0-9]+)x([0-9]+).*");
+    private static final Pattern PATTERN_DIMENSIONS    = Pattern.compile(".*?\\sVideo: (.*?), (.*?), ([0-9]+)x([0-9]+).*");
     private static final Pattern VIDEOBITRATE2_PATTERN = Pattern.compile(".*?\\sVideo: .*, (.*?) kb/s.*");
     private static final Pattern VIDEOFPS_PATTERN      = Pattern.compile(".*?\\sVideo: .*, (.*?) fps.*");
 
@@ -400,7 +400,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
                     dest.setIntValue("bitrate", bitrate);
                 }
             }
-
+            
             m = VIDEOFPS_PATTERN.matcher(l);
             if (m.matches()) {
                 if (log.isDebugEnabled()) log.debug("fps: " + m.group(1));

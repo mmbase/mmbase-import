@@ -64,6 +64,7 @@
     </body>
   </block>
 
+  <!-- depends on code in test-jar.
   <block name="test_datatypes"
          classification="mmbase.test"
          mimetype="text/html">
@@ -73,7 +74,7 @@
     <body jsp="datatypes.jspx" />
   </block>
 
-
+  -->
 
 
 </component>

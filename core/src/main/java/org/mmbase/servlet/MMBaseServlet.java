@@ -202,6 +202,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
         if (! MMBaseContext.isInitialized()) {
             MMBaseContext.init(servletContext);
+            MMBaseContext.initHtmlRoot();
         }
 
         log.info("Init of servlet " + getServletName() + ".");
@@ -215,6 +216,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             // used to determine the accurate way to access a servlet
             try {
 
+                MMBaseContext.initHtmlRoot();
                 // get config and do stuff.
                 java.net.URL url;
                 try {
@@ -614,16 +616,12 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
            servletInstanceCount--;
             if (servletInstanceCount == 0) {
-                MMBaseContext.shutdown();
                 try {
                     log.info("Unloaded servlet mappings");
                     associatedServlets.clear();
                     servletMappings.clear();
                     log.info("No MMBase servlets left; modules can be shut down");
-                    MMBase mmb = (MMBase) MMBase.getModule("mmbaseroot", false);
-                    if (mmb != null) {
-                        mmb.shutdown();
-                    }
+                    MMBase.getMMBase().shutdown();
                     Module.shutdownModules();
                 } catch (Throwable t) {
                     log.error(t.getMessage(), t);

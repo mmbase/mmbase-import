@@ -1444,6 +1444,7 @@ public class BasicSqlHandlerTest extends TestCase {
                                                 query, false, false, instance);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("(1 = 1)"));
 
+
         sb.setLength(0);
         compositeConstraint.addChild(constraint2); // Add first child constraint.
         instance.appendCompositeConstraintToSql(sb, compositeConstraint,

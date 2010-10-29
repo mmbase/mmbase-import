@@ -958,7 +958,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <rtexprvalue>true</rtexprvalue>
       <info>
         Override the default escape behaviour determined by the surrounding Content-tag.
-        <document file="../resources/org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
+        <document file="org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
                   mode="escapers" />
         <p>The value can also refer to the id of an escaper tag</p>
       </info>
@@ -3831,7 +3831,7 @@ transaction was commited, following should result anything:
         <info>The description of the field (can be in other language)</info>
       </possiblevalue>
       <possiblevalue>
-        <value>dataype</value>
+        <value>datatype</value>
         <info>A String identifying the datatype of the field</info>
         <since>MMBase-1.8</since>
       </possiblevalue>
@@ -7062,7 +7062,7 @@ The 0 is just counter, which starts at 0 on every page.
         <p>
           Setting the content-type can also trigger a default `escaper' and `postprocessor'.
         </p>
-        <document file="../resources/org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
+        <document file="org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
                   mode="content" />
       </info>
     </attribute>
@@ -7137,7 +7137,7 @@ The 0 is just counter, which starts at 0 on every page.
         <p>
           The following postprocessors can be specified (besides the ones defined with mm:escaper tags).
         </p>
-        <document file="../resources/org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
+        <document file="org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
                   mode="postprocessors" />
       </info>
       <see tag="escaper" />
@@ -7159,8 +7159,9 @@ The 0 is just counter, which starts at 0 on every page.
         <p>
           The following `escapers' can be specified (besides the ones defined with mm:escaper tags):
         </p>
-        <document file="../resources/org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
-                  mode="escapers" />
+        <document
+            file="org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
+            mode="escapers" />
       </info>
       <see tag="writer" attribute="escape" />
       <see tag="function" />
@@ -7243,8 +7244,9 @@ The 0 is just counter, which starts at 0 on every page.
       <rtexprvalue>true</rtexprvalue>
       <info>
         What kind of escaper.
-        <document file="../resources/org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
-                  mode="parameterizedescapers" />
+        <document
+            file="org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
+            mode="parameterizedescapers" />
       </info>
     </attribute>
     <attribute>
@@ -9177,7 +9179,6 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>base</name>
       <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
       <name>id</name>
@@ -9187,12 +9188,10 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>nodemanager</name>
       <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
       <name>field</name>
       <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
 

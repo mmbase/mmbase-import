@@ -11,7 +11,8 @@
       @version $Id$
   -->
   <jsp:directive.tag
-      description="This is meant to be isued in an item jsp of mm-sr:relatednodes. A part of the item can be hidden with that, with a toggle button the user can click to show it. A subtag can be mm-sr:lazy" />
+      example="See /mmexamples/searchrelate"
+      description="" />
 
 
   <a class="toggle toggle_open">
