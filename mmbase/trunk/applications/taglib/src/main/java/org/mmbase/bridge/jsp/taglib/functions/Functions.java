@@ -13,6 +13,7 @@ package org.mmbase.bridge.jsp.taglib.functions;
 import org.mmbase.bridge.jsp.taglib.*;
 
 import java.util.*;
+import java.text.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.TreeHelper;
 import org.mmbase.util.*;
@@ -225,5 +226,28 @@ public class Functions {
       return ApplicationContextReader.getCachedProperties(path);
     }
 
+    /**
+     * Reformats a date and time. If a locale is needed for parsing and/or formatting, the one on the pagecontext is used.
+     *
+     * @param   datetime        which should be reformatted
+     * @param   inputformat     for example 'EE MMM dd HH:mm:ss Z yyyy' (used in twitter streams)
+     * @param   outputformat    the desired format (supports formats from mm:time)
+     * @return  a date and/or time reformatted
+     * @since MMBase-2.0
+     */
+    public static String reformatDate(String datetime, String inputformat, String outputformat) throws ParseException {
+        Locale locale;
+        try {
+            javax.servlet.jsp.PageContext pageContext = ContextReferrerTag.getThreadPageContext();
+            locale = (Locale) pageContext.getAttribute(LocaleTag.KEY, LocaleTag.SCOPE);
+        } catch (Exception e) {
+            locale = LocalizedString.getDefault();
+        }
+        SimpleDateFormat idf = (SimpleDateFormat) DateFormats.getInstance(inputformat, null, locale);
+        System.out.println("" + idf.toPattern());
 
+        DateFormat odf = DateFormats.getInstance(outputformat, null, locale);
+        Date date = idf.parse(datetime);
+        return odf.format(date);
+    }
 }
