@@ -155,7 +155,9 @@
                 </mm:isnotempty>
               </mm:compare>
 
-              <mm:include page="node.tr.jspx" attributes="status,_node@node,customizedir?,flds@fields?,editrelations?,relation?,aliases?" />
+              <mm:include page="node.tr.jspx" attributes="status,_node@node,customizedir?,flds@fields?,editrelations?,relation?,aliases?">
+                <mm:param name="nodemanager">${query.nodeManager.name}</mm:param>
+              </mm:include>
 
               <c:if test="${editrelations == true}">
                 <mm:compare referid="id" regexp="\w*current">
