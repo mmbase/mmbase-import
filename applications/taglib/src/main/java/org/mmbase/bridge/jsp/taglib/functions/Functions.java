@@ -230,22 +230,24 @@ public class Functions {
      * Reformats a date and time. If a locale is needed for parsing and/or formatting, the one on the pagecontext is used.
      *
      * @param   datetime        which should be reformatted
+     * @param   inputformat     Locale to use to use to parse the input. (en_US?)
      * @param   inputformat     for example 'EE MMM dd HH:mm:ss Z yyyy' (used in twitter streams)
      * @param   outputformat    the desired format (supports formats from mm:time)
      * @return  a date and/or time reformatted
      * @since MMBase-2.0
      */
-    public static String reformatDate(String datetime, String inputformat, String outputformat) throws ParseException {
-        Locale locale;
+    public static String reformatDate(String datetime, String inputformat, String inputlocale, String outputformat) throws ParseException {
+        Locale locale = null;
         try {
             javax.servlet.jsp.PageContext pageContext = ContextReferrerTag.getThreadPageContext();
             locale = (Locale) pageContext.getAttribute(LocaleTag.KEY, LocaleTag.SCOPE);
         } catch (Exception e) {
+        }
+        if (locale == null) {
             locale = LocalizedString.getDefault();
         }
-        SimpleDateFormat idf = (SimpleDateFormat) DateFormats.getInstance(inputformat, null, locale);
-        System.out.println("" + idf.toPattern());
-
+        Locale ilocale = inputlocale == null || inputlocale.length() == 0 ? locale : LocalizedString.getLocale(inputlocale);
+        SimpleDateFormat idf = (SimpleDateFormat) DateFormats.getInstance(inputformat, null, ilocale);
         DateFormat odf = DateFormats.getInstance(outputformat, null, locale);
         Date date = idf.parse(datetime);
         return odf.format(date);
