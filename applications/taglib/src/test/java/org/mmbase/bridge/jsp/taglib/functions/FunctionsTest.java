@@ -31,8 +31,8 @@ public  class FunctionsTest {
 
     @Test
     public void reformatDate() throws Exception {
-        assertEquals("2010-11-01", Functions.reformatDate("01/11/2010", "dd/MM/yyyy", "yyyy-MM-dd"));
-        assertEquals("2010-10-21", Functions.reformatDate("Thu Oct 21 09:58:10 +0000 2010", "EE MMM dd HH:mm:ss Z yyyy", "yyyy-MM-dd"));
+        assertEquals("2010-11-01", Functions.reformatDate("01/11/2010", "dd/MM/yyyy", "", "yyyy-MM-dd"));
+        assertEquals("2010-10-21", Functions.reformatDate("Thu Oct 21 09:58:10 +0000 2010", "EE MMM dd HH:mm:ss Z yyyy", "en_US", "yyyy-MM-dd"));
     }
 
 }
