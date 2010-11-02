@@ -354,11 +354,10 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
                 try {
                     String encoding = org.mmbase.util.GenericResponseWrapper.getXMLEncoding(body);
                     if (encoding == null) encoding = "UTF-8"; // it _must_ be XML.
-                    javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
+                    javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
                     DocumentBuilder db =  namespaceAware.getBoolean(this, true) ? documentBuilderNS : documentBuilder;
-                    doc = db.parse(new java.io.ByteArrayInputStream(body.getBytes(encoding)),
-                                   pageContext.getServletContext().getResource(request.getServletPath()).toString()
-                                   );
+                    String resource = "" + pageContext.getServletContext().getResource(request.getServletPath());
+                    doc = db.parse(new java.io.ByteArrayInputStream(body.getBytes(encoding)), resource);
                 } catch (Exception e) {
                     throw new TaglibException(e.getMessage() + "when parsing '" + body + "'", e);
                 }
