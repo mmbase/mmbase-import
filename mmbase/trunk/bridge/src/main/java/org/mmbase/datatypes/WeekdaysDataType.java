@@ -12,6 +12,7 @@ package org.mmbase.datatypes;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * An enumeration datatype representing all days of a week, so an integer with the value 1 through
@@ -34,6 +35,10 @@ public class WeekdaysDataType extends IntegerDataType {
         super(name, false);
         setMin(1, true);
         setMax(7, true);
+        // The enumeration factory should not be empty, (although we've overriden getEnumerationValue), because
+        // otherwise gui value does not work
+        // TODO, this seems a bit stupid
+        getEnumerationFactory().addBundle("org.mmbase.datatypes.resources.weekdays", null, Calendar.class, Integer.class, null);
     }
 
     @Override
