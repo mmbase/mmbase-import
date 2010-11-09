@@ -35,8 +35,13 @@ public class WeekdaysDataType extends IntegerDataType {
         super(name, false);
         setMin(1, true);
         setMax(7, true);
+        // The enumeration factory should not be empty, (although we've overriden getEnumerationValue), because
+        // otherwise gui value does not work
+        // TODO, this seems a bit stupid
+        getEnumerationFactory().addBundle("org.mmbase.datatypes.resources.weekdays", null, Calendar.class, Integer.class, null);
     }
 
+    @Override
     public Iterator<Map.Entry<Integer, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
         final Calendar cal = Calendar.getInstance(locale);
         final SortedMap<Object, String> bundle = SortedBundle.getResource("org.mmbase.datatypes.resources.weekdays", locale, null,
