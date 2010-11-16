@@ -72,7 +72,7 @@
             </goals>
             <configuration>
               <descriptors>
-                <descriptor>examples-assembly.xml</descriptor>
+                <descriptor>assemblies/examples-assembly.xml</descriptor>
               </descriptors>
             </configuration>
           </execution>
@@ -80,4 +80,18 @@
       </plugin>
     </plugins>
   </build>
+
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <name>MMBase Maven2 repository</name>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+    <repository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 snapshots repository</name>
+      <url>http://www.mmbase.org/snapshots</url>
+    </repository>
+  </repositories>
+
 </project>
