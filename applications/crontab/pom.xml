@@ -22,7 +22,6 @@
   </description>
 
   <dependencies>
-    <!-- TODO: remove dependency on core (and even bridge?) -->
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase</artifactId>
@@ -30,9 +29,19 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <name>MMBase Maven2 repository</name>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+    <repository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 snapshots repository</name>
+      <url>http://www.mmbase.org/snapshots</url>
+    </repository>
+  </repositories>
+
 </project>

@@ -19,7 +19,6 @@
     redirects to a long one.
   </description>
 
-
   <dependencies>
     <dependency>
       <groupId>org.mmbase</groupId>
@@ -28,4 +27,17 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <name>MMBase Maven2 repository</name>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+    <repository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 snapshots repository</name>
+      <url>http://www.mmbase.org/snapshots</url>
+    </repository>
+  </repositories>
 </project>

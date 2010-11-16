@@ -35,8 +35,6 @@
     well as sorting lists of related nodes. It is easy to extend the
     system your own custom actions.
   </description>
-  <repositories>
-  </repositories>
 
   <dependencies>
     <dependency>
@@ -133,8 +131,7 @@
             </goals>
             <configuration>
               <descriptors>
-                <descriptor>examples-assembly.xml
-                </descriptor>
+                <descriptor>assemblies/examples-assembly.xml</descriptor>
               </descriptors>
             </configuration>
           </execution>
@@ -144,4 +141,16 @@
 
     </plugins>
   </build>
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <name>MMBase Maven2 repository</name>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+    <repository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 snapshots repository</name>
+      <url>http://www.mmbase.org/snapshots</url>
+    </repository>
+  </repositories>
 </project>
