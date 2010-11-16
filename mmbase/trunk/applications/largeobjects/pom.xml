@@ -20,17 +20,22 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>8.3-604.jdbc3</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <name>MMBase Maven2 repository</name>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+    <repository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 snapshots repository</name>
+      <url>http://www.mmbase.org/snapshots</url>
+    </repository>
+  </repositories>
 </project>

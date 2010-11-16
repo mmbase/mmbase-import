@@ -18,7 +18,18 @@
     approach to a news site, where you can see a list of news articles and click on one to view detail information.
     In its simplicity it is a good example to see how the basic MMBase taglib works.
   </description>
-
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <name>MMBase Maven2 repository</name>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+    <repository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 snapshots repository</name>
+      <url>http://www.mmbase.org/snapshots</url>
+    </repository>
+  </repositories>
 
   <dependencies>
     <dependency>

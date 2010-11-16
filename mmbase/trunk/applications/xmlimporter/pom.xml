@@ -18,7 +18,18 @@
     The XML importer allows you to import large quantities of data into MMBase objects.
     Currently this code still depends on the SCAN application which is deprecated.
   </description>
-
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <name>MMBase Maven2 repository</name>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+    <repository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 snapshots repository</name>
+      <url>http://www.mmbase.org/snapshots</url>
+    </repository>
+  </repositories>
   <dependencies>
     <dependency>
       <groupId>org.mmbase</groupId>
