@@ -276,7 +276,7 @@ See http://www.MMBase.org/license
               <link>http://download.oracle.com/javaee/5/api/</link>
               <link>http://www.mmbase.org/api/</link>
             </links>
-            <source>1.5</source>
+            <source>1.6</source>
 
           </configuration>
         </plugin>
