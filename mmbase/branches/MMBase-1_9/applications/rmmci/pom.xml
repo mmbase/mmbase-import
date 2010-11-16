@@ -82,7 +82,7 @@
           <descriptors>
             <descriptor>assembly/client.xml</descriptor>
             <descriptor>assembly/client-skinny.xml</descriptor>
-            <descriptor>examples-assembly.xml</descriptor>
+            <descriptor>assemblies/examples-assembly.xml</descriptor>
           </descriptors>
         </configuration>
         <executions>
