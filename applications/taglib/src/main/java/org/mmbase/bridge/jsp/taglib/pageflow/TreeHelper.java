@@ -223,7 +223,7 @@ public class TreeHelper {
         for (int i = 0; i < numberTokens; i++) {
             int objectNo = objectNumbers[i];
             String field = getSmartPath("" + objectNo, pathNow, session);
-
+            log.debug("Found smartpath " + field);
             if (field == null || field.length() == 0) {
                 break;
             }
@@ -235,6 +235,9 @@ public class TreeHelper {
         //  We now have a list of paths in a stack, we must now find the best one.
         //  this means we walk the stack backwards (wow, what an amazing data-type :)
         //  We return the first path we find that != null and that contains 'page'
+        if (log.isDebugEnabled()) {
+            log.debug("Found object paths " + objectPaths);
+        }
 
         pathNow = "";
         while (!objectPaths.empty()) {
@@ -315,10 +318,11 @@ public class TreeHelper {
         params.set("loader",   ResourceLoader.getWebRoot());
         params.set("backwardsCompatible",  backwardsCompatible);
 
+        String result = (String) f.getFunctionValue(params);
         if (log.isDebugEnabled()) {
-            log.debug("Using " + params);
+            log.debug("Using " + n.getNodeManager() + " " + f + params + " -> " + result);
         }
-        return (String) f.getFunctionValue(params);
+        return result;
     }
 
     /**
