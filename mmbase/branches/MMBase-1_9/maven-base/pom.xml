@@ -155,7 +155,9 @@ See http://www.MMBase.org/license
         <plugin>
           <artifactId>maven-war-plugin</artifactId>
           <!-- this is a version of the war plugin compiled by Michiel. See http://jira.codehaus.org/browse/MWAR-205 -->
+          <!--
           <version>2.1-beta-2-20090723.092931-2</version>
+          -->
           <configuration>
             <archiveClasses>true</archiveClasses>
             <attachClasses>true</attachClasses>
@@ -258,8 +260,8 @@ See http://www.MMBase.org/license
             <quiet>true</quiet>
             <show>package</show>
             <links>
-              <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
-              <link>http://java.sun.com/javaee/5/docs/api/</link>
+              <link>http://download.oracle.com/javase/1.5.0/docs/api/</link>
+              <link>http://download.oracle.com/javaee/5/api/</link>
               <link>http://www.mmbase.org/api/</link>
             </links>
             <source>1.5</source>
@@ -281,6 +283,19 @@ See http://www.MMBase.org/license
               <systemProperty>
                 <name>com.sun.management.jmxremote</name>
                 <value>true</value>
+              </systemProperty>
+              <systemProperty>
+                <!-- Avoids the incredibly silly 'Laucher' in the windowlist of OSX -->
+                <name>java.awt.headless</name>
+                <value>true</value>
+              </systemProperty>
+              <systemProperty>
+                <!--
+                    This may not be very safe, but we use jetty only for developing
+                    See: http://communitymapbuilder.org/display/JETTY/How+to+enable+serving+aliased+files
+                -->
+                <name>org.mortbay.util.FileResource.checkAliases</name>
+                <value>false</value>
               </systemProperty>
             </systemProperties>
           </configuration>
