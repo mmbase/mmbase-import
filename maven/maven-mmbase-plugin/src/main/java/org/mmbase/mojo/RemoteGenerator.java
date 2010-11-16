@@ -82,7 +82,8 @@ public class RemoteGenerator extends AbstractMojo {
       if (arts != null) {
          ClassLoader loader = getClassLoader(arts);
          for (Artifact artifact : arts) {
-            if (artifact.getGroupId().equals("org.mmbase")) {
+            if (artifact.getGroupId().equals("org.mmbase")
+                && ! artifact.getScope().equals(Artifact.SCOPE_TEST)) {
                generateBridgeClasses(loader, artifact.getFile(), objectsToWrap, remoteDir, rmiDir, proxyDir);
             }
          }
