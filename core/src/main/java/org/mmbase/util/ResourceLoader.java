@@ -1815,7 +1815,10 @@ public class ResourceLoader extends ClassLoader {
         private  Set<String> getPaths(final Set<String> results, final Pattern pattern,  final String recursive, final boolean directories) {
             if (servletContext != null) {
                 try {
-                    final String currentRoot  = root + (root.equals("/") ? "" : "/") + ResourceLoader.this.context.getPath();
+                    String contextPath = ResourceLoader.this.context.getPath();
+                    // It seems that it should be possible without this if/else stuff.
+                    if (contextPath.startsWith("/")) contextPath = contextPath.substring(1); // MMB-1994
+                    final String currentRoot  = root + (root.equals("/") ? "" : "/") + contextPath;
                     final String resourcePath = currentRoot + (recursive == null ? "" : recursive);
                     final Collection<String> c = servletContext.getResourcePaths(resourcePath);
 
