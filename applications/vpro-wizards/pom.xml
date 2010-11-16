@@ -120,8 +120,7 @@
             </goals>
             <configuration>
               <descriptors>
-                <descriptor>examples-assembly.xml
-                </descriptor>
+                <descriptor>assemblies/examples-assembly.xml</descriptor>
               </descriptors>
             </configuration>
           </execution>
