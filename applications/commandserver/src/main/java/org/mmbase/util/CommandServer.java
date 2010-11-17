@@ -87,7 +87,9 @@ public class CommandServer {
             }
         };
 
-    final static Executor threads = new ThreadPoolExecutor(THREADS, 10 * THREADS, 5 * 60, TimeUnit.SECONDS, new  ArrayBlockingQueue<Runnable>(500), factory);
+    // direct-hand-of-executor. Resources are limited by the acceptQueue
+    final static BlockingQueue<Runnable> threadQueue = new  SynchronousQueue<Runnable>(true);
+    final static Executor threads = new ThreadPoolExecutor(6 * THREADS, Integer.MAX_VALUE, 5 * 60, TimeUnit.SECONDS, threadQueue, factory);
 
     // copy job
     public static class Copier implements Runnable {
@@ -157,7 +159,7 @@ public class CommandServer {
                 ObjectInputStream stream = new ObjectInputStream(input);
                 String[] params = (String[]) stream.readObject();
                 String[] env    = (String[]) stream.readObject();
-                System.out.println(number + " Executing " + Arrays.asList(params));
+                System.out.println(number + " Executing " + Arrays.asList(params) + " (queue " + threadQueue.size() + ")");
                 Process p = Runtime.getRuntime().exec(params, env);
                 PipedInputStream pi  = new PipedInputStream();
                 PipedOutputStream po = new PipedOutputStream(pi);
@@ -213,7 +215,7 @@ public class CommandServer {
                 if (errors != output) {
                     errors.close();
                 }
-                System.out.println(number + " ready: " + p.exitValue());
+                System.out.println(number + " ready. Exit value: " + p.exitValue());
 
 
 
@@ -245,8 +247,8 @@ public class CommandServer {
             }
             String host = args.length > 1 ? args[0] : "localhost";
             int port    = args.length == 1 ? Integer.parseInt(args[0]) : Integer.parseInt(args[1]);
-
-            final Executor socketThreads = new ThreadPoolExecutor(THREADS, THREADS, 5 * 60, TimeUnit.SECONDS, new  LinkedBlockingQueue<Runnable>(), factory);
+            BlockingQueue<Runnable> socketQueue = new  LinkedBlockingQueue<Runnable>();
+            final Executor socketThreads = new ThreadPoolExecutor(THREADS, THREADS + 100 , 5 * 60, TimeUnit.SECONDS, socketQueue, factory);
             ServerSocket server = new ServerSocket();
             SocketAddress address = new InetSocketAddress(host, port);
             server.bind(address);
@@ -270,8 +272,11 @@ public class CommandServer {
                                                       }
                                                   }
                                               });
-                System.out.println(command.number + " " + format.format(new Date()) + " " + " Connection " + accept);
+                System.out.println(command.number + " " + format.format(new Date()) + " " + " Connection " + accept + " (queue " + socketQueue.size() + " )");
                 socketThreads.execute(command);
+                System.out.println(command.number + ".");
+
+
             }
         }
 
