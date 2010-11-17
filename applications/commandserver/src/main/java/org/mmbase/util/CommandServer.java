@@ -217,8 +217,6 @@ public class CommandServer {
                 }
                 System.out.println(number + " ready. Exit value: " + p.exitValue());
 
-
-
             } catch (Exception ie) {
                 System.err.println("" + number + " " + ie.getClass().getName() + " " + ie.getMessage() + " for " + desc + " " + Arrays.asList(ie.getStackTrace()));
             } finally {
@@ -232,27 +230,36 @@ public class CommandServer {
     }
     /**
      */
-    public static void main(String[] args) throws IOException, InterruptedException {
-        if (args.length == 0) {
+    public static void main(String[] a) throws IOException, InterruptedException {
+        List<String> args = new ArrayList<String>();
+        int numberOfThreads = THREADS;
+        for (int i = 0 ; i < a.length; i++) {
+            String arg = a[i];
+            if (arg.equals("--help") || args.equals("-h") || args.equals("-?") || args.equals("--?")) {
+                System.out.println("Usage:\n");
+                System.out.println(" java -jar mmbase-commandserver.jar [[--threads <number>] [<hostname>] <portnumber>]\n");
+                System.out.println("If both arguments missing, it will listen on stdin, and produce output on stdout.");
+                return;
+            } else if (arg.equals("--threads")) {
+                numberOfThreads = Integer.parseInt(a[++i]);
+            } else {
+                args.add(arg);
+            }
+        }
+
+        if (args.size() == 0) {
             debug = false;
             Runnable run = new Command(System.in, System.out, System.err, "stdin/stdout", null);
             run.run();
-
         } else {
-            if (args[0].equals("--help") || args[0].equals("-h") || args[0].equals("-?") || args[0].equals("--?")) {
-                System.out.println("Usage:\n");
-                System.out.println(" java -jar mmbase-commandserver.jar [[<hostname>] <portnumber>]\n");
-                System.out.println("If both arguments missing, it will listen on stdin, and produce output on stdout.");
-                return;
-            }
-            String host = args.length > 1 ? args[0] : "localhost";
-            int port    = args.length == 1 ? Integer.parseInt(args[0]) : Integer.parseInt(args[1]);
+            String host = args.size() > 1 ? args.get(0) : "localhost";
+            int port    = args.size() == 1 ? Integer.parseInt(args.get(0)) : Integer.parseInt(args.get(1));
             BlockingQueue<Runnable> socketQueue = new  LinkedBlockingQueue<Runnable>();
-            final Executor socketThreads = new ThreadPoolExecutor(THREADS, THREADS + 100 , 5 * 60, TimeUnit.SECONDS, socketQueue, factory);
+            final Executor socketThreads = new ThreadPoolExecutor(numberOfThreads, numberOfThreads, 5 * 60, TimeUnit.SECONDS, socketQueue, factory);
             ServerSocket server = new ServerSocket();
             SocketAddress address = new InetSocketAddress(host, port);
             server.bind(address);
-            System.out.println("Started " + server);
+            System.out.println("Started " + server + " (using " + numberOfThreads + " threads)");
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             while (true) {
 
