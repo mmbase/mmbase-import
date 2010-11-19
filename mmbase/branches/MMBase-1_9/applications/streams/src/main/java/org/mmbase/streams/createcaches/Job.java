@@ -185,10 +185,10 @@ public class Job implements Iterable<Result> {
 
                 // mimetype: skip (?) when there is no match between current jd and inNode <- that's not right!
                 //  not all video are video/*
-                //  video/* does not match with application/x-mpegurl but should!
+                //  video/* does not match with application/x-mpegurl but should in some cases
                 MimeType inType = new MimeType(inNode.getStringValue("mimetype"));
                 if (! jd.getMimeType().matches(inType) && 
-                        (! "application".equals(inType.getType()) && ! "video".equals(jd.getMimeType().getType() )) 
+                        (! "video".equals(inType.getType()) && ! "application".equals(jd.getMimeType().getType() )) 
                     ) {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("SKIPPING " + jd);
