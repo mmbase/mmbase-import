@@ -186,8 +186,16 @@ public class Job implements Iterable<Result> {
                 // mimetype: skip (?) when there is no match between current jd and inNode <- that's not right!
                 //  not all video are video/*
                 //  video/* does not match with application/x-mpegurl but should!
-                if (! jd.getMimeType().matches(new MimeType(inNode.getStringValue("mimetype")))) {
-                    LOG.warn("No match between mimetypes (jd: " + jd.getMimeType() + " - inNode: " + inNode.getStringValue("mimetype") + ") but doing anyway: " + jd);
+                MimeType inType = new MimeType(inNode.getStringValue("mimetype"));
+                if (! jd.getMimeType().matches(inType) && 
+                        (! "application".equals(inType.getType()) && ! "video".equals(jd.getMimeType().getType() )) 
+                    ) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("SKIPPING " + jd);
+                    }
+                    results.set(i, new SkippedResult(jd, inURI));
+                    skipped++;
+                    continue;
                 }
 
                 assert inURI != null;
@@ -422,6 +430,9 @@ public class Job implements Iterable<Result> {
      * Gets and/or creates the node representing the 'cached' stream (the result of a conversion),
      * see the builder property 'org.mmbase.streams.cachestype'. It first looks if it already
      * exists, if not it creates a new one.
+     * Nota that this method uses id (source node to create cache) and key (parameters for 
+     * creation) to determine if a cache node already exists and can be re-used. If one of these
+     * is changed a new cache node is made.
      *
      * @param src   source node to create cache stream from, can be another cache
      * @param key   representation of the way the stream was created from its source, f.e. transcoding parameters
