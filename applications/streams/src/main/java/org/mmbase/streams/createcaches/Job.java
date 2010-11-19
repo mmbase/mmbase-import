@@ -187,15 +187,19 @@ public class Job implements Iterable<Result> {
                 //  not all video are video/*
                 //  video/* does not match with application/x-mpegurl but should in some cases
                 MimeType inType = new MimeType(inNode.getStringValue("mimetype"));
-                if (! jd.getMimeType().matches(inType) && 
-                        (! "video".equals(inType.getType()) && ! "application".equals(jd.getMimeType().getType() )) 
-                    ) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("SKIPPING " + jd);
+                if (! jd.getMimeType().matches(inType)) {
+                    if ( "video".equals(inType.getType()) && "application".equals(jd.getMimeType().getType()) ) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("NOT SKIPPING jd mt: " + jd.getMimeType().getType() + " in mt: " + inType.getType());
+                        }
+                    } else {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("SKIPPING " + jd);
+                        }
+                        results.set(i, new SkippedResult(jd, inURI));
+                        skipped++;
+                        continue;
                     }
-                    results.set(i, new SkippedResult(jd, inURI));
-                    skipped++;
-                    continue;
                 }
 
                 assert inURI != null;
