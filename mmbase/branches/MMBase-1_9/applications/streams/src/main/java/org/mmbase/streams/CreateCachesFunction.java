@@ -201,12 +201,15 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                 String config_key = e.getValue();
                 
                 if (! cacheKeys.containsValue(config_key)) {   // make new
-                    LOG.debug("Not found in caches: " + config_id);
+                    if (LOG.isDebugEnabled()) { 
+                        LOG.debug("Not found in caches: " + config_id + ", with: " + config_key);
+                    }
                     JobDefinition jd = jdlist.get(config_id);
                     if (!new_jdlist.containsKey(jd.getId())) {
-                        //new_jdlist.putAll( newJobDefsList(jd, jdlist, cacheKeys) );
                         
                         new_jdlist.putAll( inJobDefsList(jd, jdlist, configKeys, cacheKeys) );
+                        if (!new_jdlist.containsKey(jd.getId())) new_jdlist.put(jd.getId(), jd);
+                        
                         new_jdlist.putAll( outJobDefsList(jd, jdlist, configKeys, cacheKeys) );
                         
                         LOG.info("new_jdlist now: " + new_jdlist);
@@ -255,6 +258,8 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                 }
                 JobDefinition jd = jdlist.get(id);
                 new_jdlist.putAll( inJobDefsList(jd, jdlist, configKeys, cacheKeys) );
+                if (!new_jdlist.containsKey(jd.getId())) new_jdlist.put(id, jd);
+                
                 // check this jd if its an inId of another
                 new_jdlist.putAll( outJobDefsList(jd, jdlist, configKeys, cacheKeys) );
 
@@ -271,10 +276,10 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
      * Compares config with already cached streams, if found that node as in node for the new jobdefinition,
      * or else uses config to add a jobdefinition to create that stream.  
      *
-     * @param jobdef    job definition we need parent job definitions for
-     * @param jdlist    list with job definitions to look in
-     * @param configKeys
-     * @param cacheKeys    already existing nodes and their keys
+     * @param jobdef     job definition we need parent job definitions for
+     * @param jdlist     list with job definitions to look in
+     * @param configKeys current config id/key
+     * @param cacheKeys  already existing nodes and their keys
      * @return a new list with jobs matched against already existing nodes
      */
     private static Map<String, JobDefinition> inJobDefsList(JobDefinition jobdef, Map<String, JobDefinition> jdlist, Map<String, String> configKeys, Map<Node, String> cacheKeys) {
