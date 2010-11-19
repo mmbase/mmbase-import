@@ -128,8 +128,10 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                         list.clear();
                     }
     
-                    LOG.info("Re-transcoding "+ list.size() + " caches for source #" + node.getNumber() + ", all: " + all);
-                    if ( list.size() > 0 && ! all ) {
+                    LOG.info("Re-transcoding " + list.size() + " caches for source #" + node.getNumber() + ", all: " + all);
+                    if (all) {
+                        jdlist = cc.getConfiguration();
+                    } else if (list.size() > 0) {
                         jdlist = newJobList(node, list, cc.getConfiguration());
                     } else {
                         jdlist = cc.getConfiguration();
@@ -207,17 +209,17 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                         new_jdlist.putAll( inJobDefsList(jd, jdlist, configKeys, cacheKeys) );
                         new_jdlist.putAll( outJobDefsList(jd, jdlist, configKeys, cacheKeys) );
                         
-                        LOG.info("New config, added for transcoding id: " + config_id + ", new_jdlist now: " + new_jdlist);
+                        LOG.info("new_jdlist now: " + new_jdlist);
                     }
                 }
             }
             
             
         } else {    // just one node: do always
+            
             Node cache = list.get(0);
             String key  = cache.getStringValue("key");
-            Node inNode = cache.getNodeValue("id");
-            String in = "" + inNode.getNumber();
+            String in = cache.getStringValue("id");
             
             if (src.getCloud().hasNode(in)) {   // look if inNode (still) exists
 
@@ -256,7 +258,7 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                 // check this jd if its an inId of another
                 new_jdlist.putAll( outJobDefsList(jd, jdlist, configKeys, cacheKeys) );
 
-                LOG.info("Added for re-transcoding id: " + id + ", new_jdlist now: " + new_jdlist);
+                LOG.info("new_jdlist now: " + new_jdlist);
 
             } 
         }
