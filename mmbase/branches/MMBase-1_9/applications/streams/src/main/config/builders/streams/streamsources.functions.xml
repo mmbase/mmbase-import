@@ -26,4 +26,9 @@
     <class>org.mmbase.streams.UpdateSourcesFunction</class>
   </function>
 
+  <function name="changeUrl">
+    <class>org.mmbase.streams.ChangeWithoutProcessFunction</class>
+  </function>
+
+
 </functionlist>
