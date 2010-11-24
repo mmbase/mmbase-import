@@ -25,8 +25,8 @@ import java.util.regex.*;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.applications.media.State;
 import static org.mmbase.streams.transcoders.AnalyzerUtils.*;
-
 
 /**
  *
@@ -51,6 +51,8 @@ public class FFMpegAnalyzer implements Analyzer {
     private final ChainedLogger log = new ChainedLogger(LOG);
     private final AnalyzerUtils util = new AnalyzerUtils(log);
     private List<Throwable> errors = new ArrayList<Throwable>();
+
+    private static boolean supported = true;     // we're very optimistic
 
     public void setUpdateSource(boolean b) {
         util.setUpdateSource(b);
@@ -80,6 +82,7 @@ public class FFMpegAnalyzer implements Analyzer {
 
             if (util.unsupported(l, source, des)) {
                 log.warn("Not supported! " + l);
+                supported = false;
                 return;
             }
 
@@ -134,6 +137,11 @@ public class FFMpegAnalyzer implements Analyzer {
             }
             
             if (util.getUpdateSource()) {
+                if (supported
+                    && (sourceNode.getIntValue("state") == State.SOURCE_UNSUPPORTED.getValue()
+                    || sourceNode.getIntValue("state") == State.UNDEFINED.getValue() )) {
+                    sourceNode.setIntValue("state", State.SOURCE.getValue());
+                }
                 sourceNode.commit();
             }
             if (destNode != null) {
