@@ -662,6 +662,7 @@ public class Utils {
             if (expression == null) {
                 XPath xp = xpathFactory.newXPath();
                 expression = xp.compile(xpath);
+                if (expression == null) throw new RuntimeException("Given xpath '" + xpath + "' compiled to null");
                 xpathCache.put(xpath, expression);
             }
             return expression;
@@ -682,8 +683,10 @@ public class Utils {
      */
     protected static Object evaluateXPath(final String xpath, final Node contextNode, final QName returnType) {
         try {
+            if (xpath == null) throw new RuntimeException("Given xpath expression is null");
             long startTime = System.nanoTime();
-            Object result = getExpression(xpath).evaluate(contextNode, returnType);
+            XPathExpression expr = getExpression(xpath);
+            Object  result = expr.evaluate(contextNode, returnType);
             long duration = System.nanoTime() - startTime;
             logDuration(xpath, contextNode, duration);
             return result;
