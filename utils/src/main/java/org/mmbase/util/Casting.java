@@ -408,7 +408,8 @@ public class Casting {
             return escape(escaper, new String((byte[])o));
         } else if (o instanceof Object[]) {
             return new ListWrapper(Arrays.asList((Object[])o), escaper);
-        } else if (o instanceof String) {
+        } else if (o instanceof String) { // It is important that a String remains a String, because all kind of tools
+                                          // want actual Strings.
             return escape(escaper, (String) o);
         } else if (o instanceof CharSequence) {
             return new StringWrapper((CharSequence) o, escaper);
