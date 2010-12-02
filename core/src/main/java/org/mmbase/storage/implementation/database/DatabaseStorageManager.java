@@ -219,9 +219,15 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         }
         activeConnection = factory.getDataSource().getConnection();
 
-        // set autocommit to true
         if (activeConnection != null) {
-            activeConnection.setAutoCommit(true);
+            try {
+                activeConnection.setAutoCommit(true);
+            } catch (SQLException sql) {
+                // autoreconnected?
+                log.warn(sql.getMessage());
+                activeConnection.setAutoCommit(true);
+            }
+
         }
         return activeConnection;
     }
