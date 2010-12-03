@@ -185,7 +185,7 @@
                 </td>
               </xsl:if>
               <td>
-                <form id="searchform">
+                <form id="searchform" method="POST"> <!-- See MMB-1997 -->
                   <span class="header">
                     <xsl:call-template name="prompt_search_list" />
                     <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
