@@ -1,4 +1,4 @@
-<!ELEMENT wizard-schema ( title*, task-description*, description*, action*, lists*, steps?, form-schema+, blocks*) >
+<!ELEMENT wizard-schema ( title*, task-description*, description*, action*, (lists | nop )*, steps?, form-schema?, (form-schema | nop )*, blocks*) >
 <!ATTLIST wizard-schema id NMTOKEN #IMPLIED >
 
 <!ELEMENT title ( #PCDATA ) >
@@ -9,7 +9,7 @@
   -->
 <!ELEMENT task-description ( #PCDATA ) >
 
-<!ELEMENT action ( field | object | relation  | prompt | description | blocks )* >
+<!ELEMENT action ( field | object | relation  | prompt | description | blocks | nop)* >
 <!ATTLIST action type NMTOKEN #IMPLIED >
 <!ATTLIST action include CDATA #IMPLIED >
 <!ATTLIST action extends CDATA #IMPLIED >
