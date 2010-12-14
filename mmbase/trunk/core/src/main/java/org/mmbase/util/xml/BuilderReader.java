@@ -434,21 +434,26 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
                                      final Element fieldElement) {
         // create a new CoreField we need to fill
 
-        // obtain field name.
-        // if both the field name attribute and the <db><name> tag are specified, the attribute takes precedence.
-        String fieldName = getElementAttributeValue(fieldElement, "name");
-        String fieldDBName = getElementValue(getElementByPath(fieldElement, "field.db.name"));
-        if ("".equals(fieldName)) {
-            if ("".equals(fieldDBName)) {
-                throw new IllegalArgumentException("Field name was not specified for builder " + builder.getTableName() + ".");
+        final String fieldName;
+        {
+            // obtain field name.
+            // if both the field name attribute and the <db><name> tag are specified, the attribute takes precedence.
+            String fn = getElementAttributeValue(fieldElement, "name");
+            String fieldDBName = getElementValue(getElementByPath(fieldElement, "field.db.name"));
+            if ("".equals(fn)) {
+                if ("".equals(fieldDBName)) {
+                    throw new IllegalArgumentException("Field name was not specified for builder " + builder.getTableName() + ".");
+                }
+                if (log.isDebugEnabled()) {
+                    log.debug("<db><name> tag for field '" + fieldDBName + "' is deprecated. Use the name attribute.");
+                }
+                fn = fieldDBName;
+            } else if (!"".equals(fieldDBName)) {
+                log.warn("Specified field name twice: once in the name attribute ('" + fn + "') and once in the <name> tag ('" + fieldDBName + "'). Ignoring name tag.");
             }
-            if (log.isDebugEnabled()) {
-                log.debug("<db><name> tag for field '" + fieldDBName + "' is deprecated. Use the name attribute.");
-            }
-            fieldName = fieldDBName;
-        } else if (!"".equals(fieldDBName)) {
-            log.warn("Specified field name twice: once in the name attribute ('" + fieldName + "') and once in the <name> tag ('" + fieldDBName + "'). Ignoring name tag.");
+            fieldName = fn;
         }
+
 
         // implied by datatype
         // use db/type to override for legacy database issues
@@ -537,7 +542,10 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
                     }
 
                     // default for notnull is value of required
-                    def.setNotNull("true".equals(fieldNotNull) || ("".equals(fieldNotNull) && dataType.isRequired()));
+                    def.setNotNull("true".equals(fieldNotNull) ||
+                                   "number".equals(fieldName) || // number is a very odd field. It is 'node' (makes no sense),
+                                                                 // it is 'not null' but not really required, because it automaticly filled
+                                   ("".equals(fieldNotNull) && dataType.isRequired() && dataType.getRequiredRestriction().getEnforceStrength() >= DataType.ENFORCE_ALWAYS));
 
                     if (def.isNotNull() && ! "false".equalsIgnoreCase(fieldRequired)) { // If not null, it _must_ be required, unless explicitely not so (MMB-1504)
                         dataType.setRequired(true);
