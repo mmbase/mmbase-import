@@ -1371,6 +1371,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         org.mmbase.bridge.util.CloudThreadLocal.unbind();
         org.mmbase.bridge.util.CloudThreadLocal.bind(prevCloudThreadLocal);
         pageContext.setAttribute(KEY, prevCloud, SCOPE);
+        log.debug("Unset " + KEY + " " + prevCloud);
         dereference();
         return super.doEndTag();
     }
@@ -1387,6 +1388,13 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         loginPageCloudName = null;
     }
 
+    @Override
+    public void doCatch(Throwable e) throws Throwable {
+        doEndTag();
+        super.doCatch(e);
+    }
+
+    @Override
     public void doFinally() {
         // can be cleaned for gc:
         super.doFinally();
