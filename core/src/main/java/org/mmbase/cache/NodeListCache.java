@@ -12,7 +12,7 @@ package org.mmbase.cache;
 /**
  * Query result cache used for getNodes from MMObjectBuilder. So it contains only simple nodes (no
  * clusternodes).
- * 
+ *
  * The query <em>can</em> contain more than one <code>Step</step>, the queried fields are, however, excactly all
  * fields of one of the steps (the 'node step').
  *
@@ -24,7 +24,7 @@ package org.mmbase.cache;
 public class NodeListCache extends QueryResultCache {
 
     // There will be only one list cache, and here it is:
-    private static NodeListCache nodeListCache;
+    private static final NodeListCache nodeListCache;
 
     public static NodeListCache getCache() {
         return nodeListCache;
