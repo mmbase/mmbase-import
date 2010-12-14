@@ -13,6 +13,9 @@ package org.mmbase.util;
 import java.net.URL;
 import java.util.*;
 import java.io.*;
+import org.springframework.mock.web.*;
+import org.springframework.core.io.*;
+
 
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -46,7 +49,7 @@ public class ResourceLoaderTest {
     }
     //@Test // does work like this,
     public void weightConfiguration() throws java.io.IOException {
-        URL u  = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders").getResource("core/object.xml");
+        URL u  = ResourceLoader.getConfigurationRoot().getResource("magic.xml");
         assertTrue(u.toString(), u.toString().endsWith("/mmbase-tests-1.jar!/org/mmbase/config/builders/core/object.xml")); // jar was in /tests
     }
 
@@ -92,5 +95,24 @@ public class ResourceLoaderTest {
 
 
     }
+    @Test
+    public void servletContext() throws Exception {
+        FileSystemResourceLoader files = new FileSystemResourceLoader();
+        System.out.println("files " + files);
+        MockServletContext sx = new MockServletContext(files);
+        System.out.println("sx " + sx.getResourcePaths("/"));
 
+        ResourceLoader.init(sx);
+        ResourceLoader webRoot = ResourceLoader.getWebRoot();
+        ResourceLoader child = webRoot.getChildResourceLoader("src/test/files");
+        //assertEquals(child, webRoot);
+
+        System.out.println("child contexts : " + child.getChildContexts(java.util.regex.Pattern.compile(".*"), false));
+        System.out.println("" + child.getResourcePaths(java.util.regex.Pattern.compile(".*"), false));
+        URL u = child.getResource("cx.png");
+        System.out.println("Existing: " + child + " " + u.getClass() + " " + u);
+        System.out.println("Not existing" + child + " " + child.getResource("doesnotexist"));
+
+        System.out.println("" + sx.getResourcePaths("tmp"));
+    }
 }
