@@ -31,6 +31,7 @@ public class SqlExecutor implements Runnable {
 
     private String query;
     private String update;
+    private String onlyIfQuery;
     private Pattern ignore = Pattern.compile("");
 
     protected DataSource dataSource;
@@ -66,6 +67,16 @@ public class SqlExecutor implements Runnable {
         update = u;
     }
 
+    /**
+     * A query returning either true of false.
+     * E.g.  <param name="onlyIf"><![CDATA[select 1 = (select count(*) from mm_versions where m_type='application' and
+     * name='Limburg' and m_version < 7);]]></param>
+     */
+
+    public void setOnlyIf(String q) {
+        onlyIfQuery = q;
+    }
+
     protected void executeQuery(Statement stmt, String q) throws SQLException {
         q = q.replace("$PREFIX", getPrefix());
         LOG.info(" Executing " + q);
@@ -93,11 +104,35 @@ public class SqlExecutor implements Runnable {
             LOG.info(seq + ":" + line);
         }
     }
-    protected void executeUpdate(Statement stmt, String u) throws SQLException {
+   protected void executeUpdate(Statement stmt, String u) throws SQLException {
         u = u.replace("$PREFIX", getPrefix());
         LOG.info(" Executing update " + u);
         int result = stmt.executeUpdate(u);
-        LOG.info("Result :" + result);
+        LOG.service("Result :" + result);
+   }
+
+    protected boolean executeOnlyIf(Connection con, String q) throws SQLException {
+        if (q == null) return true;
+        Statement stmt = null;
+        try {
+            stmt = con.createStatement();
+            q = q.replace("$PREFIX", getPrefix());
+            LOG.debug(" Executing query " + q);
+            ResultSet rs = stmt.executeQuery(q);
+            rs.next();
+            boolean res = rs.getBoolean(1);
+            LOG.debug("Result: " + res);
+            return res;
+        } catch (SQLException sqe) {
+            LOG.error(sqe.getMessage() + " from " + q);
+            throw sqe;
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (Exception g) {}
+        }
     }
 
 
@@ -108,13 +143,17 @@ public class SqlExecutor implements Runnable {
         try {
             DataSource ds = getDataSource();
             con = ds.getConnection();
-            stmt = con.createStatement();
-            if (query != null) {
-                executeQuery(stmt, query);
-            } else if (update != null) {
-                executeUpdate(stmt, update);
+            if (executeOnlyIf(con, onlyIfQuery)) {
+                stmt = con.createStatement();
+                if (query != null) {
+                    executeQuery(stmt, query);
+                } else if (update != null) {
+                    executeUpdate(stmt, update);
+                } else {
+                    throw new IllegalStateException("Both query and update properties are unset");
+                }
             } else {
-                throw new IllegalStateException("Both query and update properties are unset");
+                LOG.debug("Skipped because of " + onlyIfQuery);
             }
         } catch (RuntimeException e) {
             throw e;
