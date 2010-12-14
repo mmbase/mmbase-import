@@ -66,7 +66,8 @@ public class MagicFileTest  {
      */
     @Test
     public void test() throws IOException  {
-        assertEquals(file.getName(), mimeType, MagicFile.getInstance().getMimeType(file));
+        assertEquals(file.getName(), mimeType,
+                     MagicFile.getInstance().getMimeType(file));
     }
 
 
@@ -77,7 +78,8 @@ public class MagicFileTest  {
     public void noExtension() throws IOException  {
         File tempFile = File.createTempFile(MagicFileTest.class.getName(), ".tmp");
         IOUtil.copy(new FileInputStream(file), new FileOutputStream(tempFile));
-        assertEquals(tempFile.getName(), mimeType, MagicFile.getInstance().getMimeType(tempFile));
+        assertEquals(file.getName() + "->" + tempFile.getName(),
+                     mimeType, MagicFile.getInstance().getMimeType(tempFile));
     }
 
 
@@ -88,7 +90,8 @@ public class MagicFileTest  {
     public void uppercase() throws IOException  {
         File tempFile = File.createTempFile("uppered", file.getName().toUpperCase());
         IOUtil.copy(new FileInputStream(file), new FileOutputStream(tempFile));
-        assertEquals(tempFile.getName(), mimeType, MagicFile.getInstance().getMimeType(tempFile));
+        assertEquals(file.getName() + "->" + tempFile.getName(),
+                     mimeType, MagicFile.getInstance().getMimeType(tempFile));
     }
 
 
