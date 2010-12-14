@@ -67,6 +67,7 @@ public class DayMarkers extends MMObjectBuilder {
         log.debug("Init of DayMarkers");
         boolean result;
         result = super.init();
+        createIfNotExists();
         smallestDay  = 0;
 
         try {

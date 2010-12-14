@@ -36,6 +36,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
     public boolean init() {
         if (!initialized) {
             super.init();
+            createIfNotExists();
             try {
                 startCacheTypes();
             } catch (Exception e) {
