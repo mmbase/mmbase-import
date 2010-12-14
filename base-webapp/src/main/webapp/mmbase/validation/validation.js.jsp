@@ -1,7 +1,7 @@
 /*<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><mm:content type="text/javascript" expires="300">
-*/
-/**
+%><jsp:directive.page session="false" />
+*///<mm:content type="text/javascript" expires="300" postprocessor="javascript-compress">
+/*
  * See test.jspx for example usage.
 
  * new MMBaseValidator(el): attaches events to all elements in el when ready.
@@ -1345,7 +1345,4 @@ MMBaseValidator.prototype.addValidation = function(el) {
     this.addValidationForElements(els);
     el = null;
 };
-
-/*
-</mm:content>
-*/
+//</mm:content>
