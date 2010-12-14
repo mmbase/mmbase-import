@@ -40,13 +40,14 @@ public class Actions extends MMObjectBuilder {
     @Override
     public boolean init() {
         super.init();
+        createIfNotExists();
         // make sure with all component actions nodes are associated
         for (Component component : ComponentRepository.getInstance().getComponents()) {
             for (Action action : component.getActions().values()) {
                 try {
                     NodeSearchQuery query = new NodeSearchQuery(this);
                     query.setMaxNumber(1);
-                    query.setConstraint(new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND, 
+                    query.setConstraint(new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND,
                                                                      new BasicFieldValueConstraint(query.getField(getField(FIELD_COMPONENT)), component.getName()),
                                                                      new BasicFieldValueConstraint(query.getField(getField(FIELD_ACTION)),    action.getName())
                                                                      ));
