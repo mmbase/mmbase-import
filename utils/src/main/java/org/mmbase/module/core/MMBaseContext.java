@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Jaco de Groot
  * @version $Id$
  */
-public class MMBaseContext {
+public class MMBaseContext implements ServletContextListener {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
     private static boolean initialized = false;
     private static boolean shutdown = false;
@@ -474,5 +474,15 @@ public class MMBaseContext {
         return shutdown;
     }
 
+
+    @Override
+    public void	contextDestroyed(ServletContextEvent sce) {
+        shutdown();
+    }
+
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        init(sce.getServletContext());
+    }
 
 }
