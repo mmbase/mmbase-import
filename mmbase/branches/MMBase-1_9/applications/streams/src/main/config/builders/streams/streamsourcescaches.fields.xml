@@ -91,7 +91,9 @@
         <search>3</search>
       </positions>
     </editor>
-    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <maxlength value="1024" />
+    </datatype>
   </field>
 
 
