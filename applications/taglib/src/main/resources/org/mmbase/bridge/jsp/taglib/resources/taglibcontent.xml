@@ -320,7 +320,6 @@
     </info>
   </escaper>
 
-
   <parameterizedescaper id="regexps">
     <class>org.mmbase.util.transformers.RegexpReplacerFactory</class>
     <info>
@@ -527,6 +526,16 @@
     </info>
     <param name="command" value="dot"/>
     <param name="type"    value="svg"/>
+  </parameterizedescaper>
+
+  <parameterizedescaper id="javascript-compress">
+    <class>org.mmbase.util.transformers.YUIJavaScriptCompressor</class>
+    <fallback>none</fallback>
+  </parameterizedescaper>
+
+  <parameterizedescaper id="css-compress">
+    <class>org.mmbase.util.transformers.YUIJavaScriptCompressor</class>
+    <fallback>none</fallback>
   </parameterizedescaper>
 
 
