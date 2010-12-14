@@ -28,6 +28,8 @@ public class YUIJavaScriptCompressor extends  ReaderTransformer {
     private boolean munge = true;
     private boolean preserveAllSemiColons = false;
     private boolean disableOptimizations = false;
+    private boolean initialNewline = true;
+
     private int linebreakpos = -1;
     public YUIJavaScriptCompressor() {
     }
@@ -45,11 +47,17 @@ public class YUIJavaScriptCompressor extends  ReaderTransformer {
     public void setLineBreakPosition(int l) {
         linebreakpos = l;
     }
+    public void setInitialNewline(boolean i) {
+        initialNewline = i;
+    }
 
     @Override
     public Writer transform(Reader reader, Writer writer) {
         try {
             JavaScriptCompressor compressor = new JavaScriptCompressor(reader, new JavascriptErrorReporter(LOG));
+            if (initialNewline) {
+                writer.write("\n");
+            }
             compressor.compress(writer, linebreakpos, munge, false,
                                 preserveAllSemiColons, disableOptimizations);
         } catch (IOException ioe) {
