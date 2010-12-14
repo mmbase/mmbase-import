@@ -53,7 +53,7 @@ class ApplicationInstaller {
         for (String appResource :  applicationLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false)) {
             ApplicationResult result = new ApplicationResult();
             if (!installApplication(appResource.substring(0, appResource.length() - 4), -1, null, result, new HashSet<String>(), true)) {
-                log.error("Problem installing application : " + appResource + ", cause: "+result.getMessage());
+                log.error("Problem installing application : " + appResource + ", cause: " + result.getMessage());
             }
         }
     }
@@ -349,7 +349,7 @@ class ApplicationInstaller {
                 if (def.getType() == Field.TYPE_NODE
                     && ! def.getName().equals("number")
                     && ! def.getName().equals("otype")
-                    && def.isRequired()) {
+                    && ! def.isNotNull()) { // not null is a bit less strong than 'isRequired'
 
                     // Dangerous territory here.
                     // The node contains a reference to another node.
