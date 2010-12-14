@@ -518,7 +518,7 @@ public class DocumentReader  {
             if ("error".equals(localName)) { // WTF?
                 log.error("Error occurred : (" + getElementValue(e) + ")");
                 return null;
-            } else if (! root.equals(localName)) {
+            } else if ((! root.equals(localName)) && (! "*".equals(root))) {
                 // path should start with document root element
                 log.error("path [" + path + "] with root (" + root + ") doesn't start with root element (" + localName + "): incorrect xml file" +
                           "(" + e.getOwnerDocument().getDocumentURI() + ")");
