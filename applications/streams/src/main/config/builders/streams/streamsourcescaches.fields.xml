@@ -92,7 +92,7 @@
       </positions>
     </editor>
     <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
-      <maxlength value="1024" />
+      <maxLength value="1024" />
     </datatype>
   </field>
 
