@@ -59,8 +59,11 @@ public abstract class BasicUserProvider implements UserProvider {
     }
 
 
+    /**
+     * Returns the anonymous user node, or <code>null</code> if there is no such node (yet).
+     */
     public MMObjectNode getAnonymousUser() throws SecurityException {
-        return getUser("anonymous", "", true);
+        return getUser("anonymous");
     }
 
     protected boolean isDbPasswordsEncoded() {
@@ -83,14 +86,6 @@ public abstract class BasicUserProvider implements UserProvider {
             log.debug("username: '" + userName + "' password: '" + password + "' " + this);
         }
         final MMObjectNode user = getUser(userName);
-
-        if (userName.equals("anonymous")) {
-            log.debug("an anonymous username");
-            if (user == null) {
-                throw new SecurityException("no node for anonymous user"); // odd.
-            }
-            return user;
-        }
 
         if (user == null) {
             log.debug("username: '" + userName + "' --> USERNAME NOT CORRECT");
