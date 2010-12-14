@@ -76,7 +76,9 @@
         <search>3</search>
       </positions>
     </editor>
-    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <maxLength value="1024" />
+    </datatype>
   </field>
 
   <field name="objecttype" state="virtual">
