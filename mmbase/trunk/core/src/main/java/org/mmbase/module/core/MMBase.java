@@ -876,17 +876,22 @@ public class MMBase extends ProcessorModule {
     boolean initBuilders() {
 
         typeDef.init();
+        typeDef.createIfNotExists();
 
-        // first initialize versions, if available (table must exist for quereis to succeed)
+        // first initialize versions, if available (table must exist for queries to succeed)
         log.debug("Versions:");
         Versions versions = (Versions)getBuilder("versions");
         if (versions != null) {
             versions.init();
+            versions.createIfNotExists();
         }
 
         relDef.init();
+        relDef.createIfNotExists();
         insRel.init();
+        insRel.createIfNotExists();
         typeRel.init();
+        typeRel.createIfNotExists();
 
         log.debug("mmobjects, inits");
         for (Iterator<MMObjectBuilder> bi = getBuilders().iterator(); bi.hasNext();) {
@@ -905,6 +910,11 @@ public class MMBase extends ProcessorModule {
                 bi.remove();
             }
         }
+        // every builder is now inited, create the tables.
+        // This must happen at last because builder's fields may reference to each other
+        for (MMObjectBuilder builder : getBuilders()) {
+            builder.createIfNotExists();
+        }
 
         log.debug("**** end of initBuilders");
         return true;
@@ -916,7 +926,14 @@ public class MMBase extends ProcessorModule {
      */
     public void initBuilder(MMObjectBuilder builder) {
         if (!builder.isVirtual()) {
-            builder.init();
+            try {
+                builder.init();
+            } catch (org.mmbase.storage.StorageException se) {
+                log.warn(se);
+                builder.createIfNotExists();
+                builder.init();
+            }
+
             if (typeDef == null) {
                 throw new IllegalStateException("No typedef builder defined");
             }
