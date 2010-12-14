@@ -88,6 +88,13 @@
       <artifactId>log4j</artifactId>
     </dependency>
 
+    <!-- To be able to compress javascript (e.g. mmbase/validation/validation.js.jsp is compressed on the fly) -->
+    <dependency>
+      <groupId>com.yahoo.platform.yui</groupId>
+      <artifactId>yuicompressor</artifactId>
+      <version>2.4.2</version>
+    </dependency>
+
   </dependencies>
 
 
