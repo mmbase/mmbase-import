@@ -87,6 +87,7 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
     public boolean init() {
         if (oType != -1) return true;
         super.init();
+        createIfNotExists();
         // during init not yet all builder are available so inheritance is not
         // yet possible
         // This means that calls to getAllowedRelations do not consider

@@ -294,21 +294,21 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     protected Function<Collection<? extends Function>> getFunctions = new MMObjectNodeFunction<Collection<? extends Function>>("getFunctions",
                                                                                                                        Parameter.emptyArray(), RETURNTYPE_COLLECTION) {
 
-            {
-                setDescription("The 'getFunctions' returns a Map of al Function object which are available on this FunctionProvider");
-            }
-            public Collection<? extends Function> getFunctionValue(Node node, Parameters parameters) {
+        {
+            setDescription("The 'getFunctions' returns a Map of al Function object which are available on this FunctionProvider");
+        }
+        public Collection<? extends Function> getFunctionValue(Node node, Parameters parameters) {
+            return MMObjectBuilder.this.getFunctions(getCoreNode(MMObjectBuilder.this, node));
+        }
+        public Collection<? extends Function> getFunctionValue(Parameters parameters) {
+            Node node = parameters.get(Parameter.NODE);
+            if (node == null) {
+                return MMObjectBuilder.this.getFunctions();
+            } else {
                 return MMObjectBuilder.this.getFunctions(getCoreNode(MMObjectBuilder.this, node));
             }
-            public Collection<? extends Function> getFunctionValue(Parameters parameters) {
-                Node node = parameters.get(Parameter.NODE);
-                if (node == null) {
-                    return MMObjectBuilder.this.getFunctions();
-                } else {
-                    return MMObjectBuilder.this.getFunctions(getCoreNode(MMObjectBuilder.this, node));
-                }
-            }
-        };
+        }
+    };
     {
         addFunction(getFunctions);
     }
@@ -319,39 +319,41 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @since MMBase-1.8
      */
     protected Function<Object> infoFunction = new MMObjectNodeFunction<Object>("info", INFO_FUNCTION_ARGS, ReturnType.UNKNOWN) {
-            {
-                setDescription("Returns information about available functions");
-            }
-            protected Object getFunctionValue(Collection<Function<?>> functions, Parameters parameters) {
-                String function = parameters.getString("function");
-                if (function == null || function.equals("")) {
-                    Map<String, String> info = new HashMap<String, String>();
-                    for (Function<?> f : functions) {
-                        info.put(f.getName(), f.getDescription());
-                    }
-                    return info;
-                } else {
-                    Function<?> func = getFunction(function);
-                    if (func == null) return "No such function " + function;
-                    return func.getDescription();
+        {
+            setDescription("Returns information about available functions");
+        }
+        protected Object getFunctionValue(Collection<Function<?>> functions, Parameters parameters) {
+            String function = parameters.getString("function");
+            if (function == null || function.equals("")) {
+                Map<String, String> info = new HashMap<String, String>();
+                for (Function<?> f : functions) {
+                    info.put(f.getName(), f.getDescription());
                 }
+                return info;
+            } else {
+                Function<?> func = getFunction(function);
+                if (func == null) return "No such function " + function;
+                return func.getDescription();
             }
-            @Override public Object getFunctionValue(Node node, Parameters parameters) {
-                if (node.getNumber() > 0) {
-                    return getFunctionValue(MMObjectBuilder.this.getFunctions(getCoreNode(MMObjectBuilder.this, node)), parameters);
-                } else {
-                    return getFunctionValue(MMObjectBuilder.this.getFunctions(), parameters);
-                }
+        }
+        @Override
+        public Object getFunctionValue(Node node, Parameters parameters) {
+            if (node.getNumber() > 0) {
+                return getFunctionValue(MMObjectBuilder.this.getFunctions(getCoreNode(MMObjectBuilder.this, node)), parameters);
+            } else {
+                return getFunctionValue(MMObjectBuilder.this.getFunctions(), parameters);
             }
-            @Override public Object getFunctionValue(Parameters parameters) {
-                MMObjectNode node = (MMObjectNode) parameters.get(Parameter.CORENODE);
-                if (node == null) {
-                    return getFunctionValue(MMObjectBuilder.this.getFunctions(), parameters);
-                } else {
-                    return getFunctionValue(MMObjectBuilder.this.getFunctions(node), parameters);
-                }
+        }
+        @Override
+        public Object getFunctionValue(Parameters parameters) {
+            MMObjectNode node = (MMObjectNode) parameters.get(Parameter.CORENODE);
+            if (node == null) {
+                return getFunctionValue(MMObjectBuilder.this.getFunctions(), parameters);
+            } else {
+                return getFunctionValue(MMObjectBuilder.this.getFunctions(node), parameters);
             }
-        };
+        }
+    };
     {
         addFunction(infoFunction);
     }
@@ -445,15 +447,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 broadCastChanges = broadCastChangesProperty.equals("true");
             }
 
-            if (!created()) {
-                log.info("Creating table for builder " + tableName);
-                if (!create() ) {
-                    // can't create buildertable.
-                    // Throw an exception
-                    throw new BuilderConfigurationException("Cannot create table for "+getTableName()+".");
-                };
-            }
             TypeDef typeDef = mmb.getTypeDef();
+            if (this == typeDef) {
+                // Typedef is the only builder which's table _must_ exist before it's inialisation, because it will
+                // enter an enter an entry for itself in the following code
+                createIfNotExists();
+            }
             // only deteremine otype if typedef is available,
             // or this is typedef itself (have to start somewhere)
             if (((typeDef != null)  && (typeDef.getObjectType()!=-1)) || (this == typeDef)) {
@@ -540,6 +539,22 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         return true;
     }
 
+    /**
+     * Creates the associated database table, unless it already exists.
+     * You can call this method from {@link #init} if you want to use the table already then. This is only possible if
+     * there are not dependencies on other builders which might not yet be initalized (MMB-1991).
+     * @since MMBase-1.9.5
+     */
+    protected void createIfNotExists() {
+        if (!created()) {
+            log.info("Creating table for builder " + tableName);
+            if (!create() ) {
+                // can't create buildertable.
+                // Throw an exception
+                throw new BuilderConfigurationException("Cannot create table for " + getTableName() + ".");
+            };
+        }
+    }
     /** clean all acquired resources, because system is shutting down */
     public void shutdown() {
         // on default, nothing needs to be done.
@@ -1421,9 +1436,11 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 rtn = getLocaleGUIIndicator(locale, field, node);
             }
         }
+        CoreField fdef = getField(field);
+        log.debug("Found field " + fdef);
 
         if (rtn == null) {
-            CoreField fdef = getField(field);
+            log.debug("Found value " + rtn);
 
             Object returnValue;
             if (fdef != null) {
@@ -1434,7 +1451,10 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                     returnValue = node.isNull(field) ? "" : "" + node.getSize(field) + " byte";
                 } else {
                     try {
+                        String svalue = node.getStringValue(field);
+                        log.debug("" + field + ":" + svalue);
                         returnValue = dataType.getEnumerationValue(locale, pars.get(Parameter.CLOUD), pars.get(Parameter.NODE), fdef, node.getStringValue(field));
+                        log.debug("Found enumeration value " + dataType.getClass() + " " + returnValue);
                     } catch (Exception e) {
                         returnValue = node.getStringValue(field);
                         log.warn("For " + fdef + " (" + returnValue + ") " + e.getMessage(), e);
@@ -1449,6 +1469,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             } else {
                 if (fdef != null && ("eventtime".equals(fdef.getGUIType()) ||
                                      fdef.getDataType() instanceof org.mmbase.datatypes.DateTimeDataType)) { // do something reasonable for this
+
+                    log.debug("date ");
                     Date date;
                     if (fdef.getType() == Field.TYPE_DATETIME) {
                         date = node.getDateValue(field);
@@ -1465,11 +1487,24 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 } else {
                     rtn = (String) pars.get("stringvalue");
                     if (rtn == null) {
+                        log.debug("using stringvalue " + rtn);
                         rtn = node.getStringValue(field);
                     }
                 }
             }
             rtn = org.mmbase.util.transformers.Xml.XMLEscape(rtn);
+        } else {
+            log.debug("Found value " + rtn.getClass() + " " + rtn);
+            /*
+            if (fdef != null && fdef.getDataType() instanceof org.mmbase.datatypes.NodeDataType) { // do something reasonable for this
+                MMObjectNode otherNode = getNode(rtn);
+                if (otherNode != null) {
+                    rtn = otherNode.parent.getNodeGUIIndicator(otherNode, null);
+                    log.debug("A node " + otherNode.getBuilder() + " -> " + rtn);
+
+                }
+            }
+            */
         }
         return rtn;
     }
