@@ -194,7 +194,7 @@ public abstract class MMTable extends FunctionProvider {
         try {
             return storageConnector.getNodeType(number);
         } catch(StorageException se) {
-            log.error(Logging.stackTrace(se));
+            log.error(se.getMessage(), se);
             return -1;
         }
     }
@@ -217,7 +217,7 @@ public abstract class MMTable extends FunctionProvider {
         try {
             result = storageConnector.getNodes(virtuals);
         } catch (SearchQueryException sqe) {
-            log.error(sqe.getMessage() + Logging.stackTrace(sqe));
+            log.error(sqe.getMessage(), sqe);
             result = new ArrayList<MMObjectNode>();
         }
         return result;
@@ -240,7 +240,7 @@ public abstract class MMTable extends FunctionProvider {
         try {
             result = count(query);
         } catch (SearchQueryException e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
         return result;
     }
@@ -258,7 +258,11 @@ public abstract class MMTable extends FunctionProvider {
      * @since MMBase-1.7
      */
     public int count(NodeSearchQuery query) throws SearchQueryException {
-        return storageConnector.count(query);
+        if (created()) {
+            return storageConnector.count(query);
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -274,7 +278,11 @@ public abstract class MMTable extends FunctionProvider {
      * @since MMBase-1.7
      */
     public List<MMObjectNode> getNodes(NodeSearchQuery query) throws SearchQueryException {
-        return storageConnector.getNodes(query);
+        if (created()) {
+            return storageConnector.getNodes(query);
+        } else {
+            return new ArrayList<MMObjectNode>();
+        }
     }
 
     // most of those below are deprecated
@@ -365,7 +373,7 @@ public abstract class MMTable extends FunctionProvider {
             List<MMObjectNode> nodes = getNodes(query);
             result.addAll(nodes);
         } catch (SearchQueryException e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
         return result;
     }
@@ -381,7 +389,7 @@ public abstract class MMTable extends FunctionProvider {
                 return nodes;
             }
         } catch (SearchQueryException e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
         return new ArrayList<MMObjectNode>();
     }
