@@ -2803,7 +2803,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 } catch (SQLException se) {
                     // ignore: the method is likely not implemented by the JDBC Driver
                     // (should be one of the above errors, but postgresql returns this as an SQLException. Tsk.)
-                    log.debug("VERIFY: determining super tables failed, skipping inheritance consistency tests for " + tableName);
+                    log.warn("VERIFY: " + se.getMessage() + " determining super tables failed, skipping inheritance consistency tests for " + tableName);
                 }
             }
             final Map<String, Map<String, Object>> columns = new HashMap<String, Map<String, Object>>();
@@ -2821,9 +2821,14 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             } finally {
                 columnsSet.close();
             }
+            // For reporting what was used for the check, we need a copy (columns itself is edited).
+            final Map<String, Map<String, Object>> columnsCopy = new HashMap<String, Map<String, Object>>();
+            columnsCopy.putAll(columns);
+
             // iterate through fields and check all fields present
             int pos = 0;
             List<CoreField> builderFields = builder.getFields(NodeManager.ORDER_CREATE);
+            int missingFieldCount = 0;
             for (CoreField field : builderFields) {
                 if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !checkStoreFieldAsFile(field.getParent()))) {
                     field.rewrite();
@@ -2837,8 +2842,8 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
 
                         log.error("VERIFY: Field '" + field.getName() + "' " +
                                   (id.equals(field.getName()) ? "" : "(mapped to field '" + id + "') ") +
-                                   "of builder '" + builder.getTableName() + "' does NOT exist in storage! Field will be considered virtual");
-
+                                   "of builder '" + builder.getTableName() + "' does NOT exist in storage! Field will be considered virtual. ");
+                        missingFieldCount++;
                         // set field to virtual so it will not be stored -
                         // prevents future queries or statements from failing
                         field.setState(Field.STATE_VIRTUAL);
@@ -2897,6 +2902,9 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             // if any are left, these fields were removed!
             for (String column : columns.keySet()) {
                 log.warn("VERIFY: Column '" + column + "' for builder '" + builder.getTableName() + "' in Storage but not defined!");
+            }
+            if (missingFieldCount > 0) {
+                log.warn("Fields were made virtual. Used meta-data for table " + tableName + " (" + builder.getTableName() + "):  " + columnsCopy);
             }
         } catch (Exception e) {
             log.error("Error during check of table (Assume table is correct.):" + e.getMessage(), e);
