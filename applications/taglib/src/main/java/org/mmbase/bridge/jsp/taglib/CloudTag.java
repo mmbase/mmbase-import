@@ -1406,5 +1406,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         }
         return SKIP_BODY;
     }
+    @Override
+    public void doCatch(Throwable e) throws Throwable {
+        doEndTag();
+        super.doCatch(e);
+    }
 
 }
