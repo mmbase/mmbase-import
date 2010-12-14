@@ -83,6 +83,7 @@ public class RelDef extends MMObjectBuilder {
      *  @return A <code>boolean</code> value, always success (<code>true</code>), as any exceptions are
      *         caught and logged.
      */
+    @Override
     public boolean init() {
        super.init();
        usesbuilder = getField("builder") != null;

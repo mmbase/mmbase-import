@@ -66,6 +66,7 @@ public class TypeDef extends MMObjectBuilder {
      * Sets the default deploy directory for the builders.
      * @return true if init was completed, false if uncompleted.
      */
+    @Override
     public boolean init() {
         broadCastChanges = false;
         boolean result = super.init();
