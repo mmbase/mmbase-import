@@ -15,8 +15,6 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.AbstractCloudContext;
 import org.mmbase.bridge.util.NodeManagerDescription;
 import org.mmbase.datatypes.DataType;
-import org.mmbase.bridge.implementation.*;
-import org.mmbase.storage.search.*;
 import org.mmbase.security.*;
 import org.mmbase.core.event.*;
 import org.mmbase.util.*;
