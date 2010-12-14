@@ -185,6 +185,10 @@ public class ContentTag extends LocaleTag  {
 
     }
 
+
+    private static String getFallBack(DocumentReader reader, Element e) {
+        return DocumentReader.getElementValue(reader.getElementByPath(e, "*.fallback"));
+    }
     protected static void readXML(InputSource escapersSource) {
 
         DocumentReader reader  = new DocumentReader(escapersSource, ContentTag.class);
@@ -192,7 +196,19 @@ public class ContentTag extends LocaleTag  {
 
         for (Element element: reader.getChildElements(root, "escaper")) {
             String id   = element.getAttribute("id");
-            CharTransformer ct = readCharTransformer(reader, element, id);
+            String fallback = getFallBack(reader, element);
+            CharTransformer ct;
+            try {
+                ct = readCharTransformer(reader, element, id);
+            } catch (NoClassDefFoundError ncdfe) {
+                if (fallback.length() > 0) {
+                    ct = charTransformers.get(fallback);
+                    log.info("For " + id + " " + ncdfe.getMessage() + " falling back to " + fallback + " " + ct);
+
+                } else {
+                    throw ncdfe;
+                }
+            }
             CharTransformer prev = charTransformers.put(id, ct);
             if (prev != null) {
                 log.warn("Replaced an escaper '" + id + "' : " + ct + "(was " + prev + ")");
@@ -205,26 +221,42 @@ public class ContentTag extends LocaleTag  {
         log.debug("Reading content tag parameterizedescaperss");
         for (Element element: reader.getChildElements(root, "parameterizedescaper")) {
             String id   = element.getAttribute("id");
-            ParameterizedTransformerFactory<CharTransformer> fact = readTransformerFactory(reader, element, id);
-            ParameterizedTransformerFactory<CharTransformer> prev = parameterizedCharTransformerFactories.put(id, fact);
-            if (prev != null) {
-                log.warn("Replaced an parameterized escaper '" + id + "' : " + fact + " (was " + prev + ")");
-            } else {
-                log.debug("Found an parameterized escaper '" + id + "' : " + fact);
-            }
-
+            String fallback = getFallBack(reader, element);
+            CharTransformer ct;
             try {
-                CharTransformer ct = (CharTransformer) fact.createTransformer(fact.createParameters());
-                if (! charTransformers.containsKey("id")) {
+                ParameterizedTransformerFactory<CharTransformer> fact = readTransformerFactory(reader, element, id);
+                ParameterizedTransformerFactory<CharTransformer> prev = parameterizedCharTransformerFactories.put(id, fact);
+                if (prev != null) {
+                    log.warn("Replaced an parameterized escaper '" + id + "' : " + fact + " (was " + prev + ")");
+                } else {
+                    log.debug("Found an parameterized escaper '" + id + "' : " + fact);
+                }
+
+                try {
+                    ct = (CharTransformer) fact.createTransformer(fact.createParameters());
+                } catch (Exception ex) {
+                    log.debug("Could not be instantiated with default parameters only: " + ex.getMessage());
+                    ct = null;
+                }
+            } catch (NoClassDefFoundError ncdfe) {
+                if (fallback.length() > 0) {
+                    ct = charTransformers.get(fallback);
+                    log.info("For " + id + " " + ncdfe.getMessage() + " falling back to " + fallback + " " + ct);
+
+                } else {
+                    log.fatal("No fallback found for " + id);
+                    throw ncdfe;
+                }
+            }
+            if (ct != null) {
+                if (! charTransformers.containsKey(id)) {
                     log.debug("Could be instantiated with default parameters too");
                     charTransformers.put(id, ct);
+                    parameterizedCharTransformerFactories.put(id, new CopierFactory());
                 } else {
                     log.service("Already a chartransformer with id " + id);
                 }
-            } catch (Exception ex) {
-                log.debug("Could not be instantiated with default parameters only: " + ex.getMessage());
             }
-
         }
 
 
@@ -402,10 +434,10 @@ public class ContentTag extends LocaleTag  {
                 ParameterizedTransformerFactory factory = getTransformerFactory(parameterized);
                 Parameters parameters = factory.createParameters();
                 parameters.setAutoCasting(true);
+                parameters.setAll(StringSplitter.split(id.substring(paramsPos + 1, id.length() - 1)));
                 if (tag != null) {
                     tag.fillStandardParameters(parameters);
                 }
-                parameters.setAll(StringSplitter.split(id.substring(paramsPos + 1, id.length() - 1)));
                 c = (CharTransformer) factory.createTransformer(parameters);
             } else {
                 // try if there is a factory with this name, which would work with only 'standard' parameters.
