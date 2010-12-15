@@ -156,9 +156,9 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
                 if (t != null) {
                     if (t instanceof RuntimeException) {
                         log.info("Trowing runtime exception from " + l);
-                        throw (RuntimeException) t;
+                        throw new RuntimeException(t); // wrap it once more so we can see the correct Thread too
                     } else {
-                        log.warn(t.getMessage(), t);
+                        log.error(t.getMessage(), t);
                     }
                 }
             }

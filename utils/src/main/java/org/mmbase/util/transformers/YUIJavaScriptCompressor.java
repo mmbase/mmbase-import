@@ -25,6 +25,26 @@ public class YUIJavaScriptCompressor extends  ReaderTransformer {
     private static final long serialVersionUID = 0L;
     private static final Logger LOG = Logging.getLoggerInstance(YUIJavaScriptCompressor.class);
 
+    private static final boolean WORKS;
+
+    static {
+        boolean w = true;
+        try {
+            JavaScriptCompressor compressor = new JavaScriptCompressor(new StringReader("function a() {}"),
+                                                                       new JavaScriptErrorReporter(LOG));
+            compressor.compress(new StringWriter(), 0, false, false, false, false);
+            w = true;
+            LOG.info("WORKED!");
+        } catch (IOException ieo) {
+            LOG.warn(ieo.getMessage(), ieo);
+            w = false;
+        } catch (StringIndexOutOfBoundsException sie) {
+            LOG.info("Javascript compression not working. See e.g. http://yuilibrary.com/forum/viewtopic.php?f=94&t=3345&p=20085#p20085. " + sie.getMessage());
+            w = false;
+        }
+        WORKS = w;
+    }
+
     private boolean munge = true;
     private boolean preserveAllSemiColons = false;
     private boolean disableOptimizations = false;
@@ -54,14 +74,24 @@ public class YUIJavaScriptCompressor extends  ReaderTransformer {
     @Override
     public Writer transform(Reader reader, Writer writer) {
         try {
-            JavaScriptCompressor compressor = new JavaScriptCompressor(reader, new JavascriptErrorReporter(LOG));
             if (initialNewline) {
                 writer.write("\n");
             }
-            compressor.compress(writer, linebreakpos, munge, false,
-                                preserveAllSemiColons, disableOptimizations);
+
+            if (WORKS) {
+                LOG.info("Compressing javascript from " + reader + " -> " + writer);
+                JavaScriptCompressor compressor = new JavaScriptCompressor(reader,
+                                                                           new JavaScriptErrorReporter(LOG));
+                compressor.compress(writer, linebreakpos, munge, false,
+                                    preserveAllSemiColons, disableOptimizations);
+                LOG.debug("Ready");
+            } else {
+                CopyCharTransformer.INSTANCE.transform(reader, writer);
+            }
         } catch (IOException ioe) {
-            LOG.error(ioe);
+            LOG.warn(ioe.getMessage(), ioe);
+        } finally {
+            LOG.debug(".");
         }
         return writer;
 
