@@ -20,7 +20,7 @@
     For more information about the release strategies see the documentation
   -->
   <releaseStrategies>
-    <strategy>org.mmbase.cache.BetterStrategy</strategy>   
+    <strategy>org.mmbase.cache.BetterStrategy</strategy>
     <!--
         ConstraintsMatchingStrategy will sometimes give more CPU overhead then it is worth.
         Therefore it is commented out. You can try it if your caches still don't perform well enough.

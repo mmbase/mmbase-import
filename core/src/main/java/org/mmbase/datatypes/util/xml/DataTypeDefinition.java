@@ -87,12 +87,15 @@ public class DataTypeDefinition {
                         }
                     } else {
                         try {
+                            // FEK
                             dt = (BasicDataType<?>) Instantiator.getInstance(childElement, id);
                             if (baseDataType != null) {
                                 // should check class here, perhaps
                                 dt.inherit(baseDataType);
                             }
-                        } catch (Exception e) {
+                        } catch (ClassNotFoundException cnfe) {
+                            log.error("During parsing of " + XMLWriter.write(childElement) + "\n:" + cnfe.getMessage());
+                        } catch (Throwable e) {
                             log.error(e.getMessage(), e);
                         }
                     }
