@@ -16,7 +16,7 @@ import org.mmbase.util.functions.AutodefiningParameters;
  * A place holder factory, which only produces copiers and accepts every parameter for that.
  * @author Michiel Meeuwissen
  * @since MMBase-1.9.6
- * @version $Id: ParameterizedTransformerFactory.java 37706 2009-08-12 09:37:14Z michiel $
+ * @version $Id$
  */
 
 public class CopierFactory implements  ParameterizedTransformerFactory<CharTransformer>  {
