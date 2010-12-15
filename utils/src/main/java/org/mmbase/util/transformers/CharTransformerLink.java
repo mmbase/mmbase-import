@@ -31,7 +31,8 @@ public class CharTransformerLink implements Runnable {
     private Reader     reader;
     private boolean    closeWriter;
     private boolean    ready = false;
-    
+    private Throwable exception;
+
     public CharTransformerLink(CharTransformer ct, Reader r, Writer w, boolean cw) {
         reader = r;
         writer = w;
@@ -42,18 +43,29 @@ public class CharTransformerLink implements Runnable {
     @Override
     synchronized public  void run() {            
         try {
-            charTransformer.transform(reader, writer);       
+            charTransformer.transform(reader, writer);
+        } catch (Throwable t) {
+            exception = t;
+        } finally {
             if (closeWriter) {
-                writer.close();
+                try {
+                    writer.close();
+                } catch (IOException io) {
+                    log.error(io.getMessage(), io);
+                }
             }
-        } catch (IOException io) {
-            log.error(io.toString());
-            log.error(io);
+            ready = true;
+            notifyAll();
         }
-        ready = true;
-        notifyAll();
+
     }
     synchronized public boolean ready() {
         return ready;
+    }
+    /**
+     * If some exception occured, durint {@link #run()}, then it can be found here.
+     */
+    public Throwable getException() {
+        return exception;
     }
 }
