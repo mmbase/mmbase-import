@@ -55,12 +55,10 @@ public class YUIJavaScriptCompressor extends  ReaderTransformer {
     public Writer transform(Reader reader, Writer writer) {
         try {
             LOG.info("Compressing javascript from " + reader + " -> " + writer);
-
+            JavaScriptCompressor compressor = new JavaScriptCompressor(reader, new JavascriptErrorReporter(LOG));
             if (initialNewline) {
                 writer.write("\n");
             }
-            JavaScriptCompressor compressor = new JavaScriptCompressor(new BufferedReader(reader),
-                                                                       new JavascriptErrorReporter(LOG));
             compressor.compress(writer, linebreakpos, munge, false,
                                 preserveAllSemiColons, disableOptimizations);
             LOG.debug("Ready");
