@@ -45,13 +45,13 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
             bw.write(line);
             result = true;
         }
-        if(srStatus.getCurrentlyOpen() != null){
+        if(srStatus.getCurrentlyOpen() != null) {
             //look for a closing tag.
             srStatus.getCurrentlyOpen().setLine(line);
             if(srStatus.getCurrentlyOpen().hasClosed()){
                 srStatus.setCurrentlyOpen(null);
             }
-        }else{
+        } else {
             //look for an opening tag
             for (Tag tag : tagsToPass) {
                 tag.setLine(line);
@@ -106,6 +106,11 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         }
         return w;
     }
+    protected String transform2(String r) {
+        if (r == null) return null;
+        Writer sw = transform2(new StringReader(r), new StringWriter());
+        return sw.toString();
+    }
 
     @Override
     public String toString() {
@@ -124,7 +129,7 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
      * @author ebunders
      *
      */
-    protected static class Tag{
+    protected static class Tag {
         private boolean hasOpened = false;
         private boolean hasClosed = false;
         private Pattern openingPattern;
@@ -189,7 +194,8 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         }
     }
 
-    @Override public Status createNewStatus(){
+    @Override
+    public Status createNewStatus(){
         return new SpaceReducerStatus();
     }
 
