@@ -373,13 +373,20 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             cloud = org.mmbase.bridge.util.CloudThreadLocal.currentCloud();
         }
         if (cloud == null) {
-            CloudContext context = ContextProvider.getDefaultCloudContext();
-            if (! context.isUp()) return null;
-            // class security can be a bit expensive, and this method can in certain cases be called very often.
-            if (classCloud == null || ! classCloud.getUser().isValid()) {
-                classCloud = context.getCloud("mmbase", "class", null);
+            try {
+                CloudContext context = ContextProvider.getDefaultCloudContext();
+                if (! context.isUp()) {
+                    return null;
+                }
+                // class security can be a bit expensive, and this method can in certain cases be called very often.
+                if (classCloud == null || ! classCloud.getUser().isValid()) {
+                    classCloud = context.getCloud("mmbase", "class", null);
+                }
+                cloud  = classCloud;
+            } catch (Throwable e) {
+                log.warn(e.getMessage(), e);
+                return null;
             }
-            cloud  = classCloud;
         }
         return cloud;
     }
@@ -499,7 +506,6 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         r.getErrorDescription().toXml("description", DataType.XMLNS, el, "");
         return el;
     }
-
 
 
     public boolean isFinished() {
@@ -716,7 +722,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     }
 
     public Element toXml() {
-        if (xml == null) {
+         if (xml == null) {
             xml = DocumentReader.getDocumentBuilder().newDocument().createElementNS(XMLNS, "datatype");
             xml.getOwnerDocument().appendChild(xml);
             toXml(xml);
@@ -917,14 +923,20 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             // Note that for now it is assumed that the keys are of the same type.
             // I'm not 100% sure that this is always the case.
             C keyValue = cast(key, node, field);
+            log.debug("Is enumeration. value " + keyValue);
+
             if (keyValue != null) {
                 for (Iterator<Map.Entry<C, String>> i = new RestrictedEnumerationIterator(locale, cloud, node, field); value == null && i.hasNext(); ) {
                     Map.Entry<C, String> entry = i.next();
+                    log.debug("Check with " + entry);
                     if (keyValue.equals(entry.getKey()) ) {
                         value = entry.getValue();
+                        log.debug("Found " + value);
                     }
                 }
             }
+        } else {
+            log.debug("key" + key + " " + getEnumerationFactory());
         }
         return value;
     }
