@@ -50,8 +50,17 @@ public class MemoryWarner extends AbstractCronJob  {
                 log.info("Memory use " + usePerc + " > " +  limitPerc);
                 log.info("Used memory over " + limitPerc + " , mailing " + config[1]);
                 Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
-                if (cloud.hasNodeManager("email")) {
-                    NodeManager email = cloud.getNodeManager("email");
+
+                String emailBuilder = "email";
+                try {
+                    Module sendmail = cloud.getCloudContext().getModule("sendmail");
+                    emailBuilder = sendmail.getProperty("emailbuilder");
+                } catch (NotFoundException nfe) {
+                    log.warn("No email module " + nfe);
+                    emailBuilder = "email";
+                }
+                if (cloud.hasNodeManager(emailBuilder)) {
+                    NodeManager email = cloud.getNodeManager(emailBuilder);
                     Node message = email.createNode();
                     String from = "memorywarner@" + java.net.InetAddress.getLocalHost().getHostName();
                     Pattern p = Pattern.compile("(?i)\\A[A-Z0-9_\\-\\+\\&\\*\\#]+([\\.-]?[A-Z0-9_\\-\\+\\&\\*\\#])*@([A-Z0-9_-]{2,}[\\.]{1})+([A-Z]{2,})\\z");
@@ -74,7 +83,7 @@ public class MemoryWarner extends AbstractCronJob  {
                     log.warn("No mail builder installed");
                     // could introduce depedency on java-mail here.
                 }
-                
+
             } else {
                 log.info("Memory use " + usePerc + " < " + limitPerc);
             }
