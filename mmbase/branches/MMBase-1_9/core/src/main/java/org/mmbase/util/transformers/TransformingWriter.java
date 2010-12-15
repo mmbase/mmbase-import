@@ -74,6 +74,10 @@ public class TransformingWriter extends PipedWriter {
         }
     }
 
+    public Throwable getException() {
+        return link.getException();
+    }
+
     /**
      * {@inheritDoc}
      * Also closes the wrapped Writer.
