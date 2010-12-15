@@ -54,14 +54,18 @@ public class YUIJavaScriptCompressor extends  ReaderTransformer {
     @Override
     public Writer transform(Reader reader, Writer writer) {
         try {
+            LOG.info("Compressing javascript from " + reader + " -> " + writer);
             JavaScriptCompressor compressor = new JavaScriptCompressor(reader, new JavascriptErrorReporter(LOG));
             if (initialNewline) {
                 writer.write("\n");
             }
             compressor.compress(writer, linebreakpos, munge, false,
                                 preserveAllSemiColons, disableOptimizations);
+            LOG.debug("Ready");
         } catch (IOException ioe) {
-            LOG.error(ioe);
+            LOG.warn(ioe.getMessage(), ioe);
+        } finally {
+            LOG.debug(".");
         }
         return writer;
 
