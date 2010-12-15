@@ -1,4 +1,6 @@
 package org.mmbase.util.transformers;
+import org.mmbase.util.*;
+import java.util.*;
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -7,7 +9,11 @@ import static org.junit.Assert.*;
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-public class SpaceReducerTest   {
+public class SpaceReducerTest  {
+
+
+    public SpaceReducerTest() {
+    }
 
 
     protected static SpaceReducer reducer = new SpaceReducer();
@@ -16,10 +22,21 @@ public class SpaceReducerTest   {
     @Test
     public void basics() {
         assertEquals("a\nb", reducer.transform("a\n\nb"));
+        assertEquals("  a\n  b", reducer.transform2("  a\n\n  b"));
+        assertEquals("  b c", reducer.transform2("  b  c"));
+        assertEquals("  a\n  b c", reducer.transform2("  a\n\n  b  c"));
         assertEquals("  a\n  b", reducer.transform("  a\n\n  b"));
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 10000; i++) {
+            reducer.transform2("  b  c");
+        }
+        System.out.println("Duriation" + (System.currentTimeMillis() - start));
+        assertEquals("  b c", reducer.transform("  b  c"));
+        assertEquals("  a\n  b c", reducer.transform("  a\n\n  b  c"));
+
     }
 
-    protected static void test(String line, boolean opened, boolean closed){
+    public static void test(String line, boolean opened, boolean closed){
         SpaceReducer.Tag tag = new SpaceReducer.Tag("pre");
         tag.setLine(line);
         if (opened) assertTrue(tag.hasOpened());
