@@ -13,7 +13,7 @@ See http://www.MMBase.org/license
  *
  * @author Michiel Meeuwisssen
  * @since MMBase-1.8.6
- * @version $Id: ListParser.jj,v 1.4 2008-07-08 15:54:46 michiel Exp $
+ * @version $Id$
  */
 
 options {
