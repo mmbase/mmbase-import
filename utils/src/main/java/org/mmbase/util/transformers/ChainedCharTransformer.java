@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 /**
  * A CharTransformer which wraps N other CharTransformers, and links them with N - 1 new Threads,
  * effectively working as a 'chained' transformer.
- * 
+ *
  * The first transformation is done by the ChainedCharTransformer instance itself, after starting
  * the N - 1 Threads for the other N - 1 transformations.
  *
@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * the CopyCharTransformer if necessary.
  *
  * Schematicly:
- * 
+ *
  <pre>
 
   new ChainedCharTransformer().add(T1).add(T2)....add(TN).transform(R, W);
@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  |  R  --> PW - PR --> PW -...- PR --> W  |
  |     T1     |    T2     |    |   TN     |
  \___________/ \_________/     \_________/
-  
+
 
  R: reader, PR: piped reader, W: writer, PW, piped writer, T1 - TN: transformers
 
@@ -50,7 +50,7 @@ import org.mmbase.util.logging.*;
 public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {
     private static final long serialVersionUID = 0L;
     private static Logger log = Logging.getLoggerInstance(ChainedCharTransformer.class);
-   
+
     private List<CharTransformer> charTransformers = new ArrayList<CharTransformer>();
 
     public ChainedCharTransformer() {
@@ -94,24 +94,24 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
     }
 
 
-    /** 
-     * Implementation without Threads. Not needed when transforming by String. 
+    /**
+     * Implementation without Threads. Not needed when transforming by String.
      */
     @Override
     public String transform(String string) {
         for (CharTransformer ct : charTransformers) {
-            string = ct.transform(string);            
+            string = ct.transform(string);
         }
         return string;
-        
+
     }
 
     // javadoc inherited
     @Override
     public Writer transform(Reader startReader, Writer endWriter) {
         try {
-            PipedReader r = null; 
-            Writer w = endWriter;  
+            PipedReader r = null;
+            Writer w = endWriter;
             boolean closeWriterAfterUse = false; // This boolean indicates if 'w' must be flushed/closed after use.
 
             List<CharTransformerLink> links = new ArrayList<CharTransformerLink>();
@@ -122,13 +122,13 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
             // transformation is performed, and the then started other Threads catch the result.
 
             ListIterator<CharTransformer> i = charTransformers.listIterator(charTransformers.size());
-            while (i.hasPrevious()) {         
+            while (i.hasPrevious()) {
                 CharTransformer ct = i.previous();
                 if (i.hasPrevious()) { // needing a new Thread!
                     r = new PipedReader();
                     CharTransformerLink link =  new CharTransformerLink(ct, r, w, closeWriterAfterUse);
                     links.add(link);
-                    w = new PipedWriter(r);  
+                    w = new PipedWriter(r);
                     closeWriterAfterUse = true;
                     ThreadPools.filterExecutor.execute(link);
                 } else {  // arrived at first in chain, start transforming
@@ -142,7 +142,7 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
             // ready
             for (CharTransformerLink l : links) {
                 try {
-                    while (!l.ready()) {                            
+                    while (!l.ready()) {
                         synchronized(l) { // make sure we have the lock.
                             l.wait();
                         }
@@ -151,11 +151,22 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
                     log.warn("" + ie);
                 }
             }
+            for (CharTransformerLink l : links) {
+                Throwable t = l.getException();
+                if (t != null) {
+                    if (t instanceof RuntimeException) {
+                        log.info("Trowing runtime exception from " + l);
+                        throw (RuntimeException) t;
+                    } else {
+                        log.warn(t.getMessage(), t);
+                    }
+                }
+            }
         } catch (IOException e) {
             log.error(e.toString());
             log.info(Logging.stackTrace(e));
         }
-        return endWriter;        
+        return endWriter;
     }
 
     @Override
@@ -169,14 +180,14 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
     public static void main(String[] args) throws IOException {
         ChainedCharTransformer t = new ChainedCharTransformer().add(new UnicodeEscaper()).add(new SpaceReducer()).add(new UpperCaser()).add(new Trimmer());
         System.out.println("Starting transform");
-        
+
         t.transform(new InputStreamReader(System.in), new OutputStreamWriter(System.out)).flush();
         //System.out.println(t.transform(new StringReader("hello      world")));
 
         System.out.println(t.transform("test test   test test "));
 
         System.out.println("Finished transform");
- 
+
     }
-    
+
 }
