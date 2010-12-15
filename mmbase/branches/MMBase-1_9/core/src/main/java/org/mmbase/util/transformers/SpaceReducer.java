@@ -42,7 +42,10 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         boolean result = false;
 
         if(!line.trim().equals("") || srStatus.getCurrentlyOpen() != null){
-            bw.write(line);
+            // All multiple occurrences of spaces (execpt indentation) must be replaced with 1 space
+            String cleaned = line.replaceAll("([^ ])\\s+", "$1 "); // 975 ms
+            //String cleaned = line; // 909 ms
+            bw.write(cleaned);
             result = true;
         }
         if(srStatus.getCurrentlyOpen() != null) {
