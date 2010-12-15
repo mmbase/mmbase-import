@@ -23,9 +23,17 @@ public class SpaceReducerTest  {
     public void basics() {
         assertEquals("a\nb", reducer.transform("a\n\nb"));
         assertEquals("  a\n  b", reducer.transform2("  a\n\n  b"));
+        assertEquals("  b c", reducer.transform2("  b  c"));
         assertEquals("  a\n  b c", reducer.transform2("  a\n\n  b  c"));
         assertEquals("  a\n  b", reducer.transform("  a\n\n  b"));
-        assertEquals("  a\n  b c", reducer.transform("  a\n\n  b  c")); // FAILS
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 10000; i++) {
+            reducer.transform2("  b  c");
+        }
+        System.out.println("Duriation" + (System.currentTimeMillis() - start));
+        assertEquals("  b c", reducer.transform("  b  c"));
+        assertEquals("  a\n  b c", reducer.transform("  a\n\n  b  c"));
+
     }
 
     public static void test(String line, boolean opened, boolean closed){
