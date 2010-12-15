@@ -71,9 +71,7 @@ public class DataTypeReader {
                     if ("fieldtype".equals(localName) ||  // backward compatibility   XXXX DO WE NEED BACKWARDS COMPATIBILITY??!
                         "specialization".equals(localName) ||
                         "datatype".equals(localName)) {
-                        // diable
                         BasicDataType dataType = readDataType(childElement, baseDataType, collector).dataType;
-
                         collector.finish(dataType);
                         BasicDataType old = collector.addDataType(dataType);
                         if (log.isDebugEnabled()) {
@@ -87,7 +85,7 @@ public class DataTypeReader {
                 } catch (DependencyException de) {
                     de.setCollector(collector);
                     failed.add(de);
-                } catch (Throwable e) {
+                } catch (Exception e) {
                     log.error("Error while parsing element  '" + childElement.getOwnerDocument().getDocumentURI() + ": " + org.mmbase.util.xml.XMLWriter.write(childElement, true, true) + "': " + e.getMessage(), e);
                 }
             }

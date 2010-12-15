@@ -199,12 +199,7 @@ public class ParameterizedDataTypesTest  {
                           new Object[] {"222222222222222.11111",  //15.5
                                         "1", new Integer(100),
                                         new BigDecimal("1.123456789"), "12345.1111111111"},
-                          new Object[] {"3333333333333333", "asjdlkf"}}
-            /*,
-            new Object[] {"owner",
-                          new Object[] {"default", "admin"},
-                          new Object[] {"invalidcontext", null, ""}
-                          }*/
+            new Object[] {"3333333333333333", "asjdlkf"}}
             /*
               XML not very well supported yet
               new Object[] {"xml",
@@ -289,8 +284,7 @@ public class ParameterizedDataTypesTest  {
         NodeManager nodeManager = cloud.getNodeManager("datatypes");
         Field field = nodeManager.getField(fieldName);
         //System.out.println("Testing " + fieldName + " "+ field.getDataType().getDefaultValue());
-        assertEquals("For " + fieldName + " " + field.getDataType(),
-                     field.getDataType().getDefaultValue(), nodeManager.createNode().getValue(fieldName));
+        assertEquals("For " + fieldName + " " + field.getDataType(), field.getDataType().getDefaultValue(), nodeManager.createNode().getValue(fieldName));
     }
 
 

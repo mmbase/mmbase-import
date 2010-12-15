@@ -55,19 +55,16 @@ public class ResourceLoaderTest {
     }
     @Test
     public void getPropertiesBuilder2() throws java.io.IOException {
-        ResourceLoader childLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders");
-        URL url = childLoader.getResource("properties.xml");
-        System.out.println(" 2 " +  url + " " + childLoader.getResourceList("properties.xml"));
-        assertNotNull("did not find /properties.xml", url);
+        URL url = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders").getResource("properties.xml");
+        assertNotNull("did not find properties.xml", url);
         assertTrue("non existing resource should openable for input", url.openConnection().getDoInput());
     }
 
     @Test
     public void getPropertiesBuilder3() throws java.io.IOException {
-        ResourceLoader childLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders");
-        URL url = childLoader.getResource("/properties.xml");
+        URL url = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders").getResource("/properties.xml");
         assertNotNull("did not find /properties.xml", url);
-        assertTrue("non existing resource should openable for input " + url + " " + childLoader.getResourceList("/properties.xml"), url.openConnection().getDoInput());
+        assertTrue("non existing resource should openable for input", url.openConnection().getDoInput());
         System.out.println(url);
     }
 
@@ -83,7 +80,6 @@ public class ResourceLoaderTest {
     public void builders2() throws java.io.IOException {
         List<URL> xmls1 = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders").getResourceList("/properties.xml");
         List<URL> xmls2 = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders").getResourceList("properties.xml");
-        System.out.println("" + xmls1);
         assertEquals(xmls1, xmls2);
 
     }
@@ -115,19 +111,9 @@ public class ResourceLoaderTest {
         ResourceLoader fileLoader = new ResourceLoader();
         fileLoader.roots.add(fileLoader.new FileURLStreamHandler(new File(System.getProperty("user.dir")), true));
 
-        ResourceLoader subLoader = fileLoader.getChildResourceLoader("src");
-
         final String dir = "src/test/resources/org/mmbase/config/directory with spaces";
-        final String subDir = "test/resources/org/mmbase/config/directory with spaces";
-        assertNotNull(fileLoader.getDocument(dir + "/file.xml", false, null));
         assertNotNull(fileLoader.getDocument(dir + "/file with spaces.xml", false, null));
-        assertNull(fileLoader.getDocument(dir + "/filedoesntexist.xml", false, null));
-        assertNull(fileLoader.getDocument(dir + "/file with spacesdoesnexit.xml", false, null));
-        assertNotNull(subLoader.getDocument(subDir + "/file.xml", false, null));
-        assertNotNull(subLoader.getDocument(subDir + "/file with spaces.xml", false, null));
-        assertNull(subLoader.getDocument(subDir + "/filedoesntexist.xml", false, null));
-        assertNull(subLoader.getDocument(subDir + "/file with spacesdoesnexit.xml", false, null));
-
+        assertNotNull(fileLoader.getDocument(dir + "/file.xml", false, null));
 
         ResourceLoader child = fileLoader.getChildResourceLoader(dir);
         Set<String> xmls = child.getResourcePaths(ResourceLoader.XML_PATTERN, true);
