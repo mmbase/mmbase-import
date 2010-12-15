@@ -29,6 +29,12 @@ public class LoggerCharTransformer extends ReaderTransformer implements CharTran
 
     public static final LoggerCharTransformer INSTANCE = new LoggerCharTransformer();
 
+    private boolean debugChars = false;
+
+    public void setDebugChars(boolean d) {
+        debugChars = d;
+    }
+
     public LoggerCharTransformer() {
         super();
     }
@@ -43,9 +49,15 @@ public class LoggerCharTransformer extends ReaderTransformer implements CharTran
             while (-1 != (n = r.read(buffer))) {
                 w.write(buffer, 0, n);
                 size += n;
-                LOG.service(new String(buffer, 0, n));
+                if (debugChars) {
+                    for (int i = 0; i < n; i++) {
+                        LOG.service("char " + (size - n + i) + ": " + buffer[i] + " (" + (int) buffer[i] + ")");
+                    }
+                } else {
+                    LOG.service(new String(buffer, 0, n));
+                }
             }
-            LOG.service("Ready");
+            LOG.service("Ready " + size + " bytes");
         } catch (java.io.IOException ie) {
             LOG.error(ie.getMessage(), ie);
         }
