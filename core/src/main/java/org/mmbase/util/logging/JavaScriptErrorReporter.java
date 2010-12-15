@@ -17,10 +17,10 @@ import org.mozilla.javascript.*;
  * @author Michiel Meeuwissen
  * @since MMBase-1.9.6
  */
-public class JavascriptErrorReporter implements ErrorReporter {
+public class JavaScriptErrorReporter implements ErrorReporter {
 
     private final Logger log;
-    public JavascriptErrorReporter(Logger log) {
+    public JavaScriptErrorReporter(Logger log) {
         this.log = log;
     }
 
