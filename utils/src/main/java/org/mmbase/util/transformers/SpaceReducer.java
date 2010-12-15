@@ -42,16 +42,19 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         boolean result = false;
 
         if(!line.trim().equals("") || srStatus.getCurrentlyOpen() != null){
-            bw.write(line);
+            // All multiple occurrences of spaces (execpt indentation) must be replaced with 1 space
+            String cleaned = line.replaceAll("([^ ])\\s+", "$1 "); // 975 ms
+            //String cleaned = line; // 909 ms
+            bw.write(cleaned);
             result = true;
         }
-        if(srStatus.getCurrentlyOpen() != null){
+        if(srStatus.getCurrentlyOpen() != null) {
             //look for a closing tag.
             srStatus.getCurrentlyOpen().setLine(line);
             if(srStatus.getCurrentlyOpen().hasClosed()){
                 srStatus.setCurrentlyOpen(null);
             }
-        }else{
+        } else {
             //look for an opening tag
             for (Tag tag : tagsToPass) {
                 tag.setLine(line);
@@ -106,6 +109,11 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         }
         return w;
     }
+    protected String transform2(String r) {
+        if (r == null) return null;
+        Writer sw = transform2(new StringReader(r), new StringWriter());
+        return sw.toString();
+    }
 
     @Override
     public String toString() {
@@ -124,7 +132,7 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
      * @author ebunders
      *
      */
-    protected static class Tag{
+    protected static class Tag {
         private boolean hasOpened = false;
         private boolean hasClosed = false;
         private Pattern openingPattern;
@@ -184,13 +192,13 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         public boolean hasClosed(){
             return hasClosed;
         }
-        @Override
         public String toString() {
             return name;
         }
     }
 
-    @Override public Status createNewStatus(){
+    @Override
+    public Status createNewStatus(){
         return new SpaceReducerStatus();
     }
 
