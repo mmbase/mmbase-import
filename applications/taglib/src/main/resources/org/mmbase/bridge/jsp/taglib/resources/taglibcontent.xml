@@ -320,6 +320,18 @@
     </info>
   </escaper>
 
+  <escaper id="logger">
+    <class>org.mmbase.util.transformers.LoggerCharTransformer</class>
+    <info>Just copies everything, but also logs it</info>
+  </escaper>
+
+
+  <parameterizedescaper id="charlogger">
+    <class>org.mmbase.util.transformers.LoggerCharTransformer</class>
+    <info>Just copies everything, but also logs it</info>
+    <param name="debugChars" value="true" />
+  </parameterizedescaper>
+
   <parameterizedescaper id="regexps">
     <class>org.mmbase.util.transformers.RegexpReplacerFactory</class>
     <info>
@@ -534,7 +546,7 @@
   </parameterizedescaper>
 
   <parameterizedescaper id="css-compress">
-    <class>org.mmbase.util.transformers.YUIJavaScriptCompressor</class>
+    <class>org.mmbase.util.transformers.YUICSSCompressor</class>
     <fallback>none</fallback>
   </parameterizedescaper>
 
