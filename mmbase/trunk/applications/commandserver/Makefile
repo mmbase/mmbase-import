@@ -5,4 +5,4 @@ run:
 
 .PHONY:
 test:
-	java -cp `ls target/mmbase-commandserver-*` org.mmbase.util.MagickClient Makefile /usr/bin/convert
+	java -cp `ls target/mmbase-commandserver-*` org.mmbase.util.MagickClient Makefile /opt/local/bin/convert -version
