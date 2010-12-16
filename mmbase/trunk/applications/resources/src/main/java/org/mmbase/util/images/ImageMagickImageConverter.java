@@ -99,7 +99,6 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 log.debug("Waitting for " + copier);
                 copier.waitFor();
                 log.debug("Ready 1");
-                socket.shutdownInput();
                 socket.shutdownOutput();
                 log.debug("Now waiting for 2");
                 copier2.waitFor();
