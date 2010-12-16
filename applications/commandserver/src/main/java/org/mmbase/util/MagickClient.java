@@ -99,7 +99,7 @@ public class MagickClient {
         final List<String> env     = new ArrayList<String>();
         final String file = args[0];
 
-        for (int i = 1; i < 50; i++) {
+        for (int i = 1; i <= 50; i++) {
             Thread t = new Thread(new Job(file, command, env));
             t.start();
         }
