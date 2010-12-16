@@ -21,7 +21,10 @@ public class JavaScriptErrorReporter implements ErrorReporter {
 
     private final Logger log;
     public JavaScriptErrorReporter(Logger log) {
-        this.log = log;
+        this.log = log == null ? Logging.getLoggerInstance("org.mmbase.JAVASCRIPT") : log;
+    }
+    public JavaScriptErrorReporter() {
+        this(null);
     }
 
     @Override
