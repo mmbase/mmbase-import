@@ -34,13 +34,20 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
 
     private static final Logger log = Logging.getLoggerInstance(ViewDatabaseStorageManager.class);
 
+
+    @Override
+    protected boolean tablesInheritFields() {
+        return false;
+    }
+
     /**
      * Determine if the basic storage elements exist
      * Basic storage elements include the 'object' storage (where all objects and their types are registered).
      * @return <code>true</code> if basic storage elements exist
      * @throws StorageException if an error occurred while querying the storage
      */
-    @Override public boolean exists() throws StorageException {
+    @Override
+    public boolean exists() throws StorageException {
         return viewExists(factory.getMMBase().getRootBuilder());
     }
 
@@ -50,15 +57,23 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      * @return <code>true</code> if the storage element exists, false if it doesn't
      * @throws StorageException if an error occurred while querying the storage
      */
-    @Override public boolean exists(MMObjectBuilder builder) throws StorageException {
-        return viewExists(builder);
+    @Override
+    public boolean exists(MMObjectBuilder builder) throws StorageException {
+        boolean result =  viewExists(builder);
+        if (result) {
+            if (verifyTables() && !isVerified(builder)) {
+                verify(builder);
+            }
+        }
+        return result;
     }
 
     /**
      * Create the basic elements for this storage
      * @throws StorageException if an error occurred during the creation of the object storage
      */
-    @Override public void create() throws StorageException {
+    @Override
+    public void create() throws StorageException {
         if(!viewExists(factory.getMMBase().getRootBuilder())) {
             viewCreate(factory.getMMBase().getRootBuilder());
             createSequence();
@@ -70,13 +85,19 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      * @param builder the builder to create the storage element for
      * @throws StorageException if an error occurred during the creation of the storage element
      */
-    @Override public void create(MMObjectBuilder builder) throws StorageException {
+    @Override
+    public void create(MMObjectBuilder builder) throws StorageException {
         if(!viewExists(builder)){
             viewCreate(builder);
         }
+        if (verifyTables() && !isVerified(builder)) {
+            verify(builder);
+        }
+
     }
 
-    @Override public void create(final MMObjectNode node, final MMObjectBuilder builder) throws StorageException {
+    @Override
+    public void create(final MMObjectNode node, final MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
         if (localTransaction) {
             beginTransaction();
@@ -130,7 +151,8 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      * @param builder the builder to change the node in
      * @throws StorageException if an error occurred during change
      */
-    @Override public void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
+    @Override
+    public void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
         if (localTransaction) {
             beginTransaction();
@@ -172,7 +194,8 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      * @param builder the builder to delete the node in
      * @throws StorageException if an error occurred during delete
      */
-    @Override public void delete(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
+    @Override
+    public void delete(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
         if (localTransaction) {
             beginTransaction();
@@ -279,7 +302,8 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         super.createIndex(index, getTableName(index.getParent()));
     }
 
-    @Override protected boolean exists(Index index) throws StorageException {
+    @Override
+    protected boolean exists(Index index) throws StorageException {
         return super.exists(index, getTableName(index.getParent()));
     }
 
@@ -313,14 +337,19 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
             // Create the table
             createTable(builder, tableFields, tablename);
 
-            //TODO rewrite verify check with views
-            //verify(builder);
         }
 
         if (builder.getParentBuilder() != null) {
             createView(builder, inheritedBuilder, fields, tablename);
         }
         return true;
+    }
+
+    @Override
+    public void verify(MMObjectBuilder builder) throws StorageException {
+        log.debug("Verifying " + builder + " for " + this.getClass());
+        super.verify(builder);
+
     }
 
     private void createView(MMObjectBuilder builder, MMObjectBuilder inheritedBuilder, List<CoreField> fields, String tablename) throws StorageError {
