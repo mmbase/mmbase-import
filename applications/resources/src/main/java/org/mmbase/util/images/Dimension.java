@@ -17,7 +17,8 @@ package org.mmbase.util.images;
  */
 
 
-public class Dimension {
+public class Dimension implements java.io.Serializable {
+    private static final long serialVersionUID = 2773350183942417955L;
 
     public static final Dimension UNDETERMINED = new Dimension(-1, -1);
     protected int x;
@@ -44,7 +45,7 @@ public class Dimension {
     public int getArea() {
         return x * y;
     }
-    
+
     public String toString() {
         return "" + x + "x" + y;
     }
