@@ -91,6 +91,26 @@ public class CommandServer {
     final static BlockingQueue<Runnable> threadQueue = new  SynchronousQueue<Runnable>(true);
     final static Executor threads = new ThreadPoolExecutor(6 * THREADS, Integer.MAX_VALUE, 5 * 60, TimeUnit.SECONDS, threadQueue, factory);
 
+    public static String stackTrace(Throwable e, int max) {
+        StackTraceElement[] stackTrace = e.getStackTrace();
+        String message = e.getMessage();
+        StringBuilder buf = new StringBuilder(e.getClass().getName());
+        buf.append(": ");
+        if (message == null) {
+
+        }  else {
+            buf.append(message);
+        }
+        for (int i = 0; i < stackTrace.length; i++) {
+            if (i == max) break;
+            buf.append("\n        at ").append(stackTrace[i]);
+        }
+        Throwable t = e.getCause();
+        if (t != null) {
+            buf.append("\n").append(stackTrace(t, max));
+        }
+        return buf.toString();
+    }
     // copy job
     public static class Copier implements Runnable {
         private boolean ready;
@@ -113,7 +133,7 @@ public class CommandServer {
                     count+= size;
                 }
             } catch (Throwable t) {
-                System.err.println("Connector " + toString() +  ": " + t.getClass() + " " + t.getMessage());
+                System.err.println("Connector " + toString() +  ": " + t.getClass() + " " + t.getMessage() + " " + in + " " + stackTrace(t, 10));
             }
             debug("Read " + toString() + " "  + count);
             synchronized(this) {
@@ -164,10 +184,10 @@ public class CommandServer {
                 PipedInputStream pi  = new PipedInputStream();
                 PipedOutputStream po = new PipedOutputStream(pi);
 
-                Copier connector = new Copier(input, po, ".input -> piped output");
+                Copier connector = new Copier(input, po, number + ".input -> piped output");
                 threads.execute(connector);
 
-                Copier connector2 = new Copier(pi, p.getOutputStream(), ",piped input -> process input");
+                Copier connector2 = new Copier(pi, p.getOutputStream(), number + ",piped input -> process input");
                 threads.execute(connector2);
 
 
@@ -176,30 +196,32 @@ public class CommandServer {
 
                 InputStream  inputStream = p.getInputStream();
                 OutputStream outputStream = p.getOutputStream();
-                Copier connector3 = new Copier(inputStream, po2, ";process output -> piped output 2");
+
+                Copier connector3 = new Copier(inputStream, po2, number + ";process output -> piped output 2");
                 threads.execute(connector3);
 
 
+                InputStream  errorStream = p.getErrorStream();
                 PipedInputStream piErr = new PipedInputStream();
                 PipedOutputStream poErr = new PipedOutputStream(piErr);
-                InputStream  errorStream = p.getErrorStream();
-                Copier connectorErr = new Copier(errorStream, poErr, ";process err -> piped err");
+
+                Copier connectorErr = new Copier(errorStream, poErr, number +  ";process err -> piped err");
                 threads.execute(connectorErr);
 
-                Copier connector4 = new Copier(pi2, output, ";piped input2 -> output");
+                Copier connector4 = new Copier(pi2, output, number + ";piped input2 -> output");
                 threads.execute(connector4);
 
-                Copier connectorErr2 = new Copier(piErr, errors, ";piped err -> errors");
+
+                Copier connectorErr2 = new Copier(piErr, errors, number +  ";piped err -> errors");
                 threads.execute(connectorErr2);
 
 
                 connector.waitFor();
-                if (close != null) {
-                    close.run();
-                }
-                po.close();
-                connector2.waitFor();
 
+                po.close();
+
+
+                connector2.waitFor();
                 outputStream.close();
 
                 connector3.waitFor();
@@ -209,12 +231,26 @@ public class CommandServer {
                 debug("Waiting for process to end");
                 p.waitFor();
 
+
                 debug("Closing");
+                connectorErr.waitFor();
+                poErr.close();
+
                 connector4.waitFor();
+                pi2.close();
+
+                connectorErr2.waitFor();
+                piErr.close();
+
                 output.close();
+
                 if (errors != output) {
                     errors.close();
                 }
+                if (close != null) {
+                    close.run();
+                }
+
                 System.out.println(number + " ready. Exit value: " + p.exitValue());
 
             } catch (Exception ie) {
@@ -264,8 +300,8 @@ public class CommandServer {
             while (true) {
 
                 final Socket accept = server.accept();
-                accept.setSoTimeout(100000);
-                accept.setKeepAlive(true);
+                accept.setSoTimeout(10000);
+                accept.setKeepAlive(false);
                 accept.setReceiveBufferSize(1024);
                 Command command = new Command(accept.getInputStream(),
                                               accept.getOutputStream(),
@@ -281,8 +317,6 @@ public class CommandServer {
                                               });
                 System.out.println(command.number + " " + format.format(new Date()) + " " + " Connection " + accept + " (queue " + socketQueue.size() + " )");
                 socketThreads.execute(command);
-                System.out.println(command.number + ".");
-
 
             }
         }
