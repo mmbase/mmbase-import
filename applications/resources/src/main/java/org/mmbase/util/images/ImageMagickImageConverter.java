@@ -97,7 +97,6 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 log.debug("Waitting for " + copier);
                 copier.waitFor();
                 log.debug("Ready 1");
-                socket.shutdownInput();
                 socket.shutdownOutput();
                 log.debug("Now waiting for 2");
                 copier2.waitFor();
@@ -282,11 +281,11 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
      */
     public boolean isMinimumVersion(int major, int minor, int patch) {
         return (imVersionMajor > major) ||
-               ((imVersionMajor == major) && 
-                ((imVersionMinor > minor) || 
+               ((imVersionMajor == major) &&
+                ((imVersionMinor > minor) ||
                   ((imVersionMinor == minor) && (imVersionPatch >= patch))
                 )
-               ); 
+               );
     }
 
     /**
@@ -785,6 +784,8 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             log.debug("Ready copying stuff to socket");
             originalStream.close();
             socket.shutdownOutput();
+
+
             log.debug("Waiting for response");
             copier2.waitFor();
             socket.close();
