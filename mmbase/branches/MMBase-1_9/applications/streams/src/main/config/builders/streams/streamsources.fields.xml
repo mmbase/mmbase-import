@@ -61,16 +61,6 @@
   </field>
 
 
-  <field name="fps">
-    <gui>
-      <guiname xml:lang="en">Frames/s</guiname>
-      <guiname xml:lang="nl">Frames/s</guiname>
-    </gui>
-    <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
-      <unique value="false" />
-    </datatype>
-  </field>
-
   <field name="mimetype" state="system">
     <descriptions>
       <description xml:lang="en">Internet media type, two-part identifier for the file format</description>
