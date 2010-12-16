@@ -89,41 +89,40 @@ import org.mmbase.util.logging.Logging;
  */
 public class CharacterEncodingFilter implements Filter {
 
-    /** MMBase logging system */
-    private static Logger log =
-        Logging.getLoggerInstance(CharacterEncodingFilter.class.getName());
+    private static final Logger LOG = Logging.getLoggerInstance(CharacterEncodingFilter.class);
 
     private String encoding = null;
     /**
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
      */
+    @Override
     public void init(FilterConfig config) throws ServletException {
-        log.info("CharacterEncodingFilter init");
+        LOG.info("CharacterEncodingFilter init");
         encoding = config.getInitParameter("encoding");
         if (encoding == null) {
-           MMBase mmbase = MMBase.getMMBase();
-           encoding = mmbase.getEncoding();
-           if (encoding == null) {
-              encoding = "UTF-8";
-           }
+            // would like to drop the dependency on core
+            MMBase mmbase = MMBase.getMMBase();
+            encoding = mmbase.getEncoding();
+            if (encoding == null) {
+                encoding = "UTF-8";
+            }
         }
     }
 
     /**
      * @see javax.servlet.Filter#destroy()
      */
+    @Override
     public void destroy() {
-        log.info("CharacterEncodingFilter destroy");
+        LOG.info("CharacterEncodingFilter destroy");
     }
 
     /**
      * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
      */
-    public void doFilter(
-        ServletRequest request,
-        ServletResponse response,
-        FilterChain chain)
-        throws IOException, ServletException {
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
 
         if (request instanceof HttpServletRequest) {
             HttpServletRequest req = (HttpServletRequest) request;
@@ -132,10 +131,9 @@ public class CharacterEncodingFilter implements Filter {
                     // Parameters are usually in the encoding of the jsp with the form
                     // jsp pageEncoding directive (ContentType charset)
                     req.setCharacterEncoding(encoding);
-               }
-            }
-            catch (Exception e) {
-                log.warn("Error setting encoding : " + e.getMessage());
+                }
+            } catch (Exception e) {
+                LOG.warn("Error setting encoding : " + e.getMessage());
             }
         }
 
