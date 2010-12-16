@@ -193,34 +193,50 @@ public final class AnalyzerUtils implements java.io.Serializable {
 
     private static final Pattern PATTERN_UNKNOWN     = Pattern.compile("(.*?): Unknown format.*");
     private static final Pattern PATTERN_UNSUPPORTED = Pattern.compile("\\s*(.*)Unsupported video codec.*?");
+    private static final Pattern PATTERN_INVALID_DATA = Pattern.compile("(.*)Invalid data found when processing input");
 
     /* Looks for messages from ffmpeg that it does not support this kind of file.
      * browserevent.ram: Unknown format
      * [NULL @ 0x1804800]Unsupported video codec
     */
     public boolean unsupported(String l, Node source, Node dest) {
-        if (! updateSource) return false;
-        Matcher m = PATTERN_UNKNOWN.matcher(l.trim());
-        if (m.matches()) {
-            log.warn("UNKNOWN format: " + m.group(1) + " : " + source.getNumber() + " " + source.getStringValue("url") + " matched on " + l);
-            source.setIntValue("state", State.SOURCE_UNSUPPORTED.getValue());
-            source.commit();
-            return true;
+        if (! updateSource) {
+            return false;
         }
-        m = PATTERN_UNSUPPORTED.matcher(l);
-        if (m.matches()) {
-            log.warn("UNSUPPORTED " + m.group(1) + " : " + source.getNumber());
+        {
+            Matcher m = PATTERN_UNKNOWN.matcher(l.trim());
+            if (m.matches()) {
+                log.warn("UNKNOWN format: " + m.group(1) + " : " + source.getNumber() + " " + source.getStringValue("url") + " matched on " + l);
+                source.setIntValue("state", State.SOURCE_UNSUPPORTED.getValue());
+                source.commit();
+                return true;
+            }
+        }
+        {
+            Matcher m = PATTERN_UNSUPPORTED.matcher(l);
+            if (m.matches()) {
+                log.warn("UNSUPPORTED " + m.group(1) + " : " + source.getNumber());
 
-            source.setIntValue("state", State.SOURCE_UNSUPPORTED.getValue());
-            source.commit();
-            return true;
+                source.setIntValue("state", State.SOURCE_UNSUPPORTED.getValue());
+                source.commit();
+                return true;
+            }
+        }
+        {
+            Matcher m = PATTERN_INVALID_DATA.matcher(l.trim());
+            if (m.matches()) {
+                log.warn("INVALID DATA " + m.group(1) + " : " + source.getNumber());
+                source.setIntValue("state", State.SOURCE_UNSUPPORTED.getValue());
+                source.commit();
+                return true;
+            }
         }
         return false;
     }
 
     /* Output #0, mpeg, to 'presto.mpeg': */
     private static final Pattern PATTERN_OUTPUT = Pattern.compile("^Output #\\d+?, (.*), to.*?");
-    
+
     public boolean output(String l, Node source, Node dest) {
         Matcher m = PATTERN_OUTPUT.matcher(l);
         if (m.matches()) {
@@ -400,7 +416,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
                     dest.setIntValue("bitrate", bitrate);
                 }
             }
-            
+
             m = VIDEOFPS_PATTERN.matcher(l);
             if (m.matches()) {
                 if (log.isDebugEnabled()) log.debug("fps: " + m.group(1));
@@ -446,7 +462,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
 
             if (source.getNodeManager().hasField("channels") && updateSource) {
                 if (source.getIntValue("channels") < 0) source.setIntValue("channels", ch);
-                
+
                 if (source.getNodeManager().hasField("acodec") && source.getIntValue("acodec") < 0) {
                     source.setIntValue("acodec", libtoCodec(m.group(1)).toInt() );
                 } else if (source.getIntValue("codec") < 0) {
@@ -464,7 +480,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
                 }
             }
 
-            if (source.getNodeManager().getName().equals(AUDIO) || 
+            if (source.getNodeManager().getName().equals(AUDIO) ||
                     (dest != null && dest.getNodeManager().getName().equals(AUDIOC))) {
                 m = AUDIOBITRATE_PATTERN.matcher(l);
                 Matcher m2 = AUDIOBITRATE2_PATTERN.matcher(l);
@@ -488,7 +504,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
                     }
                 }
             }
-            
+
             return true;
         } else {
             return false;
