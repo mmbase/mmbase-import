@@ -543,8 +543,9 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
 
                     // default for notnull is value of required
                     def.setNotNull("true".equals(fieldNotNull) ||
-                                   "number".equals(fieldName) || // number is a very odd field. It is 'node' (makes no sense),
-                                                                 // it is 'not null' but not really required, because it automaticly filled
+                                   "number".equals(fieldName) || // number is a very odd field. It is 'node' (makes no sense),  it is 'not null' but not really required, because it
+                                                                 // automaticly filled
+                                   "owner".equals(fieldName) || // see number
                                    ("".equals(fieldNotNull) && dataType.isRequired() && dataType.getRequiredRestriction().getEnforceStrength() >= DataType.ENFORCE_ALWAYS));
 
                     if (def.isNotNull() && ! "false".equalsIgnoreCase(fieldRequired)) { // If not null, it _must_ be required, unless explicitely not so (MMB-1504)
