@@ -1,6 +1,7 @@
 /*<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@ taglib uri="http://www.opensymphony.com/oscache" prefix="os" 
 %><jsp:directive.page session="false" />
-*///<mm:content type="text/javascript" expires="300" postprocessor="javascript-compress">
+*///<mm:content type="text/javascript" expires="3600" postprocessor="none"><os:cache time="3600"><mm:escape  escape="javascript-compress">
 /*
  * See test.jspx for example usage.
 
@@ -1345,4 +1346,4 @@ MMBaseValidator.prototype.addValidation = function(el) {
     this.addValidationForElements(els);
     el = null;
 };
-//</mm:content>
+//</mm:escape></os:cache></mm:content>
