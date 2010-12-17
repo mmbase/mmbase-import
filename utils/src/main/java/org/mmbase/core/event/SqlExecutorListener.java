@@ -30,6 +30,9 @@ public class SqlExecutorListener extends org.mmbase.util.SqlExecutor implements 
         } else {
         }
     }
+    public int getWeight() {
+        return 0;
+    }
 
     @Override
     public String toString() {

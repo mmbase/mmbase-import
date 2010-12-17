@@ -9,11 +9,10 @@ package org.mmbase.core.event;
 /**
  *
  * @author Michiel Meeuwissen
- * @since MMBase-1.9.3
- * @version $Id: TransactionEventListener.java 41419 2010-03-16 12:54:44Z michiel $
+ * @since MMBase-1.9.6
+ * @version $Id: EventListener.java 34900 2009-05-01 16:29:42Z michiel $
  */
-public interface SystemEventListener extends   WeightEventListener {
-    public void notify(SystemEvent event);
-
+public interface WeightEventListener extends EventListener {
+    public int getWeight();
 
 }
