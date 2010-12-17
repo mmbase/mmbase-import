@@ -241,7 +241,7 @@ public class ContentTag extends LocaleTag  {
             } catch (NoClassDefFoundError ncdfe) {
                 if (fallback.length() > 0) {
                     ct = charTransformers.get(fallback);
-                    log.info("For " + id + " " + ncdfe.getMessage() + " falling back to " + fallback + " " + ct);
+                    log.info("For " + id + " " + ncdfe.getClass().getName() + " " + ncdfe.getMessage() + " falling back to " + fallback + " " + ct);
 
                 } else {
                     log.fatal("No fallback found for " + id);
