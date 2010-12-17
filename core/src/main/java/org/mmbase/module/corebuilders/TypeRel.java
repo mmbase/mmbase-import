@@ -98,6 +98,7 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
         return true;
     }
 
+    @Override
     public void notify(SystemEvent se) {
         if (se instanceof SystemEvent.ServletContext) {
             ServletContext sx = ((SystemEvent.ServletContext) se).getServletContext();
@@ -107,6 +108,10 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
                 log.info("Found default relation step direction " + def);
             }
         }
+    }
+    @Override
+    public int getWeight() {
+        return 0;
     }
 
     /**
