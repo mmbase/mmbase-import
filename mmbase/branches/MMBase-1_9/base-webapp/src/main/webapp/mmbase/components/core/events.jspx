@@ -92,7 +92,7 @@
           <select  name="class">
             <c:forTokens items="IdEvent:IdEvent,NodeEvent:NodeEvent,RelationEvent:RelationEvent" var="_" delims=",">
               <c:choose>
-                <c:when test='${class eq fn:split(_, ":")[0]}'>
+                <c:when test='${pageScope["class"] eq fn:split(_, ":")[0]}'>
                   <option value='${fn:split(_, ":")[0]}' selected="selected">${fn:split(_, ":")[1]}</option>
                 </c:when>
                 <c:otherwise>
