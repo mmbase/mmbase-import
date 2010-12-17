@@ -107,6 +107,9 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
             }
         }
     }
+    public int getWeight() {
+        return 0;
+    }
 
     /**
      * The TypeRel cache contains all TypeRels MMObjectNodes. Called after init by MMBase, and when
