@@ -89,13 +89,14 @@
       </positions>
     </editor>
     <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes">
-      <required value="true" enforce="never" />
+      <required value="true"  />
       <enumeration>
         <query type="mmbasecontexts" xmlns="http://www.mmbase.org/xmlns/searchquery" >
           <sortorder field="name" />
         </query>
       </enumeration>
     </datatype>
+    <db><type notnull="false" /></db>
   </field>
   <field name="status">
     <gui>
