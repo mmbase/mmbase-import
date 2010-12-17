@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * @since   MMBase-1.9.3
  * @version $Id: TransactionEvent.java 41369 2010-03-15 20:54:45Z michiel $
  */
-public abstract class SystemEvent extends Event {
+public abstract class SystemEvent extends Event  {
     private static final Logger LOG = Logging.getLoggerInstance(SystemEvent.class);
 
     public SystemEvent() {
@@ -87,6 +87,9 @@ public abstract class SystemEvent extends Event {
         SystemEventListener logger = new SystemEventListener() {
                 public void notify(SystemEvent s) {
                     LOG.service(" Received " + s);
+                }
+                public int getWeight() {
+                    return 50000;
                 }
                 @Override
                 public String toString() {

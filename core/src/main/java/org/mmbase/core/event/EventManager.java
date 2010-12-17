@@ -78,6 +78,11 @@ public class EventManager implements SystemEventListener {
         if (se instanceof SystemEvent.Shutdown) {
             shutdown();
         }
+
+    }
+
+    public int getWeight() {
+        return Integer.MAX_VALUE;
     }
 
 
