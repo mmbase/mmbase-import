@@ -108,6 +108,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
 
     static {
         EventManager.getInstance().addEventListener(new SystemEventListener() {
+                @Override
                 public void notify(SystemEvent se) {
                     if (se instanceof BuildersRead) {
                         int iterationCount = 0;
@@ -125,6 +126,10 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
                         } while (postponedDataTypeDecoders.size() < size);
 
                     }
+                }
+                @Override
+                public int getWeight() {
+                    return 0;
                 }
             });
     }
