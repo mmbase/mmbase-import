@@ -16,6 +16,7 @@ import org.mmbase.util.logging.MDC;
 
 import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.ResourceLoader;
+import org.mmbase.core.event.*;
 
 import org.apache.log4j.xml.DOMConfigurator;
 
@@ -54,6 +55,22 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     private static ResourceWatcher configWatcher;
 
     private static PrintStream stderr;
+
+    static {
+        EventManager.getInstance().addEventListener(new SystemEventListener() {
+                @Override
+                public void notify(SystemEvent se) {
+                    if (se instanceof SystemEvent.Shutdown) {
+                        log.info("Shutting down log4j");
+                        log4jRepository.shutdown();
+                    }
+                }
+                public int getWeight() {
+                    // logging should be shut down last
+                    return Integer.MAX_VALUE;
+                }
+            });
+    }
 
     /**
      * Constructor, like the constructor of {@link org.apache.log4j.Logger}.
