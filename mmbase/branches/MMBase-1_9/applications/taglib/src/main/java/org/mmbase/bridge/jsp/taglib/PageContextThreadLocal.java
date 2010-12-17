@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import org.mmbase.core.event.*;
 import java.util.LinkedList;
 
 import javax.servlet.jsp.PageContext;
@@ -25,7 +26,27 @@ import org.mmbase.util.logging.Logging;
  */
 public class PageContextThreadLocal {
 
-    private static final Logger log = Logging.getLoggerInstance(PageContextThreadLocal.class);
+
+
+    private static final Logger LOG = Logging.getLoggerInstance(PageContextThreadLocal.class);
+
+    static {
+        LOG.info("Adding system event listener");
+        EventManager.getInstance().addEventListener(new SystemEventListener() {
+                @Override
+                public void notify(SystemEvent se) {
+                    LOG.info("Got " + se);
+                    if (se instanceof SystemEvent.Shutdown) {
+                        LOG.info("Shutting down. Clearing " + threadPageContexts.get());
+                        threadPageContexts.remove();
+                    }
+                }
+                public int getWeight() {
+                    return 0;
+                }
+            });
+    }
+
 
     private static ThreadLocal<LinkedList<PageContextInfo>> threadPageContexts
                         = new ThreadLocal<LinkedList<PageContextInfo>>() {
@@ -38,16 +59,18 @@ public class PageContextThreadLocal {
         LinkedList<PageContextInfo> stack = threadPageContexts.get();
         if (stack.size() == 0) {
             stack.add(0, new PageContextInfo(pc, contextReferrerTag));
-            log.trace("added new stack size = " + stack.size());
-        }
-        else {
+            LOG.trace("added new stack size = " + stack.size());
+        } else {
             PageContextInfo first = stack.getFirst();
             if (first.pageContext != pc) {
                 stack.add(0, new PageContextInfo(pc, contextReferrerTag));
-                log.trace("added new stack size = " + stack.size());
-            }
-            else {
-                log.trace("PageContext is already on the stack");
+                if (stack.size() < 20) {
+                    LOG.trace("added new stack size = " + stack.size());
+                } else {
+                    LOG.warn("added new stack size = " + stack.size());
+                }
+            } else {
+                LOG.trace("PageContext is already on the stack");
             }
         }
     }
@@ -67,7 +90,7 @@ public class PageContextThreadLocal {
         PageContextInfo first = stack.getFirst();
         if (first.firstTagWithPageContext == contextReferrerTag) {
             stack.removeFirst();
-            log.trace("removed new stack size = " + stack.size());
+            LOG.trace("removed new stack size = " + stack.size());
         }
     }
 
