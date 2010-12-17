@@ -1,9 +1,8 @@
-/*
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<mm:content type="text/javascript" language="${param.locale}">
-<fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
-*/
+/*<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@ taglib uri="http://www.opensymphony.com/oscache" prefix="os"
+%><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"  
+%><jsp:directive.page session="false" />
+*///<mm:content type="text/javascript" expires="3600" postprocessor="none" language="${param.locale}"><os:cache time="3600"><mm:escape  escape="javascript-compress"><fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
 /**
  * Generic mmbase search & relate tool. Javascript part.
  *
@@ -67,7 +66,7 @@ $(document).ready(
 			 });
                  }
 		);
-
+	
 	$("input.search").
 	    live("keyup",
 		 function(e) {
@@ -106,12 +105,13 @@ MMBaseLogger.prototype.debug = function (msg) {
         if (errorTextArea) {
             errorTextArea.value = "LOG: " + msg + "\n" + errorTextArea.value;
         } else {
-            // firebug console
-            console.log(msg);
-
+	    if (console != null) {
+		// firebug console
+		console.log(msg);
+	    }
         }
     }
-}
+};
 
 /*
  * ************************************************************************************************************************
@@ -1111,7 +1111,4 @@ MMBaseSearcher.prototype.resetTrClasses = function() {
     });
 };
 
-/*
-</fmt:bundle>
-</mm:content>
-*/
+//</fmt:bundle></mm:escape></os:cache></mm:content>
