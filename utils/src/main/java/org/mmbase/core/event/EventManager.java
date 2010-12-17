@@ -101,8 +101,12 @@ public class EventManager implements SystemEventListener {
             log.service("Reconfiguring event managers, because " + se);
             watcher.onChange();
         }
+
     }
 
+    public int getWeight() {
+        return Integer.MAX_VALUE;
+    }
 
     protected ResourceWatcher watcher;
 
