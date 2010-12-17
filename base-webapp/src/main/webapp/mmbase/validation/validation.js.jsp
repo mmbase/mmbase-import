@@ -38,7 +38,7 @@ function MMBaseValidator(root, id) {
 
     this.lang          = null;
     this.sessionName   = null;
-    this.activeElement = null;
+   this.activeElement = null;
     this.checkAfter    = 600;
     this.logArea       = "logarea";
     this.id = MMBaseValidator.validators.push(this);
@@ -711,6 +711,7 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
         this.trace("got " + result.string());
         el.mm_dataTypeStructure = result;
     }
+    console.log(el.mm_dataTypeStructure);
     return el.mm_dataTypeStructure;
 };
 
@@ -724,7 +725,7 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
  */
 MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
     var nm = nodemanager.split(",");
-    for (var i in nm) {
+    for (var i=0; i < nm.length; i++) {
         if (nm[i].length > 0) {
             var n = nm[i];
             if (MMBaseValidator.prefetchedNodeManagers[n] == "success") {
@@ -743,7 +744,6 @@ MMBaseValidator.prototype.checkPrefetch = function() {
             }
         });
     if (nodemanagers.length > 0) {
-        var self = this;
         this.log("prefetching " + nodemanagers);
         var url = '<mm:url page="/mmbase/validation/datatypes.jspx" />';
         var params = {nodemanager: nodemanagers };
