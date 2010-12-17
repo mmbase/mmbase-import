@@ -37,6 +37,13 @@ public abstract class SystemEvent extends Event {
     public static class Up extends Collectable {
     }
 
+    /**
+     * Notifies that the local MMBase is going to be shut down
+     * @since MMBase-1.9.6
+     */
+    public static class Shutdown extends Collectable {
+    }
+
 
     public static class ResourceLoaderChange extends Collectable {
     }

@@ -75,6 +75,9 @@ public class EventManager implements SystemEventListener {
             log.service("Reconfiguring event managers, because " + se);
             watcher.onChange();
         }
+        if (se instanceof SystemEvent.Shutdown) {
+            shutdown();
+        }
     }
 
 
