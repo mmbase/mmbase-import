@@ -124,6 +124,9 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
 
                     }
                 }
+                public int getWeight() {
+                    return 0;
+                }
             });
     }
 
