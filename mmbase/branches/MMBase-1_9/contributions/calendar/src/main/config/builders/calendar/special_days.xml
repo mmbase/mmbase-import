@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder xmlns="http://www.mmbase.org/xmlns/builder" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         extends="calendar_items" maintainer="mmbase.org" 
-         name="special_days" version="0" 
+<builder xmlns="http://www.mmbase.org/xmlns/builder"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         extends="calendar_items" maintainer="mmbase.org"
+         name="special_days" version="0"
          xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
   <names>
     <singular xml:lang="en">Special day</singular>
@@ -33,7 +33,7 @@
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <commitprocessor>
           <class name="org.mmbase.datatypes.processors.CopyFieldCommitProcessorFactory">
-            <param name="field">start</param>            
+            <param name="field">start</param>
           </class>
         </commitprocessor>
       </datatype>
@@ -48,8 +48,9 @@
       </editor>
     </field>
     <field name="type">
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="string">
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="eline">
         <default value="birthday" />
+        <maxLength value="255" />
         <enumeration>
           <entry value="birthday"      display="Verjaardag"           xml:lang="nl" />
           <entry value="weddingday"    display="Trouwdag"             xml:lang="nl" />
