@@ -30,7 +30,7 @@
           <search>-1</search>
         </positions>
       </editor>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" >
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes"  base="date">
         <commitprocessor>
           <class name="org.mmbase.datatypes.processors.CopyFieldCommitProcessorFactory">
             <param name="field">start</param>
