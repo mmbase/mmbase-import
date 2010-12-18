@@ -51,10 +51,8 @@
       <property name="maxAddress" value="1" />
       <property name="local" value="true" />
       <required value="true" />
+      <maxLength value="255" />
     </datatype>
-    <db>
-      <type state="persistent" size="255" notnull="false" key="false">STRING</type>
-    </db>
   </field>
   <field name="to">
     <descriptions>
@@ -75,10 +73,8 @@
       <property name="local" value="false" />
       <property name="restrictionEnforceStrength" value="onvalidate" />
       <required value="true" />
+      <maxLength value="255" />
     </datatype>
-    <db>
-      <type state="persistent" size="255" notnull="false" key="false">STRING</type>
-    </db>
   </field>
   <field name="cc">
     <descriptions>
@@ -161,21 +157,19 @@
       <guiname xml:lang="nl">Tekst</guiname>
       <guiname xml:lang="eo">Teksto</guiname>
     </gui>
-    <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-    <db>
-      <type state="persistent" size="32000" notnull="false" key="false">STRING</type>
-    </db>
+    <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <maxLength value="32000" />
+    </datatype>
   </field>
   <field name="mailtype">
-      <gui>
-        <guiname xml:lang="en">Type</guiname>
-        <guiname xml:lang="nl">Type</guiname>
-        <guiname xml:lang="eo">Tipo</guiname>
-      </gui>
-      <editor><positions><list>4</list></positions></editor>
-      <datatype base="email_type" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-
-    </field>
+    <gui>
+      <guiname xml:lang="en">Type</guiname>
+      <guiname xml:lang="nl">Type</guiname>
+      <guiname xml:lang="eo">Tipo</guiname>
+    </gui>
+    <editor><positions><list>4</list></positions></editor>
+    <datatype base="email_type" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+  </field>
   <field name="mailstatus">
     <descriptions>
       <description xml:lang="en">State of the message: 0:waiting to be scheduled, 1:delivered, 2:delivery failed, 3:marked as SPAM, 4:scheduled, wating to bedelivered</description>
