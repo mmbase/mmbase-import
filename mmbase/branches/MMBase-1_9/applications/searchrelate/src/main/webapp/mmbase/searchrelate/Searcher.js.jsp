@@ -38,7 +38,23 @@ $(document).ready(
 		    return true;
 		}
             });
-
+	$(window).bind("beforeunload",
+		       function() {
+			   var idss ="";
+			   $(".mm_related").each(
+			       function() {
+				   if (idss.length > 0) {
+				       idss += ",";
+				   }
+				   idss += this.id;
+			       });
+			   var params = {ids: idss };
+			   var url = "${mm:link('/mmbase/searchrelate/clearSession.jspx')}";
+			   $.ajax({async: false,
+				   url: url, type: "GET", dataType: "xml", data: params
+				  });
+		       });
+	
 	/*
 	 * If you defined in your CSS that 'implicit' search results are not visible at all, then
 	 * this method arranges the texts on the search buttons accordingly
@@ -121,7 +137,6 @@ MMBaseLogger.prototype.debug = function (msg) {
  * The 'relater' encapsulated 1 or 2 'searchers', and is responsible for moving elements from one to the other.
  */
 function MMBaseRelater(d, validator) {
-    var self = this;
     this.div           = d;
     this.related       = {};    // related nodes
     this.unrelated     = {};    // unrelated nodes
@@ -211,7 +226,6 @@ function MMBaseRelater(d, validator) {
     }
     
     $(this.div).trigger("mmsrRelaterReady", [self]);
-
 }
 
 /**
