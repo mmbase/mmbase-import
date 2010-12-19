@@ -8,7 +8,6 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.util.logging;
-import java.util.*;
 import org.mozilla.javascript.*;
 
 /**

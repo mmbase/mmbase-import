@@ -44,7 +44,10 @@ public class XmlDetector extends AbstractDetector {
      * @return Whether detector matches the prefix/lithmus of the file
      */
     @Override
-    public boolean test(byte[] lithmus) {
+    public boolean test(byte[] lithmus, InputStream input) {
+        return test(input);
+    }
+    protected boolean test(InputStream input) {
         try {
             XMLReader parser = XMLReaderFactory.createXMLReader();
             Handler handler = new Handler();
@@ -52,7 +55,7 @@ public class XmlDetector extends AbstractDetector {
             parser.setDTDHandler(handler);
             parser.setEntityResolver(handler);
             parser.setErrorHandler(new ErrorHandler(false, ErrorHandler.FATAL_ERROR));
-            InputSource source = new InputSource(new ByteArrayInputStream(lithmus));
+            InputSource source = new InputSource(input);
             parser.parse(source);
 
             // successfully parsed (which is remarkable while the byte array is truncated),
@@ -69,6 +72,7 @@ public class XmlDetector extends AbstractDetector {
             // this really is exceptional, and should not happen
             log.warn(ioe);
             return false;
+        } finally {
         }
     }
 

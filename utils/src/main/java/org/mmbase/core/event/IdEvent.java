@@ -34,6 +34,7 @@ public class IdEvent extends Event  {
         return id;
     }
 
+    @Override
     public String toString() {
         return id + " " + eventType;
     }

@@ -160,7 +160,8 @@ public class UtilReader {
     }
 
     @Override
-    public void finalize() {
+    public void finalize() throws Throwable {
+        super.finalize();
         if (watcher != null) {
             watcher.exit();
         }
@@ -204,7 +205,7 @@ public class UtilReader {
 
 
 
-    protected void readProperties(String s) {
+    protected final void readProperties(String s) {
         properties.clear();
         maps.clear();
 
@@ -274,7 +275,7 @@ public class UtilReader {
             }
 
         }
-        if (properties.size() == 0 && maps.size() == 0) {
+        if (properties.isEmpty() && maps.isEmpty()) {
             log.service("No properties read from " + configList);
         } else {
             log.service("Read " + properties.entrySet() + " from " + configList);

@@ -71,6 +71,7 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
         this(MMBaseContext.getMachineName());
     }
 
+    @Override
     public Event clone(){
         Object clone = null;
         try {

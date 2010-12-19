@@ -87,6 +87,7 @@ public class EventManager implements SystemEventListener {
     }
     private final List<SystemEvent.Collectable> receivedSystemEvents = new ArrayList<SystemEvent.Collectable>();
 
+    @Override
     public synchronized void notify(SystemEvent se) {
         if (se instanceof SystemEvent.MachineName) {
             machineName = ((SystemEvent.MachineName) se).getName();
@@ -104,12 +105,14 @@ public class EventManager implements SystemEventListener {
 
     }
 
+    @Override
     public int getWeight() {
         return Integer.MAX_VALUE;
     }
 
     protected ResourceWatcher watcher;
 
+    @SuppressWarnings("LeakingThisInConstructor")
     private EventManager() {
         addEventListener(this);
 
@@ -179,7 +182,7 @@ public class EventManager implements SystemEventListener {
             }
         }
 
-        if (eventBrokers.size() == 0) {
+        if (eventBrokers.isEmpty()) {
             log.debug("No event brokers could not be found. This means that query-invalidation does not work correctly now. Proceeding anyway.");
         }
         for (EventBroker original :  originalEventBrokers) {
@@ -231,7 +234,7 @@ public class EventManager implements SystemEventListener {
     }
 
 
-    public synchronized void addEventListener(EventListener listener) {
+    public final synchronized void addEventListener(EventListener listener) {
         addEventListener(listener, true);
     }
     /**
@@ -243,10 +246,11 @@ public class EventManager implements SystemEventListener {
             // this is procrasted as long as possible to avoid
             // circular dependencies on bootstrap
             watcher = new ResourceWatcher() {
-                    public void onChange(String w) {
-                        configure(w);
-                    }
-                };
+                @Override
+                public void onChange(String w) {
+                    configure(w);
+                }
+            };
             watcher.add("eventmanager.xml");
             watcher.onChange();
             watcher.start();
@@ -334,10 +338,11 @@ public class EventManager implements SystemEventListener {
     public void propagateEvent(final Event event, boolean asynchronous) {
         if (asynchronous) {
             ThreadPools.jobsExecutor.execute(new Runnable() {
-                    public void run() {
-                        propagateEvent(event);
-                    }
-                });
+                @Override
+                public void run() {
+                    propagateEvent(event);
+                }
+            });
         } else {
             propagateEvent(event);
         }
@@ -382,7 +387,7 @@ public class EventManager implements SystemEventListener {
         watcher.exit();
     }
 
-    private static class BrokerIterator implements Iterator<EventBroker>, Iterable<EventBroker> {
+    private static final class BrokerIterator implements Iterator<EventBroker>, Iterable<EventBroker> {
         EventBroker next;
         final Iterator<EventBroker> i;
         final EventListener listener;
@@ -392,18 +397,22 @@ public class EventManager implements SystemEventListener {
             this.listener = listener;
             findNext();
         }
+        @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
+        @Override
         public Iterator<EventBroker> iterator() {
             return this;
         }
+        @Override
         public EventBroker next() {
             if (next == null) throw new NoSuchElementException();
             EventBroker n = next;
             findNext();
             return n;
         }
+        @Override
         public boolean hasNext() {
             return next != null;
         }

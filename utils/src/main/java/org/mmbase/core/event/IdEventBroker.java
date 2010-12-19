@@ -17,11 +17,13 @@ public class IdEventBroker extends AbstractEventBroker {
 
 
     // javadoc inherited
+    @Override
     public boolean canBrokerForListener(EventListener listener) {
         return listener instanceof IdEventListener;
     }
 
     // javadoc inherited
+    @Override
     public boolean canBrokerForEvent(Event event) {
         return event instanceof IdEvent;
     }
@@ -31,6 +33,7 @@ public class IdEventBroker extends AbstractEventBroker {
      *
      * @see event.AbstractEventBroker#notifyEventListeners()
      */
+    @Override
     protected void notifyEventListener(Event event, EventListener listener) {
         IdEvent ne = (IdEvent) event; //!!!!!
         IdEventListener nel = (IdEventListener) listener;
@@ -40,6 +43,7 @@ public class IdEventBroker extends AbstractEventBroker {
     /* (non-Javadoc)
      * @see org.mmbase.core.event.AbstractEventBroker#toString()
      */
+    @Override
     public String toString() {
         return "IdEvent Broker";
     }

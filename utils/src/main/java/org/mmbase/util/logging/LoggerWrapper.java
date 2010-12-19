@@ -34,6 +34,7 @@ public class LoggerWrapper implements Logger {
     private final String name;
 
     // package
+    @SuppressWarnings("LeakingThisInConstructor")
     LoggerWrapper(Logger log, String name) {
         this.name = name;
         setLogger(log);
@@ -46,7 +47,7 @@ public class LoggerWrapper implements Logger {
     }
 
     // package
-    Logger setLogger(Logger log) {
+    final Logger setLogger(Logger log) {
         if (log == null) {
             if (this.log == null) {
                 log = SimpleImpl.getLoggerInstance(name);

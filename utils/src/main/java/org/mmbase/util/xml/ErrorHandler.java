@@ -51,7 +51,7 @@ public class ErrorHandler implements org.xml.sax.ErrorHandler {
     @Override
     public void warning(SAXParseException ex) throws SAXException {
         String message = getLocationString(ex)+": "+ ex.getMessage();
-        messages.append(message + "\n");
+        messages.append(message).append("\n");
         warning = true;
         if(logMessages) {
             log.warn(message);
@@ -85,7 +85,7 @@ public class ErrorHandler implements org.xml.sax.ErrorHandler {
             return;
         }
 
-        messages.append(message + "\n");
+        messages.append(message).append("\n");
         error = true;
         if(logMessages) {
             if (log.isDebugEnabled()) {
@@ -102,7 +102,7 @@ public class ErrorHandler implements org.xml.sax.ErrorHandler {
     @Override
     public void fatalError(SAXParseException ex) throws SAXException {
         String message = getLocationString(ex)+": "+ ex.getMessage();
-        messages.append(message + "\n");
+        messages.append(message).append("\n");
         fatal = true;
         if(logMessages) {
             log.fatal(message, ex);

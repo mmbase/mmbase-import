@@ -26,7 +26,7 @@ import org.mmbase.util.Entry;
 public class LinkFinder extends RegexpReplacer {
     private static final long serialVersionUID = 0L;
 
-    protected static Collection<Entry<Pattern,String>> urlPatterns = new ArrayList<Entry<Pattern,String>>();
+    protected static final Collection<Entry<Pattern,String>> urlPatterns = new ArrayList<Entry<Pattern,String>>();
 
     static {
         new LinkFinder().readPatterns(urlPatterns);

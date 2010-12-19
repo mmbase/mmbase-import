@@ -22,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class CommonsLogFactory {
 
-    private static Map<String, CommonsLog> logInstances = new Hashtable<String, CommonsLog>();
+    private static Map<String, CommonsLog> logInstances = Collections.synchronizedMap(new HashMap<String, CommonsLog>());
 
     private CommonsLogFactory() {
         System.out.println("CommonsLogger");

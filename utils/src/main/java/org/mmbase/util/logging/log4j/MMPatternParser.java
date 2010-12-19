@@ -59,6 +59,7 @@ public class MMPatternParser extends PatternParser {
             super(formattingInfo);
         }
 
+        @Override
         public String convert(LoggingEvent event) {
             return event.getLevel().toString().substring(0, 3);
         }
@@ -69,6 +70,7 @@ public class MMPatternParser extends PatternParser {
             super(formattingInfo);
         }
 
+        @Override
         public String convert(LoggingEvent event) {
             Runtime rt = Runtime.getRuntime();
             return  "" + (rt.totalMemory() - rt.freeMemory()) / 1024;
@@ -82,8 +84,9 @@ public class MMPatternParser extends PatternParser {
             super(formattingInfo);
         }
 
+        @Override
         public String convert(LoggingEvent event) {
-            return  "" + Logging.getMachineName();
+            return  String.format("{0}", Logging.getMachineName());
         }
     }
     /**
@@ -94,8 +97,9 @@ public class MMPatternParser extends PatternParser {
             super(formattingInfo);
         }
 
+        @Override
         public String convert(LoggingEvent event) {
-            return  "" + Thread.currentThread().getThreadGroup().getName();
+            return  String.format("{0}", Thread.currentThread().getThreadGroup().getName());
         }
     }
 }

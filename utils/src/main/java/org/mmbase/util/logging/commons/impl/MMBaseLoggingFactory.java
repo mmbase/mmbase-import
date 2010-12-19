@@ -35,10 +35,10 @@ public class MMBaseLoggingFactory extends LogFactory {
     /**
      * The configuration attributes for this {@link LogFactory}.
      */
-    private Map<String, Object> attributes = new Hashtable<String, Object>();
+    private Map<String, Object> attributes = Collections.synchronizedMap(new HashMap<String, Object>());
 
     // Previously returned instances, to avoid creation of proxies
-    private Map<Object, Log> instances = new Hashtable<Object, Log>();
+    private Map<Object, Log> instances = Collections.synchronizedMap(new HashMap<Object, Log>());
 
     // --------------------------------------------------------- Public Methods
 
@@ -60,11 +60,11 @@ public class MMBaseLoggingFactory extends LogFactory {
      */
     @Override
     public String[] getAttributeNames() {
-        Vector<String> names = new Vector<String>();
+        List<String> names = new ArrayList<String>();
         names.addAll(attributes.keySet());
         String results[] = new String[names.size()];
         for (int i = 0; i < results.length; i++) {
-            results[i] = names.elementAt(i);
+            results[i] = names.get(i);
         }
         return results;
     }

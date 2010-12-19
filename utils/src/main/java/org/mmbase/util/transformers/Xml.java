@@ -208,7 +208,7 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
                     sb.append('\'');
                 }
                 else {
-                    sb.append("&" + entity + ";");
+                    sb.append("&").append(entity).append(";");
                 }
             }
             else {
