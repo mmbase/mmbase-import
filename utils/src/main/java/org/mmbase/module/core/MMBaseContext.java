@@ -95,19 +95,19 @@ public class MMBaseContext implements ServletContextListener {
                 userDir = servletContext.getRealPath(userDir.substring(8));
             }
             // Init outputfile.
-            String outputFile = sx.getInitParameter("mmbase.outputfile");
-            if (outputFile == null) {
+            String mmbaseOutputFile = sx.getInitParameter("mmbase.outputfile");
+            if (mmbaseOutputFile == null) {
                 try {
-                    outputFile = System.getProperty("mmbase.outputfile");
+                    mmbaseOutputFile = System.getProperty("mmbase.outputfile");
                 } catch (SecurityException se) {
                     log.debug(se.getMessage());
                 }
             }
             // take into account configpath can start at webrootdir
-            if (outputFile != null && outputFile.indexOf("$WEBROOT") == 0) {
-                outputFile = servletContext.getRealPath(outputFile.substring(8));
+            if (mmbaseOutputFile != null && mmbaseOutputFile.indexOf("$WEBROOT") == 0) {
+                mmbaseOutputFile = servletContext.getRealPath(mmbaseOutputFile.substring(8));
             }
-            initOutputfile(outputFile);
+            initOutputfile(mmbaseOutputFile);
 
             ResourceLoader.init(sx);
 
@@ -335,7 +335,7 @@ public class MMBaseContext implements ServletContextListener {
      */
     public  synchronized static String getConfigPath() {
         List<File> files =  ResourceLoader.getConfigurationRoot().getFiles("");
-        if (files.size() == 0) {
+        if (files.isEmpty()) {
             return null;
         } else {
             return files.get(0).getAbsolutePath();

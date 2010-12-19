@@ -91,13 +91,16 @@ public abstract class EventBroker {
         }
     }
 
+    @Override
     public abstract String toString();
 
+    @Override
     public boolean equals(Object o) {
         //  we can only have one instance so this will do to prevent adding more instances of an envent broker
         return o != null && this.getClass().equals(o.getClass());
     }
 
+    @Override
     public int hashCode() {
         return this.getClass().hashCode();
     }

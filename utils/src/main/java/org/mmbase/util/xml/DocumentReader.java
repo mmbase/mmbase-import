@@ -73,7 +73,7 @@ public class DocumentReader  {
      * Returns the default setting for validation for DocumentReaders.
      * @return true if validation is on
      */
-    public static final boolean validate() {
+    public static boolean validate() {
         Object validate = utilProperties == null ? null : utilProperties.get("validate");
         return validate == null || validate.equals("true");
     }
@@ -82,7 +82,7 @@ public class DocumentReader  {
      * Whether to validate given a request for that. So, the request is followed, unless it is configured to 'never' validate.
      * @since MMBase-1.8
      */
-    protected static final boolean validate(boolean requested) {
+    protected static boolean validate(boolean requested) {
         Object validate = utilProperties == null ? null : utilProperties.get("validate");
         if (validate != null && validate.equals("never")) return false;
         return requested;

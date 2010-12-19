@@ -11,6 +11,7 @@ package org.mmbase.util.magicfile;
 
 import java.io.*;
 import java.util.List;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -106,7 +107,10 @@ public class MagicFile {
      *
      * @return The found mime-type or FAILED
      */
-    public String getMimeType(final byte[] input) {
+    protected String getMimeType(final byte[] input, final InputStream in) {
+        if (! in.markSupported()) {
+            throw new IllegalArgumentException("Mark not supported on " + in);
+        }
         List<Detector> list = getDetectors();
         if (list == null || list.size() == 0) {
             log.warn("No detectors found");
@@ -122,13 +126,16 @@ public class MagicFile {
         }
 
         for (Detector detector : list) {
-            if (detector.test(lithmus)) {
+            if (detector.test(lithmus, in)) {
                 log.debug("Matched " + detector);
-
                 return detector.getMimeType();
             }
         }
         return FAILED;
+    }
+
+    public String getMimeType(final byte[] input) {
+        return getMimeType(input, new ByteArrayInputStream(input));
     }
     /**
      * @since MMBase-1.9.2
@@ -137,10 +144,7 @@ public class MagicFile {
         byte[] lithmus = new byte[BUFSIZE];
         int res = input.read(lithmus, 0, BUFSIZE);
         log.debug("read " + res + "  bytes from " + input);
-        return getMimeType(lithmus);
-
-
-
+        return getMimeType(lithmus, input);
     }
 
     /**

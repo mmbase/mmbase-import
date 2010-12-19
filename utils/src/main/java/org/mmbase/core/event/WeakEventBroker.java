@@ -25,10 +25,12 @@ public abstract class WeakEventBroker extends EventBroker {
 
     private final Map<EventListener, Boolean> listeners = new WeakHashMap<EventListener, Boolean>();
 
+    @Override
     protected Collection<EventListener> backing() {
         return listeners.keySet();
     }
 
+    @Override
     public synchronized boolean addListener(EventListener listener) {
         if (canBrokerForListener(listener)) {
             if (listeners.containsKey(listener)) {
@@ -43,6 +45,7 @@ public abstract class WeakEventBroker extends EventBroker {
         return false;
     }
 
+    @Override
     public synchronized void removeListener(EventListener listener) {
         if (! listeners.remove(listener)) {
             log.warn("Tried to remove " + listener + " from " + getClass()+ " but it was not found. Ignored.");
@@ -52,10 +55,12 @@ public abstract class WeakEventBroker extends EventBroker {
     /**
      * Only adds synchronization, because backing is not concurrency proof.
      */
+    @Override
     public synchronized void notifyForEvent(Event event) {
         super.notifyForEvent(event);
     }
 
+    @Override
     public String toString(){
         return "Weak Event Broker";
     }

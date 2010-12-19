@@ -73,6 +73,7 @@ public class Trimmer extends ReaderTransformer implements CharTransformer {
     }
 
 
+    @Override
     public String toString() {
         return "TRIMMER";
     }

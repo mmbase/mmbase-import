@@ -16,6 +16,7 @@ import org.mmbase.util.logging.MDC;
 
 import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.ResourceLoader;
+import org.mmbase.core.event.*;
 
 import org.apache.log4j.xml.DOMConfigurator;
 
@@ -55,9 +56,23 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
     private static PrintStream stderr;
 
-    /**
-     * Constructor, like the constructor of {@link org.apache.log4j.Logger}.
-     */
+    static {
+        EventManager.getInstance().addEventListener(new SystemEventListener() {
+                @Override
+                public void notify(SystemEvent se) {
+                    if (se instanceof SystemEvent.Shutdown) {
+                        log.info("Shutting down log4j");
+                        log4jRepository.shutdown();
+                    }
+                }
+                @Override
+                public int getWeight() {
+                    // logging should be shut down last
+                    return Integer.MAX_VALUE;
+                }
+            });
+    }
+
     protected Log4jImpl(String name) {
         super(name);
     }
@@ -79,6 +94,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     public static MDC getMDC() {
         return new MDC() {
 
+            @Override
             public void put(String key, Object value) {
                 if (value != null) {
                     org.apache.log4j.MDC.put(key, value);
@@ -87,6 +103,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
                 }
             }
 
+            @Override
             public Object get(String key) {
                 return org.apache.log4j.MDC.get(key);
             }
@@ -114,10 +131,11 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
         log.info("using " + rl + " for resolving " + s + " -> " + rl.getResource(s));
         configWatcher = new ResourceWatcher (rl) {
-                public void onChange(String s) {
-                    doConfigure(resourceLoader.getResourceAsStream(s));
-                }
-            };
+            @Override
+            public void onChange(String s) {
+                doConfigure(resourceLoader.getResourceAsStream(s));
+            }
+        };
 
         configWatcher.clear();
         configWatcher.add(s);
@@ -156,6 +174,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
     }
 
+    @Override
     public void setLevel(Level p) {
         switch (p.toInt()) {
         case Level.TRACE_INT:   setLevel(Log4jLevel.TRACE);   break;
@@ -211,6 +230,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     /**
      *  A new logging method that takes the SERVICE priority.
      */
+    @Override
     public final void service(Object message) {
         // disable is defined in Category
         if (log4jRepository.isDisabled(Log4jLevel.SERVICE_INT)) {
@@ -221,6 +241,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
             forcedLog(classname, Log4jLevel.SERVICE, message, null);
     }
 
+    @Override
     public final void service(Object message, Throwable t) {
         // disable is defined in Category
         if (log4jRepository.isDisabled(Log4jLevel.SERVICE_INT)) {
@@ -231,6 +252,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
             forcedLog(classname, Log4jLevel.SERVICE, message, t);
     }
 
+    @Override
     public final boolean isServiceEnabled() {
         if(log4jRepository.isDisabled( Log4jLevel.SERVICE_INT))
             return false;
@@ -244,6 +266,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         return Log4jLevel.TRACE.isGreaterOrEqual(this.getEffectiveLevel());
     }
 
+    @Override
     public final boolean isEnabledFor(Level l) {
         return ! log4jRepository.isDisabled(l.toInt());
     }

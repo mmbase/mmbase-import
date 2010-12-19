@@ -40,6 +40,7 @@ public class ByteTransformerLink implements Runnable {
         closeOutputStream = co;
     }
 
+    @Override
     synchronized public  void run() {
         try {
             transformer.transform(in, out);

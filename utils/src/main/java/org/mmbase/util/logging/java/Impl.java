@@ -46,7 +46,7 @@ public final class Impl implements Logger {
     private static Logger log = Logging.getLoggerInstance(Impl.class);
     private static ResourceWatcher configWatcher;
 
-    private java.util.logging.Logger logger;
+    private final java.util.logging.Logger logger;
 
 
     /**
@@ -127,7 +127,7 @@ public final class Impl implements Logger {
 
     @Override
     public void trace (Object m) {
-        logger.log(java.util.logging.Level.FINER, "" + m);
+        logger.log(java.util.logging.Level.FINER, "{0}", m);
     }
     @Override
     public void trace (Object m, Throwable t) {
@@ -135,7 +135,7 @@ public final class Impl implements Logger {
     }
     @Override
     public void debug (Object m) {
-        logger.log(java.util.logging.Level.FINE, "" + m);
+        logger.log(java.util.logging.Level.FINE, "{0}", m);
     }
     @Override
     public void debug (Object m, Throwable t) {
@@ -144,7 +144,7 @@ public final class Impl implements Logger {
 
     @Override
     public void service (Object m) {
-        logger.log(java.util.logging.Level.CONFIG, "" + m);
+        logger.log(java.util.logging.Level.CONFIG, "{0}", m);
     }
     @Override
     public void service (Object m, Throwable t) {
@@ -152,7 +152,7 @@ public final class Impl implements Logger {
     }
     @Override
     public void info    (Object m) {
-        logger.log(java.util.logging.Level.INFO, "" + m);
+        logger.log(java.util.logging.Level.INFO, "{0}", m);
     }
     @Override
     public void info    (Object m, Throwable t) {
@@ -160,7 +160,7 @@ public final class Impl implements Logger {
     }
     @Override
     public void warn    (Object m) {
-        logger.log(java.util.logging.Level.WARNING, "" + m);
+        logger.log(java.util.logging.Level.WARNING, "{0}", m);
     }
     @Override
     public void warn    (Object m, Throwable t) {
@@ -168,7 +168,7 @@ public final class Impl implements Logger {
     }
     @Override
     public void error   (Object m) {
-        logger.log(java.util.logging.Level.SEVERE, "" + m);
+        logger.log(java.util.logging.Level.SEVERE, "{0}", m);
     }
     @Override
     public void error   (Object m, Throwable t) {
@@ -176,14 +176,14 @@ public final class Impl implements Logger {
     }
     @Override
     public void fatal   (Object m) {
-        logger.log(java.util.logging.Level.SEVERE, "" + m);
+        logger.log(java.util.logging.Level.SEVERE, "{0}", m);
     }
     @Override
     public void fatal   (Object m, Throwable t) {
         logger.log(java.util.logging.Level.SEVERE, "" + m, t);
     }
 
-    private  final java.util.logging.Level getLevel() {
+    private java.util.logging.Level getLevel() {
         java.util.logging.Level level = null;
         java.util.logging.Logger l = logger;
         while (level == null) {

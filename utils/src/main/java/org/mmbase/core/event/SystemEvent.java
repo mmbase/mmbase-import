@@ -7,7 +7,6 @@
 package org.mmbase.core.event;
 
 import java.io.*;
-import java.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -109,18 +108,19 @@ public abstract class SystemEvent extends Event  {
 
     static {
         SystemEventListener logger = new SystemEventListener() {
-                @Override
-                public void notify(SystemEvent s) {
-                    LOG.service(" Received " + s);
-                }
-                public int getWeight() {
-                    return 50000;
-                }
-                @Override
-                public String toString() {
-                    return "SystemEventLogger";
-                }
-            };
+            @Override
+            public void notify(SystemEvent s) {
+                LOG.service(" Received " + s);
+            }
+            @Override
+            public int getWeight() {
+                return 50000;
+            }
+            @Override
+            public String toString() {
+                return "SystemEventLogger";
+            }
+        };
         EventManager.getInstance().addEventListener(logger);
     }
 
