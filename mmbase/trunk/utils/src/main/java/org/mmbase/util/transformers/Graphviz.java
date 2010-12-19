@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 /**
- * Converts the tools of <a href="http://www.graphviz.org">graphviz</a> into an MMBase 'chartransformer'. Meaning that it can convert
+ * Wraps the tools of <a href="http://www.graphviz.org">graphviz</a> into an MMBase 'chartransformer'. Meaning that it can convert
  * a script in the <a href="http://en.wikipedia.org/wiki/DOT_language">dot language</a> into SVG (or something else, using the 'type' parameter).
  *
  * We can use this to generated diagrams e.g. to represent the current MMBase object model.

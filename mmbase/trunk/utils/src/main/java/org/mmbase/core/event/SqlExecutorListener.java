@@ -21,6 +21,7 @@ public class SqlExecutorListener extends org.mmbase.util.SqlExecutor implements 
         LOG.debug("Instantiated " + this + " because ", new Exception());
     }
 
+    @Override
     public void notify(SystemEvent se) {
         if (se instanceof SystemEvent.DataSourceAvailable) {
             SystemEvent.DataSourceAvailable av = (SystemEvent.DataSourceAvailable) se;
@@ -30,6 +31,7 @@ public class SqlExecutorListener extends org.mmbase.util.SqlExecutor implements 
         } else {
         }
     }
+    @Override
     public int getWeight() {
         return 0;
     }

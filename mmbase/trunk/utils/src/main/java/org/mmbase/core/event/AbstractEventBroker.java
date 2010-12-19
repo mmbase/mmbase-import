@@ -7,7 +7,6 @@
 package org.mmbase.core.event;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -73,6 +72,7 @@ public abstract class AbstractEventBroker extends EventBroker {
         return false;
     }
 
+    @Override
     public void removeListener(EventListener listener) {
         synchronized(COMPARATOR) {
             if (! listeners.remove(listener)) {

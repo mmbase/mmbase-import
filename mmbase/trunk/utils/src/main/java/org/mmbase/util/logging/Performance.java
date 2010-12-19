@@ -82,6 +82,7 @@ public class Performance {
         return (double)1000*(after - before)/ repeats;
     }
 
+    @SuppressWarnings("SleepWhileHoldingLock")
     static double doCaseDelayed(Logger log) {
         int j = 0;
         int i;

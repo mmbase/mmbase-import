@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.util.magicfile;
+import org.mmbase.util.*;
 import java.io.*;
 import org.w3c.dom.Element;
 import org.mmbase.util.xml.DocumentReader;
@@ -104,11 +105,12 @@ public class BasicDetector extends AbstractDetector {
 
 
 
+
     /**
      * @return Whether detector matches the prefix/lithmus of the file
      */
     @Override
-    public boolean test(byte[] lithmus) {
+    public boolean test(byte[] lithmus, InputStream sin) {
         if (lithmus == null || lithmus.length == 0 || offset == -1) {
             return false;
         }
@@ -133,7 +135,7 @@ public class BasicDetector extends AbstractDetector {
         if (hit) {
             log.debug("Detector " + this + " hit");
             for (Detector child : childList) {
-                if (child.test(lithmus)) {
+                if (child.test(lithmus, sin)) {
                     String s = child.getDesignation();
                     if (s.startsWith("\\b")) {
                         s = s.substring(2);

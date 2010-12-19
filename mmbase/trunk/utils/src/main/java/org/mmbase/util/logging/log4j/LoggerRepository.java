@@ -37,6 +37,7 @@ class MMCategoryFactory implements LoggerFactory {
     MMCategoryFactory() {
     }    
     
+    @Override
     public Logger makeNewLoggerInstance(String name) {
         return new Log4jImpl(name);
     }    

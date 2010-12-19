@@ -27,7 +27,7 @@ public interface Detector {
     String getMimeType();
     String getDesignation();
     void addChild(Detector detector, int level);
-    boolean test(byte[] lithmus);
+    boolean test(byte[] lithmus, java.io.InputStream input);
 
     void setValid(boolean v);
     boolean valid();

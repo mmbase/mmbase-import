@@ -24,7 +24,7 @@ import org.mmbase.util.xml.Instantiator;
  * @version $Id$
  */
 public abstract class ThreadPools {
-    private static Logger log = Logging.getLoggerInstance(ThreadPools.class);
+    private static final Logger LOG = Logging.getLoggerInstance(ThreadPools.class);
 
     public static final ThreadGroup threadGroup =  new ThreadGroup("MMBase Thread Pool");
 
@@ -77,7 +77,7 @@ public abstract class ThreadPools {
 
     public static Thread newThread(final Runnable r, final String id) {
         String mn = getMachineName();
-        log.service("Found mn " + mn + "(" + (mn == null) + ")");
+        LOG.service("Found mn " + mn + "(" + (mn == null) + ")");
         Thread t = new Thread(threadGroup, r,
                               (mn == null ? "" : mn) + ":" + id) {
                 /**
@@ -89,9 +89,9 @@ public abstract class ThreadPools {
                         super.run();
                         //} catch (org.mmbase.bridge.NotFoundException nf) {
                     } catch (RuntimeException nf) {
-                        log.debug("Error during job: " + r + ":" + id + " " + nf.getClass().getName() + " " + nf.getMessage(), nf);
+                        LOG.error("Error during job: " + r + ":" + id + " " + nf.getClass().getName() + " " + nf.getMessage(), nf);
                     } catch (Throwable e) {
-                        log.error("Error during job: " + r + ":" + id + " " + e.getClass().getName() + " " + e.getMessage(), e);
+                        LOG.error("Error during job: " + r + ":" + id + " " + e.getClass().getName() + " " + e.getMessage(), e);
                     }
                 }
             };
@@ -119,14 +119,14 @@ public abstract class ThreadPools {
         }) {
             @Override
             public void execute(Runnable r) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Executing " + r + " because ", new Exception());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Executing " + r + " because ", new Exception());
                 }
                 super.execute(r);
             }
             @Override
             protected void beforeExecute(Thread t, Runnable r) {
-                log.debug("Now executing " + r + " in thread " + t);
+                LOG.debug("Now executing " + r + " in thread " + t);
 
 
             }
@@ -148,10 +148,11 @@ public abstract class ThreadPools {
      * @since MMBase-1.9
      */
     public static final ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(2, new ThreadFactory() {
-            public Thread newThread(Runnable r) {
-                return ThreadPools.newThread(r, "SchedulerThread-" + (schedSeq++));
-            }
-        });
+        @Override
+        public Thread newThread(Runnable r) {
+            return ThreadPools.newThread(r, "SchedulerThread-" + (schedSeq++));
+        }
+    });
 
     private static final Map<String, ExecutorService> threadPools = new ConcurrentHashMap<String, ExecutorService>();
 
@@ -163,36 +164,41 @@ public abstract class ThreadPools {
             EventManager manager = EventManager.getInstance();
 
             if (manager == null) {
-                log.fatal("No event manager!");
+                LOG.fatal("No event manager!");
 
             } else {
 
                 manager.addEventListener(new SystemEventListener() {
-                        @Override
-                        public void notify(SystemEvent systemEvent) {
-                            if (systemEvent instanceof SystemEvent.MachineName) {
+                    @Override
+                    public void notify(SystemEvent systemEvent) {
+                        if (systemEvent instanceof SystemEvent.MachineName) {
 
-                                String machineName = ((SystemEvent.MachineName) systemEvent).getName();
-                                for (WeakReference<Thread> tr : nameLess) {
-                                    Thread t = tr.get();
-                                    if (t != null) {
-                                        String stringBefore = "" + t;
-                                        t.setName(machineName + t.getName());
-                                        log.debug("Fixed name of " + stringBefore + " -> " + t);
-                                    }
+                            String machineName = ((SystemEvent.MachineName) systemEvent).getName();
+                            for (WeakReference<Thread> tr : nameLess) {
+                                Thread t = tr.get();
+                                if (t != null) {
+                                    String stringBefore = "" + t;
+                                    t.setName(machineName + t.getName());
+                                    LOG.debug("Fixed name of " + stringBefore + " -> " + t);
                                 }
-                                nameLess.clear();
-                            } else if (systemEvent instanceof SystemEvent.Shutdown) {
-                                ThreadPools.shutdown();
                             }
+                            nameLess.clear();
+                        } else if (systemEvent instanceof SystemEvent.Shutdown) {
+                            ThreadPools.shutdown();
                         }
-                    });
+                    }
+
+                    @Override
+                    public int getWeight() {
+                        return 0;
+                    }
+                });
             }
             threadPools.put("jobs", jobsExecutor);
             threadPools.put("filters", filterExecutor);
             threadPools.put("schedules", scheduler);
         } catch (Throwable t) {
-            log.fatal(t.getMessage(), t);
+            LOG.fatal(t.getMessage(), t);
         }
 
     }
@@ -217,19 +223,19 @@ public abstract class ThreadPools {
         if (key.equals("maxsize")) {
             int newSize = Integer.parseInt(value);
             if (object.getMaximumPoolSize() !=  newSize) {
-                log.info("Setting max pool size from " + object.getMaximumPoolSize() + " to " + newSize);
+                LOG.info("Setting max pool size from " + object.getMaximumPoolSize() + " to " + newSize);
                 object.setMaximumPoolSize(newSize);
             }
         } else if (key.equals("coresize")) {
             int newSize = Integer.parseInt(value);
             if (object.getCorePoolSize() != newSize) {
-                log.info("Setting core pool size from " + object.getCorePoolSize() + " to " + newSize);
+                LOG.info("Setting core pool size from " + object.getCorePoolSize() + " to " + newSize);
                 object.setCorePoolSize(newSize);
             }
         } else if (key.equals("keepAliveTime")) {
             int newTime = Integer.parseInt(value);
             if (object.getKeepAliveTime(TimeUnit.SECONDS) != newTime) {
-                log.info("Setting keep alive time  from " + object.getKeepAliveTime(TimeUnit.SECONDS) + " to " + newTime);
+                LOG.info("Setting keep alive time  from " + object.getKeepAliveTime(TimeUnit.SECONDS) + " to " + newTime);
                 object.setKeepAliveTime(newTime, TimeUnit.SECONDS);
             }
         } else {
@@ -247,11 +253,11 @@ public abstract class ThreadPools {
 
         for (Map.Entry<String, String> entry : props.entrySet()) {
             if (entry.getKey().startsWith("jobs.")) {
-                setProperty(jobsExecutor, entry.getKey().substring("jobs.".length()), entry.getValue());;
+                setProperty(jobsExecutor, entry.getKey().substring("jobs.".length()), entry.getValue());
             } else if (entry.getKey().startsWith("scheduler.")) {
-                setProperty(scheduler, entry.getKey().substring("scheduler.".length()), entry.getValue());;
+                setProperty(scheduler, entry.getKey().substring("scheduler.".length()), entry.getValue());
             } else if (entry.getKey().startsWith("filters.")) {
-                setProperty(scheduler, entry.getKey().substring("filters.".length()), entry.getValue());;
+                setProperty(scheduler, entry.getKey().substring("filters.".length()), entry.getValue());
             }
         }
     }
@@ -263,21 +269,21 @@ public abstract class ThreadPools {
         {
             List<Runnable> run = scheduler.shutdownNow();
             if (run.size() > 0) {
-                log.info("Interrupted " + run);
+                LOG.info("Interrupted " + run);
             }
         }
         {
 
             List<Runnable> run = filterExecutor.shutdownNow();
             if (run.size() > 0) {
-                log.info("Interrupted " + run);
+                LOG.info("Interrupted " + run);
             }
 
         }
         {
             List<Runnable> run = jobsExecutor.shutdownNow();
             if (run.size() > 0) {
-                log.info("Interrupted " + run);
+                LOG.info("Interrupted " + run);
             }
         }
     }

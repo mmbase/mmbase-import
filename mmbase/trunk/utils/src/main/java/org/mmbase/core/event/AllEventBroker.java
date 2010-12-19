@@ -21,6 +21,7 @@ package org.mmbase.core.event;
  */
 public class AllEventBroker extends AbstractEventBroker {
 
+    @Override
     public boolean canBrokerForListener(EventListener listener) {
         if (listener instanceof AllEventListener) {
             return true;
@@ -28,10 +29,12 @@ public class AllEventBroker extends AbstractEventBroker {
         return false;
     }
 
+    @Override
     public boolean canBrokerForEvent(Event event) {
         return true;
     }
 
+    @Override
     protected void notifyEventListener(Event event, EventListener listener) throws ClassCastException {
         ((AllEventListener)listener).notify(event);
     }
@@ -39,6 +42,7 @@ public class AllEventBroker extends AbstractEventBroker {
     /* (non-Javadoc)
      * @see org.mmbase.core.event.AbstractEventBroker#toString()
      */
+    @Override
     public String toString() {
         return "All Event Broker";
     }

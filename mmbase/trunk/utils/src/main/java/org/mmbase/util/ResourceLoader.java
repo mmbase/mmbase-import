@@ -18,6 +18,8 @@ import java.net.*;
 
 // used for resolving in servlet-environment
 import javax.servlet.ServletContext;
+import javax.servlet.ServletContextListener;
+import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -227,6 +229,7 @@ public class ResourceLoader extends ClassLoader {
         // reset both roots, they will be redetermined using servletContext.
         configRootNeedsInit = true;
         webRootNeedsInit    = true;
+        System.out.println("Inited with " + sc);
         if (sc != null) {
             EventManager.getInstance().propagateEvent(new SystemEvent.ResourceLoaderChange());
         }
@@ -593,6 +596,8 @@ public class ResourceLoader extends ClassLoader {
         if (context.equals("..")) { // should be made a bit smarter, (also recognizing "../..", "/" and those kind of things).
             return getParentResourceLoader();
         }
+        if ("".equals(context) || "/".equals(context)) return this;
+
         String [] dirs = context.split("/");
         ResourceLoader rl = this;
         for (String element : dirs) {
@@ -1022,7 +1027,9 @@ public class ResourceLoader extends ClassLoader {
     public boolean equals(Object o) {
         if(this == o) return true;
         // if this is a 'root' loader, then the only equal object should be the object itself!
-        if (parent == null) return  false;
+        if (parent == null) {
+            return  false;
+        }
         if (o instanceof ResourceLoader) {
             ResourceLoader rl = (ResourceLoader) o;
             return rl.parent == parent && rl.context.sameFile(context);
@@ -1042,6 +1049,17 @@ public class ResourceLoader extends ClassLoader {
         return result;
     }
 
+
+    public static class Init implements ServletContextListener {
+        @Override
+        public void	contextDestroyed(ServletContextEvent sce) {
+        }
+
+        @Override
+        public void contextInitialized(ServletContextEvent sce) {
+            ResourceLoader.init(sce.getServletContext());
+        }
+    }
     /**
      * ================================================================================
      * INNER CLASSES, all private, protected
@@ -1575,7 +1593,7 @@ public class ResourceLoader extends ClassLoader {
      * URLStreamHandler based on the servletContext object of ResourceLoader
      */
     protected  static class ServletResourceURLStreamHandler extends PathURLStreamHandler {
-        private String root;
+        private final String root;
         ServletResourceURLStreamHandler(ResourceLoader parent, String r) {
             super(parent);
             root = r;
@@ -1587,7 +1605,8 @@ public class ResourceLoader extends ClassLoader {
 
         @Override
         protected String getName(URL u) {
-            return u.getPath().substring(root.length());
+            String n = u.getPath().substring((root +  parent.context.getPath()).length());
+            return u.getPath().substring((root +  parent.context.getPath()).length());
         }
         @Override
         public URLConnection openConnection(String name) {
@@ -1624,7 +1643,10 @@ public class ResourceLoader extends ClassLoader {
         private  Set<String> getPaths(final Set<String> results, final Pattern pattern,  final String recursive, final boolean directories) {
             if (servletContext != null) {
                 try {
-                    final String currentRoot  = root + (root.equals("/") ? "" : "/") + parent.context.getPath();
+                    String contextPath = parent.context.getPath();
+                    // It seems that it should be possible without this if/else stuff.
+                    if (contextPath.startsWith("/")) contextPath = contextPath.substring(1);
+                    final String currentRoot  = root + (root.equals("/") ? "" : "/") + contextPath;
                     final String resourcePath = currentRoot + (recursive == null ? "" : recursive);
                     final Collection<String> c = servletContext.getResourcePaths(resourcePath);
 
@@ -1750,6 +1772,7 @@ public class ResourceLoader extends ClassLoader {
     public static int getWeight(final URL u) {
         int w = 0;
         log.debug("Getting weight for " + u + " with " + classWeights);
+        System.out.println(u);
         if (classWeights != null) {
             for (Map.Entry<Pattern, Integer> e : classWeights.entrySet()) {
                 if (e.getKey().matcher(u.toExternalForm()).matches()) {
