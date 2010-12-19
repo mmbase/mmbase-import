@@ -116,6 +116,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
         addFunction(new ProcessFunction("BUILDERSAVE", new Parameter[] {PARAM_BUILDER, PARAM_PATH, PARAM_PAGEINFO, new Parameter("RESULT", String.class, "")}));
     }
 
+    @SuppressWarnings("LeakingThisInConstructor")
     public MMAdmin(String name) {
         super(name);
         EventManager.getInstance().addEventListener(this);
@@ -140,14 +141,15 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     public void notify(SystemEvent event) {
         if (event instanceof SystemEvent.Up) {
             org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
-                    public void run() {
-                        try {
-                            MMAdmin.this.probeCall();
-                        } catch (Exception e) {
-                            log.error(e.getMessage(), e);
-                        }
+                @Override
+                public void run() {
+                    try {
+                        MMAdmin.this.probeCall();
+                    } catch (Exception e) {
+                        log.error(e.getMessage(), e);
                     }
-                });
+                }
+            });
         }
     }
 
@@ -185,6 +187,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
      * Generate a list of values from a command to the processor
      * @javadoc
      */
+    @Override
     public List<String> getList(PageInfo sp, StringTagger tagger, String value) {
         String line = Strip.doubleQuote(value, Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line, "-\n\r");
@@ -193,7 +196,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
             log.debug("Cmd '" + cmd + "'");
             if (!checkUserLoggedOn(sp, cmd, false)) {
                 log.warn("Could not find cloud for " + sp + " returning empty list for " + tagger + "/" + value);
-                return new Vector<String>();
+                return new ArrayList<String>();
             }
             if (cmd.equals("APPLICATIONS")) {
                 tagger.setValue("ITEMS", "6");
@@ -477,11 +480,11 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
                 return ("" + (MultilevelCache.getCache().getRatio() * 100));
             } else if (cmd.equals("MULTILEVELCACHESTATE")) {
                 if (tok.hasMoreTokens()) {
-                    String state = tok.nextToken();
-                    if (state.equalsIgnoreCase("On")) {
+                    String stateToken = tok.nextToken();
+                    if (stateToken.equalsIgnoreCase("On")) {
                         MultilevelCache.getCache().setActive(true);
                         log.info("turned multilevelcache on");
-                    } else if (state.equalsIgnoreCase("Off")) {
+                    } else if (stateToken.equalsIgnoreCase("Off")) {
                         MultilevelCache.getCache().setActive(false);
                         log.info("turned multilevelcache off");
                     }
@@ -584,7 +587,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    public void setModuleProperty(Hashtable<String,Object> vars) {
+    public void setModuleProperty(Map<String,Object> vars) {
         if (kioskmode) {
             log.warn("refused module property set, am in kiosk mode");
             return;
@@ -634,16 +637,16 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
      */
     String getBuilderDescription(String builderName) {
         MMBase mmb = MMBase.getMMBase();
-        String description = "";
+        String des = "";
         BuilderReader bul = mmb.getBuilderReader(getXMLPath(builderName) + builderName);
         if (bul != null) {
             Map<String,String> desc = bul.getDescriptions();
             String english = desc.get("en");
             if (english != null) {
-                description = english;
+                des = english;
             }
         }
-        return description;
+        return des;
     }
 
     /**
@@ -735,8 +738,8 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    Vector<String> getApplicationsList() throws SearchQueryException {
-        Vector<String> results = new Vector<String>(); //sigh, synchronized, for what?
+    List<String> getApplicationsList() throws SearchQueryException {
+        List<String> results = new ArrayList<String>();
         MMBase mmb = MMBase.getMMBase();
         if (mmb == null) {
             log.warn("MMBase not yet initialized, Can't get to apps");
@@ -759,10 +762,10 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
                 continue;
             }
 
-            String name = reader.getName();
-            results.add(name);
+            String appName = reader.getName();
+            results.add(appName);
             results.add("" + reader.getVersion());
-            int installedversion = ver.getInstalledVersion(name, "application");
+            int installedversion = ver.getInstalledVersion(appName, "application");
             if (installedversion == -1) {
                 results.add("no");
             } else {
@@ -822,8 +825,8 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    Vector<String> getModuleProperties(String modulename) {
-        Vector<String> results = new Vector<String>();
+    List<String> getModuleProperties(String modulename) {
+        List<String> results = new ArrayList<String>();
         ModuleReader mod = getModuleReader(modulename);
         if (mod != null) {
             Map<String,String> props = mod.getProperties();
@@ -847,9 +850,9 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    Vector<String> getFields(String builderName) {
+    List<String> getFields(String builderName) {
         MMBase mmb = MMBase.getMMBase();
-        Vector<String> results = new Vector<String>();
+        List<String> results = new ArrayList<String>();
         BuilderReader bul = mmb.getBuilderReader(getXMLPath(builderName) + builderName);
         if (bul != null) {
             List<CoreField> defs = bul.getFields();
@@ -871,11 +874,11 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    Vector<String> getModulesList() {
-        Vector<String> results = new Vector<String>();
+    List<String> getModulesList() {
+        List<String> results = new ArrayList<String>();
         ResourceLoader moduleLoader = getModuleLoader();
         // new code checks all the *.xml files in modules dir
-        for (String path : moduleLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false)) {;
+        for (String path : moduleLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false)) {
             String sname = ResourceLoader.getName(path);
             ModuleReader reader = getModuleReader(sname);
             if (reader == null) {
@@ -898,14 +901,14 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    Vector<String> getDatabasesList() {
+    List<String> getDatabasesList() {
         MMBase mmb = MMBase.getMMBase();
         Versions ver = (Versions)mmb.getBuilder("versions");
         if (ver == null) {
             log.warn("Versions builder not installed, Can't get to builders");
             return null;
         }
-        Vector<String> results = new Vector<String>();
+        List<String> results = new ArrayList<String>();
 
         String path = MMBaseContext.getConfigPath() + File.separator + "databases" + File.separator;
         // new code checks all the *.xml files in builder dir
@@ -916,8 +919,8 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
                 return results;
             for (String aname : files) {
                 if (aname.endsWith(".xml")) {
-                    String name = aname;
-                    String sname = name.substring(0, name.length() - ".xml".length());
+                    String dbName = aname;
+                    String sname = dbName.substring(0, dbName.length() - ".xml".length());
                     results.add(sname);
 
                     results.add("0");
@@ -993,8 +996,8 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    private Vector<String> getISOGuiNames(String buildername, String fieldname) {
-        Vector<String> results = new Vector<String>();
+    private List<String> getISOGuiNames(String buildername, String fieldname) {
+        List<String> results = new ArrayList<String>();
         MMObjectBuilder bul = getBuilder(buildername);
         if (bul != null) {
             CoreField def = bul.getField(fieldname);
@@ -1010,8 +1013,8 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    private Vector<String> getISODescriptions(String buildername, String fieldname) {
-        Vector<String> results = new Vector<String>();
+    private List<String> getISODescriptions(String buildername, String fieldname) {
+        List<String> results = new ArrayList<String>();
         MMObjectBuilder bul = getBuilder(buildername);
         if (bul != null) {
             CoreField def = bul.getField(fieldname);
@@ -1057,7 +1060,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    public void doModulePosts(String command, Hashtable<String,Object> cmds, Hashtable<String,Object> vars) {
+    public void doModulePosts(String command, Map<String,Object> cmds, Map<String,Object> vars) {
         if (command.equals("SETPROPERTY")) {
             setModuleProperty(vars);
         }
@@ -1066,7 +1069,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    public void doBuilderPosts(String command, Hashtable<String,Object> cmds, Hashtable<String,Object> vars) {
+    public void doBuilderPosts(String command, Map<String,Object> cmds, Map<String,Object> vars) {
         if (command.equals("SETGUINAME")) {
             setBuilderGuiName(vars);
         } else if (command.equals("SETDESCRIPTION")) {
@@ -1099,7 +1102,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    public void setBuilderGuiName(Hashtable<String,Object> vars) {
+    public void setBuilderGuiName(Map<String,Object> vars) {
         if (kioskmode) {
             log.warn("refused gui name set, am in kiosk mode");
             return;
@@ -1120,7 +1123,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
      * @javadoc
      * @since MMBase-1.7
      */
-    public void setBuilderDescription(Hashtable<String,Object> vars) {
+    public void setBuilderDescription(Map<String,Object> vars) {
         if (kioskmode) {
             log.warn("refused gui name set, am in kiosk mode");
             return;
@@ -1141,7 +1144,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    public void setBuilderGuiType(Hashtable<String,Object> vars) {
+    public void setBuilderGuiType(Map<String,Object> vars) {
         if (kioskmode) {
             log.warn("refused gui type set, am in kiosk mode");
             return;
@@ -1169,7 +1172,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    public void setBuilderEditorInput(Hashtable<String,Object> vars) {
+    public void setBuilderEditorInput(Map<String,Object> vars) {
         if (kioskmode) {
             log.warn("refused editor input set, am in kiosk mode");
             return;
@@ -1192,7 +1195,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    public void setBuilderEditorList(Hashtable<String,Object> vars) {
+    public void setBuilderEditorList(Map<String,Object> vars) {
         if (kioskmode) {
             log.warn("refused editor list set, am in kiosk mode");
             return;
@@ -1215,7 +1218,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    public void setBuilderEditorSearch(Hashtable<String,Object> vars) {
+    public void setBuilderEditorSearch(Map<String,Object> vars) {
         if (kioskmode) {
             log.warn("refused editor pos set, am in kiosk mode");
             return;
@@ -1238,7 +1241,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    public void setBuilderDBSize(Hashtable<String,Object> vars) {
+    public void setBuilderDBSize(Map<String,Object> vars) {
         if (kioskmode) {
             log.warn("Refused set DBSize field, am in kiosk mode");
             return;
@@ -1277,7 +1280,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    public void setBuilderDBField(Hashtable<String,Object> vars) {
+    public void setBuilderDBField(Map<String,Object> vars) {
         if (kioskmode) {
             log.warn("Refused set setDBField field, am in kiosk mode");
             return;
@@ -1312,7 +1315,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    public void setBuilderDBState(Hashtable<String,Object> vars) {
+    public void setBuilderDBState(Map<String,Object> vars) {
         if (kioskmode) {
             log.warn("Refused set DBState field, am in kiosk mode");
             return;
@@ -1354,7 +1357,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    public void setBuilderDBKey(Hashtable<String,Object> vars) {
+    public void setBuilderDBKey(Map<String,Object> vars) {
         if (kioskmode) {
             log.warn("Refused set dbkey field, am in kiosk mode");
             return;
@@ -1382,7 +1385,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    public void setBuilderDBNotNull(Hashtable<String,Object> vars) {
+    public void setBuilderDBNotNull(Map<String,Object> vars) {
         if (kioskmode) {
             log.warn("Refused set NotNull field, am in kiosk mode");
             return;
@@ -1436,7 +1439,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
             String guiType = (String)vars.get("guitype");
             int type = Fields.getType((String)vars.get("mmbasetype"));
             int itemListType = Fields.getType((String)vars.get("mmbasetype"));
-            int state = Fields.getState((String)vars.get("dbstate"));
+            int dbstate = Fields.getState((String)vars.get("dbstate"));
 
             log.service("Adding field " + fieldName);
             DataType<? extends Object> dataType;
@@ -1447,7 +1450,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
             }
             log.debug("Found datatype " + dataType);
 
-            CoreField def = Fields.createField(fieldName, type, itemListType, state, dataType);
+            CoreField def = Fields.createField(fieldName, type, itemListType, dbstate, dataType);
             def.setListPosition(pos);
             def.setEditPosition(pos);
 
@@ -1486,7 +1489,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    public void removeBuilderField(Hashtable<String,Object> vars) {
+    public void removeBuilderField(Map<String,Object> vars) {
         if (kioskmode) {
             log.warn("Refused remove builder field, am in kiosk mode");
             return;
@@ -1543,8 +1546,8 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    public Vector<String> getMultilevelCacheEntries() {
-        Vector<String> results = new Vector<String>();
+    public List<String> getMultilevelCacheEntries() {
+        List<String> results = new ArrayList<String>();
         for (Map.Entry<org.mmbase.storage.search.SearchQuery, List<MMObjectNode>> entry : MultilevelCache.getCache().entrySet()) {
             /*
             StringTagger tagger=en.getTagger();
@@ -1582,9 +1585,9 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    public Vector<String> getNodeCacheEntries() {
+    public List<String> getNodeCacheEntries() {
         MMBase mmb = MMBase.getMMBase();
-        Vector<String> results = new Vector<String>();
+        List<String> results = new ArrayList<String>();
         for (MMObjectNode node :  NodeCache.getCache().values()) {
             results.add("" + NodeCache.getCache().getCount(node.getIntegerValue("number")));
             results.add("" + node.getIntValue("number"));
@@ -1592,6 +1595,11 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
             results.add(mmb.getTypeDef().getValue(node.getIntValue("otype")));
         }
         return results;
+    }
+
+    @Override
+    public int getWeight() {
+        return 0;
     }
 
 }
