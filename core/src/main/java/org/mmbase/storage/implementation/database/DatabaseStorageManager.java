@@ -2807,19 +2807,45 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 }
             }
             final Map<String, Map<String, Object>> columns = new HashMap<String, Map<String, Object>>();
-            ResultSet columnsSet = metaData.getColumns(null, null, tableName, null);
-            try {
-                // get column information
-                while (columnsSet.next()) {
-                    Map<String, Object> colInfo = new HashMap<String, Object>();
-                    colInfo.put("DATA_TYPE", columnsSet.getInt("DATA_TYPE"));
-                    colInfo.put("TYPE_NAME", columnsSet.getString("TYPE_NAME"));
-                    colInfo.put("COLUMN_SIZE", columnsSet.getInt("COLUMN_SIZE"));
-                    colInfo.put("NULLABLE", Boolean.valueOf(columnsSet.getInt("NULLABLE") != DatabaseMetaData.columnNoNulls));
-                    columns.put(columnsSet.getString("COLUMN_NAME"), colInfo);
+            for (int i = 0 ; true; i++) { 
+                // This silly loop should not be necessary, but I found it was sometimes with mysql (though it normally breaks the second time)
+                // It makes no sense, but what can I do? If getColumns simply does not return persistently the correct data, only hackery is left to us.
+                // Tried drivers: mysql 5.0.4 and 5.1.14.
+                // See MMB-2003
+                
+                ResultSet columnsSet = metaData.getColumns(null, null, tableName, null);
+                try {
+                    // get column information
+                    while (columnsSet.next()) {
+                        Map<String, Object> colInfo = new HashMap<String, Object>();
+                        colInfo.put("DATA_TYPE", columnsSet.getInt("DATA_TYPE"));
+                        colInfo.put("TYPE_NAME", columnsSet.getString("TYPE_NAME"));
+                        colInfo.put("COLUMN_SIZE", columnsSet.getInt("COLUMN_SIZE"));
+                        colInfo.put("NULLABLE", Boolean.valueOf(columnsSet.getInt("NULLABLE") != DatabaseMetaData.columnNoNulls));
+                        columns.put(columnsSet.getString("COLUMN_NAME"), colInfo);
+                    }
+                } finally {
+                    columnsSet.close();
                 }
-            } finally {
-                columnsSet.close();
+                if (columns.size() > 2) {
+                    // that looks right. number, otype, owner, that's the minimum.
+                    break;
+                }
+
+                if (i < 3) {
+                    // try again
+                    log.warn("No columns found in " + metaData + "  for "+ tableName + " ???. Trying again (" + i + ").");
+                } else if (i < 10) {
+                    // try again, but also with a new meta dat object
+                    log.error("No columns found in " + metaData + "  for "+ tableName + " ???. Trying again, with new metaData (" + i + ")");
+                    metaData = activeConnection.getMetaData();
+                } else {
+                    // give up
+                    log.error("The table " + tableName + " could not be verified after repeated checks. Skipping that altogether and proceeding now.");
+                    verifiedTablesCache.add(builder.getTableName().toUpperCase());
+                    return;
+                }
+                
             }
             // For reporting what was used for the check, we need a copy (columns itself is edited).
             final Map<String, Map<String, Object>> columnsCopy = new HashMap<String, Map<String, Object>>();
