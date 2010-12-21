@@ -83,7 +83,9 @@
           <script>
             <xsl:copy-of select="@*" />
             <xsl:copy-of select="*|text()" />
-            <xsl:comment>help</xsl:comment>
+            <xsl:if test="string-length(*|text()) &lt; 9">
+              <xsl:comment>help</xsl:comment>
+            </xsl:if>
           </script>
         </xsl:if>
       </xsl:for-each>
