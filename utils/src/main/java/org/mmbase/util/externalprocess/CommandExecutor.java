@@ -26,6 +26,8 @@ import org.mmbase.util.logging.Logging;
  */
 public class CommandExecutor {
 
+    private static final Logger LOG = Logging.getLoggerInstance(CommandExecutor.class);
+
     public static enum Type {
         LAUNCHER,
         CONNECTOR;
@@ -68,14 +70,27 @@ public class CommandExecutor {
                                OutputStream errorStream,
                                Method method,
                                String command, String... args) throws ProcessException, InterruptedException {
+        InputStream inputStream = new ByteArrayInputStream(new byte[0]);
+        execute(inputStream, outputStream, errorStream, method, EMPTY, command, args);
+    }
+
+    /**
+     * @since MMBase-1.9.6
+     */
+    public static long execute(InputStream inputStream,
+                               OutputStream outputStream,
+                               OutputStream errorStream,
+                               Method method,
+                               String [] env,
+                               String command, String... args) throws ProcessException, InterruptedException {
         method.setInUse(true);
         try {
             switch(method.type) {
             case LAUNCHER:
                 CommandLauncher launcher = new CommandLauncher(command);
-                launcher.execute(command, args);
-                launcher.waitAndRead(outputStream, errorStream);
-                return;
+                launcher.execute(command, args, env);
+                ProcessClosure reader = launcher.waitAndWrite(inputStream, outputStream, errorStream);
+                return reader.getCount();
             case CONNECTOR:
                 try {
                     // errorStream is ignored.
@@ -90,8 +105,8 @@ public class CommandExecutor {
                         cmd.add(arg);
                     }
                     stream.writeObject((cmd.toArray(EMPTY)));
-                    stream.writeObject(EMPTY);
-                    Copier copier = new Copier(new ByteArrayInputStream(new byte[0]), os, ".file -> socket");
+                    stream.writeObject(env);
+                    Copier copier = new Copier(inputStream, os, ".file -> socket");
                     org.mmbase.util.ThreadPools.jobsExecutor.execute(copier);
 
                     Copier copier2 = new Copier(socket.getInputStream(), outputStream, ";socket -> cout");
@@ -101,10 +116,13 @@ public class CommandExecutor {
                     socket.shutdownOutput();
                     copier2.waitFor();
                     socket.close();
+                    return copier.getCount();
                 } catch (IOException ioe) {
                     throw new ProcessException(ioe);
                 }
-                return;
+            default:
+                throw new IllegalArgumentException();
+
             }
         } finally {
             method.inUse = false;
@@ -115,7 +133,7 @@ public class CommandExecutor {
     // copy job
     public static class Copier implements Runnable {
         private boolean ready;
-        private int count = 0;
+        private long count = 0;
         private final InputStream in;
         private final OutputStream out;
         private final String name;
@@ -125,15 +143,10 @@ public class CommandExecutor {
             in = i; out = o; name = n;
         }
         public void run() {
-            int size = 0;
             try {
-                byte[] buffer = new byte[1024];
-                while ((size = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, size);
-                    count+= size;
-                }
+                count = org.mmbase.util.IOUtil.copy(in, out);
             } catch (Throwable t) {
-                System.err.println("Connector " + toString() +  ": " + t.getClass() + " " + t.getMessage());
+                LOG.error("Connector " + toString() +  ": " + t.getClass() + " " + t.getMessage());
             }
             synchronized(this) {
                 notifyAll();
@@ -152,6 +165,13 @@ public class CommandExecutor {
         }
         public String toString() {
             return name;
+        }
+
+        /**
+         * @since MMBase-1.9.6
+         */
+        public long getCount() {
+            return count;
         }
 
     }
