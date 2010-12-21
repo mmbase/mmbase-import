@@ -30,6 +30,8 @@ import org.mmbase.util.logging.*;
 public class ImageMagickImageConverter extends AbstractImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
 
+    private static final String[] EMPTY = new String[] {};
+
     static final Pattern IM_VERSION_PATTERN = Pattern.compile("(?is)(.*)\\s(\\d+)\\.(\\d+)\\.(\\d+)(-[0-9]+)?\\s.*");
     private static final Pattern IM_FORMAT_PATTERN  = Pattern.compile("(?is)\\s*([A-Z0-9]+)\\*?\\s+[A-Z0-9]*\\s*[r\\-]w[\\+\\-]\\s+.*");
 
@@ -48,9 +50,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
 
     // private static String CONVERT_LC_ALL= "LC_ALL=en_US.UTF-8"; I don't know how to change it.
 
-    public static final int METHOD_LAUNCHER  = 1;
-    public static final int METHOD_CONNECTOR = 2;
-    protected int method = METHOD_LAUNCHER;
+    protected CommandExecutor.Method method = new CommandExecutor.Method();
     protected String host = "localhost";
     protected int port = 1679;
 
@@ -60,63 +60,16 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
     private OutputStream getOutput(String... args) {
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        switch (method) {
-        case METHOD_LAUNCHER: {
-            log.debug("Starting convert");
-            List<String> cmd = new ArrayList<String>();
-            for (String arg : args) {
-                cmd.add(arg);
-            }
+        try {
+            CommandExecutor.execute(outputStream, errorStream, method, converterPath, args);
+        } catch (Exception ioe) {
             try {
-
-                CommandLauncher launcher = new CommandLauncher("ConvertImage");
-                launcher.execute(converterPath, cmd.toArray(EMPTY));
-                launcher.waitAndRead(outputStream, errorStream);
-            } catch (ProcessException e) {
-                log.error("Convert test failed. " + converterPath + cmd + " (" + e.getMessage() + ")");
+                errorStream.write(ioe.getMessage().getBytes());
+                errorStream.write(method.toString().getBytes());
+                errorStream.flush();
+            } catch (Exception e) {
+                 log.error(e);
             }
-            break;
-        }
-        case METHOD_CONNECTOR: {
-            try {
-                java.net.Socket socket = new java.net.Socket(host, port);
-                final OutputStream os = socket.getOutputStream();
-                os.write(0); // version
-                final ObjectOutputStream stream = new ObjectOutputStream(os);
-                List<String> cmd = new ArrayList<String>();
-                cmd.add(converterPath);
-                for (String arg : args) {
-                    cmd.add(arg);
-                }
-                stream.writeObject((cmd.toArray(EMPTY)));
-                stream.writeObject(EMPTY);
-                Copier copier = new Copier(new ByteArrayInputStream(new byte[0]), os, ".file -> socket");
-                log.debug("Executing " + copier);
-                org.mmbase.util.ThreadPools.jobsExecutor.execute(copier);
-
-                Copier copier2 = new Copier(socket.getInputStream(), outputStream, ";socket -> cout");
-                org.mmbase.util.ThreadPools.jobsExecutor.execute(copier2);
-                log.debug("Waitting for " + copier);
-                copier.waitFor();
-                log.debug("Ready 1");
-                socket.shutdownOutput();
-                log.debug("Now waiting for 2");
-                copier2.waitFor();
-                log.debug("Ready 2");
-                socket.close();
-                log.debug("Ready");
-            } catch (Exception ioe) {
-                log.error("" + host + ":" + port);
-                try {
-                    errorStream.write(("" + host + ":" + port).getBytes());
-                    errorStream.flush();
-                } catch (Exception e) {
-                    log.error(e);
-                }
-            }
-            break;
-        }
-        default: log.error("unknown method " + method);
         }
         return outputStream;
 
@@ -166,9 +119,9 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         tmp = params.get("ImageConvert.Method");
         if (tmp != null && ! tmp.equals("")) {
             if (tmp.equals("launcher")) {
-                method = METHOD_LAUNCHER;
+                method = new CommandExecutor.Method();
             } else if (tmp.equals("connector")) {
-                method = METHOD_CONNECTOR;
+                method = new CommandExecutor.Method(host, port);
                 log.info("Will connect to " + host + ":" + port + " to convert images");
             } else {
                 log.error("Unknown imageconvert method " + tmp);
@@ -687,16 +640,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
 
         long result;
         try {
-            switch(method) {
-            case METHOD_LAUNCHER:
-                result = launcherConvertImage(cmd, env, originalStream, imageStream, errorStream);
-                break;
-            case METHOD_CONNECTOR:
-                result = connectorConvertImage(cmd, env, originalStream, imageStream, errorStream);
-                break;
-            default: log.error("unknown method " + method);
-                result = 0;
-            }
+            result = CommandExecutor.execute(originalStream, imageStream, errorStream, method, env, cmd.get(0), cmd.subList(1, cmd.size()).toArray(EMPTY));
             writer.close();
 
             log.debug("retrieved all information");
@@ -727,90 +671,6 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
 
     }
 
-    protected long launcherConvertImage(List<String> cmd, String[] env, InputStream originalStream, OutputStream imageStream, OutputStream errorStream) throws ProcessException {
-        CommandLauncher launcher = new CommandLauncher("ConvertImage");
-        launcher.execute(cmd.toArray(new String[0]), env);
-        ProcessClosure reader = launcher.waitAndWrite(originalStream, imageStream, errorStream);
-        return reader.getCount();
-    }
-
-    // copy job
-    public static class Copier implements Runnable {
-        private volatile boolean ready;
-        private long count = 0;
-        private final InputStream in;
-        private final OutputStream out;
-        private final String name;
-        public  boolean debug = false;
-
-        public Copier(InputStream i, OutputStream o, String n) {
-            in = i; out = o; name = n;
-        }
-        public void run() {
-            log.debug("Executing " + this);
-            try {
-                count = IOUtil.copy(in, out);
-            } catch (Throwable t) {
-                System.err.println("Connector " + toString() +  ": " + t.getClass() + " " + t.getMessage());
-            }
-            log.debug("Ready" + this);
-            synchronized(this) {
-                ready = true;
-                notifyAll();
-            }
-        }
-        public  boolean ready() {
-            return ready;
-        }
-        public void  waitFor() throws InterruptedException {
-            synchronized(this) {
-                while (! ready) {
-                    wait();
-                }
-            }
-        }
-        public String toString() {
-            return name;
-        }
-        public long getCount() {
-            return count;
-        }
-
-    }
-
-
-    private final String[] EMPTY = new String[] {};
-    protected long connectorConvertImage(List<String> cmd, String[] env, InputStream originalStream, OutputStream imageStream, OutputStream errorStream) throws java.net.UnknownHostException, IOException, InterruptedException   {
-        try {
-            java.net.Socket socket = new java.net.Socket(host, port);
-            final OutputStream os = socket.getOutputStream();
-            os.write(0); // version
-            final ObjectOutputStream stream = new ObjectOutputStream(os);
-            stream.writeObject((cmd.toArray(EMPTY)));
-            stream.writeObject(env);
-
-            Copier copier = new Copier(originalStream, os, ".file -> socket");
-            org.mmbase.util.ThreadPools.jobsExecutor.execute(copier);
-
-            Copier copier2 = new Copier(socket.getInputStream(), imageStream, ";socket -> cout");
-            org.mmbase.util.ThreadPools.jobsExecutor.execute(copier2);
-
-            copier.waitFor();
-            log.debug("Ready copying stuff to socket");
-            originalStream.close();
-            socket.shutdownOutput();
-            log.debug("Waiting for response");
-            copier2.waitFor();
-            socket.close();
-            return copier2.getCount();
-        } catch (IOException ioe) {
-            log.error("" + host + ":" + port);
-            errorStream.write(("" + host + ":" + port).getBytes());
-            errorStream.flush();
-            throw ioe;
-        }
-
-    }
 
     public String toString() {
         return super.toString() + " " + converterPath + " (version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch + ")";
@@ -825,5 +685,6 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             System.out.println("Could not find");
         }
     }
+
 
 }
