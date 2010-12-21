@@ -79,7 +79,7 @@ public abstract class EventBroker {
     /**
      * @since MMBase-1.8.5
      */
-    public Collection<EventListener> getListeners() {
+    public final Collection<EventListener> getListeners() {
         return Collections.unmodifiableCollection(backing());
     }
 
