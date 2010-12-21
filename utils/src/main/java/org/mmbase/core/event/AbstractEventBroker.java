@@ -21,7 +21,7 @@ public abstract class AbstractEventBroker extends EventBroker {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractEventBroker.class);
 
-    private List<EventListener> listeners = new ArrayList<EventListener>();
+    private List<EventListener> listeners = Collections.unmodifiableList(new ArrayList<EventListener>());
 
     private static final Comparator<EventListener> COMPARATOR = new Comparator<EventListener>() {
 
@@ -43,7 +43,7 @@ public abstract class AbstractEventBroker extends EventBroker {
 
     @Override
     protected Collection<EventListener> backing() {
-        return Collections.unmodifiableList(listeners);
+        return listeners;
     }
 
 
@@ -51,6 +51,7 @@ public abstract class AbstractEventBroker extends EventBroker {
     public boolean addListener(EventListener listener) {
         if (canBrokerForListener(listener)) {
             synchronized(COMPARATOR) {
+
                 if (listeners.contains(listener)) {
                     if (log.isDebugEnabled()) {
                         log.debug("" + listener + " was already in " + getClass() + ". Ignored.");
@@ -61,11 +62,11 @@ public abstract class AbstractEventBroker extends EventBroker {
                     newList.addAll(listeners);
                     newList.add(listener);
                     Collections.sort(newList, COMPARATOR);
-                    listeners = newList;
+                    listeners = Collections.unmodifiableList(newList);
                     log.debug("listener added to " + getClass());
                 }
+                return true;
             }
-            return true;
         } else {
             log.warn("Ignored listener for" + getClass() + " because it cannot broker for that.");
         }
@@ -75,9 +76,14 @@ public abstract class AbstractEventBroker extends EventBroker {
     @Override
     public void removeListener(EventListener listener) {
         synchronized(COMPARATOR) {
-            if (! listeners.remove(listener)) {
+            List<EventListener> newList = new ArrayList<EventListener>(listeners.size() + 1);
+            newList.addAll(listeners);
+            if (! newList.remove(listener)) {
                 log.warn("Tried to remove " + listener + " from " + getClass()+ " but it was not found. Ignored.");
+                //return false;
             }
+            listeners = Collections.unmodifiableList(newList);
+            //return true;
         }
 
     }

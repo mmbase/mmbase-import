@@ -49,7 +49,9 @@ public abstract class WeakEventBroker extends EventBroker {
     public synchronized void removeListener(EventListener listener) {
         if (! listeners.remove(listener)) {
             log.warn("Tried to remove " + listener + " from " + getClass()+ " but it was not found. Ignored.");
+            //return false;
         }
+        //return true;
 
     }
     /**
