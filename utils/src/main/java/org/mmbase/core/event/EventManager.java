@@ -187,8 +187,9 @@ public class EventManager implements SystemEventListener {
         }
         for (EventBroker original :  originalEventBrokers) {
             for (EventListener el : original.getListeners()) {
-                log.debug("Readding " + el);
-                if (! listenersFromResources.remove(el)) {
+                log.debug("Reading " + el);
+                if (original.getListeners().contains(el)) {
+                    original.removeListener(el);
                     addEventListener(el, false);
                 }
             }
