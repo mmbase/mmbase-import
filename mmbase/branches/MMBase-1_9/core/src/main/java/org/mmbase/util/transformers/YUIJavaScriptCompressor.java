@@ -34,7 +34,7 @@ public class YUIJavaScriptCompressor extends  ReaderTransformer {
                                                                        new JavaScriptErrorReporter(LOG));
             compressor.compress(new StringWriter(), 0, false, false, false, false);
             w = true;
-            LOG.info("WORKED!");
+            LOG.service("It seams that there are no problems with rhino artifacts, so YUI Compressor can be used.");
         } catch (IOException ieo) {
             LOG.warn(ieo.getMessage(), ieo);
             w = false;
