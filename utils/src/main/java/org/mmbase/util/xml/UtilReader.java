@@ -354,4 +354,11 @@ public class UtilReader {
         }
     }
 
+
+    @Override
+    public String toString() {
+        return super.toString() + " " + file;
+    }
+
+
 }
