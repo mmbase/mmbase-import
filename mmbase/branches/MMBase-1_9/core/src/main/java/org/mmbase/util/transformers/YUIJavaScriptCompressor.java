@@ -41,6 +41,9 @@ public class YUIJavaScriptCompressor extends  ReaderTransformer {
         } catch (StringIndexOutOfBoundsException sie) {
             LOG.info("Javascript compression not working. See e.g. http://yuilibrary.com/forum/viewtopic.php?f=94&t=3345&p=20085#p20085. " + sie.getMessage());
             w = false;
+        } catch (Throwable re) {
+            LOG.warn(re.getMessage(), re);
+            w = false;
         }
         WORKS = w;
     }
