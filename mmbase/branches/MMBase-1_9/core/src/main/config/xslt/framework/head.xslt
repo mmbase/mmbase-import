@@ -28,8 +28,10 @@
 
       <title>
         <xsl:for-each select="$descendants/title">
-          <xsl:if test="position() &gt; 1 and string-length(text()) &gt; 0"> - </xsl:if>
-          <xsl:copy-of select="text()" />
+          <xsl:if test="position() &gt; 1 and string-length(text()) &gt; 0">
+            <xsl:text> - </xsl:text>
+          </xsl:if>
+          <xsl:text></xsl:text><xsl:copy-of select="text()" /><xsl:text></xsl:text>
         </xsl:for-each>
       </title>
 
@@ -129,7 +131,15 @@
         </xsl:choose>
       </xsl:for-each>
 
+      <!-- comments -->
+      <xsl:variable name="unique-comments"
+                    select="$descendants/comment()" /> <!-- I don't know -->
+
+      <xsl:for-each select="$unique-comments">
+         <xsl:copy-of select="." />
+      </xsl:for-each>
       <meta name="generator" content="MMBase" />
+
 
     </head>
   </xsl:template>
