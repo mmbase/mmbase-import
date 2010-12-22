@@ -442,9 +442,12 @@ public class Images extends AbstractImages {
 
     @Override
     protected String getSGUIIndicatorForNode(MMObjectNode node, Parameters args) {
-        return getGUIIndicatorWithAlt(node, node.getStringValue("title"), args);
+        if (hasField("title")) {
+            return getGUIIndicatorWithAlt(node, node.getStringValue("title"), args);
+        } else {
+            return getGUIIndicatorWithAlt(node, "" + node.getNumber(), args);
+        }
     }
-
 
     @Override
     public String getDefaultImageType() {
