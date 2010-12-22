@@ -32,11 +32,13 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
     }
 
     // javadoc is inherited
-    @Override public double getVersion() {
+    @Override
+    public double getVersion() {
         return 1.0;
     }
 
-    @Override protected boolean tablesInheritFields() {
+    @Override
+    protected boolean tablesInheritFields() {
         return false;
     }
 
