@@ -2196,10 +2196,20 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
      * Returns whether tables inherit fields form parent tables.
      * this determines whether fields that are inherited in mmbase builders
      * are redefined in the database tables.
-     * @return tables inherit fields form parent tables
+     * @return tables inherit fields from parent tables. If <code>true</code>,
      */
     protected boolean tablesInheritFields() {
         return true;
+    }
+
+
+    /**
+     * Whether during the table verification also metaData.getSuperTables must be used to obtain the fields in the
+     * parent builder.
+     * @since MMBase-1.9.6
+     */
+    protected boolean useDatabaseInheritance() {
+        return tablesInheritFields();
     }
 
     /**
@@ -2216,7 +2226,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         // skip fields that are in the parent builder
         MMObjectBuilder parentBuilder = field.getParent().getParentBuilder();
         if (isPart && parentBuilder != null) {
-            isPart = !tablesInheritFields() || parentBuilder.getField(field.getName()) == null;
+            isPart = ! tablesInheritFields() || parentBuilder.getField(field.getName()) == null;
         }
         return isPart;
     }
@@ -2776,7 +2786,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 tableName = tableName.toUpperCase();
             }
             // skip if does not support inheritance, or if this is the object table
-            if (tablesInheritFields()) {
+            if (useDatabaseInheritance()) {
                 MMObjectBuilder parent = builder.getParentBuilder();
                 try {
                     ResultSet superTablesSet = metaData.getSuperTables(null, null, tableName);
@@ -2807,12 +2817,12 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 }
             }
             final Map<String, Map<String, Object>> columns = new HashMap<String, Map<String, Object>>();
-            for (int i = 0 ; true; i++) { 
+            for (int i = 0 ; true; i++) {
                 // This silly loop should not be necessary, but I found it was sometimes with mysql (though it normally breaks the second time)
                 // It makes no sense, but what can I do? If getColumns simply does not return persistently the correct data, only hackery is left to us.
                 // Tried drivers: mysql 5.0.4 and 5.1.14.
                 // See MMB-2003
-                
+
                 ResultSet columnsSet = metaData.getColumns(null, null, tableName, null);
                 try {
                     // get column information
@@ -2845,7 +2855,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                     verifiedTablesCache.add(builder.getTableName().toUpperCase());
                     return;
                 }
-                
+
             }
             // For reporting what was used for the check, we need a copy (columns itself is edited).
             final Map<String, Map<String, Object>> columnsCopy = new HashMap<String, Map<String, Object>>();
