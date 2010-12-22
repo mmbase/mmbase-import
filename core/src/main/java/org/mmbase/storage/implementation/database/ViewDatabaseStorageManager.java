@@ -251,7 +251,6 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
     protected boolean isInheritedField(CoreField field) {
         MMObjectBuilder parent = field.getParent().getParentBuilder();
         if (parent == null) {
-            log.info(" " + field + " is not inherited (this must be  object");
             // no parent, thus cannot inherit anything
             return false;
         }
