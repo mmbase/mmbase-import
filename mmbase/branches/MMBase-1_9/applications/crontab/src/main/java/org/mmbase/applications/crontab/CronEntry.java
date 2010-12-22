@@ -213,6 +213,7 @@ public class CronEntry implements java.io.Serializable {
      */
     public boolean isActive() {
         String machineName = MMBaseContext.getMachineName();
+        if (machineName == null) return false;
         return servers.matcher(machineName).matches();
     }
 
