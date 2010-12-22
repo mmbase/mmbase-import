@@ -25,18 +25,20 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * @javadoc
+ * A View database storage manager creates tables without the fields of the 'super' tables and views to represent the
+ * combined table.
  *
  * @version $Id$
  * @since MMBase-1.8
+ * @author Nico Klasens (?)
  */
 public class ViewDatabaseStorageManager extends DatabaseStorageManager {
 
     private static final Logger log = Logging.getLoggerInstance(ViewDatabaseStorageManager.class);
 
-
     @Override
-    protected boolean tablesInheritFields() {
+    protected boolean useDatabaseInheritance() {
+        // we don't use real inheritance, but simulate with views
         return false;
     }
 
@@ -246,20 +248,22 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         return (String)factory.getStorageIdentifier(field);
     }
 
-    public boolean isInheritedField(CoreField field) {
-        MMObjectBuilder inheritedBuilder = field.getParent().getParentBuilder();
-        if(inheritedBuilder == null) {
+    protected boolean isInheritedField(CoreField field) {
+        MMObjectBuilder parent = field.getParent().getParentBuilder();
+        if (parent == null) {
+            log.info(" " + field + " is not inherited (this must be  object");
             // no parent, thus cannot inherit anything
             return false;
         }
-        return (inheritedBuilder.getField(field.getName()) != null);
+        boolean res = parent.hasField(field.getName());
+        return res;
     }
 
-    public CoreField getNumberField() {
+    protected CoreField getNumberField() {
         return factory.getMMBase().getRootBuilder().getField("number");
     }
 
-    public String getTableName(MMObjectBuilder builder) {
+    protected String getTableName(MMObjectBuilder builder) {
         if (builder.getParentBuilder() == null) {
             return (String) factory.getStorageIdentifier(builder);
         } else {
@@ -267,7 +271,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         }
     }
 
-    public String getTableName(String viewname) {
+    protected String getTableName(String viewname) {
         String id = (String)factory.getStorageIdentifier(viewname + "_table");
         String toCase = (String)factory.getAttribute(org.mmbase.storage.Attributes.STORAGE_IDENTIFIER_CASE);
         if ("lower".equals(toCase)) {
@@ -279,10 +283,10 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         }
     }
 
-    public String getViewName(MMObjectBuilder builder) {
+    protected String getViewName(MMObjectBuilder builder) {
         return getViewName((String)factory.getStorageIdentifier(builder));
     }
-    public String getViewName(String viewname) {
+    protected String getViewName(String viewname) {
         return viewname;
     }
 
@@ -307,11 +311,11 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         return super.exists(index, getTableName(index.getParent()));
     }
 
-    public boolean viewExists(MMObjectBuilder builder) {
+    protected boolean viewExists(MMObjectBuilder builder) {
         return exists(getViewName(builder));
     }
 
-    public boolean viewCreate(MMObjectBuilder builder) {
+    protected boolean viewCreate(MMObjectBuilder builder) {
         MMObjectBuilder inheritedBuilder = builder.getParentBuilder();
         // create the inherited builder first
         if(inheritedBuilder != null) {
@@ -353,7 +357,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
     }
 
     private void createView(MMObjectBuilder builder, MMObjectBuilder inheritedBuilder, List<CoreField> fields, String tablename) throws StorageError {
-        log.debug("Creating a view for " + builder);
+        log.info("Creating a view for " + builder);
         Scheme viewScheme = factory.getScheme(Schemes.CREATE_VIEW, Schemes.CREATE_VIEW_DEFAULT);
         Scheme createInsertTriggerScheme = null;
         Scheme createDeleteTriggerScheme = null;
@@ -399,22 +403,24 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 if (createTableFields.length() > 0) {
                     createTableFields.append(", ");
                 }
-                if(isInheritedField(field)) {
-                    if(inheritedBuilder == null)
+                boolean isInherited = isInheritedField(field);
+                if (isInherited) {
+                    if(inheritedBuilder == null) {
                         throw new StorageError("Cannot have a inherited field while we dont extend inherit from a builder!");
-                    createTableFields.append(getViewName(inheritedBuilder) + "." + getFieldName(field));
+                    }
+                    createTableFields.append(getViewName(inheritedBuilder)).append(".").append(getFieldName(field));
                     parentFieldNames.add(getFieldName(field));
                 } else {
-                    createTableFields.append(tablename + "." + getFieldName(field));
+                    createTableFields.append(tablename).append(".").append(getFieldName(field));
                     myFieldNames.add(getFieldName(field));
                 }
 
-                if (isInheritedField(field) && field.getName().equals(getNumberField().getName())) {
+                if (isInherited && field.getName().equals(getNumberField().getName())) {
                     myFieldNames.add(getFieldName(field));
                 }
             }
         }
-
+        log.info("VIEW fields: " + createViewFields + " TABLE fields: " + createTableFields);
         String query = "";
         try {
             getActiveConnection();
@@ -452,7 +458,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                         myValues.append(", ");
                     }
                     myFields.append(myFieldNames.get(i));
-                    myValues.append(":NEW." + myFieldNames.get(i));
+                    myValues.append(":NEW.").append(myFieldNames.get(i));
                 }
                 for (int i=0; i<parentFieldNames.size(); i++) {
                     if (i > 0) {
@@ -460,7 +466,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                         parentValues.append(", ");
                     }
                     parentFields.append(parentFieldNames.get(i));
-                    parentValues.append(":NEW." + parentFieldNames.get(i));
+                    parentValues.append(":NEW.").append(parentFieldNames.get(i));
                 }
                 Object triggerName = factory.getStorageIdentifier(viewname + "_INSERT");
                 query = createInsertTriggerScheme.format(new Object[]{this, viewname, tablename, inheritedBuilder, myFields.toString(), myValues.toString(), parentFields.toString(), parentValues.toString(), triggerName});
