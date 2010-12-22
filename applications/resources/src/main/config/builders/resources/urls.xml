@@ -45,6 +45,7 @@
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <maxLength value="255" enforce="never"/>
       </datatype>
+      <db><type notnull="true" /></db>
     </field>
 
     <field name="url">
@@ -63,6 +64,7 @@
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <default value="http://" />
+        <required value="true" />
         <maxLength value="255" enforce="never"/>
       </datatype>
     </field>
