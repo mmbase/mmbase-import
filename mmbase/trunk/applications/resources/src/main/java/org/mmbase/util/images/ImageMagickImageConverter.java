@@ -551,7 +551,13 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
     private boolean isCommandPrefixed(String s) {
         if (s == null || s.length() == 0) return false;
         char c = s.charAt(0);
-        return c == '-' || c == '+';
+        if (c == '-' || c == '+') {
+            return true;
+        }
+        if (s.indexOf(":") > 0) { // xc:transparent
+            return true;
+        }
+        return false;
     }
 
     /**
