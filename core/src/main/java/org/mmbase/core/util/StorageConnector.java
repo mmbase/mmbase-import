@@ -16,7 +16,6 @@ import org.mmbase.bridge.NodeQuery;
 import org.mmbase.cache.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.storage.*;
 import org.mmbase.storage.util.Index;
 import org.mmbase.storage.search.*;
@@ -28,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * A StorageConnector object is associated with a specific builder.
  * It provides methods for loading nodes from the cloud (using the search query classes),
- * either indivbidual nodes or nodelists.
+ * either individual nodes or nodelists.
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
@@ -41,7 +40,10 @@ public class StorageConnector {
      */
     private static final int MAX_QUERY_SIZE = 20000;
 
-    private static final Logger log = Logging.getLoggerInstance(StorageConnector.class);
+    private static final Logger LOG = Logging.getLoggerInstance(StorageConnector.class);
+
+    private static final Logger STACKLOG = Logging.getLoggerInstance("org.mmbase.STACK.CONNECTOR");
+    private static long logseq = 0;
 
     /**
      * Determines whether the cache need be refreshed.
@@ -111,7 +113,7 @@ public class StorageConnector {
         try {
             return builder.getMMBase().getStorageManager().size(builder);
         } catch (StorageException se) {
-            log.error(se.getMessage());
+            LOG.error(se.getMessage());
             return -1;
         }
     }
@@ -126,7 +128,7 @@ public class StorageConnector {
         try {
             return builder.getMMBase().getStorageManager().exists(builder);
         } catch (StorageException se) {
-            log.error(se.getMessage() + Logging.stackTrace(se));
+            LOG.error(se.getMessage(), se);
             return false;
         }
     }
@@ -191,8 +193,8 @@ public class StorageConnector {
      *       <code>MMObjectNode</code> containing the contents of the requested node.
      */
     public  MMObjectNode getNode(final int number, final boolean useCache) throws StorageException {
-        if (log.isDebugEnabled()) {
-            log.trace("Getting node with number " + number);
+        if (LOG.isDebugEnabled()) {
+            LOG.trace("Getting node with number " + number);
         }
         if (number < 0) {
             throw new IllegalArgumentException("Tried to obtain node from builder '" + builder.getTableName() + "' with an illegal number = " + number);
@@ -203,7 +205,7 @@ public class StorageConnector {
         // try cache if indicated to do so
         node = builder.getNodeFromCache(numberValue);
         if (node != null) {
-            log.trace("Found in cache!");
+            LOG.trace("Found in cache!");
             if (useCache) {
                 return node;
             } else {
@@ -216,7 +218,7 @@ public class StorageConnector {
         // retrieve node's objecttype
         MMObjectBuilder nodeBuilder = getBuilderForNode(number);
         // use storage factory if present
-        log.debug("Getting node from storage");
+        LOG.debug("Getting node from storage");
         node = mmb.getStorageManager().getNode(nodeBuilder, number);
         if (nodeBuilder == mmb.getInsRel() && node.getOType() != nodeBuilder.getObjectType()) {
             // the builder was unknown en we falled back to insrel.
@@ -227,13 +229,13 @@ public class StorageConnector {
         }
         // store in cache if indicated to do so
         if (useCache) {
-            if (log.isDebugEnabled()) {
-                log.debug("Caching node from storage" + node);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Caching node from storage" + node);
             }
             node = builder.safeCache(numberValue, node);
         }
-        if (log.isDebugEnabled()) {
-            log.debug("Returning " + node);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Returning " + node);
         }
         if (useCache) {
             return node;
@@ -253,12 +255,12 @@ public class StorageConnector {
         }
         // if the type is not for the current builder, determine the real builder
         if (nodeType != builder.getNumber()) {
-            if (log.isDebugEnabled()) {
-                log.debug(" " + nodeType + "!=" + builder.getNumber());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(" " + nodeType + "!=" + builder.getNumber());
             }
             String builderName = mmb.getTypeDef().getValue(nodeType);
             if (builderName == null) {
-                log.error("The nodetype name of node #" + number + " could not be found (nodetype # " + nodeType + "), taking '" + builder.getTableName() + "' (more errors of this kind are logged on debug)");
+                LOG.error("The nodetype name of node #" + number + " could not be found (nodetype # " + nodeType + "), taking '" + builder.getTableName() + "' (more errors of this kind are logged on debug)");
                 builderName = builder.getTableName();
             }
             nodeBuilder = mmb.getBuilder(builderName);
@@ -269,10 +271,10 @@ public class StorageConnector {
                     nodeBuilder = mmb.getRootBuilder();
                 }
                 if (! warnedBuilders.contains(nodeType)) {
-                    log.warn("Builder " + builderName + "(" + nodeType + ") is not loaded, taking " + nodeBuilder.getTableName());
+                    LOG.warn("Builder " + builderName + "(" + nodeType + ") is not loaded, taking " + nodeBuilder.getTableName());
                     warnedBuilders.add(nodeType);
                 }
-                log.debug("Node #" + number + "'s builder " + builderName + "(" + nodeType + ") is not loaded. Taking " + nodeBuilder.getTableName());
+                LOG.debug("Node #" + number + "'s builder " + builderName + "(" + nodeType + ") is not loaded. Taking " + nodeBuilder.getTableName());
 
             }
         }
@@ -321,7 +323,7 @@ public class StorageConnector {
             if(builder.isNodeCached(number)) {
                 MMObjectNode n = builder.getNodeFromCache(number);
                 if (n == null) {
-                    log.warn("No such node '" + number + "', adding NULL. Found in virtual node " + node);
+                    LOG.warn("No such node '" + number + "', adding NULL. Found in virtual node " + node);
                 }
                 result.add(n);
                 // else seek it with a search on builder in db
@@ -370,7 +372,9 @@ public class StorageConnector {
         for (Integer n : subResult) {
             MMObjectNode node = rawMap.get(n);
             if (node == null) {
-                log.warn("No node " + n + " found in " + rawNodes + " (for " +   MMBase.getMMBase().getSearchQueryHandler().createSqlString(query)  + ") will use NULL");
+                long l = ++logseq;
+                LOG.warn(l + ": No node " + n + " found in " + rawNodes + " (for " +   MMBase.getMMBase().getSearchQueryHandler().createSqlString(query)  + ") will use NULL");
+                STACKLOG.service("" + l, new Exception());
             }
             result.add(node);
         }
@@ -381,7 +385,7 @@ public class StorageConnector {
      */
     protected boolean assertSizes(Collection<MMObjectNode> virtuals, Collection<MMObjectNode> result) {
         if (virtuals.size() != result.size()) {
-            log.error(" virtuals " + virtuals + " result " + result);
+            LOG.error(" virtuals " + virtuals + " result " + result);
             return false;
         } else {
             return true;
@@ -431,7 +435,7 @@ public class StorageConnector {
         if (query instanceof NodeQuery) {
             builderName = ((NodeQuery)query).getNodeManager().getName();
         } else if (query instanceof NodeSearchQuery) {
-            builderName = ((NodeSearchQuery)query).getTableName();
+            builderName = ((NodeSearchQuery)query).getBuilder().getTableName();
         }
         if (builderName != null && !builderName.equals(builder.getTableName())) {
             throw new IllegalArgumentException("Query passed runs on '" + builderName + "' but was passed to '" + builder.getTableName() + "'");
@@ -485,11 +489,11 @@ public class StorageConnector {
 
         // if unavailable, obtain from storage
         if (results == null) {
-            log.debug("result list is null, getting from storage");
+            LOG.debug("result list is null, getting from storage");
             results = builder.getMMBase().getSearchQueryHandler().getNodes(query, builder);
         } else {
-            if (log.isDebugEnabled()) {
-                log.debug("Found from cache '" + getCache(query).getName() + "' " + results);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Found from cache '" + getCache(query).getName() + "' " + results);
             }
         }
         return results;
@@ -570,7 +574,7 @@ public class StorageConnector {
             Integer number = node.getNumber();
             if(number.intValue() < 0) {
                 // never happened to me, and never should!
-                log.error("invalid node found, node number was invalid:" + node.getNumber()+", storage invalid?");
+                LOG.error("invalid node found, node number was invalid:" + node.getNumber()+", storage invalid?");
                 // dont know what to do with this node,...
                 // remove it from the results, continue to the next one!
                 resultsIterator.remove();
@@ -582,7 +586,7 @@ public class StorageConnector {
             // maybe we got the wrong node typeback, if so
             // try to retrieve the correct node from the cache first
             int oType = builder.getNumber();
-            if(oType != -1 && oType != node.getOType()){
+            if (oType != -1 && oType != node.getOType()) {
                 // try to retrieve the correct node from the
                 // nodecache
                 MMObjectNode cachedNode = builder.getNodeFromCache(number);
@@ -650,36 +654,36 @@ public class StorageConnector {
                 try {
                     typedefNode = getNode(nodeType, true);
                 } catch (Exception e) {
-                    log.error("Exception during conversion of nodelist to right types.  Nodes (" + nodes + ") of current type " + nodeType + " will be skipped. Probably the storage is inconsistent. Message: " + e.getMessage());
+                    LOG.error("Exception during conversion of nodelist to right types.  Nodes (" + nodes + ") of current type " + nodeType + " will be skipped. Probably the storage is inconsistent. Message: " + e.getMessage());
 
                     continue;
                 }
                 if(typedefNode == null) {
                     typedefNode = getNode(MMBase.getMMBase().getBuilder("object").getNumber(), true);
-                    log.error("Could not find typedef node #" + nodeType + " taking " + typedefNode + " in stead");
+                    LOG.error("Could not find typedef node #" + nodeType + " taking " + typedefNode + " in stead");
                 }
                 String tableName = typedefNode.getBuilder().getTableName();
                 if (! tableName.equals("typedef")) {
                     typedefNode = getNode(MMBase.getMMBase().getBuilder("object").getNumber(), true);
-                    log.error("The type of node '" + nodeType + "' is not typedef (but '" + tableName + "'). This is an error. Taking '" + typedefNode + "' in stead.");
+                    LOG.error("The type of node '" + nodeType + "' is not typedef (but '" + tableName + "'). This is an error. Taking '" + typedefNode + "' in stead.");
                 }
 
                 MMObjectBuilder conversionBuilder = builder.getMMBase().getBuilder(typedefNode.getStringValue("name"));
                 if(conversionBuilder == null) {
                     // maybe it is not active?
-                    log.error("Could not find builder with name:" + typedefNode.getStringValue("name") + " refered by node #" + typedefNode.getNumber()+", is it active? Taking object builder in stead.");
+                    LOG.error("Could not find builder with name:" + typedefNode.getStringValue("name") + " refered by node #" + typedefNode.getNumber()+", is it active? Taking object builder in stead.");
                     conversionBuilder = MMBase.getMMBase().getBuilder("object");
                 }
                 try {
                     for (MMObjectNode current : conversionBuilder.getStorageConnector().getNodes(nodes)) {
                         if (current == null) {
-                            log.service("Found a node which is NULL !");
+                            LOG.service("Found a node which is NULL !");
                             continue;
                         }
                         convertedNodes.put(current.getNumber(), current);
                     }
                 } catch (SearchQueryException sqe) {
-                    log.error(sqe.getMessage(),  sqe);
+                    LOG.error(sqe.getMessage(),  sqe);
                     // no nodes
                 }
             }
@@ -697,11 +701,11 @@ public class StorageConnector {
                 assert current.getNumber() >= 0;
             }
         } else if(convert.size() != 0) {
-            log.warn("we still need to convert " + convertCount + " of the " + results.size() + " nodes"
+            LOG.warn("we still need to convert " + convertCount + " of the " + results.size() + " nodes"
                      + "(number of different types:"+ convert.size()  +")");
         }
-        if(log.isDebugEnabled()) {
-            log.debug("retrieved " + results.size() +
+        if(LOG.isDebugEnabled()) {
+            LOG.debug("retrieved " + results.size() +
                       " nodes, converted " + convertedCount +
                       " of the " + convertCount +
                       " invalid nodes(" + convert.size() +
