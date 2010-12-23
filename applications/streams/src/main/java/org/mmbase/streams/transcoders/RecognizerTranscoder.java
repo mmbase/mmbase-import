@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * This thin wrapper just represents a 'Recognizer' as a Transcoder. This makes administration easier.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractTranscoder.java 36425 2009-06-25 18:26:28Z michiel $
+ * @version $Id$
  */
 public class RecognizerTranscoder implements Transcoder {
 

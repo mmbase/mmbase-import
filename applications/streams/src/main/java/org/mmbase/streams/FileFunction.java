@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: UpdateSourcesFunction.java 43341 2010-09-15 13:07:42Z andre $
+ * @version $Id$
  */
 
 public class FileFunction extends NodeFunction<File> {

@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * This is a transcoder simply copies the file, and does not transcode anything. This is for testing only.
  *
  * @author Michiel Meeuwissen
- * @version $Id: InfiniteTranscoder.java 36518 2009-07-02 12:52:01Z michiel $
+ * @version $Id$
  */
 @Settings({"format", "setting", "x", "y"})
 public class MockTranscoder extends AbstractTranscoder {

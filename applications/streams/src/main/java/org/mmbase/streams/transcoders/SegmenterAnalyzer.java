@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * be ready before starting to rewrite.
  * 
  * @author Andr&eacute; van Toly
- * @version $Id: SegmenterAnalyzer.java 40036 2009-11-30 20:27:39Z andre $
+ * @version $Id$
  */
 public class SegmenterAnalyzer implements Analyzer {
 

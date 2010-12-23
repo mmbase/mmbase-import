@@ -48,7 +48,7 @@ import org.mmbase.applications.media.Format;
  * TODO: replace "/" with File.separator
  *
  * @author Andr&eacute; van Toly
- * @version $Id: SegmenterTranscoder.java 41564 2010-03-22 19:42:15Z andre $
+ * @version $Id$
  */
 @Settings({"duration", "httpPrefix"})
 public class SegmenterTranscoder extends CommandTranscoder {
