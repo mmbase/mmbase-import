@@ -16,6 +16,9 @@
     <plural xml:lang="nl">Thumbnails</plural>
   </names>
 
+  <properties>
+    <property name="Content-Disposition">inline</property>
+  </properties>
 
   <fieldlist>
     <field name="id">
