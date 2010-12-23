@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: CreateCachesFunction.java 43817 2010-11-19 11:45:01Z andre $
+ * @version $Id$
  */
 
 public class ThumbNailRemover implements NodeEventListener {
