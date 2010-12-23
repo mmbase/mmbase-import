@@ -29,6 +29,7 @@
 
   <xi:include href="http://www.mmbase.org/builders/media/mediafragments.fields.xml" />
   <xi:include href="http://www.mmbase.org/builders/media/mediafragments.auxiliary.fields.xml" />
+  <xi:include href="http://www.mmbase.org/builders/media/mediafragments.extra.functions.xml" />
 
 
 </builder>
