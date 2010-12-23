@@ -138,12 +138,20 @@ public class ImagesURLComposer extends FragmentURLComposer {
     }
 
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
         if (super.equals(o)) {
             ImagesURLComposer other = (ImagesURLComposer) o;
             return other.template.equals(template);
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = super.hashCode();
+        hash = 97 * hash + (this.template != null ? this.template.hashCode() : 0);
+        return hash;
     }
 
 

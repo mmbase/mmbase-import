@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -41,7 +41,7 @@ public class AnalyzerUtilsTest {
     }
 
 
-    @Test
+    //@Test
     public void duration() throws Exception {
         File testFile = new File(System.getProperty("user.dir"), "samples" + File.separator + "basic.mp4");
         assumeTrue(testFile.exists());
@@ -69,7 +69,6 @@ public class AnalyzerUtilsTest {
                 protected void log(String s) {
                     if (util.unsupported(s, source, destination)) {
                         System.out.println("UNSUPPORT " + s);
-
                         this.success = true;
                     } else {
                         System.out.println("SUPPORT " + s);
@@ -81,7 +80,7 @@ public class AnalyzerUtilsTest {
 
     }
 
-    //@Test
+    ////@Test
     public void known() throws Exception {
         File testFile = new File(System.getProperty("user.dir"), "samples" + File.separator + "basic.wav");
         assumeTrue(testFile.exists());
@@ -100,7 +99,7 @@ public class AnalyzerUtilsTest {
     }
 
 
-    @Test
+    //@Test
     public void unsupported() throws Exception {
         File testFile = new File(System.getProperty("user.dir"), "samples" + File.separator + "unsupported.rm");
         assumeTrue(testFile.exists());

@@ -21,12 +21,10 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.transcoders;
 
-import java.util.regex.*;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.applications.media.State;
-import static org.mmbase.streams.transcoders.AnalyzerUtils.*;
 
 /**
  *
@@ -153,6 +151,7 @@ public class FFMpegAnalyzer implements Analyzer {
 
     }
 
+    @Override
     public FFMpegAnalyzer clone() {
         try {
             return (FFMpegAnalyzer) super.clone();

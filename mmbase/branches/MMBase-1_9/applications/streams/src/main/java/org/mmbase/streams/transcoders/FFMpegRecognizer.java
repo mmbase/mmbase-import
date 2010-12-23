@@ -67,6 +67,7 @@ public class FFMpegRecognizer implements Recognizer {
     }
 
 
+    @Override
     public FFMpegRecognizer clone() {
         try {
             return (FFMpegRecognizer) super.clone();
@@ -76,6 +77,7 @@ public class FFMpegRecognizer implements Recognizer {
         }
     }
 
+    @Override
     public String toString() {
         return getClass().getName();
     }

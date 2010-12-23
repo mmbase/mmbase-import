@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -23,23 +23,21 @@ package org.mmbase.streams.transcoders;
 
 import org.mmbase.applications.media.Codec;
 import org.mmbase.applications.media.Format;
-import java.net.*;
 import java.io.*;
 import java.util.*;
-import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 import java.util.regex.*;
 
 
 /**
- * Transcoder that uses <code>ffmpeg</code> to transcode media. Possible parameters to be set in 
- * 'createcaches.xml' are: forceFormat (-f), acodec (-acodec), vcodec (-vcodec), 
- * vpre (-vpre), aq (-aq), ab (-ab), bitrate or b (-b), async (-async), framesPerSecond or 
- * r (-r), audioChannels or ac (-ac), width and height (combined to -s). 
+ * Transcoder that uses <code>ffmpeg</code> to transcode media. Possible parameters to be set in
+ * 'createcaches.xml' are: forceFormat (-f), acodec (-acodec), vcodec (-vcodec),
+ * vpre (-vpre), aq (-aq), ab (-ab), bitrate or b (-b), async (-async), framesPerSecond or
+ * r (-r), audioChannels or ac (-ac), width and height (combined to -s).
  * Others can be added as extra parameters but will be at the end of the commands parameters. See the
  * documentation for FFmpeg for more information.
- * 
+ *
  * @author Michiel Meeuwissen
  * @version $Id$
  */
@@ -75,6 +73,7 @@ public class FFMpegTranscoder extends CommandTranscoder {
         vcodec = v;
     }
 
+    @Override
     public Codec getCodec() {
         if (vcodec != null) {
             return AnalyzerUtils.libtoCodec(vcodec);
@@ -147,16 +146,19 @@ public class FFMpegTranscoder extends CommandTranscoder {
         format = Format.AVI;
     }
 
-    /* Saving values like width, height, normally when re-transcoding */
+    /**
+     * Saving values like width, height, normally when re-transcoding
+     */
+    @Override
     public void init(Node dest) {
         if (width != null && dest.getNodeManager().hasField("width")) {
             dest.setIntValue("width", width);
             if (height != null) {
                 dest.setIntValue("height", height);
-            }        
+            }
         }
     }
-    
+
     @Override
     protected  String getCommand() {
         return "ffmpeg";
@@ -223,7 +225,7 @@ public class FFMpegTranscoder extends CommandTranscoder {
             args.add(async);
         }
         args.add("-y"); // overwrite
-        
+
         args.add(outFile.toString());
 
         return args.toArray(new String[args.size()]);

@@ -24,12 +24,10 @@ package org.mmbase.streams.transcoders;
 
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.Codec;
-import java.net.*;
 import java.io.*;
 import java.util.regex.*;
 import java.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 
@@ -77,6 +75,7 @@ public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
      * Saves values video codec in codec (Theora)) and audio codec in acodec (Vorbis) in destination node.
      * @param dest  destination node (streamsourcescaches)
      */
+    @Override
     public void init(Node dest) {
         dest.setIntValue("codec", Codec.THEORA.toInt() );
         if (dest.getNodeManager().hasField("acodec")) {

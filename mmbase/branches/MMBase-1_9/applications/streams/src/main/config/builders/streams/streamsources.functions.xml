@@ -5,7 +5,7 @@
                         http://www.mmbase.org/xmlns/builder.xsd"
     xmlns:xi="http://www.w3.org/2001/XInclude"
     >
-  
+
   <function name="triggerCaches">
     <class>org.mmbase.streams.CreateCachesFunction</class>
   </function>
@@ -28,6 +28,10 @@
 
   <function name="changeUrl">
     <class>org.mmbase.streams.ChangeWithoutProcessFunction</class>
+  </function>
+
+  <function name="file">
+    <class>org.mmbase.streams.FileFunction</class>
   </function>
 
 

@@ -48,11 +48,11 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
     private double bits = -1;
     private long prevPos = 0;
 
-    private ChainedLogger log = new ChainedLogger(LOG);
+    private final ChainedLogger log = new ChainedLogger(LOG);
 
-    private AnalyzerUtils util = new AnalyzerUtils(log);
+    private final AnalyzerUtils util = new AnalyzerUtils(log);
 
-    private List<Throwable> errors = new ArrayList<Throwable>();
+    private final List<Throwable> errors = new ArrayList<Throwable>();
 
     public void addThrowable(Throwable t) {
         errors.add(t);
@@ -121,6 +121,7 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
         }
     }
 
+    @Override
     public FFMpeg2TheoraAnalyzer clone() {
         try {
             return (FFMpeg2TheoraAnalyzer) super.clone();

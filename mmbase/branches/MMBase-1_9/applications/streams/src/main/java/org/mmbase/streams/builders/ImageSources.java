@@ -27,7 +27,6 @@ import org.mmbase.util.images.*;
 import org.mmbase.servlet.FileServlet;
 import org.mmbase.util.functions.*;
 import org.mmbase.bridge.*;
-import java.util.*;
 import java.io.*;
 import org.mmbase.util.logging.*;
 
@@ -118,9 +117,9 @@ public class ImageSources extends MediaSources implements ImagesInterface {
         }
     }
 
-    private static ReturnType<MMObjectNode> MMOBJECTNODE_RT = new ReturnType<MMObjectNode>(MMObjectNode.class, "mmobjectnode");
-    private static Parameter<String> TEMPLATE = new Parameter<String>("template", String.class);
-    private static Parameter<?>[] PARAMS = new Parameter<?>[] { TEMPLATE };
+    private static final ReturnType<MMObjectNode> MMOBJECTNODE_RT = new ReturnType<MMObjectNode>(MMObjectNode.class, "mmobjectnode");
+    private static final Parameter<String> TEMPLATE = new Parameter<String>("template", String.class);
+    private static final Parameter<?>[] PARAMS = new Parameter<?>[] { TEMPLATE };
     {
         addFunction(new NodeFunction<MMObjectNode>("cachednode", PARAMS , MMOBJECTNODE_RT) {
                 public MMObjectNode getFunctionValue(Node node, Parameters parameters) {
