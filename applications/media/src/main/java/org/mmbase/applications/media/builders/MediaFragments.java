@@ -73,6 +73,8 @@ public class MediaFragments extends MMObjectBuilder {
     public final static Parameter[] DURATION_PARAMETERS      = {};
 
 
+
+
     // This filter is able to find the best mediasource by a mediafragment.
     // private  static MainFilter mediaSourceFilter = null;
 
@@ -82,10 +84,11 @@ public class MediaFragments extends MMObjectBuilder {
 
     private URLCache cache = URLCache.getCache();
 
+    @Override
     public boolean init() {
         if(initDone) {
-        return super.init();
-    }
+            return super.init();
+        }
         log.service("Init of Media Fragments builder");
         initDone = true;  // because of inheritance we do init-protections
 
@@ -311,6 +314,16 @@ public class MediaFragments extends MMObjectBuilder {
             });
     }
 
+    {
+        addFunction(new NodeFunction<List>("sources", new Parameter[] {}) {
+                @Override
+                public List<Node> getFunctionValue(Node node, Parameters params) {
+                    MMObjectNode fragment = MediaFragments.this.getNode(node.getNumber());
+                    Node root  = node.getCloud().getNode(MediaFragments.this.getRootFragment(fragment).getNumber());
+                    return root.getRelatedNodes("mediasources", "related", "destination");
+                };
+            });
+    }
 
     /**
      * Retrieves the url of the mediasource that matches best.
@@ -440,7 +453,7 @@ public class MediaFragments extends MMObjectBuilder {
         if (mediasources == null) {
             log.warn("Could not get related nodes of type mediasources");
         }
-        if (log.isDebugEnabled()) log.debug("Mediafragment contains "+mediasources.size()+" mediasources");
+        if (log.isDebugEnabled()) log.debug("Mediafragment contains " + mediasources.size() + " mediasources");
 
         return mediasources;
     }
@@ -539,8 +552,8 @@ public class MediaFragments extends MMObjectBuilder {
     @Override
     public Object getObjectValue(MMObjectNode node, String field) {
         if (field.equals("lengthsec")) {
-            long val=node.getLongValue("length");
-            return ""+val/1000;
+            long val = node.getLongValue("length");
+            return "" + val/1000;
         }
         return super.getObjectValue(node,field);
     }
