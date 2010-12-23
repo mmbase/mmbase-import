@@ -25,11 +25,7 @@ import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.Codec;
 import java.net.*;
 import java.lang.reflect.*;
-import java.io.*;
-import java.util.*;
 import org.mmbase.bridge.Node;
-import org.mmbase.util.externalprocess.*;
-import org.mmbase.util.WriterOutputStream;
 import org.mmbase.util.MimeType;
 
 import org.mmbase.util.logging.*;
@@ -45,8 +41,13 @@ public abstract class AbstractTranscoder implements Transcoder {
 
     public static String PACKAGE = "org.mmbase.streams.transcoders.";
 
-    public static final Logger LOG = Logging.getLoggerInstance(AbstractTranscoder.class);
+    private static final Logger LOG = Logging.getLoggerInstance(AbstractTranscoder.class);
 
+    /**
+     * Default implementation of parsing the 'key' given by a {@link Trancoder}.
+     * <code>[<id>:]<class> [<property1>=<value1>, [<property2>=<value2], [...]]</code>
+     * @param key
+     */
     public static Transcoder getInstance(String key) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException  {
         String[] split = key.split(" ", 2);
         Transcoder trans;
@@ -185,7 +186,7 @@ public abstract class AbstractTranscoder implements Transcoder {
         return buf.toString();
     }
 
-    public void transcode(final URI in, final URI out, final Logger log) throws Exception {
+    public final void transcode(final URI in, final URI out, final Logger log) throws Exception {
         if (in == null) throw new IllegalArgumentException(toString());
         if (out == null) throw new IllegalArgumentException(toString());
         this.in = in;
@@ -212,6 +213,7 @@ public abstract class AbstractTranscoder implements Transcoder {
         return out;
     }
 
+    @Override
     public AbstractTranscoder clone() {
         try {
             AbstractTranscoder c =  (AbstractTranscoder) super.clone();

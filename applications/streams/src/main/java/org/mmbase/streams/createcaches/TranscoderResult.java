@@ -62,6 +62,7 @@ class TranscoderResult extends Result {
     public URI getOut() {
         return out;
     }
+    @Override
     public void ready() {
         super.ready();
         if (dest != null) {
@@ -90,7 +91,7 @@ class TranscoderResult extends Result {
 
 
                 try {
-                    Thread.currentThread().sleep(10000);
+                    Thread.sleep(10000);
                     count++;
                 } catch (InterruptedException ie) {
                     LOG.info("Interrupted");

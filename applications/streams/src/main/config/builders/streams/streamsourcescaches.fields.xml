@@ -72,7 +72,9 @@
         <search>9</search>
       </positions>
     </editor>
-    <datatype base="nodenumber" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    <datatype base="nodenumber" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <required value="true" />
+    </datatype>
   </field>
 
   <field name="mimetype" state="system">

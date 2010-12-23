@@ -22,7 +22,6 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 package org.mmbase.streams.transcoders;
 
 import org.mmbase.applications.media.Format;
-import java.net.*;
 import java.io.*;
 import java.util.*;
 

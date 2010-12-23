@@ -25,5 +25,6 @@
   <xi:include href="streamsources.virtual.fields.xml" />
   <xi:include href="http://www.mmbase.org/builders/media/mediasources.main.virtual.fields.xml" />
   <xi:include href="streamsources.functions.xml" />
+  <xi:include href="videostreamsources.functions.xml" />
 
 </builder>

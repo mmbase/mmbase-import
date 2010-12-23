@@ -43,7 +43,7 @@ import net.sf.fmj.media.RegistryDefaults;
 public class FFMpeg2Theora extends com.sun.media.BasicCodec implements javax.media.Codec {
 
 
-    protected static Format[] OUT = new Format[] {
+    protected static final Format[] OUT = new Format[] {
         new VideoFormat("theora", null, -1, Format.byteArray, -1.0f),
     };
 
@@ -51,7 +51,7 @@ public class FFMpeg2Theora extends com.sun.media.BasicCodec implements javax.med
         RegistryDefaults.registerAll(RegistryDefaults.FMJ | RegistryDefaults.FMJ_NATIVE);
         PlugInManager.addPlugIn(FFMpeg2Theora.class.getName(), new Format[0], OUT, PlugInManager.CODEC);
 
-        final Vector v = PackageManager.getProtocolPrefixList();
+        final List v = PackageManager.getProtocolPrefixList();
         if (! v.contains("org.mmbase.streams")) v.add("org.mmbase.streams");
 
         for (Object plugin :  PlugInManager.getPlugInList(null, null, PlugInManager.CODEC)) {
