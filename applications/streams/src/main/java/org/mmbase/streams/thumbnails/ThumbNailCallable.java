@@ -63,12 +63,12 @@ public class ThumbNailCallable implements  Callable<Node> {
         CommandExecutor.Method method = Executors.getFreeExecutor();
         String command = "ffmpeg";
         List<String> args = new ArrayList<String>();
+        args.add("-itsoffset");
+        args.add(String.format(Locale.US, "-%.2f", node.getFloatValue("time") / 1000));
         args.add("-i");
         args.add(source.getFunctionValue("file", null).toString());
         args.add("-vframes");
         args.add("" + count);
-        args.add("-itsoffset");
-        args.add(String.format(Locale.US, "%.2f", node.getFloatValue("time") / 1000));
         try {
             File tempFile = File.createTempFile(ThumbNailProcessor.class.getName(), ".%d.png");
             args.add(tempFile.getAbsolutePath());
@@ -77,6 +77,7 @@ public class ThumbNailCallable implements  Callable<Node> {
             CommandExecutor.execute(outStream, errStream, method, command, args.toArray(new String[args.size()]));
             File file = new File(String.format(tempFile.getAbsolutePath(), 1));
             node.setInputStreamValue(field, new FileInputStream(file), file.length());
+            file.delete();
             node.commit();
             return node;
         } catch (IOException ioe) {
