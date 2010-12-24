@@ -39,6 +39,7 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
     }
 
     /**
+     * Sets whether the 'numbers' NaN and Infinity are allowed. Defaults to <code>false</code>.
      * @since MMBase-1.9.2
      */
     public void setAllowSpecialNumbers(boolean sn) {
