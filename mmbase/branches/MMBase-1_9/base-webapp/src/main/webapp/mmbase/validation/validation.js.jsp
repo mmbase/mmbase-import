@@ -712,7 +712,6 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
         this.trace("got " + result.string());
         el.mm_dataTypeStructure = result;
     }
-    console.log(el.mm_dataTypeStructure);
     return el.mm_dataTypeStructure;
 };
 
