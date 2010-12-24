@@ -48,6 +48,7 @@ public class ImageCaches extends AbstractImages {
     public ImageCaches() {
     }
 
+    @Override
     public boolean init() {
         if (oType != -1) return true; // inited already
         if (!super.init()) return false;
@@ -98,6 +99,7 @@ public class ImageCaches extends AbstractImages {
         }
         return buf;
     }
+    @Override
     protected boolean addFileName(MMObjectNode node, String servlet) {
         if (super.addFileName(node, servlet)) return true;
         MMObjectNode originalImage = originalImage(node);
@@ -166,10 +168,14 @@ public class ImageCaches extends AbstractImages {
             "\"" + title + " /></a>";
     }
 
-    // javadoc inherited
+    @Override
     protected String getSGUIIndicatorForNode(MMObjectNode node, Parameters a) {
         MMObjectNode origNode = originalImage(node);
-        return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""), a);
+        if (origNode.getBuilder().hasField("title")) {
+            return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""), a);
+        } else {
+            return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("number") : ""), a);
+        }
     }
 
     /**
@@ -177,6 +183,7 @@ public class ImageCaches extends AbstractImages {
      * must therefor still be triggered.
      * @since MMBase-1.8.5
      */
+    @Override
     protected boolean handleEmpty(MMObjectNode node) {
         return node.isNull(Imaging.FIELD_HANDLE) ||
             (node.getBuilder().getField(Imaging.FIELD_HANDLE).isNotNull() && node.getSize(Imaging.FIELD_HANDLE) == 0);
@@ -198,8 +205,16 @@ public class ImageCaches extends AbstractImages {
             String template = Imaging.parseCKey(ckey).template;
             List<String> params     = Imaging.parseTemplate(template);
             MMObjectNode image = originalImage(node);
+            Function fun = image.getFunction("wait");
+            if (fun != null) {
+                log.debug("Found a wait function");
+                fun.getFunctionValue(fun.createParameters());
+                // refresh
+                image = originalImage(node);
+            }
             if (handleEmpty(image)) {
                 // The original node is empty!
+                log.debug("EMPTY node");
                 return true;
             } else {
                 ImagesInterface images = (ImagesInterface) image.getBuilder();
@@ -251,7 +266,7 @@ public class ImageCaches extends AbstractImages {
             log.warn("Found more then one cached image with key "+ ckey +"");
         }
 
-        if (nodes.size() == 0) {
+        if (nodes.isEmpty()) {
             log.debug("Did not find cached images with key "+ ckey +"");
             if (checkLegacyCkey) {
                 return getLegacyCachedNode(imageNumber, template);
@@ -280,7 +295,7 @@ public class ImageCaches extends AbstractImages {
             StepField ckeyField = query.getField(getField(Imaging.FIELD_CKEY));
             query.setConstraint(new BasicFieldValueConstraint(ckeyField, legacyCKey));
             legacyNodes = getNodes(query);
-            if (legacyNodes.size() == 0) {
+            if (legacyNodes.isEmpty()) {
                 log.debug("Did not find cached images with key (" +  legacyCKey + ")");
             }
             if (legacyNodes.size() > 1) {
@@ -328,10 +343,8 @@ public class ImageCaches extends AbstractImages {
             nodes = new java.util.ArrayList<MMObjectNode>(); // do nothing
         }
 
-        Iterator<MMObjectNode> i = nodes.iterator();
-        while(i.hasNext()) {
+        for (MMObjectNode invalidNode : nodes) {
             // delete the icache node
-            MMObjectNode invalidNode = i.next();
             removeNode(invalidNode);
             if (log.isDebugEnabled()) {
                 log.debug("deleted node with number#" + invalidNode.getNumber());
@@ -348,6 +361,7 @@ public class ImageCaches extends AbstractImages {
      *
      * @param node The node to remove.
      */
+    @Override
     public void removeNode(MMObjectNode node) {
         String ckey = node.getStringValue(Imaging.FIELD_CKEY);
         log.service("Icaches: removing node " + node.getNumber() + " " + ckey);
@@ -360,6 +374,7 @@ public class ImageCaches extends AbstractImages {
     /**
      * Returns the image format.
      */
+    @Override
     public String getImageFormat(MMObjectNode node) {
         if (storesImageType()) {
             String iType = node.getStringValue(FIELD_ITYPE);
@@ -416,6 +431,7 @@ public class ImageCaches extends AbstractImages {
      * If icache does not yet have a filled handle field, neither filled width/heigh fields (can occur after a update). The dimension can still be given.
      * @since MMBase-1.8.1
      */
+    @Override
     protected Dimension getDimensionForEmptyHandle(MMObjectNode node) {
         String ckey     = node.getStringValue(Imaging.FIELD_CKEY);
         String template = Imaging.parseCKey(ckey).template;
@@ -438,6 +454,7 @@ public class ImageCaches extends AbstractImages {
         return getMimeType(getNode("" + params.get(0)));
     }
 
+    @Override
     public int insert(String owner, MMObjectNode node) {
         int res = super.insert(owner, node);
         // make sure there is no such thing with this ckey cached
@@ -451,6 +468,7 @@ public class ImageCaches extends AbstractImages {
      *
      */
 
+    @Override
     protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (function.equals("wait")) {
             return waitForConversion(node);
@@ -468,7 +486,7 @@ public class ImageCaches extends AbstractImages {
      * @return a string containing the key for this List, or <code>null</code>,....
      */
     private String getLegacyCKey(List<String> params) {
-        if (params == null || params.size() == 0) {
+        if (params == null || params.isEmpty()) {
             log.debug("no parameters");
             return null;
         }
