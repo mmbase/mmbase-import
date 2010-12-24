@@ -60,18 +60,18 @@ public class CommandExecutor {
         }
     }
 
-    public static void execute(OutputStream outputStream,
+    public static long execute(OutputStream outputStream,
                                Method method,
                                String command, String... args) throws ProcessException, InterruptedException {
-        execute(outputStream, outputStream, method, command, args);
+        return execute(outputStream, outputStream, method, command, args);
     }
 
-    public static void execute(OutputStream outputStream,
+    public static long execute(OutputStream outputStream,
                                OutputStream errorStream,
                                Method method,
                                String command, String... args) throws ProcessException, InterruptedException {
         InputStream inputStream = new ByteArrayInputStream(new byte[0]);
-        execute(inputStream, outputStream, errorStream, method, EMPTY, command, args);
+        return execute(inputStream, outputStream, errorStream, method, EMPTY, command, args);
     }
 
     /**
