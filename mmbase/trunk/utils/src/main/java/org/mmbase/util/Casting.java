@@ -198,6 +198,8 @@ public class Casting {
                 return (C) toSerializableInputStream(value);
             } else if (type.equals(String.class)) {
                 return (C) toString(value);
+            } else if (type.equals(CharSequence.class)) {
+                return (C) toString(value);
             } else if (type.equals(Date.class)) {
                 return (C) toDate(value);
             } else if (type.equals(Document.class)) {
