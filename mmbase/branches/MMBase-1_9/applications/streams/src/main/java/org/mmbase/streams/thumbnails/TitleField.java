@@ -40,9 +40,16 @@ public class TitleField implements Processor {
         Node idNode = node.getNodeValue("id"); // a videsource
         if (idNode != null && idNode.getNodeManager().hasField("mediafragment")) {
             Node mediaFragment = idNode.getNodeValue("mediafragment");
-            if (mediaFragment != null) {
-                return mediaFragment.getStringValue("title") + " (" + node.getLongValue("time") + " ms)";
-            }
+            long time = node.getLongValue("time");
+            int seconds = (int) (time / 1000);
+            int hours = seconds / (60 * 60);
+            seconds %= 60 * 60;
+            int minutes = seconds / 60;
+            seconds %=  60;
+            String timeString = hours > 0 ?
+                String.format("%02d:%02d:%02d", hours, minutes, seconds) :
+                String.format("%d:%02d", minutes, seconds);
+            return mediaFragment.getStringValue("title") + " (" + timeString +")";
         }
         return "Thumbnail";
     }
