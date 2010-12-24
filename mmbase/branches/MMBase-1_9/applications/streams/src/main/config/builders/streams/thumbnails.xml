@@ -21,7 +21,7 @@
   </properties>
 
   <fieldlist>
-    <field name="title" virtual="true" readonly="true">
+    <field name="title" state="virtual" readonly="true">
       <editor>
         <positions>
           <list>2</list>
