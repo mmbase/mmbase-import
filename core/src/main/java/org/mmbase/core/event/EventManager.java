@@ -219,13 +219,13 @@ public class EventManager implements SystemEventListener {
     }
 
 
-    public synchronized void addEventListener(EventListener listener) {
+    public void addEventListener(EventListener listener) {
         addEventListener(listener, true);
     }
     /**
      * @param listener
      */
-    protected synchronized void addEventListener(EventListener listener, boolean propagateToCollected) {
+    protected void addEventListener(EventListener listener, boolean propagateToCollected) {
         BrokerIterator i =  findBrokers(listener);
         boolean notifiedReceived = ! propagateToCollected;
         while (i.hasNext()) {
@@ -236,7 +236,7 @@ public class EventManager implements SystemEventListener {
                     notifiedReceived = true;
                     for (SystemEvent.Collectable se : receivedSystemEvents) {
                         ((SystemEventListener) listener).notify(se);
-                    }
+                        }
                 }
                 if (log.isDebugEnabled()) {
                     log.debug("listener " + listener + " added to broker " + broker );
