@@ -16,7 +16,7 @@
 
   <attributes>
 
-    <attribute name="database-max-key-length">333</attribute> <!-- 333 = 1000/3? -->
+    <attribute name="database-max-key-length">255</attribute> <!-- ERROR 1071 (42000): Specified key was too long; max key length is 767 bytes, UTF-8: 1 char = 3 byte 767/3: 255-->
 
     <!-- MySQL does not default support transactions, but it's Metadata object claims that it does
              So set support to false.
