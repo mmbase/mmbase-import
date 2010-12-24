@@ -89,7 +89,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
 
 
     public boolean isEmpty() {
-        return bundles.size() == 0 && fallBack.size() == 0 && !usesCloud;
+        return bundles.isEmpty() && fallBack.isEmpty() && !usesCloud;
     }
 
     /**
@@ -230,10 +230,126 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
     }
 
 
+
+
     /**
      * @since MMBase-1.9.1
      */
     public List<Map.Entry<C, String>> get(final Locale locale, Cloud c, final org.mmbase.bridge.Node node, final Field field) {
+        final List<Map.Entry<C, ? extends CharSequence>> lazy = getLazy(locale, c, node, field);
+        return new AbstractSequentialList<Map.Entry<C, String>> () {
+            @Override
+            public int size() {
+                return lazy.size();
+            }
+            @Override
+            public ListIterator<Map.Entry<C, String>> listIterator(final int index) {
+                final ListIterator<Map.Entry<C, ? extends CharSequence>> i = lazy.listIterator(index);
+                return new ListIterator<Map.Entry<C, String>>() {
+
+                    public boolean hasNext() {
+                        return i.hasNext();
+                    }
+                    protected Map.Entry<C, String> get(Map.Entry<C, ? extends CharSequence> entry) {
+                        if (entry.getValue() instanceof String) {
+                            return (Map.Entry<C, String>) entry;
+                        } else {
+                            return new Entry<C, String>(entry.getKey(), entry.getValue().toString());
+                        }
+                    }
+
+                    public Map.Entry<C, String> next() {
+                        return get(i.next());
+                    }
+
+                    public boolean hasPrevious() {
+                        return i.hasPrevious();
+                    }
+
+                    public Map.Entry<C, String> previous() {
+                        return get(i.previous());
+                    }
+
+                    public int nextIndex() {
+                        return i.nextIndex();
+                    }
+
+                    public int previousIndex() {
+                        return i.previousIndex();
+                    }
+
+                    public void remove() {
+                        i.remove();
+                    }
+
+                    public void set(Map.Entry<C, String> e) {
+                        i.set(e);
+                    }
+
+                    public void add(Map.Entry<C, String> e) {
+                        i.add(e);
+                    }
+                };
+            }
+        };
+    }
+
+    /**
+     * @since MMBase-1.9.6
+     */
+    public List<C> getKeys(final Locale locale, Cloud c, final org.mmbase.bridge.Node node, final Field field) {
+        final List<Map.Entry<C, ? extends CharSequence>> lazy = getLazy(locale, c, node, field);
+        return new AbstractSequentialList<C> () {
+            public int size() {
+                return lazy.size();
+            }
+            public ListIterator<C> listIterator(final int index) {
+                final ListIterator<Map.Entry<C, ? extends CharSequence>> i = lazy.listIterator(index);
+                return new ListIterator<C>() {
+
+                    public boolean hasNext() {
+                        return i.hasNext();
+                    }
+
+                    public C next() {
+                        return i.next().getKey();
+                    }
+
+                    public boolean hasPrevious() {
+                        return i.hasPrevious();
+                    }
+
+                    public C previous() {
+                        return i.previous().getKey();
+                    }
+
+                    public int nextIndex() {
+                        return i.nextIndex();
+                    }
+
+                    public int previousIndex() {
+                        return i.previousIndex();
+                    }
+
+                    public void remove() {
+                        i.remove();
+                    }
+
+                    public void set(C e) {
+                        throw new UnsupportedOperationException("Not supported.");
+                    }
+
+                    public void add(C e) {
+                        throw new UnsupportedOperationException("Not supported.");
+                    }
+                };
+            }
+        };
+    }
+    /**
+     * @since MMBase-1.9.6
+     */
+    protected List<Map.Entry<C, ? extends CharSequence>> getLazy(final Locale locale, Cloud c, final org.mmbase.bridge.Node node, final Field field) {
         if (c == null) {
             if (node != null) {
                 c = node.getCloud();
@@ -246,7 +362,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             }
         }
         final Cloud cloud = c;
-        return new AbstractSequentialList<Map.Entry<C, String>> () {
+        return new AbstractSequentialList<Map.Entry<C, ? extends CharSequence>> () {
 
             @Override
             public int size() {
@@ -266,8 +382,8 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                             log.debug("using locale " + useLocale);
                         }
                         private ChainedIterator iterator = new ChainedIterator();
-                        private Iterator<Map.Entry<C, String>> subIterator = null;
-                        private Map.Entry<C, String> next = null;
+                        private Iterator<Map.Entry<C, ? extends CharSequence>> subIterator = null;
+                        private Map.Entry<C, ? extends CharSequence> next = null;
 
                         {
                             Locale orgLocale = useLocale;
@@ -329,7 +445,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                                         }
                                         final Query query = QueryReader.parseQuery(element, qc, useCloud, null).query;
                                         final org.mmbase.bridge.NodeList list = query.getList();
-                                        subIterator = new Iterator<Map.Entry<C, String>>() {
+                                        subIterator = new Iterator<Map.Entry<C, ? extends CharSequence>>() {
                                             final NodeIterator nodeIterator = list.nodeIterator();
                                             @Override
                                             public boolean hasNext() {
@@ -391,7 +507,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                                         log.error(e.getMessage(), e);
                                     }
                                 } else {
-                                    next = new Entry(candidate, candidate);
+                                    next = new Entry(candidate, Casting.toString(candidate));
                                 }
                             }
                     }

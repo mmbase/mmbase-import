@@ -69,7 +69,7 @@ public class MapNode<V> extends AbstractNode implements Node, Serializable {
     public MapNode(Map<String, V> v) {
         this(v, guessCloud());
     }
-    private static final Cloud guessCloud() {
+    private static Cloud guessCloud() {
         try {
             return ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
         } catch (Exception e) {
