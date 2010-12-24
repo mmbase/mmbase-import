@@ -21,6 +21,18 @@
   </properties>
 
   <fieldlist>
+    <field name="title" virtual="true" readonly="true">
+      <editor>
+        <positions>
+          <list>2</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <getprocessor>
+          <class name="org.mmbase.streams.thumbnails.TitleField" />
+        </getprocessor>
+      </datatype>
+    </field>
     <field name="id">
       <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <required value="true" />
@@ -148,26 +160,6 @@
         <maxLength value="255" enforce="never"/>
       </datatype>
     </field>
-
-    <!--
-        If you use this field, then you ensure that no duplicate images can be uploaded.
-    -->
-    <!--
-    <field name="checksum" state="system">
-      <descriptions>
-        <description xml:lang="en">Checksum of byte array, which allows for uniqueness checking</description>
-        <description xml:lang="nl">Checksum van de bytes, hiermee kan men controleren of een afbeelding al bestaat</description>
-      </descriptions>
-      <gui>
-        <guiname xml:lang="en">Checksum</guiname>
-        <guiname xml:lang="nl">Checksum</guiname>
-      </gui>
-      <datatype base="checksum" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <unique value="true" />
-        <maxLength value="255" enforce="never"/>
-      </datatype>
-    </field>
-    -->
 
   </fieldlist>
   <indexlist>
