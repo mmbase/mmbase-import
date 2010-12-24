@@ -212,14 +212,14 @@ public class ImageCaches extends AbstractImages {
             MMObjectNode image = originalImage(node);
             Function fun = image.getFunction("wait");
             if (fun != null) {
-                log.info("Found a wait function");
+                log.debug("Found a wait function");
                 fun.getFunctionValue(fun.createParameters());
                 // refresh
                 image = originalImage(node);
             }
             if (handleEmpty(image)) {
                 // The original node is empty!
-                log.info("EMPTY node");
+                log.debug("EMPTY node");
                 return true;
             } else {
                 ImagesInterface images = (ImagesInterface) image.getBuilder();
