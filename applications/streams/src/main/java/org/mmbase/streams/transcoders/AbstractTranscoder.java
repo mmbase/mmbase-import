@@ -48,7 +48,8 @@ public abstract class AbstractTranscoder implements Transcoder {
      * <code>[<id>:]<class> [<property1>=<value1>, [<property2>=<value2], [...]]</code>
      * @param key
      */
-    public static Transcoder getInstance(String key) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException  {
+    public static Transcoder getInstance(String key) 
+            throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         String[] split = key.split(" ", 2);
         Transcoder trans;
         { // parse split[0] (a class name) to instantiate object

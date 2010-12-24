@@ -80,7 +80,12 @@ public class ThumbNailFunction extends NodeFunction<Node> {
         }
         Node sourceNode = getSourceNode(node);
         if (sourceNode == null) {
-            return null;
+            Cloud cloud = node.getCloud();
+            if (cloud.hasNode("default_video_thumbnail")) {
+                return node.getCloud().getNode("default_video_thumbnail");
+            } else {
+                return null;
+            }
         }
         long videoLength = node.getLongValue("length");
 
@@ -93,7 +98,7 @@ public class ThumbNailFunction extends NodeFunction<Node> {
 
         // round of the offset a bit, otherwise it would be possible to create a thumbnail for every millisecond, which
         // seems a bit overdone....
-        if (videoLength > 1000) {
+        if (videoLength > 5000) {
             offset = 1000 * (offset / 1000); // round off to seconds
         } else {
             offset = 100 * (offset / 100);
@@ -118,7 +123,7 @@ public class ThumbNailFunction extends NodeFunction<Node> {
             }
         }
         if (thumb.isNull("handle")) {
-            ThumbNailCallable callable = new ThumbNailCallable(thumb, thumbs.getField("handle"));
+            FFMpegThumbNailCreator callable = new FFMpegThumbNailCreator(thumb, thumbs.getField("handle"));
             Future<Node> future = Executors.submit(Stage.RECOGNIZER, callable);
             if (parameters.get(WAIT)) {
 

@@ -27,28 +27,29 @@ import java.util.concurrent.*;
 import java.io.*;
 
 import org.mmbase.streams.createcaches.Executors;
-import org.mmbase.streams.createcaches.Stage;
 import org.mmbase.bridge.*;
-import org.mmbase.datatypes.processors.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.externalprocess.*;
 import org.mmbase.util.WriterOutputStream;
 
 /**
+ * Contains the functionality to fill the 'handle' field of a thumbnails object. For that it uses ffmpeg.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
  */
 
-public class ThumbNailCallable implements  Callable<Node> {
+public class FFMpegThumbNailCreator implements  Callable<Node> {
 
-    private static final Logger LOG = Logging.getLoggerInstance(ThumbNailCallable.class);
+    private static final Logger LOG = Logging.getLoggerInstance(FFMpegThumbNailCreator.class);
 
 
     private final String field;
     private final Node source;
     private final Node node;
-    public ThumbNailCallable(Node node, Field field) {
+
+
+    public FFMpegThumbNailCreator(Node node, Field field) {
         Cloud myCloud = node.getCloud().getCloudContext().getCloud("mmbase", "class", null);
         this.source = myCloud.getNode(node.getIntValue("id"));
         this.node   = myCloud.getNode(node.getNumber());
@@ -57,20 +58,32 @@ public class ThumbNailCallable implements  Callable<Node> {
 
 
     @Override
-    public synchronized Node call() {
+    public Node call() {
         int count = 1;
 
+        File input = (File) source.getFunctionValue("file", null);
+        if (! input.canRead()) {
+            LOG.debug("Cannot read " + input);
+            return null;
+        }
+        if (input.length() == 0) {
+            LOG.debug("File is empty " + input);
+            return null;
+        }
         CommandExecutor.Method method = Executors.getFreeExecutor();
         String command = "ffmpeg";
         List<String> args = new ArrayList<String>();
         args.add("-itsoffset");
-        args.add(String.format(Locale.US, "-%.2f", node.getFloatValue("time") / 1000));
+        args.add(String.format(Locale.US, "-%.2f", node.getDoubleValue("time") / 1000));
         args.add("-i");
-        args.add(source.getFunctionValue("file", null).toString());
+        args.add(input.getAbsolutePath());
         args.add("-vframes");
         args.add("" + count);
         try {
-            File tempFile = File.createTempFile(ThumbNailProcessor.class.getName(), ".%d.png");
+            File tempDir = File.createTempFile(FFMpegThumbNailCreator.class.getName(), ".dir");
+            tempDir.delete();
+            tempDir.mkdir();
+            File tempFile = new File(tempDir, "thumbnail.%d.png");
             args.add(tempFile.getAbsolutePath());
             OutputStream outStream = new WriterOutputStream(new LoggerWriter(LOG, Level.SERVICE), System.getProperty("file.encoding"));
             OutputStream errStream = new WriterOutputStream(new LoggerWriter(LOG, Level.DEBUG), System.getProperty("file.encoding"));
@@ -78,6 +91,7 @@ public class ThumbNailCallable implements  Callable<Node> {
             File file = new File(String.format(tempFile.getAbsolutePath(), 1));
             node.setInputStreamValue(field, new FileInputStream(file), file.length());
             file.delete();
+            tempDir.delete();
             node.commit();
             return node;
         } catch (IOException ioe) {
@@ -87,7 +101,6 @@ public class ThumbNailCallable implements  Callable<Node> {
         } catch (InterruptedException  ie) {
             LOG.service(ie.getMessage(), ie);
         }
-        this.notifyAll();
         return null;
     }
 }

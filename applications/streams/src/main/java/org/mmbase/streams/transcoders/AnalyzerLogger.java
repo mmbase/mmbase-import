@@ -73,6 +73,7 @@ public class AnalyzerLogger  extends AbstractSimpleImpl implements java.io.Seria
         return analyzer;
     }
 
+    @Override
     public String toString() {
         return super.toString() + " " + level;
     }
