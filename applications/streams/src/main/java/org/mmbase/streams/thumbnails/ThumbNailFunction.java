@@ -49,7 +49,7 @@ public class ThumbNailFunction extends NodeFunction<Node> {
     }
 
 
-    protected Node getSourceNode(Node node) {
+    protected static Node getSourceNode(Node node) {
         if (node == null) {
             return null;
         }
@@ -76,11 +76,7 @@ public class ThumbNailFunction extends NodeFunction<Node> {
         return null;
     }
 
-    @Override
-    protected Node getFunctionValue(final Node node, final Parameters parameters) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("params: " + parameters);
-        }
+    static Node getThumbNail(final Node node, Long offset) {
         Node sourceNode = getSourceNode(node);
         if (sourceNode == null) {
             Cloud cloud = node.getCloud();
@@ -91,8 +87,6 @@ public class ThumbNailFunction extends NodeFunction<Node> {
             }
         }
         long videoLength = node.getLongValue("length");
-
-        Long offset = parameters.get(OFFSET);
 
         if (offset == null) {
             offset = videoLength / 2;
@@ -123,10 +117,22 @@ public class ThumbNailFunction extends NodeFunction<Node> {
                 thumb.setValue("height", sourceNode.getIntValue("height"));
                 thumb.setValue("width",  sourceNode.getIntValue("width"));
                 thumb.commit();
+                LOG.service("Created thumbnail " + thumb.getNumber());
             } else {
                 thumb = thumbNodes.get(0);
             }
         }
+        return thumb;
+    }
+
+    @Override
+    protected Node getFunctionValue(final Node node, final Parameters parameters) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("params: " + parameters);
+        }
+
+        Node thumb = getThumbNail(node, parameters.get(OFFSET));
+
         if (parameters.get(WAIT)) {
             LOG.service("Waiting");
             WaitFunction.wait(thumb);
