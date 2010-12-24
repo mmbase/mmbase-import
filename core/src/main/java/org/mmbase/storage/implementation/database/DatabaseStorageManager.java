@@ -143,12 +143,12 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         return getFactory().logQuery(query, duration);
     }
 
-    // javadoc is inherited
+    @Override
     public double getVersion() {
         return 1.0;
     }
 
-    // javadoc is inherited
+    @Override
     public void init(DatabaseStorageManagerFactory factory) throws StorageException {
         this.factory = factory;
         if (factory.supportsTransactions()) {
@@ -1175,7 +1175,15 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             StringBuilder values = new StringBuilder();
             for (CoreField field : fields) {
                 values.append("\n");
-                values.append(field.getName() + ":" + node.getStringValue(field.getName()));
+                String name = field.getName();
+                if (field.getType() == Field.TYPE_BINARY) {
+                    values.append(name + "(bin): " + node.getSize(name) + " bytes");
+                } else if (node.getSize(name) > 512) {
+                    values.append(name + "(shorted):" + node.getStringValue(name).substring(0, 512));
+                } else {
+                    values.append(name + ":" + node.getStringValue(name));
+                }
+
             }
             valuesLogger.info(values);
         }
