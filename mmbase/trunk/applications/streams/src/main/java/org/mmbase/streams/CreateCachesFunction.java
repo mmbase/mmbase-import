@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -38,7 +38,7 @@ import org.mmbase.datatypes.processors.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Triggers (re)creation of caches (streamsourcescaches) of a source node 
+ * Triggers (re)creation of caches (streamsourcescaches) of a source node
  * (streamsources). The parameter 'all' determines whether to recreate all caches
  * or just to transcode newly configured streams. The parameter 'cache' can hold the
  * node number of a singe caches node to retranscode.
@@ -52,7 +52,7 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
 
     private static final Logger LOG = Logging.getLoggerInstance(CreateCachesFunction.class);
 
-    public final static Parameter[] PARAMETERS = { 
+    public final static Parameter[] PARAMETERS = {
         new Parameter("all", java.lang.Boolean.class),
         new Parameter("cache", org.mmbase.bridge.Node.class)
     };
@@ -90,15 +90,15 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
         if (LOG.isDebugEnabled()) {
             LOG.debug("params: " + parameters);
         }
-        if (node.getNumber() > 0 
+        if (node.getNumber() > 0
                 && node.getCloud().may(ActionRepository.getInstance().get("streams", "retrigger_jobs"), null)) {
-            
+
             Boolean all = (Boolean) parameters.get("all");
             Node cache = (Node) parameters.get("cache");
 
             {
                 final Field url = node.getNodeManager().getField("url");
-                final Processor cc = getCacheCreator(url);                
+                final Processor cc = getCacheCreator(url);
                 Map<String, JobDefinition> jdlist = new LinkedHashMap<String, JobDefinition>();
 
                 if (cache != null && node.getCloud().hasNode(cache.getNumber())) {
@@ -107,13 +107,13 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                     NodeList list = cache.getNodeManager().createNodeList();
                     list.add(cache);
                     jdlist = newJobList(node, list, cc.getConfiguration());
-                    
+
                 } else {
                     // list
                     Node mediafragment = node.getNodeValue("mediafragment");
                     String cachestype = node.getNodeManager().getProperty("org.mmbase.streams.cachestype");
-                    NodeList list = SearchUtil.findRelatedNodeList(mediafragment, cachestype, "related"); 
-                    
+                    NodeList list = SearchUtil.findRelatedNodeList(mediafragment, cachestype, "related");
+
                     // when the streamsourcescaches are initially of the wrong type they don't get deleted, this helps a bit
                     if (list.size() < 1) {
                         if (cachestype.startsWith("video")) {
@@ -127,7 +127,7 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                         }
                         list.clear();
                     }
-    
+
                     LOG.info("Re-transcoding " + list.size() + " caches for source #" + node.getNumber() + ", all: " + all);
                     if (all) {
                         jdlist = cc.getConfiguration();
@@ -137,11 +137,11 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                         jdlist = cc.getConfiguration();
                     }
                 }
-                
+
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("jdlist: " + jdlist);
                 }
-                
+
                 if (cc != null) {
                     LOG.debug("Calling " + cc);
                     cc.createCaches(node.getCloud().getNonTransactionalCloud(), node.getNumber(), jdlist);
@@ -155,7 +155,7 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
             return false;
         }
     }
-    
+
     /**
      * Compares configuration with already transcoded (cached) streamsourcescaches nodes and makes
      * a new list with {$link JobDefinition}s.
@@ -165,12 +165,12 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
      * @param jdlist    list with current configured job descriptions
      * @return a new list with jobs matched against already existing nodes if needed
      */
-    private static Map<String, JobDefinition> newJobList(Node src, NodeList list, 
+    private static Map<String, JobDefinition> newJobList(Node src, NodeList list,
             Map<String, JobDefinition> jdlist) {
         Map<String, JobDefinition> new_jdlist = new LinkedHashMap<String, JobDefinition>();
         Map<Node, String> cacheKeys = new HashMap<Node, String>();
         Map<String, String> configKeys = new HashMap<String, String>();
-        
+
         // current config: id/keys
         for (Map.Entry<String, JobDefinition> entry : jdlist.entrySet()) {
             String id = entry.getKey();
@@ -181,17 +181,17 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                 configKeys.put(id, key);
             }
         }
-        
+
         // current caches: cache/key
         Node mediafragment = src.getNodeValue("mediafragment");
         String cachestype = src.getNodeManager().getProperty("org.mmbase.streams.cachestype");
-        NodeList cachesNodeList = SearchUtil.findRelatedNodeList(mediafragment, cachestype, "related");         
+        NodeList cachesNodeList = SearchUtil.findRelatedNodeList(mediafragment, cachestype, "related");
         for (Node cache : cachesNodeList) {
             String key = cache.getStringValue("key");
             //LOG.debug("Already existing cache #" + cache.getNumber() + ", key: " + key);
             cacheKeys.put(cache, key);
         }
-        
+
         if (list.size() > 1) {
             // iterate config keys, look for not yet existing caches
             Iterator<Map.Entry<String,String>> it = configKeys.entrySet().iterator();
@@ -199,31 +199,31 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                 Map.Entry<String,String> e = it.next();
                 String config_id  = e.getKey();
                 String config_key = e.getValue();
-                
+
                 if (! cacheKeys.containsValue(config_key)) {   // make new
-                    if (LOG.isDebugEnabled()) { 
+                    if (LOG.isDebugEnabled()) {
                         LOG.debug("Not found in caches: " + config_id + ", with: " + config_key);
                     }
                     JobDefinition jd = jdlist.get(config_id);
                     if (!new_jdlist.containsKey(jd.getId())) {
-                        
+
                         new_jdlist.putAll( inJobDefsList(jd, jdlist, configKeys, cacheKeys) );
                         if (!new_jdlist.containsKey(jd.getId())) new_jdlist.put(jd.getId(), jd);
-                        
+
                         new_jdlist.putAll( outJobDefsList(jd, jdlist, configKeys, cacheKeys) );
-                        
+
                         LOG.info("new_jdlist now: " + new_jdlist);
                     }
                 }
             }
-            
-            
+
+
         } else {    // just one node: do always
-            
+
             Node cache = list.get(0);
             String key  = cache.getStringValue("key");
             String in = cache.getStringValue("id");
-            
+
             if (src.getCloud().hasNode(in)) {   // look if inNode (still) exists
 
                 String label  = cache.getStringValue("label");
@@ -238,15 +238,15 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                 } catch (Exception e) {
                     LOG.error("Exception while trying to (re)transcode - " + e);
                 }
-                
+
                 JobDefinition jd = new JobDefinition("re-cache", in, label.length() > 0 ? label : null, tr, mt, Stage.TRANSCODER);
                 new_jdlist.put("re-cache", jd);
                 LOG.info("Added for re-transcoding id 're-cache' [" + jd + "] from existing inNode #" + in);
-            
+
             } else if (configKeys.containsValue(key)) { // else re-transcode it based on config
-            
+
                 LOG.debug("Found for #" + cache.getNumber() + " in config: " + key);
-                
+
                 // get config id
                 Iterator<Map.Entry<String,String>> it = configKeys.entrySet().iterator();
                 String id = "";
@@ -259,22 +259,22 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                 JobDefinition jd = jdlist.get(id);
                 new_jdlist.putAll( inJobDefsList(jd, jdlist, configKeys, cacheKeys) );
                 if (!new_jdlist.containsKey(jd.getId())) new_jdlist.put(id, jd);
-                
+
                 // check this jd if its an inId of another
                 new_jdlist.putAll( outJobDefsList(jd, jdlist, configKeys, cacheKeys) );
 
                 LOG.info("new_jdlist now: " + new_jdlist);
 
-            } 
+            }
         }
-        
+
         return new_jdlist;
     }
-    
+
     /**
      * Makes a list with {$link JobDefinition}s of streams that are needed for this one just based on config.
      * Compares config with already cached streams, if found that node as in node for the new jobdefinition,
-     * or else uses config to add a jobdefinition to create that stream.  
+     * or else uses config to add a jobdefinition to create that stream.
      *
      * @param jobdef     job definition we need parent job definitions for
      * @param jdlist     list with job definitions to look in
@@ -283,19 +283,19 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
      * @return a new list with jobs matched against already existing nodes
      */
     private static Map<String, JobDefinition> inJobDefsList(JobDefinition jobdef, Map<String, JobDefinition> jdlist, Map<String, String> configKeys, Map<Node, String> cacheKeys) {
-        
+
         Map<String, JobDefinition> injds = new LinkedHashMap<String, JobDefinition>();
         String inId = jobdef.getInId();
-        
+
         int c = 0;
         while (jdlist.get(inId) != null && c < 5) {
-            
+
             String inKey = configKeys.get(inId);
-            
+
             if (LOG.isDebugEnabled()) {
                 LOG.debug("This jd has inId: " + inId);
             }
-    
+
             if (cacheKeys.containsValue(inKey)) {      // source node
                 Node inNode = null;
                 Iterator<Map.Entry<Node,String>> ic = cacheKeys.entrySet().iterator();
@@ -305,57 +305,57 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                         inNode = e.getKey();
                     }
                 }
-                if (LOG.isDebugEnabled()) { 
+                if (LOG.isDebugEnabled()) {
                     LOG.debug("inId is cached as #" + inNode.getNumber());
                 }
                 if (inNode.getIntValue("state") > State.BUSY.getValue()) {
                     String id     = jobdef.getId();
-                    Transcoder tr = jobdef.getTranscoder(); 
-                    String label  = jobdef.getLabel(); 
+                    Transcoder tr = jobdef.getTranscoder();
+                    String label  = jobdef.getLabel();
                     MimeType mt   = jobdef.getMimeType();
                     List<Analyzer> analyzers = jobdef.getAnalyzers();
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("analyzers: "  + analyzers);
                     }
-            
+
                     jobdef = new JobDefinition(id, "" + inNode.getNumber(), label.length() > 0 ? label : null, tr, mt, Stage.TRANSCODER);
                     jobdef.addAnalyzers(analyzers);
                     injds.put(id, jobdef);
-                    
+
                     break;  // return just jobdef itself with new inId
-                    
+
                 } else {
                     // in not ready, do everything based on config
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("infile not ready " + inNode.getStringValue("state"));
                     }
                 }
-                
-                
+
+
             }
-            
+
             injds.put(inId, jdlist.get(inId));
-            
+
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Added inId: " + inId);
             }
-            
+
             inId = jdlist.get(inId).getInId();  // get inId of this inId
             c++;
         }
-        if (LOG.isDebugEnabled()) { 
-            LOG.debug("injds now: " + injds); 
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("injds now: " + injds);
         }
-        
+
         Map<String, JobDefinition> reverse = new LinkedHashMap<String, JobDefinition>();
         for (int i = injds.size() - 1; i >= 0; i--) {
             reverse.put((String)injds.keySet().toArray()[i], (JobDefinition)injds.values().toArray()[i]);
         }
-        
+
         //return injds;
         return reverse;
     }
-    
+
     /**
      * Makes a list with {$link JobDefinition}s of streams that need (result from) this one, based on config.
      * Iterates over config, looks for jd with inId and if that's already cached, or else
@@ -372,18 +372,18 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
         for (Map.Entry<String, JobDefinition> entry : jdlist.entrySet()) {
             JobDefinition jd = entry.getValue();
             String inId = jd.getInId();
-            
+
             if (id.equals(inId)) {  // this jd is an inId
                 id = jd.getId();
-                
+
                 String key = configKeys.get(id);
                 if (cacheKeys.containsValue(key)) {
-                    
+
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Already cache for id: " + id);
                     }
                 } else {
-                    
+
                     outjds.put(id, jd);
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Added id: " + id);
@@ -393,6 +393,6 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
         }
         return outjds;
     }
-    
-    
+
+
 }
