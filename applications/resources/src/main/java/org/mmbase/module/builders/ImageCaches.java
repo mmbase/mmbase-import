@@ -349,10 +349,16 @@ public class ImageCaches extends AbstractImages {
         }
 
         for (MMObjectNode invalidNode : nodes) {
-            // delete the icache node
-            removeNode(invalidNode);
-            if (log.isDebugEnabled()) {
-                log.debug("deleted node with number#" + invalidNode.getNumber());
+            if (! invalidNode.isNull(FIELD_HANDLE)) {
+                // delete the icache node
+                removeNode(invalidNode);
+                if (log.isDebugEnabled()) {
+                    log.debug("deleted node with number#" + invalidNode.getNumber());
+                }
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("No need to delete number#" + invalidNode.getNumber() + " because it is still empty");
+                }
             }
         }
 
