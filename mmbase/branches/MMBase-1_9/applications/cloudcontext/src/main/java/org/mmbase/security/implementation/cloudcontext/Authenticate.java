@@ -88,7 +88,8 @@ public class Authenticate extends CloudContextAuthentication {
     /**
      * @since MMBase-1.9
      */
-    @Override public int getNode(UserContext user) throws SecurityException {
+    @Override
+    public int getNode(UserContext user) throws SecurityException {
         return ((User) user).getNode().getNumber();
     }
 
@@ -140,7 +141,7 @@ public class Authenticate extends CloudContextAuthentication {
             if (extraAdmins.containsKey(userName)) {
                 if(extraAdmins.get(userName).equals(password)) {
                     log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
-                    User user = new LocalAdmin(userName, type);
+                    User user = new LocalAdmin(users.getUser(userName), userName, type);
                     loggedInExtraAdmins.put(userName, user);
                     return user;
                 }
@@ -158,7 +159,7 @@ public class Authenticate extends CloudContextAuthentication {
             if (extraAdmins.containsKey(userName)) {
                 if(users.encode((String) extraAdmins.get(userName)).equals(password)) {
                     log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
-                    User user = new LocalAdmin(userName, type);
+                    User user = new LocalAdmin(users.getUser(userName), userName, type);
                     loggedInExtraAdmins.put(userName, user);
                     return user;
                 }
@@ -176,7 +177,7 @@ public class Authenticate extends CloudContextAuthentication {
             String rank     = li.getMap().get(PARAMETER_RANK.getName());
             if (userName != null && (rank == null || (Rank.ADMIN.toString().equals(rank) && extraAdmins.containsKey(userName)))) {
                 log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
-                User user = new LocalAdmin(userName, type);
+                User user = new LocalAdmin(users.getUser(userName), userName, type);
                 loggedInExtraAdmins.put(userName, user);
                 return user;
             } else {
@@ -230,7 +231,8 @@ public class Authenticate extends CloudContextAuthentication {
     }
 
 
-    @Override public String[] getTypes(int method) {
+    @Override
+    public String[] getTypes(int method) {
         if (allowEncodedPassword) {
             if (method == METHOD_ASIS) {
                 return new String[] {"anonymous", "name/password", "name/encodedpassword", "class"};
@@ -254,7 +256,8 @@ public class Authenticate extends CloudContextAuthentication {
             PARAMETER_ENCODEDPASSWORD,
             new Parameter.Wrapper(PARAMETERS_USERS) };
 
-    @Override public Parameters createParameters(String application) {
+    @Override
+    public Parameters createParameters(String application) {
         application = application.toLowerCase();
         if ("anonymous".equals(application)) {
             return new Parameters(PARAMETERS_ANONYMOUS);
@@ -275,10 +278,13 @@ public class Authenticate extends CloudContextAuthentication {
         private String userName;
         private long   l;
         private Rank   r = Rank.ADMIN;
-        LocalAdmin(String user, String app) {
-            super(new AdminVirtualNode(), Authenticate.this.getKey(), app);
+        LocalAdmin(MMObjectNode userNode, String user, String app) {
+            super(userNode == null ? new AdminVirtualNode() : userNode, Authenticate.this.getKey(), app);
             l = extraAdminsUniqueNumber;
             userName = user;
+        }
+        LocalAdmin(String user, String app) {
+            this(null, user, app);
         }
         LocalAdmin(String user, String app, Rank r) {
             this(user, app);
