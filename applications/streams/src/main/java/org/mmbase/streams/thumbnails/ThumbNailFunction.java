@@ -62,6 +62,9 @@ public class ThumbNailFunction extends NodeFunction<Node> {
             NodeList related = root.getRelatedNodes("videostreamsources", "related", "destination");
             if (! related.isEmpty()) {
                 return related.get(0);
+            } else {
+                //  simply does not have any sources
+                return null;
             }
         } else if (manager.equals(videosources) || videosources.getDescendants().contains(manager)) {
             return node;
@@ -69,7 +72,7 @@ public class ThumbNailFunction extends NodeFunction<Node> {
             Node fragment = node.getNodeValue("mediafragment");
             return getSourceNode(fragment);
         }
-        LOG.warn("Could not determin source node for " + node);
+        LOG.warn("Could not determin source node for " + manager + " " + node);
         return null;
     }
 
