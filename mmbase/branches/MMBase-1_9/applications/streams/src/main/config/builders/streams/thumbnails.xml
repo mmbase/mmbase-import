@@ -176,4 +176,9 @@
       <indexfield name="time" />
     </index>
   </indexlist>
+  <functionlist>
+    <function name="wait">
+      <class>org.mmbase.streams.thumbnails.WaitFunction</class>
+    </function>
+  </functionlist>
 </builder>
