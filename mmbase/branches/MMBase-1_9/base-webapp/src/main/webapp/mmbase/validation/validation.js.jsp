@@ -152,6 +152,7 @@ MMBaseValidator.prototype.enforce = function(el, enf) {
     if (enf == 'never') return false;
     if (enf == 'always') return true;
     if (enf == 'absolute') return true;
+    if (enf == 'onvalidate') return true;
     if (enf == 'oncreate') return  this.getNode(el) == null;
     if (enf == 'onchange') return  this.getNode(el) == null || this.isChanged(el);
 };
