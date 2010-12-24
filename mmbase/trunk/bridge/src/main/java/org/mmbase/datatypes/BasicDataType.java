@@ -1366,13 +1366,19 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             }
             boolean enforce = enforce(v, node, field);
             if (! enforce) {
-                log.debug("Ignoring " + v + " because not currently enforced by " + this);
+                if (log.isDebugEnabled()) {
+                    log.debug("Ignoring " + v + " because not currently enforced by " + this);
+                }
                 return errors;
             } else if (valid(v, node, field)) {
-                log.debug("Valid " + v + " for " + this);
+                if (log.isDebugEnabled()) {
+                    log.debug("Valid " + v + " for " + this);
+                }
                 return errors;
             } else {
-                log.debug("Invalid  " + v + " for " + this);
+                if (log.isDebugEnabled()) {
+                    log.debug("Invalid  " + v + " for " + this);
+                }
                 return addError(errors, v, node, field);
             }
         }
@@ -1687,18 +1693,18 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
         @Override
         protected String valueString(Node node, Field field) {
-            Collection<Map.Entry<C, String>> col = getEnumeration(null, null, node, field);
+            Collection<C> col = getEnumerationKeys(null, null, node, field);
             //System.out.println("Making value string gof " + col);
             if (col.size() == 0) {
                 return "";
             }
             StringBuilder buf = new StringBuilder();
-            Iterator<Map.Entry<C, String>> it = col.iterator();
+            Iterator<C> it = col.iterator();
             int i = 0;
             while (it.hasNext() && i < 10) {
                 i++;
-                Map.Entry<C, String> ent = it.next();
-                buf.append(Casting.toString(ent));
+                C v = it.next();
+                buf.append(Casting.toString(v));
                 if (it.hasNext()) {
                     buf.append(", ");
                 }
