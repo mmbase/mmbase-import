@@ -355,7 +355,21 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * @since MMBase-1.8
      */
     public StringBuilder getFileName(MMObjectNode node, StringBuilder buf) {
-        String fileName = hasField(FIELD_FILENAME) ? node.getStringValue(FIELD_FILENAME) : "";
+        Cloud anonymousCloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+        Node bridgeNode;
+        if (anonymousCloud.hasNode(node.getNumber()) && anonymousCloud.mayRead(node.getNumber())) {
+            bridgeNode = anonymousCloud.getNode(node.getNumber());
+        } else {
+            bridgeNode = new org.mmbase.bridge.util.MapNode(node.getValues());
+        }
+        return getFileName(bridgeNode, buf);
+    }
+
+    /**
+     * @since MMBase-1.9.6
+     */
+    public StringBuilder getFileName(Node node, StringBuilder buf) {
+        String fileName = node.getNodeManager().hasField(FIELD_FILENAME) ? node.getStringValue(FIELD_FILENAME) : "";
         if (fileName.equals("")) {
             String fileTitle;
             if (hasField("title")) {
