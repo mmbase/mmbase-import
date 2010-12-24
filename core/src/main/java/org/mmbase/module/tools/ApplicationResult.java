@@ -38,7 +38,7 @@ class ApplicationResult {
         return success;
     }
 
-    private void addMessage(String message) {
+    public void addMessage(String message) {
         if (resultMessage.length() > 0) {
             resultMessage.append('\n');
         }
