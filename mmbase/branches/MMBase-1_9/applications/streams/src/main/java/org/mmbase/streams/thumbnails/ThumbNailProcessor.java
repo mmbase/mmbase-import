@@ -21,20 +21,16 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.thumbnails;
 
-import java.util.*;
 import java.util.concurrent.*;
-import java.io.*;
 
 import org.mmbase.streams.createcaches.Executors;
 import org.mmbase.streams.createcaches.Stage;
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.processors.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.externalprocess.*;
-import org.mmbase.util.WriterOutputStream;
 
 /**
- *
+ * unused
  * @author Michiel Meeuwissen
  * @version $Id$
  */
@@ -50,7 +46,7 @@ public class ThumbNailProcessor implements Processor {
         LOG.info("Hello " + node);
         if (node.isNull(field.getName())) {
             LOG.info("Thumbnail not yet generated. doing that now");
-            final Callable<Node> callable = new ThumbNailCallable(node, field);
+            final Callable<Node> callable = new FFMpegThumbNailCreator(node, field);
             Future<Node> future = Executors.submit(Stage.RECOGNIZER, callable);
             try {
                 Node result = future.get();

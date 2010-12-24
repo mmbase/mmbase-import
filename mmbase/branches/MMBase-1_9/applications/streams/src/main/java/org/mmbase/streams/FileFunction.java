@@ -29,6 +29,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * This function on streamsources and caches returns the associated file as an actual {@link #File} object.
  * @author Michiel Meeuwissen
  * @version $Id$
  */
