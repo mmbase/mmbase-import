@@ -241,7 +241,7 @@ public class EventManager implements SystemEventListener {
     /**
      * @param listener
      */
-    protected synchronized void addEventListener(EventListener listener, boolean propagateToCollected) {
+    protected void addEventListener(EventListener listener, boolean propagateToCollected) {
         if (! setup) {
             setup = true;
             // this is procrasted as long as possible to avoid
@@ -268,7 +268,7 @@ public class EventManager implements SystemEventListener {
                     notifiedReceived = true;
                     for (SystemEvent.Collectable se : receivedSystemEvents) {
                         ((SystemEventListener) listener).notify(se);
-                    }
+                        }
                 }
                 if (log.isDebugEnabled()) {
                     log.debug("listener " + listener + " added to broker " + broker );
