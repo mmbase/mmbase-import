@@ -38,7 +38,7 @@ import org.xml.sax.InputSource;
 class ApplicationInstaller {
 
     private static final Logger log = Logging.getLoggerInstance(ApplicationInstaller.class);
-
+    private static final String EXPORTSOURCE = "___exportsource";
 
     private final MMBase mmb;
     private final MMAdmin admin;
@@ -201,11 +201,11 @@ class ApplicationInstaller {
      * @javadoc
      * @since MMBase-1.7
      */
-    protected boolean installDataSources(List<Map<String,String>> dataSources, String appName, ApplicationResult result) {
+    protected boolean installDataSources(List<Map<String,String>> dataSources, String appName, ApplicationResult result) throws SearchQueryException {
         MMObjectBuilder syncbul = mmb.getBuilder("syncnodes");
-
-        List<MMObjectNode> nodeFieldNodes = new ArrayList<MMObjectNode>(); // a temporary list with all nodes that have NODE fields, which should be synced, later.
         if (syncbul != null) {
+
+            List<MMObjectNode> nodeFieldNodes = new ArrayList<MMObjectNode>(); // a temporary list with all nodes that have NODE fields, which should be synced, later.
             for (Map<String, String> bh : dataSources) {
                 NodeReader nodeReader = getNodeReader(bh, appName);
                 if (nodeReader == null) {
@@ -215,8 +215,9 @@ class ApplicationInstaller {
                 }
             }
 
-            treatNodeFields(nodeFieldNodes, syncbul);
-
+            if (!treatNodeFields(nodeFieldNodes, syncbul)) {
+                return result.error("Could not sync all node fields");
+            }
             return result.isSuccess();
         } else {
             return result.error("Application installer : can't reach syncnodes builder"); //
@@ -238,7 +239,7 @@ class ApplicationInstaller {
                 int exportnumber = newNode.getIntValue("number");
                 if (existsSyncnode(syncbul, exportsource, exportnumber)) {
                     // XXX To do : we may want to load the node and check/change the fields
-                    log.debug("node allready installed : " + exportnumber);
+                    log.debug("node already installed : " + exportnumber);
                 } else {
                     newNode.setValue("number", -1);
                     int localnumber = doKeyMergeNode(syncbul, newNode, exportsource, result);
@@ -286,82 +287,63 @@ class ApplicationInstaller {
     }
 
     private void findFieldsOfTypeNode(List<MMObjectNode> nodeFieldNodes, String exportsource, MMObjectNode newNode) {
-        // determine if there were NODE fields, which need special treatment later.
-        Collection<CoreField> fields = newNode.getBuilder().getFields();
-        Iterator<CoreField> i = fields.iterator();
-        while (i.hasNext()) {
-            CoreField field = i.next();
-
-            // Fields with type NODE and notnull=true will be handled
-            // by the doKeyMergeNode() method.
+        for (CoreField field : newNode.getBuilder().getFields()) {
+            // Fields with type NODE
             if (field.getType() == Field.TYPE_NODE
-                    && ! field.getName().equals("number")
-                    && ! field.isRequired()) {
-
-                newNode.storeValue("__exportsource", exportsource);
+                && ! field.getName().equals("number")) {
+                newNode.storeValue(EXPORTSOURCE, exportsource);
                 nodeFieldNodes.add(newNode);
                 break;
             }
         }
     }
 
-    private void treatNodeFields(List<MMObjectNode> nodeFieldNodes, MMObjectBuilder syncbul) {
-        Iterator<MMObjectNode> i = nodeFieldNodes.iterator();
-        while (i.hasNext()) {
-            MMObjectNode importedNode = i.next();
-            String exportsource = (String) importedNode.getValues().get("__exportsource");
-            // clean it up
-            importedNode.storeValue("__exportsource", null); // hack to remove it.
-
-            Collection<CoreField> fields = importedNode.getBuilder().getFields();
-            Iterator<CoreField> j = fields.iterator();
-            while (j.hasNext()) {
-                CoreField def = j.next();
+    private boolean treatNodeFields(List<MMObjectNode> nodeFieldNodes, MMObjectBuilder syncbul) throws SearchQueryException {
+        boolean success = true;
+        for (MMObjectNode importedNode: nodeFieldNodes) {
+            for (CoreField def : importedNode.getBuilder().getFields()) {
                 String fieldName = def.getName();
                 if (def.getType() == Field.TYPE_NODE &&
                     !fieldName.equals("number") &&
+                    !fieldName.equals("otype") &&
                     !fieldName.equals("snumber") &&
                     !fieldName.equals("dnumber") &&
                     !fieldName.equals("rnumber")
                    ) {
-
-                    updateFieldWithTypeNode(syncbul, importedNode, exportsource, fieldName);
+                    String exportsource = (String) importedNode.getValues().get(EXPORTSOURCE);
+                    boolean s = updateFieldWithTypeNode(syncbul, importedNode, exportsource, fieldName);
+                    if (! s) {
+                        log.warn("Could not sync field " +  fieldName + " of " + importedNode);
+                    }
+                    success &= s;
                 }
             }
+            importedNode.storeValue(EXPORTSOURCE, null); // not needed any more
             if (importedNode.isChanged()) {
                 importedNode.commit();
             }
+
+
         }
+        return success;
     }
 
     /**
      * @javadoc !!!
      */
-    private int doKeyMergeNode(MMObjectBuilder syncbul, MMObjectNode newNode, String exportsource, ApplicationResult result) {
+    private int doKeyMergeNode(MMObjectBuilder syncbul, MMObjectNode newNode, String exportsource, ApplicationResult result) throws SearchQueryException {
         MMObjectBuilder bul = newNode.getBuilder();
         if (bul != null) {
-            Collection<CoreField> vec = bul.getFields();
             Constraint constraint = null;
             NodeSearchQuery query = null;
-            for (CoreField def : vec) {
+            boolean nodeFieldsSuccess = true;
+            for (CoreField def : bul.getFields()) {
                 if (! def.inStorage()) continue;
-                // check for notnull fields with type NODE.
                 if (def.getType() == Field.TYPE_NODE
-                    && ! def.getName().equals("number")
-                    && ! def.getName().equals("otype")
-                    && ! def.isNotNull()) { // not null is a bit less strong than 'isRequired'
+                    && ! def.getName().equals("number") // wtf this is not a NODE field!
+                    && ! def.getName().equals("otype")) {
 
-                    // Dangerous territory here.
-                    // The node contains a reference to another node.
-                    // The referenced node has to exist when this node is inserted.
-                    // trying to update the node.
-                    updateFieldWithTypeNode(syncbul, newNode, exportsource, def.getName());
-                    if (newNode.getIntValue(def.getName()) == -1) {
-                       // guess that failed
-                       result.error("Insert of node " + newNode + " failed. Field '" + def.getName() + "' with type NODE is not allowed to have a null value. " +
-                                    "The referenced node is not found. Try to reorder the nodes so the referenced node is imported before this one.");
-                       return -1;
-                    }
+                    nodeFieldsSuccess &= updateFieldWithTypeNode(syncbul, newNode, exportsource, def.getName());
                 }
 
                 // generation of key constraint to check if there is a node already present.
@@ -371,12 +353,12 @@ class ApplicationInstaller {
                     String name = def.getName();
                     if (type == Field.TYPE_STRING) {
                         String value = newNode.getStringValue(name);
-                        if (query==null) {
+                        if (query == null) {
                             query = new NodeSearchQuery(bul);
                         }
                         StepField field = query.getField(def);
                         Constraint newConstraint = new BasicFieldValueConstraint(field, value);
-                        if (constraint==null) {
+                        if (constraint == null) {
                             constraint= newConstraint;
                         } else {
                             BasicCompositeConstraint compConstraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
@@ -391,7 +373,7 @@ class ApplicationInstaller {
                 query.setConstraint(constraint);
                 try {
                     List<MMObjectNode> nodes = bul.getNodes(query);
-                    if (nodes.size()>0) {
+                    if (nodes.size() > 0) {
                         MMObjectNode oldNode = nodes.get(0);
                         return oldNode.getIntValue("number");
                     }
@@ -405,6 +387,9 @@ class ApplicationInstaller {
             if (localnumber == -1) {
                 result.error("Insert of node " + newNode + " failed.");
             }
+            if (! nodeFieldsSuccess) {
+                result.addMessage("Not all node fields were successfully merged already");
+            }
             return localnumber;
 
         } else {
@@ -413,51 +398,50 @@ class ApplicationInstaller {
         }
     }
 
-   /** update the field with the real node number of the referenced node
+   /**
+    * update the field with the real node number of the referenced node
     *
     * @param syncbul syncnode builder
     * @param importedNode Node to update
     * @param exportsource export source of the node to update
     * @param fieldname name of the field
+    * @return Whether it succeeded
     */
-   private void updateFieldWithTypeNode(
-      MMObjectBuilder syncbul,
-      MMObjectNode importedNode,
-      String exportsource,
-      String fieldname) {
+   private boolean updateFieldWithTypeNode(MMObjectBuilder syncbul,
+                                           MMObjectNode importedNode,
+                                           String exportsource,
+                                           String fieldname) throws SearchQueryException {
 
-      int exportnumber;
-      try {
-          exportnumber = Integer.parseInt((String) importedNode.getValues().get("__" + fieldname));
-      } catch (Exception e) {
-          exportnumber = -1;
-      }
 
-      // clean it up (don't know if this is necessary, but don't risk anything!)
-      importedNode.storeValue("__" + fieldname, null);
+       String exportNumber = (String) importedNode.getValues().get("__" + fieldname);
+       if (exportNumber == null) {
+           // resolved already?
+           return true;
+       }
+       int exportNode = Integer.parseInt(exportNumber);
 
-      int localNumber = -1;
-
-      List<MMObjectNode> syncnodes = null;
-      try {
-          syncnodes = getSyncnodes(syncbul, exportsource, exportnumber);
-      }
-      catch (SearchQueryException e) {
-          log.warn("Search for exportnumber " + exportnumber + " exportsource " + exportsource + "failed", e);
-      }
-      if (syncnodes != null && !syncnodes.isEmpty()) {
-          MMObjectNode n2 = syncnodes.get(0);
-          localNumber = n2.getIntValue("localnumber");
-      }
-      if (localNumber != -1) { // leave it unset in that case, because foreign keys whine otherwise (so, if you have foreign keys (e.g. hsql), the field _must not_ be required).
-          importedNode.setValue(fieldname, localNumber);
-      }
+       List<MMObjectNode> syncnodes = getSyncnodes(syncbul, exportsource, exportNode);
+       int localNumber;
+       if (!syncnodes.isEmpty()) {
+           MMObjectNode n2 = syncnodes.get(0);
+           localNumber = n2.getIntValue("localnumber");
+           // clean it up .
+           importedNode.storeValue("__" + fieldname, null);
+       } else {
+           // The syncnode could not be found fill in temporary the syncbuilder itself
+           // temporary put in another node number so that the node at least can be committed (the node field can be NOT
+           // NULL)
+           // This method is called a second time after all imports have been done, it should be possible to resolve it then.
+           localNumber = syncbul.getNumber();
+       }
+       importedNode.setValue(fieldname, localNumber);
+       return ! syncnodes.isEmpty();
    }
 
-   /**
+    /**
      * @javadoc
      */
-    boolean installRelationSources(List<Map<String,String>> ds, String appname, ApplicationResult result) {
+    boolean installRelationSources(List<Map<String,String>> ds, String appname, ApplicationResult result) throws SearchQueryException {
         MMObjectBuilder syncbul = mmb.getBuilder("syncnodes");
         InsRel insRel = mmb.getInsRel();
         if (syncbul != null) {
@@ -470,7 +454,9 @@ class ApplicationInstaller {
                     installRelationSource(syncbul, insRel, nodereader, nodeFieldNodes, result);
                 }
             }
-            treatNodeFields(nodeFieldNodes,syncbul);
+            if (! treatNodeFields(nodeFieldNodes, syncbul)) {
+                return result.error("Could not sync all node fields of relations");
+            }
         } else {
             result.error("Application installer : can't reach syncnodes builder");
         }
@@ -542,8 +528,7 @@ class ApplicationInstaller {
                                 + ", snumber:" + snumber + ", dnumber:" + dnumber + ")");
                     }
                 }
-            }
-            catch (SearchQueryException sqe) {
+            } catch (SearchQueryException sqe) {
                 log.error(sqe);
             }
         }
