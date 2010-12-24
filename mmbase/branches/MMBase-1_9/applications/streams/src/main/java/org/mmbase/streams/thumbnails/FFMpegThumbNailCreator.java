@@ -61,7 +61,7 @@ public class FFMpegThumbNailCreator implements  Callable<Node> {
     public Node call() {
         int count = 1;
 
-        File input = (File) source.getFunctionValue("file", null);
+        File input = (File) source.getFunctionValue("file", null).get();
         if (! input.canRead()) {
             LOG.debug("Cannot read " + input);
             return null;
