@@ -42,7 +42,7 @@ public class ThumbNailFunction extends NodeFunction<Node> {
     private static final Logger LOG = Logging.getLoggerInstance(ThumbNailFunction.class);
 
     public final static Parameter<Long> OFFSET = new Parameter<Long>("offset", java.lang.Long.class);
-    public final static Parameter<Boolean> WAIT = new Parameter<Boolean>("wait", java.lang.Boolean.class, Boolean.TRUE);
+    public final static Parameter<Boolean> WAIT = new Parameter<Boolean>("wait", java.lang.Boolean.class, Boolean.FALSE);
     public final static Parameter[] PARAMETERS = { OFFSET, WAIT };
     public ThumbNailFunction() {
         super("thumbnail", PARAMETERS);
@@ -120,24 +120,16 @@ public class ThumbNailFunction extends NodeFunction<Node> {
                 thumb = thumbs.createNode();
                 thumb.setValue("id", sourceNode);
                 thumb.setValue("time", offset);
+                thumb.setValue("height", sourceNode.getIntValue("height"));
+                thumb.setValue("width",  sourceNode.getIntValue("width"));
                 thumb.commit();
             } else {
                 thumb = thumbNodes.get(0);
             }
         }
-        if (thumb.isNull("handle")) {
-            FFMpegThumbNailCreator callable = new FFMpegThumbNailCreator(thumb, thumbs.getField("handle"));
-            Future<Node> future = Executors.submit(Stage.RECOGNIZER, callable);
-            if (parameters.get(WAIT)) {
-
-                try {
-                    future.get(); // wait for result
-                } catch (InterruptedException ie) {
-                    LOG.warn(ie.getMessage(), ie);
-                } catch (ExecutionException ee) {
-                    LOG.error(ee.getMessage(), ee);
-                }
-            }
+        if (parameters.get(WAIT)) {
+            LOG.service("Waiting");
+            WaitFunction.wait(thumb);
         }
         return thumb;
 
