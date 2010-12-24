@@ -1,7 +1,8 @@
 /*<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><mm:content type="text/javascript" expires="300">
-*/
-/**
+%><%@ taglib uri="http://www.opensymphony.com/oscache" prefix="os" 
+%><jsp:directive.page session="false" />
+*///<mm:content type="text/javascript" expires="3600" postprocessor="none"><os:cache time="3600"><mm:escape  escape="javascript-compress">
+/*
  * See test.jspx for example usage.
 
  * new MMBaseValidator(el): attaches events to all elements in el when ready.
@@ -37,7 +38,7 @@ function MMBaseValidator(root, id) {
 
     this.lang          = null;
     this.sessionName   = null;
-    this.activeElement = null;
+   this.activeElement = null;
     this.checkAfter    = 600;
     this.logArea       = "logarea";
     this.id = MMBaseValidator.validators.push(this);
@@ -151,6 +152,7 @@ MMBaseValidator.prototype.enforce = function(el, enf) {
     if (enf == 'never') return false;
     if (enf == 'always') return true;
     if (enf == 'absolute') return true;
+    if (enf == 'onvalidate') return true;
     if (enf == 'oncreate') return  this.getNode(el) == null;
     if (enf == 'onchange') return  this.getNode(el) == null || this.isChanged(el);
 };
@@ -723,7 +725,7 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
  */
 MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
     var nm = nodemanager.split(",");
-    for (var i in nm) {
+    for (var i=0; i < nm.length; i++) {
         if (nm[i].length > 0) {
             var n = nm[i];
             if (MMBaseValidator.prefetchedNodeManagers[n] == "success") {
@@ -742,7 +744,6 @@ MMBaseValidator.prototype.checkPrefetch = function() {
             }
         });
     if (nodemanagers.length > 0) {
-        var self = this;
         this.log("prefetching " + nodemanagers);
         var url = '<mm:url page="/mmbase/validation/datatypes.jspx" />';
         var params = {nodemanager: nodemanagers };
@@ -1345,7 +1346,4 @@ MMBaseValidator.prototype.addValidation = function(el) {
     this.addValidationForElements(els);
     el = null;
 };
-
-/*
-</mm:content>
-*/
+//</mm:escape></os:cache></mm:content>
