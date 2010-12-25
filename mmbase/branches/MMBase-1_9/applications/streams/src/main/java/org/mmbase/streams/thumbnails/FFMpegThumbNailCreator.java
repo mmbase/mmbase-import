@@ -39,7 +39,7 @@ import org.mmbase.util.WriterOutputStream;
  * @version $Id$
  */
 
-public class FFMpegThumbNailCreator implements  Callable<Node> {
+public class FFMpegThumbNailCreator implements  Callable<Long> {
 
     private static final Logger LOG = Logging.getLoggerInstance(FFMpegThumbNailCreator.class);
 
@@ -58,7 +58,7 @@ public class FFMpegThumbNailCreator implements  Callable<Node> {
 
 
     @Override
-    public Node call() {
+    public Long call() {
         int count = 1;
 
         File input = (File) source.getFunctionValue("file", null).get();
@@ -73,8 +73,8 @@ public class FFMpegThumbNailCreator implements  Callable<Node> {
         CommandExecutor.Method method = Executors.getFreeExecutor();
         String command = "ffmpeg";
         List<String> args = new ArrayList<String>();
-        args.add("-itsoffset");
-        args.add(String.format(Locale.US, "-%.2f", node.getDoubleValue("time") / 1000));
+        args.add("-ss");
+        args.add(String.format(Locale.US, "%.2f", node.getDoubleValue("time") / 1000));
         args.add("-i");
         args.add(input.getAbsolutePath());
         args.add("-vframes");
@@ -89,11 +89,18 @@ public class FFMpegThumbNailCreator implements  Callable<Node> {
             OutputStream errStream = new WriterOutputStream(new LoggerWriter(LOG, Level.DEBUG), System.getProperty("file.encoding"));
             CommandExecutor.execute(outStream, errStream, method, command, args.toArray(new String[args.size()]));
             File file = new File(String.format(tempFile.getAbsolutePath(), 1));
-            node.setInputStreamValue(field, new FileInputStream(file), file.length());
-            file.delete();
+            long result;
+            if (file.exists()) {
+                node.setInputStreamValue(field, new FileInputStream(file), file.length());
+                result = file.length();
+                file.delete();
+                node.commit();
+            } else {
+                result = 0;
+            }
             tempDir.delete();
-            node.commit();
-            return node;
+
+            return result;
         } catch (IOException ioe) {
             LOG.error(ioe.getMessage(), ioe);
         } catch (ProcessException pe) {
@@ -101,6 +108,6 @@ public class FFMpegThumbNailCreator implements  Callable<Node> {
         } catch (InterruptedException  ie) {
             LOG.service(ie.getMessage(), ie);
         }
-        return null;
+        return -1l;
     }
 }

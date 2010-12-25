@@ -21,6 +21,7 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.thumbnails;
 
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.Future;
 import java.util.concurrent.ExecutionException;
@@ -75,16 +76,18 @@ public class ThumbNailFunction extends NodeFunction<Node> {
         LOG.warn("Could not determin source node for " + manager + " " + node);
         return null;
     }
+    private static Node getDefault(Cloud cloud) {
+        if (cloud.hasNode("default_video_thumbnail")) {
+            return cloud.getNode("default_video_thumbnail");
+        } else {
+            return null;
+        }
+    }
 
     static Node getThumbNail(final Node node, Long offset) {
         Node sourceNode = getSourceNode(node);
         if (sourceNode == null) {
-            Cloud cloud = node.getCloud();
-            if (cloud.hasNode("default_video_thumbnail")) {
-                return node.getCloud().getNode("default_video_thumbnail");
-            } else {
-                return null;
-            }
+            return getDefault(node.getCloud());
         }
         long videoLength = node.getLongValue("length");
 
@@ -111,6 +114,11 @@ public class ThumbNailFunction extends NodeFunction<Node> {
             Queries.addConstraint(q, q.createConstraint(q.getStepField(thumbs.getField("time")), offset));
             List<Node> thumbNodes = thumbs.getList(q);
             if (thumbNodes.isEmpty()) {
+                File input = (File) sourceNode.getFunctionValue("file", null).get();
+                if (input == null || ! input.exists() || ! input.canRead() || input.length() == 0) {
+                    LOG.debug("Source seems broken, no point in creating a thumbnail");
+                    return getDefault(node.getCloud());
+                }
                 thumb = thumbs.createNode();
                 thumb.setValue("id", sourceNode);
                 thumb.setValue("time", offset);
