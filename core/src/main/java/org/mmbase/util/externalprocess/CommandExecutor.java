@@ -56,7 +56,7 @@ public class CommandExecutor {
             return inUse;
         }
         public String toString() {
-            return (type == Type.LAUNCHER ? "LAUNCHER" : (host + ":" + port)) + (inUse ? " (in use)" : "");
+            return (type == Type.LAUNCHER ? "LAUNCHER" : (host + ":" + port));
         }
     }
 
@@ -84,6 +84,9 @@ public class CommandExecutor {
                                String [] env,
                                String command, String... args) throws ProcessException, InterruptedException {
         method.setInUse(true);
+        if (LOG.isServiceEnabled()) {
+            LOG.service("" + method + " " + command + " " + Arrays.asList(args));
+        }
         try {
             switch(method.type) {
             case LAUNCHER:
