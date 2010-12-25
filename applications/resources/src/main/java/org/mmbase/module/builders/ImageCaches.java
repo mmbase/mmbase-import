@@ -326,12 +326,16 @@ public class ImageCaches extends AbstractImages {
 
     /**
      * Invalidate the Image Cache for a specific Node
-     * method only accessable on package level, since only Images should call it..
+     * method only accessible on package level, since only Images should call it..
      *
      * @param imageNode The image node, which is the original of the cached modifications
      * @since MMBase-1.7
      */
     protected void invalidate(MMObjectNode imageNode) {
+        invalidate(imageNode, true);
+    }
+
+    protected void invalidate(MMObjectNode imageNode, boolean remove) {
         if (log.isDebugEnabled()) {
             log.debug("Going to invalidate the node, where the original node # " + imageNode.getNumber());
         }
@@ -349,7 +353,7 @@ public class ImageCaches extends AbstractImages {
         }
 
         for (MMObjectNode invalidNode : nodes) {
-            if (! invalidNode.isNull(FIELD_HANDLE)) {
+            if (remove || ! invalidNode.isNull(FIELD_HANDLE)) {
                 // delete the icache node
                 removeNode(invalidNode);
                 if (log.isDebugEnabled()) {
