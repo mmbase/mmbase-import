@@ -465,7 +465,7 @@ public class Images extends AbstractImages {
         if(super.commit(node)) {
             // when cache is invalid, invalidate
             if(imageCacheInvalid) {
-                invalidateImageCache(node);
+                invalidateImageCache(node, false);
                 templateCacheNumberCache.remove(node.getNumber());
             }
             return true;
@@ -481,7 +481,7 @@ public class Images extends AbstractImages {
      */
     @Override
     public void removeNode(MMObjectNode node) {
-        invalidateImageCache(node);
+        invalidateImageCache(node, true);
         templateCacheNumberCache.remove(node.getNumber());
         super.removeNode(node);
     }
@@ -506,11 +506,11 @@ public class Images extends AbstractImages {
      * Invalidate the Image Cache, if there is one, for a specific ImageNode
      * @param node The image node, which is the original
      */
-    private void invalidateImageCache(MMObjectNode node) {
+    private void invalidateImageCache(MMObjectNode node, boolean remove) {
         ImageCaches icache = (ImageCaches) mmb.getMMObject("icaches");
         if(icache != null) {
             // we have a icache that is active...
-            icache.invalidate(node);
+            icache.invalidate(node, remove);
         }
     }
 
