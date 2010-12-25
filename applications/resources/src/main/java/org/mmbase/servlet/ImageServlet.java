@@ -45,6 +45,7 @@ public class ImageServlet extends HandleServlet {
      */
     private boolean convert = false;
 
+    @Override
     public void init() throws ServletException {
         super.init();
         String convertParameter = getInitParameter("convert");
@@ -56,14 +57,17 @@ public class ImageServlet extends HandleServlet {
     }
 
     // just to get ImageServlet in the stacktrace.
+    @Override
     protected final Cloud getClassCloud() {
         return super.getClassCloud();
     }
 
+    @Override
     public String getServletInfo()  {
         return "Serves (cached) MMBase images";
     }
 
+    @Override
     protected Map<String, Integer> getAssociations() {
         Map<String, Integer> a = super.getAssociations();
         a.put("images",      50);  // Is good in images (knows icaches)
@@ -72,6 +76,7 @@ public class ImageServlet extends HandleServlet {
         return a;
     }
 
+    @Override
     protected String getMimeType(Node node) {
         return node.getFunctionValue("mimetype", null).toString();
     }
@@ -82,6 +87,7 @@ public class ImageServlet extends HandleServlet {
      * {@inheritDoc}
      */
 
+    @Override
     protected boolean setContent(QueryParts query, Node node, String mimeType) throws java.io.IOException {
         Node originalNode;
         if (node.getNodeManager().getName().equals("icaches")) {
@@ -113,6 +119,7 @@ public class ImageServlet extends HandleServlet {
      *
      * @since MMBase-1.7.4
      */
+    @Override
     protected Node getServedNode(QueryParts query, Node node) throws java.io.IOException {
         if (node == null) {
             return null;
@@ -173,6 +180,7 @@ public class ImageServlet extends HandleServlet {
      * Overridden to support 'title aliases'.
      * @since MMBase-1.7.5
      */
+    @Override
     protected Node desperatelyGetNode(Cloud cloud, String nodeIdentifier) {
         log.debug("Desperately searching node '" + nodeIdentifier + "'");
         NodeManager nm = cloud.getNodeManager("images");
