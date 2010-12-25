@@ -51,10 +51,11 @@ public class WaitFunction extends NodeFunction<Node> {
         if (thumb.isNull("handle")) {
             LOG.debug("Triggering a conversion");
             FFMpegThumbNailCreator callable = new FFMpegThumbNailCreator(thumb, thumb.getNodeManager().getField("handle"));
-            Future<Node> future = Executors.submit(Stage.RECOGNIZER, callable);
+            Future<Long> future = Executors.submit(Stage.RECOGNIZER, callable);
             try {
                 LOG.service("And waiting for it");
-                future.get(); // wait for result
+                long result = future.get(); // wait for result
+                LOG.service("Found " + result + " bytes");
             } catch (InterruptedException ie) {
                 LOG.warn(ie.getMessage(), ie);
             } catch (ExecutionException ee) {

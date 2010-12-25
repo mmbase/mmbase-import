@@ -9,15 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.streams.thumbnails;
 
-import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
 import org.mmbase.bridge.*;
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.servlet.FileServlet;
 import org.mmbase.util.functions.*;
-import org.mmbase.util.*;
-import org.mmbase.util.transformers.UrlEscaper;
-import org.mmbase.util.transformers.Xml;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -37,10 +30,15 @@ public class GuiFunction extends NodeFunction<String> {
 
     @Override
     protected String getFunctionValue(Node node, Parameters parameters) {
-        LOG.info("Field " + parameters.get(Parameter.FIELD));
+        LOG.info("Field " + parameters.get(Parameter.FIELD), new Exception());
         if (parameters.get(Parameter.FIELD) == null) {
             Node thumb = ThumbNailFunction.getThumbNail(node, null);
-            return thumb.getFunctionValue("gui", parameters).toString();
+            Function fun = thumb.getFunction("gui");
+            Parameters params = fun.createParameters();
+            for (Parameter p : org.mmbase.util.functions.GuiFunction.PARAMETERS) {
+                params.set(p, parameters.get(p));
+            }
+            return thumb.getFunctionValue("gui", params).toString();
         } else {
             return null;
         }
