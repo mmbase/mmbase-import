@@ -72,19 +72,27 @@ public class ImageMagickImageInformer implements ImageInformer {
 
 
     public Dimension getDimension(InputStream input) throws IOException {
-        File file = File.createTempFile("ImageMagickImageInformer", null);
-        FileOutputStream image = new FileOutputStream(file);
-        IOUtil.copy(input, image);
-        image.close();
-        return getDimension(file);
+        File file = File.createTempFile(ImageMagickImageInformer.class.getName(), null);
+        try {
+            FileOutputStream image = new FileOutputStream(file);
+            IOUtil.copy(input, image);
+            image.close();
+            return getDimension(file);
+        } finally {
+            file.delete();
+        }
     }
 
     public Dimension getDimension(byte[] input) throws IOException {
-        File file = File.createTempFile("ImageMagickImageInformer", null);
-        FileOutputStream image = new FileOutputStream(file);
-        image.write(input);
-        image.close();
-        return  getDimension(file);
+        File file = File.createTempFile(ImageMagickImageInformer.class.getName(), null);
+        try {
+            FileOutputStream image = new FileOutputStream(file);
+            image.write(input);
+            image.close();
+            return  getDimension(file);
+        } finally {
+            file.delete();
+        }
 
     }
     public static void main(String[] args) {
