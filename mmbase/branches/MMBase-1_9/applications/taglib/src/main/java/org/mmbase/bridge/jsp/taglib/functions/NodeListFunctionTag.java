@@ -147,6 +147,7 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
     }
 
     public void doFinally() {
+        super.doFinally();
         listHelper.doFinally();
         nodeHelper.doFinally();
     }
