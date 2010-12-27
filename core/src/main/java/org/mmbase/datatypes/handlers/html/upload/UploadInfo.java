@@ -17,7 +17,9 @@ package org.mmbase.datatypes.handlers.html.upload;
  * @since MMBase-1.9.2
  */
 
-public class UploadInfo {
+public class UploadInfo implements java.io.Serializable {
+    private static final long serialVersionUID = 0L;
+
     private final long totalSize;
     private final long startTime = System.currentTimeMillis();
 
