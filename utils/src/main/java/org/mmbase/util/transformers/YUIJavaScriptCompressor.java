@@ -82,7 +82,7 @@ public class YUIJavaScriptCompressor extends  ReaderTransformer {
             }
 
             if (WORKS) {
-                LOG.info("Compressing javascript from " + reader + " -> " + writer);
+                LOG.service("Compressing javascript from " + reader + " -> " + writer);
                 JavaScriptCompressor compressor = new JavaScriptCompressor(reader,
                                                                            new JavaScriptErrorReporter(LOG));
                 compressor.compress(writer, linebreakpos, munge, false,
