@@ -84,6 +84,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         listHelper.remove();
     }
 
+    @Override
     public Query getGeneratingQuery() {
         return generatingQuery;
     }
@@ -332,16 +333,19 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     }
 
 
+    @Override
     public int doAfterBody() throws JspTagException {
         super.doAfterBody();
         return listHelper.doAfterBody();
     }
 
+    @Override
     public int doEndTag() throws JspTagException {
         listHelper.doEndTag();
         return  super.doEndTag();
     }
 
+    @Override
     public void doFinally() {
         generatingQuery = null;
         listHelper.doFinally();

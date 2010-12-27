@@ -286,6 +286,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         return EVAL_PAGE;
     }
 
+    @Override
     public void doFinally() {
         PageContextThreadLocal.cleanThreadPageContexts(this);
         helper.doFinally();
