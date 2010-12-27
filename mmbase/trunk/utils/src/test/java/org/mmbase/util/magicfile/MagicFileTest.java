@@ -80,6 +80,7 @@ public class MagicFileTest  {
         IOUtil.copy(new FileInputStream(file), new FileOutputStream(tempFile));
         assertEquals(file.getName() + "->" + tempFile.getName(),
                      mimeType, MagicFile.getInstance().getMimeType(tempFile));
+        tempFile.deleteOnExit();
     }
 
 
@@ -92,6 +93,7 @@ public class MagicFileTest  {
         IOUtil.copy(new FileInputStream(file), new FileOutputStream(tempFile));
         assertEquals(file.getName() + "->" + tempFile.getName(),
                      mimeType, MagicFile.getInstance().getMimeType(tempFile));
+        tempFile.deleteOnExit();
     }
 
 
