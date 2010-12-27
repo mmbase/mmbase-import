@@ -56,6 +56,7 @@ public class FileServletTest {
         OutputStream out = new FileOutputStream(outFile);
         FileServlet.stream(range, in, out);
         assertTrue(FileUtils.contentEquals(file, outFile));
+        outFile.deleteOnExit();
     }
 
     @Test
