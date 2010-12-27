@@ -326,6 +326,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         return EVAL_PAGE;
     }
 
+    @Override
     public void doFinally() {
         collector = null;
         returnList = null;
