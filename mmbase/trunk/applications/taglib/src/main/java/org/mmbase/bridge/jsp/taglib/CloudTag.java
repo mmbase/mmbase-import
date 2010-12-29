@@ -218,7 +218,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     protected int getMethod() throws JspTagException {
         String m = method.getString(this);
         AuthenticationData data = getDefaultCloudContext().getAuthentication();
-        int r =  data == null ? -1 : data.getMethod(m);
+        int r =  data == null ? AuthenticationData.METHOD_UNSET : data.getMethod(m);
         if (log.isDebugEnabled()) {
             log.debug("method '" + m + "' -> " + r);
         }
@@ -233,10 +233,15 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         int m = getMethod();
         if (m == AuthenticationData.METHOD_UNSET) {
             if (! "".equals(loginpage.getString(this))) {
+                log.debug("loginpage attribute given");
                 return AuthenticationData.METHOD_LOGINPAGE;
             } else if (logonatt != Attribute.NULL && pwd != Attribute.NULL) {
+                log.debug("logon and pwd attributes given");
                 return AuthenticationData.METHOD_SESSIONLOGON;
             } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("lp: " + loginpage + " logonatt: " + logonatt + " pwd: " + pwd + " falling back to default for " + request.getProtocol());
+                }
                 return  cloudContext.getAuthentication().getDefaultMethod(request.getProtocol());
             }
         } else {
@@ -929,8 +934,12 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
               logon.add(userName); why is this..
             */
         }
-        user.set(AuthenticationData.PARAMETER_USERNAME, userName);
-        user.set(AuthenticationData.PARAMETER_PASSWORD, password);
+        if (userName != null) {
+            user.setIfDefined(AuthenticationData.PARAMETER_USERNAME, userName);
+        }
+        if (password != null) {
+            user.setIfDefined(AuthenticationData.PARAMETER_PASSWORD, password);
+        }
         return EVAL_BODY;
 
     }
