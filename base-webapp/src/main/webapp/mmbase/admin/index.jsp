@@ -67,7 +67,7 @@
             <div id="head">
               <h1>MMBase</h1>
               <p>
-                You are logged in as: <mm:cloudinfo type="user" /> (rank: <mm:cloudinfo type="user" />) |
+                You are logged in as: <mm:cloudinfo type="user" /> (rank: <mm:cloudinfo type="rank" />) |
                 <mm:link>
                   <mm:param name="logout" value="ok" />
                   <a href="${_}">logout</a>
