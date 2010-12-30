@@ -239,10 +239,10 @@ public class ContentTag extends LocaleTag  {
                     ct = null;
                 }
             } catch (NoClassDefFoundError ncdfe) {
+                parameterizedCharTransformerFactories.put(id, new CopierFactory());
                 if (fallback.length() > 0) {
                     ct = charTransformers.get(fallback);
                     log.info("For " + id + " " + ncdfe.getClass().getName() + " " + ncdfe.getMessage() + " falling back to " + fallback + " " + ct);
-
                 } else {
                     log.fatal("No fallback found for " + id);
                     throw ncdfe;
@@ -252,7 +252,6 @@ public class ContentTag extends LocaleTag  {
                 if (! charTransformers.containsKey(id)) {
                     log.debug("Could be instantiated with default parameters too");
                     charTransformers.put(id, ct);
-                    parameterizedCharTransformerFactories.put(id, new CopierFactory());
                 } else {
                     log.service("Already a chartransformer with id " + id);
                 }
