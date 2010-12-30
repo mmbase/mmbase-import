@@ -30,6 +30,7 @@ import org.mmbase.util.IOUtil;
 import org.mmbase.util.SerializableInputStream;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Level;
 import org.mmbase.util.transformers.CharTransformer;
 
 /**
@@ -692,6 +693,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     public InputStream getInputStreamValue(MMObjectNode node, CoreField field) throws StorageException {
         try {
             Blob blob = getBlobValue(node, field);
+            if (blob == null) return null;
             return new org.mmbase.util.SerializableInputStream(blob.getBinaryStream(), blob.length());
         } catch (SQLException sqe) {
             throw new StorageException(sqe);
@@ -1179,7 +1181,8 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 if (field.getType() == Field.TYPE_BINARY) {
                     values.append(name + "(bin): " + node.getSize(name) + " bytes");
                 } else if (node.getSize(name) > 512) {
-                    values.append(name + "(shorted):" + node.getStringValue(name).substring(0, 512));
+                    String string = node.getStringValue(name);
+                    values.append(name + "(shorted):" + string.substring(0, Math.min(512, string.length())));
                 } else {
                     values.append(name + ":" + node.getStringValue(name));
                 }
@@ -2853,10 +2856,13 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 if (i < 3) {
                     // try again
                     log.warn("No columns found in " + metaData + "  for "+ tableName + " ???. Trying again (" + i + ").");
+                    Thread.sleep(100);
                 } else if (i < 10) {
-                    // try again, but also with a new meta dat object
-                    log.error("No columns found in " + metaData + "  for "+ tableName + " ???. Trying again, with new metaData (" + i + ")");
+                    // try again, but also with a new meta data object
+                    Logging.log(i < 7 ? Level.WARN : Level.ERROR,
+                                log, "No columns found in " + metaData + "  for "+ tableName + " ???. Trying again, with new metaData (" + i + ")");
                     metaData = activeConnection.getMetaData();
+                    Thread.sleep(100);
                 } else {
                     // give up
                     log.error("The table " + tableName + " could not be verified after repeated checks. Skipping that altogether and proceeding now.");
