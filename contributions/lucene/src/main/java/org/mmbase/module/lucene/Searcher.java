@@ -347,7 +347,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
     }
 
     static final String QUERY_SYNTAX =
-        "&lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE]:&lt;value&gt; | " +
+        "&lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | PREFIX ]:&lt;value&gt; | " +
         "&lt;field&gt;:[IN | INC]:&lt;value1&gt;:&lt;value2&gt;";
 
     static final String FILTER_SYNTAX =
@@ -377,6 +377,14 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                 if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form " + FILTER_SYNTAX);
                 tokens.nextToken(); // colon
             }
+            boolean negate = false;
+            if (type.startsWith("!")) {
+                negate = true;
+                type = type.substring(1);
+            }
+            if (type.equals("NE") || type.equals("NIN_SET")) {
+                negate = true;
+            }
             String value = ""; // should use stringbuffer?
             String value2 = "";
             if (type.equals("IN") || type.equals("INC")) {
@@ -401,6 +409,9 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
             } else if (type.equals("EQ") || type.equals("NE")) {
                 subFilter = new TermsFilter();
                 ((TermsFilter)subFilter).addTerm(new Term(field, value));
+            } else if (type.equals("PREFIX")) {
+                PrefixFilter pf = new PrefixFilter(new Term(field, value));
+                subFilter = pf;
             } else if (type.equals("GT")|| type.equals("GTE")) {
                 subFilter = new RangeFilter(field, value, null, type.equals("GTE"), false);
             } else if (type.equals("LT") || type.equals("LTE")) {
@@ -413,22 +424,20 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
             } else {
                 throw new IllegalArgumentException("Unknown operator '" + type + "'");
             }
-            if (subFilter !=null) {
+            if (subFilter != null) {
                 if (filter == null) {
-                    if (type.equals("NE") || type.equals("NIN_SET")) {
+                    if (negate) {
                         BooleanFilter booleanFilter = new BooleanFilter();
-                        booleanFilter.add(new FilterClause(filter, BooleanClause.Occur.MUST_NOT));
+                        booleanFilter.add(new FilterClause(subFilter, BooleanClause.Occur.MUST_NOT));
                         filter = booleanFilter;
                     } else {
-                      filter = subFilter;
-            }
+                        filter = subFilter;
+                    }
                 } else {
                     BooleanFilter booleanFilter = new BooleanFilter();
                     booleanFilter.add(new FilterClause(filter, BooleanClause.Occur.MUST));
                     BooleanClause.Occur occur =
-                        (type.equals("NE") ||
-                         type.equals("NIN_SET"))
-                        ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST;
+                        negate ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST;
                     // no support for 'SHOULD'.
                     booleanFilter.add(new FilterClause(subFilter, occur));
                     filter = booleanFilter;
