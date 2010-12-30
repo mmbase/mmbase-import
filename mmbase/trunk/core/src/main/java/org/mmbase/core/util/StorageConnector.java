@@ -21,6 +21,7 @@ import org.mmbase.storage.util.Index;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.legacy.QueryConvertor;
+import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
