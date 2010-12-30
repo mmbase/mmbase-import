@@ -25,6 +25,7 @@ import org.mmbase.module.Module;
 import org.mmbase.module.ProcessorModule;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.module.core.*;
+import org.mmbase.core.event.*;
 import org.mmbase.security.Rank;
 import org.mmbase.storage.StorageException;
 import org.mmbase.storage.search.SearchQueryException;
@@ -43,7 +44,7 @@ import org.xml.sax.InputSource;
  * @author Pierre van Rooden
  * @version $Id$
  */
-public class MMAdmin extends ProcessorModule {
+public class MMAdmin extends ProcessorModule implements SystemEventListener {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
 
     // true: ready (probeCall was called)
@@ -140,18 +141,22 @@ public class MMAdmin extends ProcessorModule {
             log.debug(se);
         }
         mmb = MMBase.getMMBase();
-        org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
-                public void run() {
-                    while (!mmb.getState()) {
-                        try {Thread.sleep(2000);} catch (InterruptedException e){ return;}
-                    }
-                    try {
-                        MMAdmin.this.probeCall();
-                    } catch (Exception e) {
-                        log.error(e.getMessage(), e);
-                    }
-                }
-            });
+        EventManager.getInstance().addEventListener(this);
+    }
+
+    @Override
+    public void notify(SystemEvent se) {
+        if (se instanceof SystemEvent.Up) {
+            try {
+                probeCall();
+            } catch (SearchQueryException sqe) {
+                log.error(sqe.getMessage(), sqe);
+            }
+        }
+    }
+    @Override
+    public int getWeight() {
+        return 0;
     }
 
     /**
