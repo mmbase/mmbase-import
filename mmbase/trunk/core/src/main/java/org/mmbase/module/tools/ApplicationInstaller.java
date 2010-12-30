@@ -19,6 +19,7 @@ import org.mmbase.module.builders.Versions;
 import org.mmbase.module.core.*;
 import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.core.event.EventManager;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.*;
@@ -56,6 +57,7 @@ class ApplicationInstaller {
                 log.error("Problem installing application : " + appResource + ", cause: " + result.getMessage());
             }
         }
+        EventManager.getInstance().propagateEvent(new ApplicationsInstalledEvent());
     }
 
     /**
@@ -882,5 +884,6 @@ class ApplicationInstaller {
             return result.error("Can't get typerel builder");
         }
     }
+
 
 }
