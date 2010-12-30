@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE functionset PUBLIC "//MMBase - functionset //" "http://www.mmbase.org/dtd/functionset_1_0.dtd">
+<functionset>
+
+  <function name="markfordelete">
+    <type>class</type>
+    <class>org.mmbase.security.implementation.cloudcontext.workflow.Functions</class>
+    <method>markForDelete</method>
+    <param name="node"  type="org.mmbase.bridge.Node"  />
+  </function>
+
+</functionset>
