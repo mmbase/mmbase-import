@@ -140,18 +140,14 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     @Override
     public void notify(SystemEvent event) {
         if (event instanceof SystemEvent.Up) {
-            org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        MMAdmin.this.probeCall();
-                    } catch (Exception e) {
-                        log.error(e.getMessage(), e);
-                    }
-                }
-            });
+            try {
+                MMAdmin.this.probeCall();
+            } catch (SearchQueryException e) {
+                log.error(e.getMessage(), e);
+            }
         }
     }
+
 
     /**
      * Returns a virtual builder used to create node lists from the results
