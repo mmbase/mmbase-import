@@ -24,6 +24,7 @@ import org.mmbase.bridge.Node;
 
 public class AliasListTag extends StringListTag  {
 
+    @Override
     protected List<String> getList() throws JspTagException {
         Node node = getNode();
         return node.getAliases();

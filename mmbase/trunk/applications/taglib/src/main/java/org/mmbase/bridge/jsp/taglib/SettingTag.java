@@ -12,7 +12,6 @@ package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.framework.*;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
@@ -52,6 +51,7 @@ public class SettingTag extends CloudReferrerTag implements Writer {
     }
 
 
+    @Override
     public int doStartTag() throws JspTagException {
         Component comp = getComponent();
         Setting<?> setting = comp.getSetting(name.getString(this));
@@ -67,6 +67,7 @@ public class SettingTag extends CloudReferrerTag implements Writer {
     }
 
 
+    @Override
     public int doAfterBody() throws JspException {
         return helper.doAfterBody();
     }
@@ -74,6 +75,7 @@ public class SettingTag extends CloudReferrerTag implements Writer {
     /**
      * write the value of the field.
      **/
+    @Override
     public int doEndTag() throws JspTagException {
         helper.doEndTag();
         return super.doEndTag();

@@ -92,6 +92,7 @@ public class WriterTEI extends TagExtraInfo {
    
     }
 
+    @Override
     public VariableInfo[] getVariableInfo(TagData data) {
         VariableInfo[] variableInfo = null;
 

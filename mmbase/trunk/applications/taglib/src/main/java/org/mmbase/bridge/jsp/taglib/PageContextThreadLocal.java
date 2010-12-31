@@ -35,7 +35,7 @@ public class PageContextThreadLocal {
         EventManager.getInstance().addEventListener(new SystemEventListener() {
                 @Override
                 public void notify(SystemEvent se) {
-                    LOG.info("Got " + se);
+                    LOG.debug("Got " + se);
                     if (se instanceof SystemEvent.Shutdown) {
                         LOG.info("Shutting down. Clearing " + threadPageContexts.get());
                         threadPageContexts.remove();
@@ -50,27 +50,38 @@ public class PageContextThreadLocal {
 
     private static ThreadLocal<LinkedList<PageContextInfo>> threadPageContexts
                         = new ThreadLocal<LinkedList<PageContextInfo>>() {
+        @Override
         protected LinkedList<PageContextInfo> initialValue() {
                 return new LinkedList<PageContextInfo>();
             }
     };
 
+    private static String getPref(ContextReferrerTag contextReferrerTag) {
+        return Thread.currentThread() + " " + contextReferrerTag + ":";
+    }
+
     protected static void setThreadPageContext(final PageContext pc, ContextReferrerTag contextReferrerTag) {
         LinkedList<PageContextInfo> stack = threadPageContexts.get();
         if (stack.size() == 0) {
             stack.add(0, new PageContextInfo(pc, contextReferrerTag));
-            LOG.trace("added new stack size = " + stack.size());
+            if (LOG.isTraceEnabled()) {
+                LOG.trace(getPref(contextReferrerTag) + "added new stack size = " + stack.size());
+            }
         } else {
             PageContextInfo first = stack.getFirst();
             if (first.pageContext != pc) {
                 stack.add(0, new PageContextInfo(pc, contextReferrerTag));
-                if (stack.size() < 20) {
-                    LOG.trace("added new stack size = " + stack.size());
+                if (stack.size() < 50) {
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace(getPref(contextReferrerTag) + "added new stack size = " + stack.size());
+                    }
                 } else {
-                    LOG.warn("added new stack size = " + stack.size());
+                    LOG.warn(getPref(contextReferrerTag) + "added new stack size = " + stack.size());
                 }
             } else {
-                LOG.trace("PageContext is already on the stack");
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace(getPref(contextReferrerTag) + "PageContext is already on the stack");
+                }
             }
         }
     }
@@ -85,18 +96,27 @@ public class PageContextThreadLocal {
     }
 
     protected static void cleanThreadPageContexts(ContextReferrerTag contextReferrerTag) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(getPref(contextReferrerTag) + "releasing pageContext info");
+        }
         LinkedList<PageContextInfo> stack = threadPageContexts.get();
         if (stack.size() == 0) return;
         PageContextInfo first = stack.getFirst();
         if (first.firstTagWithPageContext == contextReferrerTag) {
             stack.removeFirst();
-            LOG.trace("removed new stack size = " + stack.size());
+            if (LOG.isTraceEnabled()) {
+                LOG.trace(getPref(contextReferrerTag) + "removed new stack size = " + stack.size());
+            }
+        } else {
+            if (LOG.isTraceEnabled()) {
+                LOG.trace(getPref(contextReferrerTag) + "Could not remove it is not first  " + stack.size() + " !");
+            }
         }
     }
 
     private static class PageContextInfo {
-        PageContext pageContext;
-        ContextReferrerTag firstTagWithPageContext;
+        final PageContext pageContext;
+        final ContextReferrerTag firstTagWithPageContext;
 
         PageContextInfo(PageContext pc, ContextReferrerTag contextReferrerTag) {
             this.pageContext = pc;

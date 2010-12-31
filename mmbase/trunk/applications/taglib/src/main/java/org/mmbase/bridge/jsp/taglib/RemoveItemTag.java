@@ -22,6 +22,7 @@ import javax.servlet.jsp.JspTagException;
 
 public class RemoveItemTag extends ListReferrerTag {
 
+    @Override
     public int doStartTag() throws JspTagException{
         ListProvider list = getList();
         list.remove();

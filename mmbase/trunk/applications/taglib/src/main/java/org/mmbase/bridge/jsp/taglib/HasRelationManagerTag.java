@@ -53,34 +53,35 @@ public class HasRelationManagerTag extends CloudReferrerTag implements Condition
     }
 
     protected NodeManager getNodeManager(Cloud cloud, Attribute a) throws JspTagException {
-        Object id = a.getValue(this);
-        if ("".equals(id)) id = null;
-        if (id == null) {
+        Object nodeManagerId = a.getValue(this);
+        if ("".equals(nodeManagerId)) nodeManagerId = null;
+        if (nodeManagerId == null) {
             return cloud.getNodeManager("object");
         } else {
 
-            if (id instanceof String) {
-                String sid = (String) id;
+            if (nodeManagerId instanceof String) {
+                String sid = (String) nodeManagerId;
                 if (! cloud.hasNodeManager(sid) && org.mmbase.datatypes.StringDataType.INTEGER_PATTERN.matcher(sid).matches()) {
-                    id = cloud.getNode(sid);
+                    nodeManagerId = cloud.getNode(sid);
                 } else {
                     return cloud.getNodeManager(sid);
                 }
             }
-            if (id instanceof NodeManager) {
-                return (NodeManager) id;
-            } else if (id instanceof Node) {
+            if (nodeManagerId instanceof NodeManager) {
+                return (NodeManager) nodeManagerId;
+            } else if (nodeManagerId instanceof Node) {
                 if (log.isDebugEnabled()) {
-                    log.debug("Taking nodemanager of node " + id);
+                    log.debug("Taking nodemanager of node " + nodeManagerId);
                 }
-                return ((Node) id).getNodeManager();
+                return ((Node) nodeManagerId).getNodeManager();
             } else {
-                return cloud.getNodeManager(org.mmbase.util.Casting.toString(id));
+                return cloud.getNodeManager(org.mmbase.util.Casting.toString(nodeManagerId));
             }
         }
     }
 
 
+    @Override
     public int doStartTag() throws JspTagException {
         Cloud cloud = getCloudVar();
         if (cloud.hasRelationManager(getNodeManager(cloud, sourceManager),
@@ -90,6 +91,7 @@ public class HasRelationManagerTag extends CloudReferrerTag implements Condition
             return SKIP_BODY;
         }
     }
+    @Override
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
             try{

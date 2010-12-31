@@ -53,14 +53,15 @@ public class RemoveTag extends ContextReferrerTag {
         }
     }
 
+    @Override
     public int doEndTag() throws JspTagException {
         super.doEndTag();
         String fromString = from.getString(this);
         if (! "".equals(fromString)) {
             boolean useCollection = value.getString(this).length() != 0;
             Collection col = null;
-            int from = ContextContainer.stringToLocation(fromString);
-            switch(from) {
+            int fromLocation = ContextContainer.stringToLocation(fromString);
+            switch(fromLocation) {
             case ContextContainer.LOCATION_PARENT:
                 if (useCollection) {
                     col = (Collection) getContextProvider().getContextContainer().getParent().get(getReferid());

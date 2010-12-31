@@ -46,6 +46,7 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
         role = getAttribute(r);
     }
 
+    @Override
     public int doStartTag() throws JspException {
         super.doStartTag();
         if (getReferid() != null) {
@@ -70,10 +71,12 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
         return EVAL_BODY_BUFFERED;
     }
 
+    @Override
     public int doAfterBody() throws JspException {
         return helper.doAfterBody();
     }
 
+    @Override
     public int doEndTag() throws JspTagException {
         helper.doEndTag();
         return super.doEndTag();

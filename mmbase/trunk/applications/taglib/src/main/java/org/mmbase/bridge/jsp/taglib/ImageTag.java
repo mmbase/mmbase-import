@@ -205,6 +205,7 @@ public class ImageTag extends FieldTag {
         return urlConvert.booleanValue();
     }
 
+    @Override
     public int doStartTag() throws JspException {
         initTag();
         Node originalNode = getNode();
@@ -249,6 +250,7 @@ public class ImageTag extends FieldTag {
         return EVAL_BODY_BUFFERED;
     }
 
+    @Override
     public int doEndTag() throws JspTagException {
         if (prevDimension == null) {
             pageContext.removeAttribute("dimension");
