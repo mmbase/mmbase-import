@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -33,8 +33,8 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * This transcoder uses the command <code>ffmpeg2theora</code>. Possible parameters to be set in 
- * 'createcaches.xml' are: videoQuality (--videoquality), keyInt (--keyint), height (-y) and width (-x). 
+ * This transcoder uses the command <code>ffmpeg2theora</code>. Possible parameters to be set in
+ * 'createcaches.xml' are: videoQuality (--videoquality), keyInt (--keyint), height (-y) and width (-x).
  * Others can be added but will be at the end of the commands parameters.
  *
  * @author Michiel Meeuwissen
@@ -70,7 +70,7 @@ public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
     public void setWidth(int x) {
         width = x;
     }
-    
+
     /**
      * Saves values video codec in codec (Theora)) and audio codec in acodec (Vorbis) in destination node.
      * @param dest  destination node (streamsourcescaches)
@@ -82,7 +82,7 @@ public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
             dest.setIntValue("acodec", Codec.VORBIS.toInt() );
         }
     }
-    
+
     @Override
     protected  String getCommand() {
         return "ffmpeg2theora";
@@ -111,7 +111,7 @@ public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
         if (height != null) {
             args.add("-y"); args.add("" + height);
         }
-        
+
         args.add(inFile.toString());
 
         return args.toArray(new String[args.size()]);
@@ -122,7 +122,7 @@ public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
     private static final Pattern PROGRESS = Pattern.compile(".*time (elapsed|remaining).*");
 
     @Override
-    protected LoggerWriter getOutputWriter(Logger l) {
+    protected LoggerWriter getErrorWriter(Logger l) {
         LoggerWriter w = new LoggerWriter(l, Level.SERVICE) {
                 @Override
                 public Level getLevel(String line) {
@@ -136,6 +136,7 @@ public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
 
         return w;
     }
+
 
     /*
     public static void main(String[] argv) throws Exception {
