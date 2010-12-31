@@ -102,16 +102,15 @@ public class FFMpegThumbNailCreator implements  Callable<Long> {
             CommandExecutor.execute(outStream, errStream, method, command, args.toArray(new String[args.size()]));
             File file = new File(String.format(tempFile.getAbsolutePath(), 1));
             long result;
-            if (file.exists()) {
+            if (file.exists() && file.length() > 0) {
                 node.setInputStreamValue(field, new FileInputStream(file), file.length());
                 result = file.length();
                 file.delete();
                 node.commit();
             } else {
+                LOG.warn("No file " + file + " produced (file exists: " + file.exists() + " file length: " + file.length() + " )");
                 result = 0;
             }
-            tempDir.delete();
-
             return result;
         } catch (IOException ioe) {
             LOG.error(ioe.getMessage(), ioe);
