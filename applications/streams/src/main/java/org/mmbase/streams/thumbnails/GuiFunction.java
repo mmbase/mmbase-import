@@ -17,7 +17,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: FlashGuiFunction.java 40156 2009-12-08 15:56:39Z michiel $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class GuiFunction extends NodeFunction<String> {

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * The virtual title field of thumbnails. They take the title of the mediafragment to which they are associated.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ThumbNailFunction.java 44227 2010-12-24 11:31:58Z michiel $
+ * @version $Id$
  */
 
 public class TitleField implements Processor {
