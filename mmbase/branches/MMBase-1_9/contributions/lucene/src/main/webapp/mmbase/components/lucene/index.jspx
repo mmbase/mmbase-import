@@ -78,7 +78,7 @@
             <mm:function module="lucene" name="default" write="false">
               <c:if test="${index eq _.name }">
                 <jsp:text>*</jsp:text>
-                <mm:write id="default" referid="index" write="false" />
+                <mm:write id="defaultIndex" referid="index" write="false" />
               </c:if>
             </mm:function>
           </td>
@@ -267,7 +267,7 @@
             <mm:last inverse="true">, </mm:last>
           </c:catch>
           <c:if test="${! empty exception2}">
-            <div class="err"><jsp:text>EXCEPTIONL ${exception1}</jsp:text></div>
+            <div class="err"><jsp:text>EXCEPTION ${exception1}</jsp:text></div>
           </c:if>
         </mm:listfunction>
         <mm:notpresent referid="notempty">
@@ -276,7 +276,7 @@
       </td>
     </tr>
     <tr>
-      <th>Search on default index (${default})</th>
+      <th>Search on default index (${defaultIndex})</th>
       <td>
         <mm:link page="search">
           <mm:param name="index" /><a href="${_}" class="navigate"><img src="${img.next}" alt="next"  /></a>
