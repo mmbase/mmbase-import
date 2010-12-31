@@ -67,6 +67,7 @@ public class LocaleTag extends CloudReferrerTag  {
     /**
      * Child tags can call this function to obtain the Locale they must use.
      */
+    @Override
     public Locale getLocale() {
 //        if (locale == null) {
 //            locale = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
@@ -74,11 +75,13 @@ public class LocaleTag extends CloudReferrerTag  {
         return locale;
     }
 
+    @Override
     public void setJspvar(String j) {
         jspvar = j;
     }
 
 
+    @Override
     public int doStartTag() throws JspTagException {
         determineLocale();
         if (locale != null) {
@@ -160,6 +163,7 @@ public class LocaleTag extends CloudReferrerTag  {
         }
     }
 
+    @Override
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             if (bodyContent != null) {
@@ -173,6 +177,7 @@ public class LocaleTag extends CloudReferrerTag  {
         return SKIP_BODY;
     }
 
+    @Override
     public int doEndTag() throws JspTagException {
         if (locale != null) {
             if (prevCloudLocale != null) {
@@ -192,6 +197,7 @@ public class LocaleTag extends CloudReferrerTag  {
         return super.doEndTag();
     }
 
+    @Override
     public void doFinally() {
         cloud = null;
         locale = null;

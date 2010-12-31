@@ -22,6 +22,7 @@ s */
 
 public class LocaleTEI extends TagExtraInfo {
 
+    @Override
     public VariableInfo[] getVariableInfo(TagData data) {
         VariableInfo[] variableInfo = null;
         String jspvarAttribute  = (String) data.getAttribute("jspvar");

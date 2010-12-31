@@ -35,14 +35,14 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     private static final Logger log = Logging.getLoggerInstance(NodeTag.class);
 
     private Attribute number    = Attribute.NULL;
-    private Attribute element   = Attribute.NULL;
-    private Attribute notfound  = Attribute.NULL;
+    private Attribute notfound = Attribute.NULL;
 
     private Attribute emptyNumberIsCurrentNode  = Attribute.NULL;
 
     /**
      * Release all allocated resources.
      */
+    @Override
     public void doFinally() {
         log.debug("releasing");
         super.doFinally();
@@ -71,15 +71,10 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         notfound = getAttribute(i, true);
     }
 
-    /**
-     * The element attribute is used to access elements of
-     * clusternodes.
-     */
-    public void setElement(String e) throws JspTagException {
-        element = getAttribute(e);
-    }
+  
 
 
+    @Override
     public int doStartTag() throws JspTagException{
         Node node = null;
         if (referid != Attribute.NULL) {
@@ -245,6 +240,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     /**
      * this method writes the content of the body back to the jsp page
      **/
+    @Override
     public int doAfterBody() throws JspTagException { // write the body if there was one
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             if (bodyContent != null) {
@@ -259,6 +255,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     }
 
 
+    @Override
     public int doEndTag() throws JspTagException {
         super.doAfterBody(); // if modified
         return super.doEndTag();

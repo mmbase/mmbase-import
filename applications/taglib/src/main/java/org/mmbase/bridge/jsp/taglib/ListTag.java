@@ -50,7 +50,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
 
     /**
      * Sets the nodes to start the search with.
-     * The value '-1' interpreted as <code>null</code>, whcih indicates no
+     * The value '-1' interpreted as <code>null</code>, which indicates no
      * predefined startnodes are sued (a more general search is conducted
      * instead).
      * @param nodes a node or a comma separated list of nodes.
@@ -88,7 +88,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
     }
 
     /**
-     * To be overrided by related-tag
+     * To be overridden by related-tag
      */
     protected String getSearchNodes() throws JspTagException {
         if (nodes != Attribute.NULL) {
@@ -99,7 +99,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
     }
 
     /**
-     * To be overrided by related-tag
+     * To be overridden by related-tag
      */
     protected String getPath() throws JspTagException {
         return path.getString(this);
@@ -112,6 +112,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
     /**
      * Performs the search
      */
+    @Override
     public int doStartTag() throws JspTagException {
         int superresult = doStartTagHelper();
         if (superresult != NOT_HANDLED) {

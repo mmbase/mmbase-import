@@ -17,6 +17,7 @@ s * @author Michiel Meeuwissen
  */
 
 public class IntegerWriterTEI extends  WriterTEI {
+    @Override
     protected String defaultType() {
         return "Integer";
     }

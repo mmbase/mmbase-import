@@ -17,6 +17,7 @@ package org.mmbase.bridge.jsp.taglib;
  */
 
 public class StringWriterTEI extends  WriterTEI {
+    @Override
     protected String defaultType() {
         return "string";
     }        
