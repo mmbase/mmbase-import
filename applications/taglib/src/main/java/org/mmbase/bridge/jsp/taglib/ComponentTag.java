@@ -133,32 +133,35 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
     }
 
 
+    @Override
     public int doStartTag() throws JspException{
         super.doStartTag();
         helper.overrideWrite(true);
         used = false;
         helper.setValue(new Object() {
-                final ComponentTag t = ComponentTag.this;
-                String string = null;
-                public String toString() {
-                    if (string == null) {
-                        try {
-                            StringWriter w = new StringWriter();
-                            t.getContent(w);
-                            string =  w.toString();
-                        } catch (JspException je) {
-                            string = je.getMessage();
-                        }
+            final ComponentTag t = ComponentTag.this;
+            String string = null;
+            @Override
+            public String toString() {
+                if (string == null) {
+                    try {
+                        StringWriter w = new StringWriter();
+                        t.getContent(w);
+                        string = w.toString();
+                    } catch (JspException je) {
+                        string = je.getMessage();
                     }
-                    return string;
                 }
-            });
+                return string;
+            }
+        });
         helper.useEscaper(false);
         return EVAL_BODY; // lets try _not_ buffering the body.
     }
 
 
     // if EVAL_BODY == EVAL_BODY_BUFFERED
+    @Override
     public int doAfterBody() throws JspTagException {
         helper.doAfterBody();
 
@@ -178,6 +181,7 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
     }
 
 
+    @Override
     public int doEndTag() throws JspTagException {
         int s = super.doEndTag();
         helper.doEndTag();

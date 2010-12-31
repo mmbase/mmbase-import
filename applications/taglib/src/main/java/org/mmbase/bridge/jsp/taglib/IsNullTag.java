@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.Node;
 
 import javax.servlet.jsp.JspTagException;
@@ -41,6 +40,7 @@ public class IsNullTag extends FieldReferrerTag implements Condition {
         return inverse.getBoolean(this, false);
     }
 
+    @Override
     public int doStartTag() throws JspException {
         Node n = getNode();
         String fieldName;
@@ -55,6 +55,7 @@ public class IsNullTag extends FieldReferrerTag implements Condition {
             return SKIP_BODY;
         }
     }
+    @Override
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
             try{

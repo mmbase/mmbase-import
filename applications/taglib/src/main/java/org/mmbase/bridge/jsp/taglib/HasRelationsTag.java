@@ -32,6 +32,7 @@ public class HasRelationsTag extends NodeReferrerTag implements Condition {
         return inverse.getBoolean(this, false);
     }
 
+    @Override
     public int doStartTag() throws JspException {
         super.doStartTag();
         if ((getNode().hasRelations()) != getInverse()) {
@@ -40,6 +41,7 @@ public class HasRelationsTag extends NodeReferrerTag implements Condition {
             return SKIP_BODY;
         }
     }
+    @Override
     public int doAfterBody() throws JspTagException {
         try{
             if(bodyContent != null) {

@@ -46,6 +46,7 @@ public class IndexTag extends ListReferrerTag implements Writer, QueryContainerR
         return offset.getInt(this, getList().getIndexOffset()); // start counting at list's offset on default (normally 1)
     }
 
+    @Override
     public int doStartTag() throws JspTagException{
 
         int index;
@@ -57,7 +58,7 @@ public class IndexTag extends ListReferrerTag implements Writer, QueryContainerR
             Query query = c.getQuery();
             index = query.getOffset() / query.getMaxNumber() + offset.getInt(this, 0);
         } else if (parentListId != Attribute.NULL) {
-            index = getList().getIndex()  + getOffset();;
+            index = getList().getIndex()  + getOffset();
         } else {
             Tag tag = findLoopOrQuery(null, false);
             if (tag != null) {
@@ -87,6 +88,7 @@ public class IndexTag extends ListReferrerTag implements Writer, QueryContainerR
     }
 
 
+    @Override
     public int doAfterBody() throws JspException {
         return helper.doAfterBody();
     }
@@ -94,6 +96,7 @@ public class IndexTag extends ListReferrerTag implements Writer, QueryContainerR
     /**
      *
      **/
+    @Override
     public int doEndTag() throws JspTagException {
         helper.doEndTag();
         return super.doEndTag();

@@ -11,7 +11,6 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.framework.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.Condition;
 import javax.servlet.jsp.JspTagException;
 
 
@@ -59,6 +58,7 @@ public class HasSettingTag extends CloudReferrerTag implements Condition {
     }
 
 
+    @Override
     public int doStartTag() throws JspTagException {
         Component comp = getComponent();
         Setting<?> setting = comp.getSetting(name.getString(this));
@@ -68,6 +68,7 @@ public class HasSettingTag extends CloudReferrerTag implements Condition {
             return SKIP_BODY;
         }
     }
+    @Override
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
             try{

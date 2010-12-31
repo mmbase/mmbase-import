@@ -12,7 +12,6 @@ package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.datatypes.*;
 import org.mmbase.datatypes.util.xml.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
-import org.mmbase.bridge.jsp.taglib.containers.*;
 
 import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.xml.ErrorHandler;
@@ -26,7 +25,6 @@ import javax.xml.parsers.DocumentBuilder;
 
 import javax.servlet.jsp.*;
 import javax.servlet.http.*;
-import java.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -80,11 +78,13 @@ public class DataTypeTag extends CloudReferrerTag {
     /**
      *
      **/
+    @Override
     public int doStartTag() throws JspTagException{
         return EVAL_BODY_BUFFERED;
     }
     private String body;
 
+    @Override
     public int doAfterBody() throws JspTagException {
         if (bodyContent != null) body = bodyContent.getString();
         return SKIP_BODY;

@@ -20,10 +20,12 @@ package org.mmbase.bridge.jsp.taglib;
 
 public class FieldProviderTEI extends WriterTEI {
 
+    @Override
     protected String defaultType() {
         return "field";
     }
 
+    @Override
     protected String getType(String  typeAttribute) {
         String type;
         switch (WriterHelper.stringToType(typeAttribute)) {

@@ -30,7 +30,6 @@ abstract class AbstractParamTag extends ContextReferrerTag {
 
     protected Attribute name    = Attribute.NULL;
     protected Attribute value   = Attribute.NULL;
-    protected Attribute referid = Attribute.NULL;
     protected boolean handled;
 
     public void setName(String n) throws JspTagException {
@@ -38,12 +37,6 @@ abstract class AbstractParamTag extends ContextReferrerTag {
     }
     public void setValue(String v) throws JspTagException {
         value = getAttribute(v);
-    }
-    /**
-     * @since MMBase-1.8
-     */
-    public void setReferid(String r) throws JspTagException {
-        referid = getAttribute(r);
     }
 
 
@@ -57,6 +50,7 @@ abstract class AbstractParamTag extends ContextReferrerTag {
 
 
 
+    @Override
     public int doStartTag() throws JspException {
         findWriter(false); // just to call haveBody, mainly for mm:link.
         handled = false;
@@ -69,6 +63,7 @@ abstract class AbstractParamTag extends ContextReferrerTag {
     abstract protected void addParameter(Object value) throws JspTagException;
 
 
+    @Override
     public int doAfterBody() throws JspException {
         if (value == Attribute.NULL && referid == Attribute.NULL && entries == null) {
             if (bodyContent != null) {
@@ -81,6 +76,7 @@ abstract class AbstractParamTag extends ContextReferrerTag {
         return super.doAfterBody();
     }
 
+    @Override
     public int doEndTag() throws JspTagException {
         if (! handled) {
             if (value != Attribute.NULL) {
@@ -105,6 +101,7 @@ abstract class AbstractParamTag extends ContextReferrerTag {
         return super.doEndTag();
     }
 
+    @Override
     public void doFinally() {
         entries = null;
         super.doFinally();

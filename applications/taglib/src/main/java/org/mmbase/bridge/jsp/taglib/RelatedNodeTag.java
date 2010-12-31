@@ -31,6 +31,7 @@ public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
         listRelationsId = getAttribute(l);
     }
 
+    @Override
     public int doStartTag() throws JspTagException{
         // get the parent ListRelationsTag
         ListRelationsTag lr = findParentTag(ListRelationsTag.class, (String) listRelationsId.getValue(this));
@@ -48,12 +49,14 @@ public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
         return EVAL_BODY_BUFFERED;
     }
 
+    @Override
     public void doInitBody() throws JspTagException {
     }
 
     /**
     * this method writes the content of the body back to the jsp page
     **/
+    @Override
     public int doAfterBody() throws JspTagException {
         super.doAfterBody();
         if (bodyContent != null) {

@@ -91,15 +91,18 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     * case it should be called from doEndTag, if the tag can do
     * something without a body.
     **/
+    @Override
     public int doAfterBody() throws JspTagException {
         return nodeHelper.doAfterBody();
     }
     
+    @Override
     public int doEndTag() throws JspTagException {
         super.doEndTag();
         return nodeHelper.doEndTag();
     }
 
+    @Override
     public void doFinally() {
         super.doFinally();
         nodeHelper.doFinally();
