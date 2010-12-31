@@ -49,7 +49,7 @@ public class TitleField implements Processor {
             String timeString = hours > 0 ?
                 String.format("%02d:%02d:%02d", hours, minutes, seconds) :
                 String.format("%d:%02d", minutes, seconds);
-            return mediaFragment.getStringValue("title") + " (" + timeString +")";
+            return (mediaFragment != null ? mediaFragment.getStringValue("title") : node.getStringValue("id")) + " (" + timeString +")";
         }
         return "Thumbnail";
     }
