@@ -59,13 +59,19 @@ public class FFMpegThumbNailCreator implements  Callable<Long> {
     }
 
     protected File getTempDir() throws IOException {
+        File result;
         if (! useSharedDir) {
-            return File.createTempFile(FFMpegThumbNailCreator.class.getName(), ".dir");
+            result = File.createTempFile(FFMpegThumbNailCreator.class.getName(), ".dir");
         } else {
             File thumbNailDir = new File(org.mmbase.module.core.MMBase.getMMBase().getDataDir(), "workdir_thumbnails");
             thumbNailDir.mkdirs();
-            return File.createTempFile("dir", "", thumbNailDir);
+            result = File.createTempFile("dir", "", thumbNailDir);
         }
+        result.delete();
+        result.mkdir();
+        result.deleteOnExit();
+        return result;
+
     }
 
 
@@ -93,9 +99,9 @@ public class FFMpegThumbNailCreator implements  Callable<Long> {
         args.add("" + count);
         try {
             File tempDir = getTempDir();
-            tempDir.delete();
-            tempDir.mkdir();
             File tempFile = new File(tempDir, "thumbnail.%d.png");
+            tempFile.deleteOnExit(); // the file is explicitely deleted too, but only if it looks okay, otherwise you
+                                     // have time to explore the situation as long as the jvm is running
             args.add(tempFile.getAbsolutePath());
             OutputStream outStream = new WriterOutputStream(new LoggerWriter(LOG, Level.SERVICE), System.getProperty("file.encoding"));
             OutputStream errStream = new WriterOutputStream(new LoggerWriter(LOG, Level.DEBUG), System.getProperty("file.encoding"));
@@ -107,6 +113,7 @@ public class FFMpegThumbNailCreator implements  Callable<Long> {
                 result = file.length();
                 file.delete();
                 node.commit();
+                tempDir.delete();
             } else {
                 LOG.warn("No file " + file + " produced (file exists: " + file.exists() + " file length: " + file.length() + " )");
                 result = 0;
