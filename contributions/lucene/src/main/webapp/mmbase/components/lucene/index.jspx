@@ -44,6 +44,7 @@
     <tr>
       <th rowspan="${readOnly ? '1' : '2'}">Name</th>
       <th rowspan="${readOnly ? '1' : '2'}">Description</th>
+      <th rowspan="${readOnly ? '1' : '2'}">Incremental updates</th>
       <th colspan="2" rowspan="1"># of entries in index</th>
       <th rowspan="${readOnly ? '1' : '2'}">Last full index (duration)</th>
       <th rowspan="${readOnly ? '1' : '2'}">Recent errors</th>
@@ -77,13 +78,12 @@
             <mm:function module="lucene" name="default" write="false">
               <c:if test="${index eq _.name }">
                 <jsp:text>*</jsp:text>
-                <mm:write id="default" referid="index" write="false" />
+                <mm:write id="defaultIndex" referid="index" write="false" />
               </c:if>
             </mm:function>
           </td>
           <td>
             <mm:write value="${mm:string(indexer.description)}" />
-            <mm:function module="lucene" referids="index" name="description" />
           </td>
           <td>
             ${indexer.incrementalUpdating}
@@ -182,7 +182,7 @@
         <jsp:text>${exception1}</jsp:text><![CDATA[</td></tr>]]>
       </c:if>
     </mm:listfunction>
-    <c:if test="${! empty total}">
+        <c:if test="${! empty total}">
       <tr>
         <th colspan="4">
           <jsp:text>total:  </jsp:text>
@@ -191,24 +191,24 @@
           <mm:write referid="total">
             <mm:time timezone="utc" format="${durationformat}" />
           </mm:write>
-        </td>
+      </td>
         <td colspan="4"><jsp:text> </jsp:text></td>
-      </tr>
+    </tr>
     </c:if>
   </table>
 
   <mm:import externid="fullindex" />
   <mm:present referid="fullindex">
     <p class="msg">
-      <jsp:text>Triggering full index for ${fullindex} for ${machines}.</jsp:text>
-      <mm:voidfunction module="lucene" name="fullIndex" referids="fullindex@index,machines" />
+    <jsp:text>Triggering full index for ${fullindex} for ${machines}.</jsp:text>
+    <mm:voidfunction module="lucene" name="fullIndex" referids="fullindex@index,machines" />
     </p>
   </mm:present>
   <mm:import externid="delete" />
   <mm:present referid="delete">
     <p class="msg">
-      <jsp:text>Removing assignment ${delete}</jsp:text>
-      <mm:voidfunction module="lucene" name="unassign" referids="delete@id" />
+    <jsp:text>Removing assignment ${delete}</jsp:text>
+    <mm:voidfunction module="lucene" name="unassign" referids="delete@id" />
     </p>
   </mm:present>
   <mm:import externid="interrupt" />
@@ -267,7 +267,7 @@
             <mm:last inverse="true">, </mm:last>
           </c:catch>
           <c:if test="${! empty exception2}">
-            <div class="err"><jsp:text>EXCEPTIONL ${exception1}</jsp:text></div>
+            <div class="err"><jsp:text>EXCEPTION ${exception1}</jsp:text></div>
           </c:if>
         </mm:listfunction>
         <mm:notpresent referid="notempty">
@@ -276,7 +276,7 @@
       </td>
     </tr>
     <tr>
-      <th>Search on default index (${default})</th>
+      <th>Search on default index (${defaultIndex})</th>
       <td>
         <mm:link page="search">
           <mm:param name="index" /><a href="${_}" class="navigate"><img src="${img.next}" alt="next"  /></a>
