@@ -50,6 +50,7 @@ public class PageContextThreadLocal {
 
     private static ThreadLocal<LinkedList<PageContextInfo>> threadPageContexts
                         = new ThreadLocal<LinkedList<PageContextInfo>>() {
+        @Override
         protected LinkedList<PageContextInfo> initialValue() {
                 return new LinkedList<PageContextInfo>();
             }

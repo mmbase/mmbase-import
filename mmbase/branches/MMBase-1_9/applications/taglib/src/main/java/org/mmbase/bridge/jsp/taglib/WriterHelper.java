@@ -67,7 +67,7 @@ public class WriterHelper {
     private boolean use_Stack = true;
 
 
-    static final int stringToType(String tt) {
+    static int stringToType(String tt) {
         String t = tt.toLowerCase();
         if ("string".equals(t)) {
             return TYPE_STRING;
@@ -133,7 +133,7 @@ public class WriterHelper {
      * @since MMBase_1.8
      */
     private   LinkedList<StackEntry> _Stack;
-    private class StackEntry {
+    protected class StackEntry {
         public final Object value;
         public final CharTransformer escaper;
         public final int vartype;
@@ -144,6 +144,7 @@ public class WriterHelper {
             vartype = vt;
         }
 
+        @Override
         public String toString() {
             return "" + value + " (" + escaper + ")";
         }

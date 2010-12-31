@@ -36,6 +36,7 @@ public class InfoTag extends  CloudReferrerTag implements Writer {
         command = getAttribute(c);
     }
 
+    @Override
     public int doStartTag() throws JspTagException {
         String result;
         if (nodeManager != Attribute.NULL) {
@@ -62,6 +63,7 @@ public class InfoTag extends  CloudReferrerTag implements Writer {
     }
 
 
+    @Override
     public int doAfterBody() throws JspException {
         return helper.doAfterBody();
     }
@@ -70,6 +72,7 @@ public class InfoTag extends  CloudReferrerTag implements Writer {
     /**
     *
     **/
+    @Override
     public int doEndTag() throws JspTagException {
         helper.doEndTag();
         return super.doEndTag();

@@ -78,6 +78,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
         nodeManagerAtt = getAttribute(t);
     }
 
+    @Override
     public int doStartTag() throws JspException{
         initTag();
         NodeManager nodeManager = null;
@@ -164,6 +165,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
         return EVAL_BODY_BUFFERED;
     }
 
+    @Override
     public int doAfterBody() throws JspException {
         return helper.doAfterBody();
     }
@@ -171,6 +173,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
     /**
      * Write the value of the nodeinfo.
      */
+    @Override
     public int doEndTag() throws JspTagException {
         helper.doEndTag();
         return super.doEndTag();

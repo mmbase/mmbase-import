@@ -23,10 +23,12 @@ public class EscapeTag extends ContextReferrerTag {
     private static final Logger log = Logging.getLoggerInstance(EscapeTag.class);
 
 
+    @Override
     public int doStartTag() throws JspTagException {
         return EVAL_BODY_BUFFERED;
     }
 
+    @Override
     public int doEndTag() throws JspTagException {
         helper.setValue(bodyContent != null ? bodyContent.getString() : "");
         helper.doEndTag();

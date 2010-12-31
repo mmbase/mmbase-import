@@ -33,6 +33,7 @@ public class NodeProviderTEI extends TagExtraInfo {
      * should be filled at one point, currently function fillVars is responsible for
      * that and gets called before every iteration
      **/
+    @Override
     public VariableInfo[] getVariableInfo(TagData data){
         //this method is called /before/ the values are set
         //so we can not use the data members in this class

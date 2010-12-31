@@ -135,6 +135,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     }
 
 
+    @Override
     public void fillStandardParameters(Parameters p) throws JspTagException {
         super.fillStandardParameters(p);
         Cloud cloud = null;
@@ -155,6 +156,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     /**
      * @since MMBase-1.8
      */
+    @Override
     public Locale getLocale() throws JspTagException {
         LocaleTag localeTag = findParentTag(LocaleTag.class, null, false);
         if (localeTag != null) {

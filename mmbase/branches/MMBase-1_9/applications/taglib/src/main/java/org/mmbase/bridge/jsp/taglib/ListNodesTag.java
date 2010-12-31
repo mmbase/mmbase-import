@@ -32,7 +32,6 @@ public class ListNodesTag extends AbstractNodeListTag {
     protected Attribute container = Attribute.NULL;
 
     protected Attribute path       = Attribute.NULL;
-    protected Attribute element    = Attribute.NULL;
     protected Attribute searchDirs = Attribute.NULL;
     protected Attribute nodes      = Attribute.NULL;
 
@@ -59,6 +58,7 @@ public class ListNodesTag extends AbstractNodeListTag {
     /**
      * @since MMBase-1.7.1
      */
+    @Override
     public void setElement(String e) throws JspTagException {
         element = getAttribute(e, true);
     }
@@ -136,6 +136,7 @@ public class ListNodesTag extends AbstractNodeListTag {
     /**
      * Performs the search
      */
+    @Override
     public int doStartTag() throws JspTagException {
         int superresult = doStartTagHelper(); // the super-tag handles the use of referid...
         if (superresult != NOT_HANDLED) {

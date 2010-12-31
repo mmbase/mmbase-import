@@ -125,7 +125,7 @@ public class ContentTag extends LocaleTag  {
     }
 
     private static ParameterizedTransformerFactory<CharTransformer> readTransformerFactory(final DocumentReader reader, final Element parentElement, final String id) {
-        final String claz = DocumentReader.getElementValue(reader.getChildElements(parentElement, "class").get(0));
+        final String claz = DocumentReader.getElementValue(DocumentReader.getChildElements(parentElement, "class").get(0));
         final Map<String, String> configuredParams = new HashMap<String, String>();
         for (Element param: DocumentReader.getChildElements(parentElement, "param")) {
             String name = param.getAttribute("name");

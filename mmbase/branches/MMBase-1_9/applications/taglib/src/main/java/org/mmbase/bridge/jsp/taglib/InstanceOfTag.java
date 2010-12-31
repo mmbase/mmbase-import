@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.util.functions.*;
-import org.mmbase.util.Casting;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
@@ -48,6 +46,7 @@ public class InstanceOfTag extends NodeReferrerTag implements Condition {
         descendants = getAttribute(d, true);
     }
 
+    @Override
     public int doStartTag() throws JspTagException{
 
         Node node = getNode();
@@ -62,6 +61,7 @@ public class InstanceOfTag extends NodeReferrerTag implements Condition {
         }
     }
 
+    @Override
     public int doAfterBody() throws JspException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
             try{

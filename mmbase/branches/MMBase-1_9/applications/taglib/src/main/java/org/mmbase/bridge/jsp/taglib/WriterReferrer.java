@@ -24,11 +24,11 @@ public interface WriterReferrer {
     /**
      * A WriterReferrer has a 'writer' attribute.
      */
-    public void setWriter(String w) throws JspTagException;
+    void setWriter(String w) throws JspTagException;
 
     /**
      * Returns the parent writer;
      */
-    public Writer findWriter() throws JspTagException;
+    Writer findWriter() throws JspTagException;
 
 }

@@ -76,6 +76,7 @@ public class ListRelationsTag extends AbstractNodeListTag {
         }
     }
 
+    @Override
     public int doStartTag() throws JspTagException{
         int superresult =  doStartTagHelper(); // the super-tag handles the use of referid...
         if (superresult != NOT_HANDLED) {
@@ -123,10 +124,12 @@ public class ListRelationsTag extends AbstractNodeListTag {
         return setReturnValues(result.nodeList, result.needsTrim);
     }
 
+    @Override
     public int doEndTag() throws JspTagException {
         return super.doEndTag();
     }
 
+    @Override
     public void doFinally() {
         nm = null;
         relatedFromNode = null;

@@ -19,9 +19,11 @@ import javax.servlet.jsp.tagext.VariableInfo;
  */
 public class ImportTEI extends WriterTEI {
     
+    @Override
     protected int scope() {
         return VariableInfo.AT_END;
     }
+    @Override
     protected String defaultType() {
         return "string";
     }

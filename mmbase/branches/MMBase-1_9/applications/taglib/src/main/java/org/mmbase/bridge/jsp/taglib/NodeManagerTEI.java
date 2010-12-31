@@ -29,6 +29,7 @@ public class NodeManagerTEI extends TagExtraInfo {
         super();
     }
 
+    @Override
     public VariableInfo[] getVariableInfo(TagData data){
         String id = "";
         Object idObject = data.getAttribute("jspvar");

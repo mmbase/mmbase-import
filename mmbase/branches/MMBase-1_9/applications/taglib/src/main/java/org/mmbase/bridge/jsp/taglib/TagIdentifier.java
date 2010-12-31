@@ -22,5 +22,5 @@ public interface TagIdentifier {
      * @return the String id the the tag. Id is is a user defined
      * identifier
      */
-    public String getId();	
+    String getId();
 }

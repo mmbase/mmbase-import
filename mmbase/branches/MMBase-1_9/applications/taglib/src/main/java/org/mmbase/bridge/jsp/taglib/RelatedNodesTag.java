@@ -30,7 +30,6 @@ public class RelatedNodesTag extends AbstractNodeListTag {
 
     protected Attribute type = Attribute.NULL;
     protected Attribute path = Attribute.NULL;
-    protected Attribute element = Attribute.NULL;
     protected Attribute role = Attribute.NULL;
     protected Attribute searchDir = Attribute.NULL;  // for use with 'role' and 'type'
     protected Attribute searchDirs = Attribute.NULL; // for use with 'path' and 'element'
@@ -73,6 +72,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
     /**
      * @since MMBase-1.7.1
      */
+    @Override
     public void setElement(String e) throws JspTagException {
         element = getAttribute(e, true);
     }
@@ -86,6 +86,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
     /**
      * Performs the search
      */
+    @Override
     public int doStartTag() throws JspTagException {
         int superresult = doStartTagHelper(); // the super-tag handles the use of referid...
         if (superresult != NOT_HANDLED) {
