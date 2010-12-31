@@ -15,9 +15,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyTag;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.util.Notfound;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -45,6 +43,7 @@ public class NodeManagerTag extends AbstractNodeProviderTag implements BodyTag {
     }
 
 
+    @Override
     public int doStartTag() throws JspTagException{
         NodeManager node = getCloudVar().getNodeManager(name.getString(this));
         setNodeVar(node);
@@ -57,6 +56,7 @@ public class NodeManagerTag extends AbstractNodeProviderTag implements BodyTag {
     /**
      * this method writes the content of the body back to the jsp page
      **/
+    @Override
     public int doAfterBody() throws JspTagException { // write the body if there was one
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             if (bodyContent != null) {
@@ -71,6 +71,7 @@ public class NodeManagerTag extends AbstractNodeProviderTag implements BodyTag {
     }
 
 
+    @Override
     public int doEndTag() throws JspTagException {
         super.doAfterBody(); // if modified
         return super.doEndTag();

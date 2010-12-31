@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 import  org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
 
 /**
  * A simple tag to provide the properties on cloud, nodemanager, modules.
@@ -48,6 +47,7 @@ public class SetPropertyTag extends  CloudReferrerTag  {
         valueId = getAttribute(v);
     }
 
+    @Override
     public int doAfterBody() throws JspTagException {
         if (bodyContent != null) body = bodyContent.getString();
         return SKIP_BODY;

@@ -40,6 +40,7 @@ public class HasNodeTag extends CloudReferrerTag implements Condition {
     }
 
 
+    @Override
     public int doStartTag() throws JspTagException {
         if (getCloudVar().hasNode(number.getString(this)) != getInverse()) {
             return EVAL_BODY;
@@ -47,6 +48,7 @@ public class HasNodeTag extends CloudReferrerTag implements Condition {
             return SKIP_BODY;
         }
     }
+    @Override
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
             try{

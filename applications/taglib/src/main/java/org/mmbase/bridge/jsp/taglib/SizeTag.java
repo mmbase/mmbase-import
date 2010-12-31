@@ -57,6 +57,7 @@ public class SizeTag extends ListReferrerTag implements Writer, QueryContainerRe
     }
 
 
+    @Override
     public int doStartTag() throws JspTagException{
         if (container != Attribute.NULL) {
             if (parentListId != Attribute.NULL) {
@@ -92,6 +93,7 @@ public class SizeTag extends ListReferrerTag implements Writer, QueryContainerRe
         return EVAL_BODY_BUFFERED;
     }
 
+    @Override
     public int doAfterBody() throws JspException {
         return helper.doAfterBody();
     }
@@ -99,6 +101,7 @@ public class SizeTag extends ListReferrerTag implements Writer, QueryContainerRe
     /**
      *
      **/
+    @Override
     public int doEndTag() throws JspTagException {
         helper.doEndTag();
         return super.doEndTag();

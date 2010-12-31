@@ -30,16 +30,12 @@ public class EscaperTag extends ContextReferrerTag implements ParamHandler {
     protected CharTransformer transformer;
     
     private Attribute type    = Attribute.NULL;
-    private Attribute referid = Attribute.NULL;
     private Attribute inverse = Attribute.NULL;
            
     private ParameterizedTransformerFactory factory;
 
     public void setType(String t) throws JspTagException {
         type = getAttribute(t);
-    }
-    public void setReferid(String r) throws JspTagException {
-        referid = getAttribute(r);
     }
 
     public void setInverse(String i) throws JspTagException {
@@ -60,6 +56,7 @@ public class EscaperTag extends ContextReferrerTag implements ParamHandler {
         ((ChainedCharTransformer) transformer).add(trans);
     }
 
+    @Override
     public int doStartTag() throws JspException {
         if (referid != Attribute.NULL) {
             transformer = ContentTag.getCharTransformer(referid.getString(this), this);
@@ -82,6 +79,7 @@ public class EscaperTag extends ContextReferrerTag implements ParamHandler {
     }
 
 
+    @Override
     public int doEndTag() throws JspTagException {
         if(transformer == null) {
             if (log.isDebugEnabled()) {
@@ -103,6 +101,7 @@ public class EscaperTag extends ContextReferrerTag implements ParamHandler {
         return super.doEndTag();
     }
 
+    @Override
     public void doFinally() {
         factory = null;
         parameters = null;

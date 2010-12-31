@@ -68,6 +68,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
     private static final class Counter {
         private int i = 0;
         public int inc() { return ++i;}
+        @Override
         public String toString() {
             return "" + i;
         }
@@ -263,6 +264,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
     }
 
 
+    @Override
     public void setPageContext(PageContext pageContext) {
         super.setPageContext(pageContext);
         javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
@@ -277,6 +279,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
     }
 
 
+    @Override
     public int doStartTag() throws JspTagException {
         extraParameters.clear();
         cloud = null;
@@ -320,11 +323,13 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         return EVAL_BODY_BUFFERED;
     }
 
+    @Override
     public int doAfterBody() throws JspException {
         return helper.doAfterBody();
     }
 
 
+    @Override
     public int doEndTag() throws JspTagException {
         if (helper.getJspvar() == null) {
             helper.overrideWrite(true);
@@ -478,6 +483,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         return super.doEndTag();
     } // doEndTag
 
+    @Override
     public void doFinally() {
         xsltSource = null;
         props = null;

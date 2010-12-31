@@ -65,12 +65,8 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     private CloudContext cloudContext;
     private ContextContainer prevParent;
 
-    private Attribute referid = Attribute.NULL;
     private Attribute scope   = Attribute.NULL;
 
-    public void setReferid(String r) throws JspTagException {
-        referid = getAttribute(r);
-    }
 
     public void setScope(String s) throws JspTagException {
         scope = getAttribute(s);
@@ -106,6 +102,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     }
 
 
+    @Override
     public void setPageContext(PageContext pc) {
         super.setPageContext(pc); // This will call fillVars for the 'page' Context.
         log.debug("setting page context");
@@ -152,6 +149,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     }
 
 
+    @Override
     public int doStartTag() throws JspTagException {
         log.debug("Start tag of ContextTag");
         ContextContainer container;
@@ -162,19 +160,19 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
             if (s == PageContext.PAGE_SCOPE) {
                 o = getObject(referid.getString(this));
             } else {
-                String id = referid.getString(this);
-                if (id.length() == 0) {
-                    id = getId();
-                    if (id == null) {
-                        id = CONTEXTTAG_KEY + "." + scope.getString(this).toLowerCase();
+                String refid = referid.getString(this);
+                if (refid.length() == 0) {
+                    refid = getId();
+                    if (refid == null) {
+                        refid = CONTEXTTAG_KEY + "." + scope.getString(this).toLowerCase();
 
                     }
                 }
-                o = pageContext.getAttribute(id, s);
-                log.debug("picking up from " + id + " in " + scope.getString(this) + " ->" + o);
+                o = pageContext.getAttribute(refid, s);
+                log.debug("picking up from " + refid + " in " + scope.getString(this) + " ->" + o);
             }
             if (o == null || "".equals(o)) { // that means, lets ignore it.
-                log.debug("Nothing foudn");
+                log.debug("Nothing found");
                 container = createContainer(getContextProvider().getContextContainer());
             } else {
                 if (! (o instanceof ContextContainer)) {
@@ -209,19 +207,19 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
 
 
         if (s != PageContext.PAGE_SCOPE) {
-            String id = getId();
-            if (id == null) {
-                id = referid.getString(this);
-                if (id.length() == 0) {
-                    id = CONTEXTTAG_KEY + "." + scope.getString(this).toLowerCase();
+            String myid = getId();
+            if (myid == null) {
+                myid = referid.getString(this);
+                if (myid.length() == 0) {
+                    myid = CONTEXTTAG_KEY + "." + scope.getString(this).toLowerCase();
                 }
             }
-            ContextContainer storedContainer = new StandaloneContextContainer(id, container.getBacking().getOriginalMap(), container.getBacking().isELIgnored());
+            ContextContainer storedContainer = new StandaloneContextContainer(myid, container.getBacking().getOriginalMap(), container.getBacking().isELIgnored());
             if (log.isDebugEnabled()) {
-                log.debug("Using " + id + " to store in " + scope.getString(this) + " " + storedContainer);
+                log.debug("Using " + myid + " to store in " + scope.getString(this) + " " + storedContainer);
             }
 
-            pageContext.setAttribute(id, storedContainer, s);
+            pageContext.setAttribute(myid, storedContainer, s);
         }
         setCloudContext(getContextTag().cloudContext);
         if (getId() != null) {
@@ -353,6 +351,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
 
     }
 
+    @Override
     public int doAfterBody() throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("after body of context " + getId());
@@ -370,6 +369,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         return SKIP_BODY;
     }
 
+    @Override
     public int doEndTag() throws JspTagException {
         getContextContainer().release(pageContext, prevParent != null ? prevParent : getContextProvider().getContextContainer()); // remove the vars from 'page-context' again if necessary.
         cloudContext = null;
@@ -377,12 +377,14 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         return super.doEndTag();
     }
 
+    @Override
     public void doFinally() {
         cloudContext = null;
         prevParent = null;
         super.doFinally();
     }
 
+    @Override
     public String toString() {
         return getClass().getName() + " with id " + getId() + " with container " + (ContextContainer)pageContext.getAttribute(CONTAINER_KEY_PREFIX + number);
     }

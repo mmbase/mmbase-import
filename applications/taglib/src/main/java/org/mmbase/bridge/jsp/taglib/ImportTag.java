@@ -10,8 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.http.*;
 
+import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -118,7 +120,6 @@ public class ImportTag extends ContextReferrerTag {
                         if (! (from == ContextContainer.LOCATION_PARAMETERS || from == ContextContainer.LOCATION_MULTIPART)) {
                             helper.overrideNoImplicitList();
                         }
-
                         cc.register(useId, result, ! res);
                         found = true;
                         break;
@@ -222,10 +223,16 @@ public class ImportTag extends ContextReferrerTag {
                 // should this be more general? Also in other contextwriters?
                 ContextProvider cp = getContextProvider();
                 ContextContainer cc = cp.getContextContainer();
+                Object prevEscaper =  (CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY);
+                CharTransformer escaper = helper.getEscaper();
+                log.debug("Found " + escaper + " from attribute");
+                pageContext.setAttribute(ContentTag.ESCAPER_KEY, escaper, PageContext.REQUEST_SCOPE);
                 if (log.isDebugEnabled()) {
                     log.debug("registering in " + cp + " with container " + cc);
                 }
                 cc.register(useId, helper, !res);
+                pageContext.setAttribute(ContentTag.ESCAPER_KEY, prevEscaper, PageContext.REQUEST_SCOPE);
+
 
             } else {
                 if (helper.getJspvar() == null) {

@@ -29,31 +29,31 @@ public interface Writer {
      * if the tag has a body, and to 'true' if it hasn't.
      *
      */
-    public void setWrite(String t) throws JspTagException;
+    void setWrite(String t) throws JspTagException;
 
 
     /**
      * (Override) escape behaviour
      *
      */
-    public void setEscape(String e) throws JspTagException;
+    void setEscape(String e) throws JspTagException;
 
     /**
      * JspVar to Create, and write to
      */
-    public void setJspvar(String j);
+    void setJspvar(String j);
 
     /**
      * Type of the jspvar.
      */
 
-    public void setVartype(String t) throws JspTagException;
+    void setVartype(String t) throws JspTagException;
 
     /**
      * Subtags of 'Writer' tag can request the value.
      */
 
-    public Object getWriterValue() throws JspTagException;
+    Object getWriterValue() throws JspTagException;
 
     /**
      *  To be used by child tags. If they are present, they say to the
@@ -62,7 +62,7 @@ public interface Writer {
      *
      * @since MMBase-1.6
      */
-    public void haveBody() throws JspTagException;
+    void haveBody() throws JspTagException;
 
 
 }

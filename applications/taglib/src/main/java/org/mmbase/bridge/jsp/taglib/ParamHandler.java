@@ -31,6 +31,6 @@ public interface ParamHandler {
      */
     public static final int SCOPE = PageContext.REQUEST_SCOPE;
 
-    public void addParameter(String key, Object value) throws JspTagException;
+    void addParameter(String key, Object value) throws JspTagException;
 
 }

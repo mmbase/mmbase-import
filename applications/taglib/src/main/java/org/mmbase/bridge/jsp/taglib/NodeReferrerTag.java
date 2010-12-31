@@ -35,7 +35,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
 
     private static final Logger log = Logging.getLoggerInstance(NodeReferrerTag.class);
     protected Attribute parentNodeId = Attribute.NULL;
-    private Attribute element  = Attribute.NULL;
+    protected Attribute element  = Attribute.NULL;
     /**
      * The element attribute is used to access elements of
      * clusternodes.

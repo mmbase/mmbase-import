@@ -14,7 +14,6 @@ import org.mmbase.bridge.jsp.taglib.util.Notfound;
 import org.mmbase.bridge.jsp.taglib.editor.Editor;
 import org.mmbase.bridge.jsp.taglib.editor.EditTag;
 import javax.servlet.jsp.*;
-import javax.servlet.jsp.tagext.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
@@ -187,6 +186,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         }
     }
 
+    @Override
     public int doStartTag() throws JspException {
         initTag();
         Node node = getNode();
