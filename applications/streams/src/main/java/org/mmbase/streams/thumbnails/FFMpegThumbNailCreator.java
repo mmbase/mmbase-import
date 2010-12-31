@@ -48,12 +48,24 @@ public class FFMpegThumbNailCreator implements  Callable<Long> {
     private final Node source;
     private final Node node;
 
+    private boolean useSharedDir = true;
 
-    public FFMpegThumbNailCreator(Node node, Field field) {
+
+    FFMpegThumbNailCreator(Node node, Field field) {
         Cloud myCloud = node.getCloud().getCloudContext().getCloud("mmbase", "class", null);
         this.source = myCloud.getNode(node.getIntValue("id"));
         this.node   = myCloud.getNode(node.getNumber());
         this.field = field.getName();
+    }
+
+    protected File getTempDir() throws IOException {
+        if (! useSharedDir) {
+            return File.createTempFile(FFMpegThumbNailCreator.class.getName(), ".dir");
+        } else {
+            File thumbNailDir = new File(org.mmbase.module.core.MMBase.getMMBase().getDataDir(), "workdir_thumbnails");
+            thumbNailDir.mkdirs();
+            return File.createTempFile("dir", "", thumbNailDir);
+        }
     }
 
 
@@ -80,7 +92,7 @@ public class FFMpegThumbNailCreator implements  Callable<Long> {
         args.add("-vframes");
         args.add("" + count);
         try {
-            File tempDir = File.createTempFile(FFMpegThumbNailCreator.class.getName(), ".dir");
+            File tempDir = getTempDir();
             tempDir.delete();
             tempDir.mkdir();
             File tempFile = new File(tempDir, "thumbnail.%d.png");
