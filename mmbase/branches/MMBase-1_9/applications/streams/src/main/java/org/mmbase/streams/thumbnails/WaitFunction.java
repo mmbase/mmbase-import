@@ -34,7 +34,7 @@ import org.mmbase.util.functions.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ThumbNailFunction.java 44227 2010-12-24 11:31:58Z michiel $
+ * @version $Id$
  */
 
 public class WaitFunction extends NodeFunction<Node> {
