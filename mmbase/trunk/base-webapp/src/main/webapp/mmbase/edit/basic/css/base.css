@@ -73,3 +73,7 @@ p.foot2 {
   font-size: smaller;
   font-style: italic;
 }
+
+div.searchresult.implicit {
+    display: none;
+}
