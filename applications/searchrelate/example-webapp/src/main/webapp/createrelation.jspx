@@ -2,13 +2,18 @@
     version="2.0"
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:jsp="http://java.sun.com/JSP/Page"
-    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
-    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
 
+  <!-- relate the new node to a people object
+       This will only work in a transaction.
+  -->
+
+  <!-- just a random people node, a specific node could be stored in the session -->
   <mm:listnodes type="people" max="1">
     <mm:node id="person" />
   </mm:listnodes>
+
+  <!-- create the actual relation -->
   <mm:createrelation source="_node" destination="person" role="related" />
 </jsp:root>
