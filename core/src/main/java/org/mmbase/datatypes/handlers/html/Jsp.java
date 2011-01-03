@@ -24,7 +24,7 @@ import java.io.*;
  * as properties on the {@link Request} properties. (The MMBase Taglib will do that).
  *
  * @author Michiel Meeuwissen
- * @version $Id: AreaHandler.java 34900 2009-05-01 16:29:42Z michiel $
+ * @version $Id$
  * @since MMBase-1.9.6
  */
 
