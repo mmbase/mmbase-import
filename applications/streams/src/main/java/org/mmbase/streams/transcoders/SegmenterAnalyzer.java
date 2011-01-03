@@ -21,7 +21,6 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.transcoders;
 
-import java.util.regex.*;
 import java.util.*;
 import java.io.*;
 
@@ -37,7 +36,7 @@ import org.mmbase.util.logging.*;
  * be ready before starting to rewrite.
  * 
  * @author Andr&eacute; van Toly
- * @version $Id: SegmenterAnalyzer.java 40036 2009-11-30 20:27:39Z andre $
+ * @version $Id$
  */
 public class SegmenterAnalyzer implements Analyzer {
 
@@ -50,11 +49,11 @@ public class SegmenterAnalyzer implements Analyzer {
     // TODO: progress matcher
     // private static final Pattern PROGRESS = Pattern.compile("\\s*(.*?) audio: ([0-9]+)kbps video: ([0-9]+)kbps, time remaining: .*");
 
-    private ChainedLogger log = new ChainedLogger(LOG);
+    private final ChainedLogger log = new ChainedLogger(LOG);
 
-    private AnalyzerUtils util = new AnalyzerUtils(log);
+    private final AnalyzerUtils util = new AnalyzerUtils(log);
 
-    private List<Throwable> errors =new ArrayList<Throwable>();
+    private final List<Throwable> errors =new ArrayList<Throwable>();
 
     public void addThrowable(Throwable t) {
         errors.add(t);
@@ -83,7 +82,7 @@ public class SegmenterAnalyzer implements Analyzer {
                 while ((!index.exists() || index.length() < 1) && count < 12) {
                     LOG.service("Result ready, but file " + index + (index.exists() ? " is too small" : " doesn't exist") + ". Waiting 10 sec. to be sure filesystem is ready (" + count + ")");
                     try {
-                        Thread.currentThread().sleep(10000);
+                        Thread.sleep(10000);
                         count++;
                     } catch (InterruptedException ie) {
                         LOG.info("Interrupted");
@@ -119,6 +118,7 @@ public class SegmenterAnalyzer implements Analyzer {
 
     }
 
+    @Override
     public SegmenterAnalyzer clone() {
         try {
             return (SegmenterAnalyzer) super.clone();

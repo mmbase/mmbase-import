@@ -22,7 +22,6 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 package org.mmbase.streams.transcoders;
 
 
-import java.net.*;
 import java.io.*;
 import java.util.*;
 import org.mmbase.util.externalprocess.*;
@@ -32,7 +31,13 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * A transcoder based on an external command, like <code>ffmpeg</code> or <code>ffmpeg2theora</code>.
+ * A transcoder based on an external command, like <code>ffmpeg</code> or <code>ffmpeg2theora</code>. To call the
+ * external command, {@link CommandExecutor} is used. This means that the command can run on the local machine, but also
+ * on a remote machine. This is indicated by {@link #setMethod}, which is called for CommandExecutors when necessary by
+ * {@link org.mmbase.streams.createcaches.Job} (and is based on settings in <code>createcaches.xml</code>).
+ *
+ * The command should be returns by {@link #getCommand}. The path of this command can be indicated by an appliction
+ * context setting 'path' in the namespace named after the class or a super class.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -62,6 +67,9 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
         moreOptions.put(key, value);
     }
 
+    /**
+     * Indicates how and 'where' the command must run.
+     */
     public void setMethod(CommandExecutor.Method m) {
         method = m;
     }
@@ -89,6 +97,7 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
      * Overrides the generation of a key in {@link AbstractTranscoder} to add extra transcoding 
      * parameters that were not set by {@link Settings} annotations on the transcoders.
      */
+    @Override
     public final String getKey() {
         StringBuilder key = new StringBuilder( super.getKey() );
         boolean appendedSetting = false;
@@ -107,6 +116,7 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
         return key.toString();
     }
     
+    @Override
     protected void transcode(final Logger log) throws Exception {
         OutputStream outStream = new WriterOutputStream(getOutputWriter(log), System.getProperty("file.encoding"));
         OutputStream errStream = new WriterOutputStream(getErrorWriter(log), System.getProperty("file.encoding"));
@@ -137,6 +147,7 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
         errStream.close();
     }
 
+    @Override
     public CommandTranscoder clone() {
         return  (CommandTranscoder) super.clone();
     }

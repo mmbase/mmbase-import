@@ -44,7 +44,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @version $Id$
  */
- 
+
 public class Job implements Iterable<Result> {
     private static final Logger LOG = Logging.getLoggerInstance(Job.class);
     private static long lastJobNumber = 0;
@@ -74,12 +74,12 @@ public class Job implements Iterable<Result> {
     public Job(Processor processor, Cloud cloud, ChainedLogger chain) {
         this(processor, processor.list, cloud, chain);
     }
-    
+
     /**
-     * A Job is defined by several {@link JobDefinition}'s, the output is goes to loggers in 
+     * A Job is defined by several {@link JobDefinition}'s, the output is goes to loggers in
      * {@link ChainedLogger}
      *
-     * @param processor reads config, is called by user etc.
+     * @param processor reads config, is called by user. Provides executors.
      * @param list      the definitions
      * @param cloud     mmbase cloud nodes belong to
      * @param chain     loggers
@@ -100,9 +100,10 @@ public class Job implements Iterable<Result> {
 
     /**
      * Defines the several {@link Result}s by reading the {@link JobDefinition}s in the list.
-     * Creates streamsourcescaches for {@link Transcoder}s and asigns {@link TranscoderResult}s to 
+     * Creates streamsourcescaches for {@link Transcoder}s and asigns {@link TranscoderResult}s to
      * them or creates {@link RecognizerResult}s for {@link JobDefinition}s of recognizers.
      */
+    @SuppressWarnings("SleepWhileHoldingLock")
     protected void findResults() {
         int i = -1;
         for (Map.Entry<String, JobDefinition> entry : jobdefs.entrySet()) {
@@ -119,28 +120,28 @@ public class Job implements Iterable<Result> {
                     File f = new File(processor.getDirectory(), url);
                     LOG.service("New (in)file: " + f);
                     assert f.exists() : "No such file " + f;
-                    
+
                     // make sure there is an in file to use
                     int w = 0;
                     while (!f.exists() && !f.isFile() && w < 30) {
                         LOG.service("Checking if (in)file exists '" + f + "'. Waiting 5 sec. to be sure filesystem is ready (" + w + ")");
                         try {
-                            getThread().sleep(5000);
+                            Thread.sleep(5000);
                             w++;
                         } catch (InterruptedException ie) {
                             LOG.info("Interrupted" + ie);
                         }
                     }
                     if (!f.exists() && !f.isFile()) LOG.error("NO INFILE! '" + f + "', but continuing anyway.");
-                    
+
                     inURI = f.toURI();
                     inNode = node;
-                
+
                 } else {    // using a previously cached node
                     String inId = jd.getInId();
                     if (! jobdefs.containsKey(inId) && node.getCloud().hasNode(inId)) {
                         // use an existing cache node
-                        
+
                         inNode = node.getCloud().getNode(inId);
                         String url = inNode.getStringValue("url");
                         if (url.length() < 0) {
@@ -150,14 +151,14 @@ public class Job implements Iterable<Result> {
 
                         File f = new File(processor.getDirectory(), url);
                         LOG.service("Using (in)file '" + f + "' of cache #" + inId + " as input");
-                        
+
                         if (!f.exists() && !f.isFile()) {
                             LOG.error("NO INFILE! '" + f );
                             break;
                         }
-                        
+
                         inURI = f.toURI();
-                        
+
                     } else {    // use inId from config
                         if (! jobdefs.containsKey(inId)) {
                             LOG.warn("Configuration error, no such job definition with id: " + inId);
@@ -170,9 +171,9 @@ public class Job implements Iterable<Result> {
                     }
                     inURI = prevResult.getOut();
                     inNode = prevResult.getDestination();
-                    
+
                     }
-                    
+
                     if (inNode == null) {
                         inNode = node;
                     }
@@ -203,7 +204,7 @@ public class Job implements Iterable<Result> {
                 }
 
                 assert inURI != null;
-               
+
                 if (jd.transcoder.getKey() != null) {  // not a recognizer (it has a transcoder key)
                     LOG.service(jd.getMimeType());
                     //LOG.service("inNode: " + inNode);
@@ -228,7 +229,7 @@ public class Job implements Iterable<Result> {
                     if (outFileName.startsWith("/")) {
                         outFileName = outFileName.substring(1);
                     }
-                    
+
                     LOG.service("outFileName: '" + outFileName + "'");
                     assert outFileName != null;
                     assert outFileName.length() > 0;
@@ -236,28 +237,28 @@ public class Job implements Iterable<Result> {
                     jd.transcoder.init(dest);
 
                     dest.commit();
-                    
+
 
                     String destFileName = dest.getStringValue("url");
-                    
+
                     // XXX: Sometimes a commit fails (partly), doing it and checking it again  */
                     int w = 0;
                     while (destFileName.length() < 1 && w < 10) {
                         LOG.warn("No value for field url: '" + destFileName + "' in #" + dest.getNumber() + ", committing it again and trying again in 5 sec. (" + w + ")");
-                        
+
                         dest.setStringValue("url", outFileName);
                         dest.commit();
-                        
+
                         try {
-                            getThread().sleep(5000);
+                            Thread.sleep(5000);
                             w++;
                         } catch (InterruptedException ie) {
                             LOG.info("Interrupted" + ie);
                         }
-                        
+
                         destFileName = dest.getStringValue("url");
                     }
-                    
+
                     if (destFileName.length() < 1) {
                         LOG.error("Still empty destFileName: '" + destFileName + "' of #" + dest.getNumber());
                     } else {
@@ -265,9 +266,9 @@ public class Job implements Iterable<Result> {
                     }
                     assert destFileName != null;
                     assert destFileName.length() > 0;
-                    
+
                     File outFile = new File(processor.getDirectory(), destFileName);
-                    if (outFile.exists()) { 
+                    if (outFile.exists()) {
                         if (outFile.delete()) {
                             LOG.service("Former version of file '" + outFile + "' deleted");
                         } else {
@@ -343,21 +344,8 @@ public class Job implements Iterable<Result> {
 
                 if (current.definition.transcoder instanceof CommandTranscoder) {
                     // Get free method
-                    CommandExecutor.Method m = null;
-                    synchronized(processor.executors) {
-                        for (CommandExecutor.Method e : processor.executors) {
-                            if (! e.isInUse()) {
-                                e.setInUse(true);
-                                m = e;
-                                break;
-                            }
-                        }
-                    }
-                    if (m == null) {
-                        LOG.error("There should always be a free CommandExecutor. Using LAUCHER now.");
-                    } else {
-                        ((CommandTranscoder) current.definition.transcoder).setMethod(m);
-                    }
+                    CommandExecutor.Method m = Executors.getFreeExecutor();
+                    ((CommandTranscoder) current.definition.transcoder).setMethod(m);
                 }
                 Node destination = current.getDestination();
                 if (destination != null) {
@@ -407,7 +395,7 @@ public class Job implements Iterable<Result> {
                            }
                            Stage s = getCurrent().getStage();
                            LOG.service(jc.toString() + " to " + s);
-                           future = processor.threadPools.get(s).submit(jc);
+                           future = Executors.submit(s, jc);
                            Job.this.notifyAll();
                        }
                    }
@@ -434,7 +422,7 @@ public class Job implements Iterable<Result> {
      * Gets and/or creates the node representing the 'cached' stream (the result of a conversion),
      * see the builder property 'org.mmbase.streams.cachestype'. It first looks if it already
      * exists, if not it creates a new one.
-     * Nota that this method uses id (source node to create cache) and key (parameters for 
+     * Nota that this method uses id (source node to create cache) and key (parameters for
      * creation) to determine if a cache node already exists and can be re-used. If one of these
      * is changed a new cache node is made.
      *
@@ -539,8 +527,8 @@ public class Job implements Iterable<Result> {
         notifyAll();
 
         if (future.isDone()) {
-            processor.runningJobs.remove(getNode().getNumber());
-            /* this makes no sence: 
+            Processor.runningJobs.remove(getNode().getNumber());
+            /* this makes no sence:
             ready = true;
         } else {
             LOG.warn("This job has not completed yet."); */

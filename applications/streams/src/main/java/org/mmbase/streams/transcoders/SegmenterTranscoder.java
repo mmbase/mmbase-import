@@ -21,14 +21,11 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.transcoders;
 
-import java.net.*;
 import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 
-import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.servlet.FileServlet;
 
@@ -37,7 +34,6 @@ import org.mmbase.util.transformers.StringTransformer;
 import org.mmbase.util.transformers.Asciifier;
 import org.mmbase.util.transformers.Identifier;
 
-import org.mmbase.applications.media.Codec;
 import org.mmbase.applications.media.Format;
 
 
@@ -52,7 +48,7 @@ import org.mmbase.applications.media.Format;
  * TODO: replace "/" with File.separator
  *
  * @author Andr&eacute; van Toly
- * @version $Id: SegmenterTranscoder.java 41564 2010-03-22 19:42:15Z andre $
+ * @version $Id$
  */
 @Settings({"duration", "httpPrefix"})
 public class SegmenterTranscoder extends CommandTranscoder {
@@ -93,6 +89,7 @@ public class SegmenterTranscoder extends CommandTranscoder {
      * segments when re-transcoding and removes punctuation, whitespace etc from filename.
      * @param dest  destination node (streamsourcescaches)
      */
+    @Override
     public void init(Node dest) {
         String mt = dest.getStringValue("mimetype");
         if (mt == null || "".equals(mt)) { 
