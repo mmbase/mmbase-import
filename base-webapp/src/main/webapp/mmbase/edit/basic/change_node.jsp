@@ -63,7 +63,7 @@
      </a>
      <mm:present referid="hasmmxf">
        <mm:write cookie="mmjspeditors_xmlmode"       referid="config.xmlmode"      />
-       <mm:import id="xmlmodes" vartype="list">wiki,xml,prettyxml,kupu,docbook</mm:import>
+       <mm:import id="xmlmodes" vartype="list">xml,wiki,prettyxml,kupu,docbook</mm:import>
        <mm:stringlist referid="xmlmodes">
          <mm:compare referid2="config.xmlmode" inverse="true">
            <a href="<mm:url referids="this_node@node_number">
@@ -82,7 +82,7 @@
      <tr>
        <td class="data" title="<mm:fieldinfo type="description"  escape="text/html/attribute" /> (<mm:fieldinfo type="datatype" />: <mm:fieldinfo type="datatypedescription" escape="text/html/attribute" />)"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
        <td class="listdata" colspan="2">
-         <mm:fieldinfo type="$showtype" />
+         //         <mm:fieldinfo type="$showtype" />
          <mm:isnull>(null)</mm:isnull>
          <mm:fieldinfo type="errors" />
        </td>
@@ -120,6 +120,7 @@
 <!-- list relations: -->
 <hr />
 <a name="relations"></a>
+
 <%@ include file="relations.jsp"%>
 
 </mm:node>

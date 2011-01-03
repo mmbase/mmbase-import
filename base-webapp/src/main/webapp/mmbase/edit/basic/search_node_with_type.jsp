@@ -26,7 +26,7 @@
 <!-- import search age and store in session -->
 
 <mm:import externid="_search_form_minage_$node_type" from="parameters,session"></mm:import>
-<mm:import externid="_search_form_maxage_$node_type" from="parameters,session"><mm:listnodescontainer type="typedef"><mm:constraint field="name" value="$node_type" /><mm:listnodes max="1"><mm:field name="defaultsearchage()" /></mm:listnodes></mm:listnodescontainer></mm:import>
+<mm:import externid="_search_form_maxage_$node_type" from="parameters,session"><mm:hasfunction nodemanager="$node_type" name="defaultsearcheage"><mm:function nodemanager="$node_type" name="defaultsearchage" /></mm:hasfunction></mm:import>
 
 <mm:write session="_search_form_minage_$node_type" referid="_search_form_minage_$node_type" />
 <mm:write session="_search_form_maxage_$node_type" referid="_search_form_maxage_$node_type" />

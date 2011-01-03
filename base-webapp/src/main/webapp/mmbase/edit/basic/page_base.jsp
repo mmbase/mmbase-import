@@ -10,10 +10,14 @@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0"  prefix="mm"
 <mm:import id="style">
     <link rel="StyleSheet" type="text/css" href="css/<mm:write referid="config.style_sheet" />"/>
     <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
+    <mm:include page="/mmbase/jquery/ajaxfileupload.jspx" />
+    <jsp:directive.include file="/mmbase/jquery/jquery-ui.jspx" />
+    <mm:link page="/mmbase/upload/MMUpload.js.jsp">
+      <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
+    </mm:link>
     <meta name="MMBase-Language"     content="${config.lang}" />
     <mm:link page="/mmbase/validation/Widgets.js">
       <script type="text/javascript" src="${_}"> </script>
     </mm:link>
     <script type="text/javascript" src="javascript.js"> </script>
-
 </mm:import>
