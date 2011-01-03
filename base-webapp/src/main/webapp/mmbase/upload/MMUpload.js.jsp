@@ -12,7 +12,7 @@
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"
 %><fmt:bundle basename="org.mmbase.resources.resources">
-<mm:content type="text/javascript" expires="0">
+<mm:content type="text/javascript">
 */
 
 
