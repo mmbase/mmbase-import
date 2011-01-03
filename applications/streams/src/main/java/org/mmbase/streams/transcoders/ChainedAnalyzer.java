@@ -21,7 +21,6 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.transcoders;
 
-import org.mmbase.util.logging.*;
 import org.mmbase.bridge.*;
 import java.util.*;
 
@@ -77,6 +76,7 @@ public class ChainedAnalyzer implements Analyzer {
             a.ready(source, dest);
         }
     }
+    @Override
     public ChainedAnalyzer clone() {
         try {
             ChainedAnalyzer clone = (ChainedAnalyzer) super.clone();

@@ -21,11 +21,9 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.transcoders;
 
-import java.util.regex.*;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
-import static org.mmbase.streams.transcoders.AnalyzerUtils.*;
 
 
 /**

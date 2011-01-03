@@ -47,6 +47,7 @@ class SkippedResult extends Result {
     public MimeType getMimeType() {
         return null;
     }
+    @Override
     public boolean isReady() {
         return true;
     }
