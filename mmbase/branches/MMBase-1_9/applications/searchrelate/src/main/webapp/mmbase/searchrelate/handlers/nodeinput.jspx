@@ -6,22 +6,30 @@
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     >
   <jsp:output omit-xml-declaration="true" />
-  <mm:import externid="node" from="request" required="true" />
+  <mm:import externid="node" from="request" />
   <mm:import externid="field" from="request" required="true" />
   <mm:import externid="query" from="request" required="true" />
   <mm:import externid="id" from="request" required="true" />
 
   <div id="${id}_sr_div">
-    <mm:node referid="node">
-      <mm:node element="${field.name}">
-        <span class="value"><mm:include page="nodevalue.jspx" /></span>
+    <mm:present referid="node">
+      <mm:node referid="node">
+        <mm:node element="${field.name}">
+          <span class="value"><mm:include page="nodevalue.jspx" /></span>
+        </mm:node>
       </mm:node>
-    </mm:node>
+    </mm:present>
+    <mm:notpresent referid="node">
+      <!-- new node? -->
+      <span class="value"><jsp:text> </jsp:text></span>
+    </mm:notpresent>
     <script type="text/javascript">
       $("#${id}_sr_div").bind("mmsrRelate", function (e, tr, relater) {
       var number= relater.getNumber(tr);
       $("#${id}").val(number);
+      $("#${id}").trigger("change");
       $("#${id}_sr_div").find("span.value").load("${mm:link('/mmbase/searchrelate/handlers/nodevalue.jspx')}?node=" + number);
+
       });
     </script>
     <mm-sr:relate
