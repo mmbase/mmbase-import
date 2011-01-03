@@ -8,12 +8,12 @@
   <mm-sre:form>
 
     <mm:node number="default.mags">
-      <mm-srt:relatednodes
+      <mm-sr:relatednodes
           type="news" orderby="posrel.pos" unlink="true" sortable="true" role="posrel"
-          precreate="/createrelation.jspx"
+          precreate="createrelation.jspx"
           >
 
-      </mm-srt:relatednodes>
+      </mm-sr:relatednodes>
     </mm:node>
   </mm-sre:form>
   <hr />
