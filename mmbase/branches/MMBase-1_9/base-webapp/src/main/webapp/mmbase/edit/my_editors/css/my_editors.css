@@ -633,3 +633,7 @@ label a:hover { cursor: help; }
     clear: both;
     height: 1px;
 }
+
+div.searchresult.implicit {
+    display: none;
+}
