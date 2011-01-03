@@ -346,6 +346,62 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             }
         };
     }
+
+    /**
+     * @since MMBase-1.9.6
+     */
+    protected ChainedIterator getIterator(Locale useLocale) {
+        ChainedIterator iterator = new ChainedIterator();
+        Locale orgLocale = useLocale;
+        LocalizedEntry loc = localized.get(useLocale);
+        while (loc == null && useLocale != null) {
+            useLocale = LocalizedString.degrade(useLocale, orgLocale);
+            if (log.isDebugEnabled()) {
+                log.debug("Degraded to " + useLocale);
+            }
+            loc = localized.get(useLocale);
+        }
+        if (loc == null) {
+            useLocale = orgLocale;
+            loc = localized.get(null);
+        }
+        if (loc == null) {
+
+            iterator.addIterator(bundles.iterator());
+            iterator.addIterator(fallBack.iterator());
+        } else {
+            iterator.addIterator(loc.entries.iterator());
+            iterator.addIterator(loc.unusedKeys.iterator());
+        }
+        return iterator;
+    }
+
+    /**
+     * Return the {@link Query}'s that define this enumeration factory.
+     * @throws IllegalStateException If this factory is not only defined by queries.
+     * @since MMBase-1.9.6
+     */
+    public List<Query> getQueries(final Cloud cloud, final org.mmbase.bridge.Node node, final Field field) throws  org.mmbase.storage.search.SearchQueryException  {
+        List<Query> result = new ArrayList<Query>();
+        ChainedIterator i = getIterator(cloud.getLocale());
+        while (i.hasNext()) {
+            Object candidate = i.next();
+            if (candidate instanceof DocumentSerializable) {
+                Element element = ((DocumentSerializable) candidate).getDocument().getDocumentElement();
+                final QueryConfigurer qc = new QueryConfigurer();
+                if (node != null) {
+                    qc.variables.put("_node", node.getNumber());
+                }
+                final Query query = QueryReader.parseQuery(element, qc, cloud, null).query;
+                result.add(query);
+            } else {
+                throw new IllegalStateException();
+            }
+        }
+        return result;
+    }
+
+
     /**
      * @since MMBase-1.9.6
      */
@@ -381,34 +437,12 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                             }
                             log.debug("using locale " + useLocale);
                         }
-                        private ChainedIterator iterator = new ChainedIterator();
+                        private final ChainedIterator iterator;
                         private Iterator<Map.Entry<C, ? extends CharSequence>> subIterator = null;
                         private Map.Entry<C, ? extends CharSequence> next = null;
 
                         {
-                            Locale orgLocale = useLocale;
-
-                            LocalizedEntry loc = localized.get(useLocale);
-                            while (loc == null && useLocale != null) {
-                                useLocale = LocalizedString.degrade(useLocale, orgLocale);
-                                if (log.isDebugEnabled()) {
-                                    log.debug("Degraded to " + useLocale);
-                                }
-                                loc = localized.get(useLocale);
-                            }
-                            if (loc == null) {
-                                useLocale = orgLocale;
-                                loc = localized.get(null);
-                            }
-                            if (loc == null) {
-
-                                iterator.addIterator(bundles.iterator());
-                                iterator.addIterator(fallBack.iterator());
-                            } else {
-                                iterator.addIterator(loc.entries.iterator());
-                                iterator.addIterator(loc.unusedKeys.iterator());
-                            }
-
+                            iterator = getIterator(useLocale);
                             findNext();
                             while (i < index) next();
                         }
