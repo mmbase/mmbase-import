@@ -22,8 +22,6 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 package org.mmbase.streams.transcoders;
 
 import org.mmbase.applications.media.Format;
-import java.net.*;
-import java.io.*;
 
 import org.mmbase.util.logging.*;
 
@@ -43,6 +41,7 @@ public class InfiniteTranscoder extends AbstractTranscoder {
         format = Format.UNKNOWN;
     }
 
+    @SuppressWarnings("SleepWhileHoldingLock")
     protected void transcode(final Logger log) throws Exception {
         LOG.info("Logging to " + log);
 

@@ -23,7 +23,6 @@ package org.mmbase.streams.createcaches;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.core.event.*;
@@ -33,7 +32,6 @@ import org.mmbase.security.UserContext;
 import org.mmbase.servlet.FileServlet;
 import org.mmbase.streams.transcoders.*;
 import org.mmbase.util.*;
-import org.mmbase.util.externalprocess.CommandExecutor;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.*;
 
@@ -46,8 +44,8 @@ import org.w3c.dom.Element;
  * This commit-processor is used on nodes of type 'streamsources' and is used to initiate the
  * conversions to other formats which are saved in 'streamsourcescaches'. Its analogy is derived
  * from the conversion of 'images' in MMBase to their resulting 'icaches' nodes.
- * Several transcodings of media files can be configured with 
- * {@link org.mmbase.streams.transcoders.Recognizer}s and 
+ * Several transcodings of media files can be configured with
+ * {@link org.mmbase.streams.transcoders.Recognizer}s and
  * {@link org.mmbase.streams.transcoders.Transcoder}s.
  *
  * @author Michiel Meeuwissen
@@ -91,39 +89,6 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
         cacheManagers = cm;
     }
 
-    private static int transSeq = 0;
-
-    public final Map<Stage, ThreadPoolExecutor> threadPools = new EnumMap<Stage, ThreadPoolExecutor>(Stage.class);
-    final List<CommandExecutor.Method> executors = new CopyOnWriteArrayList<CommandExecutor.Method>();
-    {
-        threadPools.put(Stage.TRANSCODER, new ThreadPoolExecutor(3, 3, 5 * 60 , TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
-                public Thread newThread(Runnable r) {
-                    return ThreadPools.newThread(r, "TranscoderThread-" + Stage.TRANSCODER + "-" + (transSeq++));
-                }
-            }));
-        threadPools.put(Stage.RECOGNIZER, new ThreadPoolExecutor(3, 3, 5 * 60 , TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
-            public Thread newThread(Runnable r) {
-                return ThreadPools.newThread(r, "TranscoderThread-" + Stage.RECOGNIZER + "-" + (transSeq++));
-            }
-            }));
-
-        // register them too
-        ThreadPools.getThreadPools().put(Processor.class.getName() + "." + Stage.TRANSCODER, threadPools.get(Stage.TRANSCODER));
-        ThreadPools.getThreadPools().put(Processor.class.getName() + "." + Stage.RECOGNIZER, threadPools.get(Stage.RECOGNIZER));
-
-
-        // fill the rest of the map too, so we don't have to think about it any more later on.
-        for (Stage s : Stage.values()) {
-            if (!threadPools.containsKey(s)) {
-                threadPools.put(s, ThreadPools.jobsExecutor);
-            }
-        }
-        // default configuration, 6 executors.
-        for (int i = 0; i < 6; i++) {
-            executors.add(new CommandExecutor.Method());
-        }
-    }
-
     private String configFile = "streams/createcaches.xml";
     protected final ResourceWatcher watcher = new ResourceWatcher() {
             @Override
@@ -131,9 +96,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
                 try {
                     LOG.debug("Reading " + resource);
                     Map<String, JobDefinition> newList = new LinkedHashMap<String, JobDefinition>();
-                    List<CommandExecutor.Method> newExecutors = new ArrayList<CommandExecutor.Method>();
                     Document document = getResourceLoader().getDocument(resource);
-                    Map<Stage, Integer> totals = new EnumMap<Stage, Integer>(Stage.class);
 
                     if (document != null) {
                         org.w3c.dom.NodeList ellist = document.getDocumentElement().getChildNodes();
@@ -181,52 +144,26 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
                                     }
                                     newList.put(id, def);
 
-                                } else if (el.getTagName().equals("localhost")) {
-                                    int max = Integer.parseInt(el.getAttribute("max_simultaneous_transcoders"));
-                                    Stage s = Stage.valueOf(el.getAttribute("stage").toUpperCase());
-                                    Integer t = totals.get(s);
-                                    if (t == null) t = 0;
-                                    t += max;
-                                    totals.put(s, t);
-                                    for (int j = 1; j <= max; j++) {
-                                        newExecutors.add(new CommandExecutor.Method());
-                                    }
-                                } else if (el.getTagName().equals("server")) {
-                                    int max = Integer.parseInt(el.getAttribute("max_simultaneous_transcoders"));
-                                    Stage s = Stage.valueOf(el.getAttribute("stage").toUpperCase());
-                                    Integer t = totals.get(s);
-                                    if (t == null) t = 0;
-                                    t += max;
-                                    totals.put(s, t);
-                                    String host = el.getAttribute("host");
-                                    int    port = Integer.parseInt(el.getAttribute("port"));
-                                    for (int j = 1; j <= max; j++) {
-                                        newExecutors.add(new CommandExecutor.Method(host, port));
+                                } else if (el.getTagName().equals("localhost") || el.getTagName().equals("server")) {
+                                    if (! "streams/createcaches.xml".equals(resource)) {
+                                        LOG.warn("Ignored " + XMLWriter.write(el));
                                     }
                                 }
                             }
-                        }
-                        for (Map.Entry<Stage, Integer> e : totals.entrySet()) {
-                            threadPools.get(e.getKey()).setCorePoolSize(e.getValue());
-                            threadPools.get(e.getKey()).setMaximumPoolSize(e.getValue());
                         }
                     } else {
                         LOG.warn("No " + resource);
                     }
                     list.clear();
                     list.putAll(newList);
-                    synchronized(executors) {
-                        executors.clear();
-                        executors.addAll(newExecutors);
-                    }
-                    LOG.service("Reading of configuration file " + resource + " successfull. JobDefinitions now " + list + ". Executors " + executors + ". Max simultaneous transcoders: " + totals);
+                    LOG.service("Reading of configuration file " + resource + " successfull. JobDefinitions now " + list);
                 } catch (Exception e)  {
                     LOG.error(e.getClass() + " " + e.getMessage() + " In " + resource + " Transcoders now " + list + " (not changed)", e);
                 }
             }
         };
 
-    protected void initWatcher() {
+    protected final void initWatcher() {
         LOG.service("Adding for " + this + " " + configFile);
         watcher.exit();
         watcher.add(configFile);
@@ -242,7 +179,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
     }
 
 
-    public void setConfigFile(final String configFile) {
+    public final void setConfigFile(final String configFile) {
         LOG.service("Adding " + configFile);
         this.configFile = configFile;
         initWatcher();
@@ -309,10 +246,6 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
 
     public Map<String, JobDefinition> getConfiguration() {
         return Collections.unmodifiableMap(list);
-    }
-
-    public List<CommandExecutor.Method> getExecutors() {
-        return executors;
     }
 
 
@@ -387,7 +320,9 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
             return;
         }
         if (node.getNumber() > 0) {
-            LOG.debug("url: " + node.getStringValue("url"));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("url: " + node.getValueWithoutProcess("url"));
+            }
             if (node.isChanged(field.getName())) {
                 LOG.service("For node " + node.getNumber() + ", the field '" + field.getName() + "' is changed " + node.getChanged() + ". That means that we must schedule create caches");
 

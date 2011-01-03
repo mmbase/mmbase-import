@@ -141,8 +141,8 @@ class JobCallable implements Callable<Integer> {
                 }
                 result = current;
                 LOG.info("NOW doing " + result);
-                URI in  = result.getIn();
-                URI out = result.getOut();
+                final URI in  = result.getIn();
+                final URI out = result.getOut();
                 LOG.info("in -> out: " + in.toString() + " -> " + out.toString());
 
                 JobDefinition jd = result.getJobDefinition();
@@ -152,18 +152,18 @@ class JobCallable implements Callable<Integer> {
                     analyzerLoggers.add(al);
                     logger.addLogger(al);
                 }
-                
+
                 assert in != null;
                 try {
                     jd.transcoder.transcode(in, out, logger);
                     for (AnalyzerLogger al : analyzerLoggers) {
                         al.getAnalyzer().ready(thisJob.getNode(), result.getDestination());
                     }
-                    
+
                     resultCount++;
                     result.ready();
                     logger.info("RESULT " + thisJob + "(" + thisJob.getNode().getNodeManager().getName() + ":" + thisJob.getNode().getNumber() + "):" + result);
-                    
+
                     if (thisJob.isInterrupted() || Thread.currentThread().isInterrupted()){
                         logger.info("Interrupted");
                         break;
@@ -195,6 +195,7 @@ class JobCallable implements Callable<Integer> {
             throw e;
         } finally {
             logger.info("FINALLY " + resultCount);
+            // needing synchronization here
             thisJob.notifyAll(); // notify waiters
         }
         //logger.info("3: returning resultCount: " + resultCount);

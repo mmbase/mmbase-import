@@ -28,6 +28,8 @@ import org.mmbase.util.logging.Logger;
 
 
 /**
+ * A Recognizer is a bit like a {@link Transcoder}, but it does not transcode anything, it only produces output to the
+ * logger, which can be analyzed using an {@link AnalyzerLogger}.
  *
  * @author Michiel Meeuwissen
  * @version $Id$

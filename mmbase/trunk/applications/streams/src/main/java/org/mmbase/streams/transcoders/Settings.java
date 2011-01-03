@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -28,7 +28,7 @@ import java.lang.annotation.*;
  * default implementation of {@link Transcoder#getKey} (in {@ink AbstractTranscoder}).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Required.java 34900 2009-05-01 16:29:42Z michiel $
+ * @version $Id$
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})

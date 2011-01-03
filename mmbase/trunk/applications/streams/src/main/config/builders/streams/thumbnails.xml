@@ -1,0 +1,176 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    name="thumbnails" maintainer="openimages.eu" version="0" extends="object">
+  <class>org.mmbase.module.builders.Images</class>
+
+  <names>
+    <singular xml:lang="en">Thumbnail</singular>
+    <singular xml:lang="nl">Thumbnail</singular>
+
+    <plural xml:lang="en">Thumbnails</plural>
+    <plural xml:lang="nl">Thumbnails</plural>
+  </names>
+
+  <properties>
+    <property name="Content-Disposition">inline</property>
+  </properties>
+
+  <fieldlist>
+    <field name="title" state="virtual" readonly="true">
+      <editor>
+        <positions>
+          <list>2</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <getprocessor>
+          <class name="org.mmbase.streams.thumbnails.TitleField" />
+        </getprocessor>
+      </datatype>
+    </field>
+    <field name="id">
+      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
+        <enumeration>
+          <query type="videosources" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+        </enumeration>
+      </datatype>
+    </field>
+    <field name="time">
+      <datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
+        <minInclusive value="0" />
+      </datatype>
+    </field>
+
+    <field name="handle">
+      <descriptions>
+        <description xml:lang="en">The image itself (binary data)</description>
+        <description xml:lang="nl">De afbeelding zelf (binaire data)</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Image</guiname>
+        <guiname xml:lang="fr">Image</guiname>
+        <guiname xml:lang="nl">Afbeelding</guiname>
+        <guiname xml:lang="eo">Bildo</guiname>
+        <guiname xml:lang="it">Immagine</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>2</list>
+        </positions>
+      </editor>
+      <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <property name="validMimeTypes" value="image/.*" />
+        <maxLength value="16777215" enforce="never"/>
+        <!--
+        <getprocessor type="binary">
+          <class name="org.mmbase.streams.thumbnails.ThumbNailProcessor" />
+        </getprocessor>
+        -->
+        <commitprocessor>
+          <class name="org.mmbase.datatypes.processors.BinaryCommitProcessor">
+            <param name="contenttypeField">itype</param>
+            <param name="itype">true</param>
+          </class>
+        </commitprocessor>
+      </datatype>
+    </field>
+
+    <field name="itype" state="system">
+      <descriptions>
+        <description xml:lang="en">Mimetype of the image</description>
+        <description xml:lang="nl">Mimetype van de afbeelding</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Imagetype</guiname>
+        <guiname xml:lang="fr">Imagetapent</guiname>
+        <guiname xml:lang="nl">Afbeeldingstype</guiname>
+        <guiname xml:lang="eo">Bildotipo</guiname>
+        <guiname xml:lang="it">Immaginetipo</guiname>
+      </gui>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="32" enforce="never"/>
+      </datatype>
+    </field>
+
+    <field name="filesize" state="system">
+      <descriptions>
+        <description xml:lang="en">Filesize of the image</description>
+        <description xml:lang="nl">Filegrootte van de afbeelding</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Size</guiname>
+        <guiname xml:lang="nl">Grootte</guiname>
+          <guiname xml:lang="fr">Taille</guiname>
+          <guiname xml:lang="eo">Grando</guiname>
+          <guiname xml:lang="it">Dimensione</guiname>
+        </gui>
+        <editor>
+          <positions>
+             <list>5</list>
+          </positions>
+        </editor>
+        <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+     </field>
+    <field name="width" state="system">
+      <descriptions>
+        <description xml:lang="en">Width of the image in pixels</description>
+        <description xml:lang="nl">Breedte van de afbeelding in pixels</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Width</guiname>
+        <guiname xml:lang="nl">Breedte</guiname>
+        <guiname xml:lang="eo">Larĝo</guiname>
+      </gui>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minInclusive value="0" />
+      </datatype>
+    </field>
+    <field name="height" state="system">
+      <descriptions>
+        <description xml:lang="en">Height of the image in pixels</description>
+        <description xml:lang="nl">Hoogte van de afbeelding in pixels</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Height</guiname>
+        <guiname xml:lang="nl">Hoogte</guiname>
+        <guiname xml:lang="eo">Alto</guiname>
+      </gui>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minInclusive value="0" />
+      </datatype>
+    </field>
+    <field name="filename">
+      <descriptions>
+        <description xml:lang="en">Original filename of attachment if it was an uploaded file</description>
+        <description xml:lang="nl">Oorspronkelijke bestandsnaam als de bijlage een ge-upload bestand betreft</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Filename</guiname>
+        <guiname xml:lang="nl">Bestandsnaam</guiname>
+        <guiname xml:lang="eo">Dosiernomo</guiname>
+      </gui>
+      <datatype base="filename" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" enforce="never"/>
+      </datatype>
+    </field>
+
+  </fieldlist>
+  <indexlist>
+    <index name="main" unique="true">
+      <indexfield name="id" />
+      <indexfield name="time" />
+    </index>
+  </indexlist>
+  <functionlist>
+    <function name="wait">
+      <class>org.mmbase.streams.thumbnails.WaitFunction</class>
+    </function>
+  </functionlist>
+</builder>
