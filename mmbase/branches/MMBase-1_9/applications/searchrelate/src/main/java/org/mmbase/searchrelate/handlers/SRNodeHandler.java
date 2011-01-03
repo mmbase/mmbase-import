@@ -36,8 +36,12 @@ public class SRNodeHandler extends IntegerHandler {
         try {
             LocalizedEntryListFactory factory = field.getDataType().getEnumerationFactory();
             List<Query> queries = factory.getQueries(cloud, node, field);
-            if (queries.size() != 1) {
-                throw new IllegalStateException();
+            if (queries.size() == 0) {
+                // a node field, but no query given. So any node is possible?
+                return cloud.getNodeManager("object").createQuery();
+            }
+            if (queries.size() > 1) {
+                throw new IllegalStateException("More than one query found (" + queries.size() + ") This is not supported");
             }
             return queries.get(0);
         } catch(SearchQueryException sqe) {
