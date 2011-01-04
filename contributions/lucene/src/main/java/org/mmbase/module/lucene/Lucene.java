@@ -838,6 +838,10 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             shutdown();
         }
     }
+    @Override
+    public int getWeight() {
+        return 0;
+    }
 
 
 
