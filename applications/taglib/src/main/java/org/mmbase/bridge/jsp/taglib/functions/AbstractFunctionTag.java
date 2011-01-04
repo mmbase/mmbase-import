@@ -20,7 +20,6 @@ import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import java.util.Map;
-import org.mmbase.util.Casting;
 
 import org.mmbase.util.Entry;
 import org.mmbase.util.functions.*;
