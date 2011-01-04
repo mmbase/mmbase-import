@@ -19,6 +19,14 @@
     quite one dimensional. You'd probably want to take a looke at the 'cloudcontext' component in
     stead.
   </description>
+  <dependencies>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
   <repositories>
     <repository>
       <id>mmbase</id>
