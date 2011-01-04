@@ -112,4 +112,9 @@ public class XmlDetector extends AbstractDetector {
 
     }
 
+
+    @Override
+    public String toString() {
+        return "xmlns:" + namespace + " publicid:" + publicId;
+    }
 }
