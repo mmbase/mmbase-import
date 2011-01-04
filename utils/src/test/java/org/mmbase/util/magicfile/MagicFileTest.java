@@ -32,16 +32,19 @@ public class MagicFileTest  {
             new Object[] {"flash2.swf", "application/x-shockwave-flash"},
 
             new Object[] {"cx.png", "image/png"},
+
             new Object[] {"wordxml.doc", "application/msword"},
-            new Object[] {"msword2007.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"},
+            new Object[] {"msword2007.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}
+            ,
             new Object[] {"msexcel2007.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
             new Object[] {"mspowerpoint2007.pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation"},
+
             new Object[] {"test.xhtml", "application/xml+xhtml"},
             new Object[] {"test.html", "text/html"},
             new Object[] {"test.xml", "text/xml"},
             new Object[] {"h-friendship-work.ppt", "application/vnd.ms-powerpoint"},
-            new Object[] {"dot.", MagicFile.FAILED
-            }
+            new Object[] {"dot.", MagicFile.FAILED }
+
         };
 
         File dir = new File("src" + File.separator + "test" + File.separator + "files");
@@ -72,7 +75,7 @@ public class MagicFileTest  {
 
 
     /**
-     * It may use the filename as a fall back. But not in these test-cases. So it should still work if the files as an unrecognized extension.
+     * It may use the filename as a fall back. But not in these test-cases. So it should still work if the files has an unrecognized extension.
      */
     @Test
     public void noExtension() throws IOException  {

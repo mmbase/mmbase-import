@@ -106,8 +106,9 @@ public class MagicFile {
      * Tests the byte[] array for the mime type.
      *
      * @return The found mime-type or FAILED
+     * @since MMBase-2.0
      */
-    protected String getMimeType(final byte[] input, final InputStream in) {
+    protected String getMimeType(final byte[] input,  final InputStream in) throws IOException {
         if (! in.markSupported()) {
             throw new IllegalArgumentException("Mark not supported on " + in);
         }
@@ -126,6 +127,7 @@ public class MagicFile {
         }
 
         for (Detector detector : list) {
+            in.reset();
             if (detector.test(lithmus, in)) {
                 log.debug("Matched " + detector);
                 return detector.getMimeType();
@@ -135,15 +137,26 @@ public class MagicFile {
     }
 
     public String getMimeType(final byte[] input) {
-        return getMimeType(input, new ByteArrayInputStream(input));
+        try {
+            return getMimeType(input, new ByteArrayInputStream(input));
+        } catch (IOException ioe) {
+            log.error(ioe);
+            return FAILED;
+        }
     }
     /**
      * @since MMBase-1.9.2
      */
     public String getMimeType(InputStream input) throws IOException {
         byte[] lithmus = new byte[BUFSIZE];
+        if (! input.markSupported()) {
+            input = new SerializableInputStream(input, -1);
+            //throw new IllegalArgumentException("Mark not supported on " + in);
+        }
         int res = input.read(lithmus, 0, BUFSIZE);
-        log.debug("read " + res + "  bytes from " + input);
+        if (log.isDebugEnabled()) {
+            log.debug("read " + res + "  bytes from " + input);
+        }
         return getMimeType(lithmus, input);
     }
 
