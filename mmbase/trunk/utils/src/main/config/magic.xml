@@ -2018,15 +2018,36 @@
       <extension>docx</extension>
       <designation>Microsoft Office Word 2007</designation>
     </detector>
+    <detector class="org.mmbase.util.magicfile.ZipDetector">
+      <mimetype>application/vnd.openxmlformats-officedocument.wordprocessingml.document</mimetype>
+      <extension>docx</extension>
+      <designation>Microsoft Office Word 2007</designation>
+      <param name="hasFiles">\[Content_Types\]\.xml</param>
+      <param name="hasDirectories">word</param>
+    </detector>
     <detector>
       <mimetype>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</mimetype>
       <extension>xlsx</extension>
       <designation>Microsoft Office Excel 2007</designation>
     </detector>
+    <detector class="org.mmbase.util.magicfile.ZipDetector">
+      <mimetype>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</mimetype>
+      <extension>xlsx</extension>
+      <designation>Microsoft Office Excel 2007</designation>
+      <param name="hasFiles">\[Content_Types\]\.xml</param>
+      <param name="hasDirectories">xl</param>
+    </detector>
     <detector>
       <mimetype>application/vnd.openxmlformats-officedocument.presentationml.presentation</mimetype>
       <extension>pptx</extension>
       <designation>Microsoft Office Powerpoint 2007</designation>
+    </detector>
+    <detector class="org.mmbase.util.magicfile.ZipDetector">
+      <mimetype>application/vnd.openxmlformats-officedocument.presentationml.presentation</mimetype>
+      <extension>pptx</extension>
+      <designation>Microsoft Office Powerpoint 2007</designation>
+      <param name="hasFiles">\[Content_Types\]\.xml</param>
+      <param name="hasDirectories">ppt</param>
     </detector>
     <detector>
       <mimetype>???</mimetype>
