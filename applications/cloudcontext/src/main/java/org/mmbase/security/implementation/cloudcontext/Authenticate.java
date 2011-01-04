@@ -141,7 +141,7 @@ public class Authenticate extends CloudContextAuthentication {
             if (extraAdmins.containsKey(userName)) {
                 if(extraAdmins.get(userName).equals(password)) {
                     log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
-                    User user = new LocalAdmin(userName, type);
+                    User user = new LocalAdmin(users.getUser(userName), userName, type);
                     loggedInExtraAdmins.put(userName, user);
                     return user;
                 }
@@ -159,7 +159,7 @@ public class Authenticate extends CloudContextAuthentication {
             if (extraAdmins.containsKey(userName)) {
                 if(users.encode((String) extraAdmins.get(userName)).equals(password)) {
                     log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
-                    User user = new LocalAdmin(userName, type);
+                    User user = new LocalAdmin(users.getUser(userName), userName, type);
                     loggedInExtraAdmins.put(userName, user);
                     return user;
                 }
@@ -177,7 +177,7 @@ public class Authenticate extends CloudContextAuthentication {
             String rank     = li.getMap().get(PARAMETER_RANK.getName());
             if (userName != null && (rank == null || (Rank.ADMIN.toString().equals(rank) && extraAdmins.containsKey(userName)))) {
                 log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
-                User user = new LocalAdmin(userName, type);
+                User user = new LocalAdmin(users.getUser(userName), userName, type);
                 loggedInExtraAdmins.put(userName, user);
                 return user;
             } else {
@@ -282,6 +282,9 @@ public class Authenticate extends CloudContextAuthentication {
             super(Authenticate.this, new AdminVirtualNode(), Authenticate.this.getKey(), app);
             l = extraAdminsUniqueNumber;
             userName = user;
+        }
+        LocalAdmin(String user, String app) {
+            this(null, user, app);
         }
         LocalAdmin(String user, String app, Rank r) {
             this(user, app);
