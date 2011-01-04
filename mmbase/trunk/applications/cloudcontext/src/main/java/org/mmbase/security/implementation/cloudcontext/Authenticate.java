@@ -278,8 +278,8 @@ public class Authenticate extends CloudContextAuthentication {
         private String userName;
         private long   l;
         private Rank   r = Rank.ADMIN;
-        LocalAdmin(String user, String app) {
-            super(Authenticate.this, new AdminVirtualNode(), Authenticate.this.getKey(), app);
+        LocalAdmin(MMObjectNode userNode, String user, String app) {
+            super(Authenticate.this, userNode == null ? new AdminVirtualNode() : userNode, Authenticate.this.getKey(), app);
             l = extraAdminsUniqueNumber;
             userName = user;
         }
