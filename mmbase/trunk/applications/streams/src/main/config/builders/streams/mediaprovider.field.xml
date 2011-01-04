@@ -11,7 +11,7 @@
   </gui>
 
   <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-    <default value="default.mediaprovider" />
+    <default value="default.provider" />
     <required value="true" />
     <enumeration enforce="never">
       <query type="mediaproviders"  xmlns="http://www.mmbase.org/xmlns/searchquery">
