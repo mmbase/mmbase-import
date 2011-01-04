@@ -425,8 +425,8 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                 return LocalizedEntryListFactory.this.size(cloud);
             }
             @Override
-            public ListIterator<Map.Entry<C, String>> listIterator(final int index) {
-                return new ListIterator<Map.Entry<C, String>>() {
+            public ListIterator<Map.Entry<C, ? extends CharSequence>> listIterator(final int index) {
+                return new ListIterator<Map.Entry<C, ? extends CharSequence>>() {
                         int   i = -1;
                         Locale useLocale = locale;
                         Cloud useCloud = cloud;
@@ -551,8 +551,8 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                         return next != null || subIterator != null;
                     }
                     @Override
-                    public Map.Entry<C, String> next() {
-                        Map.Entry<C, String> res;
+                    public Map.Entry<C, ? extends CharSequence> next() {
+                        Map.Entry<C, ? extends CharSequence> res;
                         if (subIterator != null) {
                             res = subIterator.next();
                             Object key = res.getKey();
@@ -595,11 +595,11 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                         throw new UnsupportedOperationException();
                     }
                     @Override
-                    public void add(Map.Entry<C, String> o) {
+                    public void add(Map.Entry<C, ? extends CharSequence> o) {
                         throw new UnsupportedOperationException();
                     }
                     @Override
-                    public void set(Map.Entry<C, String> o) {
+                    public void set(Map.Entry<C, ? extends CharSequence> o) {
                         throw new UnsupportedOperationException();
                     }
                 };
