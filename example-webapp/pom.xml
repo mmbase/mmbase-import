@@ -10,6 +10,12 @@
     <relativePath>../maven-base/pom.xml</relativePath>
   </parent>
 
+  <description>This is an MMBase example webapp. It is a simple mmbase applications with a lot of dependencies. It's
+  artifact is a 'war' (a web application archive) that you could e.g. deploy in Tomcat or so. You'll need to provide a
+  database then. It is also possible to run it directly from the sources, using the 'mvn jetty:run target'. A hsql
+  database (in the 'data' dir) is provided then.
+  </description>
+
   <artifactId>example-webapp</artifactId>
   <packaging>war</packaging>
   <name>MMBase Example webapp</name>
