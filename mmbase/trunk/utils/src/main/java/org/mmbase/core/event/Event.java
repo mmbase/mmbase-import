@@ -37,7 +37,8 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
         return machine;
     }
     public boolean isLocal() {
-        return MMBaseContext.getMachineName().equals(machine);
+        String localMachine = MMBaseContext.getMachineName();
+        return localMachine == null ? machine == null : localMachine.equals(machine);
     }
 
 
