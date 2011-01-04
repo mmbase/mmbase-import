@@ -127,7 +127,8 @@ public class Functions {
                 page = new java.io.File(requestURI).getName();
             }
         }
-        if (page.charAt(0) == '/') { // absolute on servletcontex
+        if (page.charAt(0) == '/') { // absolute on servletcontext
+            if (req == null) throw new RuntimeException("No request on pageContext " + pageContext);
             show.append(req.getContextPath());
         }
         show.append(page);
