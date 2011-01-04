@@ -23,6 +23,7 @@
          -DjdbcUrl=jdbc:hsqldb:hsql://localhost/testb
          to connect to a running hsql, e.g. needed when testing clustering
     -->
+    <netbeans.hint.deploy.server>gfv3ee6</netbeans.hint.deploy.server>
   </properties>
 
   <build>
@@ -223,12 +224,6 @@
       <type>war</type>
     </dependency>
 
-    <dependency>
-      <groupId>hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-      <version>1.8.0.7</version>
-    </dependency>
-
 
 
   </dependencies>
@@ -242,4 +237,6 @@
   </pluginRepositories>
 
 </project>
+
+
 
