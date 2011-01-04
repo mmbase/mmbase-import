@@ -23,7 +23,7 @@ import static org.junit.Assume.*;
 /**
    *
  * @author Michiel Meeuwissen
- * @version $Id: QueriesTest.java 40323 2010-01-04 13:43:05Z michiel $
+ * @version $Id$
  */
 public class CloneUtilTest {
 

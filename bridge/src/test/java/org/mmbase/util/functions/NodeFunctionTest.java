@@ -19,7 +19,7 @@ import static org.junit.Assume.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: SetFunctionTest.java 39514 2009-11-03 15:51:57Z michiel $
+ * @verion $Id$
  */
 public class NodeFunctionTest {
 

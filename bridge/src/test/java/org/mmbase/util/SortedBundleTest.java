@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: LocalizedEntryListFactoryTest.java 39842 2009-11-23 10:41:32Z michiel $
+ * @verion $Id$
  */
 public class SortedBundleTest {
 

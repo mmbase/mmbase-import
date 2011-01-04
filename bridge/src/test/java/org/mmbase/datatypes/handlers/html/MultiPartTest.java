@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 
 /**
- * @version $Id: StringListTagTest.java 39892 2009-11-24 09:13:41Z michiel $
+ * @version $Id$
  */
 
 public  class MultiPartTest {

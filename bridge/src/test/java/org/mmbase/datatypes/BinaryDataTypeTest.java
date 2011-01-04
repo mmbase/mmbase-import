@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-2.0
- * @version $Id: DataTypesTest.java 40400 2010-01-07 15:55:35Z michiel $
+ * @version $Id$
  */
 public class BinaryDataTypeTest  {
     private static final byte[] GIF = new byte[]{
