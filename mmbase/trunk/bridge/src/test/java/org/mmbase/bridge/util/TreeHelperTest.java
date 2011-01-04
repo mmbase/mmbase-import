@@ -25,7 +25,7 @@ import static org.junit.Assume.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: QueriesTest.java 41584 2010-03-23 18:05:29Z michiel $
+ * @version $Id$
  */
 public class TreeHelperTest  {
 

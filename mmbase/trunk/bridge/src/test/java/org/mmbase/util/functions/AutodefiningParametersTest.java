@@ -15,7 +15,7 @@ import org.junit.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: ParameterTest.java 39343 2009-10-26 21:04:47Z michiel $
+ * @verion $Id$
  */
 public class AutodefiningParametersTest {
 

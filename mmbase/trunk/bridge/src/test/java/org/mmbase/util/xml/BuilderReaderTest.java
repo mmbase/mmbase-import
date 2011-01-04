@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: DocumentReaderTest.java 38306 2009-09-01 15:58:19Z michiel $
+ * @verion $Id$
  */
 public class BuilderReaderTest {
 

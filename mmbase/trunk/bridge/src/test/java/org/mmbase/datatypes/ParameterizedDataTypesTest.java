@@ -28,7 +28,7 @@ import org.mmbase.util.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9.2
- * @version $Id: DataTypesTest.java 39003 2009-10-06 14:42:39Z michiel $
+ * @version $Id$
  */
 @RunWith(Parameterized.class)
 public class ParameterizedDataTypesTest  {

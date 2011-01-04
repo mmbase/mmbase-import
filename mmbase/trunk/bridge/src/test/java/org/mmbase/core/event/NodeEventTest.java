@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: MockTest.java 41950 2010-04-19 11:16:24Z michiel $
+ * @version $Id$
  */
 public class NodeEventTest  {
 
