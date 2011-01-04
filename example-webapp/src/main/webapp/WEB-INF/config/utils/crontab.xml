@@ -3,7 +3,9 @@
 <util>
   <properties>
 
-    <property name="testjob">*/1 20-23 * * *|org.mmbase.applications.crontab.TestCronJob|||balance</property>
+    <property name="testjob1">*/1 20-23 * * *|org.mmbase.applications.crontab.TestCronJob|Test Job|exceptions=true,duration=12800|balance</property>
+
+    <property name="testjob2">*/1 20-23 * * *|org.mmbase.applications.crontab.TestCronJob|Test Job|exceptions=false,duration=10000000|balance</property>
 
   </properties>
 </util>
