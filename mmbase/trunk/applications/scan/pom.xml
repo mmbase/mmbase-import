@@ -47,24 +47,28 @@
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-vwms</artifactId>
       <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-jumpers</artifactId>
       <version>${project.version}</version>
       <classifier>classes</classifier>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-resources</artifactId>
       <version>${project.version}</version>
       <classifier>classes</classifier>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-email</artifactId>
       <version>${project.version}</version>
       <classifier>classes</classifier>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
   <repositories>
