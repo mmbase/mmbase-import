@@ -177,6 +177,8 @@ public class FileServlet extends BridgeServlet {
 
     /**
      * FileServlet supports 'meta' files like Cern HTTPD (and apaches mod_cern_meta).
+     * Such a file contains the extra HTTP headers (e.g. the Content-Disposition)
+     * and can be found in <code>.web/&lt;filename&gt;.meta</code>.
      * @since MMBase-1.9.2
      */
     public  File getMetaFile(File f) {
@@ -242,6 +244,9 @@ public class FileServlet extends BridgeServlet {
     }
 
     /**
+     * Parses back the result of {@link #getMetaValue(String, String)}.
+     * E.g. to get the filename back from the content disposition in the meta header maps do:
+     * <code>String inDisposition = FileServlet.parseMetaValue("filename", meta.get("Content-Disposition"));</code>
      * @since MMBase-1.9.6
      */
     public static String parseMetaValue(String fieldName, String cd) {
@@ -277,10 +282,15 @@ public class FileServlet extends BridgeServlet {
     }
 
     /**
+     * Constructs a key/value entry for use in the meta-files.
+     * This uses <a href="http://greenbytes.de/tech/webdav/rfc5987.html">RFC 5987</a> to also encode other characters
+     * than those of ISO-8859-1 (we use UTF-8). Is is also added simply as field=value, which can serve as a fall back for browsers
+     * which don't yet understand the RFC.
+     * E.g. <code>meta.put("Content-Disposition", "attachment; " + FileServlet.getMetaValue("filename", name));</code>
      * @since MMBase-1.9.6
      */
     public static String getMetaValue(String field, String value) {
-        //http://greenbytes.de/tech/webdav/rfc5987.html
+        //BTW also chrome doesn't quite understand it:
         //http://code.google.com/p/chromium/issues/detail?id=57830
         return field + "=\"" + value + "\";\n  " + field + "*=UTF-8''" + UrlEscaper.INSTANCE.transform(value);
     }
