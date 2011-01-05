@@ -56,7 +56,7 @@ public class BinaryHandler extends HtmlHandler {
             show.append("" + gui.getFunctionValue(args));
         }
         show.append("<input class=\"");
-        appendClasses(show,node, field);
+        appendClasses(request, show, node, field);
         show.append("\" type=\"").append(search ? "text" : "file").append("\" name=\"").append(request.getName(field)).append("\" ");
         //show.append("id=\"").append(prefixID(field.getName())).append("\" ");
         //addExtraAttributes(show);

@@ -43,7 +43,7 @@ public class EnumHandler extends HtmlHandler {
         StringBuilder buffer = new StringBuilder();
         String fieldName = field.getName();
         buffer.append("<select class=\"");
-        appendClasses(buffer, node, field);
+        appendClasses(request, buffer, node, field);
         appendNameId(buffer, request, field);
         //addExtraAttributes(buffer);
         buffer.append(">");
