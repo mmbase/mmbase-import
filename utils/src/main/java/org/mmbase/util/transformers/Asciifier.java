@@ -35,6 +35,8 @@ public class Asciifier extends StringTransformer {
     private boolean removeDiacritics = true;
     private boolean collapseMultiple = false;
 
+    private Pattern more;
+
     /**
      * Replacement character in stead of a question mark. Note that if you use more then one
      * character in the replacement string only the first character used.
@@ -57,6 +59,10 @@ public class Asciifier extends StringTransformer {
         collapseMultiple = m;
     }
 
+    public void setMoreDisallowed(String more) {
+        this.more = Pattern.compile(more);
+    }
+
 
     @Override
     public String transform(String str) {
@@ -64,6 +70,10 @@ public class Asciifier extends StringTransformer {
 
         if (removeDiacritics) {
             str = DiacriticsRemover.INSTANCE.transform(str);
+        }
+        if (more != null) {
+            str = more.matcher(str).replaceAll("\u00e9");
+            //\u00e9 is just a placeholder and will be replaced by replacer in the following lines
         }
         if (collapseMultiple) {
             str = NOASCII_MULTIPLE.matcher(str).replaceAll(replacer);
