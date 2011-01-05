@@ -50,11 +50,11 @@ public class AreaHandler extends TextHandler {
             StringBuilder buffer =  new StringBuilder();
             buffer.append("<textarea class=\"");
             buffer.append(field.getMaxLength() > 2048 ? "big " : "small ");
-            appendClasses(buffer, node, field);
+            appendClasses(request, buffer, node, field);
             buffer.append("\" ");
             appendNameId(buffer, request, field);
             buffer.append(">");
-            Object value = getFieldValue(request, node, field, ! search);
+            Object value = getEvaluatedFieldValue(request, node, field);
             if ("".equals(value)) {
                 // This can be needed because:
                 // If included, e.g. with xmlhttprequest,
