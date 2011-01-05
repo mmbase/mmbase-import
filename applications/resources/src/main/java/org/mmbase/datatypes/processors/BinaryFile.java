@@ -115,7 +115,10 @@ public class BinaryFile {
 
         private static final long serialVersionUID = 1L;
 
-        private CharTransformer fileNameTransformer = new Asciifier();
+        private Asciifier fileNameTransformer = new Asciifier();
+        {
+            fileNameTransformer.setMoreDisallowed("[\\s!?:/,]");
+        }
 
         private String contenttypeField = "mimetype";
 
@@ -196,7 +199,7 @@ public class BinaryFile {
                 File to = getFile(node, field, parts[1]);
                 if (! to.getParentFile().exists()) {
                     if (! (to.getParentFile().mkdirs())) {
-                        log.warn("Could not make directories " + to.getParentFile());
+                    log.warn("Could not make directories " + to.getParentFile());
                     }
                 }
                 log.debug("Fixing file");
@@ -211,17 +214,19 @@ public class BinaryFile {
                         log.warn("Could not rename " + file + " to " + to);
                     }
                     if (renamed) {
-                        fileName = to.toString().substring(dir.toString().length() + 1);
-                        log.debug("Setting file name to " + fileName);
-                        node.setValueWithoutProcess(field.getName(), fileName);
-                        log.debug("Chached " + node.getChanged() + " " + node.getCloud());
+                    fileName = to.toString().substring(dir.toString().length() + 1);
+                    log.debug("Setting file name to " + fileName);
+                    node.setValueWithoutProcess(field.getName(), fileName);
+                    log.debug("Chached " + node.getChanged() + " " + node.getCloud());
+                    if (! node.isNew()) {
                         node.commit();
-                        File meta = FileServlet.getInstance().getMetaFile(file);
-                        if (meta.exists()) {
-                            File toMeta = FileServlet.getInstance().getMetaFile(to);
-                            toMeta.getParentFile().mkdirs();
-                            meta.renameTo(toMeta);
-                        }
+                    }
+                    File meta = FileServlet.getInstance().getMetaFile(file);
+                    if (meta.exists()) {
+                        File toMeta = FileServlet.getInstance().getMetaFile(to);
+                        toMeta.getParentFile().mkdirs();
+                        meta.renameTo(toMeta);
+                    }
                     }
                 }
             }
