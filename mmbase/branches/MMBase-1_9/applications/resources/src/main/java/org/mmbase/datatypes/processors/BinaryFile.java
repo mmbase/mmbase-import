@@ -13,7 +13,6 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
 import org.mmbase.util.*;
 import org.mmbase.util.transformers.*;
-import org.mmbase.datatypes.processors.*;
 import java.util.*;
 import java.io.*;
 import java.text.*;
@@ -144,8 +143,7 @@ public class BinaryFile {
                 }
                 File f = getFile(node, field, fileNameTransformer.transform(name));
                 Map<String, String> meta = FileServlet.getInstance().getMetaHeaders(f);
-                //http://greenbytes.de/tech/webdav/rfc5987.html
-                meta.put("Content-Disposition", "attachment; filename=\"" + name + "\";\n  filename*=UTF-8''" + UrlEscaper.INSTANCE.transform(name));
+                meta.put("Content-Disposition", "attachment; " + FileServlet.getMetaValue("filename", name));
                 FileServlet.getInstance().setMetaHeaders(f, meta);
 
                 if (log.isDebugEnabled()) {

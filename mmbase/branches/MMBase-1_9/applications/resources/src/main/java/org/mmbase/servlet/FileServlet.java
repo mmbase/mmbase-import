@@ -228,7 +228,7 @@ public class FileServlet extends BridgeServlet {
      */
     public void setMetaHeaders(File f, Map<String, String> meta) {
         try {
-            File metaFile = FileServlet.getInstance().getMetaFile(f);
+            File metaFile = getMetaFile(f);
             metaFile.getParentFile().mkdirs();
             BufferedWriter w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(metaFile), "ISO-8859-1"));
             for (Map.Entry<String, String> entry : meta.entrySet()) {
@@ -239,6 +239,49 @@ public class FileServlet extends BridgeServlet {
         } catch (IOException ioe) {
             log.warn(ioe);
         }
+    }
+
+    /**
+     * @since MMBase-1.9.6
+     */
+    public static String getContentDispositionFileName(File f) {
+        Map<String, String> meta = FileServlet.getInstance().getMetaHeaders(f);
+        String cd = meta.get("Content-Disposition");
+        if (cd != null) {
+            String[] fields = cd.split(";");
+            String inDisposition = null;
+            for (String field : fields) {
+                String[] expr = field.split("=", 2);
+                if (expr.length == 2) {
+                    if (expr[0].equals("filename") && inDisposition == null) {
+                        inDisposition = expr[1];
+                        if (inDisposition.startsWith("\"") && inDisposition.endsWith("\"")) {
+                            inDisposition = inDisposition.substring(1, inDisposition.length() - 1);
+                        }
+                    }
+                    if (expr[0].equals("filename*")) {
+                        inDisposition = expr[1];
+                        int q = inDisposition.indexOf("'");
+                        if (q > 0) {
+                            q = inDisposition.indexOf("'", q);
+                            inDisposition = inDisposition.substring(q);
+                        }
+                    }
+
+                }
+            }
+            if (inDisposition != null) return inDisposition;
+        }
+        return org.mmbase.util.ResourceLoader.getName(f.getName());
+    }
+
+    /**
+     * @since MMBase-1.9.6
+     */
+    public static String getMetaValue(String field, String value) {
+        //http://greenbytes.de/tech/webdav/rfc5987.html
+        //http://code.google.com/p/chromium/issues/detail?id=57830
+        return field + "=\"" + value + "\";\n  " + field + "*=UTF-8''" + UrlEscaper.INSTANCE.transform(value);
     }
 
     protected File checkFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
