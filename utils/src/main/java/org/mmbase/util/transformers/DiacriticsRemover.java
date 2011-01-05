@@ -11,6 +11,7 @@ package org.mmbase.util.transformers;
 
 import java.io.*;
 import java.text.*;
+import java.util.regex.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -20,11 +21,17 @@ import org.mmbase.util.logging.*;
  */
 
 public class DiacriticsRemover extends StringTransformer {
+    private static final long serialVersionUID = 0L;
+    public static final DiacriticsRemover INSTANCE = new DiacriticsRemover();
+
+    public static final Pattern DIACRITICS
+        = Pattern.compile("[\\p{InCombiningDiacriticalMarks}\\p{IsLm}\\p{IsSk}]+"); // I have no idea what IsLm and IsSk mean.
+    // http://www.fileformat.info/info/unicode/block/combining_diacritical_marks/index.htm
+    // [\u0300-\u0367]+"
 
     @Override
     public String transform(String r) {
-        // http://www.fileformat.info/info/unicode/block/combining_diacritical_marks/index.htm
-        return Normalizer.normalize(r, Normalizer.Form.NFD).replaceAll("[\u0300-\u0367]", "");
+        return DIACRITICS.matcher(Normalizer.normalize(r, Normalizer.Form.NFD)).replaceAll("");
     }
 
 }
