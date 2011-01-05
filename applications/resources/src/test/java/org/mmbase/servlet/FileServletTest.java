@@ -78,4 +78,13 @@ public class FileServletTest {
         }
     }
 
+    @Test
+    public void metaValues() {
+        String testString =  "\u043f\u0435\u0440\u0435\u0441\u0442\u0440\u043e\u0439\u043a\u0430.txt";
+        Map<String, String> meta = new HashMap<String, String>();
+        meta.put("Content-Disposition", "attachment; " + FileServlet.getMetaValue("filename", testString));
+        System.out.println("" + meta);
+        assertEquals(testString, FileServlet.parseMetaValue("filename", meta.get("Content-Disposition")));
+    }
+
 }
