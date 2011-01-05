@@ -184,6 +184,8 @@ public class FileServlet extends BridgeServlet {
         File metaFile = new File(webDir, f.getName() + metaSuffix);
         return metaFile;
     }
+
+    private static final Pattern STARTS_WITH_WHITESPACE = Pattern.compile("^\\s+.*");
     /**
      * Returns contents of {@link #getMetaFile} as a Map.
      * @since MMBase-1.9.2
@@ -193,21 +195,30 @@ public class FileServlet extends BridgeServlet {
         File metaFile = getMetaFile(f);
         if (metaFile.exists() && metaFile.canRead()) {
             try {
-                BufferedReader r = new BufferedReader(new FileReader(metaFile));
+                BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(metaFile), "ISO-8859-1"));
                 String line = r.readLine();
+                String prevHeader = null;
                 while (line != null) {
-                    line = line.trim();
-                    String[] header = line.split(":\\s*", 2);
-                    if (header.length == 2) {
-                        meta.put(header[0], header[1]);
+                    if (prevHeader != null && STARTS_WITH_WHITESPACE.matcher(line).matches()) {
+                        meta.put(prevHeader, meta.get(prevHeader) + "\n" + line);
                     } else {
-                        log.warn("Could not parse " + line);
+                        line = line.trim();
+                        String[] header = line.split(":\\s*", 2);
+                        if (header.length == 2) {
+                            meta.put(header[0], header[1]);
+                            prevHeader = header[0];
+                        } else {
+                            log.warn("Could not parse " + line);
+                        }
                     }
                     line = r.readLine();
                 }
             } catch (IOException ioe) {
                 log.error(ioe);
             }
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Found " + meta + " for " + f);
         }
         return meta;
     }
@@ -219,7 +230,7 @@ public class FileServlet extends BridgeServlet {
         try {
             File metaFile = FileServlet.getInstance().getMetaFile(f);
             metaFile.getParentFile().mkdirs();
-            BufferedWriter w = new BufferedWriter(new FileWriter(metaFile));
+            BufferedWriter w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(metaFile), "ISO-8859-1"));
             for (Map.Entry<String, String> entry : meta.entrySet()) {
                 w.write(entry.getKey() + ": " + entry.getValue());
             }
@@ -232,9 +243,12 @@ public class FileServlet extends BridgeServlet {
 
     protected File checkFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pi = req.getPathInfo();
+        log.debug(pi);
         if (ignores(pi)) {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "The file '" + pi + "' is explicitely ignored by the file servlet.");
             return null;
+        } else {
+            log.debug("Not matching " + ignore);
         }
 
         File file = getFile(pi, resp);
@@ -534,7 +548,7 @@ public class FileServlet extends BridgeServlet {
     private static final Xml XML = new Xml();
 
     protected byte[] getListingBytes(HttpServletRequest req, HttpServletResponse resp, File directory) throws IOException {
-   StringBuilder result = new StringBuilder();
+        StringBuilder result = new StringBuilder();
         result.append("<?xml version='1.0'?>\n");
         result.append("<html xmlns='http://www.w3.org/1999/xhtml'>");
         result.append("<head>");
