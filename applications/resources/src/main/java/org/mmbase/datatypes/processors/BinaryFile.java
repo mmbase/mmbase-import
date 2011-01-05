@@ -12,9 +12,12 @@ package org.mmbase.datatypes.processors;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
 import org.mmbase.util.*;
+import org.mmbase.util.transformers.*;
 import org.mmbase.datatypes.processors.*;
 import java.util.*;
 import java.io.*;
+import java.text.*;
+
 import org.mmbase.util.logging.*;
 import org.mmbase.servlet.FileServlet;
 
@@ -49,7 +52,9 @@ public class BinaryFile {
         return new File(getDirectory(), getFileName(node, field, fileName).replace("/", File.separator));
     }
 
-    public static String getFileName(final Node node, final Field field, String fileName) {
+
+
+    private static String getFileName(final Node node, final Field field, String fileName) {
         StringBuilder buf = new StringBuilder();
         org.mmbase.storage.implementation.database.DatabaseStorageManager.appendDirectory(buf, node.getNumber(), "/");
         buf.append("/").append(node.getNumber()).append(".");
@@ -111,10 +116,15 @@ public class BinaryFile {
 
         private static final long serialVersionUID = 1L;
 
+        private CharTransformer fileNameTransformer = new Asciifier();
+
         private String contenttypeField = "mimetype";
 
         public void setContenttypeField(String f) {
             contenttypeField = f;
+        }
+        public void setFileNameTransformer(String ft) {
+            throw new UnsupportedOperationException("Not yet implemented");
         }
 
         public Object process(final Node node, final Field field, final Object value) {
@@ -132,7 +142,7 @@ public class BinaryFile {
                         log.warn("Could not find " + ef + " so could not delete it");
                     }
                 }
-                File f = getFile(node, field, name);
+                File f = getFile(node, field, fileNameTransformer.transform(name));
                 Map<String, String> meta = FileServlet.getInstance().getMetaHeaders(f);
                 meta.put("Content-Disposition", "attachment; filename=\"" + name + "\"");
                 FileServlet.getInstance().setMetaHeaders(f, meta);
@@ -206,7 +216,9 @@ public class BinaryFile {
                     log.debug("Setting file name to " + fileName);
                     node.setValueWithoutProcess(field.getName(), fileName);
                     log.debug("Chached " + node.getChanged() + " " + node.getCloud());
-                    node.commit();
+                    if (! node.isNew()) {
+                        node.commit();
+                    }
                     File meta = FileServlet.getInstance().getMetaFile(file);
                     if (meta.exists()) {
                         File toMeta = FileServlet.getInstance().getMetaFile(to);
