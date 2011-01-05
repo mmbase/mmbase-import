@@ -126,54 +126,15 @@ public class UrlEscaper extends ReaderTransformer{
     @Override
     public Writer transformBack(Reader reader, Writer writer) {
         BufferedReader br = new BufferedReader(reader, BUF_SIZE);
-        // can do something with using a buffer and anticipate that you can need a few chars more
-        // (perhaps 3).
-        OutputStream out = new org.mmbase.util.WriterOutputStream(writer, "UTF-8");
-        byte[] buf = new byte[10];
-        int bufSize = 0;
         try {
-            int t = br.read();
-
-            while (t != -1) {
-                if (t == HEX_ESCAPE) {
-                    int n = br.read();
-                    if (n != -1) {
-                        int j = from_hex((char) n)*16;
-                        int n2 = br.read();
-                        if (n2 != -1) {
-                            j += from_hex((char) n2);
-                            buf[bufSize] = (byte) j;
-                            bufSize++;
-                        } else {
-                            if (bufSize > 0) {
-                                out.write(buf, 0, bufSize);
-                                bufSize = 0;
-                            }
-                            out.write(t);
-                            out.write(n);
-                            break;
-                        }
-                    } else {
-                        if (bufSize > 0) {
-                            out.write(buf, 0, bufSize);
-                            bufSize = 0;
-                        }
-                        out.write(t);
-                        break;
-                    }
-                } else {
-                    if (bufSize > 0) {
-                        out.write(buf, 0, bufSize);
-                        bufSize = 0;
-                    }
-                    out.write(t);
-                }
-                t = br.read();
+            String line;
+            while ((line = br.readLine()) != null) {
+                writer.write(java.net.URLDecoder.decode(line, "UTF-8"));
             }
-            out.flush();
-        } catch (IOException ioe) {
-            log.warn(ioe.getMessage(), ioe);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
+
         return writer;
 
     }
