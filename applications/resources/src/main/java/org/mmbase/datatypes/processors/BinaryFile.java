@@ -116,6 +116,9 @@ public class BinaryFile {
         private static final long serialVersionUID = 1L;
 
         private CharTransformer fileNameTransformer = new Asciifier();
+        {
+            fileNameTransformer.setMoreDisallowed("[\\s!?]");
+        }
 
         private String contenttypeField = "mimetype";
 
