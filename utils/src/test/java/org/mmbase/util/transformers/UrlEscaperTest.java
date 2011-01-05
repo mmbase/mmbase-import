@@ -18,8 +18,9 @@ public class UrlEscaperTest  {
     public static Collection<Object[]> data() throws Exception {
         List<Object[]> data = new ArrayList<Object[]>();
         //data.add(new Object[] {"Caf\u00e9 e\u0125o\u015dan\u011do"});
-        data.add(new Object[] {"\u043f\u0435"});
-        //data.add(new Object[] {"\u043f\u0435\u0440\u0435\u0441\u0442\u0440\u043e\u0439\u043a\u0430.txt"});
+        //data.add(new Object[] {"\u043f\u0435"});
+        //data.add(new Object[] {"\u0440\u0435\u0441\u0442\u0440\u043e\u0439\u043a\u0430.txt"});
+        data.add(new Object[] {"\u043f\u0435\u0440\u0435\u0441\u0442\u0440\u043e\u0439\u043a\u0430.txt"});
         //                         p    e     r     e     s     t     r     o     j     k      a
         return data;
     }
