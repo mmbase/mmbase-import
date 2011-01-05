@@ -48,6 +48,7 @@
     <mm-sr:relate
         load="false"
         repository="${query}"
+        forms="false"
         implicitRepository="false"
         create="false"
         />
