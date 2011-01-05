@@ -28,7 +28,7 @@ public class TextHandler extends HtmlHandler  {
     @Override
     public String input(Request request, Node node, Field field, boolean search)  {
         StringBuilder show =  new StringBuilder("<input type=\"text\" class=\"small ");
-        appendClasses(show, node, field);
+        appendClasses(request, show, node, field);
         show.append("\" size=\"80\" ");
         //addExtraAttributes(show);
         appendNameId(show, request, field);

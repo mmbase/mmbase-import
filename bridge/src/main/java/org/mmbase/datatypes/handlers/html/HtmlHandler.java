@@ -44,14 +44,75 @@ public abstract class HtmlHandler  extends AbstractHandler<String> {
         setIfNotChanged = b;
     }
 
-    protected void appendClasses(StringBuilder buf, Node node, Field field) {
-        buf.append("mm_validate");
-        if (field instanceof org.mmbase.bridge.util.DataTypeField) {
-            buf.append(" mm_dthandler mm_dt_").append(field.getDataType().getName());
-        } else {
-            buf.append(" mm_dthandler mm_f_").append(field.getName()).append(" mm_nm_").append(field.getNodeManager().getName());
+    /**
+     * @since MMBase-1.9.6
+     */
+    protected String getClassName(Class<?> c) {
+        String name = c.getName();
+        name = name.substring(c.getPackage().getName().length() + 1);
+        if (name.endsWith("DataType")) {
+            name = name.substring(0, name.length() - "DataType".length());
         }
-        if (node != null) buf.append(" mm_n_").append(node.getNumber());
+        return name.toLowerCase();
+    }
+
+    protected void appendClasses(Request request, StringBuilder buf, Node node, Field field) {
+        buf.append("mm_validate");
+        DataType dt = field.getDataType();
+        for (String styleClass : dt.getStyleClasses()) {
+            buf.append(" ");
+            buf.append(styleClass);
+        }
+        {
+            Class<?> sup = dt.getClass();
+            while(DataType.class.isAssignableFrom(sup)) {
+                if (sup.equals(org.mmbase.datatypes.BasicDataType.class)) {
+                    break;
+                }
+                buf.append(" mm_dtclass_");
+                buf.append(getClassName(sup));
+                sup = sup.getSuperclass();
+            }
+            for (Class<?> c : dt.getClass().getInterfaces()) {
+                if (DataType.class.isAssignableFrom(c)) {
+                    buf.append(" mm_dtclass_");
+                    buf.append(getClassName(c));
+                }
+            }
+        }
+        if (field.getClass().equals(org.mmbase.bridge.util.DataTypeField.class)) {
+            buf.append(" mm_dt_");
+            buf.append(field.getDataType().getName());
+        } else {
+            buf.append(" mm_f_");
+            buf.append(field.getName());
+            buf.append(" mm_nm_");
+            buf.append(field.getNodeManager().getName());
+        }
+        /*
+        FieldInfoTag.DataTypeOrigin o = tag.getOrigin();
+        if (o != FieldInfoTag.DataTypeOrigin.FIELD) {
+            buf.append(" mm_dto_").append(o.toString().toLowerCase());
+        }
+        */
+
+        buf.append(" mm_n_");
+        buf.append(node == null ? -1 :node.getNumber());
+        if (dt instanceof org.mmbase.datatypes.LengthDataType) {
+            buf.append(" mm_length_");
+            Object value = getEvaluatedFieldValue(request, node, field);
+            if (value != null) {
+                try {
+                    buf.append(((org.mmbase.datatypes.LengthDataType) dt).getLength(value));
+                } catch (Exception e) {
+                    log.warn(e.getMessage());
+                    buf.append(node == null ? -1 : node.getSize(field.getName()));
+                }
+            } else {
+                buf.append(0);
+            }
+        }
+
     }
 
     protected void appendNameId(StringBuilder buf, Request request, Field field) {
