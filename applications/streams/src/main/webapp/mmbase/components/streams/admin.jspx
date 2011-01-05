@@ -44,12 +44,12 @@
             <th> </th>
             <th colspan="4"> command executors (LAUNCHER is localhost)</th>
           </tr>
-        <c:forEach items="${status.current.dataType.commitProcessor.processors[2].executors}" var="exec">
+        <!-- c:forEach items="${status.current.dataType.commitProcessor.processors[2].executors}" var="exec">
           <tr>
             <td> </td>
             <td colspan="3">${exec}</td>
           </tr>
-        </c:forEach>
+        </c:forEach -->
       </table>
     </mm:fieldlist>
 
@@ -61,22 +61,5 @@
       </mm:first>
     </mm:listfunction>
 
-    <table summary="mediafragments">
-      <caption>Recent mediafragments</caption>
-      <tr>
-        <th>#</th>
-        <th>title or url</th>
-        <th>mimetype</th>
-        <th>size</th>
-        <th>sourcenode, builder</th>
-        <th>action</th>
-      </tr>
-      <mm:listnodescontainer type="${type}">
-        <mm:sortorder field="number" direction="down" />
-        <mm:offset value="${page * pagesize}" />
-        <mm:maxnumber value="${pagesize}" />
-        <jsp:directive.include file="fragment.trs.jspx" />
-      </mm:listnodescontainer>
-    </table>
   </mm:cloud>
 </div>
