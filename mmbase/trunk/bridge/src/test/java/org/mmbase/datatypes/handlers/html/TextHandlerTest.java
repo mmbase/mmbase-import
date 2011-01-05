@@ -76,5 +76,13 @@ public  class TextHandlerTest {
         assertEquals("foo", article.getValue("title"));
     }
 
+    @Test
+    public void checkWithValueDefault() throws Exception {
+        TextHandler handler = new TextHandler();
+        Request request = new JavaRequest(false);
+        String result = handler.check(request, null, title, true);
+        assertTrue(request.isValid());
+    }
+
 
 }
