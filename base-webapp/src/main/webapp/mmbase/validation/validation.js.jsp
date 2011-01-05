@@ -36,9 +36,9 @@ function MMBaseValidator(root, id) {
     this.root = root;
     this.setup();
 
-    this.lang          = null;
+    this.lang          = $("html").attr("lang");
     this.sessionName   = null;
-   this.activeElement = null;
+    this.activeElement = null;
     this.checkAfter    = 600;
     this.logArea       = "logarea";
     this.id = MMBaseValidator.validators.push(this);
