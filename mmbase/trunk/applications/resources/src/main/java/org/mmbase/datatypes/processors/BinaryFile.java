@@ -117,6 +117,7 @@ public class BinaryFile {
 
         private Asciifier fileNameTransformer = new Asciifier();
         {
+            fileNameTransformer.setReplacer("_");
             fileNameTransformer.setMoreDisallowed("[\\s!?:/,]");
         }
 
