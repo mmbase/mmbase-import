@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  */
 
 public abstract class AbstractHandler<C>  implements Handler<C> {
-    private static final Logger log = Logging.getLoggerInstance(AbstractHandler.class);
+    private static final Logger LOG = Logging.getLoggerInstance(AbstractHandler.class);
 
     /**
      * Puts a prefix 'mm_' before an id in form fields. To be used in ccs etc..
@@ -62,18 +62,44 @@ public abstract class AbstractHandler<C>  implements Handler<C> {
     }
     /**
      * Returns the field value to be used in the page.
+     * @param request The request, {@link Request#isPost} is used to determin whether the value is given by the user,
+     * otherwise the value of the node is used, or if that is null the default value of the field.
+     * @param node A node or <code>null</code>
+     * @param field The field, never <code>null</code>.
      */
-    protected Object getFieldValue(Request request, Node node, Field field, boolean useDefault) {
-        Object  value = getFieldValue(request, node, field);
-        if (value == null) {
+    protected Object getEvaluatedFieldValue(final Request request, final Node node, final Field field) {
+        if (request.isPost()) {
+            return getFieldValue(request, node, field);
+        } else {
             String fieldName = field.getName();
-            if (node != null) {
-                value = node.isNull(fieldName) ? null : getValue(node, fieldName);
-            } else if (useDefault) {
+            Object value;
+            if (node == null) {
                 value = field.getDataType().getDefaultValue(request.getLocale(), request.getCloud(), field);
+                LOG.debug("No node, using default value " + value + " from " + field.getDataType());
+            } else {
+                value = node.isNull(fieldName) ? null : getValue(node, fieldName);
+                LOG.debug("using value from node " + value);
             }
+            return value;
         }
-        return value;
+    }
+    protected Object getSearchFieldValue(final Request request, final Field field) {
+        if (request.isPost()) {
+            return getFieldValue(request, null, field);
+        } else {
+            return null;
+        }
+
+    }
+    /**
+     * @param request
+     * @param node or <code>null</code>
+     * @param field
+     * @param form If false then this value is to be used for search inputs. The node and the default values are not
+     * used
+     */
+    protected Object getFieldValue(final Request request, final Node node, final Field field, boolean form) {
+        return form ? getEvaluatedFieldValue(request, node, field) : getSearchFieldValue(request, field);
     }
 
 
@@ -117,8 +143,8 @@ public abstract class AbstractHandler<C>  implements Handler<C> {
             }
             int operator = getOperator(field);
             String searchValue = getSearchValue(value, field, operator);
-            if (log.isDebugEnabled()) {
-                log.debug("Found value " + value + " -> " + searchValue + " for field " + fieldName);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Found value " + value + " -> " + searchValue + " for field " + fieldName);
             }
             Constraint con = Queries.createConstraint(query, fieldName, operator, searchValue);
             Queries.addConstraint(query, con);
@@ -139,7 +165,7 @@ public abstract class AbstractHandler<C>  implements Handler<C> {
     @Override
     public boolean set(Request request, Node node, Field field) {
         String fieldName = field.getName();
-        Object fieldValue = getFieldValue(request, node, field, false);
+        Object fieldValue = getEvaluatedFieldValue(request, node, field);
         if (interpretEmptyAsNull(field) && "".equals(fieldValue)) {
             fieldValue = null;
         }

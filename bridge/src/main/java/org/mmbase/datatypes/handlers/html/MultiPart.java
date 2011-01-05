@@ -79,7 +79,7 @@ public class MultiPart {
 
     static public class MMultipartRequest {
 
-        private Map<String, Object> parametersMap = new HashMap<String, Object>();
+        Map<String, Object> parametersMap = new HashMap<String, Object>();
         private String coding = null;
 
         MMultipartRequest(HttpServletRequest req, String c) {
