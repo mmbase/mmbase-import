@@ -11,7 +11,7 @@
 
   <artifactId>mmbase-application-parent</artifactId>
   <packaging>pom</packaging>
-  <name>MMBase Applications</name>
+  <name>MMBase Applications Base</name>
   <version>2.0-SNAPSHOT</version>
 
   <description>
