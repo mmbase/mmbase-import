@@ -23,6 +23,10 @@ public class AsciifierTest  {
         assertEquals("___________?", a.transform(perestrojka));
         a.setCollapseMultiple(true);
         assertEquals("_?", a.transform(perestrojka));
+
+        a.setMoreDisallowed("[\\s!?]");
+        String testString2 = "Caf\u00e9 22?";
+        assertEquals("Cafe_22_", a.transform(testString2));
     }
 
 }
