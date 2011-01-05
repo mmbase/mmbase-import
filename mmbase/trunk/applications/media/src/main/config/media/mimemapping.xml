@@ -18,6 +18,7 @@ refer e.g. to http://wiki.whatwg.org/wiki/Video_type_parameters for media types 
   <map format="oga" codec="*">audio/ogg</map>
   <map format="ogv" codec="*">video/ogg</map>
   
+  <map format="flac" codec="*">audio/flac</map>
   <map format="webm" codec="*">video/webm</map>
   
   <map format="aif" codec="*">audio/x-aif</map>
