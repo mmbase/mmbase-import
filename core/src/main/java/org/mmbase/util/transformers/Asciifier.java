@@ -8,18 +8,13 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.util.transformers;
+import java.util.regex.*;
 
-import java.lang.reflect.*;
-
-import java.io.Reader;
-import java.io.Writer;
 
 import org.mmbase.util.logging.*;
 
 /**
- * Transforms strings to ascii strings. Uses reflection to decide between jdk15 sun.text.Normalize
- * and jdk16 java.text.Normalize. If it can not find any of the normalizers is just returns the
- * string unharmed. Non-ascii characters will become question marks.
+ * Transforms strings to ascii strings. Non-ascii characters will become question marks.
  * Optionally, the question marks can be replaced by another character.
  * After some examples I found at http://stackoverflow.com/questions/2096667/convert-unicode-to-ascii-without-changing-the-string-length-in-java
  *
@@ -30,97 +25,64 @@ import org.mmbase.util.logging.*;
 
 public class Asciifier extends StringTransformer {
     private static final long serialVersionUID = 0L;
-    private static Logger log = Logging.getLoggerInstance(Asciifier.class);
+    private static final Logger LOG = Logging.getLoggerInstance(Asciifier.class);
 
-    private char replacer = '?';
-    
+    private static final Pattern NOASCII = Pattern.compile("[^\\p{ASCII}]");
+    private static final Pattern NOASCII_MULTIPLE = Pattern.compile("[^\\p{ASCII}]+");
+
+    private String replacer = "?";
+
+    private boolean removeDiacritics = true;
+    private boolean collapseMultiple = false;
+
+    private Pattern more;
+
     /**
-     * Replacement character in stead of a question mark. Note that if you use more then one 
-     * character in the replacement string only the first character used. 
+     * Replacement character in stead of a question mark. Note that if you use more then one
+     * character in the replacement string only the first character used.
      */
     public void setReplacer(String r) {
-        replacer = r.charAt(0);
+        replacer = r;
     }
 
     /**
-     * The replacer character in stead of a ?. 
+     * The replacer character in stead of a ?.
      */
-    public char getReplacer() {
+    public String getReplacer() {
         return replacer;
     }
 
-    /**
-     * Optionally replaces question marks (marking non-ascii characters) with something else. 
-     */
-     private static String replaceQuestionMark(String str, char r) {
-        StringBuilder sb = new StringBuilder(str);
-        for (int i = 0; i < sb.length(); i++) {
-            if (sb.charAt(i) == '?') {
-                sb.setCharAt(i, r);
-            }
-        }
-        return sb.toString();
+    public void setRemoveDiacritis(boolean b) {
+        removeDiacritics = b;
     }
-    
-    public String transform(String s) {
-        return normalize(s, replacer);
-    }
-    
-    private String normalize(String str) {
-        return normalize(str, replacer);
+    public void setCollapseMultiple(boolean m) {
+        collapseMultiple = m;
     }
 
-    private static String normalize(String str, char r) {
-        try {
-            log.debug("Starting asciifier");
-            
-            try {
-                Class normalizer16Class = Class.forName("java.text.Normalizer");
-                Class form16Class = Class.forName("java.text.Normalizer$Form");
-                
-                Method m1 = normalizer16Class.getMethod("normalize", new Class[] { 
-                    CharSequence.class, form16Class });
-                Object form = form16Class.getField("NFD").get(null);
-                
-                //str = java.text.Normalizer.normalize(str, java.text.Normalizer.Form.NFD);
-                str = (String) m1.invoke(null, new Object[] { (CharSequence)str, form } );
-                
-            } catch (Exception e) {
-                log.warn("Exception invoking java.text.Normalizer : " + e);
-                
-                try {
-                    Class normalizer15Class = Class.forName("sun.text.Normalizer");
-                    Class mode15Class = Class.forName("sun.text.Normalizer$Mode");
-                    
-                    Method m2 = normalizer15Class.getMethod("normalize", new Class[] { 
-                        String.class, mode15Class, int.class });
-                    Object mode = normalizer15Class.getField("DECOMP").get(null);
-                    
-                    //str = sun.text.Normalizer.normalize(str, sun.text.Normalizer.DECOMP, 0);
-                    str = (String) m2.invoke(null, new Object[] { str, mode, 0 });
-                
-                } catch (Exception ex) {
-                    log.warn("Exception invoking sun.text.Normalizer : " + ex);
-                }
-            }
-            
-            //return str.replaceAll("[^\\p{ASCII}]","");
-            String regex = "[\\p{InCombiningDiacriticalMarks}\\p{IsLm}\\p{IsSk}]+";
-            str = new String(str.replaceAll(regex, "").getBytes("ascii"), "ascii");
-            
-            if (r != '?') {
-                log.debug("replacing ? in: " + str);
-                str = replaceQuestionMark(str, r);
-            }
-            
-            log.debug("Finished asciifier");
-            
-        } catch (Exception exc) {
-            log.error(exc.toString());
-        }
+    public void setMoreDisallowed(String more) {
+        this.more = Pattern.compile(more);
+    }
 
+
+    @Override
+    public String transform(String str) {
+        LOG.debug("Starting asciifier");
+
+        if (removeDiacritics) {
+            str = DiacriticsRemover.INSTANCE.transform(str);
+        }
+        if (more != null) {
+            str = more.matcher(str).replaceAll("\u00e9");
+            //\u00e9 is just a placeholder and will be replaced by replacer in the following lines
+        }
+        if (collapseMultiple) {
+            str = NOASCII_MULTIPLE.matcher(str).replaceAll(replacer);
+        } else {
+            str = NOASCII.matcher(str).replaceAll(replacer);
+        }
         return str;
     }
+
 
     @Override
     public String toString() {
@@ -136,12 +98,11 @@ public class Asciifier extends StringTransformer {
             System.out.println("Use at least one argument");
             return;
         }
-        if (argv.length == 1) {
-            System.out.println(normalize(argv[0], '?'));
+        Asciifier a = new Asciifier();
+        if (argv.length > 1) {
+            a.setReplacer(argv[1]);
         }
-        if (argv.length == 2) {
-            System.out.println(normalize(argv[0], argv[1].charAt(0) ));
-        }
+        System.out.println(a.transform(argv[0]));
     }
 
 }
