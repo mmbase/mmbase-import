@@ -31,7 +31,9 @@ public class UrlEscaperTest  {
     @Test
     public void basic() {
         UrlEscaper u = new UrlEscaper();
-        assertEquals(testString, u.transformBack(u.transform(testString)));
+        String transformed = u.transform(testString);
+        System.out.println(tranformed);
+        assertEquals(testString, u.transformBack(transformed));
     }
 
 }
