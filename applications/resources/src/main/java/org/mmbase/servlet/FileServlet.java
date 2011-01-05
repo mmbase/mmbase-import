@@ -244,35 +244,36 @@ public class FileServlet extends BridgeServlet {
     /**
      * @since MMBase-1.9.6
      */
-    public static String getContentDispositionFileName(File f) {
-        Map<String, String> meta = FileServlet.getInstance().getMetaHeaders(f);
-        String cd = meta.get("Content-Disposition");
-        if (cd != null) {
-            String[] fields = cd.split(";");
-            String inDisposition = null;
-            for (String field : fields) {
-                String[] expr = field.split("=", 2);
-                if (expr.length == 2) {
-                    if (expr[0].equals("filename") && inDisposition == null) {
-                        inDisposition = expr[1];
-                        if (inDisposition.startsWith("\"") && inDisposition.endsWith("\"")) {
-                            inDisposition = inDisposition.substring(1, inDisposition.length() - 1);
-                        }
-                    }
-                    if (expr[0].equals("filename*")) {
-                        inDisposition = expr[1];
-                        int q = inDisposition.indexOf("'");
-                        if (q > 0) {
-                            q = inDisposition.indexOf("'", q);
-                            inDisposition = inDisposition.substring(q);
-                        }
-                    }
+    public static String parseMetaValue(String fieldName, String cd) {
+        String[] fields = cd.split(";");
+        String value = null;
+        for (String field : fields) {
+            String[] expr = field.split("=", 2);
 
+            if (expr.length == 2) {
+                String foundFieldName = expr[0].trim();
+                if (foundFieldName.equals(fieldName) && value == null) {
+                    value = expr[1].trim();
+                    if (value.startsWith("\"") && value.endsWith("\"")) {
+                        value = value.substring(1, value.length() - 1);
+                    }
                 }
+                if (foundFieldName.equals(fieldName + "*")) {
+                    value = expr[1].trim();
+                    int q = value.indexOf("'");
+                    if (q > 0) {
+                        q = value.indexOf("'", q + 1);
+                        if (q > -1) {
+                            String found = value.substring(q + 1);
+                            System.out.println("found " + found);
+                            value = UrlEscaper.INSTANCE.transformBack(found);
+                        }
+                    }
+                }
+
             }
-            if (inDisposition != null) return inDisposition;
         }
-        return org.mmbase.util.ResourceLoader.getName(f.getName());
+        return value;
     }
 
     /**
