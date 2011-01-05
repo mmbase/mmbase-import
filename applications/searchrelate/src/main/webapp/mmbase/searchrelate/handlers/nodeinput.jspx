@@ -34,11 +34,11 @@
     </mm:notpresent>
     <script type="text/javascript">
       if (typeof(MMBaseSearcher) != 'undefined') {
+        $("#${id}").hide();
         $("#${id}_sr_div").bind("mmsrRelate",
             function (e, tr, relater) {
                var number= relater.getNumber(tr);
                $("#${id}").val(number);
-               $("#${id}").hide();
                $("#${id}").trigger("change");
               $("#${id}_sr_div").find("span.value").load("${mm:link('/mmbase/searchrelate/handlers/nodevalue.jspx')}?node=" + number);
         })} else {
