@@ -36,7 +36,7 @@ public class SRNodeHandler extends IntegerHandler {
         try {
             LocalizedEntryListFactory factory = field.getDataType().getEnumerationFactory();
             List<Query> queries = factory.getQueries(cloud, node, field);
-            if (queries.size() == 0) {
+            if (queries.isEmpty()) {
                 // a node field, but no query given. So any node is possible?
                 return cloud.getNodeManager("object").createQuery();
             }
@@ -55,11 +55,13 @@ public class SRNodeHandler extends IntegerHandler {
         if (search) {
             return super.input(request, node, field, search);
         } else {
-            StringBuilder show =  new StringBuilder("<input type=\"hidden\" class=\" ");
+            // Field to contain the actual information
+            // Will be made hidden by the javascript.
+            StringBuilder show =  new StringBuilder("<input type=\"text\" class=\" ");
             appendClasses(show, node, field);
             show.append("\" ");
             appendNameId(show, request, field);
-            Object value = getFieldValue(request, node, field, ! search);
+            Object value = getFieldValue(request, node.isNew() ? null : node, field, node.isNew());
             show.append("value=\"");
             show.append((value == null ? "" : Casting.toString(value)));
             show.append("\" />");
