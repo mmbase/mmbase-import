@@ -70,7 +70,7 @@
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <property name="collator" value=":IDENTICAL" />
         <required value="true" enforce="never" />
-        <maxLength value="255" />
+        <maxLength value="1024" />
       </datatype>
     </field>
 
@@ -179,7 +179,7 @@
 
   </fieldlist>
   <indexlist>
-    <index name="main">
+    <index name="main" unique="true" >
       <indexfield name="ckey" />
     </index>
   </indexlist>
