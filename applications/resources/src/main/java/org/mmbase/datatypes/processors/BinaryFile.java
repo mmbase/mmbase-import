@@ -144,7 +144,8 @@ public class BinaryFile {
                 }
                 File f = getFile(node, field, fileNameTransformer.transform(name));
                 Map<String, String> meta = FileServlet.getInstance().getMetaHeaders(f);
-                meta.put("Content-Disposition", "attachment; filename=\"" + name + "\"");
+                //http://greenbytes.de/tech/webdav/rfc5987.html
+                meta.put("Content-Disposition", "attachment; filename=\"" + name + "\";\n  filename*=UTF-8''" + UrlEscaper.INSTANCE.transform(name));
                 FileServlet.getInstance().setMetaHeaders(f, meta);
 
                 if (log.isDebugEnabled()) {
