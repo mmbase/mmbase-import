@@ -120,7 +120,6 @@
       <id>mmbase-snapshots</id>
       <name>MMBase Maven2 Snapshot Repository</name>
       <url>${mmbase.repos}snapshots</url>
-      <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
     <site>
       <id>mmbase-website</id>
