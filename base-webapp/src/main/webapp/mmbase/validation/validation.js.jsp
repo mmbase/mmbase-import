@@ -1,7 +1,7 @@
 /*<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@ taglib uri="http://www.opensymphony.com/oscache" prefix="os" 
 %><jsp:directive.page session="false" />
-*///<mm:content type="text/javascript" expires="3600" postprocessor="none"><os:cache time="3600"><mm:escape  escape="javascript-compress">
+*///<mm:content type="text/javascript" expires="3600" postprocessor="none"><os:cache time="3600"><mm:escape escape="javascript-compress">
 /*
  * See test.jspx for example usage.
 
@@ -724,13 +724,15 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
  *
  */
 MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
-    var nm = nodemanager.split(",");
-    for (var i=0; i < nm.length; i++) {
-        if (nm[i].length > 0) {
-            var n = nm[i];
-            if (MMBaseValidator.prefetchedNodeManagers[n] == "success") {
-            } else {
-                MMBaseValidator.prefetchedNodeManagers[n] = "requested";
+    if (nodemanager != undefined) {
+        var nm = nodemanager.split(",");
+        for (var i=0; i < nm.length; i++) {
+            if (nm[i].length > 0) {
+                var n = nm[i];
+                if (MMBaseValidator.prefetchedNodeManagers[n] == "success") {
+                } else {
+                    MMBaseValidator.prefetchedNodeManagers[n] = "requested";
+                }
             }
         }
     }
