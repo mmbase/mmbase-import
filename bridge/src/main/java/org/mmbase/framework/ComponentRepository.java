@@ -235,7 +235,7 @@ public class ComponentRepository {
         configuringThread = Thread.currentThread();
         try {
             clear();
-
+            org.mmbase.datatypes.DataTypes.initialize();
             ResourceLoader loader =  ResourceLoader.getConfigurationRoot().getChildResourceLoader(child);
             Collection<String> components = loader.getResourcePaths(ResourceLoader.XML_PATTERN, true /* recursive*/);
             log.debug("In " + loader + " the following components XML's were found " + components);
