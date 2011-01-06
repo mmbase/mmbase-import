@@ -79,7 +79,7 @@ public interface Cloud {
      * @return                        the requested node
      * @throws NotFoundException  if the specified node could not be found
      */
-    public Node getNode(int number) throws NotFoundException;
+    Node getNode(int number) throws NotFoundException;
 
     /**
      * Returns the node with the specified number from this cloud.
@@ -91,7 +91,7 @@ public interface Cloud {
      * @return          the requested node
      * @throws NotFoundException  if the specified node could not be found
      */
-    public Node getNode(String number) throws NotFoundException;
+    Node getNode(String number) throws NotFoundException;
 
 
     /**
@@ -103,7 +103,7 @@ public interface Cloud {
      * @return                        the requested node
      * @throws NotFoundException  if the specified node could not be found
      */
-    public Node getNodeByAlias(String alias) throws NotFoundException;
+    Node getNodeByAlias(String alias) throws NotFoundException;
 
     /**
      * Returns the relation with the specified number from this cloud. The returned
@@ -116,7 +116,7 @@ public interface Cloud {
      * @throws ClassCastException  if the specified node is not a relation
      * @since  MMBase-1.6
      */
-    public Relation getRelation(int number) throws NotFoundException;
+    Relation getRelation(int number) throws NotFoundException;
 
     /**
      * Returns the relation with the specified number from this cloud.
@@ -130,7 +130,7 @@ public interface Cloud {
      * @throws ClassCastException  if the specified node is not a relation
      * @since  MMBase-1.6
      */
-    public Relation getRelation(String number) throws NotFoundException;
+    Relation getRelation(String number) throws NotFoundException;
 
     /**
      * Determines whether a node with the specified number exists in this cloud.
@@ -141,7 +141,7 @@ public interface Cloud {
      * @return          true if the node exists
      * @since  MMBase-1.6
      */
-    public boolean hasNode(int number);
+    boolean hasNode(int number);
 
     /**
      * Determines whether a node with the specified number is available from this cloud.
@@ -153,7 +153,7 @@ public interface Cloud {
      * @return          true if the node exists
      * @since  MMBase-1.6
      */
-    public boolean hasNode(String number);
+    boolean hasNode(String number);
 
     /**
      * Determines whether a relation with the specified number exists in this cloud.
@@ -165,7 +165,7 @@ public interface Cloud {
      * @return          true if the relation exists
      * @since  MMBase-1.6
      */
-    public boolean hasRelation(int number);
+    boolean hasRelation(int number);
 
     /**
      * Determines whether a relation with the specified number is available from this cloud.
@@ -178,7 +178,7 @@ public interface Cloud {
      * @return          true if the relation exists
      * @since  MMBase-1.6
      */
-    public boolean hasRelation(String number);
+    boolean hasRelation(String number);
 
     /**
      * Determines whether a node with the specified number is accessible for the user - that is,
@@ -190,7 +190,7 @@ public interface Cloud {
      * @throws NotFoundException  if the specified node could not be found
      * @since  MMBase-1.6
      */
-    public boolean mayRead(int number);
+    boolean mayRead(int number);
 
     /**
      * Check whether an action is allowed
@@ -199,7 +199,7 @@ public interface Cloud {
      * @return <code>true</code> when allowed
      * @since MMBase-1.9
      */
-    public boolean may(org.mmbase.security.Action action, org.mmbase.util.functions.Parameters parameters);
+    boolean may(org.mmbase.security.Action action, org.mmbase.util.functions.Parameters parameters);
 
     /**
      * Determines whether a node with the specified number is accessible for the user - that is,
@@ -212,7 +212,7 @@ public interface Cloud {
      * @throws NotFoundException  if the specified node could not be found
      * @since  MMBase-1.6
      */
-    public boolean mayRead(String number);
+    boolean mayRead(String number);
 
     /**
      * Returns all node managers available in this cloud.
@@ -220,7 +220,7 @@ public interface Cloud {
      * @return  a <code>NodeManagerList</code> containing all node managers
      *          available in this cloud.
      */
-    public NodeManagerList getNodeManagers();
+    NodeManagerList getNodeManagers();
 
     /**
      * Returns the specified node manager.
@@ -229,7 +229,7 @@ public interface Cloud {
      * @return                    the requested node manager
      * @throws NotFoundException  if the specified node manager could not be found
      */
-    public NodeManager getNodeManager(String name) throws NotFoundException;
+    NodeManager getNodeManager(String name) throws NotFoundException;
 
     /**
      * Returns whether the specified node manager exists.
@@ -237,7 +237,7 @@ public interface Cloud {
      * @param name  the name of the requested node manager
      * @return      <code>true</code> if the specified node manager exists
      */
-    public boolean hasNodeManager(String name);
+    boolean hasNodeManager(String name);
 
     /**
      * Returns the specified node manager.
@@ -247,7 +247,7 @@ public interface Cloud {
      * @throws NotFoundException  if the specified node manager could not be found
      * @since  MMBase-1.6
      */
-    public NodeManager getNodeManager(int nodeManagerId) throws NotFoundException;
+    NodeManager getNodeManager(int nodeManagerId) throws NotFoundException;
 
     /**
      * Returns the specified relation manager.
@@ -257,7 +257,7 @@ public interface Cloud {
      * @throws NotFoundException  if the specified relation manager could not be found
      * @since  MMBase-1.6
      */
-    public RelationManager getRelationManager(int relationManagerId) throws NotFoundException;
+    RelationManager getRelationManager(int relationManagerId) throws NotFoundException;
 
     /**
      * Returns the specified relation manager.
@@ -266,7 +266,7 @@ public interface Cloud {
      * @return                       the requested relation manager
      * @throws NotFoundException     if the specified relation manager could not be found
      */
-    public RelationManager getRelationManager(String roleName) throws NotFoundException;
+    RelationManager getRelationManager(String roleName) throws NotFoundException;
 
     /**
      * Returns the specified relation manager.
@@ -277,7 +277,7 @@ public interface Cloud {
      * @return                       the requested relation manager
      * @throws NotFoundException     if the specified relation manager could not be found
      */
-    public RelationManager getRelationManager(String sourceManagerName, String destinationManagerName, String roleName) throws NotFoundException;
+    RelationManager getRelationManager(String sourceManagerName, String destinationManagerName, String roleName) throws NotFoundException;
 
 
     /**
@@ -290,7 +290,7 @@ public interface Cloud {
      * @throws NotFoundException     if the specified relation manager could not be found
      * @since MMBase-1.7
      */
-    public RelationManager getRelationManager(NodeManager sourceManager, NodeManager destinationManager, String roleName) throws NotFoundException;
+    RelationManager getRelationManager(NodeManager sourceManager, NodeManager destinationManager, String roleName) throws NotFoundException;
 
 
 
@@ -302,7 +302,7 @@ public interface Cloud {
      * @param roleName               name of the role
      * @return                       <code>true</code> if the specified relation manager could be found
      */
-    public boolean hasRelationManager(String sourceManagerName, String destinationManagerName, String roleName);
+    boolean hasRelationManager(String sourceManagerName, String destinationManagerName, String roleName);
 
 
     /**
@@ -314,7 +314,7 @@ public interface Cloud {
      * @return                      <code>true</code> if the specified relation manager could be found
      * @since MMBase-1.7
      */
-    public boolean hasRelationManager(NodeManager sourceManager, NodeManager destinationManager, String roleName);
+    boolean hasRelationManager(NodeManager sourceManager, NodeManager destinationManager, String roleName);
 
 
     /**
@@ -323,7 +323,7 @@ public interface Cloud {
      * @return                      <code>true</code> if the specified role could  be found
      * @since MMBase-1.7
      */
-    public boolean hasRole(String roleName);
+    boolean hasRole(String roleName);
 
 
     /**
@@ -332,7 +332,7 @@ public interface Cloud {
      * @param roleName   name of the role
      * @return           <code>true</code> if the specified relation manager exists
      */
-    public boolean hasRelationManager(String roleName);
+    boolean hasRelationManager(String roleName);
 
     /**
      * Returns all relation managers available in this cloud.
@@ -340,7 +340,7 @@ public interface Cloud {
      * @return  a <code>RelationManagerList</code> containing all relation
      *          managers available in this cloud
      */
-    public RelationManagerList getRelationManagers();
+    RelationManagerList getRelationManagers();
 
     /**
      * Returns all relation managers available in this cloud that follow the specified filter.
@@ -352,7 +352,7 @@ public interface Cloud {
      *          managers that follow this filter
      * @throws NotFoundException     if one of the specified relation managers or the rolename could not be found
      */
-    public RelationManagerList getRelationManagers(String sourceManagerName, String destinationManagerName,  String roleName) throws NotFoundException;
+    RelationManagerList getRelationManagers(String sourceManagerName, String destinationManagerName, String roleName) throws NotFoundException;
 
     /**
      * Returns all relation managers available in this cloud that follow the specified filter.
@@ -364,7 +364,7 @@ public interface Cloud {
      *          managers that follwo thsi filter
      * @throws NotFoundException     if one of the specified relation managers or the rolename could not be found
      */
-    public RelationManagerList getRelationManagers(NodeManager sourceManager, NodeManager destinationManager,
+    RelationManagerList getRelationManagers(NodeManager sourceManager, NodeManager destinationManager,
                 String roleName) throws NotFoundException;
 
     /**
@@ -372,7 +372,7 @@ public interface Cloud {
      *
      * @return  a <code>CloudContext</code> to which this cloud belongs
      */
-    public CloudContext getCloudContext();
+    CloudContext getCloudContext();
 
     /**
      * Creates a transaction on this cloud. The returned
@@ -380,7 +380,7 @@ public interface Cloud {
      *
      * @return a <code>Transaction</code> on this cloud
      */
-    public Transaction createTransaction();
+    Transaction createTransaction();
 
     /**
      * Creates a transaction on this cloud with a specified name.
@@ -389,7 +389,7 @@ public interface Cloud {
      * @return                         a <code>Transaction</code> on this cloud
      * @throws AlreadyExistsException  if a transaction with the specified name allready exists
      */
-    public Transaction createTransaction(String name) throws AlreadyExistsException;
+    Transaction createTransaction(String name) throws AlreadyExistsException;
 
     /**
      * Creates a transaction on this cloud with a specified name.
@@ -401,16 +401,16 @@ public interface Cloud {
      * @throws AlreadyExistsException  if a transaction with the specified name allready
      *                                 exists and overwrite is <code>false</code>
      */
-    public Transaction createTransaction(String name, boolean overwrite) throws AlreadyExistsException;
+    Transaction createTransaction(String name, boolean overwrite) throws AlreadyExistsException;
 
     /**
-     * Returnes the transaction with the specified name.
+     * Returns the transaction with the specified name.
      * If no active transaction exists, a new transaction is created.
      *
      * @param name  the name of the requested transaction
      * @return      the requested transaction
      */
-    public Transaction getTransaction(String name);
+    Transaction getTransaction(String name);
 
 
     /**
@@ -419,7 +419,7 @@ public interface Cloud {
      *
      * @return the name of this cloud
      */
-    public String getName();
+    String getName();
 
     /**
      * This may return {@link #getName}, but in principable it could have been localized using the
@@ -427,14 +427,14 @@ public interface Cloud {
      *
      * @return the description of this cloud
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      * Who is using this cloud.
      *
      * @return the User object describing who is using this cloud now.
      */
-    public UserContext getUser();
+    UserContext getUser();
 
     /**
      * Returns a list of virtual nodes that are composed by fields of other
@@ -560,7 +560,7 @@ public interface Cloud {
      *                      values is allready present.
      * @return              a list of virtual nodes
      */
-    public NodeList getList(String startNodes, String nodePath, String fields,
+    NodeList getList(String startNodes, String nodePath, String fields,
             String constraints, String orderby, String directions,
             String searchDir, boolean distinct);
 
@@ -572,7 +572,7 @@ public interface Cloud {
      * @see org.mmbase.storage.search.SearchQuery
      * @since MMBase-1.7
      */
-    public NodeList getList(Query query);
+    NodeList getList(Query query);
 
 
     /**
@@ -580,14 +580,14 @@ public interface Cloud {
      * @return empty Query
      * @since MMBase-1.7
      */
-    public Query createQuery();
+    Query createQuery();
 
 
     /*
      * TODO: Why has there to be a difference between aggregated and non-aggregaged queries?
      * @since MMBase-1.7
      */
-    public Query createAggregatedQuery();
+    Query createAggregatedQuery();
 
 
     /**
@@ -597,7 +597,7 @@ public interface Cloud {
      * @return empty NodeQuery
      * @since MMBase-1.7
      */
-    public NodeQuery createNodeQuery();
+    NodeQuery createNodeQuery();
 
 
     /**
@@ -606,15 +606,15 @@ public interface Cloud {
      *
      * @since MMBase-1.6
      */
-    public void setLocale(Locale locale);
+    void setLocale(Locale locale);
 
    /**
-     * Gets the locale assocatied with this <code>Cloud</code> instance.
+     * Gets the locale associated with this <code>Cloud</code> instance.
      * @return Locale of this Cloud instance
      *
      * @since MMBase-1.6
      */
-    public Locale getLocale();
+    Locale getLocale();
 
     /**
      * Retrieves a property previously set for this cloud. If this Cloud has a 'parent' cloud
@@ -625,7 +625,7 @@ public interface Cloud {
      * @return the property value
      * @since MMBase-1.8
      */
-    public Object getProperty(Object key);
+    Object getProperty(Object key);
 
     /**
      * Sets a property for this cloud object.
@@ -634,14 +634,14 @@ public interface Cloud {
      * @param value the property value
      * @since MMBase-1.8
      */
-    public void setProperty(Object key, Object value);
+    void setProperty(Object key, Object value);
 
     /**
      * Retrieves all properties previously set for this cloud.
      * @return all properties
      * @since MMBase-1.8
      */
-    public Map<Object, Object> getProperties();
+    Map<Object, Object> getProperties();
 
     /**
      * Returns all Function objects from a function set.
@@ -654,7 +654,7 @@ public interface Cloud {
      * @return a Set of {@link org.mmbase.util.functions.Function} objects.
      * @throws NotFoundException if the function set does not exist
      */
-    public Collection<Function<?>> getFunctions(String setName);
+    Collection<Function<?>> getFunctions(String setName);
 
     /**
      * Returns a Function object from a function set.
@@ -667,7 +667,7 @@ public interface Cloud {
      * @return a {@link org.mmbase.util.functions.Function} object.
      * @throws NotFoundException if the function set or the function do not exist
      */
-    public Function<?> getFunction(String setName, String functionName);
+    Function<?> getFunction(String setName, String functionName);
 
     /**
      * Returns a new, empty node list for this cloud
@@ -675,7 +675,7 @@ public interface Cloud {
      * @return  The empty list
      * @since   MMBase-1.8
      */
-    public NodeList createNodeList();
+    NodeList createNodeList();
 
     /**
      * Returns a new, empty relation list for this cloud
@@ -683,7 +683,7 @@ public interface Cloud {
      * @return  The empty list
      * @since   MMBase-1.8
      */
-    public RelationList createRelationList();
+    RelationList createRelationList();
 
     /**
      * Returns a new, empty node manager list for this cloud
@@ -691,7 +691,7 @@ public interface Cloud {
      * @return  The empty list
      * @since   MMBase-1.8
      */
-    public NodeManagerList createNodeManagerList();
+    NodeManagerList createNodeManagerList();
 
     /**
      * Returns a new, empty relation manager list for this cloud
@@ -699,7 +699,7 @@ public interface Cloud {
      * @return  The empty list
      * @since   MMBase-1.8
      */
-    public RelationManagerList createRelationManagerList();
+    RelationManagerList createRelationManagerList();
 
     /**
      * Contacts the security implementation to find out to which possible contexts are
@@ -708,7 +708,7 @@ public interface Cloud {
      * @return A StringList containing the contexts which can be used by teh suer
      * @throws SecurityException   When appropriate rights to perform this are lacking (read rights)
      */
-    public StringList getPossibleContexts();
+    StringList getPossibleContexts();
 
 
 
@@ -717,7 +717,7 @@ public interface Cloud {
      * @return This cloud or a parent cloud if this cloud is a {@link Transaction}
      * @since MMBase-1.9.1
      */
-    public Cloud getNonTransactionalCloud();
+    Cloud getNonTransactionalCloud();
 
 
     /**
@@ -725,6 +725,6 @@ public interface Cloud {
      * @since MMBase-1.9
      * @throws SecurityException If you are not allowed.
      */
-    public void shutdown();
+    void shutdown();
 
 }

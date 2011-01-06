@@ -12,8 +12,6 @@ package org.mmbase.datatypes.handlers.html;
 
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.handlers.Request;
-import org.mmbase.storage.search.Constraint;
-import org.apache.commons.fileupload.FileItem;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.*;
 
@@ -53,7 +51,7 @@ public class BinaryHandler extends HtmlHandler {
             args.set(Parameter.RESPONSE, request.getProperty(Parameter.RESPONSE));
             args.set(Parameter.REQUEST,  request.getProperty(Parameter.REQUEST));
             args.set(Parameter.LOCALE, request.getLocale());
-            show.append("" + gui.getFunctionValue(args));
+            show.append(gui.getFunctionValue(args));
         }
         show.append("<input class=\"");
         appendClasses(request, show, node, field);

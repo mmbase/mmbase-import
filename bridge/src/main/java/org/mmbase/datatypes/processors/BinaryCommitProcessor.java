@@ -99,6 +99,7 @@ public class BinaryCommitProcessor implements CommitProcessor {
         return ct;
     }
 
+    @Override
     public void commit(Node node, Field field) {
 
         if (node.getCloud().getProperty(NOT) != null) {

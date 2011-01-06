@@ -72,6 +72,7 @@ public class NodeURLStreamHandlerFactory extends ResourceLoader.URLStreamHandler
 
 
 
+    @Override
     public ResourceLoader.PathURLStreamHandler[] createURLStreamHandler(ResourceLoader root, ResourceLoader.Type type) {
         return new ResourceLoader.PathURLStreamHandler[] {new NodeURLStreamHandler(root, type.ordinal())};
     }
@@ -84,6 +85,7 @@ public class NodeURLStreamHandlerFactory extends ResourceLoader.URLStreamHandler
             super(parent);
             this.type    = type;
         }
+        @Override
         public NodeURLStreamHandler createSubHandler(ResourceLoader parent) {
             return new NodeURLStreamHandler(parent, type);
         }

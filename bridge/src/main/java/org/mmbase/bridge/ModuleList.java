@@ -19,16 +19,16 @@ package org.mmbase.bridge;
 public interface ModuleList extends BridgeList<Module> {
 
     /**
-     * Returns the Module at the indicated postion in the list
+     * Returns the Module at the indicated position in the list
      * @param index the position of the Module to retrieve
-     * @return Module at the indicated postion
+     * @return Module at the indicated position
      */
-    public Module getModule(int index);
+    Module getModule(int index);
 
     /**
      * Returns an type-specific iterator for this list.
      * @return Module iterator
      */
-    public ModuleIterator moduleIterator();
+    ModuleIterator moduleIterator();
 
 }

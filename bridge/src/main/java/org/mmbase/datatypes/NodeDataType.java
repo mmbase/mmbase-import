@@ -11,7 +11,7 @@ package org.mmbase.datatypes;
 
 import java.util.*;
 import org.mmbase.util.Casting;
-import org.mmbase.util.BridgeCaster;
+import org.mmbase.bridge.util.BridgeCaster;
 import org.mmbase.util.LocalizedString;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;

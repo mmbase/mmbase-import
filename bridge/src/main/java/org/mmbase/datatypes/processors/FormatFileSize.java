@@ -24,7 +24,7 @@ package org.mmbase.datatypes.processors;
  * @since MMBase-1.8
  */
 
-public class FormatFileSize extends FormatQuantity {
+public  class FormatFileSize extends FormatQuantity {
 
     private static final long serialVersionUID = 1L;
 
@@ -48,7 +48,7 @@ public class FormatFileSize extends FormatQuantity {
      * @param c boolean
      * @since MMBase-1.9
      */
-    public void setClassical(boolean c) {
+    public final void setClassical(boolean c) {
         if (c) {
             prefixes = SI;
             unit = "byte";

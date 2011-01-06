@@ -92,7 +92,7 @@ public interface CloudContext {
      * @return                    the requested cloud
      * @throws NotFoundException  if the specified cloud could not be found
      */
-    public Cloud getCloud(String name, String authenticationType, Map<String, ?> loginInfo) throws NotFoundException;
+    Cloud getCloud(String name, String authenticationType, Map<String, ?> loginInfo) throws NotFoundException;
 
     /**
      * Returns the cloud with the specified name, based on an existing User object.

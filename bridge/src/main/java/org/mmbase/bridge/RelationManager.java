@@ -39,43 +39,43 @@ public interface RelationManager extends NodeManager {
      * Retrieves the role of the source to the destination
      * @return the role as a <code>String</code>
      */
-    public String getForwardRole();
+    String getForwardRole();
 
     /**
      * Retrieves the role of the destination to the source
      * @return the role as a <code>String</code>
      */
-    public String getReciprocalRole();
+    String getReciprocalRole();
 
     /**
      * Retrieves the gui name (prompt) of the role from source to destination
      * @return the name as a <code>String</code>
      */
-    public String getForwardGUIName();
+    String getForwardGUIName();
 
     /**
      * Retrieves the gui name (prompt) of the role from destination to source
      * @return the name as a <code>String</code>
      */
-    public String getReciprocalGUIName();
+    String getReciprocalGUIName();
 
     /**
      * Retrieves the directionality for this type (the default assigned to a new relation).
      * @return one of the directionality constants
      */
-    public int getDirectionality();
+    int getDirectionality();
 
     /**
      * Retrieves the NodeManager of node that can act as the source of a relation of this type.
      * @return the source NodeManager
      */
-    public NodeManager getSourceManager();
+    NodeManager getSourceManager();
 
     /**
      * Retrieves the type of node that can act as the destination of a relation of this type.
      * @return the destination NodeManager
      */
-    public NodeManager getDestinationManager();
+    NodeManager getDestinationManager();
 
     /**
      * Adds a relation from this type.
@@ -83,7 +83,7 @@ public interface RelationManager extends NodeManager {
      * @param destinationNode the node to which you want to relate
      * @return the added relation
      */
-    public Relation createRelation(Node sourceNode, Node destinationNode);
+    Relation createRelation(Node sourceNode, Node destinationNode);
 
     /**
      * This method from Node is redeclared here to prevent an ambiguous invocation of method.
@@ -94,7 +94,7 @@ public interface RelationManager extends NodeManager {
      * @return new Relation
      **/
     @Override
-    public Relation createRelation(Node sourceNode, RelationManager relationManager);
+    Relation createRelation(Node sourceNode, RelationManager relationManager);
 
     /**
      * Retrieves all the relations of this type from a given node.
@@ -108,7 +108,7 @@ public interface RelationManager extends NodeManager {
      * @return a list of relations
      * @todo I think this is a silly method.
      */
-    public RelationList getRelations(Node node);
+    RelationList getRelations(Node node);
 
     /**
      * Check if the current user may create a new relation of this type between
@@ -119,6 +119,6 @@ public interface RelationManager extends NodeManager {
      * @return  Check if the current user may create a new relation of this type
      *          between the specified nodes.
      */
-    public boolean mayCreateRelation(Node sourceNode, Node destinationNode);
+    boolean mayCreateRelation(Node sourceNode, Node destinationNode);
 
 }

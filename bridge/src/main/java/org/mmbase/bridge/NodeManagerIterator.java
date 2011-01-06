@@ -25,13 +25,13 @@ public interface NodeManagerIterator extends ListIterator<NodeManager> {
      * Returns the next element in the iterator as a NodeManager
      * @return next node manager
      */
-    public NodeManager nextNodeManager();
+    NodeManager nextNodeManager();
 
     /**
      * Returns the previous element in the iterator as a NodeManager
      * @return previous node manager
      * @since MMBase-1.7
      */
-    public NodeManager previousNodeManager();
+    NodeManager previousNodeManager();
 
 }

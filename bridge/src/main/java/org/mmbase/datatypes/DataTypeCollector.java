@@ -68,7 +68,9 @@ public final class DataTypeCollector implements Serializable {
      */
     public DataTypeCollector(Serializable signature) {
          this.signature = signature;
-         log.info("Instantatiated " + this + " ", new Exception());
+         if (log.isDebugEnabled()) {
+             log.debug("Instantatiated " + this + " ", new Exception());
+         }
     }
 
     public DataTypeDefinition getDataTypeDefinition() {

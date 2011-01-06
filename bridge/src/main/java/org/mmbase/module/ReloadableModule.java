@@ -78,11 +78,12 @@ public abstract class ReloadableModule extends Module {
 
     {
         addFunction(new AbstractFunction<Void>("reload") {
-                public Void getFunctionValue(Parameters arguments) {
-                    ReloadableModule.this.reload();
-                    return null;
-                }
-            });
+            @Override
+            public Void getFunctionValue(Parameters arguments) {
+                ReloadableModule.this.reload();
+                return null;
+            }
+        });
     }
 
 }

@@ -35,7 +35,8 @@ public interface Module extends Descriptor, Comparable<Module> {
      * Retrieve the name of the module (in the default language defined in mmbaseroot.xml).
      * @return name of the module
      */
-    public String getName();
+    @Override
+    String getName();
 
     /**
      * Retrieve a property of the module.
@@ -43,14 +44,14 @@ public interface Module extends Descriptor, Comparable<Module> {
      * @return the property value (null if not given)
      * @since  MMBase-1.7
      */
-    public String getProperty(String name);
+    String getProperty(String name);
 
     /**
      * Retrieve a copy of the module's properties
      * @return a map of module properties
      * @since  MMBase-1.7
      */
-    public Map getProperties();
+    Map getProperties();
 
     /**
      * Runs the command with the given parameter(s).
@@ -58,7 +59,7 @@ public interface Module extends Descriptor, Comparable<Module> {
      * @param parameter the main parameter for the command. Depends on the command issued. Not all
      *      commands make use of this parameter.
      */
-    public void process(String command, Object parameter);
+    void process(String command, Object parameter);
 
     /**
      * Runs the command with the given parameter(s).
@@ -67,18 +68,18 @@ public interface Module extends Descriptor, Comparable<Module> {
      *      commands make use of this parameter.
      * @param auxparameters additional parameters for this command.
      */
-    public void process(String command, Object parameter, Map<String, Object> auxparameters);
+    void process(String command, Object parameter, Map<String, Object> auxparameters);
 
     /**
      * Runs the command with the given parameter(s).
      * @param command the command to run, i.e. "MESSAGE-UPDATE".
-         * @param parameter the main parameter for the command. Depends on the command issued. Not all
-         *      commands make use of this parameter.
-         * @param auxparameters additional parameters for this command.
+     * @param parameter the main parameter for the command. Depends on the command issued. Not all
+     *      commands make use of this parameter.
+     * @param auxparameters additional parameters for this command.
      * @param req the Request item to use for obtaining user information. For backward compatibility.
      * @param resp the Response item to use for redirecting users. For backward compatibility.
      */
-    public void process(String command, Object parameter, Map<String, Object> auxparameters, ServletRequest req,  ServletResponse resp);
+    void process(String command, Object parameter, Map<String, Object> auxparameters, ServletRequest req, ServletResponse resp);
 
     /**
      * Retrieve info from a module based on a command string.
@@ -86,7 +87,7 @@ public interface Module extends Descriptor, Comparable<Module> {
      * @param command the info to obtain, i.e. "USER-OS".
      * @return info from a module
      */
-    public String getInfo(String command);
+    String getInfo(String command);
 
     /**
      * Retrieve info from a module based on a command string
@@ -96,29 +97,29 @@ public interface Module extends Descriptor, Comparable<Module> {
      * @param resp the Response item to use for redirecting users. For backward compatibility.
      * @return info from a module
      */
-    public String getInfo(String command, ServletRequest req, ServletResponse resp);
+    String getInfo(String command, ServletRequest req, ServletResponse resp);
 
     /**
      * Retrieve info (as a list of virtual nodes) from a module based on a command string.
      * Similar to the LIST command in SCAN.
-     * The values retrieved are represented as fields of a virtual node, named following the fieldnames listed in the fields paramaters..
+     * The values retrieved are represented as fields of a virtual node, named following the field names listed in the fields parameters..
      * @param command the info to obtain, i.e. "USER-OS".
-     * @param parameters a hashtable containing the named parameters of the list.
+     * @param parameters a map containing the named parameters of the list.
      * @return info from a module (as a list of virtual nodes)
      */
-    public NodeList getList(String command, Map<String, ?> parameters);
+    NodeList getList(String command, Map<String, ?> parameters);
 
     /**
      * Retrieve info from a module based on a command string
      * Similar to the LIST command in SCAN.
-     * The values retrieved are represented as fields of a virtual node, named following the fieldnames listed in the fields paramaters..
+     * The values retrieved are represented as fields of a virtual node, named following the field names listed in the fields parameters..
      * @param command the info to obtain, i.e. "USER-OS".
-     * @param parameters a hashtable containing the named parameters of the list.
+     * @param parameters a map containing the named parameters of the list.
      * @param req the Request item to use for obtaining user information. For backward compatibility.
      * @param resp the Response item to use for redirecting users. For backward compatibility.
      * @return info from a module (as a list of virtual nodes)
      */
-    public NodeList getList(String command, Map<String, ?> parameters, ServletRequest req, ServletResponse resp);
+    NodeList getList(String command, Map<String, ?> parameters, ServletRequest req, ServletResponse resp);
 
     /**
      * Returns all the Function objects of this Module.
@@ -126,7 +127,7 @@ public interface Module extends Descriptor, Comparable<Module> {
      * @since MMBase-1.8
      * @return a Collection of {@link org.mmbase.util.functions.Function} objects.
      */
-    public Collection<Function<?>> getFunctions();
+    Collection<Function<?>> getFunctions();
 
     /**
      * Returns a Function object.
@@ -139,7 +140,7 @@ public interface Module extends Descriptor, Comparable<Module> {
      * @return a {@link org.mmbase.util.functions.Function} object.
      * @throws NotFoundException if the function does not exist
      */
-    public Function getFunction(String functionName);
+    Function getFunction(String functionName);
 
     /**
      * Creates a parameter list for a function.
@@ -153,7 +154,7 @@ public interface Module extends Descriptor, Comparable<Module> {
      * @return a {@link org.mmbase.util.functions.Parameters} object.
      * @throws NotFoundException if the function does not exist
      */
-    public Parameters createParameters(String functionName);
+    Parameters createParameters(String functionName);
 
     /**
      * Executes a function on this module with the given parameters, and returns the result.
@@ -164,6 +165,6 @@ public interface Module extends Descriptor, Comparable<Module> {
      * @return the result value of executing the function
      * @throws NotFoundException if the function does not exist
      */
-    public FieldValue getFunctionValue(String functionName, List<?> parameters);
+    FieldValue getFunctionValue(String functionName, List<?> parameters);
 
 }

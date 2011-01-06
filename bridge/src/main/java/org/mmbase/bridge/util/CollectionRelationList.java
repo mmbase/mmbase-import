@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  */
 public class CollectionRelationList extends AbstractCollectionNodeList<Relation> implements RelationList {
 
-    private static final Logger log = Logging.getLoggerInstance(CollectionRelationList.class);
+    private static final Logger LOG = Logging.getLoggerInstance(CollectionRelationList.class);
 
 
     public CollectionRelationList(Collection<? extends Node> c, NodeManager nodeManager) {

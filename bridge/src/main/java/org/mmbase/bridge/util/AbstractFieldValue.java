@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util;
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
-import org.mmbase.util.BridgeCaster;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import java.util.*;

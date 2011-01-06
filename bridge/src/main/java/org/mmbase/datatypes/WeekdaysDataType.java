@@ -12,11 +12,10 @@ package org.mmbase.datatypes;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
 
 /**
  * An enumeration datatype representing all days of a week, so an integer with the value 1 through
- * 7. It considers the locale to determin which day is to be the first of the week, and hence the
+ * 7. It considers the locale to determine which day is to be the first of the week, and hence the
  * first in the enumeration.
  *
  * @author Michiel Meeuwissen

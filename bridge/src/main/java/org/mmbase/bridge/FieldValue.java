@@ -26,10 +26,10 @@ public interface FieldValue {
      *
      * @return  <code>true</code> if the value can be changed
      */
-    public boolean canModify();
+    boolean canModify();
 
 
-    public boolean isNull();
+    boolean isNull();
 
     /**
      * Returns the value as an Object.
@@ -39,28 +39,28 @@ public interface FieldValue {
      *
      * @return  the field value as an object
      */
-    public Object get();
+    Object get();
 
     /**
      * Returns the Field object belonging to this value.
      *
      * @return  the field object. Why not return Field?
      */
-    public Field getField();
+    Field getField();
 
     /**
      * Returns the Node to which this value belongs.
      *
      * @return  the Node object
      */
-    public Node getNode();
+    Node getNode();
 
     /**
      * Returns the value as an boolean (<code>true</code> or  <code>false</code>).
      * If the actual value is a Boolean object, this call returns it's (primitive) boolean value.
      * If the actual value is a Number object, this call returns <code>true</code>
      * if the value is a positive, non-zero, value. In other words, values '0'
-     * and '-1' are concidered <code>false</code>.
+     * and '-1' are considered <code>false</code>.
      * If the value is a string, this call returns <code>true</code> if
      * the value is "true" or "yes" (case-insensitive).
      * In all other cases (including calling byte fields), <code>false</code>
@@ -68,7 +68,7 @@ public interface FieldValue {
      *
      * @return  the field value as a boolean
      */
-    public boolean toBoolean();
+    boolean toBoolean();
 
     /**
      * Returns the value as a byte array.
@@ -78,7 +78,7 @@ public interface FieldValue {
      *
      * @return  the field value as a byte array
      */
-    public byte[] toByte();
+    byte[] toByte();
 
     /**
      * Returns the value as a float.
@@ -91,7 +91,7 @@ public interface FieldValue {
      *
      * @return  the field value as a float
      */
-    public float toFloat();
+    float toFloat();
 
     /**
      * Returns the value as a double.
@@ -99,12 +99,12 @@ public interface FieldValue {
      * Numeric fields are simply converted. Double may be truncated.
      * Boolean fields return 0.0 if false, and 1.0 if true.
      * String fields are parsed.
-     * If a parsed string contains an error, ot the field value is not of a type that can be converted
+     * If a parsed string contains an error, or the field value is not of a type that can be converted
      * (i.e. a byte array), this function returns -1.0.
      *
      * @return  the field value as a double
      */
-    public double toDouble();
+    double toDouble();
 
     /**
      * Returns the value as a long.
@@ -117,7 +117,7 @@ public interface FieldValue {
      *
      * @return  the field value as a long.
      */
-    public long toLong();
+    long toLong();
 
     /**
      * Returns the value as an int.
@@ -127,35 +127,35 @@ public interface FieldValue {
      * Long values return -1 of the value is too large.
      * Boolean fields return 0 if false, and 1 if true.
      * String fields are parsed.
-     * If a parsed string contains an error, ot the field value is not of a type that can be converted
+     * If a parsed string contains an error, or the field value is not of a type that can be converted
      * (i.e. a byte array), this function returns -1
      *
      * @return  the field value as an int.
      */
-    public int toInt();
+    int toInt();
 
     /**
      * Returns the value as a Node.
      * This function attempts to retrieve the node represented by the value.
      * For numeric fields the node is retrieved using the numeric values as the node key.
-     * String fields are used as Node aliases, withw hich to retrieve the Node.
-     * If the node does not exist, or the value is of anotehr type, the function returns <code>null</code>.
+     * String fields are used as Node aliases, with which to retrieve the Node.
+     * If the node does not exist, or the value is of another type, the function returns <code>null</code>.
      *
      * @return  the field value as a Node
      */
-    public Node toNode();
+    Node toNode();
 
     /**
      * Returns the value as a String.
      * Byte arrays are converted to string using the default encoding (UTF8).
      * Node values return a string representation of their numeric key.
-     * DOM Documents are serialized to a proper strign represnattion fo the xml.
+     * DOM Documents are serialized to a proper string representation of the xml.
      * For other values the result is calling the toString() method on the actual object.
      *
      * @return  the field value as a String
      */
     @Override
-    public String toString();
+    String toString();
 
     /**
      * Returns the value as a <code>org.w3c.dom.Document</code>
@@ -166,7 +166,7 @@ public interface FieldValue {
      * @return  the field value as a Document
      * @throws  IllegalArgumentException if the Field is not of type TYPE_XML.
      */
-    public org.w3c.dom.Document toXML() throws IllegalArgumentException;
+    org.w3c.dom.Document toXML() throws IllegalArgumentException;
 
     /**
      * Returns the value as a <code>java.util.Date</code>
@@ -174,7 +174,7 @@ public interface FieldValue {
      * @return the field value as Date
      * @since MMBase-1.8
      */
-    public java.util.Date toDate();
+    java.util.Date toDate();
 
     /**
      * Returns the value as a <code>org.w3c.dom.Element</code>
@@ -188,7 +188,7 @@ public interface FieldValue {
      * @return  the field value as an Element
      * @throws  IllegalArgumentException if the Field is not of type TYPE_XML.
      */
-    public org.w3c.dom.Element toXML(org.w3c.dom.Document tree) throws IllegalArgumentException;
+    org.w3c.dom.Element toXML(org.w3c.dom.Document tree) throws IllegalArgumentException;
 
     /**
      * Sets the value, passing any Object
@@ -204,14 +204,14 @@ public interface FieldValue {
      * @see #get
      * @param value the field value as an Object
      */
-    public void set(Object value);
+    void set(Object value);
 
     /*
      * Sets the value of the specified field using an object, but without dispatching to the right
      * type first.
      * @since MMBase-1.8
      */
-    public void setObject(Object value);
+    void setObject(Object value);
 
     /**
      * Sets the value, passing a boolean value.
@@ -220,7 +220,7 @@ public interface FieldValue {
      * @see #toBoolean
      * @param value the field value as a boolean
      */
-    public void setBoolean(boolean value);
+    void setBoolean(boolean value);
 
     /**
      * Sets the value, passing a float value.
@@ -229,7 +229,7 @@ public interface FieldValue {
      * @see #toFloat
      * @param value the field value as a float
      */
-    public void setFLoat(float value);
+    void setFLoat(float value);
 
     /**
      * Sets the value, passing a double value.
@@ -238,7 +238,7 @@ public interface FieldValue {
      * @see #toDouble
      * @param value the field value as a double
      */
-    public void setDouble(double value);
+    void setDouble(double value);
 
     /**
      * Sets the value, passing a long value.
@@ -247,7 +247,7 @@ public interface FieldValue {
      * @see #toLong
      * @param value the field value as a long
      */
-    public void setLong(long value);
+    void setLong(long value);
 
     /**
      * Sets the value, passing a int value.
@@ -256,7 +256,7 @@ public interface FieldValue {
      * @see #toInt
      * @param value the field value as a int
      */
-    public void setInt(int value);
+    void setInt(int value);
 
     /**
      * Sets the value, passing a byte array.
@@ -264,7 +264,7 @@ public interface FieldValue {
      * @see #toByte
      * @param value the field value as a byte array
      */
-    public void setByte(byte[] value);
+    void setByte(byte[] value);
 
     /**
      * Sets the value, passing a String.
@@ -272,7 +272,7 @@ public interface FieldValue {
      * @see #toString
      * @param value the field value as a String
      */
-    public void setString(String value);
+    void setString(String value);
 
     /**
      * Sets the value, passing a Node.
@@ -280,22 +280,22 @@ public interface FieldValue {
      * @see #toNode
      * @param value the field value as a Node
      */
-    public void setNode(Node value);
+    void setNode(Node value);
 
     /**
-     * Sets the value, passing a org.w3c.dom.Document object.
+     * Sets the value, passing a {@link org.w3c.dom.Document} object.
      *
      * @see #toXML(org.w3c.dom.Document)
      * @param value the field value as a XML Document
      */
-    public void setXML(org.w3c.dom.Document value);
+    void setXML(org.w3c.dom.Document value);
 
     /**
-     * Sets the value, passing a java.util.Date object.
+     * Sets the value, passing a {@link java.util.Date} object.
      * @see #toDate
-     * @param value the field value as a java.util.Date Document
+     * @param value the field value as a {@link java.util.Date} Document
      * @since MMBase-1.8
      */
-    public void setDate(java.util.Date value);
+    void setDate(java.util.Date value);
 
 }

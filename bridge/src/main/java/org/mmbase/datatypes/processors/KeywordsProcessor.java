@@ -98,39 +98,39 @@ public class KeywordsProcessor implements Processor, NodeEventListener {
     public void setField(final String f) {
         if (field == null) {
             ThreadPools.jobsExecutor.execute(new Runnable() {
-                    public void run() {
-                        getRepository(repository);
-                        log.service("Filling keyword repository for " + f);
-                        String[] array = f.split("\\.");
-                        builder = array[0];
-                        field   = array[1];
-                        EventManager.getInstance().addEventListener(KeywordsProcessor.this);
-                        ContextProvider.getDefaultCloudContext().assertUp();
-                        Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
-                        NodeManager nm = cloud.getNodeManager(builder);
-                        NodeQuery q = nm.createQuery();
-                        Constraint c = q.createConstraint(q.createStepField(field));
-                        q.setInverse(c, true);
-                        q.setConstraint(c);
-                        NodeIterator ni = new HugeNodeListIterator(q);
-                        long i = 0;
-                        while(ni.hasNext()) {
-                            Node n = ni.nextNode();
-                            String keywords = n.getStringValue(field);
-                            i++;
-                            if (i % 1000 == 0 && log.isDebugEnabled()) {
-                                log.debug("Found keywords " + getKeywords(repository));
-                            }
-                            if (! "".equals(keywords)) {
-                                addKeywords(repository, keywords.toLowerCase());
-                            }
+                @Override
+                public void run() {
+                    getRepository(repository);
+                    log.service("Filling keyword repository for " + f);
+                    String[] array = f.split("\\.");
+                    builder = array[0];
+                    field = array[1];
+                    EventManager.getInstance().addEventListener(KeywordsProcessor.this);
+                    ContextProvider.getDefaultCloudContext().assertUp();
+                    Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+                    NodeManager nm = cloud.getNodeManager(builder);
+                    NodeQuery q = nm.createQuery();
+                    Constraint c = q.createConstraint(q.createStepField(field));
+                    q.setInverse(c, true);
+                    q.setConstraint(c);
+                    NodeIterator ni = new HugeNodeListIterator(q);
+                    long i = 0;
+                    while (ni.hasNext()) {
+                        Node n = ni.nextNode();
+                        String keywords = n.getStringValue(field);
+                        i++;
+                        if (i % 1000 == 0 && log.isDebugEnabled()) {
+                            log.debug("Found keywords " + getKeywords(repository));
                         }
-                        if (log.isDebugEnabled()) {
-                            log.debug("Ready " + getKeywords(repository));
+                        if (!"".equals(keywords)) {
+                            addKeywords(repository, keywords.toLowerCase());
                         }
                     }
+                    if (log.isDebugEnabled()) {
+                        log.debug("Ready " + getKeywords(repository));
+                    }
                 }
-                );
+            });
         }
     }
 
@@ -175,6 +175,7 @@ public class KeywordsProcessor implements Processor, NodeEventListener {
         }
     }
 
+    @Override
     public Object process(Node node, Field field, Object value) {
         if (field == null) throw new IllegalStateException("Field property should have been set");
         String oldValues = node.getStringValue(field.getName());
@@ -183,6 +184,7 @@ public class KeywordsProcessor implements Processor, NodeEventListener {
         return value;
     }
 
+    @Override
     public void notify(NodeEvent event) {
         if (! event.isLocal()) {
             if (event.getBuilderName().equals(builder)) {
@@ -198,6 +200,7 @@ public class KeywordsProcessor implements Processor, NodeEventListener {
 
 
     static class EntryComparator implements Comparator<Map.Entry<String, Integer>> {
+        @Override
         public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
             int res = o2.getValue() - o1.getValue();
             if (res != 0) return res;
@@ -206,6 +209,12 @@ public class KeywordsProcessor implements Processor, NodeEventListener {
         @Override
         public boolean equals(Object o) {
             return o != null && o instanceof EntryComparator;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            return hash;
         }
 
     }

@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.core.util;
 
-import org.mmbase.bridge.*;
 import org.mmbase.datatypes.*;
 import org.mmbase.core.AbstractField;
 

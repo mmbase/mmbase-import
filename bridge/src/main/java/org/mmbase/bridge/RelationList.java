@@ -19,17 +19,17 @@ package org.mmbase.bridge;
 public interface RelationList extends BridgeList<Relation> {
 
     /**
-     * Returns the Relation at the indicated postion in the list
+     * Returns the Relation at the indicated position in the list
      * @param index the position of the Relation to retrieve
-     * @return Relation at the indicated postion
+     * @return Relation at the indicated position
      */
-    public Relation getRelation(int index);
+    Relation getRelation(int index);
 
     /**
      * Returns an type-specific iterator for this list.
      * @return Relation iterator
      */
-    public RelationIterator relationIterator();
+    RelationIterator relationIterator();
 
     /**
      * Returns a sublist of this list.
@@ -37,5 +37,5 @@ public interface RelationList extends BridgeList<Relation> {
      * @param toIndex the position in the current list where the sublist ends (exclusive)
      * @return sublist of this list
      */
-    public RelationList subRelationList(int fromIndex, int toIndex);
+    RelationList subRelationList(int fromIndex, int toIndex);
 }

@@ -24,7 +24,7 @@ import javax.servlet.ServletRequest;
  * some information on {@link #getDescendants derived} and {@link #getParent deriving} types. It also contains some maintenance code - code
  * to create new nodes, and code to query objects belonging to the same manager.</p>
  *
- * <p> Node types are normally maintained using config files (and not in the database), in so
+ * <p> Node types are normally maintained using configuration files (and not in the database), in so
  * called 'builder xmls'.</p>
  *
   <p>A NodeManager does however extend {@link Node}, because an entry for each node manager is stored
@@ -42,31 +42,31 @@ public interface NodeManager extends Node {
      * A constant for use with {@link #getFields(int)}, meaning `all fields, even those which are
      * not stored.
      */
-    public final static int ORDER_NONE = -1;
+    final static int ORDER_NONE = -1;
     /**
-     * A constant for use with {@link #getFields(int)}, meaning `all fields, in storage order (so
+     * A constant for use with {@link #getFields(int)}, meaning 'all fields, in storage order (so
      * which are in storage'.
      */
-    public final static int ORDER_CREATE = 0;
+    final static int ORDER_CREATE = 0;
     /**
      * A constant for use with {@link #getFields(int)}, meaning all fields which a user may want to
      * fill when creating or editing this node. That are normally all nodes without the `automatic'
      * ones like `number' and `otype'.
      */
-    public final static int ORDER_EDIT = 1;
+    final static int ORDER_EDIT = 1;
     /**
      * A constant for use with {@link #getFields(int)}. When presenting a Node in some list overview
      * then less essential fields can be left out, to get a more concise presentation of the node.
      */
-    public final static int ORDER_LIST = 2;
+    final static int ORDER_LIST = 2;
     /**
      * A constant for use with {@link #getFields(int)} On some fields, like binary fields (e.g. images) it makes no sense searching. These are left
-     * out among the `search' fields.
+     * out among the 'search' fields.
      */
-    public final static int ORDER_SEARCH = 3;
+    final static int ORDER_SEARCH = 3;
 
-    public final static int GUI_SINGULAR = 1;
-    public final static int GUI_PLURAL = 2;
+    final static int GUI_SINGULAR = 1;
+    final static int GUI_PLURAL = 2;
 
     /**
     * Creates a new node. The returned node will not be visible in the cloud
@@ -75,7 +75,7 @@ public interface NodeManager extends Node {
     *
     * @return the new <code>Node</code>
     */
-    public Node createNode();
+    Node createNode();
 
     /**
      * Returns the cloud to which this manager belongs.
@@ -83,28 +83,28 @@ public interface NodeManager extends Node {
      * @return the cloud to which this manager belongs
      */
     @Override
-    public Cloud getCloud();
+    Cloud getCloud();
 
     /**
-     * Retrieve the parent of this NodeManager (the Nodemanager that this nodemanager extends from)
+     * Retrieve the parent of this NodeManager (the {@link NodeManager} that this nodemanager extends from)
      * @return the NodeManager's parent
      * @throws NotFoundException if no parent exists (i.e. this nodeManager is "object")
      */
-    public NodeManager getParent() throws NotFoundException;
+    NodeManager getParent() throws NotFoundException;
 
     /**
-     * Retrieve a  list of descendant nodemanagers (the nodemanagers that - possibly indirectly - extend from this nodemanager)
+     * Retrieve a  list of descendant {@link NodeManager}s (the nodemanagers that - possibly indirectly - extend from this nodemanager)
      * @return a list of NodeManagers
      * @since MMBase-1.7
      */
-    public NodeManagerList getDescendants();
+    NodeManagerList getDescendants();
 
     /**
      * Returns the name of this node manager. This name is a unique name.
      *
      * @return the name of this node manager.
      */
-    public String getName();
+    String getName();
 
     /**
      * Retrieve a property of the node manager.
@@ -112,14 +112,14 @@ public interface NodeManager extends Node {
      * @return the property value (null if not given)
      * @since  MMBase-1.7
      */
-    public String getProperty(String name);
+    String getProperty(String name);
 
     /**
      * Retrieve a copy of the node manager's properties
      * @return a map of node manager properties
      * @since  MMBase-1.7
      */
-    public Map<String, String> getProperties();
+    Map<String, String> getProperties();
 
     /**
      * Returns the descriptive name of this node manager. This name will be in
@@ -127,7 +127,7 @@ public interface NodeManager extends Node {
      *
      * @return the descriptive name of this node manager
      */
-    public String getGUIName();
+    String getGUIName();
 
     /**
      * Returns the descriptive name of this node manager. This name will be in
@@ -138,10 +138,10 @@ public interface NodeManager extends Node {
      *                  ({@link #GUI_SINGULAR} or {@link #GUI_PLURAL})
      * @return the descriptive name of this node manager
      */
-    public String getGUIName(int plurality);
+    String getGUIName(int plurality);
 
     /**
-     * Returns the descriptive name of this node manager ina a specified language.
+     * Returns the descriptive name of this node manager in a a specified language.
      *
      * @since MMBase-1.6
      * @param plurality the plurality (number of objects) for which to return a description
@@ -149,14 +149,14 @@ public interface NodeManager extends Node {
      * @param locale the locale that determines the language for the GUI name
      * @return the descriptive name of this node manager
      */
-    public String getGUIName(int plurality, Locale locale);
+    String getGUIName(int plurality, Locale locale);
 
     /**
      * Returns the description of this node manager.
      *
      * @return the description of this node manager
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      * Returns the description of this node manager in a specified language.
@@ -165,14 +165,14 @@ public interface NodeManager extends Node {
      * @return the description of this node manager
      * @since MMBase-1.7
      */
-    public String getDescription(Locale locale);
+    String getDescription(Locale locale);
 
     /**
      * Returns a list of all fields defined for this node manager.
      *
      * @return a list of all fields defined for this node manager
      */
-    public FieldList getFields();
+    FieldList getFields();
 
     /**
      * Retrieve a subset of field types of this NodeManager, depending on a given order. The order
@@ -188,7 +188,7 @@ public interface NodeManager extends Node {
      * @see   #ORDER_LIST
      * @see   #ORDER_SEARCH
      */
-    public FieldList getFields(int order);
+    FieldList getFields(int order);
 
     /**
      * Returns the field with the specified name.
@@ -197,7 +197,7 @@ public interface NodeManager extends Node {
      * @return      the field with the requested name
      * @throws NotFoundException is the field does not exist
      */
-    public Field getField(String name) throws NotFoundException;
+    Field getField(String name) throws NotFoundException;
 
     /**
      * Tests whether the field with the specified name exists in this nodemanager.
@@ -206,14 +206,14 @@ public interface NodeManager extends Node {
      * @param fieldName  the name of the field to be returned
      * @return      <code>true</code> if the field with the requested name exists
      */
-    public boolean hasField(String fieldName);
+    boolean hasField(String fieldName);
 
     /**
      * Returns a list of nodes belonging to this node manager. Constraints can
      * be given to exclude nodes from the returned list. These constraints
      * follow the syntax of the SQL where clause. It's a good practice to use
      * uppercase letters for the operators and lowercase letters for the
-     * fieldnames. Example constraints are:
+     * field names. Example constraints are:
      *
      * <pre>
      * "number = 100" (!=, <, >, <= and >= can also be used)
@@ -250,7 +250,7 @@ public interface NodeManager extends Node {
      * </pre>
      *
      * The single quote can be escaped using it twice for every single
-     * occurence:
+     * occurrence:
      *
      * <pre>
      * "name='aaa''bbb'" (if we want to find the string aaa'bbb)
@@ -285,12 +285,12 @@ public interface NodeManager extends Node {
      *                      value.
      * @return              a list of nodes belonging to this node manager
      */
-    public NodeList getList(String constraints, String orderby, String directions);
+    NodeList getList(String constraints, String orderby, String directions);
 
 
 
     /**
-     * Creates a query for this NodeNanager. The nodemanager is added as a step, and also all (non
+     * Creates a query for this NodeNanager. The {@link NodeManager} is added as a step, and also all (non
      * byte array) fields are added.  The query can be used  by getList of Cloud.
      *
      * You can not add steps to this NodeQuery.
@@ -300,7 +300,7 @@ public interface NodeManager extends Node {
      * @see #getList(NodeQuery)
      * @see Cloud#createNodeQuery
      */
-    public NodeQuery createQuery();
+    NodeQuery createQuery();
 
     /**
      * Executes a query and returns the result as nodes of this NodeManager (or of extensions)
@@ -309,7 +309,7 @@ public interface NodeManager extends Node {
      *
      * @since MMBase-1.7
      */
-    public NodeList getList(NodeQuery query);
+    NodeList getList(NodeQuery query);
 
 
     /**
@@ -318,7 +318,7 @@ public interface NodeManager extends Node {
      * @param command the info to obtain, i.e. "USER-OS".
      * @return info from a node manager
      */
-    public String getInfo(String command);
+    String getInfo(String command);
 
     /**
      * Retrieve info from a node manager based on a command string
@@ -328,65 +328,65 @@ public interface NodeManager extends Node {
      * @param resp the Response item to use for redirecting users. For backward compatibility.
      * @return info from a node manager
      */
-    public String getInfo(String command, ServletRequest req,  ServletResponse resp);
+    String getInfo(String command, ServletRequest req, ServletResponse resp);
 
     /**
-     * Retrieve all relation managers that can be used to create relations for objects of this nodemanager.
+     * Retrieve all relation managers that can be used to create relations for objects of this {@link NodeManager}.
      * @return the relation manager list
      * @since MMBase-1.6
      */
-    public RelationManagerList getAllowedRelations();
+    RelationManagerList getAllowedRelations();
 
     /**
      * Retrieve all relation managers that can be used to create relations for objects from this nodemanager,
      * to the specified manager, using the specified role and direction.
-     * @param nodeManager the name of the nodemanger with which to make a relation, can be null
+     * @param nodeManager the name of the {@link NodeManager} with which to make a relation, can be null
      * @param role the role with which to make a relation, can be null
      * @param direction the search direction ("source", "destination", "both"), can be null
      * @return the relation manager list
      * @since MMBase-1.6
      */
-    public RelationManagerList getAllowedRelations(String nodeManager, String role, String direction);
+    RelationManagerList getAllowedRelations(String nodeManager, String role, String direction);
 
     /**
      * Retrieve all relation managers that can be used to create relations for objects from this nodemanager,
      * to the specified manager, using the specified role and direction.
-     * @param nodeManager the nodemanger with which to make a relation, can be null
+     * @param nodeManager the nodemanager with which to make a relation, can be null
      * @param role the role with which to make a relation, can be null
      * @param direction the search direction ("source", "destination", "both"), can be null
      * @return the relation manager list
      * @since MMBase-1.6
      */
-    public RelationManagerList getAllowedRelations(NodeManager nodeManager, String role, String direction);
+    RelationManagerList getAllowedRelations(NodeManager nodeManager, String role, String direction);
 
     /**
      * Retrieve info (as a list of virtual nodes) from a node manager based on a command string.
      * Similar to the LIST command in SCAN.
      * The values retrieved are represented as fields of a virtual node, named following the fieldnames listed in the fields paramaters..
      * @param command the info to obtain, i.e. "USER-OS".
-     * @param parameters a hashtable containing the named parameters of the list.
+     * @param parameters a map containing the named parameters of the list.
      * @return info from a node manager (as a list of virtual nodes)
      */
-    public NodeList getList(String command, Map parameters);
+    NodeList getList(String command, Map parameters);
 
     /**
      * Retrieve info from a node manager based on a command string
      * Similar to the LIST command in SCAN.
      * The values retrieved are represented as fields of a virtual node, named following the fieldnames listed in the fields paramaters..
      * @param command the info to obtain, i.e. "USER-OS".
-     * @param parameters a hashtable containing the named parameters of the list.
+     * @param parameters a map containing the named parameters of the list.
      * @param req the Request item to use for obtaining user information. For backward compatibility.
      * @param resp the Response item to use for redirecting users. For backward compatibility.
      * @return info from a node manager (as a list of virtual nodes)
      */
-    public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp);
+    NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp);
 
     /**
      * Check if the current user may create a new node of this type.
      *
      * @return  Check if the current user may create a new node of this type.
      */
-    public boolean mayCreateNode();
+    boolean mayCreateNode();
 
     /**
      * Returns a new, empty field list for this nodemanager
@@ -394,7 +394,7 @@ public interface NodeManager extends Node {
      * @return  The empty list
      * @since   MMBase-1.8
      */
-    public FieldList createFieldList();
+    FieldList createFieldList();
 
     /**
      * Returns a new, empty node list for this nodemanager
@@ -402,7 +402,7 @@ public interface NodeManager extends Node {
      * @return  The empty list
      * @since   MMBase-1.8
      */
-    public NodeList createNodeList();
+    NodeList createNodeList();
 
     /**
      * Returns a new, empty relation list for this nodemanager
@@ -410,6 +410,6 @@ public interface NodeManager extends Node {
      * @return  The empty list
      * @since   MMBase-1.8
      */
-    public RelationList createRelationList();
+    RelationList createRelationList();
 
 }

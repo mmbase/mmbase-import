@@ -33,7 +33,7 @@ public interface Transaction extends Cloud {
      * @return <code>true</code> if the commit succeeded, <code>false</code>
      *         otherwise
      */
-    public boolean commit();
+    boolean commit();
 
     /**
      * Cancels this transaction. If the transaction itself was 'nested' in
@@ -41,27 +41,27 @@ public interface Transaction extends Cloud {
      * This routine also removes the transaction (and all outer transactions)
      * as an 'active' transaction (it cannot be opened again).
      */
-    public void cancel();
+    void cancel();
 
     /**
      * Returns whether the transaction is committed
      * @return <code>true</code> when committed
      * @since MMBase-1.8
      */
-    public boolean isCommitted();
+    boolean isCommitted();
 
     /**
      * Returns whether the transaction is canceled
      * @return <code>true</code> when canceled
      * @since MMBase-1.8
      */
-    public boolean isCanceled();
+    boolean isCanceled();
 
 
     /**
      * @since MMBase-1.9
      */
-    public NodeList getNodes();
+    NodeList getNodes();
 
     /**
      * Returns the name of the cloud this transaction uses
@@ -69,6 +69,6 @@ public interface Transaction extends Cloud {
      * @return the name of the cloud
      * @since MMBase-1.8
      */
-    public String getCloudName();
+    String getCloudName();
 
 }
