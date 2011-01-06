@@ -90,8 +90,9 @@ public class ContextProvider {
                                 try {
                                     Resolver resolver = (Resolver) Class.forName(line).newInstance();
                                     if (resolvers.contains(resolver)) {
-                                        log.warn("Already resolving with " + resolver + "(" + url + ")");
+                                        log.warn("Already resolving with " + resolver + " (" + url + ")");
                                     } else {
+                                        log.info("Found " + resolver + " (" + url + ")");
                                         resolvers.add(resolver);
                                     }
                                 } catch (Exception e) {

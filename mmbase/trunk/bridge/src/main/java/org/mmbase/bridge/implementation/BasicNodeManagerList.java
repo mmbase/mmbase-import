@@ -43,7 +43,12 @@ public class BasicNodeManagerList extends AbstractNodeList<NodeManager> implemen
         } else if (o instanceof NodeManager) {
             return (NodeManager) o;
         }
-        return super.convert(o).toNodeManager();
+        Node superResult = super.convert(o);
+        if (superResult == null) {
+            log.warn("" + o + " converted to null ", new Exception());
+            return null;
+        }
+        return superResult.toNodeManager();
     }
 
 
