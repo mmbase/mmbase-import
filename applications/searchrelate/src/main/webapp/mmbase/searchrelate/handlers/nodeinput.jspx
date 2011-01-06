@@ -13,10 +13,19 @@
 
   <div id="${id}_sr_div">
     <mm:present referid="node">
-      <mm:node referid="node">
-        <mm:node element="${field.name}">
-          <span class="value"><mm:include page="nodevalue.jspx" /></span>
-        </mm:node>
+      <mm:node referid="node" commitonclose="false">
+        <mm:isnull name="${field.name}">
+          <span class="value"></span>
+        </mm:isnull>
+        <mm:isnull name="${field.name}" inverse="true">
+          <mm:node element="${field.name}" notfound="skip" commitonclose="false">
+            <mm:import id="found" />
+            <span class="value"><mm:include page="nodevalue.jspx" /></span>
+          </mm:node>
+        </mm:isnull>
+        <mm:notpresent referid="found">
+          <span class="value"></span>
+        </mm:notpresent>
       </mm:node>
     </mm:present>
     <mm:notpresent referid="node">
@@ -24,16 +33,22 @@
       <span class="value"><jsp:text> </jsp:text></span>
     </mm:notpresent>
     <script type="text/javascript">
-      $("#${id}_sr_div").bind("mmsrRelate", function (e, tr, relater) {
-      var number= relater.getNumber(tr);
-      $("#${id}").val(number);
-      $("#${id}").trigger("change");
-      $("#${id}_sr_div").find("span.value").load("${mm:link('/mmbase/searchrelate/handlers/nodevalue.jspx')}?node=" + number);
-
-      });
+      if (typeof(MMBaseSearcher) != 'undefined') {
+        $("#${id}").hide();
+        $("#${id}_sr_div").bind("mmsrRelate",
+            function (e, tr, relater) {
+               var number= relater.getNumber(tr);
+               $("#${id}").val(number);
+               $("#${id}").trigger("change");
+              $("#${id}_sr_div").find("span.value").load("${mm:link('/mmbase/searchrelate/handlers/nodevalue.jspx')}?node=" + number);
+        })} else {
+           $("#${id}_sr_div").remove();
+        };
     </script>
     <mm-sr:relate
+        load="false"
         repository="${query}"
+        forms="false"
         implicitRepository="false"
         create="false"
         />
