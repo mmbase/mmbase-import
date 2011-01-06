@@ -813,8 +813,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public DataTypeCollector getDataTypeCollector() {
         if (dataTypeCollector == null) {
-            Object signature = new String(getTableName()+ "_" + System.currentTimeMillis());
-            dataTypeCollector = new DataTypeCollector(signature);
+            dataTypeCollector = new DataTypeCollector(getTableName() + "_" + System.currentTimeMillis());
         }
         return dataTypeCollector;
     }
