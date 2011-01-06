@@ -81,17 +81,16 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     protected final static Parameter<String> INDEX = new Parameter<String>("index", String.class);
     static { INDEX.setDescription("the name of the index to search in"); }
 
-    protected final static Parameter/*<List<String>>*/MACHINES =
-            new Parameter/*<List<String>>*/(
-            "machines",
-            List.class, null);
+    protected final static Parameter<List<String>/MACHINES =
+        new Parameter<List<String>>("machines",
+                                    List.class, null);
     static { MACHINES.setDescription("the machines on which to execute a full index"); }
 
     protected final static Parameter<Boolean> COPY = new Parameter<Boolean>("copy", Boolean.class, Boolean.FALSE);
     static { INDEX.setDescription("use the copy of the index (used for full index)"); }
 
-    protected final static Parameter/*<Class<? extends IndexDefinition>>*/CLASS =
-            new Parameter/*<Class<? extends IndexDefinition>>*/("class",
+    protected final static Parameter<Class<? extends IndexDefinition>>CLASS =
+            new Parameter<Class<? extends IndexDefinition>>("class",
             Class.class,
             IndexDefinition.class);
     static { INDEX.setDescription("the class of indices to search in (default to all classes)"); }
@@ -844,21 +843,21 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 }
         };
         watcher.add(INDEX_CONFIG_FILE);
-            watcher.onChange();
-            watcher.start();
+        watcher.onChange();
+        watcher.start();
 
-            if (!readOnly) {
-                scheduler.start();
-                log.service("Module Lucene started");
-                // full index ?
-                String fias = getInitParameter("fullindexatstartup");
-                if ("true".equals(fias)) {
-                    log.info("Configured to run a full index at startup, so doing that now");
-                    scheduler.fullIndex();
-                }
-            } else {
-                log.service("No scheduler started, because read-only");
+        if (!readOnly) {
+            scheduler.start();
+            log.service("Module Lucene started");
+            // full index ?
+            String fias = getInitParameter("fullindexatstartup");
+            if ("true".equals(fias)) {
+                log.info("Configured to run a full index at startup, so doing that now");
+                scheduler.fullIndex();
             }
+        } else {
+            log.service("No scheduler started, because read-only");
+        }
     }
 
     @Override
