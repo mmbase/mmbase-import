@@ -32,9 +32,10 @@ import org.mmbase.util.ResourceWatcher;
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-public class Authenticate extends CloudContextAuthentication {
-    private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
+public class Authenticate extends CloudContextAuthentication implements java.io.Serializable {
+    private static final long serialVersionUID = 0L;
 
+    private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
 
     protected static final String ADMINS_PROPS = "admins.properties";
 
