@@ -50,17 +50,21 @@ public class NewSearcher {
      */
     public static class Broker extends AbstractEventBroker {
 
+        @Override
         public boolean canBrokerForListener(EventListener listener) {
             return listener instanceof NewSearcher.Listener;
         }
+        @Override
         public boolean canBrokerForEvent(org.mmbase.core.event.Event event) {
             return event instanceof NewSearcher.Event;
         }
+        @Override
         protected void notifyEventListener(org.mmbase.core.event.Event event, EventListener listener) {
             NewSearcher.Event ne = (NewSearcher.Event) event; //!!!!!
             Listener nel = (Listener) listener;
             nel.notify(ne);
         }
+        @Override
         public String toString() {
             return "Lucene New Searcher Broker";
         }

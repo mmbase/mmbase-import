@@ -21,6 +21,7 @@ import org.mmbase.util.functions.Parameters;
  **/
 public class FullIndex extends  AbstractCronJob {
 
+    @Override
     public void run() {
         Lucene lucene = Module.getModule(Lucene.class);
         if (lucene != null) {

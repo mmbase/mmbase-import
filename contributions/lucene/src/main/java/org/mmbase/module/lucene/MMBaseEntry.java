@@ -61,6 +61,7 @@ public class MMBaseEntry implements IndexEntry {
         this.node = node;
     }
 
+    @Override
     public String getIdentifier() {
         if (multiLevel) {
             String alias = elementStep.getAlias();
@@ -72,6 +73,7 @@ public class MMBaseEntry implements IndexEntry {
     }
 
     // For MMBase indexing the 'key' for sub-queries is always equal to the identifier of the current node ('related nodes')
+    @Override
     public String getKey() {
         return getIdentifier();
     }
@@ -135,6 +137,7 @@ public class MMBaseEntry implements IndexEntry {
     }
 
 
+    @Override
     public void index(Document document) {
         final Map<String, Object> data = new HashMap<String, Object>();
         if (log.isTraceEnabled()) {
@@ -220,6 +223,7 @@ public class MMBaseEntry implements IndexEntry {
         }
     }
 
+    @Override
     public Collection<IndexDefinition> getSubDefinitions() {
         if (subQueries == null) {
             return Collections.emptyList();

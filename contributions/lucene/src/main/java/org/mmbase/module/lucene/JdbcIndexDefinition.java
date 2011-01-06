@@ -112,9 +112,11 @@ public class JdbcIndexDefinition implements IndexDefinition {
         assert ! isSub  || "".equals(findSql);
     }
 
+    @Override
     public void setId(String i) {
         id = i;
     }
+    @Override
     public String getId() {
         return id;
     }
@@ -139,6 +141,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
         }
     }
 
+    @Override
     public Analyzer getAnalyzer() {
         return analyzer;
     }
@@ -152,6 +155,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
         return s;
     }
 
+    @Override
     public boolean inIndex(String identifier) {
         CloseableIterator<JdbcEntry> i = getSqlCursor(getFindSql(identifier));
         boolean result = i.hasNext();
@@ -187,10 +191,12 @@ public class JdbcIndexDefinition implements IndexDefinition {
                 boolean hasNext = results.isBeforeFirst();
                 int i = 0;
 
+                @Override
                 public boolean hasNext() {
                     return hasNext;
                 }
 
+                @Override
                 public JdbcEntry next() {
                     if (! hasNext) {
                         throw new NoSuchElementException();
@@ -214,10 +220,12 @@ public class JdbcIndexDefinition implements IndexDefinition {
                     return entry;
                 }
 
+                @Override
                 public void remove() {
                     throw new UnsupportedOperationException();
                 }
 
+                @Override
                 public void close() {
                     log.debug("Closing " + con);
                     try {
@@ -287,6 +295,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
                 }
             }
         }
+        @Override
         public Set<Map.Entry<String, String>> entrySet() {
             check();
             return map.entrySet();
@@ -320,6 +329,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
         }
     }
 
+    @Override
     public org.mmbase.bridge.Node getNode(final Cloud userCloud, final Document doc) {
         String docId = doc.get("number");
         if (docId == null) {
@@ -360,11 +370,13 @@ public class JdbcIndexDefinition implements IndexDefinition {
     }
 
 
+    @Override
     public CloseableIterator<JdbcEntry> getCursor() {
         assert ! isSub;
         return getSqlCursor(indexSql);
     }
 
+    @Override
     public CloseableIterator<JdbcEntry> getSubCursor(String identifier) {
         if (isSub) {
             log.debug("Using getSubCursor for " + identifier);
@@ -391,6 +403,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
             sql = s;
         }
 
+        @Override
         public void index(Document document) {
             if (log.isTraceEnabled()) {
                 log.trace("Indexing " + sql + " id=" + JdbcIndexDefinition.this.identifier + ", key = " + JdbcIndexDefinition.this.key);
@@ -428,10 +441,12 @@ public class JdbcIndexDefinition implements IndexDefinition {
             }
         }
 
+        @Override
         public Collection<IndexDefinition> getSubDefinitions() {
             return JdbcIndexDefinition.this.subQueries;
         }
 
+        @Override
         public String getIdentifier() {
             if (JdbcIndexDefinition.this.identifier != null && ! JdbcIndexDefinition.this.identifier.equals("")) {
                 try {
@@ -444,6 +459,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
                 return null;
             }
         }
+        @Override
         public String getKey() {
             if (JdbcIndexDefinition.this.key != null && ! JdbcIndexDefinition.this.key.equals("")) {
                 try {

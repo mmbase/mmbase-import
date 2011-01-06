@@ -63,6 +63,7 @@ public class StandardCleaningAnalyzer extends Analyzer {
      * Constructs a {@link StandardTokenizer} filtered by a {@link
      * StandardFilter}, a {@link LowerCaseFilter} and a {@link StopFilter}.
      */
+    @Override
     public TokenStream tokenStream(String fieldName, Reader reader) {
         if (cleanHtml) {
             TagStripperFactory factory = new TagStripperFactory();
