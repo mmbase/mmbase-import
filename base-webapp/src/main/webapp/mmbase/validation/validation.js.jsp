@@ -724,13 +724,15 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
  *
  */
 MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
-    var nm = nodemanager.split(",");
-    for (var i=0; i < nm.length; i++) {
-        if (nm[i].length > 0) {
-            var n = nm[i];
-            if (MMBaseValidator.prefetchedNodeManagers[n] == "success") {
-            } else {
-                MMBaseValidator.prefetchedNodeManagers[n] = "requested";
+    if (nodemanager != undefined) {
+        var nm = nodemanager.split(",");
+        for (var i=0; i < nm.length; i++) {
+            if (nm[i].length > 0) {
+                var n = nm[i];
+                if (MMBaseValidator.prefetchedNodeManagers[n] == "success") {
+                } else {
+                    MMBaseValidator.prefetchedNodeManagers[n] = "requested";
+                }
             }
         }
     }
