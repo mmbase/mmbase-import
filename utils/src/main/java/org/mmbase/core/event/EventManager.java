@@ -40,6 +40,7 @@ public class EventManager implements SystemEventListener {
     public static final String PUBLIC_ID_EVENTMANAGER = "-//MMBase//DTD eventmanager config 1.0//EN";
     public static final String DTD_EVENTMANAGER = "eventmanager_1_0.dtd";
 
+    protected static final String CONFIG = "eventmanager.xml";
 
     static {
         org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_EVENTMANAGER, DTD_EVENTMANAGER, EventManager.class);
@@ -107,13 +108,15 @@ public class EventManager implements SystemEventListener {
                     configure(w);
                 }
             };
-            watcher.add("eventmanager.xml");
+            watcher.add(CONFIG);
             watcher.onChange();
             watcher.start();
         }
         if (se instanceof SystemEvent.ResourceLoaderChange) {
             log.service("Reconfiguring event managers, because " + se);
-            watcher.onChange();
+            if (watcher != null) {
+                watcher.onChange();
+            }
         }
 
     }
@@ -127,11 +130,12 @@ public class EventManager implements SystemEventListener {
 
     @SuppressWarnings("LeakingThisInConstructor")
     private EventManager() {
+        configure(CONFIG);
         addEventListener(this);
     }
 
 
-    protected synchronized void configure(String resource) {
+    protected synchronized final void configure(String resource) {
         log.service("Configuring the event manager");
         Set<EventBroker> originalEventBrokers = new HashSet<EventBroker>();
         Set<EventListener> newListeners = new HashSet<EventListener>();
