@@ -362,15 +362,12 @@ public class BasicQuery implements Query, java.io.Serializable  {
             */
             return step;
         } else {
-            //RelDef relDef = BasicCloudContext.mmb.getRelDef();
-            int r = cloud.getRelationManager(role).getNumber();
+            RelationManager rm = cloud.getRelationManager(role);
+            int r = rm.getNumber();
             if (r == -1) {
                 throw new NotFoundException("Role '" + role + "' does not exist.");
             }
-            // TODO
-            //MMObjectNode relDefNode = relDef.getNode(r);
-            //InsRel insrel = ((RelDef)relDefNode.getBuilder()).getBuilder(relDefNode.getNumber());
-            BasicRelationStep step =  addRelationStep("insrel", otherNodeManager, relationDir);
+            BasicRelationStep step =  addRelationStep(rm.getName(), otherNodeManager, relationDir);
             step.setRole(Integer.valueOf(r));
             if (! cloud.hasNodeManager(role)) {
                 step.setAlias(createAlias(role));
