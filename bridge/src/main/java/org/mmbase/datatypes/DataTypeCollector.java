@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes;
 
 import java.util.*;
+import java.io.Serializable;
 import org.mmbase.datatypes.util.xml.DataTypeDefinition;
 import org.mmbase.util.logging.*;
 import java.util.concurrent.*;
@@ -29,7 +30,8 @@ import java.util.concurrent.*;
  * @version $Id$
  */
 
-public final class DataTypeCollector {
+public final class DataTypeCollector implements Serializable {
+    private static final long serialVersionUID = 0L;
 
     private static final Logger log = Logging.getLoggerInstance(DataTypeCollector.class);
 
@@ -39,7 +41,7 @@ public final class DataTypeCollector {
     private Map<DataType<?>, Object> roots = new ConcurrentHashMap<DataType<?>, Object>(); // All datatypes which did't inherit from another datatype (this should normally be (a subset of) the 'database types' of mmbase)
 
     // the object to finish datatypes with
-    private Object signature = null;
+    private java.io.Serializable signature = null;
 
     // dependent collectors
     private List<DataTypeCollector> collectors = new CopyOnWriteArrayList<DataTypeCollector>();
@@ -53,7 +55,7 @@ public final class DataTypeCollector {
      */
     static DataTypeCollector createSystemDataTypeCollector() {
         if (systemDataTypeCollector == null) {
-            Object signature = new String( "SYSTEM_" + System.currentTimeMillis());
+            Serializable signature = new String( "SYSTEM_" + System.currentTimeMillis());
             systemDataTypeCollector = new DataTypeCollector(signature);
             return systemDataTypeCollector;
         } else {
@@ -64,8 +66,9 @@ public final class DataTypeCollector {
     /**
      * @param signature the object used to finish a data type for this collector.
      */
-    public DataTypeCollector(Object signature) {
+    public DataTypeCollector(Serializable signature) {
          this.signature = signature;
+         log.info("Instantatiated " + this + " ", new Exception());
     }
 
     public DataTypeDefinition getDataTypeDefinition() {

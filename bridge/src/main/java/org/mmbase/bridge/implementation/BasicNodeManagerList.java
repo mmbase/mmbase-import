@@ -34,7 +34,7 @@ public class BasicNodeManagerList extends AbstractNodeList<NodeManager> implemen
 
 
     @Override
-    protected NodeManager convert(Object o) {
+    protected NodeManager convert(final Object o) {
         if (o == null) {
             return null;
         }
@@ -45,7 +45,7 @@ public class BasicNodeManagerList extends AbstractNodeList<NodeManager> implemen
         }
         Node superResult = super.convert(o);
         if (superResult == null) {
-            log.warn("" + o + " converted to null ", new Exception());
+            log.warn(o.getClass().getName() + " "  + o + " converted to null ", new Exception());
             return null;
         }
         return superResult.toNodeManager();
