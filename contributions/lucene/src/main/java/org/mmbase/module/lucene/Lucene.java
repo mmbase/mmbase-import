@@ -62,8 +62,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     public static final String XSD_LUCENE_1_0 = "luceneindex.xsd";
     public static final String NAMESPACE_LUCENE_1_0 = "http://www.mmbase.org/xmlns/luceneindex";
 
+    public static final String XSD_LUCENEQUERY_1_0 = "lucenequery.xsd";
+    public static final String NAMESPACE_LUCENEQUERY_1_0 = "http://www.mmbase.org/xmlns/lucenequery";
+
     /**
-     * Most recend namespace
+     * Most recent namespace
      */
     public static final String NAMESPACE_LUCENE = NAMESPACE_LUCENE_1_0;
 
@@ -125,8 +128,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     static {
         EntityResolver.registerPublicID(PUBLIC_ID_LUCENE_2_0, DTD_LUCENE_2_0, Lucene.class);
-        EntityResolver.registerPublicID(NAMESPACE_LUCENE_1_0, XSD_LUCENE_1_0, Lucene.class);
         EntityResolver.registerPublicID(PUBLIC_ID_LUCENE, DTD_LUCENE, Lucene.class);
+
+        EntityResolver.registerSystemID(NAMESPACE_LUCENE_1_0 + ".xsd", XSD_LUCENE_1_0, Lucene.class);
+        EntityResolver.registerSystemID(NAMESPACE_LUCENEQUERY_1_0 + ".xsd", XSD_LUCENEQUERY_1_0, Lucene.class);
+
     }
 
     // initial wait time after startup, default 2 minutes. This can be needed to give e.g. CCS time
