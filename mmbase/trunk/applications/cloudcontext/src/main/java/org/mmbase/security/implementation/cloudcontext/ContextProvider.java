@@ -13,7 +13,6 @@ import java.util.*;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.NodeSearchQuery;
 
 /**
@@ -50,6 +49,8 @@ public interface ContextProvider {
      * Returns the MMObjectNode representing the 'context' which is identifier with the given name.
      */
     MMObjectNode getContextNode(String context);
+
+    String getContext(User user, MMObjectNode node);
 
     Set<String> getPossibleContexts(User user, MMObjectNode node)  throws SecurityException;
 

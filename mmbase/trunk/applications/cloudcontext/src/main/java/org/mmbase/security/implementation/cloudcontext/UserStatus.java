@@ -12,7 +12,7 @@ package org.mmbase.security.implementation.cloudcontext;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: User.java 35335 2009-05-21 08:14:41Z michiel $
+ * @version $Id$
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
 public enum UserStatus {
