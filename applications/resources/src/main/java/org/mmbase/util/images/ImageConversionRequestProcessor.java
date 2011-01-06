@@ -62,6 +62,7 @@ public class ImageConversionRequestProcessor implements Runnable {
     }
 
     // javadoc inherited (from Runnable)
+    @Override
     public void run() {
         MMBase mmbase = MMBase.getMMBase();
         log.debug("Started request processor");
@@ -141,6 +142,7 @@ public class ImageConversionRequestProcessor implements Runnable {
         }
     }
 
+    @Override
     public String toString() {
         return super.toString() + " converter: " + convert;
     }

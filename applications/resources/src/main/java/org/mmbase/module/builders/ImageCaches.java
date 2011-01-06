@@ -117,6 +117,7 @@ public class ImageCaches extends AbstractImages {
      * @since MMBase-1.6
      **/
 
+    @Override
     protected String getGUIIndicatorWithAlt(MMObjectNode node, String alt, Parameters a) {
         StringBuilder servlet = new StringBuilder();
         HttpServletRequest req = a.get(Parameter.REQUEST);

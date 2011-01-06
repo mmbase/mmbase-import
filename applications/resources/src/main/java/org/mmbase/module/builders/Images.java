@@ -44,10 +44,16 @@ public class Images extends AbstractImages {
 
     // This cache connects templates (or ckeys, if that occurs), with node numbers,
     // to avoid querying icaches.
-    private static CKeyCache templateCacheNumberCache = new CKeyCache(500) {
-            public String getName()        { return "CkeyNumberCache"; }
-            public String getDescription() { return "Connection between image conversion templates and icache node numbers"; }
-        };
+    private static final CKeyCache templateCacheNumberCache = new CKeyCache(500) {
+        @Override
+        public String getName() {
+            return "CkeyNumberCache";
+        }
+        @Override
+        public String getDescription() {
+            return "Connection between image conversion templates and icache node numbers";
+        }
+    };
     static {
         templateCacheNumberCache.putCache();
     }
@@ -136,7 +142,7 @@ public class Images extends AbstractImages {
             List<Object> empty = new ArrayList<Object>();
             Map<String,String> info = (Map<String,String>) super.executeFunction(node, function, empty);
             info.put("cache", "" + CACHE_PARAMETERS + " The node number of the cached converted image (icaches node)");
-            if (args == null || args.size() == 0) {
+            if (args == null || args.isEmpty()) {
                 return info;
             } else {
                 return info.get(args.get(0));
@@ -157,19 +163,19 @@ public class Images extends AbstractImages {
                 return null;
             }
         } else if ("height".equals(function)) {
-            if (args.size() == 0) {
+            if (args.isEmpty()) {
                 return Integer.valueOf(getDimension(node).getHeight());
             } else {
                 return Integer.valueOf(getDimension(node, (String) args.get(0)).getHeight());
             }
         } else if ("width".equals(function)) {
-            if (args.size() == 0) {
+            if (args.isEmpty()) {
                 return Integer.valueOf(getDimension(node).getWidth());
             } else {
                 return Integer.valueOf(getDimension(node, (String) args.get(0)).getWidth());
             }
         } else if ("dimension".equals(function)) {
-            if (args.size() == 0) {
+            if (args.isEmpty()) {
                 return getDimension(node);
             } else {
                 return getDimension(node, (String) args.get(0));
@@ -267,7 +273,7 @@ public class Images extends AbstractImages {
     public static File createTemporaryFile(SerializableInputStream in, String template) throws IOException {
         long lt = 120;
         FileServlet fileServlet = FileServlet.getInstance();
-        File temporaryImages = new File(fileServlet.getDirectory(), "temporary_images");
+        File temporaryImages = new File(FileServlet.getDirectory(), "temporary_images");
         temporaryImages.mkdirs();
         final File thumb = new File(temporaryImages, in.getName() + "." + template + ".png");
         thumb.deleteOnExit();
@@ -280,11 +286,12 @@ public class Images extends AbstractImages {
             dimensions.put(thumb, dim);
             if (lt > 0) {
                 deleter.schedule(new TimerTask() {
-                        public void run() {
-                            thumb.delete();
-                            dimensions.remove(thumb);
-                        }
-                    }, lt * 1000);
+                    @Override
+                    public void run() {
+                        thumb.delete();
+                        dimensions.remove(thumb);
+                    }
+                }, lt * 1000);
             }
         } else {
             dim = dimensions.get(thumb);

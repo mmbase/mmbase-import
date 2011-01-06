@@ -34,12 +34,14 @@ public class MemoryReceiver implements ImageConversionReceiver {
         return dim;
     }
 
+    @Override
     public OutputStream getOutputStream() {
         if (stream == null) {
             stream = new ByteArrayOutputStream();
         }
         return stream;
     }
+    @Override
     public InputStream getInputStream() throws IOException {
         if (stream != null) {
             stream.flush();
@@ -50,9 +52,11 @@ public class MemoryReceiver implements ImageConversionReceiver {
         }
         return in;
     }
+    @Override
     public void setSize(long s) {
         size = s;
     }
+    @Override
     public long getSize() {
         if (size < 0 && stream != null) {
             try {
@@ -63,15 +67,18 @@ public class MemoryReceiver implements ImageConversionReceiver {
         return size;
     }
 
+    @Override
     public boolean wantsDimension() {
         return true;
     }
+    @Override
     public void setDimension(Dimension d) {
         if (d != null) {
             dim = d;
         }
     }
 
+    @Override
     public void ready() throws IOException {
         if (stream != null) {
             stream.flush();

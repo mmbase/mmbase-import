@@ -12,12 +12,10 @@ package org.mmbase.util.images;
 import java.util.*;
 import java.util.regex.*;
 
-import org.mmbase.util.IOUtil;
 import org.mmbase.util.transformers.*;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
-import java.io.*;
 
 /**
  * Utilities related to Images.
@@ -341,6 +339,7 @@ public abstract class Imaging {
             template = t;
             node = n;
         }
+        @Override
         public String toString() {
             return "" + node + unicode.transform(template);
         }

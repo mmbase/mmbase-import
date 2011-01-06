@@ -76,9 +76,11 @@ public class HandleServlet extends BridgeServlet {
         }
         if (isIECompatibleJpeg && jpegSizes == null) {
             jpegSizes = new Cache<Integer, Integer>(5000) {
+                @Override
                 public String getName() {
                     return "JPEGSizes";
                 }
+                @Override
                 public String getDescription() {
                     return "HandleServlet may ditch some bytes from Jpeg-streams to please IE";
                 }
@@ -89,6 +91,7 @@ public class HandleServlet extends BridgeServlet {
     }
 
     // just to get HandleServlet in the stacktrace.
+    @Override
     protected Cloud getClassCloud() {
         return super.getClassCloud();
     }

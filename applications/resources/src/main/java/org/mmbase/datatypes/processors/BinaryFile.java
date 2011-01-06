@@ -15,14 +15,13 @@ import org.mmbase.util.*;
 import org.mmbase.util.transformers.*;
 import java.util.*;
 import java.io.*;
-import java.text.*;
 
 import org.mmbase.util.logging.*;
 import org.mmbase.servlet.FileServlet;
 
 
 /**
- * This class constains Setter and Getter method for 'binary' file fields. In such fields you can set
+ * This class contains Setter and Getter method for 'binary' file fields. In such fields you can set
  * a FileItem, and it is stored as a file, using the FileServlet to produce an URL. The (string)
  * field itself only contains a file name.
  *
@@ -130,6 +129,7 @@ public class BinaryFile {
             throw new UnsupportedOperationException("Not yet implemented");
         }
 
+        @Override
         public Object process(final Node node, final Field field, final Object value) {
             SerializableInputStream is = Casting.toSerializableInputStream(value);
             String name = is.getName();
@@ -176,6 +176,7 @@ public class BinaryFile {
     public static class Getter implements Processor {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public Object process(Node node, Field field, Object value) {
 
             return value;
@@ -189,6 +190,7 @@ public class BinaryFile {
     public static class StringGetter implements Processor {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public Object process(final Node node, final Field field, final Object value) {
             if (value == null) return null;
             String fileName = (String) value;

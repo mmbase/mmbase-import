@@ -32,12 +32,14 @@ public abstract class AbstractImageConverter implements ImageConverter {
     /**
      * @see org.mmbase.util.images.ImageConverter#init(java.util.Map)
      */
+    @Override
     public void init(Map<String, String> params) {
     }
 
     /**
      * @see org.mmbase.util.images.ImageConverter#convertImage(byte[], java.lang.String, java.util.List)
      */
+    @Override
     public byte[] convertImage(byte[] input, String sourceFormat, List<String> commands) {
         try {
             ByteArrayInputStream in = new ByteArrayInputStream(input);
@@ -53,6 +55,7 @@ public abstract class AbstractImageConverter implements ImageConverter {
     /**
      * @see org.mmbase.util.images.ImageConverter#convertImage(java.io.InputStream, java.lang.String, java.io.OutputStream, java.util.List)
      */
+    @Override
     public long convertImage(InputStream input, String sourceFormat, OutputStream out, List<String> commands) throws IOException {
         byte[] bytes;
         if (input instanceof BytesInputStream) {

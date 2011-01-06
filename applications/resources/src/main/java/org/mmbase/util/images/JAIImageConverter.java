@@ -170,7 +170,7 @@ public class JAIImageConverter extends AbstractImageConverter implements ImageCo
                         if (area) {
                             float a = x;
                             if (img.getWidth() * img.getHeight() > a) {
-                                float ratio = (float) img.getWidth() / img.getHeight();;
+                                float ratio = (float) img.getWidth() / img.getHeight();
                                 x = (int) Math.floor(Math.sqrt(a * ratio));
                                 y = (int) Math.floor(Math.sqrt(a / ratio));
                             } else {
