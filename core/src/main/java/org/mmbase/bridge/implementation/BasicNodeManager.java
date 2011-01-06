@@ -316,7 +316,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         return new BasicNodeManagerList(descs, cloud) {
             @Override
             protected NodeManager convert(final Object o) {
-                return new BasicNodeManager((MMObjectBuilder) o, BasicNodeManager.this.cloud);
+                return BasicNodeManager.this.cloud.getBasicNodeManager((MMObjectBuilder) o);
             }
         };
     }
