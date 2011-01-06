@@ -155,7 +155,10 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
      */
     public static void registerSystemID(String systemID, String xsd, Class<?> c) {
         systemIDtoResource.put(systemID, new FileResource(c, xsd));
-        if (log.isDebugEnabled()) log.debug("systemIDtoResource: " + systemID + " " + xsd + (c != null ? c.getName() : "NULL") + " " + systemIDtoResource.get(systemID));
+        if (log.isDebugEnabled()) {
+            log.debug("systemIDtoResource: " + systemID + " " + xsd + (c != null ? c.getName() : "NULL") + " " + systemIDtoResource.get(systemID));
+        }
+
     }
 
     private final String definitionPath;
@@ -326,6 +329,9 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
                 definitionStream = res.getStream();
                 encoding = res.getEncoding();
             }
+            if (definitionStream == null && systemId.startsWith(DOMAIN) && systemId.endsWith(".xsd")) {
+                log.warn("Could not find " + systemId + " in " + systemIDtoResource, new Exception());
+            }
             log.debug("Get definition stream by registered system id: " + systemId + " " + definitionStream);
         }
 
@@ -384,7 +390,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
                 }
                 if (definitionStream == null) {
                     if (resolveBase != null) {
-                        log.error("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir) " + resolveBase + " " + mmResource);
+                        log.error("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir) " + resolveBase + " " + mmResource, new Exception());
                     } else {
                         log.service("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
                     }

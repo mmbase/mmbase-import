@@ -53,7 +53,10 @@ public class EventManager implements SystemEventListener {
      */
     private static final EventManager eventManager = new EventManager();
 
-
+    static {
+        eventManager.configure(CONFIG);
+        eventManager.addEventListener(eventManager);
+    }
 
 
     /**
@@ -130,8 +133,6 @@ public class EventManager implements SystemEventListener {
 
     @SuppressWarnings("LeakingThisInConstructor")
     private EventManager() {
-        configure(CONFIG);
-        addEventListener(this);
     }
 
 
@@ -213,6 +214,7 @@ public class EventManager implements SystemEventListener {
         listenersFromResources.clear();
         listenersFromResources.addAll(newListeners);
         log.debug("Ready ");
+        propagateEvent(new Ready());
 
     }
 
@@ -435,6 +437,8 @@ public class EventManager implements SystemEventListener {
             next = null;
         }
 
+    }
+    public static class Ready extends SystemEvent.Collectable {
     }
 
 
