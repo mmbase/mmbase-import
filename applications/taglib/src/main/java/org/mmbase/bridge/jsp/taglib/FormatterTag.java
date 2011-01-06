@@ -124,7 +124,8 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
             documentBuilder = dfactory.newDocumentBuilder();
             dfactory.setNamespaceAware(true);
             documentBuilderNS = dfactory.newDocumentBuilder();
-            org.xml.sax.ErrorHandler    handler = new org.mmbase.util.xml.ErrorHandler();
+            org.xml.sax.ErrorHandler    handler = new org.mmbase.util.xml.ErrorHandler(true,
+                                                                                       org.mmbase.util.xml.ErrorHandler.FATAL_ERROR);
             org.xml.sax.EntityResolver resolver = new org.mmbase.util.xml.EntityResolver();
             documentBuilder.setErrorHandler(handler);
             documentBuilder.setEntityResolver(resolver);

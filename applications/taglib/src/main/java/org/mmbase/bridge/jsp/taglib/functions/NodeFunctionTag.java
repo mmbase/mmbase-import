@@ -120,7 +120,9 @@ public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider
         return nodeHelper.doAfterBody();
     }
 
+    @Override
     public void doFinally() {
+        super.doFinally();
         nodeHelper.doFinally();
     }
 }
