@@ -11,13 +11,11 @@ package org.mmbase.util.xml;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.regex.Pattern;
 import org.mmbase.datatypes.DataTypes.FieldNotFoundException;
 
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.mmbase.bridge.Field;
-import org.mmbase.core.AbstractField;
 import org.mmbase.core.util.DataTypeSetter;
 import org.mmbase.core.event.*;
 import org.mmbase.datatypes.*;
@@ -427,13 +425,15 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
                                        final Element fieldElement,
                                        final boolean forceInstance) {
         postponedDataTypeDecoders.add(new Runnable() {
-                public void run() {
-                    decodeDataType(setter, builder, collector, fieldName, fieldElement, forceInstance);
-                }
-                public String toString() {
-                    return "Decoding datatype for " + builder + ":" + fieldName;
-                }
-            });
+            @Override
+            public void run() {
+                decodeDataType(setter, builder, collector, fieldName, fieldElement, forceInstance);
+            }
+            @Override
+            public String toString() {
+                return "Decoding datatype for " + builder + ":" + fieldName;
+            }
+        });
         log.debug("Scheduling for later " + postponedDataTypeDecoders);
 
     }
@@ -845,19 +845,20 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
                         } else {
                             if (method.getParameterTypes().length == 0) {
                                 function = BeanFunction.getFunction(claz, providerKey, new BeanFunction.Producer() {
-                                        public Object getInstance() {
-                                            try {
-                                                return BeanFunction.getInstance(claz, builder);
-                                            } catch (Exception e) {
-                                                log.error(e.getMessage(), e);
-                                                return null;
-                                            }
+                                    @Override
+                                    public Object getInstance() {
+                                        try {
+                                            return BeanFunction.getInstance(claz, builder);
+                                        } catch (Exception e) {
+                                            log.error(e.getMessage(), e);
+                                            return null;
                                         }
-                                        @Override
-                                        public String toString() {
-                                            return "" + claz.getName() + "." + builder;
-                                        }
-                                    });
+                                    }
+                                    @Override
+                                    public String toString() {
+                                        return "" + claz.getName() + "." + builder;
+                                    }
+                                });
                             } else {
                                 if (method.getClass().isInstance(builder)) {
                                     function = MethodFunction.getFunction(method, providerKey, builder);

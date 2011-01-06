@@ -19,16 +19,16 @@ package org.mmbase.bridge;
 public interface StringList extends BridgeList<String> {
 
     /**
-     * Returns the string at the indicated postion in the list
+     * Returns the string at the indicated position in the list
      * @param index the position of the string to retrieve
-     * @return string at the indicated postion
+     * @return string at the indicated position
      */
-    public String getString(int index);
+    String getString(int index);
 
     /**
      * Returns an type-specific iterator for this list.
      * @return String iterator
      */
-    public StringIterator stringIterator();
+    StringIterator stringIterator();
 
 }

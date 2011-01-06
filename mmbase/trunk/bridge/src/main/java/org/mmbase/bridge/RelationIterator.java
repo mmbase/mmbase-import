@@ -24,13 +24,13 @@ public interface RelationIterator extends ListIterator<Relation> {
      * Returns the next element in the iterator as a Relation
      * @return next Relation
      */
-    public Relation nextRelation();
+    Relation nextRelation();
 
     /**
      * Returns the previous element in the iterator as a Relation
      * @return previous Relation
      * @since MMBase-1.7
      */
-    public Relation previousRelation();
+    Relation previousRelation();
 
 }

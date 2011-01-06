@@ -48,7 +48,7 @@ public class NodeEvent extends Event {
      * @since MMBase-1.9.4
      */
     private static Map<String, Object> values(final Map<String, Object> values) {
-        if (values.size() == 0) {
+        if (values.isEmpty()) {
             return Collections.unmodifiableMap(values);
         }
         Set<String> toremove = new HashSet<String>();

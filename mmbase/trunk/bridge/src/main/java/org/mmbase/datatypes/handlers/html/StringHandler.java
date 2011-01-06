@@ -10,9 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.datatypes.handlers.html;
 
-import org.mmbase.bridge.*;
-import org.mmbase.storage.search.Constraint;
-
 /**
  *
  * @author Michiel Meeuwissen

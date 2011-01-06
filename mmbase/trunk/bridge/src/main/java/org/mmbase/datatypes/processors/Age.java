@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
 
 public class Age {
 
-    private static final Logger log = Logging.getLoggerInstance(Age.class);
+    private static final Logger LOG = Logging.getLoggerInstance(Age.class);
 
     public static class Setter implements Processor {
 
@@ -42,11 +42,11 @@ public class Age {
                 // educated guess for the birth date:
                 Date date = DynamicDate.eval(DynamicDate.getInstance("today - 6 month - " + value + " year"));
                 node.setValueWithoutProcess(birthdateField, date);
-                if (log.isDebugEnabled()) {
-                    log.debug("setting age to " + value + " in " + birthdateField + " -> " + date + " -> " + new NodeMap(node));
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("setting age to " + value + " in " + birthdateField + " -> " + date + " -> " + new NodeMap(node));
                 }
             } catch (org.mmbase.util.dateparser.ParseException pe) {
-                log.warn(pe);
+                LOG.warn(pe);
             }
             return value;
         }
@@ -67,8 +67,8 @@ public class Age {
             Date birthDate = node.getDateValue(birthdateField);
             Date now = new Date();
             int age = (int) Math.floor((double) (now.getTime() - birthDate.getTime()) / (1000 * 3600 * 24 * 365.25));
-            if (log.isDebugEnabled()) {
-                log.debug("getting age for " + birthDate + " --> " + age + " from " + new NodeMap(node));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("getting age for " + birthDate + " --> " + age + " from " + new NodeMap(node));
             }
             return Casting.toType(value.getClass(), age);
         }

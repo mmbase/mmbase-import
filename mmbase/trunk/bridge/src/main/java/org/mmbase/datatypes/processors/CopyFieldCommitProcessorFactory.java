@@ -32,11 +32,13 @@ public class CopyFieldCommitProcessorFactory implements ParameterizedCommitProce
     /**
      * Creates a parameterized processor.
      */
+    @Override
     public CommitProcessor createProcessor(Parameters parameters) {
         final String  sourceField = (String) parameters.get("field");
         return new CommitProcessor() {
             private static final long serialVersionUID = 1L;
 
+            @Override
             public void commit(Node node, Field field) {
                 log.debug("Committing for " + field + " " + node.getChanged());
                 if (node.isChanged(sourceField) && ! node.isChanged(field.getName())) {
@@ -49,6 +51,7 @@ public class CopyFieldCommitProcessorFactory implements ParameterizedCommitProce
     /**
      * Create  empty <code>Parameters</code> object for use with {@link #createProcessor}.
      */
+    @Override
     public Parameters createParameters() {
         return new Parameters(PARAMS);
     }

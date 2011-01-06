@@ -25,13 +25,13 @@ public interface NodeIterator extends ListIterator<Node> {
      * Returns the next element in the iterator as a Node
      * @return next Node
      */
-    public Node nextNode();
+    Node nextNode();
 
     /**
      * Returns the previous element in the iterator as a Node
      * @return previous Node
      * @since MMBase-1.7
      */
-    public Node previousNode();
+    Node previousNode();
 
 }

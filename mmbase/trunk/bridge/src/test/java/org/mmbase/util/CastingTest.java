@@ -8,6 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.util;
+import org.mmbase.bridge.util.BridgeCaster;
 import org.mmbase.util.Casting;
 import org.mmbase.util.transformers.*;
 import org.mmbase.bridge.*;

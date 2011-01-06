@@ -19,16 +19,16 @@ package org.mmbase.bridge;
 public interface RelationManagerList extends BridgeList<RelationManager> {
 
     /**
-     * Returns the RelationManager at the indicated postion in the list
+     * Returns the RelationManager at the indicated position in the list
      * @param index the position of the RelationManager to retrieve
-     * @return RelationManager at the indicated postion
+     * @return RelationManager at the indicated position
      */
-    public RelationManager getRelationManager(int index);
+    RelationManager getRelationManager(int index);
 
     /**
      * Returns an type-specific iterator for this list.
      * @return RelationManager iterator
      */
-    public RelationManagerIterator relationManagerIterator();
+    RelationManagerIterator relationManagerIterator();
 
 }

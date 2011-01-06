@@ -49,7 +49,7 @@ public abstract class ActionRepository extends Configurable {
      * Returns the ActionRepository associated with the current MMBase's {@link MMBaseCop}. Or if
      * that doesn't provide one, returns a {@link MemoryActionRepository}.
      */
-    public static final ActionRepository getInstance() {
+    public static ActionRepository getInstance() {
         if (bootstrap != null) {
             return bootstrap;
         } else {

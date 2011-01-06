@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge;
 
+import org.mmbase.bridge.util.BridgeCaster;
 import java.util.*;
 import java.util.concurrent.*;
 import java.io.*;

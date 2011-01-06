@@ -128,7 +128,7 @@ public abstract class Authentication extends Configurable implements Authenticat
      *
      * @since MMBase-1.9
      */
-    public static final String getMethod(int m) {
+    public static String getMethod(int m) {
         switch(m) {
         case METHOD_HTTP: return "http";
         case METHOD_ASIS: return "asis";

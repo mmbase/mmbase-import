@@ -25,6 +25,7 @@ import org.mmbase.util.logging.*;
 public class DefaultOwner  implements Processor {
     private static final Logger LOG = Logging.getLoggerInstance(DefaultOwner.class);
 
+    @Override
     public Object process(Node node, Field field, Object value) {
         LOG.debug("Getting default value for " + field);
         final Cloud cloud;

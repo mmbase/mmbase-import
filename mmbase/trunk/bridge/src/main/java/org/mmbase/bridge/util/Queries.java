@@ -809,7 +809,7 @@ abstract public class Queries {
 
         Cloud cloud = query.getCloud();
 
-        if (query.getSteps().size() == 0) { // if no steps yet, first step must be added with addStep
+        if (query.getSteps().isEmpty()) { // if no steps yet, first step must be added with addStep
             String completeFirstToken = pathTokenizer.nextToken().trim();
             String firstToken = removeDigits(completeFirstToken);
             //if (cloud.hasRole(firstToken)) {
@@ -979,7 +979,7 @@ abstract public class Queries {
             count.addAggregatedField(nq.getNodeStep(), firstField, type);
         } else {
             List<StepField> fields = query.getFields();
-            if (fields.size() == 0) { // for non-distinct queries always the number fields would be available
+            if (fields.isEmpty()) { // for non-distinct queries always the number fields would be available
                 throw new IllegalArgumentException("Cannot count queries with less than one field: " + query);
             }
 
@@ -1767,7 +1767,7 @@ abstract public class Queries {
             log.debug(" " + q.toSql() + " must become " + desiredOrder);
         }
         List<SortOrder> sos = q.getSortOrders();
-        if (sos == null || sos.size() == 0) {
+        if (sos == null || sos.isEmpty()) {
             throw new IllegalArgumentException("The query " + q + " is not sorted");
         }
         SortOrder so = sos.get(0);

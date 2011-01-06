@@ -612,7 +612,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     /**
      * {@inheritDoc}
      */
-    private final Collection<LocalizedString> validate(final Object value, final Node node, final Field field, boolean testEnum) {
+    private Collection<LocalizedString> validate(final Object value, final Node node, final Field field, boolean testEnum) {
         if (log.isDebugEnabled()) {
             log.debug("Validating " + value);
         }
@@ -696,7 +696,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
     protected StringBuilder toStringBuilder() {
         StringBuilder buf = new StringBuilder();
-        buf.append(getName() + " (" + getTypeAsClass() + (defaultValue != null ? ":" + defaultValue : "") + ")");
+        buf.append(getName()).append(" (").append(getTypeAsClass()).append(defaultValue != null ? ":" + defaultValue : "").append(")");
         buf.append(commitProcessor == null || EmptyCommitProcessor.getInstance() == commitProcessor ? "" : " commit: " + commitProcessor + "");
         buf.append(deleteProcessor == null || EmptyCommitProcessor.getInstance() == deleteProcessor ? "" : " delete: " + deleteProcessor + "");
         buf.append(defaultProcessor == null || CopyProcessor.getInstance() == defaultProcessor ? "" : " default: " + defaultProcessor + "");
@@ -718,7 +718,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         }
         if (enumerationRestriction.getValue() != null && ! enumerationRestriction.getEnumerationFactory().isEmpty()) {
             try {
-                buf.append(" " + enumerationRestriction);
+                buf.append(" ").append(enumerationRestriction);
             } catch (Throwable t) {
                 // never mind
             }
@@ -1673,7 +1673,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
             Cloud cloud = BasicDataType.this.getCloud(node, field);
             Collection<C> validValues = getEnumerationKeys(null, cloud, node, field);
-            if (validValues.size() == 0) {
+            if (validValues.isEmpty()) {
                 return true;
             }
             C candidate;
@@ -1695,7 +1695,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         protected String valueString(Node node, Field field) {
             Collection<C> col = getEnumerationKeys(null, null, node, field);
             //System.out.println("Making value string gof " + col);
-            if (col.size() == 0) {
+            if (col.isEmpty()) {
                 return "";
             }
             StringBuilder buf = new StringBuilder();
@@ -1710,7 +1710,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                 }
             }
             if (i < col.size()) {
-                buf.append(".(" + (col.size() - i) + " more ..)");
+                buf.append(".(").append(col.size() - i).append(" more ..)");
             }
             return buf.toString();
         }
@@ -1742,7 +1742,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             determineNext();
         }
 
-        protected void determineNext() {
+        protected final void determineNext() {
             next = null;
             while (baseIterator.hasNext()) {
                 final Map.Entry<C, String> entry = baseIterator.next();

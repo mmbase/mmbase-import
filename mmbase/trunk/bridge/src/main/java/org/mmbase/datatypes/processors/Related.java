@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes.processors;
 
+import org.mmbase.bridge.util.BridgeCaster;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
 import org.mmbase.util.*;
@@ -224,6 +225,7 @@ public class Related {
      */
     public static class Creator extends AbstractProcessor {
         private static final long serialVersionUID = 1L;
+        @Override
         public Object process(final Node node, final Field field, final Object value) {
             Node relatedNode = getRelatedNode(node, field);
             if (relatedNode == null) {
@@ -255,6 +257,7 @@ public class Related {
         private static final long serialVersionUID = 1L;
 
 
+        @Override
         public Object process(final Node node, final Field field, final Object value) {
             if (log.isDebugEnabled()) {
                 log.debug("Setting "  + value);
@@ -283,6 +286,7 @@ public class Related {
         private static final long serialVersionUID = 1L;
 
 
+        @Override
         public Object process(final Node node, final Field field, final Object value) {
             if (log.isDebugEnabled()) {
                 log.debug("getting "  + node);

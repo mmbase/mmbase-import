@@ -247,6 +247,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                 final ListIterator<Map.Entry<C, ? extends CharSequence>> i = lazy.listIterator(index);
                 return new ListIterator<Map.Entry<C, String>>() {
 
+                    @Override
                     public boolean hasNext() {
                         return i.hasNext();
                     }
@@ -258,34 +259,42 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                         }
                     }
 
+                    @Override
                     public Map.Entry<C, String> next() {
                         return get(i.next());
                     }
 
+                    @Override
                     public boolean hasPrevious() {
                         return i.hasPrevious();
                     }
 
+                    @Override
                     public Map.Entry<C, String> previous() {
                         return get(i.previous());
                     }
 
+                    @Override
                     public int nextIndex() {
                         return i.nextIndex();
                     }
 
+                    @Override
                     public int previousIndex() {
                         return i.previousIndex();
                     }
 
+                    @Override
                     public void remove() {
                         i.remove();
                     }
 
+                    @Override
                     public void set(Map.Entry<C, String> e) {
                         i.set(e);
                     }
 
+                    @Override
                     public void add(Map.Entry<C, String> e) {
                         i.add(e);
                     }
@@ -300,45 +309,56 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
     public List<C> getKeys(final Locale locale, Cloud c, final org.mmbase.bridge.Node node, final Field field) {
         final List<Map.Entry<C, ? extends CharSequence>> lazy = getLazy(locale, c, node, field);
         return new AbstractSequentialList<C> () {
+            @Override
             public int size() {
                 return lazy.size();
             }
+            @Override
             public ListIterator<C> listIterator(final int index) {
                 final ListIterator<Map.Entry<C, ? extends CharSequence>> i = lazy.listIterator(index);
                 return new ListIterator<C>() {
 
+                    @Override
                     public boolean hasNext() {
                         return i.hasNext();
                     }
 
+                    @Override
                     public C next() {
                         return i.next().getKey();
                     }
 
+                    @Override
                     public boolean hasPrevious() {
                         return i.hasPrevious();
                     }
 
+                    @Override
                     public C previous() {
                         return i.previous().getKey();
                     }
 
+                    @Override
                     public int nextIndex() {
                         return i.nextIndex();
                     }
 
+                    @Override
                     public int previousIndex() {
                         return i.previousIndex();
                     }
 
+                    @Override
                     public void remove() {
                         i.remove();
                     }
 
+                    @Override
                     public void set(C e) {
                         throw new UnsupportedOperationException("Not supported.");
                     }
 
+                    @Override
                     public void add(C e) {
                         throw new UnsupportedOperationException("Not supported.");
                     }

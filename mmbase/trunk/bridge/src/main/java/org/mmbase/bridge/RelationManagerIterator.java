@@ -24,13 +24,13 @@ public interface RelationManagerIterator extends ListIterator<RelationManager> {
      * Returns the next element in the iterator as a RelationManager
      * @return next RelationManager
      */
-    public RelationManager nextRelationManager();
+    RelationManager nextRelationManager();
 
     /**
      * Returns the previous element in the iterator as a RelationManager
      * @return previous RelationManager
      * @since MMBase-1.7
      */
-    public RelationManager previousRelationManager();
+    RelationManager previousRelationManager();
 
 }
