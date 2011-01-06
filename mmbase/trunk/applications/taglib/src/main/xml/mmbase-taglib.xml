@@ -9322,6 +9322,12 @@ The 0 is just counter, which starts at 0 on every page.
     <path>/META-INF/tags/mm/u/virtualnode.tagx</path>
     <since>MMBase-1.9.2</since>
   </tag-file>
+  <tag-file>
+    <type>mmbase.util</type>
+    <name>validation</name>
+    <path>/META-INF/tags/mm/u/validation.tagx</path>
+    <since>MMBase-1.9.6</since>
+  </tag-file>
   <!--
   <tag-file>
     <type>mmbase.basic</type>

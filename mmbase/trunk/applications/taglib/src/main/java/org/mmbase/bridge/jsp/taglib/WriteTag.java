@@ -131,6 +131,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
     }
 
 
+    @Override
     public int doStartTag() throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("start writetag id: '" +getId() + "' referid: '" + getReferid() + "' value '" + value + "'");
@@ -208,11 +209,13 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
         return EVAL_BODY_BUFFERED;
     }
 
+    @Override
     public int doAfterBody() throws JspException {
         return helper.doAfterBody();
     }
 
 
+    @Override
     public int doEndTag() throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("End writetag id: '" +getId() + "' referid: '" + getReferid() + "' value '" + value + "'");
