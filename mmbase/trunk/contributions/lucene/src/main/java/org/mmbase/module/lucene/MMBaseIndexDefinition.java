@@ -66,9 +66,11 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
         return releaseStrategy;
     }
 
+    @Override
     public void setId(String i) {
         id = i;
     }
+    @Override
     public String getId() {
         return id;
     }
@@ -76,10 +78,12 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
         analyzer = a;
     }
 
+    @Override
     public Analyzer getAnalyzer() {
         return analyzer;
     }
 
+    @Override
     public Node getNode(Cloud userCloud, Document doc) {
         String identifier = doc.get("number");
         if (userCloud.hasNode(identifier)) {
@@ -102,6 +106,7 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
         return identifierFields;
     }
 
+    @Override
     public boolean inIndex(String identifier) {
         Cloud cloud = query.getCloud();
         if (! cloud.hasNode(identifier)) {
@@ -122,12 +127,15 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
                                                        final Collection<? extends FieldDefinition> f) {
         return new CloseableIterator<MMBaseEntry>() {
             int i = 0;
+            @Override
             public boolean hasNext() {
                 return nodeIterator != null && nodeIterator.hasNext();
             }
+            @Override
             public void remove() {
                 nodeIterator.remove();
             }
+            @Override
             public MMBaseEntry next() {
                 Node node = nodeIterator.nextNode();
                 MMBaseEntry entry = new MMBaseEntry(node, (Collection<IndexFieldDefinition>) f, isMultiLevel,
@@ -142,16 +150,19 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
                 }
                 return entry;
             }
+            @Override
             public void close() {
                 // no need for closing
             }
         };
     }
 
+    @Override
     public CloseableIterator<MMBaseEntry> getCursor() {
         return getCursor(getNodeIterator((String) null), fields);
     }
 
+    @Override
     public CloseableIterator<MMBaseEntry> getSubCursor(String identifier) {
         return getCursor(getNodeIterator(identifier), fields);
     }

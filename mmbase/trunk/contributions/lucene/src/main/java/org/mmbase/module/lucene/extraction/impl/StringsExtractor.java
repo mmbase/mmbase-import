@@ -30,10 +30,12 @@ public class StringsExtractor implements Extractor {
     private String mimetype = ".*";
     private String command = "/usr/bin/strings";
 
+    @Override
     public void setMimeType(String mimetype) {
         this.mimetype = mimetype;
     }
 
+    @Override
     public String getMimeType() {
         return this.mimetype;
     }
@@ -42,6 +44,7 @@ public class StringsExtractor implements Extractor {
         return command;
     }
 
+    @Override
     public String extract(InputStream inputStream) throws Exception {
         String encoding = System.getProperty("file.encoding");
         CommandLauncher launcher = new CommandLauncher("Transformer");

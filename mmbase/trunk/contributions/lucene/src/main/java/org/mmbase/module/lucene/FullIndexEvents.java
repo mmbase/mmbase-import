@@ -64,17 +64,21 @@ public class FullIndexEvents {
      */
     public static class Broker extends AbstractEventBroker {
 
+        @Override
         public boolean canBrokerForListener(EventListener listener) {
             return listener instanceof FullIndexEvents.Listener;
         }
+        @Override
         public boolean canBrokerForEvent(org.mmbase.core.event.Event event) {
             return event instanceof FullIndexEvents.Event;
         }
+        @Override
         protected void notifyEventListener(org.mmbase.core.event.Event event, EventListener listener) {
             FullIndexEvents.Event ne = (FullIndexEvents.Event) event; //!!!!!
             Listener nel = (Listener) listener;
             nel.notify(ne);
         }
+        @Override
         public String toString() {
             return "Lucene Full Index Broker";
         }

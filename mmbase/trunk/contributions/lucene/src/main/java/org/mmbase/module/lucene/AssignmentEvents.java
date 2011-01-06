@@ -85,17 +85,21 @@ public class AssignmentEvents {
      */
     public static class Broker extends AbstractEventBroker {
 
+        @Override
         public boolean canBrokerForListener(EventListener listener) {
             return listener instanceof AssignmentEvents.Listener;
         }
+        @Override
         public boolean canBrokerForEvent(org.mmbase.core.event.Event event) {
             return event instanceof AssignmentEvents.Event;
         }
+        @Override
         protected void notifyEventListener(org.mmbase.core.event.Event event, EventListener listener) {
             AssignmentEvents.Event ne = (AssignmentEvents.Event) event; //!!!!!
             Listener nel = (Listener) listener;
             nel.notify(ne);
         }
+        @Override
         public String toString() {
             return "Lucene Assignments Broker";
         }
