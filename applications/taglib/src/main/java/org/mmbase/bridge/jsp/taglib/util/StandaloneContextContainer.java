@@ -22,8 +22,8 @@ import org.mmbase.util.logging.Logging;
  * @version $Id$
  * @since MMBase-1.8
  **/
-
-public class StandaloneContextContainer extends ContextContainer {
+public class StandaloneContextContainer extends ContextContainer implements java.io.Serializable {
+    private static final  long serialVersionUID = 0L;
 
     private static final Logger log = Logging.getLoggerInstance(StandaloneContextContainer.class);
     /**
