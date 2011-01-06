@@ -51,7 +51,7 @@ See http://www.MMBase.org/license
               <mainClass>org.mmbase.Version</mainClass>
             </manifest>
             <manifestEntries>
-              <url>${pom.url}</url>
+              <url>${project.url}</url>
             </manifestEntries>
             <manifestSections>
               <manifestSection>
@@ -64,7 +64,7 @@ See http://www.MMBase.org/license
                   <SCM-Revision>${sources.version}</SCM-Revision>
                   <Distribution>${project.version}</Distribution>
                   <Build-Date>${timestamp}</Build-Date>
-                  <Description>${pom.description}</Description>
+                  <Description>${project.description}</Description>
                 </manifestEntries>
               </manifestSection>
             </manifestSections>
