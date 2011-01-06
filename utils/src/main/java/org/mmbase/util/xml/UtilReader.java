@@ -14,6 +14,7 @@ import java.net.URL;
 import java.io.IOException;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.core.event.*;
 import org.w3c.dom.Element;
 /**
  * This class reads configuration files for utilities, that are
@@ -108,8 +109,9 @@ public class UtilReader {
 
     private final Map<String, String> properties = new HashMap<String, String>();
     private final Map<String,Collection<Map.Entry<String, String>>> maps = new HashMap<String, Collection<Map.Entry<String,String>>>();
-    private final ResourceWatcher watcher;
     private final String file;
+    private ResourceWatcher watcher;
+
 
 
     /**
@@ -121,9 +123,7 @@ public class UtilReader {
     public UtilReader(String fileName) {
         file = CONFIG_UTILS + "/" + fileName;
         readProperties(file);
-        watcher = new UtilFileWatcher(null);
-        watcher.add(file);
-        watcher.start();
+        startWatcher(null);
 
     }
     /**
@@ -138,9 +138,7 @@ public class UtilReader {
     public UtilReader(String fileName, ResourceWatcher w) {
         file =  CONFIG_UTILS + "/" + fileName;
         readProperties(file);
-        watcher = new UtilFileWatcher(w);
-        watcher.add(file);
-        watcher.start();
+        startWatcher(w);
 
     }
     /**
@@ -157,6 +155,27 @@ public class UtilReader {
                 }
             }
             );
+    }
+
+    /**
+     * @since MMBase-2.0
+     */
+    protected final void startWatcher(final ResourceWatcher w) {
+        EventManager.getInstance().addEventListener(new SystemEventListener() {
+                @Override
+                public void notify(SystemEvent se) {
+                    if (se instanceof EventManager.Ready) {
+                        watcher = new UtilFileWatcher(w);
+                        watcher.add(file);
+                        watcher.start();
+                        EventManager.getInstance().removeEventListener(this);
+                    }
+                }
+                @Override
+                public int getWeight() {
+                    return 0;
+                }
+            });
     }
 
     @Override

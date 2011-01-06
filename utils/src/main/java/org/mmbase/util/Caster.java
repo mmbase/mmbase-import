@@ -1,7 +1,6 @@
 package org.mmbase.util;
 import org.mmbase.util.transformers.CharTransformer;
 import java.util.*;
-import java.io.*;
 
 /**
  * @since MMBase-2.0
@@ -22,7 +21,7 @@ public interface Caster {
 
 
     public static class NotRecognized extends Exception {
-        static NotRecognized INSTANCE = new NotRecognized();
+        public static NotRecognized INSTANCE = new NotRecognized();
         protected NotRecognized() {
         }
 

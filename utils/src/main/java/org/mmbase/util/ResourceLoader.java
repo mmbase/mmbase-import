@@ -1130,7 +1130,7 @@ public class ResourceLoader extends ClassLoader {
         abstract Set<String> getPaths(Set<String> results, Pattern pattern,  boolean recursive,  boolean directories);
 
         /**
-         * @MMBase-2.0
+         * @since MMBase-2.0
          */
         public void setWeight(int w) {
             weight = w;
@@ -1715,6 +1715,7 @@ public class ResourceLoader extends ClassLoader {
     private static String RESOURCELOADER_XML = "resourceloader.xml";
     private static org.mmbase.util.xml.UtilReader.PropertiesMap<Collection<Map.Entry<String, String>>> classWeightProperties =
         new org.mmbase.util.xml.UtilReader(RESOURCELOADER_XML, new Runnable() {
+                @Override
                 public void run() {
                     ResourceLoader.readClassWeights();
                 }
