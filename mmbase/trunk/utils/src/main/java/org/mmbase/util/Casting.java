@@ -428,7 +428,7 @@ public class Casting {
 
     }
 
-    static String escape(CharTransformer escaper, CharSequence string) {
+    public static String escape(CharTransformer escaper, CharSequence string) {
         if (escaper != null) {
             return escaper.transform(string == null ? "" : string.toString());
         } else {
