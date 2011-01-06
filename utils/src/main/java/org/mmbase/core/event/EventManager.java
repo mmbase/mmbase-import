@@ -34,12 +34,6 @@ public class EventManager implements SystemEventListener {
     private static final Logger log = Logging.getLoggerInstance(EventManager.class);
 
 
-    /**
-     * the instance that this singleton will manage
-     */
-    private static final EventManager eventManager = new EventManager();
-
-
     private static final UUID INSTANCEID = UUID.randomUUID();
     private static String machineName = "localhost";
 
@@ -50,6 +44,15 @@ public class EventManager implements SystemEventListener {
     static {
         org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_EVENTMANAGER, DTD_EVENTMANAGER, EventManager.class);
     }
+
+
+
+    /**
+     * the instance that this singleton will manage
+     */
+    private static final EventManager eventManager = new EventManager();
+
+
 
 
     /**
