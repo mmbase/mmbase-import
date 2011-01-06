@@ -81,18 +81,19 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     protected final static Parameter<String> INDEX = new Parameter<String>("index", String.class);
     static { INDEX.setDescription("the name of the index to search in"); }
 
-    protected final static Parameter<List<String>/MACHINES =
-        new Parameter<List<String>>("machines",
-                                    List.class, null);
+    protected final static Parameter<List>MACHINES =
+        new Parameter<List>("machines",
+                            List.class, null);
     static { MACHINES.setDescription("the machines on which to execute a full index"); }
 
     protected final static Parameter<Boolean> COPY = new Parameter<Boolean>("copy", Boolean.class, Boolean.FALSE);
     static { INDEX.setDescription("use the copy of the index (used for full index)"); }
 
-    protected final static Parameter<Class<? extends IndexDefinition>>CLASS =
-            new Parameter<Class<? extends IndexDefinition>>("class",
-            Class.class,
-            IndexDefinition.class);
+    //<Class<? extends IndexDefinition>>CLASS
+    protected final static Parameter<Class>CLASS =
+        new Parameter<Class>("class",
+                             Class.class,
+                             IndexDefinition.class);
     static { INDEX.setDescription("the class of indices to search in (default to all classes)"); }
 
     protected final static Parameter<String> SORTFIELDS = new Parameter<String>("sortfields", String.class);
