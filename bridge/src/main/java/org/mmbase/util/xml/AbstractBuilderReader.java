@@ -84,7 +84,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
         EntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_1, DTD_BUILDER_1_1, AbstractBuilderReader.class);
         //EntityResolver.registerPublicID("-//MMBase//DTD builder config 2.0//EN", "builder_2_0.dtd", BuilderReader.class);
 
-        System.out.println("Registered " + PUBLIC_ID_BUILDER_1_1 + " " +  DTD_BUILDER_1_1);
+        //System.out.println("Registered " + PUBLIC_ID_BUILDER_1_1 + " " +  DTD_BUILDER_1_1);
 
 
         // legacy public IDs (wrong, don't use these)
