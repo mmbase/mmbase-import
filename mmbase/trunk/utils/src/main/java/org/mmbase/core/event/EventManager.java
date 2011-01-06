@@ -62,7 +62,6 @@ public class EventManager implements SystemEventListener {
 
     private long numberOfPropagatedEvents = 0;
     private long duration = 0;
-    private boolean setup = false;
 
     private final Set<EventListener> listenersFromResources = new CopyOnWriteArraySet<EventListener>();
 
@@ -101,6 +100,17 @@ public class EventManager implements SystemEventListener {
         if (se instanceof SystemEvent.Collectable) {
             receivedSystemEvents.add((SystemEvent.Collectable) se);
         }
+        if (se instanceof SystemEvent.Up) {
+            watcher = new ResourceWatcher() {
+                @Override
+                public void onChange(String w) {
+                    configure(w);
+                }
+            };
+            watcher.add("eventmanager.xml");
+            watcher.onChange();
+            watcher.start();
+        }
         if (se instanceof SystemEvent.ResourceLoaderChange) {
             log.service("Reconfiguring event managers, because " + se);
             watcher.onChange();
@@ -118,7 +128,6 @@ public class EventManager implements SystemEventListener {
     @SuppressWarnings("LeakingThisInConstructor")
     private EventManager() {
         addEventListener(this);
-
     }
 
 
@@ -245,21 +254,6 @@ public class EventManager implements SystemEventListener {
      * @param listener
      */
     protected void addEventListener(EventListener listener, boolean propagateToCollected) {
-        if (! setup) {
-            setup = true;
-            // this is procrasted as long as possible to avoid
-            // circular dependencies on bootstrap
-            watcher = new ResourceWatcher() {
-                @Override
-                public void onChange(String w) {
-                    configure(w);
-                }
-            };
-            watcher.add("eventmanager.xml");
-            watcher.onChange();
-            watcher.start();
-
-        }
 
         BrokerIterator i =  findBrokers(listener);
         boolean notifiedReceived = ! propagateToCollected;
