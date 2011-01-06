@@ -660,13 +660,10 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       -->
       <activation>
         <property>
-          <name>my.version</name>
+          <name>my.repository.id</name>
         </property>
       </activation>
 
-      <properties>
-        <mmbase.version.postfix>-${my.version}</mmbase.version.postfix>
-      </properties>
       <distributionManagement>
         <repository>
           <id>${my.repository.id}</id>
