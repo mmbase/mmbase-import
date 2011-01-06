@@ -273,7 +273,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
           <bottom>${project.name} ${project.version} - ${javadoctimestamp}</bottom>
           <show>package</show>
           <links>
-            <link>http://download.java.net/jdk7/docs/api/</link>
+            <link>http://download.oracle.com/javase/6/docs/api/</link>
             <link>http://download-llnw.oracle.com/javaee/5/api/</link>
             <link>http://download.oracle.com/docs/cd/E17802_01/products/products/jsp/jstl/1.1/docs/api/</link>
             <link>http://logging.apache.org/log4j/docs/api/</link>
@@ -475,6 +475,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.6</version>
         <configuration>
           <maxmemory>1024</maxmemory>
         </configuration>
@@ -513,6 +514,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
         <artifactId>maven-site-plugin</artifactId>
         <version>2.1</version> <!-- http://jira.codehaus.org/browse/MPIR-195 -->
       </plugin>
+      <!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>taglist-maven-plugin</artifactId>
@@ -520,6 +522,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
+
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -544,7 +547,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
           </reportSet>
         </reportSets>
       </plugin>
-
+      -->
       <!--
           <plugin>
           <artifactId>maven-checkstyle-plugin</artifactId>
