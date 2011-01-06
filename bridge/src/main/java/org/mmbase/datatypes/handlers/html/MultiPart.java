@@ -16,11 +16,10 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.SerializableInputStream;
 import org.mmbase.datatypes.handlers.html.upload.*;
 import org.apache.commons.fileupload.*;
-import org.apache.commons.fileupload.disk.*;
 import org.apache.commons.fileupload.servlet.*;
 
 /**
- * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
+ * Taglib needs to read Multipart request sometimes. Functionality is centralized here.
  * @author Michiel Meeuwissen
  * @version $Id$
  **/

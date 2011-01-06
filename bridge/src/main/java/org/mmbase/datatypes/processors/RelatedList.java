@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes.processors;
 
+import org.mmbase.bridge.util.BridgeCaster;
 import org.mmbase.bridge.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -104,7 +105,7 @@ public class RelatedList {
             if (log.isDebugEnabled()) {
                 log.debug("related nodes for  "  + node  + " " + nl);
             }
-            if (nl.size() == 0) {
+            if (nl.isEmpty()) {
                 return null;
             } else {
 

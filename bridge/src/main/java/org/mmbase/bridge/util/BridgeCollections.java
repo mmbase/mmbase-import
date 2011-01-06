@@ -28,42 +28,42 @@ public abstract class BridgeCollections {
     /**
      * Makes a BridgeList unmodifiable.
      */
-    public static final <E> BridgeList<E> unmodifiableBridgeList(BridgeList<E> bridgeList) {
+    public static <E> BridgeList<E> unmodifiableBridgeList(BridgeList<E> bridgeList) {
         return new UnmodifiableBridgeList<E>(bridgeList);
     }
 
     /**
      * Makes a NodeList unmodifiable.
      */
-    public static final NodeList unmodifiableNodeList(NodeList nodeList) {
+    public static NodeList unmodifiableNodeList(NodeList nodeList) {
         return new UnmodifiableNodeList(nodeList);
     }
 
     /**
      * Makes a NodeManagerList unmodifiable.
      */
-    public static final NodeManagerList unmodifiableNodeManagerList(NodeManagerList nodeList) {
+    public static NodeManagerList unmodifiableNodeManagerList(NodeManagerList nodeList) {
         return new UnmodifiableNodeManagerList(nodeList);
     }
 
     /**
      * Makes a RelationManagerList unmodifiable.
      */
-    public static final RelationManagerList unmodifiableRelationManagerList(RelationManagerList nodeList) {
+    public static RelationManagerList unmodifiableRelationManagerList(RelationManagerList nodeList) {
         return new UnmodifiableRelationManagerList(nodeList);
     }
 
     /**
      * Makes a RelationList unmodifiable.
      */
-    public static final RelationList unmodifiableRelationList(RelationList relationList) {
+    public static RelationList unmodifiableRelationList(RelationList relationList) {
         return new UnmodifiableRelationList(relationList);
     }
 
     /**
      * Makes a StringList unmodifiable.
      */
-    public static final StringList unmodifiableStringList(StringList stringList) {
+    public static StringList unmodifiableStringList(StringList stringList) {
         return new UnmodifiableStringList(stringList);
     }
 

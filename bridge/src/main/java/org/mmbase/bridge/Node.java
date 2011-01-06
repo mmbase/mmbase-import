@@ -30,7 +30,7 @@ public interface Node extends Comparable<Node> {
      * node
      * @since MMBase-1.9.1
      */
-    public static String CLOUD_COMMITNODE_KEY = "org.mmbase.cloud.commit_node";
+    static String CLOUD_COMMITNODE_KEY = "org.mmbase.cloud.commit_node";
 
     /**
      * Returns the cloud this node belongs to.

@@ -1,12 +1,11 @@
-package org.mmbase.util;
+package org.mmbase.bridge.util;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.NodeWrapper;
-import org.mmbase.bridge.util.NodeMap;
-import org.mmbase.bridge.util.MapNode;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.datatypes.DataTypes;
 import org.mmbase.util.transformers.CharTransformer;
 import java.util.*;
+import org.mmbase.util.Caster;
+import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
 

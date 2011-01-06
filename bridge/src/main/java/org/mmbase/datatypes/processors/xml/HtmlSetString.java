@@ -29,7 +29,7 @@ import javax.xml.parsers.*;
  */
 
 public class HtmlSetString implements  Processor {
-    private static final Logger log = Logging.getLoggerInstance(HtmlSetString.class);
+    private static final Logger LOG = Logging.getLoggerInstance(HtmlSetString.class);
     private static final long serialVersionUID = 1L;
 
 
@@ -50,8 +50,8 @@ public class HtmlSetString implements  Processor {
         CharTransformer htmlCleaner = factory.createTransformer(params);
         String cleanHtml = htmlCleaner.transform(Casting.toString(value));
 
-        if (log.isDebugEnabled()) {
-            log.debug("Setting " + field + " from " + node + " as a String to " + cleanHtml);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Setting " + field + " from " + node + " as a String to " + cleanHtml);
         }
 
         try {
@@ -61,13 +61,13 @@ public class HtmlSetString implements  Processor {
             try {
                 return  documentBuilder.parse(new java.io.ByteArrayInputStream(cleanHtml.getBytes("UTF-8")));
             } catch (org.xml.sax.SAXException se) {
-                log.service(se);
+                LOG.service(se);
                 String reparedHtml = PREF + cleanHtml + POST;
                 return  documentBuilder.parse(new java.io.ByteArrayInputStream(reparedHtml.getBytes("UTF-8")));
             }
         } catch (Exception e) {
             // give it up.
-            log.warn(e);
+            LOG.warn(e);
             return Casting.toXML(cleanHtml);
         }
 

@@ -73,38 +73,39 @@ public class CacheManager implements CacheManagerMBean {
             instance = new CacheManager();
             ThreadPools.jobsExecutor.execute(new Runnable() {
                 @Override
-                    public void run() {
+                public void run() {
 
-                        ObjectName on;
-                        final Hashtable<String, String> props = new Hashtable<String, String>();
+                    ObjectName on;
+                    @SuppressWarnings("UseOfObsoleteCollectionType")
+                    final Hashtable<String, String> props = new Hashtable<String, String>();
 
+                    try {
+                        props.put("type", "Caches");
                         try {
-                            props.put("type", "Caches");
-                            try {
-                                String machineName = getMachineName(true);
+                            String machineName = getMachineName(true);
 
-                                if (machineName != null) {
-                                    props.put("type", machineName);
-                                }
-                            } catch (Throwable t) {
-                                log.error(t.getMessage(), t);
+                            if (machineName != null) {
+                                props.put("type", machineName);
                             }
-                            on = new ObjectName("org.mmbase", props);
-                        } catch (MalformedObjectNameException mfone) {
-                            log.warn("" + props + " " + mfone);
-                            return;
-                        }
-                        try {
-                            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-                            mbs.registerMBean(instance, on);
-                            log.service("Registered " + on);
-                        } catch (JMException jmo) {
-                            log.warn("" + on + " " + jmo.getClass() + " " + jmo.getMessage());
                         } catch (Throwable t) {
-                            log.error("" + on + " " + t.getClass() + " " + t.getMessage());
+                            log.error(t.getMessage(), t);
                         }
+                        on = new ObjectName("org.mmbase", props);
+                    } catch (MalformedObjectNameException mfone) {
+                        log.warn("" + props + " " + mfone);
+                        return;
                     }
-                });
+                    try {
+                        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+                        mbs.registerMBean(instance, on);
+                        log.service("Registered " + on);
+                    } catch (JMException jmo) {
+                        log.warn("" + on + " " + jmo.getClass() + " " + jmo.getMessage());
+                    } catch (Throwable t) {
+                        log.error("" + on + " " + t.getClass() + " " + t.getMessage());
+                    }
+                }
+            });
 
         }
         return instance;
@@ -345,7 +346,7 @@ public class CacheManager implements CacheManagerMBean {
      * The caches can be configured with an XML file, this file can
      * be changed which causes the caches to be reconfigured automaticly.
      */
-    private static ResourceWatcher configWatcher = new ResourceWatcher () {
+    private static final ResourceWatcher configWatcher = new ResourceWatcher () {
         @Override
         public void onChange(String resource) {
             try {
@@ -409,6 +410,7 @@ public class CacheManager implements CacheManagerMBean {
             }
         }
         {
+            @SuppressWarnings("UseOfObsoleteCollectionType")
             final Hashtable<String, String> props = new Hashtable<String, String>();
             props.put("type", "Caches");
             String machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
@@ -454,11 +456,11 @@ public class CacheManager implements CacheManagerMBean {
         Pattern p = Pattern.compile(pattern);
         for (Map.Entry<String, Cache<?, ?>> entry : caches.entrySet()) {
             if (p.matcher(entry.getKey()).matches()) {
-                buf.append("Clearing " + entry.getValue() + "\n");
+                buf.append("Clearing ").append(entry.getValue()).append("\n");
                 entry.getValue().clear();
             }
         }
-        if (buf.length() == 0) buf.append("The regular expression '" + pattern + "' matched no cache at all");
+        if (buf.length() == 0) buf.append("The regular expression '").append(pattern).append("' matched no cache at all");
         return buf.toString();
     }
     /**
@@ -473,15 +475,15 @@ public class CacheManager implements CacheManagerMBean {
             if (p.matcher(entry.getKey()).matches()) {
                 Cache c = entry.getValue();
                 if(c.isActive()) {
-                    buf.append("Already active " + c + "\n");
+                    buf.append("Already active ").append(c).append("\n");
                 } else {
                     c.setActive(true);
-                    buf.append("Making active " + c + "\n");
+                    buf.append("Making active ").append(c).append("\n");
                 }
 
             }
         }
-        if (buf.length() == 0) buf.append("The regular expression '" + pattern + "' matched no cache at all");
+        if (buf.length() == 0) buf.append("The regular expression '").append(pattern).append("' matched no cache at all");
         return buf.toString();
     }
     /**
@@ -497,14 +499,16 @@ public class CacheManager implements CacheManagerMBean {
                 Cache c = entry.getValue();
                 if(c.isActive()) {
                     c.setActive(false);
-                    buf.append("Making inactive " + c + "\n");
+                    buf.append("Making inactive ").append(c).append("\n");
                 } else {
-                    buf.append("Already inactive " + c + "\n");
+                    buf.append("Already inactive ").append(c).append("\n");
                 }
 
             }
         }
-        if (buf.length() == 0) buf.append("The regular expression '" + pattern + "' matched no cache at all");
+        if (buf.length() == 0) {
+            buf.append("The regular expression '").append(pattern).append("' matched no cache at all");
+        }
         return buf.toString();
     }
     /**

@@ -34,17 +34,17 @@ public interface NodeList extends BridgeList<Node> {
     public static final String NODESTEP_PROPERTY = "nodestep";
 
     /**
-     * Returns the Node at the indicated postion in the list
+     * Returns the Node at the indicated position in the list
      * @param index the position of the Node to retrieve
-     * @return Node at the indicated postion
+     * @return Node at the indicated position
      */
-    public Node getNode(int index);
+    Node getNode(int index);
 
     /**
      * Returns an type-specific iterator for this list.
      * @return Node iterator
      */
-    public NodeIterator nodeIterator();
+    NodeIterator nodeIterator();
 
     /**
      * Returns a sublist of this list.
@@ -52,6 +52,6 @@ public interface NodeList extends BridgeList<Node> {
      * @param toIndex the position in the current list where the sublist ends (exclusive)
      * @return sublist of this list
      */
-    public NodeList subNodeList(int fromIndex, int toIndex);
+    NodeList subNodeList(int fromIndex, int toIndex);
 
 }

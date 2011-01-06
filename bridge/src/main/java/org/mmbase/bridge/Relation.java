@@ -23,29 +23,29 @@ public interface Relation extends Node {
      * Retrieves the source of the relation
      * @return the source node
      */
-    public Node getSource();
+    Node getSource();
 
     /**
      * Retrieves the destination of the relation
      * @return the destination node
      */
-    public Node getDestination();
+    Node getDestination();
 
     /**
      * set the source of the relation
      * @param node the source node
      */
-    public void setSource(Node node);
+    void setSource(Node node);
 
     /**
      * set the destination of the relation
      * @param node the destination node
      */
-    public void setDestination(Node node);
+    void setDestination(Node node);
 
     /**
      * Retrieves the RelationManager used
      * @return the RelationManager
      */
-    public RelationManager getRelationManager();
+    RelationManager getRelationManager();
 }

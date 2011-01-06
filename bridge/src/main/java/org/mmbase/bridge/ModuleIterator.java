@@ -23,13 +23,13 @@ public interface ModuleIterator extends ListIterator<Module> {
      * Returns the next element in the iterator as a Module
      * @return next Module
      */
-    public Module nextModule();
+    Module nextModule();
 
     /**
      * Returns the previous element in the iterator as a Module
      * @return previous Module
      * @since MMBase-1.7
      */
-    public Module previousModule();
+    Module previousModule();
 
 }

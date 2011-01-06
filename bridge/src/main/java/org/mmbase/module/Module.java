@@ -96,7 +96,7 @@ public abstract class Module extends DescribedFunctionProvider {
     protected String configurationPath;
 
     // the state map, containing runtime-generated information as name-value pairs.
-    private Map<String, String> states = new Hashtable<String, String>();
+    private Map<String, String> states = new HashMap<String, String>();
 
 
     // the name of the module maintainer
@@ -233,7 +233,7 @@ public abstract class Module extends DescribedFunctionProvider {
      * Sets a state value by name.
      * @since MMBase-1.9
      */
-    public String setState(String name, String value) {
+    public final String setState(String name, String value) {
         return states.put(name, value);
     }
 
@@ -360,7 +360,7 @@ public abstract class Module extends DescribedFunctionProvider {
      * Synchorinze on Module.class.
      * @return an <code>Iterator</code> with all active modules.
      */
-    public static final Iterator<Module> getModules() {
+    public static Iterator<Module> getModules() {
         if (modules == null) {
             return null;
         } else {
@@ -399,7 +399,7 @@ public abstract class Module extends DescribedFunctionProvider {
      *
      * @since MMBase-1.6.2
      */
-    public static final void shutdownModules() {
+    public static void shutdownModules() {
         if (modules != null) {
             synchronized(Module.class) {
                 for (Module m : modules.values()) {
@@ -412,7 +412,7 @@ public abstract class Module extends DescribedFunctionProvider {
         }
     }
 
-    public static final void startModules() {
+    public static void startModules() {
         // call the onload to get properties
         synchronized(Module.class) {
             log.service("Starting modules " + modules.keySet());
@@ -573,12 +573,9 @@ public abstract class Module extends DescribedFunctionProvider {
      * Loads all module-xml present in <mmbase-config-dir>/modules.
      * @return A HashTable with <module-name> --> Module-instance
      */
-    @SuppressWarnings("deprecation")
     private static synchronized Map<String, Module>  loadModulesFromDisk(String... names) {
         Set<String> namesSet = new HashSet<String>();
-        for (String n : names) {
-            namesSet.add(n);
-        }
+        namesSet.addAll(Arrays.asList(names));
         Map<String, Module> results = Collections.synchronizedMap(new TreeMap<String, Module>());
         ResourceLoader moduleLoader = getModuleLoader();
         Collection<String> mods = moduleLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false/* non-recursive*/);

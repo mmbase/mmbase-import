@@ -19,16 +19,16 @@ package org.mmbase.bridge;
 public interface NodeManagerList extends BridgeList<NodeManager> {
 
     /**
-     * Returns the NodeManager at the indicated postion in the list
+     * Returns the NodeManager at the indicated position in the list
      * @param index the position of the NodeManager to retrieve
-     * @return NodeManager at the indicated postion
+     * @return NodeManager at the indicated position
      */
-    public NodeManager getNodeManager(int index);
+    NodeManager getNodeManager(int index);
 
     /**
      * Returns an type-specific iterator for this list.
      * @return NodeManager iterator
      */
-    public NodeManagerIterator nodeManagerIterator();
+    NodeManagerIterator nodeManagerIterator();
 
 }

@@ -159,10 +159,10 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
     protected StringBuilder toStringBuilder() {
         StringBuilder buf = super.toStringBuilder();
         if (getMinLength() > 0) {
-            buf.append(" minLength:" + getMinLength() + " ");
+            buf.append(" minLength:").append(getMinLength()).append(" ");
         }
         if (getMaxLength() < Long.MAX_VALUE) {
-            buf.append(" maxLength:" + getMaxLength() + " ");
+            buf.append(" maxLength:").append(getMaxLength()).append(" ");
         }
         return buf;
     }

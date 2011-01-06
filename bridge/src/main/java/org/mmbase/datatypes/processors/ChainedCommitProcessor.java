@@ -35,6 +35,7 @@ public class ChainedCommitProcessor implements  CommitProcessor, org.mmbase.util
         return this;
     }
 
+    @Override
     public void commit(Node node, Field field) {
         for (CommitProcessor proc : processors) {
             proc.commit(node, field);
