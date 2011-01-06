@@ -140,6 +140,7 @@ public class DataTypes {
                     DocumentBuilder db = DocumentReader.getDocumentBuilder(true, true,
                                                                            new org.mmbase.util.xml.ErrorHandler(),
                                                                            new org.mmbase.util.xml.EntityResolver(true, DataTypeReader.class));
+                    DataTypeReader.registerSystemIDs();
                     Document doc = db.parse(dataTypesSource);
                     Element dataTypesElement = doc.getDocumentElement(); // fieldtypedefinitons or datatypes element
                     List<DependencyException> f = DataTypeReader.readDataTypes(dataTypesElement, dataTypeCollector);

@@ -134,6 +134,7 @@ public class MockCloudContext extends  AbstractCloudContext {
      * It may also add a core relation model. Like 'related' and 'posrel' roles.
      */
     public void addCore() throws java.io.IOException {
+        org.mmbase.datatypes.DataTypes.initialize();
         for (String buil : new String[] {"object", "typedef", "typerel", "reldef", "insrel"}) {
             if (! nodeManagers.containsKey(buil)) {
                 InputSource source = MockBuilderReader.getBuilderLoader().getInputSource("core/" + buil + ".xml");

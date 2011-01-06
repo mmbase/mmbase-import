@@ -39,14 +39,16 @@ public class DataTypeReader {
     public static final String NAMESPACE_DATATYPES = NAMESPACE_DATATYPES_1_0;
     public static final String NAMESPACE_ENUMERATIONQUERY = NAMESPACE_ENUMERATIONQUERY_1_0;
 
+
     /**
      * Register the namespace and XSD used by DataTypeConfigurer
-     * This method is called by EntityResolver.
+     * This method is called by DataTypes.initialize
      */
-    static  {
+    public static void registerSystemIDs() {
         EntityResolver.registerSystemID(NAMESPACE_DATATYPES_1_0 + ".xsd", XSD_DATATYPES_1_0, DataTypeReader.class);
         EntityResolver.registerSystemID(NAMESPACE_ENUMERATIONQUERY_1_0 + ".xsd", XSD_ENUMERATIONQUERY_1_0, DataTypeReader.class);
     }
+
 
     /**
      * Initialize the data types default supported by the system.
