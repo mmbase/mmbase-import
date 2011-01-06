@@ -103,7 +103,7 @@ public class DataTypeReader {
      */
     public static DataTypeDefinition readDataType(Element typeElement, BasicDataType baseDataType, DataTypeCollector collector) throws DependencyException {
         DataTypeDefinition definition = collector == null ?
-            (new DataTypeCollector(typeElement)).getDataTypeDefinition() :
+            (new DataTypeCollector(typeElement.toString())).getDataTypeDefinition() :
             collector.getDataTypeDefinition();
         definition.configure(typeElement, baseDataType);
         definition.dataType.setXml(typeElement);

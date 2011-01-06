@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
 public class Setting<C> {
 
     private static final Logger log = Logging.getLoggerInstance(Setting.class);
-    protected final DataTypeCollector dataTypeCollector = new DataTypeCollector(new Object());
+    protected final DataTypeCollector dataTypeCollector = new DataTypeCollector(new String());
 
     private final String name;
     private final LocalizedString description;
