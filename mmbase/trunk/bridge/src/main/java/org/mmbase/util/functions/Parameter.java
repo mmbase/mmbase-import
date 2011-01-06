@@ -116,7 +116,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
             String base = dataTypeElement.getAttribute("base");
             BasicDataType baseDataType = DataTypes.getSystemCollector().getDataType(base);
             try {
-                dataType = DataTypeReader.readDataType(dataTypeElement, baseDataType, new DataTypeCollector(new Object())).dataType;
+                dataType = DataTypeReader.readDataType(dataTypeElement, baseDataType, new DataTypeCollector(new String())).dataType;
             } catch (DependencyException de) {
                 throw new IllegalArgumentException(de);
             }
@@ -166,7 +166,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
                 clazz = Class.forName(type);
             }
         } catch (ClassNotFoundException cne) {
-            log.warn("Cannot determine parameter type : '" + type + "', using Object as type instead.");
+            log.warn("Cannot determine parameter type : '" + type + "', using Object as type instead.", new Exception());
             clazz = Object.class;
         }
         return clazz;
