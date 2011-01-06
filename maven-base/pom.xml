@@ -147,7 +147,13 @@ See http://www.MMBase.org/license
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.3.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.3.2</version>
           <configuration>
             <source>${java.source.version}</source>
             <target>${java.target.version}</target>
@@ -178,7 +184,7 @@ See http://www.MMBase.org/license
                 <mainClass>${jar.mainClass}</mainClass>
               </manifest>
               <manifestEntries>
-                <url>${pom.url}</url>
+                <url>${project.url}</url>
               </manifestEntries>
               <manifestSections>
                 <manifestSection>
@@ -190,7 +196,7 @@ See http://www.MMBase.org/license
                     <SCM-Revision>${sources.version}</SCM-Revision>
                     <Distribution>${project.version}</Distribution>
                     <Build-Date>${timestamp}</Build-Date>
-                    <Description>${pom.description}</Description>
+                    <Description>${project.description}</Description>
                   </manifestEntries>
                 </manifestSection>
               </manifestSections>
@@ -362,9 +368,9 @@ See http://www.MMBase.org/license
               <addClasspath>true</addClasspath>
             </manifest>
             <manifestEntries>
-              <ExtensionName>${pom.groupId}:${pom.artifactId}</ExtensionName>
-              <ExtensionName>${pom.groupId}:${pom.artifactId}</ExtensionName>
-              <url>${pom.url}</url>
+              <ExtensionName>${project.groupId}:${project.artifactId}</ExtensionName>
+              <ExtensionName>${project.groupId}:${project.artifactId}</ExtensionName>
+              <url>${project.url}</url>
             </manifestEntries>
             <manifestSections>
               <manifestSection>
@@ -376,7 +382,7 @@ See http://www.MMBase.org/license
                   <SCM-Revision>${sources.version}</SCM-Revision>
                   <Distribution>${project.version}</Distribution>
                   <Build-Date>${timestamp}</Build-Date>
-                  <Description>${pom.description}</Description>
+                  <Description>${project.description}</Description>
                 </manifestEntries>
               </manifestSection>
             </manifestSections>
