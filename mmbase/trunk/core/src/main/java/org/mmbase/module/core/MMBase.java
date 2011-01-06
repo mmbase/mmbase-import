@@ -966,7 +966,8 @@ public class MMBase extends ProcessorModule {
      * @since MMBase-1.8
      */
     public ResourceLoader getBuilderLoader() {
-        return ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders");
+        // this also calls the static init of BuilderReader and registers the system and public ids.
+        return org.mmbase.util.xml.AbstractBuilderReader.getBuilderLoader();
     }
 
     /**
