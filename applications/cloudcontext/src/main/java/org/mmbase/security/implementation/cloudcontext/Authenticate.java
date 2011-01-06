@@ -38,11 +38,11 @@ public class Authenticate extends CloudContextAuthentication {
 
     protected static final String ADMINS_PROPS = "admins.properties";
 
-    private int extraAdminsUniqueNumber;
+    private static int extraAdminsUniqueNumber;
 
     private boolean allowEncodedPassword = false;
 
-    private static Properties extraAdmins = new Properties();      // Admins to store outside database.
+    private   static Properties extraAdmins = new Properties();      // Admins to store outside database.
     protected static Map<String, User>      loggedInExtraAdmins = new HashMap<String, User>();
 
 

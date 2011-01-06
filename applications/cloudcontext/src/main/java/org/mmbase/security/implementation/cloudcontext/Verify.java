@@ -32,6 +32,7 @@ public class Verify extends Authorization {
 
     private static final Logger log = Logging.getLoggerInstance(Verify.class);
 
+    @Override
     protected void load() {
     }
 
@@ -85,15 +86,8 @@ public class Verify extends Authorization {
 
     @Override
     public String getContext(UserContext userContext, int nodeId) throws org.mmbase.security.SecurityException {
-        // userContext ignored
-        MMObjectNode contextNode = getContextNode(nodeId, true);
-        if (contextNode == null) {
-            log.warn("No context node found for node with id " + nodeId);
-            return null;
-        } else {
-            log.debug("Found context node for node with id " + nodeId + " " + contextNode.getNumber());
-        }
-        return getContextProvider().getContextName(contextNode);
+        MMObjectNode node = getNode(nodeId, true);
+        return getContextProvider().getContext((User) userContext, node);
     }
 
     @Override

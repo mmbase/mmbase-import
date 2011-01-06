@@ -151,6 +151,22 @@ public  class BasicContextProvider implements ContextProvider {
         node.commit();
     }
 
+    protected SortedSet<String> getAllContextsUnCached() throws SearchQueryException {
+        SortedSet set = new TreeSet<String>();
+        for (NodeSearchQuery q : getContextQueries()) {
+            MMObjectBuilder contextBuilder = MMBase.getMMBase().getBuilder(q.getSteps().get(0).getTableName());
+            String nameField = getContextNameField(q.getBuilder().getTableName());
+            if (log.isDebugEnabled()) {
+                log.debug("Using " + MMBase.getMMBase().getSearchQueryHandler().createSqlString(q) + " for all context");
+            }
+            for (MMObjectNode context : contextBuilder.getNodes(q)) {
+                set.add(context.getStringValue(nameField));
+            }
+        }
+        log.debug("All contexts " + set);
+        //invalidableObjects.put("ALL", Collections.unmodifiableSortedSet(all));
+        return set;
+    }
 
     /**
      * Returns a Set (of Strings) of all existing contexts
@@ -158,19 +174,7 @@ public  class BasicContextProvider implements ContextProvider {
     protected SortedSet<String> getAllContexts() {
         if (all == null) {
             try {
-                all = new TreeSet<String>();
-                for (NodeSearchQuery q : getContextQueries()) {
-                    MMObjectBuilder contextBuilder = MMBase.getMMBase().getBuilder(q.getSteps().get(0).getTableName());
-                    String nameField = getContextNameField(q.getBuilder().getTableName());
-                    if (log.isDebugEnabled()) {
-                        log.debug("Using " + MMBase.getMMBase().getSearchQueryHandler().createSqlString(q) + " for all context");
-                    }
-                    for (MMObjectNode context : contextBuilder.getNodes(q)) {
-                        all.add(context.getStringValue(nameField));
-                    }
-                }
-                log.debug("All contexts " + all);
-                //invalidableObjects.put("ALL", Collections.unmodifiableSortedSet(all));
+                all = getAllContextsUnCached();
             } catch (SearchQueryException sqe) {
                 log.error(sqe.getMessage(), sqe);
             }
@@ -208,7 +212,9 @@ public  class BasicContextProvider implements ContextProvider {
 
     protected SortedSet<String> getAllowingContexts(User user, Operation operation) {
         if (operation != Operation.READ) throw new UnsupportedOperationException("Currently only implemented for READ");
-        if (canReadAll()) { return getAllContexts(); }
+        if (canReadAll()) {
+            return getAllContexts();
+        }
 
         SortedSet<String> set = new TreeSet<String>(getAllContexts());
         set.removeAll(getDisallowingContexts(user, operation));
@@ -230,6 +236,20 @@ public  class BasicContextProvider implements ContextProvider {
 
     }
 
+    /**
+     * @since MMBase-1.9.6
+     */
+    public String getContext(User userContext, MMObjectNode node) {
+   // userContext ignored
+        MMObjectNode contextNode = getContextNode(node);
+        if (contextNode == null) {
+            log.warn("No context node found for node with id " + node.getNumber());
+            return null;
+        } else {
+            log.debug("Found context node for node with id " + node.getNumber() + " " + contextNode.getNumber());
+        }
+        return getContextName(contextNode);
+    }
 
     public MMObjectNode getContextNode(String context) {
         Cache<String,MMObjectNode> contextCache = Caches.getContextCache();
@@ -318,6 +338,7 @@ public  class BasicContextProvider implements ContextProvider {
             return set;
         }
     }
+
 
     public Set<String> getPossibleContexts(User user)  throws org.mmbase.security.SecurityException {
         if (user.getRank().getInt() >= Rank.ADMIN_INT) {
@@ -627,117 +648,144 @@ public  class BasicContextProvider implements ContextProvider {
         return result;
 
     }
+    /**
+     * @since MMBase-1.9.6
+     */
+    protected Authorization.QueryCheck addSecurityObjectsConstraints(List<Constraint> constraints, User userContext, Query query, Operation operation) {
+        List<Step> steps = query.getSteps();
+        // constraints on security objects
+        {
+            for (Step step : steps) {
+                Constraint newConstraint = null;
+                if (step.getTableName().equals("mmbasegroups")) {
+                    constraints.add(query.createConstraint(query.createStepField(step, "number"), userContext.getGroups())); // must be member of group to see group
+                    if(operation != Operation.READ) { //
+                        if (userContext.getRank().getInt() <= Rank.BASICUSER.getInt()) { // may do nothing, simply making the query result nothing: number = -1
+                            Constraint mayNothing = query.createConstraint(query.createStepField(step, "number"), Integer.valueOf(-1));
+                            return new Authorization.QueryCheck(true, mayNothing);
+                        }
+                    }
+                } else if (step.getTableName().equals("mmbaseranks")) { // higher ranks are none of your businuess (especially usefull for editors)
+                    constraints.add(query.createConstraint(query.createStepField(step, "rank"), FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(userContext.getRank().getInt())));
+                } else {
+                    continue;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @since MMBase-1.9.6
+     */
+    protected AllowingContexts getAllowingOrDisallowingContexts(User userContext, Operation operation) {
+        Cache<String, ContextProvider.AllowingContexts> allowingContextsCache = Caches.getAllowingContextsCache();
+        AllowingContexts ac = allowingContextsCache.get(userContext.getIdentifier());
+        if (ac == null) {
+            // smart stuff for query-modification
+            SortedSet<String> disallowing = getDisallowingContexts(userContext, operation);
+            SortedSet<String> contexts;
+            boolean   inverse;
+            if (log.isDebugEnabled()) {
+                log.debug("disallowing: " + disallowing + " all " + getAllContexts());
+            }
+
+            // searching which is 'smallest': disallowing contexts, or allowing contexts.
+            if (disallowing.size() < (getAllContexts().size() / 2)) {
+                contexts = disallowing;
+                inverse = true;
+            } else {
+                contexts  = new TreeSet<String>(getAllContexts());
+                contexts.removeAll(disallowing);
+                inverse = false;
+            }
+            ac = new AllowingContexts(contexts, inverse);
+            allowingContextsCache.put(userContext.getIdentifier(), ac);
+        }
+        return ac;
+    }
+    /**
+     * @since MMBase-1.9.6
+     */
+    protected Authorization.QueryCheck addAllowingContextsConstraints(List<Constraint> constraints, User userContext, Query query, Operation operation) {
+        if (operation == Operation.READ && (canReadAll() || disableContextChecks())) {
+            if (log.isDebugEnabled()) {
+                log.debug("No read checks done (can read all: " + canReadAll() + " disable context checks: " + disableContextChecks() + ")");
+            }
+            return null;
+        }
+        AllowingContexts ac = getAllowingOrDisallowingContexts(userContext, operation);
+        if (log.isDebugEnabled()) {
+            log.debug("Allowing contexts for " + userContext + ": " + ac + " and " + constraints);
+        }
+        if (ac.contexts.size() == 0) {
+            if (ac.inverse) {
+                log.debug("All contexts allowed");
+                return null;
+            } else {
+                log.debug("No contexts allowed");
+                // may read nothing, simply making the query result nothing: number = -1
+                Constraint mayNothing = query.createConstraint(query.createStepField(query.getSteps().get(0), "number"), Integer.valueOf(-1));
+                return new Authorization.QueryCheck(true, mayNothing);
+            }
+        }
+        List<Step> steps = query.getSteps();
+
+        if (steps.size() * ac.contexts.size() < getMaxContextsInQuery()) {
+            for (Step step : steps) {
+                StepField field = query.createStepField(step, "owner");
+                Constraint newConstraint = query.createConstraint(field, ac.contexts);
+                if (ac.inverse) query.setInverse(newConstraint, true);
+
+                UserProvider users = Authenticate.getInstance().getUserProvider();
+
+                if (step.getTableName().equals(users.getUserBuilder().getTableName())) { // anybody may see own node
+                    Constraint own = query.createConstraint(query.createStepField(step, "number"),
+                                                            Integer.valueOf(users.getUser(userContext.getIdentifier()).getNumber()));
+                    newConstraint = query.createConstraint(newConstraint, CompositeConstraint.LOGICAL_OR, own);
+                }
+
+                constraints.add(newConstraint);
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("Constraint " + constraints);
+            }
+            return null;
+        } else { // query would grow too large
+            log.debug("Too many contexts");
+            return Authorization.NO_CHECK;
+        }
+    }
+    /**
+     * @since MMBase-1.9.6
+     */
+    protected Authorization.QueryCheck addConstraints(List<Constraint> constraints, User userContext, Query query, Operation operation) {
+        Authorization.QueryCheck sec = addSecurityObjectsConstraints(constraints, userContext, query, operation);
+        if (sec != null) return sec;
+        Authorization.QueryCheck acc = addAllowingContextsConstraints(constraints, userContext, query, operation);
+        if (acc != null) return acc;
+        return null;
+    }
+
+
 
     public Authorization.QueryCheck check(User userContext, Query query, Operation operation) {
         if (userContext.getRank().getInt() >= Rank.ADMIN_INT) {
             log.debug("User is admin");
             return Authorization.COMPLETE_CHECK;
         } else {
-            if (operation == Operation.READ && (canReadAll() || disableContextChecks())) {
-                log.debug("No read checks done (can read all: " + canReadAll() + " disable context checks: " + disableContextChecks() + ")");
-                return Authorization.COMPLETE_CHECK;
-            } else if (operation == Operation.READ) {
-                Cache<String, ContextProvider.AllowingContexts> allowingContextsCache = Caches.getAllowingContextsCache();
-                AllowingContexts ac = allowingContextsCache.get(userContext.getIdentifier());
-                if (ac == null) {
-                    // smart stuff for query-modification
-                    SortedSet<String> disallowing = getDisallowingContexts(userContext, operation);
-                    SortedSet<String> contexts;
-                    boolean   inverse;
-                    if (log.isDebugEnabled()) {
-                        log.debug("disallowing: " + disallowing + " all " + getAllContexts());
-                    }
-
-                    // searching which is 'smallest': disallowing contexts, or allowing contexts.
-                    if (disallowing.size() < (getAllContexts().size() / 2)) {
-                        contexts = disallowing;
-                        inverse = true;
-                    } else {
-                        contexts  = new TreeSet<String>(getAllContexts());
-                        contexts.removeAll(disallowing);
-                        inverse = false;
-                    }
-                    ac = new AllowingContexts(contexts, inverse);
-                    allowingContextsCache.put(userContext.getIdentifier(), ac);
+            if (operation == Operation.READ) {
+                List<Constraint> constraints = new ArrayList<Constraint>();
+                Authorization.QueryCheck qc = addConstraints(constraints, userContext, query, operation);
+                if (qc != null) {
+                    return qc;
                 }
-
-
-                List<Step> steps = query.getSteps();
-                Constraint constraint = null;
-                // constraints on security objects
-                {
-                    for (Step step : steps) {
-                        Constraint newConstraint = null;
-                        if (step.getTableName().equals("mmbasegroups")) {
-                            newConstraint = query.createConstraint(query.createStepField(step, "number"), userContext.getGroups()); // must be member of group to see group
-                            if(operation != Operation.READ) { //
-                                if (userContext.getRank().getInt() <= Rank.BASICUSER.getInt()) { // may no nothing, simply making the query result nothing: number = -1
-                                    Constraint mayNothing = query.createConstraint(query.createStepField(step, "number"), Integer.valueOf(-1));
-                                    return new Authorization.QueryCheck(true, mayNothing);
-                                }
-                            }
-                        } else if (step.getTableName().equals("mmbaseranks")) { // higher ranks are none of your businuess (especially usefull for editors)
-                            newConstraint = query.createConstraint(query.createStepField(step, "rank"), FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(userContext.getRank().getInt()));
-                        } else {
-                            continue;
-                        }
-
-                        if (constraint == null) {
-                            constraint = newConstraint;
-                        } else {
-                            constraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
-                        }
-
-                    }
-                }
-                if (log.isDebugEnabled()) {
-                    log.debug("Allowing contexts for " + userContext + ": " + ac + " and " + constraint);
-                }
-                if (ac.contexts.size() == 0) {
-                    if (ac.inverse) {
-                        log.debug("All contexts allowed");
-                        if (constraint == null) {
-                            return Authorization.COMPLETE_CHECK;
-                        } else {
-                            return new Authorization.QueryCheck(true, constraint);
-                        }
-                    } else {
-                        log.debug("No contexts allowed");
-                        // may read nothing, simply making the query result nothing: number = -1
-                        Constraint mayNothing = query.createConstraint(query.createStepField(query.getSteps().get(0), "number"), Integer.valueOf(-1));
-                        return new Authorization.QueryCheck(true, mayNothing);
-                    }
-                }
-
-
-                if (steps.size() * ac.contexts.size() < getMaxContextsInQuery()) {
-                    for (Step step : steps) {
-                        StepField field = query.createStepField(step, "owner");
-                        Constraint newConstraint = query.createConstraint(field, ac.contexts);
-                        if (ac.inverse) query.setInverse(newConstraint, true);
-
-                        UserProvider users = Authenticate.getInstance().getUserProvider();
-
-                        if (step.getTableName().equals(users.getUserBuilder().getTableName())) { // anybody may see own node
-                            Constraint own = query.createConstraint(query.createStepField(step, "number"),
-                                                                    Integer.valueOf(users.getUser(userContext.getIdentifier()).getNumber()));
-                            newConstraint = query.createConstraint(newConstraint, CompositeConstraint.LOGICAL_OR, own);
-                        }
-
-
-                        if (constraint == null) {
-                            constraint = newConstraint;
-                        } else {
-                            constraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
-                        }
-                    }
-                    if (log.isDebugEnabled()) {
-                        log.debug("Constraint " + constraint);
-                    }
-                    return new Authorization.QueryCheck(true, constraint);
-                } else { // query would grow too large
-                    log.debug("Too many contexts");
-                    return Authorization.NO_CHECK;
+                if (constraints.isEmpty()) {
+                    return Authorization.COMPLETE_CHECK;
+                } else if (constraints.size() == 1) {
+                    return new Authorization.QueryCheck(true, constraints.get(0));
+                } else {
+                    return new Authorization.QueryCheck(true, new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND, constraints.toArray(new Constraint[constraints.size()])));
                 }
 
             } else {
