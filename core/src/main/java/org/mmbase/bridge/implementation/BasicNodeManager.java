@@ -313,7 +313,12 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
 
     public NodeManagerList getDescendants() {
         List<MMObjectBuilder> descs = getMMObjectBuilder().getDescendants();
-        return new BasicNodeManagerList(descs, cloud);
+        return new BasicNodeManagerList(descs, cloud) {
+            @Override
+            protected NodeManager convert(final Object o) {
+                return new BasicNodeManager((MMObjectBuilder) o, BasicNodeManager.this.cloud);
+            }
+        };
     }
 
     public String getName() {
