@@ -14,8 +14,6 @@
   <packaging>war</packaging>
   <version>${mmbase.version}</version>
 
-  <properties>
-  </properties>
 
   <description>
     The MMBase JSP Taglib is the main technology used to create dynamic pages that display content
@@ -223,4 +221,16 @@
     </repository>
   </repositories>
 
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <name>MMBase Maven2 repository</name>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+    <repository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 snapshots repository</name>
+      <url>http://www.mmbase.org/snapshots</url>
+    </repository>
+  </repositories>
 </project>
