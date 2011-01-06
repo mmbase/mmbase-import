@@ -229,7 +229,7 @@ public class ResourceLoader extends ClassLoader {
         // reset both roots, they will be redetermined using servletContext.
         configRootNeedsInit = true;
         webRootNeedsInit    = true;
-        System.out.println("Inited with " + sc);
+        log.debug("Inited with " + sc);
         if (sc != null) {
             EventManager.getInstance().propagateEvent(new SystemEvent.ResourceLoaderChange());
         }
@@ -1772,7 +1772,6 @@ public class ResourceLoader extends ClassLoader {
     public static int getWeight(final URL u) {
         int w = 0;
         log.debug("Getting weight for " + u + " with " + classWeights);
-        System.out.println(u);
         if (classWeights != null) {
             for (Map.Entry<Pattern, Integer> e : classWeights.entrySet()) {
                 if (e.getKey().matcher(u.toExternalForm()).matches()) {
