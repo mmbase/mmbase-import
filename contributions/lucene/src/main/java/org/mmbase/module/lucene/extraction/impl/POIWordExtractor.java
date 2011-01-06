@@ -32,14 +32,17 @@ public class POIWordExtractor implements Extractor {
     private static final Logger log = Logging.getLoggerInstance(POIWordExtractor.class);
     private String mimetype = "application/msword";
 
+    @Override
     public void setMimeType(String mimetype) {
         this.mimetype = mimetype;
     }
 
+    @Override
     public String getMimeType() {
         return this.mimetype;
     }
 
+    @Override
     public String extract(InputStream input) {
         log.debug("extract stream");
         String result = null;
