@@ -46,16 +46,17 @@ public class Dimension implements java.io.Serializable {
         return x * y;
     }
 
+    @Override
     public String toString() {
         return "" + x + "x" + y;
     }
 
     public boolean equalsIgnoreRound(Dimension dim, int offset) {
-        boolean xOk = dim.x >= x - offset && dim.x <= x + offset;
-        boolean yOk = dim.y >= y - offset && dim.y <= y + offset;
-        return xOk && yOk;
+        return dim.x >= x - offset && dim.x <= x + offset && // x OK
+                dim.y >= y - offset && dim.y <= y + offset; // y OK
     }
 
+    @Override
     public boolean equals(Object o) {
         if (o instanceof Dimension) {
             Dimension dim = (Dimension) o;
@@ -64,11 +65,12 @@ public class Dimension implements java.io.Serializable {
             return false;
         }
     }
+    @Override
     public int hashCode() {
         return (x + 1) * (y + 1);
     }
     /**
-     * Returns true of both x and y > 0.
+     * Returns true if both x and y > 0.
      * @since MMBase-1.8.1
      */
     public boolean valid() {

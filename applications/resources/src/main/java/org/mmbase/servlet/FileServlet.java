@@ -270,7 +270,6 @@ public class FileServlet extends BridgeServlet {
                         q = value.indexOf("'", q + 1);
                         if (q > -1) {
                             String found = value.substring(q + 1);
-                            System.out.println("found " + found);
                             value = UrlEscaper.INSTANCE.transformBack(found);
                         }
                     }
@@ -434,11 +433,13 @@ public class FileServlet extends BridgeServlet {
             }
             this.max = max;
         }
+        @Override
         public long available(long i) {
             if (i < first) return 0;
             if (i > last) return 0;
             return last - i + 1;
         }
+        @Override
         public long notavailable(long i) {
             if (i < first) return first - i;
             if (i > last)  return max - last;
@@ -465,6 +466,7 @@ public class FileServlet extends BridgeServlet {
             this.max = max;
         }
 
+        @Override
         public long available(long i) {
             long available = 0;
             for (Range r : ranges) {
@@ -474,6 +476,7 @@ public class FileServlet extends BridgeServlet {
             }
             return available;
         }
+        @Override
         public long notavailable(long i) {
             long notavailable = max;
             for (Range r : ranges) {
@@ -611,11 +614,11 @@ public class FileServlet extends BridgeServlet {
         result.append("<html xmlns='http://www.w3.org/1999/xhtml'>");
         result.append("<head>");
         String pathInfo = req.getPathInfo();
-        result.append("<title>Directory Listing For " + XML.transform(URL.transformBack(pathInfo)) + "</title>");
-        result.append("<link rel='stylesheet' href='" + req.getContextPath() + "/mmbase/style/css/mmbase.css' type='text/css' />");
+        result.append("<title>Directory Listing For ").append(XML.transform(URL.transformBack(pathInfo))).append("</title>");
+        result.append("<link rel='stylesheet' href='").append(req.getContextPath()).append("/mmbase/style/css/mmbase.css' type='text/css' />");
         result.append("</head>");
         result.append("<body class='filelisting'>");
-        result.append("<h1>Directory Listing For " + XML.transform(URL.transformBack(pathInfo)) + "</h1>");
+        result.append("<h1>Directory Listing For ").append(XML.transform(URL.transformBack(pathInfo))).append("</h1>");
         String header = getInitParameter("header");
         if (header != null && ! "".equals(header)) {
             File headerFile = new File(directory, header);
@@ -631,9 +634,9 @@ public class FileServlet extends BridgeServlet {
         }
         result.append("<table>");
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        result.append("<tr><td class='lastmodified'>" + df.format(new Date(directory.lastModified())) + "</td><td class='filesize'> </td><td class='filename'><a href='.'>./</a></td></tr>");
+        result.append("<tr><td class='lastmodified'>").append(df.format(new Date(directory.lastModified()))).append("</td><td class='filesize'> </td><td class='filename'><a href='.'>./</a></td></tr>");
         if (! pathInfo.equals("/")) {
-            result.append("<tr><td class='lastmodified'>" + df.format(new Date(directory.getParentFile().lastModified()))  +"</td><td class='filesize'> </td><td class='filename'><a href='..'>../</a></td></tr>");
+            result.append("<tr><td class='lastmodified'>").append(df.format(new Date(directory.getParentFile().lastModified()))).append("</td><td class='filesize'> </td><td class='filename'><a href='..'>../</a></td></tr>");
         }
         List<File> list = Arrays.asList(directory.listFiles());
         if (comparator != null) {
@@ -652,14 +655,14 @@ public class FileServlet extends BridgeServlet {
             result.append("<td class='filename'>");
             if (canRead(req, file)) {
                 String url = URL.transform(file.getName()) + (file.isDirectory() ? "/" : "");
-                result.append("<a href='" + url + "'>" + XML.transform(name) + "</a>");
+                result.append("<a href='").append(url).append("'>").append(XML.transform(name)).append("</a>");
             } else {
                 result.append(XML.transform(name));
             }
             result.append("</td></tr>");
         }
         result.append("</table>");
-        result.append("<h3>" + org.mmbase.Version.get() + "</h3>");
+        result.append("<h3>").append(org.mmbase.Version.get()).append("</h3>");
         result.append("</body>");
         result.append("</html>");
         try {
@@ -716,6 +719,7 @@ public class FileServlet extends BridgeServlet {
             super("fileServletDirectory");
         }
         String dir = null;
+        @Override
         public String getFunctionValue(org.mmbase.util.functions.Parameters parameters) {
             if (dir != null) {
                 return dir;

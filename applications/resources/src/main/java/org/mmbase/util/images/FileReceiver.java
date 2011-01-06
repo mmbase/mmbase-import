@@ -35,12 +35,14 @@ public class FileReceiver implements ImageConversionReceiver {
         return dim;
     }
 
+    @Override
     public OutputStream getOutputStream() throws IOException {
         if (stream == null) {
             stream = new FileOutputStream(file);
         }
         return stream;
     }
+    @Override
     public InputStream getInputStream() throws IOException {
         if (stream != null) {
             stream.close();
@@ -50,21 +52,26 @@ public class FileReceiver implements ImageConversionReceiver {
         }
         return in;
     }
+    @Override
     public void setSize(long s) {
     }
+    @Override
     public long getSize() {
         return file.length();
     }
 
+    @Override
     public boolean wantsDimension() {
         return true;
     }
+    @Override
     public void setDimension(Dimension d) {
         if (d != null) {
             dim = d;
         }
     }
 
+    @Override
     public void ready() throws IOException {
         if (stream != null) {
             stream.close();
@@ -74,9 +81,11 @@ public class FileReceiver implements ImageConversionReceiver {
         }
     }
 
+    @Override
     public int hashCode() {
         return  file.hashCode();
     }
+    @Override
     public boolean equals(Object o) {
         if (o instanceof FileReceiver) {
             FileReceiver r = (FileReceiver) o;
@@ -86,6 +95,7 @@ public class FileReceiver implements ImageConversionReceiver {
         }
     }
 
+    @Override
     public String toString() {
         return file.toString();
     }

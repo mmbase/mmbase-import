@@ -11,7 +11,6 @@ package org.mmbase.servlet;
 
 import java.io.*;
 import java.util.*;
-import org.mmbase.util.logging.*;
 
 
 /**
@@ -23,12 +22,20 @@ import org.mmbase.util.logging.*;
  */
 public class FileNameComparator implements Comparator<File> {
 
+    @Override
     public int compare(File f1, File f2) {
         return f1.getName().compareTo(f2.getName());
     }
 
+    @Override
     public boolean equals(Object o) {
         return o != null && o.getClass().equals(FileNameComparator.class);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        return hash;
     }
 
 }

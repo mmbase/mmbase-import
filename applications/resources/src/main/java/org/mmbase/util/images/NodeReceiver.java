@@ -40,22 +40,28 @@ public class NodeReceiver implements ImageConversionReceiver {
         return icacheNode;
     }
 
+    @Override
     public OutputStream  getOutputStream() {
         return receiver;
     }
+    @Override
     public InputStream getInputStream() {
         return new ByteArrayInputStream(receiver.toByteArray());
     }
+    @Override
     public void setSize(long size) {
         icacheNode.setSize(Imaging.FIELD_HANDLE, size);
     }
+    @Override
     public long getSize() {
         return icacheNode.getSize(Imaging.FIELD_HANDLE);
 
     }
+    @Override
     public boolean wantsDimension() {
         return icacheNode.getBuilder().hasField("height");
     }
+    @Override
     public void setDimension(Dimension dim) {
         Dimension predicted = (Dimension) icacheNode.getFunctionValue("dimension", null);
         if (! predicted.equals(Dimension.UNDETERMINED)) {
@@ -71,14 +77,17 @@ public class NodeReceiver implements ImageConversionReceiver {
         icacheNode.setValue("width", dim.x);
     }
 
+    @Override
     public void ready() {
         icacheNode.setValue(Imaging.FIELD_HANDLE, receiver.toByteArray());
         icacheNode.commit();
     }
 
+    @Override
     public int hashCode() {
         return  icacheNode.getStringValue(Imaging.FIELD_CKEY).hashCode();
     }
+    @Override
     public boolean equals(Object o) {
         if (o instanceof NodeReceiver) {
             NodeReceiver r = (NodeReceiver) o;
@@ -88,7 +97,7 @@ public class NodeReceiver implements ImageConversionReceiver {
         }
     }
 
-    // javadoc inherited (of Object)
+    @Override
     public String toString() {
         return icacheNode.getStringValue("id") + " --> " + icacheNode.getNumber() + " " + icacheNode.getStringValue(Imaging.FIELD_CKEY);
     }

@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import org.mmbase.module.core.*;
-import org.mmbase.bridge.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 

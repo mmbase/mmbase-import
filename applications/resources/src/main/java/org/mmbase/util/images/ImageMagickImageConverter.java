@@ -678,6 +678,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
     }
 
 
+    @Override
     public String toString() {
         return super.toString() + " " + converterPath + " (version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch + ")";
     }

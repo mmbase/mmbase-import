@@ -13,7 +13,6 @@ import java.util.*;
 import java.io.*;
 import org.apache.commons.io.FileUtils;
 
-import org.mmbase.util.*;
 
 import org.junit.*;
 import static org.junit.Assert.*;

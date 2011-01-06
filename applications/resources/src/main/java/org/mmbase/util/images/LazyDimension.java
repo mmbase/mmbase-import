@@ -44,15 +44,18 @@ public class LazyDimension extends Dimension {
         loaded = true;
     }
 
+    @Override
     public int getWidth() {
         getDimension();
         return super.getWidth();
     }
+    @Override
     public int getHeight() {
         getDimension();
         return super.getHeight();
     }
 
+    @Override
     public int getArea() {
         getDimension();
         return super.getArea();
