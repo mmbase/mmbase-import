@@ -9,9 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes.processors;
 
-import java.io.*;
 import java.util.*;
-import org.mmbase.util.*;
 import org.mmbase.bridge.mock.*;
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.*;
@@ -19,7 +17,6 @@ import org.mmbase.datatypes.*;
 
 import org.junit.*;
 import static org.junit.Assert.*;
-import static org.junit.Assume.*;
 
 /**
  *

@@ -28,25 +28,32 @@ public class OutputStreamReceiver implements ImageConversionReceiver {
         stream = s;
     }
 
+    @Override
     public OutputStream getOutputStream() {
         return stream;
     }
+    @Override
     public InputStream getInputStream() throws IOException {
         throw new UnsupportedOperationException();
     }
+    @Override
     public void setSize(long s) {
         size = s;
     }
+    @Override
     public long getSize() {
         return size;
     }
 
+    @Override
     public boolean wantsDimension() {
         return false;
     }
+    @Override
     public void setDimension(Dimension d) {
     }
 
+    @Override
     public void ready() throws IOException {
 
     }

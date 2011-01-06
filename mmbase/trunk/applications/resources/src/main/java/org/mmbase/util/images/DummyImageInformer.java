@@ -22,15 +22,18 @@ import java.io.*;
  */
 public class DummyImageInformer implements ImageInformer {
 
+    @Override
     public void init(Map<String,String> params) {
     }
 
+    @Override
     public Dimension getDimension(byte[] data) {
         ImageInfo imageInfo = new ImageInfo();
         imageInfo.setInput(new ByteArrayInputStream(data));
         imageInfo.check();
         return new Dimension(imageInfo.getWidth(), imageInfo.getHeight());
     }
+    @Override
     public Dimension getDimension(InputStream data) {
         ImageInfo imageInfo = new ImageInfo();
         imageInfo.setInput(data);

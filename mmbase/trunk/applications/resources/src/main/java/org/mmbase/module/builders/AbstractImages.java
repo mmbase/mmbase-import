@@ -40,9 +40,15 @@ public abstract class AbstractImages extends AbstractServletBuilder implements I
     public static final String FIELD_HEIGHT      = "height";
     public static final String FIELD_WIDTH       = "width";
 
-    protected static BlobCache handleCache = new BlobCache(300) {  // a few images are in memory cache.
-            public String getName()        { return "ImageHandles"; }
-            public String getDescription() { return "Handles of Images (number -> handle)"; }
+    protected static final BlobCache handleCache = new BlobCache(300) {  // a few images are in memory cache.
+        @Override
+        public String getName() {
+            return "ImageHandles";
+        }
+        @Override
+        public String getDescription() {
+            return "Handles of Images (number -> handle)";
+        }
         };
     static {
         handleCache.putCache();
@@ -107,6 +113,7 @@ public abstract class AbstractImages extends AbstractServletBuilder implements I
         }
     }
 
+    @Override
     protected BlobCache getBlobCache(String fieldName) {
         if (fieldName.equals(Imaging.FIELD_HANDLE)) {
             return handleCache;
@@ -115,9 +122,11 @@ public abstract class AbstractImages extends AbstractServletBuilder implements I
         }
     }
 
+    @Override
     protected String getAssociation() {
         return "images";
     }
+    @Override
     protected String getDefaultPath() {
         return "/img.db";
     }
@@ -139,6 +148,7 @@ public abstract class AbstractImages extends AbstractServletBuilder implements I
     /**
      * @since MMBase-1.7
      */
+    @Override
     protected String getSGUIIndicator(MMObjectNode node, Parameters a) {
         String field = a.getString("field");
         if (field.equals(Imaging.FIELD_HANDLE) || field.equals("")) {
@@ -150,7 +160,8 @@ public abstract class AbstractImages extends AbstractServletBuilder implements I
 
 
     protected final Set<String> IMAGE_HANDLE_FIELDS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(new String[] {FIELD_FILESIZE, FIELD_ITYPE, FIELD_HEIGHT, FIELD_WIDTH})));
-    // javadoc inherited
+   
+    @Override
     protected Set<String> getHandleFields() {
         return IMAGE_HANDLE_FIELDS;
     }
@@ -158,6 +169,7 @@ public abstract class AbstractImages extends AbstractServletBuilder implements I
     /**
      * Determine the MIME type of this image node, based on the image format.
      */
+    @Override
     public String getMimeType(MMObjectNode node) {
         String ext = getImageFormat(node);
         if (log.isDebugEnabled()) {
@@ -202,6 +214,7 @@ public abstract class AbstractImages extends AbstractServletBuilder implements I
     /**
      * Gets the dimension of given node. Also when the fields are missing, it will result a warning then.
      */
+    @Override
     public Dimension getDimension(MMObjectNode node) {
         if (storesDimension()) {
             int width  = node.getIntValue(FIELD_WIDTH);
@@ -287,6 +300,7 @@ public abstract class AbstractImages extends AbstractServletBuilder implements I
      * Determines the image type of an object and stores the content in the itype field.
      * @param node The object to use.
      */
+    @Override
     public String getImageFormat(MMObjectNode node) {
         String itype = null;
         if (storesImageType()) {
@@ -350,7 +364,7 @@ public abstract class AbstractImages extends AbstractServletBuilder implements I
         return itype;
     }
 
-    //javadoc inherited
+    @Override
     protected void checkHandle(MMObjectNode node) {
         super.checkHandle(node);
         if (storesFileSize()) {
@@ -371,6 +385,7 @@ public abstract class AbstractImages extends AbstractServletBuilder implements I
      *
      */
 
+    @Override
     protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (function.equals("mimetype")) {
             return getMimeType(node);

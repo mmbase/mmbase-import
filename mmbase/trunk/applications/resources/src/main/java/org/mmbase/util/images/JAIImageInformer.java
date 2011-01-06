@@ -25,14 +25,17 @@ import com.sun.media.jai.codec.MemoryCacheSeekableStream;
  */
 public class JAIImageInformer implements ImageInformer {
 
+    @Override
     public void init(Map<String,String> params) {
     }
 
+    @Override
     public Dimension getDimension(byte[] input) throws IOException { 
         ByteArraySeekableStream bin = new ByteArraySeekableStream(input);
         PlanarImage img = JAI.create("stream", bin);
         return new Dimension(img.getWidth(), img.getHeight());
     }
+    @Override
     public Dimension getDimension(InputStream input) {
         MemoryCacheSeekableStream bin = new MemoryCacheSeekableStream(input);
         PlanarImage img = JAI.create("stream", bin);

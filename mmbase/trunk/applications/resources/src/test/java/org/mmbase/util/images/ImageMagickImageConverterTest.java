@@ -10,15 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.util.images;
 
 import java.io.*;
-import java.util.*;
 import java.util.regex.*;
-import org.mmbase.util.*;
 
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 import static org.junit.Assert.*;
-import static org.junit.Assume.*;
 
 /**
  *

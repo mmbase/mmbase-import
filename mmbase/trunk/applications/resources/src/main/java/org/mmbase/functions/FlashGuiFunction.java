@@ -110,7 +110,7 @@ public class FlashGuiFunction extends NodeFunction<String> {
                     return Xml.INSTANCE.transform(ioe.getMessage());
                 }
             }
-            String name = "mm_flashobject_" + node.getNumber();
+            String n = "mm_flashobject_" + node.getNumber();
             String url = node.getFunctionValue("servletpath", null).toString();
             return appendFlash(new StringBuilder(), url).toString();
         } else {

@@ -11,12 +11,9 @@ package org.mmbase.module.builders;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
 
-import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
@@ -24,7 +21,7 @@ import org.mmbase.util.functions.*;
 /**
  * An attachment builder where, aside from storing the binary data in the database, you can point out a
  * binary resource on another server using an url.
- * Basic support for sucha  field is in AbstractServletBuidler.
+ * Basic support for such a  field is in AbstractServletBuidler.
  * This builder defines a default url field ('url'), has a better GUI function, and determines file size,
  * filename, and mimetype from a referred to file when the url changes.
  *
@@ -41,11 +38,13 @@ public class ReferredAttachments extends Attachments {
     /**
      * Sets a default for the 'externalUrlField' property
      */
+    @Override
     public boolean init() {
         externalUrlField = DEFAULT_EXTERNAL_URL_FIELD;
         return super.init();
     }
 
+    @Override
     protected void checkHandle(MMObjectNode node) {
         String url = node.getStringValue(externalUrlField);
         if (url != null && !url.equals("")) {
@@ -78,6 +77,7 @@ public class ReferredAttachments extends Attachments {
         }
     }
 
+    @Override
     protected String getSGUIIndicator(MMObjectNode node, Parameters a) {
         String field = a.getString("field");
         if (field.equals("handle") || field.equals("")) {
