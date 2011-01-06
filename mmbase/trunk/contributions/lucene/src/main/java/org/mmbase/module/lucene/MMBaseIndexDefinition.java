@@ -185,9 +185,7 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
                 if (query.getCloud().hasNode(number.intValue())) {
                     Node node = query.getCloud().getNode(number.intValue());
                     NodeManager nm = node.getNodeManager();
-                    //for (Step step : q.getSteps()) {
-                    for (Iterator i = q.getSteps().iterator(); i.hasNext();) {
-                        Step step = (Step) i.next();
+                    for (Step step : q.getSteps()) {
                         NodeManager stepManager = query.getCloud().getNodeManager(step.getTableName());
                         if (stepManager.equals(nm) || stepManager.getDescendants().contains(nm)) {
                             StepField numberField = q.createStepField(step, "number");
