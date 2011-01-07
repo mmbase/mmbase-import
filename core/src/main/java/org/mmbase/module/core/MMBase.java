@@ -328,7 +328,7 @@ public class MMBase extends ProcessorModule {
             }
             LocalizedString.setDefault(LocalizedString.getLocale(tmp));
         } else {
-            LOG.service("No default specified using default " + LocalizedString.getLocale());
+            LOG.service("No default specified using default " + LocalizedString.getDefault());
         }
         MMBaseContext.INITLOG.info("MMBase Locale      : " + getLocale());
 
