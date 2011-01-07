@@ -62,7 +62,7 @@ public abstract class Instantiator {
             }
         }
         if ("".equals(className)) { // try body
-            className = BuilderReader.getNodeTextValue(classElement);
+            className = DocumentReader.getNodeTextValue(classElement);
         }
         return Class.forName(className);
     }
