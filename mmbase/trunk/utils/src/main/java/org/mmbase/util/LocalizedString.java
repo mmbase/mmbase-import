@@ -89,14 +89,28 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
                 ServletContext sx = ((SystemEvent.ServletContext) se).getServletContext();
                 String fmtDefault = sx.getInitParameter(FMT_FALLBACK_PARAM);
                 if (fmtDefault != null) {
-                    setDefault(getLocale(fmtDefault));
-                    LOG.service("Default from " + FMT_FALLBACK_PARAM + ": "+ org.mmbase.util.LocalizedString.getDefault());
+                    Locale prev = setDefault(getLocale(fmtDefault));
+                    if (prev != null) {
+                        LOG.warn("Reset " + prev + "  from " + FMT_FALLBACK_PARAM + ": "+ org.mmbase.util.LocalizedString.getDefault());
+                    } else {
+                        LOG.service("Default from " + FMT_FALLBACK_PARAM + ": "+ org.mmbase.util.LocalizedString.getDefault());
+                    }
+                } else {
+                    LOG.service("No " + FMT_FALLBACK_PARAM + " found");
                 }
             }
 
         }
         @Override
         public int getWeight() {
+            return -1000;
+        }
+        @Override
+        public boolean equals(Object o) {
+            return o instanceof DefaultFromServletContext;
+        }
+        @Override
+        public int hashCode() {
             return 0;
         }
     }

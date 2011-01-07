@@ -18,8 +18,6 @@ import java.net.*;
 
 // used for resolving in servlet-environment
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -1050,16 +1048,31 @@ public class ResourceLoader extends ClassLoader {
     }
 
 
-    public static class Init implements ServletContextListener {
+    /**
+     * @since MMBase-2.0
+     */
+    public static class ServletContextInit implements SystemEventListener {
         @Override
-        public void	contextDestroyed(ServletContextEvent sce) {
+        public void notify(SystemEvent se) {
+            if (se instanceof SystemEvent.ServletContext) {
+                ServletContext sx = ((SystemEvent.ServletContext) se).getServletContext();
+                ResourceLoader.init(sx);
+            }
         }
-
         @Override
-        public void contextInitialized(ServletContextEvent sce) {
-            ResourceLoader.init(sce.getServletContext());
+        public int getWeight() {
+            return -1000;
+        }
+        @Override
+        public boolean equals(Object o) {
+            return o instanceof ServletContextInit;
+        }
+        @Override
+        public int hashCode() {
+            return 0;
         }
     }
+
     /**
      * ================================================================================
      * INNER CLASSES, all private, protected
