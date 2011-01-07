@@ -15,7 +15,7 @@ import java.io.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
-import org.mmbase.util.BridgeCaster;
+import org.mmbase.bridge.util.BridgeCaster;
 import org.mmbase.bridge.util.*;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.module.core.VirtualBuilder;
