@@ -35,7 +35,8 @@
             <caption>${summary}</caption>
             <tfoot>
               <tr class="buttons">
-                <td colspan="2">
+                <th><jsp:text> </jsp:text></th>
+                <td>
                   <input type="submit" value="${createmessage}" />
                   <input type="hidden" name="s" value="submitted" />
                   <input type="hidden" name="queryid" value="${queryid}" />
@@ -73,7 +74,7 @@
               <c:if test="${! empty extracreate}">
                 <mm:include page="${extracreate}" attributes="newnode,context,formtag" />
               </c:if>
-              <tr><td> OWNER ${_node.owner}</td>
+              <tr><td class="owner">OWNER ${_node.owner}</td> <!-- is this debug? can it be removed? -->
               <td><mm:cloudinfo type="user" /></td>
               </tr>
 
