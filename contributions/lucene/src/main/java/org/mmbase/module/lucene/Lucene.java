@@ -1143,6 +1143,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             }
         }
         EventManager.getInstance().addEventListener(assignmentsListener);
+        EventManager.getInstance().propagateEvent(new ConfigurationRead());
         configReadTime = new Date();
     }
 
@@ -1607,5 +1608,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     }
 
+    public static class ConfigurationRead extends SystemEvent.Collectable {
+    }
 
 }
