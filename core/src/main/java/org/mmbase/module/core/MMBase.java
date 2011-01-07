@@ -14,6 +14,7 @@ import java.util.*;
 import java.text.DateFormat;
 import javax.naming.*;
 import javax.sql.DataSource;
+import javax.servlet.ServletContext;
 
 import org.mmbase.core.event.*;
 import org.mmbase.datatypes.DataTypes;
@@ -31,6 +32,7 @@ import org.mmbase.util.xml.BuilderReader;
 import org.mmbase.util.xml.BuilderWriter;
 import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.functions.*;
+import org.mmbase.util.LocalizedString;
 import org.xml.sax.SAXException;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -84,7 +86,7 @@ public class MMBase extends ProcessorModule {
     private static final int STATE_UP = 2;
 
     // logging
-    private static final Logger log = Logging.getLoggerInstance(MMBase.class);
+    private static final Logger LOG = Logging.getLoggerInstance(MMBase.class);
 
     /**
      * Reference to the MMBase singleton. Used for quick reference by getMMBase();
@@ -176,10 +178,6 @@ public class MMBase extends ProcessorModule {
      */
     private  ClusterBuilder clusterBuilder;
 
-    /**
-     * Currently used locale. Access using getLocale()
-     */
-    private Locale locale = Locale.ENGLISH;
 
     private TimeZone timeZone = TimeZone.getDefault();
 
@@ -213,8 +211,8 @@ public class MMBase extends ProcessorModule {
      */
     public MMBase(String name) {
         super(name);
-        if (mmbaseroot != null) log.error("Tried to instantiate a second MMBase");
-        log.debug("MMBase constructed");
+        if (mmbaseroot != null) LOG.error("Tried to instantiate a second MMBase");
+        LOG.debug("MMBase constructed");
     }
 
     /**
@@ -238,9 +236,9 @@ public class MMBase extends ProcessorModule {
             Class osCache = Class.forName("com.opensymphony.oscache.web.ServletCacheAdministrator");
             java.lang.reflect.Method m = osCache.getMethod("getInstance", javax.servlet.ServletContext.class, Properties.class);
             m.invoke(null, MMBaseContext.getServletContext(), p);
-            log.service("Using " + p + " for oscache");
+            LOG.service("Using " + p + " for oscache");
         } catch (Throwable e) {
-            log.service(e.getMessage());
+            LOG.service(e.getMessage());
         }
     }
 
@@ -259,12 +257,12 @@ public class MMBase extends ProcessorModule {
                 EntityResolver.appendEntities(sb, mmbase, "mmbase", 0, added);
             }
         } catch (Throwable ie) {
-            log.warn(ie.getMessage());
+            LOG.warn(ie.getMessage());
             EntityResolver.setMMEntities(sb.toString());
         }
         String ents = sb.toString();
         if (logEnts) {
-            log.debug("Using entities\n" + ents);
+            LOG.debug("Using entities\n" + ents);
         }
         EntityResolver.setMMEntities(ents);
 
@@ -277,13 +275,13 @@ public class MMBase extends ProcessorModule {
     public void init() {
         //synchronized(MMBase.class) {
         if (mmbaseState >= STATE_STARTED_INIT) {
-            log.debug("Already initialized or initializing");
+            LOG.debug("Already initialized or initializing");
             return;
         } else if (mmbaseState == STATE_SHUT_DOWN) {
-            log.warn("was shutdown... should NOT restart again!");
+            LOG.warn("was shutdown... should NOT restart again!");
         return;
         }
-        log.service("Init of " + org.mmbase.Version.get() + " (" + this + ")");
+        LOG.service("Init of " + org.mmbase.Version.get() + " (" + this + ")");
 
         configureOSCache();
 
@@ -302,7 +300,7 @@ public class MMBase extends ProcessorModule {
             // yes then replace the default name (def1)
             baseName = tmp;
         } else {
-            log.info("init(): No name defined for mmbase using default (def1)");
+            LOG.info("init(): No name defined for mmbase using default (def1)");
         }
 
         tmp = getInitParameter("AUTHTYPE");
@@ -316,13 +314,21 @@ public class MMBase extends ProcessorModule {
         }
         DateFormat format = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.US);
         format.setTimeZone(timeZone);
-        log.info("MMBase Time zone      : " + timeZone.getDisplayName(Locale.US) + " (it's now " + format.format(new Date()) + ")");
+        MMBaseContext.INITLOG.info("MMBase Time zone      : " + timeZone.getDisplayName(Locale.US) + " (it's now " + format.format(new Date()) + ")");
         org.mmbase.util.dateparser.DateParser.setDefault(timeZone);
 
         tmp = getInitParameter("LANGUAGE");
         if (tmp != null && !tmp.equals("")) {
-            locale = org.mmbase.util.LocalizedString.getLocale(tmp);
+            ServletContext sx = MMBaseContext.getServletContext();
+            if (sx != null) {
+                String fmtLocale = sx.getInitParameter(LocalizedString.FMT_FALLBACK_PARAM);
+                if (fmtLocale != null && ! fmtLocale.equals("")) {
+                    LOG.warn("The default fmt fallback locale: " + fmtLocale + " is not equal to the MMBase Locale " + tmp + ". Consider removing the mmbaseroot.language setting.");
+                }
+            }
+            LocalizedString.setDefault(LocalizedString.getLocale(tmp));
         }
+        MMBaseContext.INITLOG.info("MMBase Locale      : " + getLocale());
 
 
         tmp = getInitParameter("DEVELOPMENT");
@@ -346,7 +352,7 @@ public class MMBase extends ProcessorModule {
             localHost = "localhost";
         }
 
-        log.service("Localhost: " + localHost);
+        LOG.service("Localhost: " + localHost);
 
         String hostParam = getInitParameter("HOST");
         if (hostParam != null && !hostParam.equals("")) {
@@ -381,7 +387,7 @@ public class MMBase extends ProcessorModule {
             pos = machineNameParam.indexOf("${CONTEXT}");
             if (pos != -1) {
                 if (! MMBaseContext.htmlRootInitialized) {
-                    log.warn("HTML root not yet known. MachineName will not be correct yet.");
+                    LOG.warn("HTML root not yet known. MachineName will not be correct yet.");
                 }
                 machineNameParam = machineNameParam.substring(0, pos) + MMBaseContext.getHtmlRootUrlPath() + machineNameParam.substring(pos + 10);
             }
@@ -389,42 +395,42 @@ public class MMBase extends ProcessorModule {
             MMBaseContext.machineName = machineNameParam;
         } else {
             if (! MMBaseContext.htmlRootInitialized) {
-                log.warn("HTML root not yet known. MachineName will not be correct yet.");
+                LOG.warn("HTML root not yet known. MachineName will not be correct yet.");
             }
             // default machine name is the local host name plus context-path.
             // We suppose that that is sufficiently unique in most cases
             MMBaseContext.machineName = localHost + MMBaseContext.getHtmlRootUrlPath();
 
         }
-        log.info("MMBase machine name used for clustering: '" + MMBaseContext.machineName + "'");
+        MMBaseContext.INITLOG.info("MMBase machine name used for clustering: '" + MMBaseContext.machineName + "'");
 
         EventManager.getInstance().propagateEvent(new SystemEvent.MachineName(MMBaseContext.machineName), true);
 
         setMMEntities(false);
 
-        log.service("Initializing  storage");
+        LOG.service("Initializing  storage");
         initializeStorage();
         EventManager.getInstance().propagateEvent(new SystemEvent.DataSourceAvailable(getDataSource(), getBaseName()));
         mmbaseState = STATE_LOAD;
 
-        log.debug("Loading builders:");
+        LOG.debug("Loading builders:");
 
         loadBuilders();
 
         if(Thread.currentThread().isInterrupted()) {
-            log.info("Interrupted");
+            LOG.info("Interrupted");
             return;
         }
 
         mmbaseState = STATE_INITIALIZE;
 
-        log.debug("Checking MMBase");
+        LOG.debug("Checking MMBase");
         if (!checkMMBase()) {
             // there is no base defined yet, create the core objects
             createMMBase();
         }
 
-        log.service("Initializing  builders:");
+        LOG.service("Initializing  builders:");
         setMMEntities(false);
 
         initBuilders();
@@ -438,27 +444,27 @@ public class MMBase extends ProcessorModule {
 
         EventManager.getInstance().addEventListener(org.mmbase.cache.NodeCache.getCache());
 
-        log.debug("Objects started");
+        LOG.debug("Objects started");
 
         String writerpath = getInitParameter("XMLBUILDERWRITERDIR");
         if (writerpath != null && !writerpath.equals("")) {
             for (MMObjectBuilder builder : getBuilders()) {
                 if (!builder.isVirtual()) {
                     String builderName = builder.getTableName();
-                    log.debug("WRITING BUILDER FILE =" + writerpath + File.separator + builderName);
+                    LOG.debug("WRITING BUILDER FILE =" + writerpath + File.separator + builderName);
                     try {
                         BuilderWriter builderOut = new BuilderWriter(builder);
                         builderOut.setIncludeComments(false);
                         builderOut.setExpandBuilder(false);
                         builderOut.writeToFile(writerpath + File.separator + builder.getTableName() + ".xml");
                     } catch (Exception ex) {
-                        log.error(ex.getMessage(), ex);
+                        LOG.error(ex.getMessage(), ex);
                     }
                 }
             }
         }
         if(Thread.currentThread().isInterrupted()) {
-            log.info("Interrupted");
+            LOG.info("Interrupted");
             return;
         }
 
@@ -467,17 +473,17 @@ public class MMBase extends ProcessorModule {
         try {
             mmbaseCop = new MMBaseCop();
         } catch (Exception e) {
-            log.fatal("Error loading the mmbase cop: " + e.getMessage());
-            log.error(e.getMessage(), e);
-            log.error("MMBase will continue without security.");
-            log.error("All future security invocations will fail.");
+            LOG.fatal("Error loading the mmbase cop: " + e.getMessage());
+            LOG.error(e.getMessage(), e);
+            LOG.error("MMBase will continue without security.");
+            LOG.error("All future security invocations will fail.");
         }
         setMMEntities(true);
         typeRel.readCache();
 
         // signal that MMBase is up and running
         mmbaseState = STATE_UP;
-        log.info("MMBase is up and running");
+        MMBaseContext.INITLOG.info("MMBase is up and running");
 
         org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory dsmf =
             (org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory) getStorageManagerFactory();
@@ -567,7 +573,7 @@ public class MMBase extends ProcessorModule {
      *   (shouldn't it return <code>false</code> instead?)
      */
     boolean createMMBase() {
-        log.debug(" creating new multimedia base : " + baseName);
+        LOG.debug(" creating new multimedia base : " + baseName);
         getStorageManager().create();
         return true;
     }
@@ -623,12 +629,12 @@ public class MMBase extends ProcessorModule {
         String builderName = getBuilderNameForNode(number);
         MMObjectBuilder nodeBuilder = null;
         if (builderName == null) {
-            log.error("The nodetype name of node #" + number + " could not be found '");
+            LOG.error("The nodetype name of node #" + number + " could not be found '");
         }
         else {
             nodeBuilder = getBuilder(builderName);
             if (nodeBuilder == null) {
-                log.warn("Node #" + number + "'s builder " + builderName + " is not loaded, taking 'object'.");
+                LOG.warn("Node #" + number + "'s builder " + builderName + " is not loaded, taking 'object'.");
                 nodeBuilder = getBuilder("object");
             }
         }
@@ -655,7 +661,7 @@ public class MMBase extends ProcessorModule {
         if (name == null) throw new RuntimeException("Cannot get builder with name 'NULL' in " + MMBaseContext.machineName);
         MMObjectBuilder o = mmobjs != null ? mmobjs.get(name) : null;
         if (o == null) {
-            log.trace("MMObject " + name + " could not be found"); // can happen...
+            LOG.trace("MMObject " + name + " could not be found"); // can happen...
         }
         return  o;
     }
@@ -669,7 +675,7 @@ public class MMBase extends ProcessorModule {
             synchronized(MMBase.class) { // make sure only one mmbaseroot is instantiated (synchronized on random static member...)
                 mmbaseroot = getModule(MMBase.class);
                 if (mmbaseroot == null) {
-                    log.fatal("The mmbaseroot module could not be found. Perhaps 'mmbaseroot.xml' is missing?", new Exception());
+                    LOG.fatal("The mmbaseroot module could not be found. Perhaps 'mmbaseroot.xml' is missing?", new Exception());
                 } else {
                     mmbaseroot.startModule();
                 }
@@ -825,7 +831,7 @@ public class MMBase extends ProcessorModule {
         if (builder == null) {
             throw new BuilderConfigurationException("The core builder " + name + " is mandatory but inactive.");
         } else {
-            log.debug("Loaded core builder " + builder + " with otype " + builder.getNumber());
+            LOG.debug("Loaded core builder " + builder + " with otype " + builder.getNumber());
             return builder;
         }
     }
@@ -854,7 +860,7 @@ public class MMBase extends ProcessorModule {
 
         Set<String> builders = getBuilderLoader().getResourcePaths(ResourceLoader.XML_PATTERN, true/* recursive*/);
 
-        log.info("Loading builders: " + builders);
+        LOG.info("Loading builders: " + builders);
         for (String builderXml : builders) {
             if (Thread.currentThread().isInterrupted()) {
                 return;
@@ -865,7 +871,7 @@ public class MMBase extends ProcessorModule {
         }
         EventManager.getInstance().propagateEvent(new BuildersRead(org.mmbase.bridge.LocalContext.getCloudContext()));
 
-        log.debug("Starting Cluster Builder");
+        LOG.debug("Starting Cluster Builder");
         clusterBuilder = new ClusterBuilder(this);
     }
 
@@ -879,7 +885,7 @@ public class MMBase extends ProcessorModule {
         typeDef.createIfNotExists();
 
         // first initialize versions, if available (table must exist for queries to succeed)
-        log.debug("Versions:");
+        LOG.debug("Versions:");
         Versions versions = (Versions)getBuilder("versions");
         if (versions != null) {
             versions.init();
@@ -893,20 +899,20 @@ public class MMBase extends ProcessorModule {
         typeRel.init();
         typeRel.createIfNotExists();
 
-        log.debug("mmobjects, inits");
+        LOG.debug("mmobjects, inits");
         for (Iterator<MMObjectBuilder> bi = getBuilders().iterator(); bi.hasNext();) {
             MMObjectBuilder builder = bi.next();
-            log.debug("init " + builder);
+            LOG.debug("init " + builder);
             try {
                 initBuilder(builder);
             } catch (BuilderConfigurationException e) {
                 // something bad with this builder or its parents - remove it
-                log.error("Removed builder " + builder.getTableName() + " from the builderlist, as it cannot be initialized.");
+                LOG.error("Removed builder " + builder.getTableName() + " from the builderlist, as it cannot be initialized.");
                 bi.remove();
             } catch (Exception ex) {
-                log.error("Something went wrong while initializing builder " + builder.getTableName());
-                log.info("This builder will be removed from active builder list");
-                log.error(ex.getMessage(), ex);
+                LOG.error("Something went wrong while initializing builder " + builder.getTableName());
+                LOG.info("This builder will be removed from active builder list");
+                LOG.error(ex.getMessage(), ex);
                 bi.remove();
             }
         }
@@ -916,7 +922,7 @@ public class MMBase extends ProcessorModule {
             builder.createIfNotExists();
         }
 
-        log.debug("**** end of initBuilders");
+        LOG.debug("**** end of initBuilders");
         return true;
     }
 
@@ -929,7 +935,7 @@ public class MMBase extends ProcessorModule {
             try {
                 builder.init();
             } catch (org.mmbase.storage.StorageException se) {
-                log.warn(se);
+                LOG.warn(se);
                 builder.createIfNotExists();
                 builder.init();
             }
@@ -955,9 +961,9 @@ public class MMBase extends ProcessorModule {
         }
         if (!builder.isVirtual()) {
             typeDef.unloadTypeDef(builder.getTableName());
-            log.info("unloaded builder with name:" + builder.getTableName());
+            LOG.info("unloaded builder with name:" + builder.getTableName());
         } else {
-            log.info("unloaded virtual builder with name:" + builder.getTableName());
+            LOG.info("unloaded virtual builder with name:" + builder.getTableName());
         }
     }
 
@@ -980,13 +986,13 @@ public class MMBase extends ProcessorModule {
             String protocol = null;
             for (java.net.URL url : getBuilderLoader().getResourceList(builderName + ".xml")) {
                 if (! url.openConnection().getDoInput()) {
-                    log.debug("Cannot read " + url);
+                    LOG.debug("Cannot read " + url);
                     continue;
                 } else {
-                    log.debug("Can read " + url);
+                    LOG.debug("Can read " + url);
                 }
                 if (protocol != null && ! url.getProtocol().equals(protocol)) {
-                    log.debug(url + " less important than " + r.getSystemId() + " breaking now");
+                    LOG.debug(url + " less important than " + r.getSystemId() + " breaking now");
                     break;
                 }
                 org.w3c.dom.Document doc = ResourceLoader.getDocument(url, true, BuilderReader.class);
@@ -998,27 +1004,27 @@ public class MMBase extends ProcessorModule {
                     urlWeight = ResourceLoader.getWeight(url);
                     protocol = url.getProtocol();
                 } else if (urlWeight == proposalWeight && prop.getVersion() > r.getVersion()) {
-                    log.service(url.toString() + " has a higher version than " + r.getSystemId() + " so, using that in stead (weights are both " + urlWeight + ")");
+                    LOG.service(url.toString() + " has a higher version than " + r.getSystemId() + " so, using that in stead (weights are both " + urlWeight + ")");
                     r = prop;
                 } else {
                     if (proposalWeight > urlWeight) {
-                        log.warn("The weight of the proposal is bigger. This should never happen");
+                        LOG.warn("The weight of the proposal is bigger. This should never happen");
                     } else if (proposalWeight <  urlWeight) {
-                        log.service(url.toString() + " has a lower weight than " + r.getSystemId() + ". Ignoring it.");
+                        LOG.service(url.toString() + " has a lower weight than " + r.getSystemId() + ". Ignoring it.");
                     } else {
-                        log.service(url.toString() + " has a lower or equals version than " + r.getSystemId() + ". Ignoring it (weights are both " + urlWeight + ")");
+                        LOG.service(url.toString() + " has a lower or equals version than " + r.getSystemId() + ". Ignoring it (weights are both " + urlWeight + ")");
                     }
                 }
             }
             if (r != null) {
-                log.debug("Found " + r.getSystemId());
+                LOG.debug("Found " + r.getSystemId());
             }
             return r;
         } catch (SAXException se) {
-            log.error(se);
+            LOG.error(se);
             return null;
         } catch (java.io.IOException ioe) {
-            log.error(ioe);
+            LOG.error(ioe);
             return null;
         }
     }
@@ -1048,8 +1054,8 @@ public class MMBase extends ProcessorModule {
      */
     public String getBuilderPath(String builderName, String path) {
         Set<String> builders = getBuilderLoader().getResourcePaths(java.util.regex.Pattern.compile(path + ResourceLoader.XML_PATTERN.pattern()), true /*recursive*/);
-        if (log.isDebugEnabled()) {
-            log.debug("Found builders " + builders + " from " +  getBuilderLoader()  + " searching for " + builderName);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Found builders " + builders + " from " +  getBuilderLoader()  + " searching for " + builderName);
         }
         String xml = builderName + ".xml";
         for (String builderXml : builders) {
@@ -1073,7 +1079,7 @@ public class MMBase extends ProcessorModule {
     MMObjectBuilder loadBuilder(String builderName, String ipath) {
         MMObjectBuilder builder = getMMObject(builderName);
         if (builder != null) {
-            log.debug("Builder '" + builderName + "' is already loaded");
+            LOG.debug("Builder '" + builderName + "' is already loaded");
             return builder;
         }
         String path = getBuilderPath(builderName, ipath);
@@ -1098,7 +1104,7 @@ public class MMBase extends ProcessorModule {
     public MMObjectBuilder loadBuilderFromXML(String builderName, String ipath) {
         MMObjectBuilder builder = getMMObject(builderName);
         if (builder != null) {
-            log.debug("Builder '" + builderName + "' is already loaded");
+            LOG.debug("Builder '" + builderName + "' is already loaded");
             return builder;
         }
 
@@ -1108,19 +1114,19 @@ public class MMBase extends ProcessorModule {
             parser = getBuilderReader(ipath + builderName);
             loading.add(builderName);
             if (parser == null) {
-                log.warn("Not found " + ipath + builderName);
+                LOG.warn("Not found " + ipath + builderName);
                 loading.remove(builderName);
                 return null;
             }
             if (! parser.getRootElement().getTagName().equals("builder")) {
-                log.debug(parser.getSystemId() + " does not represent a builder xml. Because the root element is not 'builder' but " + parser.getRootElement().getTagName() + ". This file is ignored.");
+                LOG.debug(parser.getSystemId() + " does not represent a builder xml. Because the root element is not 'builder' but " + parser.getRootElement().getTagName() + ". This file is ignored.");
                 loading.remove(builderName);
                 return null;
             }
 
             String status = parser.getStatus();
             if (status.equals("active")) {
-                log.service("Starting builder: " + parser.getSystemId());
+                LOG.service("Starting builder: " + parser.getSystemId());
                 Class newclass;
                 try {
                     String classname = parser.getClassName();
@@ -1132,10 +1138,10 @@ public class MMBase extends ProcessorModule {
                     } else {
                         newclass = MMObjectBuilder.class;
                     }
-                    if (log.isDebugEnabled()) {
-                        log.error(cnfe.toString() + " (for '" + parser.getClassName() + "' of builder '" + ipath + builderName + "')  Falling back to " + newclass.getName(), cnfe);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.error(cnfe.toString() + " (for '" + parser.getClassName() + "' of builder '" + ipath + builderName + "')  Falling back to " + newclass.getName(), cnfe);
                     } else {
-                        log.error(cnfe.toString() + " (for '" + parser.getClassName() + "' of builder '" + ipath + builderName + "')  Falling back to " + newclass.getName());
+                        LOG.error(cnfe.toString() + " (for '" + parser.getClassName() + "' of builder '" + ipath + builderName + "')  Falling back to " + newclass.getName());
                     }
                 } catch (NoClassDefFoundError ncdfe) {
                     MMObjectBuilder p = parser.getParentBuilder();
@@ -1144,7 +1150,7 @@ public class MMBase extends ProcessorModule {
                     } else {
                         newclass = MMObjectBuilder.class;
                     }
-                    log.error(ncdfe.toString() + " (for '" + parser.getClassName() + "' of builder '" + ipath + builderName + "')  Falling back to " + newclass.getName(), ncdfe);
+                    LOG.error(ncdfe.toString() + " (for '" + parser.getClassName() + "' of builder '" + ipath + builderName + "')  Falling back to " + newclass.getName(), ncdfe);
                 }
                 builder = (MMObjectBuilder)newclass.newInstance();
 
@@ -1166,7 +1172,7 @@ public class MMBase extends ProcessorModule {
 
                 Map<String, String> descriptions = parser.getDescriptions();
                 builder.setDescriptions(descriptions);
-                String desc = descriptions.get(locale.getLanguage());
+                String desc = descriptions.get(getLocale().getLanguage());
                 // XXX" set description by builder?
                 builder.setDescription(desc);
                 builder.setSingularNames(parser.getSingularNames());
@@ -1180,7 +1186,7 @@ public class MMBase extends ProcessorModule {
                 builder.getStorageConnector().addIndices(parser.getIndices(builder));
                 for (Function func : parser.getFunctions(builder)) {
                     Function prev = builder.addFunction(func);
-                    log.service((prev == null ? "Added " : "Replaced ") + func + " to " + builder);
+                    LOG.service((prev == null ? "Added " : "Replaced ") + func + " to " + builder);
                 }
                 if (parent != null) {
                     for (Function parentFunction : parent.getFunctions()) {
@@ -1190,16 +1196,16 @@ public class MMBase extends ProcessorModule {
                     }
                 }
             } else {
-                log.service("Inactive builder: " + parser.getSystemId());
+                LOG.service("Inactive builder: " + parser.getSystemId());
             }
         } catch (BuilderConfigurationException bcfe) {
             loading.remove(builderName);
-            log.error((parser == null ? ipath + builderName : parser.getSystemId()) + ": " +
+            LOG.error((parser == null ? ipath + builderName : parser.getSystemId()) + ": " +
                       bcfe.getMessage() + " " + bcfe.getMessage());
             return null;
         } catch (Throwable e) { // what kind of exceptions are these?
             loading.remove(builderName);
-            log.error((parser == null ? ipath + builderName : parser.getSystemId()) + ": " +
+            LOG.error((parser == null ? ipath + builderName : parser.getSystemId()) + ": " +
                       e.getClass() + " " + e.getMessage(), e);
             return null;
         }
@@ -1216,7 +1222,7 @@ public class MMBase extends ProcessorModule {
         try {
             storageManagerFactory = StorageManagerFactory.newInstance(this);
             // print information about storage
-            log.info("Using class: '" + storageManagerFactory.getClass().getName() + "'.");
+            LOG.info("Using class: '" + storageManagerFactory.getClass().getName() + "'.");
         } catch (StorageException se) {
             throw new StorageError(se.getMessage());
         }
@@ -1276,7 +1282,7 @@ public class MMBase extends ProcessorModule {
      * @return the language as a <code>String</code>
      */
     public String getLanguage() {
-        return locale.getLanguage();
+        return getLocale().getLanguage();
     }
 
     /**
@@ -1284,7 +1290,7 @@ public class MMBase extends ProcessorModule {
      * @since MMBase-1.8
      */
     public Locale getLocale() {
-        return locale;
+        return LocalizedString.getDefault();
     }
 
     /**
@@ -1421,7 +1427,7 @@ public class MMBase extends ProcessorModule {
 
         if (! dataDir.isAbsolute()) {
             if (sc != null && sc.getRealPath("/" + dataDirString) != null) {
-                log.debug(" "  + sc.getRealPath("/" + dataDirString));
+                LOG.debug(" "  + sc.getRealPath("/" + dataDirString));
                 dataDir = new File(sc.getRealPath("/" + dataDirString));
             } else {
                 dataDir = new File(System.getProperty("user.dir"), dataDirString);
@@ -1431,18 +1437,18 @@ public class MMBase extends ProcessorModule {
         if (! dataDir.exists()) {
             try {
                 if (dataDir.mkdirs()) {
-                    log.info("Created " + dataDir);
+                    LOG.info("Created " + dataDir);
                 }
             } catch (SecurityException  se) {
-                log.warn(se);
+                LOG.warn(se);
             }
         }
 
         if (! dataDir.isDirectory()) {
-            log.warn("Datadir " + dataDir + " is not a directory");
+            LOG.warn("Datadir " + dataDir + " is not a directory");
         }
         if (! dataDir.canRead()) {
-            log.warn("Datadir " + dataDir + " is not readable");
+            LOG.warn("Datadir " + dataDir + " is not readable");
         }
         {
             boolean  canWrite = false;
@@ -1454,21 +1460,21 @@ public class MMBase extends ProcessorModule {
                 try {
                     File proposal = sc != null ? (File) sc.getAttribute("javax.servlet.context.tempdir") : new File(System.getProperty("java.io.tmpdir"));
                     if (proposal.canWrite()) {
-                        log.warn("Datadir " + dataDir + " is not writable. Falling back to " + proposal);
+                        LOG.warn("Datadir " + dataDir + " is not writable. Falling back to " + proposal);
                         dataDir = proposal;
                     } else {
-                        log.warn("Datadir " + dataDir + " is not writable.");
+                        LOG.warn("Datadir " + dataDir + " is not writable.");
                     }
                 } catch (SecurityException se) {
-                    log.warn(se.getMessage(), se);
+                    LOG.warn(se.getMessage(), se);
                 }
 
             }
         }
         if (shownDataDir) {
-            log.debug("MMBase data dir: " + dataDir);
+            LOG.debug("MMBase data dir: " + dataDir);
         } else {
-            log.info("MMBase data dir: " + dataDir);
+            LOG.info("MMBase data dir: " + dataDir);
             shownDataDir = true;
         }
         return dataDir;
@@ -1489,12 +1495,12 @@ public class MMBase extends ProcessorModule {
                 if (contextName == null) {
                     contextName = "java:comp/env";
                 }
-                log.service("Using configured datasource " + dataSourceURI);
+                LOG.service("Using configured datasource " + dataSourceURI);
                 Context initialContext = new InitialContext();
                 Context environmentContext = (Context) initialContext.lookup(contextName);
                 return (DataSource)environmentContext.lookup(dataSourceURI);
             } catch(NamingException ne) {
-                log.warn("Datasource '" + dataSourceURI + "' not available. (" + ne.getMessage() + "). Will attempt to use JDBC Module to access database.");
+                LOG.warn("Datasource '" + dataSourceURI + "' not available. (" + ne.getMessage() + "). Will attempt to use JDBC Module to access database.");
             }
         }
         return null;

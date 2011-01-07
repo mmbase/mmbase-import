@@ -12,6 +12,8 @@ package org.mmbase.util;
 import java.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.DocumentReader;
+import org.mmbase.core.event.*;
+import javax.servlet.ServletContext;
 import org.w3c.dom.*;
 
 /**
@@ -37,9 +39,10 @@ import org.w3c.dom.*;
  */
 public class LocalizedString implements java.io.Serializable, PublicCloneable<LocalizedString> {
 
-    private static final Logger log = Logging.getLoggerInstance(LocalizedString.class);
-
+    private static final Logger LOG = Logging.getLoggerInstance(LocalizedString.class);
     private static final long serialVersionUID = 1L;
+
+    public static final String FMT_FALLBACK_PARAM = "javax.servlet.jsp.jstl.fmt.fallbackLocale";
 
     private static Locale defaultLocale = null; // means 'system default' and 'unset'.
 
@@ -73,6 +76,29 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
             res.add(s.get(locale));
         }
         return res;
+    }
+
+
+    /**
+     * @since MMBase-2.0
+     */
+    public static class DefaultFromServletContext implements SystemEventListener {
+        @Override
+        public void notify(SystemEvent se) {
+            if (se instanceof SystemEvent.ServletContext) {
+                ServletContext sx = ((SystemEvent.ServletContext) se).getServletContext();
+                String fmtDefault = sx.getInitParameter(FMT_FALLBACK_PARAM);
+                if (fmtDefault != null) {
+                    setDefault(getLocale(fmtDefault));
+                    LOG.service("Default from " + FMT_FALLBACK_PARAM + ": "+ org.mmbase.util.LocalizedString.getDefault());
+                }
+            }
+
+        }
+        @Override
+        public int getWeight() {
+            return 0;
+        }
     }
 
     private String key;
@@ -141,8 +167,8 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
                 return ResourceBundle.getBundle(bundle, locale).getString(key);
             } catch (MissingResourceException mre) {
                 // fall back to key.
-                if (log.isDebugEnabled()) {
-                    log.debug("Cannot get resource from bundle: " + bundle + ", key: " + key);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Cannot get resource from bundle: " + bundle + ", key: " + key);
                 }
             }
         }
