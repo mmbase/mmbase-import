@@ -144,7 +144,11 @@ div.mm_related .mm_related .searchable table tfoot a.navigate
 	text-decoration: none;
 }
 
-div.mm_related .mm_related .searchable table tfoot span.seperator { display: none; }
+div.mm_related span.seperator
+{
+	color: transparent;
+	padding: 0 2px;
+}
 
 div.mm_related .mm_related .searchable table tfoot span.current
 {
@@ -179,29 +183,29 @@ div.mm_related .searchresult table th.guitype,
 div.mm_related .searchresult table td.guitype { display: none; }
 
 /* row colors */
-div.mm_related .searchresult table tbody tr.even
+div.mm_related tr.even
 {
 	color: #000;
 	background-color: #e6e9dd;
 }
 
-div.mm_related .searchresult table tbody tr.odd
+div.mm_related tr.odd
 {
 	color: #000;
 	background-color: #fff;
 }
-div.mm_related table tbody tr.even.new { background-color: #ded; }
-div.mm_related table tbody tr.odd.new { background-color: #efe; }
-div.mm_related tbody tr.even.removed { background-color: #edd; }
-div.mm_related tbody tr.odd.removed { background-color: #fee; }
-div.mm_related tbody tr.click:hover { cursor: pointer; }
-div.mm_related table tbody tr.odd:hover { background-color: #e0f0e0; }
-div.mm_related tbody tr.even:hover { background-color: #d8e8d8; }
-div.mm_related tbody tr.odd.readonly:hover { background-color: #f0e0e0; }
-div.mm_related .searchresult tbody tr.even.readonly:hover { background-color: #e8d8d8; }
-div.mm_related .searchresult.delete tbody tr.selected.odd { background-color: #ffffaa; }
-div.mm_related .searchresult.delete tbody tr.selected.even { background-color: #ffff00; }
-div.mm_related .searchresult tbody tr.selected.odd
+div.mm_related tr.even.new { background-color: #ded; }
+div.mm_related tr.odd.new { background-color: #efe; }
+div.mm_related tr.even.removed { background-color: #edd; }
+div.mm_related tr.odd.removed { background-color: #fee; }
+div.mm_related tr.click:hover { cursor: pointer; }
+div.mm_related tr.odd:hover { background-color: #e0f0e0; }
+div.mm_related tr.even:hover { background-color: #d8e8d8; }
+div.mm_related tr.odd.readonly:hover { background-color: #f0e0e0; }
+div.mm_related tr.even.readonly:hover { background-color: #e8d8d8; }
+div.mm_related .searchresult.delete tr.selected.odd { background-color: #ffffaa; }
+div.mm_related .searchresult.delete tr.selected.even { background-color: #ffff00; }
+div.mm_related .searchresult tr.selected.odd
 {
 	background-color: #555;
 	color: #fff;
