@@ -91,7 +91,10 @@ public class EventManager implements SystemEventListener {
     public static String getMachineName() {
         return machineName;
     }
-    private final List<SystemEvent.Collectable> receivedSystemEvents = new ArrayList<SystemEvent.Collectable>();
+    /**
+     * The received system events, and the listeners to which it was already notified
+     */
+    private final Map<SystemEvent.Collectable, Set<EventListener>> receivedSystemEvents = new HashMap<SystemEvent.Collectable, Set<EventListener>>();
 
     @Override
     public synchronized void notify(SystemEvent se) {
@@ -102,7 +105,14 @@ public class EventManager implements SystemEventListener {
             shutdown();
         }
         if (se instanceof SystemEvent.Collectable) {
-            receivedSystemEvents.add((SystemEvent.Collectable) se);
+            Set<EventListener> notified = new HashSet<EventListener>();
+            receivedSystemEvents.put((SystemEvent.Collectable) se, notified);
+            for (EventBroker broker :  eventBrokers) {
+                if (broker.canBrokerForEvent(se)) {
+                    Collection<EventListener> alreadyNotified = broker.getListeners();
+                    notified.addAll(alreadyNotified);
+                }
+            }
         }
         if (se instanceof SystemEvent.Up) {
             watcher = new ResourceWatcher() {
@@ -267,11 +277,19 @@ public class EventManager implements SystemEventListener {
             EventBroker broker = i.next();
             if (broker.addListener(listener)) {
                 if (! notifiedReceived && listener instanceof SystemEventListener) {
-                    log.debug("Notifying " + receivedSystemEvents + " to " + listener);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Notifying " + receivedSystemEvents + " to " + listener);
+                    }
                     notifiedReceived = true;
-                    for (SystemEvent.Collectable se : receivedSystemEvents) {
-                        ((SystemEventListener) listener).notify(se);
+                    SystemEventListener sel = (SystemEventListener) listener;
+                    for (Map.Entry<SystemEvent.Collectable, Set<EventListener>> se : receivedSystemEvents.entrySet()) {
+                        if (! se.getValue().contains(sel)) {
+                            sel.notify(se.getKey());
+                            se.getValue().add(sel);
+                        } else {
+                            log.debug(sel.toString() + " was already notified about " + se);
                         }
+                    }
                 }
                 if (log.isDebugEnabled()) {
                     log.debug("listener " + listener + " added to broker " + broker );
@@ -430,8 +448,8 @@ public class EventManager implements SystemEventListener {
                     }
                     next = broker;
                     return;
-                } else if (log.isDebugEnabled()) {
-                    log.debug("broker " + broker + " cannot boker for eventlistener." + listener.getClass().getName());
+                } else if (log.isTraceEnabled()) {
+                    log.trace("broker " + broker + " cannot boker for eventlistener." + listener.getClass().getName());
                 }
             }
             next = null;

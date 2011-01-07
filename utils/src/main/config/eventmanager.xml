@@ -15,5 +15,6 @@
 	</brokers>
   <listeners>
     <listener class="org.mmbase.util.LocalizedString$DefaultFromServletContext" />
+    <listener class="org.mmbase.util.ResourceLoader$ServletContextInit" />
   </listeners>
 </eventmanager>

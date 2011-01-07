@@ -110,9 +110,6 @@ public class MMBaseContext implements ServletContextListener {
             }
             initOutputfile(mmbaseOutputFile);
 
-            ResourceLoader.init(sx);
-
-
             // Init logging.
             initLogging();
             initialized = true;
@@ -475,13 +472,20 @@ public class MMBaseContext implements ServletContextListener {
     }
 
 
+    /**
+     * @since MMBase-2.0
+     */
     @Override
     public void	contextDestroyed(ServletContextEvent sce) {
         shutdown();
     }
 
+    /**
+     * @since MMBase-2.0
+     */
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        LOG.debug("Received " + sce);
         init(sce.getServletContext());
     }
 
