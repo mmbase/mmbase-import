@@ -85,6 +85,7 @@
           <search>100</search>
         </positions>
       </editor>
+      <!-- It makes absolutely no sense whatsoever that number is a 'node' field -->
       <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <unique value="true" enforce="never" />
         <required value="true" enforce="never" />
@@ -161,8 +162,15 @@
         </positions>
       </editor>
       <datatype base="owner" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <class name="org.mmbase.datatypes.SecurityContextDataType" />
+        <property name="collator" value=":IDENTICAL" />
         <required value="true" enforce="never"/>
         <maxLength value="64" enforce="never"/>
+
+        <defaultprocessor>
+          <class name="org.mmbase.datatypes.processors.DefaultOwner" />
+        </defaultprocessor>
+
       </datatype>
     </field>
 
@@ -184,7 +192,9 @@
 
   <functionlist>
     <function name="smartpath">
-      <class>org.mmbase.util.functions.SmartPathFunction</class>
+      <class name="org.mmbase.module.core.SmartPathFunction">
+        <param name="backwardsCompatible">false</param>
+      </class>
     </function>
     <function name="clone">
       <class>org.mmbase.util.functions.CloneNodeFunction</class>
