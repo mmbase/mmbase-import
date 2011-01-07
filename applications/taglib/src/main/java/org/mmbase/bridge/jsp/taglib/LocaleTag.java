@@ -27,6 +27,7 @@ import java.util.*;
 public class LocaleTag extends CloudReferrerTag  {
 
     public static final String KEY = "javax.servlet.jsp.jstl.fmt.locale.request";
+    public static final String FALLBACK_KEY = "javax.servlet.jsp.jstl.fmt.fallbackLocale";
     public static final String TZ_KEY = "org.mmbase.timezone";
     public static final int SCOPE = PageContext.REQUEST_SCOPE;
     private Attribute language = Attribute.NULL;
@@ -38,6 +39,7 @@ public class LocaleTag extends CloudReferrerTag  {
     protected Locale locale;
     protected Locale prevCloudLocale = null;
     protected Locale prevJstlLocale = null;
+    protected Locale prevJstlFallbackLocale = null;
     protected Cloud  cloud;
     private String jspvar = null;
 
@@ -91,7 +93,9 @@ public class LocaleTag extends CloudReferrerTag  {
             // compatibility with jstl fmt tags:
             // should use their constant, but that would make compile-time dependency.
             prevJstlLocale = (Locale) pageContext.findAttribute(KEY);
+            prevJstlFallbackLocale = (Locale) pageContext.findAttribute(FALLBACK_KEY);
             pageContext.setAttribute(KEY, locale, SCOPE);
+            pageContext.setAttribute(FALLBACK_KEY, org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale().toString(), SCOPE);
             CloudProvider cloudProvider = findCloudProvider(false);
             if (cloudProvider != null) {
                 cloud = cloudProvider.getCloudVar();
@@ -185,11 +189,16 @@ public class LocaleTag extends CloudReferrerTag  {
                     cloud.setLocale(prevCloudLocale);
                 }
             }
-            
+
             if (prevJstlLocale != null) {
                 pageContext.setAttribute(KEY, prevJstlLocale, SCOPE);
             } else {
                 pageContext.removeAttribute(KEY, SCOPE);
+            }
+            if (prevJstlFallbackLocale != null) {
+                pageContext.setAttribute(FALLBACK_KEY, prevJstlFallbackLocale, SCOPE);
+            } else {
+                pageContext.removeAttribute(FALLBACK_KEY, SCOPE);
             }
         }
         cloud = null;
@@ -203,6 +212,7 @@ public class LocaleTag extends CloudReferrerTag  {
         locale = null;
         prevCloudLocale = null;
         prevJstlLocale = null;
+        prevJstlFallbackLocale = null;
         jspvar = null;
         super.doFinally();
     }

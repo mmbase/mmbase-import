@@ -130,7 +130,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
             log.debug("found a Node Number in Context");
             return getCloudVar().getNode(n.toString());
         } else {
-            return org.mmbase.util.BridgeCaster.toNode(n, getCloudVar());
+            return org.mmbase.bridge.util.BridgeCaster.toNode(n, getCloudVar());
         }
     }
 
