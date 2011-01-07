@@ -808,25 +808,23 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
             for (Element functionElement : getChildElements(functionList,"function")) {
                 final String functionName = functionElement.getAttribute("name");
                 String providerKey        = functionElement.getAttribute("key");
-                String functionClass      = getNodeTextValue(getElementByPath(functionElement, "function.class"));
+                Element classElement      = getElementByPath(functionElement, "function.class");
                 try {
-
-
                     Function function;
-                    log.debug("Using function class '" + functionClass + "'");
-                    final Class claz = Class.forName(functionClass);
+                    final Class claz = Instantiator.getClass(classElement);
+                    log.debug("Using function class '" + claz + "'");
                     if (Function.class.isAssignableFrom(claz)) {
                         if (!providerKey.equals("")) {
                             log.warn("Specified a key attribute for a Function " + claz + " in " + getSystemId() + ", this makes only sense for FunctionProviders.");
                         }
-                        function = (Function) claz.newInstance();
+                        function = (Function) Instantiator.getInstance(claz, functionElement);
                     } else if (FunctionProvider.class.isAssignableFrom(claz)) {
                         if ("".equals(providerKey)) providerKey = functionName;
                         if ("".equals(providerKey)) {
                             log.error("FunctionProvider " + claz + " specified in " + getSystemId() + " without key or name");
                             continue;
                         }
-                        FunctionProvider provider = (FunctionProvider) claz.newInstance();
+                        FunctionProvider provider = (FunctionProvider) Instantiator.getInstance(claz, functionElement);
                         function = provider.getFunction(providerKey);
                         if (function == null) {
                             log.error("Function provider " + provider + "has no function '" + providerKey + "'");
@@ -900,7 +898,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
                     results.put(key, function);
                     log.debug("functions are now: " + results);
                 } catch (ClassNotFoundException cnfe) {
-                    log.warn(functionClass + " " + cnfe.getClass() + " " + getSystemId() + " '" + cnfe.getMessage() + "'");
+                    log.warn(XMLWriter.write(classElement) + " " + cnfe.getClass() + " " + getSystemId() + " '" + cnfe.getMessage() + "'");
                 } catch (Throwable e) {
                     log.error(e.getClass() + " " + getSystemId() + " " + e.getMessage(), e);
                 }
