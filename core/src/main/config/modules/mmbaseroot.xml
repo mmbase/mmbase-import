@@ -165,9 +165,9 @@
   <!--
   name="language" defines a default language for GUI functionality. Effectively this makes it
   possible to override the JVM's default Locale.
-
+  If it is empty, it default to the ServletContext parameter "javax.servlet.jsp.jstl.fmt.fallbackLocale", or if that does not exist, to the system local.
   -->
-  <property name="language">en</property>
+  <property name="language"></property>
 
   <!--
   name="encoding"
