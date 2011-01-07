@@ -46,18 +46,12 @@ public abstract class Instantiator {
 
     private static final Logger log = Logging.getLoggerInstance(Instantiator.class);
 
+
     /**
-     * Instantiates any object using an Dom Element and constructor arguments. Sub-param tags are
-     * used on set-methods on the newly created object.
-     * @param classElement a 'class' element with a 'name' attribute,
-     *        or any element with a 'class' attribute. Finally if this any element has no 'class' attribute, it will try 'name' too.
-     * @param args Constructor arguments.
-     * @throws NoSuchMethodError If not matching constructor could be found
-     * @throws ClassNotFoundException If the specified class does not exist.
-     * @return A newly created object. Never <code>null</code>.
+     * @see {@link #getInstance(Class, Element, Object...)}
+     * @since MMBase-1.9.6
      */
-    public static Object getInstance(Element classElement, Object... args)
-        throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
+    public static Class getClass(Element classElement) throws ClassNotFoundException {
         String className;
         if (classElement.getTagName().equals("class")) {
             className = classElement.getAttribute("name");
@@ -67,7 +61,32 @@ public abstract class Instantiator {
                 className = classElement.getAttribute("name");
             }
         }
-        Class claz = Class.forName(className);
+        if ("".equals(className)) { // try body
+            className = BuilderReader.getNodeTextValue(classElement);
+        }
+        return Class.forName(className);
+    }
+    /**
+     * @see {@link #getInstance(Class, Element, Object...)}
+     */
+    public static Object getInstance(Element classElement, Object... args)
+        throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
+        return getInstance(getClass(classElement), classElement, args);
+    }
+    /**
+     * Instantiates any object using an Dom Element and constructor arguments. Sub-param tags are
+     * used on set-methods on the newly created object.
+     * @param classElement a 'class' element with a 'name' attribute,
+     *        or any element with a 'class' attribute. Finally if this any element has no 'class' attribute, it will try
+     *        'name' too. If it hasn't either, it will try the body.
+     * @param args Constructor arguments.
+     * @throws NoSuchMethodError If not matching constructor could be found
+     * @throws ClassNotFoundException If the specified class does not exist.
+     * @return A newly created object. Never <code>null</code>.
+     * @since MMBase-1.9.6
+     */
+    public static Object getInstance(final Class claz, Element classElement, Object... args)
+        throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
         List<Class> argTypes = new ArrayList<Class>(args.length);
         for (Object arg : args) {
             argTypes.add(arg.getClass());
