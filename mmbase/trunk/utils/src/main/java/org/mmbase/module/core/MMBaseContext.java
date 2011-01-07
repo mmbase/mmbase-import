@@ -31,7 +31,8 @@ import org.mmbase.util.logging.Logging;
  * @version $Id$
  */
 public class MMBaseContext implements ServletContextListener {
-    private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
+    private static final Logger LOG     = Logging.getLoggerInstance(MMBaseContext.class);
+    public  static final Logger INITLOG = Logging.getLoggerInstance("org.mmbase.INIT");
     private static boolean initialized = false;
     private static boolean shutdown = false;
     static boolean htmlRootInitialized = false;
@@ -72,12 +73,12 @@ public class MMBaseContext implements ServletContextListener {
                 throw new IllegalArgumentException();
             }
             if (initialized) {
-                log.info("Reinitializing, this time with ServletContext");
+                LOG.info("Reinitializing, this time with ServletContext");
             }
 
             // store the current context
             sx = servletContext;
-            log.service("Found servletContext " + sx);
+            LOG.service("Found servletContext " + sx);
             EventManager.getInstance().propagateEvent(new SystemEvent.ServletContext(sx), true);
 
             // Get the user directory using the user.dir property.
@@ -87,7 +88,7 @@ public class MMBaseContext implements ServletContextListener {
                 try {
                     userDir = System.getProperty("user.dir");
                 } catch (SecurityException se) {
-                    log.service(se.getMessage());
+                    LOG.service(se.getMessage());
                 }
             }
             // take into account userdir can start at webrootdir
@@ -100,7 +101,7 @@ public class MMBaseContext implements ServletContextListener {
                 try {
                     mmbaseOutputFile = System.getProperty("mmbase.outputfile");
                 } catch (SecurityException se) {
-                    log.debug(se.getMessage());
+                    LOG.debug(se.getMessage());
                 }
             }
             // take into account configpath can start at webrootdir
@@ -118,7 +119,7 @@ public class MMBaseContext implements ServletContextListener {
             try {
                 initHtmlRoot();
             } catch (Exception e) {
-                log.error(e.getMessage(), e);
+                LOG.error(e.getMessage(), e);
             }
 
         }
@@ -136,19 +137,19 @@ public class MMBaseContext implements ServletContextListener {
      */
     public synchronized static void init(String configPath, boolean initLogging) throws Exception {
         if (!initialized) {
-            log.service("Initializing with " + configPath);
+            LOG.service("Initializing with " + configPath);
             // Get the current directory using the user.dir property.
 	    try {
 		userDir = System.getProperty("user.dir");
 	    } catch (SecurityException se) {
-		log.info(se.getMessage());
+		LOG.info(se.getMessage());
 	    }
 
             // Init outputfile. // use of mmbase.outputfile  is deprecated!
 	    try {
 		initOutputfile(System.getProperty("mmbase.outputfile"));
 	    } catch (SecurityException se) {
-		log.info(se.getMessage());
+		LOG.info(se.getMessage());
 	    }
 
             // Init logging.
@@ -218,8 +219,8 @@ public class MMBaseContext implements ServletContextListener {
                  System.setErr(stream);
             } catch (IOException e) {
                  outputFile = null;
-                 log.error("Failed to set mmbase.outputfile to '" + outputFile + "'.");
-                 log.error(Logging.stackTrace(e));
+                 LOG.error("Failed to set mmbase.outputfile to '" + outputFile + "'.");
+                 LOG.error(Logging.stackTrace(e));
             }
         }
     }
@@ -227,35 +228,34 @@ public class MMBaseContext implements ServletContextListener {
     private static void initLogging() {
         // Starting the logger
         Logging.configure(ResourceLoader.getConfigurationRoot().getChildResourceLoader("log"), "log.xml");
-        log.info("===========================");
-        log.info("MMBase logging initialized.");
-        log.info("===========================");
+        INITLOG.info("===========================");
+        INITLOG.info("MMBase logging initialized.");
+        INITLOG.info("===========================");
         try {
-            log.info("java.version       : " +  System.getProperty("java.version"));
+            INITLOG.info("java.version       : " +  System.getProperty("java.version"));
         } catch (SecurityException se) {
-            log.info("java.version       : " +  se.getMessage());
+            INITLOG.info("java.version       : " +  se.getMessage());
         }
 
-        log.info("user.dir          : " + userDir);
+        INITLOG.info("user.dir          : " + userDir);
         String configPath = ResourceLoader.getConfigurationRoot().toString();
-        log.info("configuration     : " + configPath);
-        log.info("webroot           : " + ResourceLoader.getWebRoot());
+        INITLOG.info("configuration     : " + configPath);
+        INITLOG.info("webroot           : " + ResourceLoader.getWebRoot());
         String version = org.mmbase.Version.get();
-        log.info("version           : " + version);
+        INITLOG.info("version           : " + version);
         Runtime rt = Runtime.getRuntime();
-        log.info("total memory      : " + rt.totalMemory() / (1024 * 1024) + " MiB");
-        log.info("free memory       : " + rt.freeMemory() / (1024 * 1024) + " MiB");
-        log.service("system locale     : " + Locale.getDefault());
+        INITLOG.info("total memory      : " + rt.totalMemory() / (1024 * 1024) + " MiB");
+        INITLOG.info("free memory       : " + rt.freeMemory() / (1024 * 1024) + " MiB");
+        INITLOG.service("system locale     : " + Locale.getDefault());
         {
             boolean assertsEnabled = false;
             assert assertsEnabled = true; // Intentional side effect!!!
             if (assertsEnabled) {
-                log.info("Assertions are enabled");
+                INITLOG.info("Assertions are enabled");
             }
         }
 
-        log.info("MMBase locale     : " + org.mmbase.util.LocalizedString.getDefault());
-        log.info("start time        : " + DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL).format(new Date(1000 * (long) startTime)));
+        INITLOG.info("start time        : " + DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL).format(new Date(1000 * (long) startTime)));
     }
 
     /**
@@ -282,14 +282,14 @@ public class MMBaseContext implements ServletContextListener {
                 try {
                     htmlRoot = System.getProperty("mmbase.htmlroot");
                 } catch (SecurityException se) {
-                    log.debug(se);
+                    LOG.debug(se);
                 }
             }
             if (htmlRoot == null) {
                 htmlRoot = sx.getRealPath("");
             }
             if (htmlRoot == null){
-                log.service("Parameter mmbase.htmlroot not set.");
+                LOG.service("Parameter mmbase.htmlroot not set.");
             } else {
                 if (userDir != null && !new File(htmlRoot).isAbsolute()) {
                     htmlRoot = userDir + File.separator + htmlRoot;
@@ -305,8 +305,8 @@ public class MMBaseContext implements ServletContextListener {
                 }
             }
             htmlRootInitialized = true;
-            log.info("mmbase.htmlroot   : " + htmlRoot);
-            log.info("context           : " + getHtmlRootUrlPath());
+            INITLOG.info("mmbase.htmlroot   : " + htmlRoot);
+            INITLOG.info("context           : " + getHtmlRootUrlPath());
         }
     }
 
@@ -386,7 +386,7 @@ public class MMBaseContext implements ServletContextListener {
      */
     public synchronized static String getHtmlRootUrlPath() {
         if (! htmlRootUrlPathInitialized) {
-            log.debug("Finding root url");
+            LOG.debug("Finding root url");
             if (! initialized) {
                 throw new RuntimeException("The init method should be called first.");
             }
@@ -396,12 +396,12 @@ public class MMBaseContext implements ServletContextListener {
             }
             String initPath = sx.getInitParameter("mmbase.htmlrooturlpath");
             if (initPath != null) {
-                log.debug("Found mmbase.htmlrooturlpath  explicitely configured");
+                LOG.debug("Found mmbase.htmlrooturlpath  explicitely configured");
                 htmlRootUrlPath = initPath;
             } else {
                 // init the htmlRootUrlPath
                 try {
-                    log.debug("Autodetecting htmlrooturlpath ");
+                    LOG.debug("Autodetecting htmlrooturlpath ");
                     // fetch resource path for the root servletcontext root...
                     // check wether this is root
                     if (sx.equals(sx.getContext("/"))) {
@@ -410,7 +410,7 @@ public class MMBaseContext implements ServletContextListener {
                         try {
                             htmlRootUrlPath = (String) sx.getClass().getMethod("getContextPath").invoke(sx) + "/";
                         } catch(Exception e) {
-                            log.error(e);
+                            LOG.error(e);
                         }
                     } else {
                         String url = sx.getResource("/").toString();
@@ -420,21 +420,21 @@ public class MMBaseContext implements ServletContextListener {
                         int lastSlash = url.substring(0, length - 1).lastIndexOf('/');
                         if (lastSlash > 0) {
                             htmlRootUrlPath = url.substring(lastSlash);
-                            log.info("Found " + htmlRootUrlPath + " from " + url);
+                            LOG.info("Found " + htmlRootUrlPath + " from " + url);
                         } else {
-                            log.warn("Could not determine htmlRootUrlPath. Using default " + htmlRootUrlPath + "(contextUrl     :" + url + ")");
+                            LOG.warn("Could not determine htmlRootUrlPath. Using default " + htmlRootUrlPath + "(contextUrl     :" + url + ")");
                         }
                     }
                 } catch (Exception e) {
-                    log.error(e);
+                    LOG.error(e);
                 }
                 try {
                     ServletContext refound = sx.getContext(htmlRootUrlPath);
                     if (refound != null && !sx.equals(refound)) {
-                        log.warn("Probably did not succeed in determining htmlRootUrlPath ('" + htmlRootUrlPath + "', because " + sx + "!= " + refound + "). Consider using the mmbase.htmlrooturlpath  context-param in web.xml");
+                        LOG.warn("Probably did not succeed in determining htmlRootUrlPath ('" + htmlRootUrlPath + "', because " + sx + "!= " + refound + "). Consider using the mmbase.htmlrooturlpath  context-param in web.xml");
                     }
                 } catch (Exception e2) {
-                    log.error(e2);
+                    LOG.error(e2);
                 }
             }
             htmlRootUrlPathInitialized = true;

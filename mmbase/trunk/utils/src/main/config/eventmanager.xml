@@ -13,4 +13,7 @@
 		<broker class="org.mmbase.core.event.SystemEventBroker"/>
 		<broker class="org.mmbase.core.event.AllEventBroker"/>
 	</brokers>
+  <listeners>
+    <listener class="org.mmbase.util.LocalizedString$DefaultFromServletContext" />
+  </listeners>
 </eventmanager>
