@@ -82,7 +82,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
         if (o instanceof Node) {
             return (Node) o;
         } else {
-            return org.mmbase.util.BridgeCaster.toNode(o, getCloudVar());
+            return org.mmbase.bridge.util.BridgeCaster.toNode(o, getCloudVar());
         }
     }
 

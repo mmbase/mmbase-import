@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.util.BridgeCaster;
+import org.mmbase.bridge.util.BridgeCaster;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
