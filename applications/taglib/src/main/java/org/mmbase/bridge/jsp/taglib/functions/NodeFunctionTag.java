@@ -18,7 +18,7 @@ import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Notfound;
-import org.mmbase.util.BridgeCaster;
+import org.mmbase.bridge.util.BridgeCaster;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
