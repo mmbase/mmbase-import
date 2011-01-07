@@ -1,12 +1,12 @@
 /* css stylesheet */
 
 .searchresult caption, .searchresult thead tr, .searchresult tfoot tr {
-    background-color: #ddd;
+    /*background-color: #ddd;*/
     color: #555;
 }
 
-
-.mm_related
+div.create { border-bottom: 1px solid #ccc; }
+div.mm_related
 {
 	max-width: 640px;
 	font-family: Helvetica, sans-serif;
@@ -22,7 +22,7 @@
 
 .searchable strong
 {
-	padding: 8px 4px 4px 4px;
+	padding: 4px 4px 0 4px;
 	display: block;
 	background-color: #e8e8e8;
 }
@@ -70,7 +70,11 @@ a.search
 }
 
 .searchable legend { display: none; }
-.searchable input[type="submit"] { margin: 6px; }
+.searchable input[type="submit"]
+{
+	margin: 6px;
+	width: auto;
+}
 
 /* hide if not yet searched */
 .mm_relate_repository div.implicit { display: none; }
@@ -100,16 +104,20 @@ a.search
 
 .searchresult table th,
 .searchresult table td { border-bottom: 1px solid #ccc; }
-.searchresult table th { border-top: 1px solid #ccc; }
+.searchresult table th { /*border-top: 1px solid #ccc;*/ }
 .searchresult table tbody { border: none; }
 .searchresult table caption
 {
 	background: #d4d4d4;
 	margin: 0;
-	padding: 4px;
+	/*padding: 4px;*/
 	font-size: 0.9em;
 	font-weight: bold;
 }
+
+.searchresult table.create { padding: 0; }
+.searchresult table.create th,
+.searchresult table.create td { border: 0; }
 
 .searchresult table tbody { overflow: auto; }
 
@@ -121,7 +129,10 @@ a.search
 }
 
 /* pager is tfoot */
-.searchresult table tfoot { background-color: #E8E8E8; }
+.searchresult table tfoot
+{
+	/*background-color: #E8E8E8;*/
+}
 .searchresult table tfoot td { text-align: center; }
 
 .mm_related .searchable table tfoot a.navigate
@@ -138,10 +149,17 @@ a.search
 	padding: 0 4px 0 4px;
 }
 
-.searchresult th, .searchresult td
+.searchresult th
 {
 	margin: 0;
-	padding: 4px;
+	padding: 0 4px;
+	text-align: left;
+}
+
+.searchresult td
+{
+	margin: 0;
+	padding: 2px 4px 0 4px;
 	text-align: left;
 	vertical-align: top;
 }
@@ -286,14 +304,29 @@ input.search { float: left; }
 {
 	background-image: url("images/c-new.png");
 	background-repeat: no-repeat;
-	height: 21px;
 	float: right;
-	padding-left: 24px;
-	padding-top: 3px;
-	text-decoration: none;
-	font-weight: bold;
-	line-height: 20px;
+    width: 20px;
+    padding-top: 20px;
+    margin-right: 2px;
+    overflow: hidden;
+    height: 0px !important;
+    height /**/: 20px;  /* for IE5/Win */
 }
+
+/*
+a.edit
+{
+    float: right;
+    width: 16px;
+    margin-left: 2px;
+    padding-top: 20px;
+    background-image: url(icons/edit-pencil.png);
+    overflow: hidden;
+    height: 0px !important;
+    height /**/: 20px;  /* for IE5/Win */
+}
+
+*/
 
 
 /*
@@ -318,13 +351,17 @@ input.search { float: left; }
 
 div.create th.node { text-align: right; }
 
-div.create input.small,
+div.create th { width: auto; }
+
+div.create input,
 div.create textarea.small,
 div.create textarea.big
 {
-	width: 240px;
-	min-width: 100px;
+	width: 96%;
 }
+div.create input.mm_datetime_year { width: auto; }
 
-div.create table tfoot tr.buttons td { text-align: right; }
-div.create table tfoot tr.buttons td input { margin-right: 30px; }
+div.create td.owner { color: transparent; }
+
+div.create tr.buttons td { text-align: left; }
+div.create tr.buttons input { margin-left: 0px; }
