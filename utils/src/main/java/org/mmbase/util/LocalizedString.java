@@ -42,7 +42,8 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
     private static final Logger LOG = Logging.getLoggerInstance(LocalizedString.class);
     private static final long serialVersionUID = 1L;
 
-    public static final String FMT_FALLBACK_PARAM = "javax.servlet.jsp.jstl.fmt.fallbackLocale";
+    //public static final String FMT_FALLBACK_PARAM = "javax.servlet.jsp.jstl.fmt.fallbackLocale";
+    public static final String FMT_DEFAULT_PARAM = "javax.servlet.jsp.jstl.fmt.locale";
 
     private static Locale defaultLocale = null; // means 'system default' and 'unset'.
 
@@ -87,16 +88,16 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
         public void notify(SystemEvent se) {
             if (se instanceof SystemEvent.ServletContext) {
                 ServletContext sx = ((SystemEvent.ServletContext) se).getServletContext();
-                String fmtDefault = sx.getInitParameter(FMT_FALLBACK_PARAM);
+                String fmtDefault = sx.getInitParameter(FMT_DEFAULT_PARAM);
                 if (fmtDefault != null) {
                     Locale prev = setDefault(getLocale(fmtDefault));
                     if (prev != null) {
-                        LOG.warn("Reset " + prev + "  from " + FMT_FALLBACK_PARAM + ": "+ org.mmbase.util.LocalizedString.getDefault());
+                        LOG.warn("Reset " + prev + "  from " + FMT_DEFAULT_PARAM + ": "+ org.mmbase.util.LocalizedString.getDefault());
                     } else {
-                        LOG.service("Default from " + FMT_FALLBACK_PARAM + ": "+ org.mmbase.util.LocalizedString.getDefault());
+                        LOG.service("Default from " + FMT_DEFAULT_PARAM + ": "+ org.mmbase.util.LocalizedString.getDefault());
                     }
                 } else {
-                    LOG.service("No " + FMT_FALLBACK_PARAM + " found");
+                    LOG.service("No " + FMT_DEFAULT_PARAM + " found");
                 }
             }
 
