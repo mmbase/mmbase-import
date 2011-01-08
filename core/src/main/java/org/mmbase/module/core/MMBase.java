@@ -314,16 +314,16 @@ public class MMBase extends ProcessorModule {
         }
         DateFormat format = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.US);
         format.setTimeZone(timeZone);
-        MMBaseContext.INITLOG.info("MMBase Time zone      : " + timeZone.getDisplayName(Locale.US) + " (it's now " + format.format(new Date()) + ")");
+        MMBaseContext.INITLOG.info("MMBase Time zone   : " + timeZone.getDisplayName(Locale.US) + " (it's now " + format.format(new Date()) + ")");
         org.mmbase.util.dateparser.DateParser.setDefault(timeZone);
 
         tmp = getInitParameter("LANGUAGE");
         if (tmp != null && !tmp.equals("")) {
             ServletContext sx = MMBaseContext.getServletContext();
             if (sx != null) {
-                String fmtLocale = sx.getInitParameter(LocalizedString.FMT_FALLBACK_PARAM);
-                if (fmtLocale != null && ! fmtLocale.equals("")) {
-                    LOG.warn("The default fmt fallback locale: " + fmtLocale + " is not equal to the MMBase Locale " + tmp + ". Consider removing the mmbaseroot.language setting.");
+                String fmtLocale = sx.getInitParameter(LocalizedString.FMT_DEFAULT_PARAM);
+                if (fmtLocale != null && ! fmtLocale.equals(tmp)) {
+                    LOG.warn("The default fmt locale: " + fmtLocale + " is not equal to the MMBase Locale " + tmp + ". Consider removing the mmbaseroot.language setting.");
                 }
             }
             LocalizedString.setDefault(LocalizedString.getLocale(tmp));
