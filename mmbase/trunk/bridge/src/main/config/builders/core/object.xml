@@ -192,7 +192,7 @@
 
   <functionlist>
     <function name="smartpath">
-      <class name="org.mmbase.module.core.SmartPathFunction">
+      <class name="org.mmbase.util.functions.SmartPathFunction">
         <param name="backwardsCompatible">false</param>
       </class>
     </function>
