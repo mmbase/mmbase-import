@@ -24,8 +24,9 @@ import org.mmbase.util.functions.Required;
  * a node (possibly extended with a version number). See the documentation on the TREEPART SCAN command for more info.
  *
  * This class can be overriden to make an even smarter search possible.
+ * Used to be {@link org.mmbase.module.core.SmartPathFunction}.
  *
- * @since MMBase-1.8.5
+ * @since MMBase-2.0
  * @version $Id$
  */
 public class SmartPathFunction {
