@@ -393,7 +393,7 @@ public class DataTypeDefinition {
         Processor newProcessor = DataTypeXml.createProcessor(processorElement);
         Processor oldProcessor = dataType.getDefaultProcessor();
         newProcessor = DataTypeXml.chainProcessors(oldProcessor, newProcessor);
-        log.info("Setting default processor " + newProcessor);
+        log.debug("Setting default processor " + newProcessor);
         dataType.setDefaultProcessor(newProcessor);
     }
 
