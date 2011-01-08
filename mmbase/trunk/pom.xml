@@ -80,28 +80,22 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
   </ciManagement>
 
   <prerequisites>
-    <maven>2.0.9</maven>
+    <maven>2.2.1</maven>
   </prerequisites>
 
 
   <mailingLists>
     <mailingList>
-      <name>MMBase User List</name>
-      <subscribe>http://lists.mmbase.org/mailman/listinfo/users</subscribe>
-      <unsubscribe>http://lists.mmbase.org/mailman/listinfo/users</unsubscribe>
-      <archive>http://lists.mmbase.org/arc/users/threads.html</archive>
-    </mailingList>
-    <mailingList>
-      <name>MMBase Developer List</name>
-      <subscribe>http://lists.mmbase.org/mailman/listinfo/developers</subscribe>
-      <unsubscribe>http://lists.mmbase.org/mailman/listinfo/developers</unsubscribe>
-      <archive>http://lists.mmbase.org/arc/developers/threads.html</archive>
+      <name>MMBase discussion group</name>
+      <subscribe>http://groups.google.com/group/mmbase-discuss/subscribe</subscribe>
+      <unsubscribe>http://groups.google.com/group/mmbase-discuss/subscribe</unsubscribe>
+      <archive>https://groups.google.com/group/mmbase-discuss/topics</archive>
     </mailingList>
     <mailingList>
       <name>MMBase SCM changes List</name>
-      <subscribe>http://lists.mmbase.org/mailman/listinfo/cvs</subscribe>
-      <unsubscribe>http://lists.mmbase.org/mailman/listinfo/cvs</unsubscribe>
-      <archive>http://lists.mmbase.org/arc/cvs/index.html</archive>
+      <subscribe>http://groups.google.com/group/mmbase-repos/subscribe</subscribe>
+      <unsubscribe>http://groups.google.com/group/mmbase-repos/subscribe</unsubscribe>
+      <archive>https://groups.google.com/group/mmbase-repos/topics</archive>
     </mailingList>
   </mailingLists>
 
