@@ -246,7 +246,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 } break;
             }
         } else {
-            log.info("Event " + event + " ignored, because MMBase machinename '" + MMBase.getMMBase().getMachineName() + "' is not equals to one in event '" + event.getMachines() + "'.");
+            log.info("Event " + event + " ignored, because MMBase machinename '" + MMBase.getMMBase().getMachineName() + "' is not equal to one in event '" + event.getMachines() + "'.");
         }
     }
 
