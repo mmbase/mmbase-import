@@ -157,7 +157,7 @@ abstract public class Queries {
 
     /**
      * Adds a 'legacy' constraint to the query, i.e. constraint(s) represented
-     * by a string. Alreading existing constraints remain ('AND' is used).
+     * by a string. Already existing constraints remain ('AND' is used).
      *
      * @param query query to add constraint to
      * @param constraints string representation of constraints
@@ -436,7 +436,7 @@ abstract public class Queries {
 
     /**
      * Defaulting version of {@link #createConstraint(Query, String, int, Object, Object, boolean, int)}.
-     * Casesensitivity defaults to false, value2 to null (so 'BETWEEN' cannot be used), datePart set to -1 (so no date part comparison)
+     * Case sensitivity defaults to false, value2 to null (so 'BETWEEN' cannot be used), datePart set to -1 (so no date part comparison)
      * @param query      The query to create the constraint for
      * @param fieldName  The field to create the constraint on (as a string, so it can include the step), e.g. 'news.number'
      * @param operator   The operator to use. This constant can be produces from a string using {@link #getOperator(String)}.
@@ -454,7 +454,7 @@ abstract public class Queries {
      * @param fieldName  The field to create the constraint on (as a string, so it can include the step), e.g. 'news.number'
      * @param operator   The operator to use. This constant can be produces from a string using {@link #getOperator(String)}.
      * @param value      The value to compare with, which must be of the right type. If field is number it might also be an alias.
-     * @param value2     The other value (only relevant if operator is BETWEEN, the only terniary operator)
+     * @param value2     The other value (only relevant if operator is BETWEEN, the only ternary operator)
      * @param caseSensitive  Whether it should happen case sensitively (not relevant for number fields)
      * @return The new constraint, or <code>null</code> it by chance the specified arguments did not lead to a new actual constraint (e.g. if value is an empty set)
      */
@@ -471,7 +471,7 @@ abstract public class Queries {
      * @param fieldName  The field to create the constraint on (as a string, so it can include the step), e.g. 'news.number'
      * @param operator   The operator to use. This constant can be produces from a string using {@link #getOperator(String)}.
      * @param originalValue  The value to compare with, which must be of the right type. If field is number it might also be an alias.
-     * @param value2     The other value (only relevant if operator is BETWEEN, the only terniary operator)
+     * @param value2     The other value (only relevant if operator is BETWEEN, the only ternary operator)
      * @param caseSensitive  Whether it should happen case sensitively (not relevant for number fields)
      * @param datePart       The part of a DATETIME value that is to be checked
      * @return The new constraint, or <code>null</code> it by chance the specified arguments did not lead to a new actual constraint (e.g. if value is an empty set)
@@ -583,11 +583,11 @@ abstract public class Queries {
     }
 
     /**
-     * Takes a Constraint of a query, and takes al constraints on 'sourceStep' of it, and copies
+     * Takes a Constraint of a query, and takes all constraints on 'sourceStep' of it, and copies
      * those Constraints to the given step of the receiving query.
      *
      * Constraints on different steps then the given 'sourceStep' are ignored. CompositeConstraints
-     * cause recursion and would work too (but same limitation are valid for the childs).
+     * cause recursion and would work too (but same limitation are valid for the children).
      *
      * @param c          The constrain to be copied (for example the result of sourceQuery.getConstraint()).
      * @param sourceStep The step in the 'source' query.
@@ -1080,8 +1080,8 @@ abstract public class Queries {
      * you already have its result (the node), but it is convenient as a base query for many other
      * goals.
      *
-     * If the node is uncommited, it cannot be queried, and the node query returning all nodes from
-     * the currect type will be returned.
+     * If the node is uncommitted, it cannot be queried, and the node query returning all nodes from
+     * the correct type will be returned.
      *
      * @param node Node to create the query from
      * @return A new NodeQuery object
@@ -1286,7 +1286,7 @@ abstract public class Queries {
 
 
     /**
-     * Compare tho nodes, with a SortOrder. This determins where a certain node is smaller or bigger than a certain other node, with respect to some SortOrder.
+     * Compare tho nodes, with a SortOrder. This determines where a certain node is smaller or bigger than a certain other node, with respect to some SortOrder.
      * This is used by {@link #compare(Node, Node, List)}
      *
      * If node2 is only 'longer' then node1, but otherwise equal, then it is bigger.
@@ -1758,7 +1758,7 @@ abstract public class Queries {
      * @param q The query which defines the existing order. The cloud of this object will be used, unless this is a committed transaction, then the parent {@link Cloud#getNonTransactionalCloud} will be used to create the sub-transction.
      * @param desiredOrder The node numbers of the nodes in the query result of q. These are the actual nodes, not the nodes which define the order (like the posrel)
 
-     * @return The number of alterations which are done. Depends on the used algorithm (currently Bubble sort). <code>0</code> if the list was correctly ordered allready.
+     * @return The number of alterations which are done. Depends on the used algorithm (currently Bubble sort). <code>0</code> if the list was correctly ordered already.
      *
      * @since MMBase-1.9.2
      */
@@ -1824,7 +1824,7 @@ abstract public class Queries {
             an.putAnnotation("desired", index);
             list.add(an);
         }
-        if (list.size() < 1) {
+        if (list.size() <= 1) {
             log.debug(list.size() + " long only, that's always correctly ordered");
             return 0;
         }
@@ -1942,8 +1942,8 @@ abstract public class Queries {
 
 
     /**
-     * This puts the node as 'startnode' in the query (propably a 'related nodes' query.
-     * If the node is uncommited yet, this cannot be done with the normal {@link Query#addNode} method.
+     * This puts the node as 'startnode' in the query (probably a 'related nodes' query).
+     * If the node is not yet committed yet, this cannot be done with the normal {@link Query#addNode} method.
      * The information will be put in the query in another way then, so that at least {@link #getStartNode} will give the correct result.
 
      * If the Query object is changed such that it can contain uncommitted nodes, then this method can be made deprecated.
@@ -2139,7 +2139,7 @@ abstract public class Queries {
      * Given a Query, and Node, produces a new query, where the first part of the query is replaced by the Node.
      * So, e.g. if you have a query mags,posrel,news,posrel,images and a news node, you can feed this query, and
      * the node into this method (with step is 2), to produce a query news,posrel,images, where the start node is the given news node. All
-     * constraints, nodes, and aliases on the remainings steps are copied. Sortorders are only preserved in steps <= elementStep.
+     * constraints, nodes, and aliases on the remaining steps are copied. Sortorders are only preserved in steps <= elementStep.
      *
      * The query is a NodeQuery, where the NodeStep is the (normal) step after the node.
      *
