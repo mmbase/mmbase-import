@@ -260,7 +260,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
               Very nice, but mvn site fails on it.
               The maven site does not work anyway.
           -->
-          <stylesheetfile>src/main/javadoc-style/stylesheet.css</stylesheetfile>
+          <stylesheetfile>httpsrc/main/javadoc-style/stylesheet.css</stylesheetfile>
 
           <doctitle>MMBase ${project.version}</doctitle>
           <windowtitle>MMBase ${project.version} - API</windowtitle>
@@ -634,6 +634,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
         <module>contributions</module>
         <module>base-webapp</module>
         <module>example-webapp</module>
+        <module>documentation</module>
       </modules>
     </profile>
     <profile>
