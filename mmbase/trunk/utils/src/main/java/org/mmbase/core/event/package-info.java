@@ -1,6 +1,5 @@
 /**
- * An event mechanism. It consists of {@link Event}s, {@link EventListener}s and {@link EventBroker}s. And everything is
- * glued together with {@link EventManager}
+ * An event mechanism. It consists of {@link org.mmbase.core.event.Event}s, {@link org.mmbase.core.even.EventListener}s and {@link org.mmbase.core.even.EventBroker}s. And everything is  glued together with {@link org.mmbase.core.event.EventManager}
  *
  * @version $Id$
  * @since   MMBase-1.8
