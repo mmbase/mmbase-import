@@ -73,13 +73,14 @@
 
   <dependencies>
 
+    <!--
     <dependency>
       <groupId>org.mmbase</groupId>
-      <artifactId>mmbase</artifactId>
+      <artifactId>mmbase-core</artifactId>
       <version>${mmbase.version}</version>
       <scope>provided</scope>
     </dependency>
-
+    -->
 
     <dependency>
       <groupId>org.mmbase</groupId>
@@ -90,7 +91,7 @@
 
     <dependency>
       <groupId>org.mmbase</groupId>
-      <artifactId>mmbase</artifactId>
+      <artifactId>mmbase-core</artifactId>
       <version>${mmbase.version}</version>
       <type>jar</type>
       <classifier>tests</classifier>
