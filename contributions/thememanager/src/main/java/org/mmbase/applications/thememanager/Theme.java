@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * @author Daniel Ockeloen
- * 
+ *
  */
 public class Theme {
 
@@ -43,11 +43,11 @@ public class Theme {
     public static final String PUBLIC_ID_ASSIGNED_1_0 = "-//MMBase//DTD assigned config 1.0//EN";
 
     /**
-     * Register the Public Ids for DTDs used by DatabaseReader This method is called by XMLEntityResolver.
+     * Register the Public Ids for DTDs used by DatabaseReader This method is called by EntityResolver.
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_THEME_1_0, DTD_THEME_1_0, Theme.class);
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_ASSIGNED_1_0, DTD_ASSIGNED_1_0, Theme.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_THEME_1_0, DTD_THEME_1_0, Theme.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_ASSIGNED_1_0, DTD_ASSIGNED_1_0, Theme.class);
     }
 
     public Theme(String mainid, String themefilename, boolean create) {

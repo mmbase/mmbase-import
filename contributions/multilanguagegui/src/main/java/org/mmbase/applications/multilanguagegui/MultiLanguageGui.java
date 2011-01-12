@@ -28,7 +28,7 @@ import org.mmbase.bridge.implementation.*;
 import org.w3c.dom.*;
 
 /**
- * 
+ *
  * @author Dani&euml;l Ockeloen
  * @javadoc
  */
@@ -61,11 +61,11 @@ public class MultiLanguageGui {
         }
     }
     /**
-     * Register the Public Ids for DTDs used by DatabaseReader This method is called by XMLEntityResolver.
+     * Register the Public Ids for DTDs used by DatabaseReader This method is called by EntityResolver.
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_LANGUAGEGUISETS_1_0, DTD_LANGUAGEGUISETS_1_0, MultiLanguageGui.class);
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_LANGUAGEGUISET_1_0, DTD_LANGUAGEGUISET_1_0, MultiLanguageGui.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_LANGUAGEGUISETS_1_0, DTD_LANGUAGEGUISETS_1_0, MultiLanguageGui.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_LANGUAGEGUISET_1_0, DTD_LANGUAGEGUISET_1_0, MultiLanguageGui.class);
     }
 
     public static void readSets() {
@@ -325,7 +325,7 @@ public class MultiLanguageGui {
         if (set != null) {
             Hashtable keywordset = (Hashtable) set.get(keyword);
             if (keywordset != null) {
-                
+
                 Enumeration e = keywordset.keys();
                 while (e.hasMoreElements()) {
                     String s = (String) e.nextElement();
