@@ -12,7 +12,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.mmbase</groupId>
-  <artifactId>mmbase-cms</artifactId>
+  <artifactId>mmbase</artifactId>
   <version>2.0-SNAPSHOT</version>
   <name>MMBase</name>
 
@@ -260,7 +260,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
               Very nice, but mvn site fails on it.
               The maven site does not work anyway.
           -->
-          <stylesheetfile>httpsrc/main/javadoc-style/stylesheet.css</stylesheetfile>
+          <stylesheetfile>src/main/javadoc-style/stylesheet.css</stylesheetfile>
 
           <doctitle>MMBase ${project.version}</doctitle>
           <windowtitle>MMBase ${project.version} - API</windowtitle>
@@ -475,6 +475,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
         <version>2.6.1</version>
         <configuration>
           <maxmemory>1024</maxmemory>
+          <stylesheetfile>src/main/javadoc-style/stylesheet.css</stylesheetfile>
         </configuration>
         <reportSets>
           <reportSet>
