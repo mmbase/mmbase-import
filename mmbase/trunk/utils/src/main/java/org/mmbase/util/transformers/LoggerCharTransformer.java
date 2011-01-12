@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 
-public class LoggerCharTransformer extends ReaderTransformer implements CharTransformer {
+public class LoggerCharTransformer extends ReaderTransformer  {
     private static final long serialVersionUID = 0L;
     private static final Logger LOG = Logging.getLoggerInstance(LoggerCharTransformer.class);
 

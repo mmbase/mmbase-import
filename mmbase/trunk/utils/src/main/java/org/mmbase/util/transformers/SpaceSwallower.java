@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.8
  */
 
-public class SpaceSwallower extends ReaderTransformer implements CharTransformer {
+public class SpaceSwallower extends ReaderTransformer  {
 
     private static final Logger log = Logging.getLoggerInstance(SpaceSwallower.class);
 

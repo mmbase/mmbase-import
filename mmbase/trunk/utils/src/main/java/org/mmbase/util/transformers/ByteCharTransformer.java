@@ -14,7 +14,7 @@ import org.mmbase.util.ReaderInputStream;
 
 /**
  * A CharTransformer which wraps a ByteToCharTransformer.
- * 
+ *
  * It uses the <em>UTF-8</em> bytes (on default).
  *
  * @author Michiel Meeuwissen
@@ -22,7 +22,7 @@ import org.mmbase.util.ReaderInputStream;
  * @version $Id$
  */
 
-public class ByteCharTransformer extends ReaderTransformer implements CharTransformer {
+public class ByteCharTransformer extends ReaderTransformer  {
     private static final long serialVersionUID = 0L;
     private ByteToCharTransformer byteToChars;
     private String encoding = "UTF-8";

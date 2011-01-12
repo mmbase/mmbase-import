@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * @version $Id$
  */
 
-public class MD5 extends StringTransformer implements CharTransformer {
+public class MD5 extends StringTransformer  {
     private static final long serialVersionUID = 0L;
     private static final Logger log = Logging.getLoggerInstance(MD5.class);
 

@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 
-public class Sitestat extends ReaderTransformer implements CharTransformer {
+public class Sitestat extends ReaderTransformer  {
     private static final Logger log = Logging.getLoggerInstance(Sitestat.class);
     private static final String allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-.";
 

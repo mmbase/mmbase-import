@@ -13,12 +13,12 @@ package org.mmbase.util.transformers;
  * And yet another rather idiotic type of Transformer. Interpret the String as a perl program and
  * transform it to its result. The perl interpretetor needs to be in the PATH.
  *
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  * @since MMBase-1.7
  * @version $Id$
  */
 
-public class Perl extends AbstractCommandStringTransformer implements CharTransformer {
+public class Perl extends AbstractCommandStringTransformer  {
     @Override
     protected String[] getCommand() {
         return new String[] {"perl"};

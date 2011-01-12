@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 
-public class Identifier extends ReaderTransformer implements CharTransformer {
+public class Identifier extends ReaderTransformer  {
     private static final long serialVersionUID = 0L;
     private static final Logger log = Logging.getLoggerInstance(Identifier.class);
 

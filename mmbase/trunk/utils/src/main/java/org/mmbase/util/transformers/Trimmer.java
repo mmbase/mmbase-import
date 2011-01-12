@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 
-public class Trimmer extends ReaderTransformer implements CharTransformer {
+public class Trimmer extends ReaderTransformer  {
     private static final Logger log = Logging.getLoggerInstance(Trimmer.class);
 
 

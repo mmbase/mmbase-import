@@ -15,7 +15,7 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * CSS compressor based on http://yuilibrary.com/
+ * CSS compressor based on <a href="http://yuilibrary.com/">YUI Library</a>
  * @author Michiel Meeuwissen
  * @since MMBase-1.9.6
  */

@@ -19,12 +19,12 @@ import org.mmbase.util.IOUtil;
  * This is the character transformer which does not actually transform
  * anything, it just copies the reader to the writer.
  *
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  * @since MMBase-1.7
  * @version $Id$
  */
 
-public class CopyCharTransformer extends ReaderTransformer implements CharTransformer {
+public class CopyCharTransformer extends ReaderTransformer  {
     private static final long serialVersionUID = 0L;
     public static final CopyCharTransformer INSTANCE = new CopyCharTransformer();
 
@@ -40,8 +40,8 @@ public class CopyCharTransformer extends ReaderTransformer implements CharTransf
         } catch (java.io.IOException e) {
             System.out.println("c " + e.toString());
         }
-        return w;        
-    } 
+        return w;
+    }
 
     // implementation, javadoc inherited
     @Override

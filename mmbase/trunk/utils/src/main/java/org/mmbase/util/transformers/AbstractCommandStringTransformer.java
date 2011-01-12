@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.7
  */
 
-public abstract class AbstractCommandStringTransformer extends StringTransformer implements CharTransformer {
+public abstract class AbstractCommandStringTransformer extends StringTransformer  {
     private static final Logger log = Logging.getLoggerInstance(AbstractCommandStringTransformer.class);
 
     private boolean throwErrors = false;
@@ -35,7 +35,6 @@ public abstract class AbstractCommandStringTransformer extends StringTransformer
 
 
 
-    // javadoc inherited
     @Override
     public final String transform(String s) {
         try {
