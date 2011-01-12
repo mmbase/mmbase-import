@@ -273,9 +273,9 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
             <link>http://logging.apache.org/log4j/docs/api/</link>
             <link>http://commons.apache.org/fileupload/apidocs/</link>
             <link>http://lucene.apache.org/java/2_4_1/api/</link>
-            <link>http://www.mmbase.org/api/trunk/mmbase/</link>
             <link>http://www.mmbase.org/api/trunk/mmbase-utils/</link>
             <link>http://www.mmbase.org/api/trunk/mmbase-bridge/</link>
+            <link>http://www.mmbase.org/api/trunk/mmbase-core/</link>
           </links>
           <groups>
             <group>
