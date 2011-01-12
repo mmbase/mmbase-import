@@ -24,6 +24,7 @@
      <plugin>
        <groupId>org.codehaus.mojo</groupId>
        <artifactId>docbook-maven-plugin</artifactId>
+       <version>1.0.0-alpha-1</version>
        <configuration>
          <!--
          <stylesheetLocation>${basedir}/style/</stylesheetLocation>
