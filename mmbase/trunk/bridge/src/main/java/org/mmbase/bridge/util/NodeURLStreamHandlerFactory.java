@@ -7,16 +7,17 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
  */
-package org.mmbase.util;
+package org.mmbase.bridge.util;
 
 import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 import java.net.*;
 
+import org.mmbase.util.*;
+
 // used for resolving in MMBase database
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
 
@@ -62,10 +63,10 @@ public class NodeURLStreamHandlerFactory extends ResourceLoader.URLStreamHandler
      * @since MMBase-1.9.2
      */
     static NodeManager getResourceBuilder() {
-        if (ResourceWatcher.resourceBuilder == null) return null;
+        if (ResourceWatcher.getResourceBuilder() == null) return null;
         if (resourceNodeManager == null) {
             Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
-            resourceNodeManager = cloud.getNodeManager(ResourceWatcher.resourceBuilder);
+            resourceNodeManager = cloud.getNodeManager(ResourceWatcher.getResourceBuilder());
         }
         return resourceNodeManager;
     }
@@ -230,7 +231,8 @@ public class NodeURLStreamHandlerFactory extends ResourceLoader.URLStreamHandler
             getResourceNode();
             return
                 (node != null && node.mayWrite()) ||
-                (ResourceWatcher.resourceBuilder != null && ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null).getNodeManager(ResourceWatcher.resourceBuilder).mayCreateNode());
+                (ResourceWatcher.getResourceBuilder() != null &&
+                 ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null).getNodeManager(ResourceWatcher.getResourceBuilder()).mayCreateNode());
         }
 
         @Override
@@ -245,10 +247,10 @@ public class NodeURLStreamHandlerFactory extends ResourceLoader.URLStreamHandler
         @Override
         public OutputStream getOutputStream() throws IOException {
             if (getResourceNode() == null) {
-                if (ResourceWatcher.resourceBuilder == null) return null;
+                if (ResourceWatcher.getResourceBuilder() == null) return null;
 
                 Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
-                NodeManager nm = cloud.getNodeManager(ResourceWatcher.resourceBuilder);
+                NodeManager nm = cloud.getNodeManager(ResourceWatcher.getResourceBuilder());
                 node = nm.createNode();
                 node.setContext(DEFAULT_CONTEXT);
                 String resourceName = (parent.getContext().getPath() + name).substring(1);
