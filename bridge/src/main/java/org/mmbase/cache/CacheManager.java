@@ -56,7 +56,7 @@ public class CacheManager implements CacheManagerMBean {
             if (assertUp) {
                 org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
             }
-            machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
+            machineName = MMBaseContext.getMachineName();
         } catch (NoClassDefFoundError ncfde) {
             //happens when RMMCI
             machineName = "localhost";
@@ -413,7 +413,7 @@ public class CacheManager implements CacheManagerMBean {
             @SuppressWarnings("UseOfObsoleteCollectionType")
             final Hashtable<String, String> props = new Hashtable<String, String>();
             props.put("type", "Caches");
-            String machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
+            String machineName = MMBaseContext.getMachineName();
             if (machineName != null) {
                 props.put("type", machineName);
             }

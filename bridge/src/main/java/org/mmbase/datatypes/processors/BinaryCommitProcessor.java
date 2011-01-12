@@ -13,6 +13,7 @@ import org.mmbase.bridge.*;
 import org.apache.commons.fileupload.FileItem;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.SerializableInputStream;
+import org.mmbase.util.MMBaseContext;
 import org.mmbase.util.magicfile.MagicFile;
 
 /**
@@ -87,7 +88,7 @@ public class BinaryCommitProcessor implements CommitProcessor {
             ct = fi.getContentType();
             if (ct == null) {
                 String name = fi.getName();
-                javax.servlet.ServletContext sx = org.mmbase.module.core.MMBaseContext.getServletContext();
+                javax.servlet.ServletContext sx = MMBaseContext.getServletContext();
                 ct = sx.getMimeType(name);
             }
             log.debug("Found ct " + ct);

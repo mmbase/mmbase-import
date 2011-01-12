@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.functions;
 
-import org.mmbase.core.AbstractDescriptor;
+import org.mmbase.bridge.util.AbstractDescriptor;
 import org.mmbase.datatypes.*;
 import org.mmbase.datatypes.util.xml.*;
 import org.mmbase.util.*;

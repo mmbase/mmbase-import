@@ -16,7 +16,7 @@ import org.mmbase.datatypes.DataTypes.FieldNotFoundException;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.mmbase.bridge.Field;
-import org.mmbase.core.util.DataTypeSetter;
+import org.mmbase.bridge.util.DataTypeSetter;
 import org.mmbase.core.event.*;
 import org.mmbase.datatypes.*;
 import org.mmbase.datatypes.util.xml.DataTypeReader;

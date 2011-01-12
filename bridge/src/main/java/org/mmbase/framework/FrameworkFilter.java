@@ -19,7 +19,7 @@ import javax.servlet.http.*;
 
 import org.mmbase.util.functions.*;
 import org.mmbase.util.transformers.UrlEscaper;
-import org.mmbase.module.core.MMBaseContext;
+import org.mmbase.util.MMBaseContext;
 
 
 import org.mmbase.util.logging.Logger;
