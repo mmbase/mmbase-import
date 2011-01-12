@@ -20,6 +20,7 @@ import javax.servlet.http.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.transformers.UrlEscaper;
 import org.mmbase.util.MMBaseContext;
+import org.mmbase.core.event.*;
 
 
 import org.mmbase.util.logging.Logger;
@@ -40,19 +41,11 @@ import org.mmbase.util.logging.Logging;
  * @since MMBase-1.9
  */
 
-public class FrameworkFilter implements Filter { //, MMBaseStarter  {
+public class FrameworkFilter implements Filter, SystemEventListener {
 
     public static final String PARAMS_KEY = "org.mmbase.framework.filter.parameters";
 
     private static Logger log = Logging.getLoggerInstance(FrameworkFilter.class);
-
-    /**
-     * MMBase needs to be started first to be able to load config
-     */
-    /*
-    private MMBase mmbase;
-    private Thread initThread;
-    */
 
     /**
      * The pattern being used to determine to exclude an URL
@@ -78,24 +71,18 @@ public class FrameworkFilter implements Filter { //, MMBaseStarter  {
         return errors;
     }
 
-    /*
-     * Methods that need to be overriden form MMBaseStarter
-     */
-    /*
-    public MMBase getMMBase() {
-        return mmbase;
-    }
+    private boolean mmbaseUp = false;
 
-    public void setMMBase(MMBase mm) {
-        mmbase = mm;
-        // logging is not coxmpletey initialized, replace logger instance too
-        log = Logging.getLoggerInstance(FrameworkFilter.class);
+    @Override
+    public void notify(SystemEvent se) {
+        if (se instanceof SystemEvent.Up) {
+            mmbaseUp = true;
+        }
     }
-
-    public void setInitException(ServletException se) {
-        // never mind, simply ignore
+    @Override
+    public int getWeight() {
+        return 0;
     }
-    */
     /**
      * Initialize the filter, called on webapp startup
      *
@@ -115,11 +102,7 @@ public class FrameworkFilter implements Filter { //, MMBaseStarter  {
         if (! MMBaseContext.isInitialized()) {
             MMBaseContext.init(ctx);
         }
-
-        /*
-        initThread = new MMBaseStartThread(this);
-        initThread.start();
-        */
+        EventManager.getInstance().addEventListener(this);
         log.info("UrlFilter initialized");
     }
 
@@ -168,14 +151,7 @@ public class FrameworkFilter implements Filter { //, MMBaseStarter  {
 
             if (request instanceof HttpServletRequest) {
 
-                /*
-                if (mmbase == null) {
-                    if (log.isDebugEnabled()) log.debug("Still waiting for MMBase (not initialized)");
-                    chained++;
-                    chain.doFilter(request, response);
-                    return;
-                }
-                */
+
                 HttpServletRequest req = (HttpServletRequest) request;
                 HttpServletResponse res = (HttpServletResponse) response;
                 String ip = req.getHeader("X-Forwarded-For");
@@ -222,6 +198,12 @@ public class FrameworkFilter implements Filter { //, MMBaseStarter  {
                     frameworkParameters.set(Parameter.RESPONSE, res);
                 }
                 if (frameworkParameters.containsParameter(Parameter.CLOUD)) {
+                    if (! mmbaseUp) {
+                        if (! res.isCommitted()) {
+                            res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "MMBase not yet, or not successfully initialized (check mmbase log)");
+                        }
+                        return;
+                    }
                     frameworkParameters.set(Parameter.CLOUD, org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase"));
                 }
                 try {
