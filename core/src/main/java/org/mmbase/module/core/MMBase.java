@@ -264,6 +264,7 @@ public class MMBase extends ProcessorModule {
             LOG.warn("was shutdown... should NOT restart again!");
         return;
         }
+        MMBaseContext.setDataDir(getInitParameter("datadir"));
         LOG.service("Init of " + org.mmbase.Version.get() + " (" + this + ")");
 
         configureOSCache();
@@ -1391,79 +1392,13 @@ public class MMBase extends ProcessorModule {
     }
 
 
-    private boolean shownDataDir = false;
     /**
      * A setting 'datadir' can be specified in mmbaseroot.xml (and hence in your context xml). This
      * serves as a default for the 'blobs on disk' directory, but it can be used on other spots as well.
      * @since MMBase-1.8.6
      */
     public File getDataDir() {
-        String dataDirString = getInitParameter("datadir");
-
-        javax.servlet.ServletContext sc = MMBaseContext.getServletContext();
-        if (dataDirString == null || dataDirString.equals("")) {
-            if (sc == null) {
-                dataDirString = "data";
-            } else {
-                dataDirString = "WEB-INF/data";
-            }
-        }
-        File dataDir = new File(dataDirString);
-
-        if (! dataDir.isAbsolute()) {
-            if (sc != null && sc.getRealPath("/" + dataDirString) != null) {
-                LOG.debug(" "  + sc.getRealPath("/" + dataDirString));
-                dataDir = new File(sc.getRealPath("/" + dataDirString));
-            } else {
-                dataDir = new File(System.getProperty("user.dir"), dataDirString);
-            }
-        }
-
-        if (! dataDir.exists()) {
-            try {
-                if (dataDir.mkdirs()) {
-                    LOG.info("Created " + dataDir);
-                }
-            } catch (SecurityException  se) {
-                LOG.warn(se);
-            }
-        }
-
-        if (! dataDir.isDirectory()) {
-            LOG.warn("Datadir " + dataDir + " is not a directory");
-        }
-        if (! dataDir.canRead()) {
-            LOG.warn("Datadir " + dataDir + " is not readable");
-        }
-        {
-            boolean  canWrite = false;
-            try {
-                canWrite = dataDir.canWrite();
-            } catch (SecurityException se) {
-            }
-            if (! canWrite) {
-                try {
-                    File proposal = sc != null ? (File) sc.getAttribute("javax.servlet.context.tempdir") : new File(System.getProperty("java.io.tmpdir"));
-                    if (proposal.canWrite()) {
-                        LOG.warn("Datadir " + dataDir + " is not writable. Falling back to " + proposal);
-                        dataDir = proposal;
-                    } else {
-                        LOG.warn("Datadir " + dataDir + " is not writable.");
-                    }
-                } catch (SecurityException se) {
-                    LOG.warn(se.getMessage(), se);
-                }
-
-            }
-        }
-        if (shownDataDir) {
-            LOG.debug("MMBase data dir: " + dataDir);
-        } else {
-            LOG.info("MMBase data dir: " + dataDir);
-            shownDataDir = true;
-        }
-        return dataDir;
-
+        return MMBaseContext.getDataDir();
     }
     /**
      * Returns the datasource as was configured with mmbaseroot.xml properties.
