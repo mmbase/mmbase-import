@@ -12,6 +12,7 @@ package org.mmbase.storage;
 import java.util.*;
 import java.text.Collator;
 import org.mmbase.util.*;
+import org.mmbase.util.MMBaseContext;
 import org.xml.sax.InputSource;
 import javax.servlet.ServletContext;
 import java.util.concurrent.ConcurrentHashMap;

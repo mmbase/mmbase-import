@@ -17,7 +17,7 @@ import org.xml.sax.InputSource;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
-import org.mmbase.core.util.DataTypeSetter;
+import org.mmbase.bridge.util.DataTypeSetter;
 import org.mmbase.core.util.Fields;
 import org.mmbase.datatypes.*;
 import org.mmbase.module.core.MMBase;
