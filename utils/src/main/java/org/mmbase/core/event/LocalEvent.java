@@ -12,7 +12,7 @@ package org.mmbase.core.event;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.9.3
- * @version $Id: LocalEvent.java 41369 2010-03-15 20:54:45Z michiel $
+ * @version $Id$
  */
 public abstract class LocalEvent extends Event {
 

@@ -27,7 +27,7 @@ public abstract class ConfigurableReaderTransformer extends ReaderTransformer im
 
     public ConfigurableReaderTransformer(int conf) {
         super();
-        configure(conf);
+        to = conf;
     }
 
     @Override

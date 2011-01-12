@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 
 public abstract class BufferedReaderTransformer extends ReaderTransformer implements CharTransformer {
 
-    private static Logger log = Logging.getLoggerInstance(BufferedReaderTransformer.class);
+    private static final Logger log = Logging.getLoggerInstance(BufferedReaderTransformer.class);
 
     /**
      * Override {@link ReaderTransformer#transform(Reader, Writer)}

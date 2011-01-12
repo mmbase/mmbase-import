@@ -7,8 +7,6 @@
 package org.mmbase.core.event;
 
 import java.util.*;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 /**
  * This is the base class for all event brokers in mmbase. the function of an
@@ -33,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  */
 public abstract class EventBroker {
 
-    private static final Logger log = Logging.getLoggerInstance(EventBroker.class);
+    //private static final Logger log = Logging.getLoggerInstance(EventBroker.class);
 
     /**
      * this method should return true if this broker can accept and propagate

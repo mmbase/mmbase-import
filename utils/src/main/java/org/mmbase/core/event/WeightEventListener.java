@@ -10,7 +10,7 @@ package org.mmbase.core.event;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9.6
- * @version $Id: EventListener.java 34900 2009-05-01 16:29:42Z michiel $
+ * @version $Id$
  */
 public interface WeightEventListener extends EventListener {
     public int getWeight();

@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  */
 
 public abstract class AbstractCommandStringTransformer extends StringTransformer implements CharTransformer {
-    private static Logger log = Logging.getLoggerInstance(AbstractCommandStringTransformer.class);
+    private static final Logger log = Logging.getLoggerInstance(AbstractCommandStringTransformer.class);
 
     private boolean throwErrors = false;
 

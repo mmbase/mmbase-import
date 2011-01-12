@@ -100,7 +100,7 @@ public class IECompatibleJpegInputStream extends FilterInputStream implements Ru
             in.close();
             pos.flush();
             pos.close();
-        } catch (Exception e) {};
+        } catch (Exception e) {}
     }
 
     public int available() throws IOException {

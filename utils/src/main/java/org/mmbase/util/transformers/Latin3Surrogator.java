@@ -21,16 +21,16 @@ import org.mmbase.util.logging.Logging;
  * The ISO-8859-3 ('South European') unibyte encoding is used for languages like maltese and
  * esperanto. If characters from this set are missing on your presentation device, this Transformer can
  * provide (ASCII) surrogates for a bunch of characters.
- * 
+ *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
  * @version $Id$
  */
 public class Latin3Surrogator extends ConfigurableReaderTransformer implements CharTransformer {
     private static final long serialVersionUID = 0L;
-    private static Logger log = Logging.getLoggerInstance(Latin3Surrogator.class);
+    private static final Logger log = Logging.getLoggerInstance(Latin3Surrogator.class);
 
-    // esperanto 
+    // esperanto
     public static final int XMETODO   = 1;  // faru iksojn
     public static final int HMETODO   = 2;  // faru hojn
 
@@ -40,7 +40,7 @@ public class Latin3Surrogator extends ConfigurableReaderTransformer implements C
     public Latin3Surrogator(int c) {
         super(c);
     }
-      
+
     protected Writer iksoj(Reader r, Writer w) {
         try {
             while (true) {

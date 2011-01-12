@@ -32,7 +32,7 @@ public abstract class ConfigurableStringTransformer extends StringTransformer im
     }
 
     @Override
-    public void configure(int t) {
+    public final void configure(int t) {
         //log.info("Setting config to " + t);
         to = t;
     }

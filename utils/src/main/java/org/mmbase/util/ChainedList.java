@@ -23,18 +23,18 @@ import java.util.*;
 public class ChainedList<E> extends AbstractList<E> {
 
     private final List<List<? extends E>> lists = new ArrayList<List<? extends E>>();
-    
+
     public ChainedList() {
         // nothing to do yet
     }
-    
+
     public ChainedList(List<? extends E>... ls) {
         for (List<? extends E> l : ls) {
             addList(l);
         }
     }
 
-    public ChainedList<E> addList(List<? extends E> l) {
+    public final ChainedList<E> addList(List<? extends E> l) {
         lists.add(l);
         return this;
     }

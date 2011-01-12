@@ -95,7 +95,7 @@ public class RandomPool {
      * selected from a set of pseudo-random values.
      * @param x the source of randomness
      */
-    public synchronized void stir(long x) {
+    public final synchronized void stir(long x) {
         int pIndex;
 
         pIndex = mod(ranPool, p.length);

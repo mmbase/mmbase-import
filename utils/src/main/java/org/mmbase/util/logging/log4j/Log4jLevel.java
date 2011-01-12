@@ -21,7 +21,7 @@ package org.mmbase.util.logging.log4j;
 import  org.apache.log4j.Level;
 import  org.apache.log4j.Priority;
 
-/** 
+/**
  *    LoggerLevel The new Level class for Log4jImpl. It extends
  *    the log4j Level with 2 extra levels, namely `SERVICE' and
  *    `TRACE'.
@@ -40,7 +40,7 @@ public class Log4jLevel extends Level {
     // WARN
     // INFO
     public static final Log4jLevel SERVICE = new Log4jLevel(SERVICE_INT, "SERVICE", 5);
-    // DEBUG    
+    // DEBUG
     // TRACE
 
     protected  Log4jLevel(int level, String strLevel, int syslogEquiv) {
@@ -52,10 +52,10 @@ public class Log4jLevel extends Level {
             return Log4jLevel.TRACE;
 
         String stringVal = sArg.toUpperCase();
-        if(stringVal.equals("SERVICE")) return Log4jLevel.SERVICE;
+        if("SERVICE".equals(stringVal)) return Log4jLevel.SERVICE;
         return Level.toLevel(sArg);
     }
-        
+
     public static Level toLevel(int i) throws  IllegalArgumentException {
         switch(i) {
         case SERVICE_INT: return Log4jLevel.SERVICE;
@@ -63,11 +63,11 @@ public class Log4jLevel extends Level {
             return Level.toLevel(i);
         }
     }
-    
+
     public static Priority[] getAllPossibleLog4jPriorities() {
         return new Priority[] {OFF, FATAL, ERROR, WARN, INFO, SERVICE, DEBUG, TRACE};
     }
-   
+
     public static Level toLog4jLevel(String sArg) { // needed?
         Level result;
         result = Level.toLevel(sArg, null);
@@ -75,7 +75,7 @@ public class Log4jLevel extends Level {
             return result;
         }
         String s = sArg.toUpperCase();
-        if (s.equals("SERVICE")) return SERVICE;
+        if ("SERVICE".equals(s)) return SERVICE;
         return DEBUG;
     }
 

@@ -79,8 +79,8 @@ public class ExprCalc {
             try {
                 do {
                   token = tokenizer.nextToken();
-                } while (token.equals(" ")||token.equals("\t"));
-            } catch(NoSuchElementException e)  {
+                } while (" ".equals(token) || "\t".equals(token));
+            } catch (NoSuchElementException e)  {
                 return false;
             }
             // numeral
@@ -88,7 +88,7 @@ public class ExprCalc {
                 int i;
                 for(i=0;i<token.length() &&
                     (Character.isDigit(token.charAt(i)) ||
-                     token.charAt(i)=='.');i++) { };
+                     token.charAt(i)=='.');i++) { }
                 if (i!=token.length()) {
                     log.error("Could not evaluate expression '" + token + "' of '" + input + "'");
                 }

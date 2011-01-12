@@ -217,6 +217,7 @@ public class MD5 extends StringTransformer implements CharTransformer {
 
     public static void main(String[] argv) {
         MD5Implementation transformer = new MD5Implementation();
+        log.debug(transformer);
         System.out.println(transformer.calcMD5(argv[0]));
     }
 }

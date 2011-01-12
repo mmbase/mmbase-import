@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 
-public abstract class AbstractDetector implements Detector {
+abstract class AbstractDetector implements Detector {
     private static final Logger log = Logging.getLoggerInstance(BasicDetector.class);
 
     /**
@@ -79,7 +79,7 @@ public abstract class AbstractDetector implements Detector {
     }
     @Override
     public String getMimeType() {
-        if (mimetype.equals("???")) {
+        if ("???".equals(mimetype)) {
             return "application/octet-stream";
         } else {
             return mimetype;

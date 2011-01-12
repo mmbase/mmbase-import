@@ -15,7 +15,20 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Tries to determine the mime-type of a byte array (or a file).
+ * Tries to determine the mime-type of an input stream ({@link #getMimeType(InputStream)}) (or a file {@link
+ * #getMimeType(File)}). It uses for that a bunch of {@link Detector}, which are all configured via a configuratin file
+ * 'magic.xml', that you can find as a resource the jar as org/mmbase/config/magic.xml (you could (temporary) override
+ * it if you need an improvement in that XML).
+ *
+ * Several algoritms are used to determin this mime-type. It can use 'magic' bytes sequences as also is done by the unix
+ * 'file' utility. Most recognized file types are determined in that manner {@link BasicDetector}).
+ *
+ * XML based file types can also be determined by trying the parse the file as an XML and check for certain
+ * XML-namespaces or public ids of the DTD (see {@link XmlDetector}).
+ *
+ * To recognize some other formats (noticebly microsoft office formats) there is now also recognition based on the
+ * contents of zip-files. So it wil be tried to treat the stream as a zip-file and if that succeeds, it is checked
+ * wether certain 'magic' files are present in it (see {@link ZipDetector}).
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
@@ -29,6 +42,10 @@ public class MagicFile {
     // Is this garanteed to be big enough?
 
 
+    /**
+     * A constant that is used as a return value for several methods in this class
+     * to indidate that determining a mime type failed.
+     */
     public static final String FAILED = "Failed to determine type";
     // application/octet-stream?
 
@@ -76,6 +93,11 @@ public class MagicFile {
         }
     }
     /**
+     * Determins what kind of file the given file represents.
+     * It first considers the <em>contents</em> of the file using
+     * {@link #getMimeType(InputStream)}. If that fails the extension of the file name is used
+     * via {@link #extensionToMimeType} to guess the file's type.
+     *
      * @param file Location of file to be checked
      * @return Type of the file as determined by the magic file
      */
@@ -145,6 +167,8 @@ public class MagicFile {
         }
     }
     /**
+     * Determins what kind of file the given input stream represents.
+     * @return The found mime-type or FAILED
      * @since MMBase-1.9.2
      */
     public String getMimeType(InputStream input) throws IOException {
@@ -161,7 +185,8 @@ public class MagicFile {
     }
 
     /**
-     * @javadoc
+     * Given a file's extension returns its mimetype (e.g. image/png).
+     * @return A mimetype string or {@link #FAILED}.
      */
     public String extensionToMimeType(String extension) {
         for (Detector detector : getDetectors()) {

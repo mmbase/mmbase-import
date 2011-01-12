@@ -29,8 +29,7 @@ public class RelativeTime {
     private final static int SECOND_POS = 2;
     private final static int MILLI_POS  = 3;
 
-    // logger
-    private static Logger log = Logging.getLoggerInstance(RelativeTime.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(RelativeTime.class.getName());
 
     /**
      * Retrieves the amount of hours that are left in the timeValue variable (representing the time in milliseconds).

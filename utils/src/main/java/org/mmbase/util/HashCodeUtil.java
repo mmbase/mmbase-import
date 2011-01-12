@@ -51,7 +51,7 @@ package org.mmbase.util;
  *
  * @since MMBase-1.8
  */
-final public class HashCodeUtil {
+public class HashCodeUtil {
 
    private static final int PRIME = 1000003;
 

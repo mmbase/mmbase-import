@@ -71,18 +71,18 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
     protected boolean onlyFirstMatch      = false;
 
     @Override
-    public void configure(int i) {
+    public final void configure(int i) {
         onlyFirstMatch = ((i & ONLY_REPLACE_FIRST_MATCH) > 0);
         onlyFirstPattern = ((i & ONLY_USE_FIRST_MATCHING_PATTERN) > 0);
         // set corresponding bits to 0, they will not be needed any more.
         i &= ~ONLY_USE_FIRST_MATCHING_PATTERN;
         i &= ~ONLY_REPLACE_FIRST_MATCH;
-
         super.configure(i);
     }
 
     protected ChunkedTransformer(int i) {
         super(i);
+
     }
 
     public ChunkedTransformer() {
@@ -179,7 +179,7 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
                     w.write(word.toString());
                     w.write(c);
                     String tag = word.toString();
-                    status.inA  = tag.equals("a") || tag.startsWith("a ");
+                    status.inA  = "a".equals(tag) || tag.startsWith("a ");
                     word.setLength(0);
                 } else if (! translating) {
                     word.append((char) c);
@@ -241,8 +241,8 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
                 }
             }
             // write last word
-            if (replace(status)) {
-                if (translating) replace(xmltext.toString(), w, status);
+            if (replace(status) && translating) {
+                replace(xmltext.toString(), w, status);
             }
             log.debug("Finished  replacing. Replaced " + status.replaced + " words");
         } catch (java.io.IOException e) {

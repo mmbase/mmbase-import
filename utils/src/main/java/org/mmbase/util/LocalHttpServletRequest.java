@@ -63,8 +63,7 @@ public class LocalHttpServletRequest extends LocalServletRequest implements Http
     public String  getContextPath() {
         try {
             java.lang.reflect.Method m = sx.getClass().getMethod("getContextPath");
-            String cp = (String) m.invoke(sx);
-            return cp;
+            return (String) m.invoke(sx);
         } catch (NoSuchMethodException nsme) {
             return "/";
         } catch (Exception e) {
@@ -155,10 +154,12 @@ public class LocalHttpServletRequest extends LocalServletRequest implements Http
                     public HttpSessionContext  getSessionContext() {
                         return null;
                     }
-                    @Deprecated public Object  getValue(String name) {
+                    @Deprecated
+                    public Object  getValue(String name) {
                         return getAttribute(name);
                     }
-                    @Deprecated public String[]  getValueNames() {
+                    @Deprecated
+                    public String[]  getValueNames() {
                         return null;
                     }
                     public void  invalidate() {
@@ -167,14 +168,16 @@ public class LocalHttpServletRequest extends LocalServletRequest implements Http
                     public boolean  isNew() {
                         return true;
                     }
-                    @Deprecated public void  putValue(String name, Object value) {
+                    @Deprecated
+                    public void  putValue(String name, Object value) {
                         setAttribute(name, value);
                     }
                     public void  removeAttribute(String name) {
                         attributes.remove(name);
                     }
 
-                    @Deprecated public void  removeValue(String name)  {
+                    @Deprecated
+                    public void  removeValue(String name)  {
                         removeAttribute(name);
                     }
                     public void  setAttribute(String name, Object value) {
@@ -193,10 +196,12 @@ public class LocalHttpServletRequest extends LocalServletRequest implements Http
     public boolean  isRequestedSessionIdFromCookie() {
         return false;
     }
-    @Deprecated public boolean  isRequestedSessionIdFromUrl() {
+    @Deprecated
+    public boolean  isRequestedSessionIdFromUrl() {
         return false;
     }
-    @Deprecated public boolean  isRequestedSessionIdFromURL() {
+    @Deprecated
+    public boolean  isRequestedSessionIdFromURL() {
         return false;
     }
 

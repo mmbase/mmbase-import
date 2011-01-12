@@ -92,35 +92,27 @@ public class SimpleTimeStampImpl extends AbstractSimpleImpl implements Logger {
         StringTokenizer t    = new StringTokenizer(c, ",");
         while (t.hasMoreTokens()) {
             String token = t.nextToken();
-            if (token.equals("stderr")) {
+            if ("stderr".equals(token)) {
                 for (Level l : Level.getLevels()) {
                     ps.put(l, System.err);
                 }
-            }
-            if (token.equals("stdout")) {
+            } else if ("stdout".equals(token)) {
                 for (Level l : Level.getLevels()) {
                     ps.put(l, System.out);
                 }
-            }
-            if (token.equals("trace")) {
+            } else if ("trace".equals(token)) {
                 setLevel(Level.TRACE);
-            }
-            if (token.equals("debug")) {
+            } else if ("debug".equals(token)) {
                 setLevel(Level.DEBUG);
-            }
-            if (token.equals("service")) {
+            } else if ("service".equals(token)) {
                 setLevel(Level.SERVICE);
-            }
-            if (token.equals("info")) {
+            } else if ("info".equals(token)) {
                 setLevel(Level.INFO);
-            }
-            if (token.equals("warn")) {
+            } else if ("warn".equals(token)) {
                 setLevel(Level.WARN);
-            }
-            if (token.equals("error")) {
+            } else if ("error".equals(token)) {
                 setLevel(Level.ERROR);
-            }
-            if (token.equals("fatal")) {
+            } else if ("fatal".equals(token)) {
                 setLevel(Level.FATAL);
             }
         }

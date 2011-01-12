@@ -27,7 +27,7 @@ public class ErrorHandler implements org.xml.sax.ErrorHandler {
     public static final int FATAL_ERROR = 3;
     public static final int NEVER = 4;
 
-    private static Logger log = Logging.getLoggerInstance(ErrorHandler.class);
+    private static final Logger log = Logging.getLoggerInstance(ErrorHandler.class);
     private int exceptionLevel;
     private boolean logMessages;
     private boolean warning = false;

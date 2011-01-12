@@ -13,7 +13,7 @@ package org.mmbase.util;
 import java.util.*;
 
 /**
- * Combines to Maps to one new map. One map is 'leading' and determins wich keys are mapped. The second map can override values, if it contains the same mapping.
+ * Combines two Maps into one new map. One map is 'leading' and determins wich keys are mapped. The second map can override values, if it contains the same mapping.
  * There are several ways to describe what must happen with <em>changes</em> on the map.
  * You can e.g. maintain original values of a map <code>values</code> like so:
  <pre>
@@ -173,7 +173,7 @@ public class LinkMap<K, V> extends AbstractMap<K,V> {
             Object originalValue = originals.get(key);
             assert originalValue == wrapper.get(key);
             assert newValue == value;
-            assert originalValue.equals("B");
+            assert "B".equals(originalValue);
             System.out.println("wrapper: " + wrapper);
             System.out.println("originals: " + originals);
             System.out.println("values: " + values);
@@ -187,8 +187,8 @@ public class LinkMap<K, V> extends AbstractMap<K,V> {
             Object newValue = wrapper.get(key);
             Object oldValue = values.get(key);
             assert value == newValue;
-            assert newValue.equals("D");
-            assert oldValue.equals("C");
+            assert "D".equals(newValue);
+            assert "C".equals(oldValue);
             System.out.println("wrapper: " + wrapper);
             System.out.println("values: " + values);
         }

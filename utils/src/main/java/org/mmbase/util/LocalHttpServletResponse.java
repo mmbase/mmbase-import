@@ -46,13 +46,15 @@ public class LocalHttpServletResponse extends LocalServletResponse implements Ht
     public boolean  containsHeader(String name) {
         return headers.containsKey(name);
     }
-    @Deprecated public String  encodeRedirectUrl(String url) {
+    @Deprecated
+    public String  encodeRedirectUrl(String url) {
         return encodeRedirectURL(url);
     }
     public String  encodeRedirectURL(String url) {
         return url;
     }
-    @Deprecated public String  encodeUrl(String url) {
+    @Deprecated
+    public String  encodeUrl(String url) {
         return encodeURL(url);
     }
     public String  encodeURL(String url) {
@@ -82,8 +84,10 @@ public class LocalHttpServletResponse extends LocalServletResponse implements Ht
     public void  setStatus(int sc) {
         status = sc;
     }
-    @Deprecated public  void  setStatus(int sc, String sm) {
+    @Deprecated
+    public  void  setStatus(int sc, String sm) {
         sendError(sc, sm);
     }
+
 
 }

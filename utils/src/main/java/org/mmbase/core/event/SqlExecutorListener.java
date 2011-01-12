@@ -12,7 +12,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9.5
- * @version $Id: WeakNodeEventListener.java 34900 2009-05-01 16:29:42Z michiel $
+ * @version $Id$
  */
 public class SqlExecutorListener extends org.mmbase.util.SqlExecutor implements SystemEventListener {
     private static final Logger LOG = Logging.getLoggerInstance(SqlExecutorListener.class);

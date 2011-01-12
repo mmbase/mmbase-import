@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.7
  **/
 public class XMLWriter {
-    private static Logger log = Logging.getLoggerInstance(XMLWriter.class);
+    private static final Logger log = Logging.getLoggerInstance(XMLWriter.class);
 
     /**
      * defaulting version of {@link #write(Node, Writer, boolean, boolean)}. (Not ommitting xml declaration).

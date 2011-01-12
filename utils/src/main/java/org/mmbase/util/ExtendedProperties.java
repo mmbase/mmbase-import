@@ -122,7 +122,7 @@ public class ExtendedProperties extends Properties {
     * Read to this Property, the Properties from a file.
     * @param filename The file were to read from
     */
-    public void getProps(String filename) throws IOException {
+    public final void getProps(String filename) throws IOException {
         try {
             FileInputStream fileInputStream = new FileInputStream(filename);
             BufferedInputStream bufferedInputStream = new BufferedInputStream (fileInputStream);
@@ -141,7 +141,7 @@ public class ExtendedProperties extends Properties {
      * @param in the input stream
      * @exception IOException Error when reading from input stream.
      */
-    public synchronized void load(InputStream in) throws IOException {
+    public final synchronized void load(InputStream in) throws IOException {
         in = Runtime.getRuntime().getLocalizedInputStream(in);
 
         int ch = in.read();
@@ -330,8 +330,8 @@ public class ExtendedProperties extends Properties {
             }
         } while (line != null);
 
-        if (!lines.equals("")) {
-            lines = lines.substring(0,lines.length()-1);
+        if (lines.length() > 0) {
+            lines = lines.substring(0, lines.length() - 1);
         }
         readfile.close();
         return lines;

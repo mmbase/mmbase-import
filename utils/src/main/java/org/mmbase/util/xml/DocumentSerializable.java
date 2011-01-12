@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 /**
  * Wraps an {@link org.w3c.dom.Document} to be certainly serializable (and cloneable). If it is not by itself (IIRC
  * the Xerces implementation is serializable), then this class serializes to a stringification.
- * 
+ *
  * This can be used if a Serializable class needs an Document member. Choose for a
  * DocumentSerializable member in stead, and use {@link #getDocument}.
  *
@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  */
 public class DocumentSerializable implements Serializable, org.mmbase.util.PublicCloneable {
     private static final Logger log = Logging.getLoggerInstance(DocumentSerializable.class);
-    private static final long serialVersionUID = 1L; 
+    private static final long serialVersionUID = 1L;
 
     private Document document;
     // implementation of serializable
@@ -80,15 +80,14 @@ public class DocumentSerializable implements Serializable, org.mmbase.util.Publi
     }
     @Override
     public boolean equals(Object o) {
-        return 
-            o != null &&
+        return
             o instanceof DocumentSerializable &&
             document.isEqualNode(((DocumentSerializable) o).document);
     }
 
     @Override
     public Object clone() {
-        Document newDocument = DocumentReader.getDocumentBuilder(false, null, null).newDocument();        
+        Document newDocument = DocumentReader.getDocumentBuilder(false, null, null).newDocument();
         Node root = newDocument.importNode(document.getDocumentElement(), true);
         newDocument.appendChild(root);
         return new DocumentSerializable(newDocument);

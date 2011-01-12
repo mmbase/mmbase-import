@@ -369,7 +369,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
 
 
     @Override
-    public void reset() throws IOException {
+    public final void reset() throws IOException {
         if (wrapped.markSupported()) {
             log.debug("" + wrapped + " supports mark, using it");
             wrapped.reset() ;
