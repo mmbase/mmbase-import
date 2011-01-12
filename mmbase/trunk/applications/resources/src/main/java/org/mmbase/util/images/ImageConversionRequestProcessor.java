@@ -16,6 +16,7 @@ import java.io.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.MMBaseContext;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;

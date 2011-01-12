@@ -65,15 +65,15 @@ import org.mmbase.util.logging.*;
  * http://jserv.javasoft.com/products/java-server/documentation/
  *        webserver1.0.2/apidoc/Package-javax.servlet.http.html
  */
-public class RMIHandlerServlet extends MMBaseServlet {
-    private static Logger log = Logging.getLoggerInstance(RMIHandlerServlet.class.getName());
-    
+public class RMIHandlerServlet extends HttpServlet {
+    private static final Logger log = Logging.getLoggerInstance(RMIHandlerServlet.class);
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         log.service("HTTP RMI bridge loaded");
     }
-    
+
     @SuppressWarnings("unused")
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -89,7 +89,7 @@ public class RMIHandlerServlet extends MMBaseServlet {
                 command = queryString.substring(0, delim);
                 param = queryString.substring(delim + 1);
             }
-            
+
             log.debug("command/param: " + command +"/"  + param);
             try {
                 if (command.equals("forward")){
@@ -115,7 +115,7 @@ public class RMIHandlerServlet extends MMBaseServlet {
             returnServerError(res, "internal error: " +  e.getMessage() + " " + Logging.stackTrace(e));
         }
     }
-    
+
     /**
      * Provide more intelligible errors for methods that are likely to
      * be called.  Let unsupported HTTP "do*" methods result in an
@@ -135,7 +135,7 @@ public class RMIHandlerServlet extends MMBaseServlet {
     throws ServletException, IOException {
         returnClientError(res, "GET Operation not supported: Can only forward POST requests.");
     }
-    
+
     @SuppressWarnings("unused")
     @Override
     public void doPut(HttpServletRequest req, HttpServletResponse res)
@@ -144,12 +144,12 @@ public class RMIHandlerServlet extends MMBaseServlet {
         "PUT Operation not supported: " +
         "Can only forward POST requests.");
     }
-    
+
     @Override
     public String getServletInfo() {
         return "RMI Call Forwarding Servlet";
     }
-    
+
     /**
      * Return an HTML error message indicating there was error in
      * the client's request.
@@ -161,7 +161,7 @@ public class RMIHandlerServlet extends MMBaseServlet {
      */
     private static void returnClientError(HttpServletResponse res, String message)
     throws IOException {
-        
+
         res.sendError(HttpServletResponse.SC_BAD_REQUEST,
         "<HTML><HEAD>" +
         "<TITLE>Java RMI Client Error</TITLE>" +
@@ -170,10 +170,10 @@ public class RMIHandlerServlet extends MMBaseServlet {
         "<H1>Java RMI Client Error</H1>" +
         message +
         "</BODY></HTML>");
-        
+
         log.warn(HttpServletResponse.SC_BAD_REQUEST + "Java RMI Client Error" + message);
     }
-    
+
     /**
      * Return an HTML error message indicating an internal error
      * occurred here on the server.
@@ -185,7 +185,7 @@ public class RMIHandlerServlet extends MMBaseServlet {
     private static void returnServerError(HttpServletResponse res,
     String message)
     throws IOException {
-        
+
         res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
         "<HTML><HEAD>" +
         "<TITLE>Java RMI Server Error</TITLE>" +
@@ -193,14 +193,14 @@ public class RMIHandlerServlet extends MMBaseServlet {
         "<BODY>" +
         "<H1>Java RMI Server Error</H1>" +
         message + "</BODY></HTML>");
-        
+
         log.warn(HttpServletResponse.SC_INTERNAL_SERVER_ERROR +
         "Java RMI Server Error: " +
         message);
     }
-    
-    
-    
+
+
+
     /**
      * Execute the forward command.  Forwards data from incoming servlet
      * request to a port on the local machine.  Presumably, an RMI server
@@ -212,7 +212,7 @@ public class RMIHandlerServlet extends MMBaseServlet {
      */
     public void forward(HttpServletRequest req, HttpServletResponse res,  String param)
     throws ServletClientException, ServletServerException, IOException {
-        
+
         int port;
         try {
             port = Integer.parseInt(param);
@@ -225,7 +225,7 @@ public class RMIHandlerServlet extends MMBaseServlet {
         if (port < 1024)
             throw new ServletClientException("permission denied for port: "
             + port);
-        
+
         byte buffer[];
         Socket socket;
         try {
@@ -234,7 +234,7 @@ public class RMIHandlerServlet extends MMBaseServlet {
             throw new ServletServerException("could not connect to " +
             "local port");
         }
-        
+
         // read client's request body
         DataInputStream clientIn =
         new DataInputStream(req.getInputStream());
@@ -248,7 +248,7 @@ public class RMIHandlerServlet extends MMBaseServlet {
             throw new ServletClientException("error reading request" +
             " body");
         }
-        
+
         DataOutputStream socketOut = null;
         // send to local server in HTTP
         try {
@@ -262,7 +262,7 @@ public class RMIHandlerServlet extends MMBaseServlet {
         } catch (IOException e) {
             throw new ServletServerException("error writing to server");
         }
-        
+
         // read response from local server
         DataInputStream socketIn;
         try {
@@ -284,7 +284,7 @@ public class RMIHandlerServlet extends MMBaseServlet {
             if (line == null)
                 throw new ServletServerException(
                 "unexpected EOF reading server response");
-            
+
             if (line.toLowerCase().startsWith(key)) {
                 if (contentLengthFound)
                     ; // what would we want to do in this case??
@@ -294,7 +294,7 @@ public class RMIHandlerServlet extends MMBaseServlet {
             }
         } while ((line.length() != 0) &&
         (line.charAt(0) != '\r') && (line.charAt(0) != '\n'));
-        
+
         if (!contentLengthFound || responseContentLength < 0)
             throw new ServletServerException(
             "missing or invalid content length in server response");
@@ -307,12 +307,12 @@ public class RMIHandlerServlet extends MMBaseServlet {
         } catch (IOException e) {
             throw new ServletServerException("error reading from server");
         }
-        
+
         // send local server response back to servlet client
         res.setStatus(HttpServletResponse.SC_OK);
         res.setContentType("application/octet-stream");
         res.setContentLength(buffer.length);
-        
+
         try {
             OutputStream out = res.getOutputStream();
             out.write(buffer);
@@ -326,30 +326,30 @@ public class RMIHandlerServlet extends MMBaseServlet {
     }
     public void getHostname(HttpServletRequest req, HttpServletResponse res, String param)
     throws IOException {
-        
+
         byte[] getHostStringBytes = req.getServerName().getBytes();
-        
+
         res.setStatus(HttpServletResponse.SC_OK);
         res.setContentType("application/octet-stream");
         res.setContentLength(getHostStringBytes.length);
-        
+
         OutputStream out = res.getOutputStream();
         out.write(getHostStringBytes);
         out.flush();
     }
-    
-    
+
+
     public void ping(HttpServletRequest req, HttpServletResponse res, String param) {
         res.setStatus(HttpServletResponse.SC_OK);
         res.setContentType("application/octet-stream");
         res.setContentLength(0);
     }
-    
+
     public void hostname(HttpServletRequest req, HttpServletResponse res, String param)
     throws IOException {
-        
+
         PrintWriter pw = res.getWriter();
-        
+
         pw.println("");
         pw.println("<HTML>" +
         "<HEAD><TITLE>Java RMI Server Hostname Info" +
@@ -360,20 +360,20 @@ public class RMIHandlerServlet extends MMBaseServlet {
         pw.print("<P>InetAddress.getLocalHost().getHostName()");
         try {
             String localHostName = InetAddress.getLocalHost().getHostName();
-            
+
             pw.println(" = " + localHostName);
         } catch (UnknownHostException e) {
             pw.println(" threw java.net.UnknownHostException");
         }
-        
+
         pw.println("<H2>Server host information obtained through Servlet " +
         "interface from HTTP server:</H2>");
         pw.println("<P>SERVER_NAME = " + req.getServerName());
         pw.println("<P>SERVER_PORT = " + req.getServerPort());
         pw.println("</BODY></HTML>");
     }
-    
-    
+
+
     /**
      * ServletClientException is thrown when an error is detected
      * in a client's request.
@@ -383,7 +383,7 @@ public class RMIHandlerServlet extends MMBaseServlet {
             super(s);
         }
     }
-    
+
     /**
      * ServletServerException is thrown when an error occurs here on the server.
      */
