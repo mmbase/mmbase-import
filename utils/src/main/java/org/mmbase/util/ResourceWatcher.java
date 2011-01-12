@@ -83,6 +83,13 @@ public abstract class ResourceWatcher { // TODO implements NodeEventListener  {
     }
 
     /**
+     * @since MMBase-2.0
+     */
+    public static String getResourceBuilder() {
+        return resourceBuilder;
+    }
+
+    /**
      * @since MMBase-1.9.2
      */
     public static void reinitWatchers() {

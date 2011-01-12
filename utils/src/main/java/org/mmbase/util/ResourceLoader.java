@@ -1089,17 +1089,17 @@ public class ResourceLoader extends ClassLoader {
     /**
      * Extension URLStreamHandler, used for the 'sub' Handlers, entries of 'roots' in ResourceLoader are of this type.
      */
-    static abstract class PathURLStreamHandler extends URLStreamHandler implements Comparable<PathURLStreamHandler> {
+    public static abstract class PathURLStreamHandler extends URLStreamHandler implements Comparable<PathURLStreamHandler> {
 
         protected final ResourceLoader parent;
 
         protected int weight = 0;
 
-        PathURLStreamHandler(ResourceLoader p) {
+        protected PathURLStreamHandler(ResourceLoader p) {
             this.parent = p;
         }
 
-        abstract PathURLStreamHandler createSubHandler(ResourceLoader parent);
+        abstract protected PathURLStreamHandler createSubHandler(ResourceLoader parent);
 
         /**
          * We need an openConnection by name only, and public.
@@ -1114,7 +1114,7 @@ public class ResourceLoader extends ClassLoader {
         /**
          * Returns a List of URL's with the same name. Defaults to one URL.
          */
-        Enumeration<URL> getResources(final String name) throws IOException {
+        protected Enumeration<URL> getResources(final String name) throws IOException {
             return new Enumeration<URL>() {
                     private boolean hasMore = true;
                     public boolean hasMoreElements() {
@@ -1139,7 +1139,7 @@ public class ResourceLoader extends ClassLoader {
             }
         }
 
-        abstract Set<String> getPaths(Set<String> results, Pattern pattern,  boolean recursive,  boolean directories);
+        protected abstract Set<String> getPaths(Set<String> results, Pattern pattern,  boolean recursive,  boolean directories);
 
         /**
          * @since MMBase-2.0
@@ -1914,7 +1914,7 @@ public class ResourceLoader extends ClassLoader {
         }
 
         @Override
-        Enumeration<URL> getResources(String name) throws IOException {
+        protected Enumeration<URL> getResources(String name) throws IOException {
             try {
                 while (name.startsWith("/")) {
                     name = name.substring(1);
