@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  */
 public class ApplicationContextReader {
 
-    private static Logger log = Logging.getLoggerInstance(ApplicationContextReader.class);
+    private static final Logger log = Logging.getLoggerInstance(ApplicationContextReader.class);
 
     private static final Map<String, Map<String, String>> cache = new ConcurrentHashMap<String, Map<String, String>>();
 

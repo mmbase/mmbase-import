@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-import org.mmbase.util.logging.*;
-
 /**
  * This straight-forward transformer wraps {@link Long#toString(long, int)} and {@link
  * Long#parseLong(String, int)}. This means that it only works on simple strings that actually
@@ -22,8 +20,6 @@ import org.mmbase.util.logging.*;
  */
 
 public class RadixTransformer extends StringTransformer {
-
-    private static final Logger log = Logging.getLoggerInstance(RadixTransformer.class);
 
     protected int radix = 36;
 
@@ -39,8 +35,7 @@ public class RadixTransformer extends StringTransformer {
     public  String transform(String r) {
         try {
             long l = Long.parseLong(r);
-            String result = Long.toString(l, radix);
-            return result;
+            return Long.toString(l, radix);
         } catch (Exception e) {
             return r;
         }

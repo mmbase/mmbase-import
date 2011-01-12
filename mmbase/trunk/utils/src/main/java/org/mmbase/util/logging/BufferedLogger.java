@@ -16,7 +16,7 @@ import java.lang.ref.*;
  * A Logger that buffers in memory, and on request logs again to a certain other logger.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: WriterLogger.java,v 1.4 2009/03/16 15:17:02 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.9.1
  */
 

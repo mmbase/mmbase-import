@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
 
 public class Identifier extends ReaderTransformer implements CharTransformer {
     private static final long serialVersionUID = 0L;
-    private static Logger log = Logging.getLoggerInstance(Identifier.class);
+    private static final Logger log = Logging.getLoggerInstance(Identifier.class);
 
     private String whitespace = "_";
     /**

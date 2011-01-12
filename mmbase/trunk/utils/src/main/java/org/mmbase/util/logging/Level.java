@@ -66,14 +66,14 @@ public final class Level implements java.io.Serializable {
     public static Level toLevel(String level) {
 
         String s = level.toUpperCase();
-        if (s.equals("TRACE") )   return TRACE;
-        if (s.equals("DEBUG") )   return DEBUG;
-        if (s.equals("SERVICE") ) return SERVICE;
-        if (s.equals("INFO") )    return INFO;
-        if (s.equals("WARN") )    return WARN;
-        if (s.equals("ERROR") )   return ERROR;
-        if (s.equals("FATAL") )   return FATAL;
-        if (s.equals("OFF") )     return OFF;
+        if ("TRACE".equals(s))   return TRACE;
+        if ("DEBUG".equals(s))   return DEBUG;
+        if ("SERVICE".equals(s)) return SERVICE;
+        if ("INFO".equals(s))    return INFO;
+        if ("WARN".equals(s))    return WARN;
+        if ("ERROR".equals(s))   return ERROR;
+        if ("FATAL".equals(s))   return FATAL;
+        if ("OFF".equals(s))     return OFF;
 
         return DEBUG;
 
@@ -91,12 +91,12 @@ public final class Level implements java.io.Serializable {
     /**
      * Makes an integer from this object.
      */
-    public final int toInt() {
+    public int toInt() {
         return level;
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return string;
     }
 

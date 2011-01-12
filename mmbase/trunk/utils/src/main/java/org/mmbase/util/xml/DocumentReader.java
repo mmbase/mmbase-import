@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logger;
  * @since MMBase-1.7
  */
 public class DocumentReader  {
-    private static Logger log = Logging.getLoggerInstance(DocumentReader.class);
+    private static final Logger log = Logging.getLoggerInstance(DocumentReader.class);
 
     /** for the document builder of javax.xml. */
     private static Map<String, DocumentBuilder> documentBuilders = Collections.synchronizedMap(new HashMap<String, DocumentBuilder>());
@@ -598,7 +598,7 @@ public class DocumentReader  {
      */
     public static List<Element> getChildElements(Element e, String tag) {
         List<Element> v = new ArrayList<Element>();
-        boolean ignoretag = tag.equals("*");
+        boolean ignoretag = "*".equals(tag);
         if (e != null) {
             NodeList nl = e.getChildNodes();
             for (int i = 0; i < nl.getLength(); i++) {

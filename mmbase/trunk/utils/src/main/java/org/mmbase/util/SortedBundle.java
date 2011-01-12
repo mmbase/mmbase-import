@@ -148,7 +148,7 @@ public class SortedBundle {
      * @throws IllegalArgumentExcpetion  if wrapper is not Comparable.
      */
     public static <C> SortedMap<C, String> getResource(final String baseName,  Locale locale, final ClassLoader loader, final Map<String, Object> constantsProvider, final Class<?> wrapper, Comparator<? super Object> comparator) {
-        String resourceKey = baseName + '/' + locale + (constantsProvider == null ? "" : "" + constantsProvider.hashCode()) + "/" + (comparator == null ? "" : "" + comparator.hashCode()) + "/" + (wrapper == null ? "" : wrapper.getName());
+        //String resourceKey = baseName + '/' + locale + (constantsProvider == null ? "" : "" + constantsProvider.hashCode()) + "/" + (comparator == null ? "" : "" + comparator.hashCode()) + "/" + (wrapper == null ? "" : wrapper.getName());
         @SuppressWarnings("unchecked")
         SortedMap<C, String> m = null; //(SortedMap<C, String>) knownResources.get(resourceKey);
         if (locale == null) locale = LocalizedString.getDefault();

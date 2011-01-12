@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.9.2
- * @version $Id: ChainedList.java 34900 2009-05-01 16:29:42Z michiel $
+ * @version $Id$
  */
 public class ChainedComparator<E> implements Comparator<E> {
 
@@ -30,7 +30,7 @@ public class ChainedComparator<E> implements Comparator<E> {
         }
     }
 
-    public ChainedComparator<E> addComparator(Comparator<E> c) {
+    public final ChainedComparator<E> addComparator(Comparator<E> c) {
         comparators.add(c);
         return this;
     }

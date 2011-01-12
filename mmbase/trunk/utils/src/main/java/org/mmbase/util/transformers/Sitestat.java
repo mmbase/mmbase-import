@@ -15,17 +15,17 @@ import java.io.Writer;
 import org.mmbase.util.logging.*;
 
 /**
- * Transforms the input to the characters which are alowed in Sitestat keys for 
+ * Transforms the input to the characters which are allowed in Sitestat keys for
  * page statistics, being: "A-Z, a-z, 0-9, - . _".
- * 
+ *
  * @author Andre van Toly
  * @since MMBase-1.7
  * @version $Id$
  */
 
 public class Sitestat extends ReaderTransformer implements CharTransformer {
-    private static Logger log = Logging.getLoggerInstance(Sitestat.class);
-    private static String alowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-.";
+    private static final Logger log = Logging.getLoggerInstance(Sitestat.class);
+    private static final String allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-.";
 
     @Override
     public Writer transform(Reader r, Writer w) {
@@ -35,14 +35,14 @@ public class Sitestat extends ReaderTransformer implements CharTransformer {
             while (true) {
                 int c = r.read();
                 if (c == -1) break;
-                if (alowedChars.indexOf((char)c) > -1) {
+                if (allowedChars.indexOf((char)c) > -1) {
                     w.write((char)c);
                     d = c;
                 } else if (d != '_') {
                     w.write('_');
                     d = '_';
                 }
-            }            
+            }
             if (log.isDebugEnabled()) log.debug("Finished transforming string for Sitestat");
         } catch (java.io.IOException e) {
             log.error(e.toString());

@@ -247,10 +247,10 @@ public class UtilReader {
                     for (Element p : DocumentReader.getChildElements(e, "property")) {
                         String name = reader.getElementAttributeValue(p, "name");
                         String type = reader.getElementAttributeValue(p, "type");
-                        if (type.equals("mergingmap") ||
-                            type.equals("map")) {
+                        if ("mergingmap".equals(type) ||
+                            "map".equals(type)) {
                             Collection<Map.Entry<String, String>> entryList = null;
-                            if (type.equals("mergingmap")) {
+                            if ("mergingmap".equals(type)) {
                                 entryList = maps.get(name);
                             }
 
@@ -273,7 +273,7 @@ public class UtilReader {
                                     entryList.add(getEntry(reader, key, value));
                                 }
                             }
-                            if (maps.containsKey(name) && ! type.equals("mergingmap")) {
+                            if (maps.containsKey(name) && ! "mergingmap".equals(type)) {
                                 log.debug("Property '" + name + "' (" + entryList + ") of " + url + " is shadowed");
                             } else {
                                 maps.put(name, entryList);

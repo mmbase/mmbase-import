@@ -67,31 +67,24 @@ public class SimpleImpl extends AbstractSimpleImpl implements Logger {
         StringTokenizer t    = new StringTokenizer(c, ",");
         while (t.hasMoreTokens()) {
             String token = t.nextToken();
-            if (token.equals("stderr")) {
+            if ("stderr".equals(token)) {
                 ps = System.err;
             }
-            if (token.equals("stdout")) {
+            if ("stdout".equals(token)) {
                 ps = System.out;
-            }
-            if (token.equals("trace")) {
+            } else if ("trace".equals(token)) {
                 root.setLevel(Level.TRACE);
-            }
-            if (token.equals("debug")) {
+            } else if ("debug".equals(token)) {
                 root.setLevel(Level.DEBUG);
-            }
-            if (token.equals("service")) {
+            } else if ("service".equals(token)) {
                 root.setLevel(Level.SERVICE);
-            }
-            if (token.equals("info")) {
+            } else if ("info".equals(token)) {
                 root.setLevel(Level.INFO);
-            }
-            if (token.equals("warn")) {
+            } else if ("warn".equals(token)) {
                 root.setLevel(Level.WARN);
-            }
-            if (token.equals("error")) {
+            } else if ("error".equals(token)) {
                 root.setLevel(Level.ERROR);
-            }
-            if (token.equals("fatal")) {
+            } else if ("fatal".equals(token)) {
                 root.setLevel(Level.FATAL);
             }
         }

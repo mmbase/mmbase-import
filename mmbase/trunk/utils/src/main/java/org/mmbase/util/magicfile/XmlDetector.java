@@ -25,7 +25,7 @@ import org.mmbase.util.xml.ErrorHandler;
  * @since MMBase-1.9.3
  */
 
-public class XmlDetector extends AbstractDetector {
+class XmlDetector extends AbstractDetector {
     private static final Logger log = Logging.getLoggerInstance(XmlDetector.class);
 
 

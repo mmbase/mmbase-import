@@ -186,7 +186,7 @@ public class ResourceLoader extends ClassLoader {
      * supposing it is some existing file and return a file: URL. If no such file, only then a
      * MalformedURLException is thrown.
      */
-    protected  URL newURL(final String url) throws MalformedURLException {
+    protected  final URL newURL(final String url) throws MalformedURLException {
         // Try already installed protocols first:
         try {
             return new URL (url);
@@ -551,7 +551,6 @@ public class ResourceLoader extends ClassLoader {
      */
     public List<URL> getResourceList(final String name) {
         try {
-            List<URL> r = Collections.list(getResources(name));
             return Collections.list(getResources(name));
         } catch (IOException io) {
             log.warn(io);
@@ -591,7 +590,7 @@ public class ResourceLoader extends ClassLoader {
      * @see #ResourceLoader(ResourceLoader, String)
      */
     public ResourceLoader getChildResourceLoader(final String context) {
-        if (context.equals("..")) { // should be made a bit smarter, (also recognizing "../..", "/" and those kind of things).
+        if ("..".equals(context)) { // should be made a bit smarter, (also recognizing "../..", "/" and those kind of things).
             return getParentResourceLoader();
         }
         if ("".equals(context) || "/".equals(context)) return this;
@@ -1618,7 +1617,6 @@ public class ResourceLoader extends ClassLoader {
 
         @Override
         protected String getName(URL u) {
-            String n = u.getPath().substring((root +  parent.context.getPath()).length());
             return u.getPath().substring((root +  parent.context.getPath()).length());
         }
         @Override
@@ -1739,7 +1737,9 @@ public class ResourceLoader extends ClassLoader {
                 if (key.startsWith("!")) {
                     String u = reader.getDocument().getDocumentURI();
                     String[] parts = u.split("!", 2);
-                    log.debug(u + "-> " + Arrays.asList(parts));
+                    if (log.isDebugEnabled()) {
+                        log.debug(u + "-> " + Arrays.asList(parts));
+                    }
                     if (parts.length == 2) {
                         key = "\\A" + ReplacingLocalizedString.makeLiteral(parts[0]) + key + "\\z"; // should escape '.' and so one.
                     } else {
@@ -1767,7 +1767,6 @@ public class ResourceLoader extends ClassLoader {
         Collection<Map.Entry<String, String>> col = classWeightProperties.get("classloaderpatterns");
         if (col != null) {
             for (Map.Entry<String, String> entry : col) {
-                String k = entry.getKey();
                 classWeights.put(Pattern.compile(entry.getKey()), Integer.parseInt(entry.getValue()));
             }
         }
@@ -1835,8 +1834,7 @@ public class ResourceLoader extends ClassLoader {
 
                 @Override
                 public int hashCode() {
-                    int hash = 7;
-                    return hash;
+                    return 7;
                 }
             };
         }

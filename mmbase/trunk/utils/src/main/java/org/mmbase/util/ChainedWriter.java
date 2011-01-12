@@ -31,7 +31,7 @@ public class ChainedWriter extends Writer {
         }
     }
 
-    public ChainedWriter addWriter(Writer w) {
+    public final ChainedWriter addWriter(Writer w) {
         writers.add(w);
         return this;
     }

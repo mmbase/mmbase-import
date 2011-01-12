@@ -82,7 +82,6 @@ public class DateParserTest  {
 
     @Test
     public void day() throws ParseException {
-        Date date = DynamicDate.getInstance("today");
         assertValue("today", new int[] {0, 0, 0, NULL, NULL, NULL});
         assertValue("today + 1 day", new int[] {0, 0, 1, NULL, NULL, NULL});
         assertValue("tomorrow", new int[] {0, 0, 1, NULL, NULL, NULL});

@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  */
 
 public abstract class ByteArrayToCharTransformer implements ByteToCharTransformer {
-    private static Logger log = Logging.getLoggerInstance(ByteArrayToCharTransformer.class);
+    private static final Logger log = Logging.getLoggerInstance(ByteArrayToCharTransformer.class);
 
     // javadoc inherited
     @Override

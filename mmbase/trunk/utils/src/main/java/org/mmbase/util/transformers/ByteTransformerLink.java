@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
 
 public class ByteTransformerLink implements Runnable {
 
-    private static Logger log = Logging.getLoggerInstance(ByteTransformerLink.class);
+    private static final Logger log = Logging.getLoggerInstance(ByteTransformerLink.class);
 
     private ByteTransformer transformer;
     private OutputStream     out;

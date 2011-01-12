@@ -18,14 +18,14 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Any non-ASCII character will be replaced by an XML-entity.
- * 
+ *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
  * @version $Id$
  */
 public class XmlEntities extends ReaderTransformer implements CharTransformer {
-    private static Logger log = Logging.getLoggerInstance(XmlEntities.class);
-      
+    private static final Logger log = Logging.getLoggerInstance(XmlEntities.class);
+
     @Override
     public Writer transform(Reader r, Writer w) {
         try {

@@ -255,6 +255,7 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
         b.append("X");
         m.appendTail(b);
         System.out.println("buf : " + b);
+        log.debug(m);
     }
 
 

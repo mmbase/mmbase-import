@@ -196,23 +196,23 @@ public class LocaleCollator  extends Collator implements Serializable {
                 return false;
             }
             if (otherLocale.getCountry().length() > 0 &&
-                locale.getCountry().length() > 0) {
-                if (! otherLocale.getCountry().equals(locale.getCountry())) {
-                    return false;
-                }
+                locale.getCountry().length() > 0 &&
+                ! otherLocale.getCountry().equals(locale.getCountry())) {
+                return false;
             }
             if (otherLocale.getVariant().length() > 0 &&
-                locale.getVariant().length() > 0) {
-                if (! otherLocale.getVariant().equals(locale.getVariant())) {
-                    return false;
-                }
+                locale.getVariant().length() > 0 &&
+                ! otherLocale.getVariant().equals(locale.getVariant())) {
+                return false;
             }
         }
-        if (elements.length > 1) {
-            if (Strength.valueOf(elements[1]).get() != getStrength()) return false;
+        if (elements.length > 1 &&
+            Strength.valueOf(elements[1]).get() != getStrength()) {
+                return false;
         }
-        if (elements.length > 2) {
-            if (Decomposition.valueOf(elements[2]).get() != getDecomposition()) return false;
+        if (elements.length > 2 &&
+            Decomposition.valueOf(elements[2]).get() != getDecomposition()) {
+            return false;
         }
         return true;
     }

@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  * This LocalizedString also has a method {@link #setLocale} which defines its own default locale for {@link #get(Locale)} in case it is called as <code>get(null)</code>.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ReplacingLocalizedString.java 34936 2009-05-04 14:41:51Z michiel $
+ * @version $Id$
  * @since MMBase-1.9.2
  */
 public class LocaleLocalizedString extends ReadonlyLocalizedString {

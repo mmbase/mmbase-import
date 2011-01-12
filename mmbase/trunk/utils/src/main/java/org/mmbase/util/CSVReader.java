@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  */
 public class CSVReader {
 
-    private static Logger log = Logging.getLoggerInstance(CSVReader.class);
+    private static final Logger log = Logging.getLoggerInstance(CSVReader.class);
 
     private static String filename;
     private static String delimiter = ",";
@@ -72,7 +72,7 @@ public class CSVReader {
      * @todo the params are members too, which is a bit confusing for a non-static method.
      *
      */
-    public void readCSV(String filename, String delimiter, String charset) {
+    public final void readCSV(String filename, String delimiter, String charset) {
         if (log.isDebugEnabled()) {
             log.debug("filename: " + filename + ", delimiter: " + delimiter + ", charset: " + charset);
         }
@@ -191,8 +191,7 @@ public class CSVReader {
         sb.append("]+)").append(delimiter).append("?|").append(delimiter);
 
         try {
-            Pattern p = Pattern.compile(sb.toString());
-            return p;
+            return Pattern.compile(sb.toString());
         } catch (PatternSyntaxException pse) {
             log.error("Can not use this delimiter '" + delimiter + "', it causes an exception: " + pse);
             return null;

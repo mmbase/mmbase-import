@@ -50,10 +50,11 @@ package org.mmbase.util;
  *
  * @license Sun license
  * @see     String
- * @author Daniel Ockeloen 
+ * @author Daniel Ockeloen
  * @author Johannes Verelst (bugfix)
  * @author  Arthur van Hoff
  * @version $Id$
+ * @deprecated Use {@link java.util.StringBuilder}
  */
 
 public final class StringObject {
@@ -110,7 +111,7 @@ public final class StringObject {
     /**
      * Copies the buffer value if it is shared.
      */
-    private final void copyWhenShared() {
+    private void copyWhenShared() {
         if (shared) {
             char newValue[] = new char[value.length];
             System.arraycopy(value, 0, newValue, 0, count);
@@ -474,11 +475,11 @@ public final class StringObject {
     // They shouldn't be called by anyone but String.
     // XXX doesn't make sense... if this is package scope how can String call it?
 
-    final void setShared() {
+    void setShared() {
         shared = true;
     }
 
-    final char[] getValue() {
+    char[] getValue() {
         return value;
     }
 
@@ -603,7 +604,7 @@ public final class StringObject {
         }
         return -1;
     }
-    
+
 
     /**
      */

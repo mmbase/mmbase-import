@@ -718,9 +718,9 @@ public class Casting {
                     // try if the value is a string representing a boolean.
                     if(i instanceof String){
                         String s = ((String)i).toLowerCase();
-                        if (s.equals("true") || s.equals("yes")) {
+                        if ("true".equals(s) || "yes".equals(s)) {
                             res = 1;
-                        } else if(s.equals("false") || s.equals("no")) {
+                        } else if("false".equals(s) || "no".equals(s)) {
                             res = 0;
                         }
                     }
@@ -777,7 +777,7 @@ public class Casting {
             // note: we don't use Boolean.valueOf() because that only captures
             // the value "true"
             String s = ((String)b).toLowerCase();
-            return s.equals("true") || s.equals("yes") || s.equals("1");
+            return "true".equals(s) || "yes".equals(s) || "1".equals(s);
         } else {
             return false;
         }
@@ -830,9 +830,9 @@ public class Casting {
         } else if (i != null) {
             if(i instanceof String){
                 String s = ((String)i).toLowerCase();
-                if (s.equals("true") || s.equals("yes")) {
+                if ("true".equals(s) || "yes".equals(s)) {
                     return 1;
-                } else if(s.equals("false") || s.equals("no")) {
+                } else if("false".equals(s) || "no".equals(s)) {
                     return 0;
                 }
             }
@@ -888,9 +888,9 @@ public class Casting {
         } else if (i != null) {
             if(i instanceof String){
                 String s = ((String)i).toLowerCase();
-                if (s.equals("true") || s.equals("yes")) {
+                if ("true".equals(s) || "yes".equals(s)) {
                     res = 1;
-                } else if(s.equals("false") || s.equals("no")) {
+                } else if("false".equals(s) || "no".equals(s)) {
                     res = 0;
                 }
             }
@@ -948,9 +948,9 @@ public class Casting {
 //              try if the value is a string representing a boolean.
                 if(i instanceof String){
                     String s = ((String)i).toLowerCase();
-                    if (s.equals("true") || s.equals("yes")) {
+                    if ("true".equals(s) || "yes".equals(s)) {
                         res = 1;
-                    } else if(s.equals("false") || s.equals("no")) {
+                    } else if ("false".equals(s) || "no".equals(s)) {
                         res = 0;
                     }
                 }
@@ -984,9 +984,9 @@ public class Casting {
             } catch (NumberFormatException nfe) {
                 if(i instanceof String){
                     String s = ((String)i).toLowerCase();
-                    if (s.equals("true") || s.equals("yes")) {
+                    if ("true".equals(s) || "yes".equals(s)) {
                         return BigDecimal.ONE;
-                    } else if(s.equals("false") || s.equals("no")) {
+                    } else if ("false".equals(s) || "no".equals(s)) {
                         return BigDecimal.ZERO;
                     }
                 }
@@ -1038,7 +1038,7 @@ public class Casting {
                     dateInSeconds = -1;
                 } else if (d != null) {
                     d = toString(d);
-                    if (d.equals("")) {
+                    if ("".equals(d)) {
                         return new Date(-1);
                     }
                     dateInSeconds = Long.parseLong((String) d);

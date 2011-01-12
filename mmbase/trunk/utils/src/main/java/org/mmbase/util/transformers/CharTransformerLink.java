@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
 
 public class CharTransformerLink implements Runnable {
 
-    private static Logger log = Logging.getLoggerInstance(CharTransformerLink.class);
+    private static final Logger log = Logging.getLoggerInstance(CharTransformerLink.class);
 
     private CharTransformer charTransformer;
     private Writer     writer;
@@ -39,9 +39,9 @@ public class CharTransformerLink implements Runnable {
         charTransformer = ct;
         closeWriter = cw;
     }
-    
+
     @Override
-    synchronized public  void run() {            
+    synchronized public  void run() {
         try {
             charTransformer.transform(reader, writer);
         } catch (Throwable t) {
