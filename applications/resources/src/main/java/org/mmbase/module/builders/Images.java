@@ -14,6 +14,7 @@ import java.util.*;
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.MMBaseContext;
 import org.mmbase.util.transformers.UrlEscaper;
 import org.mmbase.util.transformers.Xml;
 import org.mmbase.util.images.*;

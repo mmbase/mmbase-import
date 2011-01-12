@@ -17,8 +17,9 @@ import javax.servlet.http.*;
 
 import org.mmbase.util.*;
 import org.mmbase.module.*;
-import org.mmbase.module.core.*;
 import org.mmbase.module.gui.html.*;
+import org.mmbase.module.core.MMBase;
+
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;

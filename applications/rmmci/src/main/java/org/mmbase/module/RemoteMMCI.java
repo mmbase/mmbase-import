@@ -17,9 +17,9 @@ import java.rmi.server.UnicastRemoteObject;
 
 import org.mmbase.bridge.CloudContext;
 import org.mmbase.bridge.LocalContext;
+import org.mmbase.util.MMBaseContext;
 import org.mmbase.bridge.remote.RemoteCloudContext;
 import org.mmbase.bridge.remote.rmi.RemoteCloudContext_Rmi;
-import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.*;
 
 /**
@@ -82,7 +82,7 @@ public class RemoteMMCI extends Module {
         if (bindNameParam != null) {
             if (bindNameParam.equals("$MACHINENAME")) {
                 // use machine name
-                bindName = MMBase.getMMBase().getMachineName();
+                bindName = MMBaseContext.getMachineName();
             } else {
                 bindName = bindNameParam;
             }
@@ -99,8 +99,7 @@ public class RemoteMMCI extends Module {
         if (host == null || host.equals("")) {
             try {
                 // load MMBase and make sure it is started first
-                MMBase mmbase  = MMBase.getMMBase();
-                host = mmbase.getHost();
+                host = MMBaseContext.getHost();
                 log.debug("using host FROM MMBASEROOT " + host);
                 java.net.InetAddress.getByName(host);
             } catch (java.net.UnknownHostException uhn) {

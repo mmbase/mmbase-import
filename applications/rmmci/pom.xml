@@ -111,10 +111,9 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- TODO, DROP FOLLOWING:! -->
     <dependency>
       <groupId>org.mmbase</groupId>
-      <artifactId>mmbase</artifactId>
+      <artifactId>mmbase-core</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
