@@ -45,12 +45,7 @@
   <dependencies>
     <dependency>
       <groupId>org.mmbase</groupId>
-      <artifactId>mmbase</artifactId>
-      <version>${mmbase.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-utils</artifactId>
+      <artifactId>mmbase-core</artifactId>
       <version>${mmbase.version}</version>
     </dependency>
 
