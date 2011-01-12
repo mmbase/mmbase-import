@@ -144,13 +144,6 @@ public class MMBase extends ProcessorModule {
 
 
     /**
-     * The host or ip number of the machine this module is
-     * running on. Its important that this name is set correctly because it is
-     * used for communication between mmbase nodes and external devices
-     */
-    private String host = "unknown";
-
-    /**
      * Authorisation type. Access using getAuthType()
      */
     private String authtype = "none";
@@ -180,16 +173,6 @@ public class MMBase extends ProcessorModule {
 
 
     private TimeZone timeZone = TimeZone.getDefault();
-
-    /**
-     * Currently used encoding. Access using getEncoding(). This
-     * default to ISO-8859-1 as long as support for other encodings is
-     * not thoroughly tested. In the feature we will probably switch
-     * to UTF-8.
-     *
-     * @since MMBase-1.6
-     */
-    private String encoding = "ISO-8859-1";
 
     /**
      * MMBase 'up state. Access using getState()
@@ -340,7 +323,7 @@ public class MMBase extends ProcessorModule {
 
         tmp = getInitParameter("ENCODING");
         if (tmp != null && !tmp.equals("")) {
-            encoding = tmp;
+            MMBaseContext.setEncoding(tmp);
         }
         setMMEntities(false);
 
@@ -364,9 +347,9 @@ public class MMBase extends ProcessorModule {
                 hostParam =hostParam.substring(0, pos) +
                     localHost + hostParam.substring(pos + 12);
             }
-            host = hostParam;
+            MMBaseContext.setHost(hostParam);
         } else {
-            host = localHost;
+            MMBaseContext.setHost(localHost);
         }
 
         setMMEntities(false);
@@ -378,7 +361,7 @@ public class MMBase extends ProcessorModule {
             if (pos != -1) {
                 machineNameParam =
                     machineNameParam.substring(0, pos) +
-                    host + machineNameParam.substring(pos + 7);
+                    MMBaseContext.getHost() + machineNameParam.substring(pos + 7);
             }
             // you may also try to incorporate the username in the machine name
             pos = machineNameParam.indexOf("${USER}");
@@ -388,25 +371,25 @@ public class MMBase extends ProcessorModule {
 
             pos = machineNameParam.indexOf("${CONTEXT}");
             if (pos != -1) {
-                if (! MMBaseContext.htmlRootInitialized) {
+                if (! MMBaseContext.isHtmlRootInitialized()) {
                     LOG.warn("HTML root not yet known. MachineName will not be correct yet.");
                 }
                 machineNameParam = machineNameParam.substring(0, pos) + MMBaseContext.getHtmlRootUrlPath() + machineNameParam.substring(pos + 10);
             }
 
-            MMBaseContext.machineName = machineNameParam;
+            MMBaseContext.setMachineName(machineNameParam);
         } else {
-            if (! MMBaseContext.htmlRootInitialized) {
+            if (! MMBaseContext.isHtmlRootInitialized()) {
                 LOG.warn("HTML root not yet known. MachineName will not be correct yet.");
             }
             // default machine name is the local host name plus context-path.
             // We suppose that that is sufficiently unique in most cases
-            MMBaseContext.machineName = localHost + MMBaseContext.getHtmlRootUrlPath();
+            MMBaseContext.setMachineName(localHost + MMBaseContext.getHtmlRootUrlPath());
 
         }
-        MMBaseContext.INITLOG.info("MMBase machine name used for clustering: '" + MMBaseContext.machineName + "'");
+        MMBaseContext.INITLOG.info("MMBase machine name used for clustering: '" + getMachineName() + "'");
 
-        EventManager.getInstance().propagateEvent(new SystemEvent.MachineName(MMBaseContext.machineName), true);
+        EventManager.getInstance().propagateEvent(new SystemEvent.MachineName(getMachineName()), true);
 
         setMMEntities(false);
 
@@ -660,7 +643,7 @@ public class MMBase extends ProcessorModule {
      * @return a <code>MMObjectBuilder</code> if found, <code>null</code> otherwise
      */
     public MMObjectBuilder getMMObject(String name) {
-        if (name == null) throw new RuntimeException("Cannot get builder with name 'NULL' in " + MMBaseContext.machineName);
+        if (name == null) throw new RuntimeException("Cannot get builder with name 'NULL' in " + MMBaseContext.getMachineName());
         MMObjectBuilder o = mmobjs != null ? mmobjs.get(name) : null;
         if (o == null) {
             LOG.trace("MMObject " + name + " could not be found"); // can happen...
@@ -807,8 +790,8 @@ public class MMBase extends ProcessorModule {
      * This value is set using the configuration file.
      * @return the machine name as a <code>String</code>. Or <code>null</code> if not yet determined.
      */
-    public String getMachineName() {
-        return MMBaseContext.machineName;
+    public final String getMachineName() {
+        return MMBaseContext.getMachineName();
     }
 
     /**
@@ -817,7 +800,7 @@ public class MMBase extends ProcessorModule {
      * @return the host name as a <code>String</code>
      */
     public String getHost() {
-        return host;
+        return MMBaseContext.getHost();
     }
 
     /**
@@ -1318,7 +1301,7 @@ public class MMBase extends ProcessorModule {
      * @since  MMBase-1.6
      */
     public String getEncoding() {
-        return encoding;
+        return MMBaseContext.getEncoding();
     }
 
     /**
