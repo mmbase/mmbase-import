@@ -103,7 +103,7 @@ public abstract class Instantiator {
             break;
         }
         if (constructor == null) {
-            throw new NoSuchMethodError("No constructors found for " + args);
+            throw new NoSuchMethodError("No constructors found for " + claz + " " + Arrays.asList(args));
         }
         log.debug("Found constructor " + constructor);
 
