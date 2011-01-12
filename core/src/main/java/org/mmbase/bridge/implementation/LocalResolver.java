@@ -1,4 +1,4 @@
-package org.mmbase.bridge;
+package org.mmbase.bridge.implementation;
 
 /**
  * The resolver recognizing only the string 'local', which then returns {@link LocalContext#getCloudContext}.
@@ -10,7 +10,7 @@ public class LocalResolver extends ContextProvider.Resolver {
     @Override
     public CloudContext resolve(String uri) {
         if (uri.equals("local")){
-            return LocalContext.getCloudContext();
+            return org.mmbase.bridge.LocalContext.getCloudContext();
         } else {
             return null;
         }
