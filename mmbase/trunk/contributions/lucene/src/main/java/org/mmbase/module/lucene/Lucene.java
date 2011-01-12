@@ -22,7 +22,8 @@ import org.mmbase.cache.*;
 import org.mmbase.module.ReloadableModule;
 
 import org.mmbase.core.event.*;
-import org.mmbase.module.core.*;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.bridge.util.xml.query.*;
 import org.mmbase.bridge.util.BridgeCollections;
 import org.mmbase.util.*;
