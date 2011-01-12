@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpSession;
 
 import org.mmbase.bridge.*;
+import org.mmbase.util.MMBaseContext;
 import org.mmbase.cache.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
