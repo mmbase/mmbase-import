@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.core;
+package org.mmbase.bridge.util;
 
 import java.util.*;
 import org.mmbase.util.PublicCloneable;

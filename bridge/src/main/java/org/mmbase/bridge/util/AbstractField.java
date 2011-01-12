@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.core;
+package org.mmbase.bridge.util;
 
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.DataType;
