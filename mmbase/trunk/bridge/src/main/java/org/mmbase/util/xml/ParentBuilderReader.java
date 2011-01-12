@@ -12,10 +12,11 @@ package org.mmbase.util.xml;
 
 import org.mmbase.datatypes.DataType;
 import org.mmbase.datatypes.Constants;
-import org.mmbase.core.util.DataTypeSetter;
+import org.mmbase.bridge.util.DataTypeSetter;
 import org.mmbase.util.xml.AbstractBuilderReader;
-import org.mmbase.bridge.mock.MockField;
 import org.mmbase.bridge.util.NodeManagerDescription;
+import org.mmbase.bridge.mock.MockField;
+
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.xml.sax.InputSource;

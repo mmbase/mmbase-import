@@ -29,6 +29,8 @@ public class LanguageDataType extends StringDataType {
 
     protected boolean languageInSelf = false;
 
+    //protected String restrict = ;
+
     public LanguageDataType(String name) {
         super(name);
     }
