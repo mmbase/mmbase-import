@@ -29,7 +29,14 @@ public class CommandExecutor {
     private static final Logger LOG = Logging.getLoggerInstance(CommandExecutor.class);
 
     public static enum Type {
+        /**
+         * A command executor of this type, simpy call System.exec itself to lauch the external command itself.
+         */
         LAUNCHER,
+        /**
+         * A command executor of this type, makes a tcp connection to a 'commandserver'
+         * (See <a href="http://www.mmbase.org/api/trunk/mmbase-commandserver/org/mmbase/util/CommandServer.html">Command Server</a>)
+         */
         CONNECTOR;
     }
 
