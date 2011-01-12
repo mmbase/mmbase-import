@@ -14,13 +14,13 @@ package org.mmbase.util.transformers;
  *
  * Figlet output is only fit for text/plain output, or perhaps for &lt;pre&gt; tags...
  *
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  * @since MMBase-1.7
  * @version $Id$
  * @todo   no way to specify commandline arguments on the fly.
  */
 
-public class Figlet extends AbstractCommandStringTransformer implements CharTransformer {
+public class Figlet extends AbstractCommandStringTransformer  {
     private static final long serialVersionUID = 0L;
     @Override
     protected String[] getCommand() {

@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 
-public class UnicodeEscaper extends ReaderTransformer implements CharTransformer {
+public class UnicodeEscaper extends ReaderTransformer  {
     private static final Logger log = Logging.getLoggerInstance(UnicodeEscaper.class);
 
     private boolean escapeLow = false;
