@@ -51,9 +51,9 @@ public class DateFormats {
                 df = DateFormat.getDateTimeInstance(getDateFormatStyle(format.substring(1, i)),
                                                             getDateFormatStyle(format.substring(i+1)), locale);
             }
-        } else if (format.equals("e")) {
+        } else if ("e".equals(format)) {
             df = new DayOfWeekDateFormat();
-        } else if (format.equals("RFC822") || format.equals("rfc822")) {
+        } else if ("RFC822".equals(format) || "rfc822".equals(format)) {
             df = new SimpleDateFormat("EE, dd MMM yyyy HH:mm:ss Z", Locale.US);
             timeZone = "UTC";
         } else {

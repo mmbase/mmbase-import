@@ -37,7 +37,6 @@ public class MagicParser implements DetectorProvider {
 
     private int offset;
     private String type;
-    private String typeAND;
     private String test;
     private String message;
     private char testComparator;
@@ -104,7 +103,7 @@ public class MagicParser implements DetectorProvider {
      * @return new offset after processing
      * @throws Exception Throws an exception when parsing failed
      */
-    private int parseOffsetString(String s, int startIndex) throws Exception {
+    private final int parseOffsetString(String s, int startIndex) throws Exception {
         try {
             int m = nextWhiteSpace(s, startIndex);
 
@@ -142,10 +141,8 @@ public class MagicParser implements DetectorProvider {
         int n = s.indexOf('&', startIndex);
         if (n > -1 && n < m - 2) {
             type = s.substring(startIndex, n);
-            typeAND = s.substring(n + 1, m);
         } else {
             type = s.substring(startIndex, m);
-            typeAND = "0";
         }
         return nextNonWhiteSpace(s, m + 1);
     }
@@ -192,19 +189,19 @@ public class MagicParser implements DetectorProvider {
         }
         int i = startIndex + start;
 
-        if (!type.equals("string")) {
+        if (!"string".equals(type)) {
             int m = nextWhiteSpace(s, i);
             String t = s.substring(i, m);
-            if (t.equals("x")) {
+            if ("x".equals(t)) {
                 test = "x";
-            } else if (type.equals("beshort") || type.equals("leshort")) {
+            } else if ("beshort".equals(type) || "leshort".equals(type)) {
                 try {
                     test = "0x" + Integer.toHexString(Integer.decode(s.substring(i, m)).intValue());
                     //test.addElement(Integer.decode(s.substring(i,m)));
                 } catch (NumberFormatException e) {
                     throw new Exception("decode(" + s.substring(i, m) + ")");
                 }
-            } else if (type.equals("belong") || type.equals("lelong")) {
+            } else if ("belong".equals(test) || "lelong".equals(test)) {
                 // Values possibly too long for Integer, while Long type won't parse :-(
                 int endIndex = m;
                 try {
@@ -218,7 +215,7 @@ public class MagicParser implements DetectorProvider {
                     log.error(Logging.stackTrace(e));
                     throw new Exception("parseLong(" + s.substring(i, endIndex) + ") ");
                 }
-            } else if (type.equals("byte")) {
+            } else if ("byte".equals(type)) {
                 try {
                     test = "0x" + Integer.toHexString(Integer.decode(s.substring(i, m)).intValue());
                     //test.addElement(Integer.decode(s.substring(i,m)));
@@ -430,14 +427,12 @@ public class MagicParser implements DetectorProvider {
      * @throws Exception Throws an exception when parsing failed
      */
     private int parseMessageString(String s, int startIndex) throws Exception {
-        if (false)
-            throw new Exception("dummy exception to stop jikes from complaining");
         message = s.substring(startIndex);
         return s.length() - 1;
 
     }
 
-    private Detector createDetector(String line) {
+    private final Detector createDetector(String line) {
         BasicDetector detector = new BasicDetector();
         // rawinput = line;
 

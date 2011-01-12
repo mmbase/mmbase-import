@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.util.*;
-import org.mmbase.util.logging.*;
 
 /**
  * Extends and wraps LocalizedString, to make it readonly
@@ -21,9 +20,6 @@ import org.mmbase.util.logging.*;
  */
 public class ReadonlyLocalizedString extends WrappedLocalizedString {
     private static final long serialVersionUID = 0L;
-
-    private static final Logger log = Logging.getLoggerInstance(WrappedLocalizedString.class);
-
 
     /**
      * @param s The wrapped LocalizedString.

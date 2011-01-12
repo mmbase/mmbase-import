@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.9.5
- * @version $Id: ChainedWriter.java 34900 2009-05-01 16:29:42Z michiel $
+ * @version $Id$
  */
 public class ChainedRunnable implements Runnable {
 
@@ -28,7 +28,7 @@ public class ChainedRunnable implements Runnable {
         }
     }
 
-    public ChainedRunnable add(Runnable r) {
+    public final ChainedRunnable add(Runnable r) {
         runnables.add(r);
         return this;
     }

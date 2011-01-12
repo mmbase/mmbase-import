@@ -58,7 +58,6 @@ public class LinkFinder extends RegexpReplacer {
         patterns.add(new Entry<Pattern,String>(Pattern.compile("https://.+"), "<a href=\"$0\">$0</a>"));
         patterns.add(new Entry<Pattern,String>(Pattern.compile("ftp://.+"),   "<a href=\"$0\">$0</a>"));
         patterns.add(new Entry<Pattern,String>(Pattern.compile("www\\..+"),   "<a href=\"http://$0\">$0</a>"));
-        return;
     }
 
 

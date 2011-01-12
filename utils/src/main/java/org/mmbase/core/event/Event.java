@@ -8,7 +8,7 @@ package org.mmbase.core.event;
 
 import java.io.Serializable;
 
-import org.mmbase.module.core.MMBaseContext;
+import org.mmbase.util.MMBaseContext;
 
 /**
  * This class is the base class for all mmbase events

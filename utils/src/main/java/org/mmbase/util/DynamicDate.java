@@ -49,7 +49,7 @@ public class DynamicDate extends Date {
      * If the request date is not dynamic, but absolutely defined, a normal Date object is returned.
      */
     public static Date getInstance(final String format) throws ParseException {
-        if (format.equals("null")) return null;
+        if ("null".equals(format)) return null;
         DateParser parser = new DateParser(new java.io.StringReader(format));
         try {
             parser.start();

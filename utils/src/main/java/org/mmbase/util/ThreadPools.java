@@ -220,19 +220,19 @@ public abstract class ThreadPools {
      * @since MMBase-1.9.2
      */
     static protected void setProperty(ThreadPoolExecutor object, String key, String value) {
-        if (key.equals("maxsize")) {
+        if ("maxsize".equals(key)) {
             int newSize = Integer.parseInt(value);
             if (object.getMaximumPoolSize() !=  newSize) {
                 LOG.info("Setting max pool size from " + object.getMaximumPoolSize() + " to " + newSize);
                 object.setMaximumPoolSize(newSize);
             }
-        } else if (key.equals("coresize")) {
+        } else if ("coresize".equals(key)) {
             int newSize = Integer.parseInt(value);
             if (object.getCorePoolSize() != newSize) {
                 LOG.info("Setting core pool size from " + object.getCorePoolSize() + " to " + newSize);
                 object.setCorePoolSize(newSize);
             }
-        } else if (key.equals("keepAliveTime")) {
+        } else if ("keepAliveTime".equals(key)) {
             int newTime = Integer.parseInt(value);
             if (object.getKeepAliveTime(TimeUnit.SECONDS) != newTime) {
                 LOG.info("Setting keep alive time  from " + object.getKeepAliveTime(TimeUnit.SECONDS) + " to " + newTime);

@@ -17,13 +17,13 @@ import org.mmbase.util.logging.*;
 /**
  * A 'hello world' for CharTransformers.
  *
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  * @since MMBase-1.7
  * @version $Id$
  */
 
 public class UpperCaser extends ReaderTransformer implements CharTransformer {
-    private static Logger log = Logging.getLoggerInstance(UpperCaser.class);
+    private static final Logger log = Logging.getLoggerInstance(UpperCaser.class);
 
     @Override
     public Writer transform(Reader r, Writer w) {
@@ -33,7 +33,7 @@ public class UpperCaser extends ReaderTransformer implements CharTransformer {
                 int c = r.read();
                 if (c == -1) break;
                 w.write(Character.toUpperCase((char) c));
-            }            
+            }
             log.debug("Finished uppercasing");
         } catch (java.io.IOException e) {
             log.error(e.toString());

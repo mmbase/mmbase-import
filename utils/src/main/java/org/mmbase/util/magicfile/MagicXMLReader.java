@@ -17,7 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class MagicXMLReader extends DocumentReader implements DetectorProvider {
 
-    private static Logger log = Logging.getLoggerInstance(MagicXMLReader.class);
+    private static final Logger log = Logging.getLoggerInstance(MagicXMLReader.class);
 
     private static DetectorProvider provider;
 

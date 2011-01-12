@@ -206,7 +206,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
      * A new logging method that takes the TRACE priority.
      */
     @Override
-    public final void trace(Object message) {
+    public void trace(Object message) {
         // disable is defined in Category
         if (log4jRepository.isDisabled(Log4jLevel.TRACE_INT)) {
             return;
@@ -217,7 +217,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     }
 
     @Override
-    public final void trace(Object message, Throwable t) {
+    public void trace(Object message, Throwable t) {
         // disable is defined in Category
         if (log4jRepository.isDisabled(Log4jLevel.TRACE_INT)) {
             return;
@@ -231,7 +231,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
      *  A new logging method that takes the SERVICE priority.
      */
     @Override
-    public final void service(Object message) {
+    public void service(Object message) {
         // disable is defined in Category
         if (log4jRepository.isDisabled(Log4jLevel.SERVICE_INT)) {
             return;
@@ -242,7 +242,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     }
 
     @Override
-    public final void service(Object message, Throwable t) {
+    public void service(Object message, Throwable t) {
         // disable is defined in Category
         if (log4jRepository.isDisabled(Log4jLevel.SERVICE_INT)) {
             return;
@@ -253,21 +253,21 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     }
 
     @Override
-    public final boolean isServiceEnabled() {
+    public boolean isServiceEnabled() {
         if(log4jRepository.isDisabled( Log4jLevel.SERVICE_INT))
             return false;
         return Log4jLevel.SERVICE.isGreaterOrEqual(this.getEffectiveLevel());
     }
 
     @Override
-    public final boolean isTraceEnabled() {
+    public boolean isTraceEnabled() {
         if(log4jRepository.isDisabled( Log4jLevel.TRACE_INT))
             return false;
         return Log4jLevel.TRACE.isGreaterOrEqual(this.getEffectiveLevel());
     }
 
     @Override
-    public final boolean isEnabledFor(Level l) {
+    public boolean isEnabledFor(Level l) {
         return ! log4jRepository.isDisabled(l.toInt());
     }
 
@@ -295,12 +295,12 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
     private static class LoggerStream extends PrintStream {
 
-        private Logger log;
+        private final Logger log;
 
         private int checkCount = 0;         // needed to avoid infinite
         // recursion in some errorneos situations.
 
-        LoggerStream (Log4jImpl l) throws IllegalArgumentException {
+        LoggerStream(Log4jImpl l) throws IllegalArgumentException {
             super(System.out);
             if (l == null) {
                 throw new IllegalArgumentException("logger == null");
@@ -308,9 +308,10 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
             log = l;
         }
 
-        private LoggerStream () {
+        private LoggerStream() {
             // do not use.
             super(System.out);
+            log = null;
         }
         // simply overriding all methods that possibly could be used (forgotten some still)
         @Override

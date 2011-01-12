@@ -105,17 +105,6 @@ public class UrlEscaper extends ReaderTransformer{
         }
     }
 
-    /**
-     * converts a HEX-character to its approprtiate byte value.
-     * i.e. 'A' is returned as '/011'
-     * @param c the Hex character
-     * @return the byte value as a <code>char</code>
-     */
-    private static char from_hex(char c) {
-        return (char)(c >= '0' && c <= '9' ? c - '0'
-            : c >= 'A' && c <= 'F' ? c - 'A' + 10
-            : c - 'a' + 10);            /* accept small letters just in case */
-    }
 
     /**
      * Unescape a url.

@@ -14,16 +14,16 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * Adaptor class to convert jakarta-commons Log calls to MMBase Logger calls.<br/>
- * <br/> 
- * 
+ * <br/>
+ *
  * @author Kees Jongenburger
  */
 public class MMBaseLogger implements Log {
 
-    protected Logger logger;
+    protected final Logger logger;
 
     /**
-     * creates a new adaptor 
+     * creates a new adaptor
      * @param logger the logger to use
      */
     MMBaseLogger(Logger logger) {
@@ -110,15 +110,15 @@ public class MMBaseLogger implements Log {
     }
 
     /**
-     * calls {@link org.mmbase.util.logging.Logger#error(java.lang.Object)} 
+     * calls {@link org.mmbase.util.logging.Logger#error(java.lang.Object)}
      */
     @Override
     public void error(Object object) {
         logger.error(object);
     }
-    
+
     /**
-     * calls {@link org.mmbase.util.logging.Logger#fatal(java.lang.Object)} 
+     * calls {@link org.mmbase.util.logging.Logger#fatal(java.lang.Object)}
      */
     @Override
     public void fatal(Object object) {

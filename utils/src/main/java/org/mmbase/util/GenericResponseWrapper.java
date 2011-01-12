@@ -403,13 +403,13 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      * @return A charset.
      */
     public static String getDefaultEncoding(String contentType) {
-        if (contentType.equals("text/xml")) {
+        if ("text/xml".equals(contentType)) {
             return TEXT_XML_DEFAULT_CHARSET; // = us-ascii, See
                                              // http://www.rfc-editor.org/rfc/rfc3023.txt.  We will
                                              // ignore it, because if not not ascii, it will never
                                              // work, and all known charset are superset of us-ascii
                                              // (so the response _is_ correct it will work).
-        } else if ( contentType.equals("application/xml") || contentType.equals("application/xhtml+xml")) {
+        } else if ("application/xml".equals(contentType) || "application/xhtml+xml".equals(contentType)) {
             return "UTF-8";
         } else {
             return "iso-8859-1";

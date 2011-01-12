@@ -43,7 +43,7 @@ import org.mmbase.util.ResourceLoader;
 
 public final class Impl implements Logger {
 
-    private static Logger log = Logging.getLoggerInstance(Impl.class);
+    private static final Logger log = Logging.getLoggerInstance(Impl.class);
     private static ResourceWatcher configWatcher;
 
     private final java.util.logging.Logger logger;
@@ -75,7 +75,7 @@ public final class Impl implements Logger {
      **/
 
     public static void configure(String s) {
-        if (s.equals("")) {
+        if ("".equals(s)) {
             System.out.println("Using default java logging configuration");
         } else {
             try {

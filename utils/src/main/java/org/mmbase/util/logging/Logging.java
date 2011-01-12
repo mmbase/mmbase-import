@@ -102,8 +102,7 @@ public class Logging {
      */
     public static Map<String, String> getInitParameters() {
         try {
-            Map<String, String> contextMap = ApplicationContextReader.getProperties("mmbase-logging");
-            return contextMap;
+            return ApplicationContextReader.getProperties("mmbase-logging");
         } catch (javax.naming.NamingException ne) {
             log.debug("Can't obtain properties from application context: " + ne.getMessage());
             return new HashMap<String, String>();

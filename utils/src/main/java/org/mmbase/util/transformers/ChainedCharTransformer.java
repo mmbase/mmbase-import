@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
 
 public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {
     private static final long serialVersionUID = 0L;
-    private static Logger log = Logging.getLoggerInstance(ChainedCharTransformer.class);
+    private static final Logger log = Logging.getLoggerInstance(ChainedCharTransformer.class);
 
     private List<CharTransformer> charTransformers = new ArrayList<CharTransformer>();
 

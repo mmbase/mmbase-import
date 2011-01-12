@@ -18,12 +18,12 @@ import org.mmbase.util.logging.*;
 /**
  * A detector which can match on zipfiles. On containing files and directories.
  *
- * @version $Id: XmlDetector.java 44096 2010-12-19 11:21:12Z michiel $
+ * @version $Id$
  * @author Michiel Meeuwissen
  * @since MMBase-2.0
  */
 
-public class ZipDetector extends AbstractDetector {
+class ZipDetector extends AbstractDetector {
     private static final Logger LOG = Logging.getLoggerInstance(ZipDetector.class);
 
 
@@ -64,22 +64,18 @@ public class ZipDetector extends AbstractDetector {
             while((ze = zis.getNextEntry()) != null) {
                 String name = ze.getName();
                 for (Map.Entry<Pattern, Boolean> e : matchedFiles.entrySet()) {
-                    if (! e.getValue()) {
-                        if (e.getKey().matcher(name).matches()) {
-                            LOG.debug("Matched " + e.getKey() + " on" + ze);
-                            e.setValue(true);
-                        }
+                    if (! e.getValue() && e.getKey().matcher(name).matches()) {
+                        LOG.debug("Matched " + e.getKey() + " on" + ze);
+                        e.setValue(true);
                     }
                 }
                 int dirIndex = name.lastIndexOf("/");
                 if (dirIndex > 0) {
                     String dir = name.substring(0, dirIndex);
                     for (Map.Entry<Pattern, Boolean> e : matchedDirectories.entrySet()) {
-                        if (! e.getValue()) {
-                            if (e.getKey().matcher(dir).matches()) {
-                                LOG.debug("Matched " + e.getKey() + " on " + dir);
-                                e.setValue(true);
-                            }
+                        if (! e.getValue() && e.getKey().matcher(dir).matches()) {
+                            LOG.debug("Matched " + e.getKey() + " on " + dir);
+                            e.setValue(true);
                         }
                     }
                 }

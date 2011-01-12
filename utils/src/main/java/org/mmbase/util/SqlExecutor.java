@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.9.5
  * @author Michiel Meeuwissen
- * @version $Id: FullBackupDataWriter.java 34900 2009-05-01 16:29:42Z michiel $
+ * @version $Id$
  */
 
 

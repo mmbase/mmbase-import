@@ -52,7 +52,7 @@ import org.mmbase.util.transformers.*;
  **/
 public class Encode {
 
-    private static Logger log;
+    private static final Logger log = Logging.getLoggerInstance(Encode.class);
 
     private Transformer trans; // the instance of the object doing the actual work.
 
@@ -60,7 +60,6 @@ public class Encode {
     private  static Set<String> registered = new HashSet<String>();  // in this is remembered which classes were registered, to avoid registering them more than once.
 
     static {
-        log = Logging.getLoggerInstance(Encode.class);
         encodings = new HashMap<String,Config>();
 
         // a few Encoding are avaible by default:
@@ -292,7 +291,7 @@ public class Encode {
      */
     public static void  main(String[] argv) {
         try {
-            org.mmbase.module.core.MMBaseContext.init(System.getProperty("mmbase.config"), false);
+            MMBaseContext.init(System.getProperty("mmbase.config"), false);
         } catch (Throwable e) {
             System.err.println("Could not intialize mmbase context, proceeding without it: " + e.getMessage());
         }

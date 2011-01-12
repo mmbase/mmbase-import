@@ -36,7 +36,7 @@ public class Version {
      * @since MMBase-1.9
      */
     public static String getTag() {
-        String url = "$URL$";
+        String url = "$URL: https://scm.mmbase.org/mmbase/trunk/utils/src/main/java/org/mmbase/Version.java $";
         Matcher matcher = SCM.matcher(url);
         if (matcher.matches()) {
             String[] group = matcher.group(1).split("/", 3);

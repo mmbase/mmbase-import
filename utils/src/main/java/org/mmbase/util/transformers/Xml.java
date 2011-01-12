@@ -192,22 +192,17 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
                 }
                 String entity = data.substring(i+1,end);
                 i+= entity.length()  + 1;
-                if (entity.equals("amp")){
+                if ("amp".equals(entity)) {
                     sb.append('&');
-                }
-                else if (entity.equals("lt")){
+                } else if ("lt".equals(entity)) {
                     sb.append('<');
-                }
-                else if (entity.equals("gt")){
+                } else if ("gt".equals(entity)) {
                     sb.append('>');
-                }
-                else if (entity.equals("quot")){
+                } else if ("quot".equals(entity)) {
                     sb.append('"');
-                }
-                else if (entity.equals("apos")){
+                } else if ("apos".equals(entity)) {
                     sb.append('\'');
-                }
-                else {
+                } else {
                     sb.append("&").append(entity).append(";");
                 }
             }

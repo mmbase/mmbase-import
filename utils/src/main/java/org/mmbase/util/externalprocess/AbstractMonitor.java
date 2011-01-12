@@ -14,7 +14,7 @@ package org.mmbase.util.externalprocess;
  * straight forward or empty way.
  *
  * @author Michiel Meeuwissen
- * @version $Id: IProgressMonitor.java 34900 2009-05-01 16:29:42Z michiel $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 public abstract class AbstractMonitor implements IProgressMonitor {

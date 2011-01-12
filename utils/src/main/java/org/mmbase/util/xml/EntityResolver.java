@@ -39,7 +39,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
     public static final String XMLNS_SUBPATH = "xmlns/";
     private static final String XSD_SUBPATH = "xsd/"; // deprecated
 
-    private static Logger log = Logging.getLoggerInstance(EntityResolver.class);
+    private static final Logger log = Logging.getLoggerInstance(EntityResolver.class);
     static {
         //log.setLevel(Level.DEBUG);
     }
@@ -230,23 +230,22 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
                 for (Method m : o.getClass().getMethods()) {
                     String name = m.getName();
                     if (m.getParameterTypes().length == 0 &&
-                        ! name.equals("getNodes")  &&
-                        ! name.equals("getConnection") && // see  	 MMB-1490, we should not call
+                        ! "getNodes".equals(name)  &&
+                        ! "getConnection".equals(name) && // see MMB-1490, we should not call
                         // getConnection, while we won't close it.
                         name.length() > 3 && name.startsWith("get") && Character.isUpperCase(name.charAt(3))) {
                         try {
                             Class<?> rt = m.getReturnType();
                             boolean invoked = false;
                             Object value = null;
-                            if (Casting.isStringRepresentable(rt)) {
-                                if (! Map.class.isAssignableFrom(rt) && ! Collection.class.isAssignableFrom(rt)) {
-                                    value = m.invoke(o); invoked = true;
-                                    sb.append("<!ENTITY ");
-                                    sb.append(prefix);
-                                    sb.append('.');
-                                    camelAppend(sb, name.substring(3));
-                                    sb.append(" \"").append(org.mmbase.util.transformers.Xml.XMLAttributeEscape("" + value, '"').replaceAll("%", "&#x25;")).append("\">\n");
-                                }
+                            if (Casting.isStringRepresentable(rt) &&
+                                ! Map.class.isAssignableFrom(rt) && ! Collection.class.isAssignableFrom(rt)) {
+                                value = m.invoke(o); invoked = true;
+                                sb.append("<!ENTITY ");
+                                sb.append(prefix);
+                                sb.append('.');
+                                camelAppend(sb, name.substring(3));
+                                sb.append(" \"").append(org.mmbase.util.transformers.Xml.XMLAttributeEscape("" + value, '"').replaceAll("%", "&#x25;")).append("\">\n");
                             }
                             if (! rt.getName().startsWith("java.lang")) {
                                 if (! invoked) value = m.invoke(o);
