@@ -48,7 +48,7 @@ public abstract class Instantiator {
 
 
     /**
-     * @see {@link #getInstance(Class, Element, Object...)}
+     * @see {@link #getInstance(Class,Element,Object...)}
      * @since MMBase-1.9.6
      */
     public static Class getClass(Element classElement) throws ClassNotFoundException {
@@ -67,7 +67,7 @@ public abstract class Instantiator {
         return Class.forName(className);
     }
     /**
-     * @see {@link #getInstance(Class, Element, Object...)}
+     * @see {@link #getInstance(Class,Element,Object...)}
      */
     public static Object getInstance(Element classElement, Object... args)
         throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
