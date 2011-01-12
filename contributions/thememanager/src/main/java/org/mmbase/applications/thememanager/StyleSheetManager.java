@@ -15,7 +15,6 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 import org.w3c.dom.*;
-import org.mmbase.module.core.*;
 
 import org.mmbase.util.*;
 
@@ -28,8 +27,8 @@ import org.mmbase.util.logging.Logger;
  * @version $Id$
  */
 public class StyleSheetManager {
- 
-    static private Logger log = Logging.getLoggerInstance(StyleSheetManager.class); 
+
+    static private Logger log = Logging.getLoggerInstance(StyleSheetManager.class);
     private final String id;
     private final Map<String, StyleSheetClass> stylesheetclasses = new HashMap<String, StyleSheetClass>();
 
@@ -110,7 +109,7 @@ public class StyleSheetManager {
             while ((str = in.readLine()) != null && str.indexOf("}")==-1) {
                 int pos = str.indexOf(":");
                 if (pos!=-1) {
-                    String name = str.substring(0,pos);    
+                    String name = str.substring(0,pos);
                     name = Strip.whitespace(name,Strip.BOTH);
                     int end = str.indexOf(";");
                     if (end!=-1) {
@@ -127,7 +126,7 @@ public class StyleSheetManager {
 
 
     static boolean saveFile(String filename,String value) {
-        try {                
+        try {
             Writer wr = ResourceLoader.getWebRoot().getWriter(filename);
             wr.write(value);
             wr.flush();

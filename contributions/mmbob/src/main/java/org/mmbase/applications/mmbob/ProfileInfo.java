@@ -16,6 +16,7 @@ import java.util.*;
 import java.io.*;
 import org.mmbase.util.*;
 import org.mmbase.util.xml.*;
+import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -34,8 +35,8 @@ import org.xml.sax.*;
  * @version $Id$
  */
 public class ProfileInfo {
- 
-    static private final Logger log = Logging.getLoggerInstance(ProfileInfo.class); 
+
+    static private final Logger log = Logging.getLoggerInstance(ProfileInfo.class);
 
     private int id = -1;
     private Poster parent;
@@ -50,10 +51,9 @@ public class ProfileInfo {
 
     /**
      * Register the Public Ids for DTDs used by DatabaseReader
-     * This method is called by XMLEntityResolver.
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_PROFILEINFO_1_0, DTD_PROFILEINFO_1_0, ProfileInfo.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_PROFILEINFO_1_0, DTD_PROFILEINFO_1_0, ProfileInfo.class);
     }
 
     public ProfileInfo(Poster parent) {
@@ -73,7 +73,7 @@ public class ProfileInfo {
 	this.forum = parent.getParent();
 	//syncExternals();
     }
- 
+
 
     public int getId() {
 	return id;
@@ -119,7 +119,7 @@ public class ProfileInfo {
                             if (n2 != null) {
                                 name = n2.getNodeValue();
                             }
-			
+
                             // decode synced
                             n2 = nm.getNamedItem("synced");
                             if (n2 != null) {
@@ -165,7 +165,7 @@ public class ProfileInfo {
 	pe.setName(name);
 	String oldvalue = getValue(name).getValue();
 	if (oldvalue==null || !oldvalue.equals(value)) {
-            pe.setValue(value);	
+            pe.setValue(value);
             pe.setSynced(false);
             setSynced(false);
             save();
@@ -193,7 +193,7 @@ public class ProfileInfo {
             body += "\t<entry name=\""+pe.getName()+"\"><![CDATA["+pe.getValue()+"]]></entry>\n";
 	}
 	body += "</profileinfo>\n";
-	return body; 
+	return body;
     }
 
     private void syncExternals() {

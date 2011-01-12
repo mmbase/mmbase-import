@@ -27,8 +27,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.xml.sax.InputSource;
 
 import org.mmbase.util.FileWatcher;
-import org.mmbase.util.XMLErrorHandler;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.ErrorHandler;
+import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.functions.*;
 
@@ -74,7 +74,7 @@ public class ASelectAuthentication extends CloudContextAuthentication {
     public static final String NAMESPACE = "http://www.mmbase.org/xmlns/aselect";
 
     static {
-        XMLEntityResolver.registerSystemID(XSD_LOC, XSD, ASelectAuthentication.class);
+        EntityResolver.registerSystemID(XSD_LOC, XSD, ASelectAuthentication.class);
     }
 
 
@@ -196,7 +196,7 @@ public class ASelectAuthentication extends CloudContextAuthentication {
         try {
             log.service("Reading resource: " + configResource);
             if (configResource.endsWith(".xml")) {
-                DocumentBuilder db = DocumentReader.getDocumentBuilder(true, true, new XMLErrorHandler(), new XMLEntityResolver(true, ASelectAuthentication.class));
+                DocumentBuilder db = DocumentReader.getDocumentBuilder(true, true, new ErrorHandler(), new EntityResolver(true, ASelectAuthentication.class));
                 InputSource is = MMBaseCopConfig.securityLoader.getInputSource(configResource);
                 if (is != null) {
                     Document doc = db.parse(is);

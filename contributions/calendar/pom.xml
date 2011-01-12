@@ -99,7 +99,7 @@
     <dependency>
       <!-- GUIFunction is there :-( -->
       <groupId>org.mmbase</groupId>
-      <artifactId>mmbase</artifactId>
+      <artifactId>mmbase-core</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
