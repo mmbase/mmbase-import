@@ -7,15 +7,13 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.core;
+package org.mmbase.util;
 
 import java.util.*;
 import java.io.*;
 import javax.servlet.*;
 import java.text.DateFormat;
 
-import org.mmbase.core.util.DaemonTask;
-import org.mmbase.core.util.DaemonThread;
 import org.mmbase.core.event.*;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.logging.Logger;
@@ -23,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Using MMBaseContext class you can retrieve the servletContext from anywhere
- * using the get method.
+ * using the get method. (This class used to be {@link org.mmbase.module.core.MMBaseContext} before MMBase 2.0).
  *
  * @author Daniel Ockeloen
  * @author David van Zeventer
@@ -35,7 +33,7 @@ public class MMBaseContext implements ServletContextListener {
     public  static final Logger INITLOG = Logging.getLoggerInstance("org.mmbase.INIT");
     private static boolean initialized = false;
     private static boolean shutdown = false;
-    static boolean htmlRootInitialized = false;
+    private static boolean htmlRootInitialized = false;
     private static ServletContext sx;
     private static String userDir;
 
@@ -43,6 +41,10 @@ public class MMBaseContext implements ServletContextListener {
     private static String htmlRootUrlPath = "/";
     private static boolean htmlRootUrlPathInitialized = false;
     private static String outputFile;
+
+    private static String encoding = null;
+    private static String host = null;
+
 
     public static final int startTime = (int) (System.currentTimeMillis() / 1000);
 
@@ -52,7 +54,7 @@ public class MMBaseContext implements ServletContextListener {
      * for each node in your cluster. This is not the machines dns name
      * (as defined by host as name or ip number).
      */
-    static String machineName = null;
+    private static String machineName = null;
 
     /**
      * Initialize MMBase using a <code>ServletContext</code>. This method will
@@ -190,20 +192,6 @@ public class MMBaseContext implements ServletContextListener {
         kicker.start();
         return kicker;
     }
-    /**
-     * Starts a daemon thread using the MMBase thread group.
-     * @param task the task to run as a thread
-     * @param name the thread's name
-     * @deprecated   Use {@link org.mmbase.util.ThreadPools#scheduler}.
-     * @since MMBase-1.8
-     */
-    public static DaemonThread startThread(DaemonTask task, String name) {
-        DaemonThread kicker = new DaemonThread(name);
-        kicker.setTask(task);
-        kicker.start();
-        return kicker;
-    }
-
     private static void initOutputfile(String o) {
         outputFile = o;
         if (outputFile != null) {
@@ -315,7 +303,7 @@ public class MMBaseContext implements ServletContextListener {
      *          <code>null</code> if MMBase was initialized without
      *          <code>ServletContext</code>
      */
-    public synchronized static ServletContext getServletContext() {
+    public static ServletContext getServletContext() {
         if (!initialized) {
             throw new RuntimeException("The init method should be called first.");
         }
@@ -330,7 +318,7 @@ public class MMBaseContext implements ServletContextListener {
      * @return  the mmbase.config parameter or WEB-INF/config
      * @deprecated use {@link org.mmbase.util.ResourceLoader#getConfigurationRoot} with relative path
      */
-    public  synchronized static String getConfigPath() {
+    public   static String getConfigPath() {
         List<File> files =  ResourceLoader.getConfigurationRoot().getFiles("");
         if (files.isEmpty()) {
             return null;
@@ -347,11 +335,18 @@ public class MMBaseContext implements ServletContextListener {
      * @return  the mmbase.htmlroot parameter or <code>null</code> if not
      *          initialized
      */
-    public synchronized static String getHtmlRoot() {
+    public static String getHtmlRoot() {
         if (!htmlRootInitialized) {
             throw new RuntimeException("The initHtmlRoot method should be called first.");
         }
        return htmlRoot;
+    }
+
+    /**
+     * @since MMBase-2.0
+     */
+    public static boolean isHtmlRootInitialized() {
+        return htmlRootInitialized;
     }
 
     /**
@@ -363,7 +358,7 @@ public class MMBaseContext implements ServletContextListener {
      * @return  the mmbase.outputFile parameter or <code>null</code> if not set
      * @deprecated use logging system
      */
-    public synchronized static String getOutputFile() {
+    public static String getOutputFile() {
         if (!initialized) {
             throw new RuntimeException("The init method should be called first.");
         }
@@ -381,7 +376,7 @@ public class MMBaseContext implements ServletContextListener {
      * "/", so this <em>also ends in a /</em>
      * @return  the HtmlRootUrlPath
      */
-    public synchronized static String getHtmlRootUrlPath() {
+    public  static String getHtmlRootUrlPath() {
         if (! htmlRootUrlPathInitialized) {
             LOG.debug("Finding root url");
             if (! initialized) {
@@ -460,6 +455,13 @@ public class MMBaseContext implements ServletContextListener {
     /**
      * @since MMBase-2.0
      */
+    public static void setMachineName(String nm) {
+        if (machineName != null && ! machineName.equals(nm)) throw new IllegalStateException();
+        machineName = nm;
+    }
+    /**
+     * @since MMBase-2.0
+     */
     public static void shutdown() {
         shutdown = true;
     }
@@ -471,6 +473,36 @@ public class MMBaseContext implements ServletContextListener {
         return shutdown;
     }
 
+    /**
+     * @since MMBase-2.0
+     */
+    public static String getEncoding() {
+        return encoding == null ? "ISO-8859-1" : encoding;
+    }
+
+    /**
+     * @since MMBase-2.0
+     */
+    public static void setEncoding(String e) {
+        if (encoding != null && ! encoding.equals(e)) throw new IllegalStateException();
+        encoding = e;
+    }
+    /**
+     * The host or ip number of the machine this module is
+     * running on. Its important that this name is set correctly because it is
+     * used for communication between mmbase nodes and external devices
+     * @since MMBase-2.0
+     */
+    public static String getHost() {
+        return host == null ? "unknown": host;
+    }
+    /**
+     * @since MMBase-2.0
+     */
+    public static void setHost(String h) {
+        if (host != null && ! host.equals(h)) throw new IllegalStateException();
+        host = h;
+    }
 
     /**
      * @since MMBase-2.0
