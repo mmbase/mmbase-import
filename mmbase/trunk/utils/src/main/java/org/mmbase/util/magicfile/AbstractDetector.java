@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 
-abstract class AbstractDetector implements Detector {
+public abstract class AbstractDetector implements Detector {
     private static final Logger log = Logging.getLoggerInstance(BasicDetector.class);
 
     /**

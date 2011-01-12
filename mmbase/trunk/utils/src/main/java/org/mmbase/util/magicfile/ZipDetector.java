@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @since MMBase-2.0
  */
 
-class ZipDetector extends AbstractDetector {
+public class ZipDetector extends AbstractDetector {
     private static final Logger LOG = Logging.getLoggerInstance(ZipDetector.class);
 
 
