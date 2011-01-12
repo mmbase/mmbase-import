@@ -9,7 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
-import org.mmbase.module.core.*;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.bridge.util.NodeURLStreamHandlerFactory;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
