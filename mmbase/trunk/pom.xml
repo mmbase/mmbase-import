@@ -251,40 +251,28 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>${javadoc.plugin.version}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-
-          <maxmemory>1024</maxmemory>
-          <!--
-              Very nice, but mvn site fails on it.
-              The maven site does not work anyway.
-          -->
-          <stylesheetfile>${basedir}/src/main/javadoc-style/stylesheet.css</stylesheetfile>
-
-          <doctitle>MMBase ${project.version}</doctitle>
-          <windowtitle>MMBase ${project.version} - API</windowtitle>
-          <bottom>${project.name} ${project.version} - ${javadoctimestamp}</bottom>
-          <show>package</show>
-          <links>
-            <link>http://download.oracle.com/javase/6/docs/api/</link>
-            <link>http://download-llnw.oracle.com/javaee/5/api/</link>
-            <link>http://download.oracle.com/docs/cd/E17802_01/products/products/jsp/jstl/1.1/docs/api/</link>
-            <link>http://logging.apache.org/log4j/1.2/apidocs/</link>
-            <link>http://commons.apache.org/fileupload/apidocs/</link>
-            <link>http://lucene.apache.org/java/2_4_1/api/</link>
-            <link>http://www.mmbase.org/api/trunk/mmbase-utils/</link>
-            <link>http://www.mmbase.org/api/trunk/mmbase-bridge/</link>
-            <link>http://www.mmbase.org/api/trunk/mmbase-core/</link>
-          </links>
-          <groups>
-            <group>
-              <title>Bridge Packages and associated packages</title>
+          <configuration>
+            <maxmemory>1024</maxmemory>
+            <source>1.6</source>
+            <stylesheetfile>${basedir}/src/main/javadoc-style/stylesheet.css</stylesheetfile>
+            <doctitle>MMBase ${project.version}</doctitle>
+            <windowtitle>MMBase ${project.version} - API</windowtitle>
+            <bottom>${project.name} ${project.version} - ${javadoctimestamp}</bottom>
+            <show>package</show>
+            <links>
+              <link>http://download.oracle.com/javase/6/docs/api/</link>
+              <link>http://download-llnw.oracle.com/javaee/5/api/</link>
+              <link>http://download.oracle.com/docs/cd/E17802_01/products/products/jsp/jstl/1.1/docs/api/</link>
+              <link>http://logging.apache.org/log4j/1.2/apidocs/</link>
+              <link>http://commons.apache.org/fileupload/apidocs/</link>
+              <link>http://lucene.apache.org/java/2_4_1/api/</link>
+              <link>http://www.mmbase.org/api/trunk/mmbase-utils/</link>
+              <link>http://www.mmbase.org/api/trunk/mmbase-bridge/</link>
+              <link>http://www.mmbase.org/api/trunk/mmbase-core/</link>
+            </links>
+            <groups>
+              <group>
+                <title>Bridge Packages and associated packages</title>
               <packages>org.mmbase.bridge:org.mmbase.bridge.util:org.mmbase.security:org.mmbase.storage.search:org.mmbase.datatypes*:org.mmbase.util.functions:org.mmbase.cache:org.mmbase.framework:org.mmbase.servlet:org.mmbase.bridge.mock</packages>
             </group>
             <group>
@@ -389,50 +377,52 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
               <name>vpro</name>
               <head>Section contains VPRO-specific code, which will be removed or fixed</head>
             </tag>
-
           </tags>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <includes>
-            <include>**/*Test.java</include>
-            <include>**/*TestCase.java</include>
-            <include>**/*TestCases.java</include>
-          </includes>
-          <!-- do not exclude **/Abstract*Test.java **/Abstract*TestCase.java -->
-          <excludes>
-            <exclude>**/*$*</exclude>
-          </excludes>
-          <reportFormat>${surefire.format}</reportFormat>
-          <useFile>${surefire.usefile}</useFile>
-          <forkMode>${surefire.fork.mode}</forkMode>
-          <childDelegation>false</childDelegation>
-          <argLine>${surefire.fork.vmargs}</argLine>
-          <systemProperties>
-            <property>
-              <name>java.awt.headless</name>
-              <value>${java.awt.headless}</value>
-            </property>
-            <property>
-              <name>mmbase.defaultcloudcontext</name>
-              <value>mock:local</value>
-            </property>
+    </plugins>
+  </pluginManagement>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <configuration>
+        <includes>
+          <include>**/*Test.java</include>
+          <include>**/*TestCase.java</include>
+          <include>**/*TestCases.java</include>
+        </includes>
+        <!-- do not exclude **/Abstract*Test.java **/Abstract*TestCase.java -->
+        <excludes>
+          <exclude>**/*$*</exclude>
+        </excludes>
+        <reportFormat>${surefire.format}</reportFormat>
+        <useFile>${surefire.usefile}</useFile>
+        <forkMode>${surefire.fork.mode}</forkMode>
+        <childDelegation>false</childDelegation>
+        <argLine>${surefire.fork.vmargs}</argLine>
+        <systemProperties>
+          <property>
+            <name>java.awt.headless</name>
+            <value>${java.awt.headless}</value>
+          </property>
+          <property>
+            <name>mmbase.defaultcloudcontext</name>
+            <value>mock:local</value>
+          </property>
 
-            <!-- TODO should not depend on system  default locale -->
-            <property>
-              <name>user.language</name>
-              <value>en</value>
-            </property>
-            <property>
-              <name>java.util.logging.config.file</name>
-              <value>${basedir}/target/test-classes/logging.properties</value>
-            </property>
-            <property>
-              <name>surefire.fork.vmargs</name>
-              <value>${surefire.fork.vmargs}</value>
+          <!-- TODO should not depend on system  default locale -->
+          <property>
+            <name>user.language</name>
+            <value>en</value>
+          </property>
+          <property>
+            <name>java.util.logging.config.file</name>
+            <value>${basedir}/target/test-classes/logging.properties</value>
+          </property>
+          <property>
+            <name>surefire.fork.vmargs</name>
+            <value>${surefire.fork.vmargs}</value>
             </property>
           </systemProperties>
           <check>
@@ -477,10 +467,6 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <maxmemory>1024</maxmemory>
-          <stylesheetfile>${basedir}/src/main/javadoc-style/stylesheet.css</stylesheetfile>
-        </configuration>
         <reportSets>
           <reportSet>
             <id>aggregate</id>
