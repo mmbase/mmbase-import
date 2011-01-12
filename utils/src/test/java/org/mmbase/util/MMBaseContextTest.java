@@ -32,14 +32,14 @@ public class MMBaseContextTest  {
                     return this;
                 }
             };
-        org.mmbase.module.core.MMBaseContext.init(sx);
+        MMBaseContext.init(sx);
     }
 
 
 
     @Test
     public void getHtmlRoot() throws Exception {
-        System.out.println(org.mmbase.module.core.MMBaseContext.getHtmlRoot());
+        System.out.println(MMBaseContext.getHtmlRoot());
     }
 
 }
