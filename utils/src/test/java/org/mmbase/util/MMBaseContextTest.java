@@ -8,7 +8,7 @@
 
 */
 
-package org.mmbase.module.core;
+package org.mmbase.util;
 
 import org.junit.*;
 import org.springframework.mock.web.*;
