@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 
 /**
  * This annotation can be used on methods, to make the parameter of
- * the corresponding {@link BeanFunction} required.
+ * the corresponding {@link org.mmbase.util.functions.BeanFunction} required.
  *
  * @author Michiel Meeuwissen
  * @version $Id$

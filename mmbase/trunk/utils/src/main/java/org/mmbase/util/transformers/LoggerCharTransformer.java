@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * This is the character transformer is like {@link CopyCharTranformer}, but it logs everything that it sees too.
+ * This is the character transformer is like {@link CopyCharTransformer}, but it logs everything that it sees too.
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.9.6
