@@ -85,14 +85,14 @@ public class XMLBasicReader extends DocumentReader {
                 try {
                     path = new java.net.URL(path).getPath();
                 } catch (java.net.MalformedURLException mfe) {
-                }                   
+                }
             }
             is = new InputSource(new FileInputStream(path));
             try {
                 is.setSystemId(new File(path).toURL().toExternalForm());
             } catch (java.net.MalformedURLException mfe) {
-            }                   
-            is.setSystemId("file://" + path);            
+            }
+            is.setSystemId("file://" + path);
         } catch (java.io.FileNotFoundException e) {
             log.error("Error reading " + path + ": " + e.toString());
             log.service("Using empty source");
@@ -136,7 +136,7 @@ public class XMLBasicReader extends DocumentReader {
      * @deprecated use {!link DocumentReader.getDocumentBuilder(boolean, ErrorHandler, EntityResolver)}
      */
     public static DocumentBuilder getDocumentBuilder(Class refer) {
-        return DocumentReader.getDocumentBuilder(DocumentReader.validate(), null, new XMLEntityResolver(DocumentReader.validate(), refer));
+        return DocumentReader.getDocumentBuilder(DocumentReader.validate(), null, new org.mmbase.util.xml.EntityResolver(DocumentReader.validate(), refer));
     }
 
 }

@@ -17,6 +17,7 @@ import javax.servlet.*;
 
 import org.mmbase.module.*;
 import org.mmbase.util.*;
+import org.mmbase.util.MMBaseContext;
 import org.mmbase.module.core.*;
 
 import org.mmbase.util.logging.*;
