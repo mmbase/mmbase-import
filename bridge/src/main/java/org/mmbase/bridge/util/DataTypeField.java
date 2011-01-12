@@ -31,7 +31,7 @@ import org.mmbase.datatypes.LengthDataType;
  * @since   MMBase-1.8.7
  */
 
-public  class DataTypeField extends org.mmbase.core.AbstractField {
+public  class DataTypeField extends org.mmbase.bridge.util.AbstractField {
     protected final NodeManager nodeManager;
     protected final Field field;
     public DataTypeField(final Cloud cloud, final DataType<? extends Object> dataType)  {

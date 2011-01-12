@@ -7,11 +7,9 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.core.util;
+package org.mmbase.bridge.util;
 
 import org.mmbase.datatypes.*;
-import org.mmbase.core.AbstractField;
-
 
 
 /**

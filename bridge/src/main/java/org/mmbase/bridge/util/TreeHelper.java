@@ -21,7 +21,7 @@ import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.module.core.MMBaseContext;
+import org.mmbase.util.MMBaseContext;
 
 /**
  * This helper-class has all Tree- and Leaf-related functionality. The algorithms that find the
