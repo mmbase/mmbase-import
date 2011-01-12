@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 
-public class UpperCaser extends ReaderTransformer implements CharTransformer {
+public class UpperCaser extends ReaderTransformer  {
     private static final Logger log = Logging.getLoggerInstance(UpperCaser.class);
 
     @Override

@@ -30,25 +30,25 @@ import org.mmbase.util.xml.DocumentReader;
  * <b><font color=#0000FF>import</font></b> org.mmbase.util.logging.Logger;
  * <b><font color=#0000FF>import</font></b> org.mmbase.util.logging.Level;
  *
- * <b><font color=#0000FF>public</font></b> <b><font color=#0000FF>class</font></b> test {
+ * <b><font color=#0000FF>public</font></b> <b><font color=#0000FF>class</font></b> Test {
  *
  *     <b><font color=#0000FF>static</font></b> {
  *         Logging.configure(<font color=#FF0000>"log.xml"</font>);
  *     }
  *
- *     <b><font color=#0000FF>static</font></b> Logger log = Logging.getLoggerInstance(test.<b><font color=#0000FF>class</font></b>);
+ *     <b><font color=#0000FF>private static final</font></b> Logger LOG = Logging.getLoggerInstance(Test.<b><font color=#0000FF>class</font></b>);
  *
  *     <b><font color=#0000FF>public</font></b> <b><font color=#0000FF>static</font></b> <font color=#009900>void</font> main(String[] args) {
- *         log.debug(<font color=#FF0000>"start"</font>);
- *         log.info(<font color=#FF0000>"Entering application."</font>);
+ *         LOG.debug(<font color=#FF0000>"start"</font>);
+ *         LOG.info(<font color=#FF0000>"Entering application."</font>);
  *
- *         log.setLevel(Level.TRACE);
+ *         LOG.setLevel(Level.TRACE);
  *         <b><font color=#0000FF>if</font></b> (log.isDebugEnabled()) {
- *             log.debug(<font color=#FF0000>"debug een"</font>);
- *             log.trace(<font color=#FF0000>"trace twee"</font>);
+ *             LOG.debug(<font color=#FF0000>"debug een"</font>);
+ *             LOG.trace(<font color=#FF0000>"trace twee"</font>);
  *         }
- *         log.info(<font color=#FF0000>"info"</font>);
- *         log.service(<font color=#FF0000>"service"</font>);
+ *         LOG.info(<font color=#FF0000>"info"</font>);
+ *         LOG.service(<font color=#FF0000>"service"</font>);
  *
  *
  *         Logging.shutdown();

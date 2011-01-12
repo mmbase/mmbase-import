@@ -19,7 +19,7 @@ package org.mmbase.util.transformers;
  * @version $Id$
  */
 
-public class Graphviz extends AbstractCommandStringTransformer implements CharTransformer {
+public class Graphviz extends AbstractCommandStringTransformer  {
     private static final long serialVersionUID = 0L;
 
     private String command = "dot";

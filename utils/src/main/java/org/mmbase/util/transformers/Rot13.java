@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.8
  */
 
-public class Rot13 extends ReaderTransformer implements CharTransformer {
+public class Rot13 extends ReaderTransformer  {
 
     private static final Logger log = Logging.getLoggerInstance(Rot13.class);
 

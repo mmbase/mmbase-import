@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 
-public class SpaceReducer extends BufferedReaderTransformer implements CharTransformer {
+public class SpaceReducer extends BufferedReaderTransformer  {
 
     private static final Logger log = Logging.getLoggerInstance(SpaceReducer.class);
 

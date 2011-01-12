@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 
-public abstract class BufferedReaderTransformer extends ReaderTransformer implements CharTransformer {
+public abstract class BufferedReaderTransformer extends ReaderTransformer  {
 
     private static final Logger log = Logging.getLoggerInstance(BufferedReaderTransformer.class);
 

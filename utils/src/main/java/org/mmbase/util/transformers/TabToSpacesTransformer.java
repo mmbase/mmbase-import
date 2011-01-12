@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.7
  */
 
-public class TabToSpacesTransformer extends ReaderTransformer implements CharTransformer {
+public class TabToSpacesTransformer extends ReaderTransformer  {
 
     private static final Logger log = Logging.getLoggerInstance(TabToSpacesTransformer.class);
 
