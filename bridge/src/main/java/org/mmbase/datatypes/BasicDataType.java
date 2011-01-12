@@ -17,7 +17,7 @@ import java.util.concurrent.*;
 import org.mmbase.datatypes.handlers.Handler;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.core.AbstractDescriptor;
+import org.mmbase.bridge.util.AbstractDescriptor;
 import org.mmbase.bridge.Fields;
 import org.mmbase.datatypes.processors.*;
 import org.mmbase.security.Rank;

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import org.mmbase.bridge.Node;
 import org.mmbase.util.Casting;
+import org.mmbase.util.MMBaseContext;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -92,7 +93,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
                 sb.setLength(0);
                 while(request.find()) {
                     if(request.group(1).equals("getContextPath")) {
-                        String r = req == null ? org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() : req.getContextPath() + '/';
+                        String r = req == null ? MMBaseContext.getHtmlRootUrlPath() : req.getContextPath() + '/';
                         request.appendReplacement(sb, r.substring(0, r.length() - 1));
                         continue;
                     }
@@ -221,7 +222,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
                     initParams.reset();
                     sb.setLength(0);
                     while(initParams.find()) {
-                        String s = org.mmbase.module.core.MMBaseContext.getServletContext().getInitParameter(initParams.group(1));
+                        String s = MMBaseContext.getServletContext().getInitParameter(initParams.group(1));
                         if (s == null) s = "";
                         initParams.appendReplacement(sb, s);
                     }

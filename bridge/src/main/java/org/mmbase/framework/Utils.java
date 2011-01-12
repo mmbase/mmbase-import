@@ -118,7 +118,7 @@ public abstract class Utils {
         log.debug("" + parameters + " -> " + myParameters);
         HttpServletRequest req = myParameters.get(Parameter.REQUEST);//BasicUrlConverter.getUserRequest(myParameters.get(Parameter.REQUEST));
         if (req != null) {
-            HttpServletRequest myreq = new LocalHttpServletRequest(org.mmbase.module.core.MMBaseContext.getServletContext(), "", req.getServletPath());
+            HttpServletRequest myreq = new LocalHttpServletRequest(MMBaseContext.getServletContext(), "", req.getServletPath());
             log.debug("" + req.getServletPath());
             for (Object attrName : Collections.list(req.getAttributeNames())) {
                 String a = (String) attrName;

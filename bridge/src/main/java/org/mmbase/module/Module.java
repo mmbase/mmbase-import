@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.module;
 
-import org.mmbase.module.core.MMBaseContext;
 import java.util.concurrent.*;
 import java.util.*;
 import java.net.*;
