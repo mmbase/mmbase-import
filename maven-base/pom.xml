@@ -270,7 +270,7 @@ See http://www.MMBase.org/license
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.6.1</version>
+          <version>${javadoc.plugin.version}</version>
           <configuration>
             <attach>true</attach>
             <quiet>false</quiet>
@@ -280,7 +280,7 @@ See http://www.MMBase.org/license
             <links>
               <link>http://download.oracle.com/javase/6/docs/api/</link>
               <link>http://download.oracle.com/javaee/5/api/</link>
-              <link>http://www.mmbase.org/api/trunk/mmbase/</link>
+              <link>http://www.mmbase.org/api/trunk/mmbase-core/</link>
               <link>http://www.mmbase.org/api/trunk/mmbase-utils/</link>
               <link>http://www.mmbase.org/api/trunk/mmbase-bridge/</link>
             </links>
@@ -639,7 +639,7 @@ See http://www.MMBase.org/license
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.6.1</version>
+            <version>2.7</version>
             <executions>
               <execution>
                 <id>attach-javadocs</id>
