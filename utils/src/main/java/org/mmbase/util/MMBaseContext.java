@@ -44,6 +44,8 @@ public class MMBaseContext implements ServletContextListener {
 
     private static String encoding = null;
     private static String host = null;
+    private static String dataDirString;
+    private static boolean shownDataDir = false;
 
 
     public static final int startTime = (int) (System.currentTimeMillis() / 1000);
@@ -503,6 +505,86 @@ public class MMBaseContext implements ServletContextListener {
         if (host != null && ! host.equals(h)) throw new IllegalStateException();
         host = h;
     }
+
+    /**
+     * @since MMBase-2.0
+     */
+    public static File getDataDir() {
+
+        javax.servlet.ServletContext sc = MMBaseContext.getServletContext();
+        if (dataDirString == null) {
+            if (sc == null) {
+                dataDirString = "data";
+            } else {
+                dataDirString = "WEB-INF/data";
+            }
+        }
+        File dataDir = new File(dataDirString);
+
+        if (! dataDir.isAbsolute()) {
+            if (sc != null && sc.getRealPath("/" + dataDirString) != null) {
+                LOG.debug(" "  + sc.getRealPath("/" + dataDirString));
+                dataDir = new File(sc.getRealPath("/" + dataDirString));
+            } else {
+                dataDir = new File(System.getProperty("user.dir"), dataDirString);
+            }
+        }
+
+        if (! dataDir.exists()) {
+            try {
+                if (dataDir.mkdirs()) {
+                    LOG.info("Created " + dataDir);
+                }
+            } catch (SecurityException  se) {
+                LOG.warn(se);
+            }
+        }
+
+        if (! dataDir.isDirectory()) {
+            LOG.warn("Datadir " + dataDir + " is not a directory");
+        }
+        if (! dataDir.canRead()) {
+            LOG.warn("Datadir " + dataDir + " is not readable");
+        }
+        {
+            boolean  canWrite = false;
+            try {
+                canWrite = dataDir.canWrite();
+            } catch (SecurityException se) {
+            }
+            if (! canWrite) {
+                try {
+                    File proposal = sc != null ? (File) sc.getAttribute("javax.servlet.context.tempdir") : new File(System.getProperty("java.io.tmpdir"));
+                    if (proposal.canWrite()) {
+                        LOG.warn("Datadir " + dataDir + " is not writable. Falling back to " + proposal);
+                        dataDir = proposal;
+                    } else {
+                        LOG.warn("Datadir " + dataDir + " is not writable.");
+                    }
+                } catch (SecurityException se) {
+                    LOG.warn(se.getMessage(), se);
+                }
+
+            }
+        }
+        if (shownDataDir) {
+            LOG.debug("MMBase data dir: " + dataDir);
+        } else {
+            LOG.info("MMBase data dir: " + dataDir);
+            shownDataDir = true;
+        }
+        return dataDir;
+
+    }
+    /**
+     * @since MMBase-2.0
+     */
+    public void setDataDir(String setting) {
+        if (dataDirString != null && ! dataDirString.equals(setting)) throw new IllegalStateException();
+        if (setting.equals("")) setting = null;
+        dataDirString = setting;
+    }
+
 
     /**
      * @since MMBase-2.0
