@@ -13,6 +13,7 @@ package org.mmbase.bridge.util;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.mock.*;
 import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.MMBaseContext;
 import java.util.*;
 import org.junit.*;
 import org.springframework.mock.web.*;
@@ -41,7 +42,7 @@ public class TreeHelperTest  {
                     return this;
                 }
             };
-        org.mmbase.module.core.MMBaseContext.init(sx);
+        MMBaseContext.init(sx);
         org.mmbase.util.logging.SimpleTimeStampImpl.configure(org.mmbase.bridge.util.TreeHelper.class.getName(), "debug");
         MockCloudContext cc =  MockCloudContext.getInstance();
         cc.addCore();
