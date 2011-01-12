@@ -17,6 +17,7 @@ import org.mmbase.servlet.BridgeServlet;
 import javax.servlet.http.HttpServletRequest;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.MMBaseContext;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.magicfile.MagicFile;
 import org.mmbase.util.functions.*;
