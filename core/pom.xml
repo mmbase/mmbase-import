@@ -26,7 +26,7 @@ See http://www.MMBase.org/license
     <version>2.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>mmbase</artifactId>
+  <artifactId>mmbase-core</artifactId>
   <name>MMBase Core</name>
 
   <version>2.0-SNAPSHOT</version>
