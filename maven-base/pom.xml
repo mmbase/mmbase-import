@@ -95,6 +95,12 @@ See http://www.MMBase.org/license
           <include>**</include>
         </includes>
       </resource>
+      <resource>
+        <directory>${basedir}/target/generated1/src/main/resources</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+      </resource>
     </resources>
     <testResources>
       <testResource>
