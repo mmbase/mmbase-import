@@ -96,6 +96,7 @@
     <xsl:value-of select="text()" />
     <xsl:text><![CDATA[</p>]]></xsl:text>
   </xsl:template>
+
   <xsl:template match="tlibversion">
     <tlib-version><xsl:value-of select="." /></tlib-version>
   </xsl:template>
@@ -136,6 +137,7 @@
       <xsl:apply-templates select="info|description" />
       <xsl:apply-templates select="see" />
       <xsl:call-template name="showextends" />
+      <xsl:call-template name="showtype" />
       <xsl:call-template name="values" />
       <xsl:apply-templates select="since" />
     </description>
@@ -198,24 +200,34 @@
 
   <xsl:template name="showextends">
     <xsl:for-each select="extends">
-      <xsl:if test="position() = 1">
-        <xsl:text><![CDATA[<h3>Extends</h3><p>]]></xsl:text>
-      </xsl:if>
       <xsl:variable name="seetag"><xsl:value-of select="text()" /></xsl:variable>
       <xsl:if test="//taglib/*[(local-name() = 'tag' or local-name() = 'function') and name = $seetag]">
-        <xsl:text><![CDATA[<a href="]]></xsl:text>
+        <xsl:text><![CDATA[Extends <a href="]]></xsl:text>
         <xsl:value-of select="text()" />
         <xsl:text><![CDATA[.html">]]></xsl:text>
+        <xsl:value-of select="text()" />
+        <xsl:text><![CDATA[</a><br /]]></xsl:text>
       </xsl:if>
-      <xsl:value-of select="text()" />
-      <xsl:if test="//taglib/*[(local-name() = 'tag' or local-name() = 'function') and name = $seetag]">
-        <xsl:text><![CDATA[</a>]]></xsl:text>
-      </xsl:if>
-      <xsl:if test="position() != last()">
-        <xsl:text>, </xsl:text>
-      </xsl:if>
-      <xsl:if test="position() = last()"><![CDATA[</p>]]></xsl:if>
+      <xsl:for-each select="//taglib/*[(local-name() = 'taginterface') and name = $seetag]">
+        <xsl:text><![CDATA[<h3>This is a ']]></xsl:text>
+        <xsl:value-of select="name" />
+        <xsl:text><![CDATA[' tag</h3>]]></xsl:text>
+        <xsl:apply-templates select="info" />
+      </xsl:for-each>
     </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="showtype">
+    <xsl:for-each select="type">
+      <xsl:variable name="seetype"><xsl:value-of select="text()" /></xsl:variable>
+      <xsl:for-each select="//taglib/tagtypes/type[@name = $seetype]">
+        <xsl:text><![CDATA[<h3>Part of ']]></xsl:text>
+        <xsl:value-of select="description" />
+        <xsl:text><![CDATA['</h3>]]></xsl:text>
+        <xsl:apply-templates select="info" />
+      </xsl:for-each>
+    </xsl:for-each>
+
   </xsl:template>
 
   <xsl:template name="values">
@@ -225,7 +237,7 @@
       </xsl:if>
       <xsl:text><![CDATA[<li><em>]]></xsl:text>
       <xsl:value-of select="value" />
-      <xsl:text><![CDATA[</em>]]></xsl:text>
+      <xsl:text><![CDATA[</em>  ]]></xsl:text>
       <xsl:apply-templates select="info" />
       <xsl:if test="local-name() = 'examplevalue'">
         <xsl:text><![CDATA[<em> (example)</em>]]></xsl:text>
