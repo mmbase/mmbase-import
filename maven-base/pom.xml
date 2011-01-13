@@ -216,6 +216,7 @@ See http://www.MMBase.org/license
           </dependencies>
         </plugin>
 
+        <!--
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-pmd-plugin</artifactId>
@@ -252,8 +253,7 @@ See http://www.MMBase.org/license
           </executions>
         </plugin>
 
-
-
+        -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
