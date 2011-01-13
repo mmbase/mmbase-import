@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 
-public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Comparable<DataType<C>>, Descriptor {
+public class BasicDataType<C> extends AbstractDescriptor implements DataType<C> {
     /**
      * The bundle used by datatype to determine default prompts for error messages when a
      * validation fails.
