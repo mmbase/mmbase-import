@@ -5,11 +5,11 @@
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-application-parent</artifactId>
     <version>2.0-SNAPSHOT</version>
+    <relativePath>../../maven-base/applications/pom.xml</relativePath>
   </parent>
 
   <artifactId>mmbase-lucene</artifactId>
   <name>MMBase Lucene</name>
-  <version>${mmbase.version}</version>
   <packaging>war</packaging>
 
   <description>Lucene is an apache product that can index objects. This wraps it into an mmbase module, to index MMBase queries. It provides</description>
