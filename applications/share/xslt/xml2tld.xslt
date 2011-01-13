@@ -233,6 +233,7 @@
   </xsl:template>
 
   <xsl:template name="showtype">
+    <xsl:variable name="thistag"><xsl:value-of select="name" /></xsl:variable>
     <xsl:for-each select="type">
       <xsl:variable name="seetype"><xsl:value-of select="text()" /></xsl:variable>
       <xsl:for-each select="//taglib/tagtypes/type[@name = $seetype]">
@@ -240,6 +241,11 @@
         <xsl:value-of select="description" />
         <xsl:text><![CDATA['</h3>]]></xsl:text>
         <xsl:apply-templates select="info" />
+        <xsl:text><![CDATA[<p>Other tags like this: ]]></xsl:text>
+        <xsl:apply-templates select="//taglib/tag[type = $seetype and name != $thistag]" mode="othertagoftype">
+          <xsl:sort select="name" />
+        </xsl:apply-templates>
+        <xsl:text><![CDATA[</p>]]></xsl:text>
       </xsl:for-each>
     </xsl:for-each>
 
