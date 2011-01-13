@@ -83,9 +83,20 @@ public class Factory {
         // Startup parrallel converters
         ireqprocessors = new ImageConversionRequestProcessor[maxConcurrentRequests];
         log.service("Starting " + maxConcurrentRequests + " Converters for " + imageConverter);
+        int failed = 0;
         for (int i = 0; i < maxConcurrentRequests; i++) {
-            ireqprocessors[i] = new ImageConversionRequestProcessor(imageConverter, imageRequestQueue, imageRequestTable);
+            try {
+                ireqprocessors[i] = new ImageConversionRequestProcessor(imageConverter, imageRequestQueue, imageRequestTable);
+            } catch (Error e) {
+                // e.g. java.lang.OutOfMemoryError: unable to create new native thread
+                log.error(e.getMessage(), e);
+                failed++;
+            }
         }
+        if (failed == maxConcurrentRequests) {
+            log.fatal("Could not start any image conversion request processors! Image conversion will not work.");
+        }
+
     }
 
 
@@ -102,7 +113,9 @@ public class Factory {
     public static void shutdown() {
         for (ImageConversionRequestProcessor icrp : ireqprocessors) {
             log.service("Shutting down " + icrp);
-            icrp.shutdown();
+            if (icrp != null) {
+                icrp.shutdown();
+            }
         }
         ireqprocessors = null;
     }
@@ -192,11 +205,12 @@ public class Factory {
             if (req != null) {
                 log.info("A conversion is already in progress (" + req + ")");
             } else {
-                req = new ImageConversionRequest(in, format, receiver, pars);
                 if (imageRequestQueue.offer(req)) {
+                    req = new ImageConversionRequest(in, format, receiver, pars);
                     imageRequestTable.put(req.getReceiver(), req);
                 } else {
                     log.error("No more space in queue to execute image-conversion " + req);
+                    return null;
                 }
             }
         }
