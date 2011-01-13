@@ -199,6 +199,7 @@
   </xsl:template>
 
   <xsl:template name="showextends">
+    <xsl:variable name="thistag"><xsl:value-of select="name" /></xsl:variable>
     <xsl:for-each select="extends">
       <xsl:variable name="seetag"><xsl:value-of select="text()" /></xsl:variable>
       <xsl:if test="//taglib/*[(local-name() = 'tag' or local-name() = 'function') and name = $seetag]">
@@ -213,8 +214,22 @@
         <xsl:value-of select="name" />
         <xsl:text><![CDATA[' tag</h3>]]></xsl:text>
         <xsl:apply-templates select="info" />
+        <xsl:text><![CDATA[<p>Other tags like this: ]]></xsl:text>
+        <xsl:apply-templates select="//taglib/tag[extends = $seetag and name != $thistag]" mode="othertagoftype">
+          <xsl:sort select="name" />
+        </xsl:apply-templates>
+        <xsl:text><![CDATA[</p>]]></xsl:text>
       </xsl:for-each>
     </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template match="tag" mode="othertagoftype">
+    <xsl:text><![CDATA[<a href="]]></xsl:text>
+    <xsl:value-of select="name" />
+    <xsl:text>.html"&gt;</xsl:text>
+    <xsl:value-of select="name" />
+    <xsl:text><![CDATA[</a>]]></xsl:text>
+    <xsl:if test="position() != last()">, </xsl:if>
   </xsl:template>
 
   <xsl:template name="showtype">
