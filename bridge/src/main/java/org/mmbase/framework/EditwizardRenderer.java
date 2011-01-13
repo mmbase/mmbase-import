@@ -21,17 +21,17 @@ import org.mmbase.util.logging.Logging;
  *
  * Other wizard/list jsp can also be used. E.g.
  <pre><![CDATA[
-  <block name="people">
-    <title xml:lang="en">Simple examples</title>
-    <title xml:lang="nl">Eenvoudige voorbeelden</title>
-    <body>
-      <class name="org.mmbase.framework.EditwizardRenderer">
-        <param name="list">samples/people</param>
-        <param name="nodepath">people</param>>
-        <param name="fields">firstname,lastname,owner</param>
-      </class>
-    </body>
-  </block>
+  &lt;block name="people"&gt;
+    &lt;title xml:lang="en"&gt;Simple examples&lt;/title&gt;
+    &lt;title xml:lang="nl"&gt;Eenvoudige voorbeelden&lt;/title&gt;
+    &lt;body&gt;
+      &lt;class name="org.mmbase.framework.EditwizardRenderer"&gt;
+        &lt;param name="list"&gt;samples/people&lt;/param&gt;
+        &lt;param name="nodepath"&gt;people&lt;/param&gt;&gt;
+        &lt;param name="fields"&gt;firstname,lastname,owner&lt;/param&gt;
+      &lt;/class&gt;
+    &lt;/body&gt;
+  &lt;/block&gt;
   ]]></pre>
  *
  * @author Michiel Meeuwissen
