@@ -266,7 +266,7 @@ version: $Id$
   <description>utility tags</description>
   <info>
     <p>
-      These are the MMBase tags which do directly relate to MMBase
+      These are the MMBase tags which do not directly relate to MMBase
       data, but are merely handy to have.
     </p>
   </info>
