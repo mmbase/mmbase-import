@@ -149,6 +149,7 @@
         <version>2.4</version>
         <configuration>
           <taglib.src.dir>${basedir}/target/generated/src/main/resources/META-INF</taglib.src.dir>
+          <taglib.title>${project.name} Reference</taglib.title>
         </configuration>
         <executions>
           <execution>
