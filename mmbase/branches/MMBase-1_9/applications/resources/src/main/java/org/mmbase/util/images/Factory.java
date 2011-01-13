@@ -94,7 +94,7 @@ public class Factory {
             }
         }
         if (failed == maxConcurrentRequests) {
-            log.fatal("Could not start any image conversion request processors! Image conversion will not work.")
+            log.fatal("Could not start any image conversion request processors! Image conversion will not work.");
         }
 
     }
