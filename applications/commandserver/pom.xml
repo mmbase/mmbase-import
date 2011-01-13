@@ -7,12 +7,12 @@
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-application-parent</artifactId>
     <version>2.0-SNAPSHOT</version>
+    <relativePath>../../maven-base/applications/pom.xml</relativePath>
   </parent>
 
   <artifactId>mmbase-commandserver</artifactId>
   <name>MMBase Command Server</name>
   <packaging>jar</packaging>
-  <version>${mmbase.version}</version>
 
   <description>
     Very small java application that allows you to execute command-line applications from a seperate
