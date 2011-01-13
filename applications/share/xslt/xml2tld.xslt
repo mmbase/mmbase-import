@@ -74,14 +74,18 @@
       </xsl:if>
       <xsl:if test="$version &lt; 2.0">
         <xsl:apply-templates select="info"/>
+        <xsl:apply-templates select="tag" mode="base">
+          <xsl:sort select="name" />
+        </xsl:apply-templates>
       </xsl:if>
-      <xsl:apply-templates select="tag" mode="base" />
       <xsl:if test="$version = '2.0'">
         <!--
             See MMB-1348
             It seems that the present tag-file entries cause the problem.
         -->
-        <xsl:apply-templates select="tag-file" />
+        <xsl:apply-templates select="tag|tag-file" mode="base">
+          <xsl:sort select="name" />
+        </xsl:apply-templates>
         <xsl:apply-templates select="function" mode="base" />
       </xsl:if>
   </xsl:template>
@@ -135,7 +139,7 @@
       <xsl:value-of select="name" />
       <xsl:text><![CDATA["</a>]]></xsl:text>
       <xsl:apply-templates select="info|description" />
-      <xsl:apply-templates select="see" />
+      <xsl:apply-templates select="see[@tag]" />
       <xsl:call-template name="showextends" />
       <xsl:call-template name="showtype" />
       <xsl:call-template name="values" />
@@ -236,13 +240,13 @@
     <xsl:variable name="thistag"><xsl:value-of select="name" /></xsl:variable>
     <xsl:for-each select="type">
       <xsl:variable name="seetype"><xsl:value-of select="text()" /></xsl:variable>
-      <xsl:for-each select="//taglib/tagtypes/type[@name = $seetype]">
+      <xsl:for-each select="//taglib/tagtypes/type[contains($seetype, @name)]">
         <xsl:text><![CDATA[<h3>Part of ']]></xsl:text>
         <xsl:value-of select="description" />
         <xsl:text><![CDATA['</h3>]]></xsl:text>
         <xsl:apply-templates select="info" />
         <xsl:text><![CDATA[<p>Other tags like this: ]]></xsl:text>
-        <xsl:apply-templates select="//taglib/tag[type = $seetype and name != $thistag]" mode="othertagoftype">
+        <xsl:apply-templates select="//taglib/tag[contains(type, @name) and name != $thistag]" mode="othertagoftype">
           <xsl:sort select="name" />
         </xsl:apply-templates>
         <xsl:text><![CDATA[</p>]]></xsl:text>
