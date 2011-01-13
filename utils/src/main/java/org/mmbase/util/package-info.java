@@ -1,5 +1,5 @@
 /**
- * This package contains all kind of generic utilities. It is a bit like {@link java.util.package-info}. Collections
+ * This package contains all kind of generic utilities. It is a bit like {@link java.util.package-summary java.util}. Collections
  * related stuff like {@link org.mmbase.util.BijectiveMap} or related to IO like {@link IOUtil}.
  *
  * Noticable in the package are {@link org.mmbase.util.MMBaseContext} which maintains some information in a few static variables which are
