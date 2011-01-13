@@ -27,13 +27,13 @@ package org.mmbase.util.logging;
  * <b><font color=#0000FF>import</font></b> org.mmbase.util.logging.Logger;
  *
  * <b><font color=#0000FF>public</font></b> <b><font color=#0000FF>class</font></b> Foo {
- *     <b><font color=#0000FF>static</font></b> Logger log = Logging.getLoggerInstance(Foo.<b><font color=#0000FF>class</font></b>.getName());
+ *     <b><font color=#0000FF>private static final </font></b> Logger LOG = Logging.getLoggerInstance(Foo.<b><font color=#0000FF>class</font></b>);
  *     <b><font color=#0000FF>public</font></b> <font color=#009900>void</font> bar() {
  *         ...
- *         log.info(<font color=#FF0000>"Hello world!"</font>);
+ *         LOG.info(<font color=#FF0000>"Hello world!"</font>);
  *         ...
  *         <b><font color=#0000FF>if</font></b>(log.isDebugEnabled()) {
- *             log.debug(<font color=#FF0000>"Oops, that's not quite right!"</font>);
+ *             LOG.debug(<font color=#FF0000>"Oops, that's not quite right!"</font>);
  *         }
  *         ...
  *     }
