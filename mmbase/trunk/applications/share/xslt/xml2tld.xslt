@@ -115,7 +115,6 @@
         <xsl:call-template name="description" />
         <xsl:call-template name="examples" />
         <xsl:apply-templates select="attribute"/>
-        <xsl:apply-templates select="extends" />
       </tag>
     </xsl:if>
   </xsl:template>
@@ -131,7 +130,8 @@
         <xsl:value-of select="." />
       </xsl:for-each>
       <xsl:apply-templates select="see" />
-      <xsl:apply-templates select="extends" />
+      <xsl:call-template name="showextends" />
+      <xsl:call-template name="values" />
     </description>
   </xsl:template>
 
@@ -190,19 +190,45 @@
     <xsl:if test="position() = last()"><![CDATA[</p>]]></xsl:if>
   </xsl:template>
 
-  <xsl:template match="extends">
-    <xsl:if test="position() = 1">
-      <xsl:text><![CDATA[<h3>Extends</h3><p>]]></xsl:text>
+  <xsl:template name="showextends">
+    <xsl:for-each select="extends">
+      <xsl:if test="position() = 1">
+        <xsl:text><![CDATA[<h3>Extends</h3><p>]]></xsl:text>
+      </xsl:if>
+      <xsl:variable name="seetag"><xsl:value-of select="text()" /></xsl:variable>
+      <xsl:if test="//taglib/*[(local-name() = 'tag' or local-name() = 'function') and name = $seetag]">
+        <xsl:text><![CDATA[<a href="]]></xsl:text>
+        <xsl:value-of select="text()" />
+        <xsl:text><![CDATA[.html">]]></xsl:text>
+      </xsl:if>
+      <xsl:value-of select="text()" />
+      <xsl:if test="//taglib/*[(local-name() = 'tag' or local-name() = 'function') and name = $seetag]">
+        <xsl:text><![CDATA[</a>]]></xsl:text>
+      </xsl:if>
+      <xsl:if test="position() != last()">
+        <xsl:text>, </xsl:text>
+      </xsl:if>
+      <xsl:if test="position() = last()"><![CDATA[</p>]]></xsl:if>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="values">
+    <xsl:for-each select="possiblevalue|examplevalue">
+      <xsl:if test="position() = 1">
+        <xsl:text><![CDATA[<p>values<p><ul>]]></xsl:text>
+      </xsl:if>
+      <xsl:text><![CDATA[<li><em>]]></xsl:text>
+      <xsl:value-of select="value" />
+      <xsl:text><![CDATA[</em>]]></xsl:text>
+      <xsl:copy-of select="info/*" />
+      <xsl:if test="local-name() = 'examplevalue'">
+        <xsl:text><![CDATA[<em> (example)</em>]]></xsl:text>
+      </xsl:if>
+      <xsl:text><![CDATA[</li>]]></xsl:text>
+    </xsl:for-each>
+    <xsl:if test="position() = last()">
+      <xsl:text><![CDATA[</ul>]]></xsl:text>
     </xsl:if>
-    <xsl:text><![CDATA[<a href="]]></xsl:text>
-    <xsl:value-of select="@tag" />
-    <xsl:text>.html">mm:</xsl:text>
-    <xsl:value-of select="@tag" />
-    <xsl:text><![CDATA[</a>]]></xsl:text>
-    <xsl:if test="position() != last()">
-      <xsl:text>, </xsl:text>
-    </xsl:if>
-    <xsl:if test="position() = last()"><![CDATA[</p>]]></xsl:if>
   </xsl:template>
 
 
