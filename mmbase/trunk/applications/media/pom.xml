@@ -43,6 +43,13 @@
       <artifactId>junit</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-rmmci</artifactId>
+      <version>${mmbase.version}</version>
+      <classifier>client</classifier>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 
