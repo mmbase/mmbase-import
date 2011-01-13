@@ -40,7 +40,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
     Source Software (MPL) and all standards used are as 'open' as possible. The system can be used
     with all major operating systems, webservers and databases.
   </description>
-  <url>http://www.mmbase.org/mm2</url>
+  <url>http://www.mmbase.org/</url>
   <inceptionYear>2000</inceptionYear>
 
   <organization>
@@ -545,10 +545,6 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       <name>MMBase Maven2 Snapshot Repository</name>
       <url>${mmbase.repos}snapshots</url>
     </snapshotRepository>
-    <site>
-      <id>mmbase-website</id>
-      <url>${mmbase.repos}mm2/</url>
-    </site>
   </distributionManagement>
 
   <repositories>
