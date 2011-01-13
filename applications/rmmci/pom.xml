@@ -7,12 +7,12 @@
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-application-parent</artifactId>
     <version>2.0-SNAPSHOT</version>
+    <relativePath>../../maven-base/applications/pom.xml</relativePath>
   </parent>
 
   <artifactId>mmbase-rmmci</artifactId>
   <name>MMBase RMMCI</name>
   <packaging>jar</packaging>
-  <version>${mmbase.version}</version>
 
   <build>
     <plugins>

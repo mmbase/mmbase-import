@@ -7,12 +7,12 @@
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-application-parent</artifactId>
     <version>2.0-SNAPSHOT</version>
+    <relativePath>../../maven-base/applications/pom.xml</relativePath>
   </parent>
 
   <artifactId>mmbase-jumpers</artifactId>
   <name>MMBase Jumpers</name>
   <packaging>war</packaging>
-  <version>${mmbase.version}</version>
 
   <description>
     The jumpers application could be used to make short urls which

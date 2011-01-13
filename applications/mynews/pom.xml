@@ -6,12 +6,12 @@
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-application-parent</artifactId>
     <version>2.0-SNAPSHOT</version>
+    <relativePath>../../maven-base/applications/pom.xml</relativePath>
   </parent>
 
   <artifactId>mmbase-mynews</artifactId>
   <name>MMBase MyNews</name>
   <packaging>war</packaging>
-  <version>${mmbase.version}</version>
 
   <description>
     The MyNews application is one of the oldest MMBase examples that still exists. It shows you a very simple
