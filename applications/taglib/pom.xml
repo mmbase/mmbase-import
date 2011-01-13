@@ -13,7 +13,7 @@
   <artifactId>mmbase-taglib</artifactId>
   <name>MMBase Taglib</name>
   <packaging>war</packaging>
-  <version>${mmbase.version}</version>
+
 
 
   <description>
@@ -76,6 +76,7 @@
                 </fileMapper>
               </fileMappers>
             </transformationSet>
+            <!--
             <transformationSet>
               <outputDir>${basedir}/target/generated/src/main/resources/META-INF</outputDir>
               <dir>${basedir}/src/main/xml/</dir>
@@ -87,16 +88,16 @@
                 </fileMapper>
               </fileMappers>
             </transformationSet>
-            <!--
             <transformationSet>
-              <dir>${basedir}/src/org/mmbase/bridge/jsp/taglib</dir>
+              <outputDir>${basedir}/target/generated-tlddoc</outputDir>
+              <dir>${basedir}/src/main/xml/</dir>
               <stylesheet>${basedir}/../share/xslt/xml2html.xslt</stylesheet>
               <includes>
-                <include>*.xml</include>
+                <include>mmbase-taglib.xml</include>
               </includes>
               <fileMappers>
                 <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
-                  <targetExtension>.html</targetExtension>
+                  <targetExtension>mmbase-taglib.html</targetExtension>
                 </fileMapper>
               </fileMappers>
             </transformationSet>
@@ -104,19 +105,7 @@
           </transformationSets>
         </configuration>
       </plugin>
-      <!--
-      <plugin>
-        <groupId>net.sourceforge.maven-taglib</groupId>
-        <artifactId>maven-taglib-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>taglibdocjar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      -->
+
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
@@ -157,8 +146,9 @@
       <plugin>
         <groupId>net.sourceforge.maven-taglib</groupId>
         <artifactId>maven-taglib-plugin</artifactId>
+        <version>2.4</version>
         <configuration>
-          <dontRecurseIntoSubdirs>true</dontRecurseIntoSubdirs>
+          <taglib.src.dir>${basedir}/target/generated/src/main/resources/META-INF</taglib.src.dir>
         </configuration>
         <executions>
           <execution>
@@ -168,7 +158,6 @@
           </execution>
         </executions>
       </plugin>
-
     </plugins>
   </build>
 
