@@ -14,7 +14,6 @@
         <exclude>org/mmbase/config/**</exclude>
       </excludes>
     </fileSet>
-    <!--
     <fileSet>
       <directory>${project.build.outputDirectory}</directory>
       <outputDirectory>/</outputDirectory>
@@ -22,6 +21,5 @@
         <include>org/mmbase/config/contextproviders</include>
       </includes>
     </fileSet>
-    -->
   </fileSets>
 </assembly>
