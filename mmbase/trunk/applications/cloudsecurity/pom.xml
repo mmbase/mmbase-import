@@ -7,12 +7,12 @@
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-application-parent</artifactId>
     <version>2.0-SNAPSHOT</version>
+    <relativePath>../../maven-base/applications/pom.xml</relativePath>
   </parent>
 
   <artifactId>mmbase-cloudsecurity</artifactId>
   <name>MMBase Simple Cloud Security</name>
   <packaging>jar</packaging>
-  <version>${mmbase.version}</version>
 
   <description>
     The MMBase cloud security module allows you to administer your users in the database. It is
