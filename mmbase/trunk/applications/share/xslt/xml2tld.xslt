@@ -87,7 +87,14 @@
   </xsl:template>
 
   <xsl:template match="info">
-    <info><xsl:value-of select="." /></info>
+    <xsl:apply-templates select="p|text()" />
+    <xsl:apply-templates select="since" />
+  </xsl:template>
+
+  <xsl:template match="since">
+    <xsl:text><![CDATA[<p><em>since</em>  ]]></xsl:text>
+    <xsl:value-of select="text()" />
+    <xsl:text><![CDATA[</p>]]></xsl:text>
   </xsl:template>
   <xsl:template match="tlibversion">
     <tlib-version><xsl:value-of select="." /></tlib-version>
@@ -126,12 +133,11 @@
       <xsl:text>-</xsl:text>
       <xsl:value-of select="name" />
       <xsl:text><![CDATA["</a>]]></xsl:text>
-      <xsl:for-each select="info|description">
-        <xsl:value-of select="." />
-      </xsl:for-each>
+      <xsl:apply-templates select="info|description" />
       <xsl:apply-templates select="see" />
       <xsl:call-template name="showextends" />
       <xsl:call-template name="values" />
+      <xsl:apply-templates select="since" />
     </description>
   </xsl:template>
 
@@ -220,7 +226,7 @@
       <xsl:text><![CDATA[<li><em>]]></xsl:text>
       <xsl:value-of select="value" />
       <xsl:text><![CDATA[</em>]]></xsl:text>
-      <xsl:copy-of select="info/*" />
+      <xsl:apply-templates select="info" />
       <xsl:if test="local-name() = 'examplevalue'">
         <xsl:text><![CDATA[<em> (example)</em>]]></xsl:text>
       </xsl:if>
