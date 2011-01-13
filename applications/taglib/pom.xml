@@ -76,9 +76,8 @@
                 </fileMapper>
               </fileMappers>
             </transformationSet>
-            <!--
             <transformationSet>
-              <outputDir>${basedir}/target/generated/src/main/resources/META-INF</outputDir>
+              <outputDir>${basedir}/target/generated1/src/main/resources/META-INF</outputDir>
               <dir>${basedir}/src/main/xml/</dir>
               <stylesheet>${basedir}/../share/xslt/xml2tld.xslt</stylesheet>
               <includes><include>mmbase-taglib.xml</include></includes>
@@ -88,6 +87,7 @@
                 </fileMapper>
               </fileMappers>
             </transformationSet>
+            <!--
             <transformationSet>
               <outputDir>${basedir}/target/generated-tlddoc</outputDir>
               <dir>${basedir}/src/main/xml/</dir>
