@@ -12,6 +12,7 @@
 
   <xsl:param name="version">1.2</xsl:param>
   <xsl:param name="uri">http://www.mmbase.org/mmbase-taglib-1.0</xsl:param>
+  <xsl:param name="descriptions">false</xsl:param>
   <xsl:variable name="nl"><xsl:text>
 </xsl:text></xsl:variable>
   <xsl:output
@@ -157,19 +158,21 @@
   </xsl:template>
 
   <xsl:template name="description">
-    <description>
-      <xsl:text><![CDATA[<a name="]]></xsl:text>
-      <xsl:value-of select="local-name()" />
-      <xsl:text>-</xsl:text>
-      <xsl:value-of select="name" />
-      <xsl:text><![CDATA[" />]]></xsl:text>
-      <xsl:apply-templates select="info|description" />
-      <xsl:apply-templates select="see[@tag or @function]" />
-      <xsl:call-template name="showextends" />
-      <xsl:call-template name="showtype" />
-      <xsl:call-template name="values" />
-      <xsl:apply-templates select="since" />
-    </description>
+    <xsl:if test="$descriptions = 'true'">
+      <description>
+        <xsl:text><![CDATA[<a name="]]></xsl:text>
+        <xsl:value-of select="local-name()" />
+        <xsl:text>-</xsl:text>
+        <xsl:value-of select="name" />
+        <xsl:text><![CDATA[" />]]></xsl:text>
+        <xsl:apply-templates select="info|description" />
+        <xsl:apply-templates select="see[@tag or @function]" />
+        <xsl:call-template name="showextends" />
+        <xsl:call-template name="showtype" />
+        <xsl:call-template name="values" />
+        <xsl:apply-templates select="since" />
+      </description>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template name="examples">
