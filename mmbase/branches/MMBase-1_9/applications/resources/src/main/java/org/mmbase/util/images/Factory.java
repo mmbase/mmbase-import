@@ -205,8 +205,8 @@ public class Factory {
             if (req != null) {
                 log.info("A conversion is already in progress (" + req + ")");
             } else {
+                req = new ImageConversionRequest(in, format, receiver, pars);
                 if (imageRequestQueue.offer(req)) {
-                    req = new ImageConversionRequest(in, format, receiver, pars);
                     imageRequestTable.put(req.getReceiver(), req);
                 } else {
                     log.error("No more space in queue to execute image-conversion " + req);
