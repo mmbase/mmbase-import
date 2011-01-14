@@ -57,6 +57,12 @@ public final class Impl implements Logger {
         logger = java.util.logging.Logger.getLogger(name);
     }
 
+    /**
+     * @since MMBase-2.0
+     */
+    public Impl(java.util.logging.Logger l) {
+        logger = l;
+    }
 
 
     /**
