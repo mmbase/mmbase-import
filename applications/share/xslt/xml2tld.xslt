@@ -95,6 +95,16 @@
     <xsl:apply-templates select="since" />
   </xsl:template>
 
+  <xsl:template match="p|code|ul|ol">
+    <xsl:text>&lt;</xsl:text>
+    <xsl:value-of select="local-name()" />
+    <xsl:text>&gt;</xsl:text>
+    <xsl:apply-templates select="p|code|ul|ol|text()" />
+    <xsl:text>&lt;/</xsl:text>
+    <xsl:value-of select="local-name()" />
+    <xsl:text>&gt;</xsl:text>
+  </xsl:template>
+
   <xsl:template match="since">
     <xsl:text><![CDATA[<p><em>since</em>  ]]></xsl:text>
     <xsl:value-of select="text()" />
@@ -137,7 +147,7 @@
       <xsl:value-of select="local-name()" />
       <xsl:text>-</xsl:text>
       <xsl:value-of select="name" />
-      <xsl:text><![CDATA["</a>]]></xsl:text>
+      <xsl:text><![CDATA[" />]]></xsl:text>
       <xsl:apply-templates select="info|description" />
       <xsl:apply-templates select="see[@tag]" />
       <xsl:call-template name="showextends" />
@@ -217,7 +227,7 @@
         <xsl:text><![CDATA[<h3>This is a ']]></xsl:text>
         <xsl:value-of select="name" />
         <xsl:text><![CDATA[' tag</h3>]]></xsl:text>
-        <xsl:apply-templates select="info" />
+        <xsl:apply-templates select="info/*" />
         <xsl:text><![CDATA[<p>Other tags like this: ]]></xsl:text>
         <xsl:apply-templates select="//taglib/tag[extends = $seetag and name != $thistag]" mode="othertagoftype">
           <xsl:sort select="name" />
@@ -227,11 +237,11 @@
     </xsl:for-each>
   </xsl:template>
 
-  <xsl:template match="tag" mode="othertagoftype">
+  <xsl:template match="tag|tag-file" mode="othertagoftype">
     <xsl:text><![CDATA[<a href="]]></xsl:text>
-    <xsl:value-of select="name" />
+    <xsl:value-of select="name/text()" />
     <xsl:text>.html"&gt;</xsl:text>
-    <xsl:value-of select="name" />
+    <xsl:value-of select="name/text()" />
     <xsl:text><![CDATA[</a>]]></xsl:text>
     <xsl:if test="position() != last()">, </xsl:if>
   </xsl:template>
@@ -240,19 +250,23 @@
     <xsl:variable name="thistag"><xsl:value-of select="name" /></xsl:variable>
     <xsl:for-each select="type">
       <xsl:variable name="seetype"><xsl:value-of select="text()" /></xsl:variable>
-      <xsl:for-each select="//taglib/tagtypes/type[contains($seetype, @name)]">
-        <xsl:text><![CDATA[<h3>Part of ']]></xsl:text>
-        <xsl:value-of select="description" />
-        <xsl:text><![CDATA['</h3>]]></xsl:text>
-        <xsl:apply-templates select="info" />
-        <xsl:text><![CDATA[<p>Other tags like this: ]]></xsl:text>
-        <xsl:apply-templates select="//taglib/tag[contains(type, @name) and name != $thistag]" mode="othertagoftype">
-          <xsl:sort select="name" />
-        </xsl:apply-templates>
-        <xsl:text><![CDATA[</p>]]></xsl:text>
-      </xsl:for-each>
+      <xsl:apply-templates select="//taglib/tagtypes/type[contains($seetype, @name) and @name != 'mmbase']" mode="partof">
+        <xsl:with-param name="thistag"><xsl:value-of select="$thistag" /></xsl:with-param>
+      </xsl:apply-templates>
     </xsl:for-each>
+  </xsl:template>
 
+  <xsl:template match="type" mode="partof">
+    <xsl:param name="thistag" />
+    <xsl:text><![CDATA[<h3>Part of ']]></xsl:text>
+    <xsl:apply-templates  select="description/text()" />
+    <xsl:text><![CDATA['</h3>]]></xsl:text>
+    <xsl:apply-templates select="info/*" />
+    <xsl:text><![CDATA[<p>Other tags like this: ]]></xsl:text>
+    <xsl:apply-templates select="//taglib/tag[contains(type, @name) and name != $thistag]|//taglib/tag-file[contains(type, @name) and name != $thistag]" mode="othertagoftype">
+      <xsl:sort select="name" />
+    </xsl:apply-templates>
+    <xsl:text><![CDATA[</p>]]></xsl:text>
   </xsl:template>
 
   <xsl:template name="values">
@@ -356,9 +370,10 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <xsl:template match="tag-file">
+  <xsl:template match="tag-file" mode="base">
     <tag-file xmlns="http://java.sun.com/xml/ns/j2ee">
       <xsl:apply-templates select="name|path" />
+      <xsl:call-template name="description" />
     </tag-file>
   </xsl:template>
   <xsl:template match="description|display-name|icon|uri|name|required|rtexprvalue|function-class|function-signature|path">
