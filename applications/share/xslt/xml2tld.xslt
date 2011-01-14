@@ -91,15 +91,24 @@
   </xsl:template>
 
   <xsl:template match="info">
-    <xsl:apply-templates select="p|text()" />
+    <xsl:apply-templates select="p|pre|text()" />
     <xsl:apply-templates select="since" />
   </xsl:template>
 
-  <xsl:template match="p|code|ul|ol">
+  <xsl:template match="p|code|ul|ol|pre">
     <xsl:text>&lt;</xsl:text>
     <xsl:value-of select="local-name()" />
     <xsl:text>&gt;</xsl:text>
-    <xsl:apply-templates select="p|code|ul|ol|text()" />
+    <xsl:apply-templates select="p|code|ul|ol|pre|a|text()" />
+    <xsl:text>&lt;/</xsl:text>
+    <xsl:value-of select="local-name()" />
+    <xsl:text>&gt;</xsl:text>
+  </xsl:template>
+  <xsl:template match="a">
+    <xsl:text>&lt;</xsl:text>
+    <xsl:value-of select="local-name()" />
+    <xsl:text> href="</xsl:text><xsl:value-of select="@href" /><xsl:text>"&gt;</xsl:text>
+    <xsl:apply-templates select="p|code|ul|ol|pre|a|text()" />
     <xsl:text>&lt;/</xsl:text>
     <xsl:value-of select="local-name()" />
     <xsl:text>&gt;</xsl:text>
@@ -137,6 +146,7 @@
         <xsl:call-template name="description" />
         <xsl:call-template name="examples" />
         <xsl:apply-templates select="attribute"/>
+        <xsl:apply-templates select="extends" />
       </tag>
     </xsl:if>
   </xsl:template>
