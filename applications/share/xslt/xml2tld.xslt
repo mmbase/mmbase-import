@@ -56,7 +56,8 @@
 
       </xsl:comment>
       <xsl:if test="$version &gt;= 2.0">
-        <xsl:apply-templates select="description | display-name | icon" />
+        <xsl:call-template name="description" />
+        <xsl:apply-templates select="display-name | icon" />
       </xsl:if>
 
       <xsl:apply-templates select="tlib-version | tlibversion | jspversion" />
@@ -83,17 +84,21 @@
             See MMB-1348
             It seems that the present tag-file entries cause the problem.
         -->
-        <xsl:apply-templates select="tag|tag-file" mode="base">
+        <xsl:apply-templates select="tag" mode="base">
+          <xsl:sort select="name" />
+        </xsl:apply-templates>
+        <xsl:apply-templates select="tag-file" mode="base">
           <xsl:sort select="name" />
         </xsl:apply-templates>
         <xsl:apply-templates select="function" mode="base" />
       </xsl:if>
   </xsl:template>
 
-  <xsl:template match="info">
-    <xsl:apply-templates select="p|pre|text()" />
+  <xsl:template match="info|description">
+    <xsl:apply-templates select="p|code|pre|text()" />
     <xsl:apply-templates select="since" />
   </xsl:template>
+
 
   <xsl:template match="p|code|ul|ol|pre">
     <xsl:text>&lt;</xsl:text>
@@ -139,14 +144,14 @@
     </xsl:if>
     <xsl:if test="$version &gt;= 2.0">
       <tag xmlns="http://java.sun.com/xml/ns/j2ee">
+        <xsl:call-template name="description" />
         <xsl:apply-templates select="name | tagclass | tag-class | teiclass | tei-class | bodycontent | body-content" />
         <xsl:if test="not(bodycontent) and not(body-content)">
           <body-content>JSP</body-content>
         </xsl:if>
-        <xsl:call-template name="description" />
-        <xsl:call-template name="examples" />
         <xsl:apply-templates select="attribute"/>
         <xsl:apply-templates select="extends" />
+        <xsl:call-template name="examples" />
       </tag>
     </xsl:if>
   </xsl:template>
@@ -159,7 +164,7 @@
       <xsl:value-of select="name" />
       <xsl:text><![CDATA[" />]]></xsl:text>
       <xsl:apply-templates select="info|description" />
-      <xsl:apply-templates select="see[@tag]" />
+      <xsl:apply-templates select="see[@tag or @function]" />
       <xsl:call-template name="showextends" />
       <xsl:call-template name="showtype" />
       <xsl:call-template name="values" />
@@ -194,29 +199,29 @@
     <xsl:if test="position() = 1">
       <xsl:text><![CDATA[<h3>See also</h3><p>]]></xsl:text>
     </xsl:if>
-    <xsl:variable name="seetag"><xsl:value-of select="@tag" /></xsl:variable>
+    <xsl:if test="@attribute">
+      <xsl:value-of select="@attribute" />
+      <xsl:text> attribute of </xsl:text>
+    </xsl:if>
+    <xsl:variable name="href">
+      <xsl:choose>
+        <xsl:when test="@tag"><xsl:value-of select="@tag" />.html</xsl:when>
+        <xsl:when test="@function"><xsl:value-of select="@function" />.fn.html</xsl:when>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:text><![CDATA[<a href="]]></xsl:text>
+    <xsl:value-of select="$href" />
+    <xsl:if test="@attribute">
+      <xsl:text>#attribute-</xsl:text>
+      <xsl:value-of select="@attribute" />
+    </xsl:if>
+    <xsl:text>"&gt;</xsl:text>
     <xsl:choose>
-      <xsl:when test="//taglib/*[(local-name() = 'tag' or local-name() = 'function') and name = $seetag]">
-        <xsl:if test="@attribute">
-          <xsl:value-of select="@attribute" />
-          <xsl:text> attribute of </xsl:text>
-        </xsl:if>
-        <xsl:text><![CDATA[<a href="]]></xsl:text>
-        <xsl:value-of select="@tag" />
-        <xsl:text>.html</xsl:text>
-        <xsl:if test="@attribute">
-          <xsl:text>#attribute-</xsl:text>
-          <xsl:value-of select="@attribute" />
-        </xsl:if>
-        <xsl:text>">mm:</xsl:text>
-        <xsl:value-of select="@tag" />
-        <xsl:text><![CDATA[</a>]]></xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="@tag" />
-      </xsl:otherwise>
+      <xsl:when test="@tag">mm:<xsl:value-of select="@tag" /></xsl:when>
+      <xsl:when test="@function">&lt;em&gt;mm:<xsl:value-of select="@function" />()&lt;/em&gt;</xsl:when>
     </xsl:choose>
-      <xsl:if test="position() != last()">
+    <xsl:text><![CDATA[</a>]]></xsl:text>
+    <xsl:if test="position() != last()">
       <xsl:text>, </xsl:text>
     </xsl:if>
     <xsl:if test="position() = last()"><![CDATA[</p>]]></xsl:if>
@@ -227,11 +232,11 @@
     <xsl:for-each select="extends">
       <xsl:variable name="seetag"><xsl:value-of select="text()" /></xsl:variable>
       <xsl:if test="//taglib/*[(local-name() = 'tag' or local-name() = 'function') and name = $seetag]">
-        <xsl:text><![CDATA[Extends <a href="]]></xsl:text>
+        <xsl:text><![CDATA[<p><b>Extends</b> <a href="]]></xsl:text>
         <xsl:value-of select="text()" />
         <xsl:text><![CDATA[.html">]]></xsl:text>
         <xsl:value-of select="text()" />
-        <xsl:text><![CDATA[</a><br /]]></xsl:text>
+        <xsl:text><![CDATA[</a></p>]]></xsl:text>
       </xsl:if>
       <xsl:for-each select="//taglib/*[(local-name() = 'taginterface') and name = $seetag]">
         <xsl:text><![CDATA[<h3>This is a ']]></xsl:text>
@@ -302,7 +307,9 @@
 
   <xsl:template match="function" mode="base" >
     <function xmlns="http://java.sun.com/xml/ns/j2ee">
-      <xsl:apply-templates select="name | description | function-class | function-signature" />
+      <xsl:call-template name="description" />
+      <xsl:apply-templates select="name" />
+      <xsl:apply-templates select="function-class | function-signature" />
       <xsl:apply-templates select="attribute"/>
       <xsl:apply-templates select="extends" />
     </function>
@@ -319,8 +326,8 @@
     </xsl:if>
     <xsl:if test="$version &gt;= 2.0">
       <attribute xmlns="http://java.sun.com/xml/ns/j2ee">
-        <xsl:apply-templates select="name | required | rtexprvalue" />
         <xsl:call-template name="description" />
+        <xsl:apply-templates select="name | required | rtexprvalue" />
       </attribute>
     </xsl:if>
   </xsl:template>
@@ -383,11 +390,11 @@
   </xsl:template>
   <xsl:template match="tag-file" mode="base">
     <tag-file xmlns="http://java.sun.com/xml/ns/j2ee">
-      <xsl:apply-templates select="name|path" />
       <xsl:call-template name="description" />
+      <xsl:apply-templates select="name|path" />
     </tag-file>
   </xsl:template>
-  <xsl:template match="description|display-name|icon|uri|name|required|rtexprvalue|function-class|function-signature|path">
+  <xsl:template match="display-name|icon|uri|name|required|rtexprvalue|function-class|function-signature|path">
     <xsl:copy-of select="." />
   </xsl:template>
 
