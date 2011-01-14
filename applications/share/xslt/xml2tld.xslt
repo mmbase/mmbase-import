@@ -258,12 +258,13 @@
 
   <xsl:template match="type" mode="partof">
     <xsl:param name="thistag" />
+    <xsl:variable name="thistype"><xsl:value-of select="@name" /></xsl:variable>
     <xsl:text><![CDATA[<h3>Part of ']]></xsl:text>
     <xsl:apply-templates  select="description/text()" />
     <xsl:text><![CDATA['</h3>]]></xsl:text>
     <xsl:apply-templates select="info/*" />
     <xsl:text><![CDATA[<p>Other tags like this: ]]></xsl:text>
-    <xsl:apply-templates select="//taglib/tag[contains(type, @name) and name != $thistag]|//taglib/tag-file[contains(type, @name) and name != $thistag]" mode="othertagoftype">
+    <xsl:apply-templates select="//taglib/tag[contains(type, $thistype) and name != $thistag]|//taglib/tag-file[contains(type, $thistype) and name != $thistag]" mode="othertagoftype">
       <xsl:sort select="name" />
     </xsl:apply-templates>
     <xsl:text><![CDATA[</p>]]></xsl:text>
