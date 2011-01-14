@@ -23,4 +23,9 @@
   <xi:include href="streamsourcescaches.fields.xml" />
   <xi:include href="http://www.mmbase.org/builders/media/mediasources.virtual.fields.xml" />
 
+  <functionlist>
+    <function name="file">
+      <class>org.mmbase.streams.FileFunction</class>
+    </function>
+  </functionlist>
 </builder>
