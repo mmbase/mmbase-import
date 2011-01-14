@@ -14,6 +14,16 @@
   <name>MMBase Taglib</name>
   <packaging>war</packaging>
 
+  <!--
+      test xslt:
+      mvn xml:transform ; xmllint -valid -schema http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd target/generated_full/src/main/resources/META-INF/mmbase-taglib-2.tld
+
+      create new tldoc:
+      mvn xml:transform taglib:taglibdocjar
+
+
+
+  -->
 
 
   <description>
@@ -77,7 +87,26 @@
               </fileMappers>
             </transformationSet>
             <transformationSet>
-              <outputDir>${basedir}/target/generated1/src/main/resources/META-INF</outputDir>
+              <!-- a version of the TLD that is simpler and less prone to errors from the app-server
+              which e.g. does not understand a description tag in the tld
+              -->
+              <outputDir>${basedir}/target/generated_full/src/main/resources/META-INF</outputDir>
+              <dir>${basedir}/src/main/xml/</dir>
+              <stylesheet>${basedir}/../share/xslt/xml2tld.xslt</stylesheet>
+              <parameters>
+                <parameter><name>version</name><value>2.0</value></parameter>
+                <parameter><name>uri</name><value>http://www.mmbase.org/mmbase-taglib-2.0</value></parameter>
+                <parameter><name>descriptions</name><value>true</value></parameter>
+              </parameters>
+              <includes><include>mmbase-taglib.xml</include></includes>
+              <fileMappers>
+                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                  <targetName>mmbase-taglib-2.tld</targetName>
+                </fileMapper>
+              </fileMappers>
+            </transformationSet>
+            <transformationSet>
+              <outputDir>${basedir}/target/generated/src/main/resources/META-INF</outputDir>
               <dir>${basedir}/src/main/xml/</dir>
               <stylesheet>${basedir}/../share/xslt/xml2tld.xslt</stylesheet>
               <includes><include>mmbase-taglib.xml</include></includes>
@@ -148,7 +177,7 @@
         <artifactId>maven-taglib-plugin</artifactId>
         <version>2.4</version>
         <configuration>
-          <taglib.src.dir>${basedir}/target/generated/src/main/resources/META-INF</taglib.src.dir>
+          <taglib.src.dir>${basedir}/target/generated_full/src/main/resources/META-INF</taglib.src.dir>
           <taglib.title>${project.name} Reference</taglib.title>
         </configuration>
         <executions>
