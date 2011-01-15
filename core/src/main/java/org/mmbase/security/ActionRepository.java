@@ -81,7 +81,7 @@ public abstract class ActionRepository extends Configurable {
                     a = new Action(name, actionName, (ActionChecker) c);
                 } else {
                     if ("".equals(rank)) { rank = "basic user"; }
-                    a = new Action(name, actionName, new ActionChecker.Rank(Rank.getRank(rank)));
+                    a = new Action(name, actionName, new ActionChecker.Rank(rank));
                 }
                 a.getDescription().fillFromXml("description", element);
                 log.service("Registering action " + a);
