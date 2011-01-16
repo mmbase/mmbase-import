@@ -245,7 +245,7 @@
         <xsl:text><![CDATA[<h3>This is a ']]></xsl:text>
         <xsl:value-of select="name" />
         <xsl:text><![CDATA[' tag</h3>]]></xsl:text>
-        <xsl:apply-templates select="info/*" />
+        <xsl:apply-templates select="info/*|info/text()" />
         <xsl:text><![CDATA[<p>Other tags like this: ]]></xsl:text>
         <xsl:apply-templates select="//taglib/tag[extends = $seetag and name != $thistag]" mode="othertagoftype">
           <xsl:sort select="name" />
