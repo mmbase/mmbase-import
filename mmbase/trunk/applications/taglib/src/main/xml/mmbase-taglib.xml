@@ -234,15 +234,15 @@ version: $Id$
         </p>
       </info>
     </type>
-    <type name="mmbase.basic">
-    <description>basic tags</description>
-    <info>
-      <p>
-        These are the most basic MMBase tags, which supply the basic functionality to access MMBase data
-        in you pages. An overview of all MMBase tags can be found in <a href="mmbase-taglib-all.html">here</a>.
-      </p>
-    </info>
-  </type>
+    <type name="basic">
+      <description>basic tags</description>
+      <info>
+        <p>
+          These are the most basic MMBase tags, which supply the basic functionality to access MMBase data
+          in you pages. An overview of all MMBase tags can be found in <a href="mmbase-taglib-all.html">here</a>.
+        </p>
+      </info>
+    </type>
   <type name="mmbase">
     <description>mmbase tags</description>
     <info>
@@ -253,7 +253,7 @@ version: $Id$
       </p>
     </info>
   </type>
-  <type name="mmbase.security">
+  <type name="security">
     <description>security tags</description>
     <info>
     <p>
@@ -280,8 +280,8 @@ version: $Id$
   </info>
   </type>
 
-  <type name="util.context">
-  <description>context/variable tags</description>
+  <type name="context">
+    <description>context/variable tags</description>
   <info>
     <p>
        All MMBase utility tags related to `contexts' and  taglib
@@ -314,58 +314,58 @@ version: $Id$
       <p>
         The following example demonstrates how to use tree's in mmbase taglib
           <pre><![CDATA[
-<mm:import externid="node" required="true" />
-<mm:node number="$node">
+&lt;mm:import externid="node" required="true" /&gt;
+&lt;mm:node number="$node"&gt;
 
-  <%-- the current node is used as a 'starting query', so this node itself will also be listed by mm:tree --%>
+  &lt;%-- the current node is used as a 'starting query', so this node itself will also be listed by mm:tree --%&gt;
 
-  <mm:treecontainer path="posrel,categories,object" searchdirs="destination">
-    <%-- the query will be extended with posrel,categories, and then with any objects related to the categories,
+  &lt;mm:treecontainer path="posrel,categories,object" searchdirs="destination"&gt;
+    &lt;%-- the query will be extended with posrel,categories, and then with any objects related to the categories,
          and then with any 'posrel' related categories related to those object etc.
-    --%>
+    --%&gt;
 
-    <%-- the categories must be order according to the 'pos' field in the posrel. --%>
-    <mm:sortorder field="posrel.pos" />
+    &lt;%-- the categories must be order according to the 'pos' field in the posrel. --%&gt;
+    &lt;mm:sortorder field="posrel.pos" /&gt;
 
-    <%-- don't do every category, but only those with 'a' in their title --%>
-    <mm:constraint field="categories.title" operator="LIKE" value="%a%" />
+    &lt;%-- don't do every category, but only those with 'a' in their title --%&gt;
+    &lt;mm:constraint field="categories.title" operator="LIKE" value="%a%" /&gt;
 
-    <%-- also some trivial sortorder on the 'object' steps --%>
-    <mm:sortorder  field="object.number" direction="up" />
+    &lt;%-- also some trivial sortorder on the 'object' steps --%&gt;
+    &lt;mm:sortorder  field="object.number" direction="up" /&gt;
 
-    In this tree <mm:size /> objects are presented.
+    In this tree &lt;mm:size /&gt; objects are presented.
 
-    <mm:tree>
+    &lt;mm:tree&gt;
 
-      <%-- If the current node provided by the tree is on the end of a 'longer branch', then we start a
+      &lt;%-- If the current node provided by the tree is on the end of a 'longer branch', then we start a
            ul. mm:grow is iterated zero (if the previous node was _bigger or equal_) or one (if the previous
            node was _smaller_  times. (Because in a forward tree iteration the branch can not grow faster
            than that)
-           --%>
-      <mm:grow>
-        <ul>
-        <%-- we also say now already what should happen if it later 'shrinks' again. The body of this will be temporary
-             put onto a stack until it is taken of it by the mm:shrink tag. -->
-        <mm:onshrink></ul></mm:onshrink>
-      </mm:grow>
+           --%&gt;
+      &lt;mm:grow&gt;
+        &lt;ul&gt;
+        &lt;%-- we also say now already what should happen if it later 'shrinks' again. The body of this will be temporary
+             put onto a stack until it is taken of it by the mm:shrink tag. --&gt;
+        &lt;mm:onshrink&gt;&lt;/ul&gt;&lt;/mm:onshrink&gt;
+      &lt;/mm:grow&gt;
 
-      <%-- a tree tag provides 'real' nodes, so in the body we can show this node --%>
+      &lt;%-- a tree tag provides 'real' nodes, so in the body we can show this node --%&gt;
 
-      <li><mm:nodeinfo type="guitype" />: <mm:field name="number" /> <mm:function name="gui" escape="none" />
+      &lt;li&gt;&lt;mm:nodeinfo type="guitype" /&gt;: &lt;mm:field name="number" /&gt; &lt;mm:function name="gui" escape="none" /&gt;
 
-      <mm:onshrink></li></mm:onshrink>
+      &lt;mm:onshrink&gt;&lt;/li&gt;&lt;/mm:onshrink&gt;
 
-      <%-- mm:shrink will use what was put onto the 'shrink tag' by the mm:onshrink tags. The body of mm:shrink
+      &lt;%-- mm:shrink will use what was put onto the 'shrink tag' by the mm:onshrink tags. The body of mm:shrink
       will be called zero (if the next node will be bigger then the current one) or more times. How
       often it iterates depends on how often mm:onshrink was called. It will be emptied until the top element
       of the shrink tag correspends to a depth which is smaller then the current depth.
-      --%>
+      --%&gt;
 
-      <mm:shrink />
-    </mm:tree>
+      &lt;mm:shrink /&gt;
+    &lt;/mm:tree&gt;
 
-  </mm:treecontainer>
-</mm:node>
+  &lt;/mm:treecontainer&gt;
+&lt;/mm:node&gt;
 ]]>
 </pre>
       </p>
@@ -390,8 +390,9 @@ version: $Id$
         they can coincide.
       </p>
       <p>
-        An example is for instance the use: &lt;mm:listnodes
-        type="$nodetype"&gt;, here the 'nodetype' variable from the
+        An example may be:
+        <code><![CDATA[&amp;lt;mm:listnodes type="$nodetype"&amp;gt;]]></code>,
+        here the 'nodetype' variable from the
         context is referred to.
       </p>
     </info>
@@ -971,7 +972,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
   <taginterface>
     <name>container</name>
     <info>
-       Container tags can be referred to by container-referrers.
+       Container tags can be referred to by 'container-referrers'
     </info>
     <since>MMBase-1.7</since>
   </taginterface>
@@ -1063,7 +1064,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
     <extends>nodereferrer</extends>
     <info>
       <p>
-        A function tag (of which there are many different types) evaluate a function. Functions can
+        A function tag (of which there are many different types) evaluates a function. Functions can
         be defined in three locations:
         <ul>
           <li>The nodemanager (for functions located in builder code)</li>
@@ -4768,6 +4769,10 @@ like the parameter list or the session (where ever it is available) --&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.ImageTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
     <bodycontent>JSP</bodycontent>
+    <variable>
+      <description>The dimension of the image that will be produced</description>
+      <name-given>dimension</name-given>
+    </variable>
     <info>
       <p>
         Returns an URL to the image servlet. This is a NodeReferrer
@@ -7218,7 +7223,7 @@ The 0 is just counter, which starts at 0 on every page.
     <tagclass>org.mmbase.bridge.jsp.taglib.EscaperTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>
-      You can defined 'parameterized' escapers by this.
+      You can define 'parameterized' escapers by this.
     </info>
     <since>MMBase-1.8</since>
     <attribute>
@@ -7226,7 +7231,7 @@ The 0 is just counter, which starts at 0 on every page.
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
-        By the id the escaper is available.
+        By this id the escaper is available.
       </info>
     </attribute>
     <attribute>
@@ -7234,7 +7239,7 @@ The 0 is just counter, which starts at 0 on every page.
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
-        Reuses the escaper identified by this.
+        Reuses the escaper identified by this, to (re)set an extra parameter or so.
       </info>
     </attribute>
     <attribute>
