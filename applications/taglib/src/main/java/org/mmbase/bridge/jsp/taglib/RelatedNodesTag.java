@@ -35,6 +35,8 @@ public class RelatedNodesTag extends AbstractNodeListTag {
     protected Attribute searchDirs = Attribute.NULL; // for use with 'path' and 'element'
 
     protected Attribute container = Attribute.NULL;
+    protected Attribute pathElement = Attribute.NULL;
+
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -70,11 +72,13 @@ public class RelatedNodesTag extends AbstractNodeListTag {
         path = getAttribute(p, true);
     }
     /**
+     * Override the 'element' attribute of NodeReferrer. It means something different in related nodes lists, namely the
+     * element of its entries, not the element of its parent node.
      * @since MMBase-1.7.1
      */
     @Override
     public void setElement(String e) throws JspTagException {
-        element = getAttribute(e, true);
+        pathElement = getAttribute(e, true);
     }
     /**
      * @since MMBase-1.7.1
@@ -127,7 +131,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
                 if (type == Attribute.NULL) {
                     otherManager = cloud.getNodeManager("object");
                 } else {
-                    if (element != Attribute.NULL) {
+                    if (pathElement != Attribute.NULL) {
                         throw new TaglibException("Cannot specify both 'element' and 'type' attributes");
                     }
                     otherManager = cloud.getNodeManager(type.getString(this));
@@ -140,8 +144,8 @@ public class RelatedNodesTag extends AbstractNodeListTag {
                     throw new TaglibException("Cannot specify both 'path' and 'role' attributes");
                 }
                 Queries.addPath(query, (String) path.getValue(this), searchDirections);
-                if (element != Attribute.NULL) {
-                    String alias = element.getString(this);
+                if (pathElement != Attribute.NULL) {
+                    String alias = pathElement.getString(this);
                     Step nodeStep = query.getStep(alias);
                     if (nodeStep == null) {
                         throw new JspTagException("Could not set element to '" + alias + "' (no such step)");
