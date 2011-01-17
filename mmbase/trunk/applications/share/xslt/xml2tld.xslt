@@ -139,19 +139,18 @@
     <xsl:if test="$version &lt; 2.0">
       <tag>
         <xsl:apply-templates select="name | tagclass | tag-class | teiclass | tei-class | bodycontent | body-content" />
-        <xsl:apply-templates select="attribute"/>
-        <xsl:apply-templates select="extends" />
+        <xsl:apply-templates select="." mode="extendsattribute"  />
       </tag>
     </xsl:if>
     <xsl:if test="$version &gt;= 2.0">
       <tag xmlns="http://java.sun.com/xml/ns/j2ee">
         <xsl:call-template name="description" />
-        <xsl:apply-templates select="name | tagclass | tag-class | teiclass | tei-class | bodycontent | variable | body-content" />
+        <xsl:apply-templates select="name | tagclass | tag-class | teiclass | tei-class | bodycontent | body-content" />
         <xsl:if test="not(bodycontent) and not(body-content)">
           <body-content>JSP</body-content>
         </xsl:if>
-        <xsl:apply-templates select="attribute"/>
-        <xsl:apply-templates select="extends" />
+        <xsl:apply-templates select="." mode="extendsvariables"  />
+        <xsl:apply-templates select="." mode="extendsattributes"  />
         <xsl:call-template name="examples" />
       </tag>
     </xsl:if>
@@ -322,9 +321,13 @@
     </function>
   </xsl:template>
 
-  <xsl:template match="tag|taginterface" mode="extends">
+  <xsl:template match="tag|taginterface" mode="extendsattributes">
     <xsl:apply-templates select="attribute"/>
-    <xsl:apply-templates select="extends" />
+    <xsl:apply-templates select="extends" mode="extendsattributes" />
+  </xsl:template>
+  <xsl:template match="tag|taginterface" mode="extendsvariables">
+    <xsl:apply-templates select="variable"/>
+    <xsl:apply-templates select="extends" mode="extendsvariables" />
   </xsl:template>
 
   <xsl:template match="attribute">
@@ -339,8 +342,11 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="extends">
-    <xsl:apply-templates select="/taglib/*[name()='tag' or name()='taginterface']/name[.=current()]/parent::*" mode="extends" />
+  <xsl:template match="extends" mode="extendsattributes">
+    <xsl:apply-templates select="/taglib/*[name()='tag' or name()='taginterface']/name[.=current()]/parent::*" mode="extendsattributes" />
+  </xsl:template>
+  <xsl:template match="extends" mode="extendsvariables">
+    <xsl:apply-templates select="/taglib/*[name()='tag' or name()='taginterface']/name[.=current()]/parent::*" mode="extendsvariables" />
   </xsl:template>
 
   <xsl:template match="shortname|short-name">
