@@ -96,16 +96,16 @@
   </xsl:template>
 
   <xsl:template match="info|description">
-    <xsl:apply-templates select="p|code|pre|text()" />
+    <xsl:apply-templates select="p|code|pre|text()|document" />
     <xsl:apply-templates select="since" />
   </xsl:template>
 
 
-  <xsl:template match="p|code|ul|ol|pre">
+  <xsl:template match="p|code|ul|ol|pre|li">
     <xsl:text>&lt;</xsl:text>
     <xsl:value-of select="local-name()" />
     <xsl:text>&gt;</xsl:text>
-    <xsl:apply-templates select="p|code|ul|ol|pre|a|text()" />
+    <xsl:apply-templates select="p|code|ul|ol|pre|a|li|text()" />
     <xsl:text>&lt;/</xsl:text>
     <xsl:value-of select="local-name()" />
     <xsl:text>&gt;</xsl:text>
@@ -114,7 +114,7 @@
     <xsl:text>&lt;</xsl:text>
     <xsl:value-of select="local-name()" />
     <xsl:text> href="</xsl:text><xsl:value-of select="@href" /><xsl:text>"&gt;</xsl:text>
-    <xsl:apply-templates select="p|code|ul|ol|pre|a|text()" />
+    <xsl:apply-templates select="p|code|ul|ol|li|pre|a|text()" />
     <xsl:text>&lt;/</xsl:text>
     <xsl:value-of select="local-name()" />
     <xsl:text>&gt;</xsl:text>
@@ -146,7 +146,7 @@
     <xsl:if test="$version &gt;= 2.0">
       <tag xmlns="http://java.sun.com/xml/ns/j2ee">
         <xsl:call-template name="description" />
-        <xsl:apply-templates select="name | tagclass | tag-class | teiclass | tei-class | bodycontent | body-content" />
+        <xsl:apply-templates select="name | tagclass | tag-class | teiclass | tei-class | bodycontent | variable | body-content" />
         <xsl:if test="not(bodycontent) and not(body-content)">
           <body-content>JSP</body-content>
         </xsl:if>
@@ -246,11 +246,13 @@
         <xsl:value-of select="name" />
         <xsl:text><![CDATA[' tag</h3>]]></xsl:text>
         <xsl:apply-templates select="info/*|info/text()" />
-        <xsl:text><![CDATA[<p>Other tags like this: ]]></xsl:text>
-        <xsl:apply-templates select="//taglib/tag[extends = $seetag and name != $thistag]" mode="othertagoftype">
-          <xsl:sort select="name" />
-        </xsl:apply-templates>
-        <xsl:text><![CDATA[</p>]]></xsl:text>
+        <xsl:if test="//taglib/tag[extends = $seetag and name != $thistag]">
+          <xsl:text><![CDATA[<p>Other tags like this: ]]></xsl:text>
+          <xsl:apply-templates select="//taglib/tag[extends = $seetag and name != $thistag]" mode="othertagoftype">
+            <xsl:sort select="name" />
+          </xsl:apply-templates>
+          <xsl:text><![CDATA[</p>]]></xsl:text>
+        </xsl:if>
       </xsl:for-each>
     </xsl:for-each>
   </xsl:template>
@@ -281,11 +283,13 @@
     <xsl:apply-templates  select="description/text()" />
     <xsl:text><![CDATA['</h3>]]></xsl:text>
     <xsl:apply-templates select="info/*" />
-    <xsl:text><![CDATA[<p>Other tags like this: ]]></xsl:text>
-    <xsl:apply-templates select="//taglib/tag[contains(type, $thistype) and name != $thistag]|//taglib/tag-file[contains(type, $thistype) and name != $thistag]" mode="othertagoftype">
-      <xsl:sort select="name" />
-    </xsl:apply-templates>
-    <xsl:text><![CDATA[</p>]]></xsl:text>
+    <xsl:if test="//taglib/tag[contains(type, $thistype) and name != $thistag]|//taglib/tag-file[contains(type, $thistype) and name != $thistag]">
+      <xsl:text><![CDATA[<p>Other tags like this: ]]></xsl:text>
+      <xsl:apply-templates select="//taglib/tag[contains(type, $thistype) and name != $thistag]|//taglib/tag-file[contains(type, $thistype) and name != $thistag]" mode="othertagoftype">
+        <xsl:sort select="name" />
+      </xsl:apply-templates>
+      <xsl:text><![CDATA[</p>]]></xsl:text>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template name="values">
@@ -397,8 +401,105 @@
       <xsl:apply-templates select="name|path" />
     </tag-file>
   </xsl:template>
-  <xsl:template match="display-name|icon|uri|name|required|rtexprvalue|function-class|function-signature|path">
+  <xsl:template match="display-name|icon|uri|name|required|rtexprvalue|function-class|function-signature|path|variable">
     <xsl:copy-of select="." />
   </xsl:template>
+
+
+  <!--
+  <xsl:template match="document">
+    <xsl:value-of select="@mode" />
+    <xsl:if test="@mode = 'escapers'">
+      <xsl:apply-templates select="document(@file)" mode="escapers"/>
+    </xsl:if>
+    <xsl:if test="@mode = 'parameterizedescapers'">
+      <xsl:apply-templates select="document(@file)" mode="parameterizedescapers"/>
+    </xsl:if>
+    <xsl:if test="@mode = 'postprocessors'">
+      <xsl:apply-templates select="document(@file)"  mode="postprocessors"/>
+    </xsl:if>
+    <xsl:if test="@mode = 'content'">
+      <xsl:apply-templates select="document(@file)"  mode="content"/>
+    </xsl:if>
+    <xsl:if test="not(@mode)">
+      NO MODE YET
+      <xsl:apply-templates select="document(@file)" />
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="escaper|postprocessor">
+    &lt;tr&gt;&lt;td&gt;<xsl:value-of select="@id" />&lt;/td&gt;
+      &lt;td valign="top"&gt;<xsl:apply-templates select="info"/>&lt;/td&gt;
+    &lt;/tr&gt;
+  </xsl:template>
+
+  <xsl:template match="parameterizedescaper">
+    <tr>
+      <td valign="top"><xsl:value-of select="@id" /></td>
+      <td valign="top"><xsl:apply-templates select="info"/></td>
+      <td valign="top">
+        <table>
+          <tr>
+            <th valign="top">Parameter name</th>
+            <th valign="top">Description</th>
+          </tr>
+          <xsl:for-each select="param">
+            <tr>
+              <td valign="top"><xsl:value-of select="@name" /></td>
+              <td valign="top"><xsl:apply-templates select="info" /></td>
+            </tr>
+          </xsl:for-each>
+        </table>
+      </td>
+    </tr>
+  </xsl:template>
+
+  <xsl:template match="taglibcontent" mode="escapers">
+    &lt;table width="100%"&gt;
+      <xsl:text>&lt;tr&gt;&lt;th valign="top"&gt;&lt;a name="escapers"/&gt;Escaper&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;</xsl:text>
+      <xsl:apply-templates select="escaper|postprocessor"/>
+    &lt;/table&gt;
+  </xsl:template>
+
+  <xsl:template match="taglibcontent" mode="postprocessors">
+    <table bgcolor="#99ccff" width="100%">
+      <tr><th valign="top"><a name="postprocessors" />Postprocessor</th><th></th></tr>
+      <xsl:apply-templates select="postprocessor"/>
+    </table>
+  </xsl:template>
+  <xsl:template match="taglibcontent" mode="parameterizedescapers">
+    &lt;table bgcolor="#99ffff" width="100%"&gt;
+      &lt;tr&gt;
+        &lt;th valign="top" colspan="2"><a name="parameterizedescapers" />Parameterized Escaper</th>
+        <th valign="top" colspan="2">Parameters</th>
+      </tr>
+      <xsl:apply-templates select="parameterizedescaper"/>
+    </table>
+  </xsl:template>
+  <xsl:template match="taglibcontent" mode="content">
+    &lt;table bgcolor="#99ffff" width="100%"&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Id&lt;/th&gt;
+        &lt;th valign="top"&gt;&lt;a name="contenttypes" /&gt;Content-Type&lt;/th&gt;
+        &lt;th valign="top"&gt;Default escaper&lt;/th&gt;
+        &lt;th valign="top"&gt;Default postprocessor&lt;/th&gt;
+        &lt;th valign="top"&gt;Default encoding&lt;/th&gt;
+      &lt;/tr&gt;
+      <xsl:for-each select="content">
+        &lt;tr&gt;
+          &lt;td valign="top"&gt;
+            <xsl:if test="@id"><xsl:value-of select="@id" /></xsl:if>
+            <xsl:if test="not(@id)"><xsl:value-of select="@type" /></xsl:if>
+          &lt;/td&gt;
+          &lt;td valign="top"&gt;&lt;xsl:value-of select="@type" /&gt;&lt;/td&gt;
+          &lt;td valign="top"&gt;&lt;xsl:value-of select="@defaultescaper" /&gt;&lt;/td&gt;
+          &lt;td valign="top"&gt;&lt;xsl:value-of select="@defaultpostprocessor" /&gt;&lt;/td&gt;
+          &lt;td valign="top"&gt;&lt;xsl:value-of select="@defaultencoding" /&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      </xsl:for-each>
+    &lt;/table&gt;
+  </xsl:template>
+  -->
+
 
 </xsl:stylesheet>
