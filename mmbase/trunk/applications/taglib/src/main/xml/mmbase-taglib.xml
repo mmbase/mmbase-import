@@ -681,6 +681,11 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
   <taginterface>
     <name>nodeprovider</name>
     <type>mmbase.basic</type>
+    <variable>
+      <description>The node that is provided</description>
+      <name-given>_node</name-given>
+      <variable-class>org.mmbase.bridge.Node</variable-class>
+    </variable>
     <info>
       A node provider makes an MMBase Node available to its body.
     </info>
@@ -830,6 +835,10 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
   <taginterface>
     <name>writer</name>
     <type>util</type>
+    <variable>
+      <description>The string that is produced</description>
+      <name-given>_</name-given>
+    </variable>
     <info>
       A writer is a tag that can produce output. Normally the default will be to
       written to the page, unless the tag has a body. All tags which
@@ -4772,6 +4781,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <variable>
       <description>The dimension of the image that will be produced</description>
       <name-given>dimension</name-given>
+      <variable-class>org.mmbase.util.images.Dimension</variable-class>
     </variable>
     <info>
       <p>
