@@ -41,9 +41,7 @@ public class MmxfSetString implements  Processor {
     private static final Wiki     wiki     = new Wiki();
 
 
-
-
-    // javadoc inherited
+    @Override
     public Object process(Node node, Field field, Object value) {
         if (log.isDebugEnabled()) {
             log.debug("Found for setstring " + value.getClass() + " " + Util.toString(value));
