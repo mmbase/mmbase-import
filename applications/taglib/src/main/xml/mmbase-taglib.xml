@@ -6038,6 +6038,17 @@ like the parameter list or the session (where ever it is available) --&gt;
         Give a name to the timer to easily find it in the log.
       </info>
     </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+    </attribute>
+    <attribute>
+      <name>enabled</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.9.6</since>
+      <info>Wether or not the timer tag should do it's jobs (so you can optionally disable it). Defaults to 'true' but you can set it to false.</info>
+    </attribute>
     <extends>contextreferrer</extends>
     <example>
     &lt;mm:timer name="listnodes timer"&gt;
