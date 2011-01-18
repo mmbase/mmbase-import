@@ -37,50 +37,62 @@
   <jsp:directive.attribute name="refresh" type="java.lang.Boolean"
 			   description="From os:cache."
 			   />
+  <jsp:directive.attribute name="timer" type="java.lang.String"
+			   description="If not empty surround a mm:timer"
+			   />
 
   <!--
        $Id: body.tagx,v 1.8 2008-07-15 15:16:43 michiel Exp $
   -->
-
-  <os:cache
-      cron="${empty cron ? (empty time ? '0 4 * * *' : '') : cron}"
-      time="${time}"
-      key="richtext_${_node.number}"
-      groups="all,richtext"
-      refresh="${refresh}" >
-    <!-- alternative to 'cron': time="3600"  -->
-    <jsp:text>&lt;!--</jsp:text><mm:time time="now" format=":FULL.FULL" /><jsp:text>--&gt;</jsp:text>
-    <mm:formatter xslt="xslt/2xhtml.xslt" escape="links">
-      <mm:param name="popupwidth" value="${empty popupwidth ? -1 : popupwidth}" /><!-- default is 'no popups' -->
-      <c:if test="${empty depth || depth gt 0}">
-        <mm:listrelationscontainer  role="idrel" searchdir="destination" >
-          <!--
-              the Wiki-setprocessors stores new idrels temporary in the 'createdlinks' property.
-              This is a bit of a hack, needed because queries don't work properly in a transaction.
-          -->
-          <c:set var="createdlinks" value="${mm:property('createdlinks')}" />
-          <mm:listrelations add="createdlinks?">
-            <mm:relatednode>
-              <c:if test="${empty depth || depth gt 1}">
-                <mm:listrelations role="idrel" searchdir="destination">
-                  <mm:relatednode>
-                    <mm:nodeinfo type="nodemanager">
-                      <mm:compare value="blocks">
-                        <mm:listrelations type="object" role="idrel" searchdir="destination" >
-                          <mm:relatednode />
-                        </mm:listrelations>
-                      </mm:compare>
-                    </mm:nodeinfo>
-                  </mm:relatednode>
-                </mm:listrelations>
-              </c:if>
-          </mm:relatednode>
-          </mm:listrelations>
-        </mm:listrelationscontainer>
-      </c:if>
-      <mm:field name="${empty field ? (empty name ? 'body' : name): field}" />
-    </mm:formatter>
-  </os:cache>
+  <mm:timer enabled="${! empty timer}" name="${timer}">
+    <os:cache
+        cron="${cron}"
+        time="${empty time ? -1 : time}"
+        key="richtext_${_node.number}"
+        groups="all,richtext"
+        refresh="${refresh}" >
+      <!-- alternative to 'cron': time="3600"  -->
+      <jsp:text>&lt;!--</jsp:text><mm:time time="now" format=":FULL.FULL" /><jsp:text>--&gt;</jsp:text>
+      <mm:formatter xslt="xslt/2xhtml.xslt" escape="links">
+        <mm:param name="popupwidth" value="${empty popupwidth ? -1 : popupwidth}" /><!-- default is 'no popups' -->
+        <c:if test="${empty depth || depth gt 0}">
+          <mm:listrelationscontainer  role="idrel" searchdir="destination" >
+            <!--
+                the Wiki-setprocessors stores new idrels temporary in the 'createdlinks' property.
+                This is a bit of a hack, needed because queries don't work properly in a transaction.
+            -->
+            <c:set var="createdlinks" value="${mm:property('createdlinks')}" />
+            <os:addgroup group="richtext_${_node}" />
+            <mm:listrelations add="createdlinks?">
+              <os:addgroup group="richtext_${_node}" />
+              <mm:relatednode>
+                <os:addgroup group="richtext_${_node}" />
+                <c:if test="${empty depth || depth gt 1}">
+                  <mm:listrelations role="idrel" searchdir="destination">
+                    <os:addgroup group="richtext_${_node}" />
+                    <mm:relatednode>
+                      <os:addgroup group="richtext_${_node}" />
+                      <mm:nodeinfo type="nodemanager">
+                        <mm:compare value="blocks">
+                          <mm:listrelations type="object" role="idrel" searchdir="destination" >
+                            <os:addgroup group="richtext_${_node}" />
+                            <mm:relatednode>
+                              <os:addgroup group="richtext_${_node}" />
+                            </mm:relatednode>
+                          </mm:listrelations>
+                        </mm:compare>
+                      </mm:nodeinfo>
+                    </mm:relatednode>
+                  </mm:listrelations>
+                </c:if>
+              </mm:relatednode>
+            </mm:listrelations>
+          </mm:listrelationscontainer>
+        </c:if>
+        <mm:field name="${empty field ? (empty name ? 'body' : name): field}" />
+      </mm:formatter>
+    </os:cache>
+  </mm:timer>
 </jsp:root>
 
 
