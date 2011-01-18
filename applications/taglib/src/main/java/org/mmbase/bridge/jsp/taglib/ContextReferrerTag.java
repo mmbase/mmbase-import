@@ -20,6 +20,7 @@ import org.mmbase.bridge.Query;
 import org.mmbase.bridge.util.AbstractQueryWrapper;
 import org.mmbase.bridge.jsp.taglib.edit.FormTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 import org.mmbase.bridge.jsp.taglib.containers.QueryContainer;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
@@ -858,5 +859,15 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      */
     public  String appendMoreParameters(String connector, String amp, StringBuffer buf) throws JspTagException {
         return connector;
+    }
+    /**
+     * @since MMBase-1.9.6
+     */
+    public TimerTag getTimer() throws JspTagException {
+        TimerTag t = findParentTag(TimerTag.class, null, false);
+        if (t != null && t.isTimerEnabled()) {
+            return t;
+        }
+        return null;
     }
 }

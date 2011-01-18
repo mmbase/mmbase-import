@@ -301,7 +301,7 @@ public class NodeListHelper implements ListProvider {
         collector = new ContextCollector(thisTag.getContextProvider());
         varStatusName = (String) varStatus.getValue(thisTag);
         // serve parent timer tag:
-        TimerTag t = thisTag.findParentTag(TimerTag.class, null, false);
+        TimerTag t = thisTag.getTimer();
         if (t != null) {
             timerHandle = t.startTimer(getId(), thisTag.getClass().getName());
         }
@@ -355,7 +355,7 @@ public class NodeListHelper implements ListProvider {
             thisTag.getContextProvider().getContextContainer().register(getId(), returnList, false); // use false because check was done in doStartTag (and doAfterBody not always called).
         }
         nodeHelper.doEndTag();
-        TimerTag t = thisTag.findParentTag(TimerTag.class, null, false);
+        TimerTag t = thisTag.getTimer();
         if (t != null) {
             t.haltTimer(timerHandle);
         }
