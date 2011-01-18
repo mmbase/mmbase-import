@@ -230,7 +230,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         }
 
         // serve parent timer tag:
-        TimerTag t = findParentTag(TimerTag.class, null, false);
+        TimerTag t = getTimer();
         if (t != null) {
             timerHandle = t.startTimer(getId(), getClass().getName());
         }
@@ -396,7 +396,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), tree, false); // use false because check was done in doStartTag (and doAfterBody not always called).
         }
-        TimerTag t = findParentTag(TimerTag.class, null, false);
+        TimerTag t = getTimer();
         if (t != null) {
             t.haltTimer(timerHandle);
         }

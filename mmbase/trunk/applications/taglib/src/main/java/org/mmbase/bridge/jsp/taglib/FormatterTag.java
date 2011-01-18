@@ -295,7 +295,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         if (log.isDebugEnabled()) log.debug("startag of formatter tag " + counter);
 
         // serve parent timer tag:
-        TimerTag t = findParentTag(TimerTag.class, null, false);
+        TimerTag t = getTimer();
         if (t != null) {
             timerHandle = t.startTimer(getId(), getClass().getName());
         } else {
@@ -478,7 +478,10 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         }
 
         if (timerHandle != -1) {
-            findParentTag(TimerTag.class, null, false).haltTimer(timerHandle);
+            TimerTag t = getTimer();
+            if (t != null) {
+                t.haltTimer(timerHandle);
+            }
         }
         helper.doEndTag();
         return super.doEndTag();

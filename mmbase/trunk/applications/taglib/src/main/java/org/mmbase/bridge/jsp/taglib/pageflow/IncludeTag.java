@@ -15,6 +15,7 @@ import org.mmbase.bridge.jsp.taglib.util.Notfound;
 import org.mmbase.bridge.jsp.taglib.util.Debug;
 import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.bridge.jsp.taglib.ContextTag;
+import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 import org.mmbase.bridge.NotFoundException;
 import java.net.*;
 
@@ -71,6 +72,7 @@ public class IncludeTag extends UrlTag {
     protected Attribute omitXmlDeclaration = Attribute.NULL;
 
     protected Object prevIncludePath = null;
+    protected int timerHandle = -1;
 
     /**
      * Test whether or not the 'cite' parameter is set
@@ -125,8 +127,18 @@ public class IncludeTag extends UrlTag {
             throw new JspTagException("No attribute 'page', 'resource' or 'referid' was specified");
         }
     }
+
     @Override
-    public int doStartTag() throws JspTagException {
+    protected void initTag(boolean internal) throws JspTagException {
+        super.initTag(internal);
+        TimerTag t = getTimer();
+        if (t != null) {
+            timerHandle = t.startTimer(getId() + ":" + getPage(), getClass().getName());
+        }
+    }
+
+    @Override
+    public final int doStartTag() throws JspTagException {
         prevIncludePath = pageContext.getRequest().getAttribute(INCLUDE_PATH_KEY);
         checkAttributes();
         initTag(true);
@@ -137,7 +149,16 @@ public class IncludeTag extends UrlTag {
     @Override
     protected void doAfterBodySetValue() throws JspTagException {
         try {
+            int includeTimerHandle = -1;
+            TimerTag t = getTimer();
+            if (t != null) {
+                includeTimerHandle = t.startTimer(getId() + ":" + getPage(), getClass().getName() + ".include");
+            }
             includePage();
+            if (t != null) {
+                t.haltTimer(includeTimerHandle);
+                t.haltTimer(timerHandle);
+            }
         } catch (org.mmbase.framework.FrameworkException fw) {
             throw new TaglibException(fw);
         }
@@ -306,11 +327,12 @@ public class IncludeTag extends UrlTag {
 
         req.removeAttribute(ContextTag.CONTEXTTAG_KEY);
 
+        Map<String, Object> originalAttributes = new HashMap<String, Object>();
         if (attributes != Attribute.NULL) {
-            Iterator<Map.Entry<String, Object>> i = Referids.getReferids(attributes, this).entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry<String, Object> entry = i.next();
+            for (Map.Entry<String, Object> entry : Referids.getReferids(attributes, this).entrySet()) {
+                Object originalValue = req.getAttribute(entry.getKey());
                 req.setAttribute(entry.getKey(), entry.getValue());
+                originalAttributes.put(entry.getKey(), originalValue);
             }
 
         }
@@ -349,6 +371,13 @@ public class IncludeTag extends UrlTag {
         } catch (Throwable e) {
             log.error(relativeUrl, e);
             throw new TaglibException(relativeUrl + " " + e.getMessage(), e);
+        } finally {
+            if (log.isDebugEnabled()) {
+                log.debug("Restoring original attributes " + originalAttributes);
+            }
+            for (Map.Entry<String, Object> entry : originalAttributes.entrySet()) {
+                req.setAttribute(entry.getKey(), entry.getValue());
+            }
         }
 
         if (log.isDebugEnabled()) {
