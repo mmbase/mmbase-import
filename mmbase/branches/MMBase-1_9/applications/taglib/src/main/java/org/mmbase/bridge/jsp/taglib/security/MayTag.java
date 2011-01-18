@@ -61,7 +61,7 @@ public class MayTag extends CloudReferrerTag implements Condition {
             }
         }
         Action a = getCloudContext().getActionRepository().get(ns, action.getString(this));
-        if (a == null) throw new JspTagException("No action " + ns + " " + action + " found");
+        if (a == null) throw new JspTagException("No action " + ns + ":" + action.getString(this) + " found (known are " + getCloudContext().getActionRepository().getActions() + ")");
         Parameters params = a.createParameters();
         fillStandardParameters(params);
         if (a == null) throw new JspTagException("No such action '" + action.getString(this) + "'");
