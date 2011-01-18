@@ -27,7 +27,7 @@ import org.mmbase.util.functions.Functions;
 import org.mmbase.util.logging.*;
 
 /**
- * The function tags can be used as a child of a 'NodeProvider' tag (though posisbly
+ * The function tags can be used as a child of a 'NodeProvider' tag (though possibly
  * not on clusternodes).
  * It can also be used stand alone, when using the attributes to specify on which object the
  * function must be called (besides nodes, it can be called on node-manager, modules, sets).
