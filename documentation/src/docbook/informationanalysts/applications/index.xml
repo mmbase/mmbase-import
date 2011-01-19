@@ -529,7 +529,7 @@
           templates.</para>
         </note>
         <note>
-          <para>If for some reasone you <emphasis>do</emphasis> want
+          <para>If for some reason you <emphasis>do</emphasis> want
           to use actual node numbers (or aliases), e.g. to add
           relations to existing nodes which do not have a synchnodes entry, you can prefix the number with ':'.
           </para>
