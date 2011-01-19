@@ -35,9 +35,9 @@ public class TimerTag extends ContextReferrerTag {
 
     private static final Logger log = Logging.getLoggerInstance(TimerTag.class);
 
-    private List<Long> timers;
-    private List<String> timerIds;
-    private Map<String, Long> totalTimes;
+    private final List<Long> timers     = new ArrayList<Long>(5);
+    private final List<String> timerIds = new ArrayList<String>(5);
+    private final Map<String, Long> totalTimes = new HashMap<String, Long>();
 
     private Attribute name = Attribute.NULL;
     private Attribute enabled = Attribute.NULL;
@@ -84,18 +84,15 @@ public class TimerTag extends ContextReferrerTag {
      */
 
     public int startTimer(String id) throws JspTagException  {
-        if (timers != null) {
-            if (log.isDebugEnabled()) {
-                log.debug("Starting timer " + name.getString(this) + ": " + id);
-            }
-            timers.add(System.currentTimeMillis());
-            if (totalTimes.get(id) == null) {
-                totalTimes.put(id, 0L);
-            }
-            timerIds.add(id);
-            return timers.size() - 1;
+        if (log.isDebugEnabled()) {
+            log.debug("Starting timer " + name.getString(this) + ": " + id);
         }
-        return 0;
+        timers.add(System.currentTimeMillis());
+        if (totalTimes.get(id) == null) {
+            totalTimes.put(id, 0L);
+        }
+        timerIds.add(id);
+        return timers.size() - 1;
     }
 
     /**
@@ -118,9 +115,9 @@ public class TimerTag extends ContextReferrerTag {
     public int doStartTag() throws JspTagException {
         if (isTimerEnabled()) {
             log.info("Starting timer " + name.getString(this));
-            timers     = new ArrayList<Long>(1);
-            timerIds   = new ArrayList<String>(1);
-            totalTimes = new HashMap<String, Long>();
+            timers.clear();
+            timerIds.clear();
+            totalTimes.clear();
             startTimer(getId(), getClass().getName());
         }
         return EVAL_BODY;
@@ -152,9 +149,9 @@ public class TimerTag extends ContextReferrerTag {
 
     }
     public int doEndTag() throws JspTagException {
-        timers = null;
-        timerIds = null;
-        totalTimes = null;
+        timers.clear();
+        timerIds.clear();
+        totalTimes.clear();
         return super.doEndTag();
     }
 
