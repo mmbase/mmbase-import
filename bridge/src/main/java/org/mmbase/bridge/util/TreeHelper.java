@@ -99,7 +99,7 @@ public class TreeHelper {
     }
 
     private void getVersionKey(StringBuilder buf, HttpSession session) {
-        if (ignoreVersions) return;
+        if (ignoreVersions || session == null) return;
         for (NodeManager nm : cloud.getNodeManagers()) {
             String versionnumber = (String) session.getAttribute(nm.getName() + "version");
             if (versionnumber != null) {
