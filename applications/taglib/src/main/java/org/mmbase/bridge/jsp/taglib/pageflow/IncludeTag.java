@@ -128,12 +128,18 @@ public class IncludeTag extends UrlTag {
         }
     }
 
+    /**
+     * @since MMBase-1.9.6
+     */
+    protected String getTimerName() throws JspTagException {
+        return getId() + ":" + url;
+    }
     @Override
     protected void initTag(boolean internal) throws JspTagException {
         super.initTag(internal);
         TimerTag t = getTimer();
         if (t != null) {
-            timerHandle = t.startTimer(getId() + ":" + getPage(), getClass().getName());
+            timerHandle = t.startTimer(getTimerName(), getClass().getName());
         }
     }
 
@@ -152,7 +158,7 @@ public class IncludeTag extends UrlTag {
             int includeTimerHandle = -1;
             TimerTag t = getTimer();
             if (t != null) {
-                includeTimerHandle = t.startTimer(getId() + ":" + getPage(), getClass().getName() + ".include");
+                includeTimerHandle = t.startTimer(getTimerName(), getClass().getName() + ".include");
             }
             includePage();
             if (t != null) {
@@ -363,7 +369,15 @@ public class IncludeTag extends UrlTag {
                 } else {
                     responseWrapper = new IncludeWrapper(resp, encoding);
                 }
+                TimerTag t = getTimer();
+                int includeTimerHandle = -1;
+                if (t != null) {
+                    includeTimerHandle = t.startTimer(getTimerName(), getClass().getName() + ".internal");
+                }
                 requestDispatcher.include(requestWrapper, responseWrapper);
+                if (t != null) {
+                    t.haltTimer(includeTimerHandle);
+                }
                 handleResponse(responseWrapper.getStatus(), responseWrapper.toString(), relativeUrl);
             }
 

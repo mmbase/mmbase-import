@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
 public class LeafIncludeTag extends IncludeTag {
 
     private static final Logger log = Logging.getLoggerInstance(LeafIncludeTag.class);
-   
+
     protected Attribute objectList = Attribute.NULL;
     private TreeHelper th = new TreeHelper();
 
@@ -47,10 +47,11 @@ public class LeafIncludeTag extends IncludeTag {
             throw new TaglibException(ioe);
         }
     }
-    
+
     protected void initTag(boolean internal) throws JspTagException {
         th.setCloud(getCloudVar());
         th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
+        th.setIgnoreVersions("true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_ignore_versions")));
         super.initTag(internal);
         url.setLegacy();
         if (log.isDebugEnabled()) {
