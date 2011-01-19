@@ -63,6 +63,7 @@ public class TreeIncludeTag extends IncludeTag {
     protected void initTag(boolean internal) throws JspTagException {
         th.setCloud(getCloudVar());
         th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
+        th.setIgnoreVersions("true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_ignore_versions")));
         super.initTag(internal);
         url.setLegacy();
         if (log.isDebugEnabled()) {
