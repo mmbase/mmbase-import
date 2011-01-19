@@ -44,7 +44,7 @@ public class LeafFileTag extends UrlTag {
     public void setNotfound(String n) throws JspTagException {
         notFound = getAttribute(n);
     }
-    
+
     protected String getPage(String p) throws JspTagException {
         try {
             return th.findLeafFile(p, objectList.getValue(this).toString(),
@@ -57,6 +57,7 @@ public class LeafFileTag extends UrlTag {
     protected void initTag(boolean internal) throws JspTagException {
         th.setCloud(getCloudVar());
         th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
+        th.setIgnoreVersions("true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_ignore_versions")));
         super.initTag(internal);
         url.setLegacy();
         if (log.isDebugEnabled()) {
