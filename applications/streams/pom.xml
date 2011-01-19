@@ -43,6 +43,7 @@
             <phase>validate</phase>
             <configuration>
               <executable>make</executable>
+              <skip>${maven.test.skip}</skip>
             </configuration>
             <goals>
               <goal>exec</goal>
