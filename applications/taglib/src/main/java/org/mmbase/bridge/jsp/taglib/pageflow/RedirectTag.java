@@ -34,13 +34,16 @@ public class RedirectTag extends UrlTag  {
     private static final Logger log = Logging.getLoggerInstance(RedirectTag.class);
 
 
-    @Override protected final String getAbsolute() throws JspTagException {
+    @Override
+    protected final String getAbsolute() throws JspTagException {
         return "server";
     }
-    @Override protected final boolean escapeAmps() throws JspTagException {
+    @Override
+    protected final boolean escapeAmps() throws JspTagException {
         return false;
     }
-    @Override protected final boolean encode() throws JspTagException {
+    @Override
+    protected final boolean encode() throws JspTagException {
         return true;
     }
     /**
@@ -54,7 +57,12 @@ public class RedirectTag extends UrlTag  {
         try {
             // dont set value, but redirect.
             HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-            response.sendRedirect(url.get());
+            String u = url.get();
+            log.info("Redirecting to " + u + " with " + response.getClass() + " " + response);
+            if (response.isCommitted()) {
+                log.warn("Response is already committed!");
+            }
+            response.sendRedirect(u);
         } catch (java.io.IOException io) {
             throw new TaglibException(io);
         }

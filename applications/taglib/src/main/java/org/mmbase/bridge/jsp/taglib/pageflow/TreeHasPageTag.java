@@ -58,6 +58,8 @@ public class TreeHasPageTag extends CloudReferrerTag implements Condition {
         }
         th.setCloud(getCloudVar());
         th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
+        th.setIgnoreVersions("true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_ignore_versions")));
+
         try {
             String treePage = th.findTreeFile(page.getString(this), objectList.getString(this), pageContext.getSession());
             log.debug("Testing " + treePage);
