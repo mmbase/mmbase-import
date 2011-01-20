@@ -43,6 +43,7 @@ version: $Id$
 
 -->
 <taglib author="MMBase community">
+  <svn-url>$HeadURL$</svn-url>
   <description>MMBase Taglib</description>
   <display-name>MMBase Taglib</display-name>
   <tlib-version>2.0</tlib-version>
@@ -623,7 +624,7 @@ version: $Id$
     </attribute>
     <see tag="listreferrer" />
     <example>
-      <pre><![CDATA[
+      <![CDATA[
 <mm:import id="list1" vartype="list">a,b,c,d,e</mm:import>
 <mm:import id="list2" vartype="list">c,d,e,f</mm:import>
 
@@ -633,11 +634,9 @@ version: $Id$
 
 <mm:write referid="list3" /> / <mm:write referid="list4" /> / <mm:write referid="list5" />
 ]]>
-      </pre>
       This will print the following:
-      <pre>
+
 a,b,c,d,e,c,d,e,f / c,d,e / a,b
-      </pre>
     </example>
     <attribute>
       <name>varStatus</name>
@@ -967,10 +966,12 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Override the default escape behaviour determined by the surrounding Content-tag.
+        Override the default escape behaviour determined by the surrounding <a href="content.html">mm:content tag</a>.
         <document file="../resources/org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
                   mode="escapers" />
-        <p>The value can also refer to the id of an escaper tag</p>
+        <p>The value can also refer to the id of escaper tag</p>
+        <p>It is also possible to directly call the 'parameterized' escapers (see <a href="escaper.html#attribute-type">parameterized escapers</a>), by using
+        a 'function' syntax. E.g. <code>escape="paragraph(myclass)"</code>.</p>
       </info>
       <see tag="content" />
       <see tag="escaper" />
@@ -9264,9 +9265,9 @@ The 0 is just counter, which starts at 0 on every page.
     <info>
       Like the HTML option tag, which it produces. It only support also a 'compare' attribute to support added selected="selected" or not.
     </info>
-    <example><pre><![CDATA[
+    <example><![CDATA[
     <mm:option name="a" value="hoi" compare="${a}" />
-]]></pre>
+]]>
     </example>
     <since>MMBase-1.8.5</since>
   </tag-file>
