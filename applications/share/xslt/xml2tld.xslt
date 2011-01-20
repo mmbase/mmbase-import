@@ -75,7 +75,8 @@
         </xsl:if>
       </xsl:if>
       <xsl:if test="$version &lt; 2.0">
-        <xsl:apply-templates select="info"/>
+        <xsl:copy-of select="description"/>
+        <!-- No place for info -->
         <xsl:apply-templates select="tag" mode="base">
           <xsl:sort select="name" />
         </xsl:apply-templates>
@@ -139,7 +140,7 @@
     <xsl:if test="$version &lt; 2.0">
       <tag>
         <xsl:apply-templates select="name | tagclass | tag-class | teiclass | tei-class | bodycontent | body-content" />
-        <xsl:apply-templates select="." mode="extendsattribute"  />
+        <xsl:apply-templates select="." mode="attributes"  />
       </tag>
     </xsl:if>
     <xsl:if test="$version &gt;= 2.0">
@@ -149,8 +150,8 @@
         <xsl:if test="not(bodycontent) and not(body-content)">
           <body-content>JSP</body-content>
         </xsl:if>
-        <xsl:apply-templates select="." mode="extendsvariables"  />
-        <xsl:apply-templates select="." mode="extendsattributes"  />
+        <xsl:apply-templates select="." mode="variables"  />
+        <xsl:apply-templates select="." mode="attributes"  />
         <xsl:call-template name="examples" />
       </tag>
     </xsl:if>
@@ -165,6 +166,18 @@
         <xsl:value-of select="name" />
         <xsl:text><![CDATA[" />]]></xsl:text>
         <xsl:apply-templates select="info|description" />
+        <xsl:if test="/taglib/svn-url">
+          <xsl:if test="local-name() = 'tag-file'">
+
+            &lt;p&gt;This is implemented as a tag-file, and tlddoc doesn't quite get the documentation right.
+            <xsl:variable name="url">
+              <xsl:value-of select="substring(/taglib/svn-url, 10, string-length(/taglib/svn-url) - string-length('src/main/xml/mmbase-taglib.xml $'))" />
+              <xsl:text>resources</xsl:text>
+              <xsl:value-of select="path" />
+            </xsl:variable>
+            We refer to the &lt;a href="<xsl:value-of select="$url" />"&gt;source code&lt;/a&gt; for complete information about variables and attributes.&lt;/p&gt;
+          </xsl:if>
+        </xsl:if>
         <xsl:apply-templates select="see[@tag or @function]" />
         <xsl:call-template name="showextends" />
         <xsl:call-template name="showtype" />
@@ -296,13 +309,15 @@
       <xsl:if test="position() = 1">
         <xsl:text><![CDATA[<p>values<p><ul>]]></xsl:text>
       </xsl:if>
-      <xsl:text><![CDATA[<li><em>]]></xsl:text>
+      <xsl:text>&lt;li style="</xsl:text>
+      <xsl:choose>
+        <xsl:when test="local-name() = 'examplevalue'">background: ##99ffff;</xsl:when>
+        <xsl:otherwise>background: #99ccff</xsl:otherwise>
+      </xsl:choose>
+      <xsl:text>"&gt;&lt;em&gt;</xsl:text>
       <xsl:value-of select="value" />
       <xsl:text><![CDATA[</em>  ]]></xsl:text>
       <xsl:apply-templates select="info" />
-      <xsl:if test="local-name() = 'examplevalue'">
-        <xsl:text><![CDATA[<em> (example)</em>]]></xsl:text>
-      </xsl:if>
       <xsl:text><![CDATA[</li>]]></xsl:text>
     </xsl:for-each>
     <xsl:if test="position() = last()">
@@ -321,11 +336,11 @@
     </function>
   </xsl:template>
 
-  <xsl:template match="tag|taginterface" mode="extendsattributes">
+  <xsl:template match="tag|taginterface" mode="attributes">
     <xsl:apply-templates select="attribute"/>
     <xsl:apply-templates select="extends" mode="extendsattributes" />
   </xsl:template>
-  <xsl:template match="tag|taginterface" mode="extendsvariables">
+  <xsl:template match="tag|taginterface" mode="variables">
     <xsl:apply-templates select="variable"/>
     <xsl:apply-templates select="extends" mode="extendsvariables" />
   </xsl:template>
@@ -343,10 +358,14 @@
   </xsl:template>
 
   <xsl:template match="extends" mode="extendsattributes">
-    <xsl:apply-templates select="/taglib/*[name()='tag' or name()='taginterface']/name[.=current()]/parent::*" mode="extendsattributes" />
+    <xsl:apply-templates select="/taglib/*[name()='tag' or name()='taginterface']/name[.=current()]/parent::*" mode="attributes">
+      <xsl:with-param name="from" select="text()" />
+    </xsl:apply-templates>
   </xsl:template>
   <xsl:template match="extends" mode="extendsvariables">
-    <xsl:apply-templates select="/taglib/*[name()='tag' or name()='taginterface']/name[.=current()]/parent::*" mode="extendsvariables" />
+    <xsl:apply-templates select="/taglib/*[name()='tag' or name()='taginterface']/name[.=current()]/parent::*" mode="extendsvariables">
+      <xsl:with-param name="from" select="text()" />
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="shortname|short-name">
@@ -405,6 +424,7 @@
     <tag-file xmlns="http://java.sun.com/xml/ns/j2ee">
       <xsl:call-template name="description" />
       <xsl:apply-templates select="name|path" />
+      <xsl:call-template name="examples" />
     </tag-file>
   </xsl:template>
   <xsl:template match="display-name|icon|uri|name|required|rtexprvalue|function-class|function-signature|path|variable">
@@ -412,9 +432,7 @@
   </xsl:template>
 
 
-  <!--
   <xsl:template match="document">
-    <xsl:value-of select="@mode" />
     <xsl:if test="@mode = 'escapers'">
       <xsl:apply-templates select="document(@file)" mode="escapers"/>
     </xsl:if>
@@ -440,47 +458,47 @@
   </xsl:template>
 
   <xsl:template match="parameterizedescaper">
-    <tr>
-      <td valign="top"><xsl:value-of select="@id" /></td>
-      <td valign="top"><xsl:apply-templates select="info"/></td>
-      <td valign="top">
-        <table>
-          <tr>
-            <th valign="top">Parameter name</th>
-            <th valign="top">Description</th>
-          </tr>
+    &lt;tr&gt;
+      &lt;td valign="top"&gt;<xsl:value-of select="@id" />&lt;/td&gt;
+      &lt;td valign="top"&gt;<xsl:apply-templates select="info"/>&lt;/td&gt;
+      &lt;td valign="top"&gt;
+        &lt;table&gt;
+          &lt;tr&gt;
+            &lt;th valign="top"&gt;Parameter name&lt;/th&gt;
+            &lt;th valign="top"&gt;Description&lt;/th&gt;
+          &lt;/tr&gt;
           <xsl:for-each select="param">
-            <tr>
-              <td valign="top"><xsl:value-of select="@name" /></td>
-              <td valign="top"><xsl:apply-templates select="info" /></td>
-            </tr>
+            &lt;tr&gt;
+              &lt;td valign="top"&gt;<xsl:value-of select="@name" />&lt;/td&gt;
+              &lt;td valign="top"&gt;<xsl:apply-templates select="info" />&lt;/td&gt;
+            &lt;/tr&gt;
           </xsl:for-each>
-        </table>
-      </td>
-    </tr>
+        &lt;/table&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
   </xsl:template>
 
   <xsl:template match="taglibcontent" mode="escapers">
-    &lt;table width="100%"&gt;
+    &lt;table bgcolor="#99ccff" width="100%"&gt;
       <xsl:text>&lt;tr&gt;&lt;th valign="top"&gt;&lt;a name="escapers"/&gt;Escaper&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;</xsl:text>
       <xsl:apply-templates select="escaper|postprocessor"/>
     &lt;/table&gt;
   </xsl:template>
 
   <xsl:template match="taglibcontent" mode="postprocessors">
-    <table bgcolor="#99ccff" width="100%">
-      <tr><th valign="top"><a name="postprocessors" />Postprocessor</th><th></th></tr>
+    &lt;table bgcolor="#99ccff" width="100%"&gt;
+      &lt;tr&gt;&lt;th valign="top"&gt;&lt;a name="postprocessors" /&gt;Postprocessor&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;
       <xsl:apply-templates select="postprocessor"/>
-    </table>
+    &lt;/table&gt;
   </xsl:template>
   <xsl:template match="taglibcontent" mode="parameterizedescapers">
     &lt;table bgcolor="#99ffff" width="100%"&gt;
       &lt;tr&gt;
-        &lt;th valign="top" colspan="2"><a name="parameterizedescapers" />Parameterized Escaper</th>
-        <th valign="top" colspan="2">Parameters</th>
-      </tr>
+        &lt;th valign="top" colspan="2"&gt;&lt;a name="parameterizedescapers" /&gt;Parameterized Escaper&lt;/th&gt;
+        &lt;th valign="top" colspan="2"&gt;Parameters&lt;/th&gt;
+      &lt;/tr&gt;
       <xsl:apply-templates select="parameterizedescaper"/>
-    </table>
+    &lt;/table&gt;
   </xsl:template>
   <xsl:template match="taglibcontent" mode="content">
     &lt;table bgcolor="#99ffff" width="100%"&gt;
@@ -497,15 +515,15 @@
             <xsl:if test="@id"><xsl:value-of select="@id" /></xsl:if>
             <xsl:if test="not(@id)"><xsl:value-of select="@type" /></xsl:if>
           &lt;/td&gt;
-          &lt;td valign="top"&gt;&lt;xsl:value-of select="@type" /&gt;&lt;/td&gt;
-          &lt;td valign="top"&gt;&lt;xsl:value-of select="@defaultescaper" /&gt;&lt;/td&gt;
-          &lt;td valign="top"&gt;&lt;xsl:value-of select="@defaultpostprocessor" /&gt;&lt;/td&gt;
-          &lt;td valign="top"&gt;&lt;xsl:value-of select="@defaultencoding" /&gt;&lt;/td&gt;
+          &lt;td valign="top"&gt;<xsl:value-of select="@type" />;&lt;/td&gt;
+          &lt;td valign="top"&gt;<xsl:value-of select="@defaultescaper" />;&lt;/td&gt;
+          &lt;td valign="top"&gt;<xsl:value-of select="@defaultpostprocessor" />;&lt;/td&gt;
+          &lt;td valign="top"&gt;<xsl:value-of select="@defaultencoding" />&lt;/td&gt;
         &lt;/tr&gt;
       </xsl:for-each>
     &lt;/table&gt;
   </xsl:template>
-  -->
+
 
 
 </xsl:stylesheet>
