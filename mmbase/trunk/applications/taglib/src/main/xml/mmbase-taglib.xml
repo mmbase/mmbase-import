@@ -276,7 +276,7 @@ version: $Id: mmbase-taglib.xml 44979 2011-01-20 09:46:46Z michiel $
   <description>HTML related tags</description>
   <info>
     <p>
-      Small, simple utilities (normally implmented with a tag-file), to help producing (valid) HTML.
+      Small, simple utilities (normally implemented with a tag-file), to help producing (valid) HTML.
     </p>
   </info>
   </type>
