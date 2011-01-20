@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id$
+version: $Id: mmbase-taglib.xml 44979 2011-01-20 09:46:46Z michiel $
 
 -->
 <taglib author="MMBase community">
