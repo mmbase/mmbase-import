@@ -11,6 +11,7 @@ package org.mmbase.security;
 import java.util.*;
 import org.w3c.dom.*;
 import org.mmbase.util.xml.Instantiator;
+import org.mmbase.core.event.*;
 
 import org.mmbase.util.logging.*;
 
@@ -43,23 +44,27 @@ import org.mmbase.util.logging.*;
 public abstract class ActionRepository extends Configurable {
     private static final Logger log = Logging.getLoggerInstance(ActionRepository.class);
 
-    protected static ActionRepository bootstrap = new MemoryActionRepository();
-
+    static ActionRepository instance = new MemoryActionRepository();
+    static {
+        EventManager.getInstance().addEventListener(new SystemEventListener() {
+                @Override
+                public int getWeight() {
+                    return 0;
+                }
+                @Override
+                public void notify(SystemEvent se) {
+                    if (se instanceof SecurityLoaded) {
+                        instance = ((SecurityLoaded) se).getCop().getActionRepository();
+                    }
+                }
+            });
+    }
     /**
      * Returns the ActionRepository associated with the current MMBase's {@link MMBaseCop}. Or if
      * that doesn't provide one, returns a {@link MemoryActionRepository}.
      */
     public static ActionRepository getInstance() {
-        if (bootstrap != null) {
-            return bootstrap;
-        } else {
-            MMBaseCop mmbc = null; // TODO org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop();
-            if (mmbc != null) {
-                return mmbc.getActionRepository();
-            } else {
-                return new MemoryActionRepository();
-            }
-        }
+        return instance;
     }
 
     /**
