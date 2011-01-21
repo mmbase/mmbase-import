@@ -73,7 +73,13 @@ public class Actions extends MMObjectBuilder {
     }
 
     public boolean check(User user, Action ac, Parameters parameters) {
-        return ac.getDefault().check(user, ac, parameters);
+        if (ac == null) throw new IllegalArgumentException("Action cannot be null");
+        ActionChecker checker = ac.getDefault();
+        if (checker != null) {
+            return checker.check(user, ac, parameters);
+        } else {
+            throw new RuntimeException("Action " + ac + " does not have a default ActionChecker");
+        }
     }
 
 
