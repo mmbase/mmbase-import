@@ -31,7 +31,7 @@ public class BasicUser implements UserContext, Comparable<Object> {
 
     protected final String authenticationType;
     private final String identifier;
-    protected final Authentication authentication;
+    protected Authentication authentication;
 
     public BasicUser(Authentication auth, String authenticationType, String identifier) {
         this.authenticationType = authenticationType;
