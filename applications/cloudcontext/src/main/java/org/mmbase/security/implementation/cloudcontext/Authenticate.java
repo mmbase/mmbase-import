@@ -216,15 +216,15 @@ public class Authenticate extends CloudContextAuthentication implements java.io.
         }
         User user = (User) userContext;
         if (user.node == null) {
-            log.debug("No node associated to user object, --> user object is invalid");
+            log.warn("No node associated to user object, --> user object is invalid " + user);
             return false;
         }
         if (! user.isValidNode()) {
-            log.debug("Node associated to user object, is invalid");
+            log.warn("Node associated to user object, is invalid " + user);
             return false;
         }
         if ( user.getKey() != getKey()) {
-            log.service(user.toString() + "(" + user.getClass().getName() + ") was NOT valid (different unique number)");
+            log.warn(user.toString() + "(" + user.getClass().getName() + ") was NOT valid (different unique number " + user.getKey() + " != " + getKey() + ")");
             return false;
         }
         log.debug(user.toString() + " was valid");
