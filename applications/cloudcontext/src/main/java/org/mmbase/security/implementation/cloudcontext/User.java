@@ -140,12 +140,15 @@ public class User extends BasicUser implements UserContext, WeakNodeEventListene
             if (isUp) {
                 MMObjectBuilder users = Authenticate.getInstance().getUserProvider().getUserBuilder();
                 node = users.getNode(number);
+                authentication = Authenticate.getInstance();
             } else {
                 org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
+                        @Override
                         public void run() {
                             org.mmbase.bridge.LocalContext.getCloudContext().assertUp();
                             MMObjectBuilder users = Authenticate.getInstance().getUserProvider().getUserBuilder();
                             node = users.getNode(number);
+                            User.this.authentication = Authenticate.getInstance();
                         }
                     });
             }
