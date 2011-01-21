@@ -458,6 +458,7 @@ public class MMBase extends ProcessorModule {
         // try to load security...
         try {
             mmbaseCop = new MMBaseCop();
+            EventManager.getInstance().propagateEvent(new SecurityLoaded(mmbaseCop));
         } catch (Exception e) {
             LOG.fatal("Error loading the mmbase cop: " + e.getMessage());
             LOG.error(e.getMessage(), e);
