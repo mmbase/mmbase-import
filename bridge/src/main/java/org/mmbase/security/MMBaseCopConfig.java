@@ -136,15 +136,16 @@ public class MMBaseCopConfig {
             String authenticationClass = reader.getElementAttributeValue(entry,"class");
             String authenticationUrl = reader.getElementAttributeValue(entry, "url");
             authentication = getAuthentication(authenticationClass);
-
+            log.debug("Instantiated " + authentication);
             // load the key
             String key = DocumentReader.getElementValue(reader.getElementByPath("security.key"));
             if (key != null && ! key.equals("")) {
                 try {
                     long k = Long.parseLong(key);
-                    authentication.key = k;
+                    authentication.setKey(k);
                 } catch (NumberFormatException nfe) {
-                    log.error("Could not format '" + key + "', defaulting to " + authentication.key);
+                    authentication.setKey(System.currentTimeMillis());
+                    log.error("Could not format '" + key + "', defaulting to " + authentication.getKey());
                 }
             }
 

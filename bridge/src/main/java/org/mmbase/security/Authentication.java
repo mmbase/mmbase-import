@@ -199,7 +199,12 @@ public abstract class Authentication extends Configurable implements Authenticat
         }
     }
 
-    long key = System.currentTimeMillis();
+    private long key = -1;
+
+    void setKey(long k) {
+        log.service("Setting key to " + k + " on " + this);
+        key = k;
+    }
 
     /**
      *<p> Some unique key associated with this security configuration. It can be explicitly set with
@@ -212,6 +217,11 @@ public abstract class Authentication extends Configurable implements Authenticat
      * @since MMBase-1.8
      */
     public long getKey() {
+        if (key == -1) {
+            IllegalStateException e = new IllegalStateException("Key not set");
+            log.error(e.getMessage(), e);
+            throw e;
+        }
         return key;
     }
 
