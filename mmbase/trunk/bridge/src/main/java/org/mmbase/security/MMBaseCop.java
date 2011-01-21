@@ -41,8 +41,7 @@ public class MMBaseCop extends SecurityManager  {
         super();
         config = new MMBaseCopConfig(this);
         config.load();
-        copyActions(ActionRepository.bootstrap, config.getActionRepository());
-        ActionRepository.bootstrap = null;
+        copyActions(ActionRepository.instance, config.getActionRepository());
         log.service("Done loading security configuration");
     }
 
