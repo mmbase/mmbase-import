@@ -10,14 +10,6 @@ See http://www.MMBase.org/license
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <!--
-      This pom is responsible for building the mmbase jar, and perhaps the maven site.
-
-      The example war can be build with example-webapp/pom.xml
-
-
-  -->
-
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -29,6 +21,10 @@ See http://www.MMBase.org/license
 
   <artifactId>mmbase-core</artifactId>
   <name>MMBase Core</name>
+
+  <description>
+    MMBase core is the part that actually implements the MMBase bridge. The database layer implementations can be found here.
+  </description>
 
   <version>2.0-SNAPSHOT</version>
 
