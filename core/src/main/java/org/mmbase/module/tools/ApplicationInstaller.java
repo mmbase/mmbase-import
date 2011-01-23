@@ -73,8 +73,8 @@ class ApplicationInstaller {
      * @return true if succesfull, false otherwise
      */
     public boolean installApplication(String applicationName, int requiredVersion,
-            String requiredMaintainer, ApplicationResult result, Set<String> installationSet,
-            boolean autoDeploy) throws SearchQueryException {
+                                      String requiredMaintainer, ApplicationResult result, Set<String> installationSet,
+                                      boolean autoDeploy) throws SearchQueryException {
 
 
         if (installationSet.contains(applicationName)) {
@@ -111,7 +111,7 @@ class ApplicationInstaller {
             if (installedVersion == -1 || version > installedVersion) {
                 if (!name.equals(applicationName)) {
                     result.warn("Application name " + name + " not the same as the base filename " + applicationName + ".\n"
-                                + "This may cause problems when referring to this application.");
+                                + "This may cause problems when referring to this application. In " + reader.getSystemId());
                 }
                 // We should possibly check whether the maintainer is valid here (see sample code below).
                 // There is currently no way to do this, though, unless we use awful queries.
