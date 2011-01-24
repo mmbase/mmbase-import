@@ -2,7 +2,9 @@
 <!DOCTYPE eventmanager PUBLIC "-//MMBase//DTD eventmanager config 1.0//EN" "http://www.mmbase.org/dtd/eventmanager_1_0.dtd">
 <eventmanager>
 	<listeners>
-    <!-- This is actually just a trick to work around http://java.net/jira/browse/JSTL-1 -->
+    <!-- This is actually just a trick to work around http://java.net/jira/browse/JSTL-1
+         See also: http://www.mmbase.org/jira/browse/MMB-2018
+    -->
 		<listener class="org.mmbase.applications.editwizard.Utils"/>
   </listeners>
 </eventmanager>
