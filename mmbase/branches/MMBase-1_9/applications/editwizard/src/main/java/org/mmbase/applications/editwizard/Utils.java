@@ -26,6 +26,7 @@ import javax.xml.namespace.QName;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.ResourceLoader;
+import org.mmbase.core.event.*;
 
 import org.mmbase.cache.xslt.*;
 import org.mmbase.cache.*;
@@ -44,12 +45,11 @@ import org.mmbase.util.xml.URIResolver;
  * @version $Id$
  */
 
-public class Utils {
+public class Utils implements SystemEventListener {
 
     private static final Logger log = Logging.getLoggerInstance(Utils.class);
 
-    protected static final XPathFactory xpathFactory = XPathFactory.newInstance();
-
+    protected static final XPathFactory xpathFactory;
     protected static final Cache<String, XPathExpression> xpathCache = new Cache<String, XPathExpression>(200) {
         @Override
         public String getName() {
@@ -57,8 +57,20 @@ public class Utils {
         }
     };
     static {
+        // work around http://java.net/jira/browse/JSTL-1
+        xpathFactory = XPathFactory.newInstance();
         xpathCache.putCache();
     }
+
+    @Override
+    public void notify(SystemEvent se) {
+        // work around http://java.net/jira/browse/JSTL-1
+        // calling static init as possible
+    }
+    public int getWeight() {
+        return 0;
+    }
+
     /**
      * This method returns a new instance of a DocumentBuilder.
      *
@@ -791,5 +803,11 @@ public class Utils {
      public static  boolean isNotEmptyNodeList(NodeList list) {
         return !isEmptyNodeList(list);
      }
+
+    public static void main(String[] argv) {
+
+        System.out.println(System.getProperty(XPathFactory.DEFAULT_PROPERTY_NAME + ":" + XPathFactory.DEFAULT_OBJECT_MODEL_URI));
+                           //XPATH_FACTORY_CLASS_NAME);
+    }
 
 }
