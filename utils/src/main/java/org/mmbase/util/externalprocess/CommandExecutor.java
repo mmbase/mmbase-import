@@ -45,15 +45,21 @@ public class CommandExecutor {
         private final String host;
         private final int port;
         private final Type type;
+        private final int timeout;
         private boolean inUse = false;
         public Method() {
             host = "localhost";
             port = -1;
+            timeout = -1;
             type = Type.LAUNCHER;
         }
         public Method(String host, int port) {
+            this(host, port, 10000);
+        }
+        public Method(String host, int port, int timeout) {
             this.host = host;
             this.port = port;
+            this.timeout = timeout;
             type = Type.CONNECTOR;
         }
         public void setInUse(boolean b) {
@@ -102,7 +108,8 @@ public class CommandExecutor {
                 try {
                     // errorStream is ignored.
                     //
-                    java.net.Socket socket = new java.net.Socket(method.host, method.port);
+                    java.net.Socket socket = new java.net.Socket();
+                    socket.connect(new InetSocketAddress(method.host, method.port),  method.timeout);
                     final OutputStream os = socket.getOutputStream();
                     os.write(0); // version
                     final ObjectOutputStream stream = new ObjectOutputStream(os);
