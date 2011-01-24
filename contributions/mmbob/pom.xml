@@ -13,8 +13,7 @@
   <name>MMBase MMBob</name>
   <packaging>war</packaging>
 
-  <description>
-  </description>
+  <description>MMBob is a forum implementation. </description>
 
 
   <dependencies>
