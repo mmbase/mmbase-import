@@ -36,9 +36,6 @@ public class ErrorRenderer extends AbstractRenderer {
     protected final Error error;
     protected final String url;
 
-    protected boolean includeSession = true;
-    protected boolean includeMMBaseVersion = true;
-
     protected static int MAX_CAUSES = 4;
 
     public ErrorRenderer(Type t, Block parent, String u, int status, String m) {
@@ -115,10 +112,10 @@ public class ErrorRenderer extends AbstractRenderer {
             showSession = b;
         }
         public void setRequestIgnore(String i) {
-            requestIgnore = Pattern.compile(i);
+            requestIgnore = i == null ? null : Pattern.compile(i);
         }
         public void setSessionIgnore(String i) {
-            sessionIgnore = Pattern.compile(i);
+            sessionIgnore = i == null ? null : Pattern.compile(i);
         }
         public void setShowVersion(Boolean b) {
             showMMBaseVersion = b;
