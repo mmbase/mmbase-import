@@ -12,26 +12,27 @@
   <name>MMBase Calendar</name>
   <packaging>war</packaging>
 
-  <description>
+  <description><![CDATA[
+   <p>
     This is an MMBased 'calendar' appliction. It demonstrates the MMBase datetime field, with timezone
     and locale options. Also it uses the newest MMBase taglib features and itself provides new tags
     implemented by tagx-files
+    </p>
+    <pre>
+      To install this calendar contribution:
+      --------------------------------------------------------------------------------
+      - You need MMBase 1.8 or higher
+      - You need a servlet 2.4 compatible application server like Tomcat 5.
 
 
-    To install this calendar contribution:
-    --------------------------------------------------------------------------------
-    - You need MMBase 1.8 or higher
-    - You need a servlet 2.4 compatible application server like Tomcat 5.
+      then:
+      - add org.mmbase:mmbase-calendar:war:2.0-SNAPSHOT to your dependencies.
+      - or manually unpack the war.
+      - Restart your application server
+    </pre>
+   <p>Browse to /mmbase/calendar for a demo.</p>
 
-
-    then:
-    - add org.mmbase:mmbase-calendar:war:2.0-SNAPSHOT to your dependencies.
-    - or manually unpack the war.
-    - Restart your application server
-
-    Browse to /mmbase/calendar for a demo.
-
-    Michiel Meeuwissen
+    ]]>
   </description>
 
   <build>
