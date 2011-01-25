@@ -10,6 +10,7 @@
 package org.mmbase.framework;
 
 import java.util.*;
+import java.util.regex.*;
 
 import javax.servlet.http.*;
 import javax.servlet.jsp.*;
@@ -34,6 +35,9 @@ public class ErrorRenderer extends AbstractRenderer {
 
     protected final Error error;
     protected final String url;
+
+    protected boolean includeSession = true;
+    protected boolean includeMMBaseVersion = true;
 
     protected static int MAX_CAUSES = 4;
 
@@ -97,10 +101,27 @@ public class ErrorRenderer extends AbstractRenderer {
     public static class Error {
         public int status;
         public final Throwable exception;
-        protected String title = null;
+        private Boolean showSession = null;
+        private Pattern requestIgnore = null;
+        private Pattern sessionIgnore = null;
+        private Boolean showMMBaseVersion = null;
 
         public Error(int s, Throwable e) {
             status = s; exception = e;
+        }
+
+
+        public void setShowSession(Boolean b) {
+            showSession = b;
+        }
+        public void setRequestIgnore(String i) {
+            requestIgnore = Pattern.compile(i);
+        }
+        public void setSessionIgnore(String i) {
+            sessionIgnore = Pattern.compile(i);
+        }
+        public void setShowVersion(Boolean b) {
+            showMMBaseVersion = b;
         }
 
 
@@ -156,6 +177,13 @@ public class ErrorRenderer extends AbstractRenderer {
             LinkedList<Throwable> stack = getStack();
             String ticket = new Date().toString();
 
+            Map<String, String> props;
+            try {
+                props = org.mmbase.util.ApplicationContextReader.getProperties("mmbase_errorpage");
+            } catch (javax.naming.NamingException ne) {
+                props = Collections.emptyMap();
+                log.info(ne);
+            }
 
             if (request != null) {
                 {
@@ -167,17 +195,31 @@ public class ErrorRenderer extends AbstractRenderer {
                 }
                 {
                     msg.append("\nAttributes\n----------\n");
+                    Pattern p = requestIgnore;
+                    if (p == null && props.get("request_ignore") != null) {
+                        p = Pattern.compile(props.get("request_ignore"));
+                    }
                     for (Object name : Collections.list(request.getAttributeNames())) {
-                        msg.append(escape.transform(name + ": " + request.getAttribute((String) name) + "\n"));
+                        if (p == null || !p.matcher((String) name).matches()) {
+                            msg.append(escape.transform(name + ": " + request.getAttribute((String) name) + "\n"));
+                        }
                     }
                 }
-                HttpSession ses = request.getSession(false);
-                if (ses != null) {
-                    msg.append("\nSession\n----------\n");
-                    for (Object name : Collections.list(ses.getAttributeNames())) {
-                        msg.append(escape.transform(name + ": " + ses.getAttribute((String) name) + "\n"));
-                    }
+                if (Boolean.TRUE.equals(showSession)  || (showSession == null && ! "false".equals(props.get("show_session")))) {
+                    HttpSession ses = request.getSession(false);
+                    if (ses != null) {
+                        msg.append("\nSession\n----------\n");
+                        Pattern p = sessionIgnore;
+                        if (p == null && props.get("session_ignore") != null) {
+                            p = Pattern.compile(props.get("session_ignore"));
+                        }
+                        for (Object name : Collections.list(ses.getAttributeNames())) {
+                            if (p == null || !p.matcher((String) name).matches()) {
+                                msg.append(escape.transform(name + ": " + ses.getAttribute((String) name) + "\n"));
+                            }
+                        }
 
+                    }
                 }
             }
             msg.append("\n");
@@ -188,8 +230,9 @@ public class ErrorRenderer extends AbstractRenderer {
                 msg.append("querystring: ").append(escape.transform(request.getQueryString())).append("\n");
                 msg.append("requesturl: ").append(escape.transform(request.getRequestURL().toString())).append("\n");
             }
-
-            msg.append("mmbase version: ").append(org.mmbase.Version.get()).append("\n");
+            if (Boolean.TRUE.equals(showMMBaseVersion)  || (showMMBaseVersion == null && ! "false".equals(props.get("show_mmbase_version")))) {
+                msg.append("mmbase version: ").append(org.mmbase.Version.get()).append("\n");
+            }
             msg.append("status: ").append("" + status).append("\n\n");
 
 
@@ -232,19 +275,17 @@ public class ErrorRenderer extends AbstractRenderer {
                     }
                 }
             }
-            // write errors to mmbase log
+            // write errors to  log
             if (status == 500) {
                 try {
-                    Map<String, String> props = org.mmbase.util.ApplicationContextReader.getProperties("mmbase_errorpage");
                     if (props.get("to") != null && props.get("to").length() > 0) {
                         javax.naming.Context initCtx = new javax.naming.InitialContext();
                         javax.naming.Context envCtx = (javax.naming.Context)initCtx.lookup("java:comp/env");
                         Object mailSession = envCtx.lookup("mail/Session");
-
                         Class sessionClass = Class.forName("javax.mail.Session");
                         Class recipientTypeClass = Class.forName("javax.mail.Message$RecipientType");
                         Class messageClass = Class.forName("javax.mail.internet.MimeMessage");
-                        Object mail = messageClass.getConstructor(sessionClass).newInstance(mailSession);
+                        Object mail = messageClass.getConstructor( sessionClass).newInstance(mailSession);
                         messageClass.getMethod("addRecipients", recipientTypeClass, String.class).invoke(mail, recipientTypeClass.getDeclaredField("TO").get(null), props.get("to"));
                         messageClass.getMethod("setSubject", String.class).invoke(mail, ticket);
                         mail.getClass().getMethod("setText", String.class).invoke(mail, logMsg.toString());
@@ -254,6 +295,9 @@ public class ErrorRenderer extends AbstractRenderer {
 
                 } catch (Exception nnfe) {
                     tee.append("\nnot mailed (" + nnfe + ")");
+                    if (log.isDebugEnabled()) {
+                        log.debug(nnfe.getMessage(), nnfe);
+                    }
                 }
                 log.error("TICKET " + ticket + ":\n" + logMsg);
             }
