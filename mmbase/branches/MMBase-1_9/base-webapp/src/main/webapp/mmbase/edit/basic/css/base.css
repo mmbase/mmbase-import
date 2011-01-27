@@ -77,3 +77,6 @@ p.foot2 {
 div.searchresult.implicit {
     display: none;
 }
+.paging.notneeded {
+    display: none;
+}
