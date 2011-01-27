@@ -12,7 +12,7 @@
   <jsp:directive.attribute
       name="notfound"
       type="java.lang.String"
-      description="like the 'notfound' attribute of a normal node tag. But with the following remarks. If empty, it behaves as 'skip'. It can also take the value 'create', in which the relation will be create if it does not yet exist."
+      description="like the 'notfound' attribute of a normal node tag. But with the following remarks. If empty, it behaves as 'skip'. It can also take the value 'create', in which case the relation will be created if it does not yet exist."
       />
 
   <mm:node number="${from}" emptynumberiscurrentnode="true">

@@ -314,61 +314,60 @@ version: $Id: mmbase-taglib.xml 44979 2011-01-20 09:46:46Z michiel $
       </p>
       <p>
         The following example demonstrates how to use tree's in mmbase taglib
-          <pre><![CDATA[
-&lt;mm:import externid="node" required="true" /&gt;
-&lt;mm:node number="$node"&gt;
+          &lt;pre&gt;
+&amp;lt;mm:import externid="node" required="true" /&amp;gt;
+&amp;lt;mm:node number="$node"&amp;gt;
 
-  &lt;%-- the current node is used as a 'starting query', so this node itself will also be listed by mm:tree --%&gt;
+  &amp;lt;%-- the current node is used as a 'starting query', so this node itself will also be listed by mm:tree --%&amp;gt;
 
-  &lt;mm:treecontainer path="posrel,categories,object" searchdirs="destination"&gt;
-    &lt;%-- the query will be extended with posrel,categories, and then with any objects related to the categories,
+  &amp;lt;mm:treecontainer path="posrel,categories,object" searchdirs="destination"&amp;gt;
+    &amp;lt;%-- the query will be extended with posrel,categories, and then with any objects related to the categories,
          and then with any 'posrel' related categories related to those object etc.
-    --%&gt;
+    --%&amp;gt;
 
-    &lt;%-- the categories must be order according to the 'pos' field in the posrel. --%&gt;
-    &lt;mm:sortorder field="posrel.pos" /&gt;
+    &amp;lt;%-- the categories must be order according to the 'pos' field in the posrel. --%&amp;gt;
+    &amp;lt;mm:sortorder field="posrel.pos" /&amp;gt;
 
-    &lt;%-- don't do every category, but only those with 'a' in their title --%&gt;
-    &lt;mm:constraint field="categories.title" operator="LIKE" value="%a%" /&gt;
+    &amp;lt;%-- don't do every category, but only those with 'a' in their title --%&amp;gt;
+    &amp;lt;mm:constraint field="categories.title" operator="LIKE" value="%a%" /&amp;gt;
 
-    &lt;%-- also some trivial sortorder on the 'object' steps --%&gt;
-    &lt;mm:sortorder  field="object.number" direction="up" /&gt;
+    &amp;lt;%-- also some trivial sortorder on the 'object' steps --%&amp;gt;
+    &amp;lt;mm:sortorder  field="object.number" direction="up" /&amp;gt;
 
-    In this tree &lt;mm:size /&gt; objects are presented.
+    In this tree &amp;lt;mm:size /&amp;gt; objects are presented.
 
-    &lt;mm:tree&gt;
+    &amp;lt;mm:tree&amp;gt;
 
-      &lt;%-- If the current node provided by the tree is on the end of a 'longer branch', then we start a
+      &amp;lt;%-- If the current node provided by the tree is on the end of a 'longer branch', then we start a
            ul. mm:grow is iterated zero (if the previous node was _bigger or equal_) or one (if the previous
            node was _smaller_  times. (Because in a forward tree iteration the branch can not grow faster
            than that)
-           --%&gt;
-      &lt;mm:grow&gt;
-        &lt;ul&gt;
-        &lt;%-- we also say now already what should happen if it later 'shrinks' again. The body of this will be temporary
-             put onto a stack until it is taken of it by the mm:shrink tag. --&gt;
-        &lt;mm:onshrink&gt;&lt;/ul&gt;&lt;/mm:onshrink&gt;
-      &lt;/mm:grow&gt;
+           --%&amp;gt;
+      &amp;lt;mm:grow&amp;gt;
+        &amp;lt;ul&amp;gt;
+        &amp;lt;%-- we also say now already what should happen if it later 'shrinks' again. The body of this will be temporary
+             put onto a stack until it is taken of it by the mm:shrink tag. --&amp;gt;
+        &amp;lt;mm:onshrink&amp;gt;&amp;lt;/ul&amp;gt;&amp;lt;/mm:onshrink&amp;gt;
+      &amp;lt;/mm:grow&amp;gt;
 
-      &lt;%-- a tree tag provides 'real' nodes, so in the body we can show this node --%&gt;
+      &amp;lt;%-- a tree tag provides 'real' nodes, so in the body we can show this node --%&amp;gt;
 
-      &lt;li&gt;&lt;mm:nodeinfo type="guitype" /&gt;: &lt;mm:field name="number" /&gt; &lt;mm:function name="gui" escape="none" /&gt;
+      &amp;lt;li&amp;gt;&amp;lt;mm:nodeinfo type="guitype" /&amp;gt;: &amp;lt;mm:field name="number" /&amp;gt; &amp;lt;mm:function name="gui" escape="none" /&amp;gt;
 
-      &lt;mm:onshrink&gt;&lt;/li&gt;&lt;/mm:onshrink&gt;
+      &amp;lt;mm:onshrink&amp;gt;&amp;lt;/li&amp;gt;&amp;lt;/mm:onshrink&amp;gt;
 
-      &lt;%-- mm:shrink will use what was put onto the 'shrink tag' by the mm:onshrink tags. The body of mm:shrink
+      &amp;lt;%-- mm:shrink will use what was put onto the 'shrink tag' by the mm:onshrink tags. The body of mm:shrink
       will be called zero (if the next node will be bigger then the current one) or more times. How
       often it iterates depends on how often mm:onshrink was called. It will be emptied until the top element
       of the shrink tag correspends to a depth which is smaller then the current depth.
-      --%&gt;
+      --%&amp;gt;
 
-      &lt;mm:shrink /&gt;
-    &lt;/mm:tree&gt;
+      &amp;lt;mm:shrink /&amp;gt;
+    &amp;lt;/mm:tree&amp;gt;
 
-  &lt;/mm:treecontainer&gt;
-&lt;/mm:node&gt;
-]]>
-</pre>
+  &amp;lt;/mm:treecontainer&amp;gt;
+&amp;lt;/mm:node&amp;gt;
+&lt;/pre&gt;
       </p>
       <p>
         Trees which do not need such complicated sort orders or constraints can also be used stand-alone.
@@ -4201,6 +4200,12 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         Writing things to cookie is also possible. Analogous to
         writing to the session.
       </info>
+    </attribute>
+    <attribute>
+      <name>cookiepath</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>Path for the cookie if the 'cookie' attribute is used. Works like url-tag. Defaults to / (i.e. &lt;context path&gt;)</info>
     </attribute>
     <attribute>
       <name>request</name>
