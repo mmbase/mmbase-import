@@ -69,7 +69,7 @@ if (urlStack == null) {
   <mm:import id="indexoffset" externid="mmjspeditors_indexoffset" from="parameters,cookie,this">1</mm:import>
   <mm:import id="style_sheet" externid="mmjspeditors_style"     from="parameters,cookie,this">mmbase.css</mm:import>
   <mm:import id="liststyle"   externid="mmjspeditors_liststyle" from="parameters,cookie,this">short</mm:import>
-  <mm:write cookie="mmjspeditors_liststyle" referid="liststyle"   />
+  <mm:write cookie="mmjspeditors_liststyle" referid="liststyle"  cookiepath="." />
   <mm:import id="lang"        externid="mmjspeditors_language"  from="parameters,cookie,this" ><%=LocalContext.getCloudContext().getDefaultLocale().getLanguage()%></mm:import>
   <mm:import id="country"     externid="mmjspeditors_country"   from="parameters,cookie,this" />
   <mm:import id="session"     externid="mmjspeditors_session"   from="parameters,cookie,this">mmbase_editors_cloud</mm:import>
