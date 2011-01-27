@@ -12,6 +12,7 @@ import org.mmbase.bridge.Node;
 
 import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.pageflow.Url;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
@@ -45,6 +46,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
 
     private Attribute sessionVar = Attribute.NULL;
     private Attribute cookie     = Attribute.NULL;
+    private Attribute cookiePath     = Attribute.NULL;
     private Attribute applicationVar  = Attribute.NULL;
     private Attribute requestVar  = Attribute.NULL;
     // private Attribute page       = Attribute.NULL;
@@ -58,6 +60,13 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
 
     public void setCookie(String s) throws JspTagException {
         cookie = getAttribute(s);
+    }
+
+    /**
+     * @since MMBase-1.9.6
+     */
+    public void setCookiepath(String s) throws JspTagException {
+        cookiePath = getAttribute(s);
     }
 
     /**
@@ -192,8 +201,16 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
             int maxCookieAge = getMaxCookieAge();
             {  // on root (keep things simple)
                 Cookie c = new Cookie(cookie.getString(this), cookievalue);
-                String path = request.getContextPath();
-                if (path.length() == 0) path = "/";
+
+                String path;
+                if (cookiePath == Attribute.NULL) {
+                    path = request.getContextPath();
+                    if (path.length() == 0) path = "/";
+                } else {
+                    Url url = new Url(this, cookiePath.getString(this), "server");
+                    path = url.get();
+                }
+
                 c.setPath(path);
                 c.setMaxAge(maxCookieAge);
                 response.addCookie(c);
