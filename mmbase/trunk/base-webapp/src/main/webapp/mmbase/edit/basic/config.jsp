@@ -8,15 +8,15 @@
 <body class="basic config">
 
   <mm:context referid="config" id="config">
-    <mm:write cookie="mmjspeditors_style"         referid="style_sheet" />
-    <mm:write cookie="mmjspeditors_liststyle"     referid="liststyle"   />
-    <mm:write cookie="mmjspeditors_language"      referid="lang"         />
-    <mm:write cookie="mmjspeditors_country"       referid="country"         />
-    <mm:write cookie="mmjspeditors_session"       referid="session"      />
-    <mm:write cookie="mmjspeditors_indexoffset"   referid="indexoffset"      />
-    <mm:write cookie="mmjspeditors_page_size"     referid="page_size"      />
-    <mm:write cookie="mmjspeditors_xmlmode"       referid="xmlmode"      />
-    <mm:write cookie="mmjspeditors_uri"           referid="uri"      />
+    <mm:write cookie="mmjspeditors_style"         referid="style_sheet" cookiepath="." />
+    <mm:write cookie="mmjspeditors_liststyle"     referid="liststyle"   cookiepath="." />
+    <mm:write cookie="mmjspeditors_language"      referid="lang"        cookiepath="." />
+    <mm:write cookie="mmjspeditors_country"       referid="country"     cookiepath="." />
+    <mm:write cookie="mmjspeditors_session"       referid="session"     cookiepath="." />
+    <mm:write cookie="mmjspeditors_indexoffset"   referid="indexoffset" cookiepath="." />
+    <mm:write cookie="mmjspeditors_page_size"     referid="page_size"   cookiepath="." />
+    <mm:write cookie="mmjspeditors_xmlmode"       referid="xmlmode"     cookiepath="." />
+    <mm:write cookie="mmjspeditors_uri"           referid="uri"         cookiepath="." />
   </mm:context>
   <form name="config">
     <table class="edit" summary="editor configuration" width="93%"  cellspacing="1" cellpadding="3" border="0">
