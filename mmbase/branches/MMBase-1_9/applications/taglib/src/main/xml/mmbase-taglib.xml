@@ -4192,6 +4192,12 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       </info>
     </attribute>
     <attribute>
+      <name>cookiepath</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>Path for the cookie if the 'cookie' attribute is used. Works like url-tag. Defaults to / (i.e. &lt;context path&gt;)</info>
+    </attribute>
+    <attribute>
       <name>request</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
