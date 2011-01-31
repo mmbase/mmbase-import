@@ -1,5 +1,5 @@
 <%@tag import="org.mmbase.framework.ErrorRenderer"
-%><%@attribute name="exception"   required="true" type="java.lang.Exception"
+%><%@attribute name="exception"   required="true" type="java.lang.Throwable"
 %><%@attribute name="showversion" type="java.lang.Boolean"
 %><%@attribute name="showsession" type="java.lang.Boolean"
 %><%@attribute name="requestignore" type="java.lang.String"
