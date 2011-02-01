@@ -121,7 +121,7 @@ public final class Schemes {
     public static final String CREATE_PRIMARY_KEY = "create-primary-key-scheme";
 
     /**
-     *  The default scheme for creating a prinary key.
+     *  The default scheme for creating a primary key.
      */
     public static final String CREATE_PRIMARY_KEY_DEFAULT = "PRIMARY KEY ({2})";
 
@@ -161,6 +161,10 @@ public final class Schemes {
      *  The default scheme for selecting a node type.
      */
     public static final String CREATE_FOREIGN_KEY_DEFAULT = "CONSTRAINT {1}_{2}_foreign FOREIGN KEY ({2}) REFERENCES {3} ({4})";
+
+
+
+
 
     /**
      *  Name of the scheme for creating a unique (generally composite) index.
