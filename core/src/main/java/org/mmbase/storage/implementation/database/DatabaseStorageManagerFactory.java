@@ -479,7 +479,14 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     protected SearchQueryHandler instantiateQueryHandler(Object data) {
         return new BasicQueryHandler((SqlHandler)data);
     }
-
+    /**
+     * The maximal length an index in the database can have, or <code>Integer.MAX_VALUE</code>.
+     * @since MMBase-1.9.6
+     */
+    protected int getMaxKeyLength() {
+        String mkl = (String) getAttribute("database-max-key-length");
+        return mkl == null || "".equals(mkl) ? Integer.MAX_VALUE : Integer.parseInt(mkl);
+    }
 
     /**
      * @since MMBase-1.9.1
