@@ -2470,31 +2470,35 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
     /**
+     * @since MMBase-1.9.6
+     */
+    protected int getMaxLengthForKey(CoreField field) {
+        return Math.min(factory.getMaxKeyLength(), field.getMaxLength());
+    }
+
+    /**
      * Creates an index definition string for a field to be passed when creating a table.
      * @param field the field for which to make the index definition
      * @return the index definition as a String, or <code>null</code> if no definition is available
      */
     protected String getConstraintDefinition(CoreField field) throws StorageException {
-        String definitions = null;
-        Scheme scheme = null;
         if (field.getName().equals("number")) {
-            scheme = factory.getScheme(Schemes.CREATE_PRIMARY_KEY, Schemes.CREATE_PRIMARY_KEY_DEFAULT);
+            Scheme scheme = factory.getScheme(Schemes.CREATE_PRIMARY_KEY, Schemes.CREATE_PRIMARY_KEY_DEFAULT);
             if (scheme != null) {
-                definitions = scheme.format(this, field.getParent(), field, factory.getMMBase());
+                return scheme.format(this, field.getParent(), field, factory.getMMBase());
             }
+            return null;
         } else {
+            String definitions = null;
             // the field is unique: create a unique key for it
             if (field.isUnique()) {
-                scheme = factory.getScheme(Schemes.CREATE_UNIQUE_KEY, Schemes.CREATE_UNIQUE_KEY_DEFAULT);
+                Scheme scheme = factory.getScheme(Schemes.CREATE_UNIQUE_KEY, Schemes.CREATE_UNIQUE_KEY_DEFAULT);
                 if (scheme != null) {
-                    String mkl = (String) factory.getAttribute("database-max-key-length");
-                    Integer maxKeyLength = mkl == null || "".equals(mkl) ? Integer.MAX_VALUE : Integer.parseInt(mkl);
-                    int keyLength = Math.min(maxKeyLength, field.getMaxLength());
-                    definitions = scheme.format(this, field.getParent(), field, field, "" + keyLength);
+                    definitions = scheme.format(this, field.getParent(), field, field, getMaxLengthForKey(field));
                 }
             }
             if (field.getType() == Field.TYPE_NODE) {
-                scheme = factory.getScheme(Schemes.CREATE_FOREIGN_KEY, Schemes.CREATE_FOREIGN_KEY_DEFAULT);
+                Scheme scheme = factory.getScheme(Schemes.CREATE_FOREIGN_KEY, Schemes.CREATE_FOREIGN_KEY_DEFAULT);
                 if (scheme != null) {
                     Object keyname = factory.getStorageIdentifier("" + field.getParent().getTableName() + "_" + field.getName() + "_FOREIGN");
                     String definition = scheme.format(this, field.getParent(), field, factory.getMMBase(), factory.getStorageIdentifier("number"), keyname);
@@ -2505,8 +2509,8 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                     }
                 }
             }
+            return definitions;
         }
-        return definitions;
     }
 
     // javadoc is inherited
@@ -3063,11 +3067,24 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         String result = null;
         if (index.size() == 1 || factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
             StringBuilder indexFields = new StringBuilder();
+            int totLength = 0;
             for (Field field : index) {
+                if (totLength >= factory.getMaxKeyLength()) {
+                    log.warn("Field " + field + " could not be added to the index, because the index already has the maximimal key length " + factory.getMaxKeyLength());
+                    continue;
+                }
                 if (indexFields.length() > 0) {
                     indexFields.append(", ");
                 }
                 indexFields.append(factory.getStorageIdentifier(field));
+                totLength += field.getMaxLength();
+                if (totLength > factory.getMaxKeyLength()) {
+                    totLength -= field.getMaxLength(); // undo that, and calculate what _is_ possible
+                    int newLength = factory.getMaxKeyLength() - totLength;
+                    indexFields.append(" (" + newLength + ")");
+                    totLength = factory.getMaxKeyLength();
+                    log.info("Key " + index + " was truncated (to a maximimal length of " + newLength + ")");
+                }
             }
             if (indexFields.length() > 0) {
                 result = indexFields.toString();
