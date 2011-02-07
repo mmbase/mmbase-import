@@ -50,7 +50,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      * This configurable constant might become deprecated, because it is a bit experimental.
      *
      */
-    public static int EVAL_BODY = -1;
+    public static int EVAL_BODY = EVAL_BODY_INCLUDE;
     // should be EVAL_BODY_INCLUDE. But
     // 1. Completely unsupported by orion 1.6.0
     // 2. Buggy supported by tomcat < 4.1.19
