@@ -31,7 +31,7 @@ public class PageContextThreadLocal {
     private static final Logger LOG = Logging.getLoggerInstance(PageContextThreadLocal.class);
 
     static {
-        LOG.info("Adding system event listener");
+        LOG.debug("Adding system event listener");
         EventManager.getInstance().addEventListener(new SystemEventListener() {
                 @Override
                 public void notify(SystemEvent se) {
