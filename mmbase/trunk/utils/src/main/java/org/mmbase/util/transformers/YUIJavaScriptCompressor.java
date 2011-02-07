@@ -43,6 +43,7 @@ public class YUIJavaScriptCompressor extends  ReaderTransformer {
             w = false;
         } catch (NoClassDefFoundError ncdfe) {
             LOG.info(ncdfe.getClass().getName() + " " + ncdfe.getMessage() + ". Javascript and CSS compression will not work.");
+            w = false;
         } catch (Throwable re) {
             LOG.warn(re.getMessage(), re);
             w = false;
