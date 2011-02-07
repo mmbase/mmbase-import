@@ -93,7 +93,7 @@ public class ContextProvider {
                                     if (resolvers.contains(resolver)) {
                                         log.warn("Already resolving with " + resolver + " (" + url + ")");
                                     } else {
-                                        log.info("Found " + resolver + " (" + url + ")");
+                                        log.service("Found " + resolver + " (" + url + ")");
                                         resolvers.add(resolver);
                                     }
                                 } catch (Exception e) {
