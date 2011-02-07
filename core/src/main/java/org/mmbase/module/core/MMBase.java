@@ -256,227 +256,227 @@ public class MMBase extends ProcessorModule {
      */
     @Override
     public void init() {
-        //synchronized(MMBase.class) {
-        if (mmbaseState >= STATE_STARTED_INIT) {
-            LOG.debug("Already initialized or initializing");
-            return;
-        } else if (mmbaseState == STATE_SHUT_DOWN) {
-            LOG.warn("was shutdown... should NOT restart again!");
-        return;
-        }
-        MMBaseContext.setDataDir(getInitParameter("datadir"));
-        LOG.service("Init of " + org.mmbase.Version.get() + " (" + this + ")");
+        synchronized(MMBase.class) {
+            if (mmbaseState >= STATE_STARTED_INIT) {
+                LOG.debug("Already initialized or initializing");
+                return;
+            } else if (mmbaseState == STATE_SHUT_DOWN) {
+                LOG.warn("was shutdown... should NOT restart again!");
+                return;
+            }
+            MMBaseContext.setDataDir(getInitParameter("datadir"));
+            LOG.service("Init of " + org.mmbase.Version.get() + " (" + this + ")");
 
-        configureOSCache();
+            configureOSCache();
 
-        mmbaseState = STATE_STARTED_INIT;
+            mmbaseState = STATE_STARTED_INIT;
 
-        // Set the mmbaseroot singleton var
-        // This prevents recursion if MMBase.getMMBase() is called while
-        // this method is run
-        mmbaseroot = this;
+            // Set the mmbaseroot singleton var
+            // This prevents recursion if MMBase.getMMBase() is called while
+            // this method is run
+            mmbaseroot = this;
 
-        super.init();
+            super.init();
 
-        // is there a basename defined in MMBASE.properties ?
-        String tmp = getInitParameter("BASENAME");
-        if (tmp != null) {
-            // yes then replace the default name (def1)
-            baseName = tmp;
-        } else {
-            LOG.info("init(): No name defined for mmbase using default (def1)");
-        }
+            // is there a basename defined in MMBASE.properties ?
+            String tmp = getInitParameter("BASENAME");
+            if (tmp != null) {
+                // yes then replace the default name (def1)
+                baseName = tmp;
+            } else {
+                LOG.info("init(): No name defined for mmbase using default (def1)");
+            }
 
-        tmp = getInitParameter("AUTHTYPE");
-        if (tmp != null && !tmp.equals("")) {
-            authtype = tmp;
-        }
+            tmp = getInitParameter("AUTHTYPE");
+            if (tmp != null && !tmp.equals("")) {
+                authtype = tmp;
+            }
 
-        tmp = getInitParameter("TIMEZONE");
-        if (tmp != null && !tmp.equals("")) {
-            timeZone = TimeZone.getTimeZone(tmp);
-        }
-        DateFormat format = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.US);
-        format.setTimeZone(timeZone);
-        MMBaseContext.INITLOG.info("MMBase Time zone   : " + timeZone.getDisplayName(Locale.US) + " (it's now " + format.format(new Date()) + ")");
-        org.mmbase.util.dateparser.DateParser.setDefault(timeZone);
+            tmp = getInitParameter("TIMEZONE");
+            if (tmp != null && !tmp.equals("")) {
+                timeZone = TimeZone.getTimeZone(tmp);
+            }
+            DateFormat format = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.US);
+            format.setTimeZone(timeZone);
+            MMBaseContext.INITLOG.info("MMBase Time zone   : " + timeZone.getDisplayName(Locale.US) + " (it's now " + format.format(new Date()) + ")");
+            org.mmbase.util.dateparser.DateParser.setDefault(timeZone);
 
-        tmp = getInitParameter("LANGUAGE");
-        if (tmp != null && !tmp.equals("")) {
-            ServletContext sx = MMBaseContext.getServletContext();
-            if (sx != null) {
-                String fmtLocale = sx.getInitParameter(LocalizedString.FMT_DEFAULT_PARAM);
-                if (fmtLocale != null && ! fmtLocale.equals(tmp)) {
-                    LOG.warn("The default fmt locale: " + fmtLocale + " is not equal to the MMBase Locale " + tmp + ". Consider removing the mmbaseroot.language setting.");
+            tmp = getInitParameter("LANGUAGE");
+            if (tmp != null && !tmp.equals("")) {
+                ServletContext sx = MMBaseContext.getServletContext();
+                if (sx != null) {
+                    String fmtLocale = sx.getInitParameter(LocalizedString.FMT_DEFAULT_PARAM);
+                    if (fmtLocale != null && ! fmtLocale.equals(tmp)) {
+                        LOG.warn("The default fmt locale: " + fmtLocale + " is not equal to the MMBase Locale " + tmp + ". Consider removing the mmbaseroot.language setting.");
+                    }
                 }
+                LocalizedString.setDefault(LocalizedString.getLocale(tmp));
+            } else {
+                LOG.service("No default specified using default " + LocalizedString.getDefault());
             }
-            LocalizedString.setDefault(LocalizedString.getLocale(tmp));
-        } else {
-            LOG.service("No default specified using default " + LocalizedString.getDefault());
-        }
-        MMBaseContext.INITLOG.info("MMBase Locale      : " + getLocale());
+            MMBaseContext.INITLOG.info("MMBase Locale      : " + getLocale());
 
 
-        tmp = getInitParameter("DEVELOPMENT");
-        if (tmp != null && !tmp.equals("")) {
-            inDevelopment = "true".equals(tmp);
-        }
-
-        tmp = getInitParameter("ENCODING");
-        if (tmp != null && !tmp.equals("")) {
-            MMBaseContext.setEncoding(tmp);
-        }
-        setMMEntities(false);
-
-        // default locale has to be known before initializing datatypes:
-        DataTypes.initialize();
-
-        String localHost;
-        try {
-            localHost = java.net.InetAddress.getLocalHost().getHostName();
-        } catch (java.net.UnknownHostException uhe) {
-            localHost = "localhost";
-        }
-
-        LOG.service("Localhost: " + localHost);
-
-        String hostParam = getInitParameter("HOST");
-        if (hostParam != null && !hostParam.equals("")) {
-            // try to incorporate the localhost (if needed)
-            int pos = hostParam.indexOf("${LOCALHOST}");
-            if (pos != -1) {
-                hostParam =hostParam.substring(0, pos) +
-                    localHost + hostParam.substring(pos + 12);
-            }
-            MMBaseContext.setHost(hostParam);
-        } else {
-            MMBaseContext.setHost(localHost);
-        }
-
-        setMMEntities(false);
-
-        String machineNameParam = getInitParameter("MACHINENAME");
-        if (machineNameParam != null) {
-            // try to incorporate the hostname (if needed)
-            int pos = machineNameParam.indexOf("${HOST}");
-            if (pos != -1) {
-                machineNameParam =
-                    machineNameParam.substring(0, pos) +
-                    MMBaseContext.getHost() + machineNameParam.substring(pos + 7);
-            }
-            // you may also try to incorporate the username in the machine name
-            pos = machineNameParam.indexOf("${USER}");
-            if (pos != -1) {
-                machineNameParam = machineNameParam.substring(0, pos) + System.getProperty("user.name") + machineNameParam.substring(pos + 7);
+            tmp = getInitParameter("DEVELOPMENT");
+            if (tmp != null && !tmp.equals("")) {
+                inDevelopment = "true".equals(tmp);
             }
 
-            pos = machineNameParam.indexOf("${CONTEXT}");
-            if (pos != -1) {
+            tmp = getInitParameter("ENCODING");
+            if (tmp != null && !tmp.equals("")) {
+                MMBaseContext.setEncoding(tmp);
+            }
+            setMMEntities(false);
+
+            // default locale has to be known before initializing datatypes:
+            DataTypes.initialize();
+
+            String localHost;
+            try {
+                localHost = java.net.InetAddress.getLocalHost().getHostName();
+            } catch (java.net.UnknownHostException uhe) {
+                localHost = "localhost";
+            }
+
+            LOG.service("Localhost: " + localHost);
+
+            String hostParam = getInitParameter("HOST");
+            if (hostParam != null && !hostParam.equals("")) {
+                // try to incorporate the localhost (if needed)
+                int pos = hostParam.indexOf("${LOCALHOST}");
+                if (pos != -1) {
+                    hostParam =hostParam.substring(0, pos) +
+                        localHost + hostParam.substring(pos + 12);
+                }
+                MMBaseContext.setHost(hostParam);
+            } else {
+                MMBaseContext.setHost(localHost);
+            }
+
+            setMMEntities(false);
+
+            String machineNameParam = getInitParameter("MACHINENAME");
+            if (machineNameParam != null) {
+                // try to incorporate the hostname (if needed)
+                int pos = machineNameParam.indexOf("${HOST}");
+                if (pos != -1) {
+                    machineNameParam =
+                        machineNameParam.substring(0, pos) +
+                        MMBaseContext.getHost() + machineNameParam.substring(pos + 7);
+                }
+                // you may also try to incorporate the username in the machine name
+                pos = machineNameParam.indexOf("${USER}");
+                if (pos != -1) {
+                    machineNameParam = machineNameParam.substring(0, pos) + System.getProperty("user.name") + machineNameParam.substring(pos + 7);
+                }
+
+                pos = machineNameParam.indexOf("${CONTEXT}");
+                if (pos != -1) {
+                    if (! MMBaseContext.isHtmlRootInitialized()) {
+                        LOG.warn("HTML root not yet known. MachineName will not be correct yet.");
+                    }
+                    machineNameParam = machineNameParam.substring(0, pos) + MMBaseContext.getHtmlRootUrlPath() + machineNameParam.substring(pos + 10);
+                }
+
+                MMBaseContext.setMachineName(machineNameParam);
+            } else {
                 if (! MMBaseContext.isHtmlRootInitialized()) {
                     LOG.warn("HTML root not yet known. MachineName will not be correct yet.");
                 }
-                machineNameParam = machineNameParam.substring(0, pos) + MMBaseContext.getHtmlRootUrlPath() + machineNameParam.substring(pos + 10);
+                // default machine name is the local host name plus context-path.
+                // We suppose that that is sufficiently unique in most cases
+                MMBaseContext.setMachineName(localHost + MMBaseContext.getHtmlRootUrlPath());
+
+            }
+            MMBaseContext.INITLOG.info("MMBase machine name used for clustering: '" + getMachineName() + "'");
+
+            EventManager.getInstance().propagateEvent(new SystemEvent.MachineName(getMachineName()), true);
+
+            setMMEntities(false);
+
+            LOG.service("Initializing  storage");
+            initializeStorage();
+            EventManager.getInstance().propagateEvent(new SystemEvent.DataSourceAvailable(getDataSource(), getBaseName()));
+            mmbaseState = STATE_LOAD;
+
+            LOG.debug("Loading builders:");
+
+            loadBuilders();
+
+            if(Thread.currentThread().isInterrupted()) {
+                LOG.info("Interrupted");
+                return;
             }
 
-            MMBaseContext.setMachineName(machineNameParam);
-        } else {
-            if (! MMBaseContext.isHtmlRootInitialized()) {
-                LOG.warn("HTML root not yet known. MachineName will not be correct yet.");
+            mmbaseState = STATE_INITIALIZE;
+
+            LOG.debug("Checking MMBase");
+            if (!checkMMBase()) {
+                // there is no base defined yet, create the core objects
+                createMMBase();
             }
-            // default machine name is the local host name plus context-path.
-            // We suppose that that is sufficiently unique in most cases
-            MMBaseContext.setMachineName(localHost + MMBaseContext.getHtmlRootUrlPath());
 
-        }
-        MMBaseContext.INITLOG.info("MMBase machine name used for clustering: '" + getMachineName() + "'");
+            LOG.service("Initializing  builders:");
+            setMMEntities(false);
 
-        EventManager.getInstance().propagateEvent(new SystemEvent.MachineName(getMachineName()), true);
+            initBuilders();
 
-        setMMEntities(false);
+            MMObjectBuilder resources = getBuilder("resources");
+            if (resources != null && resources.getClass().getName().equals("org.mmbase.module.builders.Resources")) {
+                org.mmbase.util.ResourceWatcher.setResourceBuilder("resources");
+            } else {
+                org.mmbase.util.ResourceWatcher.setResourceBuilder(null);
+            }
 
-        LOG.service("Initializing  storage");
-        initializeStorage();
-        EventManager.getInstance().propagateEvent(new SystemEvent.DataSourceAvailable(getDataSource(), getBaseName()));
-        mmbaseState = STATE_LOAD;
+            EventManager.getInstance().addEventListener(org.mmbase.cache.NodeCache.getCache());
 
-        LOG.debug("Loading builders:");
+            LOG.debug("Objects started");
 
-        loadBuilders();
-
-        if(Thread.currentThread().isInterrupted()) {
-            LOG.info("Interrupted");
-            return;
-        }
-
-        mmbaseState = STATE_INITIALIZE;
-
-        LOG.debug("Checking MMBase");
-        if (!checkMMBase()) {
-            // there is no base defined yet, create the core objects
-            createMMBase();
-        }
-
-        LOG.service("Initializing  builders:");
-        setMMEntities(false);
-
-        initBuilders();
-
-        MMObjectBuilder resources = getBuilder("resources");
-        if (resources != null && resources.getClass().getName().equals("org.mmbase.module.builders.Resources")) {
-            org.mmbase.util.ResourceWatcher.setResourceBuilder("resources");
-        } else {
-            org.mmbase.util.ResourceWatcher.setResourceBuilder(null);
-        }
-
-        EventManager.getInstance().addEventListener(org.mmbase.cache.NodeCache.getCache());
-
-        LOG.debug("Objects started");
-
-        String writerpath = getInitParameter("XMLBUILDERWRITERDIR");
-        if (writerpath != null && !writerpath.equals("")) {
-            for (MMObjectBuilder builder : getBuilders()) {
-                if (!builder.isVirtual()) {
-                    String builderName = builder.getTableName();
-                    LOG.debug("WRITING BUILDER FILE =" + writerpath + File.separator + builderName);
-                    try {
-                        BuilderWriter builderOut = new BuilderWriter(builder);
-                        builderOut.setIncludeComments(false);
-                        builderOut.setExpandBuilder(false);
-                        builderOut.writeToFile(writerpath + File.separator + builder.getTableName() + ".xml");
-                    } catch (Exception ex) {
-                        LOG.error(ex.getMessage(), ex);
+            String writerpath = getInitParameter("XMLBUILDERWRITERDIR");
+            if (writerpath != null && !writerpath.equals("")) {
+                for (MMObjectBuilder builder : getBuilders()) {
+                    if (!builder.isVirtual()) {
+                        String builderName = builder.getTableName();
+                        LOG.debug("WRITING BUILDER FILE =" + writerpath + File.separator + builderName);
+                        try {
+                            BuilderWriter builderOut = new BuilderWriter(builder);
+                            builderOut.setIncludeComments(false);
+                            builderOut.setExpandBuilder(false);
+                            builderOut.writeToFile(writerpath + File.separator + builder.getTableName() + ".xml");
+                        } catch (Exception ex) {
+                            LOG.error(ex.getMessage(), ex);
+                        }
                     }
                 }
             }
-        }
-        if(Thread.currentThread().isInterrupted()) {
-            LOG.info("Interrupted");
-            return;
-        }
+            if(Thread.currentThread().isInterrupted()) {
+                LOG.info("Interrupted");
+                return;
+            }
 
-        setMMEntities(false);
-        // try to load security...
-        try {
-            mmbaseCop = new MMBaseCop();
-            EventManager.getInstance().propagateEvent(new SecurityLoaded(mmbaseCop));
-        } catch (Exception e) {
-            LOG.fatal("Error loading the mmbase cop: " + e.getMessage());
-            LOG.error(e.getMessage(), e);
-            LOG.error("MMBase will continue without security.");
-            LOG.error("All future security invocations will fail.");
+            setMMEntities(false);
+            // try to load security...
+            try {
+                mmbaseCop = new MMBaseCop();
+                EventManager.getInstance().propagateEvent(new SecurityLoaded(mmbaseCop));
+            } catch (Exception e) {
+                LOG.fatal("Error loading the mmbase cop: " + e.getMessage());
+                LOG.error(e.getMessage(), e);
+                LOG.error("MMBase will continue without security.");
+                LOG.error("All future security invocations will fail.");
+            }
+            setMMEntities(true);
+            typeRel.readCache();
+
+            // signal that MMBase is up and running
+            mmbaseState = STATE_UP;
+            MMBaseContext.INITLOG.info("MMBase is up and running");
+
+            org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory dsmf =
+                (org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory) getStorageManagerFactory();
+            EventManager.getInstance().propagateEvent(new SystemEvent.Up(dsmf.getDatabaseName(), dsmf.getBinaryFileBasePath()), true);
+            MMBase.class.notifyAll();
         }
-        setMMEntities(true);
-        typeRel.readCache();
-
-        // signal that MMBase is up and running
-        mmbaseState = STATE_UP;
-        MMBaseContext.INITLOG.info("MMBase is up and running");
-
-        org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory dsmf =
-            (org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory) getStorageManagerFactory();
-        EventManager.getInstance().propagateEvent(new SystemEvent.Up(dsmf.getDatabaseName(), dsmf.getBinaryFileBasePath()), true);
-        //notifyAll();
-        //}
     }
 
 
@@ -488,8 +488,6 @@ public class MMBase extends ProcessorModule {
         mmbaseState = STATE_SHUT_DOWN;
 
         //shutdown in the reverse order as init does
-
-        org.mmbase.core.event.EventManager.getInstance().propagateEvent(new SystemEvent.Shutdown());
 
         mmbaseCop = null;
 
