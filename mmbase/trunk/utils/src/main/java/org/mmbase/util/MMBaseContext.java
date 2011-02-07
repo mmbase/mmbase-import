@@ -466,6 +466,7 @@ public class MMBaseContext implements ServletContextListener {
      */
     public static void shutdown() {
         shutdown = true;
+        org.mmbase.core.event.EventManager.getInstance().propagateEvent(new SystemEvent.Shutdown());
     }
 
     /**
