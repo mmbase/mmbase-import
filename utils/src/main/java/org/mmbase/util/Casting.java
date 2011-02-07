@@ -1263,7 +1263,7 @@ public class Casting {
      */
     public static void setHelper(Caster h) {
         helper = h;
-        log.info("Casting helper: " + helper);
+        log.service("Casting helper: " + helper);
     }
     public static final Pattern BOOLEAN_PATTERN = Pattern.compile("\\A(1|0|true|false)\\z");
     public static final Pattern DOUBLE_PATTERN;
