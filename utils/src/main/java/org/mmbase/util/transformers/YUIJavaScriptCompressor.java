@@ -33,7 +33,7 @@ public class YUIJavaScriptCompressor extends  ReaderTransformer {
             JavaScriptCompressor compressor = new JavaScriptCompressor(new StringReader("function a() {}"),
                                                                        new JavaScriptErrorReporter(LOG));
             compressor.compress(new StringWriter(), 0, false, false, false, false);
-            w = true;
+
             LOG.service("It seams that there are no problems with rhino artifacts, so YUI Compressor can be used.");
         } catch (IOException ieo) {
             LOG.warn(ieo.getMessage(), ieo);
@@ -41,6 +41,8 @@ public class YUIJavaScriptCompressor extends  ReaderTransformer {
         } catch (StringIndexOutOfBoundsException sie) {
             LOG.info("Javascript compression not working. See e.g. http://yuilibrary.com/forum/viewtopic.php?f=94&t=3345&p=20085#p20085. " + sie.getMessage());
             w = false;
+        } catch (NoClassDefFoundError ncdfe) {
+            LOG.info(ncdfe.getClass().getName() + " " + ncdfe.getMessage() + ". Javascript and CSS compression will not work.");
         } catch (Throwable re) {
             LOG.warn(re.getMessage(), re);
             w = false;
