@@ -1,7 +1,7 @@
 /*<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@ taglib uri="http://www.opensymphony.com/oscache" prefix="os" 
 %><jsp:directive.page session="false" />
-*///<mm:content type="text/javascript" expires="3600" postprocessor="none"><os:cache time="3600"><mm:escape  escape="javascript-compress">
+*///<mm:content type="text/javascript" expires="3600" postprocessor="none"><os:cache time="3600"><mm:escape escape="javascript-compress">
 /*
  * See test.jspx for example usage.
 
@@ -407,6 +407,9 @@ MMBaseValidator.prototype.javaScriptPattern = function(javaPattern) {
 
 MMBaseValidator.prototype.patternValid = function(el) {
     if (this.isString(el)) {
+	if (! this.isRequired(el)) {
+ 	    if (value === "" || value == null) return true;
+ 	}
         var xml = this.getDataTypeXml(el);
         if (el.mm_pattern == null) {
             var javaPatternXml = this.find(xml, 'datatype pattern')[0];
