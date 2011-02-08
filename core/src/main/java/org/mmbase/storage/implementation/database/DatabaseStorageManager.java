@@ -2968,6 +2968,34 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         verifiedTablesCache.add(builder.getTableName().toUpperCase());
     }
 
+
+    /**
+     * @since MMBase-1.9.6
+     */
+    protected boolean compareIndex(List<String> indexFields, Index index) {
+        if (log.isDebugEnabled()) {
+            log.debug("Comparing found index " + indexFields + " with " + index);
+        }
+        if (indexFields.size() == index.size()) {
+            boolean matches = true;
+            for (int i = 0; i < index.size(); i++) {
+                String fieldName = (String)factory.getStorageIdentifier(index.get(i).getName());
+                if (! fieldName.equalsIgnoreCase(indexFields.get(i))) {
+                    log.debug("Doesn't matched because " + fieldName + " != " + indexFields.get(i));
+                    matches = false;
+                    break;
+                }
+            }
+            if (matches) {
+                log.debug("MATCHED!");
+                return true;
+            }
+        } else {
+            log.debug("Lengths are different");
+        }
+        return false;
+    }
+
     /**
      * Determines if an index exists.
      * You should have an active connection before calling this method.
@@ -2975,26 +3003,46 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
      * @param tablename the tablename to test the index against
      * @throws StorageException when a database error occurs
      */
-    protected boolean exists(Index index, String tablename) {
-        boolean result = false;
+    protected boolean exists(final Index index, final String tablename) {
         try {
             DatabaseMetaData metaData = activeConnection.getMetaData();
-            ResultSet indexSet = metaData.getIndexInfo(null, null, tablename, index.isUnique(), false);
+            ResultSet indexSet = metaData.getIndexInfo(null, null, tablename, index.isUnique(), true);
             try {
                 String indexName = (String)factory.getStorageIdentifier(index);
-                while (!result && indexSet.next()) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Checking wether index " + indexName + " exists " + index);
+                }
+                String databaseIndexName = null;
+                List<String> indexFields = new ArrayList<String>();
+                while (indexSet.next()) {
                     int indexType = indexSet.getInt("TYPE");
+                    log.debug(" Type " + indexType);
                     if (indexType != DatabaseMetaData.tableIndexStatistic) {
-                        result = indexName.equalsIgnoreCase(indexSet.getString("INDEX_NAME"));
+
+                        String foundName = indexSet.getString("INDEX_NAME");
+                        log.debug(" Name " + foundName);
+                        if (! foundName.equals(databaseIndexName)) {
+                            if (databaseIndexName != null) {
+                                log.debug("Comparing for " + databaseIndexName);
+                                if (compareIndex(indexFields, index)) return true;
+                            }
+                            indexFields.clear();
+                            databaseIndexName = foundName;
+
+                        }
+                        String columnName = indexSet.getString("COLUMN_NAME");
+                        indexFields.add(columnName);
                     }
                 }
+                log.debug("Comparing for " + databaseIndexName);
+                if (compareIndex(indexFields, index)) return true;
             } finally {
                 indexSet.close();
             }
         } catch (SQLException se) {
             throw new StorageException(se);
         }
-        return result;
+        return false;
     }
 
     /**
@@ -3132,24 +3180,33 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             createIndexScheme = factory.getScheme(Schemes.CREATE_INDEX, Schemes.CREATE_INDEX_DEFAULT);
         }
         // note: do not attempt to create an index if it already exists.
-        if (createIndexScheme != null && !exists(index, tablename)) {
-            String fieldlist = getFieldList(index);
-            if (fieldlist != null) {
-                String query = null;
-                try {
-                    Statement s = activeConnection.createStatement();
-                    query = createIndexScheme.format(this, tablename, fieldlist, index);
-                    long startTime = getLogStartTime();
+        if (createIndexScheme != null) {
+            if (!exists(index, tablename)) {
+                String fieldlist = getFieldList(index);
+                if (fieldlist != null) {
+                    String query = null;
                     try {
-                        s.executeUpdate(query);
-                    } finally {
-                        s.close();
+                        Statement s = activeConnection.createStatement();
+                        query = createIndexScheme.format(this, tablename, fieldlist, index);
+                        long startTime = getLogStartTime();
+                        try {
+                            s.executeUpdate(query);
+                        } finally {
+                            s.close();
+                        }
+                        logQuery(query, startTime);
+                    } catch (SQLException se) {
+                        throw new StorageException(se.getMessage() + " in query:" + query, se);
                     }
-                    logQuery(query, startTime);
-                } catch (SQLException se) {
-                    throw new StorageException(se.getMessage() + " in query:" + query, se);
+                }
+                assert exists(index, tablename) : "Index " + index + " does not exist on " + tablename + " but I just created it!";
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("No need to create index " + index + ", it already exists");
                 }
             }
+        } else {
+            log.warn("Missing create index scheme for " + index);
         }
     }
 
