@@ -57,14 +57,11 @@
 
   <xi:include href="http://www.mmbase.org/builders/cloudcontext/mmbasegroups.virtual.fields.xml" />
 
-  <!-- MM: Because the field 'name' is also marked 'unique', this results the following exception:
-       java.sql.SQLException: Constraint already exists in statement [ALTER TABLE MMBASETESTS_MMBASEGROUPS ADD CONSTRAINT MMBASETESTS_MMBASEGROUPS_NAME_IDX UNIQUE (NAME)]
 
-       Commented out for now.
-       See also:   MMB-1751
   <indexlist>
-    <index name="name" unique="true"><indexfield name="name" /></index>
+    <index name="name" unique="true">
+      <indexfield name="name" />
+    </index>
   </indexlist>
-  -->
 
 </builder>
