@@ -408,7 +408,7 @@ MMBaseValidator.prototype.javaScriptPattern = function(javaPattern) {
 MMBaseValidator.prototype.patternValid = function(el) {
     if (this.isString(el)) {
 	if (! this.isRequired(el)) {
- 	    if (value === "" || value == null) return true;
+ 	    if (el.value === "" || el.value == null) return true;
  	}
         var xml = this.getDataTypeXml(el);
         if (el.mm_pattern == null) {
