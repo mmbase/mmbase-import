@@ -62,16 +62,19 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
 
   </scm>
 
+
   <issueManagement>
     <system>JIRA</system>
     <url>http://www.mmbase.org/jira/</url>
   </issueManagement>
 
   <ciManagement>
+    <system>hudson</system>
+    <url>http://www.mmbase.org/hudson/</url>
     <notifiers>
       <notifier>
         <configuration>
-          <address>developers@mmbase.org</address>
+          <address>mmbase-repos@googlegroups.com</address>
         </configuration>
       </notifier>
     </notifiers>
@@ -378,30 +381,14 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
           <forkMode>${surefire.fork.mode}</forkMode>
           <childDelegation>false</childDelegation>
           <argLine>${surefire.fork.vmargs}</argLine>
-          <systemProperties>
-            <property>
-              <name>java.awt.headless</name>
-              <value>${java.awt.headless}</value>
-            </property>
-            <property>
-              <name>mmbase.defaultcloudcontext</name>
-              <value>mock:local</value>
-            </property>
-
+          <systemPropertiesVariables>
+            <java.awt.headless>${java.awt.headless}</java.awt.headless>
+            <mmbase.defaultcloudcontext>mock:local</mmbase.defaultcloudcontext>
             <!-- TODO should not depend on system  default locale -->
-            <property>
-              <name>user.language</name>
-              <value>en</value>
-            </property>
-            <property>
-              <name>java.util.logging.config.file</name>
-              <value>${basedir}/target/test-classes/logging.properties</value>
-            </property>
-            <property>
-              <name>surefire.fork.vmargs</name>
-              <value>${surefire.fork.vmargs}</value>
-            </property>
-          </systemProperties>
+            <user.language>en</user.language>
+            <java.util.logging.config.file>${basedir}/target/test-classes/logging.properties</java.util.logging.config.file>
+            <surefire.fork.vmargs>${surefire.fork.vmargs}</surefire.fork.vmargs>
+          </systemPropertiesVariables>
           <check>
             <branchRate>80</branchRate>
             <lineRate>80</lineRate>
