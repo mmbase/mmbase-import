@@ -41,7 +41,7 @@ public class AnalyzerUtilsTest {
     }
 
 
-    //@Test
+    @Test
     public void duration() throws Exception {
         File testFile = new File(System.getProperty("user.dir"), "samples" + File.separator + "basic.mp4");
         assumeTrue(testFile.exists());
@@ -80,7 +80,7 @@ public class AnalyzerUtilsTest {
 
     }
 
-    ////@Test
+    @Test
     public void known() throws Exception {
         File testFile = new File(System.getProperty("user.dir"), "samples" + File.separator + "basic.wav");
         assumeTrue(testFile.exists());
@@ -99,7 +99,7 @@ public class AnalyzerUtilsTest {
     }
 
 
-    //@Test
+    @Test
     public void unsupported() throws Exception {
         File testFile = new File(System.getProperty("user.dir"), "samples" + File.separator + "unsupported.rm");
         assumeTrue(testFile.exists());
