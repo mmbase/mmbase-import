@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @version $Id$
  */
-public class MMBaseCop extends SecurityManager  {
+public final class MMBaseCop extends SecurityManager  {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCop.class);
 
     /**
@@ -32,7 +32,7 @@ public class MMBaseCop extends SecurityManager  {
 
     /**
      * The constructor, will load the classes for authorization and authentication
-     * with their config files, as specied in the xml from configUrl
+     * with their configuration files, as specified in the XML from configUrl
      * @throws  java.io.IOException When reading the file failed
      * @throws  java.lang.NoSuchMethodException When a tag was not specified
      * @throws  org.mmbase.security.SecurityException When the class could not  be loaded
@@ -57,7 +57,7 @@ public class MMBaseCop extends SecurityManager  {
 
     /**
      *	reload, will load the classes for authorization and authentication
-     *	with their config files, as specied in the xml from configUrl
+     *	with their configuration files, as specified in the XML from configUrl
      *	@throws  java.io.IOException When reading the file failed
      *	@throws  java.lang.NoSuchMethodException When a tag was not specified
      *	@throws  org.mmbase.security.SecurityException When the class could not  be loaded
@@ -73,7 +73,7 @@ public class MMBaseCop extends SecurityManager  {
         log.info("Done changing security configuration");
     }
 
-    private final MMBaseCopConfig getConfig() {
+    private MMBaseCopConfig getConfig() {
         if (config == null) throw new RuntimeException("No MMBaseCopConfig in MMBaseCop!!");
         return config;
     }
