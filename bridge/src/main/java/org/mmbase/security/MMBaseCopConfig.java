@@ -147,6 +147,8 @@ public class MMBaseCopConfig {
                     authentication.setKey(System.currentTimeMillis());
                     log.error("Could not format '" + key + "', defaulting to " + authentication.getKey());
                 }
+            } else {
+                authentication.setKey(System.currentTimeMillis());
             }
 
             entry = reader.getElementByPath("security.authorization");
