@@ -57,6 +57,7 @@ public class ContextAuthentication extends Authentication {
         attributes.put(STORES_CONTEXT_IN_OWNER, Boolean.TRUE);
     }
 
+    @Override
     protected void load() {
         if (log.isDebugEnabled()) {
             log.debug("using: '" + configResource + "' as config file for context-authentication");
@@ -116,6 +117,7 @@ public class ContextAuthentication extends Authentication {
     }
 
 
+    @Override
     public UserContext login(String moduleName, Map<String, ?> loginInfo, Object[] parameters) throws SecurityException {
         // look if we can find our login module...
         if(!loginModules.containsKey(moduleName)) {
@@ -139,6 +141,7 @@ public class ContextAuthentication extends Authentication {
     /**
      * this method does nothing..
      */
+    @Override
     public boolean isValid(UserContext userContext) throws SecurityException {
         if (userContext == null) return false;
 
@@ -151,6 +154,7 @@ public class ContextAuthentication extends Authentication {
         return false;
     }
 
+    @Override
     public String[] getTypes() {
         return loginModules.keySet().toArray(new String[] {});
     }

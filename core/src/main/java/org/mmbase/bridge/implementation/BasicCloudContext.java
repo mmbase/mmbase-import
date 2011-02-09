@@ -62,64 +62,47 @@ public abstract class BasicCloudContext implements CloudContext {
      * @throws BridgeException   If mmbase not running and cannot be started (but mmbase.config was specified)
      */
     protected boolean check() {
-        if(mmb == null) {
-            synchronized(org.mmbase.module.core.MMBase.class) { // this is the object which MMBase.getMMBase is synchronizing too
-                // obtained lock
-                if (mmb == null) { // if run in the mean time by other thread, then skip
-                    Iterator<org.mmbase.module.Module> i = org.mmbase.module.Module.getModules();
-                    // check if MMBase is already running
+        synchronized (org.mmbase.module.core.MMBase.class) {
+            if (mmb == null) {
+                Iterator<org.mmbase.module.Module> i = org.mmbase.module.Module.getModules();
+                if (i == null) {
+                    if (java.lang.System.getProperty("mmbase.config") == null) {
+                        throw new NotFoundException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + " : no property mmbase.config found)");
+                    }
+                    try {
+                        org.mmbase.module.core.MMBaseContext.init();
+                        org.mmbase.module.core.MMBase.getMMBase();
+                        i = org.mmbase.module.Module.getModules();
+                    } catch (java.lang.Exception ex) {
+                        log.error("Error while trying to start MMBase from the bridge: " + ex.getMessage(), ex);
+                    }
                     if (i == null) {
-                        // build the error message, since it has very litle overhead (only entered once incase of startup)
-                        // MMBase may only be started from the bridge when the property mmbase.config was provided
-                        if (java.lang.System.getProperty("mmbase.config") == null) {
-                            // when mmbase.config is empty fill it with current working dir + /config
-                            // this way there is no need to provide the info on the commandline
-                            // java.lang.System.setProperty("mmbase.config", java.lang.System.getProperty("user.dir") + java.io.File.separatorChar + "config");
-                            throw new NotFoundException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + " : no property mmbase.config found)");
-                        }
-                        // when MMBase is not running, try to start it!
-                        try {
-                            // init the MMBaseContext,...
-                            org.mmbase.module.core.MMBaseContext.init();
-                            // try to start MMBase now,...
-                            org.mmbase.module.core.MMBase.getMMBase();
-                            // now re-assign the values agina
-                            i = org.mmbase.module.Module.getModules();
-                        } catch(java.lang.Exception ex) {
-                            log.error("Error while trying to start MMBase from the bridge: " + ex.getMessage(), ex);
-                        }
-                        // if still null,.. give error!
-                        if(i == null) {
-                            return false;
-                        }
+                        return false;
                     }
-                    // get the core module!
-                    MMBase m = org.mmbase.module.core.MMBase.getMMBase();
-                    // create module list
-                    while(i.hasNext()) {
-                        Module mod = ModuleHandler.getModule(i.next(), this);
-                        localModules.put(mod.getName(), mod);
-                    }
-
-                    transactionManager = TransactionManager.getInstance();
-                    tmpObjectManager = transactionManager.getTemporaryNodeManager();
-
-                    // set all the names of all accessable clouds..
-                    localClouds.add("mmbase");
-
-                    mmb = m;
                 }
+                MMBase m = org.mmbase.module.core.MMBase.getMMBase();
+                while (i.hasNext()) {
+                    Module mod = ModuleHandler.getModule(i.next(), this);
+                    localModules.put(mod.getName(), mod);
+                }
+                transactionManager = TransactionManager.getInstance();
+                tmpObjectManager = transactionManager.getTemporaryNodeManager();
+                localClouds.add("mmbase");
+                assert m != null;
+                mmb = m;
             }
         }
         return true;
     }
 
+    @Override
     public ModuleList getModules() {
         if (!check()) throw new BridgeException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + ")");
         ModuleList ml = new BasicModuleList(localModules.values());
         return ml;
     }
 
+    @Override
     public Module getModule(String moduleName) throws NotFoundException {
         if (!check()) throw new BridgeException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + ")");
         Module mod = localModules.get(moduleName);
@@ -129,6 +112,7 @@ public abstract class BasicCloudContext implements CloudContext {
         return mod;
     }
 
+    @Override
     public boolean hasModule(String moduleName) {
         if (!check()) throw new BridgeException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + ")");
         return localModules.get(moduleName) != null;
@@ -144,11 +128,13 @@ public abstract class BasicCloudContext implements CloudContext {
             throw new NotFoundException("MMBase is not yet initialized");
         }
     }
+    @Override
     public Cloud getCloud(String cloudName) {
         checkExists(cloudName);
         return getCloud(cloudName, "anonymous", null);
     }
 
+    @Override
     public Cloud getCloud(String cloudName, String authenticationType, Map<String, ?> loginInfo) throws NotFoundException  {
         checkExists(cloudName);
         UserContext userContext = mmb.getMMBaseCop().getAuthentication().login(authenticationType, loginInfo, null);
@@ -164,11 +150,13 @@ public abstract class BasicCloudContext implements CloudContext {
         return getCloud(cloudName, userContext);
     }
 
+    @Override
     public Cloud getCloud(String cloudName, UserContext user) throws NotFoundException {
         checkExists(cloudName);
-       return new BasicCloud(cloudName, user, this);
+        return new BasicCloud(cloudName, user, this);
     }
 
+    @Override
     public StringList getCloudNames() {
         if (!check()) throw new BridgeException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + ")");
         return new BasicStringList(localClouds);
@@ -178,49 +166,60 @@ public abstract class BasicCloudContext implements CloudContext {
      * @return String describing the encoding.
      * @since MMBase-1.6
      */
+    @Override
     public String getDefaultCharacterEncoding() {
         if (!check()) throw new BridgeException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + ")");
         return mmb.getEncoding();
     }
 
+    @Override
     public java.util.Locale getDefaultLocale() {
         if (!check()) throw new BridgeException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + ")");
         return mmb.getLocale();
     }
 
+    @Override
     public java.util.TimeZone getDefaultTimeZone() {
         if (!check()) throw new BridgeException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + ")");
         return mmb.getTimeZone();
     }
 
+    @Override
     public FieldList createFieldList() {
         return new BasicFieldList();
     }
 
+    @Override
     public NodeList createNodeList() {
         return new BasicNodeList();
     }
 
+    @Override
     public RelationList createRelationList() {
         return new BasicRelationList();
     }
 
+    @Override
     public NodeManagerList createNodeManagerList() {
         return new BasicNodeManagerList();
     }
 
+    @Override
     public RelationManagerList createRelationManagerList() {
         return new BasicRelationManagerList();
     }
 
+    @Override
     public ModuleList createModuleList() {
         return new BasicModuleList();
     }
 
+    @Override
     public StringList createStringList() {
         return new BasicStringList();
     }
 
+    @Override
     public AuthenticationData getAuthentication() throws NotFoundException {
         if (!check()) throw new BridgeException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + ")");
         // checkExists(cloudName);
@@ -232,6 +231,7 @@ public abstract class BasicCloudContext implements CloudContext {
         }
     }
 
+    @Override
     public ActionRepository getActionRepository() throws NotFoundException {
         if (!check()) throw new BridgeException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + ")");
         // checkExists(cloudName);
@@ -244,35 +244,29 @@ public abstract class BasicCloudContext implements CloudContext {
     }
 
 
+    @Override
     public boolean isUp() {
         return mmb != null && mmb.getState() && check();
     }
 
+    @Override
     public CloudContext assertUp() {
-        // TODO implement with some nice notify-mechanism.
-        CloudContext ctx = LocalContext.getCloudContext();
-        while (!MMBaseContext.isInitialized() || ! isUp()) {
-
-            if (mmb != null && mmb.isShutdown()) break;
-            try {
-                if (Thread.currentThread().isInterrupted()) {
-                    return this;
+        if (! isUp()) {
+            synchronized(MMBase.class) {
+                while (! isUp()) {
+                    try {
+                        MMBase.class.wait();
+                    } catch(InterruptedException ie) {
+                        throw new BridgeException(ie);
+                    }
                 }
-                try {
-                    check();
-                    log.debug("Sleeping 10 secs");
-                } catch (NotFoundException nfe) {
-                    log.service(nfe.getMessage() + ". Waiting 10 secs.");
-                }
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                return this;
             }
         }
         return this;
     }
 
 
+    @Override
     public SearchQueryHandler getSearchQueryHandler() {
         return mmb.getSearchQueryHandler();
     }
