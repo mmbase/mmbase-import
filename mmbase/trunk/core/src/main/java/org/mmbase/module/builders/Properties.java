@@ -51,6 +51,7 @@ public class Properties extends MMObjectBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(Properties.class);
 
+    @Override
     public String getGUIIndicator(MMObjectNode node) {
         String str = node.getStringValue("key");
         if (str.length() > 15) {
@@ -85,7 +86,7 @@ public class Properties extends MMObjectBuilder {
      * @since MMBase-1.8.6
      */
     protected Object getValue(List<Node> prop) {
-        if (prop.size() == 0) {
+        if (prop.isEmpty()) {
             return null;
         } else if (prop.size() == 1) {
             return prop.get(0).getValue("value");
@@ -116,69 +117,77 @@ public class Properties extends MMObjectBuilder {
 
     {
         addFunction(new AbstractFunction<NodeList>("list", LIST_PARAMETERS) {
-                public NodeList getFunctionValue(Parameters parameters) {
-                    return Properties.this.getPropertyNodes(parameters.get(NODE));
-                }
-            });
+            @Override
+            public NodeList getFunctionValue(Parameters parameters) {
+                return Properties.this.getPropertyNodes(parameters.get(NODE));
+            }
+        });
         addFunction(new AbstractFunction<Object>("get", GET_PARAMETERS) {
-                public Object getFunctionValue(Parameters parameters) {
-                    Object v = Properties.this.getValue(parameters.get(NODE), parameters.get(KEY));
-                    if (v == null) return parameters.get(DEFAULT);
-                    return v;
+            @Override
+            public Object getFunctionValue(Parameters parameters) {
+                Object v = Properties.this.getValue(parameters.get(NODE), parameters.get(KEY));
+                if (v == null) {
+                    return parameters.get(DEFAULT);
                 }
-            });
+                return v;
+            }
+        });
         addFunction(new AbstractFunction<Object>("set", SET_PARAMETERS) {
-                public Object getFunctionValue(Parameters parameters) {
-                    Node node = parameters.get(NODE);
-                    String key = parameters.get(KEY);
-                    List<Node> list = new ArrayList<Node>(Properties.this.getValueNode(node, key));
-                    Object orgValue = getValue(list);
-                    Object newValue = parameters.get(VALUE);
-                    if (newValue == null) {
-                        for (Node n : list) {
-                            n.delete(true);
-                        }
-                    } else if (newValue instanceof Collection) {
-                        Collection c = (Collection) newValue;
+            @Override
+            public Object getFunctionValue(Parameters parameters) {
+                Node node = parameters.get(NODE);
+                String key = parameters.get(KEY);
+                List<Node> list = new ArrayList<Node>(Properties.this.getValueNode(node, key));
+                Object orgValue = getValue(list);
+                Object newValue = parameters.get(VALUE);
+                if (newValue == null) {
+                    for (Node n : list) {
+                        n.delete(true);
+                    }
+                } else if (newValue instanceof Collection) {
+                    Collection c = (Collection) newValue;
                         while (list.size() > c.size()) {
                             list.remove(0).delete(true);
-                        }
-                        while (list.size() < c.size()) {
-                            Node p = node.getCloud().getNodeManager(Properties.this.getTableName()).createNode();
-                            p.setStringValue("key", key);
-                            p.setNodeValue("parent", node);
-                            list.add(p);
-                        }
-                        int i = 0;
-                        for (Object v : c) {
-                            Node n = list.get(i++);
+                    }
+                    while (list.size() < c.size()) {
+                        Node p = node.getCloud().getNodeManager(Properties.this.getTableName()).createNode();
+                        p.setStringValue("key", key);
+                        p.setNodeValue("parent", node);
+                        list.add(p);
+                    }
+                    int i = 0;
+                    for (Object v : c) {
+                        Node n = list.get(i++);
                             n.setValue("value", v);
-                            n.commit();
-                        }
-
-                    } else {
-                        while (list.size() > 1) {
-                            list.remove(0).delete(true);
-                        }
-                        while (list.size() < 1) {
-                            Node p = node.getCloud().getNodeManager(Properties.this.getTableName()).createNode();
-                            p.setStringValue("key", key);
-                            p.setNodeValue("parent", node);
-                            list.add(p);
-                        }
-                        Node n = list.get(0);
-                        n.setValue("value", newValue);
                         n.commit();
                     }
-                    if (orgValue == null) return parameters.get(DEFAULT);
-                    return orgValue;
+
+                } else {
+                    while (list.size() > 1) {
+                        list.remove(0).delete(true);
+                    }
+                    while (list.size() < 1) {
+                        Node p = node.getCloud().getNodeManager(Properties.this.getTableName()).createNode();
+                        p.setStringValue("key", key);
+                        p.setNodeValue("parent", node);
+                        list.add(p);
+                    }
+                    Node n = list.get(0);
+                    n.setValue("value", newValue);
+                    n.commit();
                 }
-            });
+                if (orgValue == null) {
+                    return parameters.get(DEFAULT);
+                }
+                return orgValue;
+            }
+        });
     }
 
     /* (non-Javadoc)
      * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
      */
+    @Override
     public void notify(NodeEvent event) {
         if (event.getBuilderName().equals(this.getTableName())) {
             if (log.isDebugEnabled()) {

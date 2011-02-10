@@ -26,6 +26,7 @@ import org.mmbase.util.logging.Logging;
 public class PasswordLogin extends ContextLoginModule {
     private static final Logger log = Logging.getLoggerInstance(PasswordLogin.class);
 
+    @Override
     public ContextUserContext login(Map<String, ?> userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException {
 
         // get userName

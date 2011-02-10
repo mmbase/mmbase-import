@@ -275,7 +275,7 @@ public class RelDef extends MMObjectBuilder {
         query.setMaxNumber(1);
         try {
             List<MMObjectNode> reldefs = getNodes(query);
-            if (reldefs.size() != 0) {
+            if (!reldefs.isEmpty()) {
                 node = reldefs.get(0);
             }
         } catch (SearchQueryException sqe) {
@@ -544,7 +544,7 @@ public class RelDef extends MMObjectBuilder {
             query.setMaxNumber(1);
             try {
                 List<MMObjectNode> reldefs = getNodes(query);
-                if (reldefs.size() != 0) {
+                if (!reldefs.isEmpty()) {
                     MMObjectNode node = reldefs.get(0);
                     return node.getNumber();
                 }

@@ -43,15 +43,15 @@ public class IndexFunction extends FunctionProvider {
 
     protected static Cache<String,String> indexCache = new Cache<String,String>(400) {
         @Override
-            public  String getName() {
-                return "IndexNumberCache";
-            }
+        public String getName() {
+            return "IndexNumberCache";
+        }
         @Override
-            public String getDescription() {
-                return "rootNumber/objectNumber -> Index";
-            }
+        public String getDescription() {
+            return "rootNumber/objectNumber -> Index";
+        }
 
-        };
+    };
 
     static {
         indexCache.putCache();
@@ -172,13 +172,13 @@ public class IndexFunction extends FunctionProvider {
         buf.append(postfix);
         return buf.toString();
     }
-    private static Parameter<Node> ROOT        = new Parameter<Node>("root", Node.class, false);
-    private static Parameter<Boolean> ROMAN    = new Parameter<Boolean>("roman", Boolean.class, Boolean.TRUE);
-    private static Parameter<String> SEPARATOR = new Parameter<String>("separator", String.class, "\\.");
-    private static Parameter<String> JOINER    = new Parameter<String>("joiner", String.class, ".");
-    private static Parameter<String> ROLE      = new Parameter<String>("role", String.class, "index");
+    private static final Parameter<Node> ROOT        = new Parameter<Node>("root", Node.class, false);
+    private static final Parameter<Boolean> ROMAN    = new Parameter<Boolean>("roman", Boolean.class, Boolean.TRUE);
+    private static final Parameter<String> SEPARATOR = new Parameter<String>("separator", String.class, "\\.");
+    private static final Parameter<String> JOINER    = new Parameter<String>("joiner", String.class, ".");
+    private static final Parameter<String> ROLE      = new Parameter<String>("role", String.class, "index");
 
-    private static Parameter<?>[] INDEX_ARGS = new Parameter[] {
+    private static final Parameter<?>[] INDEX_ARGS = new Parameter[] {
         Parameter.CLOUD, ROOT, SEPARATOR, JOINER, ROMAN, ROLE
     };
 
@@ -205,7 +205,7 @@ public class IndexFunction extends FunctionProvider {
         }
     }
 
-    protected static NodeFunction<String> index = new NodeFunction<String>("index", INDEX_ARGS, ReturnType.STRING) {
+    protected static final NodeFunction<String> index = new NodeFunction<String>("index", INDEX_ARGS, ReturnType.STRING) {
         private static final long serialVersionUID = 0L;
 
         {
@@ -215,6 +215,7 @@ public class IndexFunction extends FunctionProvider {
         /**
          * complete bridge version of {@link #getFunctionValue}
          */
+        @Override
         public String getFunctionValue(final Node node, final Parameters parameters) {
             Node root = parameters.get(ROOT);
             final String role = parameters.get(ROLE);

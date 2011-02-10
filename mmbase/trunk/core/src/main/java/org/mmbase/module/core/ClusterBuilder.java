@@ -22,7 +22,6 @@ import org.mmbase.util.functions.*;
 import org.mmbase.datatypes.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.storage.search.legacy.ConstraintParser;
 import org.mmbase.storage.search.legacy.QueryConvertor;
 
 import org.mmbase.util.logging.*;
@@ -256,6 +255,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param fieldName the requested field's name
      * @return the field
      */
+    @Override
     public FieldDefs getField(String fieldName) {
         return (FieldDefs) CoreClusterQueries.INSTANCE.getField(fieldName);
     }
@@ -272,6 +272,7 @@ public class ClusterBuilder extends VirtualBuilder {
     /**
      * @since MMBase-1.8
      */
+    @Override
     public Map<String, CoreField> getFields(MMObjectNode node) {
         Map<String, CoreField> ret = new HashMap<String, CoreField>();
         Iterator<String> i = node.getValues().keySet().iterator();

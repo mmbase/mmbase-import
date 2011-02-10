@@ -118,11 +118,11 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
     /**
      * Collection for temporary nodes,
-     * Used by the Temporarynodemanager when working with transactions
+     * Used by the TemporaryNodeManager when working with transactions
      * The default size is 1024.
      * @scope protected
      */
-    static Map<String, MMObjectNode> temporaryNodes = new Hashtable<String, MMObjectNode>(TEMPNODE_DEFAULT_SIZE);
+    static Map<String, MMObjectNode> temporaryNodes = Collections.synchronizedMap(new HashMap<String, MMObjectNode>(TEMPNODE_DEFAULT_SIZE));
 
     /**
      * Default output when no data is available to determine a node's GUI description
@@ -291,15 +291,17 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * This is overridden from FunctionProvider, because this one needs to be (also) a NodeFunction
      * @since MMBase-1.8
      */
-    protected Function<Collection<? extends Function>> getFunctions = new MMObjectNodeFunction<Collection<? extends Function>>("getFunctions",
+    protected Function<Collection<? extends Function>> getFunctionsFunction = new MMObjectNodeFunction<Collection<? extends Function>>("getFunctions",
                                                                                                                        Parameter.emptyArray(), RETURNTYPE_COLLECTION) {
 
         {
             setDescription("The 'getFunctions' returns a Map of al Function object which are available on this FunctionProvider");
         }
+        @Override
         public Collection<? extends Function> getFunctionValue(Node node, Parameters parameters) {
             return MMObjectBuilder.this.getFunctions(getCoreNode(MMObjectBuilder.this, node));
         }
+        @Override
         public Collection<? extends Function> getFunctionValue(Parameters parameters) {
             Node node = parameters.get(Parameter.NODE);
             if (node == null) {
@@ -310,7 +312,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         }
     };
     {
-        addFunction(getFunctions);
+        addFunction(getFunctionsFunction);
     }
 
     private static final Parameter[] INFO_FUNCTION_ARGS = new Parameter[] { new Parameter<String>("function", String.class) };
@@ -552,7 +554,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 // can't create buildertable.
                 // Throw an exception
                 throw new BuilderConfigurationException("Cannot create table for " + getTableName() + ".");
-            };
+            }
         }
     }
     /** clean all acquired resources, because system is shutting down */
@@ -754,7 +756,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return the extended (parent) builder, or null if not available
      */
     public MMObjectBuilder getParentBuilder() {
-        if (ancestors.size() == 0) return null;
+        if (ancestors.isEmpty()) return null;
         return ancestors.get(ancestors.size()  - 1);
     }
     /**
@@ -899,7 +901,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 value = baseValue + seq;
                 BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField(field)), value);
                 query.setConstraint(constraint);
-                if (getNodes(query).size() == 0) {
+                if (getNodes(query).isEmpty()) {
                     found = true;
                     break;
                 }
@@ -924,7 +926,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 NodeSearchQuery query = new NodeSearchQuery(this);
                 BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField(field)), Integer.valueOf(seq));
                 query.setConstraint(constraint);
-                if (getNodes(query).size() == 0) {
+                if (getNodes(query).isEmpty()) {
                     found = true;
                     break;
                 }
@@ -1874,11 +1876,11 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 info.put(f.getName(), f.getDescription());
             }
             info.put("info", "(functionname) Returns information about a certain 'function'. Or a map of all function if no arguments.");
-            if (arguments == null || arguments.size() == 0 || arguments.get(0) == null) {
+            if (arguments == null || arguments.isEmpty() || arguments.get(0) == null) {
                 log.info("returing " + info);
                 return info;
             } else {
-                return info.get(arguments.get(0));
+                return info.get((String) arguments.get(0));
             }
         } else if (function.equals("wrap")) {
             if (arguments.size() < 2) throw new IllegalArgumentException("wrap function needs 2 arguments (currently:" + arguments.size() + " : "  + arguments + ")");
@@ -1991,6 +1993,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return a <code>Vector</code> with InsRel nodes
      * @todo Return-type and name of this function are not sound.
      */
+    @SuppressWarnings("UseOfObsoleteCollectionType")
     public Vector<MMObjectNode> getRelations_main(int src) {
         InsRel bul = mmb.getInsRel();
         if (bul == null) {
@@ -2170,6 +2173,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param tok a list of strings that describe the (sub)command to execute
      * @return a <code>Vector</code> containing the result values as a <code>String</code>
      */
+    @SuppressWarnings("UseOfObsoleteCollectionType")
     public Vector<String> getList(PageInfo sp, StringTagger tagger, StringTokenizer tok) {
         throw new UnsupportedOperationException(getClass().getName() +" should override the getList method (you've probably made a typo)");
     }
@@ -2202,7 +2206,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param vars variables (PRC-VAR) thatw ere set to be used during processing.
      * @return the result value as a <code>String</code>
      */
-    public boolean process(PageInfo sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
+    public boolean process(PageInfo sp, StringTokenizer command, @SuppressWarnings("UseOfObsoleteCollectionType") Hashtable cmds, @SuppressWarnings("UseOfObsoleteCollectionType") Hashtable vars) {
         return false;
     }
 
@@ -2671,7 +2675,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public File getConfigFile() {
         // what is the location of our builder?
         List<File> files = ResourceLoader.getConfigurationRoot().getFiles(getConfigResource());
-        if (files.size() == 0) {
+        if (files.isEmpty()) {
             return null;
         } else {
             return files.get(0);
@@ -2731,7 +2735,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
     /**
      * Set a single builder property
-     * The propertie will not be saved.
+     * The property will not be saved.
      * @param name name of the property
      * @param value value of the property
      */
@@ -2758,7 +2762,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param i the version number
      */
     public void setVersion(int i) {
-        version=i;
+        version = i;
         update();
     }
 

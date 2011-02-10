@@ -64,6 +64,7 @@ public class BuilderWriter extends DocumentWriter  {
      * Generates the document. Can only be called once.
      * @throws DOMException when an error occurred during generation
      */
+    @Override
     protected void generate() throws DOMException {
         Element root=document.getDocumentElement();
         addComment("builder.configuration",builder.getTableName(),root);

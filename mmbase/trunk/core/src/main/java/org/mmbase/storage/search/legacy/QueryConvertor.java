@@ -21,7 +21,6 @@ import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.storage.search.implementation.BasicSearchQuery;
-import org.mmbase.storage.search.implementation.BasicStep;
 
 /**
  * Class for the converion of a expression string to a SQL where clause.
@@ -68,7 +67,7 @@ public class QueryConvertor {
             return query;
         }
 
-        StringBuffer buffer = new StringBuffer(64);
+        StringBuilder buffer = new StringBuilder(64);
         // query = query.toLowerCase();
         DBQuery parsedQuery = new DBQuery(query);
         // log.debug("Converting: " + query);
@@ -144,14 +143,15 @@ class ParseItem {
      * Appends the converted item to the stringbuffer.
      * @param result the stringbuffer to which to add the item
      */
-    public void sqlConversion(StringBuffer result) {
+    public void sqlConversion(StringBuilder result) {
     }
 
     /**
      * Returns the converted item as a <code>String</code>
      */
+    @Override
     public String toString() {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         this.sqlConversion(result);
         return result.toString();
     }
@@ -164,7 +164,7 @@ class DBQuery  extends ParseItem {
     // logger
     //private static Logger log = Logging.getLoggerInstance(DBQuery.class.getName());
 
-    public Vector<ParseItem> items = new Vector<ParseItem>();
+    public List<ParseItem> items = new ArrayList<ParseItem>();
 
     /**
      * Creates the query
@@ -176,11 +176,11 @@ class DBQuery  extends ParseItem {
 
         while (parser.hasMoreTokens()) {
             item = new DBConditionItem(parser.nextToken());
-            items.addElement(item);
+            items.add(item);
 
             if (parser.hasMoreTokens()) {
                 item = new DBLogicalOperator(parser.nextToken());
-                items.addElement(item);
+                items.add(item);
             }
         }
     }
@@ -189,13 +189,12 @@ class DBQuery  extends ParseItem {
      * Appends the converted query to the stringbuffer.
      * @param result the stringbuffer to which to add the query
      */
-    public void sqlConversion(StringBuffer result) {
-        Enumeration<ParseItem> enumeration = items.elements();
-
+    @Override
+    public void sqlConversion(StringBuilder result) {
         result.append("WHERE ");
 
-        while (enumeration.hasMoreElements()) {
-            enumeration.nextElement().sqlConversion(result);
+        for (ParseItem pi : items) {
+            pi.sqlConversion(result);
         }
     }
 
@@ -480,7 +479,8 @@ class DBConditionItem extends ParseItem {
      * Appends the converted expression to the stringbuffer.
      * @param result the stringbuffer to which to add the expression
      */
-    public void sqlConversion(StringBuffer result) {
+    @Override
+    public void sqlConversion(StringBuilder result) {
         if (value instanceof DBWildcardStringValue || value instanceof DBStringValue)
             result.append("lower(").append(identifier).append(")");
             //result.append("").append(identifier).append("");

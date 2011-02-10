@@ -59,6 +59,7 @@ public class BasicQueryHandler implements CoreSearchQueryHandler {
 
 
     // javadoc is inherited
+    @Override
     public List<MMObjectNode> getNodes(final SearchQuery query, final MMObjectBuilder builder) throws SearchQueryException {
 
         final List<MMObjectNode> results = new ArrayList<MMObjectNode>();
@@ -86,28 +87,29 @@ public class BasicQueryHandler implements CoreSearchQueryHandler {
         final DatabaseStorageManager manager = ((DatabaseStorageManagerFactory) MMBase.getMMBase().getStorageManagerFactory()).getStorageManager();
         try {
             manager.executeQuery(sqlString, new ResultSetReader() {
-                    public void read(ResultSet rs) throws SQLException {
-                        if (mustSkipResults) {
-                            log.debug("skipping results, to provide weak support for offset");
+                @Override
+                public void read(ResultSet rs) throws SQLException {
+                    if (mustSkipResults) {
+                        log.debug("skipping results, to provide weak support for offset");
                             for (int i = 0; i < query.getOffset(); i++) {
                                 rs.next();
-                            }
-                        }
-
-                        // Now store results as cluster-/real nodes.
-                        StepField[] fields = query.getFields().toArray(STEP_FIELD_ARRAY);
-                        int maxNumber = query.getMaxNumber();
-
-                        // now, we dispatch the reading of the result set to the right function wich instantiates Nodes of the right type.
-                        if (builder instanceof ClusterBuilder) {
-                            readNodes(results, manager, (ClusterBuilder) builder, fields, rs, sqlHandlerSupportsMaxNumber, maxNumber, query.getSteps().size());
-                        } else if (builder instanceof ResultBuilder) {
-                            readNodes(results, manager, (ResultBuilder) builder, fields, rs, sqlHandlerSupportsMaxNumber, maxNumber);
-                        } else {
-                            readNodes(results, manager, builder, fields, rs, sqlHandlerSupportsMaxNumber, maxNumber);
                         }
                     }
-                });
+
+                    // Now store results as cluster-/real nodes.
+                    StepField[] fields = query.getFields().toArray(STEP_FIELD_ARRAY);
+                    int maxNumber = query.getMaxNumber();
+
+                    // now, we dispatch the reading of the result set to the right function wich instantiates Nodes of the right type.
+                    if (builder instanceof ClusterBuilder) {
+                        readNodes(results, manager, (ClusterBuilder) builder, fields, rs, sqlHandlerSupportsMaxNumber, maxNumber, query.getSteps().size());
+                    } else if (builder instanceof ResultBuilder) {
+                        readNodes(results, manager, (ResultBuilder) builder, fields, rs, sqlHandlerSupportsMaxNumber, maxNumber);
+                    } else {
+                        readNodes(results, manager, builder, fields, rs, sqlHandlerSupportsMaxNumber, maxNumber);
+                    }
+                    }
+            });
         } catch (SQLException e) {
             throw new SearchQueryException("Query '" + (sqlString == null ? "" + query.toString() : sqlString)  + "' failed: " + e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -122,6 +124,7 @@ public class BasicQueryHandler implements CoreSearchQueryHandler {
      * @return the sql string
      * @throws SearchQueryException when error occurs while making the string
      */
+    @Override
     public String createSqlString(SearchQuery query) throws SearchQueryException {
         // Flag, set if offset must be supported by skipping results.
         boolean mustSkipResults =

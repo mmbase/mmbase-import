@@ -23,11 +23,11 @@ import org.mmbase.storage.StorageInaccessibleException;
 import org.mmbase.util.logging.*;
 
 /**
- * This class functions as a Datasource wrapper around the JDBC Module.
- * It is intended for use when MMBase runs outside an applicationserver, or when the server does not (or poorly)
- * support pooled datasources.
- * I can also be used by older systems that use the JDBC Module and do not want to change their configuration.
- * Note that the JDBC Module will likely be fased out as a module at some point in the future,
+ * This class functions as a DataSource wrapper around the JDBC Module.
+ * It is intended for use when MMBase runs outside an application server, or when the server does not (or poorly)
+ * support pooled DataSources.
+ * It can also be used by older systems that use the JDBC Module and do not want to change their configuration.
+ * Note that the JDBC Module will likely be faced out as a module at some point in the future,
  * with code and supporting classes to be moved to this class instead.
  *
  * @author Pierre van Rooden
@@ -49,11 +49,11 @@ public final class GenericDataSource implements DataSource {
     private boolean basePathOk = false;
 
     /**
-     * Constructs a datasource for accessing the database belonging to the given MMBase module.
+     * Constructs a DataSource for accessing the database belonging to the given MMBase module.
      * The MMBase parameter is not currently used, but is included for future expansion
      * @param mmbase the MMBase instance
-     * @param A Datadir (as a string ending in a /) which may be used in some URL's (most noticably those of HSQLDB). Can be <code>null</code> if not used.
-     * @throws StorageInaccessibleException if the JDBC module used in creating the datasource is inaccessible
+     * @param A data directory (as a string ending in a /) which may be used in some URL's (most noticeably those of HSQLDB). Can be <code>null</code> if not used.
+     * @throws StorageInaccessibleException if the JDBC module used in creating the DataSource is inaccessible
      */
     GenericDataSource(MMBase mmbase, File dataDir) throws StorageInaccessibleException {
         jdbc = Module.getModule(JDBC.class);
@@ -92,6 +92,7 @@ public final class GenericDataSource implements DataSource {
             this.multiCon = m;
         }
 
+        @Override
         public Object invoke(Object proxy, Method m, Object[] args) throws Throwable {
             Object result;
             try {
@@ -116,6 +117,7 @@ public final class GenericDataSource implements DataSource {
         }
     }
     // see javax.sql.DataSource
+    @Override
     public Connection getConnection() throws SQLException {
         String url = makeUrl();
         if (log.isTraceEnabled()) {
@@ -144,6 +146,7 @@ public final class GenericDataSource implements DataSource {
     }
 
     // see javax.sql.DataSource
+    @Override
     public Connection getConnection(String userName, String password) throws SQLException {
         String url = makeUrl();
         if (log.isDebugEnabled()) {
@@ -157,11 +160,13 @@ public final class GenericDataSource implements DataSource {
     }
 
     // see javax.sql.DataSource
+    @Override
     public int getLoginTimeout() {
         return 0;
     }
 
     // see javax.sql.DataSource
+    @Override
     public java.io.PrintWriter getLogWriter() {
         return printWriter;
     }
@@ -170,12 +175,14 @@ public final class GenericDataSource implements DataSource {
      * {@inheritDoc}
      * Note: currently this code does not actually change the timeout. Login timeout is not implemented by JDBC module
      */
+    @Override
     public void setLoginTimeout(int seconds) {
         // loginTimeout = seconds;
     }
 
 
     // see javax.sql.DataSource
+    @Override
     public void setLogWriter(java.io.PrintWriter out) {
         printWriter = out;
     }
@@ -227,10 +234,12 @@ public final class GenericDataSource implements DataSource {
     }
 
     //untested
+    @Override
     public boolean isWrapperFor(Class<?> iface) {
         return iface.isAssignableFrom(JDBC.class);
     }
     //untested
+    @Override
     public <T> T unwrap(Class<T> iface) {
         return (T) jdbc;
     }

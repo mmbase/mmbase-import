@@ -89,7 +89,8 @@ public class VirtualNode extends MMObjectNode {
      */
     @Override
     public Enumeration<MMObjectNode> getRelations() {
-        return new java.util.Vector<MMObjectNode>(0).elements();
+        List<MMObjectNode> empty = Collections.emptyList();
+        return Collections.enumeration(empty);
     }
 
     /**

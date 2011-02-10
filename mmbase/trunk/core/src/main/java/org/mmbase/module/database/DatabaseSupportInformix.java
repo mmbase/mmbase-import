@@ -24,9 +24,11 @@ public class DatabaseSupportInformix implements DatabaseSupport {
 
     private static final Logger log = Logging.getLoggerInstance(DatabaseSupportInformix.class);
 
+    @Override
     public void init() {
     }
 
+    @Override
     public void initConnection(Connection con) {
         setLockMode(con, 30);
     }

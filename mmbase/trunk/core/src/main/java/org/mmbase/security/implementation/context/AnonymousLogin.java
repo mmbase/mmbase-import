@@ -20,6 +20,7 @@ import java.util.Map;
  * @version $Id$
  */
 public class AnonymousLogin extends ContextLoginModule {
+    @Override
     public ContextUserContext login(Map<String, ?> userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException {
         return getValidUserContext("anonymous", Rank.ANONYMOUS);
     }

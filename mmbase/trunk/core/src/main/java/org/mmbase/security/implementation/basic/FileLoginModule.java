@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Simple implemetation, to provide authentication from files...
+ * Simple implementation, to provide authentication from files...
  * @javadoc
  * @author Eduard Witteveen
  * @version $Id$
@@ -28,6 +28,7 @@ public class FileLoginModule implements LoginModule {
     private static Logger log=Logging.getLoggerInstance(FileLoginModule.class.getName());
     private File configFile = null;
 
+    @Override
     public void load(Map<String, Object> properties) {
         String passwordFile = (String)properties.get("file");
 
@@ -62,13 +63,14 @@ public class FileLoginModule implements LoginModule {
         log.debug("file login loaded");
     }
 
+    @Override
     public boolean login(NameContext user, Map<String, ?> loginInfo,  Object[] parameters) {
         if(!loginInfo.containsKey("username")) throw new org.mmbase.security.SecurityException("key 'username' not found  in login information");
         if(!loginInfo.containsKey("password")) throw new org.mmbase.security.SecurityException("key 'password' not found  in login information");
         ExtendedProperties reader = new ExtendedProperties();
 
         log.debug("reading accounts from " + configFile);
-        java.util.Hashtable accounts = reader.readProperties(configFile.getAbsolutePath());
+        java.util.Map accounts = reader.readProperties(configFile.getAbsolutePath());
 
         if (accounts == null) {
             log.error("Could not find accounts!");

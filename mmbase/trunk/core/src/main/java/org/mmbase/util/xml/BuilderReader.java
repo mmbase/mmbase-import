@@ -186,7 +186,7 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
 
 
     @Override
-    protected boolean resolveInheritance() {
+    protected final boolean resolveInheritance() {
         String buildername = getExtends();
         if (buildername.equals("")) {
             parentBuilder = null;

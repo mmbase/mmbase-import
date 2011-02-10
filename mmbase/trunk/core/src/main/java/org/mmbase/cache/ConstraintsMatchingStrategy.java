@@ -104,10 +104,12 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         super();
     }
 
+    @Override
     public String getName() {
         return "Constraint matching strategy";
     }
 
+    @Override
     public String getDescription() {
         return "Checks wether a changed node has a matching step within the constraints of a query, and then checks "
                 + "if the node falls within the constraint. For changed nodes a check is made if the node previously "
@@ -115,6 +117,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 + "will not be flushed.";
     }
 
+    @Override
     protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
         //no constraint, we release any way
         Constraint constraint = query.getConstraint();
@@ -240,6 +243,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         return true; //safe: should release
     }
 
+    @Override
     protected final boolean doEvaluate(RelationEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
         // TODO I don't think this strategy should handle these events
         //because the node event that preceeds the relation event takes care of it.
@@ -252,7 +256,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
      *
      * @param constraint
      */
-    protected final static AbstractConstraintMatcher findMatcherForConstraint(Constraint constraint) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    protected static AbstractConstraintMatcher findMatcherForConstraint(Constraint constraint) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         String constraintClassName = constraint.getClass().getName();
         constraintClassName = constraintClassName.substring(constraintClassName.lastIndexOf(".") + 1);
 
@@ -308,6 +312,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             }
         }
 
+        @Override
         public boolean nodeMatchesConstraint(Map<String,Object> valuesToMatch, NodeEvent event) {
             int matches = 0;
             for (AbstractConstraintMatcher acm : findRelevantConstraints(valuesToMatch, event)) {
@@ -330,8 +335,9 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             }
         }
 
+        @Override
         public String toString(){
-            StringBuffer sb = new StringBuffer("Composite Wrapper. type: ");
+            StringBuilder sb = new StringBuilder("Composite Wrapper. type: ");
             sb.append(wrappedCompositeConstraint.getLogicalOperator() == CompositeConstraint.LOGICAL_AND ? "AND" : "OR");
             sb.append(" [");
             for (Iterator<AbstractConstraintMatcher> i = wrappedConstraints.iterator(); i.hasNext();) {
@@ -348,6 +354,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
          * of it's constraints are relevant it is relevant, and if the opreator is OR and one or more of it's
          * constraints are relevant it is relevant
          */
+        @Override
         public boolean eventApplies(Map<String,Object> valuesToMatch, NodeEvent event) {
             List<AbstractConstraintMatcher> relevantConstraints =  findRelevantConstraints(valuesToMatch, event);
             if (log.isDebugEnabled()) {
@@ -397,14 +404,17 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         /**
          * Return true here, to make sure the query gets flushed.
          */
+        @Override
         public boolean nodeMatchesConstraint(Map<String,Object> valuesToMatch, NodeEvent event) {
             return true;
         }
 
+        @Override
         public String toString(){
             return "Unsupported Matcher. masking for constraint: " + wrappedConstraint.getClass().getName();
         }
 
+        @Override
         public boolean eventApplies(Map<String,Object> valuesToMatch, NodeEvent event) {
             return true;
         }
@@ -576,7 +586,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 stringToCompare = stringToCompare.toLowerCase();
             }
             char[] chars = constraintString.toCharArray();
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
 
             for (char element : chars) {
                 if(element == '?'){
@@ -639,12 +649,14 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
         }
 
+        @Override
         protected int getOperator() {
             return wrappedFieldValueConstraint.getOperator();
         }
         /**
          * Check the values to see if the values of the node matches the constraint.
          */
+        @Override
         public boolean nodeMatchesConstraint(Map<String,Object> valuesToMatch, NodeEvent event)  {
             log.debug("**method: nodeMatchesConstraint");
             //if(! eventApplies(valuesToMatch, event)) throw new FieldComparisonException("constraint " + wrappedFieldCompareConstraint.toString() + "does not match event of type " +event.getBuilderName());
@@ -655,6 +667,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             return  matches != wrappedFieldValueConstraint.isInverse();
         }
 
+        @Override
         public String toString(){
             return "Field Value Matcher.  operator: " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[wrappedFieldValueConstraint.getOperator()] +
             ", value: " + wrappedFieldValueConstraint.getValue().toString() + ", step: " +stepField.getStep().getTableName() +
@@ -666,6 +679,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
          * An event applies to a field value constraint wrapper if the wrapper is of the same type as the event, and the field
          * that is being checked is in the 'changed' fields map (valuesToMatch)
          */
+        @Override
         public boolean eventApplies(Map<String,Object> valuesToMatch, NodeEvent event) {
             return
                 wrappedFieldValueConstraint.getField().getStep().getTableName().equals(event.getBuilderName()) &&
@@ -690,14 +704,17 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             wrappedFieldConstraint = constraint;
         }
 
+        @Override
         public boolean nodeMatchesConstraint(Map<String,Object> valuesToMatch, NodeEvent event) {
             return true;
         }
 
+        @Override
         public boolean eventApplies(Map<String,Object> valuesToMatch, NodeEvent event) {
             return true;
         }
 
+        @Override
         public String toString() {
             return "Field Value Between Matcher.  operator: " +
             ", step: " +stepField.getStep().getTableName() +
@@ -720,6 +737,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             wrappedFieldValueInConstraint = constraint;
         }
 
+        @Override
         protected int getOperator() {
             return FieldCompareConstraint.EQUAL;
         }
@@ -727,6 +745,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         /**
          * Check the values to see if the node's value matches the constraint.
          */
+        @Override
         public boolean nodeMatchesConstraint(Map<String,Object> valuesToMatch, NodeEvent event) {
             log.debug("**method: nodeMatchesConstraint");
             SortedSet<Object> values = wrappedFieldValueInConstraint.getValues();
@@ -742,6 +761,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             return  matches != wrappedFieldValueInConstraint.isInverse();
         }
 
+        @Override
         public String toString(){
             return "Field Value IN Matcher.  operator: " +
                 ", value: " + wrappedFieldValueInConstraint.getValues().toString() + ", step: " +stepField.getStep().getTableName() +
@@ -750,6 +770,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
 
 
+        @Override
         public boolean eventApplies(Map<String,Object> valuesToMatch, NodeEvent event) {
             return
                 wrappedFieldValueInConstraint.getField().getStep().getTableName().equals(event.getBuilderName()) &&

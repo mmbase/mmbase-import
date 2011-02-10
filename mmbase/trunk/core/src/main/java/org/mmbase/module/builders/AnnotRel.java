@@ -46,6 +46,7 @@ public class AnnotRel extends InsRel {
      * Initializes all numeric fields to 0, and sets the annotation type to {@link #MILLIS}.
      * @param node The node to set the defaults of.
      */
+    @Override
     public void setDefaults(MMObjectNode node) {
         super.setDefaults(node);
         // Set the default value for pos and length to 0 (0:0:0.0)
@@ -64,6 +65,7 @@ public class AnnotRel extends InsRel {
      * @param field the name field of the field to display
      * @return the display of the node's field as a <code>String</code>, null if not specified
      */
+    @Override
     public String getGUIIndicator(String field, MMObjectNode node) {
         if (field.equals("pos")) {
             int time = node.getIntValue("pos");
@@ -104,32 +106,7 @@ public class AnnotRel extends InsRel {
         }
         return null;
     }
-
-    /**
-     * The hook that passes all form related pages to the correct handler.
-     * This method is not supported.
-     * @param sp The PageInfo
-     * @param cmds the commands (PRC-CMD) to process
-     * @param vars variables (PRC-VAR) to use
-     * @return the result value as a <code>String</code>
-     */
-    public boolean process(PageInfo sp, Hashtable cmds, Hashtable vars) {
-        log.debug("process: This method isn't implemented yet.");
-        return false;
-    }
-
-    /**
-     * Obtains a string value by performing the provided command.
-     * This method is not supported.
-     * @param sp The PageInfo
-     * @param command the command to execute
-     * @return the result value as a <code>String</code>
-     */
-    public String replace(PageInfo sp, StringTokenizer command) {
-        log.debug("replace: This method isn't implemented yet.");
-        return "";
-    }
-
+ 
     /**
      * Provides additional functionality when setting field values.
      * This method makes sure that the pos, end, and length values have the
@@ -138,6 +115,7 @@ public class AnnotRel extends InsRel {
      * @param field the fieldname that is changed
      * @return <code>true</code> if the call was handled.
      */
+    @Override
     public boolean setValue(MMObjectNode node, String field) {
         if (field.equals("end")) {
             int pos = node.getIntValue("pos");
@@ -159,6 +137,7 @@ public class AnnotRel extends InsRel {
         return true;
     }
 
+    @Override
     public Object getValue(MMObjectNode node, String field) {
         if (field.equals("ms_pos")) {
             int pos = node.getIntValue("pos");

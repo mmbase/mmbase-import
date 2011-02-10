@@ -601,7 +601,7 @@ public class TypeDef extends MMObjectBuilder {
             List<Object> empty = new ArrayList<Object>();
             java.util.Map<String,String> info = (java.util.Map<String,String>) super.executeFunction(node, function, empty);
             info.put("gui", info.get("info") + " (localized)");
-            if (args == null || args.size() == 0) {
+            if (args == null || args.isEmpty()) {
                 return info;
             } else {
                 return info.get(args.get(0));

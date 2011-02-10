@@ -18,6 +18,6 @@ import java.util.Map;
  * @version $Id$
  */
 public interface LoginModule {
-    public void load(Map<String, Object> properties);
-    public boolean login(NameContext user, Map<String, ?> loginInfo,  Object[] parameters);
+    void load(Map<String, Object> properties);
+    boolean login(NameContext user, Map<String, ?> loginInfo, Object[] parameters);
 }
