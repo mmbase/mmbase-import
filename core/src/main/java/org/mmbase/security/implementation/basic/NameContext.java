@@ -32,6 +32,7 @@ public class NameContext extends BasicUser {
         this.rank = rank;
     }
 
+    @Override
     public String getIdentifier() {
         if(identifier == null) {
             throw new SecurityException("No user name was set by the security implementation. This is required.");
@@ -39,6 +40,7 @@ public class NameContext extends BasicUser {
         return identifier;
     }
 
+    @Override
     public Rank getRank() {
         if(rank == null) {
             throw new SecurityException("No rank was provider by the security implementation. This is required.");

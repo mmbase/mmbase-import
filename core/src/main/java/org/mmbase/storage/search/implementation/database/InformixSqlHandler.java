@@ -639,7 +639,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                     unionRelationConstraints.append(andElements).append(" AND ");
                 }
 
-                unionRelationConstraints.append(" " + combinedElement + " ");
+                unionRelationConstraints.append(" ").append(combinedElement).append(" ");
 
                 if (log.isDebugEnabled()) {
                     log.trace("Union relation constraint " + teller + " : " + unionRelationConstraints);
@@ -695,7 +695,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                         // search for the matching field to obtain the number of the field
                         if (field.equals(orderByField.toString())) {
                             // match found
-                            sb.append((i + 1) + " ");
+                            sb.append(i + 1).append(" ");
                             // prevent that the field is listed twice in this order-by
                             found = true;
                             break;

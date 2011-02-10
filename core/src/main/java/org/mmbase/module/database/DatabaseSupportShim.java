@@ -20,9 +20,11 @@ import java.sql.*;
  */
 public class DatabaseSupportShim implements DatabaseSupport {
 
+    @Override
     public void init() {
     }
 
+    @Override
     public void initConnection(Connection con) {
     }
 }

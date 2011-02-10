@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.cache;
 import org.mmbase.core.event.*;
 import org.mmbase.module.core.*;
-import org.mmbase.util.Casting;
 import java.util.*;
 import java.lang.ref.WeakReference;
 import java.lang.ref.ReferenceQueue;
@@ -24,7 +23,7 @@ import java.lang.ref.ReferenceQueue;
 public class NodeCache extends Cache<Integer, MMObjectNode> implements NodeEventListener {
     private static final int CACHE_SIZE = 4 * 1024;
 
-    private static NodeCache cache;
+    private static final NodeCache cache;
 
     public static NodeCache getCache() {
         return cache;
@@ -100,6 +99,7 @@ public class NodeCache extends Cache<Integer, MMObjectNode> implements NodeEvent
 
 
 
+    @Override
     public void notify(NodeEvent event) {
         int type = event.getType();
         if(type == Event.TYPE_DELETE || ((! event.isLocal()) && type == Event.TYPE_CHANGE)) {

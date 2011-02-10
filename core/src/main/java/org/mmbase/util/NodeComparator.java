@@ -36,7 +36,7 @@ public class NodeComparator implements Comparator<MMObjectNode> {
      */
     public NodeComparator(List<String> fields) {
         this.fields = fields;
-        sortDirs = new Vector<String>(fields.size());
+        sortDirs = new ArrayList<String>(fields.size());
     }
 
     /**
@@ -67,6 +67,7 @@ public class NodeComparator implements Comparator<MMObjectNode> {
      * @return 0 if both objects are equal, -1 if object 1 is 'less than'
      *    object 2, and +1 if object 1 is 'greater than' object 2.
      */
+    @Override
     public int compare(MMObjectNode o1, MMObjectNode o2) {
         Object f1, f2;
         int result=0;
@@ -109,6 +110,7 @@ public class NodeComparator implements Comparator<MMObjectNode> {
      * @return <code>true</code> if the objects are equal
      * @throws ClassCastException
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof NodeComparator) {
             return (obj.hashCode()==hashCode());
@@ -121,6 +123,7 @@ public class NodeComparator implements Comparator<MMObjectNode> {
      * Returns the comparator's hash code.
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
         return fields.hashCode()^sortDirs.hashCode();
     }

@@ -16,7 +16,6 @@ import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.Casting;
 import java.util.*;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 /**
@@ -32,6 +31,7 @@ public class BasicSqlHandler implements SqlHandler {
     private static final Logger log = Logging.getLoggerInstance(BasicSqlHandler.class);
 
     private static final ThreadLocal<SimpleDateFormat> DATE_FORMAT = new ThreadLocal<SimpleDateFormat>() {
+        @Override
         protected synchronized SimpleDateFormat  initialValue() {
                 return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
             }
@@ -214,6 +214,7 @@ public class BasicSqlHandler implements SqlHandler {
     // javadoc is inherited
     // XXX what exception to throw when an unsupported feature is
     // encountered (currently throws UnsupportedOperationException)?
+    @Override
     public String toSql(SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
         // XXX should table and field aliases be tested for uniqueness?
 
@@ -360,6 +361,7 @@ public class BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
+    @Override
     public void appendQueryBodyToSql(StringBuilder sb, SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
 
         // Buffer expressions for included nodes, like
@@ -725,6 +727,7 @@ public class BasicSqlHandler implements SqlHandler {
     // javadoc is inherited
     // XXX what exception to throw when an unsupported constraint is
     // encountered (currently throws UnsupportedOperationException)?
+    @Override
     public void appendConstraintToSql(StringBuilder sb, Constraint constraint, SearchQuery query, boolean inverse, boolean inComposite)  throws SearchQueryException {
 
         // Net effect of inverse setting with constraint inverse property.
@@ -980,12 +983,14 @@ public class BasicSqlHandler implements SqlHandler {
 
     // javadoc is inherited
     @SuppressWarnings("unused") // subclasses throw exception
+    @Override
     public int getSupportLevel(Constraint constraint, SearchQuery query)
             throws SearchQueryException {
         return constraint.getBasicSupportLevel();
     }
 
     // javadoc is inherited
+    @Override
     public String getAllowedValue(String value) {
         if (value == null) {
             throw new IllegalArgumentException("Invalid value: " + value);

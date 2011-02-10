@@ -25,6 +25,7 @@ public class ClassLoginModule implements LoginModule {
 
     private Map<String, String> ranks = new HashMap<String, String>();
 
+    @Override
     public void load(Map<String, Object> properties) {
         for (Map.Entry<String, Object> entry : properties.entrySet()) {
             if (entry.getValue() instanceof String) {
@@ -33,6 +34,7 @@ public class ClassLoginModule implements LoginModule {
         }
     }
 
+    @Override
     public boolean login(NameContext user, Map<String, ?> loginInfo,  Object[] parameters) {
         org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class", loginInfo);
         if (li == null) {

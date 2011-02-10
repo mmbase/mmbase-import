@@ -39,6 +39,7 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
     public BasicReleaseStrategy(){
     }
 
+    @Override
     public String getName() {
         return "Basic release strategy";
     }
@@ -47,6 +48,7 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
     /* (non-Javadoc)
      * @see org.mmbase.cache.QueryResultCacheReleaseStrategy#getDescription()
      */
+    @Override
     public String getDescription() {
         return "This strategy does exactly what the original cache release "+
             "implementation did. It checks if the step of the query that maches the "+
@@ -57,6 +59,7 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
     /* (non-Javadoc)
      * @see org.mmbase.cache.ReleaseStrategy#doEvaluate(org.mmbase.module.core.NodeEvent, org.mmbase.storage.search.SearchQuery, java.util.List)
      */
+    @Override
     protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
         //this simple optimization only works for nodeEvents
         MMBase mmb = MMBase.getMMBase();
@@ -78,13 +81,14 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
             if (! (table.equals(eventTable) ||
                    eventBuilder.isExtensionOf(stepBuilder))) continue;
             Set<Integer> nodes = step.getNodes();
-            if (nodes == null || nodes.size() == 0 ||  nodes.contains(event.getNodeNumber())) {
+            if (nodes == null || nodes.isEmpty() ||  nodes.contains(event.getNodeNumber())) {
                 return true;
             }
         }
         return false;
     }
 
+    @Override
     protected boolean doEvaluate(RelationEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
         // no strategy for relation events
     	log.debug("basic strategy: flush: relation event");

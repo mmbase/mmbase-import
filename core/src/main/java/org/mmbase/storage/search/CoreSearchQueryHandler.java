@@ -47,7 +47,7 @@ public interface CoreSearchQueryHandler extends SearchQueryHandler {
      * @see ResultNode
      * @see org.mmbase.module.core.ClusterNode
      */
-    public List<org.mmbase.module.core.MMObjectNode> getNodes(SearchQuery query, MMObjectBuilder builder) throws SearchQueryException;
+    List<org.mmbase.module.core.MMObjectNode> getNodes(SearchQuery query, MMObjectBuilder builder) throws SearchQueryException;
 
 
 }

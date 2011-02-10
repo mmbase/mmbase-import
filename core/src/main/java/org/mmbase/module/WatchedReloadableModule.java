@@ -22,13 +22,14 @@ import org.mmbase.util.ResourceWatcher;
 public abstract class WatchedReloadableModule extends ReloadableModule {
 
     private ResourceWatcher configWatcher = new ResourceWatcher() {
-            public void onChange(String resource) {
-                // resource parameter can be ignored, because it inconveniently contains ".xml".
-                if (reloadConfiguration()) {
-                    reload();
-                }
+        @Override
+        public void onChange(String resource) {
+            // resource parameter can be ignored, because it inconveniently contains ".xml".
+            if (reloadConfiguration()) {
+                reload();
             }
-        };
+        }
+    };
     public WatchedReloadableModule() {
     }
     public WatchedReloadableModule(String name) {
@@ -37,9 +38,10 @@ public abstract class WatchedReloadableModule extends ReloadableModule {
 
     /**
      * {@inheritDoc}
-     * On the onload of a reloadable module, a filewatcher is started. You should call
+     * On the onload of a reloadable module, a FileWatcher is started. You should call
      * super.onload if you need to override this.
      */
+    @Override
     public void onload() {
         configWatcher.setDelay(10 * 1000);
         configWatcher.start();

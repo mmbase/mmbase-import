@@ -11,6 +11,7 @@ package org.mmbase.module.database;
 
 import java.sql.*;
 import java.util.*;
+import java.util.logging.Level;
 import org.mmbase.util.DijkstraSemaphore;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
@@ -86,7 +87,7 @@ public class MultiPool {
      * Fills the connection pool
      * @since MMBase-1.7
     */
-    protected void createPool() {
+    protected final void createPool() {
         MMBase mmb = MMBase.getMMBase();
         boolean logStack = true;
         if (semaphore != null) {
@@ -195,7 +196,10 @@ public class MultiPool {
 
     }
 
+    @Override
+    @SuppressWarnings({"FinalizeDeclaration", "FinalizeDoesntCallSuperFinalize"})
     protected void finalize() {
+
         shutdown();
     }
 
@@ -426,8 +430,9 @@ public class MultiPool {
     }
 
     /**
-     * putback the used connection in the pool
+     * put back the used connection in the pool
      */
+    @SuppressWarnings("ResultOfObjectAllocationIgnored")
     void putBack(MultiConnection con) {
         //see comment in method checkTime()
         synchronized (semaphore) {
@@ -529,6 +534,7 @@ public class MultiPool {
     /**
      * @javadoc
      */
+    @Override
     public String toString() {
         return "dbm=" + url + ",name=" + name + ",conmax=" + conMax;
     }
@@ -538,7 +544,7 @@ public class MultiPool {
      * Support class to close connections in a seperate thread, as some JDBC drivers
      * have a tendency to hang themselves on a running sql close.
      */
-    static class ConnectionCloser implements Runnable {
+    static final class ConnectionCloser implements Runnable {
         private static final Logger log = Logging.getLoggerInstance(ConnectionCloser.class);
 
         private MultiConnection connection;
@@ -561,6 +567,7 @@ public class MultiPool {
         /**
          * Close the database connection.
          */
+        @Override
         public void run() {
             try {
                 connection.realclose();

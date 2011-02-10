@@ -263,6 +263,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
     abstract protected Set<String> getHandleFields();
 
+    @Override
     public int insert(String owner, MMObjectNode node) {
         if (log.isDebugEnabled()) {
             log.debug("Inserting node " + node.getNumber() + " memory: " + SizeOf.getByteSize(node));
@@ -275,6 +276,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         return result;
     }
 
+    @Override
     public boolean commit(MMObjectNode node) {
         Collection<String> changed = node.getChanged();
         if (log.isDebugEnabled()) {
@@ -326,6 +328,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         return super.getGUIIndicator(field, node);
     }
 
+    @Override
     final public  String getGUIIndicator(MMObjectNode node, Parameters pars) {
         String field = (String) pars.get("field");
         if (field == null || "".equals(field) || FIELD_HANDLE.equals(field)) {
@@ -339,6 +342,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * This is final, because getSGUIIndicator has to be overridden in stead
      */
 
+    @Override
     final public String getGUIIndicator(String field, MMObjectNode node) { // final, override getSGUIIndicator
         return getSGUIIndicator(node, new Parameters(GUI_PARAMETERS).set("field", field));
     }
@@ -552,7 +556,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                             log.debug("Using session " + session);
 
                             if (usesBridgeServlet &&  session != null && ! "".equals(session)) {
-                                servlet.append("session=" + session + "+");
+                                servlet.append("session=").append(session).append("+");
                             }
 
                             servlet.append(argument);
@@ -651,6 +655,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      *
      */
 
+    @Override
     protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (log.isDebugEnabled()) {
             log.debug("executefunction of abstractservletbuilder for " + node.getNumber() + "." + function + " " + args);
@@ -663,7 +668,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             info.put("mimetype", "Returns the mimetype associated with this object");
             info.put("gui", "" + GUI_PARAMETERS + "Gui representation of this object.");
 
-            if (args == null || args.size() == 0) {
+            if (args == null || args.isEmpty()) {
                 return info;
             } else {
                 return info.get(args.get(0));
@@ -679,7 +684,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             if (log.isDebugEnabled()) {
                 log.debug("GUI of servlet builder with " + args);
             }
-            if (args == null || args.size() == 0) {
+            if (args == null || args.isEmpty()) {
                 return getGUIIndicator(node);
             } else {
                 Parameters a;

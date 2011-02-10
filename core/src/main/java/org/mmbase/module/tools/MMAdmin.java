@@ -297,7 +297,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
      * @javadoc
      */
     @Override
-    public boolean process(PageInfo sp, Hashtable<String,Object> cmds, Hashtable<String,Object> vars) {
+    public boolean process(PageInfo sp, @SuppressWarnings("UseOfObsoleteCollectionType") Hashtable<String,Object> cmds, Hashtable<String,Object> vars) {
         MMBase mmb = MMBase.getMMBase();
         for (Enumeration<String> h = cmds.keys(); h.hasMoreElements();) {
             String cmdline = h.nextElement();

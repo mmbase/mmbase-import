@@ -54,6 +54,7 @@ public class OwnerAuthorization extends Authorization {
         return node;
     }
 
+    @Override
     public void load() {
         log.service("using: '" + configResource + "' as config file for authentication");
         InputStream in = MMBaseCopConfig.securityLoader.getResourceAsStream(configResource);
@@ -79,6 +80,7 @@ public class OwnerAuthorization extends Authorization {
         log.debug("file for accounts loaded");
     }
 
+    @Override
     public void create(UserContext user, int nodeNumber) {
         if(manager.getActive()) { // else don't touch.
             MMObjectNode node = getMMNode(nodeNumber);
@@ -87,6 +89,7 @@ public class OwnerAuthorization extends Authorization {
         }
     }
 
+    @Override
     public void update(UserContext user, int nodeNumber) {
         if(manager.getActive()) {
             MMObjectNode node = getMMNode(nodeNumber);
@@ -95,9 +98,11 @@ public class OwnerAuthorization extends Authorization {
         }
     }
 
+    @Override
     public void remove(UserContext user, int node) {
     }
 
+    @Override
     public boolean check(UserContext user, int nodeNumber, Operation operation) {
         // if we don't do security, then we are allowed to do everything.
        if (!manager.getActive()) {
@@ -157,6 +162,7 @@ public class OwnerAuthorization extends Authorization {
         return permitted;
     }
 
+    @Override
     public boolean check(UserContext user, int nodeNumber, int srcNodeNumber, int dstNodeNumber, Operation operation) {
         if(manager.getActive()){
             if (user.getRank() == Rank.ANONYMOUS) {
@@ -169,6 +175,7 @@ public class OwnerAuthorization extends Authorization {
         return true;
     }
 
+    @Override
     public String getContext(UserContext user, int nodeNumber) throws SecurityException {
         verify(user, nodeNumber, Operation.READ);        
         // and get the value...
@@ -179,6 +186,7 @@ public class OwnerAuthorization extends Authorization {
     /**
      * This method does nothing, except from checking if the setContext was valid..
      */
+    @Override
     public void setContext(UserContext user, int nodeNumber, String context) throws SecurityException {
         // check if is a valid context for us..
         Set<String> possible = getPossibleContexts(user, nodeNumber);
@@ -201,6 +209,7 @@ public class OwnerAuthorization extends Authorization {
     /**
      * Returns a list of all users in accounts.properties
      */
+    @Override
     public Set<String> getPossibleContexts(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {
 
         if (possibleContexts == null) {
@@ -211,6 +220,7 @@ public class OwnerAuthorization extends Authorization {
         }
     }
 
+    @Override
     public QueryCheck check(UserContext user, Query query, Operation operation) {
         if(user.getRank().getInt() >= Rank.ADMIN.getInt()) {
             return COMPLETE_CHECK;
