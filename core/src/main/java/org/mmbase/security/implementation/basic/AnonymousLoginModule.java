@@ -25,10 +25,12 @@ import org.mmbase.util.logging.Logging;
 public class AnonymousLoginModule implements LoginModule {
     private static final Logger log = Logging.getLoggerInstance(AnonymousLoginModule.class);
 
+    @Override
     public void load(Map<String, Object> properties) {
         // nah do nothing..
     }
 
+    @Override
     public boolean login(NameContext user, Map<String, ?> loginInfo,  Object[] parameters) {
         log.debug("anonymous login..");
         // set the identifier...

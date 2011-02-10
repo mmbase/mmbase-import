@@ -41,17 +41,20 @@ public class ChainedSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
+    @Override
     public String toSql(SearchQuery query, SqlHandler firstInChain)
-    throws SearchQueryException {
+            throws SearchQueryException {
         return successor.toSql(query, firstInChain);
     }
 
     // javadoc is inherited
+    @Override
     public void appendQueryBodyToSql(StringBuilder sb, SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
         successor.appendQueryBodyToSql(sb, query, firstInChain);
     }
 
     // javadoc is inherited
+    @Override
     public void appendConstraintToSql(StringBuilder sb, Constraint constraint,
                                       SearchQuery query, boolean inverse, boolean inComposite)
         throws SearchQueryException {
@@ -60,18 +63,21 @@ public class ChainedSqlHandler implements SqlHandler {
     }
     
     // javadoc is inherited
+    @Override
     public int getSupportLevel(int feature, SearchQuery query)
         throws SearchQueryException {
         return successor.getSupportLevel(feature, query);
     }
     
     // javadoc is inherited
+    @Override
     public int getSupportLevel(Constraint constraint, SearchQuery query)
         throws SearchQueryException {
         return successor.getSupportLevel(constraint, query);
     }
     
     // javadoc is inherited
+    @Override
     public String getAllowedValue(String value) {
         return successor.getAllowedValue(value);
     }

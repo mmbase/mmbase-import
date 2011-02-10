@@ -125,9 +125,10 @@ public class ContextDepthDataWriter  {
         //where the message nodes contain a thread nodefield
         //upon creation there first must exist a thread message
         //so the "thread message" will have a lower number
-        List<Integer> list = new Vector<Integer>();
+        List<Integer> list = new ArrayList<Integer>();
         list.addAll(nodes);
         Collections.sort(list, new Comparator<Integer>(){
+            @Override
             public int compare(Integer o1, Integer o2) {
                 return o1.compareTo(o2);
             }
@@ -145,7 +146,7 @@ public class ContextDepthDataWriter  {
         String subtargetpath=targetpath+"/"+app.getName()+"/";
 
         // create a list of writer objects for the nodes
-        Hashtable<String, NodeWriter> nodeWriters = new Hashtable<String, NodeWriter>();
+        Map<String, NodeWriter> nodeWriters = new HashMap<String, NodeWriter>();
         while (res.hasNext()) {
             Map<String,String> bset = res.next(); // retrieve source builder name
             String name = bset.get("builder");
@@ -176,10 +177,7 @@ public class ContextDepthDataWriter  {
         }
 
         // close the files.
-        for (Enumeration<String> e = nodeWriters.keys(); e.hasMoreElements();) {
-            String name = e.nextElement();
-            NodeWriter nodeWriter;
-            nodeWriter = nodeWriters.get(name);
+        for (NodeWriter nodeWriter : nodeWriters.values()) {
             nodeWriter.done();
         }
     }

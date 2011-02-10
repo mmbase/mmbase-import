@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.util;
 
-import java.util.*;
 import java.sql.*;
 import javax.sql.*;
 
@@ -20,7 +19,7 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * Meant to be used as an 'AfterDeployment' job of an app1 xml. Automaticly execute some SQL.
+ * Meant to be used as an 'AfterDeployment' job of an app1 xml. Automatically execute some SQL.
  * E.g.
   &lt;afterdeployment&gt;
     &lt;runnable version="10" class="org.mmbase.storage.util.Sql"&gt;
@@ -45,6 +44,7 @@ public class Sql implements Runnable {
         query = q;
     }
 
+    @Override
     public void run() {
         Connection con = null;
         Statement stmt = null;

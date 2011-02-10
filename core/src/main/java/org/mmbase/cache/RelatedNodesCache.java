@@ -29,7 +29,7 @@ import org.mmbase.module.core.MMObjectNode;
 public class RelatedNodesCache extends QueryResultCache {
 
     // There will be only one list cache, and here it is:
-    private static RelatedNodesCache relatedNodesCache;
+    private static final RelatedNodesCache relatedNodesCache;
 
     public static RelatedNodesCache getCache() {
         return relatedNodesCache;

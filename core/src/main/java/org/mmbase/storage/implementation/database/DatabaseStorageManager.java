@@ -90,11 +90,13 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
      * The cache that contains the last X types of all requested objects
      * @since 1.7
      */
-    protected static Cache<Integer, Integer> typeCache;
+    protected static final Cache<Integer, Integer> typeCache;
 
     static {
         typeCache = new Cache<Integer, Integer>(OBJ2TYPE_MAX_SIZE) {
+            @Override
             public String getName()        { return "TypeCache"; }
+            @Override
             public String getDescription() { return "Cache for node types";}
         };
         typeCache.putCache();
@@ -113,12 +115,12 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
 
     /**
      * <code>true</code> if a transaction has been started.
-     * This member is for state maitenance and may be true even if the storage does not support transactions
+     * This member is for state maintenance and may be true even if the storage does not support transactions
      */
     protected boolean inTransaction = false;
 
     /**
-     * The transaction issolation level to use when starting a transaction.
+     * The transaction isolation level to use when starting a transaction.
      * This value is retrieved from the factory's {@link Attributes#TRANSACTION_ISOLATION_LEVEL} attribute, which is commonly set
      * to the highest (most secure) transaction isolation level available.
      */
@@ -258,6 +260,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
     // javadoc is inherited
+    @Override
     public void beginTransaction() throws StorageException {
         if (inTransaction) {
             throw new StorageException("Cannot start Transaction when one is already active.");
@@ -285,6 +288,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
     // javadoc is inherited
+    @Override
     public void commit() throws StorageException {
         if (!inTransaction) {
             throw new StorageException("No transaction started.");
@@ -312,6 +316,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
     // javadoc is inherited
+    @Override
     public boolean rollback() throws StorageException {
         if (!inTransaction) {
             throw new StorageException("No transaction started.");
@@ -355,6 +360,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         }
     }
 
+    @Override
     public int createKey() throws StorageException {
         log.debug("Creating key");
         synchronized (sequenceKeys) {
@@ -422,6 +428,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
     // javadoc is inherited
+    @Override
     public String getStringValue(MMObjectNode node, CoreField field) throws StorageException {
         try {
             MMObjectBuilder builder = node.getBuilder();
@@ -673,6 +680,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     /**
      * @see org.mmbase.storage.StorageManager#getBinaryValue(org.mmbase.module.core.MMObjectNode, org.mmbase.core.CoreField)
      */
+    @Override
     public byte[] getBinaryValue(MMObjectNode node, CoreField field) throws StorageException {
         try {
             Blob b = getBlobValue(node, field);
@@ -690,6 +698,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     /**
      * @see org.mmbase.storage.StorageManager#getInputStreamValue(org.mmbase.module.core.MMObjectNode, org.mmbase.core.CoreField)
      */
+    @Override
     public InputStream getInputStreamValue(MMObjectNode node, CoreField field) throws StorageException {
         try {
             Blob blob = getBlobValue(node, field);
@@ -1022,6 +1031,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     /**
      * @see org.mmbase.storage.StorageManager#create(org.mmbase.module.core.MMObjectNode)
      */
+    @Override
     public int create(MMObjectNode node) throws StorageException {
         int res = createWithoutEvent(node);
         commitChange(node, "n");
@@ -1164,9 +1174,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             try {
                 setValue(ps, fieldNumber + 1, node, field);
             } catch (StorageException e) {
-                SQLException sqle = new SQLException(node.toString() + "/" + field.getName() + " " + e.getMessage());
-                sqle.initCause(e);
-                throw sqle;
+                throw new SQLException(node.toString() + "/" + field.getName() + " " + e.getMessage(), e);
             }
         }
         long startTime = getLogStartTime();
@@ -1179,12 +1187,12 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 values.append("\n");
                 String name = field.getName();
                 if (field.getType() == Field.TYPE_BINARY) {
-                    values.append(name + "(bin): " + node.getSize(name) + " bytes");
+                    values.append(name).append("(bin): ").append(node.getSize(name)).append(" bytes");
                 } else if (node.getSize(name) > 512) {
                     String string = node.getStringValue(name);
-                    values.append(name + "(shorted):" + string.substring(0, Math.min(512, string.length())));
+                    values.append(name).append("(shorted):").append(string.substring(0, Math.min(512, string.length())));
                 } else {
-                    values.append(name + ":" + node.getStringValue(name));
+                    values.append(name).append(":").append(node.getStringValue(name));
                 }
 
             }
@@ -1194,6 +1202,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
     // javadoc is inherited
+    @Override
     public void change(final MMObjectNode node) throws StorageException {
         synchronized(node) {
             // resolve aliases, if any.
@@ -1278,7 +1287,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             log.debug("Changing " + changeFields + " in " +  node);
         }
         // Create a String that represents the fields to be used in the commit
-        final StringBuilder setFields = new StringBuilder();;
+        final StringBuilder setFields = new StringBuilder();
         final List<CoreField> fields = new ArrayList<CoreField>();
         for (CoreField field : changeFields) {
             // changing number is not allowed
@@ -1717,7 +1726,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
      * @param objectValue value to set
      * @param field update of this node field
      * @param node updated node
-     * @throws StorageException error occured in storage layer
+     * @throws StorageException error occurred in storage layer
      * @throws SQLException if database connections failures occurs
      * @since MMBase-1.7.1
      */
@@ -1739,6 +1748,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     /**
      * @see org.mmbase.storage.StorageManager#delete(org.mmbase.module.core.MMObjectNode)
      */
+    @Override
     public void delete(MMObjectNode node) throws StorageException {
         // determine parent
         if (node.hasRelations()) {
@@ -1902,6 +1912,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     /**
      * @see org.mmbase.storage.StorageManager#getNode(org.mmbase.module.core.MMObjectBuilder, int)
      */
+    @Override
     public MMObjectNode getNode(final MMObjectBuilder builder, final int number) throws StorageException {
         if (builder == null) throw new IllegalArgumentException("Builder cannot be null when requesting node " + number);
         Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
@@ -1956,7 +1967,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
      * Use this after a create or change action, so the data in memory is consistent with
      * any data stored in the database.
      * @param node the node to refresh
-     * @throws StorageException error occured in storage layer
+     * @throws StorageException error occurred in storage layer
      */
     protected void refresh(MMObjectNode node) throws StorageException {
         Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
@@ -2161,6 +2172,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     /**
      * @see org.mmbase.storage.StorageManager#getNodeType(int)
      */
+    @Override
     public int getNodeType(int number) throws StorageException {
         Integer numberValue = number;
         Integer otypeValue =  typeCache.get(numberValue);
@@ -2248,6 +2260,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     /**
      * @see org.mmbase.storage.StorageManager#create(org.mmbase.module.core.MMObjectBuilder)
      */
+    @Override
     public void create(MMObjectBuilder builder) throws StorageException {
         log.debug("Creating a table for " + builder);
         // use the builder to get the fields and create a
@@ -2314,7 +2327,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                     if (createFieldsAndIndices.length() > 0) {
                         createFieldsAndIndices.append(", ");
                     }
-                    createFieldsAndIndices.append(fieldDef + ", " + constraintDef);
+                    createFieldsAndIndices.append(fieldDef).append(", ").append(constraintDef);
                 } else {
                     if (createFieldsAndIndices.length() > 0) {
                         createFieldsAndIndices.append(", ");
@@ -2409,7 +2422,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
      * The fieldtype is taken from the type mapping in the factory.
      * @since MMBase-1.8
      * @param field the field
-     * @return the typedefiniton as a String
+     * @return the type definition as a String
      * @throws StorageException if the field type cannot be mapped
      */
     public String getFieldTypeDefinition(CoreField field) throws StorageException {
@@ -2514,6 +2527,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
     // javadoc is inherited
+    @Override
     public void change(MMObjectBuilder builder) throws StorageException {
         // test if you can make changes
         // iterate through the fields,
@@ -2526,6 +2540,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
     // javadoc is inherited
+    @Override
     public synchronized void delete(MMObjectBuilder builder) throws StorageException {
         int size = size(builder);
         if (size != 0) {
@@ -2562,6 +2577,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
     // javadoc is inherited
+    @Override
     public void create() throws StorageException {
         create(factory.getMMBase().getRootBuilder());
         createSequence();
@@ -2618,6 +2634,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
     // javadoc is inherited
+    @Override
     public boolean exists(MMObjectBuilder builder) throws StorageException {
         boolean result = exists((String)factory.getStorageIdentifier(builder));
         if (result) {
@@ -2670,11 +2687,13 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
     // javadoc is inherited
+    @Override
     public boolean exists() throws StorageException {
         return exists(factory.getMMBase().getRootBuilder());
     }
 
     // javadoc is inherited
+    @Override
     public int size(MMObjectBuilder builder) throws StorageException {
         try {
             getActiveConnection();
@@ -2699,6 +2718,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
     // javadoc is inherited
+    @Override
     public int size() throws StorageException {
         return size(factory.getMMBase().getRootBuilder());
     }
@@ -2887,7 +2907,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !checkStoreFieldAsFile(field.getParent()))) {
                     field.rewrite();
                     pos++;
-                    Object id = field.getStorageIdentifier(); // why the fuck is this an Object and not a String
+                    String id = (String) field.getStorageIdentifier(); // why the fuck is this an Object and not a String
                     Map<String, Object> colInfo = columns.get(id);
                     if (colInfo == null) {
                         colInfo = columns.get(("" + id).toLowerCase());
@@ -3106,7 +3126,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
     /**
-     * Returns a comma seperated list of fieldnames for an index.
+     * Returns a comma separated list of field names for an index.
      * @param index the index to create it for
      * @return the field list definition as a String, or <code>null</code> if the index was empty, or
      *         if it consists of a composite index and composite indices are not supported.
@@ -3129,7 +3149,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 if (totLength > factory.getMaxKeyLength()) {
                     totLength -= field.getMaxLength(); // undo that, and calculate what _is_ possible
                     int newLength = factory.getMaxKeyLength() - totLength;
-                    indexFields.append(" (" + newLength + ")");
+                    indexFields.append(" (").append(newLength).append(")");
                     totLength = factory.getMaxKeyLength();
                     log.info("Key " + index + " was truncated (to a maximimal length of " + newLength + ")");
                 }
@@ -3214,6 +3234,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     /**
      * @see org.mmbase.storage.StorageManager#create(org.mmbase.core.CoreField)
      */
+    @Override
     public void create(CoreField field) throws StorageException {
         if (field == null) throw new IllegalArgumentException("No field given");
         if (!factory.hasOption(Attributes.SUPPORTS_DATA_DEFINITION)) {
@@ -3265,6 +3286,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     /**
      * @see org.mmbase.storage.StorageManager#change(org.mmbase.core.CoreField)
      */
+    @Override
     public void change(CoreField field) throws StorageException {
         if (!factory.hasOption(Attributes.SUPPORTS_DATA_DEFINITION)) {
             throw new StorageException("Data definiton statements (change field) are not supported.");
@@ -3314,6 +3336,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     /**
      * @see org.mmbase.storage.StorageManager#delete(org.mmbase.core.CoreField)
      */
+    @Override
     public void delete(CoreField field) throws StorageException {
         if (!factory.hasOption(Attributes.SUPPORTS_DATA_DEFINITION)) {
             throw new StorageException("Data definiton statements (delete field) are not supported.");
@@ -3356,7 +3379,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             synchronized(factory) { // there is only on factory. This makes sure that there is only one conversion running
                 int result = 0;
                 int fromDatabase = 0;
-                for (MMObjectBuilder builder : factory.getMMBase().getBuilders()) {;
+                for (MMObjectBuilder builder : factory.getMMBase().getBuilders()) {
                     // remove clusternodes from the convert
                     if (!builder.getSingularName().equals("clusternodes")) {
                         for (CoreField field : builder.getFields()) {
@@ -3452,6 +3475,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             size = -1;
         }
 
+        @Override
         public InputStream getBinaryStream() {
             if (bytes != null) {
                 return new ByteArrayInputStream(bytes);
@@ -3459,10 +3483,12 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 return inputStream;
             }
         }
+        @Override
         public InputStream getBinaryStream(long pos, long length) {
             return new ByteArrayInputStream(getBytes(pos, (int) length));
         }
 
+        @Override
         public byte[] getBytes(long pos, int length) {
             if (pos == 1 && size == length && bytes != null) return bytes;
 
@@ -3499,6 +3525,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             size = bytes.length;
         }
 
+        @Override
         public long length() {
             if (size < 0 && inputStream != null) {
                 getBytes();
@@ -3506,30 +3533,37 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             return size;
         }
 
+        @Override
         public long position(Blob pattern, long start) {
             throw new UnsupportedOperationException("");
         }
 
+        @Override
         public long  position(byte[] pattern, long start) {
             throw new UnsupportedOperationException("");
         }
 
+        @Override
         public OutputStream setBinaryStream(long pos) {
             throw new UnsupportedOperationException("");
         }
 
+        @Override
         public int setBytes(long pos, byte[] bytes) {
             throw new UnsupportedOperationException("");
         }
 
+        @Override
         public int setBytes(long pos, byte[] bytes, int offset, int len) {
             throw new UnsupportedOperationException("");
         }
 
+        @Override
         public void truncate(long len) {
             throw new UnsupportedOperationException("");
         }
 
+        @Override
         public void free() {
             bytes = null;
             if (inputStream != null) {
@@ -3547,6 +3581,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     /**
      * @see org.mmbase.storage.StorageManager#isNull(org.mmbase.module.core.MMObjectNode, org.mmbase.core.CoreField)
      */
+    @Override
     public boolean isNull(MMObjectNode node, CoreField field) throws StorageException {
         int dbtype = Field.TYPE_UNKNOWN;
         if (field != null) {

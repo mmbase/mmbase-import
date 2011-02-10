@@ -122,29 +122,38 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     private String durationFormat = "0.00";
 
     final UtilReader.PropertiesMap<String> utilProperties =  new UtilReader("querylogging.xml",
-                                                                            new Runnable() {public void run() {readDurations(); }}).getProperties();
-    private void readDurations() {
-        debugDuration     = new Float(Float.parseFloat(utilProperties.getProperty("debug",   "" + debugDuration)) * MS).longValue();
-        serviceDuration   = new Float(Float.parseFloat(utilProperties.getProperty("service", "" + serviceDuration)) * MS).longValue();
-        infoDuration      = new Float(Float.parseFloat(utilProperties.getProperty("info",    "" + infoDuration)) * MS).longValue();
-        warnDuration      = new Float(Float.parseFloat(utilProperties.getProperty("warn",    "" + warnDuration)) * MS).longValue();
-        errorDuration     = new Float(Float.parseFloat(utilProperties.getProperty("error",   "" + errorDuration)) * MS).longValue();
-        fatalDuration     = new Float(Float.parseFloat(utilProperties.getProperty("fatal",   "" + fatalDuration)) * MS).longValue();
+            new Runnable() {
 
-        durationFormat     = utilProperties.getProperty("durationFormat", durationFormat);
+                @Override
+                public void run() {
+                    readDurations();
+                }
+            }).getProperties();
+    private void readDurations() {
+        debugDuration = new Float(Float.parseFloat(utilProperties.getProperty("debug", "" + debugDuration)) * MS).longValue();
+        serviceDuration = new Float(Float.parseFloat(utilProperties.getProperty("service", "" + serviceDuration)) * MS).longValue();
+        infoDuration = new Float(Float.parseFloat(utilProperties.getProperty("info", "" + infoDuration)) * MS).longValue();
+        warnDuration = new Float(Float.parseFloat(utilProperties.getProperty("warn", "" + warnDuration)) * MS).longValue();
+        errorDuration = new Float(Float.parseFloat(utilProperties.getProperty("error", "" + errorDuration)) * MS).longValue();
+        fatalDuration = new Float(Float.parseFloat(utilProperties.getProperty("fatal", "" + fatalDuration)) * MS).longValue();
+
+        durationFormat = utilProperties.getProperty("durationFormat", durationFormat);
     }
     {
         readDurations();
     }
 
+    @Override
     public double getVersion() {
         return 0.1;
     }
 
+    @Override
     public boolean supportsTransactions() {
         return supportsTransactions;
     }
 
+    @Override
     public String getCatalog() {
         return catalog;
     }
@@ -217,6 +226,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
      * Obtain a datasource to the storage, and load configuration attributes.
      * @throws StorageException if the storage could not be accessed or necessary configuration data is missing or invalid
      */
+    @Override
     protected synchronized void load() throws StorageException {
         // default storagemanager class
         storageManagerClass = DEFAULT_STORAGE_MANAGER_CLASS;
@@ -330,20 +340,21 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
      * @throws StorageException if the storage could not be accessed while determining the database type
      * @return a StorageReader instance
      */
+    @Override
     public StorageReader getDocumentReader() throws StorageException {
         StorageReader reader = super.getDocumentReader();
         // if no storage reader configuration has been specified, auto-detect
         if (reader == null) {
             String databaseResourcePath;
             // First, determine the database name from the parameter set in mmbaseroot
-            String databaseName = mmbase.getInitParameter("database");
-            if (databaseName != null && ! "".equals(databaseName)) {
+            String dbname = mmbase.getInitParameter("database");
+            if (dbname != null && ! "".equals(dbname)) {
                 log.info("No database specified, using lookup.xml");
                 // if databasename is specified, attempt to use the database resource of that name
-                if (databaseName.endsWith(".xml")) {
-                    databaseResourcePath = databaseName;
+                if (dbname.endsWith(".xml")) {
+                    databaseResourcePath = dbname;
                 } else {
-                    databaseResourcePath = "storage/databases/" + databaseName + ".xml";
+                    databaseResourcePath = "storage/databases/" + dbname + ".xml";
                 }
                 log.service("Using " + databaseResourcePath + " as database configuration file");
             } else {
@@ -440,6 +451,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
         }
     }
 
+    @Override
     protected Object instantiateBasicHandler(Class handlerClass) {
         // first handler
         try {
@@ -458,6 +470,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
         }
     }
 
+    @Override
     protected Object instantiateChainedHandler(Class handlerClass, Object handler) {
         // Chained handlers
         try {
@@ -476,6 +489,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
         }
     }
 
+    @Override
     protected SearchQueryHandler instantiateQueryHandler(Object data) {
         return new BasicQueryHandler((SqlHandler)data);
     }

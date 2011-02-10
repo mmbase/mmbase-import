@@ -11,7 +11,6 @@ package org.mmbase.storage.util;
 
 import java.util.*;
 //import com.ibm.icu.text.*;
-import java.text.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 

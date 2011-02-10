@@ -53,6 +53,7 @@ public class ApplicationWriter extends org.mmbase.util.xml.DocumentWriter  {
      * Generates the document. Can only be called once.
      * @throws DOMException when an error occurred during generation
      */
+    @Override
     protected void generate() throws DOMException {
         Element root = document.getDocumentElement();
         addComment("application.configuration", reader.getName(), reader.getDescription(), root);

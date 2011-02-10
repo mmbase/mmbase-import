@@ -275,27 +275,6 @@ public abstract class ReleaseStrategy {
         }
     }
 
-    /**
-     * @author Ernst Bunders This is a utility class to help timing the
-     *         evaluation. Just create an instance before the evaluation and
-     *         then use it to create the StrategyResult object
-     * @deprecated The only thing what this  does is knowing how to subtract, which is really not so
-     * difficult or verbose by itself
-     */
-    protected final static class Timer {
-        private final long start;
-
-        Timer() {
-            start = System.nanoTime();
-        }
-
-        public long getNanoTime() {
-            return System.nanoTime() - start;
-        }
-        public long getTimeMillis() {
-            return getNanoTime() / 1000000;
-        }
-    }
-
+ sdf
 
 }

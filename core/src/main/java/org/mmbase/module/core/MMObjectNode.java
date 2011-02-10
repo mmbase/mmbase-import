@@ -56,7 +56,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     /**
      * Map which stores the current database value for fields when
      * they change in the node.
-     * it can be used to optimise cacheing
+     * it can be used to optimize caching
      * @since MMBase-1.8
      */
     private Map<String, Object> oldValues = Collections.synchronizedMap(new HashMap<String, Object>());
@@ -516,7 +516,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         result.append(' ');
         result.append(super.toString());
         if (oldBuilder != null) {
-            result.append(" (to be converted from " + oldBuilder.getTableName() + " to " + builder.getTableName() + ")");
+            result.append(" (to be converted from ").append(oldBuilder.getTableName()).append(" to ").append(builder.getTableName()).append(")");
         }
         return result.toString();
     }
@@ -696,11 +696,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                 log.debug("Setting " + fieldName + " to " +  string);
             }
 
-            boolean changed =
-                (! values.containsKey(fieldName)) ||
-                (originalValue == null ? fieldValue != null : ! Casting.equals(originalValue, fieldValue));
-            if (! changed) return false;
-
+            {
+                boolean c =
+                        (!values.containsKey(fieldName))
+                        || (originalValue == null ? fieldValue != null : !Casting.equals(originalValue, fieldValue));
+                if (!c) {
+                    return false;
+                }
+            }
             if (log.isDebugEnabled()) {
                 log.debug("" + fieldName + ":" + originalValue + " --> " + fieldValue);
             }
@@ -1448,7 +1451,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return An <code>Enumeration</code> containing the nodes
      */
     public Enumeration<MMObjectNode> getAllRelations() {
-        Vector<MMObjectNode> allrelations=parent.mmb.getInsRel().getAllRelationsVector(getNumber());
+        @SuppressWarnings("UseOfObsoleteCollectionType")
+        Vector<MMObjectNode> allrelations = parent.mmb.getInsRel().getAllRelationsVector(getNumber());
         if (allrelations!=null) {
             return allrelations.elements();
         } else {
@@ -1520,6 +1524,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     public Enumeration<MMObjectNode> getRelations(int otype) {
         Enumeration<MMObjectNode> e = getRelations();
+        @SuppressWarnings("UseOfObsoleteCollectionType")
         Vector<MMObjectNode> result=new Vector<MMObjectNode>();
         if (e!=null) {
             while (e.hasMoreElements()) {
@@ -1711,6 +1716,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @param search_type the type of directionality to use
      * @since MMBase-1.6.3
      */
+    @SuppressWarnings("UseOfObsoleteCollectionType")
     public Vector<MMObjectNode> getRelatedNodes(String type, int search_type) {
         return getRelatedNodes(type, "insrel",  search_type);
     }
@@ -1722,11 +1728,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * }
      * Otherwise the SEARCH_BOTH will result in an OR on insrel which will never return in
      * (huge) databases.
-     * @param type the type of teh realted node to return
+     * @param type the type of the related node to return
      * @param role the role of the relation (null if no role specified)
      * @param search_type the type of directionality to use
      * @since MMBase-1.6.3
      */
+    @SuppressWarnings("UseOfObsoleteCollectionType")
     public Vector<MMObjectNode> getRelatedNodes(String type, String role, int search_type) {
         Vector<MMObjectNode> result = null;
 
@@ -1860,12 +1867,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         // check that we didnt loose any nodes
         if(virtualNumbers.size() != result.size()) {
             log.error("We lost a few nodes during conversion from virtualnodes(" + virtuals.size() + ") to realnodes(" + result.size() + ")");
-            StringBuffer vNumbers = new StringBuffer();
+            StringBuilder vNumbers = new StringBuilder();
             for (int j = 0; j < virtualNumbers.size(); j++) {
                 vNumbers.append(virtualNumbers.get(j)).append(" ");
             }
             log.error("Virtual node numbers: " + vNumbers.toString());
-            StringBuffer rNumbers = new StringBuffer();
+            StringBuilder rNumbers = new StringBuilder();
             for (int j = 0; j < result.size(); j++) {
                 int resultNumber = (result.get(j)).getIntValue("number");
                 rNumbers.append(resultNumber).append(" ");

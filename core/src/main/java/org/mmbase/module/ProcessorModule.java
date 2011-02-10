@@ -85,6 +85,7 @@ public abstract class ProcessorModule extends Module {
         public GetNodeListFunction(String name, Parameter[] params) {
             super(name, params, ReturnType.NODELIST);
         }
+        @Override
         public org.mmbase.bridge.NodeList getFunctionValue(Parameters arguments) {
             Cloud cloud = arguments.get(Parameter.CLOUD);
             return new BasicNodeList(getNodeList(getPageInfo(arguments), getCommand(getName(), arguments), arguments.toMap()),
@@ -101,6 +102,7 @@ public abstract class ProcessorModule extends Module {
         public ReplaceFunction(String name, Parameter[] params) {
             super(name, params, ReturnType.STRING);
         }
+        @Override
         public String getFunctionValue(Parameters arguments) {
             return replace(getPageInfo(arguments), getCommand(getName(), arguments));
         }
@@ -119,6 +121,7 @@ public abstract class ProcessorModule extends Module {
             super(name, params, ReturnType.MAP);
         }
 
+        @Override
         public Map getFunctionValue(Parameters arguments) {
             Hashtable<String,Object> cmds = new Hashtable<String,Object>();
             Hashtable<String,Object> vars = new Hashtable<String,Object>();

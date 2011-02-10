@@ -14,7 +14,6 @@ import java.text.Collator;
 import org.mmbase.util.*;
 import org.mmbase.util.MMBaseContext;
 import org.xml.sax.InputSource;
-import javax.servlet.ServletContext;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -263,7 +262,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
     protected void load() throws StorageException {
         StorageReader<SM> reader = getDocumentReader();
         if (reader == null) {
-            if (storageManagerClass == null || queryHandlerClasses.size() == 0) {
+            if (storageManagerClass == null || queryHandlerClasses.isEmpty()) {
                 throw new StorageConfigurationException("No storage reader specified, and no default values available.");
             } else {
                 log.warn("No storage reader specified, continue using default values.");
@@ -314,9 +313,9 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         // has to be done last, as we have to passing the disallowedfields map (doh!)
         // need to move this to DatabaseStorageManagerFactory
         List <Class<?>> configuredClasses = reader.getSearchQueryHandlerClasses();
-        if (configuredClasses.size() != 0) {
+        if (!configuredClasses.isEmpty()) {
             queryHandlerClasses = configuredClasses;
-        } else if (queryHandlerClasses.size() == 0) {
+        } else if (queryHandlerClasses.isEmpty()) {
             throw new StorageConfigurationException("No SearchQueryHandler class specified, and no default available.");
         }
         log.service("Found queryhandlers " + queryHandlerClasses);
@@ -627,7 +626,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * You can override this method if you intend to use different ids.
      *
      * @see Storable
-     * @param mmobject the MMBase objecty
+     * @param mmobject the MMBase object
      * @return the storage-specific identifier
      * @throws StorageException if the object cannot be given a valid identifier
      */

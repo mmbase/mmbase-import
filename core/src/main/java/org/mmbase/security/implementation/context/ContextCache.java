@@ -29,9 +29,13 @@ public class ContextCache  {
 
     private org.mmbase.cache.Cache<String, Map<String, Map<String, Boolean>>> globalRightCache 
             = new org.mmbase.cache.Cache<String, Map<String, Map<String, Boolean>>>(50) {
+        @Override
         public String getName()        { return "ContextRight"; }
-            public String getDescription() { return "Context Security Implementation Rights Cache"; }
-        };
+        @Override
+        public String getDescription() {
+            return "Context Security Implementation Rights Cache";
+        }
+    };
 
     private long    rightTries = 0;
     private long    rightSucces = 0;
@@ -89,9 +93,15 @@ public class ContextCache  {
 
     private org.mmbase.cache.Cache<String, Set<String>> globalContextCache 
         = new org.mmbase.cache.Cache<String, Set<String>>(50) {
-            public String getName()        { return "ContextContext"; }
-            public String getDescription() { return "Context Security Implementation Context Cache"; }
-        };
+        @Override
+        public String getName() {
+            return "ContextContext";
+        }
+        @Override
+        public String getDescription() {
+            return "Context Security Implementation Context Cache";
+        }
+    };
 
     private long    contextTries = 0;
     private long    contextSucces = 0;

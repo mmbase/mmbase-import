@@ -21,7 +21,7 @@ package org.mmbase.cache;
 public class AggregatedResultCache extends QueryResultCache {
 
     // There will be only one multilevel cache, and here it is:
-    private static AggregatedResultCache cache;
+    private static final AggregatedResultCache cache;
 
     public static AggregatedResultCache getCache() {
         return cache;
