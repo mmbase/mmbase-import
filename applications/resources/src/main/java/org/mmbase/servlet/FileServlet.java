@@ -291,7 +291,7 @@ public class FileServlet extends BridgeServlet {
     public static String getMetaValue(String field, String value) {
         //BTW also chrome doesn't quite understand it:
         //http://code.google.com/p/chromium/issues/detail?id=57830
-        return field + "=\"" + value + "\";\n  " + field + "*=UTF-8''" + UrlEscaper.INSTANCE.transform(value);
+        return field + "=\"" + value + "\";  " + field + "*=UTF-8''" + UrlEscaper.INSTANCE.transform(value);
     }
 
     protected File checkFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
