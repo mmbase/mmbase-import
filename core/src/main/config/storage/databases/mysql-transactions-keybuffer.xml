@@ -5,7 +5,6 @@
   <!ENTITY collation-mappings SYSTEM "mysql.collation-mappings.xml">
   <!ENTITY index-schemes SYSTEM "mysql.index-schemes.xml">
 ]>
-]>
 <storage>
   <!-- MySQLdb configuration resource. -->
 
