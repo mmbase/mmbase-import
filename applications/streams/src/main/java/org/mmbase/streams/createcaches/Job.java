@@ -280,17 +280,13 @@ public class Job implements Iterable<Result> {
                         File inMeta = FileServlet.getInstance().getMetaFile(inFile);
                         if (inMeta.exists()) {
                             Map<String, String> meta = FileServlet.getInstance().getMetaHeaders(inFile);
-                            String cd = meta.get("Content-Disposition");
-                            if (cd != null) {
-                                String inDisposition =  cd.substring("attachment; filename=".length());
-                                if (inDisposition.startsWith("\"") && inDisposition.endsWith("\"")) {
-                                    inDisposition = inDisposition.substring(1, inDisposition.length() - 1);
-                                }
-                                String outDisposition = ResourceLoader.getName(inDisposition) + "." + jd.transcoder.getFormat().toString().toLowerCase();
-                                meta.put("Content-Disposition", "attachment; filename=\"" + outDisposition + "\"");
-
-                                FileServlet.getInstance().setMetaHeaders(outFile, meta);
+                            String inDisposition = FileServlet.parseMetaValue("filename", meta.get("Content-Disposition"));
+                            if (inDisposition == null) {
+                                inDisposition = inFile.getName();
                             }
+                            String outDisposition = ResourceLoader.getName(inDisposition) + "." + jd.transcoder.getFormat().toString().toLowerCase();
+                            meta.put("Content-Disposition", "attachment; " + FileServlet.getMetaValue("filename", outDisposition));
+                            FileServlet.getInstance().setMetaHeaders(outFile, meta);
                         }
                     }
 
@@ -386,6 +382,7 @@ public class Job implements Iterable<Result> {
        } else {
            LOG.service("Will submit " + jc);
            ThreadPools.jobsExecutor.execute(new Runnable() {
+                   @Override
                    public void run() {
                        jc.init();
                        synchronized(Job.this) {
