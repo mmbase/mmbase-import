@@ -47,7 +47,7 @@ public class WaitFunction extends NodeFunction<Node> {
     }
 
 
-    static void wait(final Node thumb) {
+    static long wait(final Node thumb) {
         if (thumb.isNull("handle")) {
             LOG.debug("Triggering a conversion");
             FFMpegThumbNailCreator callable = new FFMpegThumbNailCreator(thumb, thumb.getNodeManager().getField("handle"));
@@ -56,17 +56,23 @@ public class WaitFunction extends NodeFunction<Node> {
                 LOG.service("And waiting for it");
                 long result = future.get(); // wait for result
                 LOG.service("Found " + result + " bytes");
+                return result;
             } catch (InterruptedException ie) {
                 LOG.warn(ie.getMessage(), ie);
+                return 0;
             } catch (ExecutionException ee) {
                 LOG.error(ee.getMessage(), ee);
+                return 0;
             }
+        } else {
+            return thumb.getSize("handle");
         }
     }
 
     @Override
     protected Node getFunctionValue(final Node node, final Parameters parameters) {
-        wait(node);
+        long result = wait(node);
+        if (result == 0) return node.getCloud().getNode("default_video_thumbnail");
         return node;
     }
 
