@@ -39,7 +39,7 @@
 <!--
         Tag that holds all attributes, options, schemes, and maps
 -->
-<!ELEMENT attributes (attribute*,option*,scheme*)>
+<!ELEMENT attributes ((attribute|option|scheme)*) >
 
 <!--
         Specifies one attribute. The value is in the tag body
