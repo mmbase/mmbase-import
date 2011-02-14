@@ -15,7 +15,6 @@ import javax.servlet.*;
 import java.text.DateFormat;
 
 import org.mmbase.core.event.*;
-import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -115,7 +114,10 @@ public class MMBaseContext implements ServletContextListener {
             initOutputfile(mmbaseOutputFile);
 
             // Init logging.
-            initLogging();
+            String initLoggingParam = sx.getInitParameter("mmbase.initlogging");
+            if (initLoggingParam == null || "true".equals(initLoggingParam)) {
+                initLogging();
+            }
             initialized = true;
             try {
                 initHtmlRoot();
