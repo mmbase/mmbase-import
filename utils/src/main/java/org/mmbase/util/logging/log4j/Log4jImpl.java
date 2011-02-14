@@ -125,35 +125,39 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
     public static void configure(String s) {
 
-        log.info("logging configurationfile : " + s);
+        if (s != null && s.length() > 0) {
+            log.info("logging configurationfile : " + s);
 
-        ResourceLoader rl = Logging.getResourceLoader();
+            ResourceLoader rl = Logging.getResourceLoader();
 
-        log.info("using " + rl + " for resolving " + s + " -> " + rl.getResource(s));
-        configWatcher = new ResourceWatcher (rl) {
-            @Override
-            public void onChange(String s) {
-                doConfigure(resourceLoader.getResourceAsStream(s));
+            log.info("using " + rl + " for resolving " + s + " -> " + rl.getResource(s));
+            configWatcher = new ResourceWatcher (rl) {
+                    @Override
+                    public void onChange(String s) {
+                        doConfigure(resourceLoader.getResourceAsStream(s));
+                    }
+                };
+
+            configWatcher.clear();
+            configWatcher.add(s);
+
+            doConfigure(rl.getResourceAsStream(s));
+
+            configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
+            configWatcher.start();
+            log = getLoggerInstance(Log4jImpl.class.getName());
+
+            Log4jImpl err = getLoggerInstance("STDERR");
+            // a trick: if the level of STDERR is FATAL, then stderr will not be captured at all.
+            if(err.getLevel() != Log4jLevel.FATAL) {
+                log.service("Redirecting stderr to MMBase logging (If you don't like this, then put the STDER logger to 'fatal')");
+                if (stderr == null) {
+                    stderr = System.err;
+                }
+                System.setErr(new LoggerStream(err));
             }
-        };
-
-        configWatcher.clear();
-        configWatcher.add(s);
-
-        doConfigure(rl.getResourceAsStream(s));
-
-        configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
-        configWatcher.start();
-        log = getLoggerInstance(Log4jImpl.class.getName());
-
-        Log4jImpl err = getLoggerInstance("STDERR");
-        // a trick: if the level of STDERR is FATAL, then stderr will not be captured at all.
-        if(err.getLevel() != Log4jLevel.FATAL) {
-            log.service("Redirecting stderr to MMBase logging (If you don't like this, then put the STDER logger to 'fatal')");
-            if (stderr == null) {
-                stderr = System.err;
-            }
-            System.setErr(new LoggerStream(err));
+        } else {
+            log.debug("Not configuring log4j, because no configuration file given");
         }
     }
 
