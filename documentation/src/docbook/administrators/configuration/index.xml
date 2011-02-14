@@ -709,7 +709,8 @@
               this is: stderr|stdout[,&lt;logging level&gt;]. So you can only
               decide where the logging must appear, and below which level it
               should not log (the same levels as in the log4j implementation).
-              For Log4jImpl it is a file name, in which the configuration is.
+              For Log4jImpl it is a file name, in which the configuration is. It may also be
+              empty, in which case log4j is left unconfigured (it be configured differently).
               This is an XML file according to the 'DOMConfigurator' of log4j.
               The rest of this document will give a short description of how
               this file looks like.</para>
