@@ -35,7 +35,7 @@ public class DijkstraSemaphore {
 
     private int count;
     private int maxCount;
-    private Object starvationLock = new Object();
+    private final Object starvationLock = new Object();
 
     /**
      * Creates a Dijkstra semaphore with the specified max count and initial count set
@@ -65,6 +65,7 @@ public class DijkstraSemaphore {
      * @see #tryAcquire()
      * @see #acquireAll()
      */
+    @SuppressWarnings("NestedSynchronizedStatement")
     public synchronized void acquire() throws InterruptedException {
         // Using a spin lock to take care of rogue threads that can enter
         // before a thread that has exited the wait state acquires the monitor
@@ -91,6 +92,7 @@ public class DijkstraSemaphore {
      * @return true if semaphore was acquired (count is decremented by 1), false
      * otherwise
      */
+    @SuppressWarnings("NestedSynchronizedStatement")
     public synchronized boolean tryAcquire() {
         if (count != 0) {
             count--;

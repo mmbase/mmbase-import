@@ -475,7 +475,6 @@ public class DocumentReader  {
     /**
      * Determine the root element of the contained document
      * @return root element
-     * @deprecated
      */
     public Element getRootElement() {
         if (document == null) {
