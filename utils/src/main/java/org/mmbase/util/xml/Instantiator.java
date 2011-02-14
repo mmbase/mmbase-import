@@ -80,7 +80,7 @@ public abstract class Instantiator {
      *        or any element with a 'class' attribute. Finally if this any element has no 'class' attribute, it will try
      *        'name' too. If it hasn't either, it will try the body.
      * @param args Constructor arguments.
-     * @throws NoSuchMethodError If not matching constructor could be found
+     * @throws NoSuchMethodError If no matching constructor could be found
      * @throws ClassNotFoundException If the specified class does not exist.
      * @return A newly created object. Never <code>null</code>.
      * @since MMBase-1.9.6
