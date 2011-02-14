@@ -125,7 +125,9 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         if (nodeNumber >= 0 && nodeNumber == node.getBuilder().getNumber()) { // this is the typedef itself
             nodeManager = this;
         } else {
-            log.debug("Setting node manager for nodeManager, but no typedef " + node);
+            if (log.isDebugEnabled()) {
+                log.debug("Setting node manager for nodeManager, but no typedef " + node);
+            }
             super.setNodeManager(node);
         }
     }
