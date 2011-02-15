@@ -141,7 +141,7 @@ public abstract class HtmlHandler  extends AbstractHandler<String> {
         final DataType<?> dt = field.getDataType();
         if (fieldValue == null) {
             log.debug("Field value not found in context, using existing value ");
-            fieldValue = getFieldValue(request, node, field, node == null);
+            fieldValue = getEvaluatedFieldValue(request, node, field);
         } else if (fieldValue.equals("") && ! field.isRequired()) {
             log.debug("Field value found in context is empty, interpreting as null");
             fieldValue = null;
@@ -150,7 +150,7 @@ public abstract class HtmlHandler  extends AbstractHandler<String> {
             log.debug("Value for field " + field + ": " + fieldValue + " and node " + node);
         }
         Collection<LocalizedString> col = dt.castAndValidate(fieldValue, node, field);
-        if (col.size() == 0) {
+        if (col.isEmpty()) {
             // do actually set the field, because some datatypes need cross-field checking
             // also in an mm:form, you can simply commit.
             if (node != null && ! field.isReadOnly()) {
@@ -190,7 +190,7 @@ public abstract class HtmlHandler  extends AbstractHandler<String> {
                 show.append("\" class=\"mm_check_error\">");
                 Locale locale = request.getLocale();
                 for (LocalizedString error : col) {
-                    show.append("<span class='" + error.getKey() + "'>");
+                    show.append("<span class='").append(error.getKey()).append("'>");
                     Xml.XMLEscape(error.get(locale), show);
                     show.append("</span>");
                 }
