@@ -48,5 +48,20 @@
     </body>
   </block>
 
+  <block name="head"
+         classification="mmbase-genericeditors.head"
+         mimetype="text/html">
+    <title xml:lang="en">Javascript</title>
+    <title xml:lang="nl">Javascript</title>
+    <head>
+      <class name="org.mmbase.framework.StringRenderer">
+        <param name="string"><![CDATA[<link rel="stylesheet" href="{REQUEST.getContextPath}/mmbase/searchrelate/page.css.jsp" type="text/css" />
+        <script type="text/javascript" src="{REQUEST.getContextPath}/mmbase/searchrelate/Searcher.js.jsp"></script>
+        ]]></param>
+      </class>
+    </head>
+  </block>
+
+
 
 </component>
