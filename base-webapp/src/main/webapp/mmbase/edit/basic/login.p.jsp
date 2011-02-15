@@ -68,7 +68,7 @@
      <%  }
         }
      %>
-     <input type="hidden" name="usernames" values="<mm:write referid="usernames" />" />
+     <input type="hidden" name="usernames" value="<mm:write referid="usernames" />" />
     <tr><td /><td><input type="hidden" name="command" value="login" /><input type="submit" name="__submit" value="<%=getPrompt("login", locale)%>" /></td></tr>
   </form>
     <tr>
@@ -80,7 +80,7 @@
           <option value="<%=authenticationTypes[i]%>" <%= currentType.equals(authenticationTypes[i])? " selected='selected'" : ""%>><%=authenticationTypes[i]%></option>
           <% } %>
           <input type="hidden" name="referrer" value="<mm:write referid="referrer" />" />
-          <input type="hidden" name="usernames" values="<mm:write referid="usernames" />" />
+          <input type="hidden" name="usernames" value="<mm:write referid="usernames" />" />
          </select>
        </form>
     </tr>
