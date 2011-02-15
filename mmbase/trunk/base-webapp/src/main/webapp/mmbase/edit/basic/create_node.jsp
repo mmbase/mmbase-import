@@ -1,13 +1,18 @@
-<%@ include file="page_base.jsp"
-%><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
+<html><jsp:directive.include file="page_base_functionality.jsp"
+/><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
 <mm:cloud  loginpage="login.jsp" sessionname="$config.session" rank="$rank" uri="$config.uri" jspvar="cloud">
   <mm:param name="org.mmbase.xml-mode" value="$config.xmlmode" />
-<mm:write referid="style" escape="none" />
-<title>Create a node</title>
-<mm:import externid="node_type" required="true" />
-<meta name="MMBase-NodeType"     content="${node_type}" />
-<meta name="MMBase-SessionName"     content="${config.session}" />
-</head>
+  <mm:import externid="node_type" required="true" />
+  <mm:formatter xslt="xslt/framework/head.xslt" escape="none">
+    <head>
+      <title>Create a node</title>
+      <jsp:directive.include file="head.entries.jsp" />
+      <jsp:directive.include file="editor.head.jsp" />
+      <meta name="MMBase-NodeType"     content="${node_type}" />
+    </head>
+  </mm:formatter>
 <mm:context id="create_node">
 
 

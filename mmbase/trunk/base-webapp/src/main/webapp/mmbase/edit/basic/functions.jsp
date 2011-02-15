@@ -1,9 +1,16 @@
-<%@page import="org.mmbase.util.Casting,org.mmbase.util.functions.*,java.util.*" %><%@ include file="page_base.jsp"
-%><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
+<%@page import="org.mmbase.util.Casting,org.mmbase.util.functions.*,java.util.*"
+%><html><jsp:directive.include file="page_base_functionality.jsp"
+/>
+<mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
 <mm:cloud loginpage="login.jsp" sessionname="$config.session" rank="$rank" uri="$config.uri" jspvar="cloud">
-<mm:write referid="style" escape="none" />
-<title>View functions</title>
-</head>
+<mm:formatter xslt="xslt/framework/head.xslt" escape="none">
+  <head>
+    <title>View functions</title>
+    <jsp:directive.include file="head.entries.jsp" />
+  </head>
+</mm:formatter>
 <body class="basic">
 <mm:import externid="node_number" required="true" />
 <mm:import externid="function_name" />
