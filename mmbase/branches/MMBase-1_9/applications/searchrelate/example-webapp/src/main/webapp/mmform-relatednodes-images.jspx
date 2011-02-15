@@ -18,8 +18,7 @@
 
 
     <mm:relatednodes type="news" max="1">
-
-      <mm-sr:relatednodes
+      <mm-srt:relatednodes
           fields="number,handle"
           type="${type}"
           role="posrel"
@@ -30,7 +29,7 @@
           implicitSearch="false"
           max="3"
           >
-      </mm-sr:relatednodes>
+      </mm-srt:relatednodes>
     </mm:relatednodes>
 
 
