@@ -30,6 +30,21 @@
           </jsp:attribute>
         </mm-sr:relatednodes>
 
+        <mm-sr:relatednodes
+            type="people"
+            role="related"
+            fields="firstname,email"
+            unlink="true"
+            search="true"
+            addposition="top"
+            item="/people-image-item.jspx"
+            >
+          <jsp:attribute name="constraints">
+            <mm:sortorder field="related.number" direction="UP" />
+            <mm:maxnumber value="2" />
+          </jsp:attribute>
+        </mm-sr:relatednodes>
+
       </mm:relatednodes>
     </mm:node>
   </mm-sre:form>
