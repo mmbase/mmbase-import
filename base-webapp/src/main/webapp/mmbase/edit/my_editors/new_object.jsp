@@ -4,7 +4,7 @@
 
 <mm:import externid="ntype" escape="text/html,trimmer" />  <%-- type of node to create --%>
 <mm:import externid="nr" />         <%-- create relation with this node nr
-    when nr is present as a 'referrer', 
+    when nr is present as a 'referrer',
     the new node (rnr) will be related to the existing one (nr) --%>
 <mm:import externid="rnr" />
 <mm:import externid="rkind" />
@@ -14,6 +14,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl">
 <head>
   <%@ include file="inc/head.jsp" %>
+  <%@ include file="inc/editor.head.jsp" %>
 </head>
 <body>
 <div id="frame">
@@ -35,7 +36,7 @@
       </tr><tr>
         <td class="name"><a href="<mm:url page="edit_object.jsp" referids="ntype,nr,rkind?,dir?" />"><img src="img/mmbase-edit.png" alt="edit" width="21" height="20" /></a></td>
         <td>
-          <a href="<mm:url page="edit_object.jsp" referids="ntype,nr,rkind?,dir?" />">Back</a> to editing 
+          <a href="<mm:url page="edit_object.jsp" referids="ntype,nr,rkind?,dir?" />">Back</a> to editing
           <mm:node number="$nr"><strong><mm:nodeinfo type="type" /></strong> object</mm:node>
         </td>
       </tr>
@@ -44,7 +45,7 @@
         <td>
           <mm:node referid="nr">
             <mm:fieldlist type="list">
-              <mm:fieldinfo type="guiname" /> 
+              <mm:fieldinfo type="guiname" />
               <mm:first><strong></mm:first><mm:fieldinfo type="guivalue" /><mm:first></strong></mm:first><br />
             </mm:fieldlist>
           </mm:node>
@@ -61,7 +62,7 @@
 <div id="node">
 <mm:import externid="save" />
 <mm:import externid="new_alias" />
-  
+
   <mm:notpresent referid="save">
     <div class="firstrow">
       <a href="<mm:url referids="ntype,nr?,rkind?,dir?" />"><img src="img/mmbase-new.png" alt="new" width="21" height="20" /></a>
@@ -81,7 +82,7 @@
     <mm:createnode type="$ntype" id="new_node">
       <mm:fieldlist type="edit"><mm:fieldinfo type="useinput" /></mm:fieldlist>
     </mm:createnode>
-      
+
     <mm:node referid="new_node">
       <mm:present referid="new_alias">
         <mm:createalias name="$new_alias" />
@@ -101,7 +102,7 @@
         </mm:present>
         <h2>New node of type <mm:nodeinfo nodetype="$ntype" type="guinodemanager" /> (<mm:nodeinfo nodetype="$ntype" type="type" />)</h2>
       </div>
-      <div class="message">    
+      <div class="message">
         <h4>
           <mm:link page="edit_object.jsp" referids="rnr@nr">
             Your new node <a href="${_}" title="edit this new node"><mm:function name="gui" /></a> (<mm:field name="number" />) is saved
@@ -131,7 +132,7 @@
       </div>
     </mm:node>
   </mm:present>
-    
+
   <%-- are we also relating ? --%>
   <%@ include file="inc/relating.jsp" %>
 
@@ -152,7 +153,7 @@
               <mm:fieldinfo type="description"><mm:isnotempty><div class="description" id="descr_<mm:fieldinfo type="name" />"><mm:write /></div></mm:isnotempty></mm:fieldinfo>
             </div>
           </mm:fieldlist>
-       
+
           <%-- aliases --%>
           <div class="row">
             <label for="new_alias">
@@ -163,7 +164,7 @@
             <div style="display: none;" class="description" id="descr_alias"><mm:nodeinfo type="description" nodetype="oalias" /></div>
           </div>
           <%-- /aliasses --%>
-          
+
           <%-- button --%>
           <div class="lastrow">
             <input type="submit" name="save" value="Save" />
@@ -173,7 +174,7 @@
     </mm:notpresent><%-- /save --%>
   </mm:notpresent><%-- /the_relation --%>
 </div><!-- / #node -->
-  
+
   </div><!-- / .padcontent -->
   <div class="padfoot">&nbsp;</div>
 </div><!-- / #content -->

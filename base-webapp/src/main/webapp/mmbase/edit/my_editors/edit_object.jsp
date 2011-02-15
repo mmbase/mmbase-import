@@ -14,6 +14,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl">
 <head>
   <%@ include file="inc/head.jsp" %>
+  <%@ include file="inc/editor.head.jsp" %>
 </head>
 <body>
 <div id="frame">
@@ -36,8 +37,8 @@
       </mm:node>
     </mm:present>
     <%-- /changes to relations --%>
-    <% 
-    int c = 0; 
+    <%
+    int c = 0;
     NodeManager nm = node.getNodeManager();
     RelationManagerIterator relIterator;
     %>
@@ -73,7 +74,7 @@
   <mm:present referid="change">
   <div class="row">
     <mm:fieldlist type="edit" fields="owner"><mm:fieldinfo type="useinput" /></mm:fieldlist>
-    <mm:present referid="new_alias"><%-- When there is was a alias, create that 1 2 --%> 
+    <mm:present referid="new_alias"><%-- When there is was a alias, create that 1 2 --%>
         <mm:node id="the_alias">
         <mm:createalias name="$new_alias" />
       </mm:node>
@@ -98,7 +99,7 @@
     </div>
   </mm:fieldlist>
   <%-- /editfields --%>
-  
+
   <mm:compare referid="ntype" value="oalias" inverse="true">
     <%@ include file="inc/aliases.jsp" %>
   </mm:compare>
