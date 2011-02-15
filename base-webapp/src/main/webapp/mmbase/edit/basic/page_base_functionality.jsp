@@ -1,5 +1,6 @@
 <%-- uncomment this, if your JSP-engine is JSP2.0 (see release-notes) --%><%--@page isELIgnored="true"
 --%><%@page session="true" language="java" contentType="text/html; charset=utf-8"  import="java.util.Stack,org.mmbase.bridge.*,org.mmbase.util.xml.UtilReader"
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0"  prefix="mm"
 %><%!
 
 // stack stuff (for the bread-crumb). Might appear a tag for this sometime.
