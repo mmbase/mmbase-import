@@ -1,9 +1,14 @@
-<%@ include file="page_base.jsp"
-%><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
+<html><jsp:directive.include file="page_base_functionality.jsp"
+/><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
 <mm:cloud loginpage="login.jsp" sessionname="$config.session" rank="$rank" uri="$config.uri" jspvar="cloud">
-<mm:write referid="style" escape="none" />
-<title>Edit aliases</title>
-</head>
+  <mm:formatter xslt="xslt/framework/head.xslt" escape="none">
+    <head>
+      <title>Edit aliases</title>
+      <jsp:directive.include file="head.entries.jsp" />
+    </head>
+  </mm:formatter>
 <body class="basic" onLoad="document.add_alias.new_alias.focus();">
 <mm:context id="edit_aliases">
 <mm:import externid="node_number" required="true" />

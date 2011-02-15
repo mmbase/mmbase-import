@@ -1,12 +1,10 @@
-<%@ include file="page_base.jsp"
-%><mm:content language="$config.lang" country="$config.country" expires="0" type="text/html" postprocessor="none">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
+<html><jsp:directive.include file="page_base_functionality.jsp"
+/><mm:content language="$config.lang" country="$config.country" expires="0" type="text/html" postprocessor="none">
 <mm:cloud loginpage="login.jsp" sessionname="$config.session" jspvar="cloud" rank="$rank" uri="$config.uri">
   <mm:param name="org.mmbase.xml-mode" value="$config.xmlmode" />
   <mm:param name="org.mmbase.richtext.wiki.show_broken"    value="true" />
-  <mm:write referid="style" escape="none" />
-  <title><%= m.getString("change_node.change")%></title>
-
-
 
 
 <mm:context id="change_node">
@@ -26,9 +24,15 @@
        push(urlStack, "" + thisNode.getNumber(), "change_node.jsp?node_number=" + thisNode.getNumber());
    }
  %>
-  <meta name="MMBase-NodeType"     content="<%=thisNode.getNodeManager().getName()%>" />
-  <meta name="MMBase-SessionName"     content="${config.session}" />
-</head>
+ <mm:formatter xslt="xslt/framework/head.xslt" escape="none">
+    <head>
+      <title><%= m.getString("change_node.change")%></title>
+      <jsp:directive.include file="head.entries.jsp" />
+      <meta name="MMBase-NodeType"     content="<%=thisNode.getNodeManager().getName()%>" />
+      <jsp:directive.include file="editor.head.jsp" />
+    </head>
+  </mm:formatter>
+
 <body class="basic" onLoad="document.change.elements[0].focus();">
 <p class="crumbpath"><%= toHtml(urlStack, request) %></p>
 
