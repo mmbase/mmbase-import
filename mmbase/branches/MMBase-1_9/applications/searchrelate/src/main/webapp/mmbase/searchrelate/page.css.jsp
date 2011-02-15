@@ -1,6 +1,8 @@
-/* -*- css -*- */
+/* -*- css -*-
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><mm:content  expires="0" type="text/css">
+%><%@ taglib uri="http://www.opensymphony.com/oscache" prefix="os"
+%><jsp:directive.page session="false" />
+*///<mm:content type="text/css" expires="3600" postprocessor="none"><os:cache time="3600"><mm:escape escape="css-compress">
 
 .searchable h1 {
   background-color: #eee;
@@ -146,4 +148,4 @@ input.searching
  background-color: yellow;
 }
 
-</mm:content>
+</mm:escape></os:cache></mm:content>
