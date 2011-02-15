@@ -26,14 +26,16 @@
 
       <xsl:variable name="descendants" select="./descendant-or-self::*" />
 
-      <title>
-        <xsl:for-each select="$descendants/title">
-          <xsl:if test="position() &gt; 1 and string-length(text()) &gt; 0">
-            <xsl:text> - </xsl:text>
-          </xsl:if>
-          <xsl:text></xsl:text><xsl:copy-of select="text()" /><xsl:text></xsl:text>
-        </xsl:for-each>
-      </title>
+      <xsl:if test="$descendants/title">
+        <title>
+          <xsl:for-each select="$descendants/title">
+            <xsl:if test="position() &gt; 1 and string-length(text()) &gt; 0">
+              <xsl:text> - </xsl:text>
+            </xsl:if>
+            <xsl:text></xsl:text><xsl:copy-of select="text()" /><xsl:text></xsl:text>
+          </xsl:for-each>
+        </title>
+      </xsl:if>
 
       <!--
           As you may understand, i'm pretty much starting to hate XSLT.
