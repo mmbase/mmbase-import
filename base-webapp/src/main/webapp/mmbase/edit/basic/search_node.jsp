@@ -1,13 +1,19 @@
-<%@ include file="page_base.jsp"
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
+<html><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0"  prefix="mm"
+%><%@ include file="page_base_functionality.jsp"
 %><mm:import externid="userlogon" from="parameters" />
 <mm:content language="$config.lang" country="$config.country" type="text/html" expires="0">
 <mm:cloud  loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" rank="$rank" jspvar="cloud" uri="$config.uri">
-<mm:write referid="style" escape="none" />
 <!-- mm:timer name="search_node"-->
-<title><%=m.getString("search_node.search")%></title>
-  <meta name="MMBase-NodeType"     content="${param.node_type}" />
-  <meta name="MMBase-SessionName"     content="${config.session}" />
-</head>
+ <mm:formatter xslt="xslt/framework/head.xslt" escape="none">
+    <head>
+      <title><%=m.getString("search_node.search")%></title>
+      <jsp:directive.include file="head.entries.jsp" />
+      <meta name="MMBase-NodeType"     content="${param.node_type}" />
+
+    </head>
+ </mm:formatter>
 <mm:write referid="config.liststyle" vartype="string" jspvar="liststyle" >
 <mm:context id="edit">
 <mm:import externid="node_type"  jspvar="node_type" from="parameters"/>

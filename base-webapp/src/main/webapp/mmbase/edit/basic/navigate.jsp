@@ -1,11 +1,16 @@
-<%@ include file="page_base.jsp"
-%><mm:import externid="userlogon" from="parameters" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
+<html><jsp:directive.include file="page_base_functionality.jsp"
+/><mm:import externid="userlogon" from="parameters" />
 <mm:content language="$config.lang" country="$config.country" type="text/html" expires="0">
 <mm:cloud loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" jspvar="cloud" rank="$rank" uri="$config.uri">
-<mm:write referid="style" escape="none" />
+<mm:formatter xslt="xslt/framework/head.xslt" escape="none">
+  <head>
+    <title><%=m.getString("search_node.search")%></title>
+    <jsp:directive.include file="head.entries.jsp" />
+  </head>
+</mm:formatter>
 <!-- mm:timer name="search_node"-->
-<title><%=m.getString("search_node.search")%></title>
-</head>
 <mm:import externid="node_number" from="parameters" required="true" />
 <body class="basic">
 <mm:context id="edit">
