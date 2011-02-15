@@ -1,5 +1,7 @@
-<%@ include file="page_base.jsp"
-%><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
+<html><jsp:directive.include file="page_base_functionality.jsp"
+/><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
 <mm:cloud  loginpage="login.jsp" sessionname="$config.session"  rank="$rank" uri="$config.uri" jspvar="cloud">
 <mm:context id="new_relation">
 
@@ -10,9 +12,12 @@
 <mm:import externid="create_relation"    required="false" />
 
 <mm:notpresent referid="create_relation">
-   <mm:write referid="style" escape="none" />
-   <title><%=m.getString("new_relation.new")%></title>
-   </head>
+  <mm:formatter xslt="xslt/framework/head.xslt" escape="none">
+    <head>
+      <title><%=m.getString("new_relation.new")%></title>
+      <jsp:directive.include file="head.entries.jsp" />
+    </head>
+  </mm:formatter>
    <body class="basic" onLoad="document.search.elements[0].focus();">
      <p class="crumbpath"><%= toHtml(urlStack, request) %></p>
      <!-- TODO escapeamps=false was not needed in 1.8 -->
@@ -78,8 +83,12 @@
     </mm:compare>
 
     <mm:present referid="annotate">
-        <mm:write referid="style" escape="none" />
+      <mm:formatter xslt="xslt/framework/head.xslt" escape="none">
+        <head>
+          <title><%=m.getString("new_relation.new")%></title>
+          <jsp:directive.include file="head.entries.jsp" />
         </head>
+      </mm:formatter>
         <body class="basic" onLoad="document.new.elements[2].focus();">
           <p class="crumbpath"><%= toHtml(urlStack, request) %></p>
         <form name="new" method="post" action='<mm:url referids="node,node_number,node_type,role_name,direction" />' >
@@ -99,10 +108,13 @@
      </mm:present>
 
      <mm:notpresent referid="annotate">
-       <!-- do the redirect to the page where we want to go to... -->
-       <META HTTP-EQUIV="refresh" content="0; url=<mm:url  page="$redirectTo" />">
-       <mm:write referid="style" escape="none" />
-       </head>
+      <mm:formatter xslt="xslt/framework/head.xslt" escape="none">
+        <head>
+          <title><%=m.getString("new_relation.new")%></title>
+          <meta http-equiv="refresh" content="0; url=<mm:url  page="$redirectTo" />" />
+          <jsp:directive.include file="head.entries.jsp" />
+        </head>
+      </mm:formatter>
        <body class="basic">
        <h1>Redirecting</h1>
        <a href="<mm:url page="$redirectTo" />"><%=m.getString("new_relation.redirect")%></a>
@@ -119,9 +131,13 @@
           <mm:fieldinfo type="useinput" />
        </mm:context></mm:fieldlist>
     </mm:node>
-    <meta http-equiv="refresh" content="0; url=<mm:url page="$redirectTo" />">
-    <mm:write referid="style" escape="none" />
-    </head>
+    <mm:formatter xslt="xslt/framework/head.xslt" escape="none">
+      <head>
+        <title><%=m.getString("new_relation.new")%></title>
+        <meta http-equiv="refresh" content="0; url=<mm:url page="$redirectTo" />" />
+        <jsp:directive.include file="head.entries.jsp" />
+      </head>
+    </mm:formatter>
     <body>
     <h1>Redirecting</h1>
     <a href="<mm:url page="$redirectTo" />"><%=m.getString("new_relation.redirect")%></a>

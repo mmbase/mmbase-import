@@ -1,9 +1,13 @@
-<%@ include file="page_base.jsp"
-%>
-<mm:write referid="style" />
-
-<title><%= m.getString("config.config") %></title>
-</head>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
+<html><jsp:directive.include file="page_base_functionality.jsp"
+/>
+<mm:formatter xslt="xslt/framework/head.xslt" escape="none">
+  <head>
+    <title><%= m.getString("config.config") %></title>
+    <jsp:directive.include file="head.entries.jsp" />
+  </head>
+</mm:formatter>
 <mm:content language="$config.lang" country="$config.country" expires="0" jspvar="locale">
 <body class="basic config">
 
