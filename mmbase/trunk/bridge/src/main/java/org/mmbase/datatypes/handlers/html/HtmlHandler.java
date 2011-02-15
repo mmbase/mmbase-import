@@ -56,6 +56,7 @@ public abstract class HtmlHandler  extends AbstractHandler<String> {
         return name.toLowerCase();
     }
 
+
     protected void appendClasses(Request request, StringBuilder buf, Node node, Field field) {
         buf.append("mm_validate");
         DataType dt = field.getDataType();
@@ -119,7 +120,6 @@ public abstract class HtmlHandler  extends AbstractHandler<String> {
         buf.append("name=\"").append(request.getName(field)).append("\" ");
         buf.append("id=\"").append(id(request, field)).append("\" ");
     }
-
     @Override
     public String id(Request request, Field field) {
         return id(request.getName(field));
@@ -136,7 +136,7 @@ public abstract class HtmlHandler  extends AbstractHandler<String> {
         final DataType<?> dt = field.getDataType();
         if (fieldValue == null) {
             log.debug("Field value not found in context, using existing value ");
-            fieldValue = getFieldValue(request, node, field, node == null);
+            fieldValue = getEvaluatedFieldValue(request, node, field);
         } else if (fieldValue.equals("") && ! field.isRequired()) {
             log.debug("Field value found in context is empty, interpreting as null");
             fieldValue = null;
