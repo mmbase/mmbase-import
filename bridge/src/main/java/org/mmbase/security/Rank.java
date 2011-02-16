@@ -169,7 +169,7 @@ public final class Rank implements Comparable<Rank>, java.io.Serializable {
     /**
      * @since MMBase-1.6.4
      */
-    // see javadoc of Comparable
+    @Override
     public int compareTo (Rank r) {
         return rank - r.rank;
     }

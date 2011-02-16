@@ -72,6 +72,7 @@ public abstract class Framework {
         if (framework == null) {
             if (frameworkWatcher == null) {
                 frameworkWatcher = new org.mmbase.util.ResourceWatcher() {
+                    @Override
                         public void onChange(String resourceName) {
                             try {
                                 ComponentRepository.getInstance();

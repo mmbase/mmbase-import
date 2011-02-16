@@ -557,7 +557,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
         }
 
         @Override
-        public Node next() {
+        public final Node next() {
             return nextNode();
         }
 

@@ -20,23 +20,19 @@ package org.mmbase.security;
 public class UnknownAuthenticationMethodException extends org.mmbase.security.SecurityException {
     private static final long serialVersionUID = -1270388603134616140L;
 
-    //javadoc is inherited
     public UnknownAuthenticationMethodException() {
         super();
     }
 
-    //javadoc is inherited
     public UnknownAuthenticationMethodException(String message) {
         super(message);
     }
 
-    //javadoc is inherited
     public UnknownAuthenticationMethodException(Throwable cause) {
         super(cause.getClass().getName() + ": " + cause.getMessage());
         initCause(cause);
     }
 
-    //javadoc is inherited
     public UnknownAuthenticationMethodException(String message, Throwable cause) {
         super(message);
         initCause(cause);

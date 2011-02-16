@@ -13,7 +13,7 @@ import org.mmbase.datatypes.*;
 
 
 /**
- * Wraps a Field. It can and is extended to make some other modifications to the field once the datatype is determined.
+ * Wraps a Field. It can be and is extended to make some other modifications to the field once the datatype is determined.
  * @since MMBase-1.9.4
  * @author Michiel Meeuwissen
  * @version $Id$

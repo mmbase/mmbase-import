@@ -29,7 +29,7 @@ import org.mmbase.util.xml.XMLWriter;
  */
 public class Generator {
 
-    private static final Logger log = Logging.getLoggerInstance(Generator.class);
+    private static final Logger LOG = Logging.getLoggerInstance(Generator.class);
 
     public final static String NAMESPACE =  "http://www.mmbase.org/xmlns/objects";
     private final static String DOCUMENTTYPE_PUBLIC =  "-//MMBase//DTD objects config 1.0//EN";
@@ -46,7 +46,7 @@ public class Generator {
 
     /**
      * To create documents representing structures from the cloud, it
-     * needs a documentBuilder, to contruct the DOM Document, and the
+     * needs a documentBuilder, to construct the DOM Document, and the
      * cloud from which the data to be inserted will come from.
      *
      * @param documentBuilder The DocumentBuilder which will be used to create the Document.
@@ -203,7 +203,7 @@ public class Generator {
         Element object = getNode(node);
 
         if (! (object.getFirstChild() instanceof Element)) {
-            log.warn("Cannot find first field of " + XMLWriter.write(object, false));
+            LOG.warn("Cannot find first field of " + XMLWriter.write(object, false));
             buildCost += System.nanoTime() - start;
             return object;
         }
@@ -328,7 +328,7 @@ public class Generator {
         setAttribute(object, "id", "" + node.getNumber());
         object.setIdAttribute("id", true);
         setAttribute(object, "type", node.getNodeManager().getName());
-        StringBuffer ancestors = new StringBuffer(" "); // having spaces before and after the attribute's value, makes it easy to use xsl's 'contains' function.
+        StringBuilder ancestors = new StringBuilder(" "); // having spaces before and after the attribute's value, makes it easy to use xsl's 'contains' function.
         if (! node.getNodeManager().getName().equals("object")) {
             NodeManager parent = node.getNodeManager();
             do {
@@ -374,8 +374,8 @@ public class Generator {
         } else {
             namespace = "http://www.mmbase.org/xmlns/" + tagName;
         }
-        if (log.isDebugEnabled()) {
-            log.debug("using namepace: " + namespace);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("using namepace: " + namespace);
         }
         Element fieldContent = (Element)document.importNode(toImport.getDocumentElement(), true);
         fieldContent.setAttribute("xmlns", namespace);
