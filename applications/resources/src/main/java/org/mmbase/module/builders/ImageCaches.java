@@ -133,18 +133,23 @@ public class ImageCaches extends AbstractImages {
         HttpServletResponse res = a.get(Parameter.RESPONSE);
         String heightAndWidth = "";
         if (origNode != null) {
+            if (origNode.getFunction("cachednode") != null) {
+                List<Object> cacheArgs =  new Parameters(Images.CACHE_PARAMETERS).set("template", GUI_IMAGETEMPLATE);
 
-            List<Object> cacheArgs =  new Parameters(Images.CACHE_PARAMETERS).set("template", GUI_IMAGETEMPLATE);
-            MMObjectNode thumb = (MMObjectNode) origNode.getFunctionValue("cachednode", cacheArgs);
-            //heightAndWidth = "height=\"" + getHeight(thumb) + "\" with=\"" + getWidth(thumb) + "\" ";
-            heightAndWidth = ""; // getHeight and getWidth not yet present in AbstractImages
-            if (thumb != null) {
-                imageThumb = servlet.toString() + thumb.getNumber();
-                if (res != null) {
-                    imageThumb = res.encodeURL(imageThumb);
+                MMObjectNode thumb = (MMObjectNode) origNode.getFunctionValue("cachednode", cacheArgs);
+                //heightAndWidth = "height=\"" + getHeight(thumb) + "\" with=\"" + getWidth(thumb) + "\" ";
+                heightAndWidth = ""; // getHeight and getWidth not yet present in AbstractImages
+                if (thumb != null) {
+                    imageThumb = servlet.toString() + thumb.getNumber();
+                    if (res != null) {
+                        imageThumb = res.encodeURL(imageThumb);
+                    }
+                } else {
+                    imageThumb = servlet.toString();
                 }
             } else {
-                imageThumb = servlet.toString();
+                log.warn("Not an image? " + origNode.getBuilder().getTableName() + " " + origNode.getNumber() + " has no 'cachednode' function. But it is the image of icache " + node.getNumber());
+                imageThumb = "";
             }
         } else {
             imageThumb = "";
@@ -164,9 +169,10 @@ public class ImageCaches extends AbstractImages {
 
         String image      = servlet.toString() + node.getNumber();
         if (res != null) image = res.encodeURL(image);
-        return "<a href=\"" + image + "\" class=\"mm_gui\" onclick=\"window.open(this.href); return false;\"><img src=\"" + imageThumb + "\" border=\"0\" " + heightAndWidth + "alt=\"" +
-            org.mmbase.util.transformers.Xml.XMLAttributeEscape(alt, '\"') +
-            "\"" + title + " /></a>";
+        return "<a href=\"" + image + "\" class=\"mm_gui\" onclick=\"window.open(this.href); return false;\">" +
+            (imageThumb == null || imageThumb.length() == 0 ? ("" + node.getNumber()) :
+             ("<img src=\"" + imageThumb + "\" border=\"0\" " + heightAndWidth + "alt=\"" + org.mmbase.util.transformers.Xml.XMLAttributeEscape(alt, '\"') + "\"" + title + " />")) +
+             " </a>";
     }
 
     @Override
