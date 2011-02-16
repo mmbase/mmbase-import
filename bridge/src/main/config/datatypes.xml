@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <datatypes
+    id="http://www.mmbase.org/bridge/datatypes.xml"
     xmlns="http://www.mmbase.org/xmlns/datatypes"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
