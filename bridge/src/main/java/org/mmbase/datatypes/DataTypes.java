@@ -50,43 +50,40 @@ public class DataTypes {
     private static final DataTypeCollector dataTypeCollector = DataTypeCollector.createSystemDataTypeCollector();
 
     private static boolean initialized = false;
-    public static void initialize() {
-        synchronized(DataTypes.class) {
-            if (! initialized) {
-		log.trace("" + Constants.class); // make sure its static init is called, otherwise it goes horribly wrong
+    public static synchronized void initialize() {
+        if (! initialized) {
+            log.trace("" + Constants.class); // make sure its static init is called, otherwise it goes horribly wrong
 
-		org.mmbase.bridge.util.xml.query.QueryReader.registerSystemIDs();
+            org.mmbase.bridge.util.xml.query.QueryReader.registerSystemIDs();
 
-                // read the XML
-                // Watching will probably not work properly,
-                // as datatypes depend one ach other, and are are referred
-                // throughout the system.
-                // For the moment turn watching off.
-                // Not sure if it is needed anyway - it won't actually happen that often
+            // read the XML
+            // Watching will probably not work properly,
+            // as datatypes depend one ach other, and are are referred
+            // throughout the system.
+            // For the moment turn watching off.
+            // Not sure if it is needed anyway - it won't actually happen that often
 
-                log.debug("Reading datatypes " + dataTypeCollector);
-                readDataTypes(ResourceLoader.getConfigurationRoot(), "datatypes.xml");
+            log.debug("Reading datatypes " + dataTypeCollector);
+            readDataTypes(ResourceLoader.getConfigurationRoot(), "datatypes.xml");
 
-                /*
-                  try {
-                  ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot()) {
-                  public void onChange(String resource) {
-                  readDataTypes(getResourceLoader(), resource);
-                  }
-                  };
-                  watcher.add("datatypes.xml");
-                  watcher.start();
-                  watcher.onChange("datatypes.xml");
-                  } catch (Throwable t) {
-                  log.error(t.getClass().getName() + ": " + Logging.stackTrace(t));
-                  }
-                */
-                initialized = true;
-            } else {
+            /*
+              try {
+              ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot()) {
+              public void onChange(String resource) {
+              readDataTypes(getResourceLoader(), resource);
+              }
+              };
+              watcher.add("datatypes.xml");
+              watcher.start();
+              watcher.onChange("datatypes.xml");
+              } catch (Throwable t) {
+              log.error(t.getClass().getName() + ": " + Logging.stackTrace(t));
+              }
+            */
+            initialized = true;
+        } else {
                 log.debug("Already initalized");
-            }
         }
-
     }
     /**
      * @since MMBase-1.9.2
@@ -128,6 +125,7 @@ public class DataTypes {
         if (log.isDebugEnabled()) log.debug("Using " + resources);
         ListIterator<URL> i = resources.listIterator();
         List<DependencyException> failed = new ArrayList<DependencyException>();
+        Map<String, URL> readDataTypes = new HashMap<String, URL>();
         while (i.hasNext()) i.next();
         while (i.hasPrevious()) {
             try {
@@ -143,6 +141,15 @@ public class DataTypes {
                     DataTypeReader.registerSystemIDs();
                     Document doc = db.parse(dataTypesSource);
                     Element dataTypesElement = doc.getDocumentElement(); // fieldtypedefinitons or datatypes element
+                    String id = dataTypesElement.getAttribute("id");
+                    // Sometimes, the same jar is present twice (e.g. when symlinking during test or so)
+                    if (id.length() > 0) {
+                        if (readDataTypes.containsKey(id)) {
+                            log.info("The datatypes from " + u + " were already read from " + readDataTypes.get(id));
+                            continue;
+                        }
+                        readDataTypes.put(id, u);
+                    }
                     List<DependencyException> f = DataTypeReader.readDataTypes(dataTypesElement, dataTypeCollector);
                     if (f.size() > 0) {
                         log.service("Failed " + f);
