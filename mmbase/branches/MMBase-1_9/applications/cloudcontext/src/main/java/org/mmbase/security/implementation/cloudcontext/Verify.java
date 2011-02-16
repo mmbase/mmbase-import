@@ -40,7 +40,7 @@ public class Verify extends Authorization {
     /**
      * @since MMBase-1.9.1
      */
-    public final static Verify getInstance() {
+    public static Verify getInstance() {
         return (Verify) org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthorization();
     }
 
