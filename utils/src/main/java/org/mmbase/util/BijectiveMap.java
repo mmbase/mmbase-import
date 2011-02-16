@@ -41,13 +41,16 @@ public class BijectiveMap<K, V> extends AbstractMap<K, V> implements java.io.Ser
                 return new Iterator<Map.Entry<K, V>>() {
                     private final Iterator<Map.Entry<K, V>> i = backing.entrySet().iterator();
                     private Map.Entry<K, V> entry;
+                    @Override
                     public boolean hasNext() {
                         return i.hasNext();
                     }
+                    @Override
                     public Map.Entry<K, V> next() {
                         entry = i.next();
                         return entry;
                     }
+                    @Override
                     public void remove() {
                         i.remove();
                         inverse.remove(entry.getValue());

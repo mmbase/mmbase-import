@@ -117,7 +117,6 @@ public class MMBaseContext implements ServletContextListener {
             String initLoggingParam = sx.getInitParameter("mmbase.initlogging");
             if (initLoggingParam == null || "true".equals(initLoggingParam)) {
                 // resource loader is initialized asynchrously, logging can only be intialized when it is ready.
-                //
                 EventManager.getInstance().addEventListener(new SystemEventListener() {
                     @Override
                     public void notify(SystemEvent se) {
