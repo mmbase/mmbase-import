@@ -12,7 +12,8 @@ package org.mmbase.applications.media.urlcomposers;
 
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.builders.MediaFragments;
-import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.TypeRel;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.DocumentReader;
@@ -219,12 +220,19 @@ public class URLComposerFactory  {
         List<MMObjectNode> templates = new ArrayList<MMObjectNode>();
 
         if (fragment != null) {
-            MediaFragments bul = (MediaFragments) fragment.getBuilder();
-            Stack<MMObjectNode> stack = bul.getParentFragments(fragment);
-            Iterator<MMObjectNode> i = stack.iterator();
-            while (i.hasNext()) {
-                MMObjectNode f = i.next();
-                templates.addAll(f.getRelatedNodes("templates"));
+            MMBase mmb = MMBase.getMMBase();
+            MMObjectBuilder templatesBuilder = mmb.getBuilder("templates");
+            if (templatesBuilder != null) {
+                MediaFragments bul = (MediaFragments) fragment.getBuilder();
+                TypeRel tr = mmb.getTypeRel();
+                if (tr.getAllowedRelations(bul.getObjectType(), templatesBuilder.getObjectType(), -1).size() > 0) {
+                    Stack<MMObjectNode> stack = bul.getParentFragments(fragment);
+                    Iterator<MMObjectNode> i = stack.iterator();
+                    while (i.hasNext()) {
+                        MMObjectNode f = i.next();
+                        templates.addAll(f.getRelatedNodes("templates"));
+                    }
+                }
             }
         }
         return templates;
