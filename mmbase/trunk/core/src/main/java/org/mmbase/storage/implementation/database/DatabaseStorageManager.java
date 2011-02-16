@@ -2181,6 +2181,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         } else {
             Scheme scheme = factory.getScheme(Schemes.SELECT_NODE_TYPE, Schemes.SELECT_NODE_TYPE_DEFAULT);
             try {
+                if (scheme == null) throw new RuntimeException("No scheme " + Schemes.SELECT_NODE_TYPE);
                 getActiveConnection();
                 MMBase mmbase = factory.getMMBase();
                 String query = scheme.format(this, mmbase, mmbase.getTypeDef().getField("number"), numberValue);
