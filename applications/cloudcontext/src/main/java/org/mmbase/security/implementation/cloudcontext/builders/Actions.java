@@ -14,10 +14,8 @@ import org.mmbase.framework.*;
 import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.security.*;
-import org.mmbase.security.SecurityException;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.cache.Cache;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.functions.*;
@@ -52,7 +50,7 @@ public class Actions extends MMObjectBuilder {
                                                                      new BasicFieldValueConstraint(query.getField(getField(FIELD_ACTION)),    action.getName())
                                                                      ));
                     List<MMObjectNode> resultList = getNodes(query);
-                    if (resultList.size() == 0) {
+                    if (resultList.isEmpty()) {
                         log.service("No node found for action " + action + " creating one now");
                         // create the node
                         MMObjectNode node = getNewNode("security");

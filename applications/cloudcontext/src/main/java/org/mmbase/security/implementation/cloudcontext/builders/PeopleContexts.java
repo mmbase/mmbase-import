@@ -38,6 +38,7 @@ public class PeopleContexts extends Contexts {
     }
 
     // javadoc inherited
+    @Override
     protected boolean isOwnNode(User user, MMObjectNode node) {       
         if (super.isOwnNode(user, node)) return true;
         if (node.getBuilder().getTableName().equals(peopleBuilder)) {
