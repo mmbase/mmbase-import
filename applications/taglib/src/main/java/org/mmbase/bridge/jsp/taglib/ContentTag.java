@@ -82,16 +82,17 @@ public class ContentTag extends LocaleTag  {
         try {
             org.mmbase.util.xml.EntityResolver.registerPublicID("-//MMBase//DTD taglibcontent 1.0//EN", "taglibcontent_1_0.dtd", ContentTag.class);
             ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot().getChildResourceLoader("taglib")) {
-                    public void onChange(String resource) {
-                        defaultEscapers.clear();
-                        defaultPostProcessors.clear();
-                        defaultEncodings.clear();
-                        charTransformers.clear();
-                        parameterizedCharTransformerFactories.clear();
-                        contentTypes.clear();
+                @Override
+                public void onChange(String resource) {
+                    defaultEscapers.clear();
+                    defaultPostProcessors.clear();
+                    defaultEncodings.clear();
+                    charTransformers.clear();
+                    parameterizedCharTransformerFactories.clear();
+                    contentTypes.clear();
                         initialize(getResourceLoader(), resource);
-                    }
-                };
+                }
+            };
             watcher.add("content.xml");
             watcher.start();
             watcher.onChange("content.xml");
@@ -139,9 +140,11 @@ public class ContentTag extends LocaleTag  {
         } else {
             return new ParameterizedTransformerFactory() {
                 final ParameterizedTransformerFactory wrapped = Transformers.getTransformerFactory(claz, " parameterizedescaper " + id);
+                @Override
                 public Transformer createTransformer(Parameters parameters) {
                     return wrapped.createTransformer(parameters);
                 }
+                @Override
                 public Parameters createParameters() {
                     Parameters params = wrapped.createParameters();
                     params.setAutoCasting(true);

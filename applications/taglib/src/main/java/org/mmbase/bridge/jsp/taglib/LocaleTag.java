@@ -16,7 +16,6 @@ import java.io.IOException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import java.util.*;
-import java.text.*;
 import org.mmbase.util.logging.*;
 
 /**

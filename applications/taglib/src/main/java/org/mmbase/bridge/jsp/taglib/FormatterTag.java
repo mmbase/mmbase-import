@@ -220,6 +220,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         referids = getAttribute(r);
     }
 
+    @Override
     public void addParameter(String key, Object value) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("adding parameter " + key + "/" + value);

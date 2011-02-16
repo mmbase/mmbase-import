@@ -111,7 +111,7 @@ public class DateHandler extends AbstractTypeHandler {
         boolean required = field.getDataType().isRequired();
 
         Calendar cal = getCalendarValue(node, field);
-        buffer.append("<span class=\"mm_datetime " + getClasses(node, field) + "\">");
+        buffer.append("<span class=\"mm_datetime ").append(getClasses(node, field)).append("\">");
         buffer.append("<input type=\"hidden\" name=\"");
         buffer.append(prefix(field.getName()));
         buffer.append("\" value=\"");
@@ -214,7 +214,7 @@ public class DateHandler extends AbstractTypeHandler {
                         buffer.append(checkOption);
                     } else {
                         String val = element.toString(i - element.getOffset(), locale, pattern.length());
-                        buffer.append("<option value=\"" + i + "\">" + val + "</option>");
+                        buffer.append("<option value=\"").append(i).append("\">").append(val).append("</option>");
                     }
                 }
                 if (check > element.getMax()) {

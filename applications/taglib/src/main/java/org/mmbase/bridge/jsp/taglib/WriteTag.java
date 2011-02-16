@@ -102,6 +102,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
     public void setValue(String v) throws JspTagException {
         value = getAttribute(v);
     }
+    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c); // not yet implemented
     }

@@ -75,9 +75,9 @@ public class StringHandler extends AbstractTypeHandler {
                     if(field.getMaxLength() > 2048)  {
                         // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
                         // wrap attribute removed, we want to produce valid XHTML, and who is still using netscape < 6?
-                        buffer.append("<textarea class=\"big " + getClasses(node, field) + "\" rows=\"10\" cols=\"80\" ");
+                        buffer.append("<textarea class=\"big ").append(getClasses(node, field)).append("\" rows=\"10\" cols=\"80\" ");
                     } else {
-                        buffer.append("<textarea class=\"small " + getClasses(node, field) + "\" rows=\"5\" cols=\"" + getCols(field) + "\" ");
+                        buffer.append("<textarea class=\"small ").append(getClasses(node, field)).append("\" rows=\"5\" cols=\"").append(getCols(field)).append("\" ");
                     }
                     addExtraAttributes(buffer);
                     buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
@@ -106,7 +106,7 @@ public class StringHandler extends AbstractTypeHandler {
                     }
                     buffer.append("</textarea>");
                 } else { // not 'field' perhaps it's 'string'.
-                    buffer.append("<input class=\"small " + getClasses(node, field) + "\" type=\"").append(dataType.isPassword() ? "password" : "text").append("\"  size=\"" + getCols(field) + "\" ");
+                    buffer.append("<input class=\"small ").append(getClasses(node, field)).append("\" type=\"").append(dataType.isPassword() ? "password" : "text").append("\"  size=\"" + getCols(field) + "\" ");
                     buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
                     buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");
                     String opt = tag.getOptions();
@@ -130,19 +130,22 @@ public class StringHandler extends AbstractTypeHandler {
     }
 
 
-    @Override protected void setValue(Node node, String fieldName, Object value) {
+    @Override
+    protected void setValue(Node node, String fieldName, Object value) {
         String string = value == null ? null :  org.mmbase.util.Casting.toString(value);
         node.setStringValue(fieldName, string);
     }
 
-    @Override protected Object getValue(Node node, String fieldName) {
+    @Override
+    protected Object getValue(Node node, String fieldName) {
         return node.getStringValue(fieldName);
     }
 
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    @Override public boolean useHtmlInput(Node node, Field field) throws JspTagException {
+    @Override
+    public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         @SuppressWarnings("deprecation")
         String guiType = field.getGUIType();
 

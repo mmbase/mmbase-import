@@ -35,6 +35,7 @@ public class TreeHasPageTag extends CloudReferrerTag implements Condition {
     }
     protected Attribute inverse = Attribute.NULL;
 
+    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
     }
@@ -49,6 +50,7 @@ public class TreeHasPageTag extends CloudReferrerTag implements Condition {
 
     protected final TreeHelper th = new TreeHelper();
 
+    @Override
     public int doStartTag() throws JspTagException {
         if (page == Attribute.NULL) {
             throw new JspTagException("Attribute 'page' was not specified");
@@ -79,6 +81,7 @@ public class TreeHasPageTag extends CloudReferrerTag implements Condition {
         }
     }
 
+    @Override
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
             if (bodyContent != null) {

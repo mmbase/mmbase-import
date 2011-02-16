@@ -63,9 +63,9 @@ public class BinaryHandler extends AbstractTypeHandler {
             args.set(Parameter.RESPONSE, (HttpServletResponse) pc.getResponse());
             args.set(Parameter.REQUEST,  (HttpServletRequest) pc.getRequest());
             args.set(Parameter.LOCALE, tag.getLocale());
-            show.append("" + gui.getFunctionValue(args));
+            show.append(gui.getFunctionValue(args));
         }
-        show.append("<input class=\"" + getClasses(node, field) + "\" type=\"").append(search ? "text" : "file").append("\" name=\"").append(prefix(field.getName())).append("\" id=\"").append(prefixID(field.getName())).append("\" ");
+        show.append("<input class=\"").append(getClasses(node, field)).append("\" type=\"").append(search ? "text" : "file").append("\" name=\"").append(prefix(field.getName())).append("\" id=\"").append(prefixID(field.getName())).append("\" ");
         addExtraAttributes(show);
         show.append("/>");
         return show.toString();
@@ -123,7 +123,7 @@ public class BinaryHandler extends AbstractTypeHandler {
             log.debug("Validating " + fieldValue + " with " + dt);
         }
         Collection<LocalizedString> col = dt.validate(fieldValue, node, field);
-        if (col.size() == 0) {
+        if (col.isEmpty()) {
             // do actually set the field, because some datatypes need cross-field checking
             // also in an mm:form, you can simply commit.
             if (fromUser) {

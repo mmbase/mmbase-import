@@ -52,7 +52,8 @@ public class RedirectTag extends UrlTag  {
      *
      * @return SKIP_PAGE
      */
-    @Override public final int doEndTag() throws JspTagException {
+    @Override
+    public final int doEndTag() throws JspTagException {
         super.doEndTag();
         try {
             // dont set value, but redirect.

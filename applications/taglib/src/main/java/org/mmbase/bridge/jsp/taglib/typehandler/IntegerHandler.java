@@ -43,10 +43,11 @@ public class IntegerHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
-    @Override public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-        EnumHandler eh = getEnumHandler(node, field);
-        if (eh != null) {
-            return eh.htmlInput(node, field, search);
+    @Override
+    public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
+        EnumHandler enumh = getEnumHandler(node, field);
+        if (enumh != null) {
+            return enumh.htmlInput(node, field, search);
         }
         return super.htmlInput(node, field, search);
     }
@@ -54,11 +55,12 @@ public class IntegerHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    @Override public boolean useHtmlInput(Node node, Field field) throws JspTagException {
+    @Override
+    public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         log.debug("using html-input");
-        EnumHandler eh = getEnumHandler(node, field);
-        if (eh != null) {
-            return eh.useHtmlInput(node, field);
+        EnumHandler enumh = getEnumHandler(node, field);
+        if (enumh != null) {
+            return enumh.useHtmlInput(node, field);
         }
         return super.useHtmlInput(node, field);
     }
@@ -66,23 +68,26 @@ public class IntegerHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    @Override public String whereHtmlInput(Field field) throws JspTagException {
-        EnumHandler eh = getEnumHandler(null, field);
-        if (eh != null) {
-            return eh.whereHtmlInput(field);
+    @Override
+    public String whereHtmlInput(Field field) throws JspTagException {
+        EnumHandler enumh = getEnumHandler(null, field);
+        if (enumh != null) {
+            return enumh.whereHtmlInput(field);
         }
         return super.whereHtmlInput(field);
     }
 
-    @Override public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
-        EnumHandler eh = getEnumHandler(null, field);
-        if (eh != null) {
-            return eh.whereHtmlInput(field, query);
+    @Override
+    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+        EnumHandler enumh = getEnumHandler(null, field);
+        if (enumh != null) {
+            return enumh.whereHtmlInput(field, query);
         }
         return super.whereHtmlInput(field, query);
     }
 
-    @Override protected Object cast(Object value, Node node, Field field) {
+    @Override
+    protected Object cast(Object value, Node node, Field field) {
         if (value == null || "".equals(value)) return null;
         return  super.cast(value, node, field);
     }

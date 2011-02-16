@@ -22,6 +22,7 @@ import javax.servlet.jsp.JspTagException;
 
 public class MayChangeContextTag extends MayWriteTag implements Condition {
 
+    @Override
     public int doStartTag() throws JspTagException {
         initTag();
         if ((getNode().mayChangeContext()) != getInverse()) {

@@ -131,6 +131,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         return container;
     }
 
+    @Override
     public ContextContainer getContextContainer() {
         ContextContainer container = (ContextContainer)pageContext.getAttribute(CONTAINER_KEY_PREFIX + number);
         if (container == null) throw new IllegalStateException("No container for " + this.getClass().getName() + " (" + CONTAINER_KEY_PREFIX + number + "). doStartTag not yet called?");

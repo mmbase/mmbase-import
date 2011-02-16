@@ -14,7 +14,6 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.handlers.Handler;
 import org.mmbase.datatypes.handlers.Request;
-import org.mmbase.datatypes.handlers.AbstractRequest;
 import org.mmbase.datatypes.handlers.html.HtmlHandler;
 import org.mmbase.bridge.jsp.taglib.ParamHandler;
 import org.mmbase.storage.search.Constraint;
@@ -50,124 +49,143 @@ public class DataTypeHandler implements TypeHandler {
                 {
                     setProperty(HtmlHandler.SESSIONNAME, tag.getSessionName());
                     try {
-                        javax.servlet.jsp.PageContext pc = tag.getContextTag().getPageContext();
-                        setProperty(Parameter.REQUEST, (javax.servlet.http.HttpServletRequest) pc.getRequest());
-                        setProperty(Parameter.RESPONSE, (javax.servlet.http.HttpServletResponse) pc.getResponse());
-                    } catch (JspTagException te) {
-                        throw new RuntimeException(te);
-                    }
+                    javax.servlet.jsp.PageContext pc = tag.getContextTag().getPageContext();
+                    setProperty(Parameter.REQUEST, (javax.servlet.http.HttpServletRequest) pc.getRequest());
+                    setProperty(Parameter.RESPONSE, (javax.servlet.http.HttpServletResponse) pc.getResponse());
+                } catch (JspTagException te) {
+                    throw new RuntimeException(te);
                 }
+            }
 
+            @Override
+            public Cloud getCloud() {
+                try {
+                    return tag.getCloudVar();
+                } catch (JspTagException te) {
+                    throw new RuntimeException(te);
+                }
+            }
 
-                public Cloud getCloud() {
-                    try {
-                        return tag.getCloudVar();
-                    } catch (JspTagException te) {
-                        throw new RuntimeException(te);
-                    }
+            @Override
+            public java.util.Locale getLocale() {
+                try {
+                    return tag.getLocale();
+                } catch (JspTagException te) {
+                    throw new RuntimeException(te);
                 }
-                public java.util.Locale getLocale() {
-                    try {
-                        return tag.getLocale();
-                    } catch (JspTagException te) {
-                        throw new RuntimeException(te);
-                    }
-                }
+            }
 
-                public void invalidate() {
-                    try {
-                        FormTag form = tag.getFormTag(false, null);
-                        if (form != null) {
-                            form.setValid(false);
-                        }
-                    } catch (JspTagException te) {
-                        throw new RuntimeException(te);
+            @Override
+            public void invalidate() {
+                try {
+                    FormTag form = tag.getFormTag(false, null);
+                    if (form != null) {
+                        form.setValid(false);
                     }
+                } catch (JspTagException te) {
+                    throw new RuntimeException(te);
                 }
+            }
 
-                public boolean isValid() {
-                    try {
-                        FormTag form = tag.getFormTag(false, null);
-                        if (form != null) {
-                            return form.isValid();
-                        } else {
-                            return true;
-                        }
-                    } catch (JspTagException te) {
-                        throw new RuntimeException(te);
+            @Override
+            public boolean isValid() {
+                try {
+                    FormTag form = tag.getFormTag(false, null);
+                    if (form != null) {
+                        return form.isValid();
+                    } else {
+                        return true;
                     }
+                } catch (JspTagException te) {
+                    throw new RuntimeException(te);
                 }
-                protected String prefix(String s) throws JspTagException {
-                    return tag.getPrefix() + "_" + s;
-                }
-                public Object getValue(Field field) {
-                    try {
-                        Object found = tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
-                        log.debug("found fv " + found);
-                        return found;
-                    } catch (JspTagException te) {
-                        throw new RuntimeException(te);
-                    }
-                }
-                public Object getValue(Field field, String part) {
-                    try {
-                        Object found = tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()) + "_" + part);
-                        log.debug("found fv " + found);
-                        return found;
-                    } catch (JspTagException te) {
-                        throw new RuntimeException(te);
-                    }
-                }
-                public String getName(Field field) {
-                    try {
-                        return prefix(field.getName());
-                    } catch (JspTagException te) {
-                        throw new RuntimeException(te);
-                    }
-                }
+            }
 
-                public <C> C setProperty(Parameter<C> name, C value) {
-                    C prev = getProperty(name);
-                    tag.getPageContext().setAttribute(name.getName(), value);
-                    return prev;
-                }
-                public <C> C getProperty(Parameter<C> name) {
-                    return (C) tag.getPageContext().getAttribute(name.getName());
-                }
+            protected String prefix(String s) throws JspTagException {
+                return tag.getPrefix() + "_" + s;
+            }
 
-                public boolean isPost() {
-                    try {
-                        return "POST".equals(((javax.servlet.http.HttpServletRequest) tag.getContextTag().getPageContext().getRequest()).getMethod());
-                    } catch (JspTagException te) {
-                        throw new RuntimeException(te);
-                    }
+            @Override
+            public Object getValue(Field field) {
+                try {
+                    Object found = tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
+                    log.debug("found fv " + found);
+                    return found;
+                } catch (JspTagException te) {
+                    throw new RuntimeException(te);
                 }
+            }
 
-            };
+            @Override
+            public Object getValue(Field field, String part) {
+                try {
+                    Object found = tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()) + "_" + part);
+                    log.debug("found fv " + found);
+                    return found;
+                } catch (JspTagException te) {
+                    throw new RuntimeException(te);
+                }
+            }
+
+            @Override
+            public String getName(Field field) {
+                try {
+                    return prefix(field.getName());
+                } catch (JspTagException te) {
+                    throw new RuntimeException(te);
+                }
+            }
+
+            @Override
+            public <C> C setProperty(Parameter<C> name, C value) {
+                C prev = getProperty(name);
+                tag.getPageContext().setAttribute(name.getName(), value);
+                return prev;
+            }
+
+            @Override
+            public <C> C getProperty(Parameter<C> name) {
+                return (C) tag.getPageContext().getAttribute(name.getName());
+            }
+
+            @Override
+            public boolean isPost() {
+                try {
+                    return "POST".equals(((javax.servlet.http.HttpServletRequest) tag.getContextTag().getPageContext().getRequest()).getMethod());
+                } catch (JspTagException te) {
+                    throw new RuntimeException(te);
+                }
+            }
+        };
 
     }
 
 
+    @Override
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         return handler.input(request, node, field, search);
     }
 
 
+    @Override
     public String htmlInputId(Node node, Field field) throws JspTagException {
         return handler.id(request, field);
     }
 
 
+    @Override
     public String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException {
         return handler.check(request, node, field, errors);
     }
 
 
+    @Override
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         return handler.set(request, node, field);
     }
 
 
+    @Override
     public String whereHtmlInput(Field field) throws JspTagException {
         throw new UnsupportedOperationException();
     }
@@ -181,14 +199,17 @@ public class DataTypeHandler implements TypeHandler {
     }
 
 
+    @Override
     public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException {
         handler.addParameter(request.getName(field), findString(field));
     }
 
+    @Override
     public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         return handler.search(request, field, query);
     }
 
+    @Override
     public void init() {
     }
 

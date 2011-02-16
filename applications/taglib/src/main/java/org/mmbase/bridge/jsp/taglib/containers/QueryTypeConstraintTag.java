@@ -37,6 +37,7 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
     protected Attribute inverse    = Attribute.NULL;
     protected Attribute descendants  = Attribute.NULL;
 
+    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
     }
@@ -79,6 +80,7 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
 
 
 
+    @Override
     public int doStartTag() throws JspTagException {
         Query query = getQuery(container);
         String elementString = element.getString(this);

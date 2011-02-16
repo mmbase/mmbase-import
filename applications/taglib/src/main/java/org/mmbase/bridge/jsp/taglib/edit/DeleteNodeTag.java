@@ -33,6 +33,7 @@ public class DeleteNodeTag extends NodeTag {
         return deleteRelations.getBoolean(this, false);
     }
         
+    @Override
     public int doEndTag() throws JspTagException {    
         org.mmbase.bridge.Node node = getNodeVar();
         if (node != null) {

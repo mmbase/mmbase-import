@@ -35,11 +35,13 @@ public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider
 
     protected  NodeProviderHelper nodeHelper = new NodeProviderHelper(this); // no m.i. and there are more nodeprovider which cannot extend this, they can use the same trick.
 
+    @Override
     public void setJspvar(String jv) {
         nodeHelper.setJspvar(jv);
     }
 
 
+    @Override
     public Node getNodeVar() {
         return nodeHelper.getNodeVar();
     }
@@ -59,22 +61,26 @@ public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider
         nodeHelper.fillVars();
     }
 
+    @Override
     public Query getGeneratingQuery() throws JspTagException {
         return nodeHelper.getGeneratingQuery();
     }
     /**
      * @since MMBase-1.8
      */
+    @Override
     public void setCommitonclose(String c) throws JspTagException {
         nodeHelper.setCommitonclose(c);
     }
 
 
+    @Override
     public int doEndTag() throws JspTagException {
         nodeHelper.doEndTag();
         return super.doEndTag();
     }
 
+    @Override
     public int doStartTag() throws JspTagException {
         initTag();
         Object value = getFunctionValue(false); // don't register, 'fillVars' will do.
@@ -107,6 +113,7 @@ public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider
     /**
      * this method writes the content of the body back to the jsp page
      **/
+    @Override
     public int doAfterBody() throws JspTagException { // write the body if there was one
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             if (bodyContent != null) {

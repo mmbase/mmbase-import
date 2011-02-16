@@ -69,17 +69,21 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag  imple
         return listHelper.getReturnList();
     }
 
+    @Override
     public Object getCurrent() {
         return listHelper.getCurrent();
     }
 
+    @Override
     public int getIndex() {
         return listHelper.getIndex();
     }
+    @Override
     public int getIndexOffset() {
         return listHelper.getIndexOffset();
     }
 
+    @Override
     public void remove() {
         listHelper.remove();
     }
@@ -126,12 +130,15 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag  imple
     public void setComparator(String c) throws JspTagException {
         listHelper.setComparator(c);
     }
+    @Override
     public void setAdd(String c) throws JspTagException {
         listHelper.setAdd(c);
     }
+    @Override
     public void setRetain(String c) throws JspTagException {
         listHelper.setRetain(c);
     }
+    @Override
     public void setRemove(String c) throws JspTagException {
         listHelper.setRemove(c);
     }
@@ -255,6 +262,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag  imple
     }
 
     // ContextProvider implementation
+    @Override
     public ContextContainer getContextContainer() throws JspTagException {
         return listHelper.getContextContainer();
     }
@@ -370,14 +378,17 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag  imple
      * If you order a list, then the 'changed' property will be
      * true if the field on which you order changed value.
      **/
+    @Override
     public boolean isChanged() {
         return listHelper.isChanged();
     }
 
+    @Override
     public int size() {
         return listHelper.size();
     }
 
+    @Override
     public LoopTagStatus getLoopStatus() {
         return listHelper.getLoopStatus();
     }

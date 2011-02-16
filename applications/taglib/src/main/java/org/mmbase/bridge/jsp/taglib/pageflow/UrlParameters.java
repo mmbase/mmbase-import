@@ -54,10 +54,12 @@ public class UrlParameters extends AbstractMap<String, Object> {
             log.debug("url parameters. " + wrapped);
         }
     }
+    @Override
     public int size() {
         getWrapped(false);
         return wrapped.size();
     }
+    @Override
     public Set<Map.Entry<String, Object>> entrySet() {
         getWrapped(false);
         return wrapped.entrySet();

@@ -22,6 +22,7 @@ import javax.servlet.jsp.JspTagException;
 
 public class MayDeleteTag extends MayWriteTag implements Condition {
 
+    @Override
     public int doStartTag() throws JspTagException {
         initTag();
         if ((getNode().mayDelete()) != getInverse()) {

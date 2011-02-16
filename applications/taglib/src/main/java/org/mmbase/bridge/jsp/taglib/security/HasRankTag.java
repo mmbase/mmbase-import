@@ -42,6 +42,7 @@ public class HasRankTag extends CloudReferrerTag implements Condition {
         maxValue = getAttribute(s);
     }
 
+    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
     }
@@ -51,6 +52,7 @@ public class HasRankTag extends CloudReferrerTag implements Condition {
 
     public final static Pattern IS_INTEGER = Pattern.compile("\\d+");
 
+    @Override
     public int doStartTag() throws JspTagException {
         boolean result;
         String minValueString = minValue.getString(this);
@@ -99,6 +101,7 @@ public class HasRankTag extends CloudReferrerTag implements Condition {
             return SKIP_BODY;
         }
     }
+    @Override
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
             try{

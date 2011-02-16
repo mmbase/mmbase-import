@@ -25,6 +25,7 @@ public class HasRelationsTag extends NodeReferrerTag implements Condition {
 
     protected Attribute inverse = Attribute.NULL;
 
+    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
     }

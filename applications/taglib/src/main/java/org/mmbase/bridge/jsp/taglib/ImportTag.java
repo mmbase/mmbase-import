@@ -78,6 +78,7 @@ public class ImportTag extends ContextReferrerTag {
 
 
 
+    @Override
     public int doStartTag() throws JspTagException {
         value = null;
         helper.setUse_Stack(false);
@@ -111,13 +112,13 @@ public class ImportTag extends ContextReferrerTag {
                 }
                 ContextContainer cc = getContextProvider().getContextContainer();
                 for (String f : fromsList) {
-                    int from = ContextContainer.stringToLocation(f);
-                    Object result = cc.find(pageContext, from, externid.getString(this));
-                    if (from == ContextContainer.LOCATION_THIS && result == null) {
-                        result = cc.find(pageContext, from, useId);
+                    int fromLocation = ContextContainer.stringToLocation(f);
+                    Object result = cc.find(pageContext, fromLocation, externid.getString(this));
+                    if (fromLocation == ContextContainer.LOCATION_THIS && result == null) {
+                        result = cc.find(pageContext, fromLocation, useId);
                     }
                     if (result != null) {
-                        if (! (from == ContextContainer.LOCATION_PARAMETERS || from == ContextContainer.LOCATION_MULTIPART)) {
+                        if (! (fromLocation == ContextContainer.LOCATION_PARAMETERS || fromLocation == ContextContainer.LOCATION_MULTIPART)) {
                             helper.overrideNoImplicitList();
                         }
                         cc.register(useId, result, ! res);
@@ -174,6 +175,7 @@ public class ImportTag extends ContextReferrerTag {
     }
 
 
+    @Override
     public int doEndTag() throws JspTagException {
         if (found) {
             setValue(value, WriterHelper.NOIMPLICITLIST);

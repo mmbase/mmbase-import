@@ -18,8 +18,9 @@ import org.mmbase.bridge.jsp.taglib.CloudTEI;
  */
 
 public class TransactionTEI extends CloudTEI {
+    @Override
     protected String cloudType() {
-        return "org.mmbase.bridge.Transaction";
+        return org.mmbase.bridge.Transaction.class.getName();
     }
 
 }

@@ -59,10 +59,12 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
     /**
      * @since MMBase-1.8.1
      */
+    @Override
     public void setJspvar(String jv) {
         jspVar = jv;
     }
 
+    @Override
     public Query getQuery() {
         if (query.isUsed()) {
             query.cloneQuery();
@@ -72,6 +74,7 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
 
 
 
+    @Override
     public int doStartTag() throws JspException {
         initTag();
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
@@ -112,6 +115,7 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
         return EVAL_BODY;
     }
 
+    @Override
     public int doAfterBody() throws JspTagException {
         if(EVAL_BODY == EVAL_BODY_BUFFERED) {
             try {
@@ -124,6 +128,7 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
         }
         return SKIP_BODY;
     }
+    @Override
     public int doEndTag() throws JspTagException {
         pageContext.setAttribute(KEY, prevQuery, SCOPE);
         prevQuery = null;

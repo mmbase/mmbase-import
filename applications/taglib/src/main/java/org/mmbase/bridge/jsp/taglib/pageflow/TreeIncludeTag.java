@@ -40,6 +40,7 @@ public class TreeIncludeTag extends IncludeTag {
 
     private TreeHelper th = new TreeHelper();
 
+    @Override
     protected String getPage() throws JspTagException {
         String orgPage = super.getPage();
         try {
@@ -60,6 +61,7 @@ public class TreeIncludeTag extends IncludeTag {
     }
 
 
+    @Override
     protected void initTag(boolean internal) throws JspTagException {
         th.setCloud(getCloudVar());
         th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
@@ -71,6 +73,7 @@ public class TreeIncludeTag extends IncludeTag {
         }
     }
 
+    @Override
     public void doFinally() {
         th.doFinally();
         super.doFinally();
@@ -78,6 +81,7 @@ public class TreeIncludeTag extends IncludeTag {
 
 
     // override to cancel
+    @Override
     protected boolean doMakeRelative() {
         log.debug("doMakeRelative() overridden!");
         return false;

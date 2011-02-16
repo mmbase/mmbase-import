@@ -48,6 +48,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
         pageContext = pc;
     }
 
+    @Override
     public void pushPageContext(PageContext pc) {
         assert pageContext == null || pageContext == pc;
         if (log.isDebugEnabled()) {
@@ -55,14 +56,17 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
         }
     }
 
+    @Override
     public void pullPageContext(PageContext pc) {
 
     }
 
+    @Override
     public PageContext getPageContext() {
         return pageContext;
     }
 
+    @Override
     public void setJspVar(PageContext pc, String jspvar, int vartype, Object value) {
         if (jspvar == null) return;
         if (value == null) return;
@@ -94,17 +98,21 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
             }
 
             ///Collection<String> names = unwrapped.keySet();
+            @Override
             public Iterator<Map.Entry<String, Object>> iterator() {
                 return new Iterator<Map.Entry<String, Object>>() {
                     Iterator<String> i = names.iterator();
                     String name;
+                    @Override
                     public Map.Entry<String, Object> next() {
                         name = i.next();
 
                         return new Map.Entry<String, Object>() {
+                            @Override
                             public String  getKey() {
                                 return name;
                             }
+                            @Override
                             public Object getValue() {
                                 try {
                                     return pageContext.findAttribute(name);
@@ -114,6 +122,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
                                     return null;
                                 }
                             }
+                            @Override
                             public Object setValue(Object value) {
                                 Object was = pageContext.findAttribute(name);
                                 if (value != null) {
@@ -126,9 +135,11 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
                             }
                         };
                     }
+                    @Override
                     public boolean hasNext() {
                         return i.hasNext();
                     }
+                    @Override
                     public void remove() {
                         pageContext.removeAttribute(name, SCOPE);
                         nulls.remove(name);
@@ -136,6 +147,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
                     }
                 };
             }
+            @Override
             public int size() {
                 return names.size();
             }
@@ -163,6 +175,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
             return false;
         }
     }
+    @Override
     public Object getOriginal(String key) {
         if (key == null) {
             return null; // pageContext cannot accept null keys
@@ -187,6 +200,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
     }
 
     @Override
+    @SuppressWarnings("element-type-mismatch")
     public boolean containsKey(Object key) {
         if (key instanceof String) {
             return pageContext.findAttribute((String) key) != null ||  nulls.contains(key);
@@ -195,10 +209,12 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
         }
     }
 
+    @Override
     public boolean containsOwnKey(String key) {
         return unwrapped.containsKey(key);
     }
 
+    @Override
     public Map<String, Object> getOriginalMap() {
         return unwrapped;
     }
@@ -209,6 +225,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
         jspvars.clear();
     }
 
+    @Override
     public boolean isELIgnored() {
         return false;
     }

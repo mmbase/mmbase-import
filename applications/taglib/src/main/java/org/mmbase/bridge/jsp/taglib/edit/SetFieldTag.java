@@ -29,6 +29,7 @@ import org.mmbase.util.Casting;
 public class SetFieldTag extends FieldTag { // but it is not a writer
     private static final Logger log = Logging.getLoggerInstance(SetFieldTag.class);
 
+    @Override
     protected String convert (String s) throws JspTagException {
         return s;
     }
@@ -36,12 +37,14 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
     private String body = null;
     private Attribute valueId = Attribute.NULL;
 
+    @Override
     public int doStartTag() throws JspException {
         initTag();
         setFieldVar(name.getString(this));
         return EVAL_BODY_BUFFERED;
     }
 
+    @Override
     public int doAfterBody() throws JspTagException {
         if (bodyContent != null) body = bodyContent.getString();
         return SKIP_BODY;
@@ -54,6 +57,7 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
     /**
      * Set the value of the field.
      */
+    @Override
     public int doEndTag() throws JspTagException {
         setFieldVar();
         Node node = getNode();

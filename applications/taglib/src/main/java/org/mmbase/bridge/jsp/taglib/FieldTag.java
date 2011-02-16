@@ -51,11 +51,13 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
      * A fieldprovider also provides a node.
      */
 
+    @Override
     public Node getNodeVar() throws JspTagException {
         return getNode();
     }
 
 
+    @Override
     public Field getFieldVar() {
         return field;
     }
@@ -322,6 +324,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     }
 
 
+    @Override
     public int doAfterBody() throws JspException {
         return helper.doAfterBody();
     }
@@ -329,6 +332,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     /**
      * write the value of the field.
      **/
+    @Override
     public int doEndTag() throws JspTagException {
         log.debug("doEndTag of FieldTag");
         if ((! "".equals(helper.getString()) && getReferid() != null)) {
@@ -338,6 +342,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         return super.doEndTag();
     }
 
+    @Override
     public void doFinally() {
         field = null;
         fieldName = null;

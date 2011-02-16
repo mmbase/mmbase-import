@@ -20,6 +20,7 @@ import org.mmbase.bridge.jsp.taglib.pageflow.CompareTag;
  */
 
 public class IsEmptyTag extends CompareTag  {
+    @Override
     protected Object getCompare2() throws JspTagException {
         return "";
     }

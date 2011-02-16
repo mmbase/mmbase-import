@@ -27,6 +27,7 @@ public class MayCreateTag extends CloudReferrerTag implements Condition {
     protected Attribute  type = Attribute.NULL;
     protected Attribute inverse = Attribute.NULL;
 
+    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
     }
@@ -38,6 +39,7 @@ public class MayCreateTag extends CloudReferrerTag implements Condition {
         type = getAttribute(t);
     }
 
+    @Override
     public int doStartTag() throws JspTagException {
         if ((getCloudVar().getNodeManager(type.getString(this)).mayCreateNode()) != getInverse()) {
             return EVAL_BODY;
@@ -46,6 +48,7 @@ public class MayCreateTag extends CloudReferrerTag implements Condition {
         }
     }
 
+    @Override
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
             try{

@@ -18,6 +18,7 @@ import org.mmbase.bridge.jsp.taglib.ListConditionTag;
  */
 
 public class ListLastTag extends ListConditionTag {
+    @Override
     protected final int getValue() throws JspTagException {
         return CONDITION_LAST;
     }

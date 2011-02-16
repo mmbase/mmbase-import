@@ -63,7 +63,7 @@ public class DurationHandler extends AbstractTypeHandler {
         }
 
         StringBuilder buffer = new StringBuilder();
-        buffer.append("<input type=\"hidden\" class=\"" + getClasses(node, field) + "\" name=\"");
+        buffer.append("<input type=\"hidden\" class=\"").append(getClasses(node, field)).append("\" name=\"");
         buffer.append(prefix(field.getName()));
         buffer.append("\" value=\"");
         buffer.append(currentValue);
@@ -110,9 +110,9 @@ public class DurationHandler extends AbstractTypeHandler {
         buffer.append("id=\"").append(minutesId).append("\">\n");
         for (int i = 0; i <= 59; i++) {
             if (currentMinutes == i) {
-                buffer.append("  <option selected=\"selected\">" + i + "</option>\n");
+                buffer.append("  <option selected=\"selected\">").append(i).append("</option>\n");
             } else {
-                buffer.append("  <option>" + i + "</option>\n");
+                buffer.append("  <option>").append(i).append("</option>\n");
             }
         }
         buffer.append("</select> min : ");
@@ -123,9 +123,9 @@ public class DurationHandler extends AbstractTypeHandler {
         buffer.append("id=\"").append(secondsId).append("\">\n");
         for (int i = 0; i <= 59; i++) {
             if (currentSeconds == i) {
-                buffer.append("  <option selected=\"selected\">" + i + "</option>\n");
+                buffer.append("  <option selected=\"selected\">").append(i).append("</option>\n");
             } else {
-                buffer.append("  <option>" + i + "</option>\n");
+                buffer.append("  <option>").append(i).append("</option>\n");
             }
         }
         buffer.append("</select> s . ");

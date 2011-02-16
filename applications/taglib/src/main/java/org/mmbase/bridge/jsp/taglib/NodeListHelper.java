@@ -43,6 +43,7 @@ public class NodeListHelper implements ListProvider {
         this.nodeHelper = nodeHelper;
     }
 
+    @Override
     public String getId() {
         try {
             return (String) thisTag.id.getValue(thisTag);
@@ -106,14 +107,17 @@ public class NodeListHelper implements ListProvider {
 
     private String previousValue = null;
 
+    @Override
     public int getIndex() {
         return currentItemIndex;
     }
 
+    @Override
     public int getIndexOffset() {
         return 1;
     }
 
+    @Override
     public void remove() {
         nodeIterator.remove();
     }
@@ -151,6 +155,7 @@ public class NodeListHelper implements ListProvider {
     /**
      * @since MMBase-1.8
      */
+    @Override
     public void setAdd(String a) throws JspTagException {
         add = thisTag.getAttribute(a);
     }
@@ -158,6 +163,7 @@ public class NodeListHelper implements ListProvider {
     /**
      * @since MMBase-1.8
      */
+    @Override
     public void setRetain(String a) throws JspTagException {
         retain = thisTag.getAttribute(a);
     }
@@ -165,6 +171,7 @@ public class NodeListHelper implements ListProvider {
     /**
      * @since MMBase-1.8
      */
+    @Override
     public void setRemove(String a) throws JspTagException {
         remove = thisTag.getAttribute(a);
     }
@@ -184,10 +191,12 @@ public class NodeListHelper implements ListProvider {
         return returnList;
     }
 
+    @Override
     public ContextContainer getContextContainer() throws JspTagException {
         if (collector == null) return thisTag.getContextProvider().getContextContainer(); // to make sure old-style implemntation work (which do not initialize container)
         return collector;
     }
+    @Override
     public PageContext getPageContext() throws JspTagException {
         return thisTag.getPageContext();
     }
@@ -350,6 +359,7 @@ public class NodeListHelper implements ListProvider {
         }
     }
 
+    @Override
     public int doEndTag() throws JspTagException {
         if (getId() != null) {
             thisTag.getContextProvider().getContextContainer().register(getId(), returnList, false); // use false because check was done in doStartTag (and doAfterBody not always called).
@@ -458,22 +468,27 @@ public class NodeListHelper implements ListProvider {
      * If you order a list, then the 'changed' property will be
      * true if the field on which you order changed value.
      **/
+    @Override
     public boolean isChanged() {
         return changed;
     }
 
+    @Override
     public int size() {
         return returnList.size();
     }
 
+    @Override
     public Object getCurrent() {
         return nodeHelper.getNodeVar();
     }
 
+    @Override
     public LoopTagStatus getLoopStatus() {
         return new ListProviderLoopTagStatus(this);
     }
 
+    @Override
     public void release() {
         doFinally();
     }
@@ -494,18 +509,22 @@ public class NodeListHelper implements ListProvider {
         previousValue = null;
     }
     // unused
+    @Override
     public int doStartTag() throws JspTagException {
         return -1;
     }
     // unused
+    @Override
     public Tag getParent() {
         return null;
     }
     // unused
+    @Override
     public void setParent(Tag tag) {
 
     }
     // unused
+    @Override
     public void setPageContext(PageContext pc) {
     }
 

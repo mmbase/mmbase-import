@@ -39,6 +39,7 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
 
     private List<Constraint> constraints;
 
+    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
     }
@@ -111,11 +112,13 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
         return newConstraint;
     }
 
+    @Override
     public int doStartTag() throws JspTagException {
         constraints = new ArrayList<Constraint>();
         return EVAL_BODY;
     }
 
+    @Override
     public int doAfterBody() throws JspTagException {
         Query query = getQuery(container);
 
@@ -131,6 +134,7 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
         }
         return SKIP_BODY;
     }
+    @Override
     public int doEndTag() throws JspTagException {
         constraints = null;
         return super.doEndTag();

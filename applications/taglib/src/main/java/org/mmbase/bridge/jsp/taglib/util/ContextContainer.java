@@ -132,6 +132,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     /**
      * @since MMBase-1.9.2
      */
+    @Override
     public Set<Entry<String, Object>> entrySet() {
         return entrySet(false);
     }
@@ -143,6 +144,10 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
 
     private   final String id;
 
+    // first non serializable parent must have non-argument constructor http://www.jguru.com/faq/view.jsp?EID=251942
+    protected ContextContainer() {
+        id = null;
+    }
 
     /**
      * Since a ContextContainer can contain other ContextContainer, it
@@ -455,6 +460,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     }
 
     @Override
+    @SuppressWarnings("element-type-mismatch")
     public Object remove(Object key) {
         return getBacking().remove(key);
     }
@@ -737,7 +743,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
             return false;
         } else {
             if (value instanceof Collection) {
-                if (((Collection) value).size() == 0) return false;
+                if (((Collection) value).isEmpty()) return false;
             }
             return true;
         }
@@ -801,15 +807,19 @@ class ContextContainerPair extends Pair {
         super(k, w);
         context = c;
     }
+    @Override
     final boolean containsKey(String key, boolean checkParent) throws JspTagException {
         return context.containsKey(key, checkParent);
     }
+    @Override
     final Object get(String key, boolean checkParent) throws JspTagException {
         return context.get(key, checkParent);
     }
+    @Override
     final void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException {
         context.register(newId, n, check, checkParent);
     }
+    @Override
     final void unRegister(String key, boolean checkParent) throws JspTagException {
         context.unRegister(key, checkParent);
     }
@@ -825,18 +835,22 @@ class MapPair extends Pair {
         super(k, w);
         map = c;
     }
+    @Override
     final boolean containsKey(String key, boolean checkParent) throws JspTagException {
         if (checkParent) throw new JspTagException("Cannot check parent of Map");
         return map.containsKey(key);
     }
+    @Override
     final Object get(String key, boolean checkParent) throws JspTagException {
         if (checkParent) throw new JspTagException("Cannot check parent of Map");
         return map.get(key);
     }
+    @Override
     final void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException {
         if (checkParent) throw new JspTagException("Cannot check parent of Map");
         map.put(newId, n);
     }
+    @Override
     final void unRegister(String key, boolean checkParent) throws JspTagException {
         if (checkParent) throw new JspTagException("Cannot check parent of Map");
         map.remove(key);
@@ -881,12 +895,14 @@ class BeanPair extends Pair {
         //}
         return method;
     }
+    @Override
     final boolean containsKey(String key, boolean checkParent) throws JspTagException {
         if (checkParent) {
             throw new JspTagException("Cannot check parent of Bean");
         }
         return getMethod(key) != null;
     }
+    @Override
     final Object get(String key, boolean checkParent) throws JspTagException {
         if (checkParent) throw new JspTagException("Cannot check parent of Bean");
         try {
@@ -897,9 +913,11 @@ class BeanPair extends Pair {
             throw new TaglibException(iae.getClass() + " Method " + getMethod(key) + " for " + bean + ": " + iae.getMessage(), iae);
         }
     }
+    @Override
     final void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException {
         throw new UnsupportedOperationException("Cannot register in a bean");
     }
+    @Override
     final void unRegister(String key, boolean checkParent) throws JspTagException {
         throw new UnsupportedOperationException("Cannot unregister in a bean");
     }
