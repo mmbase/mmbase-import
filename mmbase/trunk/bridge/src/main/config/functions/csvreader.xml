@@ -10,8 +10,8 @@
     <class>org.mmbase.util.CSVReader</class>
     <method>readCSV</method>
     <param name="filename"  type="String" description="The csv file to import" />
-	<param name="delimiter" type="String" description="Something other then a ," />
-	<param name="charset"   type="String" description="Another characterset then utf-8" />
+    <param name="delimiter" type="String" description="Something other then a ," />
+    <param name="charset"   type="String" description="Another characterset then utf-8" />
   </function>
 
   <function name="values">
@@ -39,18 +39,10 @@
     <type>class</type>
 	  <class>org.mmbase.util.CSVReader</class>
     <method>getValues</method>
-	<param name="filename"  type="String" description="The csv file to import" />
-	<param name="delimiter" type="String" description="Something other then a ," />
-	<param name="charset"   type="String" description="Another characterset then utf-8" />
+    <param name="filename"  type="String" description="The csv file to import" />
+    <param name="delimiter" type="String" description="Something other then a ," />
+    <param name="charset"   type="String" description="Another characterset then utf-8" />
     <return type="java.util.Map" />
-  </function>
-
-  <function name="description">
-    <description>Show description, like a toString method</description>
-    <type>class</type>
-    <class>org.mmbase.util.CSVReader</class>
-    <method>getDescription</method>
-    <return type="String" />
   </function>
 
 </functionset>
