@@ -461,7 +461,7 @@ public class ResourceLoader extends ClassLoader {
      */
     protected ResourceLoader() {
         super();
-        roots        = new ArrayList<PathURLStreamHandler>();
+        roots        = new CopyOnWriteArrayList<PathURLStreamHandler>();
         parent       = null;
         try {
             context = newURL(PROTOCOL + ":/");
