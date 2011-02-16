@@ -32,10 +32,12 @@ import org.mmbase.util.logging.Logging;
 public class CSVReader {
 
     private static final Logger log = Logging.getLoggerInstance(CSVReader.class);
+    private static final String DEFAULT_DELIM = ",";
+    private static final String DEFAULT_CHARSET = "UTT-8";
 
     private final String filename;
     private final String delimiter;
-    private String charset = "UTF-8";
+    private final String charset;
     private Pattern csv_pattern = Pattern.compile("\"([^\"]+?)\",?|([^,]+),?|,");
     public List<String> lines              = new ArrayList<String>();    // list with rows as strings
     public List<String> header             = new ArrayList<String>();
@@ -46,17 +48,17 @@ public class CSVReader {
      */
     public CSVReader(String filename, String delimiter, String charset) {
        this.filename = filename;
-       this.delimiter = delimiter;
-       this.charset = charset;
-       readCSV(filename, delimiter, charset);
+       this.delimiter = delimiter == null || delimiter.length() == 0 ? DEFAULT_DELIM : delimiter;
+       this.charset = charset == null || charset.length() == 0 ? DEFAULT_CHARSET : charset;
+       readCSV();
     }
 
     public CSVReader(String filename, String delimiter) {
-        this(filename, delimiter, "UTF-8");
+        this(filename, delimiter, null);
     }
 
     public CSVReader(String filename) {
-        this(filename, ",", "UTF-8");
+        this(filename, null);
     }
 
 
@@ -65,10 +67,9 @@ public class CSVReader {
      * @param filename  CSV file
      * @param delimiter the comma or something else TODO!
      * @param charset   by default UTF-8
-     * @todo the params are members too, which is a bit confusing for a non-static method.
      *
      */
-    public final void readCSV(String filename, String delimiter, String charset) {
+    private void readCSV() {
         if (log.isDebugEnabled()) {
             log.debug("filename: " + filename + ", delimiter: " + delimiter + ", charset: " + charset);
         }
@@ -117,12 +118,8 @@ public class CSVReader {
         return value;
     }
 
-    public Map<Integer, List<String>> getValues(String filename) {
-        return getValues(filename, null, null);
-    }
-
-    public Map<Integer, List<String>> getValues(String filename, String delimiter) {
-        return getValues(filename, delimiter, null);
+    public Map<Integer, List<String>> getValues() {
+        return rows;
     }
 
     /**
@@ -131,12 +128,14 @@ public class CSVReader {
      * @return map with an array per row with values
      * @todo   I don't understand why it does not return List<List<String>> in stead.
      */
-    public Map<Integer, List<String>> getValues(String filename, String delimiter, String charset) {
-        if (delimiter == null || "".equals(delimiter)) delimiter = this.delimiter;
-        if (charset == null || "".equals(charset)) charset = this.charset;
-        readCSV(filename, delimiter, charset);
-        return rows;
+    public static Map<Integer, List<String>> getValues(String filename, String delimiter, String charset) {
+        CSVReader reader = new CSVReader(filename, delimiter, charset);
+        return reader.getValues();
     }
+    public static CSVReader readCSV(String filename, String delimiter, String charset) {
+        return new CSVReader(filename, delimiter, charset);
+    }
+
 
     /**
      * Returns the number of rows in the CVS file.
