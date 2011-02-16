@@ -6,9 +6,9 @@
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     >
   <jsp:output omit-xml-declaration="true" />
-  <mm:import externid="node" from="request" />
-  <mm:import externid="field" from="request" required="true" />
-  <mm:import externid="query" from="request" required="true" />
+  <mm:import externid="field" from="request" required="true" vartype="org.mmbase.bridge.Field" />
+  <mm:import externid="node" from="request" vartype="org.mmbase.bridge.Node" />
+  <mm:import externid="query" from="request" required="true" vartype="org.mmbase.bridge.NodeQuery" />
   <mm:import externid="id" from="request" required="true" />
 
   <div id="${id}_sr_div">
@@ -29,14 +29,22 @@
       </mm:node>
     </mm:present>
     <mm:notpresent referid="node">
-      <!-- new node? -->
-      <span class="value"><jsp:text> </jsp:text></span>
+      <c:choose>
+        <c:when test="${! empty field.dataType.defaultValue}">
+          <mm:node number="${field.dataType.defaultValue.number}">
+            <span class="value"><mm:include page="nodevalue.jspx" /></span>
+          </mm:node>
+        </c:when>
+        <c:otherwise>
+          <span class="value"> </span>
+        </c:otherwise>
+      </c:choose>
     </mm:notpresent>
     <script type="text/javascript">
       if (typeof(MMBaseSearcher) != 'undefined') {
         $("#${id}").hide();
         $("#${id}_sr_div").bind("mmsrRelate",
-            function (e, tr, relater) {
+        function (e, tr, relater) {
                var number= relater.getNumber(tr);
                $("#${id}").val(number);
                $("#${id}").trigger("change");
