@@ -177,7 +177,15 @@ public class BinaryFile {
         private static final long serialVersionUID = 1L;
 
         public Object process(Node node, Field field, Object value) {
-
+            if (value instanceof String) {
+                File dir = getDirectory();
+                File file = new File(dir, (String) value);
+                try {
+                    value = new SerializableInputStream(new FileInputStream(file), file.length());
+                } catch (FileNotFoundException ex) {
+                    log.error(ex);
+                }
+            }
             return value;
         }
     }
