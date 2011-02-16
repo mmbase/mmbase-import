@@ -32,6 +32,7 @@ public class QueryDistinctTag extends CloudReferrerTag implements QueryContainer
     protected Attribute distinct   = Attribute.NULL;
 
 
+    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
     }
@@ -41,6 +42,7 @@ public class QueryDistinctTag extends CloudReferrerTag implements QueryContainer
     }
 
 
+    @Override
     public int doStartTag() throws JspTagException {
         Query query = getQuery(container);
         query.setDistinct(distinct.getBoolean(this, true));

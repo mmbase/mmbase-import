@@ -298,7 +298,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             if (dataType == null) {
                 log.warn("'" + type + "' is not a known datatype");
             }
-            String claz = DocumentReader.getElementValue(reader.getElementByPath(element, "fieldtype.class"));
+            String claz = DocumentReader.getElementValue(DocumentReader.getElementByPath(element, "fieldtype.class"));
             try {
                 log.debug("Adding field handler " + claz + " for type " + type + "(" + dataTypeClass + ")");
                 handlers.put(dataTypeClass, (Class<? extends TypeHandler>) Class.forName(claz));
@@ -362,14 +362,21 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             }
             final DataType dt = thisDataType;
             fieldProvider = new FieldProvider() {
-                    private final Field f = new DataTypeField(getCloudVar(), dt);
-                    public Field getFieldVar() { return f; }
-                    public String getId() { return null; }
-                    public Node getNodeVar() throws JspTagException {
-                        return FieldInfoTag.this.getNode(false);
-                    }
+                private final Field f = new DataTypeField(getCloudVar(), dt);
+                @Override
+                public Field getFieldVar() {
+                    return f;
+                }
+                @Override
+                public String getId() {
+                    return null;
+                }
+                @Override
+                public Node getNodeVar() throws JspTagException {
+                    return FieldInfoTag.this.getNode(false);
+                }
 
-                };
+            };
             field = fieldProvider.getFieldVar();
         } else {
             field = fieldProvider.getFieldVar();
@@ -451,7 +458,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         }
 
 
-        Locale locale = getLocale();;
+        Locale locale = getLocale();
         log.debug("Using locale " + locale);
 
         switch(infoType) {

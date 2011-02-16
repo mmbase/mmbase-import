@@ -17,6 +17,7 @@ import org.mmbase.bridge.jsp.taglib.ListConditionTag;
  * @version $Id$
  */
 public class ListFirstTag extends ListConditionTag {
+    @Override
     protected final int getValue() throws JspTagException {
         return CONDITION_FIRST;
     }

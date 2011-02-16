@@ -40,9 +40,9 @@ public class BooleanHandler extends AbstractTypeHandler {
      */
     @Override
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-        EnumHandler eh = getEnumHandler(node, field);
-        if (eh != null) {
-            return eh.htmlInput(node, field, search);
+        EnumHandler enumh = getEnumHandler(node, field);
+        if (enumh != null) {
+            return enumh.htmlInput(node, field, search);
         } else {
             StringBuilder buffer = new StringBuilder();
             buffer.append("<input type=\"checkbox\" class=\"");
@@ -74,9 +74,9 @@ public class BooleanHandler extends AbstractTypeHandler {
     @Override
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         log.debug("using html-input");
-        EnumHandler eh = getEnumHandler(node, field);
-        if (eh != null) {
-            return eh.useHtmlInput(node, field);
+        EnumHandler enumh = getEnumHandler(node, field);
+        if (enumh != null) {
+            return enumh.useHtmlInput(node, field);
         }
         return super.useHtmlInput(node, field);
     }
@@ -86,18 +86,18 @@ public class BooleanHandler extends AbstractTypeHandler {
      */
     @Override
     public String whereHtmlInput(Field field) throws JspTagException {
-        EnumHandler eh = getEnumHandler(null, field);
-        if (eh != null) {
-            return eh.whereHtmlInput(field);
+        EnumHandler enumh = getEnumHandler(null, field);
+        if (enumh != null) {
+            return enumh.whereHtmlInput(field);
         }
         return super.whereHtmlInput(field);
     }
 
     @Override
     public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
-        EnumHandler eh = getEnumHandler(null, field);
-        if (eh != null) {
-            return eh.whereHtmlInput(field, query);
+        EnumHandler enumh = getEnumHandler(null, field);
+        if (enumh != null) {
+            return enumh.whereHtmlInput(field, query);
         }
         return super.whereHtmlInput(field, query);
     }
@@ -112,8 +112,8 @@ public class BooleanHandler extends AbstractTypeHandler {
     @Override
     public Object getFieldValue(Node node, Field field) throws JspTagException {
         Object v = super.getFieldValue(node, field);
-        EnumHandler eh = getEnumHandler(null, field);
-        if (eh == null) {
+        EnumHandler enumh = getEnumHandler(null, field);
+        if (enumh == null) {
             // check-boxes.
           boolean posted = "yes".equals(tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()) + "_check"));
           if (posted) {

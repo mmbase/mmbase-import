@@ -10,12 +10,11 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.Condition;
 import javax.servlet.jsp.JspTagException;
 
 
 /**
- * Straight-forward wrapper arround {@link org.mmbase.bridge.Cloud#hasNode}.
+ * Straight-forward wrapper around {@link org.mmbase.bridge.Cloud#hasNode}.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -27,6 +26,7 @@ public class HasNodeTag extends CloudReferrerTag implements Condition {
     protected Attribute inverse = Attribute.NULL;
     protected Attribute number    = Attribute.NULL;
 
+    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
     }

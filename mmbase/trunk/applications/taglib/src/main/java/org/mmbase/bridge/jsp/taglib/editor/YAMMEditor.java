@@ -44,6 +44,7 @@ public class YAMMEditor extends Editor {
     };
 
 
+    @Override
     protected Parameter[] getParameterDefinition() {
         return PARAMS;
     }
@@ -65,6 +66,7 @@ public class YAMMEditor extends Editor {
      *
      * @param context PageContext used to write a string with a link and an icon to access yammeditor.jsp
      */
+    @Override
     public void getEditorHTML(PageContext context) throws IOException {
         String html = "Sorry. You should see an icon and a link to yammeditor here.";
 

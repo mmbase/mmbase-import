@@ -33,6 +33,7 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
     private boolean foundBody;
     private boolean write;
 
+    @Override
     public int size() {
         if (! foundSize) { // avoid determining size if it is never requested
             size = index;
@@ -45,6 +46,7 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
     }
 
 
+    @Override
     public int doStartTag() throws JspTagException {
         log.debug("starttag");
         doStartTagHelper();
@@ -76,6 +78,7 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
             return SKIP_BODY;
         }
     }
+    @Override
     public void doInitBody() throws JspException {
         // called once, if there is a body.
         log.debug("initbody");
@@ -98,6 +101,7 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
     }
 
 
+    @Override
     public int doAfterBody() throws JspTagException {
         log.debug("afterbody");
         if (index == 0) {
@@ -145,6 +149,7 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
 
     }
 
+    @Override
     public int doEndTag() throws JspTagException {
         log.debug("endtag");
         if (! foundBody) { // write everything to page!
@@ -152,7 +157,7 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
             if (stack.size() > 0) {
                 log.debug("no body, doing work");
                 Entry entry = stack.peek();
-                StringBuffer value = new StringBuffer();
+                StringBuilder value = new StringBuilder();
                 while (depth >= endDepth) {
                     log.debug("writing now " + entry.string);
                     value.append(entry.string);
@@ -176,12 +181,13 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
     }
 
 
-    static class Entry {
+    public static class Entry {
         Entry(int d, String s) {
             depth = d; string = s;
         }
         public int depth;
         public String string;
+        @Override
         public String toString() {
             return "" + depth + ":" + string;
         }

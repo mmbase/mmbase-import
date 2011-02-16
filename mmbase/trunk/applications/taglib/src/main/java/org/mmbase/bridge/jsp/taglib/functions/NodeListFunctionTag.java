@@ -40,45 +40,55 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
 
 
     // implementation of NodeProvider
+    @Override
     public Node getNodeVar() throws JspTagException {
         return nodeHelper.getNodeVar();
     }
 
+    @Override
     public Query getGeneratingQuery() throws JspTagException {
         return nodeHelper.getGeneratingQuery();
     }
     /**
      * @since MMBase-1.8
      */
+    @Override
     public void setCommitonclose(String c) throws JspTagException {
         nodeHelper.setCommitonclose(c);
     }
 
+    @Override
     public void setJspvar(String jv) {
         nodeHelper.setJspvar(jv);
     }
 
     // implementation of ListProvider
+    @Override
     public int size() {
         return listHelper.size();
     }
 
+    @Override
     public int getIndex() {
         return listHelper.getIndex();
     }
 
+    @Override
     public int getIndexOffset() {
         return listHelper.getIndexOffset();
     }
 
+    @Override
     public boolean isChanged() {
         return listHelper.isChanged();
     }
 
+    @Override
     public Object getCurrent() {
         return listHelper.getCurrent();
     }
 
+    @Override
     public void remove() {
         listHelper.remove();
     }
@@ -95,12 +105,15 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
     public void setComparator(String c) throws JspTagException {
         listHelper.setComparator(c);
     }
+    @Override
     public void setAdd(String c) throws JspTagException {
         listHelper.setAdd(c);
     }
+    @Override
     public void setRetain(String c) throws JspTagException {
         listHelper.setRetain(c);
     }
+    @Override
     public void setRemove(String c) throws JspTagException {
         listHelper.setRemove(c);
     }
@@ -108,10 +121,12 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
         listHelper.setVarStatus(s);
     }
 
+    @Override
     public ContextContainer getContextContainer() throws JspTagException {
         return listHelper.getContextContainer();
     }
 
+    @Override
     public int doStartTag() throws JspTagException {
         initTag();
         NodeList list;
@@ -134,24 +149,28 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
         return listHelper.setReturnValues(list, true);
     }
 
+    @Override
     public int doAfterBody() throws JspException {
         log.debug("doafterbody");
         nodeHelper.doAfterBody();
         return listHelper.doAfterBody();
     }
 
+    @Override
     public int doEndTag() throws JspTagException {
         super.doEndTag();
         listHelper.doEndTag();
         return nodeHelper.doEndTag();
     }
 
+    @Override
     public void doFinally() {
         super.doFinally();
         listHelper.doFinally();
         nodeHelper.doFinally();
     }
 
+    @Override
     public javax.servlet.jsp.jstl.core.LoopTagStatus getLoopStatus() {
         return new ListProviderLoopTagStatus(this);
     }

@@ -83,6 +83,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
     }
 
 
+    @Override
     public int doStartTag() throws JspTagException {
         Object compare1;
 
@@ -156,7 +157,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                             compare2 = new BigDecimal("0");
                         } else if("true".equals(((String)compare2).toLowerCase()) || "false".equals((((String)compare2).toLowerCase()))) {
                             //if compare1 was a boolean it will be a number by now, and we will have to change compare2 to a number too.
-                            compare2 = new BigDecimal(Casting.toInteger(new Boolean((String)compare2)));
+                            compare2 = new BigDecimal(Casting.toInteger(Boolean.valueOf((String) compare2)));
                         } else {
                             compare2 = new BigDecimal((String)compare2);
                         }

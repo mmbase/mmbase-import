@@ -60,6 +60,7 @@ public class ListConditionTag extends ListReferrerTag implements Condition {
         }
     }
 
+    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
     }

@@ -9,17 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.edit;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.Transaction;
 
 import org.mmbase.util.logging.*;
 
 /**
  * This tag can be used inside a transaction tag, to commit it. It also
- * serves as a baseclass for e.g. CancelTag
+ * serves as a base class for e.g. CancelTag
  *
  * @author Michiel Meeuwissen
  * @version $Id$

@@ -317,9 +317,10 @@ public class WriterHelper {
 
 
     /**
-     * Sets only the value in the helper, withouth setting the _Stack
+     * Sets only the value in the helper, without setting the _Stack
      * @since MMBase-1.8
      */
+    @SuppressWarnings("UseOfObsoleteCollectionType")
     public void setValueOnly(Object v, boolean noImplicitList) throws JspTagException {
         value = null;
         if (noImplicitList && ! overrideNoImplicitList &&  vartype != TYPE_LIST && vartype != TYPE_VECTOR && vartype != TYPE_SET) {

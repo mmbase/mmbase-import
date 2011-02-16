@@ -59,12 +59,14 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
         debug = getAttribute(d);
     }
 
+    @Override
     public void addParameter(String key, Object value) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("adding parameter " + key + "/" + value);
         }
         extraParameters.add(new Entry<String, Object>(key, value));
     }
+    @Override
     public void addFrameworkParameter(String key, Object value) {
         extraFrameworkParameters.add(new Entry<String, Object>(key, value));
     }

@@ -37,10 +37,12 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
     public void setMaxdepth(String md) throws JspTagException {
         maxDepth = getAttribute(md);
     }
+    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
     }
 
+    @Override
     public void setJspvar(String jv) {
         jspVar = jv;
     }
@@ -52,9 +54,11 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
     }
 
 
+    @Override
     public Query getQuery() {
         return getNodeQuery();
     }
+    @Override
     public NodeQuery getNodeQuery() {
         return tree.getTemplate();
     }

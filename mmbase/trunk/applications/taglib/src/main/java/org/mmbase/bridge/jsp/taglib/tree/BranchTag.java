@@ -32,6 +32,7 @@ public class BranchTag extends ContextReferrerTag implements QueryContainerRefer
     private Attribute role        = Attribute.NULL;
     private Attribute searchDir   = Attribute.NULL;
 
+    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
     }
@@ -48,6 +49,7 @@ public class BranchTag extends ContextReferrerTag implements QueryContainerRefer
     }
 
 
+    @Override
     public int doStartTag() throws JspTagException {
         GrowingTreeList tree = (findParentTag(TreeContainerTag.class, (String) container.getValue(this), true)).getTree();
         NodeManager nm = tree.getCloud().getNodeManager(nodeManager == Attribute.NULL ? "object" : nodeManager.getString(this));

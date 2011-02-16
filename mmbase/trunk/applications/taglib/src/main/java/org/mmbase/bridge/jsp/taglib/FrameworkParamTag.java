@@ -34,11 +34,13 @@ public class FrameworkParamTag extends AbstractParamTag implements FrameworkPara
         return super.doStartTag();
     }
 
+    @Override
     public void addFrameworkParameter(String key, Object value) throws JspTagException {
         super.addParameter(key, value);
     }
     /**
      */
+    @Override
     protected void addParameter(Object value) throws JspTagException {
         if (name == Attribute.NULL) {
             if (value instanceof CharSequence) {

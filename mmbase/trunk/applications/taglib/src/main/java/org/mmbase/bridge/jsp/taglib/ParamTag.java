@@ -44,6 +44,7 @@ public class ParamTag extends AbstractParamTag implements ParamHandler {
     /**
      * @since MMBase-1.9
      */
+    @Override
     protected void addParameter(Object value) throws JspTagException {
         if (name == Attribute.NULL) {
             if (value instanceof CharSequence) {

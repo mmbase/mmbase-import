@@ -91,6 +91,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
         isELIgnored = ignoreEL;
     }
 
+    @Override
     public void pushPageContext(PageContext pc) {
         PageContext origPageContext = pageContext;
         pageContext = pc;
@@ -116,6 +117,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
             }
         }
     }
+    @Override
     public void pullPageContext(PageContext pc) {
         //System.out.println("Pulling " + pc);
         release();
@@ -124,10 +126,12 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
         originalPageContextValues = (Map<String, Object>) pageContext.getAttribute(PAGECONTEXT_KEY + uniqueNumber);
     }
 
+    @Override
     public PageContext getPageContext() {
         return pageContext;
     }
 
+    @Override
     public void setJspVar(PageContext pc, String jspvar, int vartype, Object value) {
         if (jspvar == null) return;
         if (value == null) return;
@@ -147,26 +151,33 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     public Set<Map.Entry<String, Object>> entrySet() {
         //System.out.println("" + Logging.stackTrace());
         return new AbstractSet<Map.Entry<String, Object>>() {
+            @Override
             public int size() {
                 return b.size();
             }
+            @Override
             public Iterator<Map.Entry<String, Object>> iterator() {
                 return new Iterator<Map.Entry<String, Object>>() {
                     Iterator<Map.Entry<String, Object>> i = b.entrySet().iterator();
                     Map.Entry<String, Object> last = null;
+                    @Override
                     public boolean hasNext() {
                         return i.hasNext();
                     }
+                    @Override
                     public Map.Entry<String, Object> next() {
                         last = new Map.Entry<String, Object>() {
                             final Map.Entry<String, Object> wrapped = i.next();
+                            @Override
                             public final String getKey() {
                                 return wrapped.getKey();
                             }
+                            @Override
                             public final Object getValue() {
                                 return wrapped.getValue();
                             }
 
+                            @Override
                             public final Object setValue(Object v) {
                                 BasicBacking.this.mirrorPut(wrapped.getKey(), v);
                                 return wrapped.setValue(v);
@@ -179,6 +190,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
                         };
                         return last;
                     }
+                    @Override
                     public void remove() {
                         i.remove();
                         if (! isELIgnored) {
@@ -245,12 +257,14 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
 
     // overriden for efficiency only (the implementation of AbstractMap does not seem very efficient)
     @Override
+    @SuppressWarnings("element-type-mismatch")
     public Object get(Object key) {
         return b.get(key);
     }
 
     // Override for efficiency and synchronization
     @Override
+    @SuppressWarnings("element-type-mismatch")
     public Object remove(Object key) {
         return b.remove(key);
     }
@@ -261,17 +275,21 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     }
 
     @Override
+    @SuppressWarnings("element-type-mismatch")
     public boolean containsKey(Object key) {
         return b.containsKey(key);
     }
 
+    @Override
     public Object getOriginal(String key) {
         return b.get(key);
     }
 
+    @Override
     public Map<String, Object> getOriginalMap() {
         return b;
     }
+    @Override
     public boolean containsOwnKey(String key) {
         return b.containsKey(key);
     }
@@ -295,6 +313,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     /**
      * @since MMBase-1.9.1
      */
+    @Override
     public boolean isELIgnored() {
         return isELIgnored;
     }

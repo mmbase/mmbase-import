@@ -41,24 +41,30 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
     protected Attribute  varStatus  = Attribute.NULL;
     protected String varStatusName  = null;
 
+    @Override
     public int size(){
         return returnList.size();
     }
+    @Override
     public int getIndex() {
         return currentItemIndex;
     }
 
+    @Override
     public int getIndexOffset() {
         return 1;
     }
 
+    @Override
     public boolean isChanged() {
         return true;
     }
+    @Override
     public Object getCurrent() {
         return getWriterValue();
     }
 
+    @Override
     public void remove() {
         iterator.remove();
     }
@@ -68,14 +74,17 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         max = getAttribute(m);
     }
 
+    @Override
     public void setAdd(String a) throws JspTagException {
         add = getAttribute(a);
     }
 
+    @Override
     public void setRetain(String r) throws JspTagException {
         retain = getAttribute(r);
     }
 
+    @Override
     public void setRemove(String r) throws JspTagException {
         remove = getAttribute(r);
     }
@@ -104,6 +113,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
 
 
     // ContextProvider implementation
+    @Override
     public ContextContainer getContextContainer() {
         return collector;
     }
@@ -275,6 +285,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         }
     }
 
+    @Override
     public LoopTagStatus getLoopStatus() {
         return new ListProviderLoopTagStatus(this);
     }

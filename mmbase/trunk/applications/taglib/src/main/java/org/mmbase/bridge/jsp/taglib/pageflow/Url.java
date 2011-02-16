@@ -389,22 +389,27 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         string = cacheEscapeAmp = cacheNoEscapeAmp = null;
     }
 
+    @Override
     public char charAt(int index) {
         return get().charAt(index);
     }
+    @Override
     public int length() {
         return get().length();
     }
+    @Override
     public CharSequence subSequence(int start, int end) {
         return get().subSequence(start, end);
     }
 
+    @Override
     public String toString() {
         // this means that it is written to page by ${_} and that consequently there _must_ be a body.
         // this is needed when body is not buffered.
         tag.haveBody();
         return get();
     }
+    @Override
     public int compareTo(Object o) {
         return toString().compareTo(Casting.toString(o));
     }
@@ -415,7 +420,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         page = page.toString();
     }
     /**
-     * Add a key/value pair to a map, but does not replace the already exsiting mapping.
+     * Add a key/value pair to a map, but does not replace the already existing mapping.
      * In stead, the already mapped value is converted to a list, contain both values.
      */
     public static Map<String, Object> addParameter(Map<String, Object> map, String key, Object value) {

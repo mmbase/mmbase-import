@@ -28,6 +28,7 @@ public class BooleanFunctionTag extends AbstractFunctionTag implements Condition
 
     protected Attribute  inverse      = Attribute.NULL;
 
+    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
     }
@@ -36,6 +37,7 @@ public class BooleanFunctionTag extends AbstractFunctionTag implements Condition
         return inverse.getBoolean(this, false);
     }
 
+    @Override
     public int doStartTag() throws JspTagException {
         initTag();
         Object value = getFunctionValue();
@@ -44,6 +46,7 @@ public class BooleanFunctionTag extends AbstractFunctionTag implements Condition
     }
 
 
+    @Override
     public int doAfterBody() throws JspTagException {
         try{
             if(bodyContent != null) {

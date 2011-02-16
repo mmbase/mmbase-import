@@ -22,5 +22,6 @@ public interface FunctionContainerReferrer extends ContainerReferrer {
     /**
      * If it should not use parent container 
      */
+    @Override
     void setContainer(String c)  throws JspTagException;
 }

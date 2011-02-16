@@ -29,6 +29,7 @@ public class IsNullTag extends FieldReferrerTag implements Condition {
     protected Attribute inverse = Attribute.NULL;
     protected Attribute name    = Attribute.NULL;
 
+    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b, true);
     }

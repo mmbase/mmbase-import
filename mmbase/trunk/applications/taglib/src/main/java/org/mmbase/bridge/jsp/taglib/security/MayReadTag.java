@@ -31,12 +31,14 @@ public class MayReadTag extends CloudReferrerTag implements Condition {
     protected Attribute referid = Attribute.NULL;
     protected Attribute number = Attribute.NULL;
 
+    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
     }
     public void setNumber(String n) throws JspTagException {
         number = getAttribute(n);
     }
+    @Override
     public void setReferid(String r) throws JspTagException {
         referid = getAttribute(r);
     }
@@ -44,6 +46,7 @@ public class MayReadTag extends CloudReferrerTag implements Condition {
         return inverse.getBoolean(this, false);
     }
 
+    @Override
     public int doStartTag() throws JspTagException {
         Cloud cloud = getCloudVar();
         String n   = number.getString(this);
@@ -63,6 +66,7 @@ public class MayReadTag extends CloudReferrerTag implements Condition {
             return SKIP_BODY;
         }
     }
+    @Override
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
             try{
