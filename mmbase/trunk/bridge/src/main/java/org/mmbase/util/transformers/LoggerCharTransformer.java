@@ -33,7 +33,8 @@ public class LoggerCharTransformer extends ReaderTransformer implements CharTran
         super();
     }
 
-    // implementation, javadoc inherited
+
+    @Override
     public Writer transform(Reader r, Writer w) {
         LOG.service("Logging " + r + " -> " + w);
         try {

@@ -15,7 +15,6 @@ import java.lang.reflect.*;
 import org.mmbase.util.*;
 import org.mmbase.cache.Cache;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.functions.Required;
 
 
 /**
@@ -23,7 +22,7 @@ import org.mmbase.util.functions.Required;
  * The system searches in a provided base path for a filename that matches the supplied number/alias of
  * a node (possibly extended with a version number). See the documentation on the TREEPART SCAN command for more info.
  *
- * This class can be overriden to make an even smarter search possible.
+ * This class can be overridden to make an even smarter search possible.
  * Used to be {@link org.mmbase.module.core.SmartPathFunction}.
  *
  * @since MMBase-2.0
@@ -32,14 +31,16 @@ import org.mmbase.util.functions.Required;
 public class SmartPathFunction {
     private static final Logger log = Logging.getLoggerInstance(SmartPathFunction.class);
 
-    protected static Cache<String, String> smartPathCache = new Cache<String, String>(100) {
-            public String getName() {
-                return "SmartPathCache";
-            }
-            public String getDescription() {
-                return "Caches the result of the 'smartpath' function";
-            }
-        };
+    protected static final Cache<String, String> smartPathCache = new Cache<String, String>(100) {
+        @Override
+        public String getName() {
+            return "SmartPathCache";
+        }
+        @Override
+        public String getDescription() {
+            return "Caches the result of the 'smartpath' function";
+        }
+    };
     static {
         smartPathCache.putCache();
     }
@@ -153,7 +154,7 @@ public class SmartPathFunction {
         String node = nodeNumber;
         if (version != null) node += "\\." + version;
         Set s = child.getChildContexts(Pattern.compile(".*\\D" + node + "\\D.*"), false);
-        if (s.size() == 0) {
+        if (s.isEmpty()) {
             return null;
         } else {
             return path + s.iterator().next() + "/";

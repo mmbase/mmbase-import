@@ -32,7 +32,7 @@ public interface Function<R> {
      * Creates an empty 'Parameters'  object for you, which you have to fill and feed back to getFunctionValue
      * @see #getFunctionValue(Parameters)
      */
-    public Parameters createParameters();
+    Parameters createParameters();
 
     /**
      * Executes the defined function supplying the given arguments.
@@ -41,7 +41,7 @@ public interface Function<R> {
      *                   Implementors are encouraged to support <code>null</code> too.
      * @return The function value, which can be of any type compatible to {@link #getReturnType}
      */
-    public R getFunctionValue(Parameters parameters);
+    R getFunctionValue(Parameters parameters);
 
     /**
      * Executes the defined function supplying the given List of arguments.
@@ -50,53 +50,53 @@ public interface Function<R> {
      *
      * @return The function value, which can be of any type compatible to {@link #getReturnType}
      */
-    public R getFunctionValueWithList(List<?> parameters);
+    R getFunctionValueWithList(List<?> parameters);
 
     /**
      * A 'varargs' version of {@link getFunctionValueWithList}.
      * @since MMBase-2.0
      */
-    public R getFunctionValueWithArgs(Object... parameters);
+    R getFunctionValueWithArgs(Object... parameters);
 
 
     /**
      * For documentational  purposes a function object needs a description too.
      */
-    public void setDescription(String description);
+    void setDescription(String description);
 
     /**
      * @see #setDescription(String)
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      * A function <em>must</em> have a name. This is the name which was used to aquire the function object.
      * @return The function's name, never <code>null</code>
      */
-    public String getName();
+    String getName();
 
     /**
      * @return The currently set Parameter definition array, or <code>null</code> if not set already.
      */
-    public Parameter<?>[] getParameterDefinition();
+    Parameter<?>[] getParameterDefinition();
 
     /**
      * A function object is of no use, as long as it lacks a definition.
      * @param params An array of Parameter objects.
      * @throws IllegalStateException if there was already set a parameter definition for this function object.
      */
-    public void setParameterDefinition(Parameter<?>[] params);
+    void setParameterDefinition(Parameter<?>[] params);
 
     /**
      * @return The return type of the function's result value, or <code>null</code> if unknown.
      */
-    public ReturnType<R> getReturnType();
+    ReturnType<R> getReturnType();
 
     /**
      * Sets the return type of the function's result value.
      * @param type A ReturnType object. For void functions that could be {@link ReturnType#VOID}.
      * @throws IllegalStateException if there was already set a return type for this function object.
      */
-    public void setReturnType(ReturnType<R> type);
+    void setReturnType(ReturnType<R> type);
 
 }

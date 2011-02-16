@@ -153,11 +153,12 @@ public class MethodFunction extends AbstractFunction<Object> {
 
         setParameterDefinition(def);
 
-        ReturnType returnType = ReturnType.getReturnType(method.getReturnType());
-        setReturnType(returnType);
+        ReturnType rt = ReturnType.getReturnType(method.getReturnType());
+        setReturnType(rt);
 
     }
 
+    @Override
     public Object getFunctionValue(Parameters parameters) {
         try {
             return method.invoke(instance, parameters.subList(0, getParameterDefinition().length).toArray());

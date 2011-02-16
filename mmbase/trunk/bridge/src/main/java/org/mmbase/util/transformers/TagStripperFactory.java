@@ -193,9 +193,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
     private static class ChainedAllowance extends Allowance {
         private final List<Allowance> allowances = new ArrayList<Allowance>();
         void add(Allowance... alls) {
-            for (Allowance a : alls) {
-                allowances.add(a);
-            }
+            allowances.addAll(Arrays.asList(alls));
         }
         @Override
         Allows allows(String p) {

@@ -21,12 +21,14 @@ import org.mmbase.util.functions.AutodefiningParameters;
 
 public class CopierFactory implements  ParameterizedTransformerFactory<CharTransformer>  {
 
+    @Override
     public CharTransformer createTransformer(Parameters parameters) {
         return CopyCharTransformer.INSTANCE;
     }
 
     /**
      */
+    @Override
     public Parameters createParameters() {
         return new AutodefiningParameters();
     }
