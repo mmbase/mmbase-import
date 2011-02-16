@@ -38,6 +38,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
     /**
      * @return The currently set ReturnType, or <code>null</code> if not set already.
      */
+    @Override
     public ReturnType<R> getReturnType() {
         if (returnType == null && autoReturnType) {
             try {
@@ -131,8 +132,9 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
 
     /**
      * To implement a NodeFunction, you must override {@link #getFunctionValue(Node, Parameters)}.
-     * This one can be overriden if the same function must <em>also</em> be a builder function.
+     * This one can be overridden if the same function must <em>also</em> be a builder function.
      */
+    @Override
     public  R getFunctionValue(Parameters parameters) {
         log.debug("Getting for " + this + " " + parameters);
         return  getFunctionValue(getNode(parameters), parameters);
@@ -156,15 +158,19 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
             if (test.containsParameter(Parameter.NODE)) {
                 final Function<S> f = function;
                 return new NodeFunction<S>(function.getName(), function.getParameterDefinition(), function.getReturnType()) {
-                        protected S getFunctionValue(org.mmbase.bridge.Node node, Parameters parameters) {
-                            if (parameters == null) parameters = createParameters();
-                            parameters.set(Parameter.NODE, node);
-                            return f.getFunctionValue(parameters);
+                    @Override
+                    protected S getFunctionValue(org.mmbase.bridge.Node node, Parameters parameters) {
+                        if (parameters == null) {
+                            parameters = createParameters();
                         }
-                        public  S getFunctionValue(Parameters parameters) {
-                            return f.getFunctionValue(parameters);
-                        }
-                    };
+                        parameters.set(Parameter.NODE, node);
+                        return f.getFunctionValue(parameters);
+                    }
+                    @Override
+                    public S getFunctionValue(Parameters parameters) {
+                        return f.getFunctionValue(parameters);
+                    }
+                };
             } else {
                 return null;
             }

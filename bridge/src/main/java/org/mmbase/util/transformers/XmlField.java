@@ -943,21 +943,21 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         // from org.xml.sax.ErrorHandler
         @Override
         public void fatalError(org.xml.sax.SAXParseException exc) {
-            errorBuff.append("FATAL[" + getLocationString(exc) + "]:" + exc.getMessage() + "\n");
+            errorBuff.append("FATAL[").append(getLocationString(exc)).append("]:").append(exc.getMessage()).append("\n");
             errorOrWarning = true;
         }
 
         // from org.xml.sax.ErrorHandler
         @Override
         public void error(org.xml.sax.SAXParseException exc) {
-            errorBuff.append("Error[" + getLocationString(exc) + "]: " + exc.getMessage() + "\n");
+            errorBuff.append("Error[").append(getLocationString(exc)).append("]: ").append(exc.getMessage()).append("\n");
             errorOrWarning = true;
         }
 
         // from org.xml.sax.ErrorHandler
         @Override
         public void warning(org.xml.sax.SAXParseException exc) {
-            errorBuff.append("Warning[" + getLocationString(exc) + "]:" + exc.getMessage() + "\n");
+            errorBuff.append("Warning[").append(getLocationString(exc)).append("]:").append(exc.getMessage()).append("\n");
             errorOrWarning = true;
         }
 

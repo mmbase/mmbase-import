@@ -3,7 +3,6 @@ package org.mmbase.util.functions;
 //import org.mmbase.module.core.*;
 //import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.*;
 import org.mmbase.bridge.*;
 import java.util.*;
 import org.mmbase.util.logging.Logger;
@@ -43,15 +42,15 @@ public final class ExampleBean {
     }
 
     /**
-     * Makes this bean useable as a Node function.
+     * Makes this bean usable as a Node function.
      */
     public void setNode(Node node) {
         this.node = node;
     }
 
     /**
-     * Makes the functions useable in bridge (so with security). See also {@link
-     * Parameter#CLOUD}. This is an example of a parameter which is automaticly filled by function tags.
+     * Makes the functions usable in bridge (so with security). See also {@link
+     * Parameter#CLOUD}. This is an example of a parameter which is automatically filled by function tags.
      */
     public void setCloud(Cloud c) {
         cloud = c;

@@ -49,9 +49,7 @@ public class AutodefiningParameters extends Parameters {
             return i;
         } else {
             Parameter<Object>[] newDef = new Parameter[definition.length + 1];
-            for (int i = 0; i < definition.length; i++) {
-                newDef[i] = definition[i];
-            }
+            System.arraycopy(definition, 0, newDef, 0, definition.length);
             newDef[newDef.length - 1] = param;
             definition = newDef;
             toIndex++;

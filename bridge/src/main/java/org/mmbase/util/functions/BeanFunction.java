@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * All other methods (with no arguments) of the class correspond to the functions. So, you can
  * implement more bean-functions in the same class, as long as they have the same parameters.
  * </p><p>
- * A BeanFunction can be aquired via {@link FunctionFactory#getFunction(Class, String)} (which
+ * A BeanFunction can be acquired via {@link FunctionFactory#getFunction(Class, String)} (which
  * delegates to a static method in this class).
  * </p>
  * @author Michiel Meeuwissen
@@ -76,7 +76,7 @@ public class BeanFunction extends AbstractFunction<Object> {
     /**
      * A cache for bean classes. Used to avoid some reflection.
      */
-    private static Cache<String, BeanFunction> beanFunctionCache = new Cache<String, BeanFunction>(50) {
+    private static final Cache<String, BeanFunction> beanFunctionCache = new Cache<String, BeanFunction>(50) {
         @Override
         public String getName() {
             return "BeanFunctionCache";

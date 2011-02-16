@@ -25,6 +25,7 @@ public class ProcessorCharTransformer extends StringTransformer {
     public ProcessorCharTransformer(Processor p) {
         wrapped = p;
     }
+    @Override
     public String transform(String r) {
         if (r == null) return null;
         return Casting.toString(wrapped.process(null, null, Casting.toString(r)));
