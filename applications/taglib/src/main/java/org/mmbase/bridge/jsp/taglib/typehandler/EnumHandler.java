@@ -203,7 +203,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             }
         }
         String maxLength =  tag.getPageContext().getServletContext().getInitParameter("mmbase.taglib.max_enumhandler_length");
-        int max = maxLength != null ? Integer.parseInt(maxLength) : Integer.MAX_VALUE;
+        int max = maxLength != null && maxLength.length() > 0 ? Integer.parseInt(maxLength) : Integer.MAX_VALUE;
         int count = 0;
         while(iterator != null && iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
