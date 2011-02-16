@@ -11,7 +11,7 @@
   </parent>
 
   <artifactId>mmbase-taglib</artifactId>
-  <name>MMBase Taglib</name>
+  <name>MMBase2 Taglib</name>
   <packaging>war</packaging>
 
   <!--
@@ -142,8 +142,6 @@
           <!--
               <jettyEnvXml>${basedir}/jetty-env.xml</jettyEnvXml>
           -->
-          <systemProperties>
-          </systemProperties>
           <webXml>${basedir}/src/test/webapp/WEB-INF/web.xml</webXml>
           <webAppConfig>
             <contextPath>/mmbase-taglib-test</contextPath>
