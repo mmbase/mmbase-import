@@ -70,7 +70,7 @@ public class IFrameRenderer extends AbstractRenderer {
             decorateIntro(hints, w, "iframe" + (sc == null ? "" : " " + sc));
             String u = getIFrameUrl(blockParameters);
             if (u.startsWith("/")) {
-                u = response.encodeUrl(request.getContextPath() + u);
+                u = response.encodeURL(request.getContextPath() + u);
             }
             w.write("<iframe src=\"" + u + "\" />");
             decorateOutro(hints, w);

@@ -62,7 +62,7 @@ public  class GrowingTreeList extends TreeList {
     /**
      * This may be used in combination with 
      * <code>Queries.addPath(tree.getTemplate(), (String) path.getValue(this), (String) searchDirs.getValue(this));</code>
-     * So you add a template constisting of a bunch of elements.
+     * So you add a template consisting of a bunch of elements.
      */
     public GrowingTreeList(NodeQuery q, int maxDepth) {
         super(q);
@@ -88,7 +88,7 @@ public  class GrowingTreeList extends TreeList {
      * @since MMBase-1.7.1
      */
 
-    public void setMaxDepth(int maxDepth) {
+    public final void setMaxDepth(int maxDepth) {
         maxNumberOfSteps = 2 * maxDepth - 1; // dont consider relation steps.
 
         if (maxNumberOfSteps < numberOfSteps) {

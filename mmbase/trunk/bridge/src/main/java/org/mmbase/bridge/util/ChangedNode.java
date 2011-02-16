@@ -14,7 +14,7 @@ import java.util.*;
 import org.mmbase.bridge.*;
 
 /**
- * A nodewrapper in which fields are explicitely marked as 'changed' (even though they may actually not be).
+ * A node wrapper in which fields are explicitely marked as 'changed' (even though they may actually not be).
  *
  * @author  Michiel Meeuwissen
  * @version $Id$
@@ -26,9 +26,7 @@ public class ChangedNode extends NodeWrapper {
     private final Set<String> changedFields = new HashSet<String>();
     public ChangedNode(Node node, String... fields) {
         super(node);
-        for (String f : fields) {
-            changedFields.add(f);
-        }
+        changedFields.addAll(Arrays.asList(fields));
     }
 
     @Override

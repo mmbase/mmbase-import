@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Static utilitiy methods which are related to (combine functionality of)  other classes in the packages.
+ * Static utility methods which are related to (combine functionality of)  other classes in the packages.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -110,6 +110,7 @@ public abstract class Utils {
     /**
      * @since MMBase-1.9.1
      */
+    @SuppressWarnings("ResultOfObjectAllocationIgnored")
     public static Parameters fixateParameters(Parameters parameters) {
         final Parameters myParameters = new Parameters(parameters);
         // CLone parameters, because after time-out they can otherwise be changed by client.

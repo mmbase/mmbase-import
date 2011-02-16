@@ -72,6 +72,7 @@ public class State {
      * But this is only used by code which want to initiate a new component itself. Normally {@link
      * #getState(ServletRequest)} should suffice.
      */
+    @SuppressWarnings("LeakingThisInConstructor")
     public State(ServletRequest r) {
         request = r;
         previousState = (State) r.getAttribute(KEY);
@@ -79,6 +80,7 @@ public class State {
         request.setAttribute(KEY, this);
     }
 
+    @SuppressWarnings("LeakingThisInConstructor")
     public State(javax.servlet.http.HttpServletRequest r, State s) {
         request = r;
         previousState = s.previousState == null ? null : new State(r, s.previousState);

@@ -16,7 +16,6 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.*;
 
-import javax.servlet.http.HttpServletRequest;
 
 
 import org.mmbase.util.functions.*;
@@ -215,6 +214,7 @@ public class CachedRenderer extends WrappedRenderer {
         if (future == null)  {
             final Parameters myBlockParameters = Utils.fixateParameters(blockParameters);
             future = ThreadPools.jobsExecutor.submit(new Callable<Exception>() {
+                @Override
                     public Exception call() {
                         try {
                             long startTime = System.currentTimeMillis();
@@ -344,6 +344,7 @@ public class CachedRenderer extends WrappedRenderer {
                     final File etagFile = getETagFile(cacheFile);
                     if ( ! cacheFile.exists() || ! etagFile.exists() || ! etag.equals(readETag(etagFile))) {
                         renderWrappedAndFile(cacheFile, blockParameters, w, hints, new Runnable() {
+                            @Override
                                 public void run()  {
                                     try {
                                         writeETag(etagFile, etag);
@@ -363,6 +364,7 @@ public class CachedRenderer extends WrappedRenderer {
                     if (! cacheFile.exists() || ! expiresFile.exists() || System.currentTimeMillis() > readExpires(expiresFile)) {
                         log.service("Rendering " + uri + " because " + cacheFile + " not existing expired");
                         renderWrappedAndFile(cacheFile, blockParameters, w, hints, new Runnable() {
+                            @Override
                                 public void run()  {
                                     try {
                                         writeExpires(expiresFile, expiration);

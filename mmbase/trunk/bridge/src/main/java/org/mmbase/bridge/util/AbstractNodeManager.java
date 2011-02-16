@@ -30,7 +30,7 @@ import org.mmbase.util.functions.Function;
  */
 public abstract class AbstractNodeManager extends AbstractNode implements NodeManager {
 
-    protected Map<String, Object> values = new HashMap<String, Object>();
+    protected final Map<String, Object> values = new HashMap<String, Object>();
     protected final Cloud cloud;
     protected AbstractNodeManager(Cloud c) {
         cloud = c;
