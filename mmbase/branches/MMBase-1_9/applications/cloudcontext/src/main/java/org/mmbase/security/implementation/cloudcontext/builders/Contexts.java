@@ -9,12 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.cloudcontext.builders;
 
-import java.util.*;
 
 import org.mmbase.bridge.Query;
 import org.mmbase.module.core.*;
 import org.mmbase.security.*;
-import org.mmbase.security.SecurityException;
 import org.mmbase.security.implementation.cloudcontext.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
@@ -83,6 +81,7 @@ public class Contexts extends MMObjectBuilder {
     /**
      * @javadoc
      */
+    @Override
     public boolean init() {
         String s = getInitParameters().get("readall");
         readAll = "true".equals(s);
@@ -150,6 +149,7 @@ public class Contexts extends MMObjectBuilder {
     /**
      * Makes sure unique values and not-null's are filed
      */
+    @Override
     public void setDefaults(MMObjectNode node) {
         setUniqueValue(node, "name", "context");
     }

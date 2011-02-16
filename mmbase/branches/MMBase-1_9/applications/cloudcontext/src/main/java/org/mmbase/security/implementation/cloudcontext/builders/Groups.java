@@ -159,20 +159,24 @@ public class Groups extends MMObjectBuilder {
     }
      */
 
+    @Override
     public void setDefaults(MMObjectNode node) {
         setUniqueValue(node, "name", "group");
     }
 
 
+    @Override
     public String toString(MMObjectNode n) {
         return n.getStringValue("name") + " (" + n.getNumber() + ")";
     }
 
 
     // needed to make SecurityOpeations Cache work?
+    @Override
     public boolean equals(MMObjectNode o1, MMObjectNode o2) {
         return o1.getNumber() == o2.getNumber();
     }
+    @Override
     public int hashCode(MMObjectNode o) {
         return 127 * o.getNumber();
     }

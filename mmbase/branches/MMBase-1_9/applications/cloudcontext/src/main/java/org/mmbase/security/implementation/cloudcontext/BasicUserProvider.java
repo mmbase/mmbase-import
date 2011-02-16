@@ -170,11 +170,11 @@ public abstract class BasicUserProvider implements UserProvider {
         MMObjectNode user = userCache.get(userName);
         if (user == null) {
             NodeSearchQuery nsq = new NodeSearchQuery(getUserBuilder());
-            org.mmbase.bridge.Field userNameField = getField(getUserNameField());
-            if (userNameField == null) {
+            org.mmbase.bridge.Field userField = getField(getUserNameField());
+            if (userField == null) {
                 throw new RuntimeException("The builder '" + getUserBuilder() + "' has no field '" + getUserNameField() + "'");
             }
-            StepField sf        = nsq.getField(userNameField);
+            StepField sf        = nsq.getField(userField);
             BasicFieldValueConstraint cons = new BasicFieldValueConstraint(sf, userName);
             cons.setCaseSensitive(userNameCaseSensitive);
             nsq.setConstraint(cons);
@@ -285,7 +285,7 @@ public abstract class BasicUserProvider implements UserProvider {
                     log.warn("More then one rank related to mmbase-user " + userNode.getNumber() + " (but " + ranks.size() + ")");
                 }
                 rank = Rank.ANONYMOUS;
-                if (ranks.size() == 0) {
+                if (ranks.isEmpty()) {
                     log.debug("No ranks related to this user");
                 } else {
                     Iterator<MMObjectNode> i = ranks.iterator();

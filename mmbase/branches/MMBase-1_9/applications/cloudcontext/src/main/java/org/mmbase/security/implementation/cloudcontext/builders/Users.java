@@ -16,9 +16,6 @@ import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.cache.Cache;
-import org.mmbase.cache.QueryResultCache;
-import org.mmbase.util.Encode;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.functions.*;
@@ -87,7 +84,7 @@ public class Users extends MMObjectBuilder {
             }
         };
 
-    // javadoc inherited
+    @Override
     public boolean init() {
 
         String s = getInitParameters().get("userNameCaseSensitive");
@@ -184,6 +181,7 @@ public class Users extends MMObjectBuilder {
     /**
      * UserName must be unique, check it also here (to throw nicer exceptions)
      */
+    @Override
     public int insert(String owner, MMObjectNode node) {
         String userName = node.getStringValue(FIELD_USERNAME);
         if (!userNameCaseSensitive && userName!=null) {
@@ -262,13 +260,14 @@ public class Users extends MMObjectBuilder {
 
      }
 
+    @Override
    protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (function.equals("info")) {
             List<Object> empty = new ArrayList<Object>();
-            java.util.Map<String,String> info =
-                (java.util.Map<String,String>) super.executeFunction(node, function, empty);
+            java.util.Map<String, String> info =
+                    (java.util.Map<String, String>) super.executeFunction(node, function, empty);
             info.put("gui", "(status..) Gui representation of this object.");
-                 if (args == null || args.size() == 0) {
+            if (args == null || args.isEmpty()) {
                 return info;
             } else {
                 return info.get(args.get(0));
@@ -308,10 +307,12 @@ public class Users extends MMObjectBuilder {
         return super.executeFunction(node, function, args);
     }
 
+    @Override
     public boolean equals(MMObjectNode o1, MMObjectNode o2) {
         return o1.getNumber() == o2.getNumber();
     }
 
+    @Override
     public String toString(MMObjectNode n) {
         return n.getStringValue(FIELD_USERNAME);
     }
