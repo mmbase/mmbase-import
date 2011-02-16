@@ -70,7 +70,7 @@ public class EventManager implements SystemEventListener {
     private final Set<EventListener> listenersFromResources = new CopyOnWriteArraySet<EventListener>();
 
     /**
-     * use this metod to get an instance of the event manager
+     * use this method to get an instance of the event manager
      */
     public static EventManager getInstance() {
         if (eventManager == null) {
@@ -264,7 +264,7 @@ public class EventManager implements SystemEventListener {
     }
 
 
-    public final synchronized void addEventListener(EventListener listener) {
+    public final void addEventListener(EventListener listener) {
         addEventListener(listener, true);
     }
     /**
