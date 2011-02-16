@@ -107,7 +107,7 @@ public class MMBaseContext implements ServletContextListener {
                     LOG.debug(se.getMessage());
                 }
             }
-            // take into account configpath can start at webrootdir
+            // take into account that configpath can start at webrootdir
             if (mmbaseOutputFile != null && mmbaseOutputFile.indexOf("$WEBROOT") == 0) {
                 mmbaseOutputFile = servletContext.getRealPath(mmbaseOutputFile.substring(8));
             }
@@ -116,7 +116,21 @@ public class MMBaseContext implements ServletContextListener {
             // Init logging.
             String initLoggingParam = sx.getInitParameter("mmbase.initlogging");
             if (initLoggingParam == null || "true".equals(initLoggingParam)) {
-                initLogging();
+                // resource loader is initialized asynchrously, logging can only be intialized when it is ready.
+                //
+                EventManager.getInstance().addEventListener(new SystemEventListener() {
+                    @Override
+                    public void notify(SystemEvent se) {
+                        if (se instanceof SystemEvent.ResourceLoaderChange) {
+                            initLogging();
+                        }
+                    }
+                    @Override
+                    public int getWeight() {
+                        return 10000;
+                    }
+                });
+
             }
             initialized = true;
             try {
