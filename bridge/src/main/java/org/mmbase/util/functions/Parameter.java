@@ -68,7 +68,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
     public static final Parameter[] EMPTY  = new Parameter[0];
 
     @SuppressWarnings({ "unchecked", "cast" })
-    public static final <C> Parameter<C>[] emptyArray() {
+    public static <C> Parameter<C>[] emptyArray() {
         return (Parameter<C>[]) EMPTY;
     }
 

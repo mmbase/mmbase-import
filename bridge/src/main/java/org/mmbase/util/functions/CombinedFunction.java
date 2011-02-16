@@ -99,7 +99,7 @@ public class CombinedFunction<R> implements Function<R> {
      * Combines the parameter definitions of the wrapped function to one new parameter definition
      */
     protected void determinDefinition() {
-        if (functions.size() == 0) throw new IllegalStateException("No functions added");
+        if (functions.isEmpty()) throw new IllegalStateException("No functions added");
         for (Function<R> f : functions) {
             Parameter<?>[] fd = f.getParameterDefinition();
             if (parameterDefinition == null) {
