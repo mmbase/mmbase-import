@@ -125,9 +125,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         try {
             fi.write(file);
         } catch (Exception e) {
-            IOException ioe = new IOException();
-            ioe.initCause(e);
-            throw ioe;
+            throw new IOException(e);
         }
         this.wrapped = new FileInputStream(file);
     }
@@ -302,7 +300,18 @@ public class SerializableInputStream  extends InputStream implements Serializabl
 
 
     @Override
+    @SuppressWarnings("FinalizeDeclaration")
     public void finalize() {
+        try {
+            super.finalize();
+        } catch (Throwable ex) {
+
+        }
+        try {
+            close();
+        } catch (IOException ex) {
+
+        }
         if (file != null && tempFile) {
             log.debug("Deleting " + file);
             file.delete();
@@ -377,6 +386,9 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         } else if (file != null) {
             if (log.isDebugEnabled()) {
                 log.debug("Resetting " + this + " to " + fileMark + " (" + file + ")");
+            }
+            if (wrapped != null) {
+                wrapped.close();
             }
             wrapped = new FileInputStream(file);
             if (fileMark > 0) {

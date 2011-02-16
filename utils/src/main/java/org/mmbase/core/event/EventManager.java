@@ -136,6 +136,7 @@ public class EventManager implements SystemEventListener {
 
     @Override
     public int getWeight() {
+        // do stuff related to event manager itself as early as possible
         return Integer.MAX_VALUE;
     }
 

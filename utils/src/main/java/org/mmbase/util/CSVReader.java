@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.*;
 import java.nio.charset.Charset;
 
-import org.mmbase.util.ResourceLoader;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,10 +33,10 @@ public class CSVReader {
 
     private static final Logger log = Logging.getLoggerInstance(CSVReader.class);
 
-    private static String filename;
-    private static String delimiter = ",";
-    private static String charset = "UTF-8";
-    private static Pattern csv_pattern = Pattern.compile("\"([^\"]+?)\",?|([^,]+),?|,");
+    private final String filename;
+    private final String delimiter;
+    private String charset = "UTF-8";
+    private Pattern csv_pattern = Pattern.compile("\"([^\"]+?)\",?|([^,]+),?|,");
     public List<String> lines              = new ArrayList<String>();    // list with rows as strings
     public List<String> header             = new ArrayList<String>();
     public Map<Integer, List<String>> rows = new HashMap<Integer, List<String>>();    // contains rows as arrays
@@ -53,21 +52,18 @@ public class CSVReader {
     }
 
     public CSVReader(String filename, String delimiter) {
-        this(filename, delimiter, charset);
+        this(filename, delimiter, "UTF-8");
     }
 
     public CSVReader(String filename) {
-        this(filename, delimiter, charset);
+        this(filename, ",", "UTF-8");
     }
 
-    public CSVReader() {
-       // empty, needed for functionset?
-    }
 
     /**
      * Reads the contents of the CSV file. The values are stored in arrays.
      * @param filename  CSV file
-     * @param delimiter the komma or something else TODO!
+     * @param delimiter the comma or something else TODO!
      * @param charset   by default UTF-8
      * @todo the params are members too, which is a bit confusing for a non-static method.
      *
@@ -206,9 +202,9 @@ public class CSVReader {
     public String getDescription() {
         StringBuilder msg = new StringBuilder("Hi, I'm the CSVReader. ");
         msg.append("My configuration is as follows:");
-        msg.append("\nfile to import: " + filename);
-        msg.append("\ndelimiter: " + delimiter);
-        msg.append("\ncharset: " + charset);
+        msg.append("\nfile to import: ").append(filename);
+        msg.append("\ndelimiter: ").append(delimiter);
+        msg.append("\ncharset: ").append(charset);
         return msg.toString();
     }
 

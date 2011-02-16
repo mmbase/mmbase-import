@@ -135,7 +135,7 @@ public class MagicFile {
             throw new IllegalArgumentException("Mark not supported on " + in);
         }
         List<Detector> list = getDetectors();
-        if (list == null || list.size() == 0) {
+        if (list == null || list.isEmpty()) {
             log.warn("No detectors found");
             return FAILED;
         }
