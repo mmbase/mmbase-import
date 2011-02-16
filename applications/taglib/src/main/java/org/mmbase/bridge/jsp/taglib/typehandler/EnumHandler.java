@@ -202,8 +202,16 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
                 valueString.add(Casting.toString(v));
             }
         }
+        String maxLength =  tag.getPageContext().getServletContext().getInitParameter("mmbase.taglib.max_enumhandler_length");
+        int max = maxLength != null ? Integer.parseInt(maxLength) : Integer.MAX_VALUE;
+        int count = 0;
         while(iterator != null && iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
+            count++;
+            if (count > max) {
+                log.debug("Enumeration truncated, because longer than " + max);
+                break;
+            }
             Object key = entry.getKey();
             if (key == null) {
                 log.warn("Found null as enumeration key for " + field.getDataType());
@@ -223,6 +231,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             }
             buffer.append(">");
             buffer.append(XML.transform(Casting.toString(entry.getValue())));
+            // buffer.append(Casting.toString(entry.getValue()));
             buffer.append("</option>");
         }
         buffer.append("</select>");
