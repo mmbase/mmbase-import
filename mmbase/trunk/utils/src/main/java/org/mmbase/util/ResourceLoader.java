@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * MMBase resource loader, for loading config-files and those kind of things. It knows about MMBase config file locations.
+ * MMBase resource loader, for loading configuration files and those kind of things. It knows about MMBase configuration file locations.
  *
  * I read <a href="http://www.javaworld.com/javaqa/2003-08/02-qa-0822-urls.html">http://www.javaworld.com/javaqa/2003-08/02-qa-0822-urls.html</a>.
  *
@@ -64,11 +64,11 @@ When you want to place a configuration file then you have several options, which
   <li>Place it in the directory identified by the 'mmbase.config' setting (A system property or web.xml setting).</li>
   <li>Place it in the directory WEB-INF/config. If this is a real directory (you are not in a war), then the resource will also be returned by {@link #getFiles}.</li>
   <li>
-  Place it in the class-loader path of your app-server, below the 'org.mmbase.config' package.
+  Place it in the class-loader path of your application server, below the 'org.mmbase.config' package.
   For tomcat this boils down to the following list (Taken from <a href="http://jakarta.apache.org/tomcat/tomcat-5.0-doc/class-loader-howto.html">tomcat 5 class-loader howto</a>)
    <ol>
     <li>Bootstrap classes of your JVM</li>
-    <li>System class loader classses</li>
+    <li>System class loader classes</li>
     <li>/WEB-INF/classes of your web application. If this is a real directory (you are not in a war), then the resource will also be returned by {@link #getFiles}.</li>
     <li>/WEB-INF/lib/*.jar of your web application</li>
     <li>$CATALINA_HOME/common/classes</li>
@@ -84,19 +84,19 @@ When you want to place a configuration file then you have several options, which
  *   Resources which do not reside in the MMBase configuration repository, can also be handled. Those can be resolved relatively to the web root, using {@link #getWebRoot()}.
 12390 * </p>
  *
- * <p>Resources can  programmaticly created or changed by the use of {@link #createResourceAsStream}, or something like {@link #getWriter}.</p>
+ * <p>Resources can  programmatically created or changed by the use of {@link #createResourceAsStream}, or something like {@link #getWriter}.</p>
  *
  * <p>If you want to check beforehand if a resource can be changed, then something like <code>resourceLoader.getResource().openConnection().getDoOutput()</code> can be used.</p>
- * <p>That is also valid if you want to check for existance. <code>resourceLoader.getResource().openConnection().getDoInput()</code>.</p>
+ * <p>That is also valid if you want to check for existence. <code>resourceLoader.getResource().openConnection().getDoInput()</code>.</p>
  * <p>If you want to remove a resource, you must write <code>null</code> to all URL's returned by {@link #findResources} (Do for every URL:<code>url.openConnection().getOutputStream().write(null);</code>)</p>
  * <h3>Encodings</h3>
  * <p>ResourceLoader is well aware of encodings. You can open XML's as Reader, and this will be done using the encoding specified in the XML itself. When saving an XML using a Writer, this will also be done using the encoding specified in the XML.</p>
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so
  * there is no need to think of that.</p>
  * <h3>Configuration and weights</h3>
- * <p>The Classloader itself reads the resources <code>config/utils/resourceloader.xml</code>. This
+ * <p>The ClassLoader itself reads the resources <code>config/utils/resourceloader.xml</code>. This
  * is mainly to attribute weights to certain resources. See {@link #getWeight}. This is used if a
- * resource is available more than once (e.g. in several distinct jars in WEB-INF/lib), to determin
+ * resource is available more than once (e.g. in several distinct jars in WEB-INF/lib), to determine
  * the order they appear in {@link #getResourceList}. E.g. an mmbase application providing a
  * security implementation would give a large weight to its own
  * <code>config/security/security.xml</code>, the ratio being that if you install a security
@@ -165,9 +165,24 @@ public class ResourceLoader extends ClassLoader {
      */
 
     public enum Type {
-        CONFIG { public ResourceLoader get() { return ResourceLoader.getConfigurationRoot(); } },
-        WEB {    public ResourceLoader get() { return ResourceLoader.getWebRoot(); } },
-        SYSTEM { public ResourceLoader get() { return ResourceLoader.getSystemRoot(); } };
+        CONFIG {
+            @Override
+            public ResourceLoader get() {
+                return ResourceLoader.getConfigurationRoot();
+            }
+        },
+        WEB {
+            @Override
+            public ResourceLoader get() {
+               return ResourceLoader.getWebRoot();
+            }
+        },
+        SYSTEM {
+            @Override
+            public ResourceLoader get() {
+               return ResourceLoader.getSystemRoot();
+            }
+        };
         public abstract ResourceLoader get();
     }
 
@@ -219,7 +234,7 @@ public class ResourceLoader extends ClassLoader {
 
 
     /**
-     * Initializes the Resourceloader using a servlet-context (makes resolving relatively to WEB-INF/config possible).
+     * Initializes the ResourceLoader using a servlet-context (makes resolving relatively to WEB-INF/config possible).
      * @param sc The ServletContext used for determining the mmbase configuration directory. Or <code>null</code>.
      */
     public static  synchronized void init(ServletContext sc) {
@@ -432,7 +447,7 @@ public class ResourceLoader extends ClassLoader {
 
 
     /**
-     * Child resourceloaders have a parent.
+     * Child ResourceLoaders have a parent.
      */
     private final ResourceLoader parent;
 
@@ -460,6 +475,7 @@ public class ResourceLoader extends ClassLoader {
     /**
      * Instantiates a ResourceLoader for a 'sub directory' of given ResourceLoader. Used by {@link #getChildResourceLoader}.
      */
+    @SuppressWarnings("LeakingThisInConstructor")
     protected  ResourceLoader(final ResourceLoader cl, final String context)  {
         super(ResourceLoader.class.getClassLoader());
         this.context = cl.findResource(context + "/");
@@ -527,9 +543,11 @@ public class ResourceLoader extends ClassLoader {
                     }
                 }
 
+            @Override
                 public boolean hasMoreElements() {
                     return current.hasMoreElements() || next.hasMoreElements();
                 }
+            @Override
                 public URL nextElement() {
                     if (! current.hasMoreElements()) {
                         current = next;
@@ -797,9 +815,7 @@ public class ResourceLoader extends ClassLoader {
             serializer.transform(source, streamResult);
             stream.close();
         } catch (final TransformerException te) {
-            IOException io = new IOException(te.getMessage());
-            io.initCause(te);
-            throw io;
+            throw new IOException(te);
         }
     }
 
@@ -1116,16 +1132,17 @@ public class ResourceLoader extends ClassLoader {
          */
         protected Enumeration<URL> getResources(final String name) throws IOException {
             return new Enumeration<URL>() {
-                    private boolean hasMore = true;
-                    public boolean hasMoreElements() {
-                        return hasMore;
-                    };
-                    public URL nextElement() {
-                        hasMore = false;
-                        return openConnection(name).getURL();
-                    }
-
-                };
+                private boolean hasMore = true;
+                @Override
+                public boolean hasMoreElements() {
+                    return hasMore;
+                }
+                @Override
+                public URL nextElement() {
+                    hasMore = false;
+                    return openConnection(name).getURL();
+                }
+            };
         }
 
         @Override
@@ -1148,6 +1165,7 @@ public class ResourceLoader extends ClassLoader {
             weight = w;
         }
 
+        @Override
         public int compareTo(PathURLStreamHandler o) {
             return weight - o.weight;
         }
@@ -1170,6 +1188,7 @@ public class ResourceLoader extends ClassLoader {
      * @since MMBase-2.0
      */
     protected static class MMBaseConfigSettingFileURLStreamHandlerFactory extends URLStreamHandlerFactory {
+        @Override
         public PathURLStreamHandler[] createURLStreamHandler(ResourceLoader parent, Type type) {
             String configPath = null;
             ServletContext servletContext = ResourceLoader.getServletContext();
@@ -1202,10 +1221,10 @@ public class ResourceLoader extends ClassLoader {
 
 
             if (configPath != null) {
-                if (parent.servletContext != null) {
+                if (ResourceLoader.servletContext != null) {
                     // take into account that configpath can start at webrootdir
                     if (configPath.startsWith("$WEBROOT")) {
-                        configPath = parent.servletContext.getRealPath(configPath.substring(8));
+                        configPath = ResourceLoader.servletContext.getRealPath(configPath.substring(8));
                     }
                 }
                 log.debug("Adding " + configPath);
@@ -1219,6 +1238,7 @@ public class ResourceLoader extends ClassLoader {
      * @since MMBase-2.0
      */
     protected static class ClassesFileURLStreamHandlerFactory extends URLStreamHandlerFactory {
+        @Override
         public PathURLStreamHandler[] createURLStreamHandler(ResourceLoader parent, Type type) {
             if (ResourceLoader.servletContext != null) {
                 String s = servletContext.getRealPath("/WEB-INF/classes" + CLASSLOADER_ROOT); // prefer opening as a files.
@@ -1298,6 +1318,7 @@ public class ResourceLoader extends ClassLoader {
             fileRoot = root;
 
         }
+        @Override
         public FileURLStreamHandler createSubHandler(ResourceLoader parent) {
             return new FileURLStreamHandler(parent, fileRoot, writeable);
         }
@@ -1473,6 +1494,7 @@ public class ResourceLoader extends ClassLoader {
      * @since MMBase-2.0
      */
     protected static class ApplicationContextFileURLStreamHandlerFactory extends URLStreamHandlerFactory {
+        @Override
         public PathURLStreamHandler[] createURLStreamHandler(ResourceLoader parent, Type type) {
             return new PathURLStreamHandler[] {new ApplicationContextFileURLStreamHandler(parent)};
         }
@@ -1505,6 +1527,7 @@ public class ResourceLoader extends ClassLoader {
                 FILES = new HashMap<String, String>();
             }
         }
+        @Override
         public ApplicationContextFileURLStreamHandler createSubHandler(ResourceLoader parent) {
             return new ApplicationContextFileURLStreamHandler(parent);
         }
@@ -1566,9 +1589,9 @@ public class ResourceLoader extends ClassLoader {
                 File f = getFileFromString(e.getValue());
                 bul.append(e.getValue());
                 if (! f.exists()) {
-                    bul.append("(" + f.toURI() + " does not exist)");
+                    bul.append("(").append(f.toURI()).append(" does not exist)");
                 } else if (! f.canRead()) {
-                    bul.append("(" + f + " cannot be read)");
+                    bul.append("(").append(f).append(" cannot be read)");
 
                 }
             }
@@ -1581,6 +1604,7 @@ public class ResourceLoader extends ClassLoader {
     // ServletContext
 
     protected static class ConfigServletResourceURLStreamHandlerFactory extends URLStreamHandlerFactory  {
+        @Override
         public PathURLStreamHandler[] createURLStreamHandler(ResourceLoader parent, Type type) {
             if (ResourceLoader.servletContext != null) {
                 String s = ResourceLoader.servletContext.getRealPath(RESOURCE_ROOT);
@@ -1610,6 +1634,7 @@ public class ResourceLoader extends ClassLoader {
             super(parent);
             root = r;
         }
+        @Override
         public ServletResourceURLStreamHandler createSubHandler(ResourceLoader parent) {
             return new ServletResourceURLStreamHandler(parent, root);
         }
@@ -1723,8 +1748,8 @@ public class ResourceLoader extends ClassLoader {
     // ================================================================================
     // ClassLoader
 
-    private static String RESOURCELOADER_XML = "resourceloader.xml";
-    private static org.mmbase.util.xml.UtilReader.PropertiesMap<Collection<Map.Entry<String, String>>> classWeightProperties =
+    private static final String RESOURCELOADER_XML = "resourceloader.xml";
+    private static final org.mmbase.util.xml.UtilReader.PropertiesMap<Collection<Map.Entry<String, String>>> classWeightProperties =
         new org.mmbase.util.xml.UtilReader(RESOURCELOADER_XML, new Runnable() {
                 @Override
                 public void run() {
@@ -1802,6 +1827,7 @@ public class ResourceLoader extends ClassLoader {
     private static Comparator<URL> getUrlComparator() {
         if (urlComparator == null) {
             urlComparator = new Comparator<URL>() {
+                @Override
                 public int compare(final URL u1, final URL u2)  {
                     int w1 = 0;
                     int w2 = 0;
@@ -1828,6 +1854,7 @@ public class ResourceLoader extends ClassLoader {
 
                 }
                 @Override
+                @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
                 public boolean equals(Object o) {
                     return o == this;
                 }
@@ -1845,6 +1872,7 @@ public class ResourceLoader extends ClassLoader {
      * @since MMBase-2.0
      */
     protected static class ConfigClassLoaderURLStreamHandlerFactory extends URLStreamHandlerFactory {
+        @Override
         public PathURLStreamHandler[] createURLStreamHandler(ResourceLoader parent, Type type) {
             return new PathURLStreamHandler[] {new ClassLoaderURLStreamHandler(parent, CLASSLOADER_ROOT)};
         }
@@ -1853,6 +1881,7 @@ public class ResourceLoader extends ClassLoader {
      * @since MMBase-2.0
      */
     protected static class FullyClassifiedClassLoaderURLStreamHandlerFactory extends URLStreamHandlerFactory {
+        @Override
         public PathURLStreamHandler[] createURLStreamHandler(ResourceLoader parent, Type type) {
             return new PathURLStreamHandler[] { new ClassLoaderURLStreamHandler(parent, "/")};
         }
@@ -1869,6 +1898,7 @@ public class ResourceLoader extends ClassLoader {
             super(parent);
             root = r;
         }
+        @Override
         public ClassLoaderURLStreamHandler createSubHandler(ResourceLoader parent) {
             return new ClassLoaderURLStreamHandler(parent, root);
         }
@@ -2062,6 +2092,7 @@ public class ResourceLoader extends ClassLoader {
         NotAvailableUrlStreamHandler(ResourceLoader parent) {
             super(parent);
         }
+        @Override
         public NotAvailableUrlStreamHandler createSubHandler(ResourceLoader parent) {
             return new NotAvailableUrlStreamHandler(parent);
         }
@@ -2293,9 +2324,7 @@ public class ResourceLoader extends ClassLoader {
                     return os;
                 }
             } catch (Exception ioe) {
-                IOException i =  new IOException("Cannot create an OutputStream for " + url + " " + ioe.getMessage());
-                i.initCause(ioe);
-                throw i;
+                throw new IOException("Cannot create an OutputStream for " + url + " " + ioe.getMessage(), ioe);
             }
         }
         /**
