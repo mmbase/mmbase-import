@@ -149,7 +149,7 @@ public class SetFunction extends AbstractFunction<Object> {
                 try {
                     functionInstance = functionMethod.getDeclaringClass().newInstance();
                 } catch(Exception e) {
-                     throw new RuntimeException("Can't create an function instance : " + functionMethod.getDeclaringClass().getName(), e);
+                     throw new RuntimeException("Can't create an function instance : " + functionMethod.getDeclaringClass().getName() + " for " + functionMethod, e);
                 }
                 break;
             case SINGLETON:
@@ -157,13 +157,13 @@ public class SetFunction extends AbstractFunction<Object> {
                     Method singleton = functionClass.getMethod("getInstance");
                     functionInstance = singleton.invoke(null);
                 } catch(Exception e) {
-                    throw new RuntimeException("Can't create an function instance : " + functionMethod.getDeclaringClass().getName(), e);
+                    throw new RuntimeException("Can't create an function instance : " + functionMethod.getDeclaringClass().getName() + " for " + functionMethod, e);
                 }
                 break;
             case BEAN:
             case INSTANCE:
                 functionInstance = null;
-                // one will be made on every calle
+                // one will be made on every call
                 break;
             default:
                 functionInstance = null;
