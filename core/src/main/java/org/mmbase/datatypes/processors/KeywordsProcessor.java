@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * processor. The first one is the 'repository' which is a key with with to store the Map with the
  * counts. This ensures that you can use this processor for different 'clouds' of keywords. The
  * second one is the 'field', which is a String of the form &lt;builder name&gt;.&lt;field
- * name&gt;. This information cannot be aquired auomaticly because a field knows about it's
+ * name&gt;. This information cannot be aquired automaticly because a field knows about it's
  * datatype, but not inversely. It is essential to use this last property.
  *
  * <pre><![CDATA<
