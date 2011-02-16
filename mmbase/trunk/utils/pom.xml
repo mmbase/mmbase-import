@@ -28,7 +28,7 @@ See http://www.MMBase.org/license
   </parent>
 
   <artifactId>mmbase-utils</artifactId>
-  <name>MMBase Utils</name>
+  <name>MMBase2 Utils</name>
   <description><![CDATA[<p>
 MMBase Utils is a part of MMBase, but can also be used in
 other projects. It contains several kind of utility

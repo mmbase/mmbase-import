@@ -60,6 +60,25 @@ public final class IOUtil {
             }
         }
     }
+    /**
+     * @since MMBase-2.0
+     */
+    public static long copy(final File from, final File to) throws IOException {
+        FileInputStream in = new FileInputStream(from);
+        FileOutputStream out = new FileOutputStream(to);
+        try {
+            long result = copy(in, out);
+            return result;
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (in != null) {
+                in.close();
+            }
+        }
+
+    }
 
 
     /**

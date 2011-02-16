@@ -80,7 +80,7 @@ public class MagicFileTest  {
     @Test
     public void noExtension() throws IOException  {
         File tempFile = File.createTempFile(MagicFileTest.class.getName(), ".tmp");
-        IOUtil.copy(new FileInputStream(file), new FileOutputStream(tempFile));
+        IOUtil.copy(file, tempFile);
         assertEquals(file.getName() + "->" + tempFile.getName(),
                      mimeType, MagicFile.getInstance().getMimeType(tempFile));
         tempFile.deleteOnExit();
