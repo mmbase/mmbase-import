@@ -25,7 +25,7 @@
     <xsd:sequence>
       <xsd:element ref="datatype" maxOccurs="unbounded" minOccurs="0" />
     </xsd:sequence>
-    <xsd:attribute name="id" type="xsd:ID" />
+    <xsd:attribute name="id" type="xsd:normalizedString" />
   </xsd:complexType>
 
   <xsd:complexType name="DataType">
@@ -125,7 +125,7 @@
       <xsd:element ref="specialization" maxOccurs="unbounded" minOccurs="0" />
 
     </xsd:sequence>
-    <xsd:attribute name="id"   type="xsd:token" use="optional" /> <!-- optinal, because in builder xml exist 'anonymous' datatypes -->
+    <xsd:attribute name="id"   type="xsd:token" use="optional" /> <!-- optional, because in builder xml exist 'anonymous' datatypes -->
     <xsd:attribute name="base" type="xsd:token" use="optional" />
     <xsd:attribute name="field" type="xsd:string" use="optional" />
   </xsd:complexType>
