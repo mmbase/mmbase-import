@@ -16,7 +16,7 @@
   </description>
 
   <artifactId>mmbase-resources</artifactId>
-  <name>MMBase Resources</name>
+  <name>MMBase2 Resources</name>
   <packaging>war</packaging>
   <version>2.0-SNAPSHOT</version>
 
