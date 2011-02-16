@@ -23,7 +23,6 @@ import java.util.*;
 public class BinaryStringDataType extends StringDataType {
 
     private static final Logger log = Logging.getLoggerInstance(BinaryStringDataType.class);
-
     public BinaryStringDataType(String name) {
         super(name);
     }
@@ -36,11 +35,16 @@ public class BinaryStringDataType extends StringDataType {
         return v.length();
     }
 
-
+     
     @Override
-    protected Object castToValidate(Object value, Node node, Field field) throws CastException {
+    protected SerializableInputStream castToValidate(Object value, Node node, Field field) throws CastException {
+        if (value instanceof String) {
+            // would convert to SerializeInputStream then, which can be properyly checked for validity (length, type, those kind of things)
+            value = getProcessor(PROCESS_GET, Field.TYPE_BINARY).process(node, field, value);
+        }
         return Casting.toSerializableInputStream(value);
     }
+      
 
     @Override
     protected String castToPresent(Object value, Node node, Field field) {
@@ -70,7 +74,12 @@ public class BinaryStringDataType extends StringDataType {
 
     @Override
     public String castForSearch(final Object value, final Node node, final Field field) {
-        return Casting.toSerializableInputStream(value).getName();
+        // We are basicly a stirng, the name of the file
+        if (value instanceof String) {
+            return (String) value;
+        } else {
+            return Casting.toSerializableInputStream(value).getName();
+        }
     }
 
 }
