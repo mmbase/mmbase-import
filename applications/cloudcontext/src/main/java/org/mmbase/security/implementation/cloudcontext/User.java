@@ -53,6 +53,7 @@ public class User extends BasicUser implements UserContext, WeakNodeEventListene
     }
 
     // javadoc inherited
+    @Override
     public String getIdentifier()  {
         if (node == null) {
             return "anonymous";
@@ -66,7 +67,7 @@ public class User extends BasicUser implements UserContext, WeakNodeEventListene
         }
     }
 
-    // javadoc inherited
+    @Override
     public Rank getRank() throws SecurityException {
         if (node == null) {
             return Rank.ANONYMOUS;
@@ -75,7 +76,8 @@ public class User extends BasicUser implements UserContext, WeakNodeEventListene
         }
     }
 
-    // javadoc inherited
+
+    @Override
     public String getOwnerField() {
         if (node == null) {
             return "system";
@@ -137,6 +139,7 @@ public class User extends BasicUser implements UserContext, WeakNodeEventListene
                         org.mmbase.bridge.LocalContext.getCloudContext().assertUp();
                         MMObjectBuilder users = Authenticate.getInstance().getUserProvider().getUserBuilder();
                         node = users.getNode(number);
+                        authentication = Authenticate.getInstance();
                     }
                 });
         }
@@ -148,6 +151,7 @@ public class User extends BasicUser implements UserContext, WeakNodeEventListene
         out.writeLong(key);
     }
 
+    @Override
     public boolean equals(Object o) {
         if (o instanceof User) {
             User ou = (User) o;
@@ -160,6 +164,7 @@ public class User extends BasicUser implements UserContext, WeakNodeEventListene
         }
     }
 
+    @Override
     public int hashCode() {
         int result = super.hashCode();
         result = HashCodeUtil.hashCode(result, node);
