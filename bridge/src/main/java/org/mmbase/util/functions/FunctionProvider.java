@@ -45,6 +45,7 @@ public abstract class FunctionProvider {
     /**
      * The constructor of an FunctionProvider  guesses the functions using reflection.
      * @todo Should this last thing not only be done on MMObjectBuilders?
+     * @todo Calling an overridable method ({@link #newFunctionInstance(java.lang.String, org.mmbase.util.functions.Parameter<?>[], org.mmbase.util.functions.ReturnType) ). This is generally ill adviced.
      */
     public FunctionProvider() {
         // determine parameters through reflection
@@ -60,7 +61,7 @@ public abstract class FunctionProvider {
         }
     }
 
-    protected  Function<?> newFunctionInstance(String name, Parameter<?>[] parameters, ReturnType returnType) {
+    protected Function<?> newFunctionInstance(String name, Parameter<?>[] parameters, ReturnType returnType) {
         throw new UnsupportedOperationException("This class is not a fully implemented function-provider");
     }
 
@@ -70,7 +71,7 @@ public abstract class FunctionProvider {
      * provider, to make it provide this function too.
      * @return The function previously assigned with this name or <code>null</code> if no such function.
      */
-    public Function<?> addFunction(Function<?> function) {
+    public final Function<?> addFunction(Function<?> function) {
         Function<?> oldValue = functions.put(function.getName(), function);
         if (oldValue != null) {
             log.debug("Replaced " + oldValue + " by " + function);
