@@ -31,8 +31,8 @@ public class ListHandler extends AbstractTypeHandler {
     public ListHandler(FieldInfoTag tag) {
         super(tag);
     }
-
-    protected @Override EnumHandler getEnumHandler(Node node, Field field) throws JspTagException {
+    @Override
+    protected EnumHandler getEnumHandler(Node node, Field field) throws JspTagException {
         EnumHandler h = super.getEnumHandler(node, field);
         if (h != null) h.setMultiple(true);
         return h;

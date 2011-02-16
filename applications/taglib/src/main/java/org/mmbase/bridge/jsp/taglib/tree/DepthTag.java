@@ -22,6 +22,7 @@ import org.mmbase.bridge.jsp.taglib.Writer;
  */
 public class DepthTag extends TreeReferrerTag implements Writer {
 
+    @Override
     public int doStartTag() throws JspTagException {
         initTag();
         DepthProvider dp =  findDepthProvider();
@@ -32,10 +33,12 @@ public class DepthTag extends TreeReferrerTag implements Writer {
         return EVAL_BODY_BUFFERED;
     }
 
+    @Override
     public int doAfterBody() throws JspException {
         return helper.doAfterBody();
     }
 
+    @Override
     public int doEndTag() throws JspTagException {
         helper.doEndTag();
         return super.doEndTag();

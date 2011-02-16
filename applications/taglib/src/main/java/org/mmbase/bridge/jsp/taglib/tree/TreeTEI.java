@@ -24,6 +24,7 @@ public class TreeTEI extends TagExtraInfo {
 
     /**
      **/
+    @Override
     public VariableInfo[] getVariableInfo(TagData data){
         VariableInfo[] variableInfo = null;
 

@@ -33,18 +33,19 @@ public class PageContextThreadLocal {
     static {
         LOG.debug("Adding system event listener");
         EventManager.getInstance().addEventListener(new SystemEventListener() {
-                @Override
-                public void notify(SystemEvent se) {
-                    LOG.debug("Got " + se);
-                    if (se instanceof SystemEvent.Shutdown) {
-                        LOG.info("Shutting down. Clearing " + threadPageContexts.get());
-                        threadPageContexts.remove();
-                    }
+            @Override
+            public void notify(SystemEvent se) {
+                LOG.debug("Got " + se);
+                if (se instanceof SystemEvent.Shutdown) {
+                    LOG.info("Shutting down. Clearing " + threadPageContexts.get());
+                    threadPageContexts.remove();
                 }
-                public int getWeight() {
-                    return 0;
-                }
-            });
+            }
+            @Override
+            public int getWeight() {
+                return 0;
+            }
+        });
     }
 
 

@@ -56,7 +56,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     /**
      * @since MMBase-1.8
      */
-    protected Iterator getIterator(Node node, Field field) throws JspTagException  {
+    protected Iterator getIterator(Node node, Field field) throws JspTagException {
         DataType<Object> dataType = field.getDataType();
         Locale locale = tag.getLocale();
         return dataType.getEnumerationValues(locale, tag.getCloudVar(), node, field);
@@ -168,7 +168,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     public String htmlInput(final Node node, final Field field, final boolean search) throws JspTagException {
         StringBuilder buffer = new StringBuilder();
         String fieldName = field.getName();
-        buffer.append("<select class=\"" + getClasses(node, field) + "\" name=\"").append(prefix(fieldName)).append("\" ");
+        buffer.append("<select class=\"").append(getClasses(node, field)).append("\" name=\"").append(prefix(fieldName)).append("\" ");
         buffer.append("id=\"").append(prefixID(fieldName)).append("\" ");
         if (multiple) {
             buffer.append("multiple=\"multiple\" ");
@@ -203,7 +203,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             }
         }
         String maxLength =  tag.getPageContext().getServletContext().getInitParameter("mmbase.taglib.max_enumhandler_length");
-        int max = maxLength != null ? Integer.parseInt(maxLength) : Integer.MAX_VALUE;
+        int max = maxLength != null && maxLength.length() > 0 ? Integer.parseInt(maxLength) : Integer.MAX_VALUE;
         int count = 0;
         while(iterator != null && iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
@@ -250,6 +250,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     }
 
 
+    @Override
     public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
         String name = prefix(field.getName() + "_search");
         String searchi =  Casting.toString(tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name));
@@ -263,7 +264,8 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    @Override public String whereHtmlInput(Field field) throws JspTagException {
+    @Override
+    public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
         String id = prefix(fieldName + "_search");
         if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
@@ -274,7 +276,8 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     }
 
 
-    @Override public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+    @Override
+    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
         String id = prefix(fieldName + "_search");
         if (tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {

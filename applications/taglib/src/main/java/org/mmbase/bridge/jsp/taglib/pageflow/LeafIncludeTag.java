@@ -40,6 +40,7 @@ public class LeafIncludeTag extends IncludeTag {
     }
 
 
+    @Override
     protected String getPage(String p) throws JspTagException {
         try {
             return th.findLeafFile(p, objectList.getValue(this).toString(),
@@ -49,6 +50,7 @@ public class LeafIncludeTag extends IncludeTag {
         }
     }
 
+    @Override
     protected void initTag(boolean internal) throws JspTagException {
         th.setCloud(getCloudVar());
         th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
@@ -61,6 +63,7 @@ public class LeafIncludeTag extends IncludeTag {
     }
 
 
+    @Override
     public void doFinally() {
         th.doFinally();
         super.doFinally();
@@ -69,6 +72,7 @@ public class LeafIncludeTag extends IncludeTag {
 
 
     // override to cancel
+    @Override
     protected boolean doMakeRelative() {
     	log.debug("doMakeRelative() overridden!");
         return false;

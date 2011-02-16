@@ -25,6 +25,6 @@ public interface CloudProvider extends TagIdentifier {
     /**
      * @return the cloud contained in the tag
      **/
-    public Cloud getCloudVar() throws JspTagException;	
+    Cloud getCloudVar() throws JspTagException;
 
 }

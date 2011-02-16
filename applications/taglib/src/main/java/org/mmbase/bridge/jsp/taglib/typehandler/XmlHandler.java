@@ -34,7 +34,7 @@ public class XmlHandler extends StringHandler {
         super(tag);
     }
 
-    private static ChainedCharTransformer ct;
+    private static final ChainedCharTransformer ct;
 
     static {
         ct = new ChainedCharTransformer();
@@ -48,12 +48,13 @@ public class XmlHandler extends StringHandler {
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
-    @Override public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
+    @Override
+    public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         if(! search) {
             StringBuilder buffer = new StringBuilder();
             // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
             // wrap attribute removed, we want to produce valid XHTML, and who is still using netscape < 6?
-            buffer.append("<textarea class=\"big " + getClasses(node, field) + "\"  rows=\"10\" cols=\"80\" ");
+            buffer.append("<textarea class=\"big ").append(getClasses(node, field)).append("\"  rows=\"10\" cols=\"80\" ");
             buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
             buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");
             addExtraAttributes(buffer);

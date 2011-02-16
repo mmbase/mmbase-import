@@ -19,6 +19,7 @@ import org.mmbase.bridge.jsp.taglib.pageflow.CompareTag;
  */
 
 public class IsGreaterThanTag extends CompareTag  {
+    @Override
     protected boolean doCompare(Comparable<Comparable> compare1, Comparable compare2) {
         return compare1.compareTo(compare2) > 0;
     }

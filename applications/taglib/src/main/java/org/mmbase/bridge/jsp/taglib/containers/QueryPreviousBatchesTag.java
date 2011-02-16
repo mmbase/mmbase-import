@@ -34,6 +34,7 @@ public class QueryPreviousBatchesTag extends StringListTag implements QueryConta
     protected Attribute indexOffsetOffset = Attribute.NULL;
     protected Attribute maxtotal = Attribute.NULL;
 
+    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
     }
@@ -48,6 +49,7 @@ public class QueryPreviousBatchesTag extends StringListTag implements QueryConta
 
     protected int indexOffset = 0;
 
+    @Override
     protected void  truncateList() throws JspTagException {
         if (max != Attribute.NULL) {
             int m = getMaxNumber();
@@ -60,11 +62,13 @@ public class QueryPreviousBatchesTag extends StringListTag implements QueryConta
         }
     }
 
+    @Override
     public int getIndexOffset() {
         return indexOffset;
     }
 
 
+    @Override
     protected List<String> getList() throws JspTagException {
         Query query = getQuery(container);
         int offset = query.getOffset();
@@ -93,8 +97,8 @@ public class QueryPreviousBatchesTag extends StringListTag implements QueryConta
                 maxSize += (availableForNext - numberOfNextBatches);
             }
 
-            int max = getMaxNumber();
-            if (max > 0 && maxSize > max) maxSize = max;
+            int mn = getMaxNumber();
+            if (mn > 0 && maxSize > mn) maxSize = mn;
 
         } else {
             maxSize = getMaxNumber();

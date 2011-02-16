@@ -30,6 +30,7 @@ public class InstanceOfTag extends NodeReferrerTag implements Condition {
     private Attribute nodemanager = Attribute.NULL;
     private Attribute descendants = Attribute.NULL;
 
+    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
     }

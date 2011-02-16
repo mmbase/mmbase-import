@@ -351,9 +351,9 @@ public class IncludeTag extends UrlTag {
                 log.error("Cannot retrieve ServletContext from PageContext");
             }
 
-            URL url = ResourceLoader.getWebRoot().getResource(relativeUrl);
-            if (! url.openConnection().getDoInput()) {
-                handleResponse(404, "No such resource " + xml.transform(relativeUrl) + " in " + ResourceLoader.getWebRoot() + " (found resource: " + url + ")", relativeUrl);
+            URL u = ResourceLoader.getWebRoot().getResource(relativeUrl);
+            if (! u.openConnection().getDoInput()) {
+                handleResponse(404, "No such resource " + xml.transform(relativeUrl) + " in " + ResourceLoader.getWebRoot() + " (found resource: " + u + ")", relativeUrl);
             } else {
                 HttpServletRequestWrapper requestWrapper   = new HttpServletRequestWrapper(req);
 
@@ -438,19 +438,19 @@ public class IncludeTag extends UrlTag {
             }
 
 
-            String resource = relativeUrl;
+            String res = relativeUrl;
             if (log.isDebugEnabled()) {
-                log.debug("Citing " + resource);
+                log.debug("Citing " + res);
             }
 
 
-            Reader reader = ResourceLoader.getWebRoot().getReader(resource);
+            Reader reader = ResourceLoader.getWebRoot().getReader(res);
             if (reader == null) {
-                handleResponse(404, "No such resource to cite " + resource, resource);
+                handleResponse(404, "No such resource to cite " + res, res);
             } else {
                 StringWriter writer = new StringWriter();
                 IOUtil.copy(reader, writer);
-                handleResponse(200, writer.toString(), resource);
+                handleResponse(200, writer.toString(), res);
             }
 
         } catch (IOException e) {
@@ -623,12 +623,15 @@ public class IncludeTag extends UrlTag {
         }
 
         // don't wrap status to including request.
+        @Override
         public void setStatus(int status) {
             includeStatus = status;
         }
+        @Override
         public void sendError(int sc, String mes) {
             includeStatus = sc;
         }
+        @Override
         public void sendError(int sc) {
             includeStatus = sc;
         }

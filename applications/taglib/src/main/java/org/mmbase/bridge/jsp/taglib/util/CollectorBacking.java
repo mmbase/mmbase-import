@@ -13,11 +13,6 @@ package org.mmbase.bridge.jsp.taglib.util;
 import javax.servlet.jsp.PageContext;
 import java.util.*;
 import javax.servlet.jsp.JspTagException;
-import org.mmbase.util.Casting;
-import org.mmbase.util.transformers.CharTransformer;
-import org.mmbase.bridge.jsp.taglib.ContextTag;
-import org.mmbase.bridge.jsp.taglib.ContentTag;
-import org.mmbase.bridge.jsp.taglib.WriterHelper;
 import org.mmbase.util.logging.*;
 
 

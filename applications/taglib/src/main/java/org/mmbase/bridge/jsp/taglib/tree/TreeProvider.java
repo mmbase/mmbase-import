@@ -20,13 +20,14 @@ import java.util.Stack;
  */
 public interface TreeProvider extends NodeProvider, ListProvider, DepthProvider {
 
-    public static final String KEY = "org.mmbase.taglib.tree";
+    @SuppressWarnings("FieldNameHidesFieldInSuperclass")
+    static final String KEY = "org.mmbase.taglib.tree";
 
-    public int getPreviousDepth();
+    int getPreviousDepth();
 
-    public int getNextDepth();
+    int getNextDepth();
 
-    public Stack<ShrinkTag.Entry> getShrinkStack();
+    Stack<ShrinkTag.Entry> getShrinkStack();
 
 }
 

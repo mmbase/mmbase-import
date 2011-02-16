@@ -24,15 +24,18 @@ import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
  */
 public class FunctionTag extends AbstractFunctionTag implements Writer, FunctionContainerReferrer {
 
+    @Override
     public int doStartTag() throws JspTagException {
         initTag();
         Object value = getFunctionValue();
         helper.setValue(value);
         return EVAL_BODY_BUFFERED;
     }
+    @Override
     public int doAfterBody() throws JspException {
         return helper.doAfterBody();
     }
+    @Override
     public int doEndTag() throws JspTagException {
         helper.doEndTag();
         return super.doEndTag();

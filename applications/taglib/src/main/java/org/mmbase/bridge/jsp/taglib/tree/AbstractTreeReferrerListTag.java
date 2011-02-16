@@ -27,32 +27,41 @@ abstract class AbstractTreeReferrerListTag extends TreeReferrerTag implements Li
 
     private Object prevDepthProvider;
 
+    @Override
     public int getIndex() {
         return index;
     }
+    @Override
     public int getIndexOffset() {
         return 0;
     }
+    @Override
     public boolean isChanged() {
         return true;
     }
+    @Override
     public Object getCurrent() {
         return depth;
     }
+    @Override
     public void remove() {
         // not supported
     }
 
+    @Override
     public int getDepth() {
         return depth;
     }
 
+    @Override
     public void setAdd(String c) throws JspTagException {
         throw new UnsupportedOperationException();
     }
+    @Override
     public void setRetain(String c) throws JspTagException {
         throw new UnsupportedOperationException();
     }
+    @Override
     public void setRemove(String c) throws JspTagException {
         throw new UnsupportedOperationException();
     }
@@ -62,6 +71,7 @@ abstract class AbstractTreeReferrerListTag extends TreeReferrerTag implements Li
 
     // ContextProvider implementation
 
+    @Override
     public ContextContainer getContextContainer() throws JspTagException {
         return collector;
     }
@@ -75,6 +85,7 @@ abstract class AbstractTreeReferrerListTag extends TreeReferrerTag implements Li
         index = 0;
     }
 
+    @Override
     public int doEndTag() throws JspTagException  {
         collector = null;
         tree     = null;
@@ -82,6 +93,7 @@ abstract class AbstractTreeReferrerListTag extends TreeReferrerTag implements Li
         prevDepthProvider = null;
         return super.doEndTag();
     }
+    @Override
     public javax.servlet.jsp.jstl.core.LoopTagStatus getLoopStatus() {
         return new ListProviderLoopTagStatus(this);
     }

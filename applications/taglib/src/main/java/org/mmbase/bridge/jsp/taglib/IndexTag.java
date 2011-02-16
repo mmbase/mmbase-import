@@ -32,6 +32,7 @@ public class IndexTag extends ListReferrerTag implements Writer, QueryContainerR
     /**
      * @since MMBase-1.7.1
      */
+    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
     }

@@ -26,6 +26,7 @@ public class PresentTag extends ContextReferrerTag implements Condition {
 
     protected Attribute inverse = Attribute.NULL;
 
+    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
     }
@@ -33,6 +34,7 @@ public class PresentTag extends ContextReferrerTag implements Condition {
         return inverse.getBoolean(this, false);
     }
 
+    @Override
     public int doStartTag() throws JspTagException {
         if ((getContextProvider().getContextContainer().isPresent(getReferid())) != getInverse()) {
             return EVAL_BODY;
@@ -41,6 +43,7 @@ public class PresentTag extends ContextReferrerTag implements Condition {
         }
     }
     
+    @Override
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
             if (bodyContent != null) {

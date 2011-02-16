@@ -70,6 +70,7 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
     }
 
 
+    @Override
     public Query getQuery() {
         if (query.isUsed()) {
             query.cloneQuery();

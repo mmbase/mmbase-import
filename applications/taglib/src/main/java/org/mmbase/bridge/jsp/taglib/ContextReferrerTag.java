@@ -296,6 +296,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         writerid = Attribute.NULL;
     }
 
+    @Override
     public void doCatch(Throwable e) throws Throwable {
         log.debug("Caught throwable: " + e.getMessage());
         throw e;
@@ -453,8 +454,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
             if (log.isDebugEnabled()) {
                 log.debug(" with id ("  + tagId + ")");
             }
-            String id = cTag instanceof TagSupport ? ((TagSupport) cTag).getId() : "";
-            while (! tagId.equals(id)) {
+            String identifier = cTag instanceof TagSupport ? ((TagSupport) cTag).getId() : "";
+            while (! tagId.equals(identifier)) {
                 cTag =  findAncestorWithClass(cTag, clazz);
                 if (cTag == null) {
                     if (exception) {
@@ -463,7 +464,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
                         return null;
                     }
                 }
-                id = cTag instanceof TagSupport ? ((TagSupport) cTag).getId() : "";
+                identifier = cTag instanceof TagSupport ? ((TagSupport) cTag).getId() : "";
             }
         }
 

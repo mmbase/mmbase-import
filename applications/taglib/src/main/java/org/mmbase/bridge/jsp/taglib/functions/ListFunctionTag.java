@@ -58,33 +58,41 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
         offset = getAttribute(o);
     }
 
+    @Override
     public int size(){
         return returnCollection.size();
     }
+    @Override
     public int getIndex() {
         return currentItemIndex;
     }
 
+    @Override
     public int getIndexOffset() {
         return 1;
     }
 
+    @Override
     public boolean isChanged() {
         return true;
     }
+    @Override
     public Object getCurrent() {
         return getWriterValue();
     }
 
+    @Override
     public void remove() {
         iterator.remove();
     }
 
 
+    @Override
     public ContextContainer getContextContainer() {
         return collector;
     }
 
+    @Override
     public int doStartTag() throws JspTagException {
         initTag();
         Object value = getFunctionValue(false); // registration is done in doInitBody
@@ -116,6 +124,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
         return SKIP_BODY;
     }
 
+    @Override
     public int doAfterBody() throws JspException {
         if (getId() != null) {
             getContextProvider().getContextContainer().unRegister(getId());
@@ -144,6 +153,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
             return SKIP_BODY;
         }
     }
+    @Override
     public int doEndTag() throws JspTagException {
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), returnCollection, false);
@@ -165,6 +175,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
 
 
 
+    @Override
     public void doInitBody() throws JspTagException {
         if (iterator.hasNext()){
             currentItemIndex ++;
@@ -180,6 +191,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
         }
     }
 
+    @Override
     public javax.servlet.jsp.jstl.core.LoopTagStatus getLoopStatus() {
         return new ListProviderLoopTagStatus(this);
     }

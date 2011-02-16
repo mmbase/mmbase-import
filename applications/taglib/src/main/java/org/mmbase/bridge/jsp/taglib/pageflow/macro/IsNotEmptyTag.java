@@ -17,6 +17,7 @@ package org.mmbase.bridge.jsp.taglib.pageflow.macro;
  */
 
 public class IsNotEmptyTag extends IsEmptyTag  {
+    @Override
     protected boolean doCompare(Comparable<Comparable> compare1, Comparable compare2) {
         return ! super.doCompare(compare1, compare2);
     }

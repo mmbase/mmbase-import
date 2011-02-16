@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.Node;
 
@@ -19,7 +18,7 @@ import javax.servlet.jsp.JspTagException;
 
 
 /**
- * Straight-forward wrapper arround {@link org.mmbase.bridge.NodeManager#hasField}.
+ * Straight-forward wrapper around {@link org.mmbase.bridge.NodeManager#hasField}.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -32,6 +31,7 @@ public class HasFieldTag extends NodeReferrerTag implements Condition {
     protected Attribute name    = Attribute.NULL;
     private Attribute nodeManagerAtt = Attribute.NULL;
 
+    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
     }

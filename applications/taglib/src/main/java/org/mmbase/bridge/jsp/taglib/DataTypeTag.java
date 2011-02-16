@@ -109,6 +109,7 @@ public class DataTypeTag extends CloudReferrerTag {
         }
     }
 
+    @Override
     public int doEndTag() throws JspTagException {
         StringBuilder buf = new StringBuilder("<datatype base=\"");
         buf.append(base.getString(this)).append("\" id=\"").append(getId()).append("\" ").append(ATTR).append(">");
