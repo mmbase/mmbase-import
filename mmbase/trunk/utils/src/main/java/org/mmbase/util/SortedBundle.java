@@ -89,6 +89,7 @@ public class SortedBundle {
             com   = c;
         }
         @SuppressWarnings({"unchecked"})
+        @Override
         public  int compareTo(ValueWrapper other) {
             int result =
                 com != null ? com.compare(value, other.value) :
