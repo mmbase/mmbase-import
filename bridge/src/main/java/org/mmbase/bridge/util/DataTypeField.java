@@ -131,6 +131,7 @@ public  class DataTypeField extends org.mmbase.bridge.util.AbstractField {
     public String getGUIType() {
         return dataType.getName();
     }
+    @Override
     public Collection<String> validate(Object value) {
         Collection<LocalizedString> errors = dataType.validate(value, (Node) null, this);
         return LocalizedString.toStrings(errors, nodeManager.getCloud().getLocale());

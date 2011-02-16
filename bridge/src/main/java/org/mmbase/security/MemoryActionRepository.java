@@ -30,10 +30,12 @@ public class MemoryActionRepository extends ActionRepository {
     public MemoryActionRepository() {
     }
 
-    @Override public void load() {
+    @Override
+    public void load() {
     }
 
-    @Override public void add(Action a) {
+    @Override
+    public void add(Action a) {
         log.debug("Adding " + a + " to " + this);
         Map<String, Action> map = store.get(a.getNameSpace());
         if (map == null) {
@@ -42,7 +44,8 @@ public class MemoryActionRepository extends ActionRepository {
         }
         map.put(a.getName(), a);
     }
-    @Override public Map<String, Action> get(String nameSpace) {
+    @Override
+    public Map<String, Action> get(String nameSpace) {
         Map<String, Action> map = store.get(nameSpace);
         if (map == null) {
             return Collections.emptyMap();
@@ -51,7 +54,8 @@ public class MemoryActionRepository extends ActionRepository {
         }
     }
 
-    @Override public Collection<Action> getActions() {
+    @Override
+    public Collection<Action> getActions() {
         return new AbstractCollection<Action>() {
             int size = -1;
             @Override

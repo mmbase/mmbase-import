@@ -26,6 +26,7 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
+ *
  * @since MMBase-2.0
  * @author Michiel Meeuwissen
  */
@@ -169,7 +170,7 @@ public class NodeURLStreamHandlerFactory extends ResourceLoader.URLStreamHandler
      * A URLConnection based on an MMBase node.
      * @see FileConnection
      */
-    private static class NodeConnection extends URLConnection {
+    protected static class NodeConnection extends URLConnection {
         Node node;
         final String name;
         final int type;

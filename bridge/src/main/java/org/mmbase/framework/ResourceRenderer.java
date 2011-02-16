@@ -66,7 +66,8 @@ public class ResourceRenderer extends AbstractRenderer {
         }
     }
 
-    @Override public void render(Parameters blockParameters,
+    @Override
+    public void render(Parameters blockParameters,
                                  Writer w, RenderHints hints) throws FrameworkException {
 
 
