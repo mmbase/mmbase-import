@@ -282,7 +282,7 @@ public class FunctionSets {
                         log.debug("Found " + fun);
                     }
                 } catch (Exception e) {
-                    log.error(e.getMessage(), e);
+                    log.error(reader.getSystemId() + ": " + e.getMessage(), e);
                 }
             } else {
                 log.warn("No function name specified on " + XMLWriter.write(element));
