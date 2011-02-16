@@ -310,8 +310,7 @@ public class ResourceLoader extends ClassLoader {
     public static synchronized ResourceLoader getConfigurationRoot() {
         if (configRootNeedsInit) {
             configRootNeedsInit = false;
-            configRoot.roots.clear();
-
+            List<PathURLStreamHandler> newRoots = new ArrayList<PathURLStreamHandler>();
             try {
                 final String name = "org/mmbase/config/utils/resourceloader_" + Type.CONFIG;
                 final List<URL> urls = Collections.list(ResourceLoader.class.getClassLoader().getResources(name));
@@ -344,7 +343,7 @@ public class ResourceLoader extends ClassLoader {
                                 PathURLStreamHandler[] handlers = fact.createURLStreamHandler(configRoot, Type.CONFIG);
                                 for (PathURLStreamHandler handler : handlers) {
                                     handler.setWeight(weight);
-                                    configRoot.roots.add(handler);
+                                    newRoots.add(handler);
                                     weight++;
                                 }
 
@@ -359,7 +358,11 @@ public class ResourceLoader extends ClassLoader {
             } catch (IOException ioe) {
                 log.error(ioe.getMessage(), ioe);
             }
-            Collections.sort(configRoot.roots);
+            Collections.sort(newRoots);
+            configRoot.roots.clear();
+            configRoot.roots.addAll(newRoots);
+
+
             //System.out.println("CONFIG: " + configRoot.roots);
         }
         return configRoot;
