@@ -49,7 +49,8 @@ public enum Debug {
         public String start(String name, Object url) {
             return "<!-- " + name + " page = '" + Xml.XMLEscape("" + url) + "' -->";
         }
-        public String end(String name, String url) {
+        @Override
+        public String end(String name, Object url) {
             return "<!-- END " + name + " page = '" + Xml.XMLEscape("" + url) + "' -->";
         }
     },
