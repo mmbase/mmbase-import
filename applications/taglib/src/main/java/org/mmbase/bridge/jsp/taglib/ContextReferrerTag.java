@@ -50,7 +50,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      * This configurable constant might become deprecated, because it is a bit experimental.
      *
      */
-    public static int EVAL_BODY = EVAL_BODY_INCLUDE;
+    public static int EVAL_BODY = -1;
     // should be EVAL_BODY_INCLUDE. But
     // 1. Completely unsupported by orion 1.6.0
     // 2. Buggy supported by tomcat < 4.1.19
@@ -177,9 +177,10 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     @Override
     public void setPageContext(PageContext pc) {
         if (EVAL_BODY == -1) { // as yet unset
-            EVAL_BODY =  "true".equals(pc.getServletContext().getInitParameter("mmbase.taglib.eval_body_include")) ?
-                EVAL_BODY_INCLUDE : EVAL_BODY_BUFFERED;
-            log.info("Using " + (EVAL_BODY == EVAL_BODY_BUFFERED ? " EVAL_BODY_BUFFERED (If you use a modern app-server, which supports it, you prefer EVAL_BODY_INCLUDE. See web.xml)" :  "EVAL_BODY_INCLUDE"));
+            EVAL_BODY =  "false".equals(pc.getServletContext().getInitParameter("mmbase.taglib.eval_body_include")) ?
+                EVAL_BODY_BUFFERED : EVAL_BODY_INCLUDE;
+            Logging.log(EVAL_BODY == EVAL_BODY_BUFFERED ? Level.INFO : Level.DEBUG, log,
+                    "Using " + (EVAL_BODY == EVAL_BODY_BUFFERED ? " EVAL_BODY_BUFFERED (If you use a modern app-server, which supports it, you prefer EVAL_BODY_INCLUDE. See web.xml)" : "EVAL_BODY_INCLUDE"));
         }
 
         if (log.isDebugEnabled()) {
