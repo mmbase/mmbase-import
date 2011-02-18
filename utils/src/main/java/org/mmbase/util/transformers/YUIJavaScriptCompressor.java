@@ -45,7 +45,7 @@ public class YUIJavaScriptCompressor extends  ReaderTransformer {
             LOG.info(ncdfe.getClass().getName() + " " + ncdfe.getMessage() + ". Javascript and CSS compression will not work.");
             w = false;
         } catch (RuntimeException re) {
-            LOG.info("Javascript comporession not working. You may be running on open jdk. See  https://lists.launchpad.net/openjdk/msg01068.html");
+            LOG.info("Javascript comporession not working. You may be running on open jdk. See  https://lists.launchpad.net/openjdk/msg01068.html. ");
             w = false;
         } catch (Throwable re) {
             LOG.warn(re.getMessage(), re);

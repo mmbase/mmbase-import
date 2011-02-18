@@ -43,9 +43,9 @@ import java.util.*;
 public class LinkMap<K, V> extends AbstractMap<K,V> {
 
     /**
-     * Enum for the parameter of the constructor  {@link LinkMap#LinkMap(Map, Map, Changes)}
+     * Enum for the parameter of the constructor  {@link LinkMap#LinkMap(Map, Map, LinkMap.Changes)}
      */
-    public enum Changes {
+    public static enum Changes {
         /**
          * Changes are reflected in the 'first' map only. So they remain invisible if second maps contains the same key.
          */
@@ -68,18 +68,18 @@ public class LinkMap<K, V> extends AbstractMap<K,V> {
          */
          NONE;
     }
-    private final Changes changes;
+    private final LinkMap.Changes changes;
     private final Map<K, V> map1;
     private final Map<K, V> map2;
     /**
      * Creates a (modifiable) Linked Map. What precisely happens on modification is ruled by the <code>c</code> parameter.
-     * @see Changes#FIRST
-     * @see Changes#SECOND
-     * @see Changes#BOTH
-     * @see Changes#CONSERVE
-     * @see Changes#NONE
+     * @see LinkMap.Changes#FIRST
+     * @see LinkMap.Changes#SECOND
+     * @see LinkMap.Changes#BOTH
+     * @see LinkMap.Changes#CONSERVE
+     * @see LinkMap.Changes#NONE
      */
-    public LinkMap(Map<K,V> m1, Map<K,V> m2, Changes c) {
+    public LinkMap(Map<K,V> m1, Map<K,V> m2, LinkMap.Changes c) {
         map1 = m1; map2 = m2;
         changes = c;
     }
@@ -87,23 +87,29 @@ public class LinkMap<K, V> extends AbstractMap<K,V> {
      * Creates an unmodifiable Linked Map
      */
     public LinkMap(Map<K,V> m1, Map<K,V> m2) {
-        this(m1, m2, Changes.NONE);
+        this(m1, m2, LinkMap.Changes.NONE);
     }
+    @Override
     public Set<Map.Entry<K,V>> entrySet() {
         return new AbstractSet<Map.Entry<K,V>>() {
+            @Override
             public Iterator<Map.Entry<K,V>> iterator() {
                 final Iterator<Map.Entry<K,V>> i = map1.entrySet().iterator();
                 return new Iterator<Map.Entry<K,V>>() {
+                    @Override
                     public boolean hasNext() {
                         return i.hasNext();
                         }
+                    @Override
                     public Map.Entry<K,V> next() {
                         final Map.Entry<K, V> entry1 = i.next();
                         final K key = entry1.getKey();
                         return new Map.Entry<K, V>() {
+                            @Override
                             public K getKey() {
                                 return key;
                             }
+                            @Override
                             public V getValue() {
                                 if (map2.containsKey(key)) {
                                     return map2.get(key);
@@ -111,16 +117,19 @@ public class LinkMap<K, V> extends AbstractMap<K,V> {
                                     return entry1.getValue();
                                 }
                             }
+                            @Override
                             public V setValue(V v) {
                                 return LinkMap.this.put(key, v);
                             }
                         };
                     }
+                    @Override
                     public void remove() {
                         throw new UnsupportedOperationException();
                     }
                 };
             }
+            @Override
             public int size() {
                 return map1.size();
             }

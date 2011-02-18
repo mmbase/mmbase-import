@@ -68,7 +68,7 @@ public class LocaleCollator  extends Collator implements Serializable {
 
     }
     /**
-     * An enum wrapping the 'decompositon' related constants of {@link Collator}. Mainly because {@link Decomposition#valueOf(String)} is used in the implementation of {@link LocaleCollator#getInstance(String)}.
+     * An enum wrapping the 'decomposition' related constants of {@link Collator}. Mainly because {@link LocaleCollator.Decomposition#valueOf(String)} is used in the implementation of {@link LocaleCollator#getInstance(String)}.
      */
     public static enum Decomposition {
         CANONICAL(Collator.CANONICAL_DECOMPOSITION),
@@ -84,9 +84,11 @@ public class LocaleCollator  extends Collator implements Serializable {
         /**
          * @param i {@link Collator#CANONICAL_DECOMPOSITION}, {@link Collator#FULL_DECOMPOSITION} or {@link Collator#NO_DECOMPOSITION}.
          */
-        public static Decomposition valueOf(int i) {
-            for (Decomposition s : Decomposition.values()) {
-                if (s.get() == i) return s;
+        public static LocaleCollator.Decomposition valueOf(int i) {
+            for (LocaleCollator.Decomposition s : LocaleCollator.Decomposition.values()) {
+                if (s.get() == i) {
+                    return s;
+                }
             }
             throw new IllegalArgumentException();
         }
@@ -112,18 +114,18 @@ public class LocaleCollator  extends Collator implements Serializable {
      *  <li>":IDENTIY The case sensitive Collator associated with the default locale</li>
      * </ul>
      * @see Strength
-     * @see Decomposition
+     * @see LocaleCollator.Decomposition
      */
 
     public static Collator getInstance(String s) {
-        String[] elements = s.split(":", -1);
-        Locale locale = elements[0].equals("") ? LocalizedString.getDefault() : LocalizedString.getLocale(elements[0]);
-        Collator collator =  new LocaleCollator(locale);
+        final String[] elements = s.split(":", -1);
+        final Locale locale = elements[0].equals("") ? LocalizedString.getDefault() : LocalizedString.getLocale(elements[0]);
+        final Collator collator = new LocaleCollator(locale);
         if (elements.length > 1) {
             collator.setStrength(Strength.valueOf(elements[1]).get());
         }
         if (elements.length > 2) {
-            collator.setDecomposition(Decomposition.valueOf(elements[2]).get());
+            collator.setDecomposition(LocaleCollator.Decomposition.valueOf(elements[2]).get());
         }
         return collator;
     }
@@ -160,19 +162,19 @@ public class LocaleCollator  extends Collator implements Serializable {
         return wrapped.getCollationKey(source);
     }
     @Override
-    public int  getDecomposition() {
+    public int getDecomposition() {
         return wrapped.getDecomposition();
     }
     @Override
-    public int  getStrength() {
+    public int getStrength() {
         return wrapped.getStrength();
     }
-    public int  hashCode() {
+    public int hashCode() {
         return wrapped.hashCode();
 
     }
     @Override
-    public void  setDecomposition(int decompositionMode) {
+    public void setDecomposition(int decompositionMode) {
         wrapped.setDecomposition(decompositionMode);
     }
     @Override
@@ -181,15 +183,15 @@ public class LocaleCollator  extends Collator implements Serializable {
     }
     @Override
     public String toString() {
-        return locale + ":" + Strength.valueOf(wrapped.getStrength()) + ":" + Decomposition.valueOf(wrapped.getDecomposition());
+        return locale + ":" + Strength.valueOf(wrapped.getStrength()) + ":" + LocaleCollator.Decomposition.valueOf(wrapped.getDecomposition());
     }
 
     /**
      * Wether a string matches this Collator. It's the same string as in
      * {@link #getInstance(String)}. Unspecified values never make the result false.
      */
-    public boolean matches(String s) {
-        String[] elements = s.split(":", -1);
+    public boolean matches(final String s) {
+        final String[] elements = s.split(":", -1);
         if (elements[0].length() > 0) {
             Locale otherLocale = LocalizedString.getLocale(elements[0]);
             if (! otherLocale.getLanguage().equals(locale.getLanguage())) {
@@ -211,7 +213,7 @@ public class LocaleCollator  extends Collator implements Serializable {
                 return false;
         }
         if (elements.length > 2 &&
-            Decomposition.valueOf(elements[2]).get() != getDecomposition()) {
+            LocaleCollator.Decomposition.valueOf(elements[2]).get() != getDecomposition()) {
             return false;
         }
         return true;
@@ -249,11 +251,11 @@ public class LocaleCollator  extends Collator implements Serializable {
         System.out.println("" + col);
         String[][] s = new String[][] {
             { "a", "A" },
-            { "a", "ä" },
-            { "a", "Ä" },
+            { "a", "ï¿½" },
+            { "a", "ï¿½" },
             { "a", "x" },
-            { "ä", "z" },
-            { "Ä", "z" }
+            { "ï¿½", "z" },
+            { "ï¿½", "z" }
         };
         for (String [] pair : s) {
             System.out.println("COMPARE " + pair[0] + "/" + pair[1] + ": " + col.compare(pair[0], pair[1]) + " " + col.equals(pair[0], pair[1]));
