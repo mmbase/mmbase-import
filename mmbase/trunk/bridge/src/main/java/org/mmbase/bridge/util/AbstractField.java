@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 
-abstract public class AbstractField<D extends Object> extends AbstractDescriptor implements Field {
+abstract public class AbstractField<D> extends AbstractDescriptor implements Field {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractField.class);
 
@@ -250,7 +250,7 @@ abstract public class AbstractField<D extends Object> extends AbstractDescriptor
     public AbstractField clone(String name, boolean copyDataTypeForRewrite) {
         AbstractField clone = (AbstractField)super.clone(name);
         if (copyDataTypeForRewrite) {
-            clone.dataType = (DataType<Object>) dataType.clone();
+            clone.dataType = dataType.clone();
         }
         return clone;
     }

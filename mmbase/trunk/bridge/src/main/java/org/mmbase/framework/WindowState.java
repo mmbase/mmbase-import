@@ -31,6 +31,6 @@ public enum WindowState {
       * Rendering may suppose quite a large area, but should be aware that other blocks are in a
       * similar state.
       */
-     NORMAL;
+     NORMAL
 }
 

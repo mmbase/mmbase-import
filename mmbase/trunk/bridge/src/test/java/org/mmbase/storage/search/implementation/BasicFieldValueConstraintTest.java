@@ -21,8 +21,8 @@ public class BasicFieldValueConstraintTest {
     private final static String FIELD_NAME2 = "number";
     private final static String STRING_VALUE1 = "value1";
     private final static String STRING_VALUE2 = "aValue2";
-    private final static Double DOUBLE_VALUE1 = new Double(12345);
-    private final static Double DOUBLE_VALUE2 = new Double(34589);
+    private final static Double DOUBLE_VALUE1 = (double) 12345;
+    private final static Double DOUBLE_VALUE2 = (double) 34589;
 
     /** Test instance 1 (string field). */
     private BasicFieldValueConstraint instance1 = null;
@@ -94,7 +94,7 @@ public class BasicFieldValueConstraintTest {
         assertTrue(!DOUBLE_VALUE1.equals(DOUBLE_VALUE2)); // Different test values!
 
         // Insert as Integer value instead of Double.
-        instance2.setValue(new Integer(DOUBLE_VALUE2.intValue()));
+        instance2.setValue(DOUBLE_VALUE2.intValue());
         assertTrue(
             ((Number) instance2.getValue()).doubleValue()
                 == DOUBLE_VALUE2.doubleValue());

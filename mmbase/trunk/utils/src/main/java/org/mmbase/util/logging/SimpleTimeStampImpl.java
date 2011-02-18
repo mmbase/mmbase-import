@@ -39,8 +39,6 @@ public class SimpleTimeStampImpl extends AbstractSimpleImpl implements Logger {
         }
     }
 
-    private static int stacktraceLevel  = Level.FATAL_INT;
-
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS ");
     private static final Map<String, SimpleTimeStampImpl> loggers  = new ConcurrentHashMap<String, SimpleTimeStampImpl>();
     private static final SimpleTimeStampImpl root = new SimpleTimeStampImpl("");
@@ -144,6 +142,7 @@ public class SimpleTimeStampImpl extends AbstractSimpleImpl implements Logger {
     protected final void log (String s, Level l) {
         PrintStream stream = getStream(l);
         stream.println(l.toString() + " " + dateFormat.format(new java.util.Date()) + s);
+        int stacktraceLevel = Level.FATAL_INT;
         if (l.toInt() >= stacktraceLevel) {
             Throwable t = new Throwable();
             stream.println(Logging.stackTrace(t));

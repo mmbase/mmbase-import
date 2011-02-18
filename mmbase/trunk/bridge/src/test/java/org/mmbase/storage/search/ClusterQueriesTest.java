@@ -26,7 +26,7 @@ public class ClusterQueriesTest {
 
     @Test
     public void getUniqueTableAlias() {
-        List<String> originalAliases = Arrays.asList(new String[] {"test1", "test2"});
+        List<String> originalAliases = Arrays.asList("test1", "test2");
         Set<String> tableAliases = new HashSet<String>();
         String alias = instance.getUniqueTableAlias("test", tableAliases, originalAliases);
         assertTrue(alias.equals("test"));
@@ -126,7 +126,7 @@ public class ClusterQueriesTest {
         Map<String,Integer> roles = new HashMap<String,Integer>();
         Map<String, BasicStepField> fieldsByName = new HashMap<String, BasicStepField>();
         List<String> tables = Arrays.asList(
-            new String[] {"news", "related", "people", "news1"});
+                "news", "related", "people", "news1");
         Map<String, BasicStep> stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
         assertTrue(query.getFields().size() == 4);
         assertTrue(fieldsByName.size() == 4);
@@ -222,7 +222,7 @@ public class ClusterQueriesTest {
         BasicSearchQuery query = new BasicSearchQuery();
         Map<String,Integer> roles = new HashMap<String,Integer>();
         Map<String, BasicStepField> fieldsByName = new HashMap<String, BasicStepField>();
-        List<String> tables = Arrays.asList(new String[] {"news", "news1"});
+        List<String> tables = Arrays.asList("news", "news1");
         Map<String, BasicStep> stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
         // Test steps and returned map.
         assertTrue(stepsByAlias.size() == 3);
@@ -258,7 +258,7 @@ public class ClusterQueriesTest {
         query = new BasicSearchQuery();
         roles.clear();
         fieldsByName.clear();
-        tables = Arrays.asList(new String[] {"news", "news1"});
+        tables = Arrays.asList("news", "news1");
         stepsByAlias = instance.addSteps(query, tables, roles, false, fieldsByName);
         // Test steps and returned map.
         assertTrue(stepsByAlias.size() == 3);
@@ -286,7 +286,7 @@ public class ClusterQueriesTest {
         query = new BasicSearchQuery();
         roles.clear();
         fieldsByName.clear();
-        tables = Arrays.asList(new String[] {"news", "related", "news1"});
+        tables = Arrays.asList("news", "related", "news1");
         stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
         // Test steps and returned map.
         assertEquals("" + stepsByAlias, 3, stepsByAlias.size());
@@ -329,7 +329,7 @@ public class ClusterQueriesTest {
         query = new BasicSearchQuery();
         roles.clear();
         fieldsByName.clear();
-        tables = Arrays.asList(new String[] {"news", "related", "news1", "related", "news"});
+        tables = Arrays.asList("news", "related", "news1", "related", "news");
         stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
         // Test steps and returned map.
         assertTrue(stepsByAlias.size() == 5);
@@ -382,11 +382,10 @@ public class ClusterQueriesTest {
     private StepField getField(
             SearchQuery query, String stepAlias, String fieldName) {
         StepField result = null;
-        Iterator<StepField> iFields = query.getFields().iterator();
-        while (iFields.hasNext()) {
-            StepField field = iFields.next();
+        for (StepField stepField : query.getFields()) {
+            StepField field = stepField;
             if (field.getStep().getAlias().equals(stepAlias)
-            && field.getFieldName().equals(fieldName)) {
+                    && field.getFieldName().equals(fieldName)) {
                 // Found.
                 result = field;
                 break;

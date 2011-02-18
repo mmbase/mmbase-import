@@ -50,8 +50,8 @@ abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<
     protected AbstractDescriptor(String name, Descriptor descriptor, boolean cloneDataForRewrite) {
         key = name;
         if (cloneDataForRewrite) {
-            description = (LocalizedString)descriptor.getLocalizedDescription().clone();
-            guiName = (LocalizedString)descriptor.getLocalizedGUIName().clone();
+            description = descriptor.getLocalizedDescription().clone();
+            guiName = descriptor.getLocalizedGUIName().clone();
         } else {
             description = descriptor.getLocalizedDescription();
             guiName = descriptor.getLocalizedGUIName();

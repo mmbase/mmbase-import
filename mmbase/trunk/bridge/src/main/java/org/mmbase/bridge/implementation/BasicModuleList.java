@@ -37,7 +37,7 @@ public class BasicModuleList extends BasicList<Module> implements ModuleList {
     @Override
     public ModuleIterator moduleIterator() {
         return new BasicModuleIterator();
-    };
+    }
 
     protected class BasicModuleIterator extends BasicIterator implements ModuleIterator {
 

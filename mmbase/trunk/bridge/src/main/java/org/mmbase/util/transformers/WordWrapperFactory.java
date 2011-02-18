@@ -88,7 +88,7 @@ public class WordWrapperFactory implements ParameterizedTransformerFactory<CharT
                     log.error(e.toString());
                 }
                 return w;
-            };
+            }
         };
 
     }

@@ -32,7 +32,6 @@ public class ResultCache extends Cache<String, String> {
 
     private static Logger log = Logging.getLoggerInstance(ResultCache.class);
 
-    private static int cacheSize = 50;
     private static ResultCache cache;
 
 
@@ -49,6 +48,7 @@ public class ResultCache extends Cache<String, String> {
     }
 
     static {
+        int cacheSize = 50;
         cache = new ResultCache(cacheSize);
         cache.putCache();
     }
@@ -158,9 +158,8 @@ public class ResultCache extends Cache<String, String> {
                 Transformer transformer = temp.newTransformer();
                 // add the params:
                 if (params != null) {
-                    Iterator i = params.entrySet().iterator();
-                    while (i.hasNext()) {
-                        Map.Entry entry = (Map.Entry) i.next();
+                    for (Object o : params.entrySet()) {
+                        Entry entry = (Entry) o;
                         transformer.setParameter((String) entry.getKey(), entry.getValue());
                     }
                 }

@@ -91,7 +91,7 @@ public abstract class Instantiator {
         for (Object arg : args) {
             argTypes.add(arg.getClass());
         }
-        Class[] argTypesArray = argTypes.toArray(new Class[] {});
+        Class[] argTypesArray = argTypes.toArray(new Class[argTypes.size()]);
         Constructor constructor = null;
         for (Constructor c : claz.getConstructors()) {
             Class[] parameterTypes = c.getParameterTypes();

@@ -18,7 +18,7 @@ public class BasicRelationStepTest  {
     private final static String TEST_BUILDER1 = "mags";
     private final static String TEST_BUILDER2 = "news";
     private final static String INSREL = "posrel";
-    private final static Integer TEST_ROLE = new Integer(123456);
+    private final static Integer TEST_ROLE = 123456;
 
     /** Test instance. */
     private BasicRelationStep instance = null;

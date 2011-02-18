@@ -53,11 +53,14 @@ public interface Renderer {
                 @Override
                 public Type getType() { return Type.this; }
                 @Override
-                public void render(Parameters parameters, Writer w, RenderHints hints) { };
+                public void render(Parameters parameters, Writer w, RenderHints hints) { }
+
                 @Override
-                public Parameter[] getParameters() { return Parameter.emptyArray(); };
+                public Parameter[] getParameters() { return Parameter.emptyArray(); }
+
                 @Override
-                public Block getBlock() { return block ; };
+                public Block getBlock() { return block ; }
+
                 @Override
                 public String toString() { return "EMPTY Renderer"; }
                 @Override

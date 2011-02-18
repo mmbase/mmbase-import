@@ -10,7 +10,7 @@ package org.mmbase.core.event;
 
 /**
  * This is a listener interface for every type of event. Primarily created for
- * {@link org.mmbases.clustering.ClusterManager}, which has to propagate all local events to the mmbase cluster.
+ * {@link org.mmbase.clustering.ClusterManager}, which has to propagate all local events to the mmbase cluster.
  * @author Ernst Bunders
  * @since 1.8
  * @version $Id$

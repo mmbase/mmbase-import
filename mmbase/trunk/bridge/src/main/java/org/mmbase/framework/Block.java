@@ -152,9 +152,7 @@ public class Block {
         if (specific != null) {
             help.addAll(Arrays.asList(specific));
         }
-        for (Parameter p : params) {
-            help.add(p);
-        }
+        help.addAll(Arrays.asList(params));
         specific = help.toArray(Parameter.emptyArray());
         log.debug("Set parameters of " + this + " to " + help);
     }

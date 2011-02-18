@@ -2084,9 +2084,6 @@ public class ResourceLoader extends ClassLoader {
     // 'NOT AVAILABLE'
 
 
-    private static String NOT_FOUND = "/localhost/NOTFOUND/";
-
-
     /**
      * URLStreamHandler for URL's which can do neither input, nor output. Such an URL can be
      * returned by other PathURLStreamHandlers too.
@@ -2113,6 +2110,7 @@ public class ResourceLoader extends ClassLoader {
                 name = name.substring(1);
             }
             try {
+                String NOT_FOUND = "/localhost/NOTFOUND/";
                 u = new URL(null, "http:/" + NOT_FOUND + name, this);
             } catch (MalformedURLException mfue) {
                 throw new AssertionError(mfue.getMessage());
@@ -2145,7 +2143,8 @@ public class ResourceLoader extends ClassLoader {
         @Override
         public void connect() throws IOException {
             throw new IOException("No such resource " + name);
-        };
+        }
+
         @Override
         public boolean getDoInput() { return false; }
         @Override
@@ -2160,8 +2159,7 @@ public class ResourceLoader extends ClassLoader {
         }
         @Override
         public String toString() { return "NOTAVAILABLECONNECTION " + name; }
-    };
-
+    }
 
 
     // ================================================================================

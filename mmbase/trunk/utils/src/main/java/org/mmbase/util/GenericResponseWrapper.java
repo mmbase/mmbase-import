@@ -53,7 +53,6 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private ServletOutputStream outputStream; // wrapped by outputStream
     private ByteArrayOutputStream   bytes;
 
-    private String contentType       = DEFAULT_CONTENTTYPE;
     private String characterEncoding = UNSET_CHARSET;
 
     private HttpServletResponse wrappedResponse;
@@ -278,6 +277,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      */
     @Override
     public void setContentType(String ct) {
+        String contentType = DEFAULT_CONTENTTYPE;
         if (ct == null) {
             contentType = DEFAULT_CONTENTTYPE;
         } else {
@@ -289,7 +289,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("set contenttype of include page to: '" +  contentType + "' (and character encoding to '" + characterEncoding +  "')");
+            log.debug("set contenttype of include page to: '" + contentType + "' (and character encoding to '" + characterEncoding +  "')");
         }
     }
 
@@ -349,7 +349,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      * @since MMBase-1.7.1
      * @see #getXMLEncoding(byte[])
      */
-    public static final String getXMLEncoding(String xmlString) {
+    public static String getXMLEncoding(String xmlString) {
         Matcher m = XMLHEADER.matcher(xmlString);
         if (! m.matches()) {
             return null; // No <? xml header found, this file is probably not XML.

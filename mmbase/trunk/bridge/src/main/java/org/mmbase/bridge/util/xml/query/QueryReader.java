@@ -286,9 +286,8 @@ public abstract class QueryReader {
 
     protected static SortedSet<Integer> getOTypes(Cloud cloud, List<String> names, boolean descendants) {
         SortedSet<Integer> set = new TreeSet<Integer>();
-        Iterator<String> i = names.iterator();
-        while (i.hasNext()) {
-            NodeManager nm = cloud.getNodeManager(i.next());
+        for (String name : names) {
+            NodeManager nm = cloud.getNodeManager(name);
             set.add(nm.getNumber());
             if (descendants) {
                 NodeManagerIterator j = nm.getDescendants().nodeManagerIterator();

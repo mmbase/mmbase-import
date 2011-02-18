@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes.handlers.html;
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 import javax.servlet.http.*;
 import org.mmbase.util.logging.Logger;
@@ -50,7 +51,7 @@ public class MultiPart {
             if (log.isDebugEnabled()) {
                 if (multipartRequest != null) {
                     StringBuilder params = new StringBuilder();
-                    for (String paramName : (Collection<String>) multipartRequest.getParameterNames()) {
+                    for (String paramName : multipartRequest.getParameterNames()) {
                         params.append(paramName).append(",");
                     }
                     log.debug("multipart parameters: " + params);
@@ -94,8 +95,8 @@ public class MultiPart {
                     log.debug("fileupload's header encoding unchanged: " + fu.getHeaderEncoding());
                 }
                 List fileItems = fu.parseRequest(req);
-                for (Iterator i = fileItems.iterator(); i.hasNext(); ) {
-                    FileItem fi = (FileItem)i.next();
+                for (Object fileItem : fileItems) {
+                    FileItem fi = (FileItem) fileItem;
                     log.debug("Found " + fi);
                     if (fi.isFormField()) {
                         String value;
@@ -106,12 +107,12 @@ public class MultiPart {
                         log.debug("using encoding: " + enc);
                         try {
                             value = fi.getString(enc);
-                        } catch(java.io.UnsupportedEncodingException uee) {
+                        } catch (UnsupportedEncodingException uee) {
                             log.error("could not happen, ISO-8859-1 is supported");
                             value = fi.getString();
                         }
                         Object oldValue = parametersMap.get(fi.getFieldName());
-                        if (oldValue == null ) {
+                        if (oldValue == null) {
                             parametersMap.put(fi.getFieldName(), value);
                         } else if (!(oldValue instanceof FileItem)) {
                             List<Object> values;
@@ -119,7 +120,7 @@ public class MultiPart {
                                 values = new ArrayList<Object>();
                                 values.add(oldValue);
                             } else {
-                                values = (List<Object>)oldValue;
+                                values = (List<Object>) oldValue;
                             }
                             values.add(value);
                             parametersMap.put(fi.getFieldName(), values);
@@ -127,7 +128,7 @@ public class MultiPart {
                     } else {
                         // This is an actual file-upload
                         parametersMap.put(fi.getFieldName(), new SerializableInputStream(fi));
-                        parametersMap.put("org.mmbase.datatypes.handlers.html.FILEITEM."  + fi.getFieldName(), fi);
+                        parametersMap.put("org.mmbase.datatypes.handlers.html.FILEITEM." + fi.getFieldName(), fi);
                     }
                 }
             } catch (FileUploadException e) {

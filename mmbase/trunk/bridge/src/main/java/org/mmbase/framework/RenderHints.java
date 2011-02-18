@@ -30,7 +30,7 @@ public class RenderHints {
 
     public enum Mode {
         NORMAL,
-        AJAX;
+        AJAX
     }
 
     public RenderHints(Renderer renderer, WindowState state, String id, String clazz, Mode mode) {

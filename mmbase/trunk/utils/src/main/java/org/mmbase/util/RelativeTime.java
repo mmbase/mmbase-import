@@ -290,7 +290,7 @@ public class RelativeTime {
                 e = testProps.keys();
                 while (e.hasMoreElements()) {
                     timeKey = (String)e.nextElement();
-                    timeValue = ((Integer)testProps.get(timeKey)).intValue();
+                    timeValue = (Integer) testProps.get(timeKey);
                     log.info("getHours using time = "+timeKey+" ->"+getHours(timeValue));
                 }
             } else if (args[0].equals("getMinutes")) {
@@ -298,7 +298,7 @@ public class RelativeTime {
                 e = testProps.keys();
                 while (e.hasMoreElements()) {
                     timeKey = (String)e.nextElement();
-                    timeValue = ((Integer)testProps.get(timeKey)).intValue();
+                    timeValue = (Integer) testProps.get(timeKey);
                     log.info("getMinutes using time = "+timeKey+" ->"+getMinutes(timeValue));
                 }
             } else if (args[0].equals("getSeconds")) {
@@ -306,7 +306,7 @@ public class RelativeTime {
                 e = testProps.keys();
                 while (e.hasMoreElements()) {
                     timeKey = (String)e.nextElement();
-                    timeValue = ((Integer)testProps.get(timeKey)).intValue();
+                    timeValue = (Integer) testProps.get(timeKey);
                     log.info("getSeconds using time = "+timeKey+" ->"+getSeconds(timeValue));
                 }
             } else if (args[0].equals("getMillis")) {
@@ -314,14 +314,14 @@ public class RelativeTime {
                 e = testProps.keys();
                 while (e.hasMoreElements()) {
                     timeKey = (String)e.nextElement();
-                    timeValue = ((Integer)testProps.get(timeKey)).intValue();
+                    timeValue = (Integer) testProps.get(timeKey);
                     log.info("getMillis using time  = "+timeKey+" ->"+getMillis(timeValue));
                 }
             } else if (args[0].equals("convertIntToTime")) {
                 log.info("Testing method: "+args[0]);
                 e = testProps.elements();
                 while (e.hasMoreElements()) {
-                    timeValue = ((Integer)e.nextElement()).intValue();
+                    timeValue = (Integer) e.nextElement();
                     log.info("convertIntToTime using timeValue = "+timeValue+" ->"+convertIntToTime(timeValue));
                 }
             } else if (args[0].equals("convertTimeToInt")) {

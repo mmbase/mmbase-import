@@ -417,7 +417,7 @@ public class MMBaseContext implements ServletContextListener {
                         htmlRootUrlPath = "/";
                     } else if (sx.getMajorVersion() > 2 || (sx.getMajorVersion() == 2 && sx.getMinorVersion() >= 5)) {
                         try {
-                            htmlRootUrlPath = (String) sx.getClass().getMethod("getContextPath").invoke(sx) + "/";
+                            htmlRootUrlPath = sx.getClass().getMethod("getContextPath").invoke(sx) + "/";
                         } catch(Exception e) {
                             LOG.error(e);
                         }

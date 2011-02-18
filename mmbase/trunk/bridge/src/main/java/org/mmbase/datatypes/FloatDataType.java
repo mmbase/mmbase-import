@@ -24,8 +24,8 @@ public class FloatDataType extends NumberDataType<Float> {
      */
     public FloatDataType(String name, boolean primitive) {
         super(name, primitive ? Float.TYPE : Float.class);
-        setMin(Float.valueOf(-1 * Float.MAX_VALUE), true);
-        setMax(Float.valueOf(Float.MAX_VALUE), true);
+        setMin(-1 * Float.MAX_VALUE, true);
+        setMax(Float.MAX_VALUE, true);
     }
 
 

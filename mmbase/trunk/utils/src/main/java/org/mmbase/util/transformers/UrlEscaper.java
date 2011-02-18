@@ -133,9 +133,9 @@ public class UrlEscaper extends ReaderTransformer{
      */
     public static void main(String args[]) {
         UrlEscaper e = new UrlEscaper();
-        for (int i = 0; i < args.length; i++) {
-            log.info("Original : '" + args[i] + "'");
-            String escaped = e.transform(args[i]);
+        for (String arg : args) {
+            log.info("Original : '" + arg + "'");
+            String escaped = e.transform(arg);
             log.info("Escaped : '" + escaped + "'");
             log.info("Unescaped again : '" + e.transformBack(escaped) + "'");
         }

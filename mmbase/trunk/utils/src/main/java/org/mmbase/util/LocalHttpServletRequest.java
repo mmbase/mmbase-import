@@ -38,9 +38,6 @@ import java.util.*;
  */
 public class LocalHttpServletRequest extends LocalServletRequest implements HttpServletRequest {
 
-    //private static final Map<String, HttpSession> session = new HashMap<String, HttpSession>(); TODO
-    private static int sessionId = 0;
-
     private final Map<String, String> headers = new HashMap<String, String>(); // TODO headers cannot be presented in a map.
 
     private final String path;
@@ -137,16 +134,18 @@ public class LocalHttpServletRequest extends LocalServletRequest implements Http
     public HttpSession  getSession() {
         return getSession(true);
     }
+    int sessionId = 0;
     @Override
     public HttpSession  getSession(final boolean create) {
         if (httpSession == null && create) {
 
             // TODO remember session longer that duration of request.
+
             httpSession =
                 new HttpSession() {
                     private final Map<String, Object> attributes = new HashMap<String, Object>();
                     private final long creationTime = System.currentTimeMillis();
-                    private final String id = "" + (sessionId ++);
+                    private final String id = "" + (sessionId++);
                     private int interval = 10000;
                     @Override
                     public Object  getAttribute(String name) {

@@ -116,7 +116,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
             String base = dataTypeElement.getAttribute("base");
             BasicDataType baseDataType = DataTypes.getSystemCollector().getDataType(base);
             try {
-                dataType = DataTypeReader.readDataType(dataTypeElement, baseDataType, new DataTypeCollector(new String())).dataType;
+                dataType = DataTypeReader.readDataType(dataTypeElement, baseDataType, new DataTypeCollector("")).dataType;
             } catch (DependencyException de) {
                 throw new IllegalArgumentException(de);
             }

@@ -55,66 +55,66 @@ public class HashCodeUtil {
 
    private static final int PRIME = 1000003;
 
-   public static final int hashCode(int source, boolean x) {
+   public static int hashCode(int source, boolean x) {
       return PRIME * source + (x ? 1 : 0);
    }
 
-   public static final int hashCode(int source, int x) {
+   public static int hashCode(int source, int x) {
       return PRIME * source + x;
    }
 
-   public static final int hashCode(int source, long x) {
-      return PRIME * source + (int) (PRIME * (x >>> 32) + (x & 0xFFFFFFFF));
+   public static int hashCode(int source, long x) {
+      return PRIME * source + (int) (PRIME * (x >>> 32) + (x));
    }
 
-   public static final int hashCode(int source, float x) {
+   public static int hashCode(int source, float x) {
       return hashCode(source, x == 0.0F ? 0 : Float.floatToIntBits(x));
    }
 
-   public static final int hashCode(int source, double x) {
+   public static int hashCode(int source, double x) {
       return hashCode(source, x == 0.0 ? 0L : Double.doubleToLongBits(x));
    }
 
-   public static final int hashCode(int source, Object x) {
+   public static int hashCode(int source, Object x) {
       return hashCode(source, x == null ? 0 : x.hashCode());
    }
 
-   public static final int hashCode(int source, boolean[] x) {
+   public static int hashCode(int source, boolean[] x) {
       for (boolean element : x) {
          source = hashCode(source, element);
       }
       return source;
    }
 
-   public static final int hashCode(int source, int[] x) {
+   public static int hashCode(int source, int[] x) {
       for (int element : x) {
          source = hashCode(source, element);
       }
       return source;
    }
 
-   public static final int hashCode(int source, long[] x) {
+   public static int hashCode(int source, long[] x) {
       for (long element : x) {
          source = hashCode(source, element);
       }
       return source;
    }
 
-   public static final int hashCode(int source, float[] x) {
+   public static int hashCode(int source, float[] x) {
       for (float element : x) {
          source = hashCode(source, element);
       }
       return source;
    }
 
-   public static final int hashCode(int source, double[] x) {
+   public static int hashCode(int source, double[] x) {
       for (double element : x) {
          source = hashCode(source, element);
       }
       return source;
    }
 
-   public static final int hashCode(int source, Object[] x) {
+   public static int hashCode(int source, Object[] x) {
       for (Object element : x) {
          source = hashCode(source, element);
       }
@@ -122,7 +122,7 @@ public class HashCodeUtil {
    }
 
 
-   public static final int hashCodeGentle(int source, Object[] x) {
+   public static int hashCodeGentle(int source, Object[] x) {
       source = PRIME * source + x.length;
       for (Object element : x) {
         source = PRIME * source + element.hashCode();
@@ -130,7 +130,7 @@ public class HashCodeUtil {
       return source;
    }
 
-   public static final int hashCodeGentle2(int source, Object[] x) {
+   public static int hashCodeGentle2(int source, Object[] x) {
       int last = x.length - 1;
       int i = 0, j = last;
       source = PRIME * source + last;

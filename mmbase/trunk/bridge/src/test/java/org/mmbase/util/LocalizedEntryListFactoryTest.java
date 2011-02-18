@@ -41,17 +41,17 @@ public class LocalizedEntryListFactoryTest {
         fact.add(EN, "b", "hi");
         assertTrue(fact.size() == 2); // a and b.
         {
-            List<Object> col  = Arrays.asList(new Object[] { new Entry("a", "hallo"), new Entry("b", "hoi")});
+            List<Object> col  = Arrays.asList(new Entry("a", "hallo"), new Entry("b", "hoi"));
             assertEquals(col, fact.get(NL));
         }
         {
-            List<Object> col  = Arrays.asList(new Object[] { new Entry("a", "hallo"), new Entry("b", "saluut")});
+            List<Object> col  = Arrays.asList(new Entry("a", "hallo"), new Entry("b", "saluut"));
             assertEquals(col, fact.get(BE));
             assertEquals(col, fact.get(BE_VAR));
 
         }
         {
-            Collection<Object> col  = Arrays.asList(new Object[] { new Entry("a", "hello"), new Entry("b", "hi")});
+            Collection<Object> col  = Arrays.asList(new Entry("a", "hello"), new Entry("b", "hi"));
             assertEquals(col, fact.get(EN));
         }
         assertEquals("a", fact.castKey("a"));
@@ -65,12 +65,12 @@ public class LocalizedEntryListFactoryTest {
         fact.addBundle(resource1, null, null, Boolean.class, SortedBundle.NO_COMPARATOR);
         assertTrue(fact.size() == 2); // false and true
         {
-            Collection<Object> col  = Arrays.asList(new Object[] { new Entry(Boolean.FALSE, "onwaar"), new Entry(Boolean.TRUE, "waar")});
+            Collection<Object> col  = Arrays.asList(new Entry(Boolean.FALSE, "onwaar"), new Entry(Boolean.TRUE, "waar"));
             assertEquals(col, fact.get(NL));
             assertEquals(col, fact.get(BE));
         }
         {
-            Collection<Object> col  = Arrays.asList(new Object[] { new Entry(Boolean.FALSE, "false"), new Entry(Boolean.TRUE, "true")});
+            Collection<Object> col  = Arrays.asList(new Entry(Boolean.FALSE, "false"), new Entry(Boolean.TRUE, "true"));
             assertEquals(col, fact.get(EN));
         }
     }
@@ -115,7 +115,7 @@ public class LocalizedEntryListFactoryTest {
 
         assertEquals("", fact.castKey(""));
         assertEquals(null, fact.castKey(null));
-        assertEquals(new Integer(1), fact.castKey(new Integer(1)));
+        assertEquals(1, fact.castKey(1));
 
     }
     @Test
@@ -158,9 +158,9 @@ public class LocalizedEntryListFactoryTest {
         Document doc = DocumentReader.getDocumentBuilder(false).parse(new InputSource(new StringReader(config)));
         fact.fillFromXml(doc.getDocumentElement(), Integer.class);
 
-        assertEquals(new Integer(-1), fact.castKey("UNKNOWN"));
-        assertEquals(new Integer(-1), fact.castKey("unknown"));
-        assertEquals(new Integer(3),  fact.castKey("error"));
+        assertEquals(-1, fact.castKey("UNKNOWN"));
+        assertEquals(-1, fact.castKey("unknown"));
+        assertEquals(3,  fact.castKey("error"));
         assertEquals("blabla",        fact.castKey("blabla"));
     }
 

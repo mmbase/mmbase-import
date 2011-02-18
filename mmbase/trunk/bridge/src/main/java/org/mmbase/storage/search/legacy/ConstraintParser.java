@@ -472,9 +472,8 @@ public class ConstraintParser {
      * @return The step.
      */
     private static BasicStep getStep(String alias, List<BasicStep> steps) {
-        Iterator<BasicStep> iSteps = steps.iterator();
-        while (iSteps.hasNext()) {
-            BasicStep step = iSteps.next();
+        for (BasicStep step1 : steps) {
+            BasicStep step = step1;
             String alias2 = step.getAlias();
             if (alias2 == null) {
                 alias2 = step.getTableName();

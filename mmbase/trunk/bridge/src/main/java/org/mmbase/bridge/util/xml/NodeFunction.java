@@ -75,7 +75,7 @@ public  class NodeFunction {
     }
 
     /**
-     * Note: Saxon cannnot distinguish this function from {@link #function(Cloud, String, String)},
+     * Note: Saxon cannot distinguish this function from {@link #function(Cloud, String, String)},
      * consider using {@link #saxonFunction(Object, String, String)} in stead.
      * @param  cloudName The name of the Cloud.
      * @param  number  The number (or alias) of the Node
@@ -93,7 +93,7 @@ public  class NodeFunction {
     }
 
     /**
-     * Note: Saxon cannnot distinguish this function from {@link #function(String, String, String)},
+     * Note: Saxon cannot distinguish this function from {@link #function(String, String, String)},
      * consider using {@link #saxonFunction(Object, String, String)} in stead.
      */
     public static String function(Cloud cloud, String number, String function) {
@@ -117,7 +117,7 @@ public  class NodeFunction {
      * @since MMBase-1.8
      */
     public static org.w3c.dom.Element nodeFunction(org.w3c.dom.NodeList destination, Cloud cloud, String number, String function, String arguments) {
-        // it only wants to work withh a NodeList. I think my book sais that it should also work with
+        // it only wants to work with a NodeList. I think my book says that it should also work with
         // Element, but no..
 
         try {

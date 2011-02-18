@@ -106,7 +106,7 @@ public class BasicSearchQueryTest  {
     public void testAddStep() {
         // Null argument, should throw IllegalArgumentException
         try {
-            instance1.addStep((String) null);
+            instance1.addStep(null);
             fail("Null argument, should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {}
 

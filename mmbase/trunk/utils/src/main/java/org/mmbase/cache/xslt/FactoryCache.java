@@ -32,7 +32,6 @@ public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
 
     private static final Logger log = Logging.getLoggerInstance(FactoryCache.class);
 
-    private static int cacheSize = 50;
     private static FactoryCache cache;
     private static File defaultDir = new File("");
     private static boolean loggedImplementation = false;
@@ -42,6 +41,7 @@ public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
     }
 
     static {
+        int cacheSize = 50;
         cache = new FactoryCache(cacheSize);
         cache.putCache();
     }

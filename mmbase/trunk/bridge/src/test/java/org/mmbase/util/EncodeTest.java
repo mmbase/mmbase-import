@@ -57,9 +57,8 @@ public class EncodeTest extends TestCase {
      */
 
     public void testDocumentedEncodersRequestable() {
-        Iterator iter = getDocumentedEncodings().iterator();
-        while (iter.hasNext()) {
-            String name = (String) iter.next();
+        for (Object o : getDocumentedEncodings()) {
+            String name = (String) o;
             new Encode(name);
         }
     }
@@ -75,15 +74,14 @@ public class EncodeTest extends TestCase {
      * test if encode and decode methods are symetric string is encoded and the decoded the same result
      */
     public void testCharEncoders(){
-        Iterator iter = getSymmetricEncodings().iterator();
-        while (iter.hasNext()) {
-            String name = (String) iter.next();
+        for (Object o : getSymmetricEncodings()) {
+            String name = (String) o;
             Encode encode = new Encode(name);
-            if (encode.isCharEncoder()){
+            if (encode.isCharEncoder()) {
                 for (String element : TESTS) {
                     String encoded = encode.encode(element);
                     String decoded = encode.decode(encoded);
-                    assertTrue("char encoder["+ name +"] failed symetric test with input value["+ element+ "]",element.equals(decoded));
+                    assertTrue("char encoder[" + name + "] failed symetric test with input value[" + element + "]", element.equals(decoded));
                 }
             }
         }

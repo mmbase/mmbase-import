@@ -25,9 +25,9 @@ public class IntegerDataType extends NumberDataType<Integer> implements Sequenti
      */
     public IntegerDataType(String name, boolean primitive) {
         super(name, primitive ? Integer.TYPE : Integer.class);
-        setMin(Integer.valueOf(Integer.MIN_VALUE), true);
+        setMin(Integer.MIN_VALUE, true);
         minRestriction.setEnforceStrength(ENFORCE_ABSOLUTE);
-        setMax(Integer.valueOf(Integer.MAX_VALUE), true);
+        setMax(Integer.MAX_VALUE, true);
         maxRestriction.setEnforceStrength(ENFORCE_ABSOLUTE);
     }
 
@@ -36,8 +36,8 @@ public class IntegerDataType extends NumberDataType<Integer> implements Sequenti
     protected void inheritRestrictions(BasicDataType origin) {
         super.inheritRestrictions(origin);
         if (origin instanceof BooleanDataType) {
-            setMin(Integer.valueOf(0), true);
-            setMax(Integer.valueOf(1), true);
+            setMin(0, true);
+            setMax(1, true);
         }
     }
 

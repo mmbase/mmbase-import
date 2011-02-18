@@ -32,7 +32,7 @@ public class UploadInfo implements java.io.Serializable {
         START,
         PROGRESS,
         ERROR,
-        DONE;
+        DONE
     }
     Status status = Status.INIT;
     int fileIndex = -1;

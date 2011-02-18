@@ -79,11 +79,6 @@ public class Logging {
 
     private static ResourceLoader resourceLoader;
 
-    /**
-     * @since MMBase-1.8
-     */
-    private static ResourceWatcher configWatcher;
-
 
     private Logging() {
         // this class has no instances.
@@ -120,7 +115,7 @@ public class Logging {
 
     public  static void configure (ResourceLoader rl, String configFile) {
         resourceLoader = rl;
-        configWatcher = new ResourceWatcher(rl) {
+        ResourceWatcher configWatcher = new ResourceWatcher(rl) {
             @Override
             public void onChange(String s) {
                 configure(resourceLoader, s);

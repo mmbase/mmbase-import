@@ -485,7 +485,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
                 if (guiType.indexOf('.') != -1) {
                     // apparently, this is a class path, which means it is probably an enumeration
                     // (if not, what else?)
-                    dataType = (BasicDataType) baseDataType.clone();
+                    dataType = baseDataType.clone();
                     dataType.getEnumerationFactory().addBundle(guiType, getClass().getClassLoader(), null, dataType.getTypeAsClass(), null);
                     dataType.getEnumerationRestriction().setEnforceStrength(DataType.ENFORCE_NEVER);
                 } else {
@@ -529,7 +529,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
                         // and add it to the enumerationfactory using addQuery()
                         Element queryElement = guiTypeElement.getOwnerDocument().createElementNS("http://www.mmbase.org/xmlns/searchquery", "query");
                         queryElement.setAttribute("type", enumerationBuilder);
-                        dataType = (BasicDataType) baseDataType.clone();
+                        dataType = baseDataType.clone();
                         Document queryDocument = DocumentReader.toDocument(queryElement);
                         dataType.getEnumerationFactory().addQuery(LocalizedString.getLocale(queryElement), queryDocument);
                         dataType.getEnumerationRestriction().setEnforceStrength(DataType.ENFORCE_NEVER);
@@ -596,7 +596,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
         if (dataType != null && baseDataType != null && !baseDataType.getClass().isAssignableFrom(dataType.getClass())) {
             // the thus configured datatype is not compatible with the database type.
             // Fix that as good as possible:
-            BasicDataType newDataType = (BasicDataType) dataType.clone();
+            BasicDataType newDataType = dataType.clone();
             newDataType.inherit(baseDataType);
             if (log.isDebugEnabled()) log.debug("" + dataType + " in '" + getSystemId() + "' field " + fieldName + " is not compatible with " + baseDataType + ". Cloning and inheriting to support gracefull fall backs -> " + newDataType);
             dataType = newDataType;
@@ -607,7 +607,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
             if (baseDataType == null) {
                 throw new IllegalArgumentException("No datatype element given, and no type ('" + type + "') defined");
             }
-            dataType = (BasicDataType) baseDataType.clone(""); // clone with empty id
+            dataType = baseDataType.clone(""); // clone with empty id
         }
 
         setter.set(dataType);

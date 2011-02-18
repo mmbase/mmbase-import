@@ -25,9 +25,9 @@ public class LongDataType extends NumberDataType<Long> implements SequentialData
      */
     public LongDataType(String name, boolean primitive) {
         super(name, primitive ? Long.TYPE : Long.class);
-        setMin(Long.valueOf(Long.MIN_VALUE), true);
+        setMin(Long.MIN_VALUE, true);
         minRestriction.setEnforceStrength(ENFORCE_ABSOLUTE);
-        setMax(Long.valueOf(Long.MAX_VALUE), true);
+        setMax(Long.MAX_VALUE, true);
         maxRestriction.setEnforceStrength(ENFORCE_ABSOLUTE);
     }
 

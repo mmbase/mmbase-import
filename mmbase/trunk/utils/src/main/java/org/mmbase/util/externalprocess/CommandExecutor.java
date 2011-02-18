@@ -37,7 +37,7 @@ public class CommandExecutor {
          * A command executor of this type, makes a tcp connection to a 'commandserver'
          * (See <a href="http://www.mmbase.org/api/trunk/mmbase-commandserver/org/mmbase/util/CommandServer.html">Command Server</a>)
          */
-        CONNECTOR;
+        CONNECTOR
     }
 
     public static class Method implements Serializable {
@@ -118,7 +118,7 @@ public class CommandExecutor {
                     for (String arg : args) {
                         cmd.add(arg);
                     }
-                    stream.writeObject((cmd.toArray(EMPTY)));
+                    stream.writeObject((cmd.toArray(new String[cmd.size()])));
                     stream.writeObject(env);
                     Copier copier = new Copier(inputStream, os, ".file -> socket");
                     org.mmbase.util.ThreadPools.jobsExecutor.execute(copier);

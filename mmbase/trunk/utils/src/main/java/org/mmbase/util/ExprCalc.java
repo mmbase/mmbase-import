@@ -93,7 +93,7 @@ public class ExprCalc {
                     log.error("Could not evaluate expression '" + token + "' of '" + input + "'");
                 }
                 try {
-                    mNum=(Double.valueOf(token)).doubleValue();
+                    mNum= Double.valueOf(token);
                 } catch (NumberFormatException e) {
                     log.error("Could not evaluate expression ('" + token + "' not a number) of '" + input + "'");
                 }
