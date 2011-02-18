@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
  * DataType interface (e.g. some datatypes (at least {@link StringDataType}) are both {@link LengthDataType}
  * and {@link ComparableDataType}, and some are only one ({@link BinaryDataType}, {@link
  * NumberDataType}). In other words, this arrangement is like this, because java does not support
- * Multipible inheritance.
+ * multiple inheritance.
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
