@@ -19,6 +19,7 @@ import org.mmbase.util.logging.Logging;
  * the comments that will stay in your file.
  * @author Jan van Oosterom
  * @version $Id$
+ * @deprecated
  */
 public class ExtendedProperties extends Properties {
     private static final Logger log = Logging.getLoggerInstance(ExtendedProperties.class);
