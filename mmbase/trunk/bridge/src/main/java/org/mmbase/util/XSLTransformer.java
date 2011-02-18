@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.io.*;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.net.URL;
 
@@ -19,15 +20,11 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.dom.DOMSource;
 
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.xml.Generator;
-
-
-
 import org.mmbase.cache.xslt.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.w3c.dom.Document;
 
 
 /**
@@ -365,22 +362,11 @@ public class XSLTransformer {
                 } else {
                     log.debug("" + in + " does not exist, interpreting it as a node, connecting using RMMCI");
                     Result result = getResult(argv);
-                    String nodeNumber = argv[1];
-                    CloudContext cc = ContextProvider.getDefaultCloudContext();
-                    Cloud cloud = cc.getCloud("mmbase", "anonymous", null);
-                    params.put("cloud", cloud);
-                    Node node = cloud.getNode(nodeNumber);
-                    DocumentBuilder documentBuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder();
-                    Generator generator = new Generator(documentBuilder, cloud);
-                    generator.setNamespaceAware(namespaceaware);
-                    generator.add(node, node.getNodeManager().getField("body"));
-                    //generator.add(node);
-                    //log.info("" + node.getXMLValue("body").getDocumentElement().getNamespaceURI());
-                    generator.add(node.getRelations("idrel"));
-                    NodeList relatedNodes = node.getRelatedNodes("object", "idrel", "both");
-                    generator.add(relatedNodes);
+                    Class generatorClass = Class.forName("org.mmbase.util.xml.Generator");
+                    Method m = generatorClass.getMethod("getDocument", String[].class, Map.class, Boolean.TYPE);
+                    Document doc = (Document) m.invoke(null);
                     log.debug("transforming");
-                    transform(new DOMSource(generator.getDocument()),  new File(argv[0]), result, params, true);
+                    transform(new DOMSource(doc),  new File(argv[0]), result, params, true);
                 }
             } catch (Exception ex) {
                 log.error(ex.getMessage(), ex);
