@@ -80,7 +80,7 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
     public static String wikiToXML(String data, boolean leaveExtraNewLines, boolean placeListsInsideP) {
         Matcher wrappingAnchors = WIKI_WRAPPING_ANCHOR.matcher(prepareDataString(data));
         data = wrappingAnchors.replaceAll("<a id=\"$1\" class=\"$3\">$2</a>");
-        StringObject obj = new StringObject(data);
+        StringBuilder obj = new StringBuilder(data);
         handleRich(obj, true, leaveExtraNewLines, true, placeListsInsideP);
         if (leaveExtraNewLines) {
             handleNewlines(obj);
