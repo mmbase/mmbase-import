@@ -26,7 +26,7 @@ public class XmlFieldTest  extends TestCase {
     public XmlFieldTest() {
     }
 
-    protected String ignoreNL(StringObject in) {
+    protected String ignoreNL(StringBuilder in) {
         return in.toString().replaceAll("\r", "").replaceAll("\n", "");
     }
 
@@ -35,7 +35,7 @@ public class XmlFieldTest  extends TestCase {
         unicode.setEscapeLow(true);
     }
 
-    protected String showNL(StringObject in) {
+    protected String showNL(StringBuilder in) {
         return unicode.transform(in.toString());
     }
 
@@ -66,7 +66,7 @@ public class XmlFieldTest  extends TestCase {
         // -nogeending
         // hallo
 //        result = xmlField.richToHTMLBlock("hallo\n-eending\n-nogeending\nhallo");
-        StringObject in = new StringObject("hallo\n- eending\n- nogeending\nhallo");
+        StringBuilder in = new StringBuilder("hallo\n- eending\n- nogeending\nhallo");
         XmlField.handleRich(in,
                             XmlField.NO_SECTIONS,
                             XmlField.REMOVE_NEWLINES,
@@ -261,7 +261,7 @@ public class XmlFieldTest  extends TestCase {
 
 
 
-    protected StringObject testRich(List<String> errors, StringObject in, String expectedResult, String intro) {
+    protected StringBuilder testRich(List<String> errors, StringBuilder in, String expectedResult, String intro) {
         if (expectedResult != null && in != null) {
             String result = in.toString();
             if (! expectedResult.equals(result)) {
@@ -269,14 +269,14 @@ public class XmlFieldTest  extends TestCase {
             }
             //return in;
         }
-        return expectedResult != null ? new StringObject(expectedResult) : in;
+        return expectedResult != null ? new StringBuilder(expectedResult) : in;
 
     }
 
     public void testRichToXML() {
         List<String> errors = new ArrayList<String>();
         for (String[] testCase : RICH_TO_XML_CASES) {
-            StringObject in = XmlField.prepareData(testCase[IN]);
+            StringBuilder in = XmlField.prepareData(testCase[IN]);
             if (testCase.length == 8) {
                 XmlField.preHandleHeaders(in);
                 in = testRich(errors, in,  testCase[AFTER_PREHANDLE_HEADERS], "PRE");
@@ -320,7 +320,7 @@ public class XmlFieldTest  extends TestCase {
      */
 
     public void listTest() {
-        StringObject in = new StringObject(listData);
+        StringBuilder in = new StringBuilder(listData);
         XmlField.handleList(in);
         String list = showNL(in);
         result = ignoreNL(in);
