@@ -17,6 +17,8 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 import org.mmbase.storage.search.*;
+import org.mmbase.util.xml.DocumentReader;
+import org.w3c.dom.Element;
 
 
 /**
@@ -167,7 +169,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
      *
      */
     @Override
-    public double getAvarageValueLength() {
+    public double getAverageValueLength() {
         synchronized(lock) {
             double total = 0;
             for (List<MMObjectNode> result : values()) {
@@ -357,4 +359,25 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
             releaseStrategy.clear();
         }
     }
+
+    @Override
+    public void configure(Element element) {
+        super.configure(element);
+        //first remove all present strategies (this might be a reconfiguration)
+        getReleaseStrategy().removeAllStrategies();
+        log.debug("found a SearchQueryCache: " + getName());
+        //see if there are globally configured release strategies
+        Element releaseStrategies = DocumentReader.getElementByPath(element, "caches.releaseStrategies");
+        if (releaseStrategies != null) {
+            getReleaseStrategy().fillFromXml(releaseStrategies);
+        }
+        getReleaseStrategy().fillFromXml(element);
+
+        if (getReleaseStrategy().size() == 0) {
+            log.warn("No release-strategies configured for cache " + this + " (nor globally configured); falling back to basic release strategy");
+            addReleaseStrategy(new BasicReleaseStrategy());
+        }
+        log.service("Release strategies for " + getName() + ": " + getReleaseStrategy());
+    }
+
 }
