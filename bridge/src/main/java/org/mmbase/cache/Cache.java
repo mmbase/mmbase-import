@@ -15,6 +15,8 @@ import org.mmbase.util.*;
 import org.mmbase.cache.implementation.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.xml.DocumentReader;
+import org.w3c.dom.Element;
 
 /**
  * A base class for all Caches. Extend this class for other caches.
@@ -139,14 +141,13 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
     }
 
     /**
-     * Returns the average 'length' of the values in the cache. Whatever that may mean. For a {@link
-     * QueryResultCache} the length obviously is the length of the cached lists.
+     * Returns the average 'length' of the values in the cache. Whatever that may mean. A natural meaning may be the length of the cached lists.
      *
      * May return <code>NaN</code> if unknown or undetermined.
      * @since MMBase-1.9.2
      */
     @Override
-    public double getAvarageValueLength() {
+    public double getAverageValueLength() {
         return Double.NaN;
     }
 
@@ -504,4 +505,49 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
         return CacheManager.putCache(this);
     }
 
+    /**
+     * @since MMBase-2.0
+     */
+    public void configure(Element cacheElement) {
+
+        String clazz = DocumentReader.getElementValue(DocumentReader.getElementByPath(cacheElement, "cache.implementation.class"));
+        if(!"".equals(clazz)) {
+            Element cacheImpl = DocumentReader.getElementByPath(cacheElement, "cache.implementation");
+            Map<String,String> configValues = new HashMap<String,String>();
+            for (Element attrNode: DocumentReader.getChildElements(cacheImpl, "param")) {
+                String paramName = attrNode.getAttribute("name");
+                String paramValue = DocumentReader.getElementValue(attrNode);
+                configValues.put(paramName, paramValue);
+            }
+            setImplementation(clazz, configValues);
+        }
+        String status = DocumentReader.getElementValue(DocumentReader.getElementByPath(cacheElement, "cache.status"));
+        setActive(status.equalsIgnoreCase("active"));
+        try {
+            Integer size = Integer.valueOf(DocumentReader.getElementValue(DocumentReader.getElementByPath(cacheElement, "cache.size")));
+            setMaxSize(size.intValue());
+            log.service("Setting " + getName() + " " + status + " with size " + size);
+        } catch (NumberFormatException nfe) {
+            log.error("Could not configure cache " + getName() + " because the size was wrong: " + nfe.toString());
+        } catch (Throwable t) {
+            log.error(" " + getName() + " maxsize " + t.getMessage());
+        }
+        String maxSize = DocumentReader.getElementValue(DocumentReader.getElementByPath(cacheElement, "cache.maxEntrySize"));
+        if (!"".equals(maxSize)) {
+            try {
+                maxEntrySize = Integer.parseInt(maxSize);
+                log.service("Setting maximum entry size on " + getName() + ": " + maxEntrySize + " bytes ");
+            } catch (NumberFormatException nfe2) {
+                log.error("Could not set max entry size cache  of " + getName() + " because " + nfe2.toString());
+            } catch (Throwable t) {
+                log.error(" " + getName() + " maxentrysize " + t.getMessage());
+            }
+        } else {
+            if (getDefaultMaxEntrySize() > 0) {
+                log.service("No max entry size specified for this cache taking default " + getDefaultMaxEntrySize() + " bytes");
+            }
+            maxEntrySize = getDefaultMaxEntrySize();
+        }
+
+    }
 }
