@@ -146,7 +146,7 @@ public class SortedBundle {
      *
      * @throws NullPointerException      if baseName or locale is <code>null</code>  (not if loader is <code>null</code>)
      * @throws MissingResourceException  if no resource bundle for the specified base name can be found
-     * @throws IllegalArgumentExcpetion  if wrapper is not Comparable.
+     * @throws IllegalArgumentException  if wrapper is not Comparable.
      */
     public static <C> SortedMap<C, String> getResource(final String baseName,  Locale locale, final ClassLoader loader, final Map<String, Object> constantsProvider, final Class<?> wrapper, Comparator<? super Object> comparator) {
         //String resourceKey = baseName + '/' + locale + (constantsProvider == null ? "" : "" + constantsProvider.hashCode()) + "/" + (comparator == null ? "" : "" + comparator.hashCode()) + "/" + (wrapper == null ? "" : wrapper.getName());

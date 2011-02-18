@@ -19,7 +19,7 @@ import org.w3c.dom.*;
 /**
  *<p>
  * A String which is localized. There are two mechanisms to find and provide translations: They can
- * explicitely be set with {@link #set} (e.g. during parsing an XML), or a resource-bundle can be
+ * explicitly be set with {@link #set} (e.g. during parsing an XML), or a resource-bundle can be
  * associated with {@link #setBundle}, which will be used to find translations based on the key of
  * this object.
  *</p>

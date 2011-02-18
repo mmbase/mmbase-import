@@ -42,7 +42,9 @@ public class LocaleLocalizedString extends ReadonlyLocalizedString {
 
     @Override
     public String get(Locale locale) {
-        if (locale == null) locale = defaultLocale;
+        if (locale == null) {
+            locale = defaultLocale;
+        }
         return super.get(locale);
     }
 
