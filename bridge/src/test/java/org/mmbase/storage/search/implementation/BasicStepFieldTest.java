@@ -172,10 +172,10 @@ public class BasicStepFieldTest  {
         Step step = new BasicStep(images.getName());
         // NODE type field.
         instance = new BasicStepField(step, imagesNumber);
-        BasicStepField.testValue(new Integer(123), instance);
-        BasicStepField.testValue(new Long(123), instance);
-        BasicStepField.testValue(new Float(123), instance);
-        BasicStepField.testValue(new Double(123), instance);
+        BasicStepField.testValue(123, instance);
+        BasicStepField.testValue((long) 123, instance);
+        BasicStepField.testValue((float) 123, instance);
+        BasicStepField.testValue((double) 123, instance);
         try {
             // String value for NODE field, should throw IllegalArgumentException.
             BasicStepField.testValue("123", instance);
@@ -192,16 +192,16 @@ public class BasicStepFieldTest  {
         BasicStepField.testValue(new byte[] {(byte) 123}, instance);
         try {
             // String value for BYTE field, should throw IllegalArgumentException.
-            BasicStepField.testValue(new Integer(123), instance);
+            BasicStepField.testValue(123, instance);
             fail("Integer value for BYTE field, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         try {
-            BasicStepField.testValue(new Long(123), instance);
+            BasicStepField.testValue((long) 123, instance);
             fail("Long value for BYTE field, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
 
         try {
-            BasicStepField.testValue(new Double(123), instance);
+            BasicStepField.testValue((double) 123, instance);
             fail("Double value for BYTE field, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         try {
@@ -219,22 +219,22 @@ public class BasicStepFieldTest  {
         } catch (IllegalArgumentException e) {}
         try {
             // Integer value for STRING field, should throw IllegalArgumentException.
-            BasicStepField.testValue(new Integer(123), instance);
+            BasicStepField.testValue(123, instance);
             fail("Integer value for STRING field, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         try {
             // Long value for STRING field, should throw IllegalArgumentException.
-            BasicStepField.testValue(new Long(123), instance);
+            BasicStepField.testValue((long) 123, instance);
             fail("Long value for STRING field, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         try {
             // Float value for STRING field, should throw IllegalArgumentException.
-            BasicStepField.testValue(new Float(123), instance);
+            BasicStepField.testValue((float) 123, instance);
             fail("Float value for STRING field, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         try {
             // Double value for STRING field, should throw IllegalArgumentException.
-            BasicStepField.testValue(new Double(123), instance);
+            BasicStepField.testValue((double) 123, instance);
             fail("Double value for STRING field, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         BasicStepField.testValue("123", instance);
@@ -247,14 +247,14 @@ public class BasicStepFieldTest  {
         assertTrue(!BasicStepField.equalFieldValues("abc def", null));
         assertTrue(!BasicStepField.equalFieldValues(null, "abc def"));
         assertTrue(BasicStepField.equalFieldValues("abc def", "abc def"));
-        assertTrue(!BasicStepField.equalFieldValues(new Integer(123), "abc def"));
-        assertTrue(!BasicStepField.equalFieldValues("abc def", new Integer(123)));
-        assertTrue(BasicStepField.equalFieldValues(new Integer(123), new Integer(123)));
-        assertTrue(BasicStepField.equalFieldValues(new Double(123), new Integer(123)));
-        assertTrue(BasicStepField.equalFieldValues(new Integer(123), new Double(123)));
-        assertTrue(BasicStepField.equalFieldValues(new Double(123), new Double(123)));
-        assertTrue(!BasicStepField.equalFieldValues(null, new Double(123)));
-        assertTrue(!BasicStepField.equalFieldValues(new Double(123), null));
+        assertTrue(!BasicStepField.equalFieldValues(123, "abc def"));
+        assertTrue(!BasicStepField.equalFieldValues("abc def", 123));
+        assertTrue(BasicStepField.equalFieldValues(123, 123));
+        assertTrue(BasicStepField.equalFieldValues((double) 123, 123));
+        assertTrue(BasicStepField.equalFieldValues(123, (double) 123));
+        assertTrue(BasicStepField.equalFieldValues((double) 123, (double) 123));
+        assertTrue(!BasicStepField.equalFieldValues(null, (double) 123));
+        assertTrue(!BasicStepField.equalFieldValues((double) 123, null));
     }
 
     /** Test of equals method, of class org.mmbase.storage.search.implementation.BasicStepField. */

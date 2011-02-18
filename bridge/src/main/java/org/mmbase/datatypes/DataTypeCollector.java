@@ -55,7 +55,7 @@ public final class DataTypeCollector implements Serializable {
      */
     static DataTypeCollector createSystemDataTypeCollector() {
         if (systemDataTypeCollector == null) {
-            Serializable signature = new String( "SYSTEM_" + System.currentTimeMillis());
+            Serializable signature = "SYSTEM_" + System.currentTimeMillis();
             systemDataTypeCollector = new DataTypeCollector(signature);
             return systemDataTypeCollector;
         } else {
@@ -256,7 +256,7 @@ public final class DataTypeCollector implements Serializable {
         } else if (dataType == null) {
             return (BasicDataType<?>) baseDataType.clone(name);
         } else {
-            return (BasicDataType<?>)dataType.clone();
+            return dataType.clone();
         }
     }
 

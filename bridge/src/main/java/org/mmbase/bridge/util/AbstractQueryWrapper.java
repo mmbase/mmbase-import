@@ -160,7 +160,7 @@ public abstract class AbstractQueryWrapper<Q extends Query> implements Query {
     }
 
     @Override
-    public FieldValueInConstraint createConstraint(StepField f, SortedSet<? extends Object> v) {
+    public FieldValueInConstraint createConstraint(StepField f, SortedSet<?> v) {
         return query.createConstraint(f, v);
     }
 

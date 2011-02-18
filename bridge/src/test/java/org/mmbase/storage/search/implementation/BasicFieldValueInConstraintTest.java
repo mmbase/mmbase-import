@@ -23,7 +23,7 @@ public class BasicFieldValueInConstraintTest  {
 
     private final static String STRING_TEST_VALUE1 = "kjjdf kjjkl";
     private final static String STRING_TEST_VALUE2 = " KLkljklj KJKLJ ERwe ";
-    private final static Integer INTEGER_TEST_VALUE = new Integer(12345);
+    private final static Integer INTEGER_TEST_VALUE = 12345;
 
     /** Test instance. */
     private BasicFieldValueInConstraint instance = null;

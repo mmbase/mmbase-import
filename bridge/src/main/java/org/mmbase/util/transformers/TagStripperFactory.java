@@ -283,7 +283,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
     static enum State {
         DEFAULT,
         SCRIPT,
-        ERROR;
+        ERROR
     }
 
     protected static class TagStripper extends HTMLEditorKit.ParserCallback {

@@ -250,9 +250,9 @@ public class BasicQuery implements Query, java.io.Serializable  {
         if (used) throw new BridgeException("Query was used already");
         Integer seq = aliasSequences.get(name);
         if (seq == null) {
-            seq = Integer.valueOf(0);
+            seq = 0;
         } else {
-            seq = Integer.valueOf(seq.intValue() + 1);
+            seq = seq.intValue() + 1;
         }
         aliasSequences.put(name, seq);
         return glueAlias(name, seq);
@@ -301,7 +301,7 @@ public class BasicQuery implements Query, java.io.Serializable  {
             if (currentSeq.intValue() == 0) {
                 aliasSequences.put(aliasBase, null);
             } else {
-                aliasSequences.put(aliasBase, Integer.valueOf(currentSeq.intValue() - 1));
+                aliasSequences.put(aliasBase, currentSeq.intValue() - 1);
             }
         }
         if ("".equals(alias)) {
@@ -368,7 +368,7 @@ public class BasicQuery implements Query, java.io.Serializable  {
                 throw new NotFoundException("Role '" + role + "' does not exist.");
             }
             BasicRelationStep step =  addRelationStep(rm.getName(), otherNodeManager, relationDir);
-            step.setRole(Integer.valueOf(r));
+            step.setRole(r);
             if (! cloud.hasNodeManager(role)) {
                 step.setAlias(createAlias(role));
             }
@@ -554,7 +554,7 @@ public class BasicQuery implements Query, java.io.Serializable  {
 
     @Override
     public FieldValueConstraint createConstraint(StepField f, int op, Object v) {
-        if (v instanceof Node) v = Integer.valueOf(((Node)v).getNumber());
+        if (v instanceof Node) v = ((Node) v).getNumber();
         BasicFieldValueConstraint c = new BasicFieldValueConstraint(f, v);
         c.setOperator(op);
         return c;
@@ -573,12 +573,12 @@ public class BasicQuery implements Query, java.io.Serializable  {
     }
 
     @Override
-    public FieldValueInConstraint createConstraint(StepField f, SortedSet<? extends Object> v) {
+    public FieldValueInConstraint createConstraint(StepField f, SortedSet<?> v) {
         if (v.size() == 0) { // make sure the query becomes empty!
             Step step = f.getStep();
             StepField nf = createStepField(step, "number");
             BasicFieldValueInConstraint c = new BasicFieldValueInConstraint(nf);
-            c.addValue(Integer.valueOf(-1));
+            c.addValue(-1);
             return c;
         } else {
             BasicFieldValueInConstraint c = new BasicFieldValueInConstraint(f);
@@ -657,7 +657,6 @@ public class BasicQuery implements Query, java.io.Serializable  {
         BasicStep step = (BasicStep) s;
         if (step == null) throw new IllegalArgumentException("Step may not be null");
         step.addNode(nodeNumber);
-        return;
     }
 
     @Override

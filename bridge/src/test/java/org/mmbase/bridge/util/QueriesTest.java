@@ -60,7 +60,7 @@ public class QueriesTest  {
         try {
             Queries.getRelationStepDirection("bla");
             fail("Should have thrown exception");
-        } catch (BridgeException be) {};
+        } catch (BridgeException be) {}
 
     }
 
@@ -106,7 +106,7 @@ public class QueriesTest  {
     public void createConstraint() {
         Cloud cloud = getCloudContext().getCloud("mmbase");
         NodeQuery q = cloud.getNodeManager("object").createQuery();
-        Queries.createConstraint(q, "number", Queries.getOperator("LT"), new Integer(1));
+        Queries.createConstraint(q, "number", Queries.getOperator("LT"), 1);
     }
 
     @Test
@@ -192,7 +192,7 @@ public class QueriesTest  {
         //NodeQuery q = Queries.createRelatedNodesQuery(node, otherNodeManager, role, direction);
         NodeQuery  q = Queries.createRelatedNodesQuery(node, cloud.getNodeManager("news"), "posrel", "destination");
         StepField pos = q.createStepField(q.getSteps().get(1), "pos");
-        Constraint c = q.createConstraint(pos, new Integer(1));
+        Constraint c = q.createConstraint(pos, 1);
         System.out.println("Query " + q.toSql());
     }
 
@@ -277,7 +277,7 @@ public class QueriesTest  {
             if (b.length() > 0) b.append(",");
             int i = n.getNumber();
             if (i != -1) {
-                b.append("" + i);
+                b.append("").append(i);
             } else {
                 b.append(n.getStringValue(pref + ".number"));
             }
@@ -315,7 +315,7 @@ public class QueriesTest  {
         List<Node> relatedNodes2 = Queries.getRelatedNodesInTransaction(node, q); // outside a transaction it works too
 
         System.out.println(toString(relatedNodes, "news") + " =? " + toString(relatedNodes2, null));
-        assertListEqual(relatedNodes, "news", relatedNodes2, (String) null);
+        assertListEqual(relatedNodes, "news", relatedNodes2, null);
 
         int sizeBefore = relatedNodes2.size();
 
@@ -384,7 +384,7 @@ public class QueriesTest  {
         List<Node> relatedNodes2 = Queries.getRelatedNodesInTransaction(node, q); // outside a transaction it works too
 
         System.out.println(toString(relatedNodes, null) + " =? " + toString(relatedNodes2, null));
-        assertListEqual(relatedNodes, null, relatedNodes2, (String) null);
+        assertListEqual(relatedNodes, null, relatedNodes2, null);
 
         int sizeBefore = relatedNodes2.size();
 

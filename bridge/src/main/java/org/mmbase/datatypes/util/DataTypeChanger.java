@@ -34,7 +34,7 @@ public class DataTypeChanger {
     private final DataType<?> dataType;
 
     public DataTypeChanger(DataType<?> dt) {
-        dataType = (DataType<?>) dt.clone();
+        dataType = dt.clone();
     }
 
     public DataTypeChanger(String dt, String guiName) {

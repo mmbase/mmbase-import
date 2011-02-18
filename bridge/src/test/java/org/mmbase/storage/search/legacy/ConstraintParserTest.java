@@ -55,15 +55,14 @@ public class ConstraintParserTest  {
         query.addStep(news.getName());
         StepField numericalField = instance.getField("number");
         StepField stringField = instance.getField("title");
-        Iterator<String> iTokens = Arrays.asList(new String[] {
-            "12345.6",
-            "NotANumber",
-            "'", "12345.6", "'",
-            "'", "NotANumber", "'",
-            "'", "value1", "'",
-            "-10",
-            "'", "value2", "'",
-            "'", "value3", "123"}).iterator();
+        Iterator<String> iTokens = Arrays.asList("12345.6",
+                "NotANumber",
+                "'", "12345.6", "'",
+                "'", "NotANumber", "'",
+                "'", "value1", "'",
+                "-10",
+                "'", "value2", "'",
+                "'", "value3", "123").iterator();
         Object value = ConstraintParser.parseValue(iTokens, numericalField);
         assertTrue(value.toString(), value.equals(new Double("12345.6")));
         try {
@@ -95,15 +94,13 @@ public class ConstraintParserTest  {
     public void testTokenize() {
         List<String> tokens = ConstraintParser.tokenize("qwe '' and '123''456' or \"\"\"789\"");
         assertTrue(tokens.toString(), tokens.equals(
-            Arrays.asList(new String[] {
-                "qwe", "'", "", "'", "and", "'", "123'456", "'", "or", "'",
-                "\"789", "'"})));
+            Arrays.asList("qwe", "'", "", "'", "and", "'", "123'456", "'", "or", "'",
+                    "\"789", "'")));
 
         tokens = ConstraintParser.tokenize("'''' and \"\"\"\" and '\"\"' and \"''\"");
         assertTrue(tokens.toString(), tokens.equals(
-            Arrays.asList(new String[] {
-                "'", "'", "'", "and", "'", "\"", "'", "and", "'", "\"\"", "'",
-                "and", "'", "''", "'"})));
+            Arrays.asList("'", "'", "'", "and", "'", "\"", "'", "and", "'", "\"\"", "'",
+                    "and", "'", "''", "'")));
     }
 
 
@@ -506,7 +503,7 @@ public class ConstraintParserTest  {
 
         // Composite with AND
         BasicFieldCompareConstraint constraint2
-            = new BasicFieldValueConstraint(field2, new Integer(123))
+            = new BasicFieldValueConstraint(field2, 123)
                 .setOperator(FieldCompareConstraint.GREATER);
         BasicCompositeConstraint constraint3
             = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND)
@@ -531,7 +528,7 @@ public class ConstraintParserTest  {
 
         // Composite with AND and OR mixed
         BasicFieldCompareConstraint constraint4 =
-            new BasicFieldValueConstraint(field2, new Integer(200))
+            new BasicFieldValueConstraint(field2, 200)
                 .setOperator(FieldCompareConstraint.LESS);
         BasicCompositeConstraint constraint5 =
             new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND)

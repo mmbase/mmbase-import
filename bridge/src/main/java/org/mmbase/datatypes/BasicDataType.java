@@ -147,7 +147,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C> 
             // if some unknown class, simply fall back
             classType         = (Class<C>) Object.class;
         }
-        defaultValue          = (C) in.readObject();
+        defaultValue          = in.readObject();
         commitProcessor       = (CommitProcessor) in.readObject();
         getProcessors         = (Processor[]) in.readObject();
         setProcessors         = (Processor[]) in.readObject();
@@ -944,7 +944,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C> 
      */
     @Override
     public void setRequired(boolean required) {
-        getRequiredRestriction().setValue(Boolean.valueOf(required));
+        getRequiredRestriction().setValue(required);
     }
 
     /**
@@ -968,7 +968,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C> 
      */
     @Override
     public void setUnique(boolean unique) {
-        getUniqueRestriction().setValue(Boolean.valueOf(unique));
+        getUniqueRestriction().setValue(unique);
     }
 
     /**
@@ -1149,7 +1149,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C> 
         edit();
         List<String> list = new ArrayList<String>(Arrays.asList(getStyleClasses()));
         list.add(styleClass);
-        styleClasses = list.toArray(EMPTY_STRING_ARRAY);
+        styleClasses = list.toArray(new String[list.size()]);
     }
 
 
@@ -1484,7 +1484,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C> 
         }
 
         RequiredRestriction(boolean b) {
-            super("required", Boolean.valueOf(b));
+            super("required", b);
         }
 
         final boolean isRequired() {
@@ -1507,7 +1507,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C> 
         }
 
         UniqueRestriction(boolean b) {
-            super("unique", Boolean.valueOf(b));
+            super("unique", b);
         }
 
         final boolean isUnique() {

@@ -251,7 +251,7 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
      * @param v value
      * @return the new Constraint.
      */
-    FieldValueInConstraint createConstraint(StepField f, SortedSet<? extends Object> v);
+    FieldValueInConstraint createConstraint(StepField f, SortedSet<?> v);
 
     FieldValueInQueryConstraint createConstraint(StepField f, Query q);
 

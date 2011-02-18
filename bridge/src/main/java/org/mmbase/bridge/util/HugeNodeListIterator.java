@@ -78,7 +78,7 @@ public class HugeNodeListIterator implements NodeIterator {
         }
         Queries.sortUniquely(query);
         originalQuery = query;
-        executeNextQuery((Query) originalQuery.clone());
+        executeNextQuery(originalQuery.clone());
     }
 
 
@@ -207,7 +207,7 @@ public class HugeNodeListIterator implements NodeIterator {
             if (nodeIterator.hasNext()) {
                 nextNode = nodeIterator.nextNode();
             } else {
-                Query currentQuery = (Query) originalQuery.clone();
+                Query currentQuery = originalQuery.clone();
 
                 // We don't use offset to determin the 'next' batch of query results
                 // because there could have been deletions/insertions.
@@ -254,7 +254,7 @@ public class HugeNodeListIterator implements NodeIterator {
             if (nodeIterator.hasPrevious()) {
                 previousNode = nodeIterator.previousNode();
             } else {
-                Query currentQuery = (Query) originalQuery.clone();
+                Query currentQuery = originalQuery.clone();
                 SortOrder order = originalQuery.getSortOrders().get(0);
                 Object value = Queries.getSortOrderFieldValue(nextNode, order);
                 Constraint cons;

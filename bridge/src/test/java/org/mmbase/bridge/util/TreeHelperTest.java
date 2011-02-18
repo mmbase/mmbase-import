@@ -56,7 +56,7 @@ public class TreeHelperTest  {
     public void sanity() throws Exception {
         Cloud cloud = getCloudContext().getCloud("mmbase", "class", null);
         TreeHelper helper = new TreeHelper();
-        System.out.println(helper.htmlRoot.getResource("/"));
+        System.out.println(TreeHelper.htmlRoot.getResource("/"));
     }
     @Test
     public void findLeafFile() throws Exception {

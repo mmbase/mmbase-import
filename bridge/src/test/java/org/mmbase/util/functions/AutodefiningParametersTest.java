@@ -28,17 +28,17 @@ public class AutodefiningParametersTest {
     public void basic() {
         Parameters params = new AutodefiningParameters();
         params.set("a", "A");
-        params.set("b", new Integer(2));
+        params.set("b", 2);
 
         assertEquals("A", params.get("a"));
-        assertEquals(new Integer(2), params.get("b"));
+        assertEquals(2, params.get("b"));
     }
 
     @Test
     public void index() {
         Parameters params = new AutodefiningParameters();
         params.set(1, "A");
-        params.set(2, new Integer(2));
+        params.set(2, 2);
         assertEquals(3, params.size());
 
         params.set("b", "B");
@@ -46,7 +46,7 @@ public class AutodefiningParametersTest {
 
         assertEquals("B", params.get(0));
         assertEquals("A", params.get(1));
-        assertEquals(new Integer(2), params.get(2));
+        assertEquals(2, params.get(2));
     }
 
 

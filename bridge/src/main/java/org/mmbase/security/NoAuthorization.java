@@ -21,7 +21,7 @@ final public class NoAuthorization extends Authorization {
 
     // This defined the 'context' used everywhere where one is needed.
     private static final String EVERYBODY = "everybody";
-    private static final Set<String>    possibleContexts = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList( new String[]{EVERYBODY, NoAuthentication.userContext.getOwnerField()})));
+    private static final Set<String>    possibleContexts = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(EVERYBODY, NoAuthentication.userContext.getOwnerField())));
 
     /**
      *	This method does nothing

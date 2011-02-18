@@ -183,7 +183,7 @@ public abstract class AbstractNode implements Node {
     @Override
     public final void setBooleanValue(String fieldName,final  boolean value) {
         Field field = getNodeManager().getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BOOLEAN).process(this, field, Boolean.valueOf(value));
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BOOLEAN).process(this, field, value);
         setValueWithoutProcess(fieldName, v);
     }
 
@@ -215,10 +215,10 @@ public abstract class AbstractNode implements Node {
         if (v == null) {
             return null;
         } else if (v instanceof Node) {
-            return Integer.valueOf(((Node)v).getNumber());
+            return ((Node) v).getNumber();
         } else {
             // giving up
-            return Integer.valueOf(getCloud().getNode(v.toString()).getNumber());
+            return getCloud().getNode(v.toString()).getNumber();
         }
     }
 
@@ -232,28 +232,28 @@ public abstract class AbstractNode implements Node {
     @Override
     public final void setIntValue(String fieldName, final int value) {
         Field field = getNodeManager().getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_INTEGER).process(this, field, Integer.valueOf(value));
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_INTEGER).process(this, field, value);
         setValueWithoutProcess(fieldName, v);
     }
 
     @Override
     public final void setLongValue(String fieldName, final long value) {
         Field field = getNodeManager().getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_LONG).process(this, field, Long.valueOf(value));
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_LONG).process(this, field, value);
         setValueWithoutProcess(fieldName, v);
     }
 
     @Override
     public final void setFloatValue(String fieldName, final float value) {
         Field field = getNodeManager().getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_FLOAT).process(this, field, Float.valueOf(value));
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_FLOAT).process(this, field, value);
         setValueWithoutProcess(fieldName, v);
     }
 
     @Override
     public final void setDoubleValue(String fieldName, final double value) {
         Field field = getNodeManager().getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_DOUBLE).process(this, field, Double.valueOf(value));
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_DOUBLE).process(this, field, value);
         setValueWithoutProcess(fieldName, v);
     }
 
@@ -342,22 +342,22 @@ public abstract class AbstractNode implements Node {
             switch(type) {
             case Field.TYPE_STRING:  return getStringValue(fieldName);
             case Field.TYPE_BINARY:    return getByteValue(fieldName);
-            case Field.TYPE_INTEGER: return Integer.valueOf(getIntValue(fieldName));
-            case Field.TYPE_FLOAT:   return Float.valueOf(getFloatValue(fieldName));
-            case Field.TYPE_DOUBLE:  return Double.valueOf(getDoubleValue(fieldName));
-            case Field.TYPE_LONG:    return Long.valueOf(getLongValue(fieldName));
+            case Field.TYPE_INTEGER: return getIntValue(fieldName);
+            case Field.TYPE_FLOAT:   return getFloatValue(fieldName);
+            case Field.TYPE_DOUBLE:  return getDoubleValue(fieldName);
+            case Field.TYPE_LONG:    return getLongValue(fieldName);
             case Field.TYPE_XML:     return getXMLValue(fieldName);
             case Field.TYPE_NODE:   {
                 // number is a NODE field, but should be returned as
                 // a number (in this case, a long)
                 // in the future, we may change the basic MMBase type for the number field to ID
                 if ("number".equals(fieldName)) {
-                    return Long.valueOf(getLongValue(fieldName));
+                    return getLongValue(fieldName);
                 } else {
                     return getNodeValue(fieldName);
                 }
             }
-            case Field.TYPE_BOOLEAN: return Boolean.valueOf(getBooleanValue(fieldName));
+            case Field.TYPE_BOOLEAN: return getBooleanValue(fieldName);
             case Field.TYPE_DATETIME:return getDateValue(fieldName);
             case Field.TYPE_DECIMAL: return getDecimalValue(fieldName);
             case Field.TYPE_LIST:    return getListValue(fieldName);
@@ -443,7 +443,7 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public float getFloatValue(String fieldName) {
-        Float result = Float.valueOf(Casting.toFloat(getValueWithoutProcess(fieldName)));
+        Float result = Casting.toFloat(getValueWithoutProcess(fieldName));
         NodeManager nodeManager = getNodeManager();
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
@@ -454,7 +454,7 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public long getLongValue(String fieldName) {
-        Long result = Long.valueOf(Casting.toLong(getValueWithoutProcess(fieldName)));
+        Long result = Casting.toLong(getValueWithoutProcess(fieldName));
         NodeManager nodeManager = getNodeManager();
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
@@ -465,7 +465,7 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public double getDoubleValue(String fieldName) {
-        Double result = Double.valueOf(Casting.toDouble(getValueWithoutProcess(fieldName)));
+        Double result = Casting.toDouble(getValueWithoutProcess(fieldName));
         NodeManager nodeManager = getNodeManager();
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);

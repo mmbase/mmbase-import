@@ -60,7 +60,7 @@ public class BasicNodeManagerList extends AbstractNodeList<NodeManager> implemen
     @Override
     public NodeManagerIterator nodeManagerIterator() {
         return new BasicNodeManagerIterator();
-    };
+    }
 
     public NodeManagerList subNodeManagerList(int fromIndex, int toIndex) {
         return new BasicNodeManagerList(subList(fromIndex, toIndex), cloud);

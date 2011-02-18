@@ -103,7 +103,7 @@ public class MagicParser implements DetectorProvider {
      * @return new offset after processing
      * @throws Exception Throws an exception when parsing failed
      */
-    private final int parseOffsetString(String s, int startIndex) throws Exception {
+    private int parseOffsetString(String s, int startIndex) throws Exception {
         try {
             int m = nextWhiteSpace(s, startIndex);
 
@@ -116,7 +116,7 @@ public class MagicParser implements DetectorProvider {
             } else if (c == '(') {
                 throw new UnsupportedOperationException("parseOffsetString: indirect offsets not implemented");
             }
-            offset = Integer.decode(s.substring(startIndex, m)).intValue();
+            offset = Integer.decode(s.substring(startIndex, m));
             return nextNonWhiteSpace(s, m + 1);
         } catch (NumberFormatException e) {
             // log.error("string->integer conversion failure for '"+s+"'");
@@ -196,7 +196,7 @@ public class MagicParser implements DetectorProvider {
                 test = "x";
             } else if ("beshort".equals(type) || "leshort".equals(type)) {
                 try {
-                    test = "0x" + Integer.toHexString(Integer.decode(s.substring(i, m)).intValue());
+                    test = "0x" + Integer.toHexString(Integer.decode(s.substring(i, m)));
                     //test.addElement(Integer.decode(s.substring(i,m)));
                 } catch (NumberFormatException e) {
                     throw new Exception("decode(" + s.substring(i, m) + ")");
@@ -209,7 +209,7 @@ public class MagicParser implements DetectorProvider {
                     if (s.charAt(m - 1) == 'L' || s.charAt(m - 1) == 'l') {
                         endIndex = m - 1;
                     }
-                    test = "0x" + Long.toHexString(Long.decode(s.substring(i, endIndex)).longValue());
+                    test = "0x" + Long.toHexString(Long.decode(s.substring(i, endIndex)));
                 } catch (NumberFormatException e) {
                     log.error(e.getMessage());
                     log.error(Logging.stackTrace(e));
@@ -217,7 +217,7 @@ public class MagicParser implements DetectorProvider {
                 }
             } else if ("byte".equals(type)) {
                 try {
-                    test = "0x" + Integer.toHexString(Integer.decode(s.substring(i, m)).intValue());
+                    test = "0x" + Integer.toHexString(Integer.decode(s.substring(i, m)));
                     //test.addElement(Integer.decode(s.substring(i,m)));
                 } catch (NumberFormatException e) {
                     throw new Exception("decode(" + s.substring(i, m) + ")");
@@ -432,7 +432,7 @@ public class MagicParser implements DetectorProvider {
 
     }
 
-    private final Detector createDetector(String line) {
+    private Detector createDetector(String line) {
         BasicDetector detector = new BasicDetector();
         // rawinput = line;
 

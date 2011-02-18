@@ -107,7 +107,6 @@ public class CachedRenderer extends WrappedRenderer {
 
     protected void writeRenderTime(Date time, Writer w) throws FrameworkException, IOException  {
         if (includeRenderTime == null || "".equals(includeRenderTime)) {
-            return;
         } else if ("xml-comments".equals(includeRenderTime)) {
             w.write("<!-- ");
             w.write(DateFormats.getInstance("yyyy-MM-dd HH:mm:ss", null, Locale.US).format(time));

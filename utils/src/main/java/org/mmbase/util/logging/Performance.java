@@ -16,7 +16,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 /**
  * This program is meant to show the performance of the
  * org.mmbase.util.logging classes. You can also easily check the
- * performance of a configuration with it. Simply feed it the configuration file, and it will 
+ * performance of a configuration with it. Simply feed it the configuration file, and it will
  * try to log (info priority) to the class A0123456789.B0123456789.C0123456789.
  * It has several other command line options (starting with -).
  *
@@ -26,7 +26,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 public class Performance {
 
     static final double SECOND = 1000;  // one second in milliseconds.
-    
+
     static int     repeats          = 1000;
     static boolean isdebugenabled   = false;
     static boolean nosystem         = false;
@@ -65,7 +65,7 @@ public class Performance {
         long after = System.currentTimeMillis();
         return (double)1000*(after - before)/ repeats;
     }
-        
+
     static double doCase(Logger log) {
         if (delay) {
             return doCaseDelayed(log);
@@ -76,7 +76,7 @@ public class Performance {
         }
         long before = System.currentTimeMillis();
         for (i = 0; i < repeats; i++) {
-            log.info("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");            
+            log.info("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
         }
         long after = System.currentTimeMillis();
         return (double)1000*(after - before)/ repeats;
@@ -91,16 +91,16 @@ public class Performance {
         for (i = 0; i < warmingup; i++) {
             log.info("warming up.");
             if(++j == burstLen) {
-                j = 0;                               
-                Thread.sleep(delaytime);                
+                j = 0;
+                Thread.sleep(delaytime);
             }
         }
-        long before = System.currentTimeMillis();        
+        long before = System.currentTimeMillis();
         for (i = 0; i < repeats; i++) {
-            log.info("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");            
+            log.info("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
             if(++j == burstLen) {
-                j = 0;                               
-                Thread.sleep(delaytime);                
+                j = 0;
+                Thread.sleep(delaytime);
             }
         }
         long after = System.currentTimeMillis();
@@ -111,9 +111,9 @@ public class Performance {
         long before_ref = System.currentTimeMillis();
         // do the same but without logging (trace will not be logged, and we've seen that it's time is neglectable).
         for (i = 0; i < repeats; i++) {
-            log.trace("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");            
+            log.trace("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
             if(j++ == burstLen) {
-                j = 0;               
+                j = 0;
                 Thread.sleep(delaytime);
             }
         }
@@ -166,11 +166,11 @@ public class Performance {
         String s = (description == null ? "" : description) + " (" + configuration + ") : ";
         for (int i = s.length(); i< 50; i++) {
             s += " "; // damn, sprintf would be nice..
-        }   
+        }
         System.out.print(s);
 
         double benchmark = Case(configuration);
-        
+
         System.out.println(benchmark + " us/logging"); // we follow the example of log4j and report in microseconds (us)
     }
 
@@ -178,12 +178,12 @@ public class Performance {
         for(int i = 0; i < args.length; i++) {
             if(args[i].charAt(0) == '-') { // an command line option
                 if(args[i].substring(1).equals("repeats")){
-                    repeats = Integer.valueOf(args[++i]).intValue();
+                    repeats = Integer.valueOf(args[++i]);
                 }
                 if(args[i].substring(1).equals("isdebugenabled")){
                     isdebugenabled = ! isdebugenabled;
                 }
-                if(args[i].substring(1).equals("nosystem")){                   
+                if(args[i].substring(1).equals("nosystem")){
                     nosystem = ! nosystem;
                 }
                 if(args[i].substring(1).equals("log4j")){
@@ -196,14 +196,14 @@ public class Performance {
                     delay = ! delay;
                 }
                 if(args[i].substring(1).equals("delaytime")){
-                    delaytime = Integer.valueOf(args[++i]).intValue();
+                    delaytime = Integer.valueOf(args[++i]);
                 }
                 if(args[i].substring(1).equals("burstlen")){
-                    burstLen = Integer.valueOf(args[++i]).intValue();
+                    burstLen = Integer.valueOf(args[++i]);
                 }
             } else {
                 warmingup = repeats / 10;
-                printCase(args[i]);                   
+                printCase(args[i]);
             }
         }
         Logging.shutdown();

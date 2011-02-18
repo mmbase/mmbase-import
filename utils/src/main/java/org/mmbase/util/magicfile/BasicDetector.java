@@ -179,7 +179,7 @@ public class BasicDetector extends AbstractDetector {
         for (byte element : ar) {
             buf.append(Integer.toHexString(element & 0x000000ff));
         }
-        return Integer.decode("0x" + buf.toString()).intValue();
+        return Integer.decode("0x" + buf.toString());
     }
 
     /**
@@ -190,7 +190,7 @@ public class BasicDetector extends AbstractDetector {
         for (byte element : ar) {
             buf.append(Integer.toHexString(element & 0x000000ff));
         }
-        return Long.decode("0x" + buf.toString()).longValue();
+        return Long.decode("0x" + buf.toString());
     }
 
     /**
@@ -252,7 +252,7 @@ public class BasicDetector extends AbstractDetector {
         } else if (test.equals("")) {
             return false;
         } else {
-            int v = Integer.decode(test).intValue();
+            int v = Integer.decode(test);
             // Hm. How did that binary arithmatic go?
             log.debug(
                       "dumb string conversion: 0x"
@@ -320,7 +320,7 @@ public class BasicDetector extends AbstractDetector {
         } else if (test.equals("")) {
             return false;
         } else {
-            long v = Long.decode(test).longValue();
+            long v = Long.decode(test);
 
             // Hm. How did that binary arithmatic go?
 
@@ -587,8 +587,8 @@ public class BasicDetector extends AbstractDetector {
             res.append("} " + testComparator + "(" + test + ") " + message);
             if (childList.size() > 0) {
                 res.append("\n");
-                for (int i = 0; i < childList.size(); i++) {
-                    res.append("> ").append(childList.get(i).toString());
+                for (Detector aChildList : childList) {
+                    res.append("> ").append(aChildList.toString());
                 }
             }
             return res.toString();

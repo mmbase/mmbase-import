@@ -107,7 +107,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
                             log.error("Didn't find the method " + request.group(1) + " on request object");
                             continue;
                         }
-                        request.appendReplacement(sb, "" + m.invoke(req, new Object[] {}));
+                        request.appendReplacement(sb, "" + m.invoke(req));
                     } catch (IllegalAccessException iae) {
                         log.error(iae.getMessage(), iae);
                     } catch (java.lang.reflect.InvocationTargetException ite) {
@@ -184,7 +184,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
             while(args.find()) {
                 params.add(new Parameter(args.group(1), String.class, ""));
             }
-            return params.toArray(new Parameter[] {});
+            return params.toArray(new Parameter[params.size()]);
         }
 
         @Override

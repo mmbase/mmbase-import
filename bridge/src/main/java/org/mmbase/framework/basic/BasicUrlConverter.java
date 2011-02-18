@@ -76,7 +76,7 @@ public final class BasicUrlConverter implements UrlConverter {
             String connector = (show.indexOf("?") == -1 ? "?" : amp);
 
             Writer w = new StringBuilderWriter(show);
-            for (Map.Entry<? extends CharSequence, ? extends Object> entry : params.entrySet()) {
+            for (Map.Entry<? extends CharSequence, ?> entry : params.entrySet()) {
                 Object value = entry.getValue();
                 String key = entry.getKey().toString();
                 if (value != null) {

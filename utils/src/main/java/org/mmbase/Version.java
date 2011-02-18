@@ -131,7 +131,7 @@ public class Version {
      */
     public static boolean isRelease() {
         return false;
-    };
+    }
 
     /**
      * A String describing the status of this release. Like 'final' or 'rc3'.
@@ -140,7 +140,7 @@ public class Version {
      */
     public static String getReleaseStatus() {
         return "";
-    };
+    }
 
 
     /**

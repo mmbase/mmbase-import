@@ -52,8 +52,6 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
     private static final String classname = Log4jImpl.class.getName();
 
-    private static ResourceWatcher configWatcher;
-
     private static PrintStream stderr;
 
     static {
@@ -131,12 +129,12 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
             ResourceLoader rl = Logging.getResourceLoader();
 
             log.info("using " + rl + " for resolving " + s + " -> " + rl.getResource(s));
-            configWatcher = new ResourceWatcher (rl) {
-                    @Override
-                    public void onChange(String s) {
-                        doConfigure(resourceLoader.getResourceAsStream(s));
-                    }
-                };
+            ResourceWatcher configWatcher = new ResourceWatcher(rl) {
+                @Override
+                public void onChange(String s) {
+                    doConfigure(resourceLoader.getResourceAsStream(s));
+                }
+            };
 
             configWatcher.clear();
             configWatcher.add(s);

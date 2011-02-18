@@ -164,7 +164,7 @@ public class DateTimeDataType extends ComparableDataType<Date> {
     @Override
     protected StringBuilder toStringBuilder() {
         StringBuilder buf = super.toStringBuilder();
-        buf.append(" " + pattern);
+        buf.append(" ").append(pattern);
         return buf;
     }
 

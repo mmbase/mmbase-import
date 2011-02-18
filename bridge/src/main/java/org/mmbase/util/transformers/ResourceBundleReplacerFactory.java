@@ -86,4 +86,4 @@ class ResourceBundleReplacer extends ChunkedTransformer {
     protected String base() {
         return name;
     }
-};
+}

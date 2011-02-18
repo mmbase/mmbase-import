@@ -115,9 +115,8 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
     public int getBasicSupportLevel() {
         // Calculate support as lowest value among childs.
         int result = 3; //TODO SearchQueryHandler.SUPPORT_OPTIMAL;
-        Iterator<Constraint> iChilds = childs.iterator();
-        while (iChilds.hasNext()) {
-            Constraint constraint = iChilds.next();
+        for (Constraint child : childs) {
+            Constraint constraint = child;
             int support = constraint.getBasicSupportLevel();
             if (support < result) {
                 result = support;

@@ -188,7 +188,7 @@ public class Casting {
                     try {
                         res = Double.valueOf("" + value);
                     } catch (NumberFormatException nfe1) {
-                        res = Integer.valueOf(-1);
+                        res = -1;
                     }
                 }
                 return (C) res;
@@ -265,7 +265,7 @@ public class Casting {
      *
      * @since MMBase-1.9.2
      */
-    public static boolean canCast(Class<? extends Object> from, Class<? extends Object> to) {
+    public static boolean canCast(Class<?> from, Class<?> to) {
         return isStringRepresentable(from) && isStringRepresentable(to);
     }
 
@@ -509,9 +509,8 @@ public class Casting {
             return (Map) o;
         } else if (o instanceof Collection) {
             Map result = new HashMap();
-            Iterator i = ((Collection)o).iterator();
-            while (i.hasNext()) {
-                Object n = i.next();
+            for (Object o1 : ((Collection) o)) {
+                Object n = o1;
                 if (n instanceof Map.Entry) {
                     Map.Entry entry = (Map.Entry) n;
                     result.put(entry.getKey(), entry.getValue());
@@ -690,7 +689,7 @@ public class Casting {
                 res = (int) l;
             }
         } else if (i instanceof Boolean) {
-            res = ((Boolean)i).booleanValue() ? 1 : 0;
+            res = (Boolean) i ? 1 : 0;
         } else if (i instanceof Date) {
             long timeValue = ((Date)i).getTime();
 
@@ -766,7 +765,7 @@ public class Casting {
         } catch (Caster.NotRecognized e) {
         }
         if (b instanceof Boolean) {
-            return ((Boolean)b).booleanValue();
+            return (Boolean) b;
         } else if (b instanceof Number) {
             return ((Number)b).doubleValue() > 0;
         } else if (b instanceof Date) {
@@ -795,7 +794,7 @@ public class Casting {
         if (i instanceof Integer) {
             return (Integer)i;
         } else {
-            return Integer.valueOf(toInt(i));
+            return toInt(i);
         }
     }
 
@@ -817,7 +816,7 @@ public class Casting {
             // never mind
         }
         if (i instanceof Boolean) {
-            res = ((Boolean)i).booleanValue() ? 1 : 0;
+            res = (Boolean) i ? 1 : 0;
         } else if (i instanceof Number) {
             res = ((Number)i).longValue();
         } else if (i instanceof Date) {
@@ -879,7 +878,7 @@ public class Casting {
         } catch (Caster.NotRecognized e) {
         }
         if (i instanceof Boolean) {
-            res = ((Boolean)i).booleanValue() ? 1 : 0;
+            res = (Boolean) i ? 1 : 0;
         } else if (i instanceof Number) {
             res = ((Number)i).floatValue();
         } else if (i instanceof Date) {
@@ -931,7 +930,7 @@ public class Casting {
         } catch (Caster.NotRecognized e) {
         }
         if (i instanceof Boolean) {
-            res = ((Boolean)i).booleanValue() ? 1 : 0;
+            res = (Boolean) i ? 1 : 0;
         } else if (i instanceof Number) {
             res = ((Number)i).doubleValue();
         } else if (i instanceof Date) {

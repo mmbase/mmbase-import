@@ -69,9 +69,8 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
      */
     public TreeList(TreeList tl) {
         cloud = tl.cloud;
-        Iterator<Branch> i = tl.branches.iterator();
-        while(i.hasNext()) {
-            Branch b = i.next();
+        for (Branch branche : tl.branches) {
+            Branch b = branche;
             branches.add(new Branch(b));
         }
         topQuery = tl.topQuery;

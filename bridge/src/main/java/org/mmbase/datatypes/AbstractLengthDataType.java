@@ -94,7 +94,7 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
      */
     @Override
     public void setMinLength(long value) {
-        getMinLengthRestriction().setValue(Long.valueOf(value));
+        getMinLengthRestriction().setValue(value);
     }
 
     /**
@@ -120,7 +120,7 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
      */
     @Override
     public void setMaxLength(long value) {
-        getMaxLengthRestriction().setValue(Long.valueOf(value));
+        getMaxLengthRestriction().setValue(value);
     }
 
     @Override
@@ -175,7 +175,7 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
         }
 
         MinRestriction(BasicDataType<?> dt, long min) {
-            super(dt, "minLength", Long.valueOf(min));
+            super(dt, "minLength", min);
             setEnforceStrength(DataType.ENFORCE_ONCHANGE);
         }
 
@@ -194,7 +194,7 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
         }
 
         MaxRestriction(BasicDataType<?> dt, long max) {
-            super(dt, "maxLength", Long.valueOf(max));
+            super(dt, "maxLength", max);
             setEnforceStrength(DataType.ENFORCE_ONCHANGE);
         }
 

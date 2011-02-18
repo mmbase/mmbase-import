@@ -155,7 +155,8 @@ public abstract class NodeWrapper implements Node {
     @Override
     public boolean hasRelations() { return node.hasRelations(); }
     @Override
-    public void deleteRelations() { node.deleteRelations(); };
+    public void deleteRelations() { node.deleteRelations(); }
+
     @Override
     public void deleteRelations(String relationManager) { node.deleteRelations(relationManager); }
     @Override

@@ -145,7 +145,7 @@ public class NodeEvent extends Event {
                 }
             }
             log.info("Setting unacceptable values types for NodeEvents to " + classes);
-            setUnacceptableValueTypes(classes.toArray(new Class[] {}));
+            setUnacceptableValueTypes(classes.toArray(new Class[classes.size()]));
         }
         {
             String[] required = properties.getProperties().get("required").split(",");
@@ -158,7 +158,7 @@ public class NodeEvent extends Event {
                 }
             }
             log.info("Setting unacceptable values types for NodeEvents to " + classes);
-            setRequiredValueTypes(classes.toArray(new Class[] {}));
+            setRequiredValueTypes(classes.toArray(new Class[classes.size()]));
         }
     }
     static {

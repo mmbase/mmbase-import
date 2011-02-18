@@ -91,12 +91,7 @@ public class  RequestActionChecker implements ActionChecker  {
         if (ip == null || "".equals(ip)) {
             ip = req.getRemoteAddr();
         }
-        if (! allowedIps.matcher(ip).matches()) {
-            return false;
-        }
-
-        return true;
-
+        return allowedIps.matcher(ip).matches();
 
 
     }

@@ -34,7 +34,7 @@ import org.mmbase.datatypes.LengthDataType;
 public  class DataTypeField extends org.mmbase.bridge.util.AbstractField {
     protected final NodeManager nodeManager;
     protected final Field field;
-    public DataTypeField(final Cloud cloud, final DataType<? extends Object> dataType)  {
+    public DataTypeField(final Cloud cloud, final DataType<?> dataType)  {
         super(dataType.getName(), dataType.getBaseType(), TYPE_UNKNOWN, Field.STATE_VIRTUAL, dataType);
         nodeManager = new AbstractNodeManager(cloud) {
                 private final Map<String, Field> fieldTypes = new HashMap<String, Field>();
@@ -62,7 +62,7 @@ public  class DataTypeField extends org.mmbase.bridge.util.AbstractField {
     /**
      * @since MMBase-1.9.2
      */
-    public DataTypeField(String name, final NodeManager nm, final DataType<? extends Object> dataType)  {
+    public DataTypeField(String name, final NodeManager nm, final DataType<?> dataType)  {
         super(name, dataType.getBaseType(), TYPE_UNKNOWN, Field.STATE_VIRTUAL, dataType);
         nodeManager = nm;
         field = null;
@@ -72,7 +72,7 @@ public  class DataTypeField extends org.mmbase.bridge.util.AbstractField {
      * This constructor only wraps the given field to have another datatype.
      * @since MMBase-1.9
      */
-    public DataTypeField(final Field field, final DataType<? extends Object> dataType)  {
+    public DataTypeField(final Field field, final DataType<?> dataType)  {
         super(field.getName(), dataType.getBaseType(), field.getType(), field.getState(), dataType);
         nodeManager = field.getNodeManager();
         this.field = field;
@@ -133,7 +133,7 @@ public  class DataTypeField extends org.mmbase.bridge.util.AbstractField {
     }
     @Override
     public Collection<String> validate(Object value) {
-        Collection<LocalizedString> errors = dataType.validate(value, (Node) null, this);
+        Collection<LocalizedString> errors = dataType.validate(value, null, this);
         return LocalizedString.toStrings(errors, nodeManager.getCloud().getLocale());
     }
 

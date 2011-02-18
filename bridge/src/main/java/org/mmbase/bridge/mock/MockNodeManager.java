@@ -96,13 +96,13 @@ public class MockNodeManager extends AbstractNodeManager  {
     // TODO This method is more or less copied from a method in AbstactNodeManager and should be generalized
     protected void setDefaultsWithCloud(Node node) {
         log.debug("Setting default values");
-        for (Iterator i = getFields().iterator(); i.hasNext(); ) {
-            Field field = (Field) i.next();
-            if (field.getName().equals("number"))      continue;
+        for (Object o : getFields()) {
+            Field field = (Field) o;
+            if (field.getName().equals("number")) continue;
             if (field.getName().equals("otype")) continue;
 
             if (node.isNull(field.getName()) || "".equals(node.getStringValue(field.getName()))) { // required field are set to '', which would destroy the default value...
-                org.mmbase.datatypes.DataType dt = field.getDataType();
+                DataType dt = field.getDataType();
                 //log.info("" + field.getName() + " " + dt);
                 Object defaultValue = dt.getDefaultValue(getCloud().getLocale(), getCloud(), field);
                 if (defaultValue != null) {

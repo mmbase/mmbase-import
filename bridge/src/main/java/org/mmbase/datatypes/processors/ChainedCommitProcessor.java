@@ -40,7 +40,6 @@ public class ChainedCommitProcessor implements  CommitProcessor, org.mmbase.util
         for (CommitProcessor proc : processors) {
             proc.commit(node, field);
         }
-        return;
     }
 
     /**
