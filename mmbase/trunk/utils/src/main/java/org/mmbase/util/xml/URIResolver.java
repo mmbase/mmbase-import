@@ -86,7 +86,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      */
     private static URL toURL(File f) {
         try {
-            return f.toURL();
+            return f.toURI().toURL();
         } catch (Exception e) {
             return null;
         }
@@ -130,7 +130,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
             File[] roots = File.listRoots();
             if (roots != null && roots.length > 0) {
                 try {
-                    cwd = roots[0].toURL();
+                    cwd = roots[0].toURI().toURL();
                 } catch (Exception e) {
                     cwd = null;
                 }

@@ -52,9 +52,9 @@ public abstract class ActionRepository extends Configurable {
                     return 0;
                 }
                 @Override
-                public void notify(SystemEvent se) {
-                    if (se instanceof SecurityLoaded) {
-                        instance = ((SecurityLoaded) se).getCop().getActionRepository();
+                public void notify(final SystemEvent event) {
+                    if (event instanceof SecurityLoaded) {
+                        instance = ((SecurityLoaded) event).getCop().getActionRepository();
                     }
                 }
             });
