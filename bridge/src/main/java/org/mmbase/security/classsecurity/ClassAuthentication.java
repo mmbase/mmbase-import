@@ -193,7 +193,7 @@ public class ClassAuthentication {
                     if (proposal != null && proposal.propertyMatchCount >= propertyMatchCount) {
                         // proposal better than this one, whether the new one will match class or
                         // not, never mind.
-                        continue CLASS;
+                        continue;
                     }
                     log.debug("" + n  + "matched on " + properties);
                 }

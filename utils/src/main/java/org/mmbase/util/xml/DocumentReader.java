@@ -605,7 +605,7 @@ public class DocumentReader  {
                 if (n.getLocalName() == null) continue;
                 if (n.getNodeType() == Node.ELEMENT_NODE &&
                     (ignoretag ||
-                     ((Element)n).getLocalName().equalsIgnoreCase(tag))) {
+                     n.getLocalName().equalsIgnoreCase(tag))) {
                     v.add((Element) n);
                 }
             }

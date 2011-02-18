@@ -58,7 +58,7 @@ public class NodeSearchQueryTest {
     public void testConstructor() {
         try {
             // Null builder, should throw IllegalArgumentException.
-            new NodeSearchQuery((NodeManager) null);
+            new NodeSearchQuery(null);
             fail("Null builder, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
 
@@ -72,20 +72,18 @@ public class NodeSearchQueryTest {
         */
         Collection<Field> fields = images.getFields();
         List<StepField> stepFields = instance.getFields();
-        Iterator<StepField> iStepFields = stepFields.iterator();
         // Test all elements in stepFields are persistent fields from images.
-        while (iStepFields.hasNext()) {
-            StepField stepField = iStepFields.next();
+        for (StepField stepField1 : stepFields) {
+            StepField stepField = stepField1;
             Field field = images.getField(stepField.getFieldName());
             //assertTrue("" + fields + " does not contain " + field, fields.contains(field));
             //assertTrue(field.getType() != Field.TYPE_BINARY); // NodeSearchQuery is not in 'database', so it should not whine!
-            assertTrue(! field.isVirtual());
+            assertTrue(!field.isVirtual());
         }
         // Test all persistent fields from images are in query.
-        Iterator<Field> iFields = fields.iterator();
-        while (iFields.hasNext()) {
-            Field field = iFields.next();
-            if (field.getType() != Field.TYPE_BINARY && ! field.isVirtual()) {
+        for (Field field1 : fields) {
+            Field field = field1;
+            if (field.getType() != Field.TYPE_BINARY && !field.isVirtual()) {
                 assertTrue(instance.getField(field) != null);
             }
         }

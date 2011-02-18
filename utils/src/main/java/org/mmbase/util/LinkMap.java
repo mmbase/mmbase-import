@@ -66,7 +66,7 @@ public class LinkMap<K, V> extends AbstractMap<K,V> {
         /**
          * No changes are allowed. The map behaves as an unmodifiable map (throwing {@link UnsupportedOperationException})
          */
-         NONE;
+         NONE
     }
     private final LinkMap.Changes changes;
     private final Map<K, V> map1;

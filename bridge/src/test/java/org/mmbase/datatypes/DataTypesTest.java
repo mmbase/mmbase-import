@@ -279,7 +279,7 @@ public class DataTypesTest  {
         BasicDataType dt = DataTypeReader.readDataType(reader.getDocument().getDocumentElement(), null, null).dataType.clone();
         dt.setXml(null);
         Element toXml = dt.toXml();
-        boolean equiv = xmlEquivalent(reader.getDocument().getDocumentElement(), toXml);;
+        boolean equiv = xmlEquivalent(reader.getDocument().getDocumentElement(), toXml);
 
         if (mustBeEqual) {
             assertTrue("" + xml + " != " + XMLWriter.write(toXml), equiv);

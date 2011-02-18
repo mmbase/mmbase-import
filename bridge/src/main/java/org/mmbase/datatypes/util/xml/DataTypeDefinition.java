@@ -96,7 +96,6 @@ public class DataTypeDefinition {
                     }
                     break;
                 } else {
-                    continue;
                 }
             }
         }
@@ -105,7 +104,7 @@ public class DataTypeDefinition {
                 log.warn("No base datatype available and no class specified for datatype '" + id + "', using 'unknown' for know.\n" + XMLWriter.write(dataTypeElement, true, true));
                 baseDataType = Constants.DATATYPE_UNKNOWN;
             }
-            dataType = (BasicDataType) baseDataType.clone(id);
+            dataType = baseDataType.clone(id);
         } else { // means that it existed it already
             log.debug("Existing datatype " + dt + " with base " + baseDataType);
             dataType = dt;

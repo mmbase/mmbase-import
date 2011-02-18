@@ -258,7 +258,7 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
      */
     @Override
     public String toString() {
-        return get((Locale) null);
+        return get(null);
     }
 
     public String getDebugString() {

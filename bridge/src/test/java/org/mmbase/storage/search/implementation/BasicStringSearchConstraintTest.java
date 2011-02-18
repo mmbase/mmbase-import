@@ -61,7 +61,7 @@ public class BasicStringSearchConstraintTest  {
     @Test
     public void testConstructor1() {
         List<String> searchTerms
-        = Arrays.asList(new String[] {"some", "search", "terms"});
+        = Arrays.asList("some", "search", "terms");
         // Applied to integer field, should throw IllegalArgumentException.
         try {
             new BasicStringSearchConstraint(field2,
@@ -166,14 +166,14 @@ public class BasicStringSearchConstraintTest  {
     public void testSetParameter() {
         try {
             // Invalid parameter name, should throw IllegalArgumentException.
-            instance.setParameter("ongeldige parameter", new Integer(0));
+            instance.setParameter("ongeldige parameter", 0);
             fail("Invalid parameter name, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
 
         try {
             // Invalid parameter type, should throw IllegalArgumentException.
             instance.setParameter(
-            StringSearchConstraint.PARAM_FUZZINESS, new Integer(0));
+            StringSearchConstraint.PARAM_FUZZINESS, 0);
             fail("Invalid parameter type, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
 
@@ -201,7 +201,7 @@ public class BasicStringSearchConstraintTest  {
         try {
             // Invalid parameter value, should throw IllegalArgumentException.
             instance.setParameter(
-            StringSearchConstraint.PARAM_PROXIMITY_LIMIT, new Integer(0));
+            StringSearchConstraint.PARAM_PROXIMITY_LIMIT, 0);
             fail("Invalid parameter value, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
 
@@ -228,7 +228,7 @@ public class BasicStringSearchConstraintTest  {
         assertTrue(instance.getParameters().get(StringSearchConstraint.PARAM_FUZZINESS)
         == null);
 
-        Integer proximityLimit = new Integer(2);
+        Integer proximityLimit = 2;
         instance.setSearchType(StringSearchConstraint.SEARCH_TYPE_WORD_ORIENTED);
 
         // Due to searchtype WORD_ORIENTED, proximity limit parameter is invalid.

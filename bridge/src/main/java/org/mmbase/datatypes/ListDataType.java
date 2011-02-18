@@ -96,7 +96,7 @@ public class ListDataType extends AbstractLengthDataType<List> {
     @Override
     protected StringBuilder toStringBuilder() {
         StringBuilder buf = super.toStringBuilder();
-        buf.append("items: " + getItemDataType());
+        buf.append("items: ").append(getItemDataType());
         return buf;
     }
 
@@ -116,9 +116,9 @@ public class ListDataType extends AbstractLengthDataType<List> {
             DataType itemDataType = getItemDataType();
             if (itemDataType == Constants.DATATYPE_UNKNOWN) return true;
             List listValue = Casting.toList(v);
-            for (Iterator i = listValue.iterator(); i.hasNext(); ) {
+            for (Object aListValue : listValue) {
                 try {
-                    Collection col = itemDataType.validate(i.next());
+                    Collection col = itemDataType.validate(aListValue);
                     if (col != VALID) return false;
                 } catch (ClassCastException cce) {
                     return false;
@@ -135,8 +135,8 @@ public class ListDataType extends AbstractLengthDataType<List> {
             DataType itemDataType = getItemDataType();
             if (itemDataType == Constants.DATATYPE_UNKNOWN) return errors;
             List listValue = Casting.toList(v);
-            for (Iterator i = listValue.iterator(); i.hasNext(); ) {
-                Collection col = itemDataType.validate(i.next());
+            for (Object aListValue : listValue) {
+                Collection col = itemDataType.validate(aListValue);
                 try {
                     if (col != VALID) {
                         if (errors == VALID) errors = new ArrayList<LocalizedString>();

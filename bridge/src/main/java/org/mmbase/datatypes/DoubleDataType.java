@@ -26,8 +26,8 @@ public class DoubleDataType extends NumberDataType<Double> {
      */
     public DoubleDataType(String name, boolean primitive) {
         super(name, primitive ? Double.TYPE : Double.class);
-        setMin(Double.valueOf(-1 * Double.MAX_VALUE), true);
-        setMax(Double.valueOf(Double.MAX_VALUE), true);
+        setMin(-1 * Double.MAX_VALUE, true);
+        setMax(Double.MAX_VALUE, true);
     }
 
     /**

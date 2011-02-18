@@ -119,7 +119,7 @@ public class SetFunction extends AbstractFunction<Object> {
                         log.warn("More methods match " + methodName + " " + Arrays.asList(parameters.getDefinition()) + " in " + functionClass + ": " + method + ", " + m + " (both scored " + newScore + ")");
                     } if (score > newScore) {
                         log.debug("More methods match " + methodName + " " + Arrays.asList(parameters.getDefinition()) + " in " + functionClass + ": " + method + ", " + m + " (First one is better");
-                        continue METHODS;
+                        continue;
                     } else {
                         log.debug("More methods match " + methodName + " " + Arrays.asList(parameters.getDefinition()) + " in " + functionClass + ": " + method + ", " + m + " (Second one is better");
                     }

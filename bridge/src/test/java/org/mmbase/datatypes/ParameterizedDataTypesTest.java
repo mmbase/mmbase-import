@@ -82,7 +82,7 @@ public class ParameterizedDataTypesTest  {
                           new Object[] {"abcdefg", "ijklm\nopqrstx", null},
                           new Object[] {}},
             new Object[] {"line",
-                          new Object[] {"abcdefg", new Integer(40), new Float(3.141592), null},
+                          new Object[] {"abcdefg", 40, new Float(3.141592), null},
                           new Object[] {"ijklm\nopqrstx"}},
             new Object[] {"field",
                           new Object[] {"xyz", "zyz\nkloink", null} ,
@@ -118,22 +118,22 @@ public class ParameterizedDataTypesTest  {
                           new Object[] {"c", "ababab", ""}}
             ,
             new Object[] {"integer",
-                          new Object[] {new Integer(-100), "-1", new Integer(100), "-100", new Float(10.0), "1234", "1234.4", "1e7",  null, ""},
-                          new Object[] {new Long(Long.MAX_VALUE), "1e30",  "asdfe"}
+                          new Object[] {-100, "-1", 100, "-100", new Float(10.0), "1234", "1234.4", "1e7",  null, ""},
+                          new Object[] {Long.MAX_VALUE, "1e30",  "asdfe"}
             },
             new Object[] {"duration",
-                          new Object[] { new Integer(100), "100", new Float(10.0), "1234", "1234.4", "1e7",  null, "", "10:10:10", new Long(Long.MAX_VALUE)},
-                          new Object[] { "1e50",  "asdfe", "-100", new Integer(-100) }
+                          new Object[] {100, "100", new Float(10.0), "1234", "1234.4", "1e7",  null, "", "10:10:10", Long.MAX_VALUE},
+                          new Object[] { "1e50",  "asdfe", "-100", -100}
             }
             ,
             new Object[] {"duration_required",
-                          new Object[] { new Integer(100), "100", new Float(10.0), "1234", "1234.4", "1e7", "10:10:10", new Long(Long.MAX_VALUE)},
-                          new Object[] { "1e50",  "asdfe", "-100", new Integer(-100), null, "" }
+                          new Object[] {100, "100", new Float(10.0), "1234", "1234.4", "1e7", "10:10:10", Long.MAX_VALUE},
+                          new Object[] { "1e50",  "asdfe", "-100", -100, null, "" }
             }
             ,
             new Object[] {"range",
-                          new Object[] {new Integer(5), "1", "6.0", new Float(2.0), null},
-                          new Object[] {"-1", "11", "xyz", new Integer(0), new Integer(10)}},
+                          new Object[] {5, "1", "6.0", new Float(2.0), null},
+                          new Object[] {"-1", "11", "xyz", 0, 10}},
             new Object[] {"datetime",
                           new Object[] {new Date(), "2005-01-01", DynamicDate.getInstance("now - 5 year"), null},
                           new Object[] {"xxx"}},
@@ -144,20 +144,20 @@ public class ParameterizedDataTypesTest  {
                           new Object[] {new Date(), "today + 100 year", null},
                           new Object[] {"now - 4 day", "today + 101 year"}},
             new Object[] {"integer_datetime",
-                          new Object[] {new Date(), "2005-01-01", DynamicDate.getInstance("now - 5 year"), new Integer(Integer.MAX_VALUE), null},
-                          new Object[] {"xxx", "2100-01-01", DynamicDate.getInstance("now + 100 year"), new Long(Long.MAX_VALUE)}},
+                          new Object[] {new Date(), "2005-01-01", DynamicDate.getInstance("now - 5 year"), Integer.MAX_VALUE, null},
+                          new Object[] {"xxx", "2100-01-01", DynamicDate.getInstance("now + 100 year"), Long.MAX_VALUE}},
             new Object[] {"mmbase_state_enumeration",
-                          new Object[] {"ACTIVE", "inactive", "unknown", new Integer(1), "1", null},
-                          new Object[] {"-2", new Long(71221111112L), "bla bla"}},
+                          new Object[] {"ACTIVE", "inactive", "unknown", 1, "1", null},
+                          new Object[] {"-2", 71221111112L, "bla bla"}},
             new Object[] {"enumeration",
-                          new Object[] {"2", "4", new Integer(6), null},
+                          new Object[] {"2", "4", 6, null},
                           new Object[] {"-1", "xxx"}},
             new Object[] {"restricted_ordinals",
-                          new Object[] {"2", "4", new Integer(6), null},
-                          new Object[] {"1", "21", new Integer(10)}},
+                          new Object[] {"2", "4", 6, null},
+                          new Object[] {"1", "21", 10}},
             new Object[] {"float",
-                          new Object[] {"2", "4", new Integer(6), null, new Double(1.0), "1.0", "1e20", null, ""},
-                          new Object[] {new Double(Double.POSITIVE_INFINITY), "bla bla"
+                          new Object[] {"2", "4", 6, null, 1.0, "1.0", "1e20", null, ""},
+                          new Object[] {Double.POSITIVE_INFINITY, "bla bla"
                           }},
             new Object[] {"handle",
                           new Object[] {null, binary // UNDETERMINED so valid, or at least unknnown
@@ -173,35 +173,35 @@ public class ParameterizedDataTypesTest  {
                           }
             },
             new Object[] {"boolean",
-                          new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0), null},
-                          new Object[] {"asjdlkf", "21", "yes", new Integer(10)}},
+                          new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", 1, 0, null},
+                          new Object[] {"asjdlkf", "21", "yes", 10}},
             new Object[] {"yesno",
-                          new Object[] {Boolean.TRUE, Boolean.FALSE,"true", "false", new Integer(1), new Integer(0), null},
-                          new Object[] {"asjdlkf", "21", new Integer(10)}},
+                          new Object[] {Boolean.TRUE, Boolean.FALSE,"true", "false", 1, 0, null},
+                          new Object[] {"asjdlkf", "21", 10}},
             new Object[] {"integer_boolean",
-                          new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0), null},
-                          new Object[] {"asjdlkf", "21", new Integer(10)}},
+                          new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", 1, 0, null},
+                          new Object[] {"asjdlkf", "21", 10}},
 
             new Object[] {"string_boolean",
-                          new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0), null},
-                          new Object[] {"asjdlkf", "21", new Integer(10)}},
+                          new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", 1, 0, null},
+                          new Object[] {"asjdlkf", "21", 10}},
             new Object[] {"boolean_string",
                           new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", null},
-                          new Object[] { "asjdlkf", "21", new Integer(10)}},
+                          new Object[] { "asjdlkf", "21", 10}},
             new Object[] {"integer_string",
-                          new Object[] {"1", "100", new Integer(10), new Integer(-1), "-1" , null},
+                          new Object[] {"1", "100", 10, -1, "-1" , null},
                           new Object[] { "asjdlkf"}},
             new Object[] {"node",
                           new Object[] {node1 , node2,
-                                        "" + node1.getNumber(), new Integer(node1.getNumber()), new Integer(node2.getNumber()),  new Integer(-1), null, ""
+                                        "" + node1.getNumber(), node1.getNumber(), node2.getNumber(), -1, null, ""
                 },
-                          new Object[] {"asjdlkf", new Integer(-2), new Integer(-100)
+                          new Object[] {"asjdlkf", -2, -100
                           }
             }
             ,
             new Object[] {"typedef",
-                          new Object[] {node1, new Integer(node1.getNumber()),  null, ""},
-                          new Object[] {"asjdlkf", node3, new Integer(node3.getNumber()), new Integer(-2), new Integer(-100)}}
+                          new Object[] {node1, node1.getNumber(),  null, ""},
+                          new Object[] {"asjdlkf", node3, node3.getNumber(), -2, -100}}
             ,
             new Object[] {"nonode_typedef",
                           new Object[] {"object", "typedef", "datatypes"},
@@ -209,13 +209,13 @@ public class ParameterizedDataTypesTest  {
             ,
             new Object[] {"decimal",
                           new Object[] {"22222222222222222222222222222222222.111111111111111111111111111111" , //35.30
-                                        "1", new Integer(100),
+                                        "1", 100,
                                         new BigDecimal("22222222222222222222222222222222222.1234")},
                           new Object[] {"333333333333333333333333333333333333", "asjdlkf"}}
             ,
             new Object[] {"currency",
                           new Object[] {"222222222222222.11111", //15.5
-                                        "1", new Integer(100),
+                                        "1", 100,
                                         new BigDecimal("1.123456789"), "12345.1111111111"},
             new Object[] {"3333333333333333", "asjdlkf"}}
             /*

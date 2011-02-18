@@ -65,15 +65,15 @@ public class CastingTest  {
     }
     @Test
     public void integer() {
-        assertEquals(new Integer(10), (Object) Casting.toInteger("10"));
-        assertEquals(new Integer(10), (Object) Casting.toInteger("1e1"));
-        assertEquals(new Integer(-1), (Object) Casting.toInteger(null));
+        assertEquals(10, Casting.toInteger("10"));
+        assertEquals(10, Casting.toInteger("1e1"));
+        assertEquals(-1, Casting.toInteger(null));
     }
     @Test
     public void testLong() {
-        assertEquals(new Long(10), (Object) Casting.toLong("10"));
-        assertEquals(new Long(10), (Object) Casting.toLong("1e1"));
-        assertEquals(new Long(-1), (Object) Casting.toLong(null));
+        assertEquals((long) 10, (Object) Casting.toLong("10"));
+        assertEquals((long) 10, (Object) Casting.toLong("1e1"));
+        assertEquals((long) -1, (Object) Casting.toLong(null));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class CastingTest  {
 
     @Test
     public void testDouble() {
-        assertEquals(new Double(-1.0), (Object) Casting.toDouble(null));
+        assertEquals(-1.0, (Object) Casting.toDouble(null));
     }
     @Test
     public void testBinary() {
@@ -94,14 +94,14 @@ public class CastingTest  {
         assertEquals("foo", Casting.toString(new String[] {"foo"}));
         assertEquals("foo", Casting.toString(new Object[] {"foo"}));
         assertEquals("1", Casting.toString(1));
-        assertEquals("1", Casting.toString(new Integer(1)));
+        assertEquals("1", Casting.toString(1));
 
         List<Object> list = new ArrayList<Object>();
         list.add("foo");
         assertEquals("foo", Casting.toString(list));
         list.clear(); list.add(1);
         assertEquals("1", Casting.toString(list));
-        list.clear(); list.add(new Integer(1));
+        list.clear(); list.add(1);
         assertEquals("1", Casting.toString(list));
 
         assertEquals("foo,bar", Casting.toString(new String[] {"foo", "bar"}));

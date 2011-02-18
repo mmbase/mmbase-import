@@ -133,7 +133,7 @@ public class ReplacingLocalizedString extends WrappedLocalizedString {
     public static void main(String argv[]) {
         ReplacingLocalizedString s = new ReplacingLocalizedString(new LocalizedString("abcd"));
         s.replaceAll("b", makeLiteral(argv[0]));
-        System.out.println(s.get((Locale) null));
+        System.out.println(s.get(null));
     }
 
 }

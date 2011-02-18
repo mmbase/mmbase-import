@@ -166,9 +166,8 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
             "Invalid search terms value: " + searchTerms);
         }
         List<String> newSearchTerms = new ArrayList<String>();
-        Iterator<String> iSearchTerms = searchTerms.iterator();
-        while (iSearchTerms.hasNext()) {
-            String  searchTerm = iSearchTerms.next();
+        for (String searchTerm1 : searchTerms) {
+            String searchTerm = searchTerm1;
             newSearchTerms.add(searchTerm);
         }
         this.searchTerms = newSearchTerms;

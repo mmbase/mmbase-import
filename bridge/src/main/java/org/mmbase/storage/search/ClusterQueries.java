@@ -14,6 +14,7 @@ import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NotFoundException;
 import org.mmbase.storage.search.implementation.*;
 
+import org.mmbase.util.functions.Utils;
 import org.mmbase.util.logging.*;
 
 /**
@@ -181,9 +182,8 @@ public abstract class ClusterQueries {
         Map<String, BasicStep> stepsByAlias= addSteps(query, tables, roles, !distinct, fieldsByAlias);
 
         // Add fields.
-        Iterator<String> iFields= fields.iterator();
-        while (iFields.hasNext()) {
-            String field = iFields.next();
+        for (String field1 : fields) {
+            String field = field1;
             addFields(query, field, stepsByAlias, fieldsByAlias);
         }
 
@@ -222,9 +222,8 @@ public abstract class ClusterQueries {
                 nodesStep = query.getSteps().get(0);
             }
 
-            Iterator<Integer> iNodeNumbers= snodeNumbers.iterator();
-            while (iNodeNumbers.hasNext()) {
-                Integer number= iNodeNumbers.next();
+            for (Integer snodeNumber : snodeNumbers) {
+                Integer number = snodeNumber;
                 nodesStep.addNode(number.intValue());
             }
         }
@@ -423,9 +422,8 @@ public abstract class ClusterQueries {
         } else if (pos1 != -1) {
             // Function parameter list containing subexpression(s).
             String parameters= expression.substring(pos1 + 1, pos2);
-            Iterator<String> iParameters= org.mmbase.util.functions.Utils.parse(parameters).iterator();
-            while (iParameters.hasNext()) {
-                String parameter= iParameters.next();
+            for (String s : Utils.parse(parameters)) {
+                String parameter = s;
                 addFields(query, parameter, stepsByAlias, fieldsByAlias);
             }
         } else if (!Character.isDigit(expression.charAt(0))) {
@@ -434,7 +432,7 @@ public abstract class ClusterQueries {
                 throw new IllegalArgumentException("Invalid fieldname: \"" + expression + "\"");
             }
             int bracketOffset = (expression.startsWith("[") && expression.endsWith("]")) ? 1 : 0;
-            String stepAlias= expression.substring(0 + bracketOffset, pos);
+            String stepAlias= expression.substring(bracketOffset, pos);
             String fieldName= expression.substring(pos + 1 - bracketOffset);
 
             BasicStep step = stepsByAlias.get(stepAlias);

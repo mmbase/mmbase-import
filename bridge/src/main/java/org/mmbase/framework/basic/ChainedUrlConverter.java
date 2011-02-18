@@ -81,7 +81,7 @@ public class ChainedUrlConverter implements UrlConverter {
 
     @Override
     public Parameter<?>[] getParameterDefinition() {
-        return parameterDefinition.toArray(Parameter.EMPTY);
+        return parameterDefinition.toArray(new Parameter[parameterDefinition.size()]);
     }
 
 

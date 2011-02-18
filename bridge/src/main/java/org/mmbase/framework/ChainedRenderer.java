@@ -36,7 +36,7 @@ public class ChainedRenderer extends AbstractRenderer {
         chain.add(render);
         List<Parameter> params = new ArrayList<Parameter>(Arrays.asList(parameters));
         params.addAll(Arrays.asList(render.getParameters()));
-        parameters = params.toArray(Parameter.EMPTY);
+        parameters = params.toArray(new Parameter[params.size()]);
     }
 
     @Override

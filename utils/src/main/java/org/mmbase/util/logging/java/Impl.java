@@ -44,7 +44,6 @@ import org.mmbase.util.ResourceLoader;
 public final class Impl implements Logger {
 
     private static final Logger log = Logging.getLoggerInstance(Impl.class);
-    private static ResourceWatcher configWatcher;
 
     private final java.util.logging.Logger logger;
 
@@ -90,17 +89,17 @@ public final class Impl implements Logger {
                 ResourceLoader rl = Logging.getResourceLoader();
 
                 log.info("using " + rl + " for resolving " + s);
-                configWatcher = new ResourceWatcher (rl) {
+                ResourceWatcher configWatcher = new ResourceWatcher(rl) {
                     @Override
-                        public void onChange(String s) {
-                            try {
-                                log.info("Reading configuration file : " + s);
-                                java.util.logging.LogManager.getLogManager().readConfiguration(resourceLoader.getResourceAsStream(s));
-                            } catch (IOException ioe) {
-                                log.error(ioe);
-                            }
+                    public void onChange(String s) {
+                        try {
+                            log.info("Reading configuration file : " + s);
+                            java.util.logging.LogManager.getLogManager().readConfiguration(resourceLoader.getResourceAsStream(s));
+                        } catch (IOException ioe) {
+                            log.error(ioe);
                         }
-                    };
+                    }
+                };
 
                 configWatcher.add(s);
                 configWatcher.start();

@@ -331,9 +331,8 @@ public class Encode {
             System.out.println("possible decoding are");
             List<String> v = new ArrayList<String>(possibleEncodings());
             java.util.Collections.sort(v);
-            Iterator<String> i = v.iterator();
-            while (i.hasNext()) {
-                String enc = i.next();
+            for (String aV : v) {
+                String enc = aV;
                 System.out.println(enc + "   " + encodings.get(enc).info);
             }
         } else {

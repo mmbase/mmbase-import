@@ -112,6 +112,6 @@ public class EnvironmentReader {
      */
     public static String[] getRawEnvVars() {
         getEnvVars();
-        return rawVars.toArray(new String[0]);
+        return rawVars.toArray(new String[rawVars.size()]);
     }
 }

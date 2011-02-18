@@ -657,7 +657,6 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                         obj.insert(pos, "</td>");
                         pos += 5;
                     }
-                    continue;
                 } else if (obj.charAt(pos) == '!') {
                     obj.deleteCharAt(pos);
                     obj.insert(pos, "<th>");
@@ -670,7 +669,6 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                     obj.deleteCharAt(pos);
                     obj.insert(pos, "</th>");
                     pos += 5;
-                    continue;
                 } else {
                     pos = obj.indexOf("\n", pos) + 1;
                     if (pos >= obj.length()) break;

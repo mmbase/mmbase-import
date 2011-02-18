@@ -58,7 +58,6 @@ public class ExceptionImpl extends AbstractSimpleImpl implements Logger {
      */
     public static  void configure(String c) {
         if (c == null) {
-           return; // everything default
         } else {
             StringTokenizer t    = new StringTokenizer(c, ",");
             if (t.hasMoreTokens()) {

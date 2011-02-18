@@ -230,7 +230,7 @@ public class ErrorRenderer extends AbstractRenderer {
             if (Boolean.TRUE.equals(showMMBaseVersion)  || (showMMBaseVersion == null && ! "false".equals(props.get("show_mmbase_version")))) {
                 msg.append("mmbase version: ").append(org.mmbase.Version.get()).append("\n");
             }
-            msg.append("status: ").append("" + status).append("\n\n");
+            msg.append("status: ").append("").append(String.valueOf(status)).append("\n\n");
 
 
             if (request != null) {
@@ -242,7 +242,7 @@ public class ErrorRenderer extends AbstractRenderer {
                     msg.append(name).append(": ").append(escape.transform(request.getParameter(name))).append("\n");
                 }
             }
-            msg.append("\nException " + ticket + "\n----------\n\n" + (exception != null ? (escape.transform(exception.getClass().getName())) : "NO EXCEPTION") + ": ");
+            msg.append("\nException ").append(ticket).append("\n----------\n\n").append(exception != null ? (escape.transform(exception.getClass().getName())) : "NO EXCEPTION").append(": ");
 
             int wroteCauses = 0;
             while (! stack.isEmpty()) {
@@ -255,7 +255,7 @@ public class ErrorRenderer extends AbstractRenderer {
                     }
                     String message = t.getMessage();
                     if (msg != tee) {
-                        to.append("\n=== skipped(see log)  : " + escape.transform(t.getClass().getName()) + ": " + message + "\n");
+                        to.append("\n=== skipped(see log)  : ").append(escape.transform(t.getClass().getName())).append(": ").append(message).append("\n");
                     }
 
                     msg.append("\n\n").append(escape.transform(t.getClass().getName() + ": " + message));
@@ -287,11 +287,11 @@ public class ErrorRenderer extends AbstractRenderer {
                         messageClass.getMethod("setSubject", String.class).invoke(mail, ticket);
                         mail.getClass().getMethod("setText", String.class).invoke(mail, logMsg.toString());
                         Class.forName("javax.mail.Transport").getMethod("send", Class.forName("javax.mail.Message")).invoke(null, mail);
-                        tee.append("\nmailed to (" + props + ")");
+                        tee.append("\nmailed to (").append(String.valueOf(props)).append(")");
                     }
 
                 } catch (Exception nnfe) {
-                    tee.append("\nnot mailed (" + nnfe + ")");
+                    tee.append("\nnot mailed (").append(String.valueOf(nnfe)).append(")");
                     if (log.isDebugEnabled()) {
                         log.debug(nnfe.getMessage(), nnfe);
                     }

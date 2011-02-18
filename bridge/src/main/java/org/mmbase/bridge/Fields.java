@@ -241,7 +241,7 @@ public class Fields {
             Field ft = new VirtualNodeManagerField(nm, createSystemField(cloud, name, Field.TYPE_NODE),  name);
             fieldTypes.put(name, ft);
 
-            if (allowNonQueriedFields && ! query.isAggregating()) {
+            if (!query.isAggregating()) {
                 /// if hasField returns true also for unqueried fields
                 for (Field f : cloud.getNodeManager(step.getTableName()).getFields()) {
                     final String fieldName = name + "." + f.getName();
@@ -249,7 +249,7 @@ public class Fields {
                 }
             }
         }
-        if (! allowNonQueriedFields || query.isAggregating()) {
+        if (query.isAggregating()) {
             //hasField only returns true for queried fields
             for (StepField field : query.getFields()) {
                 Step step = field.getStep();

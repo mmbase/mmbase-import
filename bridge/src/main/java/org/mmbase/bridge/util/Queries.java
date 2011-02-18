@@ -231,7 +231,7 @@ abstract public class Queries {
         } else {
             for (Constraint child : compConstraint.getChilds()) {
                 if (child instanceof CompositeConstraint) {
-                    boolean r = removeConstraint((BasicCompositeConstraint) compConstraint, cons);
+                    boolean r = removeConstraint(compConstraint, cons);
                     if (r) return true;
                 } else {
                 }
@@ -355,9 +355,9 @@ abstract public class Queries {
                 return Double.valueOf(stringValue);
             } catch (NumberFormatException e2) {
                 if(stringValue.equalsIgnoreCase("true")) {
-                    return Integer.valueOf(1);
+                    return 1;
                 } else if(stringValue.equalsIgnoreCase("false")) {
-                return Integer.valueOf(0);
+                return 0;
                 }
                 throw new BridgeException("Operator requires number value ('" + stringValue + "' is not)");
             }
@@ -504,7 +504,7 @@ abstract public class Queries {
                 if (value instanceof String) { // it might be an alias!
                     if (cloud.hasNode((String) value)) {
                         Node node = cloud.getNode((String)value);
-                        value = Integer.valueOf(node.getNumber());
+                        value = node.getNumber();
                     } else {
                         value = -1; // non existing node number. Integer.parseInt((String) value);
                     }
@@ -653,11 +653,11 @@ abstract public class Queries {
                 case Field.TYPE_INTEGER:
                 case Field.TYPE_LONG:
                 case Field.TYPE_NODE:
-                    value = Long.valueOf(Casting.toLong(value));
+                    value = Casting.toLong(value);
                     break;
                 case Field.TYPE_FLOAT:
                 case Field.TYPE_DOUBLE:
-                    value = Double.valueOf(Casting.toDouble(value));
+                    value = Casting.toDouble(value);
                     break;
                 case Field.TYPE_DATETIME:
                     value = new Date((long) 1000 * Integer.parseInt("" + value));
@@ -1627,7 +1627,7 @@ abstract public class Queries {
             NodeQuery query = dayMarks.createQuery();
             StepField step = query.createStepField("daycount");
             int currentDay = (int) (System.currentTimeMillis()/(1000*60*60*24));
-            Integer day = new Integer(currentDay  - age);
+            Integer day = currentDay - age;
             if (log.isDebugEnabled()) {
                 log.debug("today : " + currentDay + " requested " + day);
             }
@@ -1701,7 +1701,7 @@ abstract public class Queries {
      */
     public static Constraint createMakeEmptyConstraint(Query q) {
         StepField sf = q.createStepField(q.getSteps().get(0), "number");
-        return q.createConstraint(sf, new Integer(-1));
+        return q.createConstraint(sf, -1);
     }
 
     /**

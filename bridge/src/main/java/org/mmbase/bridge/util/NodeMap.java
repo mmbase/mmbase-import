@@ -210,8 +210,8 @@ public class NodeMap extends NodeWrapper implements Map<String, Object> {
 
     // javadoc inherited
     @Override
-    public void putAll(Map<? extends String, ? extends Object> map) {
-        for (java.util.Map.Entry<? extends String, ? extends Object> e : map.entrySet()) {
+    public void putAll(Map<? extends String, ?> map) {
+        for (java.util.Map.Entry<? extends String, ?> e : map.entrySet()) {
             put(e.getKey(), e.getValue());
         }
     }

@@ -31,7 +31,6 @@ public final class EmptyCommitProcessor  implements CommitProcessor {
 
     @Override
     public final void commit(Node node, Field field) {
-        return;
     }
 
     @Override

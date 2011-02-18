@@ -142,7 +142,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
      */
     @Override
     public void setMinLength(long value) {
-        getMinLengthRestriction().setValue(Long.valueOf(value));
+        getMinLengthRestriction().setValue(value);
     }
 
     /**
@@ -165,7 +165,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
      */
     @Override
     public void setMaxLength(long value) {
-        getMaxLengthRestriction().setValue(Long.valueOf(value));
+        getMaxLengthRestriction().setValue(value);
     }
 
 

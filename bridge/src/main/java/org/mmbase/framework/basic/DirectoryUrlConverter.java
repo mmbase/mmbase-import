@@ -85,9 +85,7 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
 
     protected List<String> getPath(String pa) {
         List<String> path = new ArrayList<String>();
-        for (String p: pa.split("/")) {
-            path.add(p);
-        }
+        path.addAll(Arrays.asList(pa.split("/")));
         if (path.size() == 0) {
             path.add("");
         }

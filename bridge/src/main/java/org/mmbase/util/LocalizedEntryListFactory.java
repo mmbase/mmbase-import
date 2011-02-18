@@ -655,9 +655,8 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             localizedList = localized.get(null);
         }
         if (localizedList != null) {
-            Iterator i = localizedList.entries.iterator();
-            while (i.hasNext()) {
-                Object o = i.next();
+            for (Object entry : localizedList.entries) {
+                Object o = entry;
                 if (o instanceof Bundle) {
                     // already in size();
                 } else if (o instanceof DocumentSerializable) {
@@ -689,9 +688,8 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
 
     public int size() {
         int bundleSize = 0;
-        Iterator i = bundles.iterator();
-        while (i.hasNext()) {
-            Bundle b = (Bundle) i.next();
+        for (Bundle bundle : bundles) {
+            Bundle b = bundle;
             try {
                 bundleSize += b.get(null).size();
             } catch (MissingResourceException mre) {
@@ -824,7 +822,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                 if (key instanceof org.mmbase.bridge.Node) {
                     // if you sepcify node-typed enumeration by entry value=, then this happens.
                     // Perhaps this should happen a bit more generically. Casting.toSerializable, or so.
-                    key = new Integer(((org.mmbase.bridge.Node) key).getNumber());
+                    key = ((org.mmbase.bridge.Node) key).getNumber();
                 }
                 if (key instanceof Serializable) {
                     if (log.isDebugEnabled()) {
@@ -933,7 +931,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             if (comparator instanceof Serializable) {
                 out.writeObject(comparator);
             } else {
-                out.writeObject((Comparator) null);
+                out.writeObject(null);
             }
         }
         // implementation of serializable

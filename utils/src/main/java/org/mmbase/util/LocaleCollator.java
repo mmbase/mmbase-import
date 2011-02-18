@@ -212,11 +212,8 @@ public class LocaleCollator  extends Collator implements Serializable {
             Strength.valueOf(elements[1]).get() != getStrength()) {
                 return false;
         }
-        if (elements.length > 2 &&
-            LocaleCollator.Decomposition.valueOf(elements[2]).get() != getDecomposition()) {
-            return false;
-        }
-        return true;
+        return !(elements.length > 2 &&
+                Decomposition.valueOf(elements[2]).get() != getDecomposition());
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {

@@ -353,7 +353,8 @@ public class BasicFramework extends Framework {
                         return new Iterator<Map.Entry<String, Object>>() {
                             private Iterator<Map.Entry<String, Object>> i = params.entrySet().iterator();
                             @Override
-                            public boolean hasNext() { return i.hasNext(); };
+                            public boolean hasNext() { return i.hasNext(); }
+
                             @Override
                             public Map.Entry<String, Object> next() {
                                 Map.Entry<String, Object> e = i.next();

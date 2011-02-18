@@ -29,7 +29,7 @@ public class XMLWriter {
     /**
      * defaulting version of {@link #write(Node, Writer, boolean, boolean)}. (Not ommitting xml declaration).
      */
-    public static void write(Node node, Writer writer, boolean indent) throws TransformerConfigurationException, TransformerException{
+    public static void write(Node node, Writer writer, boolean indent) throws TransformerException{
         write(node, writer, indent, false);
     }
     /**
@@ -39,7 +39,7 @@ public class XMLWriter {
      * @param indent if true the document wil be indented
      * @param omitxml
      **/
-    public static void write(Node node, Writer writer, boolean indent, boolean omitxml) throws TransformerConfigurationException, TransformerException {
+    public static void write(Node node, Writer writer, boolean indent, boolean omitxml) throws TransformerException {
         if (node == null) {
             try {
                 writer.write("<null />");

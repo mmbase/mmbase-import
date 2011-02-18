@@ -118,9 +118,8 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
             BasicStepField stepField = ((NodeSearchQuery) query).getField(field);
             return stepField;
         } else {
-            Iterator<StepField> fields = query.getFields().iterator();
-            while(fields.hasNext()) {
-                StepField stepField = fields.next();
+            for (StepField stepField1 : query.getFields()) {
+                StepField stepField = stepField1;
                 if (stepField.getStep().equals(step)) {
                     if (stepField.getFieldName().equals(field.getName())) {
                         return stepField;

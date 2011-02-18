@@ -671,8 +671,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("SearchQuery(distinct:").append(isDistinct()).
-        append(", steps:" + getSteps()).
+        StringBuilder sb = new StringBuilder("SearchQuery(distinct:").append(isDistinct()).append(", steps:").append(getSteps()).
         append(", fields:").append(getFields()).
         append(", constraint:").append(getConstraint()).
         append(", sortorders:").append(getSortOrders()).

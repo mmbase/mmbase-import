@@ -23,10 +23,7 @@ public class AllEventBroker extends AbstractEventBroker {
 
     @Override
     public boolean canBrokerForListener(EventListener listener) {
-        if (listener instanceof AllEventListener) {
-            return true;
-        }
-        return false;
+        return listener instanceof AllEventListener;
     }
 
     @Override
