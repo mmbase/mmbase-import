@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  * @author  Michiel Meeuwissen
  * @version $Id$
  * @since   MMBase-1.9.2
- * @todo    EXPERIMENTAL
+ * TODO    EXPERIMENTAL
  */
 
 abstract class AbstractQueryHandler implements QueryHandler  {
