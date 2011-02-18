@@ -274,7 +274,7 @@ public class MMBaseContext implements ServletContextListener {
         if (!initialized) {
             throw new RuntimeException("The init(ServletContext) method should be called first. (Not initalized)");
         }
-        if (sx == null) {
+        if (null == sx) {
             throw new RuntimeException("The init(ServletContext) method should be called first. (No servlet context was given)");
         }
         if (!htmlRootInitialized) {
@@ -461,7 +461,7 @@ public class MMBaseContext implements ServletContextListener {
     }
 
     /**
-     * Static version of {@link MMBase#getMachineName}
+     * Returns the unique identifier for the MMBase instance. Used for clustering.
      * @since MMBase-1.8.7
      * @return 'machine name' to identify this web app or <code>null</code> if not yet determined.
      */

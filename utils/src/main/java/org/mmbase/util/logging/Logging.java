@@ -342,7 +342,7 @@ public class Logging {
         try {
             if (configured) {
                 for (LoggerWrapper wrapper : LoggerWrapper.getWrappers()) {
-                    wrapper.setLogger(SimpleImpl.getLoggerInstance("org.mmbase.SHUTDOWN"));
+                    wrapper.setLogger(SimpleImpl.getLoggerInstance(wrapper.getName() + ".SHUTDOWN"));
                 }
                 if (logClass != null) {
                     Method shutdown = logClass.getMethod("shutdown");
@@ -498,7 +498,7 @@ public class Logging {
     }
 
     /**
-     * Utility method for dynamicly checking the 'enabled'ness of a logger on a given level.
+     * Utility method for dynamically checking the 'enabled'ness of a logger on a given level.
      * @since MMBase-1.9
      */
     public static boolean isEnabled(Level l, Logger log) {

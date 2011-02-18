@@ -91,7 +91,7 @@ public class IECompatibleJpegInputStream extends FilterInputStream implements Ru
                     }
                 }
             } else {
-                int c = 0;
+                int c;
                 byte[] buf = new byte[1024];
                 while ((c = in.read(buf)) != -1) {
                     pos.write(buf, 0, c);

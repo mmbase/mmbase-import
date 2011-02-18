@@ -15,7 +15,7 @@ import java.nio.channels.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Various utils to consisely and efficiently deal with streams
+ * Various utils to concisely and efficiently deal with streams
  * @since MMBase-1.9.1
  * @version $Id$
  */
@@ -32,6 +32,10 @@ public final class IOUtil {
 
     /**
      * Copy bytes from an <code>InputStream</code> to an <code>OutputStream</code>.
+     * @param input
+     * @param output
+     * @return
+     * @throws java.io.IOException
      */
     public static long copy(final InputStream input, final OutputStream output) throws IOException {
         if (input instanceof FileInputStream && output instanceof FileOutputStream) {
@@ -61,7 +65,11 @@ public final class IOUtil {
         }
     }
     /**
+     * @param from
+     * @param to
      * @since MMBase-2.0
+     * @throws java.io.IOException
+     * @return
      */
     public static long copy(final File from, final File to) throws IOException {
         FileInputStream in = new FileInputStream(from);
@@ -84,8 +92,12 @@ public final class IOUtil {
     /**
      * Copy bytes from an <code>InputStream</code> to an <code>OutputStream</code>.
      *
+     * @param input
+     * @param output
      * @param bufferSize
      *           Size of internal buffer to use.
+     * @throws java.io.IOException
+     * @return
      */
     public static long copy(final InputStream input, final OutputStream output, final int bufferSize) throws IOException {
         long size = 0;
@@ -101,6 +113,10 @@ public final class IOUtil {
 
     /**
      * Copy chars from a <code>Reader</code> to a <code>Writer</code>.
+     * @param input
+     * @param output
+     * @return
+     * @throws java.io.IOException
      */
     public static long copy(final Reader input, final Writer output) throws IOException {
         return copy(input, output, DEFAULT_BUFFER_SIZE);
@@ -109,8 +125,12 @@ public final class IOUtil {
     /**
      * Copy chars from a <code>Reader</code> to a <code>Writer</code>.
      *
+     * @param input
+     * @param output
      * @param bufferSize
      *           Size of internal buffer to use.
+     * @return
+     * @throws java.io.IOException
      */
     public static long copy(final Reader input, final Writer output, final int bufferSize) throws IOException {
         long size = 0;

@@ -712,12 +712,12 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
-     * Returns the givens resource as a Document (parsed XML). This can come in handly, because most
+     * Returns the givens resource as a Document (parsed XML). This can come in handily, because most
      * configuration is in XML.
      *
      * @param name The name of the resource to be loaded
-     * @return The Document if succesful, <code>null</code> if there is no such resource.
-     * @throws SAXException If the resource does not present parseable XML.
+     * @return The Document if successful, <code>null</code> if there is no such resource.
+     * @throws org.xml.sax.SAXException If the resource does not present parseable XML.
      * @throws IOException
      */
     public Document getDocument(String name) throws org.xml.sax.SAXException, IOException  {
@@ -725,14 +725,14 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
-     * Returns the givens resource as a Document (parsed XML). This can come in handly, because most
+     * Returns the givens resource as a Document (parsed XML). This can come in handily, because most
      * configuration is in XML.
      *
      * @param name The name of the resource to be loaded
      * @param validation If <code>true</code>, validate the xml. By dtd if one of the first lines starts with &lt;!DOCTYPE, by XSD otherwise
      * @param baseClass If validation is <code>true</code>, the base class to search for the validating xsd or dtd
-     * @return The Document if succesful, <code>null</code> if there is no such resource.
-     * @throws SAXException If the resource does not present parseable XML.
+     * @return The Document if successful, <code>null</code> if there is no such resource.
+     * @throws org.xml.sax.SAXException If the resource does not present parseable XML.
      * @throws IOException
      */
     public Document getDocument(String name, boolean validation, Class<?> baseClass) throws org.xml.sax.SAXException, IOException  {
@@ -742,10 +742,10 @@ public class ResourceLoader extends ClassLoader {
 
 
     /**
-     * sice MMBase-1.9
+     * @since MMBase-1.9
      */
     protected static boolean validateable(URL url) throws IOException {
-       // determin whether this XML perhaps must be validated by DTD (specified 'DOCTYPE')
+       // determine whether this XML perhaps must be validated by DTD (specified 'DOCTYPE')
         boolean xsd = true;
         Reader r = new InputStreamReader(url.openStream());
         BufferedReader reader = new BufferedReader(r);

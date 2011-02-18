@@ -42,6 +42,7 @@ public class LocalServletResponse implements ServletResponse {
     private String contentType = "text/plain";
     private Locale locale = Locale.US;
 
+    @Override
     public void flushBuffer() {
         if (writer != null) {
             try {
@@ -60,20 +61,26 @@ public class LocalServletResponse implements ServletResponse {
             }
         }
     }
+    @Override
     public int  getBufferSize() {
         return 0;
     }
+    @Override
     public String  getCharacterEncoding() {
         return characterEncoding;
     }
+    @Override
     public String  getContentType() {
         return contentType;
     }
+    @Override
     public Locale  getLocale() {
         return locale;
     }
+    @Override
     public ServletOutputStream  getOutputStream() {
         return new ServletOutputStream() {
+            @Override
             public void write(int b) throws IOException {
                 output.write(b);
             }
@@ -83,6 +90,7 @@ public class LocalServletResponse implements ServletResponse {
             }
         };
     }
+    @Override
     public PrintWriter  getWriter() {
         if (pwriter == null) {
             if (writer != null) {
@@ -93,23 +101,31 @@ public class LocalServletResponse implements ServletResponse {
         }
         return pwriter;
     }
+    @Override
     public boolean  isCommitted() {
         return false;
     }
+    @Override
     public void  reset() {
     }
+    @Override
     public void  resetBuffer() {
     }
+    @Override
     public void  setBufferSize(int size) {
     }
+    @Override
     public void  setCharacterEncoding(String charset) {
         characterEncoding = charset;
     }
+    @Override
     public void  setContentLength(int len) {
     }
+    @Override
     public void  setContentType(String type) {
         contentType = type;
     }
+    @Override
     public void  setLocale(Locale loc) {
         locale = loc;
     }
