@@ -330,7 +330,7 @@ public class CoreField extends AbstractField<Object> implements Field, Storable 
      */
     public int compareTo(Field o) {
         int pos1 = getStoragePosition();
-        int pos2 = ((CoreField)o).getStoragePosition();
+        int pos2 = o.getStoragePosition();
         if (pos1 < pos2) {
             return -1;
         } else if (pos1 > pos2) {
@@ -369,7 +369,7 @@ public class CoreField extends AbstractField<Object> implements Field, Storable 
         this.maxLength = size;
         if (size > 0 && (dataType instanceof LengthDataType) && size < ((LengthDataType)dataType).getMaxLength()) {
             if (dataType.isFinished()) {
-                dataType = (DataType) dataType.clone();
+                dataType = dataType.clone();
             }
             ((LengthDataType)dataType).setMaxLength(size);
         }

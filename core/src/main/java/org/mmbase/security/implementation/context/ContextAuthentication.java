@@ -35,7 +35,6 @@ import org.mmbase.util.logging.Logging;
 public class ContextAuthentication extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(ContextAuthentication.class);
     private Map<String, ContextLoginModule>  loginModules = new LinkedHashMap<String, ContextLoginModule>();
-    private Document document;
 
     /** Public ID of the Builder DTD version 1.0 */
     public static final String PUBLIC_ID_SECURITY_CONTEXT_CONFIG_1_0 = "-//MMBase//DTD security context config 1.0//EN";
@@ -63,6 +62,7 @@ public class ContextAuthentication extends Authentication {
             log.debug("using: '" + configResource + "' as config file for context-authentication");
         }
 
+        Document document;
         try {
             InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configResource);
             document = new DocumentReader(in, this.getClass()).getDocument();
@@ -156,6 +156,7 @@ public class ContextAuthentication extends Authentication {
 
     @Override
     public String[] getTypes() {
-        return loginModules.keySet().toArray(new String[] {});
+        Set<String> types = loginModules.keySet();
+        return types.toArray(new String[types.size()]);
     }
 }

@@ -67,10 +67,9 @@ public abstract class ProcessorModule extends Module {
      */
     private static String getCommand(String functionName, Parameters arguments) {
         StringBuilder buf = new StringBuilder(functionName);
-        Iterator<Object> i = arguments.iterator();
-        while (i.hasNext()) {
-            Object argument = i.next();
-            if (argument instanceof String && ! "".equals(argument)) {
+        for (Object argument1 : arguments) {
+            Object argument = argument1;
+            if (argument instanceof String && !"".equals(argument)) {
                 buf.append('-').append(argument);
             }
         }

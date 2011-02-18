@@ -306,12 +306,12 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (v == null) {
             return null;
         } else if (v instanceof Node) {
-            return Integer.valueOf(((Node)v).getNumber());
+            return ((Node) v).getNumber();
         } else if (v instanceof MMObjectNode) {
-            return Integer.valueOf(((MMObjectNode)v).getNumber());
+            return ((MMObjectNode) v).getNumber();
         } else {
             // giving up
-            return Integer.valueOf(cloud.getNode(v.toString()).getNumber());
+            return cloud.getNode(v.toString()).getNumber();
         }
     }
 
@@ -354,13 +354,13 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
     @Override
     public boolean getBooleanValue(String fieldName) {
-        Boolean result = Boolean.valueOf(noderef.getBooleanValue(fieldName));
+        Boolean result = noderef.getBooleanValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
             log.debug("" + field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_STRING));
             result = Casting.toBoolean(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_BOOLEAN).process(this, field, result));
         }
-        return result.booleanValue();
+        return result;
     }
 
     @Override
@@ -414,13 +414,13 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
     @Override
     public int getIntValue(String fieldName) {
-        Integer result = Integer.valueOf(getNode().getIntValue(fieldName));
+        Integer result = getNode().getIntValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
             result  = Casting.toInteger(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_INTEGER).process(this, field, result));
             // Casting on this position. Should it not be done in all get<..>Value's?
         }
-        return result.intValue();
+        return result;
 
     }
 
@@ -431,7 +431,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             Field field = nodeManager.getField(fieldName);
             result = Casting.toFloat(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_FLOAT).process(this, field, result));
         }
-        return result.floatValue();
+        return result;
     }
 
     @Override
@@ -441,7 +441,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             Field field = nodeManager.getField(fieldName);
             result = Casting.toLong(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_LONG).process(this, field, result));
         }
-        return result.longValue();
+        return result;
     }
 
     @Override
@@ -451,7 +451,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             Field field = nodeManager.getField(fieldName);
             result = Casting.toDouble(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_DOUBLE).process(this, field, result));
         }
-        return result.doubleValue();
+        return result;
     }
 
     @Override
@@ -513,7 +513,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (! deleted) {
             Object prev = getCloud().getProperty(CLOUD_COMMITNODE_KEY);
             try {
-                getCloud().setProperty(CLOUD_COMMITNODE_KEY, Integer.valueOf(getNumber())); // Validation code wants to know that we are commiting right now.
+                getCloud().setProperty(CLOUD_COMMITNODE_KEY, getNumber()); // Validation code wants to know that we are commiting right now.
                 Collection<String> errors = validate();
                 if (errors.size() > 0) {
                     String mes = "node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString();
@@ -782,7 +782,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
                 MMObjectNode relDefNode = ((BasicRelationManager) insrel).relDefNode;
                 if (relDefNode != null) {
                     StepField rnumber = query.getStepField(insrel.getField("rnumber"));
-                    query.setConstraint(query.createConstraint(rnumber, Integer.valueOf(relDefNode.getNumber())));
+                    query.setConstraint(query.createConstraint(rnumber, relDefNode.getNumber()));
                 }
             }
 
@@ -794,7 +794,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             StepField snumber = query.getStepField(insrel.getField("snumber"));
             StepField dnumber = query.getStepField(insrel.getField("dnumber"));
 
-            Integer number = Integer.valueOf(getNumber());
+            Integer number = getNumber();
 
             switch(dir) {
             case RelationStep.DIRECTIONS_DESTINATION: {
@@ -940,7 +940,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     public StringList getAliases() {
         NodeManager oalias = cloud.getNodeManager("oalias");
         NodeQuery q = oalias.createQuery();
-        Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), Integer.valueOf(getNumber()));
+        Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), getNumber());
         q.setConstraint(c);
         NodeList aliases = oalias.getList(q);
         StringList result = new BasicStringList();
@@ -984,7 +984,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (!isNew()) {
             NodeManager oalias = cloud.getNodeManager("oalias");
             NodeQuery q = oalias.createQuery();
-            Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), Integer.valueOf(getNumber()));
+            Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), getNumber());
             if (aliasName != null) {
                 Constraint c2 = q.createConstraint(q.getStepField(oalias.getField("name")), aliasName);
                 c = q.createConstraint (c, CompositeConstraint.LOGICAL_AND, c2);
@@ -1069,6 +1069,11 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
                 cancel();
                 // TODO: WE NEED A DECENT locking, change-tracking mechanism.
             }
+        }
+        try {
+            super.finalize();
+        } catch (Throwable throwable) {
+
         }
     }
 

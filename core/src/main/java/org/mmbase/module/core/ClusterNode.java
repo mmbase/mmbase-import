@@ -76,7 +76,7 @@ public class ClusterNode extends VirtualNode {
      */
     public void testValidData() throws InvalidDataException { // why is it public?
 	throw new UnsupportedOperationException("ClusterNode " + this.getClass().getName() + " removed since 1.8");
-    };
+    }
 
     /**
       * commit : commits the node to the database or other storage system.
@@ -98,7 +98,7 @@ public class ClusterNode extends VirtualNode {
         if (builderName == null) return null;
         Integer number = (Integer) retrieveValue(builderName + ".number");
         if (number != null) {
-            return parent.getNode(number.intValue());
+            return parent.getNode(number);
         }
         return null;
     }

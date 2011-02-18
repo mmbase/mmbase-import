@@ -33,9 +33,6 @@ public class DatabaseStorageLookup extends DocumentReader {
 
     private static final Logger log = Logging.getLoggerInstance(DatabaseStorageLookup.class);
 
-    private static String DATABASE_STORAGE_LOOKUP_RESOURCE_PATH_FALLBACK = "/org/mmbase/storage/implementation/database/resources/lookup.xml";
-    private static String DATABASE_STORAGE_LOOKUP_RESOURCE_PATH     = "storage/databases/lookup.xml";
-
     /** Public ID of the Storage DTD version 1.0 */
     public static final String PUBLIC_ID_DATABASE_STORAGE_LOOKUP_1_0 = "-//MMBase//DTD storage config 1.0//EN";
     /** DTD resource filename of the Database DTD version 1.0 */
@@ -60,11 +57,13 @@ public class DatabaseStorageLookup extends DocumentReader {
     private static InputSource getInputSource() {
         InputSource is = null;
         try {
+            String DATABASE_STORAGE_LOOKUP_RESOURCE_PATH = "storage/databases/lookup.xml";
             is = ResourceLoader.getConfigurationRoot().getInputSource(DATABASE_STORAGE_LOOKUP_RESOURCE_PATH);
         } catch (java.io.IOException ioe) {
             log.service(ioe);
         }
         if (is == null) { // 1.7 compatibility
+            String DATABASE_STORAGE_LOOKUP_RESOURCE_PATH_FALLBACK = "/org/mmbase/storage/implementation/database/resources/lookup.xml";
             is = new InputSource(DatabaseStorageLookup.class.getResourceAsStream(DATABASE_STORAGE_LOOKUP_RESOURCE_PATH_FALLBACK));
             is.setSystemId(DATABASE_STORAGE_LOOKUP_RESOURCE_PATH_FALLBACK);
             return is;
@@ -103,7 +102,7 @@ public class DatabaseStorageLookup extends DocumentReader {
     /**
      * Returns an given connection URL for a given Driver CLass. Or <code>null</code> if no such
      * thing was defined in lookup.xml. In that case the configured URL in MMBase can be used.
-     * 
+     *
      * @since MMBase-1.8
      */
     String getMetaURL(Class clazz) {

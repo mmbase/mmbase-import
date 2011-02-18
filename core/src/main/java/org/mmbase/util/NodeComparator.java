@@ -90,7 +90,7 @@ public class NodeComparator implements Comparator<MMObjectNode> {
                 }
             } else if (!f1.equals(f2)) {
                 if (f1 instanceof Boolean) {
-                    result=((Boolean)f1).booleanValue() ? 1 : -1;
+                    result= (Boolean) f1 ? 1 : -1;
                 }
             }
             fieldnr++;

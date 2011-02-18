@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @see   ExampleBean For examples on hot to add functions to a builder without extending it.
  * @since MMBase-1.7
  */
-public class ExampleBuilder extends MMObjectBuilder { 
+public class ExampleBuilder extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(ExampleBuilder.class);
 
 
@@ -49,7 +49,7 @@ public class ExampleBuilder extends MMObjectBuilder {
     };
 
     protected final static Parameter[] SUMFIELDS_PARAMETERS = {
-        new Parameter("fields", List.class, Arrays.asList(new String[] {"otype", "number"})) /* name, type, default value */
+        new Parameter("fields", List.class, Arrays.asList("otype", "number")) /* name, type, default value */
     };
 
     /**
@@ -65,7 +65,7 @@ public class ExampleBuilder extends MMObjectBuilder {
             Cloud cloud = parameters.get(Parameter.CLOUD);
             NodeManager thisManager = cloud.getNodeManager(getTableName());
             NodeQuery q = thisManager.createQuery();
-            q.setMaxNumber(max.intValue());
+            q.setMaxNumber(max);
                 q.addSortOrder(q.getStepField(thisManager.getField("number")), SortOrder.ORDER_DESCENDING);
             return thisManager.getList(q);
         }
@@ -86,9 +86,8 @@ public class ExampleBuilder extends MMObjectBuilder {
         public Integer getFunctionValue(Node node, Parameters parameters) {
             List fields = (List) parameters.get("fields");
             int result = 0;
-                Iterator i = fields.iterator();
-            while (i.hasNext()) {
-                result += node.getIntValue((String) i.next());
+            for (Object field : fields) {
+                result += node.getIntValue((String) field);
             }
             return result;
         }

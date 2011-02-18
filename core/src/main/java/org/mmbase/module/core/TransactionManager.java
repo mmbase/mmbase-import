@@ -196,7 +196,7 @@ public class TransactionManager {
         return tmpnumber;
     }
 
-    public String cancel(final Object user, final String transactionName) throws TransactionManagerException {
+    public String cancel(final Object user, final String transactionName) {
         final Collection<MMObjectNode> transaction =  transactions.get(transactionName);
         if (transaction == null) {
             log.warn("Transaction '" + transactionName + "' does not exist (already cancelled?)", new Exception());

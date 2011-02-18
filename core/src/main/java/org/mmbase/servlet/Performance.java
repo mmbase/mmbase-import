@@ -77,7 +77,6 @@ public class Performance extends BridgeServlet {
     private long intloop() {
         long begin = new Date().getTime();
         for (int i = 0; i < 20000000; i++) {
-            ;
         }
         long end = new Date().getTime();
         return end - begin;

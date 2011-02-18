@@ -33,6 +33,8 @@ import org.mmbase.util.xml.BuilderWriter;
 import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.LocalizedString;
+import org.mmbase.util.MMBaseContext;
+
 import org.xml.sax.SAXException;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -251,8 +253,8 @@ public class MMBase extends ProcessorModule {
 
     }
     /**
-     * Initalizes the MMBase module. Evaluates the parameters loaded from the configuration file.
-     * Sets parameters (authorisation, language), loads the builders, and starts MultiCasting.
+     * Initializes the MMBase module. Evaluates the parameters loaded from the configuration file.
+     * Sets parameters (authorization, language), loads the builders, and starts MultiCasting.
      */
     @Override
     public void init() {
@@ -765,7 +767,7 @@ public class MMBase extends ProcessorModule {
     }
 
     /**
-     * Locks until init of mmbase is finished.
+     * Locks until initialization of mmbase is finished.
      * @since MMBase-1.7
      */
     protected void assertUp() {

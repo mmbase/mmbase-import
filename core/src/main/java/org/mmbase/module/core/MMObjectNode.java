@@ -296,7 +296,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     public void testValidData() throws InvalidDataException {
         parent.testValidData(this);
-    };
+    }
 
     /**
      * Commit the node to the database or other storage system.
@@ -593,7 +593,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             if (! (nodeValue instanceof org.mmbase.bridge.implementation.VirtualNode)) {
                 int number = nodeValue.getNumber();
                 if (number != -1) { // -1 is very meaningless, and it will not be possible to make a sensible node of that again
-                    fieldValue = Integer.valueOf(number);
+                    fieldValue = number;
                 }
             }
         }
@@ -1483,7 +1483,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @scope public?
      */
     protected List<MMObjectNode> getRelationNodes() {
-        Integer number = Integer.valueOf(getNumber());
+        Integer number = getNumber();
         List<MMObjectNode> relations;
         RelationsCache relationsCache = RelationsCache.getCache();
         if (! relationsCache.contains(number)) {
@@ -1868,13 +1868,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if(virtualNumbers.size() != result.size()) {
             log.error("We lost a few nodes during conversion from virtualnodes(" + virtuals.size() + ") to realnodes(" + result.size() + ")");
             StringBuilder vNumbers = new StringBuilder();
-            for (int j = 0; j < virtualNumbers.size(); j++) {
-                vNumbers.append(virtualNumbers.get(j)).append(" ");
+            for (Integer virtualNumber : virtualNumbers) {
+                vNumbers.append(virtualNumber).append(" ");
             }
             log.error("Virtual node numbers: " + vNumbers.toString());
             StringBuilder rNumbers = new StringBuilder();
-            for (int j = 0; j < result.size(); j++) {
-                int resultNumber = (result.get(j)).getIntValue("number");
+            for (MMObjectNode aResult : result) {
+                int resultNumber = aResult.getIntValue("number");
                 rNumbers.append(resultNumber).append(" ");
             }
             log.error("Real node numbers: " + rNumbers.toString());

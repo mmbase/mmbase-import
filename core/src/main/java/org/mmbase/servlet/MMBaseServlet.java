@@ -135,7 +135,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             if (p == null) {
                 priority = 0;
             } else {
-                priority = p.intValue();
+                priority = p;
             }
         }
         String name;
@@ -382,9 +382,9 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     private static synchronized void associate(String function, String servletName, Integer priority) {
         if (priority == null) priority = 0;
         ServletEntry m = associatedServletMappings.get(function);
-        if (m != null && (priority.intValue() < m.priority)) return;
+        if (m != null && (priority < m.priority)) return;
         ServletEntry e = associatedServlets.get(function);
-        if (e != null && (priority.intValue() < e.priority)) return;
+        if (e != null && (priority < e.priority)) return;
         log.service("Associating function '" + function + "' with servlet name " + servletName +
            (e == null ? ""  : " (previous assocation was with " + e.name +")")+
            (m == null ? ""  : " (previous assocation was with " + m.name +")"));
@@ -406,9 +406,9 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     protected static synchronized void associateMapping(String function, String servletMapping, Integer priority) {
         if (priority == null) priority = 0;
         ServletEntry m = associatedServletMappings.get(function);
-        if (m != null && (priority.intValue() < m.priority)) return;
+        if (m != null && (priority < m.priority)) return;
         ServletEntry e = associatedServlets.get(function);
-        if (e != null && (priority.intValue() < e.priority)) return;
+        if (e != null && (priority < e.priority)) return;
         log.service("Associating function '" + function + "' with servlet mapping " + servletMapping +
            (e == null ? ""  : " (previous assocation was with " + e.name +")")+
            (m == null ? ""  : " (previous assocation was with " + m.name +")"));

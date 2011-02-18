@@ -162,18 +162,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     private List<MMObjectBuilder> descendants;
 
     /**
-     * The string that can be used inside the builder.xml as property,
-     * to define the maximum number of nodes to return.
-     */
-    private static String MAX_NODES_FROM_QUERY_PROPERTY = "max-nodes-from-query";
-
-    /**
-     * The string that can be used inside the builder.xml as property,
-     * to set whether the builder broadcasts changes to nodes to eventlisteners.
-     */
-    private static String BROADCAST_CHANGES_PROPERTY = "broadcast-changes";
-
-    /**
      * Description of the builder in the currently selected language
      * Not that the first time the builder is created, this value is what is stored in the TypeDef table.
      * @scope protected
@@ -252,7 +240,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     protected final static Parameter<?>[] WRAP_PARAMETERS = {
         new Parameter<String>(Parameter.FIELD, true),
-        new Parameter<Number>("length", Number.class, Integer.valueOf(20))
+        new Parameter<Number>("length", Number.class, 20)
     };
 
     /**
@@ -444,6 +432,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             // first make sure parent builder is initalized
             initAncestors();
 
+            String BROADCAST_CHANGES_PROPERTY = "broadcast-changes";
             String broadCastChangesProperty = getInitParameter(BROADCAST_CHANGES_PROPERTY);
             if (broadCastChangesProperty != null) {
                 broadCastChanges = broadCastChangesProperty.equals("true");
@@ -522,6 +511,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             checkAddTmpField(TMP_FIELD_RESOLVED);
 
             // get property of maximum number of queries..
+            String MAX_NODES_FROM_QUERY_PROPERTY = "max-nodes-from-query";
             String property = getInitParameter(MAX_NODES_FROM_QUERY_PROPERTY);
             if(property != null) {
                 try {
@@ -629,7 +619,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public void testValidData(MMObjectNode node) throws InvalidDataException {
         return;
-    };
+    }
 
     /**
      * Insert a new, empty, object of a certain type.
@@ -664,7 +654,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         if (n <= 0) {
             log.warn("Did not get valid nodeNumber of storage " + n);
         }
-        Integer nodeNumber = Integer.valueOf(n);
+        Integer nodeNumber = n;
         if (isNodeCached(nodeNumber)) {
             // it seems that something put the node in the cache already.
             // This is usually because the ChangeManager indirectly called 'getNode'
@@ -924,7 +914,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         try {
             while (! found) {
                 NodeSearchQuery query = new NodeSearchQuery(this);
-                BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField(field)), Integer.valueOf(seq));
+                BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField(field)), seq);
                 query.setConstraint(constraint);
                 if (getNodes(query).isEmpty()) {
                     found = true;
@@ -1099,7 +1089,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             }
             res = node.insert(userName);
             if (res > -1) {
-                nodeCache.put(Integer.valueOf(res), node);
+                nodeCache.put(res, node);
             }
         } finally {
             synchronized(nodeCache) {
@@ -1880,7 +1870,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 log.info("returing " + info);
                 return info;
             } else {
-                return info.get((String) arguments.get(0));
+                return info.get(arguments.get(0));
             }
         } else if (function.equals("wrap")) {
             if (arguments.size() < 2) throw new IllegalArgumentException("wrap function needs 2 arguments (currently:" + arguments.size() + " : "  + arguments + ")");
@@ -1917,7 +1907,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
         if (function.equals("age")) {
             if (node == null) return -1;
-            Integer val = Integer.valueOf(node.getAge());
+            Integer val = node.getAge();
             return val.toString();
         } else if (function.equals("wap")) {
             String val = node.getStringValue(field);
@@ -2992,7 +2982,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
          }
 
          //update the cache
-         Integer changedNode = Integer.valueOf((event.getRelationDestinationType().equals(getTableName()) ? event.getRelationSourceNumber() : event.getRelationDestinationNumber()));
+         Integer changedNode = (event.getRelationDestinationType().equals(getTableName()) ? event.getRelationSourceNumber() : event.getRelationDestinationNumber());
          MMObjectNode.delRelationsCache(changedNode);
      }
 

@@ -209,7 +209,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
      * Obtains a cloud object, using a QueryParts object.
      * @return A Cloud or <code>null</code> if unsuccessful (this may not be fatal).
      */
-    final protected Cloud getCloud(QueryParts qp) throws IOException {
+    final protected Cloud getCloud(QueryParts qp) {
         log.debug("getting a cloud");
         // trying to get a cloud from the session
         Cloud cloud = null;
@@ -350,7 +350,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
      * @param node The node which is specified on the URL (obtained by {@link #getNode}
      * @since MMBase-1.7.4
      */
-    protected Node getServedNode(QueryParts qp, Node node) throws IOException {
+    protected Node getServedNode(QueryParts qp, Node node) {
         return node;
     }
 

@@ -226,10 +226,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         if (node == null) {
             return false; // node does not exist
         } else {
-            if (isrelation && !(node.getBuilder() instanceof InsRel)) {
-                return false;
-            }
-            return true;
+            return !(isrelation && !(node.getBuilder() instanceof InsRel));
         }
     }
 
@@ -1114,9 +1111,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         out.writeUTF(name);
         out.writeObject(userContext);
         HashMap<Object, Object> props = new HashMap<Object, Object>();
-        Iterator<Map.Entry<Object, Object>> i = properties.entrySet().iterator();
-        while(i.hasNext()) {
-            Map.Entry<Object, Object> entry = i.next();
+        for (Map.Entry<Object, Object> objectObjectEntry : properties.entrySet()) {
+            Map.Entry<Object, Object> entry = objectObjectEntry;
             Object key = entry.getKey();
             Object value = entry.getValue();
             if ((key instanceof Serializable) && (value instanceof Serializable)) {
