@@ -90,7 +90,7 @@ public class OAlias extends MMObjectBuilder {
                 return -1;
             }
         } else {
-            return nodeNumber.intValue();
+            return nodeNumber;
         }
     }
 

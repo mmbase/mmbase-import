@@ -48,7 +48,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
         super(cloud);
         // determine fields and field types
         if (node.getBuilder() instanceof VirtualBuilder) {
-            VirtualBuilder virtualBuilder = (VirtualBuilder) node.getBuilder();;
+            VirtualBuilder virtualBuilder = (VirtualBuilder) node.getBuilder();
             Map<String,CoreField> fields = virtualBuilder.getFields(node);
             for (Map.Entry<String, CoreField> entry : fields.entrySet()) {
                 Field ft         = new BasicField(entry.getValue(), this);
@@ -116,7 +116,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
             Field ft = new VirtualNodeManagerField(nm, UNKNOWN_NODE_TYPE, name);
             fieldTypes.put(name, ft);
 
-            if (allowNonQueriedFields && ! query.isAggregating()) {
+            if (!query.isAggregating()) {
                 /// if hasField returns true also for unqueried fields
                 for (Field f : cloud.getNodeManager(step.getTableName()).getFields()) {
                     final String fieldName = name + "." + f.getName();
@@ -124,7 +124,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
                 }
             }
         }
-        if (! allowNonQueriedFields || query.isAggregating()) {
+        if (query.isAggregating()) {
             //hasField only returns true for queried fields
             for (StepField field : query.getFields()) {
                 Step step = field.getStep();

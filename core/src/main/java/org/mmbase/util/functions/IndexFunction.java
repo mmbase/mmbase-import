@@ -102,20 +102,17 @@ public class IndexFunction extends FunctionProvider {
                 return buf.toString();
             } else if (c == 'z') {
                 buf.setCharAt(i, 'a');
-                continue;
             } else if (c >= 'A' && c <= 'Y') {
                 buf.setCharAt(i, (char) (c + 1));
                 return buf.toString();
             } else if (c == 'Z') {
                 lowercase = false;
                 buf.setCharAt(i, 'A');
-                continue;
             } else if (c < 128) {
                 buf.setCharAt(i, (char) (c + 1));
                 return buf.toString();
             } else {
                 buf.setCharAt(i, (char) 65);
-                continue;
             }
         }
 

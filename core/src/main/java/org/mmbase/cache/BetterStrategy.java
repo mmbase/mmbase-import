@@ -274,7 +274,7 @@ public class BetterStrategy extends ReleaseStrategy {
 
             Integer role = step.getRole();
             if (matches &&
-                (role == null || role.intValue() == event.getRole())) {
+                (role == null || role == event.getRole())) {
                 return true;
             }
         }
@@ -312,7 +312,7 @@ public class BetterStrategy extends ReleaseStrategy {
                 if (log.isDebugEnabled()) {
                     log.debug("matching constraint found: " + constraintsForFieldList.size());
                 }
-                break search;
+                break;
             }
 
             for (StepField field : query.getFields()) {
@@ -335,7 +335,7 @@ public class BetterStrategy extends ReleaseStrategy {
                 if (log.isDebugEnabled()) {
                     log.debug("matching sortorders found: " + sortordersForFieldList.size());
                 }
-                break search;
+                break;
             }
         }
         if(log.isDebugEnabled()){

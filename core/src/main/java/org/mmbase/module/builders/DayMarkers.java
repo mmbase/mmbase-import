@@ -179,14 +179,14 @@ public class DayMarkers extends MMObjectBuilder {
         if (i.hasNext()) {   // cache not empty
             Map.Entry<Integer,Integer> current = i.next();
             Map.Entry<Integer,Integer> previous = null;
-            while (i.hasNext() && current.getValue().intValue() < nodeNumber) { // search until current > nodeNumber
+            while (i.hasNext() && current.getValue() < nodeNumber) { // search until current > nodeNumber
                 previous = current;
                 current = i.next();
             }
-            if ((previous != null) && current.getValue().intValue() >= nodeNumber) { // found in cache
+            if ((previous != null) && current.getValue() >= nodeNumber) { // found in cache
                 // if we found a lower and a higher mark on two consecutive days, return the lower.
-                if (current.getKey().intValue() - previous.getKey().intValue() == 1) {
-                    return day - previous.getKey().intValue();
+                if (current.getKey() - previous.getKey() == 1) {
+                    return day - previous.getKey();
                 }
             }
 
@@ -279,7 +279,7 @@ public class DayMarkers extends MMObjectBuilder {
         log.debug("finding mark of day " + wday);
         Integer result = daycache.get(wday);
         if (result!=null) { // already in cache
-            return result.intValue();
+            return result;
         }
         log.debug("could not be found in cache");
 

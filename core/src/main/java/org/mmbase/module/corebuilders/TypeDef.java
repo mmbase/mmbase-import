@@ -283,7 +283,7 @@ public class TypeDef extends MMObjectBuilder {
     public int getIntValue(String builderName) {
         Integer result = getNameToNumberCache().get(builderName);
         if (result != null) {
-            return result.intValue();
+            return result;
         } else {
             return -1;
         }

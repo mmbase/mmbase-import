@@ -532,7 +532,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      */
     public boolean hasOption(String key) {
         Object o = getAttribute(key);
-        return (o instanceof Boolean) && ((Boolean)o).booleanValue();
+        return (o instanceof Boolean) && (Boolean) o;
     }
 
     /**
@@ -541,7 +541,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @param value the value of the option (true or false)
      */
     public void setOption(String key, boolean value) {
-        setAttribute(key, Boolean.valueOf(value));
+        setAttribute(key, value);
     }
 
     /**

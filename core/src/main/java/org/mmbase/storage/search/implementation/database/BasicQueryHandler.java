@@ -97,7 +97,7 @@ public class BasicQueryHandler implements CoreSearchQueryHandler {
                     }
 
                     // Now store results as cluster-/real nodes.
-                    StepField[] fields = query.getFields().toArray(STEP_FIELD_ARRAY);
+                    StepField[] fields = query.getFields().toArray(new StepField[query.getFields().size()]);
                     int maxNumber = query.getMaxNumber();
 
                     // now, we dispatch the reading of the result set to the right function wich instantiates Nodes of the right type.
@@ -296,7 +296,7 @@ public class BasicQueryHandler implements CoreSearchQueryHandler {
         int j = 1;
         for (StepField element : fields) {
             if (element.getType() == Field.TYPE_BINARY) continue;
-            Integer index = Integer.valueOf(j++);
+            Integer index = j++;
             if (element.getStep() == nodeStep) {
                 String fieldName =  element.getFieldName();
                 CoreField field = builder.getField(fieldName);
@@ -334,7 +334,7 @@ public class BasicQueryHandler implements CoreSearchQueryHandler {
             NodeCache nodeCache = NodeCache.getCache();
             Cache<Integer, Integer> typeCache = CacheManager.getCache("TypeCache");
             int builderType = builder.getObjectType();
-            Integer oTypeInteger = Integer.valueOf(builderType);
+            Integer oTypeInteger = builderType;
             while (rs.next() && (maxNumber > results.size() || maxNumber==-1)) {
                 try {
                     /*
@@ -358,7 +358,7 @@ public class BasicQueryHandler implements CoreSearchQueryHandler {
                         Object value = null;
                         String fieldName = field.getName();
                         if (index != null) {
-                            value = storageManager.getValue(rs, index.intValue(), field, true);
+                            value = storageManager.getValue(rs, index, field, true);
                         } else {
                             java.sql.Blob b = null;
                             if (field.getType() == Field.TYPE_BINARY && storesAsFile) {
@@ -390,7 +390,7 @@ public class BasicQueryHandler implements CoreSearchQueryHandler {
                     // (provided the node is persistent)
                     if (! isVirtual) {
                         int otype = node.getOType();
-                        Integer number = Integer.valueOf(node.getNumber());
+                        Integer number = node.getNumber();
                         if (otype == builderType) {
                             MMObjectNode cacheNode = nodeCache.get(number);
                             if (cacheNode != null) {
@@ -400,7 +400,7 @@ public class BasicQueryHandler implements CoreSearchQueryHandler {
                             }
                             typeCache.put(number, oTypeInteger);
                         } else {
-                            typeCache.put(number, Integer.valueOf(otype));
+                            typeCache.put(number, otype);
                         }
                     }
 

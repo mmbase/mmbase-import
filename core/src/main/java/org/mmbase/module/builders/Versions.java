@@ -85,7 +85,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
         String key = type + "_" + name;
         if (versionsCache.containsKey(key)) {
             Integer number = versionsCache.get(key);
-            retval = getNode(number.intValue());
+            retval = getNode(number);
         }
         return retval;
     }

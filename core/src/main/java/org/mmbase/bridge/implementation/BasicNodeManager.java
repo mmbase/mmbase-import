@@ -18,6 +18,7 @@ import javax.servlet.http.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.core.CoreField;
+import org.mmbase.datatypes.DataType;
 import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -253,15 +254,15 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
      */
     protected void setDefaultsWithCloud(MMObjectNode node) {
         log.debug("Setting default values");
-        for (Iterator i = getFields().iterator(); i.hasNext(); ) {
-            Field field = (Field) i.next();
-            if (field.isVirtual())                         continue;
-            if (field.getName().equals(MMObjectBuilder.FIELD_NUMBER))      continue;
-            if (field.getName().equals(MMObjectBuilder.FIELD_OWNER))       continue;
+        for (Object o : getFields()) {
+            Field field = (Field) o;
+            if (field.isVirtual()) continue;
+            if (field.getName().equals(MMObjectBuilder.FIELD_NUMBER)) continue;
+            if (field.getName().equals(MMObjectBuilder.FIELD_OWNER)) continue;
             if (field.getName().equals(MMObjectBuilder.FIELD_OBJECT_TYPE)) continue;
 
             if (node.isNull(field.getName()) || "".equals(node.getStringValue(field.getName()))) { // required field are set to '', which would destroy the default value...
-                org.mmbase.datatypes.DataType dt = field.getDataType();
+                DataType dt = field.getDataType();
                 //log.info("" + field.getName() + " " + dt);
                 Object defaultValue = dt.getDefaultValue(getCloud().getLocale(), getCloud(), field);
                 if (defaultValue != null) {
@@ -533,14 +534,14 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         MMObjectBuilder builder = getMMObjectBuilder();
         StringTagger params = new StringTagger("");
         if (parameters != null) {
-            for (Iterator entries = parameters.entrySet().iterator(); entries.hasNext(); ) {
-                Map.Entry entry = (Map.Entry) entries.next();
-                String key=(String) entry.getKey();
+            for (Object o1 : parameters.entrySet()) {
+                Map.Entry entry = (Map.Entry) o1;
+                String key = (String) entry.getKey();
                 Object o = entry.getValue();
                 if (o instanceof Vector) {
-                    params.setValues(key,(Vector)o);
+                    params.setValues(key, (Vector) o);
                 } else {
-                    params.setValue(key,""+o);
+                    params.setValue(key, "" + o);
                 }
             }
         }

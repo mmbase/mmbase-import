@@ -55,8 +55,6 @@ public class ContextAuthorization extends Authorization {
         }
         };
 
-    private int            maxContextsInQuery = 50; // must be configurable
-
     /** contains elements of type = Operation */
     private final Set<Operation>            globalAllowedOperations = new HashSet<Operation>();
     private final Map<String, String>       replaceNotFound         = new HashMap<String, String>();
@@ -291,7 +289,7 @@ public class ContextAuthorization extends Authorization {
             Boolean result = cache.rightGet(operation, context, user.getIdentifier());
             if(result != null) {
                 log.trace("cache hit");
-                return result.booleanValue();
+                return result;
             }
         }
 
@@ -393,9 +391,8 @@ public class ContextAuthorization extends Authorization {
         if (log.isDebugEnabled()) {
             log.debug("entering userInGroups(recursive) with username: '" + user + "' and look if the user is in the following groups:");
 
-            Iterator<String> di = groups.iterator();
-            while (di.hasNext()) {
-                log.debug("\t -> group : " + di.next());
+            for (String group : groups) {
+                log.debug("\t -> group : " + group);
             }
         }
 
@@ -599,6 +596,7 @@ public class ContextAuthorization extends Authorization {
                 }
 
                 List<Step> steps = query.getSteps();
+                int maxContextsInQuery = 50;
                 if (steps.size() * ac.contexts.size() < maxContextsInQuery) {
                     Iterator<Step> i = steps.iterator();
                     Constraint constraint = null;

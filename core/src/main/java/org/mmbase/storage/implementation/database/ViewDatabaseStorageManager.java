@@ -296,8 +296,8 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      */
     @Override
     protected void create(Index index) throws StorageException {
-        for (int i=0; i<index.size(); i++) {
-            CoreField f = (CoreField)index.get(i);
+        for (Object anIndex : index) {
+            CoreField f = (CoreField) anIndex;
             if (!isPartOfBuilderDefinition(f)) {
                 return;
             }
@@ -425,7 +425,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         try {
             getActiveConnection();
             // create the view
-            query = viewScheme.format(new Object[] { this, viewname, tablename, createViewFields.toString(), createTableFields.toString(), getFieldName(getNumberField()), inheritedBuilder, factory.getDatabaseName() });
+            query = viewScheme.format(this, viewname, tablename, createViewFields.toString(), createTableFields.toString(), getFieldName(getNumberField()), inheritedBuilder, factory.getDatabaseName());
             // remove parenthesis with empty field definitions -
             // unfortunately Schemes don't take this into account
             if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
@@ -469,7 +469,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                     parentValues.append(":NEW.").append(parentFieldNames.get(i));
                 }
                 Object triggerName = factory.getStorageIdentifier(viewname + "_INSERT");
-                query = createInsertTriggerScheme.format(new Object[]{this, viewname, tablename, inheritedBuilder, myFields.toString(), myValues.toString(), parentFields.toString(), parentValues.toString(), triggerName});
+                query = createInsertTriggerScheme.format(this, viewname, tablename, inheritedBuilder, myFields.toString(), myValues.toString(), parentFields.toString(), parentValues.toString(), triggerName);
 
                 if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
                     query = query.replaceAll("\\(\\s*\\)", "");
@@ -492,7 +492,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
 
             if (createDeleteTriggerScheme != null) {
                 Object triggerName = factory.getStorageIdentifier(viewname + "_DELETE");
-                query = createDeleteTriggerScheme.format(new Object[]{this, viewname, tablename, inheritedBuilder, getFieldName(getNumberField()), triggerName});
+                query = createDeleteTriggerScheme.format(this, viewname, tablename, inheritedBuilder, getFieldName(getNumberField()), triggerName);
                 if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
                     query = query.replaceAll("\\(\\s*\\)", "");
                 }
@@ -531,7 +531,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                     parentAssignments.append(parentFieldNames.get(i));
                 }
                 Object triggerName = factory.getStorageIdentifier(viewname + "_UPDATE");
-                query = createUpdateTriggerScheme.format(new Object[]{this, viewname, tablename, inheritedBuilder, myAssignments.toString(), parentAssignments.toString(), getFieldName(getNumberField()), triggerName});
+                query = createUpdateTriggerScheme.format(this, viewname, tablename, inheritedBuilder, myAssignments.toString(), parentAssignments.toString(), getFieldName(getNumberField()), triggerName);
 
                 if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
                     query = query.replaceAll("\\(\\s*\\)", "");

@@ -44,8 +44,6 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
     private static final Logger log = Logging.getLoggerInstance(PostgreSqlSqlHandler.class);
 
 
-    private boolean localeMakesCaseInsensitive = false;
-
     /**
      * Constructor.
      */
@@ -120,6 +118,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
      * DISTINCT, ORDER BY expressions must appear in select list), may occur.
      */
     @Override protected StringBuilder appendSortOrderField(StringBuilder sb, SortOrder sortOrder, boolean multipleSteps, SearchQuery query) {
+        boolean localeMakesCaseInsensitive = false;
         if (localeMakesCaseInsensitive) {
             if (sortOrder.isCaseSensitive()) {
                 log.warn("Don't now how to sort case sensitively if the locale make case insensitive in Postgresql for " + sortOrder + " it will be ignored.");

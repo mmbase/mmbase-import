@@ -47,7 +47,7 @@ public class DaemonThread extends Thread implements DaemonTask  {
      * Create a MMBase daemon thread (associated with this MMBase's threadgroup).
      */
     public DaemonThread() {
-        this((Runnable)null, (String)null);
+        this(null, null);
     }
 
     /**
@@ -55,7 +55,7 @@ public class DaemonThread extends Thread implements DaemonTask  {
      * @param name the name of the thread
      */
     public DaemonThread(String name) {
-        this((Runnable)null, name);
+        this(null, name);
     }
 
     /**

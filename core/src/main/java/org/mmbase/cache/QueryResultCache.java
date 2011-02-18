@@ -208,7 +208,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
                 return true;
             }
             MMBase mmb = MMBase.getMMBase();
-            String roleName = mmb.getRelDef().getBuilderName(Integer.valueOf(event.getRole()));
+            String roleName = mmb.getRelDef().getBuilderName(event.getRole());
             if (typeCounters.containsKey(roleName)) {
                 return true;
             }

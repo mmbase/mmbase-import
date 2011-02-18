@@ -211,7 +211,6 @@ class ApplicationInstaller {
             for (Map<String, String> bh : dataSources) {
                 NodeReader nodeReader = getNodeReader(bh, appName);
                 if (nodeReader == null) {
-                    continue;
                 } else {
                     installDatasource(syncbul, nodeReader, nodeFieldNodes, result);
                 }
@@ -451,7 +450,6 @@ class ApplicationInstaller {
             for (Map<String, String> bh : ds) {
                 RelationNodeReader nodereader = getRelationNodeReader(appname, bh);
                 if (nodereader == null) {
-                    continue;
                 } else {
                     installRelationSource(syncbul, insRel, nodereader, nodeFieldNodes, result);
                 }
@@ -469,9 +467,9 @@ class ApplicationInstaller {
         String exportsource = nodereader.getExportSource();
         int timestamp = nodereader.getTimeStamp();
 
-        for (Iterator<MMObjectNode> n = (nodereader.getNodes(mmb)).iterator(); n.hasNext();) {
+        for (MMObjectNode mmObjectNode : (nodereader.getNodes(mmb))) {
             try {
-                MMObjectNode newNode = n.next();
+                MMObjectNode newNode = mmObjectNode;
                 int exportnumber = newNode.getIntValue("number");
 
                 if (existsSyncnode(syncbul, exportsource, exportnumber)) {
@@ -765,7 +763,6 @@ class ApplicationInstaller {
                     typeNode.insert("system");
                 } catch (Exception e) {
                     result.error(e.getMessage());
-                    continue;
                 }
                     // we now made the builder active.. look for other builders...
             }

@@ -126,7 +126,7 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
                 case StringSearchConstraint.MATCH_TYPE_FUZZY:
                     Float fuzziness =
                         (Float) parameters.get(StringSearchConstraint.PARAM_FUZZINESS);
-                    int wordScore = Math.round(100 * fuzziness.floatValue());
+                    int wordScore = Math.round(100 * fuzziness);
                     sb.append(" & PATTERN_ALL & WORD_SCORE = ").append(wordScore);
                     break;
 
@@ -227,9 +227,8 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
      *         false otherwise.
      */
     protected boolean hasAdditionalConstraints(SearchQuery query) {
-        Iterator<Step> iSteps = query.getSteps().iterator();
-        while (iSteps.hasNext()) {
-            Step step = iSteps.next();
+        for (Step step1 : query.getSteps()) {
+            Step step = step1;
             if (step instanceof RelationStep || step.getNodes() != null) {
                 // Additional constraints on relations or nodes.
                 return true;
@@ -254,10 +253,8 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
     StringSearchConstraint searchConstraint) {
         if (constraint instanceof CompositeConstraint) {
             // Composite constraint.
-            Iterator<Constraint> iChildConstraints
-                = ((CompositeConstraint) constraint).getChilds().iterator();
-            while (iChildConstraints.hasNext()) {
-                Constraint childConstraint = iChildConstraints.next();
+            for (Constraint constraint1 : ((CompositeConstraint) constraint).getChilds()) {
+                Constraint childConstraint = constraint1;
                 if (containsOtherStringSearchConstraints(childConstraint, searchConstraint)) {
                     // Another stringsearch constraint found in childs.
                     return true;
@@ -266,15 +263,8 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
             // No other stringsearch constraint found in childs.
             return false;
 
-        } else if (constraint instanceof StringSearchConstraint
-        && constraint != searchConstraint) {
-            // Anther stringsearch constraint.
-            return true;
-
-        } else {
-            // Not another stringsearch constraint and not a composite.
-            return false;
-        }
+        } else return constraint instanceof StringSearchConstraint
+                && constraint != searchConstraint;
     }
 
     /**
@@ -352,9 +342,8 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
             "Unknown builder: \"" + builderName + "\".");
         }
 
-        Iterator<String> iFieldNames = builder.getFieldNames().iterator();
-        while (iFieldNames.hasNext()) {
-            String fieldName = iFieldNames.next();
+        for (String s : builder.getFieldNames()) {
+            String fieldName = s;
             if (factory.getStorageIdentifier(fieldName).equals(dbField)) {
                 return builderName + "." + fieldName;
             }

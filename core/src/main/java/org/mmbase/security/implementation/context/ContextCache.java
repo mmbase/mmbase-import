@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 public class ContextCache  {
     private static Logger log = Logging.getLoggerInstance(ContextCache.class.getName());
 
-    private org.mmbase.cache.Cache<String, Map<String, Map<String, Boolean>>> globalRightCache 
+    private org.mmbase.cache.Cache<String, Map<String, Map<String, Boolean>>> globalRightCache
             = new org.mmbase.cache.Cache<String, Map<String, Map<String, Boolean>>>(50) {
         @Override
         public String getName()        { return "ContextRight"; }
@@ -57,7 +57,7 @@ public class ContextCache  {
         if(contextCache.containsKey(user)) {
             log.warn("rights context cache already contained this entry");
         }
-        contextCache.put(user, Boolean.valueOf(value));
+        contextCache.put(user, value);
         log.debug("added to cache the operation: " + operation + " for context: " + context + " with user: " + user + " with value: " + value );
         rightSize++;
     }
@@ -91,7 +91,7 @@ public class ContextCache  {
         return contextCache.get(user);
     }
 
-    private org.mmbase.cache.Cache<String, Set<String>> globalContextCache 
+    private org.mmbase.cache.Cache<String, Set<String>> globalContextCache
         = new org.mmbase.cache.Cache<String, Set<String>>(50) {
         @Override
         public String getName() {

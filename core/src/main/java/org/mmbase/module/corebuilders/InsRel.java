@@ -341,7 +341,7 @@ public class InsRel extends MMObjectBuilder {
 
     // creates a constraint for a numeric field on a query
     private BasicFieldValueConstraint getNumberConstraint(NodeSearchQuery query, String fieldName, int value) {
-        return new BasicFieldValueConstraint(query.getField(query.getBuilder().getField(fieldName)), Integer.valueOf(value));
+        return new BasicFieldValueConstraint(query.getField(query.getBuilder().getField(fieldName)), value);
     }
 
     /**
@@ -659,7 +659,7 @@ public class InsRel extends MMObjectBuilder {
                 }
             }
             if (role == -1) {
-                relatedCache.put(Integer.valueOf(source), list);
+                relatedCache.put(source, list);
             }
         }
         // oke got the Vector now lets get the correct otypes

@@ -256,7 +256,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
      *
      * @param constraint
      */
-    protected static AbstractConstraintMatcher findMatcherForConstraint(Constraint constraint) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    protected static AbstractConstraintMatcher findMatcherForConstraint(Constraint constraint) throws InvocationTargetException, InstantiationException, IllegalAccessException {
         String constraintClassName = constraint.getClass().getName();
         constraintClassName = constraintClassName.substring(constraintClassName.lastIndexOf(".") + 1);
 
@@ -273,7 +273,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             log.trace("matcher class found: " + matcherConstructor.getDeclaringClass().getName());
         }
 
-        return (AbstractConstraintMatcher) matcherConstructor.newInstance(new Object[] { constraint });
+        return (AbstractConstraintMatcher) matcherConstructor.newInstance(constraint);
 
     }
 

@@ -155,7 +155,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     public void init(DatabaseStorageManagerFactory factory) throws StorageException {
         this.factory = factory;
         if (factory.supportsTransactions()) {
-            transactionIsolation = ((Integer)factory.getAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL)).intValue();
+            transactionIsolation = (Integer) factory.getAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL);
         }
         // determine generated key buffer size
         if (bufferSize == null) {
@@ -394,7 +394,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                             if (result.next()) {
                                 int keynr = result.getInt(1);
                                 // add remaining keys to sequenceKeys
-                                for (int i = 1; i < bufferSize.intValue(); i++) {
+                                for (int i = 1; i < bufferSize; i++) {
                                     sequenceKeys.add(keynr + i);
                                 }
                                 if (log.isDebugEnabled()) {
@@ -610,7 +610,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         if (result.wasNull()) {
             return null;
         } else {
-            return Boolean.valueOf(value);
+            return value;
         }
     }
 
@@ -1525,7 +1525,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         if (!setNullValue(statement, index, value, field, java.sql.Types.BOOLEAN)) {
             boolean bool = Casting.toBoolean(value);
             statement.setBoolean(index, bool);
-            node.storeValue(field.getName(),Boolean.valueOf(bool));
+            node.storeValue(field.getName(), bool);
         }
     }
 
@@ -2050,7 +2050,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
      * @param builder Builder to use the fields from.
      * @since MMBase-1.9.2
      */
-    private Map<String, Object> getValuesFromDisk(final MMObjectNode node, final MMObjectBuilder builder) throws StorageException, SQLException {
+    private Map<String, Object> getValuesFromDisk(final MMObjectNode node, final MMObjectBuilder builder) throws StorageException {
         final Map<String, Object> values = new LinkedHashMap<String, Object>();
         for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
             if (field.getType() == Field.TYPE_BINARY && checkStoreFieldAsFile(builder)) {
@@ -2156,7 +2156,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 if (o instanceof Integer) {
                     return o;
                 } else if (o instanceof Number) {
-                    return Integer.valueOf(((Number)o).intValue());
+                    return ((Number) o).intValue();
                 } else {
                     return o;
                 }
@@ -2177,7 +2177,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         Integer numberValue = number;
         Integer otypeValue =  typeCache.get(numberValue);
         if (otypeValue != null) {
-            return otypeValue.intValue();
+            return otypeValue;
         } else {
             Scheme scheme = factory.getScheme(Schemes.SELECT_NODE_TYPE, Schemes.SELECT_NODE_TYPE_DEFAULT);
             try {
@@ -2867,7 +2867,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                         colInfo.put("DATA_TYPE", columnsSet.getInt("DATA_TYPE"));
                         colInfo.put("TYPE_NAME", columnsSet.getString("TYPE_NAME"));
                         colInfo.put("COLUMN_SIZE", columnsSet.getInt("COLUMN_SIZE"));
-                        colInfo.put("NULLABLE", Boolean.valueOf(columnsSet.getInt("NULLABLE") != DatabaseMetaData.columnNoNulls));
+                        colInfo.put("NULLABLE", columnsSet.getInt("NULLABLE") != DatabaseMetaData.columnNoNulls);
                         columns.put(columnsSet.getString("COLUMN_NAME"), colInfo);
                     }
                 } finally {
@@ -3597,7 +3597,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             try {
                 MMObjectBuilder builder = node.getBuilder();
                 Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
-                String query = scheme.format(new Object[] { this, builder, field, builder.getField("number"), node });
+                String query = scheme.format(this, builder, field, builder.getField("number"), node);
                 getActiveConnection();
                 Statement s = activeConnection.createStatement();
                 ResultSet result = s.executeQuery(query);
