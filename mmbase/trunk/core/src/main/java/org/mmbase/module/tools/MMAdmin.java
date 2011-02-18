@@ -197,11 +197,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
             }
             if (cmd.equals("APPLICATIONS")) {
                 tagger.setValue("ITEMS", "6");
-                try {
-                    return getApplicationsList();
-                } catch (SearchQueryException e) {
-                    log.warn(Logging.stackTrace(e));
-                }
+                return getApplicationsList();
             }
             if (cmd.equals("BUILDERS")) {
                 tagger.setValue("ITEMS", "4");
@@ -735,7 +731,7 @@ public class MMAdmin extends ProcessorModule implements SystemEventListener {
     /**
      * @javadoc
      */
-    List<String> getApplicationsList() throws SearchQueryException {
+    List<String> getApplicationsList() {
         List<String> results = new ArrayList<String>();
         MMBase mmb = MMBase.getMMBase();
         if (mmb == null) {

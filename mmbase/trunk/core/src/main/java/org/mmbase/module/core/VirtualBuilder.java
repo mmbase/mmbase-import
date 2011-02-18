@@ -180,9 +180,8 @@ public class VirtualBuilder extends MMObjectBuilder {
         // determine fields and field types
         Map<String, Object> values = node.getValues();
         synchronized(values) {
-            Iterator<Map.Entry<String, Object>> i = values.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry<String, Object> entry = i.next();
+            for (Map.Entry<String, Object> stringObjectEntry : values.entrySet()) {
+                Map.Entry<String, Object> entry = stringObjectEntry;
                 String fieldName = entry.getKey();
                 Object value = entry.getValue();
                 if (value == null) value = new Object();

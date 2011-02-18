@@ -113,14 +113,14 @@ public class RelDef extends MMObjectBuilder {
         relCache.remove(node.getStringValue("sname"));
         relCache.remove(node.getStringValue("sname") + "/" + node.getStringValue("dname"));
 
-        rnumberCache.remove(Integer.valueOf(node.getNumber()));
+        rnumberCache.remove(node.getNumber());
     }
 
     /**
      * @since MMBase-1.7.1
      */
     private void removeFromCache(int rnumber) {
-        Integer r = Integer.valueOf(rnumber);
+        Integer r = rnumber;
         Iterator<Map.Entry<String, Integer>> i = relCache.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry<String, Integer> entry = i.next();
@@ -142,7 +142,7 @@ public class RelDef extends MMObjectBuilder {
     private boolean readCache() {
         rnumberCache.clear();
         relCache.clear();        // add insrel (default behavior)
-        relCache.put("insrel", Integer.valueOf(-1));
+        relCache.put("insrel", -1);
         // add relation definiation names
         try {
             for (MMObjectNode n :getNodes(new NodeSearchQuery(this))) {
@@ -215,7 +215,7 @@ public class RelDef extends MMObjectBuilder {
      */
     public String getBuilderName(MMObjectNode node) {
         if (node == null) return "NULL";
-        return rnumberCache.get(Integer.valueOf(node.getNumber()));
+        return rnumberCache.get(node.getNumber());
     }
 
 
@@ -304,7 +304,7 @@ public class RelDef extends MMObjectBuilder {
                 throw new InvalidDataException("Builder ("+builder+") is not a relationbuilder","builder");
             }
         }
-    };
+    }
 
     /**
      * Insert a new object, and updated the cache after an insert.
@@ -328,7 +328,7 @@ public class RelDef extends MMObjectBuilder {
             addToCache(node);
         }
         return number;
-    };
+    }
 
 
     /**
@@ -463,7 +463,7 @@ public class RelDef extends MMObjectBuilder {
             // add all builders that descend from InsRel
             for (MMObjectBuilder fbul : mmb.getBuilders()) {
                 if (fbul instanceof InsRel) {
-                    relBuilderCache.put(Integer.valueOf(fbul.getNumber()), fbul);
+                    relBuilderCache.put(fbul.getNumber(), fbul);
                 }
             }
         }
@@ -477,7 +477,7 @@ public class RelDef extends MMObjectBuilder {
      */
 
     public boolean isRelationBuilder(int number) {
-        return getRelBuilderCache().containsKey(Integer.valueOf(number));
+        return getRelBuilderCache().containsKey(number);
     }
 
     /**
@@ -535,7 +535,7 @@ public class RelDef extends MMObjectBuilder {
     public int getNumberByName(String role, boolean searchBidirectional) {
         Integer number = relCache.get(role);
         if (number != null) {
-            return number.intValue();
+            return number;
         }
         if (searchBidirectional) {
             NodeSearchQuery query = new NodeSearchQuery(this);

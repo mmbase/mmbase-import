@@ -79,7 +79,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         ADD,
         DONTADD,
         IFSENSIBLE,
-        CHECKSETTING;
+        CHECKSETTING
     }
     /**
 
@@ -584,7 +584,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                         }
                     });
 
-        addFunction(new NodeFunction<String>("url", new Parameter[] { Parameter.REQUEST, Parameter.CLOUD }) {
+        addFunction(new NodeFunction<String>("url", Parameter.REQUEST, Parameter.CLOUD) {
                 @Override
                 public String getFunctionValue(Node node, Parameters a) {
                     Function spFunction = node.getFunction("servletpath");

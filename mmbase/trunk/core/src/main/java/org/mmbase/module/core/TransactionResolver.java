@@ -63,7 +63,7 @@ class TransactionResolver {
         // Get the numbers
         for (Map.Entry<String, Integer> numberEntry : numbers.entrySet()) {
             Integer num = numberEntry.getValue();
-            if (num == null || num.intValue() == -1) {
+            if (num == null || num == -1) {
                 int newNumber = mmbase.getStorageManager().createKey();
                 if (log.isDebugEnabled()) {
                     log.debug("" + numberEntry.getKey() + " -> " + newNumber);
@@ -89,7 +89,7 @@ class TransactionResolver {
                 String key = node.getStringValue(tmpField);
                 Integer number = numbers.get(key);
                 if (number != null) {
-                    node.setValue(field, number.intValue());
+                    node.setValue(field, number);
                 }
             }
         }
@@ -100,7 +100,7 @@ class TransactionResolver {
      * The 'deleteRelations' code in bridge does not work for new nodes. For now, simply implicelty drop these kind of dangling relationss too.
      * @since MMBase-1.9.2
      */
-    private void ditchDanglingRelations(final Collection<MMObjectNode> nodes) throws TransactionManagerException {
+    private void ditchDanglingRelations(final Collection<MMObjectNode> nodes) {
 
         synchronized(nodes) {
 

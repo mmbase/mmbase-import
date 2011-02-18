@@ -55,7 +55,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, org.mm
             }
             public Long getFunctionValue(Parameters parameters) {
                 int now = (int) (System.currentTimeMillis() / 1000);
-                return Long.valueOf(now - MMBase.startTime);
+                return (long) now - MMBase.startTime;
             }
         };
     {

@@ -139,9 +139,8 @@ public class NodeWriter {
             }
         }
         MMObjectBuilder bul = node.getBuilder();
-        Iterator<CoreField> nd = bul.getFields().iterator();
-        while (nd.hasNext()) {
-            CoreField def = nd.next();
+        for (CoreField coreField : bul.getFields()) {
+            CoreField def = coreField;
             if (def.inStorage()) {
                 String key = def.getName();
                 if (isRelationNode) {

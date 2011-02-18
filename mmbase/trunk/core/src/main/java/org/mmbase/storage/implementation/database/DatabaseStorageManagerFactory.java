@@ -475,7 +475,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
         // Chained handlers
         try {
             java.lang.reflect.Constructor constructor = handlerClass.getConstructor(new Class[] {SqlHandler.class});
-            ChainedSqlHandler sqlHandler = (ChainedSqlHandler) constructor.newInstance(new Object[] { handler });
+            ChainedSqlHandler sqlHandler = (ChainedSqlHandler) constructor.newInstance(handler);
             log.service("Instantiated chained SQLHandler of type " + handlerClass.getName());
             return sqlHandler;
         } catch (NoSuchMethodException nsme) {

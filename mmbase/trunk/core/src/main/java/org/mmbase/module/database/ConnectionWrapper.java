@@ -303,10 +303,10 @@ public abstract class ConnectionWrapper { //implements Connection {
         throw new UnsupportedOperationException();
     }
     */
-    public boolean isValid(int i) throws SQLException {
+    public boolean isValid(int i) {
         throw new UnsupportedOperationException();
     }
-   
+
     /*
     public void setClientInfo(String name, String value) throws SQLClientInfoException {
         throw new UnsupportedOperationException();
@@ -316,22 +316,22 @@ public abstract class ConnectionWrapper { //implements Connection {
     }
     */
 
-    public String getClientInfo(String name) throws SQLException {
+    public String getClientInfo(String name) {
         throw new UnsupportedOperationException();
     }
-    public Properties getClientInfo() throws SQLException {
-        throw new UnsupportedOperationException();
-    }
-
-    
-    public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
+    public Properties getClientInfo() {
         throw new UnsupportedOperationException();
     }
 
-    public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
+
+    public Array createArrayOf(String typeName, Object[] elements) {
         throw new UnsupportedOperationException();
     }
-    
+
+    public Struct createStruct(String typeName, Object[] attributes) {
+        throw new UnsupportedOperationException();
+    }
+
     public <T> T unwrap(Class<T> iface) {
         return (T) con;
     }

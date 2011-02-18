@@ -237,13 +237,8 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         if (parentCloud instanceof Transaction) {
             ((Transaction)parentCloud).cancel();
         } else {
-            try {
             //   BasicCloudContext.transactionManager.cancel(account, transactionContext);
-                BasicCloudContext.transactionManager.cancel(userContext, transactionName);
-            } catch (TransactionManagerException e) {
-                // do we drop the transaction here or delete the trans context?
-                throw new BridgeException(e.getMessage(), e);
-            }
+            BasicCloudContext.transactionManager.cancel(userContext, transactionName);
         }
         // remove the transaction from the parent cloud
         parentCloud.transactions.remove(getName());
@@ -369,6 +364,11 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     protected void finalize() {
         if ((transactionName != null) && !(parentCloud instanceof Transaction)) {
             cancel();
+        }
+        try {
+            super.finalize();
+        } catch (Throwable throwable) {
+            log.error(throwable);
         }
     }
 

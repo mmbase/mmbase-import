@@ -53,7 +53,7 @@ public class MultiPool {
     /**
      * Establish connection to the JDBC Pool(s)
      */
-    MultiPool(DatabaseSupport databaseSupport, String url, String name, String password, int conMax,int maxQueries) throws SQLException {
+    MultiPool(DatabaseSupport databaseSupport, String url, String name, String password, int conMax,int maxQueries) {
 
         this.conMax          = conMax;
         this.name            = name;
@@ -280,13 +280,7 @@ public class MultiPool {
 
                 boolean isClosed = true;
 
-                try {
-                    isClosed = con.isClosed();
-                } catch (SQLException e) {
-                    log.warn("Could not check isClosed on connection, assuming it closed: " + e.getMessage());
-                }
-
-
+                isClosed = con.isClosed();
 
                 if (isClosed) {
                     MultiConnection newCon = null;
@@ -444,14 +438,10 @@ public class MultiPool {
                 // try to guess wat happend, to report that in the logs
                 MMBase mmb = MMBase.getMMBase();
                 if (! mmb.isShutdown()) {
-                    try {
-                        if (con.isClosed()) {
-                            log.debug("Connection " + con + " as closed an not in busypool, so it was removed from busyPool by checkTime");
-                        } else {
-                            log.warn("Put back connection (" + con.getLastSQL() + ") was not in busyPool!!");
-                        }
-                    } catch (SQLException sqe) {
-                        log.warn("Connection " + con + " not in busypool : " + sqe.getMessage());
+                    if (con.isClosed()) {
+                        log.debug("Connection " + con + " as closed an not in busypool, so it was removed from busyPool by checkTime");
+                    } else {
+                        log.warn("Put back connection (" + con.getLastSQL() + ") was not in busyPool!!");
                     }
                 } else {
                     log.service("Connection " + con.getLastSQL() + " was put back, but MMBase is shut down, so it was ignored.");

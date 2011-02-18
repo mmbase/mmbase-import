@@ -231,7 +231,7 @@ public class StorageReader<SM extends StorageManager> extends DocumentReader  {
         NodeList disallowedFieldsList = root.getElementsByTagName("disallowed-fields");
         if (disallowedFieldsList.getLength() > 0) {
             Element disallowedFieldsTag = (Element)disallowedFieldsList.item(0);
-            boolean casesensitive = Boolean.valueOf(disallowedFieldsTag.getAttribute("case-sensitive")).booleanValue();
+            boolean casesensitive = Boolean.valueOf(disallowedFieldsTag.getAttribute("case-sensitive"));
             NodeList fieldTagList = disallowedFieldsTag.getElementsByTagName("disallowed-field");
             for (int i = 0; i < fieldTagList.getLength(); i++) {
                 Element fieldTag = (Element)fieldTagList.item(i);

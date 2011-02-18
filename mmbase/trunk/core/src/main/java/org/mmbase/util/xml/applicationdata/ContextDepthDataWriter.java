@@ -161,7 +161,7 @@ public class ContextDepthDataWriter  {
         // Store all the nodes that apply using their corresponding NodeWriter object
         for (Integer integer : list) {
         // retrieve the node to export
-            int nr = integer.intValue();
+            int nr = integer;
             MMObjectNode node = bul.getNode(nr);
             String name = node.getName();
             NodeWriter nodeWriter = nodeWriters.get(name);
@@ -233,28 +233,26 @@ public class ContextDepthDataWriter  {
             //
             nodesdoneSet.addAll(nodesSet_current);
             // iterate through the current level
-            for (Iterator<Integer> curlist=nodesSet_current.iterator(); curlist.hasNext();) {
+            for (Integer thisnodenr : nodesSet_current) {
                 // get the next node's number
-                Integer thisnodenr = curlist.next();
                 // Iterate through all the relations of a node
                 // determining relations has to be adapted when using MMRelations!
-                for (Iterator<MMObjectNode> rel=bul.getRelationsVector(thisnodenr.intValue()).iterator(); rel.hasNext();) {
+                for (MMObjectNode relnode : bul.getRelationsVector(thisnodenr.intValue())) {
                     // get the relation node and node number
-                    MMObjectNode relnode = rel.next();
-                    Integer relnumber=relnode.getIntValue("number");
+                    Integer relnumber = relnode.getIntValue("number");
                     // check whether to add the referenced node
                     // and the relation between this node and the referenced one.
                     // if relation is in pool, save trouble and do not traverse further
                     if (!relationnodesSet.contains(relnumber)) {
                         // determine node referenced
-                        int nodenumber=getRelatedNode(thisnodenr.intValue(),relnode);
+                        int nodenumber = getRelatedNode(thisnodenr, relnode);
                         // check type of referenced node
                         type = bul.getNodeType(nodenumber);
-                        if (fb.contains(type)) {	// good node? then proceed
+                        if (fb.contains(type)) {    // good node? then proceed
                             // add the relation node
                             relationnodesSet.add(relnumber);
                             // if the node has been 'done', don't add it!
-                            Integer nodeNumber=nodenumber;
+                            Integer nodeNumber = nodenumber;
                             if (!nodesdoneSet.contains(nodeNumber)) {
                                 // because we use a set, no double nodes will be added (cool, uh?)
                                 nodesSet_next.add(nodeNumber);

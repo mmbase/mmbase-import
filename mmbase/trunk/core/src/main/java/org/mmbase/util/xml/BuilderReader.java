@@ -290,7 +290,7 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
                 // have to clone the parent fields
                 // need clone()!
                 for (CoreField f : parentfields) {
-                    CoreField newField = (CoreField)f.clone(f.getName());
+                    CoreField newField = f.clone(f.getName());
                     newField.setParent(builder);
                     while(newField.getStoragePosition() >= pos) pos++;
                     newField.finish();
@@ -384,7 +384,7 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
             Collection<Index> parentIndices = parentBuilder.getStorageConnector().getIndices().values();
             if (parentIndices != null) {
                 for (Index parentIndex : parentIndices) {
-                    Index newIndex = new Index(builder, parentIndex.getName());;
+                    Index newIndex = new Index(builder, parentIndex.getName());
                     newIndex.setUnique(parentIndex.isUnique());
                     for (Field field : parentIndex) {
                         newIndex.add(builder.getField(field.getName()));

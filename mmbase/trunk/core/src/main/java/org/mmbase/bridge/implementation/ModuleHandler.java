@@ -275,7 +275,6 @@ public class ModuleHandler implements Module, InvocationHandler {
         hash = 29 * hash + (this.cloudContext != null ? this.cloudContext.hashCode() : 0);
         return hash;
     }
-;
 
     public Collection<Function<?>> getFunctions() {
         return  mmbaseModule.getFunctions();

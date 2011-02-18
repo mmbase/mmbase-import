@@ -38,7 +38,6 @@ public class Sql implements Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(Sql.class);
     private String query;
-    private int max = Integer.MAX_VALUE;
 
     public void setQuery(String q) {
         query = q;
@@ -68,6 +67,7 @@ public class Sql implements Runnable {
             while(true) {
                 boolean valid = rs.next();
                 seq ++;
+                int max = Integer.MAX_VALUE;
                 if (seq >= max) break;
                 if (! valid) break;
                 StringBuilder line = new StringBuilder();

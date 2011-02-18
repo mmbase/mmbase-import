@@ -122,10 +122,10 @@ public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<
             for(Iterator<ReleaseStrategy> i = iterator(); i.hasNext();){
                 ReleaseStrategy strategy = i.next();
 
-                //if it must be switched on, we must use the memeory if present
-                if(newStatus == true){
+                //if it must be switched on, we must use the memory if present
+                if(newStatus){
                     Boolean memory = childStrategyMemory.get(strategy.getName());
-                    strategy.setEnabled( memory == null ? true :  memory.booleanValue());
+                    strategy.setEnabled( memory == null ? true : memory);
                 } else {
                     //if it must switch of, we must record the status
                     childStrategyMemory.put(strategy.getName(), strategy.isEnabled());
@@ -198,23 +198,21 @@ public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<
      */
     protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
         // first do the 'basic' strategy that is allways there. (see constructor)
-        Iterator<ReleaseStrategy> i = releaseStrategies.iterator();
         // while the outcome of getResult is true (the cache should be flushed), we have to keep trying.
-        while (i.hasNext()) {
-            ReleaseStrategy strategy = i.next();
+        for (ReleaseStrategy releaseStrategy : releaseStrategies) {
+            ReleaseStrategy strategy = releaseStrategy;
             StrategyResult result = strategy.evaluate(event, query, cachedResult);
-            if (! result.shouldRelease()) return false;
+            if (!result.shouldRelease()) return false;
         }
         return true;
     }
     protected final boolean doEvaluate(RelationEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
         // first do the 'basic' strategy that is allways there. (see constructor)
-        Iterator<ReleaseStrategy> i = releaseStrategies.iterator();
         // while the outcome of getResult is true (the cache should be flushed), we have to keep trying.
-        while (i.hasNext()) {
-            ReleaseStrategy strategy = i.next();
+        for (ReleaseStrategy releaseStrategy : releaseStrategies) {
+            ReleaseStrategy strategy = releaseStrategy;
             StrategyResult result = strategy.evaluate(event, query, cachedResult);
-            if (! result.shouldRelease()) return false;
+            if (!result.shouldRelease()) return false;
         }
         return true;
     }

@@ -259,16 +259,15 @@ class DBQuery  extends ParseItem {
 
             // Find corresponding field in query.
             StepField field = null;
-            Iterator<StepField> iFields = query.getFields().iterator();
-            while (iFields.hasNext()) {
-                StepField field2 = iFields.next();
+            for (StepField stepField : query.getFields()) {
+                StepField field2 = stepField;
                 String alias2 = field2.getStep().getAlias();
                 if (alias2 == null) {
                     alias2 = field2.getStep().getTableName();
                 }
                 if ((condition.prefix == null
                         || alias2.equals(condition.prefix))
-                    && field2.getFieldName().equals(condition.fieldName)) {
+                        && field2.getFieldName().equals(condition.fieldName)) {
                     field = field2;
                     break;
                 }
@@ -280,9 +279,8 @@ class DBQuery  extends ParseItem {
                 if (condition.prefix == null) {
                     step = query.getSteps().get(0);
                 } else {
-                    Iterator<Step> iSteps = query.getSteps().iterator();
-                    while (iSteps.hasNext()) {
-                        Step step2 = iSteps.next();
+                    for (Step step1 : query.getSteps()) {
+                        Step step2 = step1;
                         if (step2.getAlias().equals(condition.prefix)) {
                             step = step2;
                             break;

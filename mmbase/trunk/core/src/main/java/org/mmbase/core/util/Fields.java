@@ -51,9 +51,9 @@ public class Fields extends org.mmbase.bridge.Fields {
     public static CoreField createField(String name, int type, int listItemType, int state, DataType dataType) {
         if (dataType == null) {
             if (type == Field.TYPE_LIST) {
-                dataType = (DataType)DataTypes.getListDataType(listItemType).clone();
+                dataType = DataTypes.getListDataType(listItemType).clone();
             } else {
-                dataType = (DataType)DataTypes.getDataType(type).clone();
+                dataType = DataTypes.getDataType(type).clone();
             }
         }
         return new org.mmbase.module.corebuilders.FieldDefs(name, type, listItemType, state, dataType);

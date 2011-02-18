@@ -174,7 +174,7 @@ public class BasicSqlHandler implements SqlHandler {
                 sb.append("'");
             }
         } else if (fieldType == Field.TYPE_BOOLEAN) {
-            boolean isTrue = ((Boolean) value).booleanValue();
+            boolean isTrue = (Boolean) value;
             if (isTrue) {
                 sb.append("TRUE");
             } else {
@@ -458,9 +458,8 @@ public class BasicSqlHandler implements SqlHandler {
                 log.debug("Query is distinct, adding " + query.getSortOrders());
             }
             boolean needComma = appended;
-            Iterator<SortOrder> iSortOrder = query.getSortOrders().iterator();
-            while (iSortOrder.hasNext()) {
-                SortOrder sortOrder = iSortOrder.next();
+            for (SortOrder sortOrder1 : query.getSortOrders()) {
+                SortOrder sortOrder = sortOrder1;
                 StepField field = sortOrder.getField();
                 if (lFields.indexOf(field) == -1) {
                     if (needComma) sb.append(',');
