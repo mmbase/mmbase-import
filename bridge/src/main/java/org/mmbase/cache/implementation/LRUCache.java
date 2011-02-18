@@ -35,7 +35,7 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
 
     public LRUCache(int size) {
         maxSize = size;
-        // caches can typically be accessed/modified by multipible thread, so we need to synchronize
+        // caches can typically be accessed/modified by multiple threads, so we need to synchronize
         backing = Collections.synchronizedMap(new LinkedHashMap<K, V>(size, 0.75f, true) {
             private static final long serialVersionUID = 0L;
             @Override

@@ -445,4 +445,26 @@ public class Generator {
         }
         return fieldElement;
     }
+
+    /**
+     * @since MMBase-2.0
+     */
+    public static Document getDocument(String[] argv, Map<String, Object> params, boolean namespaceaware) {
+        String nodeNumber = argv[1];
+
+        CloudContext cc = ContextProvider.getDefaultCloudContext();
+        Cloud cloud = cc.getCloud("mmbase", "anonymous", null);
+        params.put("cloud", cloud);
+        org.mmbase.bridge.Node node = cloud.getNode(nodeNumber);
+        DocumentBuilder documentBuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder();
+        Generator generator = new Generator(documentBuilder, cloud);
+        generator.setNamespaceAware(namespaceaware);
+        generator.add(node, node.getNodeManager().getField("body"));
+        //generator.add(node);
+        //log.info("" + node.getXMLValue("body").getDocumentElement().getNamespaceURI());
+        generator.add(node.getRelations("idrel"));
+        org.mmbase.bridge.NodeList relatedNodes = node.getRelatedNodes("object", "idrel", "both");
+        generator.add(relatedNodes);
+        return generator.getDocument();
+    }
 }
