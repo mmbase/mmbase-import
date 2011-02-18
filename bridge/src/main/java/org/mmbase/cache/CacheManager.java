@@ -49,14 +49,13 @@ public class CacheManager implements CacheManagerMBean, SystemEventListener {
     private final Map<String, Cache<?,?>> caches = new ConcurrentHashMap<String, Cache<?,?>>();
 
     private static CacheManager instance = null;
-
+    private String machineName;
 
     private CacheManager() {
         // singleton
     }
 
-    private static  String getMachineName() {
-        String machineName = MMBaseContext.getMachineName();
+    private  String getMachineName() {
         return machineName;
     }
 
@@ -74,6 +73,7 @@ public class CacheManager implements CacheManagerMBean, SystemEventListener {
     }
 
     private void register() {
+        machineName = MMBaseContext.getMachineName();
         ObjectName on;
         @SuppressWarnings("UseOfObsoleteCollectionType")
         final Hashtable<String, String> props = new Hashtable<String, String>();
@@ -189,7 +189,7 @@ public class CacheManager implements CacheManagerMBean, SystemEventListener {
     /**
      * @since MMBase-1.9
      */
-    private static ObjectName getObjectName(Cache cache) {
+    private ObjectName getObjectName(Cache cache) {
         // Not using the Constructor with Hashtable, because you can't influence the order of keys
         // with that. Which is relevant, e.g. when presented in a tree by jconsole.
         StringBuilder buf = new StringBuilder("org.mmbase:");
@@ -447,10 +447,13 @@ public class CacheManager implements CacheManagerMBean, SystemEventListener {
     public void notify(SystemEvent event) {
         if (event instanceof SystemEvent.MachineName) {
             SystemEvent.MachineName mn = (SystemEvent.MachineName) event;
-            unRegister();
-            register();
-            for (Cache c : caches.values()) {
-                register(c);
+            synchronized(caches) {
+                unRegister();
+                machineName = mn.getMachine();
+                register();
+                for (Cache c : caches.values()) {
+                    register(c);
+                }
             }
         }
     }
