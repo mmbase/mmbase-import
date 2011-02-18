@@ -32,10 +32,10 @@ public interface ActionChecker extends java.io.Serializable {
      * The ActionChecker that always allows every action to to everybody.
      * @since MMBase-1.9.2
      */
-    public static final ActionChecker ALLOWS = new ActionChecker() {
+    ActionChecker ALLOWS = new ActionChecker() {
         private static final long serialVersionUID = 1L;
         @Override
-        public boolean check(UserContext user, Action ac, Parameters parameters) {
+        public boolean check(final UserContext user, final Action ac, final Parameters parameters) {
             return true;
         }
         @Override
@@ -53,24 +53,24 @@ public interface ActionChecker extends java.io.Serializable {
      * rank is to be supplied in the constructor.
      */
 
-    public static class Rank implements  ActionChecker {
+    class Rank implements  ActionChecker {
         private static final long serialVersionUID = 7047822780810829661L;
         private static final Logger log = Logging.getLoggerInstance(Rank.class);
         final String rank;
-        public Rank(org.mmbase.security.Rank r) {
+        public Rank(final org.mmbase.security.Rank r) {
             rank = r.toString();
         }
         /**
          * @since MMBase-1.9.6
          */
-        public Rank(String r) {
+        public Rank(final String r) {
             rank = r;
         }
         /**
          * @since MMBase-1.9.6
          */
         protected org.mmbase.security.Rank getRank() {
-            org.mmbase.security.Rank r = org.mmbase.security.Rank.getRank(rank);
+            final org.mmbase.security.Rank r = org.mmbase.security.Rank.getRank(rank);
             if (r == null) {
                 log.error("No such rank " + rank + " returning " + org.mmbase.security.Rank.ADMIN);
                 return org.mmbase.security.Rank.ADMIN;
@@ -78,7 +78,7 @@ public interface ActionChecker extends java.io.Serializable {
             return r;
         }
         @Override
-        public boolean check(UserContext user, Action ac, Parameters parameters) {
+        public boolean check(final UserContext user, final Action ac, final Parameters parameters) {
             return user.getRank().getInt() >= getRank().getInt();
         }
         @Override
