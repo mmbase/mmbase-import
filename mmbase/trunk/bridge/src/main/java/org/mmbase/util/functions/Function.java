@@ -53,7 +53,7 @@ public interface Function<R> {
     R getFunctionValueWithList(List<?> parameters);
 
     /**
-     * A 'varargs' version of {@link getFunctionValueWithList}.
+     * A 'varargs' version of {@link #getFunctionValueWithList(List)}.
      * @since MMBase-2.0
      */
     R getFunctionValueWithArgs(Object... parameters);
