@@ -112,7 +112,7 @@ public interface Component {
 
     /**
      * Retrieves a setting (a definition, not a value; for that, use
-     * {@link Framework#getSettingValue(Setting, Parameters)}) with a certain name. Or
+     * {@link Framework#getSettingValue(Setting, org.mmbase.util.functions.Parameters)}) with a certain name. Or
      * <code>null</code> if no such setting in this component.
      */
     Setting<?> getSetting(String name);
