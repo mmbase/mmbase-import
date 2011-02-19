@@ -41,17 +41,17 @@ public class LocalizedEntryListFactoryTest {
         fact.add(EN, "b", "hi");
         assertTrue(fact.size() == 2); // a and b.
         {
-            List<Object> col  = Arrays.asList(new Entry("a", "hallo"), new Entry("b", "hoi"));
+            List<? extends Map.Entry> col  = Arrays.asList(new Entry("a", "hallo"), new Entry("b", "hoi"));
             assertEquals(col, fact.get(NL));
         }
         {
-            List<Object> col  = Arrays.asList(new Entry("a", "hallo"), new Entry("b", "saluut"));
+            List<? extends Map.Entry> col  = Arrays.asList(new Entry("a", "hallo"), new Entry("b", "saluut"));
             assertEquals(col, fact.get(BE));
             assertEquals(col, fact.get(BE_VAR));
 
         }
         {
-            Collection<Object> col  = Arrays.asList(new Entry("a", "hello"), new Entry("b", "hi"));
+            Collection<? extends Map.Entry> col  = Arrays.asList(new Entry("a", "hello"), new Entry("b", "hi"));
             assertEquals(col, fact.get(EN));
         }
         assertEquals("a", fact.castKey("a"));
@@ -65,12 +65,12 @@ public class LocalizedEntryListFactoryTest {
         fact.addBundle(resource1, null, null, Boolean.class, SortedBundle.NO_COMPARATOR);
         assertTrue(fact.size() == 2); // false and true
         {
-            Collection<Object> col  = Arrays.asList(new Entry(Boolean.FALSE, "onwaar"), new Entry(Boolean.TRUE, "waar"));
+            Collection<? extends Map.Entry> col  = Arrays.asList(new Entry(Boolean.FALSE, "onwaar"), new Entry(Boolean.TRUE, "waar"));
             assertEquals(col, fact.get(NL));
             assertEquals(col, fact.get(BE));
         }
         {
-            Collection<Object> col  = Arrays.asList(new Entry(Boolean.FALSE, "false"), new Entry(Boolean.TRUE, "true"));
+            Collection<? extends Map.Entry> col  = Arrays.asList(new Entry(Boolean.FALSE, "false"), new Entry(Boolean.TRUE, "true"));
             assertEquals(col, fact.get(EN));
         }
     }
