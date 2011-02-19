@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author  Michiel Meeuwissen
  * @version $Id$
  * @see    org.mmbase.cache.Cache
- * @deprecated use org.mmbase.cache.implementation.LRUCache
+ * @deprecated use {@link org.mmbase.cache.implementation.LRUCache}
  */
 public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterface<K, V>, SizeMeasurable {
 

@@ -16,6 +16,6 @@ public interface WeightEventListener extends EventListener {
     /**
      * The weight of an event listener determines the order in which they are called. The bigger, the earlier.
      */
-    public int getWeight();
+    int getWeight();
 
 }

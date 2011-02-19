@@ -26,7 +26,7 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
 
     private static final Logger log = Logging.getLoggerInstance(LRUCache.class);
 
-    public int maxSize = 100;
+    private int maxSize;
     private final Map<K, V> backing;
 
     public LRUCache() {

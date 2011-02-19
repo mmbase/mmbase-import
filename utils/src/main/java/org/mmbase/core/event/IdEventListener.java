@@ -8,11 +8,11 @@ package org.mmbase.core.event;
 
 /**
  * This is the listener interface for id events
- * 
+ *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
  * @version $Id$
  */
 public interface IdEventListener extends EventListener {
-    public void notify(IdEvent event);
+    void notify(IdEvent event);
 }

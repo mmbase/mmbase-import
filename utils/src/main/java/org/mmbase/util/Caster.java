@@ -20,7 +20,7 @@ public interface Caster {
     boolean isStringRepresentable(Class<?> type);
 
 
-    public static class NotRecognized extends Exception {
+    class NotRecognized extends Exception {
         public static NotRecognized INSTANCE = new NotRecognized();
         protected NotRecognized() {
         }

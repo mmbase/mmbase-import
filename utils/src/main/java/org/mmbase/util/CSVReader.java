@@ -64,9 +64,6 @@ public class CSVReader {
 
     /**
      * Reads the contents of the CSV file. The values are stored in arrays.
-     * @param filename  CSV file
-     * @param delimiter the comma or something else TODO!
-     * @param charset   by default UTF-8
      *
      */
     private void readCSV() {
