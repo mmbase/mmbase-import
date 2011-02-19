@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 import org.mmbase.bridge.util.BridgeCaster;
-import org.mmbase.util.Casting;
 import org.mmbase.util.transformers.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.mock.*;
@@ -65,9 +64,9 @@ public class CastingTest  {
     }
     @Test
     public void integer() {
-        assertEquals(10, Casting.toInteger("10"));
-        assertEquals(10, Casting.toInteger("1e1"));
-        assertEquals(-1, Casting.toInteger(null));
+        assertEquals((Object) 10, Casting.toInteger("10"));
+        assertEquals((Object) 10, Casting.toInteger("1e1"));
+        assertEquals((Object) (-1), Casting.toInteger(null));
     }
     @Test
     public void testLong() {
@@ -130,10 +129,10 @@ public class CastingTest  {
         assertEquals(news, BridgeCaster.toNode("" + news.getNumber(), cloud));
 
 
-        assertEquals(news, Casting.toType(Node.class, cloud,  news.getNumber()));
+        assertEquals(news, Casting.toType(Node.class, cloud, news.getNumber()));
         assertEquals(news, Casting.toType(Node.class, cloud, "" + news.getNumber()));
 
-        assertEquals(news.getNumber(), Casting.toType(Node.class, null,  news.getNumber()).getNumber());
+        assertEquals(news.getNumber(), Casting.toType(Node.class, null, news.getNumber()).getNumber());
         assertEquals(news.getNumber(), Casting.toType(Node.class, null, "" + news.getNumber()).getNumber());
 
         assertEquals("123", ((Node) Casting.wrap(news, CopyCharTransformer.INSTANCE)).getValue("date").toString());

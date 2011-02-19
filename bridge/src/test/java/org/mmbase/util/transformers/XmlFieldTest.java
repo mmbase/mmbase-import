@@ -1,7 +1,7 @@
 package org.mmbase.util.transformers;
-import org.mmbase.util.*;
+import org.junit.*;
 import java.util.*;
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 /**
  * Tests for org.mmbase.util.transformers.XmlField
@@ -11,7 +11,7 @@ import junit.framework.TestCase;
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-public class XmlFieldTest  extends TestCase {
+public class XmlFieldTest  {
 
     private String result;
     private String expectedResult;
@@ -38,28 +38,29 @@ public class XmlFieldTest  extends TestCase {
     protected String showNL(StringBuilder in) {
         return unicode.transform(in.toString());
     }
-
-    public void testRichToHTMLBlock1() {
+    @Test
+    public void richToHTMLBlock1() {
 
         result = XmlField.richToHTMLBlock("");
         expectedResult = "<p></p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
-
-    public void testRichToHTMLBlock1a() {
+    @Test
+    public void richToHTMLBlock1a() {
 
         result = XmlField.richToHTMLBlock("hallo");
         expectedResult = "<p>hallo</p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
-
-    public void testRichToHTMLBlock2() {
+    @Test
+    public void richToHTMLBlock2() {
         result = XmlField.richToHTMLBlock("hallo\n\nhallo");
         expectedResult = "<p>hallo</p><p>hallo</p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
 
-    public void testRichToHTMLBlock3() {
+    @Test
+    public void richToHTMLBlock3() {
         // input:
         // hallo
         // -eending
@@ -76,8 +77,8 @@ public class XmlFieldTest  extends TestCase {
         expectedResult = "<p>hallo<ul><li>eending</li><li>nogeending</li></ul>hallo</p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
-
-    public void testRichToHTMLBlock4() {
+    @Test
+    public void richToHTMLBlock4() {
         // input:
         // hallo
         //
@@ -89,8 +90,8 @@ public class XmlFieldTest  extends TestCase {
         expectedResult = "<p>hallo</p><p><ul><li>eending</li><li>nogeending</li></ul></p><p>hallo</p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
-
-    public void testRichToHTMLBlock5() {
+    @Test
+    public void richToHTMLBlock5() {
         // input:
         // hallo
         // *eending
@@ -260,7 +261,6 @@ public class XmlFieldTest  extends TestCase {
     };
 
 
-
     protected StringBuilder testRich(List<String> errors, StringBuilder in, String expectedResult, String intro) {
         if (expectedResult != null && in != null) {
             String result = in.toString();
@@ -272,8 +272,8 @@ public class XmlFieldTest  extends TestCase {
         return expectedResult != null ? new StringBuilder(expectedResult) : in;
 
     }
-
-    public void testRichToXML() {
+    @Test
+    public void richToXML() {
         List<String> errors = new ArrayList<String>();
         for (String[] testCase : RICH_TO_XML_CASES) {
             StringBuilder in = XmlField.prepareData(testCase[IN]);
@@ -318,7 +318,6 @@ public class XmlFieldTest  extends TestCase {
     /**
      * Tests handling lists only
      */
-
     public void listTest() {
         StringBuilder in = new StringBuilder(listData);
         XmlField.handleList(in);
@@ -328,13 +327,14 @@ public class XmlFieldTest  extends TestCase {
         XmlField.handleParagraphs(in, leaveExtraNewLines, surroundingP, placeListsInsideP);
         result =ignoreNL(in);
         assertTrue("\n"+ comment + ":\n"+ listData + " (" + list + "):\n" +
-           expectedResult + "\nexpected, but found\n" + result, expectedResult.equals(result));
+                expectedResult + "\nexpected, but found\n" + result, expectedResult.equals(result));
     }
 
     /**
      * Tests handling lists only
      */
-    public void testHandleListTTF() {
+    @Test
+    public void handleListTTF() {
         comment = "HTML_BLOCK_LIST_BR";
         leaveExtraNewLines = true;
         surroundingP = true;
@@ -359,7 +359,8 @@ public class XmlFieldTest  extends TestCase {
     /**
      * Tests handling lists only
      */
-    public void testHandleListTFF() {
+    @Test
+    public void handleListTFF() {
         comment = "HTML_BLOCK_LIST_BR_NOSURROUNDINGP";
         leaveExtraNewLines = true;
         surroundingP = false;
@@ -384,7 +385,8 @@ public class XmlFieldTest  extends TestCase {
     /**
      * Tests handling lists only
      */
-    public void testHandleListTTT() {
+    @Test
+    public void handleListTTT() {
         comment = "HTML_BLOCK_BR";
         leaveExtraNewLines = true;
         surroundingP = true;
@@ -409,7 +411,8 @@ public class XmlFieldTest  extends TestCase {
     /**
      * Tests handling lists only
      */
-    public void testHandleListTFT() {
+    @Test
+    public void handleListTFT() {
         comment = "HTML_BLOCK_BR_NOSURROUNDINGP";
         leaveExtraNewLines = true;
         surroundingP = false;
