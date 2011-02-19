@@ -13,7 +13,7 @@ package org.mmbase.core.event;
  * @version $Id$
  */
 public interface SystemEventListener extends   WeightEventListener {
-    public void notify(SystemEvent event);
+    void notify(SystemEvent event);
 
 
 }

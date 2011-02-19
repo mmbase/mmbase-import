@@ -15,7 +15,7 @@ import java.util.regex.*;
 import org.mmbase.util.logging.*;
 
 /**
- * This trnasformer removes all diacritics from the characters of a string.
+ * This transformer removes all diacritics from the characters of a string.
  * @author Michiel Meeuwissen
  * @since MMBase-1.9.6
  */

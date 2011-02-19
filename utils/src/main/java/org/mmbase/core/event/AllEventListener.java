@@ -18,5 +18,5 @@ package org.mmbase.core.event;
  *
  */
 public interface AllEventListener extends EventListener {
-    public void notify(Event event);
+    void notify(Event event);
 }
