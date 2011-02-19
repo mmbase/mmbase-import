@@ -75,7 +75,6 @@ classes.</p>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
-          <showDeprecation>true</showDeprecation>
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>

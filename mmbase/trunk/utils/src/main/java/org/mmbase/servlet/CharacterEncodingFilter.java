@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * There's large simularity in the way data travels from and to a web server.
+ * There's large similarity in the way data travels from and to a web server.
  * But unfortunately there is one difference: while the web server tells the browser what
  * character encoding the page it sends is in (via the Content-Type HTTP header),
  * the client does not send such information.
