@@ -578,13 +578,11 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         //other options
         // a=b,c=d,e=f
         if (options != Attribute.NULL) {
-            Iterator<String> i = options.getList(this).iterator();
-            while (i.hasNext()) {
-                String option = i.next();
+            for (String option : options.getList(this)) {
                 // List   o = StringSplitter.split(option, "=");
-                List<String> o = Arrays.asList( option.trim().split("\\s*=\\s*") );
+                List<String> o = Arrays.asList(option.trim().split("\\s*=\\s*"));
                 if (o.size() != 2) {
-                    throw  new JspTagException("Option '" + option + "' is not in the format key=value (required for XSL transformations)");
+                    throw new JspTagException("Option '" + option + "' is not in the format key=value (required for XSL transformations)");
 
                 } else {
                     if (log.isDebugEnabled()) log.debug("Setting XSLT option " + option);
@@ -593,9 +591,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
             }
         }
         params.putAll(Referids.getReferids(referids, this));
-        Iterator<Entry<String, Object>> i = extraParameters.iterator();
-        while (i.hasNext()) {
-            Map.Entry<String, Object> entry = i.next();
+        for (Entry<String, Object> entry : extraParameters) {
             params.put(entry.getKey(), entry.getValue());
         }
 

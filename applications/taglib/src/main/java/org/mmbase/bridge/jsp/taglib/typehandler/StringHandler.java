@@ -106,7 +106,7 @@ public class StringHandler extends AbstractTypeHandler {
                     }
                     buffer.append("</textarea>");
                 } else { // not 'field' perhaps it's 'string'.
-                    buffer.append("<input class=\"small ").append(getClasses(node, field)).append("\" type=\"").append(dataType.isPassword() ? "password" : "text").append("\"  size=\"" + getCols(field) + "\" ");
+                    buffer.append("<input class=\"small ").append(getClasses(node, field)).append("\" type=\"").append(dataType.isPassword() ? "password" : "text").append("\"  size=\"").append(getCols(field)).append("\" ");
                     buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
                     buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");
                     String opt = tag.getOptions();

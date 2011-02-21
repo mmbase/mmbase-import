@@ -439,9 +439,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
      */
     void unRegisterAll(Set<String> set) throws JspTagException {
         if (set == null) return;
-        Iterator<String> i = set.iterator();
-        while (i.hasNext()) {
-            String key = i.next();
+        for (String key : set) {
             unRegister(key);
         }
 
@@ -866,7 +864,7 @@ class MapPair extends Pair {
  */
 class BeanPair extends Pair {
     private final Object bean;
-    private final Class<? extends Object> clazz;
+    private final Class<?> clazz;
     BeanPair(Object c, String k, boolean w) {
         super(k, w);
         bean = c;

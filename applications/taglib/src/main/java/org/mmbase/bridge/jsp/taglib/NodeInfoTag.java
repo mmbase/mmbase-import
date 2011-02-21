@@ -81,7 +81,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
     @Override
     public int doStartTag() throws JspException{
         initTag();
-        NodeManager nodeManager = null;
+        NodeManager nodeManager;
         if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
             Node node = getNode();
             if (node == null) {

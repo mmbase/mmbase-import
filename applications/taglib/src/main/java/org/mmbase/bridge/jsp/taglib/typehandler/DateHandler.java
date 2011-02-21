@@ -456,7 +456,7 @@ public class DateHandler extends AbstractTypeHandler {
                 if (field.getType() == Field.TYPE_DATETIME) {
                     nextTime = new Date(((Date)time).getTime() + 24 * 60 * 60 * 1000);
                 } else {
-                    nextTime = ((Long)time).longValue() + 24 * 60 * 60;
+                    nextTime = (Long) time + 24 * 60 * 60;
                 }
                 con = Queries.createConstraint(query, fieldName, Queries.OPERATOR_BETWEEN, time, nextTime, false);
             } else {

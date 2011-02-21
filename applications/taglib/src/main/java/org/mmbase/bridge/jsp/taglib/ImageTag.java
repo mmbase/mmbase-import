@@ -182,9 +182,9 @@ public class ImageTag extends FieldTag {
     private boolean makeRelative() {
         if (makeRelative == null) {
             String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
-            makeRelative = Boolean.valueOf("true".equals(setting));
+            makeRelative = "true".equals(setting);
         }
-        return makeRelative.booleanValue();
+        return makeRelative;
     }
 
     protected Node getServletNode(Node node, String template) {
@@ -200,9 +200,9 @@ public class ImageTag extends FieldTag {
 
     private boolean urlConvert() {
         if (urlConvert == null) {
-            urlConvert = Boolean.valueOf("true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.image.urlconvert")));
+            urlConvert = "true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.image.urlconvert"));
         }
-        return urlConvert.booleanValue();
+        return urlConvert;
     }
 
     @Override

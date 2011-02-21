@@ -133,7 +133,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
                 if (removeObject instanceof Collection) {
                     col.removeAll((Collection<C>) removeObject);
                 } else {
-                    col.remove((C)removeObject);
+                    col.remove(removeObject);
                 }
             }
         }
@@ -169,7 +169,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             }
             String set = functionSet.getString(this);
             if (set.equals(THISPAGE)) {
-                Class<? extends Object> jspClass = pageContext.getPage().getClass();
+                Class<?> jspClass = pageContext.getPage().getClass();
                 Method method = Functions.getMethodFromClass(jspClass, functionName);
                 Function f = FunctionFactory.getFunction(method, functionName); // or: new MethodFunction(method, functionName);
                 if (f == null && exception) throw new JspTagException("No function '" + functionName + "' on this page");
@@ -194,7 +194,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             try {
                 Class<?> clazz;
                 if (className.indexOf(".") == -1) {
-                    Class<? extends Object> jspClass = pageContext.getPage().getClass();
+                    Class<?> jspClass = pageContext.getPage().getClass();
                     clazz   = BeanFunction.getClass(jspClass, className);
                 } else {
                     clazz = Class.forName(className);
@@ -299,7 +299,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             }
             value = getObject(getReferid());
         } else {
-            Function function = null;
+            Function function;
             try {
                 function = getFunction();
             } catch (RuntimeException e) {
@@ -327,9 +327,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
                 if (log.isDebugEnabled()) {
                     log.debug("Using parameters " + functionContainer.getParameters() + " of functioncontainer " + functionContainer.getId());
                 }
-                Iterator<Entry<String, Object>> i = functionContainer.getParameters().iterator();
-                while (i.hasNext()) {
-                    Map.Entry<String, Object> entry = i.next();
+                for (Entry<String, Object> entry : functionContainer.getParameters()) {
                     params.set(entry.getKey(), entry.getValue());
                 }
             }

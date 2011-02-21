@@ -78,7 +78,7 @@ public class ListConditionTag extends ListReferrerTag implements Condition {
 
 
         boolean i = getInverse();
-        boolean result = false;
+        boolean result;
         int j = getValue();
         //
         // One would expect a switch, but for some odd reason, that does not work in my resin 3.0.6

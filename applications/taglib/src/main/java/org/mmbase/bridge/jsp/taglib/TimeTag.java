@@ -258,7 +258,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
                 } catch (Throwable e) {
                     log.debug(e);
                     // Try to parse it in three standard ways, this can be considered Legacy, because DynamicDate.getInstance can handle everything already.
-                    date = parseTime(useTime); 
+                    date = parseTime(useTime);
                 }
             }
         } else { // The input format is provided. We use that to parse the time attribute
@@ -300,7 +300,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
             return getFormat().format(date);
         }
     }
-    
+
     private Date handleOffset(Date date) throws JspTagException {
         // Calculate the offset
         if (offset != Attribute.NULL) {
@@ -316,7 +316,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         }
         return date;
     }
-    
+
     private Date handlePrecision(Date date) throws JspTagException, org.mmbase.util.dateparser.ParseException {
         // precision sets fields of date opbject to 0 starting with least relevant bits (for caching purposes)
         if (precision != Attribute.NULL) {
@@ -343,7 +343,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
                 cal.set(Calendar.MILLISECOND, 0);
             }
             if (prec == PRECISION_WEEKS) {
-                // this can not be done in above fall-through mechanism, because should not be done if >= PRECION_WEEKS                
+                // this can not be done in above fall-through mechanism, because should not be done if >= PRECION_WEEKS
                 cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
                 cal.set(Calendar.HOUR_OF_DAY, 0);
                 cal.set(Calendar.MINUTE, 0);
@@ -370,7 +370,6 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
                 case PRECISION_HOURS :
                     cal.set(Calendar.DAY_OF_MONTH, 0);
                 case PRECISION_WEEKS :
-                    ;
                 case PRECISION_DAYS :
                     cal.set(Calendar.MONTH, Calendar.JANUARY);
                 case PRECISION_MONTHS :
@@ -395,7 +394,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
      */
     private Date parseTime(String t) throws ParseException, JspTagException {
 
-        Date date = new Date();
+        Date date;
         if (t.length() == 10) {
             SimpleDateFormat format = getDateFormat();
             format.applyPattern("yyyy/MM/dd");

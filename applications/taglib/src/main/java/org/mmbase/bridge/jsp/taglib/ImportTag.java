@@ -225,7 +225,7 @@ public class ImportTag extends ContextReferrerTag {
                 // should this be more general? Also in other contextwriters?
                 ContextProvider cp = getContextProvider();
                 ContextContainer cc = cp.getContextContainer();
-                Object prevEscaper =  (CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY);
+                Object prevEscaper = pageContext.findAttribute(ContentTag.ESCAPER_KEY);
                 CharTransformer escaper = helper.getEscaper();
                 log.debug("Found " + escaper + " from attribute");
                 pageContext.setAttribute(ContentTag.ESCAPER_KEY, escaper, PageContext.REQUEST_SCOPE);

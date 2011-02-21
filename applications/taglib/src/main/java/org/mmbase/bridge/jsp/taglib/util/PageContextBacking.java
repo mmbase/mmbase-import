@@ -192,7 +192,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
             return null;
         } else {
             try {
-                return pageContext.findAttribute((String) key);
+                return pageContext.findAttribute(key);
             } catch (Exception e) {
                 throw new RuntimeException(" for " + (key == null ? "NULL" : (key.getClass() + ":" + key)) + "  " + e.getMessage() , e);
             }

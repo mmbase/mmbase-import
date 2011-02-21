@@ -397,9 +397,8 @@ public class IncludeTag extends UrlTag {
         if (log.isDebugEnabled()) {
             log.debug("req Parameters");
             Map params = req.getParameterMap();
-            Iterator i = params.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry e = (Map.Entry) i.next();
+            for (Object o : params.entrySet()) {
+                Map.Entry e = (Map.Entry) o;
                 log.debug("key '" + e.getKey() + "' value '" + e.getValue() + "'");
             }
         }
@@ -512,7 +511,7 @@ public class IncludeTag extends UrlTag {
                 if (level == null) {
                     includeLevel = 0;
                 } else {
-                    includeLevel = level.intValue();
+                    includeLevel = level;
                 }
 
                 // Fetch the current servlet from request attribute.
@@ -542,7 +541,7 @@ public class IncludeTag extends UrlTag {
 
                 // Increase level and put it together with the new URI in the Attributes of the request
                 includeLevel++;
-                request.setAttribute(INCLUDE_LEVEL_KEY, Integer.valueOf(includeLevel));
+                request.setAttribute(INCLUDE_LEVEL_KEY, includeLevel);
 
                 if (log.isDebugEnabled()) {
                     log.debug("Next Include: Level=" + includeLevel + " URI=" + includedServlet);
@@ -565,7 +564,7 @@ public class IncludeTag extends UrlTag {
                 if (includeLevel == 0) {
                     request.removeAttribute(INCLUDE_LEVEL_KEY);
                 } else {
-                    request.setAttribute(INCLUDE_LEVEL_KEY, Integer.valueOf(includeLevel));
+                    request.setAttribute(INCLUDE_LEVEL_KEY, includeLevel);
                 }
 
             } else { // really absolute

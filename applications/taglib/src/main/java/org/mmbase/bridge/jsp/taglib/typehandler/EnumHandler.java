@@ -268,7 +268,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
         String id = prefix(fieldName + "_search");
-        if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
+        if ( tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
             return "";
         } else {
             return super.whereHtmlInput(field);
