@@ -62,8 +62,9 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
      * @return <code>true</code> if the given query will contain a UNION
      */
     private boolean isUnionQuery(SearchQuery query) {
-        for (Step step1 : query.getSteps()) {
-            Step step = step1;
+        Iterator<Step> iSteps = query.getSteps().iterator();
+        while (iSteps.hasNext()) {
+            Step step = iSteps.next();
             if (step instanceof RelationStep) {
                 RelationStep relationStep = (RelationStep) step;
                 // If the query contains RelationSteps that are bi-directional
@@ -188,8 +189,9 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
         // across databases, while requiring no modification in the calling
         // code.
         if (query.isDistinct()) {
-            for (SortOrder sortOrder1 : query.getSortOrders()) {
-                SortOrder sortOrder = sortOrder1;
+            Iterator<SortOrder> iSortOrder = query.getSortOrders().iterator();
+            while (iSortOrder.hasNext()) {
+                SortOrder sortOrder = iSortOrder.next();
                 StepField field = sortOrder.getField();
                 if (lFields.indexOf(field) == -1) {
                     lFields.add(field);
@@ -571,7 +573,12 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             for (int counter = 0; counter < orElements.size(); counter++) {
                 for (int counter2 = counter; counter2 < orElements.size(); counter2++) {
                     // determine if the combination is valid and may be added to the relational constraints
-                    skipCombination = counter % 2 == 0 && counter2 - counter == 1;
+                    if (counter%2==0 && counter2-counter==1) {
+                       // this combination may not be added
+                       skipCombination=true;
+                    } else {
+                       skipCombination=false;
+                    }
                     // Don't combine  with same element. That doesn't make sense
                     // If there are just two relation-constraint-elements, we don't need to combine
                     if (counter != counter2 && orElements.size() > 2) {
@@ -610,8 +617,9 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             }
 
             // now add the combined relation-constraints as UNIONS
-            for (String combinedElement1 : combinedElements) {
-                String combinedElement = combinedElement1;
+            Iterator<String> e = combinedElements.iterator();
+            while (e.hasNext()) {
+                String combinedElement = e.next();
                 if (teller != 1) {
                     if (sb.indexOf("COUNT") > -1) {
                         unionRelationConstraints.append(" UNION ALL ").append(baseQuery);
@@ -816,8 +824,9 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     private void closeInformix(MultiConnection activeConnection) {
-        Connection con = activeConnection.unwrap(Connection.class);
+        Connection con;
         try {
+            con = activeConnection.unwrap(Connection.class);
             Method scrub = Class.forName("com.informix.jdbc.IfxConnection").getMethod("scrubConnection");
             scrub.invoke(con);
         } catch (Exception e) {
