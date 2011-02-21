@@ -91,10 +91,13 @@ public class FFMpegThumbNailCreator implements  Callable<Long> {
         CommandExecutor.Method method = Executors.getFreeExecutor();
         String command = "ffmpeg";
         List<String> args = new ArrayList<String>();
-        args.add("-ss");
-        args.add(String.format(Locale.US, "%.2f", node.getDoubleValue("time") / 1000));
         args.add("-i");
         args.add(input.getAbsolutePath());
+        args.add("-an"); // audio doesn't make sense
+        args.add("-ss");
+        args.add(String.format(Locale.US, "%.2f", node.getDoubleValue("time") / 1000));
+        args.add("-t");
+        args.add("00:00:01");
         args.add("-vframes");
         args.add("" + count);
         try {
