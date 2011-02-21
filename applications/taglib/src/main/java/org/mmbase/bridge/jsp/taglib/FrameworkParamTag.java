@@ -44,7 +44,7 @@ public class FrameworkParamTag extends AbstractParamTag implements FrameworkPara
     protected void addParameter(Object value) throws JspTagException {
         if (name == Attribute.NULL) {
             if (value instanceof CharSequence) {
-                for (Map.Entry<String, String> entry : StringSplitter.map(((CharSequence) value).toString()).entrySet()) {
+                for (Map.Entry<String, String> entry : StringSplitter.map(value.toString()).entrySet()) {
                     paramHandler.addFrameworkParameter(entry.getKey(), entry.getValue());
                 }
             } else {

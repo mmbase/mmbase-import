@@ -245,7 +245,7 @@ public class ContentTag extends LocaleTag  {
                 }
 
                 try {
-                    ct = (CharTransformer) fact.createTransformer(fact.createParameters());
+                    ct = fact.createTransformer(fact.createParameters());
                 } catch (Exception ex) {
                     log.debug("Could not be instantiated with default parameters only: " + ex.getMessage());
                     ct = null;
@@ -470,14 +470,12 @@ public class ContentTag extends LocaleTag  {
 
     public static CharTransformer getCharTransformer(String id,  ContextReferrerTag tag) throws JspTagException {
 
-        List transs = org.mmbase.util.StringSplitter.splitFunctions(id);
+        List<String> transs = org.mmbase.util.StringSplitter.splitFunctions(id);
 
         if (transs.size() > 1) {
             ChainedCharTransformer ct = new ChainedCharTransformer();
             // Iterator ids = StringSplitter.split(id).iterator();
-            Iterator ids = transs.iterator();
-            while (ids.hasNext()) {
-                String i = (String) ids.next();
+            for (String i : transs) {
                 CharTransformer c = getSimpleCharTransformer(i, tag);
                 if (ct != COPY) {
                     ct.add(c);
@@ -566,7 +564,7 @@ public class ContentTag extends LocaleTag  {
                 addVary("Accept");
                 String acceptHeader = request.getHeader("Accept");
                 log.debug("a: " + acceptHeader);
-                boolean acceptable = acceptHeader == null ? true : acceptHeader.indexOf(t) != -1;
+                boolean acceptable = acceptHeader == null || acceptHeader.indexOf(t) != -1;
                 if (! acceptable) {
                     if (a.startsWith("CRIPPLE")) {
                         log.debug("browser doesn't accept " + t + " crippling now");

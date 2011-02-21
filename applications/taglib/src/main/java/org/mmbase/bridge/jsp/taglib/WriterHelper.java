@@ -247,7 +247,7 @@ public class WriterHelper {
             }
             if (overrideWrite != null) {
                 log.debug("override-write was used --> " + overrideWrite);
-                return overrideWrite.booleanValue();
+                return overrideWrite;
             }
             boolean result = "".equals(getString()) && (! hasBody);
             log.debug("Result " + result + " with body-string '" + getString() + "' and hasbody " + hasBody);
@@ -434,7 +434,7 @@ public class WriterHelper {
                 break;
             case TYPE_BOOLEAN:
                 if (! (v instanceof Boolean)) {
-                    v = Boolean.valueOf(Casting.toBoolean(v));
+                    v = Casting.toBoolean(v);
                 }
                 break;
             case TYPE_NODE:

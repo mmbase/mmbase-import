@@ -169,7 +169,7 @@ public class BinaryHandler extends AbstractTypeHandler {
      */
     @Override
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
-        SerializableInputStream bytes = (SerializableInputStream) getFieldValue(node, field);
+        SerializableInputStream bytes = getFieldValue(node, field);
         if (bytes == null) {
             if (! MultiPart.isMultipart(tag.getPageContext())) {
                 throw new BridgeException("getBytes(" + prefix(field.getName()) + ") returned null (node= " +  node.getNumber() +") field=(" + field + ") (Was your form  enctype='multipart/form-data' ?");

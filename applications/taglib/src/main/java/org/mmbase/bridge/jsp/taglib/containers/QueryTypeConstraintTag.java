@@ -63,15 +63,13 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
     protected SortedSet<Integer> getOTypes(List<String> names) throws JspTagException {
         Cloud cloud = getCloudVar();
         SortedSet<Integer> set = new TreeSet<Integer>();
-        Iterator<String> i = names.iterator();
         boolean desc = descendants.getBoolean(this, true);
-        while (i.hasNext()) {
-            NodeManager nm = cloud.getNodeManager(i.next());
+        for (String name : names) {
+            NodeManager nm = cloud.getNodeManager(name);
             set.add(nm.getNumber());
             if (desc) {
-                NodeManagerIterator j = nm.getDescendants().nodeManagerIterator();
-                while (j.hasNext()) {
-                    set.add(j.nextNodeManager().getNumber());
+                for (NodeManager dnm : nm.getDescendants()) {
+                    set.add(dnm.getNumber());
                 }
             }
         }

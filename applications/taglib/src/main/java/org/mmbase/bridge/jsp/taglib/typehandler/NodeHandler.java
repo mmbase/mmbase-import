@@ -139,7 +139,7 @@ public class NodeHandler extends AbstractTypeHandler {
                     }
                 }
                 buffer.append("value=\"").append(gui.getValue()).append("\">");
-                buffer.append(Encode.encode("ESCAPE_XML", (String)  gui.getKey()));
+                buffer.append(Encode.encode("ESCAPE_XML", gui.getKey()));
                 buffer.append("</option>\n");
             }
             buffer.append("</select>");
@@ -168,7 +168,7 @@ public class NodeHandler extends AbstractTypeHandler {
         if(useLegacy(null, field) &&
             tag.getCloudVar().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
-            if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
+            if ( tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
                 return null;
             }
         }
@@ -180,7 +180,7 @@ public class NodeHandler extends AbstractTypeHandler {
         if(useLegacy(null, field) &&
            tag.getCloudVar().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
-            if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
+            if ( tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
                 return null;
             }
         }

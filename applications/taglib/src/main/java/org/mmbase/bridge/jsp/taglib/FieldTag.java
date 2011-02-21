@@ -158,13 +158,12 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 
             int nodenr = node.getIntValue("number");		// nodenr of this field to pass to EditTag
             if (nodenr < 0) {
-                java.util.List steps = query.getSteps();
+                java.util.List<Step> steps = query.getSteps();
                 Step nodeStep = null;
                 if (query instanceof NodeQuery) {
                     nodeStep = ((NodeQuery) query).getNodeStep();
             	}
-                for (int j = 0; j < steps.size(); j++) {
-                    Step step = (Step)steps.get(j);
+                for (Step step : steps) {
                     if (step.equals(nodeStep)) {
                         nodenr = node.getIntValue("number");
                     } else {
@@ -300,7 +299,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                             }
                             break;
                         case Field.TYPE_BOOLEAN:
-                            value = Boolean.valueOf(node.getBooleanValue(fieldName));
+                            value = node.getBooleanValue(fieldName);
                             break;
                         case Field.TYPE_LIST:
                             value = node.getListValue(fieldName);

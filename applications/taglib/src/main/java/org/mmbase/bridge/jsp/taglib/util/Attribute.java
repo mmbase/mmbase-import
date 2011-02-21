@@ -110,7 +110,7 @@ public class Attribute {
         if (log.isDebugEnabled()) {
             log.debug("Appending " + attribute);
         }
-        if (! containsVars) buffer.append(attribute.toString());
+        if (! containsVars) buffer.append(attribute);
 
         for (Part ap : attributeParts) {
             ap.appendValue(tag, buffer);
@@ -204,7 +204,7 @@ public class Attribute {
      */
     @Override
     public String toString() {
-        return "att: " + attribute.toString() + " parts: " + attributeParts;
+        return "att: " + attribute + " parts: " + attributeParts;
     }
 
     /**
@@ -291,7 +291,6 @@ public class Attribute {
         if (rest.length() > 0) {
             attributeParts.add(new StringPart(rest));
         }
-        return;
     }
 
     /**
@@ -379,7 +378,7 @@ public class Attribute {
             } else {
                 evaluated = true;
                 ExprCalc cl = new ExprCalc((String) a.getValue(null));
-                part = new Double(cl.getResult());
+                part = cl.getResult();
             }
         }
         @Override
@@ -390,7 +389,7 @@ public class Attribute {
                 return part;
             } else {
                 ExprCalc cl = new ExprCalc( ((Attribute) part).getString(tag));
-                return new Double(cl.getResult());
+                return cl.getResult();
             }
         }
     }
@@ -458,7 +457,8 @@ final class NullAttribute extends Attribute {
     @Override
     public final String getString(ContextReferrerTag tag) { return ""; }
     @Override
-    public final void   appendValue(ContextReferrerTag tag, StringBuilder buffer) { return; }
+    public final void   appendValue(ContextReferrerTag tag, StringBuilder buffer) {
+    }
     @Override
     public final String toString() { return "NULLATTRIBUTE"; }
 }

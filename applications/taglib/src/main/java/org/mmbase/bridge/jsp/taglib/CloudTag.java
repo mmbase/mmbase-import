@@ -864,7 +864,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             log.debug("Cloud was logged on with different authentication type ('" + cloud.getUser().getAuthenticationType()
                       + "' in stead of the requested '" + getAuthenticate() + "'. Should do procedure again.");
             removeCloud();
-            return;
         } else {
             log.debug("Cloud was logged with same authentication type -> ok");
         }
@@ -1006,7 +1005,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         try {
 
             // find this page relative to login-page
-            String referrerPage = null;
+            String referrerPage;
 
             String requestURI = request.getRequestURI();
             if (requestURI.endsWith("/")) {

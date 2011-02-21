@@ -166,7 +166,7 @@ public class DurationHandler extends AbstractTypeHandler {
             Integer minutes  = Integer.parseInt( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_minutes")));
             Integer seconds   = Integer.parseInt( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_seconds")));
             Integer milliSeconds   = Integer.parseInt( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_milliseconds")));
-            return  (long) milliSeconds.intValue() + 1000 * (seconds.intValue()  + 60 * (minutes.intValue() + 60 * hours.intValue()));
+            return  (long) milliSeconds.intValue() + 1000 * (seconds + 60 * (minutes + 60 * hours));
         } catch (java.lang.NumberFormatException e) {
             throw new JspTagException("Not a valid number (" + e.toString() + ")");
         }

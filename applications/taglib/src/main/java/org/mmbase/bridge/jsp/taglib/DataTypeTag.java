@@ -66,7 +66,7 @@ public class DataTypeTag extends CloudReferrerTag {
         int scope = session == null ? PageContext.REQUEST_SCOPE : PageContext.SESSION_SCOPE;
         DataTypeCollector collector = (DataTypeCollector) pageContext.getAttribute(KEY, scope);
         if (collector == null) {
-            collector = new DataTypeCollector(new String());
+            collector = new DataTypeCollector("");
             pageContext.setAttribute(KEY, collector, scope);
 
         }
