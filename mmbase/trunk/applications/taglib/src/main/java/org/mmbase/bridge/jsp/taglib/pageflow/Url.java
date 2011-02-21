@@ -147,7 +147,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         if (log.isDebugEnabled()) {
             log.debug("legacy url " + page + m);
         }
-        String res = BasicUrlConverter.getUrl(page.toString(), m, (HttpServletRequest)tag.getPageContext().getRequest(), escapeamp).toString();
+        String res = BasicUrlConverter.getUrl(page.toString(), m, (HttpServletRequest) tag.getPageContext().getRequest(), escapeamp);
         pageLog.service("getting legacy: " + page + " -> " + res);
         return res;
       }

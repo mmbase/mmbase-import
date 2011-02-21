@@ -138,7 +138,7 @@ public class FormTag extends TransactionTag implements Writer {
         }
         pageContext.setAttribute(KEY, this, SCOPE);
         m = getMode();
-        Url u = new Url(this, (CharSequence) page.getString(this), absolute.getString(this));
+        Url u = new Url(this, page.getString(this), absolute.getString(this));
         u.setProcess();
 
 
@@ -187,7 +187,7 @@ public class FormTag extends TransactionTag implements Writer {
         int result = super.doEndTag();
         switch(m) {
         case MODE_VALIDATE:
-        case MODE_HTML_FORM_VALIDATE:;
+        case MODE_HTML_FORM_VALIDATE:
             if (! t.isCommitted()) {
                 t.cancel();
             }

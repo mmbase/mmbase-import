@@ -63,9 +63,8 @@ public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryCo
 
     protected SortedSet<Integer> getAliases(List<String> names) throws JspTagException {
         SortedSet<Integer> set = new TreeSet<Integer>();
-        Iterator<String> i = names.iterator();
-        while (i.hasNext()) {
-            set.add(getAlias(i.next()));
+        for (String n : names) {
+            set.add(getAlias(n));
         }
         return set;
     }

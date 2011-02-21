@@ -100,7 +100,7 @@ public class TimerTag extends ContextReferrerTag {
      */
 
     public long haltTimer(int handle) throws JspTagException  {
-        long duration = System.currentTimeMillis() - timers.get(handle).longValue();
+        long duration = System.currentTimeMillis() - timers.get(handle);
         String timerid = timerIds.get(handle);
         if (log.isDebugEnabled()) {
             log.debug("Timer " + (name != Attribute.NULL ? name.getString(this) + ":"  : "")  + timerid + ": " + (double)duration / 1000 + " s");

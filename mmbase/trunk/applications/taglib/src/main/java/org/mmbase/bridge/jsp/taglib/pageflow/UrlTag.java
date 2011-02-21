@@ -332,7 +332,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
             String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
             makeRelative = "true".equals(setting) ? Boolean.TRUE : Boolean.FALSE;
         }
-        return makeRelative.booleanValue();
+        return makeRelative;
     }
 
 

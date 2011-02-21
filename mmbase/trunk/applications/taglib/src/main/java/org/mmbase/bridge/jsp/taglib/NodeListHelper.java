@@ -443,11 +443,7 @@ public class NodeListHelper implements ListProvider {
                 if (orderField != null) {
                     String value =  "" + next.getValue(orderField);
                     if (previousValue != null) {
-                        if (value.equals(previousValue)) {
-                            changed = false;
-                        } else {
-                            changed = true;
-                        }
+                        changed = !value.equals(previousValue);
                     }
                     previousValue = value;
 

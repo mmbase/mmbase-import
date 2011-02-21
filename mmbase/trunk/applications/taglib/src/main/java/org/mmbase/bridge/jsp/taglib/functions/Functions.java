@@ -67,9 +67,8 @@ public class Functions {
     public static void remove(Collection col, Object obj) {
         if (col == null) return;
         if (obj instanceof Collection) { // like removeAll
-            Iterator i = ((Collection) obj).iterator();
-            while (i.hasNext()) {
-                remove(col, i.next());
+            for (Object o : ((Collection) obj)) {
+                remove(col, o);
             }
         } else {
             if (obj instanceof Node) {

@@ -178,7 +178,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
      * @since MMBase-1.8.1
      */
     protected NodeManager getNodeManagerFromQuery(String id, boolean exception) throws JspTagException {
-        NodeQueryContainer qc = (NodeQueryContainer) findParentTag(NodeQueryContainer.class, id, exception);
+        NodeQueryContainer qc = findParentTag(NodeQueryContainer.class, id, exception);
         if (qc != null) {
             NodeQuery query = qc.getNodeQuery();
             return query.getNodeManager();
