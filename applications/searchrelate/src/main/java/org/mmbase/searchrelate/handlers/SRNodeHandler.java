@@ -26,6 +26,13 @@ import org.mmbase.util.logging.Logging;
 public class SRNodeHandler extends IntegerHandler {
     private static final Logger LOG = Logging.getLoggerInstance(SRNodeHandler.class);
 
+
+    private int enumHandlerLimit = 30;
+
+    public void setEnumHandlerLimit(int e) {
+        enumHandlerLimit = e;
+    }
+
     @Override
     protected void appendClasses(Request request, StringBuilder buf, Node node, Field field) {
         buf.append("mm_sr_searcher ");
@@ -52,6 +59,9 @@ public class SRNodeHandler extends IntegerHandler {
 
     @Override
     public String input(Request request, Node node, Field field, boolean search)  {
+        if (field.getDataType().getEnumerationFactory().size() < enumHandlerLimit) { // a drop down for small lists suffices
+            return new EnumHandler().input(request, node, field, search);
+        }
         if (search) {
             return super.input(request, node, field, search);
         } else {
