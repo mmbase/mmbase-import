@@ -12,8 +12,10 @@ package org.mmbase.module.builders;
 import org.mmbase.module.core.*;
 
 /**
+ * Dummy is equal to {@link MMObjectBuilder}
  * @author Daniel Ockeloen
  * @version $Id$
+ * @deprecated Simply use {@link MMObjectBuilder}. In the builder xml you can simply leave the &lt;class&gt; element away alltogether.
  */
 public class Dummy extends MMObjectBuilder {
 
