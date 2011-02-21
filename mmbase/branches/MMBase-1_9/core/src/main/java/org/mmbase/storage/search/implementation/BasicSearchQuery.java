@@ -227,6 +227,9 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         List<Step> steps = q.getSteps();
         Step step = steps.get(steps.indexOf(fstep));
         MMObjectBuilder bul = MMBase.getMMBase().getBuilder(step.getTableName());
+        if (bul == null) {
+            throw new IllegalStateException("No such builder " + step.getTableName());
+        }
         CoreField field = bul.getField(f.getFieldName());
         if (field == null) {
             throw new IllegalStateException("Did not find field " + f.getFieldName() + " in builder " + step.getTableName() + " " + bul.getFields());

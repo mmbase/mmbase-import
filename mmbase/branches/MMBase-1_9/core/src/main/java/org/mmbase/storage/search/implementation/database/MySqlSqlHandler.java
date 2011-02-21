@@ -57,7 +57,8 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         super();
     }
 
-    @Override protected String toSqlString(String str) {
+    @Override
+    protected String toSqlString(String str) {
         //http://dev.mysql.com/doc/refman/5.0/en/string-syntax.html
         String res =  super.toSqlString(str
                                         .replaceAll("\\\\", "\\\\\\\\")
@@ -70,7 +71,8 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
-    @Override public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
+    @Override
+    public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int result;
         switch (feature) {
         case SearchQueryHandler.FEATURE_MAX_NUMBER:
@@ -115,7 +117,8 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     private static final Pattern NO_LOWER_NEEDED = Pattern.compile("(varchar|char|text|mediumtext|longtext).*");
     private static final Map<String, Boolean> useLowerCache = new ConcurrentHashMap<String, Boolean>();
     // javadoc inherited
-    @Override protected boolean useLower(FieldConstraint constraint) {
+    @Override
+    protected boolean useLower(FieldConstraint constraint) {
         StepField stepField = constraint.getField();
         String stepName = stepField.getStep().getTableName();
         String fieldName = stepField.getFieldName();
@@ -139,7 +142,8 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     /**
      * @since MMBase-1.9.2
      */
-    @Override protected String appendPreField(StringBuilder sb, FieldConstraint constraint, StepField field, boolean multiple) {
+    @Override
+    protected String appendPreField(StringBuilder sb, FieldConstraint constraint, StepField field, boolean multiple) {
         if (constraint instanceof FieldCompareConstraint) {
             FieldCompareConstraint compare = (FieldCompareConstraint) constraint;
             if (field.getType() == Field.TYPE_STRING && compare.isCaseSensitive() && ! isCaseSensitive(getDataType(field))) {
@@ -149,7 +153,8 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         return null;
     }
 
-    @Override protected StringBuilder appendLikeOperator(StringBuilder sb, FieldConstraint constraint) {
+    @Override
+    protected StringBuilder appendLikeOperator(StringBuilder sb, FieldConstraint constraint) {
         if (constraint.isCaseSensitive() && ! isCaseSensitive(getDataType(constraint.getField()))) {
             sb.append(" LIKE BINARY ");
         } else {
@@ -158,7 +163,8 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         return sb;
     }
 
-    @Override protected StringBuilder appendRegularExpressionOperator(StringBuilder sb, FieldConstraint constraint) {
+    @Override
+    protected StringBuilder appendRegularExpressionOperator(StringBuilder sb, FieldConstraint constraint) {
         if (constraint.isCaseSensitive() && ! isCaseSensitive(getDataType(constraint.getField()))) {
             sb.append(" REGEXP BINARY ");
         } else {
