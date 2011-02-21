@@ -276,7 +276,11 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
                 System.setErr(stderr);
             }
         }
-        log4jRepository.shutdown();
+        try {
+            log4jRepository.shutdown();
+        } catch (Throwable t) {
+            System.err.println(t.getMessage());
+        }
     }
 
     /**
