@@ -360,7 +360,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * @since MMBase-1.8
      */
     public StringBuilder getFileName(MMObjectNode node, StringBuilder buf) {
-        Cloud anonymousCloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+        Cloud anonymousCloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
         Node bridgeNode;
         if (anonymousCloud.hasNode(node.getNumber()) && anonymousCloud.mayRead(node.getNumber())) {
             bridgeNode = anonymousCloud.getNode(node.getNumber());
