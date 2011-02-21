@@ -37,7 +37,7 @@ public class TitleField implements Processor {
 
     @Override
     public Object process(final Node node, final Field field, Object value) {
-        Node idNode = node.getNodeValue("id"); // a videsource
+        Node idNode = node.getCloud().mayRead(node.getIntValue("id")) ? node.getNodeValue("id") : null; // a videsource
         if (idNode != null && idNode.getNodeManager().hasField("mediafragment")) {
             Node mediaFragment = idNode.getNodeValue("mediafragment");
             long time = node.getLongValue("time");
