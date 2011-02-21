@@ -367,7 +367,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
         getReleaseStrategy().removeAllStrategies();
         log.debug("found a SearchQueryCache: " + getName());
         //see if there are globally configured release strategies
-        Element releaseStrategies = DocumentReader.getElementByPath(element, "caches.releaseStrategies");
+        Element releaseStrategies = DocumentReader.getElementByPath(element.getOwnerDocument().getDocumentElement(), "caches.releaseStrategies");
         if (releaseStrategies != null) {
             getReleaseStrategy().fillFromXml(releaseStrategies);
         }
