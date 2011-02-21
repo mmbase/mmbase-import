@@ -12,7 +12,7 @@
   <mm:import externid="length" vartype="integer">100</mm:import>
   <mm:import externid="unit" vartype="string">%</mm:import>
   <mm:escaper id="myfilesize" type="filesize">
-    <mm:param name="binaryPrefixes">${empty initParam['org.mmbase.filesize.binaryPrefixes'] ? true : initParam['org.mmbase.filesize.binaryPrefixes']}</mm:param>
+    <mm:param name="binaryPrefixes">${empty initParam['mmbase.filesize.binaryPrefixes'] ? true : initParam['mmbase.filesize.binaryPrefixes']}</mm:param>
   </mm:escaper>
   <fmt:formatNumber value="${sessionScope['org.mmbase.uploadInfo'].fraction * length}"
                     maxFractionDigits="0"
