@@ -3200,8 +3200,8 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             //  Scheme: CREATE_INDEX
             createIndexScheme = factory.getScheme(Schemes.CREATE_INDEX, Schemes.CREATE_INDEX_DEFAULT);
         }
-        // note: do not attempt to create an index if it already exists.
         if (createIndexScheme != null) {
+            // note: do not attempt to create an index if it already exists.
             if (!exists(index, tablename)) {
                 String fieldlist = getFieldList(index);
                 if (fieldlist != null) {
@@ -3227,7 +3227,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 }
             }
         } else {
-            log.warn("Missing create index scheme for " + index);
+            log.info("Missing create index scheme for " + index + ". So index not created.");
         }
     }
 
