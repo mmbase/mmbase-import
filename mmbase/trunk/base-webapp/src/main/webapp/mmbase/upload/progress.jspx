@@ -11,6 +11,9 @@
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="length" vartype="integer">100</mm:import>
   <mm:import externid="unit" vartype="string">%</mm:import>
+  <mm:escaper id="myfilesize" type="filesize">
+    <mm:param name="binaryPrefixes">${empty initParam['org.mmbase.filesize.binaryPrefixes'] ? true : initParam['org.mmbase.filesize.binaryPrefixes']}</mm:param>
+  </mm:escaper>
   <fmt:formatNumber value="${sessionScope['org.mmbase.uploadInfo'].fraction * length}"
                     maxFractionDigits="0"
                     var="roundedLength" />
@@ -24,11 +27,11 @@
       </span>
       <span class="speed">
         <jsp:text>(</jsp:text>
-        <mm:escape escape="filesize">${sessionScope['org.mmbase.uploadInfo'].bytesRead}</mm:escape>
+        <mm:escape escape="myfilesize">${sessionScope['org.mmbase.uploadInfo'].bytesRead}</mm:escape>
         <jsp:text>/</jsp:text>
-        <mm:escape escape="filesize">${sessionScope['org.mmbase.uploadInfo'].totalSize}</mm:escape>
+        <mm:escape escape="myfilesize">${sessionScope['org.mmbase.uploadInfo'].totalSize}</mm:escape>
         <jsp:text>, </jsp:text>
-        <mm:escape escape="filesize">${1000 * sessionScope['org.mmbase.uploadInfo'].bytesRead /  sessionScope['org.mmbase.uploadInfo'].elapsedTime}</mm:escape>
+        <mm:escape escape="myfilesize">${1000 * sessionScope['org.mmbase.uploadInfo'].bytesRead /  sessionScope['org.mmbase.uploadInfo'].elapsedTime}</mm:escape>
         <jsp:text>/s)</jsp:text>
       </span>
     </p>
