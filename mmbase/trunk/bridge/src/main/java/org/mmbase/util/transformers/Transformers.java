@@ -130,14 +130,14 @@ public class Transformers {
             log.error("Class " + name + " specified for " + errorId + " could not be found");
             return null;
         }
-        if (Transformer.class.isAssignableFrom(clazz)) {
+        if (Transformer.class.isAssignableFrom(clazz) ||
+            Processor.class.isAssignableFrom(clazz)) {
             try {
                 return new BeanTransformerFactory(clazz);
             } catch (Exception e) {
                 log.error("The class " + clazz + " specified for "  + errorId + " is not a  ParamerizedTransformerFactory but a " + clazz + " and it could not be wrapped into a Factory: " + e.getMessage());
             }
         }
-
 
         if (! ParameterizedTransformerFactory.class.isAssignableFrom(clazz)) {
             log.error("The class " + clazz + " specified for "  + errorId + " is not a ParamerizedTransformerFactory");
