@@ -12,6 +12,7 @@
     name*
     description*
     class?
+    handler*
     property*
     default?
     unique?
