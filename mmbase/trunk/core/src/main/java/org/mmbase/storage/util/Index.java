@@ -67,4 +67,9 @@ public class Index extends ArrayList<Field> {
         return super.remove(field);
     }
 
+    @Override
+    public String toString() {
+        return (isUnique() ? "UNIQUE INDEX" : "INDEX") + " '" + getName() + "' on " + getParent().getTableName() + " " + super.toString();
+    }
+
 }

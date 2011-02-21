@@ -257,7 +257,7 @@ public abstract class BasicCloudContext implements CloudContext {
                     try {
                         MMBase.class.wait();
                     } catch(InterruptedException ie) {
-                        throw new BridgeException(ie);
+                        log.info(ie);
                     }
                 }
             }
