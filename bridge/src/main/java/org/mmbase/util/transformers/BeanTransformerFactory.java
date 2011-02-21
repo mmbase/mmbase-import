@@ -12,6 +12,7 @@ package org.mmbase.util.transformers;
 import java.util.*;
 import java.lang.reflect.*;
 import org.mmbase.util.functions.*;
+import org.mmbase.datatypes.processors.Processor;
 
 /**
  * BeanTransformerFactory takes simple {@link Transformer}s class-es and wraps them into parameterixed transformer factories.
@@ -25,11 +26,11 @@ import org.mmbase.util.functions.*;
 public class BeanTransformerFactory<T extends Transformer> implements ParameterizedTransformerFactory<T>  {
 
 
-    private final Class<T> implementation;
+    private final Class<?> implementation;
     private final Parameter<?>[] definition;
     private final List<Method> setMethods = new ArrayList<Method>();
 
-    public BeanTransformerFactory(Class<T> clazz) throws IllegalAccessException, InstantiationException, java.lang.reflect.InvocationTargetException,
+    public BeanTransformerFactory(Class<?> clazz) throws IllegalAccessException, InstantiationException, java.lang.reflect.InvocationTargetException,
         org.mmbase.datatypes.util.xml.DependencyException {
         implementation = clazz;
         definition = BeanFunction.getParameterDefinition(implementation.newInstance(), setMethods);
@@ -40,9 +41,12 @@ public class BeanTransformerFactory<T extends Transformer> implements Parameteri
     @Override
     public T createTransformer(Parameters parameters) {
         try {
-            T result = implementation.newInstance();
+            Object result = implementation.newInstance();
             BeanFunction.setParameters(result, parameters, setMethods);
-            return result;
+            if (Processor.class.isAssignableFrom(implementation)) {
+                result = new ProcessorCharTransformer((Processor) result);
+            }
+            return (T) result;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
