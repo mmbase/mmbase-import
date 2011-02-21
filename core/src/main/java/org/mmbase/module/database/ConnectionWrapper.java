@@ -19,7 +19,7 @@ import java.util.*;
  * @version $Id$
  * @since MMBase-1.8
  */
-public abstract class ConnectionWrapper { //implements Connection {
+public abstract class ConnectionWrapper implements MultiConnection {
     /**
      * The wrapped connection
      */
@@ -32,7 +32,7 @@ public abstract class ConnectionWrapper { //implements Connection {
     /**
      * Called just before every prepare statement. Can be overridden, because this default implementation is empty.
      */
-    protected void setLastSQL(String sql) {
+    public void setLastSQL(String sql) {
     }
     /**
      * @see java.sql.Connection#createStatement()
