@@ -11,7 +11,7 @@
   </parent>
 
   <artifactId>mmbase-clustering</artifactId>
-  <name>MMBase Clustering</name>
+  <name>MMBase2 Clustering</name>
   <packaging>war</packaging>
 
   <description>
