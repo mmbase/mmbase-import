@@ -597,7 +597,7 @@ public class MMBaseContext implements ServletContextListener {
      */
     public static void setDataDir(String setting) {
         if (dataDirString != null && ! dataDirString.equals(setting)) throw new IllegalStateException();
-        if (setting.equals("")) setting = null;
+        if ("".equals(setting)) setting = null;
         dataDirString = setting;
     }
 
