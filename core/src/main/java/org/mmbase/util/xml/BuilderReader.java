@@ -11,6 +11,7 @@ package org.mmbase.util.xml;
 
 import java.util.*;
 import java.util.regex.Pattern;
+import org.mmbase.bridge.ContextProvider;
 
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
@@ -20,6 +21,7 @@ import org.mmbase.core.CoreField;
 import org.mmbase.bridge.util.DataTypeSetter;
 import org.mmbase.core.util.Fields;
 import org.mmbase.datatypes.*;
+import org.mmbase.datatypes.DataTypes.FieldNotFoundException;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.util.Index;
@@ -328,7 +330,7 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
                     } else {
                         CoreField newDef = decodeFieldDef(builder, collector, fieldElement);
                         newDef.setStoragePosition(pos++);
-                        newDef.finish();
+                        decodeFieldAttributes(fieldElement, newDef);
                         results.add(newDef);
                     }
                 } catch (Exception e) {
@@ -555,8 +557,8 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
                     } else if ("true".equalsIgnoreCase(fieldUnique)) {
                         dataType.setUnique(true);
                     }
-
                     decodeFieldDef(fieldElement, def, collector);
+                    def.finish();
 
                 }
             };
@@ -615,7 +617,28 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
         }
         return true;
     }
-
+    /**
+     * @since MMBase-1.9.6
+     * @param fieldAttribute
+     * @return
+     * @throws FieldNotFoundException
+     */
+    @Override
+    protected BasicDataType getDataTypeForFieldAttribute(String fieldAttribute) throws FieldNotFoundException {
+        List<String> elements = Arrays.asList(fieldAttribute.split("\\|", 4));
+        Collections.reverse(elements);
+        String uri                = elements.size() == 4 ? elements.get(3) : ContextProvider.getDefaultCloudContext().getUri();
+        if (uri.equals("local")) {
+            MMObjectBuilder ob = mmbase.getBuilder(elements.get(1));
+            if (ob == null) throw new FieldNotFoundException("Builder " + elements.get(1) + " not yet available");
+            CoreField field = ob.getField(elements.get(0));
+            if (field == null) throw new FieldNotFoundException("Builder " + elements.get(1) + " has no field " + elements.get(0));
+            return (BasicDataType) field.getDataType();
+        } else {
+            return super.getDataTypeForFieldAttribute(fieldAttribute);
+        }
+    }
+     
     /**
      * For testing only
      */
