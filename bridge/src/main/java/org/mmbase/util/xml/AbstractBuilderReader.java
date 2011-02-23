@@ -16,15 +16,14 @@ import org.mmbase.datatypes.DataTypes.FieldNotFoundException;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.mmbase.bridge.Field;
-import org.mmbase.core.CoreField;
-import org.mmbase.core.util.DataTypeSetter;
-import org.mmbase.core.util.Fields;
+import org.mmbase.bridge.util.DataTypeSetter;
 import org.mmbase.core.event.*;
 import org.mmbase.datatypes.*;
 import org.mmbase.datatypes.util.xml.DataTypeReader;
 import org.mmbase.datatypes.util.xml.DependencyException;
 
 import org.mmbase.util.*;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
 /**
