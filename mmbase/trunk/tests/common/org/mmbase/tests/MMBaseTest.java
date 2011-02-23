@@ -52,8 +52,11 @@ public abstract class MMBaseTest extends TestCase {
             mmb = MMBase.getMMBase();
 
             MMAdmin mmadmin = (MMAdmin) Module.getModule("mmadmin", true);
+            int i = 0;
             while (! mmadmin.getState()) {
                 Thread.sleep(1000);
+                i++;
+                if (i % 10 == 0) System.out.println("Waiting for the mmadmin module");
             }
         } catch (Throwable e) {
             System.out.println("Error during startMMBase" + e.getMessage() + " " + Logging.stackTrace(e));
