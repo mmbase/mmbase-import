@@ -15,7 +15,6 @@ import java.util.regex.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
-import java.util.*;
 
 /**
  *

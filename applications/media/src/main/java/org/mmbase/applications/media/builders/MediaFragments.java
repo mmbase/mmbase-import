@@ -59,8 +59,7 @@ public class MediaFragments extends MMObjectBuilder {
     public static final String FUNCTION_FORMAT      = "format";
     public static final String FUNCTION_DURATION    = "duration";
 
-    // parameter definitions (making use of reflection utitility for functions)
-    public final static Parameter[] URLS_PARAMETERS          = { new Parameter("format",  List.class), new Parameter("bitrate", String.class), Parameter.REQUEST };
+    public final static Parameter[] URLS_PARAMETERS          = { new Parameter("format",  List.class), new Parameter("bitrate", String.class), new Parameter("attributes", Map.class), Parameter.REQUEST };
     public final static Parameter[] FILTEREDURLS_PARAMETERS  = URLS_PARAMETERS;
     public final static Parameter[] URL_PARAMETERS           = URLS_PARAMETERS;
     public final static Parameter[] NUDEURL_PARAMETERS       = URLS_PARAMETERS;
@@ -135,7 +134,7 @@ public class MediaFragments extends MMObjectBuilder {
             // info.put("urlresult", "(<??>) ");
             info.put("gui", "(state|channels|codec|format|..) Gui representation of this object.");
 
-            if (args == null || args.size() == 0) {
+            if (args == null || args.isEmpty()) {
                 return info;
             } else {
                 return info.get(args.get(0));

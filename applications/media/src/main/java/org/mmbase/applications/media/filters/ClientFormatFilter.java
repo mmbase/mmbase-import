@@ -48,7 +48,7 @@ public class ClientFormatFilter implements Filter {
             }
 
             if( format instanceof List) {
-                if( ((List)format).size()==0 ) {
+                if( ((List) format).isEmpty() ) {
                     if (log.isDebugEnabled()) {
                         log.debug("Client did not specify format.");
                     }
