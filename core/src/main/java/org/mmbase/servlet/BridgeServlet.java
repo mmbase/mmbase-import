@@ -350,7 +350,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
      * @param node The node which is specified on the URL (obtained by {@link #getNode}
      * @since MMBase-1.7.4
      */
-    protected Node getServedNode(QueryParts qp, Node node) {
+    protected Node getServedNode(QueryParts qp, Node node) throws IOException {
         return node;
     }
 
