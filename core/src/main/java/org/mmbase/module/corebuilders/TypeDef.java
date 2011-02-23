@@ -738,6 +738,7 @@ public class TypeDef extends MMObjectBuilder {
             return null;
         }
         mmb.initBuilder(builder);
+        builder.createIfNotExists();
         return builder;
     }
 
