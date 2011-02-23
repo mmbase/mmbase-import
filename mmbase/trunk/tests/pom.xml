@@ -126,12 +126,17 @@ See http://www.MMBase.org/license
   <dependencies>
     <dependency>
       <groupId>org.mmbase</groupId>
-      <artifactId>mmbase</artifactId>
+      <artifactId>mmbase-core</artifactId>
       <version>${mmbase.version.test}</version>
     </dependency>
     <dependency>
       <groupId>org.mmbase</groupId>
-      <artifactId>mmbase</artifactId>
+      <artifactId>mmbase-utils</artifactId>
+      <version>${mmbase.version.test}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-core</artifactId>
       <version>${mmbase.version.test}</version>
       <classifier>tests</classifier>
     </dependency>
