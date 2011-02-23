@@ -192,7 +192,7 @@ public class Transaction implements Runnable {
         // Create new transaction.
         String key = null;
         try {
-            key = id; 
+            key = id;
             getTransactionManager().createTransaction(id);
         } catch (TransactionManagerException e) {
             throw new TransactionHandlerException(e.getMessage());
@@ -404,13 +404,8 @@ public class Transaction implements Runnable {
             + id + " is timed out after "  + timeOut + " seconds.");
         }
         // Cancel the transaction and stop thread.
-        try {
-            transactionManager.cancel(uti.user, id);
-        } catch (TransactionManagerException e) {
-            throw new TransactionHandlerException(e.getMessage());
-        } finally {
-            stop();
-        }
+        transactionManager.cancel(uti.user, id);
+        stop();
 
         // Remove from user's transaction contexts.
         uti.knownTransactionContexts.remove(id);
