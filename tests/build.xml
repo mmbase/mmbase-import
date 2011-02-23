@@ -184,6 +184,9 @@
       <arg value="org.mmbase.bridge.AllTests" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <jvmarg value="-Xdebug" />
+      <jvmarg value="-Xnoagent" />
+      <jvmarg value="-Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=n" />
       <assertions><enable /></assertions>
     </java>
   </target>
