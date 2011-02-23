@@ -16,14 +16,15 @@ import org.mmbase.datatypes.DataTypes.FieldNotFoundException;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.mmbase.bridge.Field;
-import org.mmbase.bridge.util.DataTypeSetter;
+import org.mmbase.core.CoreField;
+import org.mmbase.core.util.DataTypeSetter;
+import org.mmbase.core.util.Fields;
 import org.mmbase.core.event.*;
 import org.mmbase.datatypes.*;
 import org.mmbase.datatypes.util.xml.DataTypeReader;
 import org.mmbase.datatypes.util.xml.DependencyException;
 
 import org.mmbase.util.*;
-import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -425,17 +426,28 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
                                        final Element fieldElement,
                                        final boolean forceInstance) {
         postponedDataTypeDecoders.add(new Runnable() {
-            @Override
-            public void run() {
-                decodeDataType(setter, builder, collector, fieldName, fieldElement, forceInstance);
-            }
-            @Override
-            public String toString() {
-                return "Decoding datatype for " + builder + ":" + fieldName;
-            }
-        });
+                @Override
+                public void run() {
+                    decodeDataType(setter, builder, collector, fieldName, fieldElement, forceInstance);
+                }
+                @Override
+                public String toString() {
+                    return "Decoding datatype for " + builder + ":" + fieldName;
+                }
+            });
         log.debug("Scheduling for later " + postponedDataTypeDecoders);
 
+
+    }
+
+    /**
+     * @since MMBase-1.9.6
+     * @param fieldAttribute
+     * @return
+     * @throws org.mmbase.datatypes.DataTypes.FieldNotFoundException
+     */
+    protected BasicDataType getDataTypeForFieldAttribute(String fieldAttribute) throws FieldNotFoundException {
+        return DataTypes.getDataTypeForFieldAttribute(fieldAttribute);
     }
 
     /**
@@ -554,7 +566,8 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
             String fieldAttribute = dataTypeElement.getAttribute("field");
             if (! fieldAttribute.equals("")) {
                 try {
-                    requestedBaseDataType = DataTypes.getDataTypeForFieldAttribute(fieldAttribute);
+                    requestedBaseDataType = getDataTypeForFieldAttribute(fieldAttribute);
+                    requestedBaseDataType = requestedBaseDataType.clone(fieldAttribute);
                 } catch (FieldNotFoundException ex) {
                     decodeDataTypeLater(setter,
                                         builder,
@@ -562,7 +575,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
                                         fieldName,
                                         fieldElement,
                                         forceInstance);
-                    log.service(" " + ex.getMessage() + " Will try again later.");
+                    log.service("For '" + fieldAttribute + "': " + ex.getMessage() + " Will try again later.");
                     return;
                 }
             } else {
