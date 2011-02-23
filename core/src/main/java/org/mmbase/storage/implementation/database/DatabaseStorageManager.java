@@ -2283,9 +2283,12 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         }
 
         List<CoreField> tableFields = new ArrayList<CoreField>();
+        System.out.println("Fields of " + builder.getTableName() + " " + fields + " (all fields " + builder.getFields() + ")");
         for (CoreField field : fields) {
             if (isPartOfBuilderDefinition(field)) {
                 tableFields.add(field);
+            } else {
+                System.out.println("" + field + " is not a part of the definition of " + builder.getTableName());
             }
         }
         String tableName = (String) factory.getStorageIdentifier(builder);
@@ -2350,6 +2353,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 log.error("" + se.getMessage(), se);
             }
         }
+        System.out.println("Creating table for " + builder.getTableName() + " " + createFields);
         String query = "";
         try {
             getActiveConnection();
