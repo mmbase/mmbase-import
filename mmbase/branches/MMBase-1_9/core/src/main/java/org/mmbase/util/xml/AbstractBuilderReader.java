@@ -103,7 +103,6 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
         EventManager.getInstance().addEventListener(new SystemEventListener() {
                 public void notify(SystemEvent se) {
                     if (se instanceof BuildersRead) {
-                        System.out.println("Received " + se + " " + postponedDataTypeDecoders);
                         int iterationCount = 0;
                         int size;
                         do {
