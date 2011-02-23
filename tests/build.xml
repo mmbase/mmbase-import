@@ -73,7 +73,7 @@
     <echo message="Initing. Testing mmbase with java ${java.version}" />
     <path id="run.classpath">
       <fileset dir="target">
-        <include name="mmbase-tests-1.jar" />
+        <include name="mmbase-tests-2-SNAPSHOT.jar" />
       </fileset>
       <fileset dir="target/dependency">
         <include name="junit*.jar" />
@@ -83,7 +83,9 @@
         <include name="commons-fileupload*.jar" />
         <include name="mmbase-resources*.jar" />
         <include name="mmbase-richtext*.jar" />
-        <include name="mmbase-${version}*.jar" />
+        <include name="mmbase-utils-${version}.jar" />
+        <include name="mmbase-bridge-${version}.jar" />
+        <include name="mmbase-core-${version}.jar" />
       </fileset>
     </path>
     <path id="run.classpath.vpro-wizards">
