@@ -537,7 +537,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * there are not dependencies on other builders which might not yet be initalized (MMB-1991).
      * @since MMBase-1.9.5
      */
-    protected void createIfNotExists() {
+    public void createIfNotExists() {
         if (!created()) {
             log.info("Creating table for builder " + tableName);
             if (!create() ) {
