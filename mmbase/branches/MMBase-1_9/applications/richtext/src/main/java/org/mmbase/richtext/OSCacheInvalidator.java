@@ -34,10 +34,15 @@ public class OSCacheInvalidator implements NodeEventListener, SystemEventListene
     public void notify(SystemEvent se) {
         LOG.info(se);
         if (se instanceof SystemEvent.Up) {
-            ServletContext context =  MMBaseContext.getServletContext();
-            ServletCacheAdministrator admin = ServletCacheAdministrator.getInstance(context);
-            cache = admin.getAppScopeCache(context);
-            LOG.info("Cache invalidator initialized with " + cache);
+            try {
+                ServletContext context =  MMBaseContext.getServletContext();
+                ServletCacheAdministrator admin = ServletCacheAdministrator.getInstance(context);
+                cache = admin.getAppScopeCache(context);
+                LOG.info("Cache invalidator initialized with " + cache);
+            } catch (NoClassDefFoundError ncdfe) {
+                // probably oscache not installed, so never mind
+                LOG.debug(ncdfe);
+            }
         }
     }
     @Override
