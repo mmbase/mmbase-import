@@ -10,4 +10,8 @@
     <class>org.mmbase.streams.thumbnails.ThumbNailFunction</class>
   </function>
 
+  <function name="gui">
+    <class>org.mmbase.streams.thumbnails.GuiFunction</class>
+  </function>
+
 </functionlist>
