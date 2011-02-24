@@ -17,6 +17,7 @@
         <param name="useSpecificSetter">true</param>
         <param name="setIfNotChanged">false</param>
       </handler>
+      <property name="collator" value=":IDENTICAL" />
       <setprocessor type="binary">
         <class name="org.mmbase.datatypes.processors.BinaryFile$Setter">
         </class>

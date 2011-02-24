@@ -109,16 +109,17 @@ public class Images extends AbstractImages {
             log.warn("Builder with name 'icaches' wasn't loaded. Cannot do image-conversions.");
         }
 
-        Map<String, String> map = getInitParameters("mmbase/imaging"); // TODO, this would conflict
-                                                                       // with module with name 'imaging'?
-        map.put("configfile", getConfigResource());
+        if (! "false".equals(getInitParameter("InitFactory"))) {
+            Map<String, String> map = getInitParameters("mmbase/imaging"); // TODO, this would conflict
+            // with module with name 'imaging'?
+            map.put("configfile", getConfigResource());
 
-        if (! Factory.isInited()) {
-            Factory.init(map);
-        } else {
-            log.warn("Image conversion factory is already inited. Ignoring " + map + " of " + getTableName());
+            if (! Factory.isInited()) {
+                Factory.init(map);
+            } else {
+                log.warn("Image conversion factory is already inited. Ignoring " + map + " of " + getTableName());
+            }
         }
-
         return true;
     }
 
