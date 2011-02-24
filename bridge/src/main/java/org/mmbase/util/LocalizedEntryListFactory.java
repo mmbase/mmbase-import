@@ -513,12 +513,16 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                                                         return new Entry<C, String>((C) next, "NULL_NODE");
                                                     } else {
                                                         try {
-                                                            Function function = next.getFunction("gui");
+                                                            try {
+                                                                function = next.getFunction("entrylistgui");
+                                                            } catch (NotFoundException nfe) {
+                                                                function = next.getFunction("gui");
+                                                            }
                                                             Parameters params = function.createParameters();
-                                                            params.set("locale", locale);
+                                                            params.setIfDefined("locale", locale);
                                                             Object gui = function.getFunctionValue(params);
-                                                            if (gui == null) gui = next.getStringValue("number");
-                                                            return new Entry<C, String>((C) next, gui.toString());
+                                                            String s = gui == null ? next.getStringValue("number") : gui.toString();
+                                                            return new Entry<C, String>((C) next, s);
                                                         } catch (NotFoundException nfe) {
                                                             if (node == null) {
                                                                 return new Entry<C, String>((C) next, "-1");
