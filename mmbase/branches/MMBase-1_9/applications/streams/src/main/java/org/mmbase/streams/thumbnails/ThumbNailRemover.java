@@ -22,8 +22,12 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 package org.mmbase.streams.thumbnails;
 
 import java.util.*;
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.ContextProvider;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.core.event.*;
 import org.mmbase.util.logging.*;
 
@@ -38,13 +42,13 @@ public class ThumbNailRemover implements NodeEventListener {
 
     private static final Logger LOG = Logging.getLoggerInstance(ThumbNailRemover.class);
 
-    private static Set<String> builders = new HashSet<String>(Arrays.asList(new String[]{"videostreamsources"}));
+    private static Set<String> deletebuilders = new HashSet<String>(Arrays.asList(new String[]{"videostreamsources"}));
 
 
     @Override
     public void notify(NodeEvent ne) {
         if (ne.getType() == Event.TYPE_DELETE) {
-            if (builders.contains(ne.getBuilderName())) {
+            if (deletebuilders.contains(ne.getBuilderName())) {
                 Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
                 Node node = cloud.getNode(ne.getNodeNumber());
                 NodeManager thumbs = cloud.getNodeManager("thumbnails");
@@ -57,6 +61,17 @@ public class ThumbNailRemover implements NodeEventListener {
 
             }
         }
+        if (ne.getType() == Event.TYPE_CHANGE) {
+            if ("thumbnails".equals(ne.getBuilderName()) && ne.getChangedFields().contains("time")) {
+                Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+                Node node = cloud.getNode(ne.getNodeNumber());
+                if (! node.isNull("handle")) {
+                    node.setValue("handle", null);
+                    node.commit();
+                }
+            }
+        }
+
 
     }
 
