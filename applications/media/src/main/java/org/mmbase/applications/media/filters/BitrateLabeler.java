@@ -26,7 +26,18 @@ public class  BitrateLabeler  extends Labeler  {
     private static final Logger log = Logging.getLoggerInstance(BitrateLabeler.class);
     private static final String CONFIG_TAG = MainFilter.FILTERCONFIG_TAG + ".bitrates";
 
-    private final Map<String, BitrateInfo> bitrates= new LinkedHashMap<String, BitrateInfo>();
+    private final Map<String, BitrateInfo> bitrates = new LinkedHashMap<String, BitrateInfo>();
+
+    private String key = "bitrate";
+
+    private boolean overwrite = true;
+
+    public void setKey(String k) {
+        key = k;
+    }
+    public void setOverwrite(boolean o) {
+        overwrite = o;
+    }
 
     @Override
     public void configure(DocumentReader reader, Element element) {
@@ -41,6 +52,7 @@ public class  BitrateLabeler  extends Labeler  {
             log.error("Error in filter.xml:" + ex, ex);
         }
         log.info("Configured bit rate labeler " + bitrates);
+        FilterUtils.propertiesConfigure(this, reader, element);
     }
 
 
@@ -50,7 +62,9 @@ public class  BitrateLabeler  extends Labeler  {
             int bitrate = uc.getSource().getIntValue("bitrate");
             if (entry.getValue().matches(bitrate)) {
                 log.debug("" + bitrate + " matched " + entry);
-                uc.getInfo().put("bitrate", entry.getKey());
+                if (overwrite || ! uc.getInfo().containsKey(key)) {
+                    uc.getInfo().put(key, entry.getKey());
+                }
             }
         }
 
