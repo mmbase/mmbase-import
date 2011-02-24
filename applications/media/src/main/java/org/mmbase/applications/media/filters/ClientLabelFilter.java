@@ -10,8 +10,12 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.filters;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
+import org.mmbase.util.StringSplitter;
 import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
 
@@ -24,6 +28,12 @@ import org.w3c.dom.Element;
 public class ClientLabelFilter implements Filter {
     public static final String ATT = ClientLabelFilter.class.getName() + ".label";
 
+    private String keys = "label";
+
+    public void setKeys(String k) {
+        keys = k;
+    }
+
     public List<URLComposer> filter(List<URLComposer> urlcomposers) {
         List<URLComposer> filteredUrlcomposers = new ArrayList<URLComposer>();
         for (URLComposer urlcomposer : urlcomposers) {
@@ -31,15 +41,21 @@ public class ClientLabelFilter implements Filter {
             if (label == null) {
                 filteredUrlcomposers.add(urlcomposer);
             } else {
-                if (label.equals(urlcomposer.getInfo().get("label"))) {
-                    filteredUrlcomposers.add(urlcomposer);
+                Set<String> labels = new HashSet<String>(StringSplitter.split(label));
+                for (String k : StringSplitter.split(keys)) {
+                    if (urlcomposer.getInfo().containsKey(k)) {
+                        if (labels.contains(urlcomposer.getInfo().get(k))) {
+                            filteredUrlcomposers.add(urlcomposer);
+                        }
+                        break;
+                    }
                 }
             }
         }
         return filteredUrlcomposers;
     }
 
-    public void configure(DocumentReader reader, Element e) {
-//
+    public void configure(DocumentReader reader, Element element) {
+        FilterUtils.propertiesConfigure(this, reader, element);
     }
 }
