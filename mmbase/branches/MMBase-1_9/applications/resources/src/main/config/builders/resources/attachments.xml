@@ -132,7 +132,7 @@
         <guiname xml:lang="eo">Dosiero</guiname>
       </gui>
       <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <property name="validMimeTypes" value="application/.*" />
+        <property name="validMimeTypes" value=".*" />
         <maxLength value="16777215" enforce="never"/>
       </datatype>
     </field>
