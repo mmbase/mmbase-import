@@ -243,8 +243,14 @@ public class MMBase extends ProcessorModule {
                     oscache = "$datadir/oscache/$contextpath/";
                 }
                 oscache = oscache.replaceAll("\\$datadir", getDataDir().toString());
-                oscache = oscache.replaceAll("\\$machinename", getMachineName());
-                oscache = oscache.replaceAll("\\$contextpath", MMBaseContext.getServletContext().getContextPath());
+                String mn = getMachineName();
+                if (mn != null) {
+                    oscache = oscache.replaceAll("\\$machinename", mn);
+                }
+                String cp = MMBaseContext.getHtmlRootUrlPath();
+                if (cp != null) {
+                    oscache = oscache.replaceAll("\\$contextpath", cp);
+                }
                 oscache = oscache.replaceAll("/+", File.separator);
                 p.setProperty("cache.path", oscache);
             }
