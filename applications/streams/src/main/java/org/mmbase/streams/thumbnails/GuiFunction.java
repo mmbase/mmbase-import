@@ -41,7 +41,7 @@ public class GuiFunction extends NodeFunction<String> {
                 }
                 return thumb.getFunctionValue("gui", params).toString();
             } else {
-                log.warn("No thumb node found for node " + node);
+                LOG.warn("No thumb node found for node " + node);
                 return null;
             }
         } else {
