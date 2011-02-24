@@ -29,5 +29,8 @@
     <function name="file">
       <class>org.mmbase.streams.FileFunction</class>
     </function>
+    <function key="{NODE.number}: {NODE.url}" name="entrylistgui">
+      <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
+    </function>
   </functionlist>
 </builder>
