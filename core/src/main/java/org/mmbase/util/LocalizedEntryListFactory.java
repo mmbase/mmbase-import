@@ -493,9 +493,14 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                                                                         private String lazy = null;
                                                                         protected String get() {
                                                                             if (lazy == null) {
-                                                                                Function function = next.getFunction("gui");
+                                                                                Function function;
+                                                                                try {
+                                                                                    function = next.getFunction("entrylistgui");
+                                                                                } catch (NotFoundException nfe) {
+                                                                                    function = next.getFunction("gui");
+                                                                                }
                                                                                 Parameters params = function.createParameters();
-                                                                                params.set("locale", locale);
+                                                                                params.setIfDefined("locale", locale);
                                                                                 Object gui = function.getFunctionValue(params);
                                                                                 lazy = gui == null ? next.getStringValue("number") : gui.toString();
                                                                             }
