@@ -29,10 +29,11 @@ public class ClientBitrateFilter implements Filter {
 
     private final Map<String, BitrateInfo> bitrateFilters = new LinkedHashMap<String, BitrateInfo>();
 
+    @Override
     public void configure(DocumentReader reader, Element element) {
         bitrateFilters.clear();
         try {
-            for(Element bitrate:reader.getChildElements(reader.getElementByPath(element, CONFIG_TAG))) {
+            for(Element bitrate:DocumentReader.getChildElements(DocumentReader.getElementByPath(element, CONFIG_TAG))) {
                 BitrateInfo brfi = new BitrateInfo(bitrate);
                 log.debug("Adding BitrateFilterInfo "+brfi);
                 bitrateFilters.put(brfi.getName(), brfi);
@@ -42,6 +43,7 @@ public class ClientBitrateFilter implements Filter {
         }
     }
 
+    @Override
     public List<URLComposer> filter(List<URLComposer> urlcomposers) {
         List<URLComposer> filteredUrlcomposers = new ArrayList<URLComposer>();
 
@@ -55,18 +57,18 @@ public class ClientBitrateFilter implements Filter {
             }
 
             if(bitrate instanceof List) {
-                log.error("lits is not supported.");
+                log.error("list is not supported.");
 
             }
 
             if (bitrate instanceof String) {
                 if(!bitrateFilters.containsKey(bitrate)) {
-                    log.error("Specified bitrate keyword is invalidid. biterate="+bitrate);
+                    log.error("Specified bitrate keyword is invalid. biterate=" + bitrate);
                 }
                 BitrateInfo brfi = bitrateFilters.get(bitrate);
                 int br = urlcomposer.getSource().getIntValue("bitrate");
                 if (brfi.matches(br)) {
-                    log.debug("BitrateFilter "+brfi+" fits for urlcomposer with bitrate "+br);
+                    log.debug("BitrateFilter " + brfi + " fits for urlcomposer with bitrate " + br);
                     filteredUrlcomposers.add(urlcomposer);
                 }
             }

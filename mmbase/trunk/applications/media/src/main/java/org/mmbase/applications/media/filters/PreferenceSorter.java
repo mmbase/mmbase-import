@@ -27,6 +27,7 @@ abstract public class PreferenceSorter extends Sorter {
     abstract protected int getPreference(URLComposer o); 
     
     
+    @Override
     final protected int compareURLComposer(URLComposer o1, URLComposer o2) {
         return getPreference(o2) - getPreference(o1);
     }

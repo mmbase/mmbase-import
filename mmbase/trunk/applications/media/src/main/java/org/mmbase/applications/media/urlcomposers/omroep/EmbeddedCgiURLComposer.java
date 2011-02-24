@@ -9,13 +9,9 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.applications.media.urlcomposers.omroep;
-import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.urlcomposers.*;
-import org.mmbase.module.core.*;
 
 import java.util.*;
-import java.net.*;
-import java.text.*;
 
 
 /**

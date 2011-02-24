@@ -12,7 +12,8 @@ package org.mmbase.applications.media.urlcomposers;
 
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.builders.MediaFragments;
-import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.TypeRel;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.DocumentReader;
@@ -22,7 +23,7 @@ import java.util.*;
 
 /**
  * The URLComposerFactory contains the code to decide which kind of
- * URLComposer is instatiated.  This is a default implementation,
+ * URLComposer is instantiated.  This is a default implementation,
  * which can be extended for your situation (The class can be configured in
  * the mediaproviders builder xml)
  *
@@ -109,6 +110,7 @@ public class URLComposerFactory  {
             return null; // could not get instance, this is an error, but go on anyway (implemtnation checks for null)
         }
 
+        @Override
         public String toString() {
             return "" + format + ":" + klass.getName() + " " + protocol + " " + mimeType + " " + properties;
         }
@@ -119,6 +121,7 @@ public class URLComposerFactory  {
     private ComposerConfig defaultUrlComposer = new ComposerConfig(null, defaultComposerClass, null, MimeType.ANY);
 
     private ResourceWatcher configWatcher = new ResourceWatcher() {
+        @Override
         public void onChange(String file) {
             readConfiguration(file);
         }
@@ -167,7 +170,7 @@ public class URLComposerFactory  {
             for(Element element:reader.getChildElements(MAIN_TAG, COMPOSER_TAG)) {
                 String  clazz   =  element.getAttribute("class");
                 if (clazz.length() == 0) {
-                    clazz = reader.getElementValue(element);
+                    clazz = DocumentReader.getElementValue(element);
                 }
                 String  f = element.getAttribute(FORMAT_ATT);
                 Format format;
@@ -181,8 +184,8 @@ public class URLComposerFactory  {
                 try {
                     log.debug("Adding for format " + format + " urlcomposer " + clazz);
                     ComposerConfig config = new ComposerConfig(format, Class.forName(clazz), protocol, mimeType);
-                    for(Element e : reader.getChildElements(element, "param")) {
-                        config.setProperty(e.getAttribute("name"), reader.getElementValue(e));
+                    for(Element e : DocumentReader.getChildElements(element, "param")) {
+                        config.setProperty(e.getAttribute("name"), DocumentReader.getElementValue(e));
                     }
                     urlComposerClasses.add(config);
                 } catch (ClassNotFoundException ex) {
@@ -219,12 +222,19 @@ public class URLComposerFactory  {
         List<MMObjectNode> templates = new ArrayList<MMObjectNode>();
 
         if (fragment != null) {
-            MediaFragments bul = (MediaFragments) fragment.getBuilder();
-            Stack<MMObjectNode> stack = bul.getParentFragments(fragment);
-            Iterator<MMObjectNode> i = stack.iterator();
-            while (i.hasNext()) {
-                MMObjectNode f = i.next();
-                templates.addAll(f.getRelatedNodes("templates"));
+            MMBase mmb = MMBase.getMMBase();
+            MMObjectBuilder templatesBuilder = mmb.getBuilder("templates");
+            if (templatesBuilder != null) {
+                MediaFragments bul = (MediaFragments) fragment.getBuilder();
+                TypeRel tr = mmb.getTypeRel();
+                if (tr.getAllowedRelations(bul.getObjectType(), templatesBuilder.getObjectType(), -1).size() > 0) {
+                    Stack<MMObjectNode> stack = bul.getParentFragments(fragment);
+                    Iterator<MMObjectNode> i = stack.iterator();
+                    while (i.hasNext()) {
+                        MMObjectNode f = i.next();
+                        templates.addAll(f.getRelatedNodes("templates"));
+                    }
+                }
             }
         }
         return templates;

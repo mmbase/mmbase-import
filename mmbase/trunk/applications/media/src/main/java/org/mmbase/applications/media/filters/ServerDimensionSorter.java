@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.media.filters;
 
 import org.mmbase.applications.media.urlcomposers.URLComposer;
-import org.mmbase.applications.media.Format;
 import org.mmbase.util.images.Dimension;
 import java.util.*;
 import org.w3c.dom.Element;
@@ -40,9 +39,10 @@ public class ServerDimensionSorter extends  PreferenceSorter {
 
     public  ServerDimensionSorter() {};
 
+    @Override
     public void configure(DocumentReader reader, Element parent) {
         preferredDimensions.clear();
-        for (Element el: reader.getChildElements(reader.getElementByPath(parent, CONFIG_TAG))) {
+        for (Element el: DocumentReader.getChildElements(DocumentReader.getElementByPath(parent, CONFIG_TAG))) {
             String xa = el.getAttribute("x");
             String ya = el.getAttribute("y");
             preferredDimensions.add(new Dimension(xa.equals("*") ? - 1 : Integer.parseInt(xa),
@@ -53,6 +53,7 @@ public class ServerDimensionSorter extends  PreferenceSorter {
 
     }
 
+    @Override
     protected int getPreference(URLComposer ri) {
         Dimension dimension = ri.getDimension();
         if (dimension == null) dimension = Dimension.UNDETERMINED;

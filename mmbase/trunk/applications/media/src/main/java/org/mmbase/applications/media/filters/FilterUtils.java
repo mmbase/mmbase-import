@@ -9,12 +9,14 @@ See http://www.MMBase.org/license
  */
 
 package org.mmbase.applications.media.filters;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
+import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
-import java.util.List;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -44,6 +46,24 @@ public abstract class FilterUtils {
                 log.error(ex.getMessage(), ex);
             }
         }
+    }
+
+    /**
+     * @since MMBase-1.9.6
+     * @param urlcomposer
+     * @param a
+     * @return
+     */
+    public static Object getClientAttribute(URLComposer urlcomposer, String a) {       
+        Map attributes = (Map) urlcomposer.getInfo().get("attributes");
+        if (attributes != null && attributes.containsKey(a)) return attributes.get(a);
+        HttpServletRequest req = (HttpServletRequest) urlcomposer.getInfo().get(Parameter.REQUEST.getName());
+        if (req != null) {
+            Object o = req.getAttribute(a);
+            if (o != null) return o;
+        }
+        return null;
+
     }
 }
 
