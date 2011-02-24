@@ -18,6 +18,7 @@
 
   <properties>
     <property name="Content-Disposition">inline</property>
+    <property name="InitFactory">false</property> <!-- will be inited by images itself -->
   </properties>
 
   <fieldlist>
