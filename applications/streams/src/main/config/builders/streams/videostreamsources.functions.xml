@@ -14,4 +14,7 @@
     <class>org.mmbase.streams.thumbnails.GuiFunction</class>
   </function>
 
+  <function key="{NODE.number}: {NODE.url}" name="entrylistgui">
+    <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
+  </function>
 </functionlist>
