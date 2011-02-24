@@ -35,14 +35,17 @@ abstract public class Sorter implements Comparator<URLComposer>, Filter {
     /**
      * Configure with setters on default
      */
+    @Override
     public void configure(DocumentReader reader, Element e) {
         FilterUtils.propertiesConfigure(this, reader, e);
     }
 
+    @Override
     final public int compare(URLComposer ri1, URLComposer ri2) {
         return compareURLComposer(ri1, ri2);
     }
 
+    @Override
     final public List<URLComposer> filter(List<URLComposer> urlcomposers) {
         Collections.sort(urlcomposers, this);
         return urlcomposers;

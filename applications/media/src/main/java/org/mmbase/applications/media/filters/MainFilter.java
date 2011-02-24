@@ -47,6 +47,7 @@ public class MainFilter {
     public static final String CONFIG_FILE       = "media/filters.xml";
 
     private ResourceWatcher configWatcher = new ResourceWatcher() {
+        @Override
         public void onChange(String resource) {
             readConfiguration(resource);
         }
@@ -95,15 +96,15 @@ public class MainFilter {
             // Then only one 'sort' has to be done, which is more efficient.
 
             for(Element chainElement:reader.getChildElements(MAIN_TAG + "." + CHAIN_TAG, FILTER_TAG)) {
-                String  clazz        = reader.getElementValue(chainElement);
+                String  clazz        = DocumentReader.getElementValue(chainElement);
                 String  elementId    = chainElement.getAttribute(ID_ATT);
                 try {
                     Class<?> newclass = Class.forName(clazz);
-                    Filter filter = (Filter) newclass.newInstance();
-                    if (filter instanceof Sorter) {
-                        chainComp.add((Sorter) filter);
+                    Filter fil = (Filter) newclass.newInstance();
+                    if (fil instanceof Sorter) {
+                        chainComp.add((Sorter) fil);
                     } else {
-                        filters.add(filter);
+                        filters.add(fil);
                     }
                     log.service("Added filter " + clazz + "(id=" + elementId + ")");
                     if (elementId != null && ! "".equals(elementId)) {
@@ -111,11 +112,11 @@ public class MainFilter {
                         // not all filters necessarily have there own configuration
                         boolean found = false;
 
-                        for(Element config:reader.getChildElements(filterConfigs, FILTERCONFIG_TAG)) {
+                        for(Element config:DocumentReader.getChildElements(filterConfigs, FILTERCONFIG_TAG)) {
                             String filterAtt = reader.getElementAttributeValue(config, FILTER_ATT);
                             if (filterAtt.equals(elementId)) {
                                 log.service("Configuring " + elementId);
-                                filter.configure(reader, config);
+                                fil.configure(reader, config);
                                 found = true;
                                 break;
                             }
@@ -143,16 +144,16 @@ public class MainFilter {
      */
 
     public List<URLComposer> filter(List<URLComposer> urls) {
-        for (Filter filter : filters) {
+        for (Filter fil : filters) {
             if (log.isDebugEnabled()) {
-                log.debug("Using filter " + filter);
+                log.debug("Using filter " + fil);
                 log.debug("before: " + urls);
             }
 
             try {
-                urls = filter.filter(urls);
+                urls = fil.filter(urls);
             } catch (Exception filterException) {
-                log.error("Check filter " + filter + ": " + filterException.getMessage(), filterException);
+                log.error("Check filter " + fil + ": " + filterException.getMessage(), filterException);
             }
             if (log.isDebugEnabled()) {
                 log.debug("after: " + urls);
@@ -185,6 +186,7 @@ public class MainFilter {
         TestComparator(int i) {
             this.i = i;
         }
+        @Override
         public int compare(String o1, String o2) {
             return o1.hashCode() - o2.hashCode();
         }

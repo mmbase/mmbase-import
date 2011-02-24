@@ -11,7 +11,7 @@
   </parent>
 
   <artifactId>mmbase-media</artifactId>
-  <name>MMBase Media</name>
+  <name>MMBase2 Media</name>
   <packaging>war</packaging>
 
   <description>

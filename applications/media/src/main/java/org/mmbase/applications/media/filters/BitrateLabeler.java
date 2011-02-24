@@ -32,7 +32,7 @@ public class  BitrateLabeler  extends Labeler  {
     public void configure(DocumentReader reader, Element element) {
         bitrates.clear();
         try {
-            for(Element bitrate : reader.getChildElements(reader.getElementByPath(element, CONFIG_TAG))) {
+            for(Element bitrate : DocumentReader.getChildElements(DocumentReader.getElementByPath(element, CONFIG_TAG))) {
                 BitrateInfo bri = new BitrateInfo(bitrate);
                 log.debug("Adding BitrateInfo "+ bri);
                 bitrates.put(bri.getName(), bri);
@@ -44,6 +44,7 @@ public class  BitrateLabeler  extends Labeler  {
     }
 
 
+    @Override
     protected void label(URLComposer uc) {
         for (Map.Entry<String, BitrateInfo> entry : bitrates.entrySet()) {
             int bitrate = uc.getSource().getIntValue("bitrate");

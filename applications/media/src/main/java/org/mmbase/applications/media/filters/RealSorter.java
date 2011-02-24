@@ -40,10 +40,11 @@ public class RealSorter extends  ChainSorter {
 
     /**
      * Prefer real a little if this filter is used.
-     * Other possibility: Impelmeent it that if one of both URLComposer are no reals, that they are equal then.
+     * Other possibility: Implement it that if one of both URLComposer are no reals, that they are equal then.
      */
 
     protected class RealFormatSorter extends PreferenceSorter {        
+        @Override
         protected int getPreference(URLComposer ri) {           
             if (ri.getFormat() != Format.RM) return 0; 
             return 1;
@@ -78,6 +79,7 @@ public class RealSorter extends  ChainSorter {
         /**
          * @todo
          */
+        @Override
         protected int getPreference(URLComposer ri) {
             Map<String, Object> info           = ri.getInfo();
             int wantedSpeed    = -1;
@@ -141,6 +143,7 @@ public class RealSorter extends  ChainSorter {
         /**
          * @javadoc
          */
+        @Override
         protected int getPreference(URLComposer ri) {
             Map<String, Object> info           = ri.getInfo();
             int wantedChannels = -1;

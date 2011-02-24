@@ -10,17 +10,13 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.filters;
 
-import org.mmbase.applications.media.urlcomposers.URLComposer;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
-import java.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 
 /**
- * container for information beloning to a bitrate filter keyword.
+ * container for information belonging to a bitrate filter keyword.
  * In filter.xml the line <bitrate name="smallband" min="0" max="150000" />
  * will result in a BitrateFilterInfo inner object.
  */

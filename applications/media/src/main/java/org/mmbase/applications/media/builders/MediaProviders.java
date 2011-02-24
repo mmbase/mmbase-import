@@ -13,7 +13,6 @@ package org.mmbase.applications.media.builders;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
 import org.mmbase.applications.media.urlcomposers.URLComposerFactory;
 import org.mmbase.module.core.*;
-import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.*;
 import java.util.*;
 import java.lang.reflect.Method;
