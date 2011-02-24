@@ -76,7 +76,6 @@ public class FFMpegAnalyzer implements Analyzer {
 
     public void analyze(String l, Node source, Node des) {
         synchronized(util) {
-            Cloud cloud = source.getCloud();
 
             if (util.unsupported(l, source, des)) {
                 log.warn("Not supported! " + l);

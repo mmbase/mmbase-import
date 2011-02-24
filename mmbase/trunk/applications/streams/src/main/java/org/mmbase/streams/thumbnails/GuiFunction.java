@@ -31,7 +31,8 @@ public class GuiFunction extends NodeFunction<String> {
     @Override
     protected String getFunctionValue(Node node, Parameters parameters) {
         LOG.debug("Field " + parameters.get(Parameter.FIELD));
-        if (parameters.get(Parameter.FIELD) == null) {
+        String field = parameters.get(Parameter.FIELD);
+        if (field == null || field.length() == 0) {
             Node thumb = ThumbNailFunction.getThumbNail(node, null);
             Function fun = thumb.getFunction("gui");
             Parameters params = fun.createParameters();

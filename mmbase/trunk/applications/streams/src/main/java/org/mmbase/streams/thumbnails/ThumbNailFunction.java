@@ -23,9 +23,6 @@ package org.mmbase.streams.thumbnails;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.Future;
-import java.util.concurrent.ExecutionException;
-import org.mmbase.streams.createcaches.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
