@@ -33,12 +33,17 @@ public class GuiFunction extends NodeFunction<String> {
         LOG.debug("Field " + parameters.get(Parameter.FIELD));
         if (parameters.get(Parameter.FIELD) == null) {
             Node thumb = ThumbNailFunction.getThumbNail(node, null);
-            Function fun = thumb.getFunction("gui");
-            Parameters params = fun.createParameters();
-            for (Parameter p : org.mmbase.util.functions.GuiFunction.PARAMETERS) {
-                params.set(p, parameters.get(p));
+            if (thumb != null) {
+                Function fun = thumb.getFunction("gui");
+                Parameters params = fun.createParameters();
+                for (Parameter p : org.mmbase.util.functions.GuiFunction.PARAMETERS) {
+                    params.set(p, parameters.get(p));
+                }
+                return thumb.getFunctionValue("gui", params).toString();
+            } else {
+                log.warn("No thumb node found for node " + node);
+                return null;
             }
-            return thumb.getFunctionValue("gui", params).toString();
         } else {
             return null;
         }
