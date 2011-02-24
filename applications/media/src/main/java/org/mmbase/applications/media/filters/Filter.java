@@ -22,5 +22,8 @@ public interface Filter {
 
     List<URLComposer> filter(List<URLComposer> urlcomposers);
     void configure(DocumentReader reader, Element e);
+
+
+ 
 }
 

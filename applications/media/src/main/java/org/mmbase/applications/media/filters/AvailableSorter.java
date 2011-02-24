@@ -22,6 +22,7 @@ public class AvailableSorter extends  PreferenceSorter {
     public  AvailableSorter() {
     }
 
+    @Override
     public int getPreference(URLComposer ri) {
         if (! ri.isAvailable()) {
             return -1; // very bad choice.

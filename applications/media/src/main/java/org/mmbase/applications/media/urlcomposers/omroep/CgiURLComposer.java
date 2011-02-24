@@ -29,10 +29,10 @@ public class CgiURLComposer extends RamURLComposer {
      */
     @Override
     public Format getFormat() {
-        Format format = super.getFormat();
-        if (format.isReal())  return Format.RAM;
-        if (format.isWindowsMedia()) return Format.WMP;
-        return format;
+        Format f = super.getFormat();
+        if (f.isReal())  return Format.RAM;
+        if (f.isWindowsMedia()) return Format.WMP;
+        return f;
     }
 
     /**

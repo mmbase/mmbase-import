@@ -47,11 +47,13 @@ public class FieldValueFilter implements Filter {
         pattern = Pattern.compile(p);
     }
 
+    @Override
     public void configure(DocumentReader reader, Element e) {
         FilterUtils.propertiesConfigure(this, reader, e);
     }
 
 
+    @Override
     final public List<URLComposer> filter(List<URLComposer> urlcomposers) {
         List<URLComposer> filteredUrlcomposers = new ArrayList<URLComposer>();
         for (URLComposer urlcomposer : urlcomposers) {

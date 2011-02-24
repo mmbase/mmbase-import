@@ -14,7 +14,6 @@ import java.util.*;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
 
-import org.mmbase.bridge.Node;
 
 import org.mmbase.util.functions.*;
 import org.mmbase.util.MimeType;
@@ -153,7 +152,7 @@ public class MediaSources extends MMObjectBuilder {
      */
     protected String getURL(MMObjectNode source, Map<String, Object> info) {
         List<URLComposer> urls = getFilteredURLs(source, null, info);
-        if (urls.size() == 0) return "[could not compose URL]";
+        if (urls.isEmpty()) return "[could not compose URL]";
         URLComposer ri = urls.get(0);
         return ri.getURL();
     }
@@ -175,6 +174,7 @@ public class MediaSources extends MMObjectBuilder {
     /**
      * Used in the editors
      */
+    @Override
     public String getGUIIndicator(MMObjectNode source) {
 	    return "" + Format.get(source.getIntValue("format")) + "/" + source.getStringValue("bitrate") + "/" + source.getStringValue("channels");
 	/*
@@ -229,6 +229,7 @@ public class MediaSources extends MMObjectBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (log.isDebugEnabled()) {
             log.debug("executeFunction  " + function + "(" + args + ") on mediasources " + node);
@@ -244,7 +245,7 @@ public class MediaSources extends MMObjectBuilder {
             info.put(FUNCTION_MIMETYPE, "() Returns the mime-type for this source");
             info.put("gui", "(state|channels|codec|format|..) Gui representation of this object.");
 
-            if (args == null || args.size() == 0) {
+            if (args == null || args.isEmpty()) {
                 return info;
             } else {
                 return info.get(args.get(0));
@@ -363,7 +364,7 @@ public class MediaSources extends MMObjectBuilder {
         if (urls == null) urls = new ArrayList<URLComposer>();
         log.debug("Getting urls for source " + source.getNumber());
         List<MMObjectNode> providers = getProviders(source);
-        if (providers.size() == 0) {
+        if (providers.isEmpty()) {
             if (defaultProvider != null) {
                 MMObjectNode provider = getNode(defaultProvider);
                 if (provider == null) {

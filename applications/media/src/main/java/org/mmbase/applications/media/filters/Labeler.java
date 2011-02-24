@@ -30,11 +30,13 @@ abstract public class Labeler implements  Filter {
      */
     abstract  protected void label(URLComposer o);
 
+    @Override
     public void configure(DocumentReader reader, Element e) {
         // nothing to be configured on default.
     }
 
 
+    @Override
     final public List<URLComposer> filter(List<URLComposer> urlcomposers) {
         for (URLComposer uc : urlcomposers) {
             label(uc);

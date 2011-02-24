@@ -23,6 +23,7 @@ import java.util.List;
  */
 public class AvailableFilter implements Filter {
 
+    @Override
     public List<URLComposer> filter(List<URLComposer> urlcomposers) {
         ListIterator<URLComposer> i = urlcomposers.listIterator();
         while (i.hasNext()) {
@@ -34,6 +35,7 @@ public class AvailableFilter implements Filter {
         return urlcomposers;
 
     }
+    @Override
     public void configure(DocumentReader reader, Element e) {
         // not needed
     }

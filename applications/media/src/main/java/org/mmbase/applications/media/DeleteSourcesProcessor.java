@@ -34,6 +34,7 @@ public class DeleteSourcesProcessor implements CommitProcessor {
     private static final Logger LOG = Logging.getLoggerInstance(DeleteSourcesProcessor.class);
     
     
+    @Override
     public void commit(final Node node, final Field field) {
         if (node.getCloud().getProperty(NOT) != null) {
             LOG.service("Not doing because of property");

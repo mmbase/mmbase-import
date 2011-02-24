@@ -110,10 +110,11 @@ public enum Format {
         String mimeMappingFile = "media/mimemapping.xml";
         readMimeMapping(mimeMappingFile);
         ResourceWatcher watcher = new ResourceWatcher() {
-                public void onChange(String file) {
-                    readMimeMapping(file);
-                }
-            };
+            @Override
+            public void onChange(String file) {
+                readMimeMapping(file);
+            }
+        };
         watcher.add(mimeMappingFile);
         watcher.start();
 

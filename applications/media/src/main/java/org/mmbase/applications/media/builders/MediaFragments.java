@@ -60,8 +60,7 @@ public class MediaFragments extends MMObjectBuilder {
     public static final String FUNCTION_FORMAT      = "format";
     public static final String FUNCTION_DURATION    = "duration";
 
-    // parameter definitions (making use of reflection utitility for functions)
-    public final static Parameter[] URLS_PARAMETERS          = { new Parameter("format",  List.class), new Parameter("bitrate", String.class), Parameter.REQUEST };
+    public final static Parameter[] URLS_PARAMETERS          = { new Parameter("format",  List.class), new Parameter("bitrate", String.class), new Parameter("attributes", Map.class), Parameter.REQUEST };
     public final static Parameter[] FILTEREDURLS_PARAMETERS  = URLS_PARAMETERS;
     public final static Parameter[] URL_PARAMETERS           = URLS_PARAMETERS;
     public final static Parameter[] NUDEURL_PARAMETERS       = URLS_PARAMETERS;
@@ -83,6 +82,7 @@ public class MediaFragments extends MMObjectBuilder {
 
     private URLCache cache = URLCache.getCache();
 
+    @Override
     public boolean init() {
         if(initDone) {
         return super.init();
@@ -122,7 +122,7 @@ public class MediaFragments extends MMObjectBuilder {
             log.debug("executeFunction  " + function + "(" + args + ") on " + node);
         }
         if (function.equals("info")) {
-            List<Object> empty = new Vector<Object>();
+            List<Object> empty = new ArrayList<Object>();
             java.util.Map<String, String> info = (java.util.Map<String, String>) super.executeFunction(node, function, empty);
             info.put(FUNCTION_URL, "(<format>)  Returns the 'best' url for this fragment. Hashtable can be filled with speed/channel/ or other info to evalute the url.");
             info.put(FUNCTION_URLS, "(info) A list of all possible URLs to this fragment (Really URLComposer.URLComposer's)");
@@ -133,7 +133,7 @@ public class MediaFragments extends MMObjectBuilder {
             // info.put("urlresult", "(<??>) ");
             info.put("gui", "(state|channels|codec|format|..) Gui representation of this object.");
 
-            if (args == null || args.size() == 0) {
+            if (args == null || args.isEmpty()) {
                 return info;
             } else {
                 return info.get(args.get(0));
@@ -154,7 +154,7 @@ public class MediaFragments extends MMObjectBuilder {
         } else if (FUNCTION_AVAILABLE.equals(function)) {
             if (mmb.getBuilder("publishtimes") != null) {
                 List<MMObjectNode> pt  = node.getRelatedNodes("publishtimes");
-                if (pt.size() == 0) {
+                if (pt.isEmpty()) {
                     return Boolean.TRUE;
                 } else {
                     MMObjectNode publishtime = pt.get(0);
@@ -487,25 +487,26 @@ public class MediaFragments extends MMObjectBuilder {
       * mediafragment, was used for speeding up listings.
       * @deprecated
       */
+    @SuppressWarnings("UseOfObsoleteCollectionType")
      private void retrieveClassificationInfo() {
 
-         MMObjectBuilder lookup = mmb.getMMObject("lookup");
-         if(lookup == null) {
-             log.debug("Downwards compatible classification code not used.");
-             return;
-         }
-         log.debug("Using downwards compatible classification code.");
-         classification =  new Hashtable<String, String>();
-         MMObjectNode fn = getNode(mmb.getTypeDef().getIntValue("mediafragments"));
-         Vector<MMObjectNode> nodes = fn.getRelatedNodes("lookup");
-         for (MMObjectNode node : nodes) {
-             String index = node.getStringValue("index");
-             String value = node.getStringValue("value");
-             log.debug("classification uses: " + index + " -> " + value);
-             classification.put(index,value);
-         }
-         return;
-     }
+        MMObjectBuilder lookup = mmb.getMMObject("lookup");
+        if (lookup == null) {
+            log.debug("Downwards compatible classification code not used.");
+            return;
+        }
+        log.debug("Using downwards compatible classification code.");
+        classification = new Hashtable<String, String>();
+        MMObjectNode fn = getNode(mmb.getTypeDef().getIntValue("mediafragments"));
+        Vector<MMObjectNode> nodes = fn.getRelatedNodes("lookup");
+        for (MMObjectNode node : nodes) {
+            String index = node.getStringValue("index");
+            String value = node.getStringValue("value");
+            log.debug("classification uses: " + index + " -> " + value);
+            classification.put(index, value);
+        }
+        return;
+    }
 
     /**
      * Replace all for frontend code

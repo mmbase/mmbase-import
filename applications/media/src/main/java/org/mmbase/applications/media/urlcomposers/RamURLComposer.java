@@ -45,7 +45,7 @@ public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
     protected StringBuilder getURLBuffer() {
         List<String> servlets = MMBaseServlet.getServletMappings("media-" + format);
         String servlet;
-        if (servlets == null || servlets.size() == 0) {
+        if (servlets == null || servlets.isEmpty()) {
             log.error("No mapping found to media-" + format + " servlet. Change this in your web.xml");
             servlet = Config.templatesDir + "mediafragment." + format + ".jsp";
         } else {
