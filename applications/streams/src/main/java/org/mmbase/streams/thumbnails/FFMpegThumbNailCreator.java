@@ -96,8 +96,8 @@ public class FFMpegThumbNailCreator implements  Callable<Long> {
         args.add("-an"); // audio doesn't make sense
         args.add("-ss");
         args.add(String.format(Locale.US, "%.2f", node.getDoubleValue("time") / 1000));
-        args.add("-t");
-        args.add("00:00:01");
+        //args.add("-t");
+        //args.add("00:00:01");
         args.add("-vframes");
         args.add("" + count);
         try {
