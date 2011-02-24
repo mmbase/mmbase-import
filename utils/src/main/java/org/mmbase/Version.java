@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  */
 public class Version {
 
-    private static final Logger log = Logging.getLoggerInstance(Version.class);
+    private static final Logger LOG = Logging.getLoggerInstance(Version.class);
 
     private static final Pattern SCM = Pattern.compile("\\$URL: https://scm.mmbase.org/mmbase/(.*)");
     /**
@@ -178,7 +178,7 @@ public class Version {
                     manifest = jarConnection.getManifest();
                 }
             } catch (IOException ioe) {
-                log.warn(ioe);
+                LOG.warn(ioe);
             }
             manifestLoaded = true;
         }

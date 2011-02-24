@@ -407,7 +407,9 @@ public class EventManager implements SystemEventListener {
     public void shutdown() {
         log.service("Shutting down event manager");
         eventBrokers.clear();
-        watcher.exit();
+        if (watcher != null) {
+            watcher.exit();
+        }
     }
 
     private static final class BrokerIterator implements Iterator<EventBroker>, Iterable<EventBroker> {
