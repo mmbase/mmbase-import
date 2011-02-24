@@ -19,6 +19,9 @@
       <guiname xml:lang="en">Fragment</guiname>
     </gui>
     <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+      <enumeration>
+        <query xmlns="http://www.mmbase.org/xmlns/searchquery" type="mediafragments"  />
+      </enumeration>
       <setprocessor>
         <!-- This field is readonly for users, but _code_ could use this setter -->
         <class name="org.mmbase.datatypes.processors.Related$Setter">
