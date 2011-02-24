@@ -599,6 +599,9 @@ public class MMBaseContext implements ServletContextListener {
         if (dataDirString != null && ! dataDirString.equals(setting)) throw new IllegalStateException();
         if ("".equals(setting)) setting = null;
         dataDirString = setting;
+        if (! new File(dataDirString).canWrite()) {
+            LOG.warn("The data dir " + dataDirString + " is not writable");
+        }
     }
 
 
