@@ -20,12 +20,12 @@ import org.mmbase.util.logging.Logging;
  * @version $Id$
  * @since MMBase-1.9
  */
-public class GuiFunction extends NodeFunction<String> {
+public class GuiFunction extends org.mmbase.util.functions.GuiFunction {
 
     private static final Logger LOG = Logging.getLoggerInstance(GuiFunction.class);
 
     public GuiFunction() {
-        super("gui", org.mmbase.util.functions.GuiFunction.PARAMETERS);
+        super();
     }
 
     @Override
@@ -43,10 +43,10 @@ public class GuiFunction extends NodeFunction<String> {
                 return thumb.getFunctionValue("gui", params).toString();
             } else {
                 LOG.warn("No thumb node found for node " + node);
-                return null;
+                return super.getFunctionValue(node, parameters);
             }
         } else {
-            return null;
+            return super.getFunctionValue(node, parameters);
         }
     }
 
