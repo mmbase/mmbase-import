@@ -58,7 +58,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
 
     private final ChainedLogger log = new ChainedLogger(LOG);
 
-    private boolean updateSource;
+    private boolean updateSource      = false;
     private boolean updateDestination = false;
 
     AnalyzerUtils(Logger... loggers) {

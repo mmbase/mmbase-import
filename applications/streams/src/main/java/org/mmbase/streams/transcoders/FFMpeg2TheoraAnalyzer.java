@@ -64,7 +64,6 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
 
     public void analyze(String l, Node source, Node des) {
         synchronized(util) {
-            Cloud cloud = source.getCloud();
             if (util.duration(l, source, des)) {
                 length = source.getLongValue("length");
                 return;

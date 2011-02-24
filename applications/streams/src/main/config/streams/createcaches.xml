@@ -18,7 +18,9 @@
   <recognizer id="recognizer">
     <class name="org.mmbase.streams.transcoders.FFMpegRecognizer">
     </class>
-    <loganalyzer name="org.mmbase.streams.transcoders.FFMpegAnalyzer" />
+    <loganalyzer name="org.mmbase.streams.transcoders.FFMpegAnalyzer">
+      <param name="updateSource">true</param>
+    </loganalyzer>
   </recognizer>
 
   <transcoder mimetype="video/*" id="v1">
@@ -37,7 +39,7 @@
   </transcoder>
 
   <!-- example for vp8 -->
-<!-- 
+<!--
   <transcoder mimetype="video/*" id="v8">
     <class name="org.mmbase.streams.transcoders.FFMpegTranscoder">
       <param name="format">webm</param>
@@ -55,12 +57,12 @@
  -->
 
   <!-- example config for ts streams over cellular networks (for iPhone etc.) -->
-<!-- 
+<!--
   <transcoder
       label="lo"
       mimetype="video/*" id="v1">
     <class name="org.mmbase.streams.transcoders.FFMpegTranscoder">
-      
+
       <param name="format">ts</param>
       <param name="forceFormat">mpegts</param>
       <param name="vcodec">libx264</param>
@@ -95,7 +97,7 @@
       <param name="-level">30</param>
       <param name="-aspect">320:240</param>
       <param name="-g">30</param>
-      
+
     </class>
     <loganalyzer name="org.mmbase.streams.transcoders.FFMpegAnalyzer" />
   </transcoder>
@@ -111,7 +113,7 @@
     <loganalyzer name="org.mmbase.streams.transcoders.SegmenterAnalyzer" />
   </transcoder>
  -->
- 
+
   <!-- audio example -->
   <transcoder mimetype="audio/*" id="a1" in="recognizer">
     <class name="org.mmbase.streams.transcoders.FFMpegTranscoder">
@@ -122,7 +124,7 @@
     </class>
     <loganalyzer name="org.mmbase.streams.transcoders.FFMpegAnalyzer" />
   </transcoder>
-  
+
   <!-- InfiniteTranscoder is for testing purposes -->
   <!--
   <transcoder>
