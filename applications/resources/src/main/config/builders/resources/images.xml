@@ -284,5 +284,11 @@
     -->
 
   </fieldlist>
+  <functionlist>
+    <!-- gui of images doesn't really work well in drop downs -->
+    <function key="{NODE.number}: {NODE.title}" name="entrylistgui">
+      <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
+    </function>
+  </functionlist>
 
 </builder>
