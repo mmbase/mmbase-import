@@ -516,8 +516,9 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                                                             Function function = next.getFunction("gui");
                                                             Parameters params = function.createParameters();
                                                             params.set("locale", locale);
-                                                            String gui = function.getFunctionValue(params).toString();
-                                                            return new Entry<C, String>((C) next, gui);
+                                                            Object gui = function.getFunctionValue(params);
+                                                            if (gui == null) gui = next.getStringValue("number");
+                                                            return new Entry<C, String>((C) next, gui.toString());
                                                         } catch (NotFoundException nfe) {
                                                             if (node == null) {
                                                                 return new Entry<C, String>((C) next, "-1");
