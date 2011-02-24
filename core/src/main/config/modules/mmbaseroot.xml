@@ -135,6 +135,12 @@
   -->
   <property name="datadir">WEB-INF/data</property>
 
+ <!--
+  Template used for oscache configuration
+  Recognized are : $datadir, $machinename and $contextpath
+  -->
+  <property name="oscache.template">$datadir/oscache/$contextpath/</property>
+
   <!--
   name="clustering" the MMBaseChangeInterface which communicates with
   other MMBase instance which use the same storage
