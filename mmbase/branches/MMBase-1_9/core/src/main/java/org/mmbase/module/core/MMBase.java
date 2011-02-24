@@ -238,7 +238,15 @@ public class MMBase extends ProcessorModule {
                 p.load(is);
             }
             if (p.getProperty("cache.path") == null || "".equals(p.getProperty("cache.path"))) {
-                p.setProperty("cache.path", new File(getDataDir(), "oscache").toString());
+                String oscache = getInitParameter("oscache.template");
+                if (oscache == null || oscache.length() == 0) {
+                    oscache = "$datadir/oscache/$contextpath/";
+                }
+                oscache = oscache.replaceAll("\\$datadir", getDataDir().toString());
+                oscache = oscache.replaceAll("\\$machinename", getMachineName());
+                oscache = oscache.replaceAll("\\$contextpath", MMBaseContext.getServletContext().getContextPath());
+                oscache = oscache.replaceAll("/+", File.separator);
+                p.setProperty("cache.path", oscache);
             }
 
             Class osCache = Class.forName("com.opensymphony.oscache.web.ServletCacheAdministrator");
@@ -246,7 +254,7 @@ public class MMBase extends ProcessorModule {
             m.invoke(null, MMBaseContext.getServletContext(), p);
             log.service("Using " + p + " for oscache");
         } catch (Throwable e) {
-            log.service(e.getMessage());
+            log.service(e.getClass() + " " + e.getMessage());
         }
     }
     /**
@@ -265,7 +273,6 @@ public class MMBase extends ProcessorModule {
         }
         log.service("Init of " + org.mmbase.Version.get() + " (" + this + ")");
 
-        configureOSCache();
 
         mmbaseState = STATE_STARTED_INIT;
 
@@ -376,6 +383,8 @@ public class MMBase extends ProcessorModule {
             machineName = localHost + MMBaseContext.getHtmlRootUrlPath();
 
         }
+
+        configureOSCache();
         log.info("MMBase machine name used for clustering: '" + machineName + "'");
         MMBaseContext.machineName = machineName;
         Logging.setMachineName(machineName);
@@ -1437,6 +1446,10 @@ public class MMBase extends ProcessorModule {
                     }
                 } catch (SecurityException se) {
                     log.warn(se.getMessage(), se);
+                }
+                String explicit = getInitParameter("datadir");
+                if (explicit != null &&  explicit.length() > 0) {
+                    log.warn("Configured data-dir " + dataDir + " is not writeable");
                 }
 
             }
