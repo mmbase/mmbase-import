@@ -22,7 +22,7 @@ import org.mmbase.servlet.FileServlet;
 
 
 /**
- * This class constains Setter and Getter method for 'binary' file fields. In such fields you can set
+ * This class contains Setter and Getter method for 'binary' file fields. In such fields you can set
  * a FileItem, and it is stored as a file, using the FileServlet to produce an URL. The (string)
  * field itself only contains a file name.
  *
@@ -177,13 +177,13 @@ public class BinaryFile {
         private static final long serialVersionUID = 1L;
 
         public Object process(Node node, Field field, Object value) {
-            if (value instanceof String) {
+            if (node != null && value instanceof String) {
                 File dir = getDirectory();
                 File file = new File(dir, (String) value);
                 try {
                     value = new SerializableInputStream(new FileInputStream(file), file.length());
                 } catch (FileNotFoundException ex) {
-                    log.error(ex);
+                    log.error(ex.getMessage(), ex);
                 }
             }
             return value;
