@@ -489,7 +489,7 @@ public class DataTypesTest  {
 
     @Test
     public void enumLength() throws DependencyException {
-        String xml = "<datatype base='string'><pattern value='a+' /><enumeration enforce='onchange'><entry value='a' /><entry value='aa' /><entry value='b' /></enumeration></datatype>";
+        String xml = "<datatype base='string'><pattern enforce='onvalidate' value='a+' /><enumeration enforce='onchange'><entry value='a' /><entry value='aa' /><entry value='b' /></enumeration></datatype>";
         DocumentReader reader = new DocumentReader(new InputSource(new java.io.StringReader(xml)), false, DataTypeReader.class);
         StringDataType dt = (StringDataType) DataTypeReader.readDataType(reader.getDocument().getDocumentElement(), null, null).dataType.clone();
         assertEquals(2, size(dt.getEnumerationValues(null, null, null, null)));
@@ -512,7 +512,7 @@ public class DataTypesTest  {
     }
     @Test
     public void nodeManagerNamesEnumLength() throws DependencyException {
-        String xml = "<datatype base='string'><class name='org.mmbase.datatypes.NodeManagerNamesDataType' /><pattern enforce='onchange' value='aa|bb' /></datatype>";
+        String xml = "<datatype base='string'><class name='org.mmbase.datatypes.NodeManagerNamesDataType' /><pattern enforce='onvalidate' value='aa|bb' /></datatype>";
         DocumentReader reader = new DocumentReader(new InputSource(new java.io.StringReader(xml)), false, DataTypeReader.class);
         Cloud cloud = MockCloudContext.getInstance().getCloud("mmbase");
         NodeManager aa = cloud.getNodeManager("aa");
