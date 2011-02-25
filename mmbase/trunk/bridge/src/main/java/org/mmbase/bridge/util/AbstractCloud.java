@@ -325,7 +325,11 @@ public abstract class AbstractCloud implements Cloud {
 
     @Override
     public void setProperty(Object key, Object value) {
-        properties.put(key, value);
+        if (value == null) {
+            properties.remove(key);
+        } else {
+            properties.put(key, value);
+        }
     }
     @Override
     public Map<Object, Object> getProperties() {

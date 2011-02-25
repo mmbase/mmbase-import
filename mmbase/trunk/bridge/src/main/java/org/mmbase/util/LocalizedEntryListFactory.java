@@ -513,6 +513,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                                                         return new Entry<C, String>((C) next, "NULL_NODE");
                                                     } else {
                                                         try {
+                                                            Function function;
                                                             try {
                                                                 function = next.getFunction("entrylistgui");
                                                             } catch (NotFoundException nfe) {
