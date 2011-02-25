@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.datatypes;
 
+import org.mmbase.bridge.Cloud;
 import org.mmbase.datatypes.util.xml.*;
 import java.util.*;
 import org.mmbase.bridge.NodeManager;
@@ -481,11 +482,10 @@ public class DataTypesTest  {
 
 
     }
-
     protected int size(Iterator i) {
         int size = 0;
-        while(i.hasNext()) {
-            i.next();
+        while (i.hasNext()) {
+            Object v = i.next();
             size++;
         }
         return size;
@@ -493,7 +493,7 @@ public class DataTypesTest  {
 
     @Test
     public void enumLength() throws DependencyException {
-        String xml = "<datatype base='string'><pattern value='a+' /><enumeration enforce='onchange'><entry value='a' /><entry value='aa' /><entry value='b' /></enumeration></datatype>";
+        String xml = "<datatype base='string'><pattern enforce='onvalidate' value='a+' /><enumeration enforce='onchange'><entry value='a' /><entry value='aa' /><entry value='b' /></enumeration></datatype>";
         DocumentReader reader = new DocumentReader(new InputSource(new java.io.StringReader(xml)), false, DataTypeReader.class);
         StringDataType dt = (StringDataType) DataTypeReader.readDataType(reader.getDocument().getDocumentElement(), null, null).dataType.clone();
         assertEquals(2, size(dt.getEnumerationValues(null, null, null, null)));
@@ -512,6 +512,23 @@ public class DataTypesTest  {
 
         assertEquals(2, size(dt.getEnumerationValues(null, cloud, null, f))); // fails?
 
+
+    }
+
+  @Test
+    public void nodeManagerNamesEnumLength() throws DependencyException {
+        String xml = "<datatype base='string'><class name='org.mmbase.datatypes.NodeManagerNamesDataType' /><pattern enforce='onvalidate' value='aa|bb' /></datatype>";
+        DocumentReader reader = new DocumentReader(new InputSource(new java.io.StringReader(xml)), false, DataTypeReader.class);
+        Cloud cloud = MockCloudContext.getInstance().getCloud("mmbase");
+        NodeManager aa = cloud.getNodeManager("aa");
+
+        NodeManagerNamesDataType dt = (NodeManagerNamesDataType) DataTypeReader.readDataType(reader.getDocument().getDocumentElement(), null, null).dataType.clone();
+        assertEquals(2, size(dt.getEnumerationValues(null, cloud, null, null)));
+        org.mmbase.bridge.Node nod = aa.createNode();
+        Field f = aa.getField("stringfield");
+        nod.commit();
+        assertFalse(nod.isNew());
+        assertEquals(2, size(dt.getEnumerationValues(null, cloud, nod, f)));
 
     }
 
