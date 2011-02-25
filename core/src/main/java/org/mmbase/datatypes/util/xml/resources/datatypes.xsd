@@ -25,7 +25,7 @@
     <xsd:sequence>
       <xsd:element ref="datatype" maxOccurs="unbounded" minOccurs="0" />
     </xsd:sequence>
-    <xsd:attribute name="id" type="xsd:ID" />
+    <xsd:attribute name="id" type="xsd:normalizedString" />
   </xsd:complexType>
 
   <xsd:complexType name="DataType">
