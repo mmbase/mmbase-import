@@ -192,7 +192,7 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
     @Override
     public Field getField(String fieldName) throws IllegalArgumentException {
         Field f = getFieldTypes().get(fieldName);
-        if (f == null) throw new IllegalArgumentException("Field '" + fieldName + "' does not exist in NodeManager '" + getName() + "'.(" + getFieldTypes() + ")");
+        if (f == null) throw new IllegalArgumentException("Field '" + fieldName + "' does not exist in NodeManager '" + getName() + "'.(Existing are: " + getFieldTypes().keySet() + ")");
         return f;
     }
 

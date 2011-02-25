@@ -62,8 +62,9 @@ public class FieldWrapper implements Field {
     public int getEditPosition() { return field.getEditPosition(); }
     @Override
     public int getStoragePosition() { return field.getStoragePosition(); }
-    @SuppressWarnings("deprecation")
+
     @Override
+    @SuppressWarnings("deprecation")
     public String getGUIType() { return field.getGUIType(); }
     @Override
     public boolean isRequired() { return field.isRequired(); }

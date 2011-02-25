@@ -17,7 +17,7 @@ import org.mmbase.bridge.util.*;
 
 /**
  * MockNodes belong to a {@link MockCloud}. They represent {@linkplain
- * MockCloudContext#NodeDescription data} in memory of a {@link MockCloudContext}. An even simpler
+ * MockCloudContext.NodeDescription data} in memory of a {@link MockCloudContext}. An even simpler
  * Node mocker is {@link MapNode}. This one is a bit more sophisticated because it does actually
  * implement methods {@link #commit} and {@link #isNew} too.
  *
@@ -43,9 +43,15 @@ public class MockNode extends MapNode<Object> implements Node  {
 
     @Override
     public  void commit() {
-        Collection<String> errors = validate();
-        if (errors.size() > 0) {
-            throw new IllegalArgumentException("node " + getNumber() + getChanged() + ", builder '" + nodeManager.getName() + "' " + errors);
+        Object prev = getCloud().getProperty(CLOUD_COMMITNODE_KEY);
+        try {
+            getCloud().setProperty(CLOUD_COMMITNODE_KEY, Integer.valueOf(getNumber())); // Validation code wants to know that we are commiting right now.
+            Collection<String> errors = validate();
+            if (errors.size() > 0) {
+                throw new IllegalArgumentException("node " + getNumber() + getChanged() + ", builder '" + nodeManager.getName() + "' " + errors);
+            }
+        } finally {
+            getCloud().setProperty(CLOUD_COMMITNODE_KEY, prev);
         }
         if (! nodeDescription.values.containsKey("number")) {
             // This is a new node, so generate a number first
