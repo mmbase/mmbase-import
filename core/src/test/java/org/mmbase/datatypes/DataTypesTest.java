@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.datatypes;
 
+import org.mmbase.bridge.Cloud;
 import org.mmbase.datatypes.util.xml.*;
 import java.util.*;
 import org.mmbase.bridge.NodeManager;
@@ -277,7 +278,7 @@ public class DataTypesTest  {
         BasicDataType dt = DataTypeReader.readDataType(reader.getDocument().getDocumentElement(), null, null).dataType.clone();
         dt.setXml(null);
         Element toXml = dt.toXml();
-        boolean equiv = xmlEquivalent(reader.getDocument().getDocumentElement(), toXml);;
+        boolean equiv = xmlEquivalent(reader.getDocument().getDocumentElement(), toXml);
 
         if (mustBeEqual) {
             assertTrue("" + xml + " != " + XMLWriter.write(toXml), equiv);
@@ -433,9 +434,9 @@ public class DataTypesTest  {
         assertTrue(restrictedBinary instanceof BinaryDataType);
         assertEquals(0, restrictedBinary.validate(new byte[] { 0, 1, 2, }, null, null).size());
         assertEquals(1, restrictedBinary.validate(null, null, null).size());
-        assertFalse(restrictedBinary.validate(new byte[0], null, null).size() == 0);
-        assertFalse(restrictedBinary.validate(new NullInputStream(201), null, null).size() == 0);
-        assertTrue(restrictedBinary.validate(new NullInputStream(199), null, null).size() == 0);
+        assertFalse(restrictedBinary.validate(new byte[0], null, null).isEmpty());
+        assertFalse(restrictedBinary.validate(new NullInputStream(201), null, null).isEmpty());
+        assertTrue(restrictedBinary.validate(new NullInputStream(199), null, null).isEmpty());
     }
 
     @Test
@@ -476,7 +477,55 @@ public class DataTypesTest  {
 
 
     }
+    protected int size(Iterator i) {
+        int size = 0;
+        while (i.hasNext()) {
+            Object v = i.next();
+            size++;
+        }
+        return size;
+    }
 
+
+    @Test
+    public void enumLength() throws DependencyException {
+        String xml = "<datatype base='string'><pattern value='a+' /><enumeration enforce='onchange'><entry value='a' /><entry value='aa' /><entry value='b' /></enumeration></datatype>";
+        DocumentReader reader = new DocumentReader(new InputSource(new java.io.StringReader(xml)), false, DataTypeReader.class);
+        StringDataType dt = (StringDataType) DataTypeReader.readDataType(reader.getDocument().getDocumentElement(), null, null).dataType.clone();
+        assertEquals(2, size(dt.getEnumerationValues(null, null, null, null)));
+        Cloud cloud = MockCloudContext.getInstance().getCloud("mmbase");
+        NodeManager aa = cloud.getNodeManager("aa");
+        Field f = aa.getField("stringfield");
+
+        {
+            org.mmbase.bridge.Node nod = aa.createNode();
+            assertTrue(nod.isNew());
+            assertEquals(2, size(dt.getEnumerationValues(null, cloud, nod, f)));
+            nod.commit();
+            assertFalse(nod.isNew());
+            assertEquals(2, size(dt.getEnumerationValues(null, cloud, nod, f)));
+        }
+
+        assertEquals(2, size(dt.getEnumerationValues(null, cloud, null, f))); // fails?
+
+
+    }
+    @Test
+    public void nodeManagerNamesEnumLength() throws DependencyException {
+        String xml = "<datatype base='string'><class name='org.mmbase.datatypes.NodeManagerNamesDataType' /><pattern enforce='onchange' value='aa|bb' /></datatype>";
+        DocumentReader reader = new DocumentReader(new InputSource(new java.io.StringReader(xml)), false, DataTypeReader.class);
+        Cloud cloud = MockCloudContext.getInstance().getCloud("mmbase");
+        NodeManager aa = cloud.getNodeManager("aa");
+
+        NodeManagerNamesDataType dt = (NodeManagerNamesDataType) DataTypeReader.readDataType(reader.getDocument().getDocumentElement(), null, null).dataType.clone();
+        assertEquals(2, size(dt.getEnumerationValues(null, cloud, null, null)));
+        org.mmbase.bridge.Node nod = aa.createNode();
+        Field f = aa.getField("stringfield");
+        nod.commit();
+        assertFalse(nod.isNew());
+        assertEquals(2, size(dt.getEnumerationValues(null, cloud, nod, f)));
+
+    }
 
 
 }
