@@ -19,11 +19,19 @@ import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.datatypes.*;
 import org.mmbase.cache.Cache;
+import org.mmbase.cache.NodeCache;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
 import org.mmbase.module.core.*;
 import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.storage.*;
+import org.mmbase.storage.search.CompositeConstraint;
+import org.mmbase.storage.search.SearchQueryException;
+import org.mmbase.storage.search.Step;
+import org.mmbase.storage.search.StepField;
+import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
+import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
+import org.mmbase.storage.search.implementation.NodeSearchQuery;
 import org.mmbase.storage.util.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.IOUtil;
@@ -1760,38 +1768,194 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
 
-    protected void setNodeTypeRememberRelations(MMObjectNode node, MMObjectBuilder buil) throws StorageException {
+
+    public Map<CoreField, Integer> getFieldIndices(MMObjectBuilder builder, StepField... fields) {
+     // determine indices of queried fields
+        Map<CoreField, Integer> fieldIndices = new HashMap<CoreField, Integer>();
+        Step nodeStep = fields[0].getStep();
+        int j = 1;
+        for (StepField element : fields) {
+            if (element.getType() == Field.TYPE_BINARY) continue;
+            Integer index = Integer.valueOf(j++);
+            if (element.getStep() == nodeStep) {
+                String fieldName =  element.getFieldName();
+                CoreField field = builder.getField(fieldName);
+                if (field == null) {
+                    log.warn("Did not find the field '" + fieldName + "' in builder " + builder);
+                    continue; // could this happen?
+                }
+                fieldIndices.put(field, index);
+            }
+        }
+        return fieldIndices;
+    }
+
+    public MMObjectNode readNode(MMObjectBuilder builder, Map<CoreField, Integer> fieldIndices, ResultSet rs, boolean isVirtual) throws SQLException {
+       
+        NodeCache nodeCache = NodeCache.getCache();
+        int builderType = builder.getObjectType();
+        Integer oTypeInteger = Integer.valueOf(builderType);
+        boolean storesAsFile = factory.hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
+        MMObjectNode node;
+        if (!isVirtual) {
+            node = new MMObjectNode(builder, false);
+        } else {
+            node = new VirtualNode(builder);
+        }
+        node.start();
+        for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
+            if (!field.inStorage()) {
+                continue;
+            }
+            Integer index = fieldIndices.get(field);
+            Object value = null;
+            String fieldName = field.getName();
+            if (index != null) {
+                value = getValue(rs, index.intValue(), field, true);
+            } else {
+                java.sql.Blob b = null;
+                if (field.getType() == Field.TYPE_BINARY && storesAsFile) {
+                    log.debug("Storage did not return data for '" + fieldName + "', supposing it on disk");
+                    // must have been a explicitely specified 'blob' field
+                    b = getBlobValue(node, field, true);
+                } else if (field.getType() == Field.TYPE_BINARY) {
+                    // binary fields never come directly from the database
+                    value = MMObjectNode.VALUE_SHORTED;
+                } else if (!isVirtual) {
+                    // field wasn't returned by the db - this must be a Virtual node, otherwise fail!
+                    // (this shoudln't occur)
+                    throw new IllegalStateException("Storage did not return data for field '" + fieldName + "'");
+                }
+                if (b != null) {
+                    if (b.length() == -1) {
+                        value = MMObjectNode.VALUE_SHORTED;
+                    } else {
+                        value = b.getBytes(0L, (int) b.length());
+                    }
+                }
+            }
+            node.storeValue(fieldName, value);
+        }
+        node.clearChanged();
+        node.finish();
+
+        // The following code fills the type- and node-cache as far as this is possible at this stage.
+        // (provided the node is persistent)
+        if (!isVirtual) {
+            int otype = node.getOType();
+            Integer number = Integer.valueOf(node.getNumber());
+            if (otype == builderType) {
+                MMObjectNode cacheNode = nodeCache.get(number);
+                if (cacheNode != null) {
+                    node = cacheNode;
+                } else {
+                    nodeCache.put(number, node);
+                }
+                typeCache.put(number, oTypeInteger);
+            } else {
+                typeCache.put(number, Integer.valueOf(otype));
+            }
+        }
+        return node;
+    }
+
+    /**
+     * Deletes the node, and recreates it in a different table. Bug first find all node fields which are pointing to this node, and
+     * temporary set those to null.
+     */
+    protected void setNodeTypeRememberRelations(MMObjectNode node, final MMObjectBuilder buil) throws StorageException {
+        MMObjectBuilder oldBuilder = node.getOldBuilder();
+        final Map<Integer, Set<String>> foreigns = new LinkedHashMap<Integer, Set<String>>();
+        for (final MMObjectBuilder ob : factory.getMMBase().getBuilders()) {
+            if (ob instanceof VirtualBuilder) continue;
+            final List<Field> fields = new ArrayList<Field>();
+            for (CoreField f :  ob.getFields(NodeManager.ORDER_CREATE)) {
+                if (f.getType() == Field.TYPE_NODE && f.inStorage()
+                        && ! "number".equals(f.getName()) // for some idiotic reason number is 'node' typed
+                        && !"otype".equals(f.getName()) 
+                        ) {
+                    fields.add(f);
+                }
+            }
+            if (fields.size() > 0) {
+                final NodeSearchQuery query = new NodeSearchQuery(ob);
+                BasicCompositeConstraint cons = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
+                for (Field f : fields) {
+                    cons.addChild(new BasicFieldValueConstraint(query.getField(f), node.getNumber()));
+                }
+                if (cons.getChilds().size() < 1) continue;
+                query.setConstraint(cons);
+
+                try {
+                    String sqlString = factory.getMMBase().getSearchQueryHandler().createSqlString(query);
+                    final Map<CoreField, Integer > fieldIndices = getFieldIndices(ob, query.getFields().toArray(new StepField[query.getFields().size()]));
+                    executeQuery(sqlString, new ResultSetReader() {
+
+                        public void read(ResultSet rs) throws SQLException {
+                            while (rs.next()) {
+                                MMObjectNode node = readNode(ob, fieldIndices, rs, false);
+                                for (Field f : fields) {
+                                    node.setValue(f.getName(), buil.getObjectType()); // tempory replace with a node that at least exists
+                                    Set<String> s = foreigns.get(node.getNumber());
+                                    if (s == null) {
+                                        s = new HashSet<String>();
+                                        foreigns.put(node.getNumber(), s);
+                                    }
+                                    s.add(f.getName());
+                                    node.commit();
+                                }
+
+                            }
+                        }
+                    });
+                } catch (SQLException ex) {
+                    throw new StorageException(ex);
+                } catch (SearchQueryException ex) {
+                    throw new StorageException(ex);
+                }
+            }
+
+        }
+        // node should have no foreign keys now
+        delete(node, oldBuilder);
+        assert node.getIntValue("otype") > 0;
+        typeCache.remove(node.getNumber());
+
+        log.service("Recreating " + node + " " + (oldBuilder == null ? "NULL" : oldBuilder.getTableName()) + " -> " + buil.getTableName());
+        createWithoutEvent(node);
+        
+        // now point the relations and foreigns keys back again
+        for (Map.Entry<Integer, Set<String>> foreign : foreigns.entrySet()) {
+            MMObjectNode n = buil.getNode(foreign.getKey());
+            for (String f : foreign.getValue()) {
+                n.setValue(f, node.getNumber());
+                n.commit();
+            }
+        }
+      
+
 
     }
 
+    /**
+     * Deletes the node, and recreates it in a different table. Without taking into accounts that there could be foreign keys.
+     */
     protected void  setNodeTypeLeaveRelations(final MMObjectNode node, final MMObjectBuilder buil) throws StorageException {
 
-        synchronized(node) {
-            assert node.getIntValue("otype") > 0;
-            assert node.getNumber() > 0;
+        MMObjectBuilder oldBuilder = node.getOldBuilder();
+        // delete from database but do not delete blobs on disk
 
-            MMObjectBuilder oldBuilder = node.getOldBuilder();
-            if (oldBuilder != null) {
-                // delete from database but do not delete blobs on disk
-                /*
+        delete(node, oldBuilder);
 
-                  String tablename = (String) factory.getStorageIdentifier(oldBuilder);
-                  delete(node, oldBuilder, new ArrayList<CoreField>(), tablename);
-                */
-                delete(node, oldBuilder);
-
-                assert node.getIntValue("otype") > 0;
+        assert node.getIntValue("otype") > 0;
 
 
-                typeCache.remove(node.getNumber());
+        typeCache.remove(node.getNumber());
 
 
-                log.service("Recreating " + node + " " + (oldBuilder == null ? "NULL" : oldBuilder.getTableName()) + " -> " + buil.getTableName());
-                createWithoutEvent(node);
-            } else {
-                log.service("Called setNodeType for nothing (done by other thread?)");
-            }
-        }
+        log.service("Recreating " + node + " " + (oldBuilder == null ? "NULL" : oldBuilder.getTableName()) + " -> " + buil.getTableName());
+        createWithoutEvent(node);
+
     }
 
     public int setNodeType(final MMObjectNode node, MMObjectBuilder bul) throws StorageException {
@@ -1805,8 +1969,19 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 if (! inTransaction) {
                     beginTransaction();
                 }
+                assert node.getIntValue("otype") > 0;
+                assert node.getNumber() > 0;
 
-                setNodeTypeLeaveRelations(node, bul);
+                MMObjectBuilder oldBuilder = node.getOldBuilder();
+                if (oldBuilder != null) {
+                    if (factory.hasOption(Attributes.SUPPORTS_FOREIGN_KEYS)) {
+                        setNodeTypeRememberRelations(node, bul);
+                    } else {
+                        setNodeTypeLeaveRelations(node, bul);
+                    }
+                } else {
+                    log.service("Called setNodeType for nothing (done by other thread?)");
+                }
                 commitChange(node, "dn");
 
                 Enumeration<MMObjectNode> en = node.getRelations();
