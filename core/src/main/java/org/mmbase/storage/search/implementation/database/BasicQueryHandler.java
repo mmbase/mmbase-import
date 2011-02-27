@@ -96,9 +96,9 @@ public class BasicQueryHandler implements CoreSearchQueryHandler {
                         }
                     }
 
-                    // Now store results as cluster-/real nodes.
-                    StepField[] fields = query.getFields().toArray(new StepField[query.getFields().size()]);
-                    int maxNumber = query.getMaxNumber();
+                        // Now store results as cluster-/real nodes.
+                        StepField[] fields = query.getFields().toArray(new StepField[query.getFields().size()]);
+                        int maxNumber = query.getMaxNumber();
 
                     // now, we dispatch the reading of the result set to the right function wich instantiates Nodes of the right type.
                     if (builder instanceof ClusterBuilder) {
@@ -281,6 +281,7 @@ public class BasicQueryHandler implements CoreSearchQueryHandler {
         return results;
     }
 
+
     /**
      * Read the result list and creates a List of normal MMObjectNodes.
      */
@@ -288,25 +289,9 @@ public class BasicQueryHandler implements CoreSearchQueryHandler {
                                          DatabaseStorageManager storageManager,
                                          MMObjectBuilder builder, StepField[] fields, ResultSet rs,
             boolean sqlHandlerSupportsMaxNumber, int maxNumber) {
-
-        boolean storesAsFile = storageManager.getFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
+       
         // determine indices of queried fields
-        Map<CoreField, Integer> fieldIndices = new HashMap<CoreField, Integer>();
-        Step nodeStep = fields[0].getStep();
-        int j = 1;
-        for (StepField element : fields) {
-            if (element.getType() == Field.TYPE_BINARY) continue;
-            Integer index = j++;
-            if (element.getStep() == nodeStep) {
-                String fieldName =  element.getFieldName();
-                CoreField field = builder.getField(fieldName);
-                if (field == null) {
-                    log.warn("Did not find the field '" + fieldName + "' in builder " + builder);
-                    continue; // could this happen?
-                }
-                fieldIndices.put(field, index);
-            }
-        }
+        Map<CoreField, Integer> fieldIndices = storageManager.getFieldIndices(builder, fields);
 
         // Test if ALL fields are queried
         StringBuilder missingFields = null;
@@ -331,10 +316,7 @@ public class BasicQueryHandler implements CoreSearchQueryHandler {
 
         // Truncate results to provide weak support for maxnumber.
         try {
-            NodeCache nodeCache = NodeCache.getCache();
-            Cache<Integer, Integer> typeCache = CacheManager.getCache("TypeCache");
-            int builderType = builder.getObjectType();
-            Integer oTypeInteger = builderType;
+          
             while (rs.next() && (maxNumber > results.size() || maxNumber==-1)) {
                 try {
                     /*
@@ -345,64 +327,7 @@ public class BasicQueryHandler implements CoreSearchQueryHandler {
                      * to limit the time scope of these nodes, because they are not complete.
                      */
 
-                    MMObjectNode node;
-                    if (!isVirtual) {
-                        node = new MMObjectNode(builder, false);
-                    } else {
-                        node = new VirtualNode(builder);
-                    }
-                    node.start();
-                    for (CoreField field :  builder.getFields(NodeManager.ORDER_CREATE)) {
-                        if (! field.inStorage()) continue;
-                        Integer index = fieldIndices.get(field);
-                        Object value = null;
-                        String fieldName = field.getName();
-                        if (index != null) {
-                            value = storageManager.getValue(rs, index, field, true);
-                        } else {
-                            java.sql.Blob b = null;
-                            if (field.getType() == Field.TYPE_BINARY && storesAsFile) {
-                                log.debug("Storage did not return data for '" + fieldName + "', supposing it on disk");
-                                // must have been a explicitely specified 'blob' field
-                                b = storageManager.getBlobValue(node, field, true);
-                            } else if (field.getType() == Field.TYPE_BINARY) {
-                                // binary fields never come directly from the database
-                                value = MMObjectNode.VALUE_SHORTED;
-                            } else if (! isVirtual){
-                                // field wasn't returned by the db - this must be a Virtual node, otherwise fail!
-                                // (this shoudln't occur)
-                                throw new IllegalStateException("Storage did not return data for field '" + fieldName + "'");
-                            }
-                            if (b != null) {
-                                if (b.length() == -1) {
-                                    value = MMObjectNode.VALUE_SHORTED;
-                                } else {
-                                    value = b.getBytes(0L, (int) b.length());
-                                }
-                            }
-                        }
-                        node.storeValue(fieldName, value);
-                    }
-                    node.clearChanged();
-                    node.finish();
-
-                    // The following code fills the type- and node-cache as far as this is possible at this stage.
-                    // (provided the node is persistent)
-                    if (! isVirtual) {
-                        int otype = node.getOType();
-                        Integer number = node.getNumber();
-                        if (otype == builderType) {
-                            MMObjectNode cacheNode = nodeCache.get(number);
-                            if (cacheNode != null) {
-                                node = cacheNode;
-                            } else {
-                                nodeCache.put(number, node);
-                            }
-                            typeCache.put(number, oTypeInteger);
-                        } else {
-                            typeCache.put(number, otype);
-                        }
-                    }
+                    MMObjectNode node = storageManager.readNode(builder, fieldIndices, rs, isVirtual);
 
                     results.add(node);
                 } catch (Exception e) {
