@@ -106,6 +106,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
     public static final Pattern NON_NEGATIVE_INTEGER_PATTERN = Pattern.compile("\\A[0-9]+\\z");
     public static final Pattern LONG_PATTERN    = INTEGER_PATTERN;
 
+    @Override
     protected void inheritRestrictions(BasicDataType origin) {
         super.inheritRestrictions(origin);
         if (origin instanceof StringDataType) {
@@ -140,6 +141,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
         }
     }
 
+    @Override
     protected void cloneRestrictions(BasicDataType origin) {
         super.cloneRestrictions(origin);
         if (origin instanceof StringDataType) {

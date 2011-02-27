@@ -25,6 +25,7 @@
     <attribute name="storage-identifier-case">upper</attribute>
     <option name="database-stores-binary-as-file" />
     <option name="database-supports-blob" value="false" />
+    <option name="database-supports-foreign-keys" value="true" />
     <scheme name="change-field-scheme" />
     <scheme name="create-table-scheme">CREATE TEXT TABLE {1} ({2} {3} {5}); SET TABLE {1} SOURCE "{7}_{1}.txt;encoding=UTF-8"</scheme>
     <scheme name="create-object-table-scheme">CREATE TEXT TABLE {1} ({2} {3} {5}); SET TABLE {1} SOURCE "{7}_{1}.txt;encoding=UTF-8"</scheme>

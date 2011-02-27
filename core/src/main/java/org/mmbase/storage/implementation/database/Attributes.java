@@ -79,6 +79,13 @@ public final class Attributes {
      */
     public static final String SUPPORTS_COMPOSITE_INDEX = "database-supports-composite-index";
 
+
+    /**
+     * Foreign keys can be used
+     * @since MMBase-1.9.6
+     */
+    public static final String SUPPORTS_FOREIGN_KEYS = "database-supports-foreign-keys";
+
     /**
      * Attribute: <code>database-transaction-isolation-level</code>.
      * The transaction isolation level used for connections to the database.
@@ -126,5 +133,7 @@ public final class Attributes {
      * The default is <code>false</code>
      */
     public static final String TRIM_STRINGS = "trim-strings";
+
+
 
 }
