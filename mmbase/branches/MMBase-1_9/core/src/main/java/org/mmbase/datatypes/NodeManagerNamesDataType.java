@@ -43,7 +43,8 @@ public class NodeManagerNamesDataType extends StringDataType {
     }
     */
 
-    @Override public String getDefaultValue(Locale locale, Cloud cloud, Field field) {
+    @Override
+    public String getDefaultValue(Locale locale, Cloud cloud, Field field) {
         if (defaultValue != null) {
             for (String def : Casting.toString(defaultValue).split("\\s*,\\s*")) {
                 log.debug("Considering " + def);
@@ -54,7 +55,8 @@ public class NodeManagerNamesDataType extends StringDataType {
         return null;
     }
 
-    @Override public Iterator<Map.Entry<String, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
+    @Override
+    public Iterator<Map.Entry<String, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
         if (node == null && cloud == null) return null; // we don't know..
         return new Iterator<Map.Entry<String, String>>() {
             List<NodeManager> list = node == null ? cloud.getNodeManagers() : node.getCloud().getNodeManagers();
@@ -64,7 +66,7 @@ public class NodeManagerNamesDataType extends StringDataType {
             protected NodeManager findNext() {
                 while (iterator.hasNext()) {
                     NodeManager prop = iterator.next();
-                    if (NodeManagerNamesDataType.this.validate(prop.getName(), node, field).size() == 0) {
+                    if (NodeManagerNamesDataType.this.validate(prop.getName(), node, field).isEmpty()) {
                         return prop;
                     }
                 }
