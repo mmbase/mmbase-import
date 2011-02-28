@@ -86,6 +86,7 @@
         A ready-only field, which contains the user id of the last user that changed the node to which the field belongs.
       </description>
       <unique value="false" />
+      <maxLength value="64" enforce="never"/> <!-- same length as owner in object.xml -->
       <pattern enforce="never" value="\A[^\n\r]*\z" />
       <setprocessor>
         <class name="org.mmbase.datatypes.processors.Readonly" />
@@ -114,6 +115,7 @@
         A ready-only field, which contains the user id of the user that created the node to wich the field belongs.
       </description>
       <unique value="false" />
+      <maxLength value="64" enforce="never"/> <!-- same length as owner in object.xml -->
       <pattern enforce="never" value="\A[^\n\r]*\z" />
       <setprocessor>
         <class name="org.mmbase.datatypes.processors.Readonly" />
