@@ -31,7 +31,6 @@ import org.mmbase.storage.search.Step;
 import org.mmbase.storage.search.StepField;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
-import org.mmbase.storage.search.implementation.NodeSearchQuery;
 import org.mmbase.storage.util.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.IOUtil;
@@ -1891,6 +1890,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                     final Map<CoreField, Integer > fieldIndices = getFieldIndices(ob, query.getFields().toArray(new StepField[query.getFields().size()]));
                     executeQuery(sqlString, new ResultSetReader() {
 
+                        @Override
                         public void read(ResultSet rs) throws SQLException {
                             while (rs.next()) {
                                 MMObjectNode node = readNode(ob, fieldIndices, rs, false);
@@ -1958,6 +1958,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
 
     }
 
+    @Override
     public int setNodeType(final MMObjectNode node, MMObjectBuilder bul) throws StorageException {
 
         synchronized(node) {
