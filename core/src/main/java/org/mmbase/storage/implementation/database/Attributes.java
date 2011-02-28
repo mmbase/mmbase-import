@@ -22,7 +22,7 @@ public final class Attributes {
     /**
      * Attribute: <code>database-data-source</code>.
      * The data source object used by the storage layer.
-     * This attribute is set by the storagelayer and returns a javax.sql.DataSource object.
+     * This attribute is set by the storage layer and returns a {@link javax.sql.DataSource} object.
      * You should not set or configure this attribute (but you can retrieve it).
      */
     public static final String DATA_SOURCE = "database-data-source";
@@ -44,9 +44,9 @@ public final class Attributes {
 
     /**
      * Attribute: <code>database-binary-file-path</code>.
-     * The path to the directyory where binary files are to be stored if {@link #STORES_BINARY_AS_FILE} is true.
+     * The path to the directory where binary files are to be stored if {@link #STORES_BINARY_AS_FILE} is true.
      * The default is the WEB-INF/data directory of the mmbase web application.
-     * Note that if you specify a relative url, it is taken from the web application's webroot.
+     * Note that if you specify a relative URL, it is taken from the web application's web root.
      */
     public static final String BINARY_FILE_PATH = "database-binary-file-path";
 
@@ -96,9 +96,9 @@ public final class Attributes {
 
     /**
      * Option: <code>database-supports-data-definition</code>.
-     * If true, the data definiton (table structure) can be changed using ALTER TABLE statements.
-     * Some databses (such as Informix) may have trouble with ALTER TABLE statements on OO-tables.
-     * Turn this option false for tehse databses.
+     * If true, the data definition (table structure) can be changed using ALTER TABLE statements.
+     * Some databases (such as Informix) may have trouble with ALTER TABLE statements on OO-tables.
+     * Turn this option false for the  databases.
      * The default is <code>true</code>
      */
     public static final String SUPPORTS_DATA_DEFINITION = "database-supports-data-definition";
@@ -109,11 +109,11 @@ public final class Attributes {
      * When you create a new table that extends form another table, but which doesn't add fields,
      * you may get a statement that looks like: <br />
      * <code>CREATE TABLE table1 () UNDER table2</code><br />
-     * This statement will fail udner a database such as Informix, which does not accept empty
+     * This statement will fail under a database such as Informix, which does not accept empty
      * parenthesis, but instead expects: <br />
      * <code>CREATE TABLE table1 UNDER table2</code><br />
-     * On the other hand, a database such as Postgresql DOES expect the parenthesis (and fails if
-     * they are ommitted.)
+     * On the other hand, a database such as PostgreSql DOES expect the parenthesis (and fails if
+     * they are omitted.)
      * The default is <code>false</code>
      */
     public static final String REMOVE_EMPTY_DEFINITIONS = "database-remove-empty-definitions";
@@ -134,11 +134,5 @@ public final class Attributes {
      */
     public static final String TRIM_STRINGS = "trim-strings";
 
-
-    /**
-     * Default is <code>true</true>
-     * @since MMBase-1.9.2
-     */
-    public static final String SUPPORTS_FOREIGN_KEYS = "support-foreign-keys";
-
+ 
 }
