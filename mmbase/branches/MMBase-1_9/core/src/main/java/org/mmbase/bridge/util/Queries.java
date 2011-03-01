@@ -163,7 +163,7 @@ abstract public class Queries {
 
     /**
      * Adds a 'legacy' constraint to the query, i.e. constraint(s) represented
-     * by a string. Alreading existing constraints remain ('AND' is used).
+     * by a string. Already existing constraints remain ('AND' is used).
      *
      * @param query query to add constraint to
      * @param constraints string representation of constraints
@@ -226,6 +226,7 @@ abstract public class Queries {
         }
         return result;
     }
+    
     /**
      * @since MMBase-1.9.4
      */
@@ -266,7 +267,6 @@ abstract public class Queries {
             }
         }
     }
-
 
     /**
      * Creates a operator constant for use by createConstraint
@@ -1518,15 +1518,36 @@ abstract public class Queries {
 
 
     /**
+     * Deletes the relations with a node from a queries resulting relations list.
+     * If multiple relations to a node exist all get removed.
      *
      * @throws UnsupportedOperationException If it cannot be determined how the node should be related.
-     * @return Removed relations.
+     * @param q query from which resulting list the node should be removed from
+     * @param n node to remove
+     * @return Removed relation nodes
      * @since MMBase-1.8.6
      */
     public static NodeList removeFromResult(Query q, Node n) {
         NodeList result = getRelations(q, n);
         for (Node r : result) {
             r.delete();
+        }
+        return result;
+    }
+
+    /**
+     * Remove one node from query, but just once leaving other relations with same node intact.
+     * @throws UnsupportedOperationException If it can not be determined how the node should be unrelated.
+     * @return Result with removed relation
+     * @since MMBase-1.9.6
+     */
+    public static NodeList removeFromResultOnce(Query q, Node n) {
+        NodeList result = getRelations(q, n);
+        if (result.size() > 0) {
+            Node r = result.get(result.size() - 1); // get last
+            r.delete();
+            result.clear();
+            result.add(r);
         }
         return result;
     }
