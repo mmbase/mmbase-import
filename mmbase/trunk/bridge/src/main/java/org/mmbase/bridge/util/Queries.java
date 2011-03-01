@@ -38,7 +38,6 @@ abstract public class Queries {
 
     private static final Logger log = Logging.getLoggerInstance(Queries.class);
 
-
     /**
      * Translates a string to a search direction constant. If the string is <code>null</code> then
      * 'BOTH' is returned.
@@ -65,7 +64,6 @@ abstract public class Queries {
             throw new BridgeException("'" + search + "' cannot be converted to a relation-step direction constant");
         }
     }
-
 
     /**
      * Creates a Query object using arguments for {@link Cloud#getList(String, String, String, String, String, String, String, boolean)}
@@ -1424,7 +1422,6 @@ abstract public class Queries {
     }
 
 
-
     /**
      * Explores a query object, and creates a certain new relation object, which would make the
      * given node appear in the query's result.
@@ -1500,6 +1497,43 @@ abstract public class Queries {
 
     }
 
+
+    /**
+     * Deletes the relations with a node from a queries resulting relations list.
+     * If multiple relations to a node exist all get removed.
+     *
+     * @throws UnsupportedOperationException If it cannot be determined how the node should be related.
+     * @param q query from which resulting list the node should be removed from
+     * @param n node to remove
+     * @return Removed relation nodes
+     * @since MMBase-1.8.6
+     */
+    public static NodeList removeFromResult(Query q, Node n) {
+        NodeList result = getRelations(q, n);
+        for (Node r : result) {
+            r.delete();
+        }
+        return result;
+    }
+
+    /**
+     * Remove one node from query, but just once leaving other relations with same node intact.
+     * @throws UnsupportedOperationException If it can not be determined how the node should be unrelated.
+     * @return Result with removed relation
+     * @since MMBase-1.9.6
+     */
+    public static NodeList removeFromResultOnce(Query q, Node n) {
+        NodeList result = getRelations(q, n);
+        if (result.size() > 0) {
+            Node r = result.get(result.size() - 1); // get last
+            r.delete();
+            result.clear();
+            result.add(r);
+        }
+        return result;
+    }
+
+
     /**
      * @since MMBase-1.9.4
      */
@@ -1533,25 +1567,6 @@ abstract public class Queries {
         return 0;
 
     }
-
-    /**
-     * Deletes the relations with a node from a queries resulting relations list.
-     * If multiple relations to a node exist all get removed.
-     *
-     * @throws UnsupportedOperationException If it cannot be determined how the node should be related.
-     * @param q query from which resulting list the node should be removed from
-     * @param n node to remove
-     * @return Removed relation nodes
-     * @since MMBase-1.8.6
-     */
-    public static NodeList removeFromResult(Query q, Node n) {
-        NodeList result = getRelations(q, n);
-        for (Node r : result) {
-            r.delete();
-        }
-        return result;
-    }
-
 
     /**
      * Explores a query object, returns the relations the node has within the query.
