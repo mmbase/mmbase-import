@@ -9,4 +9,10 @@
   <datatype id="mediafragments_objecttype" base="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
     <pattern value="videofragments|audiofragments|imagefragments" enforce="onvalidate" />
   </datatype>
+  <datatype id="mediasources_objecttype" base="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
+    <pattern value="videosources|audiosources|imagesources" />
+    <commitprocessor>
+      <class name="org.mmbase.applications.media.FragmentTypeFixer" />
+    </commitprocessor>
+  </datatype>
 </datatypes>
