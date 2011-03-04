@@ -137,7 +137,7 @@ public class NodeHandler extends AbstractTypeHandler {
                         buffer.append(" selected=\"selected\" ");
                     }
                 }
-                buffer.append("value=\"" + gui.getValue() + "\">");
+                buffer.append("value=\"").append(gui.getValue()).append("\">");
                 buffer.append(Encode.encode("ESCAPE_XML", (String)  gui.getKey()));
                 buffer.append("</option>\n");
             }
