@@ -78,21 +78,36 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
 
             {
                 Matcher m = RESIZE.matcher(l);
+                Matcher n = NORESIZE.matcher(l);
                 if (m.matches()) {
                     util.toVideo(source, des);
-                    log.debug("Found " + m);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Found " + m);
+                    }
                     des.setIntValue("width", Integer.parseInt(m.group(3)));
                     des.setIntValue("height", Integer.parseInt(m.group(4)));
                     des.commit();
     
-                } else {
-                    Matcher n = NORESIZE.matcher(l);
-                    if (n.matches()) {
+                } else if (n.matches()) {
+                    if (log.isDebugEnabled()) {
                         log.debug("Found " + n);
-                        util.toVideo(source, des);
-                        des.setIntValue("width", Integer.parseInt(n.group(1)));
-                        des.setIntValue("height", Integer.parseInt(n.group(2)));
-                        des.commit();
+                    }
+                    util.toVideo(source, des);
+                    des.setIntValue("width", Integer.parseInt(n.group(1)));
+                    des.setIntValue("height", Integer.parseInt(n.group(2)));
+                    des.commit();
+                    
+                } else {
+                    if (util.dimensions(l, source, des)) {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Found dimensions via util");
+                        }
+                        if (! util.getUpdateDestination()) {
+                            util.setUpdateDestination(true);
+                            util.dimensions(l, source, des);
+                            util.setUpdateDestination(false);
+                            des.commit();
+                        }
                     }
                 }
             }
