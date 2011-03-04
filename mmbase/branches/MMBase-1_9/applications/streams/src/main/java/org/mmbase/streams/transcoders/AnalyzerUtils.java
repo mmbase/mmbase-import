@@ -76,6 +76,9 @@ public final class AnalyzerUtils implements java.io.Serializable {
     public void setUpdateDestination(boolean b) {
         updateDestination = b;
     }
+    public boolean getUpdateDestination() {
+        return updateDestination;
+    }
 
     /**
      * This fixes the first part (f.e. audio/*) when needed, not the complete MimeType.
