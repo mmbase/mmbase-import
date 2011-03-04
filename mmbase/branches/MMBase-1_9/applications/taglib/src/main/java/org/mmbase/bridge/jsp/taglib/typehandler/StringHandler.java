@@ -75,9 +75,9 @@ public class StringHandler extends AbstractTypeHandler {
                     if(field.getMaxLength() > 2048)  {
                         // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
                         // wrap attribute removed, we want to produce valid XHTML, and who is still using netscape < 6?
-                        buffer.append("<textarea class=\"big " + getClasses(node, field) + "\" rows=\"10\" cols=\"80\" ");
+                        buffer.append("<textarea class=\"big ").append(getClasses(node, field)).append("\" rows=\"10\" cols=\"80\" ");
                     } else {
-                        buffer.append("<textarea class=\"small " + getClasses(node, field) + "\" rows=\"5\" cols=\"" + getCols(field) + "\" ");
+                        buffer.append("<textarea class=\"small ").append(getClasses(node, field)).append("\" rows=\"5\" cols=\"").append(getCols(field)).append("\" ");
                     }
                     addExtraAttributes(buffer);
                     buffer.append("name=\"").append(prefix(field.getName())).append("\" ");

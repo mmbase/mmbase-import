@@ -509,7 +509,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     private int evalBody() throws JspTagException {
 
-        if (getId() != null) { // writeclou to context.
+        if (getId() != null) { // writecloud to context.
             getContextProvider().getContextContainer().register(getId(), cloud);
         }
 
@@ -1380,7 +1380,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         org.mmbase.bridge.util.CloudThreadLocal.unbind();
         org.mmbase.bridge.util.CloudThreadLocal.bind(prevCloudThreadLocal);
         pageContext.setAttribute(KEY, prevCloud, SCOPE);
-        log.debug("Unset " + KEY + " " + prevCloud);
+        if (log.isDebugEnabled()) {
+            log.debug("Unset " + KEY + " " + prevCloud);
+        }
         dereference();
         return super.doEndTag();
     }
