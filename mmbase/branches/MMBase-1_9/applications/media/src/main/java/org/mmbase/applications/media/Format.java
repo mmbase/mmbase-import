@@ -48,8 +48,7 @@ public enum Format {
     WMP (18),
     HTML (19),
     SMIL (20),
-    QT   (21),
-    /* more windows media types */
+    QT   (21),    /* more windows media types */
     ASX  (22),
     WAX  (23),
     WMV  (24),
@@ -58,38 +57,28 @@ public enum Format {
     WMX  (27),
     WMZ  (28),
     WMD  (29),
-
     MID  (30),
-
     OGV  (31),
     OGA  (32),
-    
     WEBM (40),
-
     PODCAST(50),
     VODCAST(51),
-
     M4A(60),
     M4V(61),
     TS(62),
     GGP(70),
     FLASH(80),
-    FLV(81),
-    /* image formats */
+    FLV(81),      /* image formats */
     JPG(100),
     JPEG(101),
     GIF(102),
     BMP(103),
     PNG(104),
-    TIFF(105),
-    /* a few more audio formats */
+    TIFF(105),    /* a few more audio formats */
     AAC(200),
-    FLAC(201),
-
-    /* others */
+    FLAC(201),    /* others */
     M3U(501),
     M3U8(502),
-
     ANY(10000);
 
 
