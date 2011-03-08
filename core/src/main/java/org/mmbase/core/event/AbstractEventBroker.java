@@ -7,7 +7,6 @@
 package org.mmbase.core.event;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -30,9 +29,9 @@ public abstract class AbstractEventBroker extends EventBroker {
         public int compare(EventListener e1, EventListener e2) {
             try {
                 if (e1 instanceof WeightEventListener && e2 instanceof WeightEventListener) {
-                    int diff = ((WeightEventListener) e1).getWeight() - ((WeightEventListener) e2).getWeight();
-                    if (diff != 0) {
-                        return diff;
+                    long diff = (long) ((WeightEventListener) e2).getWeight() - ((WeightEventListener) e1).getWeight();
+                    if (diff != 0L) {
+                        return diff > 0L ? 1 : -1;
                     }
                 }
             } catch (Throwable t) {
@@ -76,7 +75,7 @@ public abstract class AbstractEventBroker extends EventBroker {
 
     public void removeListener(EventListener listener) {
         synchronized(COMPARATOR) {
-            List<EventListener> newList = new ArrayList<EventListener>(listeners.size() + 1);
+            List<EventListener> newList = new ArrayList<EventListener>(listeners.size());
             newList.addAll(listeners);
             if (! newList.remove(listener)) {
                 log.warn("Tried to remove " + listener + " from " + getClass()+ " but it was not found. Ignored.");
