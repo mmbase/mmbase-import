@@ -87,9 +87,7 @@
           <script>
             <xsl:copy-of select="@*" />
             <xsl:copy-of select="*|text()" />
-            <xsl:if test="string-length(*|text()) &lt; 9">
-              <xsl:comment>help</xsl:comment>
-            </xsl:if>
+            <xsl:if test="string-length(*|text()) &lt; 9"> /* help ie html5 style */ </xsl:if>
           </script>
         </xsl:if>
       </xsl:for-each>
