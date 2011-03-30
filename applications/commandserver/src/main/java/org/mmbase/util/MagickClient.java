@@ -26,19 +26,19 @@ public class MagickClient {
     public static int cnumber = 0;
 
 
-    protected static class Job implements Runnable {
+    public static class Job implements Runnable {
         private final int number = cnumber++;
         final List<String> command;
         final List<String> env;
         final String file;
+        private boolean ready = false;
         public Job(String file, List<String> c, List<String> env) {
             this.file = file;
             this.command = c;
             this.env = env;
         }
 
-        @Override
-        public void run()  {
+        public synchronized void run()  {
             try {
                 System.out.println(number + " command = " + command);
                 InputStream is = new FileInputStream(file);
@@ -89,20 +89,38 @@ public class MagickClient {
                 throw new RuntimeException(ioe);
             } catch (InterruptedException ie) {
                 throw new RuntimeException(ie);
+            } finally {
+                System.out.println("Ready " + Thread.currentThread());
+                ready = true;
+                notifyAll();
             }
+        }
+        @Override
+        public String toString() {
+            return "job " + number;
         }
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         final List<String> command = new ArrayList<String>(Arrays.asList(args).subList(1, args.length));
         final List<String> env     = new ArrayList<String>();
         final String file = args[0];
 
-        for (int i = 1; i <= 50; i++) {
-            Thread t = new Thread(new Job(file, command, env));
+        List<Job> jobs = new ArrayList<Job>();
+        for (int i = 1; i <= 100; i++) {
+            Job j = new Job(file, command, env);
+            Thread t = new Thread(null, j, "magicclient" + i);
             t.start();
+            jobs.add(j);
         }
+        for (Job j : jobs) {
+            synchronized(j) {
+                while(! j.ready) j.wait();
+                System.out.println("Ready " + j);
+            }
+        }
+
 
 
     }
