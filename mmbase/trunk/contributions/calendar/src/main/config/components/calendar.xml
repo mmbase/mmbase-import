@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component
     name="calendar"
+    defaultblock="months"
+    version="1"
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
-  <class name="org.mmbase.framework.BasicComponent">
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component 
+                        http://www.mmbase.org/xmlns/component.xsd">
 
-  </class>
+  <class name="org.mmbase.framework.BasicComponent">  </class>
   <description xml:lang="nl">Tools voor agenda's</description>
   <description xml:lang="en">Tools for a calendar</description>
   <!--
       No dependencies.
   -->
 
+  <title xml:lang="nl">MMBase kalender</title>
+  <title xml:lang="en">MMBase calendar</title>
 
-  <block name="months" mimetype="text/html">
+  <block name="months" 
+    classification="mmbase.calendar"
+    mimetype="text/html">
     <head jsp="head.jspx" />
     <body jsp="index.jspx">
       <param name="offset" />

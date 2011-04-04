@@ -20,7 +20,7 @@
     <mm:import id="referids" vartype="list">language,timezone,weekend,cols,rows,offset</mm:import>
   </mm:context>
     
-  <link href="style.css" rel="stylesheet" title="Normaal" type="text/css" media="screen" />
+  <link href="${mm:link('/mmbase/components/calendar/style.css')}" rel="stylesheet" title="Normaal" type="text/css" media="screen" />
   <style>
     <mm-cal:css weekend="${config.weekend}" months="seasons"/>
     .time {
