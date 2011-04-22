@@ -516,7 +516,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
      *
      * It returns a String, even if it goes wrong, in which case the string contains the error
      * message.
-     * @param A Source (representing the XSLT).
+     * @param xsl A Source (representing the XSLT).
      * @return The result ot the transformation.
      */
     private String xslTransform(Document doc, Source xsl) throws JspTagException {
@@ -603,7 +603,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
     }
     /**
      * @see   xslTransform
-     * @param A name of an XSLT file.
+     * @param xsl A name of an XSLT file.
      */
     private String xslTransform(Document doc, String xsl) throws JspTagException {
         try {
