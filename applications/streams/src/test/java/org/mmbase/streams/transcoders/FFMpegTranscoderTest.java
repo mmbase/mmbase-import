@@ -26,6 +26,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 import java.util.*;
 import java.io.*;
+import org.mmbase.util.externalprocess.ProcessException;
 import org.mmbase.util.logging.*;
 
 
@@ -69,6 +70,8 @@ public class FFMpegTranscoderTest {
             fail("Should have thrown exception");
         } catch (Error e) {
             // OK
+        } catch (ProcessException ie) {
+            assumeTrue(false);
         }
 
 
