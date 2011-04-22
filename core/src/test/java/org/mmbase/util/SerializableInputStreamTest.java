@@ -81,6 +81,7 @@ public class SerializableInputStreamTest  {
             os.write( (i % 100) + 20);
         }
         os.close();
+        file.deleteOnExit();
         return file;
     }
 
@@ -139,6 +140,7 @@ public class SerializableInputStreamTest  {
         after = l.get();
         assertTrue("" + before.length + " " + after.length, Arrays.equals(before, after));
         File f = File.createTempFile(getClass().getName() + "." + id + ".", ".many");
+        f.deleteOnExit();
         l.moveTo(f);
         testSerializable(l);
         testSerializable(l);
@@ -197,6 +199,7 @@ public class SerializableInputStreamTest  {
         File f = File.createTempFile(getClass().getName(), ".copy");
         IOUtil.copy(l, new FileOutputStream(f));
         //l.close();
+        f.deleteOnExit();
         return f;
     }
 
