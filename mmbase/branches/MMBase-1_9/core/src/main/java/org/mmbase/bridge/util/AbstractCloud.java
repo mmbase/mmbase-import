@@ -15,6 +15,7 @@ import java.util.concurrent.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.*;
 import org.mmbase.security.*;
+import org.mmbase.util.LocalizedString;
 import org.mmbase.util.functions.*;
 
 /**
@@ -31,7 +32,7 @@ public abstract class AbstractCloud implements Cloud {
 
     private final Map<Object, Object> properties = new ConcurrentHashMap<Object, Object>();
     protected final Map<String, Transaction> transactions = new HashMap<String, Transaction>();
-    private Locale locale = Locale.getDefault();
+    private Locale locale = LocalizedString.getDefault();
 
     private final String name;
     private final UserContext userContext;
