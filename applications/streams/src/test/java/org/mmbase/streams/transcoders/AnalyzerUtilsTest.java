@@ -21,6 +21,7 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.transcoders;
 
+import org.mmbase.util.externalprocess.ProcessException;
 import java.io.*;
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -53,8 +54,12 @@ public class AnalyzerUtilsTest {
                         this.success = true;
                     }
                 }
-            };
-        getFFMpegTranscoder().transcode(testFile.toURI(), null, test);
+        };
+        try {
+            getFFMpegTranscoder().transcode(testFile.toURI(), null, test);
+        } catch (ProcessException io) {
+            assumeTrue(false);
+        }
         assertTrue(test.success);
 
     }
@@ -75,8 +80,12 @@ public class AnalyzerUtilsTest {
                     }
                 }
             };
-        getFFMpegTranscoder().transcode(testFile.toURI(), null, test);
-        assertTrue(test.success);
+        try {
+            getFFMpegTranscoder().transcode(testFile.toURI(), null, test);
+            assertTrue(test.success);
+        } catch (ProcessException pe) {
+            assumeTrue(false);
+        }
 
     }
 
@@ -93,8 +102,12 @@ public class AnalyzerUtilsTest {
                     }
                 }
             };
-        getFFMpegTranscoder().transcode(testFile.toURI(), null, test);
-        assertFalse(test.success);
+        try {
+            getFFMpegTranscoder().transcode(testFile.toURI(), null, test);
+            assertFalse(test.success);
+        } catch (ProcessException pe) {
+            assumeTrue(false);
+        }
 
     }
 
@@ -112,8 +125,12 @@ public class AnalyzerUtilsTest {
                     }
                 }
             };
-        getFFMpegTranscoder().transcode(testFile.toURI(), null, test);
-        assertTrue(test.success);
+        try {
+            getFFMpegTranscoder().transcode(testFile.toURI(), null, test);
+            assertTrue(test.success);
+        } catch (ProcessException pe) {
+            assumeTrue(false);
+        }
 
     }
 
