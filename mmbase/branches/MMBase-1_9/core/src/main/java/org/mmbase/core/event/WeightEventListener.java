@@ -7,6 +7,7 @@
 package org.mmbase.core.event;
 
 /**
+ * Heavier eventlisteners are notified before lighter ones.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9.6
