@@ -12,7 +12,7 @@
 
 
   <artifactId>mmbase-streams</artifactId>
-  <name>MMBase Streams</name>
+  <name>MMBase2 Streams</name>
   <packaging>war</packaging>
 
   <description>
