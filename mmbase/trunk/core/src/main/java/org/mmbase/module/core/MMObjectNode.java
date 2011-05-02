@@ -1074,7 +1074,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                 log.debug("Found in " + v.length + " bytes in blob cache for field " + fieldName + " (expected  " + getSize(fieldName) + " )");
                 //assert v.length == getSize(fieldName) : ("" + fieldName + ":" + v.length + " " + sizes);
                 if (v.length != getSize(fieldName)) {
-                    log.warn("Found incorrect size " + getSize(fieldName) + "for #" + getNumber() + " (" + fieldName + " should be " + v.length + "). Correcting now.");
+                    log.warn("Size " + getSize(fieldName) + ", not set or incorrect for #" + getNumber() + " (" + fieldName + " should be " + v.length + "). Correcting now.");
                     setSize(fieldName, v.length);
                 }
             }
