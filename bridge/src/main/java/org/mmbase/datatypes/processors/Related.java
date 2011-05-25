@@ -225,27 +225,29 @@ public class Related {
         private static final long serialVersionUID = 1L;
         @Override
         public Object process(final Node node, final Field field, final Object value) {
-            Node relatedNode = getRelatedNode(node, field);
-            if (relatedNode == null) {
-                log.service("No related node of type " + getRelatedCreateType(node) + " for node " + node.getNumber() + ". Implicitely creating now.");
-                Node newNode = getRelatedCreateType(node).createNode();
-                newNode.commit();
-                RelationManager rel = getRelationManager(node);
-                Relation newrel = node.createRelation(newNode, rel);
-                for (Map.Entry<String, String> entry : relationConstraints.entrySet()) {
-                    newrel.setStringValue(entry.getKey(), entry.getValue());
-                }
-
-                newrel.commit();
-                if (node.getCloud() instanceof Transaction) {
-                    node.getCloud().setProperty(getKey(node, field),  newNode);
-                }
-                if (log.isDebugEnabled()) {
-                    log.debug("Created " + newrel);
-                    log.debug("Cloud: : " + node.getCloud().getProperties());
-
+            synchronized(node) {    // this should of course only happen once
+                Node relatedNode = getRelatedNode(node, field);
+                if (relatedNode == null) {
+                        log.info("No related node of type " + getRelatedCreateType(node).getName() + " for node " + node.getNumber() + ". Implicitely creating now.");
+                    Node newNode = getRelatedCreateType(node).createNode();
+                    newNode.commit();
+                    RelationManager rel = getRelationManager(node);
+                    Relation newrel = node.createRelation(newNode, rel);
+                    for (Map.Entry<String, String> entry : relationConstraints.entrySet()) {
+                        newrel.setStringValue(entry.getKey(), entry.getValue());
+                    }
+    
+                    newrel.commit();
+                    if (node.getCloud() instanceof Transaction) {
+                        node.getCloud().setProperty(getKey(node, field),  newNode);
+                    }
+                    if (log.isDebugEnabled()) {
+                        log.debug("Created " + newrel);
+                        log.debug("Cloud: : " + node.getCloud().getProperties());
+                    }
                 }
             }
+            
             return value;
         }
     }

@@ -29,7 +29,6 @@ public class RelatedField {
 
     public abstract static class  AbstractProcessor extends Related.AbstractProcessor {
 
-
         protected String otherField = null;
 
         public void setField(String f) {
@@ -61,7 +60,7 @@ public class RelatedField {
                 otherNode.commit();
                 return value;
             } else {
-                log.warn("No related node");
+                log.warn("No related node for #" + node.getNumber() + ", field: " + field.getName());
                 return null;
             }
 
@@ -81,7 +80,7 @@ public class RelatedField {
                 String fieldName = otherField == null ? field.getName() : otherField;
                 return otherNode.getValue(fieldName);
             } else {
-                log.debug("No related node");
+                log.warn("No related node for #" + node.getNumber() + ", field: " + field.getName());
                 return null;
             }
         }
