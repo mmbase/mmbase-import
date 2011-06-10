@@ -46,6 +46,7 @@ public class MagickClient {
 
                 try {
                     Socket socket = new Socket("localhost" , 1679);
+
                     OutputStream os = socket.getOutputStream();
                     os.write(0); // version
                     final ObjectOutputStream stream = new ObjectOutputStream(os);
@@ -108,7 +109,7 @@ public class MagickClient {
         final String file = args[0];
 
         List<Job> jobs = new ArrayList<Job>();
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= 1; i++) {
             Job j = new Job(file, command, env);
             Thread t = new Thread(null, j, "magicclient" + i);
             t.start();

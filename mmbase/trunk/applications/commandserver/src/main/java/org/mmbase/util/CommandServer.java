@@ -9,11 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.net.*;
 import java.io.*;
+import java.net.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
-import java.text.*;
 
 
 /**
@@ -114,7 +116,7 @@ public class CommandServer {
     // copy job
     public static class Copier implements Runnable {
         private boolean ready;
-        private int count = 0;
+        private long count = 0;
         private final InputStream in;
         private final OutputStream out;
         private final String name;
@@ -127,10 +129,25 @@ public class CommandServer {
             debug("Started " + this);
             int size = 0;
             try {
-                byte[] buffer = new byte[10];
-                while ((size = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, size);
-                    count+= size;
+                try {
+                    final ReadableByteChannel inputChannel  = Channels.newChannel(in);
+                    final WritableByteChannel outputChannel = Channels.newChannel(out);
+                    final ByteBuffer buffer = ByteBuffer.allocateDirect(16 * 1024);
+                    while ((size = inputChannel.read(buffer)) != -1) {
+                        buffer.flip();
+                        outputChannel.write(buffer);
+                        buffer.compact();
+                        count += size;
+                        //System.out.println(name + ":" + count);
+                    }
+                    buffer.flip();
+                    while (buffer.hasRemaining()) {
+                        count += outputChannel.write(buffer);
+                    }
+                } catch (InterruptedIOException ie) {
+                    debug("Interrupted");
+                    in.close();
+                    out.close();
                 }
             } catch (Throwable t) {
                 System.err.println("Connector " + toString() +  ": " + t.getClass() + " " + t.getMessage() + " " + in + " " + stackTrace(t, 10));
@@ -147,7 +164,9 @@ public class CommandServer {
         public void  waitFor() throws InterruptedException {
             debug("Waiting for " + this);
             synchronized(this) {
-                while (! ready) wait();
+                while (! ready) {
+                    wait();
+                }
             }
             debug("Written " + toString() + " "  + count);
         }
@@ -191,10 +210,11 @@ public class CommandServer {
                     scheduler = Executors.newScheduledThreadPool(1);
                 }
                 scheduler.schedule(new Runnable() {
+                        @Override
                         public void run() {
                             Process p = Command.this.process;
                             if (p != null) {
-                                System.out.println("Killing " + Command.this);
+                                System.out.println("Killing " + Command.this + " (took over " + maxDuration + " ms)");
                                 try {
                                     errors.write(("Killing " + Command.this + " (took over " + maxDuration + " ms)\n").getBytes());
                                 } catch (IOException e) {
@@ -206,6 +226,7 @@ public class CommandServer {
                                 } catch (InterruptedException e) {
                                     System.err.println(e.getMessage());
                                 }
+
                                 for (Future<?> f : futures) {
                                     if (f.cancel(true)) {
                                         System.err.println("Canceled " + f);
@@ -225,65 +246,21 @@ public class CommandServer {
                 String[] env    = (String[]) stream.readObject();
                 System.out.println(number + " Executing " + Arrays.asList(params) + " (queue " + threadQueue.size() + ")");
                 process = Runtime.getRuntime().exec(params, env);
-                PipedInputStream pi  = new PipedInputStream();
-                PipedOutputStream po = new PipedOutputStream(pi);
 
-                Copier connector = new Copier(input, po, number + ".input -> piped output");
+                Copier connector = new Copier(input, process.getOutputStream(), number + ".input -> process input");
                 futures.add(threads.submit(connector));
 
-                Copier connector2 = new Copier(pi, process.getOutputStream(), number + ",piped input -> process input");
-                futures.add(threads.submit(connector2));
-
-
-                PipedInputStream pi2 = new PipedInputStream();
-                PipedOutputStream po2 = new PipedOutputStream(pi2);
-
-                InputStream  inputStream = process.getInputStream();
-                OutputStream outputStream = process.getOutputStream();
-
-                Copier connector3 = new Copier(inputStream, po2, number + ";process output -> piped output 2");
-                futures.add(threads.submit(connector3));
-
-
-                InputStream  errorStream = process.getErrorStream();
-                PipedInputStream piErr = new PipedInputStream();
-                PipedOutputStream poErr = new PipedOutputStream(piErr);
-
-                Copier connectorErr = new Copier(errorStream, poErr, number +  ";process err -> piped err");
+                Copier connectorInput = new Copier(process.getInputStream(), output, number +  ";process -> output");
+                futures.add(threads.submit(connectorInput));
+                Copier connectorErr   = new Copier(process.getErrorStream(), errors, number +  ";process -> errors");
                 futures.add(threads.submit(connectorErr));
 
-                Copier connector4 = new Copier(pi2, output, number + ";piped input2 -> output");
-                futures.add(threads.submit(connector4));
-
-
-                Copier connectorErr2 = new Copier(piErr, errors, number +  ";piped err -> errors");
-                futures.add(threads.submit(connectorErr2));
-
                 connector.waitFor();
-                po.close();
-
-                connector2.waitFor();
-
-                outputStream.close();
-
-                connector3.waitFor();
-                po2.close();
-
-                debug("Waiting for process to end");
+                process.getOutputStream().close();
                 process.waitFor();
-
-
-                debug("Closing");
+                connectorInput.waitFor();
                 connectorErr.waitFor();
-                poErr.close();
-
-                connector4.waitFor();
-                pi2.close();
-                connectorErr2.waitFor();
-                piErr.close();
-
                 output.close();
-
                 if (errors != output) {
                     errors.close();
                 }
@@ -366,9 +343,11 @@ public class CommandServer {
             while (true) {
 
                 final Socket accept = server.accept();
-                accept.setSoTimeout(10000);
-                accept.setKeepAlive(false);
-                accept.setReceiveBufferSize(1024);
+                accept.setSoTimeout(100000);
+                //accept.setKeepAlive(true);
+                //accept.setReceiveBufferSize(10 * 1024); // This makes everthing fail withe large files.
+                debug("Receive buffer size " + accept.getReceiveBufferSize());
+
                 final Command command = new Command(accept.getInputStream(),
                                               accept.getOutputStream(),
                                               accept.getOutputStream(),
