@@ -298,9 +298,9 @@ public class CommandServer {
         int maxDuration     = -1;
         for (int i = 0 ; i < a.length; i++) {
             String arg = a[i];
-            if (arg.equals("--help") || args.equals("-h") || args.equals("-?") || args.equals("--?")) {
+            if (arg.equals("--help") || arg.equals("-h") || arg.equals("-?") || arg.equals("--?")) {
                 System.out.println("Usage:\n");
-                System.out.println(" java -jar mmbase-commandserver.jar [[--threads <number>] [<hostname>] <portnumber>]\n");
+                System.out.println(" java -jar mmbase-commandserver.jar [--log <log file>] [--threads <number>] [<hostname>] <portnumber>]\n");
                 System.out.println("If both arguments missing, it will listen on stdin, and produce output on stdout.");
                 return;
             } else if (arg.equals("--threads")) {
