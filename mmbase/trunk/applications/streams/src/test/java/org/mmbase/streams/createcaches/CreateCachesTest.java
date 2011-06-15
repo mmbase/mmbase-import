@@ -22,23 +22,14 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 package org.mmbase.streams.createcaches;
 
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
-import static org.junit.Assert.*;
-import static org.junit.Assume.*;
-import java.util.*;
-import java.io.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.mock.MockCloudContext;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.datatypes.DataType;
-import static org.mmbase.datatypes.Constants.*;
-import org.mmbase.datatypes.processors.*;
-import org.mmbase.bridge.mock.*;
-import org.mmbase.streams.transcoders.*;
-import static org.mmbase.streams.transcoders.AnalyzerUtils.*;
-import org.mmbase.util.logging.*;
 
-import org.mmbase.servlet.FileServlet;
+import java.io.*;
+
+import static org.junit.Assert.*;
+import static org.junit.Assume.assumeNotNull;
 
 
 /**
