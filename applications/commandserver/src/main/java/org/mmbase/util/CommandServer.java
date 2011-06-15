@@ -365,7 +365,7 @@ public class CommandServer {
                             System.err.println(ie.getMessage());
                             res = null;
                         }
-                        logger.println(res + " READY " + (t != null ? "(" + t + ")" : "") + " (query " + socketQueue.size() + ")");
+                        logger.println(res + " READY " + (t != null ? "(" + t + ")" : "") + " (queue " + socketQueue.size() + ")");
                     }
                 };
             ServerSocket server = new ServerSocket();
