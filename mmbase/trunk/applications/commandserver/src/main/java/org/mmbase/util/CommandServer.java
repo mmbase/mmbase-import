@@ -121,7 +121,6 @@ public class CommandServer {
         private final InputStream in;
         private final OutputStream out;
         private final String name;
-        public  boolean debug = false;
 
         public Copier(InputStream i, OutputStream o, String n) {
             in = i; out = o; name = n;
@@ -300,7 +299,7 @@ public class CommandServer {
             String arg = a[i];
             if (arg.equals("--help") || arg.equals("-h") || arg.equals("-?") || arg.equals("--?")) {
                 System.out.println("Usage:\n");
-                System.out.println(" java -jar mmbase-commandserver.jar [--log <log file>] [--threads <number>] [<hostname>] <portnumber>]\n");
+                System.out.println(" java -jar mmbase-commandserver.jar [--log <log file>] [--debug <true|false>] [--threads <number>] [<hostname>] <portnumber>]\n");
                 System.out.println("If both arguments missing, it will listen on stdin, and produce output on stdout.");
                 return;
             } else if (arg.equals("--threads")) {
@@ -309,12 +308,13 @@ public class CommandServer {
                 maxDuration = (int) (Float.parseFloat(a[++i]) * 1000);
             } else if (arg.equals("--log")) {
                 logger = new PrintStream(new FileOutputStream(new File(a[++i]), true), true);
+            } else if (arg.equals("--debug")) {
+                debug = Boolean.valueOf(a[++i]);
             } else {
                 args.add(arg);
             }
         }
         if (args.size() == 0) {
-            debug = false;
             if (logger == null) logger = new PrintStream(new OutputStream() {
                 @Override
                 public void write(int i) throws IOException {
