@@ -81,7 +81,7 @@ public class CommandServer {
                             try {
                                 super.run();
                             } catch (Throwable t) {
-                                System.err.println("Error during job: " + t.getClass().getName() + " " + t.getMessage());
+                                logger.println("Error during job: " + t.getClass().getName() + " " + t.getMessage());
                             }
                         }
                     };
@@ -151,7 +151,7 @@ public class CommandServer {
                     out.close();
                 }
             } catch (Throwable t) {
-                System.err.println("Connector " + toString() +  ": " + t.getClass() + " " + t.getMessage() + " " + in + " " + stackTrace(t, 10));
+                logger.println("Connector " + toString() +  ": " + t.getClass() + " " + t.getMessage() + " " + in + " " + stackTrace(t, 10));
             }
             debug("Read " + toString() + " "  + count);
             synchronized(this) {
@@ -292,7 +292,7 @@ public class CommandServer {
     }
     /**
      */
-    public static void main(String[] a) throws IOException, InterruptedException {
+    public static void main(String[] a) throws IOException {
         List<String> args = new ArrayList<String>();
         int numberOfThreads = THREADS;
         int maxDuration     = -1;
@@ -322,7 +322,11 @@ public class CommandServer {
                 }
             });
             Runnable run = new Command(System.in, System.out, System.err, "stdin/stdout", null);
-            run.run();
+            try {
+                run.run();
+            } catch (Exception e) {
+                logger.print(e.getMessage());
+            }
         } else {
             if (logger == null) logger = System.out;
             String host = args.size() > 1 ? args.get(0) : "localhost";
