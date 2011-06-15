@@ -37,20 +37,25 @@ public class TitleField implements Processor {
 
     @Override
     public Object process(final Node node, final Field field, Object value) {
-        Node idNode = node.getCloud().mayRead(node.getIntValue("id")) ? node.getNodeValue("id") : null; // a videsource
-        if (idNode != null && idNode.getNodeManager().hasField("mediafragment")) {
-            Node mediaFragment = idNode.getNodeValue("mediafragment");
-            long time = node.getLongValue("time");
-            int seconds = (int) (time / 1000);
-            int hours = seconds / (60 * 60);
-            seconds %= 60 * 60;
-            int minutes = seconds / 60;
-            seconds %=  60;
-            String timeString = hours > 0 ?
-                String.format("%02d:%02d:%02d", hours, minutes, seconds) :
-                String.format("%d:%02d", minutes, seconds);
-            return (mediaFragment != null ? mediaFragment.getStringValue("title") : node.getStringValue("id")) + " (" + timeString +")";
+        
+        if (node.getCloud().hasNode(node.getIntValue("id"))) {
+            Node idNode = node.getCloud().mayRead(node.getIntValue("id")) ? node.getNodeValue("id") : null; // a videsource
+            if (idNode != null && idNode.getNodeManager().hasField("mediafragment")) {
+                Node mediaFragment = idNode.getNodeValue("mediafragment");
+                long time = node.getLongValue("time");
+                int seconds = (int) (time / 1000);
+                int hours = seconds / (60 * 60);
+                seconds %= 60 * 60;
+                int minutes = seconds / 60;
+                seconds %=  60;
+                String timeString = hours > 0 ?
+                    String.format("%02d:%02d:%02d", hours, minutes, seconds) :
+                    String.format("%d:%02d", minutes, seconds);
+                return (mediaFragment != null ? mediaFragment.getStringValue("title") : node.getStringValue("id")) + " (" + timeString +")";
+            }
+            
         }
+        
         return "Thumbnail";
     }
 
