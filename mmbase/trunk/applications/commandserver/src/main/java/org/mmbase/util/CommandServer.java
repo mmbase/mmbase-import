@@ -45,6 +45,26 @@ commandserver	stream	tcp		nowait	nobody	/usr/bin/java java -jar /home/michiel/mm
  * in /etc/inetd.conf. The result is the same (you can communicate with TCP), but avoids the hassle of having to keep the process alive.
  * </p>
  * <p>
+ *     The xinetd configuration file might look like this:
+ *     <pre>
+service commandserver
+{
+        flags           = REUSE
+        socket_type     = stream
+        port            = 1679
+        wait            = no
+        user            = tomcat6
+        group           = shareusers
+        server          = /usr/bin/java
+        server_args     = -jar /home/michiel/mmbase-commandserver.jar --log /tmp/commandserver.log --debug false
+        log_on_failure  += USERID
+        disable         = no
+        only_from       = 127.0.0.1 192.168.13.11
+   log_type        = FILE /var/log/commandserver.log
+}
+ *     </pre>
+ * </p>
+ * <p>
  * The input for this server are 2 serialized String[] arrays (which will be the arguments for
  * {@link Runtime#exec(String[], String[])}), followed by the stdin for the command. It will return stdout of the process.
  * </p>
