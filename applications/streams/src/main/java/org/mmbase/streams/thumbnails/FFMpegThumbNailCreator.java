@@ -22,15 +22,16 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.thumbnails;
 
-import java.util.*;
-import java.util.concurrent.*;
-import java.io.*;
-
-import org.mmbase.streams.createcaches.Executors;
 import org.mmbase.bridge.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.externalprocess.*;
+import org.mmbase.streams.createcaches.Executors;
 import org.mmbase.util.WriterOutputStream;
+import org.mmbase.util.externalprocess.CommandExecutor;
+import org.mmbase.util.externalprocess.ProcessException;
+import org.mmbase.util.logging.*;
+
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.Callable;
 
 /**
  * Contains the functionality to fill the 'handle' field of a thumbnails object. For that it uses ffmpeg.
@@ -41,7 +42,7 @@ import org.mmbase.util.WriterOutputStream;
 
 public class FFMpegThumbNailCreator implements  Callable<Long> {
 
-    private static final Logger LOG = Logging.getLoggerInstance(FFMpegThumbNailCreator.class);
+    static final Logger LOG = Logging.getLoggerInstance(FFMpegThumbNailCreator.class);
 
 
     private final String field;
@@ -56,6 +57,16 @@ public class FFMpegThumbNailCreator implements  Callable<Long> {
         this.source = myCloud.getNode(node.getIntValue("id"));
         this.node   = myCloud.getNode(node.getNumber());
         this.field = field.getName();
+    }
+
+    /**
+     * Used for testing only.
+     */
+    FFMpegThumbNailCreator() {
+        this.source = null;
+        this.node   = null;
+        this.field  = null;
+
     }
 
     protected File getTempDir() throws IOException {
@@ -74,12 +85,26 @@ public class FFMpegThumbNailCreator implements  Callable<Long> {
 
     }
 
+    protected File getInput() {
+        return (File) source.getFunctionValue("file", null).get();
+    }
+    protected void setOutput(File file) throws FileNotFoundException {
+        node.setInputStreamValue(field, new FileInputStream(file), file.length());
+        node.commit();
+
+    }
+    double getTime() {
+        return node.getDoubleValue("time") / 1000;
+    }
+    String getCommand() {
+        return "ffmpeg";
+    }
 
     @Override
     public Long call() {
         int count = 1;
 
-        File input = (File) source.getFunctionValue("file", null).get();
+        File input = getInput();
         if (input == null || ! input.canRead()) {
             LOG.debug("Cannot read " + input);
             return null;
@@ -89,17 +114,19 @@ public class FFMpegThumbNailCreator implements  Callable<Long> {
             return null;
         }
         CommandExecutor.Method method = Executors.getFreeExecutor();
-        String command = "ffmpeg";
+        String command = getCommand();
+
         List<String> args = new ArrayList<String>();
         args.add("-i");
         args.add(input.getAbsolutePath());
         args.add("-an"); // audio doesn't make sense
         args.add("-ss");
-        args.add(String.format(Locale.US, "%.2f", node.getDoubleValue("time") / 1000));
+        args.add(String.format(Locale.US, "%.2f", getTime()));
         //args.add("-t");
         //args.add("00:00:01");
         args.add("-vframes");
         args.add("" + count);
+        LOG.debug("Using " + method + " to execute " + command + " " + args);
         try {
             File tempDir = getTempDir();
             File tempFile = new File(tempDir, "thumbnail.%d.png");
@@ -112,10 +139,9 @@ public class FFMpegThumbNailCreator implements  Callable<Long> {
             File file = new File(String.format(tempFile.getAbsolutePath(), 1));
             long result;
             if (file.exists() && file.length() > 0) {
-                node.setInputStreamValue(field, new FileInputStream(file), file.length());
+                setOutput(file);
                 result = file.length();
                 file.delete();
-                node.commit();
                 tempDir.delete();
             } else {
                 LOG.warn("No file " + file + " produced (file exists: " + file.exists() + " file length: " + file.length() + " )");

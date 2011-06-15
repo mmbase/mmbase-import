@@ -21,17 +21,21 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.createcaches;
 
-import java.util.*;
-import java.util.concurrent.*;
+import org.mmbase.util.ResourceWatcher;
+import org.mmbase.util.ThreadPools;
 import org.mmbase.util.externalprocess.CommandExecutor;
-import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.xml.EntityResolver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.util.*;
+import java.util.concurrent.*;
+
 
 /**
- * This maintains a list of reusable {@link CommandExecutors.Methods}s. You can obtain on unused one with {@link
+ * This maintains a list of reusable {@link CommandExecutor.Method}s. You can obtain on unused one with {@link
  * #getFreeExecutor}. Supposing that you are going to want to use it in a seperate thread, it also maintains ThreadPoolExecuters.
  * @author Michiel Meeuwissen
  * @since MMBase-1.9.6
@@ -39,6 +43,10 @@ import org.w3c.dom.Element;
 public class Executors {
 
     private static final Logger LOG = Logging.getLoggerInstance(Processor.class);
+
+    static {
+        EntityResolver.registerSystemID(Processor.NAMESPACE_CREATECACHES + ".xsd", Processor.XSD_CREATECACHES, Processor.class);
+    }
 
     private Executors() {
         // no instances;
