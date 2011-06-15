@@ -62,9 +62,10 @@ public class CommandServer {
     private static final int THREADS = 2;
     private static boolean debug = false;
 
+    private static PrintStream logger = null;
     private static void debug(String m) {
-        if (debug) {
-            System.out.println(m);
+        if (debug && logger != null) {
+            logger.println(m);
         }
     }
 
@@ -214,22 +215,22 @@ public class CommandServer {
                         public void run() {
                             Process p = Command.this.process;
                             if (p != null) {
-                                System.out.println("Killing " + Command.this + " (took over " + maxDuration + " ms)");
+                                logger.println("Killing " + Command.this + " (took over " + maxDuration + " ms)");
                                 try {
                                     errors.write(("Killing " + Command.this + " (took over " + maxDuration + " ms)\n").getBytes());
                                 } catch (IOException e) {
-                                    System.err.println(e.getMessage());
+                                    logger.println(e.getMessage());
                                 }
                                 p.destroy();
                                 try {
                                     Thread.sleep(1000);
                                 } catch (InterruptedException e) {
-                                    System.err.println(e.getMessage());
+                                    logger.println(e.getMessage());
                                 }
 
                                 for (Future<?> f : futures) {
                                     if (f.cancel(true)) {
-                                        System.err.println("Canceled " + f);
+                                        logger.println("Canceled " + f);
                                     }
                                 }
                             }
@@ -237,6 +238,7 @@ public class CommandServer {
                     }, maxDuration, TimeUnit.MILLISECONDS);
             }
         }
+        @Override
         public void run() {
             try {
                 killAfterDuration();
@@ -244,7 +246,7 @@ public class CommandServer {
                 ObjectInputStream stream = new ObjectInputStream(input);
                 params = (String[]) stream.readObject();
                 String[] env    = (String[]) stream.readObject();
-                System.out.println(number + " Executing " + Arrays.asList(params) + " (queue " + threadQueue.size() + ")");
+                logger.println(number + " Executing " + Arrays.asList(params) + " (queue " + threadQueue.size() + ")");
                 process = Runtime.getRuntime().exec(params, env);
 
                 Copier connector = new Copier(input, process.getOutputStream(), number + ".input -> process input");
@@ -305,19 +307,26 @@ public class CommandServer {
                 numberOfThreads = Integer.parseInt(a[++i]);
             } else if (arg.equals("--maxDuration")) {
                 maxDuration = (int) (Float.parseFloat(a[++i]) * 1000);
+            } else if (arg.equals("--log")) {
+                logger = new PrintStream(new FileOutputStream(new File(a[++i]), true), true);
             } else {
                 args.add(arg);
             }
         }
         if (args.size() == 0) {
             debug = false;
+            if (logger == null) logger = new PrintStream(new OutputStream() {
+                @Override
+                public void write(int i) throws IOException {
+                    // ignore everything
+                }
+            });
             Runnable run = new Command(System.in, System.out, System.err, "stdin/stdout", null);
             run.run();
         } else {
+            if (logger == null) logger = System.out;
             String host = args.size() > 1 ? args.get(0) : "localhost";
             int port    = args.size() == 1 ? Integer.parseInt(args.get(0)) : Integer.parseInt(args.get(1));
-
-
 
             final BlockingQueue<Runnable> socketQueue = new  LinkedBlockingQueue<Runnable>();
             threads.setCorePoolSize(numberOfThreads * 7);
@@ -332,13 +341,13 @@ public class CommandServer {
                             System.err.println(ie.getMessage());
                             res = null;
                         }
-                        System.out.println(res + " READY " + (t != null ? "(" + t + ")" : "") + " (query " + socketQueue.size() + ")");
+                        logger.println(res + " READY " + (t != null ? "(" + t + ")" : "") + " (query " + socketQueue.size() + ")");
                     }
                 };
             ServerSocket server = new ServerSocket();
             SocketAddress address = new InetSocketAddress(host, port);
             server.bind(address);
-            System.out.println("Started " + server + " (using " + numberOfThreads + " threads, " + maxDuration + " ms)");
+            logger.println("Started " + server + " (using " + numberOfThreads + " threads, " + maxDuration + " ms)");
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             while (true) {
 
@@ -360,7 +369,7 @@ public class CommandServer {
                                                       }
                                                   }
                                               });
-                System.out.println(command.number + " " + format.format(new Date()) + " " + " Connection " + accept + " (queue " + socketQueue.size() + ")");
+                logger.println(command.number + " " + format.format(new Date()) + " " + " Connection " + accept + " (queue " + socketQueue.size() + ")");
                 Future<Command> future = socketThreads.submit(command, command);
                 if (maxDuration > 0) {
                     command.setMaxDuration(maxDuration, future);
