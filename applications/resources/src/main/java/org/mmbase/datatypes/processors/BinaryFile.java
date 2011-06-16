@@ -154,20 +154,28 @@ public class BinaryFile {
                     log.debug("" + value + " -> " + is + " -> " + f + " " + Logging.applicationStacktrace());
                 }
                 is.moveTo(f);
-                log.debug("Set a file " + f.getName());
+                if (log.isDebugEnabled()) {
+                    log.debug("Set a file " + f.getName());
+                }
                 if (node.getNodeManager().hasField(contenttypeField)) {
                     if (! node.isChanged(contenttypeField) || node.isNull(contenttypeField)) {
                         node.setStringValue(contenttypeField, is.getContentType());
                         log.info("Found " + is.getContentType());
                     } else {
-                        log.debug("Field " + contenttypeField + " is already changed " + node.getChanged() + " not setting to " + is.getContentType());
+                        if (log.isDebugEnabled()) {
+                            log.debug("Field " + contenttypeField + " is already changed " + node.getChanged() + " not setting to " + is.getContentType());
+                        }
                     }
                 } else {
-                    log.debug("No field " + contenttypeField);
+                    if (log.isDebugEnabled()) {
+                        log.debug("No field " + contenttypeField);
+                    }
                 }
                 return f.toString().substring(dir.toString().length() + 1);
             } else {
-                log.debug("No name given, ignoring this processor (not an upload)");
+                if (log.isDebugEnabled()) {
+                    log.debug("No name given, ignoring this processor (not an upload)");
+                }
                 return value;
             }
         }
@@ -178,7 +186,7 @@ public class BinaryFile {
 
         @Override
         public Object process(Node node, Field field, Object value) {
-            if (node != null && value instanceof String) {
+            if (node != null && ! node.isNew() && value instanceof String) {
                 File dir = getDirectory();
                 File file = new File(dir, (String) value);
                 try {
@@ -202,7 +210,9 @@ public class BinaryFile {
         public Object process(final Node node, final Field field, final Object value) {
             if (value == null) return null;
             String fileName = (String) value;
-            log.debug("String processing " + fileName);
+            if (log.isDebugEnabled()) {
+                log.debug("String processing " + fileName);
+            }
             if (fileName.startsWith("-") && node.getNumber() > 0) {
                 File dir = getDirectory();
                 String[] parts = fileName.split("\\.", 2);
@@ -213,7 +223,9 @@ public class BinaryFile {
                     log.warn("Could not make directories " + to.getParentFile());
                     }
                 }
-                log.debug("Fixing file");
+                if (log.isDebugEnabled()) {
+                    log.debug("Fixing file");
+                }
                 synchronized(StringGetter.class) { // making sure only one at the time is busy doing this.
                     boolean renamed = false;
                     if (! file.exists() && to.exists()) {
@@ -226,9 +238,13 @@ public class BinaryFile {
                     }
                     if (renamed) {
                     fileName = to.toString().substring(dir.toString().length() + 1);
-                    log.debug("Setting file name to " + fileName);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Setting file name to " + fileName);
+                    }
                     node.setValueWithoutProcess(field.getName(), fileName);
-                    log.debug("Chached " + node.getChanged() + " " + node.getCloud());
+                    if (log.isDebugEnabled()) { 
+                        log.debug("Chached " + node.getChanged() + " " + node.getCloud());
+                    }
                     if (! node.isNew()) {
                         node.commit();
                     }
