@@ -42,21 +42,20 @@ public class ThumbNailRemover implements NodeEventListener {
 
     private static final Logger LOG = Logging.getLoggerInstance(ThumbNailRemover.class);
 
-    private static Set<String> deletebuilders = new HashSet<String>(Arrays.asList(new String[]{"videostreamsources"}));
+    private static Set<String> builders = new HashSet<String>(Arrays.asList(new String[]{"videostreamsources"}));
 
 
     @Override
     public void notify(NodeEvent ne) {
         if (ne.getType() == Event.TYPE_DELETE) {
-            if (deletebuilders.contains(ne.getBuilderName())) {
+            if (builders.contains(ne.getBuilderName())) {
                 Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
-                Node node = cloud.getNode(ne.getNodeNumber());
                 NodeManager thumbs = cloud.getNodeManager("thumbnails");
                 NodeQuery q = thumbs.createQuery();
-                Queries.addConstraint(q, q.createConstraint(q.getStepField(thumbs.getField("id")), node));
+                Queries.addConstraint(q, q.createConstraint(q.getStepField(thumbs.getField("id")), ne.getNodeNumber()));
                 for (Node thumb : thumbs.getList(q)) {
+                    LOG.service("Deleting " + thumb.getNumber());
                     thumb.delete(true);
-                    LOG.service("Deleting " + thumb);
                 }
 
             }
