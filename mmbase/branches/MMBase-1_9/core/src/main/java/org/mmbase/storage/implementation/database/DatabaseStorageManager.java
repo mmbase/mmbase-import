@@ -1805,7 +1805,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
     public MMObjectNode readNode(MMObjectBuilder builder, Map<CoreField, Integer> fieldIndices, ResultSet rs, boolean isVirtual) throws SQLException {
-       
+
         NodeCache nodeCache = NodeCache.getCache();
         int builderType = builder.getObjectType();
         Integer oTypeInteger = Integer.valueOf(builderType);
@@ -1886,7 +1886,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             for (CoreField f :  ob.getFields(NodeManager.ORDER_CREATE)) {
                 if (f.getType() == Field.TYPE_NODE && f.inStorage()
                         && ! "number".equals(f.getName()) // for some idiotic reason number is 'node' typed
-                        && !"otype".equals(f.getName()) 
+                        && !"otype".equals(f.getName())
                         ) {
                     fields.add(f);
                 }
@@ -1937,7 +1937,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
 
         log.service("Recreating " + node + " " + (oldBuilder == null ? "NULL" : oldBuilder.getTableName()) + " -> " + buil.getTableName());
         createWithoutEvent(node);
-        
+
         // now point the relations and foreigns keys back again
         for (Map.Entry<Integer, Set<String>> foreign : foreigns.entrySet()) {
             MMObjectNode n = buil.getNode(foreign.getKey());
@@ -1946,7 +1946,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 n.commit();
             }
         }
-      
+
 
 
     }
@@ -2285,8 +2285,8 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                     log.warn("Got a very suspicious record from db (" + values + ") where number is null!. Will not use this to fill node!", new Exception());
                 }
 
-                assert node.getNumber() > 0;
-                assert node.getIntValue("otype") > 0;
+                assert node.getNumber() >= 0 : "" + node;
+                assert  node.getIntValue("otype") >= 0 : "" + node;
                 // clear the changed signal on the node
                 node.clearChanged();
                 return;
