@@ -77,6 +77,7 @@ public class ThumbNailFunction extends NodeFunction<Node> {
         if (cloud.hasNode("default_video_thumbnail")) {
             return cloud.getNode("default_video_thumbnail");
         } else {
+            LOG.warn("No default video thumbnail found with alias 'default_video_thumbnail' an images node f.e.");
             return null;
         }
     }
