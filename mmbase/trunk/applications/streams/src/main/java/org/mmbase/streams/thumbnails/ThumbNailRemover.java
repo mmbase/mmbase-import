@@ -50,7 +50,7 @@ public class ThumbNailRemover implements NodeEventListener {
                 NodeQuery q = thumbs.createQuery();
                 Queries.addConstraint(q, q.createConstraint(q.getStepField(thumbs.getField("id")), ne.getNodeNumber()));
                 for (Node thumb : thumbs.getList(q)) {
-                    LOG.service("Deleting " + thumb.getNumber());
+                    LOG.service("Deleting thumbnail #" + thumb.getNumber());
                     thumb.delete(true);
                 }
 
