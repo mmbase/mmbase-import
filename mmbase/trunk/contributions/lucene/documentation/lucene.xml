@@ -205,7 +205,7 @@
 
       <programlisting>
   &lt;list type="documents"&gt;
-    &lt;mmsq:field name="title" boost="2" /&gt;
+    &lt;mmsq:field name="title" boost="2" alias="title" /&gt;
     &lt;mmsq:field name="subtitle" /&gt;
     &lt;mmsq:field name="intro" /&gt;
     &lt;mmsq:field name="body" optional=".*" /&gt;
@@ -218,8 +218,11 @@
   &lt;/list&gt;
 </programlisting>
 
-      <para>The 'boost' attribute will make indexing in given field
-      'heavier'.</para>
+      <para>The 'boost' attribute will make indexing in a given field
+      'heavier'. The boost applies to all values stored in a field with a given name (or alias).
+      I.e. in the example a given, you can search on the fields 'fulltext,title'. Values stored in 'title' will then be counted 
+      twice as important.
+      </para>
 
       <para>The 'optional' attribute contains a regular expression which is
       matched on the node-manager of the found node. If it not matches, then
