@@ -625,7 +625,11 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
             function = builder != null ? builder.getFunction(functionName) : null;
         }
         if (function == null) {
-            throw new NotFoundException("Function with name " + functionName + " does not exist in " + builder.getFunctions());
+            if (builder == null) {
+                throw new NotFoundException("Function with name " + functionName + " does not exist (builder is null)");
+            } else {
+                throw new NotFoundException("Function with name " + functionName + " does not exist in " + builder.getFunctions());
+            }
         }
         return function;
 
