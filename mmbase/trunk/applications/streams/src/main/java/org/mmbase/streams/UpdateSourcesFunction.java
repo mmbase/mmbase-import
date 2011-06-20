@@ -75,12 +75,14 @@ public class UpdateSourcesFunction extends NodeFunction<Boolean> {
             
             try {
                 Recognizer recognizer = new FFMpegRecognizer().clone();
-                
                 FFMpegAnalyzer a = new FFMpegAnalyzer();
+                
                 if (cache != null) {
                     a.setUpdateDestination(true);
+                    cache.setLongValue("filesize", f.length());
                 } else {
                     a.setUpdateSource(true);
+                    source.setLongValue("filesize", f.length());
                 }
                 
                 ChainedLogger chain = new ChainedLogger(log);
