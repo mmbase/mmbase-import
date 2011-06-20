@@ -4,6 +4,7 @@
   <properties>
     <property name="classloaderpatterns" type="mergingmap">
       <entry><key>!/org/mmbase/config/builders/media/.*</key><value>100</value></entry>
+      <entry><key>!/org/mmbase/config/media/urlcomposers.xml</key><value>100</value></entry>
     </property>
   </properties>
 </util>
