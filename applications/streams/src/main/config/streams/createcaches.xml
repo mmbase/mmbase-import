@@ -23,6 +23,7 @@
     </loganalyzer>
   </recognizer>
 
+  <!-- v1 and v2 produce ogv and presume that FFMpeg2Theora is installed  -->
   <transcoder mimetype="video/*" id="v1">
     <class name="org.mmbase.streams.transcoders.FFMpeg2TheoraTranscoder">
       <param name="videoQuality">5</param>
@@ -36,6 +37,25 @@
       <param name="videoQuality">8</param>
     </class>
     <loganalyzer name="org.mmbase.streams.transcoders.FFMpeg2TheoraAnalyzer" />
+  </transcoder>
+
+  <!-- v4 produces an mp4 and only uses FFMpeg -->
+  <transcoder
+      label="lo"
+      mimetype="video/*" in="v1" id="v4">
+    <class name="org.mmbase.streams.transcoders.FFMpegTranscoder">
+      <param name="format">mp4</param>
+      <param name="vcodec">libx264</param>
+      <param name="vpre">default</param>
+      <param name="framesPerSecond">25</param>
+      <param name="bitrate">1024k</param>
+      <param name="acodec">libfaac</param>
+      <param name="abitrate">128k</param>
+      <param name="audioChannels">2</param>
+      <param name="async">1</param>
+      <param name="-vf">scale=-1:288</param>
+    </class>
+    <loganalyzer name="org.mmbase.streams.transcoders.FFMpegAnalyzer" />
   </transcoder>
 
   <!-- example for vp8 -->
@@ -114,12 +134,23 @@
   </transcoder>
  -->
 
-  <!-- audio example -->
+  <!-- audio example producing an oga with FFMpeg -->
   <transcoder mimetype="audio/*" id="a1" in="recognizer">
     <class name="org.mmbase.streams.transcoders.FFMpegTranscoder">
       <param name="format">ogg</param>
       <param name="acodec">libvorbis</param>
       <param name="aq">32</param> <!-- 0-255 (0 = highest quality, 255 = lowest) -->
+      <param name="ab">192k</param>
+    </class>
+    <loganalyzer name="org.mmbase.streams.transcoders.FFMpegAnalyzer" />
+  </transcoder>
+
+  <!-- audio mp3: ffmpeg -i audio.wav -acodec libmp3lame -aq 32 -ab 192k audio.mp3 -->
+  <transcoder mimetype="audio/*" id="a2" in="recognizer">
+    <class name="org.mmbase.streams.transcoders.FFMpegTranscoder">
+      <param name="format">mp3</param>
+      <param name="acodec">libmp3lame</param>
+      <param name="aq">32</param>
       <param name="ab">192k</param>
     </class>
     <loganalyzer name="org.mmbase.streams.transcoders.FFMpegAnalyzer" />
