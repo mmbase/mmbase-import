@@ -66,12 +66,12 @@
 
   <field name="objecttype" state="virtual">
     <descriptions>
-      <description xml:lang="nl">Status en beschikbaarheid van de source</description>
-      <description xml:lang="en">State and availability of the source</description>
+      <description xml:lang="nl">Objecttype of soort media (audio, video).</description>
+      <description xml:lang="en">Objecttype or kind of media (audio, video).</description>
     </descriptions>
     <gui>
-      <guiname xml:lang="nl">Status</guiname>
-      <guiname xml:lang="en">State</guiname>
+      <guiname xml:lang="nl">Objecttype</guiname>
+      <guiname xml:lang="en">Objecttype</guiname>
     </gui>
     <datatype base="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <pattern value="videosources|audiosources" />
