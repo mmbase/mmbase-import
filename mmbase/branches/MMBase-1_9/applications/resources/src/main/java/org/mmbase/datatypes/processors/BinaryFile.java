@@ -211,7 +211,7 @@ public class BinaryFile {
             if (value == null) return null;
             String fileName = (String) value;
             if (log.isDebugEnabled()) {
-                log.debug("String processing " + fileName);
+                log.debug("String processing: " + fileName);
             }
             if (fileName.startsWith("-") && node.getNumber() > 0) {
                 File dir = getDirectory();
@@ -220,7 +220,7 @@ public class BinaryFile {
                 File to = getFile(node, field, parts[1]);
                 if (! to.getParentFile().exists()) {
                     if (! (to.getParentFile().mkdirs())) {
-                    log.warn("Could not make directories " + to.getParentFile());
+                        log.warn("Could not make directories " + to.getParentFile());
                     }
                 }
                 if (log.isDebugEnabled()) {
@@ -257,7 +257,10 @@ public class BinaryFile {
                     }
                 }
             }
-
+            
+            if (log.isDebugEnabled()) {
+                log.debug("returning: " + fileName);
+            }
             return fileName;
         }
     }
