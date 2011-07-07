@@ -144,11 +144,10 @@ public class BinaryFile {
                     } else {
                         log.warn("Could not find " + ef + " so could not delete it");
                     }
-                }                
-                String fileName = fileNameTransformer.transform(name);
-                File f = getFile(node, field, fileName);
+                }
+                File f = getFile(node, field, fileNameTransformer.transform(name));
                 Map<String, String> meta = FileServlet.getInstance().getMetaHeaders(f);
-                meta.put("Content-Disposition", "attachment; " + FileServlet.getMetaValue("filename", fileName));
+                meta.put("Content-Disposition", "attachment; " + FileServlet.getMetaValue("filename", name));
                 FileServlet.getInstance().setMetaHeaders(f, meta);
 
                 if (log.isDebugEnabled()) {
