@@ -226,7 +226,10 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
 
             if (src.getCloud().hasNode(in)) {   // look if inNode (still) exists
 
-                String label  = cache.getStringValue("label");
+                String label = "";
+                if (cache.getNodeManager().hasField("label")) {
+                    label = cache.getStringValue("label");
+                }
                 MimeType mt   = new MimeType( cache.getStringValue("mimetype") );
                 Transcoder tr = null;
                 try {
