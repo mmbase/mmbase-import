@@ -230,16 +230,22 @@ public class FileServlet extends BridgeServlet {
         try {
             File metaFile = getMetaFile(f);
             metaFile.getParentFile().mkdirs();
-            OutputStream o = new FileOutputStream(metaFile);
+            OutputStream os = new FileOutputStream(metaFile);
             for (Map.Entry<String, String> entry : meta.entrySet()) {
                 // The values my have some decomposed form, in that case the ISO-8859-1 bytes don't work so nice.
-                String line = Normalizer.normalize(entry.getKey() + ": " + entry.getValue() + "\n", Normalizer.Form.NFC);
-                o.write(line.getBytes("ISO-8859-1"));
+                String line = entry.getKey() + ": " + entry.getValue() + "\n";
+                try {
+                    Class c = Class.forName("java.text.Normalizer");
+                    line = Normalizer.normalize(entry.getKey() + ": " + entry.getValue() + "\n", Normalizer.Form.NFC);
+                } catch (ClassNotFoundException cnfe) {
+                    log.warn("java.text.Normalizer is unsupported (JVM < 1.6) !");
+                }
+                os.write(line.getBytes("ISO-8859-1"));
             }
-            o.close();
-            log.debug("Created " + metaFile);
+            os.close();
+            log.debug("Created: " + metaFile);
         } catch (IOException ioe) {
-            log.warn(ioe);
+            log.warn("IOException: " +  ioe);
         }
     }
 
