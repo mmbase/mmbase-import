@@ -42,7 +42,6 @@ $(document).ready(function() {
 	// Just some stuff to guess a nicer title
 	$("input[type=file]").change(function(ev) {
 		var file = ev.target.value;
-	    console.log("changed! " + file);
 		var title = $(ev.target.form).find(".mm_validate.mm_f_title")[0];
 		if (title.originalValue == $(title).val()) {
 		    var li = file.lastIndexOf('\\');
