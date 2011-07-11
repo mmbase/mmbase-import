@@ -156,9 +156,10 @@
          mimetype="text/html">
     <title xml:lang="en">Upload</title>
     <title xml:lang="nl">Upload</title>
-    <description xml:lang="en">Upload a stream</description>
-    <description xml:lang="nl">Upload een stream</description>
-    <xi:include href="http://www.mmbase.org/components/widgets.head.xml" />
+    <description xml:lang="en">Upload video, audio or an images.</description>
+    <description xml:lang="nl">Upload video, audio of een afbeelding.</description>
+    <xi:include href="http://www.mmbase.org/components/validation.head.xml" />
+    <head jsp="upload.head.jspx" />
     <body jsp="upload.jspx" />
   </block>
 
