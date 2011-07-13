@@ -18,6 +18,7 @@
 
   <properties>
     <property name="Content-Disposition">inline</property>
+    <property name="InitFactory">false</property> <!-- will be inited by images itself -->
   </properties>
 
   <fieldlist>
@@ -33,8 +34,12 @@
         </getprocessor>
       </datatype>
     </field>
-    <field name="id">
+    <field name="id" readonly="true">
       <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <!-- this would only work if mmbase-searchrelate installed. In that case you can also override the NODE field itself via
+             the system wide datatypes.xml
+        <handler mimetype="text/html,application/xml+xhtml" name="org.mmbase.searchrelate.handlers.SRNodeHandler" />
+        -->
         <required value="true" />
         <enumeration>
           <query type="videosources" xmlns="http://www.mmbase.org/xmlns/searchquery" />

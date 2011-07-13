@@ -65,6 +65,11 @@
     </field>
 
     <field name="handle" state="systemvirtual">
+      <editor>
+        <positions>
+          <input>-1</input>
+        </positions>
+      </editor>
       <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <getprocessor>
           <class name="org.mmbase.datatypes.processors.OtherField$Getter" >
@@ -81,4 +86,5 @@
   <xi:include href="http://www.mmbase.org/builders/media/mediasources.main.virtual.fields.xml" />
   <xi:include href="streamsources.functions.xml" />
 
+  <xi:include href="videostreamsources.functions.xml" />
 </builder>

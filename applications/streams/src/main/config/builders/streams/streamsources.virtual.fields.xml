@@ -8,7 +8,7 @@
 
   <field name="objecttype" state="virtual">
     <datatype base="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
-      <pattern value="videostreamsources|audiostreamsources" />
+      <pattern value="videostreamsources|audiostreamsources|imagesources" />
       <commitprocessor>
         <class name="org.mmbase.applications.media.FragmentTypeFixer" />
       </commitprocessor>
