@@ -11,12 +11,10 @@
   <class name="org.mmbase.framework.BasicComponent" />
 
   <description xml:lang="en">
-    The MMBase Streams application is designed to upload, transcode and manage media:
-    video, audio and images. 
+    The MMBase Streams application is designed to upload, transcode and manage media. You can upload video, audio or image files and transcode it to other formats.
   </description>
   <description xml:lang="nl">
-    Met de MMBase Streams applicatie kunnen media - video, audio en afbeeldingen - 
-    geuploaded, getranscodeerd en beheerd worden.
+    Met de MMBase Streams applicatie kunnen media geuploaded, getranscodeerd en beheerd worden. Upload video-, audio- of afbeeldingsbestanden en transcodeer het naar andere formaten.
   </description>
 
   <title xml:lang="nl">Streams</title>
@@ -86,10 +84,10 @@
     <title xml:lang="en">My jobs</title>
     <title xml:lang="nl">Mijn jobs</title>
     <description xml:lang="en">
-      Displays your current, running media transcodings to other formats.
+      Your current running media transcodings to other formats.
     </description>
     <description xml:lang="nl">
-      Toont je huidige, lopende transcoderingen van media naar andere formaten.
+      Op dit moment lopende transcoderingen van media naar andere formaten die je gestart hebt.
     </description>
     <body jsp="myjobs.jspx">
       <param name="cancel" />
@@ -99,13 +97,13 @@
   <block name="alljobs"
          classification="mmbase.streams"
          mimetype="text/html">
-    <title xml:lang="en">All jobs</title>
-    <title xml:lang="nl">Alle jobs</title>
+    <title xml:lang="en">Jobs</title>
+    <title xml:lang="nl">Jobs</title>
     <description xml:lang="en">
-      Displays all current, running media transcodings to other formats.
+      All current, running media transcodings to other formats.
     </description>
     <description xml:lang="nl">
-      Toont alle huidige, lopende transcoderingen van media naar andere formaten.
+      Alle op dit moment lopende transcoderingen van media naar andere formaten.
     </description>
     <body jsp="alljobs.jspx">
       <param name="cancel" />
@@ -156,7 +154,7 @@
          mimetype="text/html">
     <title xml:lang="en">Upload</title>
     <title xml:lang="nl">Upload</title>
-    <description xml:lang="en">Upload video, audio or an images.</description>
+    <description xml:lang="en">Upload video, audio or an image.</description>
     <description xml:lang="nl">Upload video, audio of een afbeelding.</description>
     <xi:include href="http://www.mmbase.org/components/validation.head.xml" />
     <head jsp="upload.head.jspx" />
@@ -174,10 +172,10 @@
     <title xml:lang="en">Update stream info</title>
     <title xml:lang="nl">Update stream info</title>
     <description xml:lang="en">
-      This tool uses ffmpeg -i to update stream file information in mmbase
+      Use FFmpeg (ffmpeg -i infile.mov) the information about streams in mmbase.
     </description>
     <description xml:lang="nl">
-      Deze tool gebruikt ffmpeg -i voor een update van de stream informatie in mmbase
+      Gebruik FFmpeg (ffmpeg -i infile.mov) om informatie over streams bij te werken in mmbase.
     </description>
     <body jsp="updatesources.jspx">
       <param name="update" />

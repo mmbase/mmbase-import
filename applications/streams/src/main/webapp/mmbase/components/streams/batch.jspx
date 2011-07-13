@@ -14,10 +14,10 @@
     <mm:write referid="blockdescription" escape="p" />
 
     <mm:import  externid="batch" />
-    <mm:import from="request" externid="trigger" />
-    <mm:import from="request" externid="interrupt" vartype="integer" />
-    <mm:import from="request" externid="all" vartype="boolean">false</mm:import> 
-    <mm:import from="request" externid="cache" />
+    <mm:import externid="trigger" />
+    <mm:import externid="interrupt" vartype="integer" />
+    <mm:import externid="all" vartype="boolean">false</mm:import> 
+    <mm:import externid="cache" />
     <mm:import externid="format">mpeg</mm:import>
     <c:if test="${format eq 'mpg'}"><mm:import id="format" reset="true">mpeg</mm:import></c:if>
     
@@ -175,7 +175,7 @@
                             <c:otherwise>
                               <mm:link referids="triggervalue@trigger,format?,max?,page?">
                                 <mm:param name="all">true</mm:param>
-                                <a href="${_}">all</a> |
+                                <a href="${_}">all</a> -
                               </mm:link>
                               <mm:link referids="triggervalue@trigger,format?,max?,page?">
                                 <a href="${_}">only new</a>
@@ -219,17 +219,30 @@
                         </c:when>
                         <c:otherwise>
                           <c:choose>
-                            <c:when test="${_.state != 'BUSY'}">
+                            <c:when test="${_.state != 'BUSY' and _.state != 'REQUEST'}">
                               <mm:link referids="recachevalue@cache,format?,max?,page?">
                                 <a href="${_}">recache</a>
                               </mm:link>
                             </c:when>
                             <c:otherwise>
-                              <strong>busy</strong>
+                              <strong>${_.state}</strong>
                             </c:otherwise>
                           </c:choose>
+<!-- work in progess 
+                          <mm:hasrank minvalue="administrator">
+                            <mm:link page="delete-cache" referids="recache@cache">
+                              - <a href="${_}">delete</a>
+                            </mm:link>
+                          </mm:hasrank>
+-->
                         </c:otherwise>
                       </c:choose>
+
+                      <c:if test="${mm:contains(joblist, _.source.number)}">
+                        <div class="msg">Transcoding: this one ${_.source.number}</div>
+                      </c:if>
+
+
                     </mm:hasfield>
                   </td>
                 </tr>

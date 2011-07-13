@@ -12,7 +12,9 @@
 <mainFilter>
   <chain>
     <filter id="client">org.mmbase.applications.media.filters.ClientFormatFilter</filter>
+    <!--
     <filter id="intermediatesorter">org.mmbase.applications.media.filters.FieldValueSorter</filter>
+    -->
     <filter>org.mmbase.applications.media.filters.AvailableSorter</filter>
     <filter id="format">org.mmbase.applications.media.filters.ServerFormatSorter</filter>
     <filter id="nodetype">org.mmbase.applications.media.filters.NodeTypeSorter</filter>

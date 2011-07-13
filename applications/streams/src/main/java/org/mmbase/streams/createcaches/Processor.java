@@ -85,6 +85,9 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
         }
     }
 
+    /**
+     * The MMBase NodeManagers that contain 'caches', i.e. trancoded media objects.
+     */
     public void setCacheManagers(String... cm) {
         cacheManagers = cm;
     }

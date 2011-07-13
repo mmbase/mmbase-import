@@ -21,4 +21,16 @@
   <xi:include href="streamsourcescaches.fields.xml" />
   <xi:include href="http://www.mmbase.org/builders/media/mediasources.virtual.fields.xml" />
   <xi:include href="streamsourcescaches.virtual.fields.xml" />
+
+  <functionlist>
+    <function name="gui">
+      <class>org.mmbase.streams.thumbnails.GuiFunction</class>
+    </function>
+    <function name="file">
+      <class>org.mmbase.streams.FileFunction</class>
+    </function>
+    <function key="{NODE.number}: {NODE.url}" name="entrylistgui">
+      <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
+    </function>
+  </functionlist>
 </builder>
