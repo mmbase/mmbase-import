@@ -52,6 +52,8 @@
             <mm:commit />
             <mm:import id="committed" />
             <mm:node number="${newsource}" cloud="cloud">
+              <mm:import id="mf"><mm:field name="mediafragment" /></mm:import>
+              <mm:write referid="mf" session="new_media_node" />
               <p class="msg">
                 You just succesfully uploaded ${_node} URL: ${_node.url} FS: ${_node.filesize}.
                 <br /><mm:link page="upload"><a href="${_}">Back to previous page</a>.</mm:link>
