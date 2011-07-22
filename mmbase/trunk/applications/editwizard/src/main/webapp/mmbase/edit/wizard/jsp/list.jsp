@@ -66,32 +66,6 @@ if (listConfig == null) {
 
 configurator.config(listConfig); // configure the thing, that means, look at the parameters.
 
-if (listConfig.age > -1) {
-    // maxlistConfig.age is set. pre-query to find objectnumber
-    long daymarker = (new java.util.Date().getTime() / (60*60*24*1000)) - listConfig.age;
-
-    NodeManager mgr = cloud.getNodeManager("daymarks");
-
-    NodeList tmplist = mgr.getList("daycount>="+daymarker, null,null);
-    String ageconstraint = "";
-    if (tmplist.size()<1) {
-        // not found. No objects can be found.
-        ageconstraint = "number>99999";
-    } else {
-        Node n = tmplist.getNode(0);
-        ageconstraint = "number>"+n.getStringValue("mark");
-    }
-
-    if (listConfig.multilevel) ageconstraint=listConfig.mainObjectName+"."+ageconstraint;
-
-    if (listConfig.constraints == null || listConfig.constraints.equals("")) {
-        listConfig.constraints = ageconstraint;
-    } else {
-        listConfig.constraints = "(" + listConfig.constraints+") AND " + ageconstraint;
-    }
-}
-
-
 boolean deletable = false;
 boolean linkable = false;
 boolean unlinkable = false;
@@ -135,34 +109,36 @@ if (listConfig.search == Config.ListConfig.SEARCH_FORCE && listConfig.searchFiel
 } else if (listConfig.multilevel) {
     log.trace("this is a multilevel");
     Query query = cloud.createQuery();
-
     Queries.addPath(query, listConfig.nodePath, listConfig.searchDir); // also possible to specify more than one searchDir
-    Queries.addSortOrders(query, listConfig.orderBy, listConfig.directions);
     Queries.addFields(query, listConfig.fields);
     Queries.addStartNodes(query, listConfig.startNodes);
     Queries.addConstraints(query, listConfig.constraints);
+    if (listConfig.age > -1) {
+        Queries.addConstraint(query,Queries.createAgeConstraint(query,query.getStep(listConfig.mainObjectName),-1,listConfig.age));
+    }
+    Queries.addSortOrders(query, listConfig.orderBy, listConfig.directions);
     query.setDistinct(listConfig.distinct);
 
     query.setMaxNumber(len);
     query.setOffset(start );
-
     results = cloud.getList(query);
     resultsSize = Queries.count(query);
 } else {
     log.trace("This is not a multilevel. Getting nodes from type " + listConfig.nodePath);
     NodeManager mgr = cloud.getNodeManager(listConfig.nodePath);
-    if (log.isDebugEnabled()) {
-       log.trace("directions: " + listConfig.directions);
+    NodeQuery query = mgr.createQuery();
+    Queries.addConstraints(query, listConfig.constraints);
+    if (listConfig.age > -1) {
+        Queries.addConstraint(query,Queries.createAgeConstraint(query,-1,listConfig.age));
     }
-    NodeQuery q = mgr.createQuery();
-    Queries.addConstraints(q, listConfig.constraints);
-    Queries.addSortOrders(q, listConfig.orderBy, listConfig.directions);
+    Queries.addSortOrders(query, listConfig.orderBy, listConfig.directions);
+    query.setDistinct(listConfig.distinct);
 
-    q.setMaxNumber(len);
-    q.setOffset(start );
+    query.setMaxNumber(len);
+    query.setOffset(start );
 
-    results = mgr.getList(q);
-    resultsSize = Queries.count(q);
+    results = mgr.getList(query);
+    resultsSize = Queries.count(query);
 }
 
 
