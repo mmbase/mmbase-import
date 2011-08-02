@@ -35,6 +35,8 @@ import org.xml.sax.InputSource;
  * @since    MMBase-1.8
  */
 public class ClassAuthentication {
+
+    private static int MAX_DEPTH = 40;
     private static final Logger log = Logging.getLoggerInstance(ClassAuthentication.class);
 
     public static final String PUBLIC_ID_CLASSSECURITY_1_0 = "-//MMBase//DTD classsecurity config 1.0//EN";
@@ -99,7 +101,7 @@ public class ClassAuthentication {
                         }
                         property = property.getNextSibling();
                     }
-                    ac.add(new Login(Pattern.compile(clazz), method, Collections.unmodifiableMap(map), weight));
+                    ac.add(new Login(u, Pattern.compile(clazz), method, map, weight, i));
                 }
             } catch (Exception e) {
                 log.error(u + " " + e.getMessage(), e);
@@ -111,7 +113,7 @@ public class ClassAuthentication {
         { // last fall back, everybody may get the 'anonymous' cloud.
             Map map = new HashMap();
             map.put("rank", "anonymous");
-            ac.add(new Login(Pattern.compile(".*"), "class", Collections.unmodifiableMap(map), Integer.MIN_VALUE));
+            ac.add(new Login(null, Pattern.compile(".*"), "class", map, Integer.MIN_VALUE, 0));
         }
 
         // This method is responsible for this list, so we return an unmodifable version
@@ -120,6 +122,11 @@ public class ClassAuthentication {
         authenticatedClasses = Collections.unmodifiableList(ac);
         log.service("Class authentication: " + ac);
 
+    }
+
+
+    public static Login classCheck(String application) {
+        return classCheck(application, null);
     }
 
 
@@ -133,68 +140,112 @@ public class ClassAuthentication {
      * @param application Only checks this 'authentication application'. Can be <code>null</code> to
      * check for every application.
      * @return A Login object if yes, <code>null</code> if not.
+     * @since MMBase-1.8.8
      */
-    public static Login classCheck(String application) {
+    public static LoginResult classCheck(String application, Map properties) {
         if (authenticatedClasses == null) {
             synchronized(ClassAuthentication.class) { // if load is running this locks
                 if (authenticatedClasses == null) { // if locked, load was running and this now skips, so load is not called twice.
-                    String configFile = "classauthentication.xml";
                     watcher = new ResourceWatcher(MMBaseCopConfig.securityLoader) {
                             public void onChange(String resource) {
                                 load(resource);
                             }
                         };
-                    watcher.add(configFile);
+                    watcher.add("classauthentication.xml");
                     watcher.start();
                     watcher.onChange();
                 }
             }
         }
-        if (log.isDebugEnabled()) {
+        if (log.isTraceEnabled()) {
             log.trace("Class authenticating (" + authenticatedClasses + ")");
         }
         Throwable t = new Throwable();
         StackTraceElement[] stack = t.getStackTrace();
 
+        LoginResult proposal = null;
         Iterator i = authenticatedClasses.iterator();
-
+        CLASS:
         while(i.hasNext()) {
             Login n = (Login) i.next();
+            Map  map = n.getMap();
             if (application == null || application.equals(n.application)) {
+                int propertyMatchCount = 0;
+                if (properties != null) {
+                    Iterator j = properties.entrySet().iterator();
+                    while (j.hasNext()) {
+                        Map.Entry e = (Map.Entry) j.next();
+                        String v = (String) map.get(e.getKey());
+                        if (v == null) continue;
+                        if (! v.equals(e.getValue())) {
+                            log.debug("Skipping " + n + " because " + v + " != " + e);
+                            continue CLASS;
+                        } else {
+                            propertyMatchCount++;
+                        }
+                    }
+                    if (proposal != null && proposal.propertyMatchCount >= propertyMatchCount) {
+                        // proposal better than this one, whether the new one will match class or
+                        // not, never mind.
+                        continue CLASS;
+                    }
+                    log.debug("" + n  + "matched on " + properties);
+                }
+
                 Pattern p = n.classPattern;
-                for (int j = 0; j < stack.length; j++) {
-                    String className = stack[j].getClassName();
+                int depth = 0;
+                for (StackTraceElement element : stack) {
+                    String className = element.getClassName();
+                    if (depth++ > MAX_DEPTH) {
+                        // for performance reasons, don't exeggerate all this pattern checking and stuff
+                        log.debug("not found in time");
+                        break;
+                    }
                     if (className.startsWith("org.mmbase.security.")) continue;
                     if (className.startsWith("org.mmbase.bridge.implementation.")) continue;
-                    log.trace("Checking " + className);
+                    if (log.isTraceEnabled()) {
+                        log.trace("Checking " + className);
+                    }
                     if (p.matcher(className).matches()) {
                         if (log.isDebugEnabled()) {
                             log.debug("" + className + " matches! ->" + n + " " + n.getMap());
                         }
-                        return n;
+                        proposal = new LoginResult(n, (Map<String, String>) properties, propertyMatchCount);
+                        if (properties == null || properties.size() == propertyMatchCount) {
+                            // cannot become any better
+                            break CLASS;
+                        }
                     }
                 }
             }
         }
-        if (log.isDebugEnabled()) {
-            log.debug("Failed to authenticate " + Arrays.asList(stack) + " with " + authenticatedClasses);
+
+        log.debug("debug " + properties + " " + authenticatedClasses + " found " + proposal);
+        if (proposal == null) {
+            log.warn("Failed to authenticate " + Arrays.asList(stack));
         }
-        return null;
+
+        return proposal;
     }
 
     /**
      * A structure to hold the login information.
      */
     public static class  Login implements Comparable {
+        final URL url;
         final Pattern classPattern;
         final String application;
-        final Map    map;
+        final Map map;
+        final Set matchingProperties = new HashSet();
         final int    weight;
-        Login(Pattern p , String a, Map m, int w) {
+        final int    position;
+        Login(URL u, Pattern p , String a, Map m, int w, int pos) {
+            url = u;
             classPattern = p;
             application = a;
-            map = m;
+            map = Collections.unmodifiableMap(m);
             weight = w;
+            position = pos;
         }
 
         public Map getMap() {
@@ -203,13 +254,40 @@ public class ClassAuthentication {
         public String toString() {
             return "" + weight + ":" + classPattern.pattern() + (application.equals("class") ? "" : ": " + application) + " " + map;
         }
-        public int compareTo(Object o) {
-            if (o instanceof Login) {
-                return ((Login) o).weight - this.weight;
-            } else {
-                return 0;
+        public int compareTo(Object ct) {
+            Login o = (Login) ct;
+
+            int result = o.weight - this.weight;
+            if (result == 0 && (o.url == null ? url == null : o.url.equals(url))) {
+                result = this.position - o.position;
             }
+            return result;
         }
     }
+
+    /**
+     * @since MMBase-1.9
+     */
+    private static  Map createCombinedMap(Map map1, Map map2) {
+        Map result = new HashMap();
+        result.putAll(map1);
+        result.putAll(map2);
+        return result;
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    public static class LoginResult extends Login {
+        final int    propertyMatchCount;
+        LoginResult(Login p, Map<String, String> properties, int propertyMatchCount) {
+            super(p.url, p.classPattern, p.application, properties == null ? p.map : createCombinedMap(p.map, properties), p.weight, p.position);
+            this.propertyMatchCount = propertyMatchCount;
+        }
+        public String toString() {
+            return super.toString() + (propertyMatchCount > 0 ? (" (matched " + propertyMatchCount + " properties)") : "");
+        }
+    }
+
 
 }
