@@ -194,7 +194,8 @@ public class ClassAuthentication {
 
                 Pattern p = n.classPattern;
                 int depth = 0;
-                for (StackTraceElement element : stack) {
+                for (int k = 0; k < stack.length; k++) {
+                    StackTraceElement element = stack[k];
                     String className = element.getClassName();
                     if (depth++ > MAX_DEPTH) {
                         // for performance reasons, don't exeggerate all this pattern checking and stuff
@@ -280,7 +281,7 @@ public class ClassAuthentication {
      */
     public static class LoginResult extends Login {
         final int    propertyMatchCount;
-        LoginResult(Login p, Map<String, String> properties, int propertyMatchCount) {
+        LoginResult(Login p, Map properties, int propertyMatchCount) {
             super(p.url, p.classPattern, p.application, properties == null ? p.map : createCombinedMap(p.map, properties), p.weight, p.position);
             this.propertyMatchCount = propertyMatchCount;
         }
