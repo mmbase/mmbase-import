@@ -210,7 +210,7 @@ public class ClassAuthentication {
                         if (log.isDebugEnabled()) {
                             log.debug("" + className + " matches! ->" + n + " " + n.getMap());
                         }
-                        proposal = new LoginResult(n, (Map<String, String>) properties, propertyMatchCount);
+                        proposal = new LoginResult(n, (Map) properties, propertyMatchCount);
                         if (properties == null || properties.size() == propertyMatchCount) {
                             // cannot become any better
                             break CLASS;
