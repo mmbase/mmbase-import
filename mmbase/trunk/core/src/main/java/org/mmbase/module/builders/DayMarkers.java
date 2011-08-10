@@ -121,7 +121,7 @@ public class DayMarkers extends MMObjectBuilder {
     private int currentDay() {
         Calendar now = Calendar.getInstance(mmb.getTimeZone(), mmb.getLocale());
         int daynr = (int)((now.getTimeInMillis() + now.get(Calendar.ZONE_OFFSET) + now.get(Calendar.DST_OFFSET)) / MILLISECONDS_IN_A_DAY);
-        log.debug("Calculating current day on: " + now.get(Calendar.HOUR_OF_DAY) +":" + now.get(Calendar.MINUTE) + ":" + now.get(Calendar.SECOND)
+        log.debug("Calculating current day on: " + now.get(Calendar.HOUR_OF_DAY) +":" + now.get(Calendar.MINUTE) + ":" + now.get(Calendar.SECOND) +
                   " to be day nr: " + daynr);
         return daynr;
     }
