@@ -239,7 +239,7 @@ public abstract class AbstractImages extends AbstractServletBuilder implements I
                 }
             }
         } else {
-            log.warn("Requested dimension on image object without height / width fields, this may be heavy on resources!");
+            log.warn("Requested dimension on image object " + node.getNumber() + " without height / width fields, this may be heavy on resources!");
         }
 
         return dim;
