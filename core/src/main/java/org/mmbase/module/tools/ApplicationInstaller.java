@@ -631,7 +631,11 @@ class ApplicationInstaller {
                 if (!insRel.hasField(newFieldName)) {
                     Object newValue = entry.getValue();
                     Object testValue = testNode.getValue(newFieldName);
-                    if (!newValue.equals(testValue)) {
+                    if (newValue == null) {
+                        if (testValue != null) {
+                            relationAlreadyExists = false;
+                        }
+                    } else if (!newValue.equals(testValue)) {
                         relationAlreadyExists = false;
                     }
                 }
