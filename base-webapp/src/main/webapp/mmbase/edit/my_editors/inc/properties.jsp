@@ -1,10 +1,10 @@
 <div class="row">
   <label><strong>Properties</strong></label>
   <div class="properties">
-    <mm:hasfunction name="list">
+    <mm:hasfunction name="list" nodemanager="properties">
        <mm:present referid="change">
          <c:if test="${!empty property_key && !empty property_value}">
-           <mm:function nodemanager="properties" name="set" referids="_node@node,property_key@key,property_value@value" />
+           <mm:function nodemanager="properties" name="set" referids="_node@node,property_key@key,property_value@value" write="false" />
          </c:if>
        </mm:present>
        <mm:nodelistfunction nodemanager="properties" name="list" referids="_node@node">
