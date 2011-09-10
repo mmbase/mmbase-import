@@ -228,8 +228,15 @@
                           </mm:field>
                         </c:when>
                         <c:otherwise>
+                          
                           <c:choose>
                             <c:when test="${_.state != 'BUSY' and _.state != 'REQUEST'}">
+                              <mm:link page="delete-cache" referids="recache@cache">
+                                <a href="${_}">delete</a> -
+                              </mm:link>
+                              <mm:link page="edit-cache" referids="recache@cache">
+                                <a href="${_}">edit</a> -
+                              </mm:link>
                               <mm:link referids="recachevalue@cache,format?,max?,page?">
                                 <a href="${_}">recache</a>
                               </mm:link>
@@ -238,15 +245,6 @@
                               <strong>${_.state}</strong>
                             </c:otherwise>
                           </c:choose>
-                          
-                          <mm:hasrank minvalue="administrator">
-                            <mm:link page="delete-cache" referids="recache@cache">
-                              - <a href="${_}">delete</a>
-                            </mm:link>
-                            <mm:link page="edit-cache" referids="recache@cache">
-                              - <a href="${_}">edit</a>
-                            </mm:link>
-                          </mm:hasrank>
                           
                         </c:otherwise>
                       </c:choose>
