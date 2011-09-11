@@ -108,7 +108,7 @@
       <table summary="mediafragments">
         <caption>Mediafragments</caption>
         <tr>
-          <th>#</th>
+          <th># / state</th>
           <th colspan="2">title</th>
           <th>transcode</th>
         </tr>
@@ -135,7 +135,12 @@
                 </c:if>
                 
                 <tr>
-                  <td>${fn:toLowerCase(_.state)}</td>
+                  <td>
+                    ${fn:toLowerCase(_.state)}
+                    <mm:hasfield name="label">
+                      <mm:field name="label"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field>
+                    </mm:hasfield>
+                  </td>
                   <td>
                     <a href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a>
                   </td>
@@ -196,7 +201,12 @@
               <c:if test="${!_.main}">
                 <mm:node number="${_.source.number}" notfound="skip" id="recache">
                 <tr>
-                  <td>${fn:toLowerCase(_.state)}</td>
+                  <td>
+                    ${fn:toLowerCase(_.state)}
+                    <mm:hasfield name="label">
+                      <mm:field name="label"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field>
+                    </mm:hasfield>
+                  </td>
                   <td>
                       <mm:hasfield name="key">
                         <mm:import id="key" reset="true"><mm:field name="key" /></mm:import>
@@ -218,8 +228,15 @@
                           </mm:field>
                         </c:when>
                         <c:otherwise>
+                          
                           <c:choose>
                             <c:when test="${_.state != 'BUSY' and _.state != 'REQUEST'}">
+                              <mm:link page="delete-cache" referids="recache@cache">
+                                <a href="${_}">delete</a> -
+                              </mm:link>
+                              <mm:link page="edit-cache" referids="recache@cache">
+                                <a href="${_}">edit</a> -
+                              </mm:link>
                               <mm:link referids="recachevalue@cache,format?,max?,page?">
                                 <a href="${_}">recache</a>
                               </mm:link>
@@ -228,13 +245,7 @@
                               <strong>${_.state}</strong>
                             </c:otherwise>
                           </c:choose>
-<!-- work in progess 
-                          <mm:hasrank minvalue="administrator">
-                            <mm:link page="delete-cache" referids="recache@cache">
-                              - <a href="${_}">delete</a>
-                            </mm:link>
-                          </mm:hasrank>
--->
+                          
                         </c:otherwise>
                       </c:choose>
 
