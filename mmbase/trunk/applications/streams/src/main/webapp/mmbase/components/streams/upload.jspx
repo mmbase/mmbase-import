@@ -12,48 +12,58 @@
   <mm:import externid="fields">title,subtitle,intro</mm:import>
   <mm:cloud method="asis" id="cloud">
     <mm:maycreate type="streamsources">
-
+      
+      <mm:import externid="submit" />
+      
       <mm:form>
-        <mm:createnode id="newsource" type="streamsources" commitonclose="false">
-          <fieldset>
-          <mm:fieldlist fields="url" id="urlfield">
-            <mm:fieldinfo type="input" />
-            <mm:fieldinfo type="errors" />
-          </mm:fieldlist>
-          </fieldset>
-          <fieldset>
-          <mm:fieldlist fields="${fields}" id="field">
-            <mm:fieldinfo type="forid">
-              <label for="${_}">${mm:string(field.localizedDescription)}</label>
-            </mm:fieldinfo>
-            <mm:fieldinfo type="input" />
-            <mm:fieldinfo type="errors" />
-          </mm:fieldlist>
-          </fieldset>
-          <fieldset class="hidden">
-            <mm:fieldlist fields="mediaprovider">
-              <mm:fieldinfo type="input" />
-              <mm:fieldinfo type="errors" />
-            </mm:fieldlist>
-          </fieldset>
-        </mm:createnode>
-        <div class="progressInfo" id="progressInfo">
-          <p>Upload not started yet.</p>
-        </div>
-        <fieldset class="buttons">
-          <input type="submit" name="submit" id="submit" value="Upload" />
-        </fieldset>
-        
-        <mm:import externid="submit" />
+        <mm:import id="buffer">
+          <div class="progressInfo" id="progressInfo">
+            <p>No upload started yet.</p>
+          </div>
+          <mm:createnode id="newsource" type="streamsources" commitonclose="false">
+            <fieldset>
+              <mm:fieldlist fields="url" id="urlfield">
+                <mm:fieldinfo type="input" />
+                <mm:fieldinfo type="errors" />
+              </mm:fieldlist>
+            </fieldset>
+            <fieldset>
+              <mm:fieldlist fields="${fields}" id="field">
+                <mm:fieldinfo type="forid">
+                  <label for="${_}">${mm:string(field.localizedDescription)}</label>
+                </mm:fieldinfo>
+                <mm:fieldinfo type="input" />
+                <mm:fieldinfo type="errors" />
+              </mm:fieldlist>
+            </fieldset>
+            <fieldset class="hidden">
+              <mm:fieldlist fields="mediaprovider">
+                <mm:fieldinfo type="input" />
+                <mm:fieldinfo type="errors" />
+              </mm:fieldlist>
+            </fieldset>
+            <fieldset class="buttons">
+              <input type="submit" name="submit" id="submit" value="Upload" />
+            </fieldset>
+          </mm:createnode>
+        </mm:import>
         <mm:present referid="submit">
           <mm:valid>
             <mm:commit />
             <mm:import id="committed" />
             <mm:node number="${newsource}" cloud="cloud">
-              <p>Submitted ${_node} URL: ${_node.url} FS: ${_node.filesize}</p>
+              <mm:import id="mf"><mm:field name="mediafragment" /></mm:import>
+              <mm:write referid="mf" session="new_media_node" />
+              <p class="msg">
+                You just succesfully uploaded ${_node} URL: ${_node.url} FS: ${_node.filesize}.
+                <br /><mm:link page="upload"><a href="${_}">Back to previous page</a>.</mm:link>
+              </p>
             </mm:node>
           </mm:valid>
         </mm:present>
+        <mm:notpresent referid="submit">
+          <mm:write referid="buffer" escape="none" />
+        </mm:notpresent>
         <mm:notpresent referid="committed">
           <mm:cancel />
         </mm:notpresent>

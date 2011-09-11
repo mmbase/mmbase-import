@@ -92,15 +92,15 @@ public class SegmenterTranscoder extends CommandTranscoder {
     @Override
     public void init(Node dest) {
         String mt = dest.getStringValue("mimetype");
-        if (mt == null || "".equals(mt)) { 
+        if (mt == null || "".equals(mt)) {
             dest.setStringValue("mimetype", "application/x-mpegurl");
         }
-        
+
         String fileName = dest.getStringValue("url");
         if (fileName.length() < 1) {
             log.warn("Still empty fileName: '" + fileName + "' of #" + dest.getNumber());
         } else {
-            
+
             // remove punctuation from fileName
             String regex = "^((.*\\/)?([0-9]+\\.?[0-9]*)?\\.)(.*)\\.m3u8";
             Pattern FILE_PATTERN = Pattern.compile(regex);
@@ -219,7 +219,7 @@ public class SegmenterTranscoder extends CommandTranscoder {
 
         return args.toArray(new String[args.size()]);
     }
-
+    
     private static final Pattern PROGRESS = Pattern.compile(".*time remaining.*");
 
     @Override

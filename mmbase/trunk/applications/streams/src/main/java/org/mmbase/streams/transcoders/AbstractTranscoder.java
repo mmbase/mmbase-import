@@ -63,10 +63,10 @@ public abstract class AbstractTranscoder implements Transcoder {
             } catch (ClassNotFoundException cnfe) {
                 clazz  = Class.forName(PACKAGE + idWithClass[1]);
             }
-            
+
             if (!"".equals(idWithClass[0])) {
-            Constructor constructor = clazz.getConstructor(String.class);
-            trans = (Transcoder) constructor.newInstance(idWithClass[0]);
+                Constructor constructor = clazz.getConstructor(String.class);
+                trans = (Transcoder) constructor.newInstance(idWithClass[0]);
             } else {
                 trans = (Transcoder) clazz.newInstance();
             }
@@ -82,7 +82,7 @@ public abstract class AbstractTranscoder implements Transcoder {
         }
         return trans;
     }
-
+    
     public void init(Node dest) {
         Format f = this.getFormat();
         dest.setIntValue("format", f.toInt());
