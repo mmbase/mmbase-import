@@ -8,7 +8,7 @@
      Example configuration: you will always need one recognizer and at least one transcoder.
      Transcoders can be on localhost but can call org.mmbase.util.CommandServer on a remote server
      to distribute tasks among multiple machines.
-  -->
+    -->
   <localhost max_simultaneous_transcoders="1"  stage="recognizer" />
   <localhost max_simultaneous_transcoders="1"  stage="transcoder" />
   <!--

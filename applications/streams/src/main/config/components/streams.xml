@@ -29,7 +29,7 @@
   <action name="retrigger_jobs" rank="administrator">
     <description xml:lang="en">Whether you may (re)trigger jobs</description>
   </action>
-
+  
   <action name="update_sources" rank="basic user">
     <description xml:lang="en">Whether you can automatically update information stored in a stream node</description>
   </action>
@@ -58,7 +58,7 @@
       <param name="all" type="java.lang.Boolean" />
       <param name="interrupt" />
       <param name="cache" />
-      <param name="page"  type="java.lang.Integer" />
+      <param name="page" type="java.lang.Integer" />
     </body>
   </block>
 
@@ -183,6 +183,38 @@
       <param name="page" type="java.lang.Integer" />
       <param name="max"  type="java.lang.Integer" />
       <param name="batch" />
+    </body>
+  </block>
+
+  <block name="delete-cache"
+         mimetype="text/html">
+    <title xml:lang="en">Delete cache</title>
+    <title xml:lang="nl">Verwijder cache</title>
+    <description xml:lang="en">
+      Delete an individual stream (cache).
+    </description>
+    <description xml:lang="nl">
+      Verwijder een stream (cache).
+    </description>
+    <body jsp="delete-cache.jspx">
+      <param name="delete" />
+      <param name="cache" />
+    </body>
+  </block>
+
+  <block name="edit-cache"
+         mimetype="text/html">
+    <title xml:lang="en">Edit cache</title>
+    <title xml:lang="nl">Wijzig cache</title>
+    <description xml:lang="en">
+      Edit stream (cache), change key and re-transcode with new ffmpeg parameters.
+    </description>
+    <description xml:lang="nl">
+      Wijzig een stream (cache), verander key met ffmpeg parameters en re-transcode het.
+    </description>
+    <body jsp="edit-cache.jspx">
+      <param name="save" />
+      <param name="cache" />
     </body>
   </block>
 

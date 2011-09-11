@@ -162,15 +162,15 @@ public class Job implements Iterable<Result> {
                     } else {    // use inId from config
                         if (! jobdefs.containsKey(inId)) {
                             LOG.warn("Configuration error, no such job definition with id: " + inId);
-                        continue;
-                    }
+                            continue;
+                        }
                         Result prevResult = lookup.get(inId);
-                    if (prevResult == null || ! prevResult.isReady()) {
-                        // no result possible yet.
-                        continue;
-                    }
-                    inURI = prevResult.getOut();
-                    inNode = prevResult.getDestination();
+                        if (prevResult == null || ! prevResult.isReady()) {
+                            // no result possible yet.
+                            continue;
+                        }
+                        inURI = prevResult.getOut();
+                        inNode = prevResult.getDestination();
 
                     }
 
