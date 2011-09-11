@@ -10,19 +10,16 @@
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="cancel" />
 
-  <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
-  <p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
-  
   <c:if test="${! empty cancel}">
     <mm:function set="streams" name="cancelJob" referids="cancel@node">
       <p class="msg">${_}</p>
     </mm:function>
   </c:if>
 
-    <mm:listfunction set="streams" name="runningJobs" id="job">
-      <mm:first><h3><mm:size /> jobs running</h3></mm:first>
-      <jsp:directive.include file="job.jspx" />
-    </mm:listfunction>
+  <mm:listfunction set="streams" name="runningJobs" id="job">
+    <mm:first><h3><mm:size id="total" /> jobs running</h3></mm:first>
+    <jsp:directive.include file="job.jspx" />
+  </mm:listfunction>
 
-
+  <mm:notpresent referid="total">0 jobs</mm:notpresent>
 </div>

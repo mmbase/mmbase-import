@@ -13,7 +13,7 @@
     <mm:import id="blockdescription">${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</mm:import>
     <mm:write referid="blockdescription" escape="p" />
 
-    <mm:import  externid="batch" />
+    <mm:import externid="batch" />
     <mm:import externid="trigger" />
     <mm:import externid="interrupt" vartype="integer" />
     <mm:import externid="all" vartype="boolean">false</mm:import> 
@@ -145,11 +145,11 @@
                   <td>
                     <mm:node number="${_.source.number}">
                       <c:set var="triggervalue" value="${fragment}:${_node}" />
-                    
+
                       <c:choose>
                         <c:when test="${interrupt eq _node.number}">
                           <div class="msg">
-                          <mm:function set="streams" name="cancelJob" referids="interrupt@node" />
+                            <mm:function set="streams" name="cancelJob" referids="interrupt@node" />
                           </div>
                         </c:when>
                         <c:otherwise>

@@ -11,9 +11,6 @@
 
   <mm:import externid="cancel" />
 
-  <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
-  <p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
-  
   <c:if test="${! empty cancel}">
     <mm:function set="streams" name="cancelJob" referids="cancel@node">
       <p class="msg">${_}</p>
@@ -21,6 +18,7 @@
   </c:if>
 
   <mm:listfunction set="streams" name="myJobs" id="job">
+    <mm:first><h3><mm:size /> jobs running</h3></mm:first>
     <jsp:directive.include file="job.jspx" />
   </mm:listfunction>
 
