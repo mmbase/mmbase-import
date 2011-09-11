@@ -8,7 +8,6 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
 
   <jsp:output omit-xml-declaration="true" />
-  
   <mm:import externid="cancel" />
 
   <c:if test="${! empty cancel}">
@@ -22,5 +21,5 @@
     <jsp:directive.include file="job.jspx" />
   </mm:listfunction>
 
-<mm:notpresent referid="total">0 jobs</mm:notpresent>
+  <mm:notpresent referid="total">0 jobs</mm:notpresent>
 </div>
