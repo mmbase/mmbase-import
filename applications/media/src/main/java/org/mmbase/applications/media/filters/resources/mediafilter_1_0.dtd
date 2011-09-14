@@ -8,7 +8,7 @@
 >
 
 
-<!ENTITY % configSubTags "property"><!-- default no configs, add them in the DOCTYPE of filters.xml -->
+<!ENTITY % configSubTags "property*"><!-- default no configs, add them in the DOCTYPE of filters.xml -->
 
 <!ELEMENT filterConfigs (config*)>
 
