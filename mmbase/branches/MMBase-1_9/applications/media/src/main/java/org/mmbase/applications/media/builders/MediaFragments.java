@@ -414,14 +414,14 @@ public class MediaFragments extends MMObjectBuilder {
      * this, so on top is the mediafragment with the sources, and on
      * the bottom is the fragment itself.
      */
-    @SuppressWarnings("empty-statement")
     public Stack<MMObjectNode> getParentFragments(MMObjectNode fragment) {
         Stack<MMObjectNode> result = new Stack<MMObjectNode>();
+        if (fragment == null) return result;
         result.push(fragment);
         if (log.isDebugEnabled()) {
             log.debug("Finding parents of node " + fragment.getNumber());
         }
-        while (addParentFragment(result));
+        while (addParentFragment(result)) {}
         return result;
     }
 
