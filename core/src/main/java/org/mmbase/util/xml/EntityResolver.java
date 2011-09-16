@@ -17,6 +17,7 @@ import java.util.concurrent.*;
 
 import java.lang.reflect.*;
 
+import org.mmbase.module.Module;
 import org.mmbase.util.xml.applicationdata.ApplicationReader;
 import org.mmbase.util.Casting;
 import org.mmbase.util.ResourceLoader;
@@ -277,25 +278,27 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
     /**
      * @since MMBase-1.9
      */
-    protected static synchronized String getMMEntities() {
+    protected static String getMMEntities() {
         if (ents == null) {
-            StringBuilder sb = new StringBuilder();
-            try {
-                Set<Object> added = new HashSet<Object>();
-                appendEntities(sb, org.mmbase.framework.Framework.getInstance(), "framework", 0, added);
-                appendEntities(sb, org.mmbase.framework.ComponentRepository.getInstance(), "componentRepository", 0, added);
+            synchronized(Module.class) {
+                StringBuilder sb = new StringBuilder();
+                try {
+                    Set<Object> added = new HashSet<Object>();
+                    appendEntities(sb, org.mmbase.framework.Framework.getInstance(), "framework", 0, added);
+                    appendEntities(sb, org.mmbase.framework.ComponentRepository.getInstance(), "componentRepository", 0, added);
 
-                org.mmbase.module.Module  mmbase = org.mmbase.module.Module.getModule("mmbaseroot", false);
-                if (mmbase != null) {
-                    appendEntities(sb, mmbase, "mmbase", 0, added);
+                    Module  mmbase = Module.getModule("mmbaseroot", false);
+                    if (mmbase != null) {
+                        appendEntities(sb, mmbase, "mmbase", 0, added);
+                    }
+                } catch (Throwable ie) {
+                    log.warn(ie.getMessage());
+                    return sb.toString();
                 }
-            } catch (Throwable ie) {
-                log.warn(ie.getMessage());
-                return sb.toString();
-            }
-            ents = sb.toString();
-            if (logEnts) {
-                log.debug("Using entities\n" + ents);
+                ents = sb.toString();
+                if (logEnts) {
+                    log.debug("Using entities\n" + ents);
+                }
             }
         }
         return ents;
