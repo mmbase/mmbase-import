@@ -566,7 +566,25 @@ public class ResourceLoader extends ClassLoader {
     }
 
 
-
+    @Override
+    public URL getResource(String name) {
+        if (name.startsWith("/")) {
+            name = name.substring(1);
+            /*
+            String p = context.getPath();
+            if (p.endsWith("/")) {
+                p = p.substring(0, p.length() - 1);
+            }
+            if (p.startsWith("/")) {
+                p = p.substring(1);
+            }
+            name = p + name;
+            */
+        }
+        //System.out.println("Using " + name);
+        URL res = super.getResource(name);
+        return res;
+    }
     /**
      * If name starts with '/' or 'mm:/' the 'parent' resourceloader is used.
      *
@@ -1277,7 +1295,9 @@ public class ResourceLoader extends ClassLoader {
                     log.warn(use);
                 }
             }
+            //String fileName = fileRoot  + (name == null ? "" : name);
             String fileName = fileRoot + ResourceLoader.this.context.getPath() + (name == null ? "" : name);
+            //System.out.println("" + fileName);
             if (! File.separator.equals("/")) { // windows compatibility
                 fileName = fileName.replace('/', File.separator.charAt(0)); // er
             }
@@ -1472,9 +1492,9 @@ public class ResourceLoader extends ClassLoader {
                 } else {
                     ResourceLoader wr = getWebRoot();
                     if (wr != null) {
-                        URI rootDir = wr.getResource("/").toURI();
-                        if (rootDir.getScheme().equals("file")) {
-                            return new File(new File(rootDir), s);
+                        URI file = wr.getResource("/" + s).toURI();
+                        if (file.getScheme().equals("file")) {
+                            return new File(file);
                         } else {
                             log.debug("The web root is no real directory");
                             return new File(s);
@@ -1518,9 +1538,9 @@ public class ResourceLoader extends ClassLoader {
                 File f = getFileFromString(e.getValue());
                 bul.append(e.getValue());
                 if (! f.exists()) {
-                    bul.append("(" + f.toURI() + " does not exist)");
+                    bul.append("(").append(f.toURI()).append(" does not exist)");
                 } else if (! f.canRead()) {
-                    bul.append("(" + f + " cannot be read)");
+                    bul.append("(").append(f).append(" cannot be read)");
 
                 }
             }
@@ -1783,7 +1803,7 @@ public class ResourceLoader extends ClassLoader {
         @Override
         public URLConnection openConnection(String name) {
             try {
-                String rn = root + ResourceLoader.this.context.getPath() + name;
+                String rn = root + name;
                 if (rn.startsWith("//")) {
                     // Doesn't seem to work in Jetty otherwise.
                     // On the other hand, it's a bit odd that it can happen, but let simply work around for now.
@@ -1884,7 +1904,7 @@ public class ResourceLoader extends ClassLoader {
     // ================================================================================
     // ClassLoader
 
-    private static String RESOURCELOADER_XML = "resourceloader.xml";
+    private static final String RESOURCELOADER_XML = "resourceloader.xml";
     private static org.mmbase.util.xml.UtilReader.PropertiesMap<Collection<Map.Entry<String, String>>> classWeightProperties =
         new org.mmbase.util.xml.UtilReader(RESOURCELOADER_XML, new Runnable() {
                 public void run() {
@@ -1987,6 +2007,7 @@ public class ResourceLoader extends ClassLoader {
 
                 }
                 @Override
+                @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
                 public boolean equals(Object o) {
                     return o == this;
                 }
@@ -2431,9 +2452,7 @@ public class ResourceLoader extends ClassLoader {
                     return os;
                 }
             } catch (Exception ioe) {
-                IOException i =  new IOException("Cannot create an OutputStream for " + url + " " + ioe.getMessage());
-                i.initCause(ioe);
-                throw i;
+                throw new IOException("Cannot create an OutputStream for " + url + " " + ioe.getMessage(), ioe);
             }
         }
         /**
