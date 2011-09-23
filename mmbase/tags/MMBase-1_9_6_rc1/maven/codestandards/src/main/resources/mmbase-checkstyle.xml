@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	This configuration file was written by the eclipse-cs plugin configuration editor
+-->
+<!--
+Checkstyle-Configuration: EPO
+Description:
+
+-->
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<module name="Checker">
+    <module name="TreeWalker">
+        <property name="tabWidth" value="4"/>
+        <module name="JavadocMethod">
+            <property name="severity" value="error"/>
+            <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" value="All public methods should have useful Javadoc"/>
+            <property name="scope" value="public"/>
+            <property name="excludeScope" value="anoninner"/>
+        </module>
+        <module name="JavadocType">
+            <property name="severity" value="error"/>
+            <property name="excludeScope" value="anoninner"/>
+            <property name="scope" value="package"/>
+            <property name="authorFormat" value="\D*@\D*"/>
+        </module>
+        <module name="JavadocVariable">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="JavadocStyle">
+            <property name="severity" value="warning"/>
+            <property name="checkFirstSentence" value="false"/>
+        </module>
+        <module name="ConstantName">
+            <property name="severity" value="warning"/>
+            <property name="format" value="(^logger|^[A-Z][A-Z0-9]*)(_[A-Z0-9]+)*$"/>
+        </module>
+        <module name="LocalFinalVariableName">
+            <property name="severity" value="error"/>
+        </module>
+       <module name="LocalVariableName">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="MemberName">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="MethodName">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="ParameterName">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="StaticVariableName">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="TypeName">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="AvoidStarImport">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="IllegalImport">
+            <property name="severity" value="error"/>
+            <property name="illegalPkgs" value="org.apache.log4j.Category"/>
+        </module>
+        <module name="RedundantImport">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="UnusedImports">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="ImportOrder">
+            <property name="severity" value="ignore"/>
+            <property name="groups" value="java, javax, org.epo"/>
+            <property name="separated" value="true"/>
+        </module>
+        <module name="FileLength">
+            <property name="severity" value="warning"/>
+            <property name="max" value="1000"/>
+        </module>
+        <module name="LineLength">
+            <property name="severity" value="warning"/>
+            <property name="max" value="132"/>
+            <property name="ignorePattern" value="^\s*\* \@see .+$"/>
+        </module>
+        <module name="MethodLength">
+            <property name="severity" value="warning"/>
+            <property name="max" value="100"/>
+            <property name="countEmpty" value="false"/>
+            <property name="tokens" value="METHOD_DEF"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="severity" value="warning"/>
+            <property name="max" value="7"/>
+        </module>
+         <module name="AnonInnerLength">
+            <property name="severity" value="error"/>
+            <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" value="Better refactor to named class"/>
+            <property name="max" value="30"/>
+        </module>
+        <module name="NoWhitespaceAfter">
+            <property name="severity" value="error"/>
+            <property name="allowLineBreaks" value="false"/>
+            <property name="tokens" value="LNOT"/>
+        </module>
+        <module name="NoWhitespaceBefore">
+            <property name="severity" value="error"/>
+            <property name="tokens" value="POST_INC"/>
+        </module>
+        <module name="OperatorWrap">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="ParenPad">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="TypecastParenPad">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="WhitespaceAfter">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="WhitespaceAround">
+            <property name="severity" value="error"/>
+            <property name="tokens" value="ASSIGN, COLON, GE, GT, LE, LT, LAND, LOR, NOT_EQUAL, EQUAL"/>
+        </module>
+        <module name="ModifierOrder">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="RedundantModifier">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="AvoidNestedBlocks">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="EmptyBlock">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="LeftCurly">
+            <property name="severity" value="warning"/>
+            <property name="maxLineLength" value="120"/>
+        </module>
+        <module name="NeedBraces">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="RightCurly">
+            <property name="severity" value="warning"/>
+            <property name="option" value="alone"/>
+            <property name="tokens" value="LITERAL_ELSE, LITERAL_CATCH, LITERAL_TRY"/>
+        </module>
+        <module name="ArrayTrailingComma">
+            <property name="severity" value="ignore"/>
+        </module>
+        <module name="CovariantEquals">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="DoubleCheckedLocking">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="EmptyStatement">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="EqualsHashCode">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="HiddenField">
+            <property name="severity" value="error"/>
+            <property name="tokens" value="VARIABLE_DEF"/>
+            <property name="ignoreSetter" value="true"/>
+        </module>
+        <module name="InnerAssignment">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="MissingSwitchDefault">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="RedundantThrows">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="SimplifyBooleanExpression">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="SimplifyBooleanReturn">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="StringLiteralEquality">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="NestedIfDepth">
+            <property name="severity" value="warning"/>
+            <property name="max" value="2"/>
+        </module>
+        <module name="NestedTryDepth">
+            <property name="severity" value="warning"/>
+            <property name="max" value="2"/>
+        </module>
+        <module name="SuperClone">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="SuperFinalize">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="IllegalCatch">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="PackageDeclaration">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="ParameterAssignment">
+            <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" value="Reassigning parameter values is not recommended"/>
+            <property name="severity" value="info"/>
+        </module>
+        <module name="VisibilityModifier">
+            <property name="severity" value="error"/>
+            <property name="protectedAllowed" value="true"/>
+        </module>
+        <module name="FinalClass">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="InterfaceIsType">
+            <property name="severity" value="ignore"/>
+        </module>
+        <module name="HideUtilityClassConstructor">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="MutableException">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="ThrowsCount">
+            <property name="severity" value="warning"/>
+            <property name="max" value="2"/>
+        </module>
+        <module name="CyclomaticComplexity">
+            <property name="severity" value="warning"/>
+            <property name="max" value="7"/>
+        </module>
+        <module name="GenericIllegalRegexp">
+            <property name="severity" value="error"/>
+            <property name="format" value="org\.appache\.log4j\.Category"/>
+            <property name="message" value="Use Apache Commons Logging instead"/>
+        </module>
+        <module name="UpperEll">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="ArrayTypeStyle">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="MultipleVariableDeclarations">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="UnnecessaryParentheses">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="BooleanExpressionComplexity">
+            <property name="severity" value="warning"/>
+            <property name="max" value="3"/>
+        </module>
+        <module name="GenericIllegalRegexp">
+            <property name="severity" value="error"/>
+            <property name="format" value="org\.appache\.log4j\.Logger"/>
+            <property name="message" value="Use Apache Commons Logging instead"/>
+        </module>
+        <module name="GenericIllegalRegexp">
+            <property name="severity" value="warning"/>
+            <property name="format" value="// TODO"/>
+            <property name="ignoreCase" value="true"/>
+            <property name="message" value="Use @todo in Javadoc, rather than inline comment"/>
+        </module>
+        <module name="TrailingComment">
+            <property name="severity" value="warning"/>
+        </module>
+    </module>
+    <module name="NewlineAtEndOfFile">
+        <property name="severity" value="ignore"/>
+    </module>
+    <module name="StrictDuplicateCode">
+        <property name="severity" value="warning"/>
+        <property name="min" value="20"/>
+    </module>
+    <!-- <module name="SeverityMatchFilter"/> -->
+</module>

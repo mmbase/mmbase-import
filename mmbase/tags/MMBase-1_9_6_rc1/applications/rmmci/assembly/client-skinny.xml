@@ -1,0 +1,24 @@
+<assembly>
+  <id>client-skinny</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <dependencySets>
+  </dependencySets>
+  <fileSets>
+    <fileSet>
+      <directory>${project.build.outputDirectory}</directory>
+      <outputDirectory>/</outputDirectory>
+      <excludes>
+        <exclude>org/mmbase/config/**</exclude>
+      </excludes>
+    </fileSet>
+    <!--
+    <fileSet>
+      <directory>${project.basedir}/src/main/resources</directory>
+      <outputDirectory>/</outputDirectory>
+    </fileSet>
+    -->
+  </fileSets>
+</assembly>

@@ -1,0 +1,1 @@
+For this demo to work make sure that mynews is installed first.

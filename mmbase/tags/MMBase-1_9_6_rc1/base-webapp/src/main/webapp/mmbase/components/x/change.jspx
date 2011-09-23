@@ -1,0 +1,113 @@
+<mm:content
+    unacceptable="Please use a better browser"
+    type="application/xhtml+xml"  expires="0" postprocessor="none" jspvar="locale"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <div
+      class="c_ c_x b_change ${requestScope['org.mmbase.componentClassName']}"
+      id="${requestScope['org.mmbase.componentId']}">
+    <!--
+         Offers a form for one existing MMBase node.
+         Also handles the form.
+
+         TODO: Some way to edit relations? NODE-field editor?
+
+         $Id$
+    -->
+    <mm:import externid="ok" from="request">init</mm:import>
+    <mm:import externid="submitted"><mm:write referid="ok" /></mm:import>
+    <mm:import id="referids" from="request">nodemanager,only?,node,ok,back</mm:import>
+    <mm:cloud rank="basic user">
+      <mm:import externid="node" required="true" />
+      <mm:form id="changeform" page="change" >
+        <mm:node referid="node" commitonclose="false">
+          <script type="text/javascript">
+            var validator = new MMBaseValidator();
+            validator.prefetchNodeManager('<mm:nodeinfo type="nodemanager" />');
+            validator.lang = "${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}";
+            validator.validateHook = function(valid) {
+              document.getElementById('okbutton').disabled = this.invalidElements != 0;
+            }
+            validator.setup(document.getElementById("${requestScope['org.mmbase.componentId']}"));
+          </script>
+
+          <mm:maywrite inverse="true"><mm:import id="readonly">readonly</mm:import></mm:maywrite>
+          <h1 class="${submitted} ${readonly}">
+            <mm:import externid="nodemanager"><mm:nodeinfo type="nodemanager" /></mm:import>
+            <mm:import externid="back">index</mm:import>
+            <mm:link page="${back}" referids="$referids">
+              <a href="${_}" class="back"><span class="navigate">back</span></a>
+            </mm:link>
+            <a href="javascript:document.getElementById('changeform').submit();" class="ok"><span class="navigate">ok</span></a>
+            <mm:nodeinfo type="gui" />
+            <jsp:text> (<mm:nodeinfo type="guitype" />)</jsp:text>
+          </h1>
+
+
+          <input type="hidden" name="back" value="${back}" />
+          <input type="hidden" name="node" value="${_node}" />
+          <input type="hidden" name="submitted" value="submitted" />
+          <table summary="fields of node ${_node}">
+            <tbody>
+              <mm:fieldlist type="edit" fields="number,owner">
+                <mm:index id="index" write="false" />
+                <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
+                  <td><mm:fieldinfo type="guiname" /></td>
+                  <td>
+                    <mm:maywrite>
+                      <mm:fieldinfo type="input" />
+                      <mm:fieldinfo type="errors" />
+                    </mm:maywrite>
+                    <mm:maywrite inverse="true">
+                      <mm:fieldinfo type="guivalue" />
+                    </mm:maywrite>
+                  </td>
+                </tr>
+              </mm:fieldlist>
+            </tbody>
+          </table>
+          <mm:maywrite>
+            <input type="submit" id="okbutton" name="ok" value="save" />
+          </mm:maywrite>
+
+          <mm:compare referid="submitted" value="submitted">
+            <!-- commit the form -->
+            <mm:valid>
+              <mm:commit />
+              <mm:redirect page="change" referids="${referids}">
+                <mm:param name="ok" value="ok" />
+              </mm:redirect>
+            </mm:valid>
+          </mm:compare>
+        </mm:node>
+      </mm:form>
+      <div class="relations">
+        <mm:node referid="node" commitonclose="false">
+          <mm:listrelationscontainer>
+            <h2>Relations: <mm:size /></h2>
+            <table>
+              <mm:listrelations>
+                <tr>
+                  <td>
+                    <mm:link referids="_node@node">
+                      <a href="${_}"><mm:nodeinfo type="gui" /></a>
+                    </mm:link>
+                  </td>
+                  <td>
+                    <mm:relatednode>
+                      <mm:link referids="_node@node">
+                        <a href="${_}"><mm:nodeinfo type="gui" /></a>
+                      </mm:link>
+                    </mm:relatednode>
+                  </td>
+                </tr>
+              </mm:listrelations>
+            </table>
+          </mm:listrelationscontainer>
+        </mm:node>
+      </div>
+    </mm:cloud>
+  </div>
+</mm:content>

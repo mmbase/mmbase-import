@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE edittagtypes PUBLIC "-//MMBase//DTD edittagtypes 1.0//EN" "http://www.mmbase.org/dtd/edittagtypes_1_0.dtd">
+<edittagtypes>
+  <!--
+      version: $Id$
+  -->
+
+  <!-- 
+       These are the available editors for use with the edittag
+  -->
+  <editor type="basic">
+    <class>org.mmbase.bridge.jsp.taglib.editor.BasicEditor</class>
+    <param name="url">/mmbase/edit/basic/change_node.jsp?node_number={NODE.number}</param>
+    <info>
+      Simple editor, which only searches the base-node and produces a link to the 'basic' editors.
+    </info>
+  </editor>
+  <editor type="my_editors">
+    <class>org.mmbase.bridge.jsp.taglib.editor.BasicEditor</class>
+    <param name="url">/mmbase/edit/my_editors/edit_object.jsp?nr={NODE.number}</param>
+    <info>
+      Simple editor, which only searches the base-node and produces a link to 'my_editors'.
+    </info>
+  </editor>
+  <editor type="yammeditor">
+    <class>org.mmbase.bridge.jsp.taglib.editor.YAMMEditor</class>
+    <info>
+      An editor to directly edit content in pages. This is an example 
+      implementation which calls the editor yammeditor.jsp.
+    </info>
+  </editor>
+
+
+</edittagtypes>

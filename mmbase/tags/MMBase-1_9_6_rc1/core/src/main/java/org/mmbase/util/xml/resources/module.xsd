@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<!--
+     module version 2.0
+
+-->
+<xsd:schema
+    xmlns="http://www.mmbase.org/xmlns/module"
+    xmlns:dt="http://www.mmbase.org/xmlns/datatypes"
+    targetNamespace="http://www.mmbase.org/xmlns/module"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified"
+    version="1.0"
+    >
+
+  <xsd:import
+      namespace="http://www.w3.org/XML/1998/namespace"
+      schemaLocation="http://www.w3.org/2001/03/xml.xsd"
+      />
+
+  <xsd:element name="module">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="status" minOccurs="0"/>
+        <xsd:element ref="url" minOccurs="0" />
+        <xsd:element ref="class" minOccurs="0" />
+        <xsd:element ref="guinames" minOccurs="0" />
+        <xsd:element ref="descriptions" minOccurs="0" />
+        <xsd:element ref="properties" minOccurs="0" />
+      </xsd:sequence>
+      <xsd:attribute name="name"       type="xsd:string" use="required" />
+      <xsd:attribute name="maintainer" type="xsd:string" />
+      <xsd:attribute name="version"    type="xsd:string" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="status" />
+  <xsd:element name="class" />
+  <xsd:element name="searchage" />
+
+  <xsd:element name="guinames">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="guiname" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="guiname">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute ref="xml:lang" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="descriptions">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="description">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute ref="xml:lang" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="properties">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="property" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="property">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute name="name" type="xsd:string" use="required" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+</xsd:schema>
+
+

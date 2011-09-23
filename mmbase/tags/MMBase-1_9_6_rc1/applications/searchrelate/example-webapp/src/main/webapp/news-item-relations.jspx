@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<div
+    class="relations"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+
+  <mm-sr:relatednodes
+      idvar="rid"
+      type="people"
+      role="related"
+      min="1"
+      max="1"
+      implicitSearch="false"
+      search="true"
+      fields="number,firstname">
+      <h4><span class="debug">${rid} </span>authors</h4>
+  </mm-sr:relatednodes>
+  <mm-sr:relatednodes
+      idvar="rid"
+      type="urls"
+      search="true"
+      sortable="true"
+      implicitSearch="false"
+      fields="url">
+    <h4><span class="debug">${rid} </span>urls</h4>
+  </mm-sr:relatednodes>
+
+  <mm-sr:relatednodes
+      idvar="rid"
+      type="images"
+      >
+    <jsp:attribute name="searcher">
+      <mm-sr:pathsearch path="news,images" />
+    </jsp:attribute>
+    <h4><span class="debug">${rid} </span>images</h4>
+  </mm-sr:relatednodes>
+
+</div>

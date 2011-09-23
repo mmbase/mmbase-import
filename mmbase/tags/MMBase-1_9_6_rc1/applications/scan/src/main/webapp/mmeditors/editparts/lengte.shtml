@@ -1,0 +1,20 @@
+    <TR BGCOLOR="#000000">
+        <TD>
+            <FONT FACE="Arial,Helvetica">
+            &nbsp;
+            <B><FONT COLOR="#FFFFFF" Size=+1>Verander Veld: $PARAM2 </Font></B>
+        </TD>
+    </TR>
+	<TR>
+		<TD>
+			<CENTER>
+			<FONT FACE="Arial,Helvetica">
+				<INPUT TYPE="HIDDEN" NAME="PRC-CMD-STATE-NEXTFIELD" VALUE="$PARAM1">
+				<INPUT SIZE=45 NAME="PRC-CMD-EDIT-SETFIELDVALUE-$PARAM1" VALUE="$MOD-MMEDIT-EDIT-GETFIELDVALUE-$PARAM1" TYPE=TEXT><BR>
+		</TD>
+	</TR>
+	<TR ALIGN=MIDDLE>
+  		<FONT FACE="Arial,Helvetica">
+		<TD>
+		</TD>
+	</TR>	

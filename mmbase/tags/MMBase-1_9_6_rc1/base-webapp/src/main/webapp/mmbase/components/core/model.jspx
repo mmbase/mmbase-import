@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<div
+    class="mm_c c_core b_model ${requestScope['org.mmbase.componentClassName']}"
+    id="${requestScope['org.mmbase.componentId']}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+   <script type="text/javascript">
+     $("object").ready(function() { $(this).click(function() { console.log("hoi");});});
+   </script>
+  <mm:import externid="nodemanager" />
+  <mm:import externid="maxdistance">2</mm:import>
+  <h2>Object model</h2>
+  <p>This page needs <a href="http://www.graphviz.org">graphviz</a> on the server and <a href="http://en.wikipedia.org/wiki/Scalable_Vector_Graphics">SVG</a> in the browser</p>
+
+  <h3>Possible relations</h3>
+  <mm:link page="/mmbase/components/core/model.svg.jsp" referids="nodemanager?,maxdistance">
+    <object data="${_}" type="image/svg+xml" />
+  </mm:link>
+
+  <h3>Inheritance</h3>
+  <mm:link page="/mmbase/components/core/inheritance.svg.jsp" referids="nodemanager?">
+    <object data="${_}" type="image/svg+xml"  />
+  </mm:link>
+</div>

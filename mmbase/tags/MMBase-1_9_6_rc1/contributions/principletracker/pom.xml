@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-application-parent</artifactId>
+    <version>1.9-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>mmbase-principletracker</artifactId>
+  <name>MMBase Principe Tracker</name>
+  <version>${mmbase.version}</version>
+  <packaging>war</packaging>
+
+  <description> </description>
+
+
+    <dependencies>
+
+    </dependencies>
+
+    <repositories>
+      <repository>
+        <id>mmbase</id>
+        <url>http://www.mmbase.org/maven2</url>
+      </repository>
+    </repositories>
+
+  </project>

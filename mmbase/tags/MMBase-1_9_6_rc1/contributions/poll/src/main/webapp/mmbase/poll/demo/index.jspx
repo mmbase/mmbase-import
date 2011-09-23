@@ -1,0 +1,27 @@
+<html
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xml:lang="en" lang="en">
+  <mm:content type="text/html" language="nl" expires="0" postprocessor="none">
+    <jsp:directive.page session="true" />
+    <jsp:output doctype-root-element="html"
+                doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
+                doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>  
+    <head>
+      <title>Poll demo</title>
+      <mm:component name="poll" render="head" />
+    </head>
+    <body>
+
+      <h1>Poll demo</h1>
+
+      <mm:component name="poll" block="edit">
+        <a href="${_}">edit</a>
+      </mm:component>
+
+      <mm:component name="poll" />
+
+    </body>
+  </mm:content>
+</html>

@@ -1,0 +1,358 @@
+/* css stylesheet */
+
+div.mm_related .searchresult caption, 
+div.mm_related .searchresult thead tr, 
+div.mm_related .searchresult tfoot tr {
+    /*background-color: #ddd;*/
+    color: #555;
+}
+
+div.mm_related div.create { border-bottom: 1px solid #ccc; }
+div.mm_related
+{
+	max-width: 640px;
+	font-size: 0.9em;
+	font-family: Helvetica, sans-serif;
+	border-top: 1px #ccc solid;
+	border-right: 1px #ccc solid;
+	border-bottom: none;
+	border-left: 1px #ccc solid;
+}
+
+div.mm_related .searchable h1 { border: none; }
+div.mm_related .searchable .searchform { border: none; }
+
+div.mm_related .searchable strong
+{
+	padding: 4px 4px 0 4px;
+	display: block;
+	background-color: #e8e8e8;
+}
+
+div.mm_related .searchable img
+{
+	float: right;
+	margin: 4px;
+}
+
+div.mm_related .searchable form.searchform
+{
+	width: 100%;
+	background-color: #e8e8e8;
+	margin: 0;
+	border-bottom: 1px #ccc solid;
+}
+
+div.mm_related input.search
+{
+	width: 60%;
+	margin: 0;
+}
+
+div.mm_related a.search
+{
+	margin-left: 6px;
+	display: none;
+}
+
+div.mm_related .searching
+{
+	background-image: url("images/wwwait.gif");
+	background-color: #fff;
+	background-position: right 1px;
+	background-repeat: no-repeat;
+}
+
+div.mm_related .searchable fieldset
+{
+	border: none;
+	margin: 0;
+	padding: 0 4px 4px 4px;
+}
+
+div.mm_related .searchable legend { display: none; }
+div.mm_related .searchable input[type="submit"]
+{
+	margin: 6px;
+	width: auto;
+	cursor: pointer;
+}
+
+/* hide if not yet searched */
+div.mm_related .mm_relate_repository div.implicit { display: none; }
+div.mm_related .mm_relate_repository img.editrelation { display: none; }
+div.mm_related .mm_related .searchable table tfoot.notneeded, 
+div.mm_related .mm_related .searchable table thead.notneeded { display: none; }
+div.mm_related .mm_relate_current caption { display: none; }
+
+div.mm_related .mm_related td.action
+{
+	text-align: right;
+	white-space: nowrap;
+}
+
+div.mm_related .mm_related td.action img
+{
+	margin: 2px;
+	border: 0;
+}
+
+div.mm_related .searchresult table
+{
+	border: 0;
+	width: 100%;
+	background: #fff;
+}
+
+div.mm_related .searchresult table th,
+div.mm_related .searchresult table td { border-bottom: 1px solid #ccc; }
+div.mm_related .searchresult table th { border-top: 1px solid #ccc; }
+div.mm_related .searchresult table.create th { border-top: none; }
+div.mm_related .searchresult table tbody { border: none; }
+div.mm_related .searchresult table caption
+{
+	background: #d4d4d4;
+	margin: 0;
+	/*padding: 4px;*/
+	font-size: 0.9em;
+	font-weight: bold;
+}
+
+div.mm_related .searchresult table.create { padding: 0; }
+div.mm_related .searchresult table.create th,
+div.mm_related .searchresult table.create td { border: 0; }
+
+div.mm_related .searchresult table tbody { overflow: auto; }
+
+div.mm_related .searchresult table thead
+{
+	background-color: #E8E8E8;
+	color: #666;
+	font-size: 0.9em;
+}
+
+/* pager is tfoot */
+div.mm_related .searchresult table tfoot
+{
+	/*background-color: #E8E8E8;*/
+}
+div.mm_related .searchresult table tfoot td { text-align: center; }
+
+div.mm_related .mm_related .searchable table tfoot a.navigate
+{
+	padding: 0 4px 0 4px;
+	text-decoration: none;
+}
+
+div.mm_related span.seperator
+{
+	color: transparent;
+	padding: 0 2px;
+}
+
+div.mm_related .mm_related .searchable table tfoot span.current
+{
+	font-weight: bold;
+	padding: 0 4px 0 4px;
+}
+
+div.mm_related .searchresult th
+{
+	margin: 0;
+	padding: 0 4px;
+	text-align: left;
+}
+
+div.mm_related .searchresult td
+{
+	margin: 0;
+	padding: 2px 4px 0 4px;
+	text-align: left;
+	vertical-align: top;
+}
+
+div.mm_related .searchresult table th.number, 
+div.mm_related .searchresult table td.number { text-align: right; }
+
+/* hide nodenumber */
+div.mm_related .searchresult table th.number, 
+div.mm_related .searchresult table td.number,
+div.mm_related .searchresult table th.relation, 
+div.mm_related .searchresult table td.relation,
+div.mm_related .searchresult table th.guitype, 
+div.mm_related .searchresult table td.guitype { display: none; }
+
+/* row colors */
+div.mm_related tr.even
+{
+	color: #000;
+	background-color: #e6e9dd;
+}
+
+div.mm_related tr.odd
+{
+	color: #000;
+	background-color: #fff;
+}
+div.mm_related tr.even.new { background-color: #ded; }
+div.mm_related tr.odd.new { background-color: #efe; }
+div.mm_related tr.even.removed { background-color: #edd; }
+div.mm_related tr.odd.removed { background-color: #fee; }
+div.mm_related tr.click:hover { cursor: pointer; }
+div.mm_related tr.odd:hover { background-color: #e0f0e0; }
+div.mm_related tr.even:hover { background-color: #d8e8d8; }
+div.mm_related tr.odd.readonly:hover { background-color: #f0e0e0; }
+div.mm_related tr.even.readonly:hover { background-color: #e8d8d8; }
+div.mm_related .searchresult.delete tr.selected.odd { background-color: #ffffaa; }
+div.mm_related .searchresult.delete tr.selected.even { background-color: #ffff00; }
+div.mm_related .searchresult tr.selected.odd
+{
+	background-color: #555;
+	color: #fff;
+}
+div.mm_related .searchresult tbody tr.selected.even
+{
+	background-color: #333;
+	color: #fff;
+}
+div.mm_related .searchresult tbody tr.selected.odd:hover
+{
+	background-color: #555;
+	color: #fff;
+}
+div.mm_related .searchresult tbody tr.selected.even:hover
+{
+	background-color: #333;
+	color: #fff;
+}
+div.mm_related .searchresult tbody tr.selected.odd.readonly:hover { background-color: #f0e0e0; }
+div.mm_related .searchresult tbody tr.selected.even.readonly:hover { background-color: #e8d8d8; }
+div.mm_related .searchable table tfoot.paging.notneeded { display: none; }
+
+/*.failed { background-color: red; }*/
+/*.submitting { background-color: green; }*/
+/*.succeeded { background-color: yellow; }*/
+/* messages to user */
+div.mm_related .message,
+div.mm_related .error, 
+div.mm_related div.failed,
+div.mm_related .relation div.succeeded,
+div.mm_related div.mm_relate_repository div.succeeded
+{
+	padding: 4px;
+	margin: 4px 18px 4px 18px;
+}
+
+div.mm_related .message, 
+div.mm_related .relation div.succeeded,
+div.mm_related div.mm_relate_repository div.succeeded
+{
+	border: 2px #060 solid;
+	background-color: #CF9;
+	color: #330;
+}
+
+div.mm_related .error,
+div.mm_related div.failed
+{
+	border: 2px #900 solid;
+	background-color: #FCC;
+}
+
+div.mm_related tr.relation fieldset
+{
+	border: 2px solid #FC0;
+	background-color: #FFC;
+	padding: 4px;
+	margin: 0;
+}
+
+div.mm_related tr.relation label em
+{
+	display: block;
+	margin: 0;
+	padding: 0;
+	font-weight: bold;
+	font-style: normal;
+}
+
+div.mm_related tr.relation label
+{
+	width: 20%;
+	float: left;
+	text-align: right;
+	padding-right: 6px;
+}
+
+div.mm_related tr.relation input.small
+{
+	width: 240px;
+	min-width: 100px;
+}
+
+div.mm_related tr.relation div.relationrow
+{
+	padding-top: 6px;
+	clear: both;
+}
+
+div.mm_related tr.relation div.dir { display: none; }
+
+div.mm_related tr.relation div.submit
+{
+	margin-left: 20%;
+	padding-top: 2px;
+}
+
+/* create */
+div.mm_related input.search { float: left; }
+
+div.mm_related a.create
+{
+	background-image: url("images/c-new.png");
+	background-repeat: no-repeat;
+	float: right;
+    width: 20px;
+    padding-top: 20px;
+    margin-right: 2px;
+    overflow: hidden;
+    height: 0px !important;
+    height /**/: 20px;  /* for IE5/Win */
+}
+
+/*
+.mm_related a.move
+{
+	display: block;
+	width: 42px;
+	height: 26px;
+	font-weight: bold;
+	text-align: center;
+	color: #000;
+	line-height: 24px;
+	border-width: 0 6px;
+	border-image: url(images/whiteButton.png) 0 10 0 10 round round;
+	-webkit-border-image: url(images/whiteButton.png) 0 10 0 10;
+	-moz-border-image: url(images/whiteButton.png) 0 10 0 10;
+	float: left;
+	margin-left: 12px;
+	text-decoration: none;
+}
+*/
+
+div.mm_related div.create th.node { text-align: right; }
+
+div.mm_related div.create th { width: auto; }
+
+div.mm_related div.create input,
+div.mm_related div.create textarea.small,
+div.mm_related div.create textarea.big
+{
+	width: 96%;
+}
+div.mm_related div.create input.mm_datetime_year { width: auto; }
+
+div.mm_related div.create td.owner { color: transparent; }
+
+div.mm_related div.create tr.buttons td { text-align: left; }
+div.mm_related div.create tr.buttons input { margin-left: 0px; }

@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<datatypes
+    xmlns="http://www.mmbase.org/xmlns/datatypes"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
+
+  <!-- Override all node fields to use S&R -->
+  <datatype id="node">
+    <description xml:lang="en">
+      Reference to an MMBase node.
+    </description>
+    <class name="org.mmbase.datatypes.NodeDataType" />
+    <handler mimetype="text/html,application/xml+xhtml" name="org.mmbase.searchrelate.handlers.SRNodeHandler" />
+  </datatype>
+</datatypes>

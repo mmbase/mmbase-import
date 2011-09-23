@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<mm-sre:html
+    xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+
+  <mm:import id="max">6</mm:import>
+  <script type="text/javascript">
+    $(function() {
+       $("#test").load("loaded-with-ajax.jspx", {}, function() {
+          List.prototype.init(this);
+         }
+         )});
+  </script>
+  <div id="test"> </div>
+  <hr />
+  <mm:escape escape="links">$URL$</mm:escape>
+
+</mm-sre:html>

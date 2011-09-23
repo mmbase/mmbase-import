@@ -1,0 +1,71 @@
+<mm:cloud rank="administrator"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+          >
+  <jsp:output omit-xml-declaration="true" />
+
+<div
+  class="mm_c mm_c_core mm_c_b_email ${requestScope['org.mmbase.componentClassName']}"
+  id="${requestScope['org.mmbase.componentId']}">
+
+  <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+  <table summary="queued email" border="0" cellspacing="0" cellpadding="3">
+    <caption>
+      ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
+    </caption>
+    <mm:hasnodemanager name="email" inverse="true">
+      <tr>
+        <th>Email builder</th><td>Email builder not active</td>
+      </tr>
+    </mm:hasnodemanager>
+    <mm:hasnodemanager name="email">
+      <tr>
+        <th>Number of messages waiting to be delivered</th>
+        <td>
+          <mm:listnodescontainer type="email">
+            <mm:constraint field="mailstatus" value="0" operator="EQUAL" />
+            <mm:size />
+          </mm:listnodescontainer>
+        </td>
+      </tr><tr>
+        <th>Number of messages send and kept in database</th>
+        <td>
+          <mm:listnodescontainer type="email">
+            <mm:constraint field="mailstatus" value="1" operator="EQUAL" />
+            <mm:size />
+          </mm:listnodescontainer>
+        </td>
+      </tr><tr>
+        <th>Number of messages failed to be delivered</th>
+        <td>
+          <mm:listnodescontainer type="email">
+            <mm:constraint field="mailstatus" value="2" operator="EQUAL" />
+            <mm:size />
+          </mm:listnodescontainer>
+        </td>
+      </tr><tr>
+        <th>Number of messages that hit a spam filter and were not mailed</th>
+        <td>
+          <mm:listnodescontainer type="email">
+            <mm:constraint field="mailstatus" value="3" operator="EQUAL" />
+            <mm:size />
+          </mm:listnodescontainer>
+        </td>
+      </tr><tr>
+        <th>Number of queued messages in database</th>
+        <td>
+          <mm:listnodescontainer type="email">
+            <mm:constraint field="mailstatus" value="4" operator="EQUAL" />
+            <mm:size />
+          </mm:listnodescontainer>
+        </td>
+      </tr><tr>
+        <th>Show first 1000 entry's of the queue</th>
+        <td>
+         <mm:link page="emailqueue"><a href="${_}"><mm:link page="/mmbase/style/images/search.png"><img src="${_}" alt="view" border="0" /></mm:link></a></mm:link>
+        </td>
+      </tr>
+    </mm:hasnodemanager>
+  </table>
+</div>
+</mm:cloud>

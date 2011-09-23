@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<!--
+  @version $Id : $
+-->
+<xsd:schema
+    xmlns="http://www.mmbase.org/xmlns/component"
+    targetNamespace="http://www.mmbase.org/xmlns/component"
+    xmlns:dt="http://www.mmbase.org/xmlns/datatypes"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified"
+    version="1.0"
+    >
+
+  <xsd:import
+      namespace="http://www.w3.org/XML/1998/namespace"
+      schemaLocation="http://www.w3.org/2001/03/xml.xsd"
+      />
+  <xsd:import
+      namespace="http://www.mmbase.org/xmlns/datatypes"
+      schemaLocation="http://www.mmbase.org/xmlns/datatypes.xsd"
+      />
+
+
+
+  <xsd:simpleType name="Name" id="Name">
+    <xsd:restriction base="xsd:token">
+      <xsd:pattern value="\i\c*"/>
+      <xsd:maxLength value="128" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:element name="component">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="class"       minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="title"       minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="dependency"  minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="bundle"      minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="setting"     minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="action"      minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="block"       minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:attribute name="name" type="Name" />
+      <xsd:attribute name="version" type="xsd:float" default="0" />
+      <xsd:attribute name="defaultblock" type="xsd:IDREF" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="setting">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="dt:datatype"     minOccurs="1" maxOccurs="1" />
+      </xsd:sequence>
+      <xsd:attribute name="name" type="Name" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="action">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="class" minOccurs="0" maxOccurs="1" />
+      </xsd:sequence>
+      <xsd:attribute name="name" type="Name" />
+      <xsd:attribute name="rank" type="xsd:string" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="description">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute ref="xml:lang" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+
+  <xsd:element name="title">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute ref="xml:lang" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="class">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="param" minOccurs="0" maxOccurs="unbounded">
+          <xsd:complexType>
+            <xsd:simpleContent>
+              <xsd:extension base="xsd:string">
+                <xsd:attribute name="name" type="Name" use="required" />
+              </xsd:extension>
+            </xsd:simpleContent>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+      <xsd:attribute name="name" use="required" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="bundle">
+    <xsd:complexType>
+      <xsd:attribute name="name" use="required" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="dependency">
+    <xsd:complexType>
+      <xsd:attribute name="component" use="required" type="Name" />
+      <xsd:attribute name="version" use="required" type="xsd:float" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="block">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="title" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="head" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="body" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="process" minOccurs="0" maxOccurs="1" />
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:ID" />
+      <xsd:attribute name="mimetype" type="xsd:token" />
+      <xsd:attribute name="classification" type="xsd:token" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="head" type="RendererType"/>
+  <xsd:element name="body" type="RendererType"/>
+  <xsd:element name="process" type="RendererType"/>
+
+  <xsd:complexType name="RendererType">
+    <xsd:sequence>
+      <xsd:element ref="class" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="param" minOccurs="0" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:attribute name="name" type="Name" use="optional" />
+          <xsd:attribute name="regex" type="xsd:string" use="optional" />
+          <xsd:attribute name="type" type="xsd:token" use="optional" default="java.lang.Object" />
+          <xsd:attribute name="required" type="xsd:boolean" use="optional" default="false" />
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+    <xsd:attribute name="jsp" type="xsd:token" />
+    <xsd:attribute name="automaticParameters" type="xsd:boolean" default="false" />
+    <!-- you may want to xinclude fieldlists, xincludes may add xml:base attributes -->
+    <xsd:attribute ref="xml:base" />
+  </xsd:complexType>
+
+</xsd:schema>

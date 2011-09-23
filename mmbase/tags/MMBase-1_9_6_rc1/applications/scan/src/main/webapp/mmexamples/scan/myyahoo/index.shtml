@@ -1,0 +1,102 @@
+<PROCESSOR MMBASE>
+<HTML>
+<HEAD>
+   <TITLE>MMBASE MyYAHOO Example</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="images/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#42BDAD" ALINK="#42BDAD" VLINK="#42BDAD">
+<CENTER>
+<TABLE width="90%" cellspacing=1 cellpadding=3 border=0>
+<TR>
+	<TD WIDTH="30"></TD>
+	<TD BGCOLOR="#32BDAD" COLSPAN="2">
+	 <center><FONT COLOR="#000000">MyYahoo, Search the url's</FONT></center>
+	</TD>
+</TR>
+<TR>
+	<TD WIDTH="30"></TD>
+	<TD BGCOLOR="#00425A" COLSPAN="2">
+	 <CENTER><FONT COLOR="#42BDAD">
+<FORM METHOD="POST" ACTION="index.shtml?$PARAM1">
+<INPUT TYPE="INPUT" NAME="SESSION-YAHOOZOEK">
+</FORM>
+	</FONT></CENTER>
+	</TD>
+</TR>
+<TR>
+<TR>
+	<TD>
+	<BR>
+	</TD>
+</TR>
+
+
+<TR>
+	<TD WIDTH="30"></TD>
+	<TD BGCOLOR="#32BDAD" COLSPAN="2">
+	 <center><FONT COLOR="#000000">The different topics</FONT></center>
+	</TD>
+</TR>
+<TR>
+<LIST RELATIONS TYPE="pools" FIELDS="number,name" NODE="$PARAM1" DBSORT="name" >
+<LIF $MOD-CALC-$ITEMP%2^=E1>
+<TR>
+<TD WIDTH="30"></TD>
+</IF>
+	<TD BGCOLOR="#00425A" COLSPAN="1">
+	 <CENTER><FONT COLOR="#42BDAD">
+     <A HREF="index.shtml?$PARAM1+$ITEM1+sub">$ITEM2</A>
+    </TD>
+<LIF $MOD-CALC-$ITEMP%2^=E0>
+</TR>
+</IF>
+</LIST>
+	</FONT></CENTER>
+	</TD>
+</TR>
+<TR>
+<TR>
+	<TD>
+	<BR>
+	</TD>
+</TR>
+
+<TR>
+	<TD WIDTH="30"></TD>
+	<TD BGCOLOR="#32BDAD" COLSPAN="2">
+	 <center><FONT COLOR="#000000">The different topics</FONT></center>
+	</TD>
+</TR>
+<IF $PARAM3=Esub>
+
+<LIST RELATIONS TYPE="urls" FIELDS="number,url,description" NODE="$PARAM2" DBSORT="url" >
+<TR>
+    <TD WIDTH="30"></TD>
+    <TD BGCOLOR="#00425A" COLSPAN="2">
+     <A HREF="$ITEM2" TARGET="new">$ITEM2</A><BR>
+     $ITEM3
+     <P>
+    </TD>
+</TR>
+<TR>
+</LIST>
+<ELSE>
+
+<LIST OBJECTS TYPE="urls" FIELDS="number,url,description" WHERE="description=E'*$SESSION-YAHOOZOEK^*'" DBSORT="url">
+<TR>
+    <TD WIDTH="30"></TD>
+    <TD BGCOLOR="#00425A" COLSPAN="2">
+     <A HREF="$ITEM2" TARGET="new">$ITEM2</A><BR>
+     $ITEM3
+     <P>
+    </TD>
+</TR>
+<TR>
+</LIST>
+</IF>
+</TABLE>
+<DO SESSION-YAHOOZOEK=>
+</CENTER>
+</BODY>
+</HTML>
+

@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<datatypes
+    id="http://www.mmbase.org/streams/datatypes.xml"
+    xmlns="http://www.mmbase.org/xmlns/datatypes"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
+
+  <!-- override from media, because imagefragments are possible too -->
+  <datatype id="mediafragments_objecttype" base="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
+    <pattern value="videofragments|audiofragments|imagefragments" enforce="onvalidate" />
+  </datatype>
+  <datatype id="mediasources_objecttype" base="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
+    <pattern value="videosources|audiosources|imagesources" />
+    <commitprocessor>
+      <class name="org.mmbase.applications.media.FragmentTypeFixer" />
+    </commitprocessor>
+  </datatype>
+</datatypes>

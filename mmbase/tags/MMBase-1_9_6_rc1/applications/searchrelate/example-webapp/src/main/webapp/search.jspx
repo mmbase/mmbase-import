@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<mm-sre:html
+    styleClass="search"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+
+  <script type="text/javascript">
+    $(document).bind("mmsrRelate", function (e, tr, relater) {
+    alert("Clicked on node " + relater.getNumber(tr));
+    });
+  </script>
+  <mm:import externid="config"></mm:import>
+
+
+  <h3>News</h3>
+  <mm-sr:search type="news"  create="true" />
+
+  <h3>Urls</h3>
+  <mm-sr:search type="urls" implicit="false" create="true" />
+
+
+  <h2>Remarks</h2>
+  <p>In this page are demonstrated the 'implicit' attribute, and the 'config' option (to show how to change the default behaviour)</p>
+  <hr />
+  <p>
+    <jsp:text>Configuration: ${empty config ? 'default' : config} | </jsp:text>
+    <c:choose>
+      <c:when test="${empty config}">
+        <mm:link>
+          <mm:param name="config">mysearch</mm:param>
+          <a href="${_}">mysearch</a>
+        </mm:link>
+      </c:when>
+      <c:otherwise>
+        <mm:link>
+          <a href="${_}">default</a>
+        </mm:link>
+      </c:otherwise>
+    </c:choose>
+  </p>
+  <mm:escape escape="links">$URL$</mm:escape>
+
+</mm-sre:html>

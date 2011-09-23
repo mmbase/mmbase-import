@@ -1,0 +1,31 @@
+<mm:content
+    type="application/xhtml+xml" language="client" expires="0" postprocessor="none" jspvar="locale"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-res="http://www.mmbase.org/tags/mm/resources"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output doctype-root-element="html"
+              doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
+              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+  <jsp:directive.page session="true" import="java.util.*" />  
+  <html lang="${locale}" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+      <jsp:directive.include file="head.jspx" />
+    </head>
+    <body class="basic">
+      <mm-res:captcha key="${sessionScope.captchakey}"/>
+      <mm-res:thumb file="/mmbase/style/logo.gif" template="r(90)+s(20x20)" />
+      <mm:cloud>
+        <mm:listnodes type="images" max="2">
+          <mm-res:captcha template="s(100)" fill="white" />
+        </mm:listnodes>
+      </mm:cloud>
+
+      <mm:component name="resources" block="captchamail">
+        <mm:param name="title">Mail me!</mm:param>
+        <mm:param name="to">mmform@localhost</mm:param>
+      </mm:component>
+    </body>
+  </html>
+</mm:content>

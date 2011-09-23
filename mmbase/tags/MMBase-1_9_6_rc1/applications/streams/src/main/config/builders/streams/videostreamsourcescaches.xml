@@ -1,0 +1,36 @@
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    name="videostreamsourcescaches" maintainer="mmbase.org" version="1" extends="videosources">
+
+  <searchage>31</searchage>
+  <names>
+    <singular xml:lang="en">Streamcaches: Video</singular>
+    <singular xml:lang="nl">Streamcache: Video</singular>
+    <plural xml:lang="en">Streamscaches: Video</plural>
+    <plural xml:lang="nl">Streamscaches: Video</plural>
+  </names>
+
+  <properties>
+    <property name="org.mmbase.streams.cachestype">videostreamsourcescaches</property>
+  </properties>
+
+  <xi:include href="streamsourcescaches.fields.xml" />
+  <xi:include href="http://www.mmbase.org/builders/media/mediasources.virtual.fields.xml" />
+  <xi:include href="streamsourcescaches.virtual.fields.xml" />
+
+  <functionlist>
+    <function name="gui">
+      <class>org.mmbase.streams.thumbnails.GuiFunction</class>
+    </function>
+    <function name="file">
+      <class>org.mmbase.streams.FileFunction</class>
+    </function>
+    <function key="{NODE.number}: {NODE.url}" name="entrylistgui">
+      <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
+    </function>
+  </functionlist>
+</builder>

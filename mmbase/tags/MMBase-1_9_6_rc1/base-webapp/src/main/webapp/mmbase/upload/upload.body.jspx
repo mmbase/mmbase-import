@@ -1,0 +1,38 @@
+<jsp:root version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:directive.page import="java.io.*,org.mmbase.servlet.*,org.mmbase.datatypes.handlers.html.MultiPart" />
+  <jsp:scriptlet>
+    File dir = new File(FileServlet.getDirectory(), "uploads");
+    dir.mkdirs();
+
+    MultiPart.MMultipartRequest multipart = MultiPart.getMultipartRequest((HttpServletRequest) pageContext.getRequest(),
+    (HttpServletResponse) pageContext.getResponse());
+
+    org.mmbase.util.SerializableInputStream is = multipart.getInputStream(name);
+    if (uid.length() > 0) {
+      uid = "." + uid;
+    }
+    File f  = new File(dir, cloud.getUser().getIdentifier() + uid + "." + n + "." + name + "." + is.getName());
+    FileServlet.protectFile((HttpServletRequest) pageContext.getRequest(), f);
+    OutputStream o = new FileOutputStream(f);
+    org.mmbase.util.IOUtil.copy(is, o);
+    o.close();
+    pageContext.setAttribute("fileurl", f.toURL());
+  </jsp:scriptlet>
+  <mm:node number="${n}" commitonclose="false" jspvar="node">
+    <jsp:scriptlet>node.setValue(field, new org.mmbase.util.SerializableInputStream(f, is.getName()));</jsp:scriptlet>
+    <div class="length"><jsp:expression>is.getSize()</jsp:expression></div>
+    <div class="nodegui">
+      <mm:nodeinfo type="gui" />
+    </div>
+    <div class="fieldgui">
+      <mm:field name="${field}">
+        <input type="hidden" name="${name}" value="${mm:escape('text/xml', fileurl)}" />
+        <mm:fieldinfo type="guivalue" />
+      </mm:field>
+    </div>
+  </mm:node>
+</jsp:root>

@@ -1,0 +1,411 @@
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    class="mm_c c_taglib b_test_vars ${requestScope.componentClassName}"
+    id="${requestScope.componentId}">
+  <jsp:output omit-xml-declaration="true" />
+  <script type="text/javascript">
+    $(function() {
+       $("table tr").each(function() {
+          var actual = $(this).find("td:eq(1)").text();
+          var expected = $(this).find("td:eq(2)").text();
+          if (actual != expected) {
+            $(this).addClass('todo');
+          }
+        });
+    });
+  </script>
+
+
+  <mm:import id="list" vartype="list">1,2,3,4</mm:import>
+
+  <p>Testing various situations with mm:import, mm:write, and mm:context. Situations are named a-d and correspond with sections in the document, tests are also named with a letter. Resulting in variable names [a-d][a-z]. The values of the variables are always uppercase values of the name (or chains thereof), or sometimes numbers (corresponding to the index in a list while it was set)</p>
+  <h2>(a) Page Context</h2>
+  <dl>
+    <dt>a</dt><dd>Set before context, imported in context</dd>
+    <dt>b</dt><dd>Set before context, also set in context</dd>
+    <dt>c</dt><dd>Set before context, reset in context</dd>
+    <dt>d</dt><dd>Not set before context, set in parent in the context (only used in (b)</dd>
+    <dt>e</dt><dd>Not set before context, set in context, set after context</dd>
+    <dt>f</dt><dd>Not set before context, set in context, set after context in list</dd>
+  </dl>
+  <mm:import id="aa">A</mm:import>
+  <mm:import id="ab">B</mm:import>
+  <mm:import id="ac">C</mm:import>
+
+
+  <table>
+    <tr><th class="id">id</th><th>is</th><th>should be</th><th>remarks</th></tr>
+    <mm:context id="contexta">
+      <mm:import externid="aa" from="parent" required="true"/>
+      <mm:import id="ab">BB</mm:import>
+      <mm:import id="ac" reset="true">CC</mm:import>
+      <mm:import id="ae">EE</mm:import>
+      <mm:import id="af">FF</mm:import>
+      <tr><td>a a</td><td><mm:write referid="aa" />, ${aa}</td><td>A, A</td></tr>
+      <tr><td>a b</td><td><mm:write referid="ab" />, ${ab}</td><td>BB, BB</td></tr>
+      <tr><td>a c</td><td><mm:write referid="ac" />, ${ac}</td><td>CC, CC</td></tr>
+      <tr><td>a e</td><td><mm:write referid="ae" />, ${ae}</td><td>EE, EE</td></tr>
+      <tr><td>a f</td><td><mm:write referid="af" />, ${af}</td><td>FF, FF</td></tr>
+    </mm:context>
+
+    <tr><td>a a</td><td><mm:write referid="aa" />, <mm:write referid="contexta.aa" />, ${aa}, ${contexta.aa}</td><td>A, A, A, A</td></tr>
+    <tr><td>a b</td><td><mm:write referid="ab" />, <mm:write referid="contexta.ab" />, ${ab}, ${contexta.ab}</td><td>B, BB, B, BB</td></tr>
+    <tr><td>a c</td><td><mm:write referid="ac" />, <mm:write referid="contexta.ac" />, ${ac}, ${contexta.ac}</td><td>C, CC, C, CC</td><td>A bit like <a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></td></tr>
+
+
+    <tr>
+      <td>a e</td>
+      <td>
+        <c:catch var="e"><mm:write referid="ae" /></c:catch>
+        <jsp:text>${empty e ? '' : 'an exception'}, (${ae})</jsp:text>
+      </td>
+      <td>an exception, ()</td>
+      <td> ${e}</td>
+    </tr>
+    <tr>
+      <td>a e</td>
+      <td>
+        <c:catch var="e"><mm:import id="ae">EEE</mm:import></c:catch>
+        <jsp:text>${empty e ? '' : 'an exception,'}</jsp:text>
+        <mm:write referid="ae" />
+        <jsp:text>, ${ae}</jsp:text>
+      </td>
+      <td>EEE, EEE</td>
+      <td>${e}</td>
+    </tr>
+    <tr>
+      <td>a f</td>
+      <td>
+        <c:catch var="e"><mm:stringlist referid="list"><mm:import id="af"><mm:index /></mm:import></mm:stringlist></c:catch>
+        <jsp:text>${empty e ? '' : 'an exception,'}</jsp:text>
+        <c:catch var="e"><mm:write referid="af" /></c:catch>
+        <jsp:text>${empty e ? '' : 'an exception'}</jsp:text>
+        <jsp:text>, ${af}</jsp:text>
+      </td>
+      <td>4, 4</td>
+      <td>${e}</td>
+    </tr>
+  </table>
+
+  <h2>(b) Context 'test'</h2>
+  <p>Like (a), but in a context named 'test'</p>
+  <mm:context id="test">
+    <mm:import id="ba">A</mm:import>
+    <mm:import id="bb">B</mm:import>
+    <mm:import id="bc">C</mm:import>
+
+    <table>
+      <tr><th class="id">id</th><th>is</th><th>should be</th><th>remarks</th></tr>
+      <mm:context id="contextb">
+        <mm:import externid="ba" from="parent" required="true"/>
+        <mm:import id="bb">BB</mm:import>
+        <mm:import id="bc" reset="true">CC</mm:import>
+        <mm:import id="bd" context="test">DD</mm:import>
+        <mm:import id="be">EE</mm:import>
+        <mm:import id="bf">FF</mm:import>
+        <tr><td>b a</td><td><mm:write referid="ba" />, ${ba}</td><td>A, A</td></tr>
+        <tr><td>b b</td><td><mm:write referid="bb" />, ${bb}</td><td>BB, BB</td></tr>
+        <tr><td>b c</td><td><mm:write referid="bc" />, ${bc}</td><td>CC, CC</td></tr>
+        <tr><td>b d</td><td><mm:write referid="bd" />, ${bd}</td><td>DD, DD</td></tr>
+        <tr><td>b e</td><td><mm:write referid="be" />, ${be}</td><td>EE, EE</td></tr>
+        <tr><td>b f</td><td><mm:write referid="bf" />, ${bf}</td><td>FF, FF</td></tr>
+      </mm:context>
+
+      <tr><td>b a</td><td><mm:write referid="ba" />, <mm:write referid="contextb.ba" />, ${ba}, ${contextb.ba}</td><td>A, A, A, A</td></tr>
+      <tr><td>b b</td><td><mm:write referid="bb" />, <mm:write referid="contextb.bb" />, ${bb}, ${contextb.bb}</td><td>B, BB, B, BB</td></tr>
+      <tr><td>b c</td><td><mm:write referid="bc" />, <mm:write referid="contextb.bc" />, ${bc}, ${contextb.bc}</td><td>C, CC, C, CC</td><td>A bit like <a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></td></tr>
+      <tr><td>b d</td><td><mm:write referid="bd" />, ${bd}</td><td>DD, DD</td></tr>
+      <tr>
+        <td>b e</td>
+        <td>
+          <c:catch var="e"><mm:write referid="be" />,</c:catch>
+          <jsp:text>${empty e ? '' : 'an exception, '}</jsp:text>
+          <jsp:text>(${be})</jsp:text>
+        </td>
+        <td>an exception, ()</td>
+        <td>${e}</td>
+      </tr>
+      <tr>
+        <td>b e</td>
+        <td>
+          <c:catch var="e"><mm:import id="be">EEE</mm:import></c:catch>
+          <jsp:text>${empty e ? '' : 'an exception,'}</jsp:text>
+          <mm:write referid="be" />
+          <jsp:text>, ${be}</jsp:text>
+        </td>
+        <td>EEE, EEE</td>
+        <td>${e}</td>
+      </tr>
+      <tr>
+        <td>b f</td>
+        <td>
+          <c:catch var="e"><mm:stringlist referid="list"><mm:import id="bf"><mm:index /></mm:import></mm:stringlist></c:catch>
+          <jsp:text>${empty e ? '' : 'an exception,'}</jsp:text>
+          <c:catch var="e"><mm:write referid="bf" /></c:catch>
+          <jsp:text>${empty e ? '' : 'an exception'}</jsp:text>
+          <jsp:text>, ${bf}</jsp:text>
+        </td>
+        <td>4, 4</td>
+        <td>4, 1 in 1.8. ${e}</td>
+      </tr>
+    </table>
+  </mm:context>
+
+  <h2>(c) Lists</h2>
+  <dl>
+    <dt>a</dt><dd>Set before list, reset in list</dd>
+    <dt>b</dt><dd>Not set before list, set in list</dd>
+    <dt>c</dt><dd>Set before list, set in list (which should give excpetion)</dd>
+    <dt>d</dt><dd>Like (c), but only set once in the list</dd>
+    <dt>e</dt><dd>Using not mm:import but mm:write</dd>
+    <dt>f</dt><dd>Set in list, remove in list</dd>
+    <dt>g</dt><dd>Not set before list, set in list, using also jspvarattribute</dd>
+  </dl>
+
+  <mm:import id="ca">A</mm:import>
+  <mm:import id="cc">C</mm:import>
+  <mm:import id="cd">D</mm:import>
+  <table>
+    <tr><th class="id">id</th><th>is</th><th>should be</th><th>remarks</th></tr>
+    <mm:stringlist referid="list" max="3">
+      <tr>
+        <td>c a <mm:index /></td>
+        <td>
+          <mm:escape escape="swallow"><c:catch var="e"><mm:write referid="ca" /></c:catch></mm:escape>
+          <jsp:text>${e}</jsp:text><!-- should never occur -->
+          <mm:import id="ca" reset="true"><mm:write /></mm:import>
+          <mm:write referid="ca" />
+          <jsp:text>, ${ca}</jsp:text>
+        </td>
+        <td><mm:index />, <mm:index /></td>
+      </tr>
+      <mm:import id="cb" ><mm:write /></mm:import>
+      <tr>
+        <td>c b <mm:index /></td>
+        <td><mm:write referid="cb" />, ${cb}</td>
+        <td><mm:index />, <mm:index /></td>
+      </tr>
+      <tr>
+        <td>c c <mm:index /></td>
+        <td>
+          <c:catch var="e"><mm:import id="cc"><mm:write /></mm:import></c:catch>
+          <jsp:text>${empty e ? '' : 'an exception, '}</jsp:text>
+          <mm:write referid="cc" />
+          <jsp:text>, ${cc}</jsp:text>
+        </td>
+        <td>an exception, C, C</td>
+        <td>
+          <mm:index>
+            <mm:isgreaterthan value="1">Fails in 1.8 (only exception in first iteration)</mm:isgreaterthan>
+          </mm:index>
+        </td>
+      </tr>
+      <mm:first>
+        <tr>
+          <td>c d <mm:index /></td>
+          <td>
+            <c:catch var="e"><mm:import id="cd"><mm:write /></mm:import></c:catch>
+            <jsp:text>${empty e ? '' : 'an exception, '}</jsp:text>
+            <mm:write referid="cd" />
+            <jsp:text>, ${cd}</jsp:text>
+          </td>
+          <td>an exception, D, D</td>
+        </tr>
+      </mm:first>
+      <tr>
+        <td>c f <mm:index /></td>
+        <td>
+          <mm:import id="cf"><mm:write /></mm:import>
+          <mm:write referid="cf" />
+          <jsp:text>, ${cf}, </jsp:text>
+          <mm:remove referid="cf" />
+          <c:catch var="e"><mm:write referid="cf" /></c:catch>
+          <jsp:text>${empty e ? '' : 'an exception'}</jsp:text>
+          <jsp:text>, ${cf}</jsp:text>
+        </td>
+        <td><mm:index />, <mm:index />, an exception, </td>
+      </tr>
+      <tr>
+        <td>c g <mm:index /></td>
+        <td>
+          <c:catch var="e"><mm:import id="cg" jspvar="cg" ><mm:write /></mm:import></c:catch>
+          <jsp:text>${empty e ? '' : 'an exception'}</jsp:text>
+          <jsp:text><mm:write referid="cg" />, ${cg}</jsp:text>
+        </td>
+        <td><mm:index />, <mm:index /></td>
+        <td>${e}</td>
+      </tr>
+    </mm:stringlist>
+    <tr><td>c a</td><td><c:catch><mm:write referid="ca" /></c:catch>, ${ca}</td><td>3, 3</td></tr>
+    <tr><td>c b</td><td><c:catch><mm:write referid="cb" /></c:catch>, ${cb}</td><td>3, 3</td><td><a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></td></tr>
+    <tr><td>c c</td><td><c:catch><mm:write referid="cc" /></c:catch>, ${cc}</td><td>C, C</td><td>3,3 in MMBase 1.8 (See remarks about exception in first iteration)</td></tr>
+    <tr><td>c d</td><td><c:catch><mm:write referid="cd" /></c:catch>, ${cd}</td><td>D, D</td></tr>
+    <tr>
+      <td>c f</td>
+      <td>
+        <c:catch var="e"><mm:write referid="cf" /></c:catch>
+        <jsp:text>${empty e ? '' : 'an exception, '}</jsp:text>
+        <jsp:text>${cf}</jsp:text>
+      </td>
+      <td>an exception, </td>
+    </tr>
+  </table>
+
+  <h2>(d) List in context</h2>
+  <p>Like (c), but in a context (named 'test2')</p>
+  <mm:context id="test2">
+    <mm:import id="da">A</mm:import>
+    <mm:import id="dc">C</mm:import>
+    <mm:import id="dd">D</mm:import>
+    <mm:import id="de">E</mm:import>
+    <table>
+      <tr><th class="id">id</th><th>is</th><th>should be</th><th>remarks</th></tr>
+      <mm:stringlist referid="list" max="3">
+        <mm:import id="da" reset="true"><mm:write /></mm:import>
+        <tr>
+          <td>d a <mm:index /></td>
+          <td><mm:write referid="da" />, ${da}</td>
+          <td><mm:index />, <mm:index /></td>
+        </tr>
+        <mm:import id="db"><mm:write /></mm:import>
+        <tr>
+          <td>d b <mm:index /></td>
+          <td><mm:write referid="db" />, ${db}</td>
+          <td><mm:index />, <mm:index /></td>
+        </tr>
+        <tr>
+          <td>d c <mm:index /></td>
+          <td>
+            <c:catch var="e"><mm:import id="dc"><mm:write /></mm:import></c:catch>
+            <jsp:text>${empty e ? '' : 'an exception, '}</jsp:text>
+            <mm:write referid="dc" />
+            <jsp:text>, ${dc}</jsp:text>
+          </td>
+          <td>an exception, C, C</td>
+          <td>
+            <mm:index>
+              <mm:isgreaterthan value="1">Fails in 1.8 (only exception in first iteration)</mm:isgreaterthan>
+            </mm:index>
+          </td>
+        </tr>
+        <mm:first>
+          <tr>
+            <td>d d <mm:index /></td>
+            <td>
+              <c:catch var="e"><mm:import id="dd"><mm:write /></mm:import></c:catch>
+              <jsp:text>${empty e ? '' : 'an exception, '}</jsp:text>
+              <mm:write referid="dd" />
+              <jsp:text>, ${dd}</jsp:text>
+            </td>
+            <td>an exception, D, D</td>
+          </tr>
+          <tr>
+            <td>d e <mm:index /></td>
+            <td>
+              <c:catch var="e">
+                <mm:write write="false" id="de" value="EE" reset="true" />
+                <mm:write referid="de" />
+                <jsp:text>, ${de}</jsp:text>
+              </c:catch>
+              <jsp:text>${e}</jsp:text>
+            </td>
+            <td>EE, EE</td>
+            <td>reset=true not supported in 1.8 (so fails)</td>
+          </tr>
+        </mm:first>
+      </mm:stringlist>
+      <tr><td>d a</td><td><c:catch><mm:write referid="da" /></c:catch>, <c:catch><mm:write referid="test2.da" /></c:catch>, ${da}</td><td>3, 3, 3</td><td>3,1 in MMBase 1.8 (Fail)</td></tr>
+      <tr><td>d b</td><td><c:catch><mm:write referid="db" /></c:catch>, ${db}</td><td>3, 3</td><td>3,1 in MMBase 1.8 (Fail)</td></tr>
+      <tr><td>d c</td><td><c:catch><mm:write referid="dc" /></c:catch>, ${dc}</td><td>C, C</td><td>3,2 in MMBase 1.8 (Fail)</td></tr>
+      <tr><td>d d</td><td><c:catch><mm:write referid="dd" /></c:catch>, ${dd}</td><td>D, D</td></tr>
+      <tr><td>d e</td><td><c:catch><mm:write referid="de" /></c:catch>, ${de}</td><td>EE, EE</td><td>reset=true not supported in 1.8 (so fails)</td></tr>
+    </table>
+  </mm:context>
+  <h2>(e) Lists in lists</h2>
+  <dl>
+    <dt>a</dt><dd>Repeatedly set in a nested list (${list} X ${list})</dd>
+  </dl>
+  <table>
+    <tr><th class="id">id</th><th>is</th><th>should be</th><th>remarks</th></tr>
+    <mm:stringlist referid="list" id="l1">
+      <mm:stringlist referid="list" id="l2">
+        <tr>
+          <td>e <mm:index list="l1" /><jsp:text> </jsp:text><mm:index list="l2" /></td>
+          <td>
+            <c:catch var="e">
+              <mm:import id="ea"><mm:index /></mm:import>
+              <mm:write referid="ea" />
+            </c:catch>
+            <jsp:text>${empty e ? "" : "an exception"}</jsp:text>
+          </td>
+          <td><mm:index /></td>
+          <td>${e}</td>
+        </tr>
+      </mm:stringlist>
+    </mm:stringlist>
+  </table>
+  <mm:import id="fb">foo</mm:import>
+  <mm:import id="fd">bar</mm:import>
+
+  <h2>(f) lists in context</h2>
+  <dl>
+    <dt>a</dt><dd>Repeatedly set in a list (${list}) in a context</dd>
+    <dt>b</dt><dd>Repeatedly set in a list (${list}) in a context, set outside context too</dd>
+    <dt>c</dt><dd>Repeatedly set in a nested list (${list} X ${list}) in a context</dd>
+    <dt>d</dt><dd>Repeatedly set in a nested list (${list} X ${list}) in a context, set outside context too</dd>
+  </dl>
+  <table>
+    <mm:context>
+      <tr><th class="id">id</th><th>is</th><th>should be</th><th>remarks</th></tr>
+      <mm:stringlist referid="list" id="l1">
+        <tr>
+          <td>f ab <mm:index /></td>
+          <td>
+            <c:catch var="e">
+              <mm:import id="fa"><mm:index /></mm:import>
+              <mm:import id="fb"><mm:index /></mm:import>
+              <mm:write referid="fa" />,<mm:write referid="fb" />
+            </c:catch>
+            <jsp:text>${empty e ? "" : "an exception"}</jsp:text>
+          </td>
+          <td><mm:index />,<mm:index /></td>
+          <td>${e}</td>
+        </tr>
+        <mm:stringlist referid="list" id="l2">
+          <tr>
+            <td>f cd <mm:index list="l1" /><jsp:text> </jsp:text><mm:index list="l2" /></td>
+            <td>
+              <c:catch var="e">
+                <mm:import id="fc"><mm:index /></mm:import>
+                <mm:import id="fd"><mm:index /></mm:import>
+                <mm:write referid="fc" />,<mm:write referid="fd" />
+              </c:catch>
+              <jsp:text>${empty e ? "" : "an exception"}</jsp:text>
+            </td>
+            <td><mm:index />,<mm:index /></td>
+            <td>${e}</td>
+          </tr>
+        </mm:stringlist>
+      </mm:stringlist>
+    </mm:context>
+    <tr>
+      <td>f bd</td>
+      <td>
+        <c:catch var="e">
+          <mm:write referid="fb" />,<mm:write referid="fd" />
+        </c:catch>
+        <jsp:text>${empty e ? "" : "an exception"}</jsp:text>
+      </td>
+      <td>foo,bar</td>
+      <td>${e}</td>
+    </tr>
+  </table>
+
+
+  <hr />
+  <mm:escape escape="links">$URL$</mm:escape>
+
+</div>

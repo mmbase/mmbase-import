@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<field
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    state="system"
+    name="lastmodifiedby">
+  <descriptions>
+    <description xml:lang="en">Lastmodified by</description>
+    <description xml:lang="nl">Aangepast door</description>
+  </descriptions>
+  <gui>
+    <guiname xml:lang="en">Lastmodified by</guiname>
+    <guiname xml:lang="nl">Aangepast door</guiname>
+  </gui>
+  <editor><positions><list>106</list></positions></editor>
+  <datatype base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes">
+    <maxLength value="255" />
+  </datatype>
+</field>

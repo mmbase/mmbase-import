@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<mm-sre:html
+    xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+
+  <mm:node number="default.mags">
+    <h3><mm:field name="title" /></h3>
+    <p>Put some jsp's in <mm:link page="/testicons"><a href="${_}">/testicons</a></mm:link> which replace the default icons. It would also have been possible to put png's.</p>
+
+    <mm-sr:relatednodes
+        icondir="/testicons"
+        type="news"
+        unlink="true"
+        max="6"
+        sortable="true"
+        search="true" />
+
+  </mm:node>
+  <hr />
+  <mm:escape escape="links">$URL$</mm:escape>
+
+</mm-sre:html>

@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<div
+    class="mm_c c_editwizard b_logo.example ${requestScope.componentClassName}"
+    id="${requestScope.componentId}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <p>
+    This example adds a logo to the default editwizard XSL's.
+  </p>
+  <mm:import id="ew"><mm:setting name="location" />/jsp</mm:import>
+  <mm:import id="templates">/mmbase/components/editwizard/logo/</mm:import>
+  <mm:import id="referrer"><mm:url absolute="context" /></mm:import>
+
+  <table>
+    <tr>
+      <td>
+        <mm:link referids="referrer,templates" page="/mmbase/edit/wizard/jsp/list.jsp">
+          <mm:param name="wizard">../samples/people</mm:param>
+          <mm:param name="nodepath">people</mm:param>
+          <a href="${_}">Person-Test</a>,
+        </mm:link>
+      </td>
+      <td>
+        A simple one-step person editor.
+      </td>
+      <td>
+        <mm:link page="view_source">
+          <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <mm:param name="page">${templates}xsl/base.xsl</mm:param>
+          <a href="${_}">See XSL</a>
+        </mm:link>
+      </td>
+    </tr>
+  </table>
+  <hr />
+  <mm:link page="examples">
+    <a class="navigate" href="${_}"><img alt="back" src="${mm:link('/mmbase/style/images/back.png')}" />
+    </a>
+  </mm:link>
+</div>

@@ -1,0 +1,5 @@
+<!ELEMENT preferredSource (source+)>
+<!ELEMENT source (#PCDATA)>
+<!ATTLIST source
+  format CDATA #REQUIRED
+>

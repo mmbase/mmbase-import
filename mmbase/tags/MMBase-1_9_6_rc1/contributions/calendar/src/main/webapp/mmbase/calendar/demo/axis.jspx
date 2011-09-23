@@ -1,0 +1,99 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://java.sun.com/jsp/jstl/core" 
+      xmlns:jsp="http://java.sun.com/JSP/Page" 
+      xmlns:mm-cal="http://www.mmbase.org/tags/mm/calendar"       
+      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <!--
+      This can be useful during development
+      xmlns:mm-cal="urn:jsptagdir:/WEB-INF/tags/mm/calendar"     
+
+  -->      
+  <jsp:directive.page buffer="100kb" import="com.ibm.icu.text.*,java.util.*" />
+  <mm:import externid="language">client</mm:import>
+  <mm:import externid="timezone"></mm:import>
+  <mm:import externid="mode">weektable</mm:import>
+  <mm:write request="language" referid="language" />
+  <mm:write request="timezone" referid="timezone" />
+  <mm:content type="application/xhtml+xml"
+              language="$language" 
+              timezone="$timezone"
+              postprocessor="none" expires="0">
+    <head>
+       <link href="../style.css" rel="stylesheet" title="Normaal" type="text/css" media="screen" />
+    </head>
+    <body>
+      <mm:cloud method="asis">        
+        <mm-cal:localeSelector />
+        
+        <mm:time id="date" time="now" vartype="date" write="false" />
+
+        <table>
+          <thead>
+            <tr><th colspan="6"><mm:time referid="date" format="MMMM yyyy" /></th></tr>
+            <tr>
+              <td> </td>
+              <c:forEach begin="0" end="6" var="i">
+                <td>day ${i}</td> <!-- how to easily translate to strings ? -->
+              </c:forEach>
+            </tr>
+          </thead>
+          <tbody>
+            <c:forEach begin="0" end="6" var="i">
+              <tr>
+                <mm-cal:axis date="${date}" name="week" index="${i}">
+                  <jsp:attribute name="left">
+                    <th>week <mm:time referid="day" format="W" /></th>
+                  </jsp:attribute>
+                  <jsp:attribute name="right">
+                    <th>week <mm:time referid="day" format="W" /></th>
+                  </jsp:attribute>
+                  <td class="${dayofweek}">
+                    <mm:time referid="day" format="EEEE dd" />
+                  </td>
+                </mm-cal:axis>
+              </tr>
+            </c:forEach>
+          </tbody>
+        </table>        
+        <hr />
+        <table>
+          <thead>
+            <tr><th colspan="6"><mm:time time="2006-09-01" format="MMMM yyyy" /></th></tr>
+            <tr>
+              <td />
+              <c:forEach begin="0" end="5" var="i">
+                <td>week ${i}</td>
+              </c:forEach>
+            </tr>
+          </thead>
+          <tbody>
+            <c:forEach begin="0" end="6" var="i">
+              <tr>
+                <mm-cal:axis year="2006" month="9" name="day" index="${i}">
+                  <jsp:attribute name="left">
+                    <th><mm:time referid="day" format="EEEEE" /></th>
+                  </jsp:attribute>
+                  <jsp:attribute name="right">
+                    <th><mm:time referid="day" format="E" /></th>
+                  </jsp:attribute>
+                  <td class="${dayofweek}">
+                    <mm:time referid="day" format="dd MMMM" />
+                    <mm-cal:items day="${day}">
+                      <jsp:attribute name="newItem">
+                        <mm:link page="../newItem.jspx" referids="day,language,timezone">
+                          <a href="${_}">+</a>
+                        </mm:link>
+                      </jsp:attribute>
+                      <mm:include page="../item.jspx" />
+                    </mm-cal:items>
+                  </td>
+                </mm-cal:axis>
+              </tr>
+            </c:forEach>
+          </tbody>
+        </table>
+      </mm:cloud>
+    </body>
+  </mm:content>
+</html>
+  

@@ -1,0 +1,38 @@
+<mm:cloud
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    name="mmbase" method="asis">
+  <jsp:output omit-xml-declaration="true" />
+  <div
+      class="mm_c c_core b_mrtg ${requestScope.className}"
+      id="${requestScope['org.mmbase.componentId']}">
+    <h2>MRTG</h2>
+    <p>
+      <a href="http://oss.oetiker.ch/mrtg/">MRTG</a> is a tool to generate statistics. It can quite easily be used to monitor MMBase Caches.
+    </p>
+    <p>
+      <mm:link page="/mmbase/admin/stats.jsp">
+        <mm:param name="action">mrtgconfig</mm:param>
+        <a href="${_}">(Example) MRTG-config for this server</a>
+      </mm:link>
+    </p>
+    <p>
+      <mm:link page="/mmbase/admin/stats.jsp">
+        <mm:param name="action">memory</mm:param>
+        <a href="${_}">This link can e.g. be used to monitor memory usage.</a>
+      </mm:link>
+    </p>
+
+    <p>
+      <mm:link page="/mmbase/admin/stats.jsp">
+        <mm:param name="action">cache</mm:param>
+        <mm:param name="cacheType">Nodes</mm:param>
+        <a href="${_}">This link can e.g. be used to monitor node cache usage.</a>
+      </mm:link>
+    </p>
+    <h2>JMX</h2>
+    <p>Information about the MMBase caches is also available via <a href="http://java.sun.com/javase/technologies/core/mntr-mgmt/javamanagement/">Java Managment Extensions</a>.</p>
+    <p>JMX information can e.g. be accessed using the <a href="http://java.sun.com/developer/technicalArticles/J2SE/jconsole.html">jconsole</a> tool.</p>
+  </div>
+</mm:cloud>

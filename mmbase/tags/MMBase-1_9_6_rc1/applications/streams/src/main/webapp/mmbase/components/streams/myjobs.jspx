@@ -1,0 +1,25 @@
+<div
+    class="mm_c c_streams b_myjobs ${requestScope.componentClassName}"
+    id="${requestScope.componentId}"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-res="urn:jsptagdir:/WEB-INF/tags/mm/resources"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+
+  <jsp:output omit-xml-declaration="true" />
+
+  <mm:import externid="cancel" />
+
+  <c:if test="${! empty cancel}">
+    <mm:function set="streams" name="cancelJob" referids="cancel@node">
+      <p class="msg">${_}</p>
+    </mm:function>
+  </c:if>
+
+  <mm:listfunction set="streams" name="myJobs" id="job">
+    <mm:first><h3><mm:size /> jobs running</h3></mm:first>
+    <jsp:directive.include file="job.jspx" />
+  </mm:listfunction>
+
+</div>

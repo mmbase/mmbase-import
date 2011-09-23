@@ -1,0 +1,27 @@
+<div
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <mm:content type="text/html">
+  <jsp:directive.page import="java.io.*,org.mmbase.servlet.*,org.mmbase.datatypes.handlers.html.MultiPart" />
+  <jsp:output omit-xml-declaration="true" />
+  <mm:cloud method="asis" jspvar="cloud">
+    <mm:import externid="uid" jspvar="uid"/>
+    <mm:import externid="name" required="true" jspvar="name"/>
+    <mm:import externid="n" required="true" jspvar="n"/>
+    <mm:import externid="field" jspvar="field">handle</mm:import>
+    <mm:import externid="transaction" />
+    <c:choose>
+      <c:when test="${empty transaction}">
+        <jsp:directive.include file="upload.body.jspx" />
+      </c:when>
+      <c:otherwise>
+        <mm:transaction commitonclose="false" name="${transaction}">
+          <jsp:directive.include file="upload.body.jspx" />
+        </mm:transaction>
+      </c:otherwise>
+    </c:choose>
+  </mm:cloud>
+  </mm:content>
+</div>
