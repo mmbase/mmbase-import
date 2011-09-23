@@ -23,7 +23,7 @@ See http://www.MMBase.org/license
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-parent</artifactId>
-    <version>1.9-SNAPSHOT</version>
+    <version>1.9.6.rc1</version>
   </parent>
 
   <artifactId>mmbase</artifactId>
@@ -102,7 +102,7 @@ See http://www.MMBase.org/license
       <plugin>
         <groupId>org.mmbase.maven</groupId>
         <artifactId>maven-mmbase-plugin</artifactId>
-        <version>1.9-SNAPSHOT</version>
+        <version>1.9.6.rc1</version>
         <executions>
           <execution>
             <id>create-index-files</id>
