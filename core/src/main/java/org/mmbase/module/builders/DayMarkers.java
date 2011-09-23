@@ -13,7 +13,6 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.text.DateFormat;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.*;
@@ -41,7 +40,7 @@ public class DayMarkers extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(DayMarkers.class);
 
     private int day = 0; // current day number/count
-    private final Map<Integer, Integer> daycache = new TreeMap<Integer, Integer>();           // day -> mark, but ordered
+    private Map<Integer, Integer> daycache = new TreeMap<Integer, Integer>();           // day -> mark, but ordered
 
     private int smallestDay; // will be queried when this builder is started
 
@@ -63,7 +62,6 @@ public class DayMarkers extends MMObjectBuilder {
      * smallestMark is the smallest object number for which a daymark exists.
      * smallestDay is the first daymarker that was set.
      */
-    @Override
     public boolean init() {
         log.debug("Init of DayMarkers");
         boolean result;
@@ -93,7 +91,6 @@ public class DayMarkers extends MMObjectBuilder {
         createMarker();
         Calendar now = Calendar.getInstance(mmb.getTimeZone(), mmb.getLocale());
         future =  ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
-            @Override
                 public void run() {
                     day = currentDay();
                     createMarker();
@@ -105,7 +102,6 @@ public class DayMarkers extends MMObjectBuilder {
         ThreadPools.identify(future, "DayMarker creation");
 
         addFunction(new AbstractFunction<Integer>("ageForNumber", new Parameter[] { new Parameter<Integer>("nodenumber", Integer.class)}, ReturnType.INTEGER) {
-            @Override
                 public Integer getFunctionValue(Parameters parameters) {
                     int nodeNumber = Casting.toInt(parameters.get("nodenumber"));
                     return DayMarkers.this.getAge(nodeNumber);
@@ -126,7 +122,6 @@ public class DayMarkers extends MMObjectBuilder {
         return daynr;
     }
 
-    @Override
     public void shutdown() {
         if (future != null) future.cancel(true);
     }
@@ -143,7 +138,7 @@ public class DayMarkers extends MMObjectBuilder {
         query.setConstraint(constraint);
         try {
             List<MMObjectNode> resultList = getNodes(query);
-            if (resultList.isEmpty()) {
+            if (resultList.size() == 0) {
                 // if not, retrieve the mark (highest node number) for today
                 MMObjectBuilder root = mmb.getRootBuilder();
                 query = new NodeSearchQuery(root);
@@ -182,14 +177,14 @@ public class DayMarkers extends MMObjectBuilder {
         if (i.hasNext()) {   // cache not empty
             Map.Entry<Integer,Integer> current = i.next();
             Map.Entry<Integer,Integer> previous = null;
-            while (i.hasNext() && current.getValue() < nodeNumber) { // search until current > nodeNumber
+            while (i.hasNext() && current.getValue().intValue() < nodeNumber) { // search until current > nodeNumber
                 previous = current;
                 current = i.next();
             }
-            if ((previous != null) && current.getValue() >= nodeNumber) { // found in cache
+            if ((previous != null) && current.getValue().intValue() >= nodeNumber) { // found in cache
                 // if we found a lower and a higher mark on two consecutive days, return the lower.
-                if (current.getKey() - previous.getKey() == 1) {
-                    return day - previous.getKey();
+                if (current.getKey().intValue() - previous.getKey().intValue() == 1) {
+                    return day - previous.getKey().intValue();
                 }
             }
 
@@ -282,7 +277,7 @@ public class DayMarkers extends MMObjectBuilder {
         log.debug("finding mark of day " + wday);
         Integer result = daycache.get(wday);
         if (result!=null) { // already in cache
-            return result;
+            return result.intValue();
         }
         log.debug("could not be found in cache");
 
@@ -302,7 +297,7 @@ public class DayMarkers extends MMObjectBuilder {
             int mark = 0;
             try {
                 List<MMObjectNode> resultList = getNodes(query);
-                if (!resultList.isEmpty()) {
+                if (resultList.size() != 0) {
                     MMObjectNode resultNode = resultList.get(0);
                     mark = resultNode.getIntValue(FIELD_MARK);
                     int daycount = resultNode.getIntValue(FIELD_DAYCOUNT);
@@ -333,7 +328,6 @@ public class DayMarkers extends MMObjectBuilder {
      * COUNTNEXTDELTAMONTH-X-Y gets an object number of X+Y months after 1970
      * TIMETOOBJECTNUMBER gets an object number of X seconds after 1970
      **/
-    @Override
     public String replace(PageInfo sp, StringTokenizer command) {
         String rtn="";
         int ival;
@@ -507,7 +501,6 @@ public class DayMarkers extends MMObjectBuilder {
      *  @param node The node of which the gui information is wanted
      *  @return a <code>String</code> in which the current date is shown
      */
-    @Override
     public String getLocaleGUIIndicator(Locale locale, MMObjectNode node) {
         return DateFormat.getDateInstance(DateFormat.LONG, locale).format(getDate(node));
 

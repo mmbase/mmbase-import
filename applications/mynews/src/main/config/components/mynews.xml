@@ -48,8 +48,8 @@
     <title xml:lang="en">List with articles</title>
     <title xml:lang="nl">Lijst met artikelen</title>
     <body jsp="list.jspx">
-      <param name="mag"    type="org.mmbase.bridge.Node" />
-      <param name="max"    type="java.lang.Integer" />
+      <param name="mag"   type="org.mmbase.bridge.Node" />
+      <param name="max"   type="java.lang.Integer" />
       <param name="offset" type="java.lang.Integer" />
       <param name="more"   type="java.lang.Boolean" />
     </body>

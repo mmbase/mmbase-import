@@ -114,7 +114,7 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
         DocumentReader reader  = new DocumentReader(edittagSource, EditTag.class);
         Element root = reader.getElementByPath("edittagtypes");
 
-        for (Element element: DocumentReader.getChildElements(root, "editor")) {
+        for (Element element: reader.getChildElements(root, "editor")) {
             String type = element.getAttribute("type");
             try {
                 EditorDefinition newDef = new EditorDefinition(element);
@@ -161,13 +161,12 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
 
     /**
      * Parameters of this tag. The tag's type is defined in its attribute, but you
-     * can give it as much parameters as you like to control your implementations
-     * behavior.
+     * can give it as much parameters as you like to controll your implementations
+     * behaviour.
      *
      * @param key     String with a key
      * @param value   Object with a value
      */
-    @Override
     public void addParameter(String key, Object value) throws JspTagException {
         if (log.isDebugEnabled()) log.debug("adding parameter " + key + "/" + value);
         editor.getParameters().set(key, value);
@@ -178,7 +177,6 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
      * consult the attribute type which implementation to use and instantiate it.
      *
      */
-    @Override
     public int doStartTag() throws JspTagException {
         if (log.isDebugEnabled()) log.debug("doStartTag of EditTag");
 
@@ -202,7 +200,6 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
      * the result back and write it to the page.
      *
      */
-    @Override
     public int doEndTag() throws JspTagException {
 
         fillStandardParameters(editor.getParameters());
@@ -222,7 +219,6 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
 
 
     // if EVAL_BODY == EVAL_BODY_BUFFERED
-    @Override
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED && bodyContent != null) {
             try {

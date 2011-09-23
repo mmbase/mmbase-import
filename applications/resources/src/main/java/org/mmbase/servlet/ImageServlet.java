@@ -86,6 +86,7 @@ public class ImageServlet extends HandleServlet {
      * Content-Disposition header
      * {@inheritDoc}
      */
+
     @Override
     protected boolean setContent(QueryParts query, Node node, String mimeType) throws java.io.IOException {
         Node originalNode;

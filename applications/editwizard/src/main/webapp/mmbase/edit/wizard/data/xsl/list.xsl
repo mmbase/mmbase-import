@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id$
+    @version $Id: list.xsl,v 1.52 2008-10-14 12:51:19 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -185,7 +185,7 @@
                 </td>
               </xsl:if>
               <td>
-                <form id="searchform" method="POST"> <!-- See MMB-1997 -->
+                <form id="searchform" method="POST">
                   <span class="header">
                     <xsl:call-template name="prompt_search_list" />
                     <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>

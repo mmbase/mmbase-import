@@ -36,7 +36,6 @@ public class LogTag extends ContextReferrerTag {
     /**
      * JspVar to Create, and write to
      */
-    @Override
     public void setJspvar(String j) {
         jspvar = j;
     }
@@ -53,7 +52,6 @@ public class LogTag extends ContextReferrerTag {
     }
 
 
-    @Override
     public void setPageContext(PageContext pc) {
         /* Determin logger only once per page */
         super.setPageContext(pc);
@@ -66,7 +64,6 @@ public class LogTag extends ContextReferrerTag {
 
     }
 
-    @Override
     public int doStartTag() throws JspTagException {
         if (jspvar != null) {
             pageContext.setAttribute(jspvar, log);
@@ -81,7 +78,6 @@ public class LogTag extends ContextReferrerTag {
         }
     }
 
-    @Override
     public int doEndTag() throws JspTagException {
         if (doLog && jspvar == null) {
             Logging.log(getLevel(), log, counter++ + ": " + (bodyContent != null ? bodyContent.getString() : "-"));

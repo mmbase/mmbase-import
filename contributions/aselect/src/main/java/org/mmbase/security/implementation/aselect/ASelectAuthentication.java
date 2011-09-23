@@ -27,8 +27,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.xml.sax.InputSource;
 
 import org.mmbase.util.FileWatcher;
-import org.mmbase.util.xml.ErrorHandler;
-import org.mmbase.util.xml.EntityResolver;
+import org.mmbase.util.XMLErrorHandler;
+import org.mmbase.util.XMLEntityResolver;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.functions.*;
 
@@ -74,7 +74,7 @@ public class ASelectAuthentication extends CloudContextAuthentication {
     public static final String NAMESPACE = "http://www.mmbase.org/xmlns/aselect";
 
     static {
-        EntityResolver.registerSystemID(XSD_LOC, XSD, ASelectAuthentication.class);
+        XMLEntityResolver.registerSystemID(XSD_LOC, XSD, ASelectAuthentication.class);
     }
 
 
@@ -196,7 +196,7 @@ public class ASelectAuthentication extends CloudContextAuthentication {
         try {
             log.service("Reading resource: " + configResource);
             if (configResource.endsWith(".xml")) {
-                DocumentBuilder db = DocumentReader.getDocumentBuilder(true, true, new ErrorHandler(), new EntityResolver(true, ASelectAuthentication.class));
+                DocumentBuilder db = DocumentReader.getDocumentBuilder(true, true, new XMLErrorHandler(), new XMLEntityResolver(true, ASelectAuthentication.class));
                 InputSource is = MMBaseCopConfig.securityLoader.getInputSource(configResource);
                 if (is != null) {
                     Document doc = db.parse(is);
@@ -354,9 +354,9 @@ public class ASelectAuthentication extends CloudContextAuthentication {
     protected UserContext getAnonymousUser() {
         if (useCloudContext) {
             Users users = Users.getBuilder();
-            return new ASelectCloudContextUser(this, users.getAnonymousUser(), getKey(), "anonymous");
+            return new ASelectCloudContextUser(users.getAnonymousUser(), getKey(), "anonymous");
         } else {
-            return new ASelectUser(this, "anonymous", Rank.ANONYMOUS, getKey(), "anonymous");
+            return new ASelectUser("anonymous", Rank.ANONYMOUS, getKey(), "anonymous");
         }
     }
 
@@ -401,7 +401,7 @@ public class ASelectAuthentication extends CloudContextAuthentication {
                     r = rank != null ? Rank.BASICUSER : Rank.getRank(rank);
                 }
                 if (userName == null) throw new SecurityException("Should specify at least a username or a rank for class authenication (given " + li + ":" + li.getMap() + ")");
-                return new ASelectCloudContextUser(this, userName, getKey(), "class", r.toString());
+                return new ASelectCloudContextUser(userName, getKey(), "class", r.toString());
             } else {
                 if (userName == null) {
                     if (rank != null) {
@@ -414,7 +414,7 @@ public class ASelectAuthentication extends CloudContextAuthentication {
                 } else {
                     r = Rank.getRank(rank);
                 }
-                return new ASelectUser(this, userName, r, getKey(), "class");
+                return new ASelectUser(userName, r, getKey(), "class");
             }
         }
 
@@ -479,10 +479,10 @@ public class ASelectAuthentication extends CloudContextAuthentication {
                 String userName = getASelectUserId(request);
                 if (useCloudContext) {
                     String r = knownUsers.getProperty(userName);
-                    newUser = new ASelectCloudContextUser(this, userName, getKey(), application, r);
+                    newUser = new ASelectCloudContextUser(userName, getKey(), application, r);
                 } else {
                     Rank rank = getRank(userName);
-                    newUser = new ASelectUser(this, userName, rank, getKey(), application);
+                    newUser = new ASelectUser(userName, rank, getKey(), application);
                 }
             } else {
                 log.debug("User not fully authenticated and has been redirected to A-Select Agent.");
@@ -512,10 +512,10 @@ public class ASelectAuthentication extends CloudContextAuthentication {
                     }
                     if (useCloudContext) {
                         String r = knownUsers.getProperty(userName);
-                        newUser = new ASelectCloudContextUser(this, userName, getKey(), application, r);
+                        newUser = new ASelectCloudContextUser(userName, getKey(), application, r);
                     } else {
                         Rank rank = getRank(userName);
-                        newUser = new ASelectUser(this, userName, rank, getKey(), application);
+                        newUser = new ASelectUser(userName, rank, getKey(), application);
                     }
                     if (requiredRank != null && newUser.getRank().getInt() < requiredRank.getInt()) {
                         if (log.isDebugEnabled()) {

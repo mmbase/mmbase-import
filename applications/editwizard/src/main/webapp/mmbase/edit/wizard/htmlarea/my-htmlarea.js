@@ -1,7 +1,7 @@
 // Code to customize the htmlarea toolbar for the editwizards (less buttons,
 // a createlink with a target dropdown and a validate button).
 // Author: Jaco de Groot.
-// Version : $Id$;
+// Version : $Id: my-htmlarea.js,v 1.11 2008-11-05 13:25:35 michiel Exp $;
 
 
 function getToolTip(id, defaultValue) {

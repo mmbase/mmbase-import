@@ -27,15 +27,11 @@ import org.mmbase.util.logging.Logging;
 public class ContextCache  {
     private static Logger log = Logging.getLoggerInstance(ContextCache.class.getName());
 
-    private org.mmbase.cache.Cache<String, Map<String, Map<String, Boolean>>> globalRightCache
+    private org.mmbase.cache.Cache<String, Map<String, Map<String, Boolean>>> globalRightCache 
             = new org.mmbase.cache.Cache<String, Map<String, Map<String, Boolean>>>(50) {
-        @Override
         public String getName()        { return "ContextRight"; }
-        @Override
-        public String getDescription() {
-            return "Context Security Implementation Rights Cache";
-        }
-    };
+            public String getDescription() { return "Context Security Implementation Rights Cache"; }
+        };
 
     private long    rightTries = 0;
     private long    rightSucces = 0;
@@ -57,7 +53,7 @@ public class ContextCache  {
         if(contextCache.containsKey(user)) {
             log.warn("rights context cache already contained this entry");
         }
-        contextCache.put(user, value);
+        contextCache.put(user, Boolean.valueOf(value));
         log.debug("added to cache the operation: " + operation + " for context: " + context + " with user: " + user + " with value: " + value );
         rightSize++;
     }
@@ -91,17 +87,11 @@ public class ContextCache  {
         return contextCache.get(user);
     }
 
-    private org.mmbase.cache.Cache<String, Set<String>> globalContextCache
+    private org.mmbase.cache.Cache<String, Set<String>> globalContextCache 
         = new org.mmbase.cache.Cache<String, Set<String>>(50) {
-        @Override
-        public String getName() {
-            return "ContextContext";
-        }
-        @Override
-        public String getDescription() {
-            return "Context Security Implementation Context Cache";
-        }
-    };
+            public String getName()        { return "ContextContext"; }
+            public String getDescription() { return "Context Security Implementation Context Cache"; }
+        };
 
     private long    contextTries = 0;
     private long    contextSucces = 0;

@@ -1,5 +1,5 @@
 ===================================================================
-                       MMBase 2.0 - Installation
+                     MMBase 1.9.4 - Installation
 ===================================================================  
  
 MMBase is distributed as a webapplication and it's packaged as a WAR 
@@ -22,7 +22,7 @@ and get MMBase running, you must do the following:
    problems with ImageMagick or don't want to use it.
 
 4. Download the MMBase example-webapp WAR:
-   <http://www.mmbase.org/maven2/org/mmbase/example-webapp/2.0/example-webapp-2.0.war>
+   <http://www.mmbase.org/maven2/org/mmbase/example-webapp/1.9.4/example-webapp-1.9.4.war>
    Copy the WAR into the Servlet Engine's webapps directory and rename it to something 
    shorter and easier to remember, like f.e. 'example.war'.
 

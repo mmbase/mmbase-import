@@ -17,8 +17,7 @@ public class InformixStorageManager extends DatabaseStorageManager {
      * Safely closes the active connection.
      * If a transaction has been started, the connection is not closed.
      */
-    @Override
-    protected void releaseActiveConnection() {
+    @Override protected void releaseActiveConnection() {
         if (!(inTransaction && factory.supportsTransactions()) && activeConnection != null) {
             try {
                 // ensure that future attempts to obtain a connection (i.e.e if it came from a pool)
@@ -37,9 +36,8 @@ public class InformixStorageManager extends DatabaseStorageManager {
 
 
     private void closeInformix() {
-        Connection con;
+        Connection con = ((MultiConnection)activeConnection).unwrap(Connection.class);
         try {
-            con = ((MultiConnection)activeConnection).unwrap(Connection.class);
             Method scrub = Class.forName("com.informix.jdbc.IfxConnection").getMethod("scrubConnection");
             scrub.invoke(con);
             ((JDBC) Module.getModule("jdbc")).getSupport().initConnection(con);

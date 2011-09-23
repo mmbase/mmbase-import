@@ -34,7 +34,6 @@ import static org.mmbase.datatypes.Constants.*;
 import org.mmbase.bridge.mock.*;
 import org.mmbase.streams.transcoders.*;
 import static org.mmbase.streams.transcoders.AnalyzerUtils.*;
-import org.mmbase.util.externalprocess.ProcessException;
 import org.mmbase.util.logging.*;
 
 
@@ -189,11 +188,7 @@ public class RecognizerTest {
                 throw new Error("The file " + c.file  + " does not exist. Please download these first (use the Makefile)");
             }
             File out = File.createTempFile(Test.class.getName(), null);
-            try {
-                transcoder.transcode(f.toURI(), out.toURI(), chain);
-            } catch (ProcessException e) {
-                assumeTrue(false);
-            }
+            transcoder.transcode(f.toURI(), out.toURI(), chain);
             a.ready(source, dest);
             chain.removeLogger(an);
 

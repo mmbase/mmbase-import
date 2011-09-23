@@ -31,7 +31,6 @@ public class QueryOffsetTag extends CloudReferrerTag implements QueryContainerRe
 
     protected Attribute offset     = Attribute.NULL;
 
-    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
     }
@@ -41,7 +40,6 @@ public class QueryOffsetTag extends CloudReferrerTag implements QueryContainerRe
     }
 
 
-    @Override
     public int doStartTag() throws JspTagException {
         Query query = getQuery(container);
         query.setOffset(offset.getInt(this, 0));

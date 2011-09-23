@@ -17,9 +17,8 @@ import org.mmbase.cache.NodeCache;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
-import org.mmbase.module.corebuilders.*;
 import org.mmbase.core.event.EventManager;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.*;
@@ -73,8 +72,8 @@ class ApplicationInstaller {
      * @return true if succesfull, false otherwise
      */
     public boolean installApplication(String applicationName, int requiredVersion,
-                                      String requiredMaintainer, ApplicationResult result, Set<String> installationSet,
-                                      boolean autoDeploy) throws SearchQueryException {
+            String requiredMaintainer, ApplicationResult result, Set<String> installationSet,
+            boolean autoDeploy) throws SearchQueryException {
 
 
         if (installationSet.contains(applicationName)) {
@@ -111,7 +110,7 @@ class ApplicationInstaller {
             if (installedVersion == -1 || version > installedVersion) {
                 if (!name.equals(applicationName)) {
                     result.warn("Application name " + name + " not the same as the base filename " + applicationName + ".\n"
-                                + "This may cause problems when referring to this application. In " + reader.getSystemId());
+                                + "This may cause problems when referring to this application.");
                 }
                 // We should possibly check whether the maintainer is valid here (see sample code below).
                 // There is currently no way to do this, though, unless we use awful queries.
@@ -211,6 +210,7 @@ class ApplicationInstaller {
             for (Map<String, String> bh : dataSources) {
                 NodeReader nodeReader = getNodeReader(bh, appName);
                 if (nodeReader == null) {
+                    continue;
                 } else {
                     installDatasource(syncbul, nodeReader, nodeFieldNodes, result);
                 }
@@ -450,6 +450,7 @@ class ApplicationInstaller {
             for (Map<String, String> bh : ds) {
                 RelationNodeReader nodereader = getRelationNodeReader(appname, bh);
                 if (nodereader == null) {
+                    continue;
                 } else {
                     installRelationSource(syncbul, insRel, nodereader, nodeFieldNodes, result);
                 }
@@ -467,9 +468,9 @@ class ApplicationInstaller {
         String exportsource = nodereader.getExportSource();
         int timestamp = nodereader.getTimeStamp();
 
-        for (MMObjectNode mmObjectNode : (nodereader.getNodes(mmb))) {
+        for (Iterator<MMObjectNode> n = (nodereader.getNodes(mmb)).iterator(); n.hasNext();) {
             try {
-                MMObjectNode newNode = mmObjectNode;
+                MMObjectNode newNode = n.next();
                 int exportnumber = newNode.getIntValue("number");
 
                 if (existsSyncnode(syncbul, exportsource, exportnumber)) {
@@ -630,7 +631,11 @@ class ApplicationInstaller {
                 if (!insRel.hasField(newFieldName)) {
                     Object newValue = entry.getValue();
                     Object testValue = testNode.getValue(newFieldName);
-                    if (!newValue.equals(testValue)) {
+                    if (newValue == null) {
+                        if (testValue != null) {
+                            relationAlreadyExists = false;
+                        }
+                    } else if (!newValue.equals(testValue)) {
                         relationAlreadyExists = false;
                     }
                 }
@@ -763,6 +768,7 @@ class ApplicationInstaller {
                     typeNode.insert("system");
                 } catch (Exception e) {
                     result.error(e.getMessage());
+                    continue;
                 }
                     // we now made the builder active.. look for other builders...
             }

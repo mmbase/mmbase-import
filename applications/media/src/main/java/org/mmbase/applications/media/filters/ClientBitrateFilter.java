@@ -29,11 +29,10 @@ public class ClientBitrateFilter implements Filter {
 
     private final Map<String, BitrateInfo> bitrateFilters = new LinkedHashMap<String, BitrateInfo>();
 
-    @Override
     public void configure(DocumentReader reader, Element element) {
         bitrateFilters.clear();
         try {
-            for(Element bitrate:DocumentReader.getChildElements(DocumentReader.getElementByPath(element, CONFIG_TAG))) {
+            for(Element bitrate : DocumentReader.getChildElements(reader.getElementByPath(element, CONFIG_TAG))) {
                 BitrateInfo brfi = new BitrateInfo(bitrate);
                 log.debug("Adding BitrateFilterInfo "+brfi);
                 bitrateFilters.put(brfi.getName(), brfi);
@@ -43,7 +42,6 @@ public class ClientBitrateFilter implements Filter {
         }
     }
 
-    @Override
     public List<URLComposer> filter(List<URLComposer> urlcomposers) {
         List<URLComposer> filteredUrlcomposers = new ArrayList<URLComposer>();
 

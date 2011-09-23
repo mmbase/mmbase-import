@@ -76,7 +76,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      */
     private final String account;
 
-    private boolean deleted = false;
 
 
     BasicNode(BasicCloud cloud) {
@@ -306,12 +305,12 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (v == null) {
             return null;
         } else if (v instanceof Node) {
-            return ((Node) v).getNumber();
+            return Integer.valueOf(((Node)v).getNumber());
         } else if (v instanceof MMObjectNode) {
-            return ((MMObjectNode) v).getNumber();
+            return Integer.valueOf(((MMObjectNode)v).getNumber());
         } else {
             // giving up
-            return cloud.getNode(v.toString()).getNumber();
+            return Integer.valueOf(cloud.getNode(v.toString()).getNumber());
         }
     }
 
@@ -354,13 +353,13 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
     @Override
     public boolean getBooleanValue(String fieldName) {
-        Boolean result = noderef.getBooleanValue(fieldName);
+        Boolean result = Boolean.valueOf(noderef.getBooleanValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
             log.debug("" + field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_STRING));
             result = Casting.toBoolean(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_BOOLEAN).process(this, field, result));
         }
-        return result;
+        return result.booleanValue();
     }
 
     @Override
@@ -406,7 +405,11 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
         if (nodeManager.hasField(fieldName)) { // only if this is actually a field of this node-manager, otherewise it might be e.g. a request for an 'element' of a cluster node
             Field field = nodeManager.getField(fieldName);
-            result = BridgeCaster.toNode(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_NODE).process(this, field, result), getCloud());
+            try {
+                result = Casting.toNode(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_NODE).process(this, field, result), getCloud());
+            } catch (NotFoundException nfe) {
+                throw new NotFoundException("for " + fieldName + ": " + nfe.getMessage(), nfe);
+            }
         }
 
         return result;
@@ -414,13 +417,13 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
     @Override
     public int getIntValue(String fieldName) {
-        Integer result = getNode().getIntValue(fieldName);
+        Integer result = Integer.valueOf(getNode().getIntValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
             result  = Casting.toInteger(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_INTEGER).process(this, field, result));
             // Casting on this position. Should it not be done in all get<..>Value's?
         }
-        return result;
+        return result.intValue();
 
     }
 
@@ -431,7 +434,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             Field field = nodeManager.getField(fieldName);
             result = Casting.toFloat(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_FLOAT).process(this, field, result));
         }
-        return result;
+        return result.floatValue();
     }
 
     @Override
@@ -441,7 +444,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             Field field = nodeManager.getField(fieldName);
             result = Casting.toLong(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_LONG).process(this, field, result));
         }
-        return result;
+        return result.longValue();
     }
 
     @Override
@@ -451,7 +454,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             Field field = nodeManager.getField(fieldName);
             result = Casting.toDouble(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_DOUBLE).process(this, field, result));
         }
-        return result;
+        return result.doubleValue();
     }
 
     @Override
@@ -510,28 +513,21 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
         checkCommit();
 
-        if (! deleted) {
-            Object prev = getCloud().getProperty(CLOUD_COMMITNODE_KEY);
-            try {
-                getCloud().setProperty(CLOUD_COMMITNODE_KEY, getNumber()); // Validation code wants to know that we are commiting right now.
-                Collection<String> errors = validate();
-                if (errors.size() > 0) {
-                    String mes = "node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString();
-                    if (! Casting.toBoolean(getCloud().getProperty(Cloud.PROP_IGNOREVALIDATION))) {
-                        noderef.cancel();
-                        throw new IllegalArgumentException(mes);
-                    }
+        Object prev = getCloud().getProperty(CLOUD_COMMITNODE_KEY);
+        try {
+            getCloud().setProperty(CLOUD_COMMITNODE_KEY, Integer.valueOf(getNumber())); // Validation code wants to know that we are commiting right now.
+            Collection<String> errors = validate();
+            if (errors.size() > 0) {
+                if (! Casting.toBoolean(getCloud().getProperty(Cloud.PROP_IGNOREVALIDATION))) {
+                    noderef.cancel();
+                    throw new IllegalArgumentException("node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString());
                 }
-            } finally {
-                getCloud().setProperty(CLOUD_COMMITNODE_KEY, prev);
             }
-        } else {
-            log.debug("Skipping validation because the node was deleted already");
+        } finally {
+            getCloud().setProperty(CLOUD_COMMITNODE_KEY, prev);
         }
 
-
         cloud.processCommitProcessors(this);
-
         if (log.isDebugEnabled()) {
             log.debug("committing " + noderef.getChanged() + " " + noderef.getValues());
         }
@@ -583,7 +579,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         // the node does not exist anymore, so invalidate all references.
         temporaryNodeId = -1;
         invalidateNode();
-        deleted = true;
     }
 
     @Override
@@ -782,7 +777,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
                 MMObjectNode relDefNode = ((BasicRelationManager) insrel).relDefNode;
                 if (relDefNode != null) {
                     StepField rnumber = query.getStepField(insrel.getField("rnumber"));
-                    query.setConstraint(query.createConstraint(rnumber, relDefNode.getNumber()));
+                    query.setConstraint(query.createConstraint(rnumber, Integer.valueOf(relDefNode.getNumber())));
                 }
             }
 
@@ -794,7 +789,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             StepField snumber = query.getStepField(insrel.getField("snumber"));
             StepField dnumber = query.getStepField(insrel.getField("dnumber"));
 
-            Integer number = getNumber();
+            Integer number = Integer.valueOf(getNumber());
 
             switch(dir) {
             case RelationStep.DIRECTIONS_DESTINATION: {
@@ -850,44 +845,21 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (role == null) {
 
             if (!typeRel.getAllowedRelations(nodeManagerNumber, allowedOtherNumber, 0,
-                                             RelationStep.DIRECTIONS_DESTINATION).isEmpty()) {
+                    RelationStep.DIRECTIONS_DESTINATION).isEmpty())
 
                 l1 = getRelatedNodes(otherManager, role, "destination");
-                if (log.isDebugEnabled()) {
-                    log.debug("l1 " + l1);
-                }
-            } else {
-                log.debug("l1 not allowed");
-            }
             if (!typeRel.getAllowedRelations(nodeManagerNumber, allowedOtherNumber, 0,
-                                             RelationStep.DIRECTIONS_SOURCE).isEmpty()) {
+                    RelationStep.DIRECTIONS_SOURCE).isEmpty())
                 l2 = getRelatedNodes(otherManager, role, "source");
-                if (log.isDebugEnabled()) {
-                    log.debug("l2 " + l2);
-                }
-            } else {
-                log.debug("l2 not allowed");
-            }
-        } else {
+        }
+        else {
             log.debug("role " + role);
             RelDef relDef = BasicCloudContext.mmb.getRelDef();
             int rnumber = relDef.getNumberByName(role);
-            if (typeRel.contains(nodeManagerNumber, allowedOtherNumber, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS)) {
+            if (typeRel.contains(nodeManager.getNumber(), otherManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
                 l1 = getRelatedNodes(otherManager, role, "destination");
-                if (log.isDebugEnabled()) {
-                    log.debug("l1 " + l1);
-                }
-            } else {
-                log.debug("l1 not allowed");
-            }
-            if (typeRel.contains(allowedOtherNumber, nodeManagerNumber, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS)) {
+            if (typeRel.contains(otherManager.getNumber(), nodeManager.getNumber(), rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS))
                 l2 = getRelatedNodes(otherManager, role, "source");
-                if (log.isDebugEnabled()) {
-                    log.debug("l2 " + l2);
-                }
-            } else {
-                log.debug("l2 not allowed");
-            }
         }
         if (l2.size() == 0) {
             return l1;
@@ -940,7 +912,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     public StringList getAliases() {
         NodeManager oalias = cloud.getNodeManager("oalias");
         NodeQuery q = oalias.createQuery();
-        Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), getNumber());
+        Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), Integer.valueOf(getNumber()));
         q.setConstraint(c);
         NodeList aliases = oalias.getList(q);
         StringList result = new BasicStringList();
@@ -984,7 +956,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (!isNew()) {
             NodeManager oalias = cloud.getNodeManager("oalias");
             NodeQuery q = oalias.createQuery();
-            Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), getNumber());
+            Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), Integer.valueOf(getNumber()));
             if (aliasName != null) {
                 Constraint c2 = q.createConstraint(q.getStepField(oalias.getField("name")), aliasName);
                 c = q.createConstraint (c, CompositeConstraint.LOGICAL_AND, c2);
@@ -1069,11 +1041,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
                 cancel();
                 // TODO: WE NEED A DECENT locking, change-tracking mechanism.
             }
-        }
-        try {
-            super.finalize();
-        } catch (Throwable throwable) {
-
         }
     }
 

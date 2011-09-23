@@ -49,7 +49,6 @@ public class NodeHandler extends AbstractTypeHandler {
     }
 
     protected class IgnoreCaseComparator implements Comparator<String> {
-        @Override
         public int  compare(String s1, String s2) {
             return s1.toUpperCase().compareTo(s2.toUpperCase());
         }
@@ -89,7 +88,7 @@ public class NodeHandler extends AbstractTypeHandler {
            tag.getCloudVar().hasNodeManager(field.getGUIType())) {
             StringBuilder buffer = new StringBuilder();
             // yippee! the gui was the same a an builder!
-            buffer.append("<select class=\"").append(getClasses(node, field)).append("\" name=\"").append( prefix(field.getName()) ).append("\" ");
+            buffer.append("<select class=\"" + getClasses(node, field) + "\" name=\"").append( prefix(field.getName()) ).append("\" ");
             buffer.append("id=\"").append( prefixID(field.getName()) ).append("\" ");
             addExtraAttributes(buffer);
             buffer.append(">\n");
@@ -99,7 +98,7 @@ public class NodeHandler extends AbstractTypeHandler {
 
 
             // args for gui function
-            Parameters args = node.getFunction("guil").createParameters();
+            Parameters args = new Parameters(org.mmbase.module.core.MMObjectBuilder.GUI_PARAMETERS);
             args.set("field",    "");
             args.set("locale",   tag.getLocale());
             args.set("response", tag.getPageContext().getResponse());
@@ -139,7 +138,7 @@ public class NodeHandler extends AbstractTypeHandler {
                     }
                 }
                 buffer.append("value=\"").append(gui.getValue()).append("\">");
-                buffer.append(Encode.encode("ESCAPE_XML", gui.getKey()));
+                buffer.append(Encode.encode("ESCAPE_XML", (String)  gui.getKey()));
                 buffer.append("</option>\n");
             }
             buffer.append("</select>");
@@ -168,7 +167,7 @@ public class NodeHandler extends AbstractTypeHandler {
         if(useLegacy(null, field) &&
             tag.getCloudVar().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
-            if ( tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
+            if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
                 return null;
             }
         }
@@ -180,7 +179,7 @@ public class NodeHandler extends AbstractTypeHandler {
         if(useLegacy(null, field) &&
            tag.getCloudVar().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
-            if ( tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
+            if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
                 return null;
             }
         }

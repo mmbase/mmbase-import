@@ -52,7 +52,7 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
     }
 
 
-    @Override
+    //@Override
     public void notify(ProposedJobs.Event event) {
         log.debug("Received " + event);
         synchronized(proposedJobs) {
@@ -80,12 +80,13 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
             log.debug("" + proposedJobs.size());
         }
     }
-    @Override
+    //@Override
     public void notify(Events.Event event) {
         synchronized(runningJobs) {
             switch (event.getType()) {
             case Events.STARTED: runningJobs.add(event.getEntry()); break;
-            case Events.INTERRUPTED: log.service("Removing " + event  + " from " + runningJobs);
+            case Events.INTERRUPTED:
+                log.service("Removing " + event  + " from " + runningJobs);
             case Events.DONE   :
                 if (! runningJobs.remove(event.getEntry())) {
                     log.warn("" + event + " was not administrated as running in: " + runningJobs);
@@ -260,7 +261,7 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
         long first = getFirst();
         log.debug("First run at " + first);
         future = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
-                @Override
+                //@Override
                 public void run() {
                     CronDaemon.this.run();
                 }
@@ -268,7 +269,7 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
         ThreadPools.identify(future, "Crontab's job kicker");
 
         proposedFuture = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
-                @Override
+                //@Override
                 public void run() {
                     CronDaemon.this.consumeJobs();
                 }
@@ -276,7 +277,7 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
         ThreadPools.identify(proposedFuture, "Crontab's poposed balanced job consumer");
 
         failedFuture = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
-                @Override
+                //@Override
                 public void run() {
                     CronDaemon.this.detectFailedJobs();
                 }

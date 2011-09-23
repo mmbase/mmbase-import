@@ -111,7 +111,7 @@ public class DateHandler extends AbstractTypeHandler {
         boolean required = field.getDataType().isRequired();
 
         Calendar cal = getCalendarValue(node, field);
-        buffer.append("<span class=\"mm_datetime ").append(getClasses(node, field)).append("\">");
+        buffer.append("<span class=\"mm_datetime " + getClasses(node, field) + "\">");
         buffer.append("<input type=\"hidden\" name=\"");
         buffer.append(prefix(field.getName()));
         buffer.append("\" value=\"");
@@ -214,7 +214,7 @@ public class DateHandler extends AbstractTypeHandler {
                         buffer.append(checkOption);
                     } else {
                         String val = element.toString(i - element.getOffset(), locale, pattern.length());
-                        buffer.append("<option value=\"").append(i).append("\">").append(val).append("</option>");
+                        buffer.append("<option value=\"" + i + "\">" + val + "</option>");
                     }
                 }
                 if (check > element.getMax()) {
@@ -456,7 +456,7 @@ public class DateHandler extends AbstractTypeHandler {
                 if (field.getType() == Field.TYPE_DATETIME) {
                     nextTime = new Date(((Date)time).getTime() + 24 * 60 * 60 * 1000);
                 } else {
-                    nextTime = (Long) time + 24 * 60 * 60;
+                    nextTime = ((Long)time).longValue() + 24 * 60 * 60;
                 }
                 con = Queries.createConstraint(query, fieldName, Queries.OPERATOR_BETWEEN, time, nextTime, false);
             } else {

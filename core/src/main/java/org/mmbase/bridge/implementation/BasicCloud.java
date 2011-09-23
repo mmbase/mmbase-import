@@ -226,7 +226,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         if (node == null) {
             return false; // node does not exist
         } else {
-            return !(isrelation && !(node.getBuilder() instanceof InsRel));
+            if (isrelation && !(node.getBuilder() instanceof InsRel)) {
+                return false;
+            }
+            return true;
         }
     }
 
@@ -350,15 +353,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         }
     }
 
-    public RelationManager getRelationManager(String roleName) throws NotFoundException {
-        int r = BasicCloudContext.mmb.getRelDef().getNumberByName(roleName);
-        if (r == -1) {
-            throw new NotFoundException("Role '" + roleName + "' does not exist.");
-        }
-        return getRelationManager(r);
-    }
-
-
     public RelationManagerList getRelationManagers() {
         List<MMObjectNode> v = BasicCloudContext.mmb.getTypeRel().getNodes();
         return new BasicRelationManagerList(v, this);
@@ -426,6 +420,14 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         if (r == -1) return false;
         return BasicCloudContext.mmb.getTypeRel().contains(source.getNumber(), destination.getNumber(), r);
         // return getRelationManager(source.getNumber(), destination.getNumber(), r) != null;
+    }
+
+    public RelationManager getRelationManager(String roleName) throws NotFoundException {
+        int r = BasicCloudContext.mmb.getRelDef().getNumberByName(roleName);
+        if (r == -1) {
+            throw new NotFoundException("Role '" + roleName + "' does not exist.");
+        }
+        return getRelationManager(r);
     }
 
     public RelationManagerList getRelationManagers(String sourceManagerName, String destinationManagerName, String roleName) throws NotFoundException {
@@ -1111,8 +1113,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         out.writeUTF(name);
         out.writeObject(userContext);
         HashMap<Object, Object> props = new HashMap<Object, Object>();
-        for (Map.Entry<Object, Object> objectObjectEntry : properties.entrySet()) {
-            Map.Entry<Object, Object> entry = objectObjectEntry;
+        Iterator<Map.Entry<Object, Object>> i = properties.entrySet().iterator();
+        while(i.hasNext()) {
+            Map.Entry<Object, Object> entry = i.next();
             Object key = entry.getKey();
             Object value = entry.getValue();
             if ((key instanceof Serializable) && (value instanceof Serializable)) {

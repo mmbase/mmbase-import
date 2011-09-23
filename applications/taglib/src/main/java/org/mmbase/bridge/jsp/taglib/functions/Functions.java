@@ -13,9 +13,7 @@ package org.mmbase.bridge.jsp.taglib.functions;
 import org.mmbase.bridge.jsp.taglib.*;
 
 import java.util.*;
-import java.text.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.TreeHelper;
 import org.mmbase.util.*;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
@@ -67,8 +65,9 @@ public class Functions {
     public static void remove(Collection col, Object obj) {
         if (col == null) return;
         if (obj instanceof Collection) { // like removeAll
-            for (Object o : ((Collection) obj)) {
-                remove(col, o);
+            Iterator i = ((Collection) obj).iterator();
+            while (i.hasNext()) {
+                remove(col, i.next());
             }
         } else {
             if (obj instanceof Node) {
@@ -171,10 +170,8 @@ public class Functions {
      */
     public static String treefile(String page, javax.servlet.jsp.PageContext pageContext, Object objectList) throws javax.servlet.jsp.JspTagException, java.io.IOException {
         Cloud cloud = (Cloud) pageContext.getAttribute(CloudTag.KEY, CloudTag.SCOPE);
-        if (cloud == null) {
-            throw new IllegalStateException("No current cloud (key '" + CloudTag.KEY + "', can not execute treefile");
-        }
-        TreeHelper th = new TreeHelper();
+        if (cloud == null) throw new IllegalStateException("No current cloud (key '" + CloudTag.KEY + "', can not execute treefile");
+        org.mmbase.bridge.jsp.taglib.pageflow.TreeHelper th = new org.mmbase.bridge.jsp.taglib.pageflow.TreeHelper();
         th.setCloud(cloud);
         javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
         String t = th.findTreeFile(page, Casting.toString(objectList), pageContext.getSession());
@@ -226,30 +223,5 @@ public class Functions {
       return ApplicationContextReader.getCachedProperties(path);
     }
 
-    /**
-     * Reformats a date and time. If a locale is needed for parsing and/or formatting, the one on the pagecontext is used.
-     *
-     * @param   datetime        which should be reformatted
-     * @param   inputformat     Locale to use to use to parse the input. (en_US?)
-     * @param   inputformat     for example 'EE MMM dd HH:mm:ss Z yyyy' (used in twitter streams)
-     * @param   outputformat    the desired format (supports formats from mm:time)
-     * @return  a date and/or time reformatted
-     * @since MMBase-2.0
-     */
-    public static String reformatDate(String datetime, String inputformat, String inputlocale, String outputformat) throws ParseException {
-        Locale locale = null;
-        try {
-            javax.servlet.jsp.PageContext pageContext = ContextReferrerTag.getThreadPageContext();
-            locale = (Locale) pageContext.getAttribute(LocaleTag.KEY, LocaleTag.SCOPE);
-        } catch (Exception e) {
-        }
-        if (locale == null) {
-            locale = LocalizedString.getDefault();
-        }
-        Locale ilocale = inputlocale == null || inputlocale.length() == 0 ? locale : LocalizedString.getLocale(inputlocale);
-        SimpleDateFormat idf = (SimpleDateFormat) DateFormats.getInstance(inputformat, null, ilocale);
-        DateFormat odf = DateFormats.getInstance(outputformat, null, locale);
-        Date date = idf.parse(datetime);
-        return odf.format(date);
-    }
+
 }

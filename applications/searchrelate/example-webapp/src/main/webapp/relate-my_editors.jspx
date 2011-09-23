@@ -1,0 +1,99 @@
+<?xml version="1.0" ?>
+<mm-sre:html
+    styleClass="search"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+
+<link href="${mm:link('/mmbase/searchrelate/styles/my_editors.css')}" rel="stylesheet"  />
+
+<script type="text/javascript">
+// the edit icon links to the edit page in my_editors
+var editor = '<mm:link page="/mmbase/edit/my_editors/edit_object.jsp" />';
+
+$(document).ready(function() {
+    
+    /* when ready */
+    $("div.mm_related").bind("mmsrRelaterReady", function (e, relater) { 
+       bind(relater);
+    });
+    
+    /* paging */
+    $("div.mm_related").bind("mmsrPaged", function (e, status, relater, obj, a) { 
+       bind(relater);
+    });
+    
+});
+
+function bind(relater) {
+    if (relater.canEditrelations) {
+        $(relater.div).find('tr.relation').hide();
+        
+        /* edit node */
+        $(relater.div).find('img.editnode').click(function(ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
+            var img = ev.target;
+            var href = $(img).parent('a').attr("href");
+            var node = href.substring(href.lastIndexOf("_") + 1);   // f.e. edit.jsp#node_348
+            window.location = editor + "?nr=" + node;
+        });
+        
+        /* edit relation */
+        $(relater.div).find('img.editrelation').click(function(ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
+            var img = ev.target;
+            var nr = $(img).parents('tr').find("td.node.number").text();
+            //console.log('clicked: ' + nr);
+            $('div.mm_relate_current').find("tr.node_" + nr).toggle();
+        });
+    }
+}
+</script>
+
+
+  <h2>mm-sr:relate my_editors style</h2>
+  <mm:import id="jquery_version" from="request" externid="org.mmbase.jquery" />
+  <p>
+    In this example the relations and their values are visible and editable.<br />
+    Make a selection in the 'current' or 'repository' list, click 'move' to move them from one to
+    the other. Press the 'Save' button to commit all changes. 
+  </p>
+
+  <mm:node number="default.mags">
+    <mm:relatednodescontainer type="news" id="current"  role="posrel">
+      <mm:sortorder field="number" direction="down" />
+      <mm:relatednodes id="related" />
+    </mm:relatednodescontainer>
+
+
+    <mm:listnodescontainer type="news" id="repository">
+      <mm:sortorder field="number" direction="down" />
+      <mm:constraint field="number" operator="IN" referid="related" inverse="true" />
+    </mm:listnodescontainer>
+    <form>
+      <mm-srt:relate
+          current="${current}" repository="${repository}"
+          maxpages="10"
+          pagesize="5"
+          unrelate="true"
+          create="true"
+          relations="true"
+          select="true"
+          customizedir="/mmbase/searchrelate/styles/"
+          submit="#save"
+          extracreate="">
+        <jsp:attribute name="currentTitle"><strong>News</strong></jsp:attribute>
+        <jsp:attribute name="repositoryTitle"><strong>Add other news</strong></jsp:attribute>
+      </mm-srt:relate>
+      <input id="save" type="submit" value="Save" />
+    </form>
+  </mm:node>
+
+  <mm:escape escape="links">$URL: https://andre@scm.mmbase.org/mmbase/branches/MMBase-1_9/applications/searchrelate/example-webapp/src/main/webapp/relate-my_editors.jspx $</mm:escape>
+
+</mm-sre:html>

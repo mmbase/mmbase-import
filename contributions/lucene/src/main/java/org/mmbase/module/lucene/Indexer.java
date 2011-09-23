@@ -101,16 +101,10 @@ public class Indexer implements Comparable<Indexer> {
     private long errorCount = 0;
     private final String[] errors = new String[ERRORBUFFER_MAX];
     protected  List<String> errorBuffer = new AbstractList<String>() {
-        @Override
-        public int size() {
-            return errorBufferSize;
-        }
-        @Override
-        public String get(int index) {
-            return errors[(errorBufferSize + errorBufferCursor - index) % errorBufferSize];
-        }
+            public int size() { return errorBufferSize; }
+            public String get(int index) { return errors[(errorBufferSize + errorBufferCursor - index) % errorBufferSize]; }
         };
-    protected final void addError(String string) {
+    protected void addError(String string) {
         errorCount++;
         errorBufferCursor++;
         if (errorBufferSize < ERRORBUFFER_MAX) {
@@ -187,7 +181,7 @@ public class Indexer implements Comparable<Indexer> {
         return incrementalUpdates;
     }
 
-    protected final Directory getDirectory() throws IOException {
+    protected Directory getDirectory() throws IOException {
         return FSDirectory.getDirectory(path);
     }
     protected Directory getDirectoryForFullIndex() throws IOException {
@@ -478,7 +472,7 @@ public class Indexer implements Comparable<Indexer> {
      * Drop all data in the index and create a new index by running all queries in this set
      * and indexing the results.
      */
-    public final void fullIndex() {
+    public void fullIndex() {
         if (! fullIndexing) {
             synchronized(this) {
                 log.service("Doing full index for " + toString());
@@ -624,10 +618,6 @@ public class Indexer implements Comparable<Indexer> {
     void clear(boolean copy) {
         try {
             Directory dir = copy ? getDirectoryForFullIndex(): getDirectory();
-            if(dir == null) {
-                log.warn("No directory found to clear");
-                return;
-            }
             log.debug("dir: " + dir);
             for (String file : dir.list()) {
                 if (file != null) {
@@ -659,16 +649,15 @@ public class Indexer implements Comparable<Indexer> {
         if (! fullIndexing) {
             synchronized(this) {
                 org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        log.info("Reparing index " + Indexer.this + " because " + ci.getMessage());
-                        Indexer.this.clear(true);
-                        if (!copy) {
-                            Indexer.this.clear(false);
-                            Indexer.this.fullIndex();
+                        public void run() {
+                            log.info("Reparing index " + Indexer.this + " because " + ci.getMessage());
+                            Indexer.this.clear(true);
+                            if (! copy) {
+                                Indexer.this.clear(false);
+                                Indexer.this.fullIndex();
+                            }
                         }
-                    }
-                });
+                    });
             }
         }
     }
@@ -679,7 +668,6 @@ public class Indexer implements Comparable<Indexer> {
     }
 
 
-    @Override
     public int compareTo(Indexer o) {
         return getName().compareTo(o.getName());
     }

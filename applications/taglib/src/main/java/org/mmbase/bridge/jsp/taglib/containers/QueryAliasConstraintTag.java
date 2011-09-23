@@ -36,7 +36,6 @@ public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryCo
 
     protected Attribute inverse    = Attribute.NULL;
 
-    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
     }
@@ -63,15 +62,15 @@ public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryCo
 
     protected SortedSet<Integer> getAliases(List<String> names) throws JspTagException {
         SortedSet<Integer> set = new TreeSet<Integer>();
-        for (String n : names) {
-            set.add(getAlias(n));
+        Iterator<String> i = names.iterator();
+        while (i.hasNext()) {
+            set.add(getAlias(i.next()));
         }
         return set;
     }
 
 
 
-    @Override
     public int doStartTag() throws JspTagException {
         Query query = getQuery(container);
         String elementString = element.getString(this);

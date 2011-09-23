@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.media.urlcomposers;
 
 import org.mmbase.applications.media.builders.MediaProviders;
+import org.mmbase.applications.media.builders.MediaSources;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.HashCodeUtil;
 import org.mmbase.util.MimeType;
@@ -69,11 +70,6 @@ public class URLComposer  {
     public MMObjectNode getProvider() {
         return provider;
     }
-    /**
-     * An auxiliary map. Filters can put stuff into it (a {@link org.mmbase.applications.media.filters.Labeler} does only that) for use by the subsequent filters in the chain.
-     * The initial contents of this map is given given by the client. Using the functions on the builders, there are only a few predefined keys (the arguments of the function).
-     * @return
-     */
     public Map<String, Object> getInfo()     {
         return info;
     }
@@ -106,7 +102,7 @@ public class URLComposer  {
     public int getBitrate() {
         return source.getIntValue("bitrate");
     }
-    
+
     /**
      * The mime-type of the produced URL. This is not necessarily the mimetype of the source.
      * (Though it normally would be)
@@ -194,7 +190,7 @@ public class URLComposer  {
     }
 
     /**
-     * Whether the URL which will be produced by this composer is actually already usable.
+     * Wether the URL which will be produced by this composer is actually already useable.
      * This means that the provider must be 'on', and the source must be either an original ({@link
      * State#SOURCE}), or its a generated source and its generation is done.
      */
@@ -208,7 +204,7 @@ public class URLComposer  {
 
     /* The source */
     public boolean isMain() {
-        if (source != null && (source.getIntValue("state") == State.SOURCE.getValue() || 
+        if (source != null && (source.getIntValue("state") == State.SOURCE.getValue() ||
                 source.getIntValue("state") == State.SOURCE_UNSUPPORTED.getValue()) ) {
             return true;
         } else {

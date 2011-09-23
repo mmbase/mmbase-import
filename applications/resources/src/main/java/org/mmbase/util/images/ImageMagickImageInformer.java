@@ -36,7 +36,6 @@ public class ImageMagickImageInformer implements ImageInformer {
 
     private static final Pattern IDENTIFY_PATTERN = Pattern.compile(".+?\\s.*?\\s(\\d+)x(\\d+).*");
 
-    @Override
     public void init(Map<String,String> params) {
         String identifyCommand = "identify";
         if(System.getProperty("os.name") != null && System.getProperty("os.name").startsWith("Windows")) {
@@ -72,7 +71,6 @@ public class ImageMagickImageInformer implements ImageInformer {
     }
 
 
-    @Override
     public Dimension getDimension(InputStream input) throws IOException {
         File file = File.createTempFile(ImageMagickImageInformer.class.getName(), null);
         try {
@@ -85,7 +83,6 @@ public class ImageMagickImageInformer implements ImageInformer {
         }
     }
 
-    @Override
     public Dimension getDimension(byte[] input) throws IOException {
         File file = File.createTempFile(ImageMagickImageInformer.class.getName(), null);
         try {

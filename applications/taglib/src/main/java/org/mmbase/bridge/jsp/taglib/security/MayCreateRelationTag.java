@@ -42,7 +42,6 @@ public class MayCreateRelationTag extends MayWriteTag implements Condition {
         destination = getAttribute(d);
     }
 
-    @Override
     public int doStartTag() throws JspTagException {
         initTag();
         String roleStr = role.getString(this);

@@ -10,15 +10,15 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.Node;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 
 
 /**
- * Straight-forward wrapper around {@link org.mmbase.bridge.NodeManager#hasField}.
+ * Straight-forward wrapper arround {@link org.mmbase.bridge.NodeManager#hasField}.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -31,7 +31,6 @@ public class HasFieldTag extends NodeReferrerTag implements Condition {
     protected Attribute name    = Attribute.NULL;
     private Attribute nodeManagerAtt = Attribute.NULL;
 
-    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
     }
@@ -54,17 +53,7 @@ public class HasFieldTag extends NodeReferrerTag implements Condition {
     public int doStartTag() throws JspException {
         super.doStartTag();
         String nm = nodeManagerAtt.getString(this);
-        NodeManager nodeManager;
-        if ("".equals(nm)) {
-            Node n = getNode();
-            if (n == null) {
-                // Very odd, getNode itself should have thrown an exception, or not have returned null.
-                throw new IllegalStateException("Found node is null");
-            }
-            nodeManager = n.getNodeManager();
-        } else {
-            nodeManager = getCloudVar().getNodeManager(nm);
-        }
+        NodeManager nodeManager = "".equals(nm) ? getNode().getNodeManager() : getCloudVar().getNodeManager(nm);
         if (nodeManager.hasField(name.getString(this)) != getInverse()) {
             return EVAL_BODY;
         } else {

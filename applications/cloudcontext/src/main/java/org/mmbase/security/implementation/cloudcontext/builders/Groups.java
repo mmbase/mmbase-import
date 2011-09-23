@@ -12,7 +12,6 @@ package org.mmbase.security.implementation.cloudcontext.builders;
 import org.mmbase.security.implementation.cloudcontext.*;
 import java.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.cache.Cache;
 import org.mmbase.util.logging.Logger;
@@ -75,15 +74,15 @@ public class Groups extends MMObjectBuilder {
 
             MMObjectBuilder object = mmb.getBuilder("object");
             BasicSearchQuery query = new BasicSearchQuery();
-            Step step = query.addStep(object.getTableName());
+            Step step = query.addStep(object);
             BasicStepField numberStepField = new BasicStepField(step, object. getField("number"));
             BasicFieldValueConstraint numberConstraint = new BasicFieldValueConstraint(numberStepField, new Integer(containedObject));
 
-            BasicRelationStep relationStep = query.addRelationStep(insrel.getTableName(), this.getTableName());
+            BasicRelationStep relationStep = query.addRelationStep(insrel, this);
             relationStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
 
             query.setConstraint(numberConstraint);
-            query.addFields(relationStep.getNext(), CoreQueryContext.INSTANCE);
+            query.addFields(relationStep.getNext());
 
             List<MMObjectNode> resultList;
             try {
@@ -160,20 +159,24 @@ public class Groups extends MMObjectBuilder {
     }
      */
 
+    @Override
     public void setDefaults(MMObjectNode node) {
         setUniqueValue(node, "name", "group");
     }
 
 
+    @Override
     public String toString(MMObjectNode n) {
         return n.getStringValue("name") + " (" + n.getNumber() + ")";
     }
 
 
     // needed to make SecurityOpeations Cache work?
+    @Override
     public boolean equals(MMObjectNode o1, MMObjectNode o2) {
         return o1.getNumber() == o2.getNumber();
     }
+    @Override
     public int hashCode(MMObjectNode o) {
         return 127 * o.getNumber();
     }

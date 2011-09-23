@@ -23,12 +23,10 @@ public class OnShrinkTag extends TreeReferrerTag implements DepthProvider {
     private int depth;
     private Object prevDepthProvider;
 
-    @Override
     public int getDepth() {
         return depth;
     }
 
-    @Override
     public int doStartTag() throws JspTagException {
         initTag();
         DepthProvider dp = findDepthProvider();
@@ -39,7 +37,6 @@ public class OnShrinkTag extends TreeReferrerTag implements DepthProvider {
     }
 
 
-    @Override
     public int doAfterBody() throws JspException {
         TreeProvider tp =  findTreeProvider();
         Stack<ShrinkTag.Entry> stack = tp.getShrinkStack();
@@ -51,7 +48,6 @@ public class OnShrinkTag extends TreeReferrerTag implements DepthProvider {
         return super.doAfterBody();
     }
 
-    @Override
     public int doEndTag() throws JspTagException  {
         pageContext.setAttribute(DepthProvider.KEY, prevDepthProvider, PageContext.REQUEST_SCOPE);
         prevDepthProvider = null;

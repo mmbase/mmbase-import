@@ -18,7 +18,6 @@ import javax.servlet.http.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.core.CoreField;
-import org.mmbase.datatypes.DataType;
 import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -54,7 +53,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     protected MMObjectBuilder builder;
 
     // field types
-    protected final Map<String, Field> fieldTypes = new HashMap<String, Field>();
+    protected Map<String, Field> fieldTypes = new HashMap<String, Field>();
 
     /**
      * Instantiates a new NodeManager (for insert) based on a newly created node which either represents or references a builder.
@@ -254,15 +253,15 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
      */
     protected void setDefaultsWithCloud(MMObjectNode node) {
         log.debug("Setting default values");
-        for (Object o : getFields()) {
-            Field field = (Field) o;
-            if (field.isVirtual()) continue;
-            if (field.getName().equals(MMObjectBuilder.FIELD_NUMBER)) continue;
-            if (field.getName().equals(MMObjectBuilder.FIELD_OWNER)) continue;
+        for (Iterator i = getFields().iterator(); i.hasNext(); ) {
+            Field field = (Field) i.next();
+            if (field.isVirtual())                         continue;
+            if (field.getName().equals(MMObjectBuilder.FIELD_NUMBER))      continue;
+            if (field.getName().equals(MMObjectBuilder.FIELD_OWNER))       continue;
             if (field.getName().equals(MMObjectBuilder.FIELD_OBJECT_TYPE)) continue;
 
             if (node.isNull(field.getName()) || "".equals(node.getStringValue(field.getName()))) { // required field are set to '', which would destroy the default value...
-                DataType dt = field.getDataType();
+                org.mmbase.datatypes.DataType dt = field.getDataType();
                 //log.info("" + field.getName() + " " + dt);
                 Object defaultValue = dt.getDefaultValue(getCloud().getLocale(), getCloud(), field);
                 if (defaultValue != null) {
@@ -300,7 +299,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         cloud.add(result);
         return result;
     }
-    public final Node createNode() {
+    public final Node createNode(
+) {
         return createBasicNode();
     }
 
@@ -316,12 +316,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
 
     public NodeManagerList getDescendants() {
         List<MMObjectBuilder> descs = getMMObjectBuilder().getDescendants();
-        return new BasicNodeManagerList(descs, cloud) {
-            @Override
-            protected NodeManager convert(final Object o) {
-                return BasicNodeManager.this.cloud.getBasicNodeManager((MMObjectBuilder) o);
-            }
-        };
+        return new BasicNodeManagerList(descs, cloud);
     }
 
     public String getName() {
@@ -493,7 +488,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
             typerelNodes = BasicCloudContext.mmb.getTypeRel().getAllowedRelations(thisOType);
         }
 
-        List<Node> nodes = new ArrayList<Node>();
+        List<MMObjectNode> nodes = new ArrayList<MMObjectNode>();
         while (typerelNodes.hasMoreElements()) {
             MMObjectNode n = typerelNodes.nextElement();
             if ((requestedRole == -1) || (requestedRole == n.getIntValue("rnumber"))) {
@@ -510,7 +505,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
                         }
                     }
                 }
-                nodes.add(BasicNodeList.convertMMObjectNodeToBridgeNode(getCloud(), this, n));
+                nodes.add(n);
             }
         }
         return new BasicRelationManagerList(nodes, cloud);
@@ -534,14 +529,14 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         MMObjectBuilder builder = getMMObjectBuilder();
         StringTagger params = new StringTagger("");
         if (parameters != null) {
-            for (Object o1 : parameters.entrySet()) {
-                Map.Entry entry = (Map.Entry) o1;
-                String key = (String) entry.getKey();
+            for (Iterator entries = parameters.entrySet().iterator(); entries.hasNext(); ) {
+                Map.Entry entry = (Map.Entry) entries.next();
+                String key=(String) entry.getKey();
                 Object o = entry.getValue();
                 if (o instanceof Vector) {
-                    params.setValues(key, (Vector) o);
+                    params.setValues(key,(Vector)o);
                 } else {
-                    params.setValue(key, "" + o);
+                    params.setValue(key,""+o);
                 }
             }
         }
@@ -626,9 +621,9 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
         if (function == null) {
             if (builder == null) {
-                throw new NotFoundException("Function with name " + functionName + " does not exist (builder is null)");
+              throw new NotFoundException("Function with name " + functionName + " does not exist (builder is null)");
             } else {
-                throw new NotFoundException("Function with name " + functionName + " does not exist in " + builder.getFunctions());
+              throw new NotFoundException("Function with name " + functionName + " does not exist in " + builder.getFunctions());
             }
         }
         return function;
@@ -651,7 +646,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     protected void finalize() {
         // http://www.fasterj.com/articles/finalizer1.shtml
         // Having a non-empty finalizer can be quite expensive.
-        // BasicNodeManagers can exist very many (every cloud object needs a bunch),
+        // BasicNodeManagers can exist very many (probably as virtual node manager).
         //
         // Probably it is not actually correct to skip the finalize() of super,
         // but I think only if the node is being edited, and commit or cancel is not called.

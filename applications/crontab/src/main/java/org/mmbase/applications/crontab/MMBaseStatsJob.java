@@ -49,7 +49,6 @@ public class MMBaseStatsJob extends AbstractCronJob  {
 
     private Logger statsLogger;
 
-    @Override
     protected void init() {
         // determin what needs to be done in run().
         String what = cronEntry.getConfiguration();
@@ -57,57 +56,50 @@ public class MMBaseStatsJob extends AbstractCronJob  {
         String w = what.toUpperCase();
         if (w.equals("MEMORY")) {
             job = new Runnable() {
-                @Override
-                public void run() {
-                    Runtime runtime = Runtime.getRuntime();
-                    statsLogger.service("" + runtime.freeMemory() + "\t" + runtime.totalMemory());
-                }
-            };
+                    public void run() {
+                        Runtime runtime = Runtime.getRuntime();
+                        statsLogger.service("" + runtime.freeMemory() + "\t" + runtime.totalMemory());
+                    }
+                };
         } else if (w.equals("QUERIES")) {
             job = new Runnable() {
-                @Override
-                public void run() {
-                    statsLogger.service("" + org.mmbase.module.database.MultiConnectionImplementation.queries);
-                }
-            };
+                    public void run() {
+                        statsLogger.service("" + org.mmbase.module.database.MultiConnectionImplementation.queries);
+                    }
+                };
         } else if (w.equals("JOBSPOOL")) {
             job = new Runnable() {
-                @Override
-                public void run() {
-                    statsLogger.service("" + ThreadPools.jobsExecutor.getCompletedTaskCount() + '\t'
-                            + ThreadPools.jobsExecutor.getActiveCount() + '\t'
-                            + ThreadPools.jobsExecutor.getQueue().size() + '\t'
-                            + ThreadPools.jobsExecutor.getPoolSize() + '\t'
-                            + ThreadPools.jobsExecutor.getLargestPoolSize() + '\t'
-                            + ThreadPools.jobsExecutor.getCorePoolSize() + '\t'
-                            + ThreadPools.jobsExecutor.getMaximumPoolSize());
+                    public void run() {
+                        statsLogger.service("" + ThreadPools.jobsExecutor.getCompletedTaskCount() + '\t' +
+                                            ThreadPools.jobsExecutor.getActiveCount() + '\t'+
+                                            ThreadPools.jobsExecutor.getQueue().size() + '\t' +
+                                            ThreadPools.jobsExecutor.getPoolSize() + '\t' +
+                                            ThreadPools.jobsExecutor.getLargestPoolSize() + '\t' +
+                                            ThreadPools.jobsExecutor.getCorePoolSize() + '\t' +
+                                            ThreadPools.jobsExecutor.getMaximumPoolSize());
                     }
                 };
         } else if (w.startsWith("CACHE.")) {
             job = new Runnable() {
-                private Cache cache = getCache();
-                {
-                    if (cache == null) {
-                        log.info("No cache with name " + cronEntry.getConfiguration().substring(6) + " found (yet).");
+                    private Cache cache = getCache();
+                    {
+                        if (cache == null) {
+                            log.info("No cache with name " + cronEntry.getConfiguration().substring(6)  + " found (yet).");
+                        }
                     }
-                }
-                @Override
-                public void run() {
-                    if (cache == null) {
-                        cache = getCache();
+                    public void run() {
+                        if (cache == null) cache = getCache();
+                        if (cache != null) {
+                            long h = cache.getHits();
+                            statsLogger.service("" +  h + "\t" + (h + cache.getMisses()));
+                        }
                     }
-                    if (cache != null) {
-                        long h = cache.getHits();
-                        statsLogger.service("" + h + "\t" + (h + cache.getMisses()));
-                    }
-                }
-            };
+                };
         } else {
             job = new Runnable() {
-                @Override
-                public void run() {
-                }
-            };
+                    public void run() {
+                    }
+                };
         }
 
     }
@@ -120,7 +112,6 @@ public class MMBaseStatsJob extends AbstractCronJob  {
         return CacheManager.getCache(cacheName);
     }
 
-    @Override
     public final void run() {
         job.run();
     }

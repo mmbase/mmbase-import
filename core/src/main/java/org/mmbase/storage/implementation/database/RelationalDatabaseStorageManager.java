@@ -93,8 +93,7 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
      * @param builder the builder to change the node in
      * @throws StorageException if an error occurred during change
      */
-    @Override
-    public void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
+    @Override public void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
         if (localTransaction) {
             beginTransaction();
@@ -121,8 +120,7 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
      * @param builder the builder to delete the node in
      * @throws StorageException if an error occurred during delete
      */
-    @Override
-    public void delete(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
+    @Override public void delete(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
         boolean localTransactionCommitted = false;
         if (localTransaction) {

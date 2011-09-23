@@ -10,9 +10,10 @@
 
   <h2>mm-sr:relate with selection in the repository</h2>
   <p>
-    Make selections in the 'repository', then press the button to submit those to 'current' 
+    Make selections in the 'repository', then press the button to submit those to 'current'
     and vise versa.
   </p>
+
 
   <mm:node number="default.mags">
     <mm:relatednodescontainer type="news" id="current"  role="posrel">
@@ -25,22 +26,20 @@
       <mm:sortorder field="number" direction="down" />
       <mm:constraint field="number" operator="IN" referid="related" inverse="true" />
     </mm:listnodescontainer>
-    <form>
-      <mm-sr:relate
-          current="${current}" repository="${repository}"
-          maxpages="10"
-          pagesize="5"
-          unrelate="true"
-          create="true"
-          submit="#save"
-          extracreate="">
-        <jsp:attribute name="currentTitle"><b>News</b></jsp:attribute>
-        <jsp:attribute name="repositoryTitle"><b>Add other news</b></jsp:attribute>
-      </mm-sr:relate>
-      <input id="save" type="submit" value="Save" />
-    </form>
+    <mm-srt:relate
+        current="${current}" repository="${repository}"
+        maxpages="10"
+        pagesize="5"
+        unrelate="true"
+        create="true"
+        select="true"
+        submit="#save">
+      <jsp:attribute name="currentTitle"><b>News</b></jsp:attribute>
+      <jsp:attribute name="repositoryTitle"><b>Add other news</b></jsp:attribute>
+    </mm-srt:relate>
+    <input type="submit" value="Save" id="save" />
   </mm:node>
 
-  <mm:escape escape="links">$URL: https://scm.mmbase.org/mmbase/branches/MMBase-1_9/applications/searchrelate/example-webapp/src/main/webapp/relate-select.jspx $</mm:escape>
+  <mm:escape escape="links">$URL$</mm:escape>
 
 </mm-sre:html>

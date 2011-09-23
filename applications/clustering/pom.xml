@@ -6,13 +6,13 @@
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-application-parent</artifactId>
-    <version>2.0-SNAPSHOT</version>
-    <relativePath>../../maven-base/applications/pom.xml</relativePath>
+    <version>1.9-SNAPSHOT</version>
   </parent>
 
   <artifactId>mmbase-clustering</artifactId>
-  <name>MMBase2 Clustering</name>
+  <name>MMBase Clustering</name>
   <packaging>war</packaging>
+  <version>${mmbase.version}</version>
 
   <description>
     The clustering libraries allow you to run MMBase in a clustered environment: where multiple
@@ -22,31 +22,14 @@
     for communication between machines, including one which depends on the 'jgroups' software.
   </description>
 
-  <properties>
-    <jar.mainClass>org.mmbase.clustering.Converter</jar.mainClass>
-  </properties>
-
-
 
   <dependencies>
-    <!-- TODO: Remove dependency on core -->
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-core</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>jgroups</groupId>
       <artifactId>jgroups-all</artifactId>
       <version>2.2.7</version>
       <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
-
   </dependencies>
   <repositories>
     <repository>

@@ -38,14 +38,10 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
     protected final Statistics receive = new Statistics();
     protected final Statistics send    = new Statistics();
 
-    /**
-     * Queue with messages to send to other MMBase instances
-     */
-    protected final BlockingQueue<byte[]> nodesToSend = new LinkedBlockingQueue<byte[]>(64);
-    /**
-     * Queue with received messages from other MMBase instances
-     */
-    protected final BlockingQueue<byte[]> nodesToSpawn = new LinkedBlockingQueue<byte[]>(64);
+    /** Queue with messages to send to other MMBase instances */
+    protected BlockingQueue<byte[]> nodesToSend = new LinkedBlockingQueue<byte[]>(64);
+    /** Queue with received messages from other MMBase instances */
+    protected BlockingQueue<byte[]> nodesToSpawn = new LinkedBlockingQueue<byte[]>(64);
 
     /** Thread which processes the messages */
     protected Thread kicker = null;
@@ -89,12 +85,11 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
                     log.debug("Sending an event to the cluster");
                 }
                 nodesToSend.offer(message);
-                log.debug("send queue: " + nodesToSend.size());
             } else {
-                log.debug("Message was null");
+                log.debug("MEssage was null");
             }
         } else {
-            log.trace("Ignoring remote event from  " + event.getMachine() + " it will not be propagated");
+            log.trace("Ignoring remote event from " + event.getMachine() + " it will not be propagated");
         }
     }
 
@@ -118,11 +113,6 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         }
     }
 
-    /**
-     * Format of a message:
-     *
-     [<17 style message>],0<serialization of event object>
-    */
     protected byte[] createMessage(Event event) {
         if (log.isDebugEnabled()) {
             log.debug("Serializing " + event);
@@ -131,7 +121,6 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             long startTime = System.currentTimeMillis();
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             if (compatible17) {
-                /// this is odd, it offers events, but this method is not about that.
                 if (event instanceof  NodeEvent || event instanceof RelationEvent) {
                     NodeEvent ne;
                     if (event instanceof RelationEvent) {
@@ -173,7 +162,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
 
     /** Followup number of message */
     protected int follownr = 1;
-    protected int lastReceivedMessage;
+    protected int lastRecievedMessage;
 
     /**
      * Creates MMBase 1.7 parseable message. This is simple String, which is prefixed before the actual 1.8 message.
@@ -194,8 +183,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             int c = 1;
             while (c > 0) {
                 // ignore backwards compatibility message
-                c = stream.read(); // first time read a , then later a 0
-                log.trace("Found " + c);
+                c = stream.read();
             }
             ObjectInputStream in = new ObjectInputStream(stream);
             Event event = (Event) in.readObject();
@@ -205,16 +193,9 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             return event;
         } catch (StreamCorruptedException scc) {
             // not sure that this can happen, now, because of the while(c>0) trick.
-            log.debug(scc.getClass() + " " + scc.getMessage() + ". Supposing old style message of " + message.length + " byte ", scc);
+            log.debug(scc.getMessage() + ". Supposing old style message.");
             // Possibly, it is a message from an 1.7 system
-            String mes;
-            try {
-                mes = new String(message, "ISO-8859-1");
-            } catch (java.io.UnsupportedEncodingException uee) {
-                log.warn(uee);
-                mes = new String(message);
-            }
-
+            String mes = new String(message);
             NodeEvent event = parseMessageBackwardCompatible(mes);
             if (log.isDebugEnabled()) {
                 log.debug("Old style message " + event);
@@ -222,16 +203,10 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             return event;
         } catch (EOFException eofe) {
             // suppose that this is a 1.7 message
-            String mes;
-            try {
-                mes = new String(message, "ISO-8859-1");
-            } catch (java.io.UnsupportedEncodingException uee) {
-                log.warn(uee);
-                mes = new String(message);
-            }
+            String mes = new String(message);
             NodeEvent event = parseMessageBackwardCompatible(mes);
             if (log.isDebugEnabled()) {
-                log.debug("Old style message " + event + " of " + message.length + " byte");
+                log.debug("Old style message " + event);
             }
             return event;
         } catch (IOException ioe) {
@@ -245,19 +220,19 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
 
     protected NodeEvent parseMessageBackwardCompatible(String message) {
         if (log.isDebugEnabled()) {
-            log.debug("RECEIVE=>" + new org.mmbase.util.transformers.UnicodeEscaper().transform(message));
+            log.debug("RECEIVE=>" + message);
         }
-        StringTokenizer tok = new StringTokenizer(message, ",");
+        StringTokenizer tok = new StringTokenizer(message,",");
         if (tok.hasMoreTokens()) {
             String machine = tok.nextToken();
             if (tok.hasMoreTokens()) {
                 String fnr = tok.nextToken();
                 int newFollowNr = Integer.valueOf(fnr);
-                int expectedFollowNr = lastReceivedMessage + 1;
+                int expectedFollowNr = lastRecievedMessage + 1;
                 if (newFollowNr != expectedFollowNr) {
-                    log.debug("Expected message " + expectedFollowNr + ", but message " + newFollowNr + " was received ");
+                    log.info("Expected message " + expectedFollowNr + ", but message " + newFollowNr + " was recieved ");
                 }
-                lastReceivedMessage = newFollowNr;
+                lastRecievedMessage = newFollowNr;
                 if (tok.hasMoreTokens()) {
                     String id = tok.nextToken();
                     if (tok.hasMoreTokens()) {
@@ -299,8 +274,8 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
                 byte[] message = nodesToSpawn.take();
                 if (message == null) continue;
                 long startTime = System.currentTimeMillis();
-                if (log.isTraceEnabled()) {
-                    log.trace("RECEIVED =>" + message.length + " bytes, queue: " + nodesToSpawn.size());
+                if (log.isDebugEnabled()) {
+                    log.trace("RECEIVED =>" + message.length + " bytes");
                 }
                 receive.count++;
                 receive.bytes += message.length;

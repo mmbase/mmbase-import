@@ -13,7 +13,6 @@ import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
-import org.mmbase.bridge.util.TreeHelper;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -89,7 +88,6 @@ public class TreeFileTag extends UrlTag {
     }
 
 
-    @Override
     public int doAfterBody() throws JspException {
         return helper.doAfterBody();
     }

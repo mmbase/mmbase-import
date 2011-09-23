@@ -26,7 +26,6 @@ public class DummyImageConverter implements ImageConverter {
     /**
      * @see ImageConverter#init(Map)
      */
-    @Override
     public void init(Map<String,String> params) {
     }
 
@@ -35,12 +34,10 @@ public class DummyImageConverter implements ImageConverter {
      * This dummy method ignores any passed commands, and simply returns the inputed list.
      * @see ImageConverter#convertImage(byte[], String, List)
      */
-    @Override
     public byte[] convertImage(byte[] input, String sourceFormat, List<String> commands) {
         return input;
     }
 
-    @Override
     public long convertImage(InputStream input, String sourceFormat, OutputStream out, List<String> commands) throws IOException {
         return IOUtil.copy(input, out);
     }

@@ -106,7 +106,7 @@ public class StringHandler extends AbstractTypeHandler {
                     }
                     buffer.append("</textarea>");
                 } else { // not 'field' perhaps it's 'string'.
-                    buffer.append("<input class=\"small ").append(getClasses(node, field)).append("\" type=\"").append(dataType.isPassword() ? "password" : "text").append("\"  size=\"").append(getCols(field)).append("\" ");
+                    buffer.append("<input class=\"small " + getClasses(node, field) + "\" type=\"").append(dataType.isPassword() ? "password" : "text").append("\"  size=\"" + getCols(field) + "\" ");
                     buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
                     buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");
                     String opt = tag.getOptions();
@@ -130,22 +130,19 @@ public class StringHandler extends AbstractTypeHandler {
     }
 
 
-    @Override
-    protected void setValue(Node node, String fieldName, Object value) {
+    @Override protected void setValue(Node node, String fieldName, Object value) {
         String string = value == null ? null :  org.mmbase.util.Casting.toString(value);
         node.setStringValue(fieldName, string);
     }
 
-    @Override
-    protected Object getValue(Node node, String fieldName) {
+    @Override protected Object getValue(Node node, String fieldName) {
         return node.getStringValue(fieldName);
     }
 
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    @Override
-    public boolean useHtmlInput(Node node, Field field) throws JspTagException {
+    @Override public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         @SuppressWarnings("deprecation")
         String guiType = field.getGUIType();
 

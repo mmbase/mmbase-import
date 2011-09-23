@@ -351,9 +351,9 @@ public class IncludeTag extends UrlTag {
                 log.error("Cannot retrieve ServletContext from PageContext");
             }
 
-            URL u = ResourceLoader.getWebRoot().getResource(relativeUrl);
-            if (! u.openConnection().getDoInput()) {
-                handleResponse(404, "No such resource " + xml.transform(relativeUrl) + " in " + ResourceLoader.getWebRoot() + " (found resource: " + u + ")", relativeUrl);
+            URL url = ResourceLoader.getWebRoot().getResource(relativeUrl);
+            if (! url.openConnection().getDoInput()) {
+                handleResponse(404, "No such resource " + xml.transform(relativeUrl) + " in " + ResourceLoader.getWebRoot() + " (found resource: " + url + ")", relativeUrl);
             } else {
                 HttpServletRequestWrapper requestWrapper   = new HttpServletRequestWrapper(req);
 
@@ -397,8 +397,9 @@ public class IncludeTag extends UrlTag {
         if (log.isDebugEnabled()) {
             log.debug("req Parameters");
             Map params = req.getParameterMap();
-            for (Object o : params.entrySet()) {
-                Map.Entry e = (Map.Entry) o;
+            Iterator i = params.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry e = (Map.Entry) i.next();
                 log.debug("key '" + e.getKey() + "' value '" + e.getValue() + "'");
             }
         }
@@ -437,19 +438,19 @@ public class IncludeTag extends UrlTag {
             }
 
 
-            String res = relativeUrl;
+            String resource = relativeUrl;
             if (log.isDebugEnabled()) {
-                log.debug("Citing " + res);
+                log.debug("Citing " + resource);
             }
 
 
-            Reader reader = ResourceLoader.getWebRoot().getReader(res);
+            Reader reader = ResourceLoader.getWebRoot().getReader(resource);
             if (reader == null) {
-                handleResponse(404, "No such resource to cite " + res, res);
+                handleResponse(404, "No such resource to cite " + resource, resource);
             } else {
                 StringWriter writer = new StringWriter();
                 IOUtil.copy(reader, writer);
-                handleResponse(200, writer.toString(), res);
+                handleResponse(200, writer.toString(), resource);
             }
 
         } catch (IOException e) {
@@ -511,7 +512,7 @@ public class IncludeTag extends UrlTag {
                 if (level == null) {
                     includeLevel = 0;
                 } else {
-                    includeLevel = level;
+                    includeLevel = level.intValue();
                 }
 
                 // Fetch the current servlet from request attribute.
@@ -541,7 +542,7 @@ public class IncludeTag extends UrlTag {
 
                 // Increase level and put it together with the new URI in the Attributes of the request
                 includeLevel++;
-                request.setAttribute(INCLUDE_LEVEL_KEY, includeLevel);
+                request.setAttribute(INCLUDE_LEVEL_KEY, Integer.valueOf(includeLevel));
 
                 if (log.isDebugEnabled()) {
                     log.debug("Next Include: Level=" + includeLevel + " URI=" + includedServlet);
@@ -564,7 +565,7 @@ public class IncludeTag extends UrlTag {
                 if (includeLevel == 0) {
                     request.removeAttribute(INCLUDE_LEVEL_KEY);
                 } else {
-                    request.setAttribute(INCLUDE_LEVEL_KEY, includeLevel);
+                    request.setAttribute(INCLUDE_LEVEL_KEY, Integer.valueOf(includeLevel));
                 }
 
             } else { // really absolute
@@ -622,15 +623,12 @@ public class IncludeTag extends UrlTag {
         }
 
         // don't wrap status to including request.
-        @Override
         public void setStatus(int status) {
             includeStatus = status;
         }
-        @Override
         public void sendError(int sc, String mes) {
             includeStatus = sc;
         }
-        @Override
         public void sendError(int sc) {
             includeStatus = sc;
         }

@@ -26,8 +26,6 @@ import org.mmbase.util.logging.*;
  * The module that provides you access to the loaded JDBC interfaces.
  * We use this as the base to get multiplexes/pooled JDBC connects.
  *
- * It is also possible to define a DataSource, then this module can remain unused.
- *
  * @author vpro
  * @version $Id$
  */
@@ -61,7 +59,6 @@ public class JDBC extends ProcessorModule {
         super(name);
     }
 
-    @Override
     public void onload() {
         if (Module.getModule(MMBase.class, false).getDataSource() == null) {
             getProps();
@@ -77,12 +74,10 @@ public class JDBC extends ProcessorModule {
     /*
      * Initialize the properties and get the driver used
      */
-    @Override
     public void init() {
         if (Module.getModule(MMBase.class, false).getDataSource() == null) {
 
             future = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
-                @Override
                     public void run() {
                         JDBC.this.checkTime();
                     }
@@ -100,7 +95,6 @@ public class JDBC extends ProcessorModule {
      * {@inheritDoc}
      * Reload the properties and driver
      */
-    @Override
     public void reload() {
         getProps();
 
@@ -115,10 +109,8 @@ public class JDBC extends ProcessorModule {
         getDriver();
     }
 
-    @Override
     public void unload() {
     }
-    @Override
     protected void shutdown() {
         if (future != null) future.cancel(true);
         if (poolHandler != null) poolHandler.shutdown();
@@ -345,15 +337,13 @@ public class JDBC extends ProcessorModule {
      * User interface stuff
      * @javadoc
      */
-    @Override
-    @SuppressWarnings("UseOfObsoleteCollectionType")
     public Vector getList(PageInfo sp, StringTagger tagger, String value) {
         String line = Strip.doubleQuote(value, Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd = tok.nextToken();
-            if (cmd.equals("POOLS")) return new Vector(listPools(tagger));
-            if (cmd.equals("CONNECTIONS")) return new Vector(listConnections(tagger));
+            if (cmd.equals("POOLS")) return listPools(tagger);
+            if (cmd.equals("CONNECTIONS")) return listConnections(tagger);
         }
         return null;
     }
@@ -376,14 +366,14 @@ public class JDBC extends ProcessorModule {
     /**
      * @javadoc
      */
-    public List<String> listPools(StringTagger tagger) {
-        List<String> results = new ArrayList<String>();
+    public Vector listPools(StringTagger tagger) {
+        Vector results = new Vector();
         if (poolHandler != null) {
-            for (String n : poolHandler.keySet()) {
-                MultiPool pool = poolHandler.get(n);
-                results.add(stripSensistive(n));
-                results.add("" + pool.getSize());
-                results.add("" + pool.getTotalConnectionsCreated());
+            for (String name : poolHandler.keySet()) {
+                MultiPool pool = poolHandler.get(name);
+                results.addElement(stripSensistive(name));
+                results.addElement("" + pool.getSize());
+                results.addElement("" + pool.getTotalConnectionsCreated());
             }
         }
         tagger.setValue("ITEMS", "3");
@@ -393,24 +383,24 @@ public class JDBC extends ProcessorModule {
     /**
      * @javadoc
      */
-    public List<String> listConnections(StringTagger tagger) {
-        List<String> results = new ArrayList();
-        for (String n : poolHandler.keySet()) {
-            MultiPool pool = poolHandler.get(n);
+    public Vector listConnections(StringTagger tagger) {
+        Vector results = new Vector();
+        for (String name : poolHandler.keySet()) {
+            MultiPool pool = poolHandler.get(name);
             for (Iterator f = pool.getBusyPool(); f.hasNext();) {
                 MultiConnection realcon=(MultiConnection)f.next();
-                results.add(stripSensistive(n.substring(n.lastIndexOf('/')+1)));
-                results.add(realcon.getStateString());
-                results.add("" + realcon.getLastSQL());
-                results.add("" + realcon.getUsage());
+                results.addElement(stripSensistive(name.substring(name.lastIndexOf('/')+1)));
+                results.addElement(realcon.getStateString());
+                results.addElement("" + realcon.getLastSQL());
+                results.addElement("" + realcon.getUsage());
                 //results.addElement(""+pool.getStatementsCreated(realcon));
             }
             for (Iterator f = pool.getPool();f.hasNext();) {
                 MultiConnection realcon=(MultiConnection)f.next();
-                results.add(stripSensistive(n.substring(n.lastIndexOf('/')+1)));
-                results.add(realcon.getStateString());
-                results.add("" + realcon.getLastSQL());
-                results.add("" + realcon.getUsage());
+                results.addElement(stripSensistive(name.substring(name.lastIndexOf('/')+1)));
+                results.addElement(realcon.getStateString());
+                results.addElement("" + realcon.getLastSQL());
+                results.addElement("" + realcon.getUsage());
                 //results.addElement(""+pool.getStatementsCreated(realcon));
             }
         }

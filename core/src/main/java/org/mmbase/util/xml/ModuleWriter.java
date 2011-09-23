@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import org.mmbase.module.Module;
+import org.mmbase.util.xml.EntityResolver;
 
 import org.w3c.dom.*;
 
@@ -43,7 +44,6 @@ public class ModuleWriter extends DocumentWriter  {
      * Generates the document. Can only be called once.
      * @throws DOMException when an error occurred during generation
      */
-    @Override
     protected void generate() throws DOMException {
         Element root = document.getDocumentElement();
         addComment("module.configuration",module.getName(),module.getModuleInfo(),root);

@@ -31,7 +31,6 @@ public class QueryMaxNumberTag extends CloudReferrerTag implements QueryContaine
 
     protected Attribute max     = Attribute.NULL;
 
-    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
     }
@@ -41,7 +40,6 @@ public class QueryMaxNumberTag extends CloudReferrerTag implements QueryContaine
     }
 
 
-    @Override
     public int doStartTag() throws JspTagException {
         Query query = getQuery(container);
         query.setMaxNumber(max.getInt(this, -1));

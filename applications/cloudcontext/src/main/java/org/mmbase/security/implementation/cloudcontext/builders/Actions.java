@@ -13,12 +13,9 @@ import org.mmbase.security.implementation.cloudcontext.User;
 import org.mmbase.framework.*;
 import java.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.security.*;
-import org.mmbase.security.SecurityException;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.cache.Cache;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.functions.*;
@@ -41,6 +38,7 @@ public class Actions extends MMObjectBuilder {
     @Override
     public boolean init() {
         super.init();
+        createIfNotExists();
         // make sure with all component actions nodes are associated
         for (Component component : ComponentRepository.getInstance().getComponents()) {
             for (Action action : component.getActions().values()) {
@@ -52,7 +50,7 @@ public class Actions extends MMObjectBuilder {
                                                                      new BasicFieldValueConstraint(query.getField(getField(FIELD_ACTION)),    action.getName())
                                                                      ));
                     List<MMObjectNode> resultList = getNodes(query);
-                    if (resultList.size() == 0) {
+                    if (resultList.isEmpty()) {
                         log.service("No node found for action " + action + " creating one now");
                         // create the node
                         MMObjectNode node = getNewNode("security");
@@ -73,13 +71,7 @@ public class Actions extends MMObjectBuilder {
     }
 
     public boolean check(User user, Action ac, Parameters parameters) {
-        if (ac == null) throw new IllegalArgumentException("Action cannot be null");
-        ActionChecker checker = ac.getDefault();
-        if (checker != null) {
-            return checker.check(user, ac, parameters);
-        } else {
-            throw new RuntimeException("Action " + ac + " does not have a default ActionChecker");
-        }
+        return ac.getDefault().check(user, ac, parameters);
     }
 
 

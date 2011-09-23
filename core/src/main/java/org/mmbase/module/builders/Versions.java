@@ -33,7 +33,6 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
     /**
      * @javadoc
      */
-    @Override
     public boolean init() {
         if (!initialized) {
             super.init();
@@ -85,7 +84,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
         String key = type + "_" + name;
         if (versionsCache.containsKey(key)) {
             Integer number = versionsCache.get(key);
-            retval = getNode(number);
+            retval = getNode(number.intValue());
         }
         return retval;
     }
@@ -156,7 +155,6 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
      * (non-Javadoc)
      * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
      */
-    @Override
     public void notify(NodeEvent event) {
         if (log.isDebugEnabled()) {
             log.debug("Changed " + event.getMachine() + " " + event.getNodeNumber() + " "

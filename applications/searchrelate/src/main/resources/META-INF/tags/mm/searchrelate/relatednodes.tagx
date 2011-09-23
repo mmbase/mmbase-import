@@ -169,7 +169,6 @@
       <mm:import from="session" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
     </c:otherwise>
   </c:choose>
-  <mm:log level="warn">seq: ${seq}</mm:log>
   <mm:write session="${requestid}_sequence" value="${seq + 1}" />
   <mm:write request="${requestid}_sequence" value="${seq + 1}" />
 
@@ -290,6 +289,7 @@
     <mm:import id="_number">${_node._number}</mm:import>
 
     <mm:relatednodescontainer context="" id="clonedquery" clone="query">
+      <jsp:text>&lt;!-- QUERY: </jsp:text><mm:write value="${clonedquery.sql}" /> <jsp:text> --&gt;</jsp:text>
       <mm:relatednodes usetransaction="true" commitonclose="false">
         <mm:last><mm:index id="cursize" write="false"/></mm:last>
       </mm:relatednodes>

@@ -16,7 +16,6 @@ import java.io.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
-import org.mmbase.util.MMBaseContext;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -63,7 +62,6 @@ public class ImageConversionRequestProcessor implements Runnable {
     }
 
     // javadoc inherited (from Runnable)
-    @Override
     public void run() {
         MMBase mmbase = MMBase.getMMBase();
         log.debug("Started request processor");
@@ -143,7 +141,6 @@ public class ImageConversionRequestProcessor implements Runnable {
         }
     }
 
-    @Override
     public String toString() {
         return super.toString() + " converter: " + convert;
     }

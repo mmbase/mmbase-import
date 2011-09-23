@@ -13,22 +13,34 @@ See http://www.MMBase.org/license
 
   <parent>
     <groupId>org.mmbase</groupId>
-    <artifactId>mmbase</artifactId>
-    <version>2.0-SNAPSHOT</version>
+    <artifactId>mmbase-cms</artifactId>
+    <version>1.9-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.mmbase</groupId>
   <artifactId>mmbase-parent</artifactId>
   <packaging>pom</packaging>
-  <name>MMBase Base</name>
+  <name>MMBase</name>
 
   <properties>
 
-    <servlet.version>2.5</servlet.version>
-    <jsp.version>2.1</jsp.version>
-    <jsp.groupId>javax.servlet.jsp</jsp.groupId>
-    <jstl.version>1.2</jstl.version>
+    <servlet.version>2.4</servlet.version>
+    <jsp.version>2.0</jsp.version>
+    <jsp.groupId>javax.servlet</jsp.groupId>
+    <jstl.version>1.1.2</jstl.version>
+    <taglib-standard.version>1.1.2</taglib-standard.version>
+
+
+    <!-- MMBase 2.0?
+    -->
+    <!--
+        <servlet.version>2.5</servlet.version>
+        <jsp.version>2.1</jsp.version>
+        <jsp.groupId>javax.servlet.jsp</jsp.groupId>
+        <jstl.version>1.2</jstl.version>
+    -->
+
 
     <log4j.version>1.2.14</log4j.version>
 
@@ -38,9 +50,6 @@ See http://www.MMBase.org/license
 
     <buildnumber.doCheck>false</buildnumber.doCheck>
 
-    <java.version>1.6</java.version>
-    <java.source.version>${java.version}</java.source.version>
-    <java.target.version>${java.version}</java.target.version>
 
     <netbeans.hint.deploy.server>gfv3</netbeans.hint.deploy.server>
     <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
@@ -55,8 +64,6 @@ See http://www.MMBase.org/license
     <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.indent-shift-width>4</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.indent-shift-width>
     <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.text-limit-width>120</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.text-limit-width>
     <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.indentCasesFromSwitch>false</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.indentCasesFromSwitch>
-
-    <jar.mainClass></jar.mainClass>
 
   </properties>
 
@@ -95,12 +102,6 @@ See http://www.MMBase.org/license
           <include>**</include>
         </includes>
       </resource>
-      <resource>
-        <directory>${basedir}/target/generated1/src/main/resources</directory>
-        <includes>
-          <include>**</include>
-        </includes>
-      </resource>
     </resources>
     <testResources>
       <testResource>
@@ -133,36 +134,11 @@ See http://www.MMBase.org/license
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.mmbase.maven</groupId>
-          <artifactId>maven-mmbase-plugin</artifactId>
-          <version>2.0-SNAPSHOT</version>
-          <executions>
-            <execution>
-              <id>create-index-files</id>
-              <goals>
-                <goal>create-index-files</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>copy-web-resources</id>
-              <goals>
-                <goal>install-resources</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>2.3.1</version>
-        </plugin>
-        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.3.2</version>
           <configuration>
-            <source>${java.source.version}</source>
-            <target>${java.target.version}</target>
+            <source>1.5</source>
+            <target>1.5</target>
             <maxmem>256M</maxmem>
             <fork>${compiler.fork}</fork>
             <showDeprecation>false</showDeprecation>
@@ -179,18 +155,17 @@ See http://www.MMBase.org/license
         <plugin>
           <artifactId>maven-war-plugin</artifactId>
           <!-- this is a version of the war plugin compiled by Michiel. See http://jira.codehaus.org/browse/MWAR-205 -->
+          <!-- another reason: http://jira.codehaus.org/browse/MWAR-240 -->
           <version>2.1-beta-2-20090723.092931-2</version>
           <configuration>
-            <failOnMissingWebXml>false</failOnMissingWebXml>
             <archiveClasses>true</archiveClasses>
             <attachClasses>true</attachClasses>
             <archive>
               <manifest>
                 <addClasspath>true</addClasspath>
-                <mainClass>${jar.mainClass}</mainClass>
               </manifest>
               <manifestEntries>
-                <url>${project.url}</url>
+                <url>${pom.url}</url>
               </manifestEntries>
               <manifestSections>
                 <manifestSection>
@@ -202,7 +177,7 @@ See http://www.MMBase.org/license
                     <SCM-Revision>${sources.version}</SCM-Revision>
                     <Distribution>${project.version}</Distribution>
                     <Build-Date>${timestamp}</Build-Date>
-                    <Description>${project.description}</Description>
+                    <Description>${pom.description}</Description>
                   </manifestEntries>
                 </manifestSection>
               </manifestSections>
@@ -222,7 +197,6 @@ See http://www.MMBase.org/license
           </dependencies>
         </plugin>
 
-        <!--
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-pmd-plugin</artifactId>
@@ -259,7 +233,8 @@ See http://www.MMBase.org/license
           </executions>
         </plugin>
 
-        -->
+
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
@@ -270,6 +245,26 @@ See http://www.MMBase.org/license
             <goals>deploy</goals>
             <arguments>-Prelease,deploy</arguments>
             <autoVersionSubmodules>true</autoVersionSubmodules>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.6</version>
+          <configuration>
+            <attach>true</attach>
+            <quiet>false</quiet>
+            <bottom>MMBase.org</bottom>
+            <quiet>true</quiet>
+            <show>package</show>
+            <links>
+              <link>http://download.oracle.com/javase/1.5.0/docs/api/</link>
+              <link>http://download.oracle.com/javaee/5/api/</link>
+              <link>http://www.mmbase.org/api/</link>
+            </links>
+            <source>1.5</source>
+
           </configuration>
         </plugin>
 
@@ -287,6 +282,19 @@ See http://www.MMBase.org/license
               <systemProperty>
                 <name>com.sun.management.jmxremote</name>
                 <value>true</value>
+              </systemProperty>
+              <systemProperty>
+                <!-- Avoids the incredibly silly 'Laucher' in the windowlist of OSX -->
+                <name>java.awt.headless</name>
+                <value>true</value>
+              </systemProperty>
+              <systemProperty>
+                <!--
+                    This may not be very safe, but we use jetty only for developing
+                    See: http://communitymapbuilder.org/display/JETTY/How+to+enable+serving+aliased+files
+                -->
+                <name>org.mortbay.util.FileResource.checkAliases</name>
+                <value>false</value>
               </systemProperty>
             </systemProperties>
           </configuration>
@@ -327,8 +335,10 @@ See http://www.MMBase.org/license
         </plugin>
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
-          <version>2.4</version><!-- The default version (2.2) contains a horrible bug (MCLEAN-39), and deletes the _contents_ of a symlinked directory -->
+          <version>2.3</version><!-- The default version (2.2) contains a horrible bug, and deletes the _contents_ of a symlinked directory -->
         </plugin>
+
+
       </plugins>
 
     </pluginManagement>
@@ -339,12 +349,6 @@ See http://www.MMBase.org/license
           <showDeprecation>false</showDeprecation>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>org.mmbase.maven</groupId>
-        <artifactId>maven-mmbase-plugin</artifactId>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -354,9 +358,9 @@ See http://www.MMBase.org/license
               <addClasspath>true</addClasspath>
             </manifest>
             <manifestEntries>
-              <ExtensionName>${project.groupId}:${project.artifactId}</ExtensionName>
-              <ExtensionName>${project.groupId}:${project.artifactId}</ExtensionName>
-              <url>${project.url}</url>
+              <ExtensionName>${pom.groupId}:${pom.artifactId}</ExtensionName>
+              <ExtensionName>${pom.groupId}:${pom.artifactId}</ExtensionName>
+              <url>${pom.url}</url>
             </manifestEntries>
             <manifestSections>
               <manifestSection>
@@ -368,7 +372,7 @@ See http://www.MMBase.org/license
                   <SCM-Revision>${sources.version}</SCM-Revision>
                   <Distribution>${project.version}</Distribution>
                   <Build-Date>${timestamp}</Build-Date>
-                  <Description>${project.description}</Description>
+                  <Description>${pom.description}</Description>
                 </manifestEntries>
               </manifestSection>
             </manifestSections>
@@ -376,6 +380,13 @@ See http://www.MMBase.org/license
         </configuration>
       </plugin>
     </plugins>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh</artifactId>
+        <version>1.0-beta-7</version>
+      </extension>
+    </extensions>
   </build>
 
   <dependencyManagement>
@@ -396,6 +407,11 @@ See http://www.MMBase.org/license
         <groupId>javax.servlet</groupId>
         <artifactId>jstl</artifactId>
         <version>${jstl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>taglibs</groupId>
+        <artifactId>standard</artifactId>
+        <version>${taglib-standard.version}</version>
       </dependency>
 
       <dependency>
@@ -460,23 +476,6 @@ See http://www.MMBase.org/license
         <version>${junit.version}</version>
         <scope>test</scope>
       </dependency>
-
-      <!--
-          Spring has a mock imlementation of javax.servlet stuff
-      -->
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-test</artifactId>
-        <version>3.0.5.RELEASE</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-core</artifactId>
-        <version>3.0.5.RELEASE</version>
-        <scope>test</scope>
-      </dependency>
-
     </dependencies>
   </dependencyManagement>
 
@@ -485,7 +484,7 @@ See http://www.MMBase.org/license
     <profile>
       <id>fastinstall</id>
       <activation>
-        <activeByDefault>false</activeByDefault>
+        <activeByDefault>true</activeByDefault>
       </activation>
       <properties>
         <maven.test.skip>true</maven.test.skip>
@@ -620,22 +619,54 @@ See http://www.MMBase.org/license
               </execution>
             </executions>
           </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
+          <!-- This is broken.
+               It will fail the complete build on:
+               ERROR: Could not resolve order in ObjectWrapperHelper
+               Completely ridiculous.
+
+               for now disable the whole thing
+          -->
+          <!--
+              <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <executions>
               <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
+              <id>attach-javadocs</id>
+              <goals>
+              <goal>jar</goal>
+              </goals>
               </execution>
-            </executions>
-          </plugin>
+              </executions>
+              </plugin>
+          -->
         </plugins>
       </build>
     </profile>
 
+    <profile>
+      <id>servlet24</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+    </profile>
+
+    <profile>
+      <id>servlet25</id>
+      <activation>
+        <property>
+          <name>servlet.version</name>
+          <value>2.5</value>
+        </property>
+      </activation>
+      <properties>
+        <servlet.version>2.5</servlet.version>
+        <jsp.version>2.1</jsp.version>
+        <jsp.groupId>javax.servlet.jsp</jsp.groupId>
+        <jstl.version>1.2</jstl.version>
+      </properties>
+
+    </profile>
     <profile>
       <id>development</id>
       <properties>

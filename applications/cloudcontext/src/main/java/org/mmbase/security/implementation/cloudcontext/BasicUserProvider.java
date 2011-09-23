@@ -14,7 +14,6 @@ import org.mmbase.security.implementation.cloudcontext.builders.Users;
 import java.util.*;
 import org.mmbase.util.transformers.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.core.CoreField;
 import org.mmbase.security.SecurityException;
@@ -171,11 +170,11 @@ public abstract class BasicUserProvider implements UserProvider {
         MMObjectNode user = userCache.get(userName);
         if (user == null) {
             NodeSearchQuery nsq = new NodeSearchQuery(getUserBuilder());
-            org.mmbase.bridge.Field userNameField = getField(getUserNameField());
-            if (userNameField == null) {
+            org.mmbase.bridge.Field userField = getField(getUserNameField());
+            if (userField == null) {
                 throw new RuntimeException("The builder '" + getUserBuilder() + "' has no field '" + getUserNameField() + "'");
             }
-            StepField sf        = nsq.getField(userNameField);
+            StepField sf        = nsq.getField(userField);
             BasicFieldValueConstraint cons = new BasicFieldValueConstraint(sf, userName);
             cons.setCaseSensitive(userNameCaseSensitive);
             nsq.setConstraint(cons);
@@ -226,11 +225,11 @@ public abstract class BasicUserProvider implements UserProvider {
         MMBase mmb = MMBase.getMMBase();
         BasicSearchQuery query = new BasicSearchQuery();
         MMObjectBuilder ranks = mmb.getBuilder("mmbaseranks");
-        BasicStep step = query.addStep(ranks.getTableName());
+        BasicStep step = query.addStep(ranks);
         StepField sf = query.addField(step, ranks.getField("name"));
         Constraint cons = new BasicFieldValueConstraint(sf, rank);
         query.addField(step, ranks.getField("number"));
-        BasicRelationStep relStep = query.addRelationStep(mmb.getInsRel().getTableName(), getUserBuilder().getTableName());
+        BasicRelationStep relStep = query.addRelationStep(mmb.getInsRel(), getUserBuilder());
         query.addField(relStep.getNext(), getField("number"));
         relStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
         relStep.setRole(Integer.valueOf(mmb.getRelDef().getNumberByName("rank")));
@@ -286,7 +285,7 @@ public abstract class BasicUserProvider implements UserProvider {
                     log.warn("More then one rank related to mmbase-user " + userNode.getNumber() + " (but " + ranks.size() + ")");
                 }
                 rank = Rank.ANONYMOUS;
-                if (ranks.size() == 0) {
+                if (ranks.isEmpty()) {
                     log.debug("No ranks related to this user");
                 } else {
                     Iterator<MMObjectNode> i = ranks.iterator();

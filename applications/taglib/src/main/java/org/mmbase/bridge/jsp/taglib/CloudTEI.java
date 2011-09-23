@@ -14,7 +14,7 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import javax.servlet.jsp.tagext.TagData;
 
 /**
- * The TEI class belonging to the CloudTag and descendants
+ * The TEI class belonging to the CloudTag and descendents
  *
  * @author Michiel Meeuwissen
  * @version $Id$

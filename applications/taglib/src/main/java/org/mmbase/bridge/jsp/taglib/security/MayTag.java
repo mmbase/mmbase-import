@@ -15,6 +15,7 @@ import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.framework.*;
 import org.mmbase.security.Action;
 import org.mmbase.util.functions.Parameters;
+import javax.servlet.http.HttpServletRequest;
 
 import javax.servlet.jsp.JspTagException;
 
@@ -33,7 +34,6 @@ public class MayTag extends CloudReferrerTag implements Condition {
     protected Attribute action    = Attribute.NULL;
     protected Attribute namespace = Attribute.NULL;
 
-    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
     }
@@ -51,7 +51,6 @@ public class MayTag extends CloudReferrerTag implements Condition {
         return inverse.getBoolean(this, false);
     }
 
-    @Override
     public int doStartTag() throws JspTagException {
         String ns = namespace.getString(this);
         if ("".equals(ns)) ns = null;
@@ -72,7 +71,6 @@ public class MayTag extends CloudReferrerTag implements Condition {
             return SKIP_BODY;
         }
     }
-    @Override
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
             try{

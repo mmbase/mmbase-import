@@ -528,21 +528,6 @@
           "8495". This is another reason to not use object numbers in your
           templates.</para>
         </note>
-        <note>
-          <para>If for some reason you <emphasis>do</emphasis> want
-          to use actual node numbers (or aliases), e.g. to add
-          relations to existing nodes which do not have a synchnodes entry, you can prefix the number with ':'.
-          </para>
-          <programlisting><![CDATA[
-<?xml version="1.0"?>
-<posrel exportsource="mmbase://geschiedenis.vpro.nl/portal" timestamp="200911251400">
-
-	<node number="1201" owner="default" snumber="700" dnumber=":23046109" rtype="posrel" dir="bidirectional"> <!-- faq -->
-    <pos>2</pos>
-	</node>
-  ]]>
-          </programlisting>
-        </note>
       </listitem>
     </itemizedlist>
   </section>

@@ -3,7 +3,7 @@
  * Routines for reading and writing cookies
  *
  * @since    MMBase-1.6
- * @version  $Id$
+ * @version  $Id: tools.js,v 1.8 2007-04-23 17:34:32 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */

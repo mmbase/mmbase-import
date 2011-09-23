@@ -20,12 +20,12 @@ import org.mmbase.util.logging.Logging;
  * @version $Id$
  * @since MMBase-1.9
  */
-public class GuiFunction extends NodeFunction<String> {
+public class GuiFunction extends org.mmbase.util.functions.GuiFunction {
 
     private static final Logger LOG = Logging.getLoggerInstance(GuiFunction.class);
 
     public GuiFunction() {
-        super("gui", org.mmbase.util.functions.GuiFunction.PARAMETERS);
+        super();
     }
 
     @Override

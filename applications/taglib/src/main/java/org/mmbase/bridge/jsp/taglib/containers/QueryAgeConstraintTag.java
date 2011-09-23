@@ -38,7 +38,6 @@ public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryCont
     protected Attribute maxAge     = Attribute.NULL;
     protected Attribute inverse    = Attribute.NULL;
 
-    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
     }
@@ -68,7 +67,6 @@ public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryCont
 
 
 
-    @Override
     public int doStartTag() throws JspTagException {
 
         if (minAge == Attribute.NULL && maxAge == Attribute.NULL) {
@@ -76,31 +74,26 @@ public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryCont
         }
         Query query = getQuery(container);
 
-        Step step;
-        {
-            if (field == Attribute.NULL && element == Attribute.NULL) {
-                if (query instanceof NodeQuery) {
-                    // avoid dependency on number field. It may not have it.
-                    step = ((NodeQuery) query).getNodeStep();
-                } else {
-                    step = query.createStepField("number").getStep();
-                }
-            } else if (field != Attribute.NULL) {
-                if(element != Attribute.NULL) {
-                    throw new JspTagException("Could not specify both 'field' and 'element' attributes on ageconstraint");
-                }
-                step = query.createStepField(field.getString(this)).getStep();
-            } else {
-                String fieldName = element.getString(this) + ".number";
-                step = query.createStepField(fieldName).getStep();
+
+        String fieldName;
+        if (field == Attribute.NULL && element == Attribute.NULL) {
+            fieldName = "number";
+        } else if (field != Attribute.NULL) {
+            if(element != Attribute.NULL) {
+                throw new JspTagException("Could not specify both 'field' and 'element' attributes on ageconstraint");
             }
+            fieldName = field.getString(this);
+        } else {
+            fieldName = element.getString(this) + ".number";
         }
+
+        StepField stepField = query.createStepField(fieldName);
+
 
         int minAgeInt = minAge.getInt(this, -1);
         int maxAgeInt = maxAge.getInt(this, -1);
 
-        Constraint newConstraint = Queries.createAgeConstraint(query, step, minAgeInt, maxAgeInt);
-
+        Constraint newConstraint = Queries.createAgeConstraint(query, stepField.getStep(), minAgeInt, maxAgeInt);
 
         // if minimal age given:
         // you need the day marker of the day after that (hence -1 in code below inside the getDayMark), node have to have this number or lower

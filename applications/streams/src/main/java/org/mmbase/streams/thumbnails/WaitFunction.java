@@ -21,13 +21,11 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.thumbnails;
 
-import java.util.*;
 import java.util.concurrent.Future;
 import java.util.concurrent.ExecutionException;
 import org.mmbase.streams.createcaches.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 

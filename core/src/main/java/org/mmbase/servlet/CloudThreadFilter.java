@@ -23,7 +23,6 @@ public class CloudThreadFilter implements Filter {
     /**
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
      */
-    @Override
     public void init(FilterConfig config) {
         // nix
     }
@@ -31,7 +30,6 @@ public class CloudThreadFilter implements Filter {
     /**
      * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
      */
-    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws ServletException {
         try {
@@ -53,7 +51,6 @@ public class CloudThreadFilter implements Filter {
     /**
      * @see javax.servlet.Filter#destroy()
      */
-    @Override
     public void destroy() {
         // nix
     }

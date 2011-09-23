@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.mmbase.bridge.Field;

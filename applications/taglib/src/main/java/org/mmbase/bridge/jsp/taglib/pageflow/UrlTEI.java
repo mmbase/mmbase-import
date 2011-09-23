@@ -23,11 +23,9 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 public class UrlTEI extends  WriterTEI {
     
-    @Override
     protected int scope() {
         return VariableInfo.AT_END;
     }
-    @Override
     protected String defaultType() {
         return "String";
     }

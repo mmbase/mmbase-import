@@ -24,17 +24,6 @@ if (typeof($) != 'undefined') {
 	    validator.addValidation($("form[name=change]"));
 	    validator.addValidation($("form[name=create]"));
 
-            var uploader = new MMUploader();
-            uploader.validator = validator;
-            $(document).bind("mmValidate", function(ev, validator, valid) {
-                    if (valid && ev.target.type == 'file') {
-                        // Doesn't work in current implementation of this editors.
-
-                        //uploader.upload(ev.target.id);
-                    }
-                });
-
-
         });
 
 }

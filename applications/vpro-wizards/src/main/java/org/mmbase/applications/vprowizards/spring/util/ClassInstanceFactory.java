@@ -11,8 +11,6 @@ import java.lang.reflect.Modifier;
 
 public class ClassInstanceFactory<T> {
 
-    private static org.mmbase.util.logging.Logger log = org.mmbase.util.logging.Logging.getLoggerInstance(ClassInstanceFactory.class);
-
     private Class<? extends T> classToInstantiate;
 
     public Class<? extends T> getClazz() {
@@ -51,9 +49,9 @@ public class ClassInstanceFactory<T> {
         try {
             return classToInstantiate.newInstance();
         } catch (InstantiationException e) {
-            log.error(e);
+            e.printStackTrace();
         } catch (IllegalAccessException e) {
-            log.error(e);
+            e.printStackTrace();
         }
         return null;
     }

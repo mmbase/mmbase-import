@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Email application</title>
 
-    <date>2010-01-25</date>
+    <date>2007-10-10</date>
 
     <edition>$Id$</edition>
 
@@ -36,57 +36,37 @@
     versions since 1.6.x.</releaseinfo>
   </articleinfo>
 
-  <section id="intro">
+  <section>
     <title>Introduction</title>
 
-    <para>As many other CMS systems, MMBase allows you to "publish" to email,
+    <para>As many other cms systems, mmbase allows you to "publish" to email,
     but unlike other systems it provides a interactive email system that
     allows you to create/send/use email in a flexible way. Within modern
     websites you have several kinds of email needs ranging from sending a new
     user a email with his account and password information to full dynamic
     update mails to a group of users who share a common interest. This manual
     will give you the basic building blocks and examples to allow you to build
-    and change your MMBase application to your email needs. Its based on the
+    and change your mmbase application to your email needs. Its based on the
     new email appication as found in 1.7.x and up but most concepts will also
     work on older releases (see installing for 1.6.x).</para>
   </section>
 
-  <section id="configuration">
-    <title>Configuration</title>
-
-    <para>You need to configure you webapplications server to send email. This
-    typically means installing Java Mail: the 'mail.jar' and 'activation.jar' (only for older versions).
-    See the README with the email application for more specific instructions,
-    but generally when using Tomcat (&gt; version 5.5) you need to add the
-    folowing piece of configuration to your webapp's context:</para>
-
-    <programlisting format="linespecific">  &lt;Resource name="mail/Session"
-    auth="Container"
-    type="javax.mail.Session"
-    mail.smtp.host="smtp.somehost.org" /&gt;</programlisting>
-
-    <para>The email application is configured in 'config/modules/sendmail.xml'
-    and addtionally the SMTP module in 'config/modules/smtp.xml'. Some
-    linkchecker tasks can be scheduled in
-    'config/modules/linkchecker.xml'.</para>
-  </section>
-
-  <section id="basics">
+  <section>
     <title>Basic Concepts</title>
 
-    <para>Email within MMBase is not created as a separate extension but gains
-    its power by using several of the core MMBase concepts : objects/relations
+    <para>Email within mmbase is not created as a separate extension but gains
+    its power by using several of the core mmbase concepts : objects/relations
     and separation between content and layout. In practice this means email is
     and uses objects and relations just like all the other content stored in
-    MMBase allow very for very powerful scripted email systems using all the
+    mmbase allow very for very powerful scripted email systems using all the
     already accepted tools to create their layout for most that means using
-    the taglib system provided with MMBase.</para>
+    the taglib system provided with mmbase.</para>
   </section>
 
   <section>
     <title>Sending our first email (oneshot)</title>
 
-    <para>Sending one email from MMBase is as simple as creating a object !,
+    <para>Sending one email from mmbase is as simple as creating a object !,
     This works because the email objects are "smart" objects that can react
     when you create/talk to them. Here is a a taglib example :</para>
 
@@ -96,7 +76,7 @@
   &lt;mm:setfield name="from"&gt;Daniel &lt;daniel@mmbase.org&gt;&lt;/mm:setfield&gt;
   &lt;mm:setfield name="to"&gt;daniel@mmbase.org&lt;/mm:setfield&gt;
   &lt;mm:setfield name="cc"&gt;michiel@mmbase.org,documentation@mmbase.org&lt;/mm:setfield&gt;
-  &lt;mm:setfield name="subject"&gt;my first MMBase email !!&lt;/mm:setfield&gt;
+  &lt;mm:setfield name="subject"&gt;my first mmbase email !!&lt;/mm:setfield&gt;
   &lt;mm:setfield name="body"&gt;Just testing email&lt;/mm:setfield&gt;
   &lt;mm:function name="mail" /&gt;&lt;!-- mail the email node --&gt;
 &lt;/mm:createnode&gt;   </programlisting>
@@ -135,7 +115,7 @@
   &lt;/mm:functioncontainer&gt;
 &lt;/mm:node&gt;
 
-&lt;!--check if MMBase could mail the message --&gt;
+&lt;!--check if mmbase could mail the message --&gt;
 &lt;mm:node referid="mail1"&gt;
   &lt;mm:field name="mailstatus"&gt;
     &lt;mm:compare value="1"&gt;
@@ -162,10 +142,10 @@
     person that we know the email address of usefull for sending account
     messages or greetingcards but within a modern website you also want to
     mail groups of users like in a mailing list or all the people that are
-    part of a community topic. The MMBase email object will automaticly check
+    part of a community topic. The mmbase email object will automaticly check
     any related users or groups of users and allow you to mail them just as
     easy as mailing just one of them. The following example mails a whole
-    group with users, so in MMBase terms its users-&gt;groups-&gt;email. Once
+    group with users, so in mmbase terms its users-&gt;groups-&gt;email. Once
     we give the mail command it will find check if there are related groups
     and if these groups have related users. If so it creates a list of all the
     found users and mails them. The application sends the mail to a specific
@@ -192,14 +172,14 @@
 &lt;/mm:node&gt;
 </programlisting>
 
-    <para>If you are new to MMBase this seems a lot of lines but if you are
-    already a user of the MMBase taglibs you will notice that the code is just
+    <para>If you are new to mmbase this seems a lot of lines but if you are
+    already a user of the mmbase taglibs you will notice that the code is just
     based taglibs and if you are working with groups in your application you
     probably already have created it and you can add some lines. The example
     first creates a email object then gets the group that is defined by the
-    MMBase alias "groups.testgroep" then a relation is created between the
+    mmbase alias "groups.testgroep" then a relation is created between the
     email object and the group. Lastly the mail(oneshot) command is given
-    again. Since MMBase can't find a "to" field it will try to find if any
+    again. Since mmbase can't find a "to" field it will try to find if any
     users or groups with users are related to this email node and mails all
     the users it finds. The above example only finds a attached group with
     users but attached users work in the same way.</para>
@@ -209,7 +189,7 @@
     <title>OneShotKeep and startmail</title>
 
     <para>In the above examples we controlled the email process by using
-    &lt;mm:function name="mail" /&gt;, the mail command tells MMBase to mail
+    &lt;mm:function name="mail" /&gt;, the mail command tells mmbase to mail
     and wait until its done. This works fine for 1 of 2 mails and should be
     used in these cases (the good thing is that you can check what happened in
     the rest of the page as in example2.jsp) but this becomes a problem if you
@@ -233,7 +213,7 @@
     will return right away so users can not stop it. There can be several mail
     action going on at the same time without a problem.</para>
 
-    <para>Now the oneshot will mail and tag itself to be deleted by MMBase,
+    <para>Now the oneshot will mail and tag itself to be deleted by mmbase,
     but in the above group example this might not be wanted. You might for
     example want to keep "prove" of when the email was send and if it worked
     ok for administration use. Or u want to reuse the email object (just
@@ -399,7 +379,7 @@ example5_body.jsp?usernumer=343 for the body      </programlisting>
       <title>Acting as an POP-client</title>
 
       <para>Mail can also be fetched by acting as a pop client. For this the
-      MMBase crontab component must be active, and you configure
+      mmbase crontab component must be active, and you configure
       org.mmbase.module.smtp.PopFetcher as a cronjob. An example
       conf/util/cronjobs.xml is shipped.</para>
     </section>

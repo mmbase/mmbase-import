@@ -15,7 +15,6 @@ import java.io.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
-import org.mmbase.bridge.util.BridgeCaster;
 import org.mmbase.bridge.util.*;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.module.core.VirtualBuilder;
@@ -66,7 +65,7 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
 
     /**
      * Makes a Node from a map of values. Sadly, this uses a local MMBase, so you can't use this with
-     * e.g. RMMCI, but I didn't feel like reimplementing Node completely..
+     * e.g. RMMCI, but I didn't feel like reimplementating Node completely..
      * See {@link org.mmbase.bridge.util.MapNode}, which <em>is</em> a complete reimplementation (with no core dependencies).
      */
     public VirtualNode(Map<String, ?> values, Cloud cloud) {
@@ -179,7 +178,11 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
         final Field field;
         public NodeAndField(Node n, String f) {
             node = n;
-            field = node.getNodeManager().getField(f);
+            if (node != null && f != null ) {
+                field = node.getNodeManager().getField(f);
+            } else {
+                field = null;
+            }
         }
 
     }
@@ -200,10 +203,10 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
                 } catch (NotFoundException nfe) {
                     // don't know when this happens, perhaps the node was deleted in the mean time?
                     log.debug(nfe.getMessage());
-                    return null;
+                    return new NodeAndField(null, fieldName);
                 }
             } else {
-                return null;
+                return new NodeAndField(null, fieldName);
             }
         } else {
             return new NodeAndField(this, fieldName);
@@ -224,14 +227,14 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
 
     @Override
     public boolean getBooleanValue(String fieldName) {
-        Boolean result = noderef.getBooleanValue(fieldName);
+        Boolean result = Boolean.valueOf(noderef.getBooleanValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
             log.debug("" + field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_STRING));
             NodeAndField actual = getActualNodeForField(fieldName);
             result = Casting.toBoolean(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_BOOLEAN).process(actual.node, actual.field, result));
         }
-        return result;
+        return result.booleanValue();
     }
 
     @Override
@@ -283,10 +286,10 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
                 return null;
             }
         }
-        if (nodeManager.hasField(fieldName)) { // only if this is actually a field of this node-manager, otherwise it might be e.g. a request for an 'element' of a cluster node
+        if (nodeManager.hasField(fieldName)) { // only if this is actually a field of this node-manager, otherewise it might be e.g. a request for an 'element' of a cluster node
             Field field = nodeManager.getField(fieldName);
             NodeAndField actual = getActualNodeForField(fieldName);
-            result = BridgeCaster.toNode(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_NODE).process(actual.node, actual.field, result), getCloud());
+            result = Casting.toNode(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_NODE).process(actual.node, actual.field, result), getCloud());
         }
         return result;
     }
@@ -300,7 +303,7 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
             result  = Casting.toInteger(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_INTEGER).process(actual.node, actual.field, result));
             // Casting on this position. Should it not be done in all get<..>Value's?
         }
-        return result;
+        return result.intValue();
 
     }
 
@@ -312,7 +315,7 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
             NodeAndField actual = getActualNodeForField(fieldName);
             result = Casting.toFloat(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_FLOAT).process(actual.node, actual.field, result));
         }
-        return result;
+        return result.floatValue();
     }
 
     @Override
@@ -323,7 +326,7 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
             NodeAndField actual = getActualNodeForField(fieldName);
             result = Casting.toLong(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_LONG).process(actual.node, actual.field, result));
         }
-        return result;
+        return result.longValue();
     }
 
     @Override
@@ -334,7 +337,7 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
             NodeAndField actual = getActualNodeForField(fieldName);
             result = Casting.toDouble(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_DOUBLE).process(actual.node, actual.field, result));
         }
-        return result;
+        return result.doubleValue();
     }
 
     @Override

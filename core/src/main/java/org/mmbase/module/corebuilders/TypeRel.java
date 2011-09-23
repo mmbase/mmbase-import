@@ -83,7 +83,6 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
 
     private int defaultRelationStepDirection = RelationStep.DIRECTIONS_BOTH;
 
-    @Override
     public boolean init() {
         if (oType != -1) return true;
         super.init();
@@ -98,7 +97,6 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
         return true;
     }
 
-    @Override
     public void notify(SystemEvent se) {
         if (se instanceof SystemEvent.ServletContext) {
             ServletContext sx = ((SystemEvent.ServletContext) se).getServletContext();
@@ -109,7 +107,6 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
             }
         }
     }
-    @Override
     public int getWeight() {
         return 0;
     }
@@ -128,8 +125,8 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
      */
     private void readCache(boolean buildersInitialized) {
         log.debug("Reading in typerels");
-        typeRelNodes        = new TypeRelSet();
-        parentTypeRelNodes  = new TypeRelSet();
+        typeRelNodes = new TypeRelSet();
+        parentTypeRelNodes = new TypeRelSet();
         inverseTypeRelNodes = new InverseTypeRelSet();
 
         TypeDef typeDef = mmb.getTypeDef();
@@ -148,45 +145,37 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
      * disregarded
      * @since MMBase-1.6.2
      */
-    protected TypeRelSet addCacheEntry(final MMObjectNode typeRel, final boolean buildersInitialized) {
+    protected TypeRelSet addCacheEntry(MMObjectNode typeRel, boolean buildersInitialized) {
 
-        if (typeRel == null) {
-            throw new IllegalArgumentException("typeRel cannot be null");
-        }
+        if (typeRel == null) throw new IllegalArgumentException("typeRel cannot be null");
 
-        final TypeRelSet added = new TypeRelSet(); // store temporary, which will enable nice logging of what happened
+        TypeRelSet added = new TypeRelSet(); // store temporary, which will enable nice logging of what happened
 
         // Start to add the actual definition, this is then afterwards again,
         // except if one of the builders could not be found
         added.add(typeRel);
 
-        if (mmb == null) {
-            throw new IllegalStateException("mmb is null");
-        }
+        if (mmb == null) throw new IllegalStateException("mmb is null");
+        RelDef reldef = mmb.getRelDef();
+        if (reldef == null) throw new IllegalStateException("No reldef found");
 
-        final RelDef reldef = mmb.getRelDef();
-        if (reldef == null) {
-            throw new IllegalStateException("No reldef found");
-        }
+        MMObjectNode reldefNode = reldef.getNode(typeRel.getIntValue("rnumber"));
+        if (reldefNode == null) { throw new RuntimeException("Could not find reldef-node for rnumber= "
+            + typeRel.getIntValue("rnumber")); }
 
-        final MMObjectNode reldefNode = reldef.getNode(typeRel.getIntValue("rnumber"));
-        if (reldefNode == null) {
-            throw new RuntimeException("Could not find reldef-node for rnumber= " + typeRel.getIntValue("rnumber"));
-        }
+        boolean bidirectional = (!InsRel.usesdir) || (reldefNode.getIntValue("dir") > 1);
 
-        final boolean bidirectional = (!InsRel.usesdir) || (reldefNode.getIntValue("dir") > 1);
-
-        INHERITANCE: if (buildersInitialized) { // handle inheritance, which is
+        inheritance: if (buildersInitialized) { // handle inheritance, which is
             // not possible during
             // initialization of MMBase.
 
-            final TypeDef typeDef = mmb.getTypeDef();
+            TypeDef typeDef = mmb.getTypeDef();
 
-            final String sourceBuilderName = typeDef.getValue(typeRel.getIntValue("snumber"));
-            final MMObjectBuilder sourceBuilder = sourceBuilderName != null ? mmb.getBuilder(sourceBuilderName) : null;
+            String sourceBuilderName = typeDef.getValue(typeRel.getIntValue("snumber"));
+            MMObjectBuilder sourceBuilder = sourceBuilderName != null ? mmb.getBuilder(sourceBuilderName) : null;
 
-            final String destinationBuilderName = typeDef.getValue(typeRel.getIntValue("dnumber"));
-            final MMObjectBuilder destinationBuilder = destinationBuilderName != null ? mmb.getBuilder(destinationBuilderName) : null;
+            String destinationBuilderName = typeDef.getValue(typeRel.getIntValue("dnumber"));
+            MMObjectBuilder destinationBuilder = destinationBuilderName != null ? mmb.getBuilder(destinationBuilderName) : null;
 
             if (sourceBuilder == null) {
                 if (destinationBuilder == null) {
@@ -196,21 +185,21 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
                     log.info("The source of relation type " + typeRel
                              + " is not an active builder. Cannot follow descendants.");
                 }
-                break INHERITANCE;
+                break inheritance;
             }
 
             if (destinationBuilder == null) {
                 log.warn("The destination of relation type " + typeRel
                          + " is not an active builder. Cannot follow descendants.");
-                break INHERITANCE;
+                break inheritance;
             }
 
-            final int rnumber = typeRel.getIntValue("rnumber");
+            int rnumber = typeRel.getIntValue("rnumber");
 
-            final List<MMObjectBuilder> sources = new ArrayList<MMObjectBuilder>(sourceBuilder.getDescendants());
+            List<MMObjectBuilder> sources = new ArrayList<MMObjectBuilder>(sourceBuilder.getDescendants());
             sources.add(sourceBuilder);
 
-            final List<MMObjectBuilder> destinations = new ArrayList<MMObjectBuilder>(destinationBuilder.getDescendants());
+            List<MMObjectBuilder> destinations = new ArrayList<MMObjectBuilder>(destinationBuilder.getDescendants());
             destinations.add(destinationBuilder);
 
             for (MMObjectBuilder s : sources) {
@@ -236,9 +225,9 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
             added.add(typeRel); // replaces the ones added in the 'inheritance'
             // loop (so now not any more Virtual)
         }
-
-
-        for (MMObjectNode node : added) {
+        Iterator<MMObjectNode> i = added.iterator();
+        while (i.hasNext()) {
+            MMObjectNode node = i.next();
             if (! node.isVirtual()) {
                 // make sure 'real' nodes replace virtual nodes. (real and virtual nodes are equal, so will not be added to set otherwise)
                 // This is especially essential whey you use STRICT in contains
@@ -264,7 +253,6 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
      * @return An <code>int</code> value which is the new object's unique number, -1 if the insert
      * failed.
      */
-    @Override
     public int insert(String owner, MMObjectNode node) {
         int snumber = node.getIntValue("snumber");
         int dnumber = node.getIntValue("dnumber");
@@ -282,7 +270,6 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
      * Remove a node from the cloud.
      * @param node The node to remove.
      */
-    @Override
     public void removeNode(MMObjectNode node) {
         super.removeNode(node);
     }
@@ -397,12 +384,11 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
      * @param node Node from which to retrieve the data
      * @return A <code>String</code> describing the content of the node
      */
-    @Override
     public String getGUIIndicator(MMObjectNode node) {
         try {
-            String source      = mmb.getTypeDef().getValue(node.getIntValue("snumber"));
+            String source = mmb.getTypeDef().getValue(node.getIntValue("snumber"));
             String destination = mmb.getTypeDef().getValue(node.getIntValue("dnumber"));
-            MMObjectNode role  = mmb.getRelDef().getNode(node.getIntValue("rnumber"));
+            MMObjectNode role = mmb.getRelDef().getNode(node.getIntValue("rnumber"));
             return source + "->" + destination + " (" + (role != null ? role.getGUIIndicator() : "???") + ")";
         } catch (Exception e) {
             log.warn(e);
@@ -418,7 +404,6 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
      * @param node Node from which to retrieve the data
      * @return A <code>String</code> describing the content of the field
      */
-    @Override
     public String getGUIIndicator(String field, MMObjectNode node) {
         try {
             if (field.equals("snumber")) {
@@ -439,7 +424,6 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
      * be retrieved through tagger).
      * @javadoc parameters
      */
-    @Override
     public Vector<String> getList(PageInfo sp, StringTagger tagger, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd = tok.nextToken(); //Retrieving command.
@@ -547,7 +531,6 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
      * (non-Javadoc)
      * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
      */
-    @Override
     public void notify(NodeEvent event) {
         if (log.isDebugEnabled()) {
             log.debug("Changed " + event.getMachine() + " " + event.getNodeNumber() + " "
@@ -565,7 +548,6 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
 
             } else {
                 //something else changed in a typerel node? reread the complete typeRelNodes Set
-                log.service("Received '" + event + "' which is about typrels. Now re-reading the entire cache");
                 readCache();
             }
             // also, clear all query-caches, because result may change by this. See MMB-348
@@ -645,7 +627,6 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
      * are the same, and the rnumber fields are the same, or one of these is '-1' (don't care).
      * @since MMBase-1.6.2
      */
-    @Override
     public boolean equals(MMObjectNode o1, MMObjectNode o2) {
         if (o2.getBuilder() instanceof TypeRel) {
             int r1 = o1.getIntValue("rnumber");
@@ -660,7 +641,6 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
      * Implements for MMObjectNode
      * @since MMBase-1.6.2
      */
-    @Override
     public int hashCode(MMObjectNode o) {
         int result = 0;
         result = HashCodeUtil.hashCode(result, o.getIntValue("snumber"));
@@ -669,7 +649,6 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
         return result;
     }
 
-    @Override
     public String toString(MMObjectNode n) {
         try {
             int snumber = n.getIntValue("snumber");
@@ -679,16 +658,12 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
             String sourceName = mmb.getTypeDef().getValue(snumber);
             String destName = mmb.getTypeDef().getValue(dnumber);
 
-            if (sourceName == null) {
-                sourceName = "unknown builder '" + snumber + "'";
-            }
-            if (destName == null) {
-                destName = "unknown builder '" + dnumber + "'";
-            }
+            if (sourceName == null) sourceName = "unknown builder '" + snumber + "'";
+            if (destName == null) destName = "unknown builder '" + dnumber + "'";
 
             // unfilled should only happen during creation of the node.
-            String source = snumber > -1 ? (sourceName + "(" + snumber + ")") : "[unfilled]";
-            String destination = dnumber > -1 ? (destName + "(" + dnumber + ")") : "[unfilled]";
+            String source = snumber > -1 ? sourceName : "[unfilled]";
+            String destination = dnumber > -1 ? destName : "[unfilled]";
             MMObjectNode role = rnumber > -1 ? mmb.getRelDef().getNode(rnumber) : null;
             return source + "->" + destination + " (" + (role != null ? role.getStringValue("sname") : "???") + ") " + (isVirtual() ? "(virtual)" : "");
         } catch (Exception e) {
@@ -739,7 +714,6 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
         protected TypeRelSet() {
             super(new Comparator<MMObjectNode>() {
                 // sorted by source, destination, role
-                @Override
                 public int compare(MMObjectNode n1, MMObjectNode n2) {
                     {
                         int i1 = n1.getIntValue("snumber");
@@ -763,7 +737,6 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
         }
 
         // make sure only MMObjectNode's are added
-        @Override
         public boolean add(MMObjectNode node) {
             return super.add(node);
         }
@@ -819,7 +792,6 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
         protected InverseTypeRelSet() {
             super(new Comparator<MMObjectNode>() {
                 // sorted by destination, source, role
-                @Override
                 public int compare(MMObjectNode n1, MMObjectNode n2) {
                     int i1 = n1.getIntValue("dnumber");
                     int i2 = n2.getIntValue("dnumber");
@@ -838,7 +810,6 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
         }
 
         // make sure only MMObjectNode's are added
-        @Override
         public boolean add(MMObjectNode object) {
             return super.add(object);
         }
@@ -870,11 +841,8 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
             int sourceMax = role <= 0 ? (source <= 0  ? 0 : source + 1) : source; // i.e. source, destination, 0
             int destinationMax = (source <= 0 && role <= 0) ? destination + 1 : destination; // i.e. 0, destination, 0
 
-            final VirtualTypeRelNode fromTypeRelNode = new VirtualTypeRelNode(sourceMin, destinationMin, roleMin);
-            final VirtualTypeRelNode toTypeRelNode =   new VirtualTypeRelNode(sourceMax, destinationMax, roleMax);
-
-            final SortedSet allowed = subSet(fromTypeRelNode, toTypeRelNode);
-            return Collections.unmodifiableSortedSet(allowed);
+            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(sourceMin, destinationMin, roleMin),
+                                                            new VirtualTypeRelNode(sourceMax, destinationMax, roleMax)));
         }
 
     }
@@ -910,9 +878,8 @@ public class TypeRel extends MMObjectBuilder implements SystemEventListener {
             values = Collections.unmodifiableMap(values); // make sure it is not changed any more!
         }
 
-        @Override
         public String toString() {
-            return "V:" + getValue("snumber") + "->" + getValue("dnumber") + "(" + getValue("rnumber") + ")";
+            return "V:" + getValue("snumber") + "->" + getValue("rnumber") + "(" + getValue("rnumber") + ")";
         }
     }
 

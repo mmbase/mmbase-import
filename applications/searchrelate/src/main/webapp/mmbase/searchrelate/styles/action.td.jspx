@@ -1,0 +1,37 @@
+<jsp:root version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.page import="org.mmbase.bridge.util.Queries,org.mmbase.bridge.NodeList" />
+  <mm:content expires="0" type="application/xml">
+    <mm:cloud method="asis">
+      
+      <mm:import externid="editor" />
+      <mm:import externid="node" from="request,parameters" />
+      <mm:import externid="id" from="request,parameters" />
+      <mm:import from="session" externid="${id}" id="q" jspvar="q" vartype="org.mmbase.bridge.Query" />
+
+      <mm:compare referid="id" regexp="\w*current">
+        <mm:node referid="node" jspvar="n">
+          <jsp:scriptlet>
+            NodeList l = Queries.getRelations(q, n);
+            pageContext.setAttribute("l", l);
+          </jsp:scriptlet>
+        </mm:node>
+        <mm:listnodes referid="l" id="relation">
+          <mm:import id="rel" reset="true">${relation}</mm:import>
+        </mm:listnodes>
+      </mm:compare>
+      
+      <c:if test="${editrelations == true}">
+        <a href="#node_${node}"><img class="editrelation" src="${mm:link('/mmbase/searchrelate/styles/images/c-relright.png')}" alt="relate" width="20" height="20" /></a>
+      </c:if>
+      <mm:link referids="node@nr">
+        <mm:param name="type"><mm:node referid="node"><mm:nodeinfo type="type" /></mm:node></mm:param>
+        <a href="#node_${node}"><img class="editnode" src="${mm:link('/mmbase/searchrelate/styles/images/c-edit.png')}" alt="edit" width="20" height="20" /></a>
+      </mm:link>
+      
+    </mm:cloud>
+  </mm:content>
+</jsp:root>

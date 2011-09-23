@@ -31,7 +31,6 @@ public class SetContextTag extends NodeReferrerTag {
         name = getAttribute(n);
     }
 
-    @Override
     public int doEndTag() throws JspTagException {        
         String n;
         if (name == Attribute.NULL) {

@@ -99,19 +99,19 @@ public class FormTag extends TransactionTag implements Writer {
     }
 
     private int getMode() throws JspTagException {
-        String modeString = mode.getString(this).toLowerCase();
-        if (modeString.length() == 0 || modeString.equals("form")) {
+        String m = mode.getString(this).toLowerCase();
+        if (m.length() == 0 || m.equals("form")) {
             return MODE_HTML_FORM;
-        } else if (modeString.equals("url")) {
+        } else if (m.equals("url")) {
             return MODE_URL;
-        } else if (modeString.equals("validate")) {
+        } else if (m.equals("validate")) {
             return MODE_VALIDATE;
-        } else if (modeString.equals("transaction")) {
+        } else if (m.equals("transaction")) {
             return MODE_TRANSACTION;
-        } else if (modeString.equals("formvalidate")) {
+        } else if (m.equals("formvalidate")) {
             return MODE_HTML_FORM_VALIDATE;
         } else {
-            throw new JspTagException("Value '" + modeString + "' not known for 'mode' attribute");
+            throw new JspTagException("Value '" + m + "' not known for 'mode' attribute");
         }
     }
 
@@ -125,7 +125,6 @@ public class FormTag extends TransactionTag implements Writer {
     }
 
 
-    @Override
     public int doStartTag() throws JspTagException {
         if (getReferid() != null) {
         }
@@ -138,7 +137,7 @@ public class FormTag extends TransactionTag implements Writer {
         }
         pageContext.setAttribute(KEY, this, SCOPE);
         m = getMode();
-        Url u = new Url(this, page.getString(this), absolute.getString(this));
+        Url u = new Url(this, (CharSequence) page.getString(this), absolute.getString(this));
         u.setProcess();
 
 
@@ -149,12 +148,12 @@ public class FormTag extends TransactionTag implements Writer {
         case MODE_HTML_FORM:
         case MODE_HTML_FORM_VALIDATE:
             String url = u.toString();
-            String formId = getId();
+            String id = getId();
             String c  = clazz.getString(this);
             try {
-                String methodString = method == Attribute.NULL ? "post" : method.getString(this);
-                pageContext.getOut().write("<form " + (formId != null ? "id=\"" + formId + "\" " : "") +
-                                           "action=\"" + url + "\" method=\"" + methodString + "\" enctype=\"multipart/form-data\" class=\"mm_form" +
+                String m = method == Attribute.NULL ? "post" : method.getString(this);
+                pageContext.getOut().write("<form " + (id != null ? "id=\"" + id + "\" " : "") +
+                                           "action=\"" + url + "\" method=\"" + m + "\" enctype=\"multipart/form-data\" class=\"mm_form" +
                                            ("".equals(c) ? "" : " " + c) +
                                            "\" >");
             } catch (java.io.IOException ioe) {
@@ -166,7 +165,6 @@ public class FormTag extends TransactionTag implements Writer {
         return super.doStartTag();
     }
 
-    @Override
     public int doEndTag() throws JspTagException {
         pageContext.setAttribute(KEY, previous, SCOPE);
         previous = null;
@@ -187,7 +185,7 @@ public class FormTag extends TransactionTag implements Writer {
         int result = super.doEndTag();
         switch(m) {
         case MODE_VALIDATE:
-        case MODE_HTML_FORM_VALIDATE:
+        case MODE_HTML_FORM_VALIDATE:;
             if (! t.isCommitted()) {
                 t.cancel();
             }
@@ -197,7 +195,6 @@ public class FormTag extends TransactionTag implements Writer {
 
 
     // never commit on close, unless, explicitely requested, of course.
-    @Override
     protected boolean getDefaultCommit() {
         return false;
     }

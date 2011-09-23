@@ -31,24 +31,19 @@ import org.springframework.web.multipart.MultipartFile;
  * this is a template class for the 'real' node actions
 
  * Is it more or less a redo of {@link org.mmbase.datatypes.handler.html}
- * @javadoc Why?
  *
  * @author ebunders
  *
  */
 public abstract class AbstractNodeAction extends Action {
 
-    private static final org.mmbase.util.logging.Logger log = Logging.getLoggerInstance(AbstractNodeAction.class);
-
     private Map<String, String> fields = new HashMap<String, String>();
-
-    protected String securityContext = null;
     // private Map<String, DateTime> dateFields = new HashMap<String, DateTime>();
-    private  Map<String, DateTime> dateFields = MapUtils.lazyMap(new HashMap<String, DateTime>(), FactoryUtils
+    private Map<String, DateTime> dateFields = MapUtils.lazyMap(new HashMap<String, DateTime>(), FactoryUtils
             .instantiateFactory(DateTime.class));
     private String id = null;
     private MultipartFile file = null;
-
+    private static org.mmbase.util.logging.Logger log = Logging.getLoggerInstance(AbstractNodeAction.class);
 
     /**
      *This property can contain a set of comma-separated fields that will be filtered by
@@ -87,10 +82,7 @@ public abstract class AbstractNodeAction extends Action {
         // get the node
         node = createNode(resultContainer.getTransaction(), resultContainer.getIdMap(), resultContainer.getRequest());
 
-        log.debug("Processing " + node);
-
         if (hasErrors()) {
-            log.debug("Errors");
             return;
         }
 
@@ -109,15 +101,12 @@ public abstract class AbstractNodeAction extends Action {
             if (node != null) {
                 log.debug("setting the field values on the node");
                 setBasicFields();
-                if (node.getNodeManager().hasField("handle")) { // WTF
+                if (node.getNodeManager().hasField("handle")) {
                     setHandlerField();
                 }
-            } else {
-                log.debug("Node is null");
             }
 
             if (resultContainer.hasFieldErrors()) {
-                log.debug("Field errors");
                 return;
             }
 
@@ -127,13 +116,10 @@ public abstract class AbstractNodeAction extends Action {
                     log.debug("node [" + node + "] is registered under id " + getId());
                 }
                 processNode(resultContainer.getTransaction());
-            } else {
-                log.service("No node found ");
             }
 
-
+            //now check for html fields, and filter them if need be.
             if(!StringUtils.isBlank(htmlFields)){
-                log.debug("now check for html fields, and filter them if need be.");
                 String[] htmlFieldArray = htmlFields.split("\\s*,\\s*");
                 for(String fieldName : htmlFieldArray){
                     checkField(fieldName);
@@ -148,7 +134,9 @@ public abstract class AbstractNodeAction extends Action {
                         log.debug("HTML filtering field " + fieldName );
                         node.setStringValue(fieldName,HTMLFilterUtils.filter(node.getStringValue(fieldName)));
                     } catch (Exception e) {
-                        throw new RuntimeException( "Something went wrong filtering field " + fieldName + " with the HTML filter: "+e.getMessage(), e);
+                        String msg = "Something went wrong filtering field "+fieldName+" with the HTML filter: "+e.getMessage();
+                        log.error(msg, e);
+                        throw new RuntimeException(msg, e);
                     }
                 }
             }
@@ -175,16 +163,11 @@ public abstract class AbstractNodeAction extends Action {
     }
 
     public Map<String, String> getFields() {
-        log.debug("Returning fields " + fields);
         return fields;
     }
 
     public void setFields(Map<String, String> fields) {
         this.fields = fields;
-    }
-
-    public void setSecurityContext(String c) {
-        this.securityContext = c;
     }
 
     public MultipartFile getFile() {
@@ -309,11 +292,6 @@ public abstract class AbstractNodeAction extends Action {
         resultContainer.addFieldError(new FieldError(field, "error.field.message", new String[] { field, message },
                 getLocale()));
     }
-    protected final void addFieldErrorTypeMessage(String field, Throwable e) {
-        FieldError error = new FieldError(field, "error.field.message", new String[] { field, e.getMessage() }, getLocale());
-        error.initCause(e);
-        resultContainer.addFieldError(error);
-    }
 
     /**
      * Creates a field error for this action, where the value set on some field is invalid. This method uses it's own
@@ -329,20 +307,12 @@ public abstract class AbstractNodeAction extends Action {
 
     /**
      * Creates a global error for this action.
-
-     * This is an example of exception reimplementation. This should all be dropped and actual exceptions should be used.
      *
      * @param key
      * @param placeholderValues
      */
     protected final void addGlobalError(String key, String[] placeholderValues) {
         resultContainer.addGlobalError(new GlobalError(key, placeholderValues, getLocale()));
-    }
-
-    protected final void addGlobalError(String key, String[] placeholderValues, Throwable t) {
-        GlobalError ge = new GlobalError(key, placeholderValues, getLocale());
-        ge.initCause(t);
-        resultContainer.addGlobalError(ge);
     }
 
     /**
@@ -470,10 +440,6 @@ public abstract class AbstractNodeAction extends Action {
             }
         }
 
-        if (securityContext != null && securityContext.length() > 0) {
-            node.setContext(securityContext);
-        }
-
         for (String field : dateFields.keySet()) {
             try {
                 if (!nm.hasField(field)) {
@@ -485,7 +451,7 @@ public abstract class AbstractNodeAction extends Action {
                     setChanged();
                 }
             } catch (ParseException e) {
-                addFieldErrorTypeMessage(field, e);
+                addFieldErrorTypeMessage(field, e.getMessage());
             }
         }
 
@@ -557,7 +523,7 @@ public abstract class AbstractNodeAction extends Action {
 
             }
         } catch (IOException e) {
-            addFieldErrorTypeMessage("file", e);
+            addFieldErrorTypeMessage("file", "" + e);
         }
         if (changed) {
             setChanged();

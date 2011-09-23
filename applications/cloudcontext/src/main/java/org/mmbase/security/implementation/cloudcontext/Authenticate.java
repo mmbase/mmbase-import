@@ -32,10 +32,9 @@ import org.mmbase.util.ResourceWatcher;
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-public class Authenticate extends CloudContextAuthentication implements java.io.Serializable {
-    private static final long serialVersionUID = 0L;
-
+public class Authenticate extends CloudContextAuthentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
+
 
     protected static final String ADMINS_PROPS = "admins.properties";
 
@@ -202,7 +201,7 @@ public class Authenticate extends CloudContextAuthentication implements java.io.
                                                            + "  and 'class' are supported");
         }
         if (node == null)  return null;
-        return new User(Authenticate.this, node, getKey(), type);
+        return new User(node, getKey(), type);
     }
 
     public static User getLoggedInExtraAdmin(String userName) {
@@ -216,15 +215,15 @@ public class Authenticate extends CloudContextAuthentication implements java.io.
         }
         User user = (User) userContext;
         if (user.node == null) {
-            log.warn("No node associated to user object, --> user object is invalid " + user);
+            log.debug("No node associated to user object, --> user object is invalid");
             return false;
         }
         if (! user.isValidNode()) {
-            log.warn("Node associated to user object, is invalid " + user);
+            log.debug("Node associated to user object, is invalid");
             return false;
         }
         if ( user.getKey() != getKey()) {
-            log.warn(user.toString() + "(" + user.getClass().getName() + ") was NOT valid (different unique number " + user.getKey() + " != " + getKey() + ")");
+            log.service(user.toString() + "(" + user.getClass().getName() + ") was NOT valid (different unique number)");
             return false;
         }
         log.debug(user.toString() + " was valid");
@@ -280,7 +279,7 @@ public class Authenticate extends CloudContextAuthentication implements java.io.
         private long   l;
         private Rank   r = Rank.ADMIN;
         LocalAdmin(MMObjectNode userNode, String user, String app) {
-            super(Authenticate.this, userNode == null ? new AdminVirtualNode() : userNode, Authenticate.this.getKey(), app);
+            super(userNode == null ? new AdminVirtualNode() : userNode, Authenticate.this.getKey(), app);
             l = extraAdminsUniqueNumber;
             userName = user;
         }

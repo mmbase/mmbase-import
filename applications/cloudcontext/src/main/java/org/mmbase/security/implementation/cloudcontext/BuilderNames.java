@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.cloudcontext;
 
-import org.mmbase.module.core.NodeSearchQuery;
+import org.mmbase.storage.search.implementation.NodeSearchQuery;
 import java.util.*;
 
 /**

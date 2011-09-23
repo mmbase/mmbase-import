@@ -46,9 +46,11 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
 
     public PageContextBacking(PageContext pc) {
         pageContext = pc;
+        if (pageContext.getRequest() == null) {
+            log.warn("PageContext " + pageContext + " has no request.", new Exception());
+        }
     }
 
-    @Override
     public void pushPageContext(PageContext pc) {
         assert pageContext == null || pageContext == pc;
         if (log.isDebugEnabled()) {
@@ -56,19 +58,18 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
         }
     }
 
-    @Override
     public void pullPageContext(PageContext pc) {
 
     }
 
-    @Override
     public PageContext getPageContext() {
         return pageContext;
     }
 
-    @Override
     public void setJspVar(PageContext pc, String jspvar, int vartype, Object value) {
-        if (jspvar == null) return;
+        if (jspvar == null) {
+            return;
+        }
         if (value == null) return;
         jspvars.add(jspvar);
         // When it doesn't, it goes ok. (at least I think that this is the difference between orion and tomcat)
@@ -98,21 +99,17 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
             }
 
             ///Collection<String> names = unwrapped.keySet();
-            @Override
             public Iterator<Map.Entry<String, Object>> iterator() {
                 return new Iterator<Map.Entry<String, Object>>() {
                     Iterator<String> i = names.iterator();
                     String name;
-                    @Override
                     public Map.Entry<String, Object> next() {
                         name = i.next();
 
                         return new Map.Entry<String, Object>() {
-                            @Override
                             public String  getKey() {
                                 return name;
                             }
-                            @Override
                             public Object getValue() {
                                 try {
                                     return pageContext.findAttribute(name);
@@ -122,7 +119,6 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
                                     return null;
                                 }
                             }
-                            @Override
                             public Object setValue(Object value) {
                                 Object was = pageContext.findAttribute(name);
                                 if (value != null) {
@@ -135,11 +131,9 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
                             }
                         };
                     }
-                    @Override
                     public boolean hasNext() {
                         return i.hasNext();
                     }
-                    @Override
                     public void remove() {
                         pageContext.removeAttribute(name, SCOPE);
                         nulls.remove(name);
@@ -147,7 +141,6 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
                     }
                 };
             }
-            @Override
             public int size() {
                 return names.size();
             }
@@ -175,7 +168,6 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
             return false;
         }
     }
-    @Override
     public Object getOriginal(String key) {
         if (key == null) {
             return null; // pageContext cannot accept null keys
@@ -185,14 +177,14 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
             return value;
         }
         if (pageContext.getRequest() == null) {
-            log.warn("PageContext " + pageContext + " has no request.");
+            log.debug("PageContext " + pageContext + " has no request.", new Exception());
 
             // findAttribute would throw NPE. This is no good, you shouldn't have had the
             // pageContext in the first place. Probably it was stored in a the session or so?
             return null;
         } else {
             try {
-                return pageContext.findAttribute(key);
+                return pageContext.findAttribute((String) key);
             } catch (Exception e) {
                 throw new RuntimeException(" for " + (key == null ? "NULL" : (key.getClass() + ":" + key)) + "  " + e.getMessage() , e);
             }
@@ -200,7 +192,6 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
     }
 
     @Override
-    @SuppressWarnings("element-type-mismatch")
     public boolean containsKey(Object key) {
         if (key instanceof String) {
             return pageContext.findAttribute((String) key) != null ||  nulls.contains(key);
@@ -209,12 +200,10 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
         }
     }
 
-    @Override
     public boolean containsOwnKey(String key) {
         return unwrapped.containsKey(key);
     }
 
-    @Override
     public Map<String, Object> getOriginalMap() {
         return unwrapped;
     }
@@ -225,7 +214,6 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
         jspvars.clear();
     }
 
-    @Override
     public boolean isELIgnored() {
         return false;
     }

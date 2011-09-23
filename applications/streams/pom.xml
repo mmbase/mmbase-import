@@ -6,14 +6,14 @@
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-application-parent</artifactId>
-    <version>2.0-SNAPSHOT</version>
-    <relativePath>../../maven-base/applications/pom.xml</relativePath>
+    <version>1.9-SNAPSHOT</version>
   </parent>
 
 
   <artifactId>mmbase-streams</artifactId>
-  <name>MMBase2 Streams</name>
+  <name>MMBase Streams</name>
   <packaging>war</packaging>
+  <version>${mmbase.version}</version>
 
   <description>
     Support for maintenance of media files in MMBase itself. Uploading, transcoding, and serving.
@@ -29,7 +29,6 @@
       </comments>
     </license>
   </licenses>
-
 
   <build>
     <plugins>
@@ -53,14 +52,7 @@
       </plugin>
     </plugins>
   </build>
-
   <dependencies>
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-core</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-resources</artifactId>

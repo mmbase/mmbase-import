@@ -1,0 +1,63 @@
+<mm:content
+    type="application/xml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:oip="urn:jsptagdir:/WEB-INF/tags/oip"
+    >
+  <jsp:output omit-xml-declaration="true" />
+    <mm:cloud method="asis">
+      
+      <script src="${mm:link('/mmbase/components/streams/upload.js')}" type="text/javascript"><jsp:text><!-- help ie --></jsp:text></script>
+      <mm:validation 
+            nodemanagers="streamsources"
+            submit="#submitupload" />      
+      
+      <meta name="ContextRoot" content="${mm:link('/')}" />
+      
+      <style type="text/css" media="all">
+      div.progressInfo
+      {
+      	width: auto;
+      	border: 2px solid #aaa;
+      	padding: 2px 4px 0;
+      	font-weight: bold;
+      	text-align: left;
+      	position: relative;
+      	height: 22px;
+      	margin: 12px 0 12px 0;
+      	background-color: #e0f0e0;
+      }
+      div.progressInfo p { margin: 2px 0; }
+      
+      div.PROGRESS, div.DONE
+      {
+      	background-color: #708A23;
+      	height: 24px;
+      	position: absolute;
+      	top: 0;
+      	left: 0;
+      	border-right: 2px solid #aaa;
+      }
+      
+      div.progressInfo span.percentage
+      {
+      	position: relative;
+      	top: 0;
+      	left: 2px;
+      	color: #000;
+      }
+      
+      div.progressInfo span.speed
+      {
+      	position: relative;
+      	top: 0;
+      	left: 12px;
+      	color: #000;
+      }
+      </style>
+          
+    </mm:cloud>
+</mm:content>

@@ -17,7 +17,6 @@ import org.xml.sax.InputSource;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.BuilderReader;
@@ -105,7 +104,6 @@ public class TypeDef extends MMObjectBuilder {
      * @param node The object to insert. The object need be of the same type as the current builder.
      * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
      */
-    @Override
     public int insert(String owner, MMObjectNode node) {
         return insert(owner, node, true);
     }
@@ -172,7 +170,6 @@ public class TypeDef extends MMObjectBuilder {
      * @return true if commit successful
      */
 
-    @Override
     public boolean commit(MMObjectNode node) {
         log.service("Commit of builder-node with name '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
         try {
@@ -220,7 +217,6 @@ public class TypeDef extends MMObjectBuilder {
      * @param node The node to remove.
      * @throws RuntimeException When the operation could not be performed
      */
-    @Override
     public void removeNode(MMObjectNode node) {
         log.info("Remove of builder-node with name '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
         // only delete when builder is completely empty...
@@ -283,7 +279,7 @@ public class TypeDef extends MMObjectBuilder {
     public int getIntValue(String builderName) {
         Integer result = getNameToNumberCache().get(builderName);
         if (result != null) {
-            return result;
+            return result.intValue();
         } else {
             return -1;
         }
@@ -355,7 +351,6 @@ public class TypeDef extends MMObjectBuilder {
      * @param field the fieldname that is requested
      * @return the result of the 'function', or null if no valid functions could be determined.
      */
-    @Override
     public Object getValue(MMObjectNode node, String field) {
         if (log.isDebugEnabled()) {
             log.debug("node:" + node.getNumber() + " field: " + field);
@@ -415,7 +410,6 @@ public class TypeDef extends MMObjectBuilder {
      * @return <code>true</code> When an update is required(when changed),
      * <code>false</code> if original value was set back into the field.
      */
-    @Override
     public boolean setValue(MMObjectNode node, String fieldName, Object originalValue) {
         Object newValue = node.retrieveValue(fieldName);
         if (fieldName.equals("name")) {
@@ -445,7 +439,6 @@ public class TypeDef extends MMObjectBuilder {
     /**
      * @javadoc
      */
-    @Override
     public boolean fieldLocalChanged(String number, String builder, String field, String value) {
         if (field.equals("state")) {
             if (value.equals("4")) {
@@ -501,7 +494,7 @@ public class TypeDef extends MMObjectBuilder {
         // first get all the info we need from the builder allready running
         MMObjectBuilder oldbul = mmb.getBuilder(objectname);
         String classname = oldbul.getClass().getName();
-        String desc = oldbul.getDescription();
+        String description = oldbul.getDescription();
 
         try {
             Class newclass = Class.forName("org.mmbase.module.builders." + classname);
@@ -512,7 +505,7 @@ public class TypeDef extends MMObjectBuilder {
 
             bul.setMMBase(mmb);
             bul.setTableName(objectname);
-            bul.setDescription(desc);
+            bul.setDescription(description);
             bul.init();
             mmb.addBuilder(objectname, bul);
         } catch (Exception e) {
@@ -528,7 +521,6 @@ public class TypeDef extends MMObjectBuilder {
      * @param node The node to display
      * @return the display of the node as a <code>String</code>
      */
-    @Override
     public String getGUIIndicator(MMObjectNode node) {
         return getSingularName(node.getStringValue("name"), null);
     }
@@ -538,7 +530,6 @@ public class TypeDef extends MMObjectBuilder {
      * The GUIIndicator can depend on the locale. Override this function
      * @since MMBase-1.6
      */
-    @Override
     protected String getLocaleGUIIndicator(Locale locale, String field, MMObjectNode node) {
         if (field == null || "".equals(field)) {
             return getLocaleGUIIndicator(locale, node);
@@ -551,7 +542,6 @@ public class TypeDef extends MMObjectBuilder {
         return null;
     }
 
-    @Override
     protected String getLocaleGUIIndicator(Locale locale, MMObjectNode node) {
         String rtn =  getSingularName(node.getStringValue("name"), locale.getLanguage());
         if (rtn == null) return node.getStringValue("name");
@@ -583,7 +573,6 @@ public class TypeDef extends MMObjectBuilder {
     /**
      * @javadoc
      */
-    @Override
     public Vector<String> getList(PageInfo sp,StringTagger tagger, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd = tok.nextToken();
@@ -594,14 +583,13 @@ public class TypeDef extends MMObjectBuilder {
         return null;
     }
 
-    @Override
     protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         log.debug("executefunction of typedef");
         if (function.equals("info")) {
             List<Object> empty = new ArrayList<Object>();
             java.util.Map<String,String> info = (java.util.Map<String,String>) super.executeFunction(node, function, empty);
             info.put("gui", info.get("info") + " (localized)");
-            if (args == null || args.isEmpty()) {
+            if (args == null || args.size() == 0) {
                 return info;
             } else {
                 return info.get(args.get(0));

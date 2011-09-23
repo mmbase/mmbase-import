@@ -5,10 +5,7 @@ body {
 }
 
 
-div.searchneeded .searchresult.implicit {
-  display: none;
-}
-div.nosearchneeded form.searchform {
+div.searchresult.implicit {
   display: none;
 }
 

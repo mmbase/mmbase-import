@@ -639,7 +639,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                     unionRelationConstraints.append(andElements).append(" AND ");
                 }
 
-                unionRelationConstraints.append(" ").append(combinedElement).append(" ");
+                unionRelationConstraints.append(" " + combinedElement + " ");
 
                 if (log.isDebugEnabled()) {
                     log.trace("Union relation constraint " + teller + " : " + unionRelationConstraints);
@@ -695,7 +695,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                         // search for the matching field to obtain the number of the field
                         if (field.equals(orderByField.toString())) {
                             // match found
-                            sb.append(i + 1).append(" ");
+                            sb.append((i + 1) + " ");
                             // prevent that the field is listed twice in this order-by
                             found = true;
                             break;
@@ -824,9 +824,8 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     private void closeInformix(MultiConnection activeConnection) {
-        Connection con;
+        Connection con = activeConnection.unwrap(Connection.class);
         try {
-            con = activeConnection.unwrap(Connection.class);
             Method scrub = Class.forName("com.informix.jdbc.IfxConnection").getMethod("scrubConnection");
             scrub.invoke(con);
         } catch (Exception e) {

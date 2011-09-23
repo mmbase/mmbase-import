@@ -22,8 +22,12 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 package org.mmbase.streams.thumbnails;
 
 import java.util.*;
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.ContextProvider;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.core.event.*;
 import org.mmbase.util.logging.*;
 

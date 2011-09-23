@@ -132,7 +132,6 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     /**
      * @since MMBase-1.9.2
      */
-    @Override
     public Set<Entry<String, Object>> entrySet() {
         return entrySet(false);
     }
@@ -144,10 +143,6 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
 
     private   final String id;
 
-    // first non serializable parent must have non-argument constructor http://www.jguru.com/faq/view.jsp?EID=251942
-    protected ContextContainer() {
-        id = null;
-    }
 
     /**
      * Since a ContextContainer can contain other ContextContainer, it
@@ -439,7 +434,9 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
      */
     void unRegisterAll(Set<String> set) throws JspTagException {
         if (set == null) return;
-        for (String key : set) {
+        Iterator<String> i = set.iterator();
+        while (i.hasNext()) {
+            String key = i.next();
             unRegister(key);
         }
 
@@ -458,7 +455,6 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     }
 
     @Override
-    @SuppressWarnings("element-type-mismatch")
     public Object remove(Object key) {
         return getBacking().remove(key);
     }
@@ -531,11 +527,12 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     public static Object fixEncoding(Object value, PageContext pageContext) throws TaglibException {
         HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
         String enc = req.getCharacterEncoding();
+
         if (enc == null) {
             enc = getDefaultCharacterEncoding(pageContext);
         } else {
             // I think this happens seldom, if ever.
-            log.debug("form encoding specified: " + enc);
+            log.debug("form encoding specified: " + enc + " no need to fix anything for " + value);
             // but _if_ it happens, don't try to be smarter then the servlet container. It would have handled it correctly then.
             return value;
         }
@@ -611,11 +608,13 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
             HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
             String[] resultvec = req.getParameterValues(referId);
             if (resultvec != null) {
-                if (log.isDebugEnabled()) log.debug("Found: " + resultvec);
                 if (resultvec.length > 1) {
                     result = fixEncoding(java.util.Arrays.asList(resultvec), pageContext);
                 } else {
                     result = fixEncoding(resultvec[0], pageContext);
+                }
+                if (log.isDebugEnabled()) {
+                    log.debug("Found: " + Arrays.asList(resultvec));
                 }
             }
         }
@@ -741,7 +740,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
             return false;
         } else {
             if (value instanceof Collection) {
-                if (((Collection) value).isEmpty()) return false;
+                if (((Collection) value).size() == 0) return false;
             }
             return true;
         }
@@ -805,19 +804,15 @@ class ContextContainerPair extends Pair {
         super(k, w);
         context = c;
     }
-    @Override
     final boolean containsKey(String key, boolean checkParent) throws JspTagException {
         return context.containsKey(key, checkParent);
     }
-    @Override
     final Object get(String key, boolean checkParent) throws JspTagException {
         return context.get(key, checkParent);
     }
-    @Override
     final void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException {
         context.register(newId, n, check, checkParent);
     }
-    @Override
     final void unRegister(String key, boolean checkParent) throws JspTagException {
         context.unRegister(key, checkParent);
     }
@@ -833,22 +828,18 @@ class MapPair extends Pair {
         super(k, w);
         map = c;
     }
-    @Override
     final boolean containsKey(String key, boolean checkParent) throws JspTagException {
         if (checkParent) throw new JspTagException("Cannot check parent of Map");
         return map.containsKey(key);
     }
-    @Override
     final Object get(String key, boolean checkParent) throws JspTagException {
         if (checkParent) throw new JspTagException("Cannot check parent of Map");
         return map.get(key);
     }
-    @Override
     final void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException {
         if (checkParent) throw new JspTagException("Cannot check parent of Map");
         map.put(newId, n);
     }
-    @Override
     final void unRegister(String key, boolean checkParent) throws JspTagException {
         if (checkParent) throw new JspTagException("Cannot check parent of Map");
         map.remove(key);
@@ -864,7 +855,7 @@ class MapPair extends Pair {
  */
 class BeanPair extends Pair {
     private final Object bean;
-    private final Class<?> clazz;
+    private final Class<? extends Object> clazz;
     BeanPair(Object c, String k, boolean w) {
         super(k, w);
         bean = c;
@@ -893,14 +884,12 @@ class BeanPair extends Pair {
         //}
         return method;
     }
-    @Override
     final boolean containsKey(String key, boolean checkParent) throws JspTagException {
         if (checkParent) {
             throw new JspTagException("Cannot check parent of Bean");
         }
         return getMethod(key) != null;
     }
-    @Override
     final Object get(String key, boolean checkParent) throws JspTagException {
         if (checkParent) throw new JspTagException("Cannot check parent of Bean");
         try {
@@ -911,11 +900,9 @@ class BeanPair extends Pair {
             throw new TaglibException(iae.getClass() + " Method " + getMethod(key) + " for " + bean + ": " + iae.getMessage(), iae);
         }
     }
-    @Override
     final void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException {
         throw new UnsupportedOperationException("Cannot register in a bean");
     }
-    @Override
     final void unRegister(String key, boolean checkParent) throws JspTagException {
         throw new UnsupportedOperationException("Cannot unregister in a bean");
     }

@@ -36,8 +36,10 @@
                            description="Font file to use to produce the text. E.g. mm:fonts/arial.ttf (mm: is mean 'mmbase configuration directory')"
                            />
 
-  <!-- If the key is stated explicitely, no new key is generated, but this given one is shown. -->
-  <jsp:directive.attribute name="key"      type="java.lang.String" />
+  <jsp:directive.attribute name="key"      type="java.lang.String"
+                           description="If the key is stated explicitely, no new key is generated, but this given one is shown"
+
+                           />
   <jsp:scriptlet>
     InputStream input = null;
     String text = null;;

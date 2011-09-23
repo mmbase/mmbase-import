@@ -21,12 +21,10 @@ public class BasicDepthProvider implements DepthProvider {
     public BasicDepthProvider(int d) {
         depth = d;
     }
-    @Override
     public int getDepth() {
         return depth;
     }
 
-    @Override
     public String toString() {
         return "DEPTH:" + depth;
     }

@@ -16,6 +16,7 @@ import java.util.*;
 import java.io.*;
 
 import org.mmbase.module.database.*;
+import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
 import org.mmbase.util.logging.Logging;
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.Logger;
  */
 public class ForumSwapManager implements Runnable {
 
-    static private Logger log = Logging.getLoggerInstance(ForumSwapManager.class);
+    static private Logger log = Logging.getLoggerInstance(ForumSwapManager.class); 
 
     // thread
     Thread kicker = null;
@@ -45,7 +46,7 @@ public class ForumSwapManager implements Runnable {
     * init()
     */
     public void init() {
-        this.start();
+        this.start();    
     }
 
 
@@ -54,11 +55,11 @@ public class ForumSwapManager implements Runnable {
      */
     public void start() {
         /* Start up the main thread */
-        if (kicker == null) {
+        if (kicker == null) {            
             kicker = MMBaseContext.startThread(this,"forumswapmanager");
         }
     }
-
+    
     /**
      * Stops the main Thread.
      */
@@ -72,7 +73,7 @@ public class ForumSwapManager implements Runnable {
      * Main loop, exception protected
      */
     public void run () {
-        kicker.setPriority(Thread.MIN_PRIORITY + 1);
+        kicker.setPriority(Thread.MIN_PRIORITY + 1);  
         while (kicker != null) {
             try {
                 doWork();
@@ -87,13 +88,13 @@ public class ForumSwapManager implements Runnable {
      * Main work loop
      */
     private void doWork() {
-        kicker.setPriority(Thread.MIN_PRIORITY+1);
+        kicker.setPriority(Thread.MIN_PRIORITY+1);  
         try {
             expirePosters();
-            maintainMemoryCaches();
+            maintainMemoryCaches();		
             Thread.sleep(sleeptime);
         } catch (InterruptedException f2){
-
+            
         }
     }
 

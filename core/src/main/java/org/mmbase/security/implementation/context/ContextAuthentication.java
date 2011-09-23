@@ -35,6 +35,7 @@ import org.mmbase.util.logging.Logging;
 public class ContextAuthentication extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(ContextAuthentication.class);
     private Map<String, ContextLoginModule>  loginModules = new LinkedHashMap<String, ContextLoginModule>();
+    private Document document;
 
     /** Public ID of the Builder DTD version 1.0 */
     public static final String PUBLIC_ID_SECURITY_CONTEXT_CONFIG_1_0 = "-//MMBase//DTD security context config 1.0//EN";
@@ -56,13 +57,11 @@ public class ContextAuthentication extends Authentication {
         attributes.put(STORES_CONTEXT_IN_OWNER, Boolean.TRUE);
     }
 
-    @Override
     protected void load() {
         if (log.isDebugEnabled()) {
             log.debug("using: '" + configResource + "' as config file for context-authentication");
         }
 
-        Document document;
         try {
             InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configResource);
             document = new DocumentReader(in, this.getClass()).getDocument();
@@ -117,7 +116,6 @@ public class ContextAuthentication extends Authentication {
     }
 
 
-    @Override
     public UserContext login(String moduleName, Map<String, ?> loginInfo, Object[] parameters) throws SecurityException {
         // look if we can find our login module...
         if(!loginModules.containsKey(moduleName)) {
@@ -141,7 +139,6 @@ public class ContextAuthentication extends Authentication {
     /**
      * this method does nothing..
      */
-    @Override
     public boolean isValid(UserContext userContext) throws SecurityException {
         if (userContext == null) return false;
 
@@ -154,9 +151,7 @@ public class ContextAuthentication extends Authentication {
         return false;
     }
 
-    @Override
     public String[] getTypes() {
-        Set<String> types = loginModules.keySet();
-        return types.toArray(new String[types.size()]);
+        return loginModules.keySet().toArray(new String[] {});
     }
 }

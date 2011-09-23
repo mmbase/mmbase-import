@@ -25,11 +25,11 @@ public interface ParamHandler {
     /**
      * @since MMBase-1.9
      */
-    static final String KEY = "org.mmbase.paramhandler";
+    public static final String KEY = "org.mmbase.paramhandler";
     /**
      * @since MMBase-1.9
      */
-    static final int SCOPE = PageContext.REQUEST_SCOPE;
+    public static final int SCOPE = PageContext.REQUEST_SCOPE;
 
     void addParameter(String key, Object value) throws JspTagException;
 

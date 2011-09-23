@@ -16,7 +16,6 @@ import java.util.concurrent.*;
 import org.mmbase.util.ThreadPools;
 
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.implementation.*;
@@ -55,7 +54,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, org.mm
             }
             public Long getFunctionValue(Parameters parameters) {
                 int now = (int) (System.currentTimeMillis() / 1000);
-                return (long) now - MMBase.startTime;
+                return Long.valueOf(now - MMBase.startTime);
             }
         };
     {
@@ -342,7 +341,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, org.mm
     }
 
     /**
-     * @return Returns the intervalTime in ms.
+     * @return Returns the intervalTime.
      */
     public long getIntervalTime() {
         return intervalTime * 1000;

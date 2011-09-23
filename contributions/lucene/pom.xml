@@ -4,50 +4,19 @@
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-application-parent</artifactId>
-    <version>2.0-SNAPSHOT</version>
-    <relativePath>../../maven-base/applications/pom.xml</relativePath>
+    <version>1.9-SNAPSHOT</version>
   </parent>
 
   <artifactId>mmbase-lucene</artifactId>
   <name>MMBase Lucene</name>
+  <version>${mmbase.version}</version>
   <packaging>war</packaging>
 
   <description>Lucene is an apache product that can index objects. This wraps it into an mmbase module, to index MMBase queries. It provides</description>
 
   <properties>
-    <lucene.version>2.9.1</lucene.version><!-- See LUCENE-20 for why we don't update to 2.9.0 or 3.0 yet -->
+    <lucene.version>2.4.1</lucene.version><!-- See LUCENE-20 for why we don't update to 2.9.0 yet -->
   </properties>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <systemPropertyVariables>
-            <mmbase.defaultcloudcontext>mock:local</mmbase.defaultcloudcontext>
-          </systemPropertyVariables>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <configuration>
-          <systemProperties>
-          </systemProperties>
-          <webXml>${basedir}/src/test/webapp/WEB-INF/web.xml</webXml>
-          <webAppConfig>
-            <contextPath>/mmbase-lucene-test</contextPath>
-            <baseResource implementation="org.mortbay.resource.ResourceCollection">
-              <resourcesAsCSV>src/main/webapp,${basedir}/target/classes,src/test/webapp</resourcesAsCSV>
-            </baseResource>
-          </webAppConfig>
-        </configuration>
-        <dependencies>
-        </dependencies>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
@@ -87,14 +56,6 @@
       <version>1.0</version>
     </dependency>
 
-    <!-- TODO: remove core dependency. -->
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-core</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-crontab</artifactId>
@@ -103,7 +64,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- dependency on taglib makes no sense -->
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-taglib</artifactId>
@@ -111,30 +71,12 @@
       <classifier>classes</classifier>
       <scope>provided</scope>
     </dependency>
-
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-mynews</artifactId>
-      <version>${mmbase.version}</version>
-      <classifier>classes</classifier>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
-
   </dependencies>
 
   <repositories>
     <repository>
       <id>mmbase</id>
       <url>http://www.mmbase.org/maven2</url>
-    </repository>
-    <repository>
-      <id>mmbase_snapshots</id>
-      <url>http://www.mmbase.org/snapshots/</url>
     </repository>
   </repositories>
 </project>

@@ -39,7 +39,6 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
     /**
      * @since MMBase-1.8
      */
-    @Override
     public void setCachepolicy(String t) throws JspTagException {
         cachePolicy = getAttribute(t);
     }
@@ -52,7 +51,6 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
     }
 
 
-    @Override
     public int doStartTag() throws JspTagException {
         initTag();
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);

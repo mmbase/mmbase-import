@@ -40,7 +40,11 @@
       </head>
       <body>
         <h1>Search and Relate examples/tests</h1>
-
+        <ol>
+          <li><a href="#mmrelatednodes">mm-sr:relatednodes</a></li>
+          <li><a href="#mmrelate">mm-sr:relate</a></li>
+          <li><a href="#mmpathsearch">mm-sr:pathsearch</a></li>
+        </ol>
 
         <div class="session">
           <mm:import externid="invalidate" />
@@ -67,7 +71,7 @@
         </div>
 
 
-        <h2>mm-sr:relatednodes</h2>
+        <h2 id="mmrelatednodes">mm-sr:relatednodes</h2>
         <ul>
           <li class="done">
             <mm:link page="relatednodes-1.jspx" referids="${referids}">
@@ -187,11 +191,6 @@
               <a href="${_}">Using your own searcher implementation</a>
             </mm:link>
           </li>
-          <li class="done">
-            <mm:link page="relatednodes-precreate.jspx" referids="${referids}">
-              <a href="${_}">Using precreate attribute</a>
-            </mm:link>
-          </li>
         </ul>
 
         <h3>TODO</h3>
@@ -234,7 +233,7 @@
           <li>Update documentation (see below for current version)</li>
         </ul>
 
-        <h2>mm-sr:relate</h2>
+        <h2 id="mmrelate">mm-sr:relate</h2>
         <ul>
           <li class="done">
             <mm:link page="search.jspx" referids="${referids}">
@@ -274,10 +273,16 @@
             </mm:link>
           </li>
 
+          <li class="">
+            <mm:link page="relate-my_editors.jspx" referids="${referids}">
+              <a href="${_}">my_editors style mm-sr:relate</a><br />
+               with the ability to edit relations and with links to edit nodes
+            </mm:link>
+          </li>
 
           <li>Make more test-cases for this tag</li>
         </ul>
-        <h2>mm-sr:pathsearch</h2>
+        <h2 id="mmpathsearch">mm-sr:pathsearch</h2>
         <ul>
           <li class="done">
             <mm:link page="pathsearch.jspx" referids="${referids}">

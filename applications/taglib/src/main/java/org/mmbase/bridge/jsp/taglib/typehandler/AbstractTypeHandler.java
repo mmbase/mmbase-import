@@ -47,7 +47,6 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         this.tag = tag;
 
     }
-    @Override
     public void init() {
         eh = null;
         gotEnumHandler = false;
@@ -69,29 +68,27 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             IntegerDataType idt = (IntegerDataType) dt;
             final int min = idt.getMin() + (idt.isMinInclusive() ? 0 : 1);
             final int max = idt.getMax() - (idt.isMaxInclusive() ? 0 : 1);
+
             if ((long) max - min < 200L) {
                 return new EnumHandler(tag, node, field) {
                     @Override
                     protected Iterator<Entry<Integer, Integer>> getIterator(Node node, Field field) {
                         return new Iterator<Entry<Integer, Integer>>() {
                             int i = min;
-
-                            @Override
                             public boolean hasNext() {
                                 return i <= max;
                             }
-                            @Override
                             public Entry<Integer, Integer> next() {
                                 Integer value = i++;
                                 return new Entry<Integer, Integer>(value, value);
                             }
-                            @Override
                             public void remove() {
                                 throw new UnsupportedOperationException();
                             }
                         };
                     }
                 };
+
             }
         }
         if (dt instanceof LongDataType) {
@@ -100,26 +97,23 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             final long max = ldt.getMax() - (ldt.isMaxInclusive() ? 0 : 1);
             if ((double) max - min < 200.0) {
                 return new EnumHandler(tag, node, field) {
-                    @Override
-                    protected Iterator<Entry<Long, Long>> getIterator(Node node, Field field) {
-                        return new Iterator<Entry<Long, Long>>() {
-                            long i = min;
 
-                            @Override
-                            public boolean hasNext() {
-                                return i <= max;
-                            }
-                            @Override
-                            public Entry<Long, Long> next() {
-                                Long value = i++;
-                                return new Entry<Long, Long>(value, value);
-                            }
-                            @Override
-                            public void remove() {
-                                throw new UnsupportedOperationException();
-                            }
-                        };
-                    }
+                        @Override
+                        protected Iterator<Entry<Long, Long>> getIterator(Node node, Field field) {
+                            return new Iterator<Entry<Long, Long>>() {
+                                long i = min;
+                                public boolean hasNext() {
+                                    return i <= max;
+                                }
+                                public Entry<Long, Long> next() {
+                                    Long value = i++;
+                                    return new Entry<Long, Long>(value, value);
+                                }
+                                public void remove() {
+                                    throw new UnsupportedOperationException();
+                                }
+                            };
+                        }
                 };
             }
         }
@@ -132,7 +126,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (options != null) {
             int i = options.indexOf("extra:");
             if (i > -1) {
-                buf.append(" ").append(options.substring(i + 6)).append(" ");
+                buf.append(" " + options.substring(i + 6) + " ");
             }
         }
         return buf;
@@ -201,26 +195,12 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                     try {
                         buf.append(((org.mmbase.datatypes.LengthDataType) dt).getLength(value));
                     } catch (Exception e) {
-                        log.warn(e.getMessage(), e);
+                        log.warn(e.getMessage());
                         buf.append(node.getSize(field.getName()));
                     }
                 } else {
                     buf.append(node.getSize(field.getName()));
                 }
-            }
-            if (dt instanceof org.mmbase.datatypes.BinaryDataType) {
-                buf.append(" mm_mimetype_");
-                Object value  = getFieldValue(node, field, false);
-                if (value != null) {
-                    try {
-                        buf.append(((org.mmbase.datatypes.BinaryDataType) dt).getMimeType(value, node, field));
-                    } catch (Exception e) {
-                        log.warn(e.getMessage(), e);
-                    }
-                } else {
-                    buf.append("NULL");
-                }
-
             }
         }
         return buf.toString();
@@ -229,7 +209,6 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
-    @Override
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         eh = getEnumHandler(node, field);
         if (eh != null) {
@@ -250,7 +229,6 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     /**
      */
 
-    @Override
     public String htmlInputId(Node node, Field field) throws JspTagException {
         return prefixID(field.getName());
     }
@@ -313,7 +291,6 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     }
 
 
-    @Override
     public String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException {
         eh = getEnumHandler(node, field);
         if (eh != null) {
@@ -332,7 +309,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             log.debug("Value for field " + field + ": " + fieldValue + " and node " + node);
         }
         Collection<LocalizedString> col = dt.castAndValidate(convertToValidate(fieldValue, node, field), node, field);
-        if (col.isEmpty()) {
+        if (col.size() == 0) {
             // do actually set the field, because some datatypes need cross-field checking
             // also in an mm:form, you can simply commit.
             if (node != null && ! field.isReadOnly()) {
@@ -374,16 +351,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                 show.append("\" class=\"mm_check_error\">");
                 Locale locale =  tag.getLocale();
                 for (LocalizedString error : col) {
-                    // keys typically contain dots, which is used the
-                    // split the css class here.
-                    show.append("<span class='").append(error.getKey().replaceAll("\\.+", " ")).append("'>");
-                    // More specificly:
-                    // http://www.w3.org/TR/CSS21/grammar.html#scanner
-                    // Basically, a name may start with an underscore (_), a dash (-), or a letter(a–z), and then be immediately followed1) by a letter, or underscore, and THEN have any number of dashes, underscores, letters, or numbers2):
-
-                    //-?[_a-zA-Z]+[_a-zA-Z0-9-]*
-                    //
-
+                    show.append("<span class='" + error.getKey().replaceAll("\\.+", " ") + "'>");
                     Xml.XMLEscape(error.get(locale), show);
                     show.append("</span>");
                 }
@@ -415,7 +383,6 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    @Override
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         String fieldName = field.getName();
         Object fieldValue = getFieldValue(node, field, false);
@@ -438,7 +405,6 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    @Override
     public String whereHtmlInput(Field field) throws JspTagException {
         eh = getEnumHandler(null, field);
         if (eh != null) {
@@ -492,7 +458,6 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     }
 
 
-    @Override
     public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
         eh = getEnumHandler(null, field);
         if (eh != null) {
@@ -508,7 +473,6 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      * @return null if nothing to be searched, the constraint if constraint added
      */
 
-    @Override
     public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         eh = getEnumHandler(null, field);
         if (eh != null) {

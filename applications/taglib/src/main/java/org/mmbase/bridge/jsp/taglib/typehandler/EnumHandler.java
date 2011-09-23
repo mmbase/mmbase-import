@@ -56,7 +56,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     /**
      * @since MMBase-1.8
      */
-    protected Iterator getIterator(Node node, Field field) throws JspTagException {
+    protected Iterator getIterator(Node node, Field field) throws JspTagException  {
         DataType<Object> dataType = field.getDataType();
         Locale locale = tag.getLocale();
         return dataType.getEnumerationValues(locale, tag.getCloudVar(), node, field);
@@ -250,7 +250,6 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     }
 
 
-    @Override
     public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
         String name = prefix(field.getName() + "_search");
         String searchi =  Casting.toString(tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name));
@@ -264,11 +263,10 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    @Override
-    public String whereHtmlInput(Field field) throws JspTagException {
+    @Override public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
         String id = prefix(fieldName + "_search");
-        if ( tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
+        if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
             return "";
         } else {
             return super.whereHtmlInput(field);
@@ -276,8 +274,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     }
 
 
-    @Override
-    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+    @Override public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
         String id = prefix(fieldName + "_search");
         if (tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {

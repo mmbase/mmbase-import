@@ -28,7 +28,7 @@ import org.mmbase.module.core.MMObjectNode;
 public class RelationsCache extends Cache<Integer,List<MMObjectNode>> {
 
     // There will be only one list cache, and here it is:
-    private static final RelationsCache relationsCache;
+    private static RelationsCache relationsCache;
 
     public static RelationsCache getCache() {
         return relationsCache;

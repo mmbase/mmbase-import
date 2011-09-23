@@ -220,7 +220,6 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         referids = getAttribute(r);
     }
 
-    @Override
     public void addParameter(String key, Object value) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("adding parameter " + key + "/" + value);
@@ -361,10 +360,11 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
                 try {
                     String encoding = org.mmbase.util.GenericResponseWrapper.getXMLEncoding(body);
                     if (encoding == null) encoding = "UTF-8"; // it _must_ be XML.
-                    javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
+                    javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
                     DocumentBuilder db =  namespaceAware.getBoolean(this, true) ? documentBuilderNS : documentBuilder;
-                    String resource = "" + pageContext.getServletContext().getResource(request.getServletPath());
-                    doc = db.parse(new java.io.ByteArrayInputStream(body.getBytes(encoding)), resource);
+                    doc = db.parse(new java.io.ByteArrayInputStream(body.getBytes(encoding)),
+                                   pageContext.getServletContext().getResource(request.getServletPath()).toString()
+                                   );
                 } catch (Exception e) {
                     throw new TaglibException(e.getMessage() + "when parsing '" + body + "'", e);
                 }
@@ -516,7 +516,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
      *
      * It returns a String, even if it goes wrong, in which case the string contains the error
      * message.
-     * @param xsl A Source (representing the XSLT).
+     * @param A Source (representing the XSLT).
      * @return The result ot the transformation.
      */
     private String xslTransform(Document doc, Source xsl) throws JspTagException {
@@ -578,11 +578,13 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         //other options
         // a=b,c=d,e=f
         if (options != Attribute.NULL) {
-            for (String option : options.getList(this)) {
+            Iterator<String> i = options.getList(this).iterator();
+            while (i.hasNext()) {
+                String option = i.next();
                 // List   o = StringSplitter.split(option, "=");
-                List<String> o = Arrays.asList(option.trim().split("\\s*=\\s*"));
+                List<String> o = Arrays.asList( option.trim().split("\\s*=\\s*") );
                 if (o.size() != 2) {
-                    throw new JspTagException("Option '" + option + "' is not in the format key=value (required for XSL transformations)");
+                    throw  new JspTagException("Option '" + option + "' is not in the format key=value (required for XSL transformations)");
 
                 } else {
                     if (log.isDebugEnabled()) log.debug("Setting XSLT option " + option);
@@ -591,7 +593,9 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
             }
         }
         params.putAll(Referids.getReferids(referids, this));
-        for (Entry<String, Object> entry : extraParameters) {
+        Iterator<Entry<String, Object>> i = extraParameters.iterator();
+        while (i.hasNext()) {
+            Map.Entry<String, Object> entry = i.next();
             params.put(entry.getKey(), entry.getValue());
         }
 
@@ -603,7 +607,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
     }
     /**
      * @see   xslTransform
-     * @param xsl A name of an XSLT file.
+     * @param A name of an XSLT file.
      */
     private String xslTransform(Document doc, String xsl) throws JspTagException {
         try {

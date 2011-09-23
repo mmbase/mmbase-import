@@ -16,7 +16,7 @@
   <property name="tests.source.dir"        location="." />
   <property name="tests.work.dir"           location="work" />
   <property name="tests.database.dir"    value="${tests.work.dir}/data" />
-  <property name="version"                value="2.0-SNAPSHOT" />
+  <property name="version"                value="1.9-SNAPSHOT" />
 
   <property name="ui.class" value="junit.textui.TestRunner" />
 
@@ -73,7 +73,7 @@
     <echo message="Initing. Testing mmbase with java ${java.version}" />
     <path id="run.classpath">
       <fileset dir="target">
-        <include name="mmbase-tests-2-SNAPSHOT.jar" />
+        <include name="mmbase-tests-1.jar" />
       </fileset>
       <fileset dir="target/dependency">
         <include name="junit*.jar" />
@@ -83,9 +83,7 @@
         <include name="commons-fileupload*.jar" />
         <include name="mmbase-resources*.jar" />
         <include name="mmbase-richtext*.jar" />
-        <include name="mmbase-utils-${version}.jar" />
-        <include name="mmbase-bridge-${version}.jar" />
-        <include name="mmbase-core-${version}.jar" />
+        <include name="mmbase-${version}*.jar" />
       </fileset>
     </path>
     <path id="run.classpath.vpro-wizards">
@@ -132,6 +130,7 @@
       </fileset>
     </path>
 
+    <echo  message="${run.rmmci.client}" />
 
   </target>
 
@@ -204,7 +203,8 @@
             classpathref="run.classpath.rmmci"
             >
           <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
-          <jvmarg value="-Drmmci.bindname=remotecontext_test" />
+          <jvmarg value="-Drmmci.port=1221" />
+          <jvmarg value="-Drmmci.bindname=remotecontext" />
           <jvmarg value="-Drmmci.RMIRegistryServer=localhost" />
           <jvmarg value="-Duser.dir=${tests.work.dir}" />
         </java>
@@ -218,7 +218,7 @@
           >
         <arg value="org.mmbase.bridge.AllTests" />
         <jvmarg value="-Dnostartmmbase=" />
-        <jvmarg value="-Dmmbase.defaultcloudcontext=rmi://localhost:1111/remotecontext_test" />
+        <jvmarg value="-Dmmbase.defaultcloudcontext=rmi://localhost:1221/remotecontext" />
         <assertions><enable /></assertions>
       </java>
     </parallel>
@@ -289,7 +289,8 @@
           <jvmarg value="-Dnostartdb=" />
           <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
           <jvmarg value="-Dmmbaseroot.machinename=mmbase1" />
-          <jvmarg value="-Drmmci.bindname=remotecontext_test1" />
+          <jvmarg value="-Drmmci.port=1221" />
+          <jvmarg value="-Drmmci.bindname=remotecontext" />
           <jvmarg value="-Drmmci.RMIRegistryServer=localhost" />
           <jvmarg value="-Duser.dir=${tests.work.dir}" />
           <assertions><enable /></assertions>
@@ -306,7 +307,8 @@
             <jvmarg value="-Dnostartdb=" />
             <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
             <jvmarg value="-Dmmbaseroot.machinename=mmbase2" />
-            <jvmarg value="-Drmmci.bindname=remotecontext_test2" />
+            <jvmarg value="-Drmmci.port=1222" />
+            <jvmarg value="-Drmmci.bindname=remotecontext" />
             <jvmarg value="-Drmmci.RMIRegistryServer=localhost" />
             <jvmarg value="-Duser.dir=${tests.work.dir}" />
             <assertions><enable /></assertions>
@@ -442,7 +444,8 @@
             classpathref="run.classpath.rmmci"
             >
           <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
-          <jvmarg value="-Drmmci.bindname=remotecontext_test" />
+          <jvmarg value="-Drmmci.port=1221" />
+          <jvmarg value="-Drmmci.bindname=remotecontext" />
           <jvmarg value="-Drmmci.RMIRegistryServer=localhost" />
           <jvmarg value="-Duser.dir=${tests.work.dir}" />
         </java>

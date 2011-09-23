@@ -6,7 +6,6 @@ import java.util.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.module.corebuilders.InsRel;
 
 import org.mmbase.util.logging.*;
@@ -21,9 +20,9 @@ public class MyNewsBuilder extends org.mmbase.util.functions.ExampleBuilder {
         if ("magazine".equals(field)) {
             log.trace("Getting magazine virtual field");
             BasicSearchQuery query = new BasicSearchQuery();
-            query.addStep(this.getTableName());
+            query.addStep(this);
             MMObjectBuilder mags = getMMBase().getBuilder("mags");
-            BasicRelationStep relation = query.addRelationStep(((InsRel) getMMBase().getBuilder("posrel")).getTableName(), mags.getTableName());
+            BasicRelationStep relation = query.addRelationStep((InsRel) getMMBase().getBuilder("posrel"), mags);
             query.addField(relation.getNext(), mags.getField("number"));
             try {
                 List<MMObjectNode> nodes = getMMBase().getClusterBuilder().getClusterNodesFromQueryHandler(query);

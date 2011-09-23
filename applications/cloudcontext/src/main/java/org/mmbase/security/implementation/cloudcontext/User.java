@@ -42,8 +42,8 @@ public class User extends BasicUser implements UserContext, WeakNodeEventListene
     /**
      * @javadoc
      */
-    public User(Authentication a, MMObjectNode n, long l, String app) {
-        super(a, app, getIdentifier(n));
+    public User(MMObjectNode n, long l, String app) {
+        super(app);
         if (n == null) throw new IllegalArgumentException();
         node = n;
         key = l;
@@ -52,13 +52,15 @@ public class User extends BasicUser implements UserContext, WeakNodeEventListene
         }
     }
 
-    private static String getIdentifier(MMObjectNode n)  {
-        if (n == null) {
+    // javadoc inherited
+    @Override
+    public String getIdentifier()  {
+        if (node == null) {
             return "anonymous";
         } else {
-            MMObjectBuilder builder = n.getBuilder();
+            MMObjectBuilder builder = node.getBuilder();
             if (builder.hasField(Users.FIELD_USERNAME)) {
-                return n.getStringValue(Users.FIELD_USERNAME);
+                return node.getStringValue(Users.FIELD_USERNAME);
             } else {
                 return null;
             }
@@ -73,6 +75,7 @@ public class User extends BasicUser implements UserContext, WeakNodeEventListene
             return Authenticate.getInstance().getUserProvider().getRank(node);
         }
     }
+
 
     @Override
     public String getOwnerField() {
@@ -128,30 +131,17 @@ public class User extends BasicUser implements UserContext, WeakNodeEventListene
         final int number = in.readInt();
         key = in.readLong();
         if (number == -1) {
-            log.warn("Found node -1 on deserialization!. Interpreting as 'null'. User object was probably not correctly serialized, or not associated with a real node.");
+            log.warn("Found node -1 on deserialization!. Interpreting as 'null'. User object was probably not correctly serialized, or not assiociated with a real node.");
             node = null;
         } else {
-            boolean isUp;
-            try {
-                isUp = org.mmbase.bridge.LocalContext.getCloudContext().isUp();
-            } catch (Exception e) {
-                isUp = false;
-            }
-            if (isUp) {
-                MMObjectBuilder users = Authenticate.getInstance().getUserProvider().getUserBuilder();
-                node = users.getNode(number);
-                authentication = Authenticate.getInstance();
-            } else {
-                org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            org.mmbase.bridge.LocalContext.getCloudContext().assertUp();
-                            MMObjectBuilder users = Authenticate.getInstance().getUserProvider().getUserBuilder();
-                            node = users.getNode(number);
-                            User.this.authentication = Authenticate.getInstance();
-                        }
-                    });
-            }
+            org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
+                    public void run() {
+                        org.mmbase.bridge.LocalContext.getCloudContext().assertUp();
+                        MMObjectBuilder users = Authenticate.getInstance().getUserProvider().getUserBuilder();
+                        node = users.getNode(number);
+                        authentication = Authenticate.getInstance();
+                    }
+                });
         }
     }
 

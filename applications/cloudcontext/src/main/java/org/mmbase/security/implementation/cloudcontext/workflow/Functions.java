@@ -17,7 +17,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id$
+ * @version $Id: BasicContextProvider.java 37281 2009-07-27 12:28:24Z michiel $
  * @since  MMBase-1.9.6
  */
 public  class Functions  {

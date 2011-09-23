@@ -32,7 +32,6 @@ public class MayWriteTag extends NodeReferrerTag implements Condition {
     protected Attribute inverse = Attribute.NULL;
     protected Attribute number = Attribute.NULL;
 
-    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
     }
@@ -54,7 +53,6 @@ public class MayWriteTag extends NodeReferrerTag implements Condition {
         return node;
     }
 
-    @Override
     public int doStartTag() throws JspException {
         initTag();
         try {
@@ -68,7 +66,6 @@ public class MayWriteTag extends NodeReferrerTag implements Condition {
             return SKIP_BODY;
         }
     }
-    @Override
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
             try{

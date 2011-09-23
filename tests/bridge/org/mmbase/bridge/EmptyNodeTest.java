@@ -40,6 +40,7 @@ public class EmptyNodeTest extends NodeTest {
             }
             node = null;
         }
+
     }
 
     public void tearDown() {

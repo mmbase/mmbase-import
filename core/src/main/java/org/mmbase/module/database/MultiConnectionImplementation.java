@@ -70,7 +70,6 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
         state = CON_UNUSED;
     }
 
-    @Override
     public MultiPool getParent() {
         return parent;
     }
@@ -78,7 +77,6 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
     /**
      * @javadoc
      */
-    @Override
     public String getStateString() {
         if (state == CON_FINISHED) {
             return "Finished";
@@ -95,7 +93,6 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
     /**
      * @javadoc
      */
-    @Override
     public void setLastSQL(String sql) {
         lastSql = sql;
         state = CON_BUSY;
@@ -104,12 +101,10 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
     /**
      * @javadoc
      */
-    @Override
     public String getLastSQL() {
         return lastSql;
     }
 
-    @Override
     public Exception getStackTrace() {
         return stackTrace;
     }
@@ -117,7 +112,6 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
     /**
      * createStatement returns an SQL Statement object
      */
-    @Override
     public Statement createStatement() throws SQLException {
         MultiStatement s = new MultiStatement(this, con.createStatement());
         return s;
@@ -134,7 +128,6 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
      * @since MMBase-1.7.1
      */
 
-    @Override
     public boolean checkAfterException() throws SQLException {
         Statement s = null;
         ResultSet rs = null;
@@ -165,7 +158,6 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
      * committed with either a "commit" or "rollback" call.
      * By default new connections are initialized with autoCommit "true".
      */
-    @Override
     public void setAutoCommit(boolean enableAutoCommit) throws SQLException {
         try {
             con.setAutoCommit(enableAutoCommit);
@@ -182,7 +174,7 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
      * @since MMBase-1.7
      */
     private String getLogSqlMessage(long time) {
-        StringBuilder mes = new StringBuilder();
+        StringBuffer mes = new StringBuffer();
         mes.append('#');
         mes.append(queries);
         mes.append("  ");
@@ -196,7 +188,6 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
     /**
      * Close connections
      */
-    @Override
     public void close() throws SQLException {
         long time = System.currentTimeMillis() - getStartTimeMillis();
         long maxLifeTime = parent.getMaxLifeTime();
@@ -230,7 +221,6 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
     /**
      * Close connections
      */
-    @Override
     public void realclose() throws SQLException {
         con.close();
     }
@@ -246,7 +236,6 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
     /**
      * @javadoc
      */
-    @Override
     public void claim() {
         usage++;
         queries++;
@@ -259,7 +248,6 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
     /**
      * @javadoc
      */
-    @Override
     public void release() {
         startTimeMillis = 0;
         stackTrace = null;
@@ -268,7 +256,6 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
     /**
      * @javadoc
      */
-    @Override
     public int getUsage() {
         return usage;
     }
@@ -276,7 +263,6 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
     /**
      * @since MMBase-1.8
      */
-    @Override
     public void resetUsage() {
         usage = 0;
     }
@@ -284,7 +270,6 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
     /**
      * Returns the moment on which the last SQL statement was started in seconds after 1970.
      */
-    @Override
     public int getStartTime() {
         return (int) (startTimeMillis / 1000);
     }
@@ -292,7 +277,6 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
     /**
      * Returns the moment on which the last SQL statement was started in milliseconds after 1970.
      */
-    @Override
     public long getStartTimeMillis() {
         return startTimeMillis;
     }
@@ -301,14 +285,12 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
     /**
      * @javadoc
      */
-    @Override
     public String toString() {
         return "'"+getLastSQL()+"'@"+hashCode();
     }
     /**
      * createStatement returns an SQL Statement object
      */
-    @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
         return new MultiStatement(this, con.createStatement(resultSetType, resultSetConcurrency));
     }
@@ -318,7 +300,6 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
      * {@inheritDoc}
      * @since MMBase 1.5, JDBC 1.4
      */
-    @Override
     public Statement createStatement(int type, int concurrency, int holdability) throws SQLException {
         return new MultiStatement(this, con.createStatement(type, concurrency, holdability));
     }
@@ -333,7 +314,6 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
     public Connection getRealConnection() {
         return con;
     }
-    @Override
     public void wrap(Connection con) {
         this.con = con;
     }

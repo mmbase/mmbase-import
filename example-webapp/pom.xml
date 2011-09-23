@@ -6,28 +6,25 @@
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-parent</artifactId>
-    <version>2.0-SNAPSHOT</version>
+    <version>1.9-SNAPSHOT</version>
+    <!--
     <relativePath>../maven-base/pom.xml</relativePath>
+    -->
   </parent>
-
-  <description>This is an MMBase example webapp. It is a simple mmbase applications with a lot of dependencies. It's
-  artifact is a 'war' (a web application archive) that you could e.g. deploy in Tomcat or so. You'll need to provide a
-  database then. It is also possible to run it directly from the sources, using the 'mvn jetty:run target'. A hsql
-  database (in the 'data' dir) is provided then.
-  </description>
 
   <artifactId>example-webapp</artifactId>
   <packaging>war</packaging>
   <name>MMBase Example webapp</name>
-  <version>2.0-SNAPSHOT</version>
+  <version>${base.version}</version>
 
   <properties>
+    <my.postfix>${mmbase.version.postfix}</my.postfix>
+    <base.version>${mmbase.version.number}${my.postfix}</base.version>
     <jdbcUrl>jdbc:hsqldb:file:data/mmbase</jdbcUrl>
     <!-- E.g. use
          -DjdbcUrl=jdbc:hsqldb:hsql://localhost/testb
          to connect to a running hsql, e.g. needed when testing clustering
     -->
-    <netbeans.hint.deploy.server>gfv3ee6</netbeans.hint.deploy.server>
   </properties>
 
   <build>
@@ -43,6 +40,7 @@
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
+        <version>7.0.0.pre5</version>
         <configuration>
           <jettyEnvXml>${basedir}/jetty-env.xml</jettyEnvXml>
           <systemProperties>
@@ -51,11 +49,29 @@
               <value>${jdbcUrl}</value>
             </systemProperty>
             <systemProperty>
+              <name>com.sun.management.jmxremote</name>
+              <value></value>
+            </systemProperty>
+            <systemProperty>
               <name>java.awt.headless</name>
               <value>true</value>
             </systemProperty>
           </systemProperties>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
+            <scope>runtime</scope>
+          </dependency>
+
+          <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.8.0.7</version>
+          </dependency>
+        </dependencies>
       </plugin>
       <!--
           it's broken.
@@ -71,30 +87,29 @@
 
   <dependencies>
 
-    <!--
     <dependency>
       <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-core</artifactId>
+      <artifactId>mmbase</artifactId>
       <version>${mmbase.version}</version>
       <scope>provided</scope>
     </dependency>
-    -->
+
 
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>base-webapp</artifactId>
-      <version>${mmbase.version}</version>
+      <version>${base.version}</version>
       <type>war</type>
     </dependency>
-
+<!--
     <dependency>
       <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-core</artifactId>
+      <artifactId>mmbase</artifactId>
       <version>${mmbase.version}</version>
       <type>jar</type>
       <classifier>tests</classifier>
-
     </dependency>
+ -->
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-resources</artifactId>
@@ -125,6 +140,14 @@
       <version>${mmbase.version}</version>
       <type>war</type>
     </dependency>
+    <!--
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-forms</artifactId>
+      <version>0.1-SNAPSHOT</version>
+      <type>war</type>
+    </dependency>
+    -->
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-oscache-cache</artifactId>
@@ -171,14 +194,6 @@
       <version>${mmbase.version}</version>
       <type>war</type>
     </dependency>
-
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-lucene</artifactId>
-      <version>${mmbase.version}</version>
-      <type>war</type>
-    </dependency>
-
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-email</artifactId>
@@ -192,21 +207,6 @@
       <version>0.4-SNAPSHOT</version>
       <type>war</type>
     </dependency>
-
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-forms</artifactId>
-      <version>0.1-SNAPSHOT</version>
-      <type>war</type>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-forms</artifactId>
-      <version>0.1-SNAPSHOT</version>
-      <classifier>tests</classifier>
-    </dependency>
-
 
     <dependency>
       <groupId>org.mmbase</groupId>
@@ -229,10 +229,29 @@
       <type>war</type>
     </dependency>
 
-
+    <dependency>
+      <groupId>hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>1.8.0.7</version>
+    </dependency>
 
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>servlet25</id>
+      <activation>
+        <property>
+          <name>servlet.version</name>
+          <value>2.5</value>
+        </property>
+      </activation>
+      <properties>
+        <my.postfix>-${my.version}</my.postfix>
+        <base.version>${mmbase.version.number}-servlet25${mmbase.version.postfix}</base.version>
+      </properties>
+    </profile>
+  </profiles>
   <pluginRepositories>
     <pluginRepository>
       <id>caucho</id>
@@ -240,8 +259,17 @@
       <url>http://caucho.com/m2</url>
     </pluginRepository>
   </pluginRepositories>
-
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <name>MMBase Maven2 repository</name>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+    <repository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 snapshots repository</name>
+      <url>http://www.mmbase.org/snapshots</url>
+    </repository>
+  </repositories>
 </project>
-
-
 

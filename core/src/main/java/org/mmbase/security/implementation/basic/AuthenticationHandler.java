@@ -49,7 +49,6 @@ public class AuthenticationHandler extends Authentication {
     private Map<String, LoginModule> modules = new HashMap<String, LoginModule>();
     private Map<String, Rank> moduleRanks    = new HashMap<String, Rank>();
 
-    @Override
     protected void load() {
         DocumentReader reader;
         try {
@@ -63,7 +62,7 @@ public class AuthenticationHandler extends Authentication {
 
 
         log.debug("Trying to load all loginmodules:");
-        for (Element modTag: DocumentReader.getChildElements(reader.getElementByPath("authentication"), "loginmodule")) {
+        for (Element modTag: reader.getChildElements(reader.getElementByPath("authentication"), "loginmodule")) {
             String modName = reader.getElementAttributeValue(modTag, "name");
             if (modName.equals("")) {
                 throw new SecurityException("module attribute name was not defined in :" + configResource);
@@ -94,9 +93,9 @@ public class AuthenticationHandler extends Authentication {
 
             // retrieve the properties...
             Map<String, Object> properties = new HashMap<String, Object>();
-            for (Element propTag: DocumentReader.getChildElements(modTag, "property")) {
+            for (Element propTag: reader.getChildElements(modTag, "property")) {
                 String propName = reader.getElementAttributeValue(propTag, "name");
-                String propValue = DocumentReader.getElementValue(propTag).trim();
+                String propValue = reader.getElementValue(propTag).trim();
                 properties.put(propName, propValue);
                 log.debug("\tadding key : " + propName + " with value : " + propValue);
             }
@@ -110,14 +109,13 @@ public class AuthenticationHandler extends Authentication {
         log.debug("Loaded all loginmodules " + listModules());
     }
 
-    @Override
     public UserContext login(String moduleName, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
         LoginModule module = modules.get(moduleName);
         if (module == null) {
             log.error("Login Module with name '" + moduleName + "' not found ! (available:" + listModules() + ")");
             throw new UnknownAuthenticationMethodException("Login Module with name '" + moduleName + "' not found ! (available:" + listModules() + ")");
         }
-        NameContext newUser = new NameContext(this, moduleRanks.get(moduleName), moduleName);
+        NameContext newUser = new NameContext(moduleRanks.get(moduleName), moduleName);
         if (module.login(newUser, loginInfo, parameters)) {
             // our login succeeded..
             // check if the identifier was set by the loginModule, when invalid will trow exception..
@@ -128,7 +126,7 @@ public class AuthenticationHandler extends Authentication {
     }
 
     private String listModules() {
-        StringBuilder loginModulesAvailable = new StringBuilder();
+        StringBuffer loginModulesAvailable = new StringBuffer();
         for (String mod : modules.keySet()) {
             loginModulesAvailable.append("\"").append(mod).append("\" ");
         }
@@ -138,7 +136,6 @@ public class AuthenticationHandler extends Authentication {
     /**
      * this method does nothing..
      */
-    @Override
     public boolean isValid(UserContext usercontext) throws org.mmbase.security.SecurityException {
         return true;
     }

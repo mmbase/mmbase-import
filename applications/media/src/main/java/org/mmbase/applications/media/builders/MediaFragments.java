@@ -20,7 +20,6 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.bridge.Node;
 import org.mmbase.util.*;
-import org.mmbase.util.MMBaseContext;
 import org.mmbase.util.transformers.Xml;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
@@ -73,6 +72,8 @@ public class MediaFragments extends MMObjectBuilder {
     public final static Parameter[] DURATION_PARAMETERS      = {};
 
 
+
+
     // This filter is able to find the best mediasource by a mediafragment.
     // private  static MainFilter mediaSourceFilter = null;
 
@@ -85,8 +86,8 @@ public class MediaFragments extends MMObjectBuilder {
     @Override
     public boolean init() {
         if(initDone) {
-        return super.init();
-    }
+            return super.init();
+        }
         log.service("Init of Media Fragments builder");
         initDone = true;  // because of inheritance we do init-protections
 
@@ -122,7 +123,7 @@ public class MediaFragments extends MMObjectBuilder {
             log.debug("executeFunction  " + function + "(" + args + ") on " + node);
         }
         if (function.equals("info")) {
-            List<Object> empty = new ArrayList<Object>();
+            List<Object> empty = new Vector<Object>();
             java.util.Map<String, String> info = (java.util.Map<String, String>) super.executeFunction(node, function, empty);
             info.put(FUNCTION_URL, "(<format>)  Returns the 'best' url for this fragment. Hashtable can be filled with speed/channel/ or other info to evalute the url.");
             info.put(FUNCTION_URLS, "(info) A list of all possible URLs to this fragment (Really URLComposer.URLComposer's)");
@@ -154,7 +155,7 @@ public class MediaFragments extends MMObjectBuilder {
         } else if (FUNCTION_AVAILABLE.equals(function)) {
             if (mmb.getBuilder("publishtimes") != null) {
                 List<MMObjectNode> pt  = node.getRelatedNodes("publishtimes");
-                if (pt.isEmpty()) {
+                if (pt.size() == 0) {
                     return Boolean.TRUE;
                 } else {
                     MMObjectNode publishtime = pt.get(0);
@@ -261,20 +262,6 @@ public class MediaFragments extends MMObjectBuilder {
         }
         return urls;
     }
-    {
-        addFunction(new NodeFunction<List<URLWrapper>>("urls_wrapped", URLS_PARAMETERS) {
-                @Override
-                public List<URLWrapper> getFunctionValue(Node node, Parameters params) {
-                    List<URLWrapper> result = new ArrayList<URLWrapper>();
-                    MMObjectNode mm = MediaFragments.this.getNode(node.getNumber());
-                    List<URLComposer> list = getURLs(mm, translateURLArguments(params, null), null, null);
-                    for (URLComposer uc :list) {
-                        result.add(new URLWrapper(uc));
-                    }
-                    return result;
-                };
-            });
-    }
 
     {
         addFunction(new NodeFunction<List<URLWrapper>>("urls_wrapped", URLS_PARAMETERS) {
@@ -326,6 +313,16 @@ public class MediaFragments extends MMObjectBuilder {
             });
     }
 
+    {
+        addFunction(new NodeFunction<List>("sources", new Parameter[] {}) {
+                @Override
+                public List<Node> getFunctionValue(Node node, Parameters params) {
+                    MMObjectNode fragment = MediaFragments.this.getNode(node.getNumber());
+                    Node root  = node.getCloud().getNode(MediaFragments.this.getRootFragment(fragment).getNumber());
+                    return root.getRelatedNodes("mediasources", "related", "destination");
+                };
+            });
+    }
 
     /**
      * Retrieves the url of the mediasource that matches best.
@@ -417,14 +414,14 @@ public class MediaFragments extends MMObjectBuilder {
      * this, so on top is the mediafragment with the sources, and on
      * the bottom is the fragment itself.
      */
-    @SuppressWarnings("empty-statement")
     public Stack<MMObjectNode> getParentFragments(MMObjectNode fragment) {
         Stack<MMObjectNode> result = new Stack<MMObjectNode>();
+        if (fragment == null) return result;
         result.push(fragment);
         if (log.isDebugEnabled()) {
             log.debug("Finding parents of node " + fragment.getNumber());
         }
-        while (addParentFragment(result));
+        while (addParentFragment(result)) {}
         return result;
     }
 
@@ -455,7 +452,7 @@ public class MediaFragments extends MMObjectBuilder {
         if (mediasources == null) {
             log.warn("Could not get related nodes of type mediasources");
         }
-        if (log.isDebugEnabled()) log.debug("Mediafragment contains "+mediasources.size()+" mediasources");
+        if (log.isDebugEnabled()) log.debug("Mediafragment contains " + mediasources.size() + " mediasources");
 
         return mediasources;
     }
@@ -487,26 +484,25 @@ public class MediaFragments extends MMObjectBuilder {
       * mediafragment, was used for speeding up listings.
       * @deprecated
       */
-    @SuppressWarnings("UseOfObsoleteCollectionType")
      private void retrieveClassificationInfo() {
 
-        MMObjectBuilder lookup = mmb.getMMObject("lookup");
-        if (lookup == null) {
-            log.debug("Downwards compatible classification code not used.");
-            return;
-        }
-        log.debug("Using downwards compatible classification code.");
-        classification = new Hashtable<String, String>();
-        MMObjectNode fn = getNode(mmb.getTypeDef().getIntValue("mediafragments"));
-        Vector<MMObjectNode> nodes = fn.getRelatedNodes("lookup");
-        for (MMObjectNode node : nodes) {
-            String index = node.getStringValue("index");
-            String value = node.getStringValue("value");
-            log.debug("classification uses: " + index + " -> " + value);
-            classification.put(index, value);
-        }
-        return;
-    }
+         MMObjectBuilder lookup = mmb.getMMObject("lookup");
+         if(lookup == null) {
+             log.debug("Downwards compatible classification code not used.");
+             return;
+         }
+         log.debug("Using downwards compatible classification code.");
+         classification =  new Hashtable<String, String>();
+         MMObjectNode fn = getNode(mmb.getTypeDef().getIntValue("mediafragments"));
+         Vector<MMObjectNode> nodes = fn.getRelatedNodes("lookup");
+         for (MMObjectNode node : nodes) {
+             String index = node.getStringValue("index");
+             String value = node.getStringValue("value");
+             log.debug("classification uses: " + index + " -> " + value);
+             classification.put(index,value);
+         }
+         return;
+     }
 
     /**
      * Replace all for frontend code
@@ -555,8 +551,8 @@ public class MediaFragments extends MMObjectBuilder {
     @Override
     public Object getObjectValue(MMObjectNode node, String field) {
         if (field.equals("lengthsec")) {
-            long val=node.getLongValue("length");
-            return ""+val/1000;
+            long val = node.getLongValue("length");
+            return "" + val/1000;
         }
         return super.getObjectValue(node,field);
     }

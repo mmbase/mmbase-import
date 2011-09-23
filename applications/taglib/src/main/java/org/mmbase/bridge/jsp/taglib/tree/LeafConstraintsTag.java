@@ -37,7 +37,6 @@ public class LeafConstraintsTag extends ContextReferrerTag implements NodeQueryC
 
     protected GrowingTreeList tree;
 
-    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
     }
@@ -46,11 +45,9 @@ public class LeafConstraintsTag extends ContextReferrerTag implements NodeQueryC
         onAttribute = getAttribute(c);
     }
 
-    @Override
     public Query getQuery() {
         return getNodeQuery();
     }
-    @Override
     public NodeQuery getNodeQuery() {
         switch(on) {
         case ON_TRUNK:
@@ -64,13 +61,11 @@ public class LeafConstraintsTag extends ContextReferrerTag implements NodeQueryC
         }
     }
 
-    @Override
     public Cloud getCloudVar() throws JspTagException {
         return getQuery().getCloud();
     }
 
 
-    @Override
     public int doStartTag() throws JspTagException {
 
         String o = onAttribute.getString(this);
@@ -87,7 +82,6 @@ public class LeafConstraintsTag extends ContextReferrerTag implements NodeQueryC
         return EVAL_BODY;
     }
 
-    @Override
     public int doAfterBody() throws JspTagException {
         if(trunkClone != null) {
             tree.setLeafConstraint(trunkClone.getConstraint());

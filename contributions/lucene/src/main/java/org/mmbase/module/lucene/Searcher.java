@@ -66,14 +66,12 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         EventManager.getInstance().addEventListener(this);
     }
 
-    @Override
     public void notify(NewSearcher.Event event) {
         if (event.getIndex().equals(index.getName())) {
             log.debug("Received " + event);
             needsNewSearcher = true;
         }
     }
-    @Override
     public void notify(FullIndexEvents.Event event) {
         if (event.getIndex().equals(index.getName())) {
             log.debug("Received " + event);
@@ -94,18 +92,17 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
             final IndexSearcher s = searcher;
             searcher = null;
             timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    try {
-                        log.debug("Shutting down a searcher for " + index);
-                        s.close();
-                    } catch (IOException ioe) {
-                        log.error("Can't close index searcher: " + ioe.getMessage());
-                    } finally {
-                        closingSearchers--;
+                    public void run() {
+                        try {
+                            log.debug("Shutting down a searcher for " + index);
+                            s.close();
+                        } catch (IOException ioe) {
+                            log.error("Can't close index searcher: " + ioe.getMessage());
+                        } finally {
+                            closingSearchers--;
+                        }
                     }
-                }
-            }, 10000);
+                }, 10000);
         }
         if (searcher == null) {
             try {
@@ -237,7 +234,6 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
             list = new AbstractList<AnnotatedNode>() {
                 private int size = -1;
 
-                @Override
                 public int size() {
                     if (size == -1) {
                         int h = hits.length() - offset;
@@ -247,7 +243,6 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                     return size;
 
                 }
-                @Override
                 public AnnotatedNode get(int i) {
                     try {
                         Document doc = hits.doc(i + offset);
@@ -306,10 +301,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                 return -1;
             } finally {
                 if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException ioe) {
-                    }
+                    try { reader.close(); } catch (IOException ioe) {};
                 }
             }
         }

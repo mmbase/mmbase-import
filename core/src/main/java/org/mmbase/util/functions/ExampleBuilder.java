@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @see   ExampleBean For examples on hot to add functions to a builder without extending it.
  * @since MMBase-1.7
  */
-public class ExampleBuilder extends MMObjectBuilder {
+public class ExampleBuilder extends MMObjectBuilder { 
     private static final Logger log = Logging.getLoggerInstance(ExampleBuilder.class);
 
 
@@ -49,7 +49,7 @@ public class ExampleBuilder extends MMObjectBuilder {
     };
 
     protected final static Parameter[] SUMFIELDS_PARAMETERS = {
-        new Parameter("fields", List.class, Arrays.asList("otype", "number")) /* name, type, default value */
+        new Parameter("fields", List.class, Arrays.asList(new String[] {"otype", "number"})) /* name, type, default value */
     };
 
     /**
@@ -59,16 +59,15 @@ public class ExampleBuilder extends MMObjectBuilder {
             {
                 setDescription("This (rather silly) function returns the latest instances of this builder.");
             }
-        @Override
-        public NodeList getFunctionValue(Parameters parameters) {
-            Integer max = (Integer) parameters.get("max");
-            Cloud cloud = parameters.get(Parameter.CLOUD);
-            NodeManager thisManager = cloud.getNodeManager(getTableName());
-            NodeQuery q = thisManager.createQuery();
-            q.setMaxNumber(max);
+            public NodeList getFunctionValue(Parameters parameters) {
+                Integer max = (Integer) parameters.get("max");
+                Cloud cloud = parameters.get(Parameter.CLOUD);
+                NodeManager thisManager = cloud.getNodeManager(getTableName());
+                NodeQuery q = thisManager.createQuery();
+                q.setMaxNumber(max.intValue());
                 q.addSortOrder(q.getStepField(thisManager.getField("number")), SortOrder.ORDER_DESCENDING);
-            return thisManager.getList(q);
-        }
+                return thisManager.getList(q);
+            }
     };
     {
         // functions must be registered.
@@ -81,16 +80,16 @@ public class ExampleBuilder extends MMObjectBuilder {
     protected final Function<Integer> sumFieldsFunction = new NodeFunction<Integer>("sumfields", SUMFIELDS_PARAMETERS) {
             {
                 setDescription("This (rather silly) function returns the sum of the given fields of a certain node");
-        }
-        @Override
-        public Integer getFunctionValue(Node node, Parameters parameters) {
-            List fields = (List) parameters.get("fields");
-            int result = 0;
-            for (Object field : fields) {
-                result += node.getIntValue((String) field);
             }
-            return result;
-        }
+            public Integer getFunctionValue(Node node, Parameters parameters) {
+                List fields = (List) parameters.get("fields");
+                int result = 0;
+                Iterator i = fields.iterator();
+                while (i.hasNext()) {
+                    result += node.getIntValue((String)i.next());
+                }
+                return result;
+            }
     };
     {
         // node-function are registered in the same way.
@@ -110,19 +109,18 @@ public class ExampleBuilder extends MMObjectBuilder {
                 {
                     setDescription("With this function one can demonstrate how to create parameters of several types, and in what excactly that results");
                 }
-            @Override
-            public List<String> getFunctionValue(Parameters parameters) {
-                List<String> result = new ArrayList<String>();
-                Parameter[] def = parameters.getDefinition();
-                for (int i = 0; i < def.length; i++) {
-                    Object value = parameters.get(i);
-                    if (value != null) {
+                public List<String> getFunctionValue(Parameters parameters) {
+                    List<String>  result = new ArrayList<String>();
+                    Parameter[] def = parameters.getDefinition();
+                    for (int i = 0 ; i < def.length; i++) {
+                        Object value = parameters.get(i);
+                        if(value != null) {
                             result.add(def[i].toString() + " ->" + value.getClass().getName() + " " + value);
+                        }
                     }
+                    return result;
                 }
-                return result;
-            }
-        });
+            });
     }
 
     {
@@ -131,33 +129,31 @@ public class ExampleBuilder extends MMObjectBuilder {
 
         addFunction(new NodeFunction<Node>("predecessor", Parameter.CLOUD // makes it possible to implement by bridge.
                                            ) {
-            {
-                setDescription("Returns the node older then the current node, or null if this node is the oldest (if called on node), or the newest node of this type, or null of there are no nodes of this type (if called on builder)");
-            }
-            @Override
-            protected Node getFunctionValue(Node node, Parameters parameters) {
-                NodeManager nm = node.getNodeManager();
-                NodeQuery q = nm.createQuery();
-                StepField field = q.getStepField(nm.getField("number"));
-                q.setConstraint(q.createConstraint(field, FieldCompareConstraint.LESS, Integer.valueOf(node.getNumber())));
+                        {
+                    setDescription("Returns the node older then the current node, or null if this node is the oldest (if called on node), or the newest node of this type, or null of there are no nodes of this type (if called on builder)");
+                }
+                protected Node getFunctionValue(Node node, Parameters parameters) {
+                    NodeManager nm = node.getNodeManager();
+                    NodeQuery q = nm.createQuery();
+                    StepField field = q.getStepField(nm.getField("number"));
+                    q.setConstraint(q.createConstraint(field, FieldCompareConstraint.LESS, Integer.valueOf(node.getNumber())));
                     q.addSortOrder(field, SortOrder.ORDER_DESCENDING);
-                q.setMaxNumber(1);
-                NodeIterator i = nm.getList(q).nodeIterator();
-                return i.hasNext() ? i.nextNode() : null;
-            }
+                    q.setMaxNumber(1);
+                    NodeIterator i = nm.getList(q).nodeIterator();
+                    return i.hasNext() ? i.nextNode() : null;
+                }
 
-            @Override
-            public Node getFunctionValue(Parameters parameters) {
-                Cloud cloud = parameters.get(Parameter.CLOUD);
-                NodeManager nm = cloud.getNodeManager(ExampleBuilder.this.getTableName());
-                NodeQuery q = nm.createQuery();
-                StepField field = q.getStepField(nm.getField("number"));
-                q.addSortOrder(field, SortOrder.ORDER_DESCENDING);
-                q.setMaxNumber(1);
-                NodeIterator i = nm.getList(q).nodeIterator();
-                return i.hasNext() ? i.nextNode() : null;
-            }
-        });
+                public Node getFunctionValue(Parameters parameters) {
+                    Cloud cloud = parameters.get(Parameter.CLOUD);
+                    NodeManager nm = cloud.getNodeManager(ExampleBuilder.this.getTableName());
+                    NodeQuery q = nm.createQuery();
+                    StepField field = q.getStepField(nm.getField("number"));
+                    q.addSortOrder(field, SortOrder.ORDER_DESCENDING);
+                    q.setMaxNumber(1);
+                    NodeIterator i = nm.getList(q).nodeIterator();
+                    return i.hasNext() ? i.nextNode() : null;
+                }
+            });
     }
 
 }

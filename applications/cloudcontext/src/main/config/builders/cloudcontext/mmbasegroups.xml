@@ -57,11 +57,11 @@
 
   <xi:include href="http://www.mmbase.org/builders/cloudcontext/mmbasegroups.virtual.fields.xml" />
 
-
   <indexlist>
     <index name="name" unique="true">
       <indexfield name="name" />
     </index>
   </indexlist>
+
 
 </builder>

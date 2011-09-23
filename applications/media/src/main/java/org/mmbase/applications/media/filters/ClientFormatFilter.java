@@ -27,19 +27,17 @@ import org.w3c.dom.Element;
 public class ClientFormatFilter implements Filter {
     private static Logger log = Logging.getLoggerInstance(ClientFormatFilter.class);
 
-    @Override
     public void configure(DocumentReader reader, Element e) {
         // nothing to be configured on default.
     }
 
-    @Override
     final public List<URLComposer> filter(List<URLComposer> urlcomposers) {
         List<URLComposer> filteredUrlcomposers = new ArrayList<URLComposer>();
 
         for (URLComposer urlcomposer : urlcomposers) {
             Object format = urlcomposer.getInfo().get("format");
             if (log.isDebugEnabled()) {
-                log.debug("Client specified format = " + (format == null ? "" : format.getClass()) + " " + format);
+                log.debug("Client specified format = " + format);
             }
 
             if(format == null) {
@@ -59,13 +57,9 @@ public class ClientFormatFilter implements Filter {
             }
 
             if (format instanceof Format) {
-                if (format == urlcomposer.getFormat()) {
-                    filteredUrlcomposers.add(urlcomposer);
-                }
+                if (format == urlcomposer.getFormat()) filteredUrlcomposers.add(urlcomposer);
             } else if (format instanceof String) {
-                if (Format.get(""+format) == urlcomposer.getFormat()) {
-                    filteredUrlcomposers.add(urlcomposer);
-                }
+                if (Format.get(""+format) == urlcomposer.getFormat()) filteredUrlcomposers.add(urlcomposer);
             } else if (format instanceof List) {
                 // You could take the order in which the client specified the formats into account.
                 List formatList = (List) format;
@@ -75,7 +69,7 @@ public class ClientFormatFilter implements Filter {
             }
         }
         if (log.isDebugEnabled()) {
-            log.debug("urlcomposers " + urlcomposers + " -> filteredUrlcomposers = " + filteredUrlcomposers);
+            log.debug("filteredUrlcomposers = "+filteredUrlcomposers);
         }
         return filteredUrlcomposers;
     }

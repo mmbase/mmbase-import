@@ -177,8 +177,6 @@ public class FileServlet extends BridgeServlet {
 
     /**
      * FileServlet supports 'meta' files like Cern HTTPD (and apaches mod_cern_meta).
-     * Such a file contains the extra HTTP headers (e.g. the Content-Disposition)
-     * and can be found in <code>.web/&lt;filename&gt;.meta</code>.
      * @since MMBase-1.9.2
      */
     public  File getMetaFile(File f) {
@@ -232,23 +230,26 @@ public class FileServlet extends BridgeServlet {
         try {
             File metaFile = getMetaFile(f);
             metaFile.getParentFile().mkdirs();
-            OutputStream o = new FileOutputStream(metaFile);
+            OutputStream os = new FileOutputStream(metaFile);
             for (Map.Entry<String, String> entry : meta.entrySet()) {
                 // The values my have some decomposed form, in that case the ISO-8859-1 bytes don't work so nice.
-                String line = Normalizer.normalize(entry.getKey() + ": " + entry.getValue() + "\n", Normalizer.Form.NFC);
-                o.write(line.getBytes("ISO-8859-1"));
+                String line = entry.getKey() + ": " + entry.getValue() + "\n";
+                try {
+                    Class c = Class.forName("java.text.Normalizer");
+                    line = Normalizer.normalize(entry.getKey() + ": " + entry.getValue() + "\n", Normalizer.Form.NFC);
+                } catch (ClassNotFoundException cnfe) {
+                    log.warn("java.text.Normalizer is unsupported (JVM < 1.6) !");
+                }
+                os.write(line.getBytes("ISO-8859-1"));
             }
-            o.close();
-            log.debug("Created " + metaFile);
+            os.close();
+            log.debug("Created: " + metaFile);
         } catch (IOException ioe) {
-            log.warn(ioe);
+            log.warn("IOException: " +  ioe);
         }
     }
 
     /**
-     * Parses back the result of {@link #getMetaValue(String, String)}.
-     * E.g. to get the filename back from the content disposition in the meta header maps do:
-     * <code>String inDisposition = FileServlet.parseMetaValue("filename", meta.get("Content-Disposition"));</code>
      * @since MMBase-1.9.6
      */
     public static String parseMetaValue(String fieldName, String cd) {
@@ -272,6 +273,7 @@ public class FileServlet extends BridgeServlet {
                         q = value.indexOf("'", q + 1);
                         if (q > -1) {
                             String found = value.substring(q + 1);
+                            //System.out.println("found " + found);
                             value = UrlEscaper.INSTANCE.transformBack(found);
                         }
                     }
@@ -283,17 +285,12 @@ public class FileServlet extends BridgeServlet {
     }
 
     /**
-     * Constructs a key/value entry for use in the meta-files.
-     * This uses <a href="http://greenbytes.de/tech/webdav/rfc5987.html">RFC 5987</a> to also encode other characters
-     * than those of ISO-8859-1 (we use UTF-8). Is is also added simply as field=value, which can serve as a fall back for browsers
-     * which don't yet understand the RFC.
-     * E.g. <code>meta.put("Content-Disposition", "attachment; " + FileServlet.getMetaValue("filename", name));</code>
      * @since MMBase-1.9.6
      */
     public static String getMetaValue(String field, String value) {
-        //BTW also chrome doesn't quite understand it:
+        //http://greenbytes.de/tech/webdav/rfc5987.html
         //http://code.google.com/p/chromium/issues/detail?id=57830
-        return field + "=\"" + value + "\";  " + field + "*=UTF-8''" + UrlEscaper.INSTANCE.transform(value);
+        return field + "=\"" + value + "\"; " + field + "*=UTF-8''" + UrlEscaper.INSTANCE.transform(value);
     }
 
     protected File checkFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -435,13 +432,11 @@ public class FileServlet extends BridgeServlet {
             }
             this.max = max;
         }
-        @Override
         public long available(long i) {
             if (i < first) return 0;
             if (i > last) return 0;
             return last - i + 1;
         }
-        @Override
         public long notavailable(long i) {
             if (i < first) return first - i;
             if (i > last)  return max - last;
@@ -468,7 +463,6 @@ public class FileServlet extends BridgeServlet {
             this.max = max;
         }
 
-        @Override
         public long available(long i) {
             long available = 0;
             for (Range r : ranges) {
@@ -478,7 +472,6 @@ public class FileServlet extends BridgeServlet {
             }
             return available;
         }
-        @Override
         public long notavailable(long i) {
             long notavailable = max;
             for (Range r : ranges) {
@@ -616,11 +609,11 @@ public class FileServlet extends BridgeServlet {
         result.append("<html xmlns='http://www.w3.org/1999/xhtml'>");
         result.append("<head>");
         String pathInfo = req.getPathInfo();
-        result.append("<title>Directory Listing For ").append(XML.transform(URL.transformBack(pathInfo))).append("</title>");
-        result.append("<link rel='stylesheet' href='").append(req.getContextPath()).append("/mmbase/style/css/mmbase.css' type='text/css' />");
+        result.append("<title>Directory Listing For " + XML.transform(URL.transformBack(pathInfo)) + "</title>");
+        result.append("<link rel='stylesheet' href='" + req.getContextPath() + "/mmbase/style/css/mmbase.css' type='text/css' />");
         result.append("</head>");
         result.append("<body class='filelisting'>");
-        result.append("<h1>Directory Listing For ").append(XML.transform(URL.transformBack(pathInfo))).append("</h1>");
+        result.append("<h1>Directory Listing For " + XML.transform(URL.transformBack(pathInfo)) + "</h1>");
         String header = getInitParameter("header");
         if (header != null && ! "".equals(header)) {
             File headerFile = new File(directory, header);
@@ -636,9 +629,9 @@ public class FileServlet extends BridgeServlet {
         }
         result.append("<table>");
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        result.append("<tr><td class='lastmodified'>").append(df.format(new Date(directory.lastModified()))).append("</td><td class='filesize'> </td><td class='filename'><a href='.'>./</a></td></tr>");
+        result.append("<tr><td class='lastmodified'>" + df.format(new Date(directory.lastModified())) + "</td><td class='filesize'> </td><td class='filename'><a href='.'>./</a></td></tr>");
         if (! pathInfo.equals("/")) {
-            result.append("<tr><td class='lastmodified'>").append(df.format(new Date(directory.getParentFile().lastModified()))).append("</td><td class='filesize'> </td><td class='filename'><a href='..'>../</a></td></tr>");
+            result.append("<tr><td class='lastmodified'>" + df.format(new Date(directory.getParentFile().lastModified()))  +"</td><td class='filesize'> </td><td class='filename'><a href='..'>../</a></td></tr>");
         }
         List<File> list = Arrays.asList(directory.listFiles());
         if (comparator != null) {
@@ -657,14 +650,14 @@ public class FileServlet extends BridgeServlet {
             result.append("<td class='filename'>");
             if (canRead(req, file)) {
                 String url = URL.transform(file.getName()) + (file.isDirectory() ? "/" : "");
-                result.append("<a href='").append(url).append("'>").append(XML.transform(name)).append("</a>");
+                result.append("<a href='" + url + "'>" + XML.transform(name) + "</a>");
             } else {
                 result.append(XML.transform(name));
             }
             result.append("</td></tr>");
         }
         result.append("</table>");
-        result.append("<h3>").append(org.mmbase.Version.get()).append("</h3>");
+        result.append("<h3>" + org.mmbase.Version.get() + "</h3>");
         result.append("</body>");
         result.append("</html>");
         try {
@@ -721,7 +714,6 @@ public class FileServlet extends BridgeServlet {
             super("fileServletDirectory");
         }
         String dir = null;
-        @Override
         public String getFunctionValue(org.mmbase.util.functions.Parameters parameters) {
             if (dir != null) {
                 return dir;

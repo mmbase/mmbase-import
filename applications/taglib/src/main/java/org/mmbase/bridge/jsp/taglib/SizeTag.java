@@ -32,7 +32,6 @@ public class SizeTag extends ListReferrerTag implements Writer, QueryContainerRe
     /**
      * @since MMBase-1.7
      */
-    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
     }

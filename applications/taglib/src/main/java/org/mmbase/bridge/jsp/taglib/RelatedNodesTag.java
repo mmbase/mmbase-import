@@ -116,6 +116,8 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             Step step1 = query.addStep(parentNode.getNodeManager());
             query.setAlias(step1, parentNode.getNodeManager().getName() + "0");
             query.addNode(step1, parentNode);
+
+
             String searchDirections;
             if (searchDir == Attribute.NULL) { // searchdir is a bit deprecated.
                 searchDirections = (String) searchDirs.getValue(this);

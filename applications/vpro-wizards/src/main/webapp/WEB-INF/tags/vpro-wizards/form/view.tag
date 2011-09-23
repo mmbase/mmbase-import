@@ -1,8 +1,7 @@
 <%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-2.0" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util"%>
-<%@ tag body-content="empty"  description="A description would be welcome"
-%>
+<%@ tag body-content="empty"  %>
 
 <%@ attribute name="nodetype" required="true"%>
 <%@ attribute name="field" description="what field to show. default is the gui function of the node. You can also use a fragment in the body to build the output for each node" %>
@@ -20,7 +19,7 @@
 <%@ attribute name="create" type="java.lang.Boolean"%>
 <%@ attribute name="sortable" type="java.lang.Boolean" description="When this is true arrows are shown to push the nodes up and down in the list." %>
 <%@ attribute name="sortfield" description="when you want to sort on non-posrel relations. it defaults to 'pos'"%>
-<%@ attribute name="newwizard" description="create a new object with a given wizard. If you dont give this, a wizard name is created (assumed)."  %>
+<%@ attribute name="newwizard" description="create a new object with a given wizard. If you dont give this a wizard name is created (assumed)."  %>
 <%@ attribute name="openwizard" %>
 <%@ attribute name="relatedpage" description="this value will override the generated url to the 'related' page. normally it is ${wizardfile}_$nodetype}. this forces you to put the reled page in the current dir, what prevents reuse."  %>
 
@@ -31,7 +30,7 @@
 
 
 <%--
-    show a summary of the relations of a certain type in the 'form' page. You can click on them to
+    show a summery of the relations of a certain type in the 'form' page. You can click on them to
     open the 'related' page
 --%>
 
@@ -111,11 +110,10 @@
             <c:if test="${create}">
                 <c:choose>
                     <c:when test="${not empty newwizard}">
-                      <mm:link page="${newwizard}" referids="nodenr@parentnodenr,relationrole,searchdir,constraints?">
-                        <a href="${_}&${extra_params}" class="addButton">nieuw
-                         <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new.png" class="icon" border="0" title="Nieuw" />
+                        <c:set var="newwizardparam" ><c:if test="${not empty relationrole}">&relationrole=${relationrole}</c:if></c:set>
+                        <a href="${newwizard}?parentnodenr=${nodenr}${newwizardparam}&${extra_params}" class="addButton">nieuw
+                            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new.png" class="icon" border="0" title="Nieuw">
                         </a>
-                      </mm:link>
                     </c:when>
                 <c:otherwise>
                   <mm:link page="${relatedpage}.jsp?create=true&amp;${extra_params}" referids="nodenr,relationrole,searchdir,constraints?">
@@ -172,32 +170,27 @@
                                         <c:set var="_pos" ><mm:node number="${_relationnr}"><mm:field name="${sortfield}" /></mm:node></c:set>
                                     </c:when>
                                 </c:choose>
-                                <mm:node number="${_relationnr}">
-                                  <c:set var="urlup">
-                                    <mm:maywrite>
-                                      <mm:url page="/wizard/post">
+
+                                <c:set var="urlup">
+                                    <mm:url page="/wizard/post">
                                         <mm:param name="actions[sortRelation][1].sourceNodeNumber" value="${nodenr}" />
                                         <mm:param name="actions[sortRelation][1].destinationNodeNumber" value="${_nodenr}" />
                                         <mm:param name="actions[sortRelation][1].direction" value="up" />
                                         <mm:param name="actions[sortRelation][1].role" value="${relationrole}" />
                                         <mm:param name="actions[sortRelation][1].sortField" value="${sortfield}" />
                                         <mm:param name="flushname" value="${flushname}" />
-                                      </mm:url>
-                                    </mm:maywrite>
-                                  </c:set>
-                                  <c:set var="urldown">
-                                    <mm:maywrite>
-                                      <mm:url page="/wizard/post">
+                                    </mm:url>
+                                </c:set>
+                                <c:set var="urldown">
+                                    <mm:url page="/wizard/post">
                                         <mm:param name="actions[sortRelation][1].sourceNodeNumber" value="${nodenr}" />
                                         <mm:param name="actions[sortRelation][1].destinationNodeNumber" value="${_nodenr}" />
                                         <mm:param name="actions[sortRelation][1].direction" value="down" />
                                         <mm:param name="actions[sortRelation][1].role" value="${relationrole}" />
                                         <mm:param name="actions[sortRelation][1].sortField" value="${sortfield}" />
                                         <mm:param name="flushname" value="${flushname}" />
-                                      </mm:url>
-                                    </mm:maywrite>
-                                  </c:set>
-                                </mm:node>
+                                    </mm:url>
+                                </c:set>
 
                                 <mm:last inverse="true">
                                     <a style="text-decoration:none" href="${urldown}" class="movedown" onclick="return checkSearch(this);">
@@ -237,50 +230,25 @@
                             <c:remove var="mayharddelete" />
                             <mm:node number="${_nodenr}"> <mm:maydelete><c:set var="mayharddelete" value="true"/></mm:maydelete> </mm:node>
 
-                            <c:if test="${delete}">
-                              <c:choose>
-                                <c:when test="${not empty maydelete}">
-                                  <mm:link page="/wizard/post">
+                            <c:if test="${delete && not empty maydelete}">
+                                <mm:link page="/wizard/post">
                                     <mm:param name="actions[deleteNode][1].nodenr" value="${_relationnr}" />
                                     <mm:param name="flushname" value="${flushname}" />
-                                    <a href="${_}" class="delete"
-                                       onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt loskoppelen?')">
-                                      <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/unlink.png" class="icon" border="0" alt="" title="Koppel los"/>
+                                    <a href="${_}" class="delete"  onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt loskoppelen?')">
+                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/unlink.png" class="icon" border="0" alt="" title="Koppel los"/>
                                     </a>
-                                  </mm:link>
-                                </c:when>
-                                <c:otherwise>
-                                  <mm:node number="${_relationnr}">
-                                    <span
-                                        class="disallowed"
-                                        style="background-image: url(${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/unlink.png);"
-                                        title="Niet toegestaan om de relatie te verwijderen. Eigenaar:  ${_node.owner}">X</span>
-                                  </mm:node>
-                                </c:otherwise>
-                              </c:choose>
+                                </mm:link>
                             </c:if>
 
-                             <c:if test="${harddelete}">
-                               <c:choose>
-                                 <c:when test="${not empty mayharddelete}">
-                                   <mm:link page="/wizard/post">
-                                     <mm:param name="actions[deleteNode][1].nodenr" value="${_nodenr}" />
-                                     <mm:param name="flushname" value="${flushname}" />
-                                     <a href="${_}" class="delete"  onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt verwijderen? (kan niet hersteld worden)')">
-                                       <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/delete.png" class="icon" border="0" alt="" title="Verwijder"/>
-                                     </a>
-                                   </mm:link>
-                                 </c:when>
-                                 <c:otherwise>
-                                   <mm:node number="${_nodenr}">
-                                    <span
-                                        class="disallowed"
-                                        style="background-image: url(${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/delete.png);"
-                                        title="Niet toegestaan om de node te verwijderen. Eigenaar:  ${_node.owner}">X</span>
-                                  </mm:node>
-                                 </c:otherwise>
-                               </c:choose>
-                             </c:if>
+                             <c:if test="${harddelete && not empty mayharddelete}">
+                                <mm:link page="/wizard/post">
+                                    <mm:param name="actions[deleteNode][1].nodenr" value="${_nodenr}" />
+                                    <mm:param name="flushname" value="${flushname}" />
+                                    <a href="${_}" class="delete"  onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt verwijderen? (kan niet hersteld worden)')">
+                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/delete.png" class="icon" border="0" alt="" title="Verwijder"/>
+                                    </a>
+                                </mm:link>
+                            </c:if>
                             <c:remove var="maydelete"/>
 
                             <mm:node element="${nodetype}" id="currentnode">
@@ -303,12 +271,6 @@
                                         <c:otherwise>
                                         </c:otherwise>
                                     </c:choose>
-                                </mm:maywrite>
-                                <mm:maywrite inverse="true">
-                                  <span
-                                      class="disallowed"
-                                      style="background-image: url(${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png);"
-                                      title="Niet toegestaan. Eigenaar: ${_node.owner}">X</span>
                                 </mm:maywrite>
                             </mm:node>
 

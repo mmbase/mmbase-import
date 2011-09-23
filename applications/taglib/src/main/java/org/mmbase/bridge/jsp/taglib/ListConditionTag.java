@@ -60,7 +60,6 @@ public class ListConditionTag extends ListReferrerTag implements Condition {
         }
     }
 
-    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
     }
@@ -78,7 +77,7 @@ public class ListConditionTag extends ListReferrerTag implements Condition {
 
 
         boolean i = getInverse();
-        boolean result;
+        boolean result = false;
         int j = getValue();
         //
         // One would expect a switch, but for some odd reason, that does not work in my resin 3.0.6

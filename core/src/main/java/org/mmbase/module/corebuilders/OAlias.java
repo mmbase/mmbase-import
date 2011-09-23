@@ -12,7 +12,6 @@ package org.mmbase.module.corebuilders;
 import java.util.*;
 import org.mmbase.cache.Cache;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 
@@ -39,9 +38,7 @@ public class OAlias extends MMObjectBuilder {
 
     // alias -> node-number (Integer)
     private Cache<String,Integer> numberCache = new Cache<String,Integer>(128) {
-        @Override
         public String getName()        { return "AliasCache"; }
-        @Override
         public String getDescription() { return "Cache for node aliases"; }
         };
 
@@ -51,7 +48,6 @@ public class OAlias extends MMObjectBuilder {
         numberCache.putCache();
     }
 
-    @Override
     public boolean init() {
         boolean res = super.init();
         if (res) checkAddTmpField("_destination");
@@ -90,7 +86,7 @@ public class OAlias extends MMObjectBuilder {
                 return -1;
             }
         } else {
-            return nodeNumber;
+            return nodeNumber.intValue();
         }
     }
 
@@ -122,10 +118,9 @@ public class OAlias extends MMObjectBuilder {
     }
 
     /**
-     * Obtain the aliases of a node. If a node has more aliases, it returns only one.
-     * Which one is not specified.
+     * Obtain the aliases of a node.
      * @param number the number of the node
-     * @return a List of the aliases of the node, or an emoty list if none exist
+     * @return a List of the aliases of the node, or an empty list if none exist
      * @see #getAlias
      */
     public List<String> getAliasList(int number) {
@@ -192,7 +187,6 @@ public class OAlias extends MMObjectBuilder {
      * Remove a node from the cloud and update the cache
      * @param node The node to remove.
      */
-    @Override
     public void removeNode(MMObjectNode node) {
         String name = node.getStringValue("name");
         super.removeNode(node);
@@ -205,7 +199,6 @@ public class OAlias extends MMObjectBuilder {
      * cache.
      * @since MMBase-1.7.1
      */
-    @Override
     public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
         if (builder.equals(getTableName())) {
             if (ctype.equals("c") || ctype.equals("n")) {

@@ -50,7 +50,6 @@ public class HasSettingTag extends CloudReferrerTag implements Condition {
 
     protected Attribute inverse = Attribute.NULL;
 
-    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
     }

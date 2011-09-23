@@ -382,7 +382,6 @@ public class Job implements Iterable<Result> {
        } else {
            LOG.service("Will submit " + jc);
            ThreadPools.jobsExecutor.execute(new Runnable() {
-                   @Override
                    public void run() {
                        jc.init();
                        synchronized(Job.this) {

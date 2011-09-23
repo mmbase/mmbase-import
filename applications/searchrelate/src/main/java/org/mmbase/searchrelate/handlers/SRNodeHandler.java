@@ -56,6 +56,10 @@ public class SRNodeHandler extends IntegerHandler {
         }
 
     }
+    @Override
+    public String check(Request request, Node node, Field field, boolean errors) {
+        return super.check(request, node, field, errors);
+    }
 
     @Override
     public String input(Request request, Node node, Field field, boolean search)  {
@@ -71,7 +75,7 @@ public class SRNodeHandler extends IntegerHandler {
             appendClasses(request, show, node, field);
             show.append("\" ");
             appendNameId(show, request, field);
-            Object value = getFieldValue(request, node.isNew() ? null : node, field, node.isNew());
+            Object value = getFieldValue(request, node == null || node.isNew() ? null : node, field, ! search);
             show.append("value=\"");
             show.append((value == null ? "" : Casting.toString(value)));
             show.append("\" />");
