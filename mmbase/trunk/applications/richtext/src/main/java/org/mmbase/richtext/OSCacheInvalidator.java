@@ -32,7 +32,6 @@ public class OSCacheInvalidator implements NodeEventListener, SystemEventListene
 
     @Override
     public void notify(SystemEvent se) {
-        LOG.info(se);
         if (se instanceof SystemEvent.Up) {
             try {
                 ServletContext context =  MMBaseContext.getServletContext();
@@ -54,7 +53,7 @@ public class OSCacheInvalidator implements NodeEventListener, SystemEventListene
     public void notify(NodeEvent ne) {
         if (cache != null) {
             String key = "richtext_" + ne.getNodeNumber();
-            LOG.debug("Flusing " + key);
+            LOG.debug("Flushing " + key);
             cache.flushEntry(key);
             cache.flushGroup(key);
         }
