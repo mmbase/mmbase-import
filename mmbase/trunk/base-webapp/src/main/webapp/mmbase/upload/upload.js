@@ -1,6 +1,6 @@
 $(document).ready(function() {
     var progressUrl = $("head meta[name=ContextRoot]").attr("content") + "/mmbase/upload/progress.jspx";
-    $("form[enctype=multipart/form-data]").each(function() {
+    $("form[enctype='multipart/form-data']").each(function() {
 
         $(this).submit(function() {
             var form = this;
