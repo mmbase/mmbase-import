@@ -20,7 +20,7 @@
        />
   <jsp:directive.include file="get.datatype.jspxf" />
   <mm:import externid="fieldname" jspvar="fieldname" required="true" />
-  <mm:import externid="length" jspvar="length" vartype="integer" required="true" />
+  <mm:import externid="length" jspvar="length" vartype="integer" />
   <mm:import externid="type" jspvar="type" vartype="string" required="true" />
   <mm:cloud uri="${param.uri}" name="${param.name}"><!-- cloud to provide locale -->
     <jsp:scriptlet>
