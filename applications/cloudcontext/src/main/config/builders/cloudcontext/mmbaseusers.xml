@@ -39,7 +39,7 @@
         You may want this if the passwords are sensitive, but not necessarily only for this site.
         Switching this to true makes the 'encoded' password about as good as the password itself.
     -->
-    <property name="allowencodedpassword">false</property>
+    <!-- <property name="allowencodedpassword">false</property> -->
   </properties>
   <xi:include href="http://www.mmbase.org/builders/cloudcontext/mmbaseusers.fields.xml" />
   <xi:include href="http://www.mmbase.org/builders/cloudcontext/mmbaseusers.virtual.fields.xml" />
