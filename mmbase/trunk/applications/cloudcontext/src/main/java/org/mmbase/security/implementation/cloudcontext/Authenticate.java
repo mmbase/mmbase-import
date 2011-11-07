@@ -105,7 +105,7 @@ public class Authenticate extends CloudContextAuthentication implements java.io.
        <tr><th>client provided</th><th>database</th><th>application to use</th><th>comments</th><tr>
        <tr><td>plain</td><th>encoded</td><td>name/password</td><td>this is the default and most
        sensible case</td></tr>
-       <tr><td>encoded</td><th>encoded</td><td>name/encodedpassword</td><td>The 'allowEnoded' property must be true for this to work.</td></tr>
+       <tr><td>encoded</td><th>encoded</td><td>name/encodedpassword</td><td>The 'allowencodedpassword' property must be true for this to work.</td></tr>
 
        <tr><td>plain</td><th>plain</td><td>name/password</td><td>this is the default if the password
        set-processor is empty.</td></tr>
