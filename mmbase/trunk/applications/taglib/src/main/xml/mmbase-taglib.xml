@@ -4208,6 +4208,13 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <info>Path for the cookie if the 'cookie' attribute is used. Works like url-tag. Defaults to / (i.e. &lt;context path&gt;)</info>
     </attribute>
     <attribute>
+      <name>cookiedomain</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>Domain of cookie if the 'cookie' attribute is used. Normally domain is set automatically, but you may have reasons to alter it.</info>
+      <since>MMBase-1.9.6</since>
+    </attribute>
+    <attribute>
       <name>request</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
