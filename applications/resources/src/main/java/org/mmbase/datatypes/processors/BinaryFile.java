@@ -139,7 +139,7 @@ public class BinaryFile {
                 if (existing != null && ! "".equals(existing)) {
                     File ef = new File(dir, existing);
                     if (ef.exists() && ef.isFile()) {
-                        log.service("Removing existing field " + ef);
+                        log.service("Removing existing file " + ef);
                         ef.delete();
                     } else {
                         log.warn("Could not find " + ef + " so could not delete it");
