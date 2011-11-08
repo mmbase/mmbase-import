@@ -47,6 +47,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
     private Attribute sessionVar = Attribute.NULL;
     private Attribute cookie     = Attribute.NULL;
     private Attribute cookiePath     = Attribute.NULL;
+    private Attribute cookieDomain   = Attribute.NULL;
     private Attribute applicationVar  = Attribute.NULL;
     private Attribute requestVar  = Attribute.NULL;
     // private Attribute page       = Attribute.NULL;
@@ -67,6 +68,13 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
      */
     public void setCookiepath(String s) throws JspTagException {
         cookiePath = getAttribute(s);
+    }
+    
+    /**
+     * @since MMBase-1.9.6
+     */
+    public void setCookiedomain(String s) throws JspTagException {
+        cookieDomain = getAttribute(s);
     }
 
     /**
@@ -208,11 +216,17 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
                     path = request.getContextPath();
                     if (path.length() == 0) path = "/";
                 } else {
-                    Url url = new Url(this, cookiePath.getString(this), "server");
-                    path = url.get();
+                    path = cookiePath.getString(this);
+                }
+                c.setPath(path);
+                
+                if (cookieDomain != Attribute.NULL) {
+                    String domain = cookieDomain.getString(this);
+                    if (domain.length() > 0) {
+                        c.setDomain(domain);
+                    }
                 }
 
-                c.setPath(path);
                 c.setMaxAge(maxCookieAge);
                 response.addCookie(c);
 
