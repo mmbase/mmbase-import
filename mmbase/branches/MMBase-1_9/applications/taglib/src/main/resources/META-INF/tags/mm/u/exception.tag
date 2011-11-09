@@ -4,6 +4,10 @@
 %><jsp:directive.attribute name="exception"   required="true" type="java.lang.Exception"
 /><mm:present  referid="exception"
 ><mm:write referid="exception" jspvar="e" vartype="java.lang.Throwable"><%
-ErrorRenderer.Error error = new ErrorRenderer.Error(500, e);
-error.getErrorReport(out, request, new org.mmbase.util.transformers.Xml());
+if (e instanceof NotFoundException) {
+   pageContext.setResponseCode(404);
+} else {
+  ErrorRenderer.Error error = new ErrorRenderer.Error(500, e);
+  error.getErrorReport(out, request, new org.mmbase.util.transformers.Xml());
+}
 %></mm:write></mm:present>
