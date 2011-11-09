@@ -95,7 +95,7 @@ public class LanguageDataType extends StringDataType {
         } else {
             loc = getLocale(cloud, field);
         }
-        if (validate(loc.toString(), null, field).size() == 0) {
+        if (validate(loc.toString(), null, field).isEmpty()) {
             return loc.toString();
 
         } else {
