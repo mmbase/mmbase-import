@@ -1,13 +1,17 @@
-<%@taglib  uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><%@taglib  uri="http://java.sun.com/jsp/jstl/core" prefix="c"
-%><%@tag import="org.mmbase.framework.ErrorRenderer"
-%><jsp:directive.attribute name="exception"   required="true" type="java.lang.Exception"
-/><mm:present  referid="exception"
-><mm:write referid="exception" jspvar="e" vartype="java.lang.Throwable"><%
-if (e instanceof NotFoundException) {
-   pageContext.setResponseCode(404);
-} else {
-  ErrorRenderer.Error error = new ErrorRenderer.Error(500, e);
-  error.getErrorReport(out, request, new org.mmbase.util.transformers.Xml());
-}
-%></mm:write></mm:present>
+<%@tag import="org.mmbase.framework.ErrorRenderer"
+%><%@attribute name="exception"   required="true" type="java.lang.Throwable"
+%><%@attribute name="showversion" type="java.lang.Boolean"
+%><%@attribute name="showsession" type="java.lang.Boolean"
+%><%@attribute name="requestignore" type="java.lang.String"
+%><%@attribute name="sessionignore" type="java.lang.String"
+%><%
+Exception exception = (Exception) jspContext.getAttribute("exception");
+int errorCode = exception instanceof org.mmbase.bridge.NotFoundException ? 404 : 500;
+response.setStatus(errorCode);
+ErrorRenderer.Error error = new ErrorRenderer.Error(errorCode ,(Exception) jspContext.getAttribute("exception"));
+error.setShowVersion((Boolean) jspContext.getAttribute("showversion"));
+error.setShowSession((Boolean) jspContext.getAttribute("showsession"));
+error.setRequestIgnore((String) jspContext.getAttribute("requestignore"));
+error.setSessionIgnore((String) jspContext.getAttribute("sessionignore"));
+error.getErrorReport(out, request, new org.mmbase.util.transformers.Xml());
+%>
