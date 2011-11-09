@@ -75,7 +75,9 @@ public class MmxfSetString implements  Processor {
                 return  docbook.parse(node, Util.parse(value));
             }
             case Modes.FLAT: {
-                log.debug("Handling flat-input " + value.getClass() + " " + Util.toString(value));
+                if (log.isDebugEnabled()) {
+                    log.debug("Handling flat-input " + (value != null ? value.getClass() : "NULL") + " " + Util.toString(value));
+                }
                 return Util.parse(xmlField.transformBack(Util.toString(value)));
             }
             default: {
