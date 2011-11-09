@@ -9,12 +9,18 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes.processors;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.*;
-import org.mmbase.util.*;
-import org.mmbase.storage.search.*;
-import java.util.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.bridge.util.BridgeCollections;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.storage.search.FieldCompareConstraint;
+import org.mmbase.storage.search.Step;
+import org.mmbase.storage.search.StepField;
+import org.mmbase.util.Casting;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * The set- and get- processors implemented in this file can be used to make a virtual field which
@@ -227,8 +233,12 @@ public class Related {
         public Object process(final Node node, final Field field, final Object value) {
             synchronized(node) {    // this should of course only happen once
                 Node relatedNode = getRelatedNode(node, field);
-                if (relatedNode == null) {
-                    log.info("No related node of type " + getRelatedCreateType(node).getName() + " for node " + node.getNumber() + ". Implicitely creating now.");
+                boolean canMakeRelation = node.getCloud() instanceof Transaction || !node.isNew();
+                if (relatedNode == null && canMakeRelation) {
+                    if (log.isServiceEnabled()) {
+                        log.service("No related node of type " + getRelatedCreateType(node).getName() + " for node " +
+                            node.getNumber() + ". Implicitely creating now.");
+                    }
                     Node newNode = getRelatedCreateType(node).createNode();
                     newNode.commit();
                     RelationManager rel = getRelationManager(node);
@@ -236,7 +246,7 @@ public class Related {
                     for (Map.Entry<String, String> entry : relationConstraints.entrySet()) {
                         newrel.setStringValue(entry.getKey(), entry.getValue());
                     }
-    
+
                     newrel.commit();
                     if (node.getCloud() instanceof Transaction) {
                         node.getCloud().setProperty(getKey(node, field),  newNode);
@@ -247,7 +257,6 @@ public class Related {
                     }
                 }
             }
-            
             return value;
         }
     }
