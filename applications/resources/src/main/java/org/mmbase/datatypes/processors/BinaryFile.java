@@ -187,6 +187,7 @@ public class BinaryFile {
         @Override
         public Object process(Node node, Field field, Object value) {
             if (node != null && ! node.isNew() && value instanceof String) {
+                if (((String) value).length() == 0) return value;
                 File dir = getDirectory();
                 File file = new File(dir, (String) value);
                 try {
