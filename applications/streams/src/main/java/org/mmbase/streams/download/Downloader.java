@@ -1,24 +1,25 @@
 /*
 
-This file is part of the Open Images Platform, a webapplication to manage and publish open media.
-    Copyright (C) 2011 Netherlands Institute for Sound and Vision
+This file is part of the MMBase Streams application, 
+which is part of MMBase - an open source content management system.
+    Copyright (C) 2011 André van Toly, Michiel Meeuwissen
 
-The Open Images Platform is free software: you can redistribute it and/or modify
+MMBase Streams is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-The Open Images Platform is distributed in the hope that it will be useful,
+MMBase Streams is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with The Open Images Platform.  If not, see <http://www.gnu.org/licenses/>.
+along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-package eu.openimages.api;
+package org.mmbase.streams.download;
 
 import java.io.*;
 import java.net.*;
@@ -32,7 +33,7 @@ import org.mmbase.servlet.FileServlet;
 import org.mmbase.util.transformers.*;
 
 /**
- * This is called by {@link MediaDownload} and does the actual downloading and saving 
+ * This is called by {@link DownloadFunction} and does the actual downloading and saving 
  * of the downloaded stream on the filesystem. Returns filename of file it is
  * saved into. 
  *

@@ -1,24 +1,25 @@
 /*
 
-This file is part of the Open Images Platform, a webapplication to manage and publish open media.
-    Copyright (C) 2011 Netherlands Institute for Sound and Vision
+This file is part of the MMBase Streams application, 
+which is part of MMBase - an open source content management system.
+    Copyright (C) 2011 André van Toly, Michiel Meeuwissen
 
-The Open Images Platform is free software: you can redistribute it and/or modify
+MMBase Streams is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-The Open Images Platform is distributed in the hope that it will be useful,
+MMBase Streams is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with The Open Images Platform.  If not, see <http://www.gnu.org/licenses/>.
+along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-package eu.openimages.api;
+package org.mmbase.streams.download;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -48,20 +49,20 @@ import org.mmbase.util.logging.*;
  * @author Andr&eacute; van Toly
  * @version $Id$
  */
-public final class MediaDownload extends NodeFunction<String> {
+public final class DownloadFunction extends NodeFunction<String> {
     private static final long serialVersionUID = 0L;
-    private static final Logger log = Logging.getLoggerInstance(MediaDownload.class);
+    private static final Logger log = Logging.getLoggerInstance(DownloadFunction.class);
 
     private static final Parameter<String> URL = new Parameter<String>("url", String.class);
     private final static Parameter[] PARAMETERS = { URL, Parameter.LOCALE };
 
-    private final static String URL_KEY    = MediaDownload.class.getName() + ".url";
-    private final static String STATUS_KEY = MediaDownload.class.getName() + ".status";
+    private final static String URL_KEY    = DownloadFunction.class.getName() + ".url";
+    private final static String STATUS_KEY = DownloadFunction.class.getName() + ".status";
 
     private final Map<Integer, Future<?>> runningJobs = new ConcurrentHashMap<Integer, Future<?>>();
 
-    public MediaDownload() {
-        super("mediadownload", PARAMETERS);
+    public DownloadFunction() {
+        super("download", PARAMETERS);
     }
 
 
@@ -152,8 +153,8 @@ public final class MediaDownload extends NodeFunction<String> {
                             result = downloader.download();
                             
                             // download is ready
-                            MediaDownload.this.setDownloadUrl(node, parameters.get(URL));
-                            MediaDownload.this.setDownloadStatus(node, "ok");
+                            DownloadFunction.this.setDownloadUrl(node, parameters.get(URL));
+                            DownloadFunction.this.setDownloadStatus(node, "ok");
                             
                             //node.getCloud().setProperty(org.mmbase.streams.createcaches.Processor.NOT, null);
                             
@@ -164,19 +165,19 @@ public final class MediaDownload extends NodeFunction<String> {
                             
                         } catch (IllegalArgumentException iae) {
                             log.error(iae.getMessage(), iae);
-                            MediaDownload.this.setDownloadStatus(node, "NON-HTTP " + iae.getMessage());
+                            DownloadFunction.this.setDownloadStatus(node, "NON-HTTP " + iae.getMessage());
                         } catch (MalformedURLException ue) {
                             log.error(ue.getMessage(), ue);
-                            MediaDownload.this.setDownloadStatus(node, "BADURL " + ue.getMessage());
+                            DownloadFunction.this.setDownloadStatus(node, "BADURL " + ue.getMessage());
                         } catch (IOException ioe) {
                             log.error(ioe.getMessage(), ioe);
-                            MediaDownload.this.setDownloadStatus(node, "IOERROR " + ioe.getMessage());
+                            DownloadFunction.this.setDownloadStatus(node, "IOERROR " + ioe.getMessage());
                         } catch (Throwable t) {
                             log.error(t.getMessage(), t);
-                            MediaDownload.this.setDownloadStatus(node, "UNEXPECTED " + t.getMessage());
+                            DownloadFunction.this.setDownloadStatus(node, "UNEXPECTED " + t.getMessage());
                         } finally {
-                            MediaDownload.this.runningJobs.remove(node.getNumber());
-                            log.info("Running jobs: " + MediaDownload.this.runningJobs);
+                            DownloadFunction.this.runningJobs.remove(node.getNumber());
+                            log.info("Running jobs: " + DownloadFunction.this.runningJobs);
                         }
                         return result;
                 } 
