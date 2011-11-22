@@ -9,5 +9,8 @@
   <function name="thumbnail">
     <class>org.mmbase.streams.thumbnails.ThumbNailFunction</class>
   </function>
+  <function name="download">
+    <class>org.mmbase.streams.download.DownloadFunction</class>
+  </function>
 
 </functionlist>
