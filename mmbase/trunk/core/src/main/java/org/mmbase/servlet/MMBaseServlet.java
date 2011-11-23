@@ -419,8 +419,9 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     }
 
     /**
-     * Serves MMBase version information. This doesn't do much useful
-     * yet, but one could image lots of cool stuff here. Any other
+     * {@inheritDoc}
+     *
+     * Default MMBaseServlet implementation serves MMBase version information. Any other
      * MMBase servlet will probably override this method.
      */
     @Override
