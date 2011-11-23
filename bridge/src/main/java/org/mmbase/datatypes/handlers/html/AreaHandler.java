@@ -50,7 +50,7 @@ public class AreaHandler extends TextHandler {
             StringBuilder buffer =  new StringBuilder();
             buffer.append("<textarea class=\"");
             buffer.append(field.getMaxLength() > 2048 ? "big " : "small ");
-            appendClasses(request, buffer, node, field);
+            appendClasses(request, buffer, node, field, search);
             buffer.append("\" ");
             appendNameId(buffer, request, field);
             buffer.append(">");

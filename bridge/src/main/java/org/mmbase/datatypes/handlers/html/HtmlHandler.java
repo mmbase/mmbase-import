@@ -57,8 +57,9 @@ public abstract class HtmlHandler  extends AbstractHandler<String> {
     }
 
 
-    protected void appendClasses(Request request, StringBuilder buf, Node node, Field field) {
+    protected void appendClasses(Request request, StringBuilder buf, Node node, Field field, boolean search) {
         buf.append("mm_validate");
+        if (search) buf.append(" mm_search");
         DataType dt = field.getDataType();
         for (String styleClass : dt.getStyleClasses()) {
             buf.append(" ");
