@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @version $Id$
  */
 public class NodeEvent extends Event {
-    private static final Logger log = Logging.getLoggerInstance(NodeEvent.class);
+    private static final Logger LOG = Logging.getLoggerInstance(NodeEvent.class);
 
     private static final long serialVersionUID = 1L;
 
@@ -39,7 +39,6 @@ public class NodeEvent extends Event {
     public static final int TYPE_RELATION_CHANGE = 3;
 
     private static final Map<String, Object> EMPTY = Collections.unmodifiableMap(new HashMap<String, Object>());
-    private static final Object EMPTIED = null;
 
     /**
      * Removes all non-serializable values, and all values we don't want to serialize (binaries, because they are too big) (actually, it considers
@@ -60,14 +59,14 @@ public class NodeEvent extends Event {
                 if (value != null) {
                     for (Class clazz : requiredValueTypes) {
                         if (! clazz.isInstance(value)) {
-                            log.warn("Found non " + clazz + "'" + entry.getKey() + "' in " + values);
+                            LOG.warn("Found non " + clazz + "'" + entry.getKey() + "' in " + values);
                             toremove.add(entry.getKey());
                             continue ENTRIES;
                         }
                     }
                     for (Class clazz : unacceptableValueTypes) {
                         if (clazz.isInstance(value)) {
-                            log.debug("Found  " + clazz + "'" + entry.getKey() + "' in " + values);
+                            LOG.debug("Found  " + clazz + "'" + entry.getKey() + "' in " + values);
                             toremove.add(entry.getKey());
                             continue ENTRIES;
                         }
@@ -77,7 +76,7 @@ public class NodeEvent extends Event {
             newMap.putAll(values);
         }
         for (String k : toremove) {
-            newMap.put(k, EMPTIED);
+            newMap.put(k, null);
         }
         return Collections.unmodifiableMap(newMap);
     }
@@ -133,7 +132,7 @@ public class NodeEvent extends Event {
      * @since MMBase-1.9.4
      */
     static void configure() {
-        log.info("Reading " + properties);
+        LOG.info("Reading " + properties);
         {
             String[] unacceptable = properties.getProperties().get("unacceptable").split(",");
             List<Class> classes = new ArrayList<Class>();
@@ -141,10 +140,10 @@ public class NodeEvent extends Event {
                 try {
                     classes.add(Class.forName(clazz));
                 } catch (Exception e) {
-                    log.error(e.getMessage(), e);
+                    LOG.error(e.getMessage(), e);
                 }
             }
-            log.info("Setting unacceptable values types for NodeEvents to " + classes);
+            LOG.info("Setting unacceptable values types for NodeEvents to " + classes);
             setUnacceptableValueTypes(classes.toArray(new Class[classes.size()]));
         }
         {
@@ -154,10 +153,10 @@ public class NodeEvent extends Event {
                 try {
                     classes.add(Class.forName(clazz));
                 } catch (Exception e) {
-                    log.error(e.getMessage(), e);
+                    LOG.error(e.getMessage(), e);
                 }
             }
-            log.info("Setting unacceptable values types for NodeEvents to " + classes);
+            LOG.info("Setting unacceptable values types for NodeEvents to " + classes);
             setRequiredValueTypes(classes.toArray(new Class[classes.size()]));
         }
     }
@@ -396,7 +395,7 @@ public class NodeEvent extends Event {
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        log.debug("deserialized node event for " + nodeNumber);
+        LOG.debug("deserialized node event for " + nodeNumber);
         try {
             int otype = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase").getNodeManager(builderName).getNumber();
             if (otype != -1) {
@@ -404,23 +403,23 @@ public class NodeEvent extends Event {
                 if (typeCache != null) {
                     Integer cachedType = typeCache.get(nodeNumber);
                     if (cachedType == null) {
-                        log.debug("Putting in type cache " + nodeNumber + " -> " + otype);
+                        LOG.debug("Putting in type cache " + nodeNumber + " -> " + otype);
                         typeCache.put(nodeNumber, otype);
                     } else {
                         if (otype == cachedType.intValue()) {
-                            log.debug("Type already cached");
+                            LOG.debug("Type already cached");
                         } else {
-                            log.warn("Type in event not the same as in cache " + otype + " != " + cachedType + " Event: " + this + " from " + getMachine());
+                            LOG.warn("Type in event not the same as in cache " + otype + " != " + cachedType + " Event: " + this + " from " + getMachine());
                         }
                     }
                 } else {
-                    log.service("No typecache?");
+                    LOG.service("No typecache?");
                 }
             } else {
-                log.service("Builder '" + builderName + "' from " + nodeNumber + " not found. Originating from " + getMachine());
+                LOG.service("Builder '" + builderName + "' from " + nodeNumber + " not found. Originating from " + getMachine());
             }
         } catch (Exception e) {
-             log.error(e);
+             LOG.error(e);
         }
 
     }
