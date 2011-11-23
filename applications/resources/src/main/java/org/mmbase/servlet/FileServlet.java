@@ -104,10 +104,17 @@ public class FileServlet extends BridgeServlet {
         a.put("files",      50);
         return a;
     }
-
+    /**
+     * FileServlet should normally be present only once. This method returns that instance. It can be used to acquire some information from it, e.g. {@link #getDirectory}.
+     * 
+     * @return The first instance of FileServlet, or <code>null</code> if there isn't one.
+     */
     public static FileServlet getInstance() {
         return firstInstance;
     }
+    /**
+     * @return The directory which is served out.
+     */
     public static File getDirectory() {
         return getInstance().files;
     }
@@ -128,7 +135,10 @@ public class FileServlet extends BridgeServlet {
     }
 
     static final String PROTECTED_FILES = FileServlet.class.getName() + ".protectedfiles";
+
     /**
+     * FileServlet can be used to serve files out only to the owner of certain HTTP-session. This happens if you 'protected' the given file with this method.
+     *
      * @since MMBase-1.9.2
      */
     public static void protectFile(HttpServletRequest req, File f) throws IOException {
@@ -176,7 +186,7 @@ public class FileServlet extends BridgeServlet {
     }
 
     /**
-     * FileServlet supports 'meta' files like Cern HTTPD (and apaches mod_cern_meta).
+     * FileServlet supports 'meta' files like CERN HTTPD (and apaches mod_cern_meta).
      * Such a file contains the extra HTTP headers (e.g. the Content-Disposition)
      * and can be found in <code>.web/&lt;filename&gt;.meta</code>.
      * @since MMBase-1.9.2
@@ -389,7 +399,7 @@ public class FileServlet extends BridgeServlet {
     /**
      * @TODO Ranges stuff can be generalized to also work e.g. with images and attachments.
      *
-     * Tomcat has an implementation of these headers: Content-Range, Accep-Ranges, Range and If-Range.
+     * Tomcat has an implementation of these headers: Content-Range, Accept-Ranges, Range and If-Range.
      * Use that? See org.apache.catalina.servlets.DefaultServlet
      * http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/catalina/servlets/DefaultServlet.html
      *
@@ -404,14 +414,14 @@ public class FileServlet extends BridgeServlet {
 
         /**
          * If we are at byte number i, how many are not available from here until we encounter one which is?
-         * @return Some number of bytes or <code>0</code> if the next character is availabe. A large number near <code>Long.MAX_VALUE</code> if all subsequent byes are unavailable.
+         * @return Some number of bytes or <code>0</code> if the next character is available. A large number near <code>Long.MAX_VALUE</code> if all subsequent byes are unavailable.
          */
         long notavailable(long i);
     }
 
     /**
      * Implementation of Range simply stating the first and last chars which are available, perhaps with a maximum too.
-     * This only deals with <start>-<stop> entries in the Range specificiation.
+     * This only deals with <start>-<stop> entries in the Range specification.
      * @since MMBase-2.0
      */
     protected static class FirstLastRange implements Range {
@@ -449,7 +459,7 @@ public class FileServlet extends BridgeServlet {
         }
         @Override
         public String toString() {
-            return "" + first + "-" + (last < Long.MAX_VALUE ? last : "");
+            return first + "-" + (last < Long.MAX_VALUE ? last : "");
         }
     }
     /**
@@ -518,7 +528,7 @@ public class FileServlet extends BridgeServlet {
 
     /**
      * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
-     * @return A ChainedRange object if Range header was present and If-Range didn't provide useage. <code>null</code> otherwise.
+     * @return A ChainedRange object if Range header was present and If-Range didn't provide usage. <code>null</code> otherwise.
      * @since MMBase-2.0
      */
     protected ChainedRange getRange(HttpServletRequest req, File file) {
