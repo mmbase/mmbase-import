@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.filters;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
