@@ -89,7 +89,7 @@ public class NodeHandler extends AbstractTypeHandler {
            tag.getCloudVar().hasNodeManager(field.getGUIType())) {
             StringBuilder buffer = new StringBuilder();
             // yippee! the gui was the same a an builder!
-            buffer.append("<select class=\"").append(getClasses(node, field)).append("\" name=\"").append( prefix(field.getName()) ).append("\" ");
+            buffer.append("<select class=\"").append(getClasses(node, field, search)).append("\" name=\"").append( prefix(field.getName()) ).append("\" ");
             buffer.append("id=\"").append( prefixID(field.getName()) ).append("\" ");
             addExtraAttributes(buffer);
             buffer.append(">\n");
