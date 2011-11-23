@@ -113,10 +113,10 @@ public class BasicFramework extends Framework {
 
 
     /**
-     * Configures the framework by reading its config file 'config/framework.xml'
+     * Configures the framework by reading its configuration file 'config/framework.xml'
      * containing a list with UrlConverters.
      */
-    protected void configure(Element el) {
+    protected final void configure(Element el) {
         try {
             description.fillFromXml("description", el);
 
@@ -294,7 +294,7 @@ public class BasicFramework extends Framework {
 
     /**
      * I think in the basic framework this method is never called explicitely, because processing is
-     * done implicitely by the render
+     * done implicitly by the render
      */
     @Override
     public void process(Processor processor, Parameters blockParameters, Parameters frameworkParameters) throws FrameworkException {
