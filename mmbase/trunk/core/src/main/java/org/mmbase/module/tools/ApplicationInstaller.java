@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import org.mmbase.bridge.Field;
 import org.mmbase.cache.NodeCache;
 import org.mmbase.core.CoreField;
+import org.mmbase.core.event.ApplicationsInstalledEvent;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.module.core.*;
 import org.mmbase.module.core.NodeSearchQuery;
@@ -641,7 +642,7 @@ class ApplicationInstaller {
 
     /**
      * Checks and if required installs needed relation definitions.
-     * Retrieves, for each reldef entry, the attributes, and passes these on to {@link #installRelDef}
+     * Retrieves, for each reldef entry, the attributes, and passes these on to {@link #installRelDef(String, String, int, String, String, int, ApplicationResult)}
      * @param reldefs a list of hashtables. Each hashtable represents a reldef entry, and contains a list of name-value
      *      pairs (the reldef attributes).
      * @return Always <code>true</code> (?)
@@ -677,7 +678,7 @@ class ApplicationInstaller {
 
     /**
      * Checks and if required installs needed allowed type relations.
-     * Retrieves, for each allowed relation entry, the attributes, and passes these on to {@link #installTypeRel}
+     * Retrieves, for each allowed relation entry, the attributes, and passes these on to {@link #installTypeRel(String, String, String, int, ApplicationResult)}
      * @param relations a list of hashtables. Each hashtable represents a allowedrelation entry, and contains a list of name-value
      *      pairs (the allowed relation attributes).
      * @return <code>true</code> if succesfull, <code>false</code> if an error occurred
