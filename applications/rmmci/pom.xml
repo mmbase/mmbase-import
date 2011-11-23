@@ -14,6 +14,9 @@
   <name>MMBase RMMCI</name>
   <packaging>jar</packaging>
 
+  <description>RMMCI stands for 'Remote MMBase Cloud Interfaces'. It is a 'remote' implementation of the MMBase bridge,
+  using RMI. It can be used to communicate with (another) MMBase installation.</description>
+
   <build>
     <plugins>
       <plugin>
