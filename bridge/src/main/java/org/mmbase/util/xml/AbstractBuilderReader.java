@@ -232,7 +232,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
                 // determine if an item should be replaced or merged
                 boolean replaceItem = replace;
                 String replaceAttr = newEl.getAttribute("override");
-                if (replaceAttr != null) {
+                if (replaceAttr != null && ! "".equals(replaceAttr)) {
                     replaceItem = replaceAttr.equals("replace");
                 }
                 Element docEl = null;
@@ -454,9 +454,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
      * @param builder the MMObjectBuilder to which the field belongs
      * @param collector The DataTypeCollector of the bulider.
      * @param fieldName the name of the field (used in log messages)
-     * @param field     The 'field' element of the builder xml
-     * @param type      The database type of the field
-     * @param listItemType If the database type is a List, there is also a type of its element
+     * @param fieldElement     The 'field' element of the builder xml
      * @param forceInstance If true, it will never return <code>null</code>, but will return (a clone) of the DataType associated with the database type.
      * @since MMBase-1.8
      */
