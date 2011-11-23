@@ -34,9 +34,9 @@ public class SRNodeHandler extends IntegerHandler {
     }
 
     @Override
-    protected void appendClasses(Request request, StringBuilder buf, Node node, Field field) {
+    protected void appendClasses(Request request, StringBuilder buf, Node node, Field field, boolean search) {
         buf.append("mm_sr_searcher ");
-        super.appendClasses(request, buf, node, field);
+        super.appendClasses(request, buf, node, field, search);
     }
 
     Query getQuery(Cloud cloud, Node node, Field field) {
@@ -68,7 +68,7 @@ public class SRNodeHandler extends IntegerHandler {
             // Field to contain the actual information
             // Will be made hidden by the javascript.
             StringBuilder show =  new StringBuilder("<input type=\"text\" class=\" ");
-            appendClasses(request, show, node, field);
+            appendClasses(request, show, node, field, search);
             show.append("\" ");
             appendNameId(show, request, field);
             Object value = getFieldValue(request, node.isNew() ? null : node, field, node.isNew());
