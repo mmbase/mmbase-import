@@ -13,9 +13,8 @@ import org.mmbase.util.logging.Level;
 import java.util.*;
 
 /**
- * Wraps a logger instance. This can be used for static logger instances which might be instatatied
- * before logging itself is configured. After configurating logging, all static 'wrappers' can then
- * be called to wrap another logger instance.
+ * Wraps a log4j logger instance.  In case you have a Log4j instance and you need an MMBase {@link #Logger}, you can straigth forwarwardly
+ * wrap it into this.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-2.0
@@ -32,72 +31,72 @@ public class Log4jWrapper implements Logger {
     }
 
     @Override
-    final public void trace   (Object m) {
+    final public void trace(Object m) {
         if (log != null) log.trace(m);
     }
 
     @Override
-    final public void trace   (Object m, Throwable t) {
+    final public void trace(Object m, Throwable t) {
         if (log != null) log.trace(m, t);
     }
 
     @Override
-    final public void debug   (Object m) {
+    final public void debug(Object m) {
         if (log != null) log.debug(m);
     }
 
     @Override
-    final public void debug   (Object m, Throwable t) {
+    final public void debug(Object m, Throwable t) {
         if (log != null) log.debug(m, t);
     }
 
     @Override
-    final public void service (Object m) {
+    final public void service(Object m) {
         log.debug(m);
     }
 
     @Override
-    final public void service (Object m, Throwable t) {
+    final public void service(Object m, Throwable t) {
         log.debug(m, t);
     }
 
     @Override
-    final public void info    (Object m) {
+    final public void info(Object m) {
         log.info(m);
     }
 
     @Override
-    final public void info    (Object m, Throwable t) {
+    final public void info(Object m, Throwable t) {
         log.info(m, t);
     }
 
     @Override
-    final public void warn    (Object m) {
+    final public void warn(Object m) {
         log.warn(m);
     }
 
     @Override
-    final public void warn    (Object m, Throwable t) {
+    final public void warn(Object m, Throwable t) {
         log.warn(m, t);
     }
 
     @Override
-    final public void error   (Object m) {
+    final public void error(Object m) {
         log.error(m);
     }
 
     @Override
-    final public void error   (Object m, Throwable t) {
+    final public void error(Object m, Throwable t) {
         log.error(m, t);
     }
 
     @Override
-    final public void fatal   (Object m) {
+    final public void fatal(Object m) {
         log.fatal(m);
     }
 
     @Override
-    final public void fatal   (Object m, Throwable t) {
+    final public void fatal(Object m, Throwable t) {
         log.fatal(m, t);
     }
 
