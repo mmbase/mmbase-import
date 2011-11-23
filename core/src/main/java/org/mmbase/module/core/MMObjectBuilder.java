@@ -157,7 +157,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     private static int cacheLocked = 0;
 
-    private static final Logger log = Logging.getLoggerInstance(MMObjectBuilder.class);
+    private static final Logger LOG = Logging.getLoggerInstance(MMObjectBuilder.class);
 
     private List<MMObjectBuilder> descendants;
 
@@ -425,7 +425,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             // note that init can be called twice
             if (oType != -1) return true;
 
-            log.debug("Init of builder " + getTableName());
+            LOG.debug("Init of builder " + getTableName());
 
             loadInitParameters();
 
@@ -449,8 +449,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             if (((typeDef != null)  && (typeDef.getObjectType()!=-1)) || (this == typeDef)) {
                 oType = typeDef.getIntValue(tableName);
                 if (oType == -1) { // no object type number defined yet
-                    if (log.isDebugEnabled()) {
-                        log.debug("Creating typedef entry for " + tableName);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Creating typedef entry for " + tableName);
                     }
                     String owner;
                     try {
@@ -480,11 +480,11 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                     try {
                         oType = mmb.getStorageManager().createKey();
                     } catch (StorageException se) {
-                        log.error(se.getMessage() + Logging.stackTrace(se));
+                        LOG.error(se.getMessage() + Logging.stackTrace(se));
                         return false;
                     }
 
-                    log.debug("Got key " + oType);
+                    LOG.debug("Got key " + oType);
                     node.storeValue(FIELD_NUMBER, oType);
                     // for typedef, set otype explictly, as it wasn't set in getNewNode()
                     if (this == typeDef) {
@@ -500,7 +500,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 // warn if typedef was not created
                 // except for the 'object' and 'typedef' basic builders
                 if(!tableName.equals("typedef") && !tableName.equals("object")) {
-                    log.warn("init(): for tablename(" + tableName + ") -> can't get to typeDef");
+                    LOG.warn("init(): for tablename(" + tableName + ") -> can't get to typeDef");
                     return false;
                 }
             }
@@ -516,9 +516,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             if(property != null) {
                 try {
                     maxNodesFromQuery = Integer.parseInt(property);
-                    log.debug(getTableName() + " returns no more than " + maxNodesFromQuery + " records from a query.");
+                    LOG.debug(getTableName() + " returns no more than " + maxNodesFromQuery + " records from a query.");
                 } catch(NumberFormatException nfe) {
-                    log.warn("property:" + MAX_NODES_FROM_QUERY_PROPERTY + " contained an invalid integer value:'" + property +"'(" + nfe + ")");
+                    LOG.warn("property:" + MAX_NODES_FROM_QUERY_PROPERTY + " contained an invalid integer value:'" + property +"'(" + nfe + ")");
                 }
             }
         }
@@ -539,7 +539,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public void createIfNotExists() {
         if (!created()) {
-            log.info("Creating table for builder " + tableName);
+            LOG.info("Creating table for builder " + tableName);
             if (!create() ) {
                 // can't create buildertable.
                 // Throw an exception
@@ -592,12 +592,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Creates a new builder table in the storage layer.
      */
     public boolean create() {
-        log.debug(tableName);
+        LOG.debug(tableName);
         try {
             mmb.getStorageManager().create(this);
             return true;
         } catch (StorageException se) {
-            log.error(se.getMessage() + Logging.stackTrace(se));
+            LOG.error(se.getMessage() + Logging.stackTrace(se));
             return false;
         }
     }
@@ -607,7 +607,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @since MMBase-1.7
      */
     public void delete() {
-        log.service("trying to drop table of builder: '"+tableName+"'");
+        LOG.service("trying to drop table of builder: '"+tableName+"'");
         mmb.getStorageManager().delete(this);
     }
 
@@ -634,7 +634,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
     /**
      * Insert a new object (content provided) in the cloud, including an entry for the object alias (if provided).
-     * This method indirectly calls {@link #preCommit}.
+     * This method indirectly calls {@link #preCommit(MMObjectNode)}.
      * @param owner The administrator creating the node
      * @param node The object to insert. The object need be of the same type as the current builder.
      * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
@@ -652,7 +652,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         //xxx: this is bad.let's kill it!
         //QueryResultCache.invalidateAll(node, NodeEvent.TYPE_NEW);
         if (n <= 0) {
-            log.warn("Did not get valid nodeNumber of storage " + n);
+            LOG.warn("Did not get valid nodeNumber of storage " + n);
         }
         Integer nodeNumber = n;
         if (isNodeCached(nodeNumber)) {
@@ -677,8 +677,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     }
 
     /**
-     * Commit changes to this node to the storage layer. This method indirectly calls {@link #preCommit}.
-     * Use only to commit changes - for adding node, use {@link #insert}.
+     * Commit changes to this node to the storage layer. This method indirectly calls {@link #preCommit(MMObjectNode)}.
+     * Use only to commit changes - for adding node, use {@link #insert(String, MMObjectNode)}.
      * @param node The node to be committed
      * @return true if commit successful
      */
@@ -821,7 +821,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
     /**
      * Get a new node, using this builder as its parent. The new node is not a part of the cloud
-     * yet, and thus has the value -1 as a number. (Call {@link #insert} to add the node to the
+     * yet, and thus has the value -1 as a number. (Call {@link #insert(String, MMObjectNode)} to add the node to the
      * cloud).
      * @param owner The administrator creating the new node.
      * @return A newly initialized <code>MMObjectNode</code>.
@@ -869,7 +869,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 if (clazz != null) {
                     defaultValue = Casting.toType(clazz, null, "");
                 } else {
-                    log.warn("No class found for type of " + field);
+                    LOG.warn("No class found for type of " + field);
                 }
             }
 
@@ -974,8 +974,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             query.setConstraint(constraint);
             for (MMObjectNode syncnode : syncnodes.getNodes(query)) {
                 syncnode.parent.removeNode(syncnode);
-                if (log.isDebugEnabled()) {
-                    log.debug("Removed syncnode " + syncnode);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Removed syncnode " + syncnode);
                 }
             }
         } catch (SearchQueryException e) {
@@ -1083,8 +1083,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             // determine valid username
             if ((userName == null) || (userName.length() <= 1 )) { // may not have owner of 1 char??
                 userName = node.getStringValue(FIELD_OWNER);
-                if (log.isDebugEnabled()) {
-                    log.debug("Found username " + (userName == null ? "NULL" : userName));
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Found username " + (userName == null ? "NULL" : userName));
                 }
             }
             res = node.insert(userName);
@@ -1121,9 +1121,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public MMObjectNode getNode(String key, boolean useCache) {
         if( key == null ) {
-            log.error("getNode(null) for builder '" + tableName + "': key is null!");
+            LOG.error("getNode(null) for builder '" + tableName + "': key is null!");
             // who is doing that?
-            log.info(Logging.stackTrace(6));
+            LOG.info(Logging.stackTrace(6));
             return null;
         }
         int nr =-1;
@@ -1138,7 +1138,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         } else {
             // key passed was an alias
             // return node with this alias
-            log.debug("Getting node by alias");
+            LOG.debug("Getting node by alias");
             if (mmb.getOAlias() != null) {
                 return mmb.getOAlias().getAliasedNode(key);
             } else {
@@ -1207,9 +1207,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             CoreField fd = org.mmbase.core.util.Fields.createField(field, Field.TYPE_STRING, Field.STATE_VIRTUAL, null);
             if (! fd.isTemporary()) {
                 fd.setStoragePosition(1000);
-                log.service("Added a virtual field '" + field + "' to builder '" + getTableName() + "' because it was not defined in the builder's XML, but the implementation requires it to exist.");
+                LOG.service("Added a virtual field '" + field + "' to builder '" + getTableName() + "' because it was not defined in the builder's XML, but the implementation requires it to exist.");
             } else {
-                log.debug("Adding tmp (virtual) field '" + field + "' to builder '" + getTableName() + "'");
+                LOG.debug("Adding tmp (virtual) field '" + field + "' to builder '" + getTableName() + "'");
             }
 
             fd.setParent(this);
@@ -1230,8 +1230,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     static protected MMObjectNode getTmpNode(String key) {
         MMObjectNode node = temporaryNodes.get(key);
-        if (node == null && log.isTraceEnabled()) {
-            log.trace("getTmpNode(): node not found " + key);
+        if (node == null && LOG.isTraceEnabled()) {
+            LOG.trace("getTmpNode(): node not found " + key);
         }
         return node;
     }
@@ -1243,7 +1243,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     static void removeTmpNode(String key) {
         MMObjectNode node = temporaryNodes.remove(key);
         if (node == null) {
-            log.debug("removeTmpNode: node with " + key + " didn't exists");
+            LOG.debug("removeTmpNode: node with " + key + " didn't exists");
         }
     }
 
@@ -1298,7 +1298,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public void addField(CoreField def) {
         Object oldField = fields.put(def.getName().toLowerCase(), def);
         if (oldField != null) {
-            log.warn("Replaced " + oldField + " !!");
+            LOG.warn("Replaced " + oldField + " !!");
         }
         updateFields();
     }
@@ -1336,7 +1336,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public int getDBType(String fieldName) {
         if (fields == null) {
-            log.error("getDBType(): fields are null on object : " + tableName);
+            LOG.error("getDBType(): fields are null on object : " + tableName);
             return Field.TYPE_UNKNOWN;
         }
         Field field = getField(fieldName);
@@ -1358,8 +1358,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
             // log warning, except for virtual builders
             if (!virtual) { // should getDBType not be overridden in Virtual Builder then?
-                log.warn("getDBType(): Can't find definition on field '" + fieldName + "' of builder " + tableName);
-                log.debug(Logging.stackTrace());
+                LOG.warn("getDBType(): Can't find definition on field '" + fieldName + "' of builder " + tableName);
+                LOG.debug(Logging.stackTrace());
             }
             return Field.TYPE_UNKNOWN;
         }
@@ -1401,8 +1401,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         }
         if (locale == null) locale = mmb.getLocale();
 
-        if (log.isDebugEnabled()) {
-            log.debug("language " + locale.getLanguage() + " country " + locale.getCountry());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("language " + locale.getLanguage() + " country " + locale.getCountry());
         }
 
         String rtn;
@@ -1428,27 +1428,27 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             }
         }
         CoreField fdef = getField(field);
-        log.debug("Found field " + fdef);
+        LOG.debug("Found field " + fdef);
 
         if (rtn == null) {
-            log.debug("Found value " + rtn);
+            LOG.debug("Found value " + rtn);
 
             Object returnValue;
             if (fdef != null) {
                 // test if the value can be derived from the enumerationlist of a datatype
                 DataType dataType = fdef.getDataType();
                 if (dataType instanceof org.mmbase.datatypes.BinaryDataType) {
-                    log.debug("Getting from " + node + " size for field " + field);
+                    LOG.debug("Getting from " + node + " size for field " + field);
                     returnValue = node.isNull(field) ? "" : "" + node.getSize(field) + " byte";
                 } else {
                     try {
                         String svalue = node.getStringValue(field);
-                        log.debug("" + field + ":" + svalue);
+                        LOG.debug("" + field + ":" + svalue);
                         returnValue = dataType.getEnumerationValue(locale, pars.get(Parameter.CLOUD), pars.get(Parameter.NODE), fdef, node.getStringValue(field));
-                        log.debug("Found enumeration value " + dataType.getClass() + " " + returnValue);
+                        LOG.debug("Found enumeration value " + dataType.getClass() + " " + returnValue);
                     } catch (Exception e) {
                         returnValue = node.getStringValue(field);
-                        log.warn("For " + fdef + " (" + returnValue + ") " + e.getMessage(), e);
+                        LOG.warn("For " + fdef + " (" + returnValue + ") " + e.getMessage(), e);
 
                     }
                 }
@@ -1461,7 +1461,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 if (fdef != null && ("eventtime".equals(fdef.getGUIType()) ||
                                      fdef.getDataType() instanceof org.mmbase.datatypes.DateTimeDataType)) { // do something reasonable for this
 
-                    log.debug("date ");
+                    LOG.debug("date ");
                     Date date;
                     if (fdef.getType() == Field.TYPE_DATETIME) {
                         date = node.getDateValue(field);
@@ -1478,14 +1478,14 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 } else {
                     rtn = (String) pars.get("stringvalue");
                     if (rtn == null) {
-                        log.debug("using stringvalue " + rtn);
+                        LOG.debug("using stringvalue " + rtn);
                         rtn = node.getStringValue(field);
                     }
                 }
             }
             rtn = org.mmbase.util.transformers.Xml.XMLEscape(rtn);
         } else {
-            log.debug("Found value " + rtn.getClass() + " " + rtn);
+            LOG.debug("Found value " + rtn.getClass() + " " + rtn);
             /*
             if (fdef != null && fdef.getDataType() instanceof org.mmbase.datatypes.NodeDataType) { // do something reasonable for this
                 MMObjectNode otherNode = getNode(rtn);
@@ -1537,7 +1537,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * What should a GUI display for this node.
      * Default the value returned is GUI_INDICATOR ('no info').
      * Override this to display your own choice (see Images.java).
-     * You may want to override {@link #getNodeGUIIndicator} for more flexibility.
+     * You may want to override {@link #getNodeGUIIndicator(MMObjectNode, org.mmbase.util.functions.Parameters)} for more flexibility.
      * @param node The node to display
      * @return the display of the node as a <code>String</code>
      */
@@ -1570,7 +1570,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                     return rtn;
                 }
             } catch (RuntimeException rte) {
-                log.warn("Cannot load node from field " + fieldName +" in node " + node.getNumber() + ":" +rte);
+                LOG.warn("Cannot load node from field " + fieldName +" in node " + node.getNumber() + ":" +rte);
                 return "invalid";
             }
         } else {
@@ -1588,7 +1588,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
     /**
      * The GUIIndicator can depend on the locale. Override this function
-     * You may want to override {@link #getNodeGUIIndicator} for more flexibility.
+     * You may want to override {@link #getNodeGUIIndicator(MMObjectNode, org.mmbase.util.functions.Parameters)} for more flexibility.
      * @since MMBase-1.6
      */
     protected String getLocaleGUIIndicator(Locale locale, MMObjectNode node) {
@@ -1681,12 +1681,13 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * This method is called whenever a Node of the builder's type fails at evaluating a getValue() request
      * (generally when a fieldname is supplied that doesn't exist).
      * It allows the system to add 'functions' to be included with a field name, such as 'html(body)' or 'time(lastmodified)'.
-     * This method will parse the fieldname, determining functions and calling the {@link #executeFunction} method to handle it.
+     * This method will parse the fieldname, determining functions and calling the {@link #executeFunction(MMObjectNode, String, java.util.List)} method to handle it.
      * Functions in fieldnames can be given in the format 'functionname(fieldname)'. An old format allows 'functionname_fieldname' instead,
      * though this only applies to the text functions 'short', 'html', and 'wap'.
      * Functions can be nested, i.e. 'html(shorted(body))'.
      * Derived builders should override this method only if they want to provide virtual fieldnames. To provide additonal functions,
-     * call {@link #addFunction} instead. See also the source code for {@link org.mmbase.util.functions.ExampleBuilder}.
+     * call {@link #addFunction(org.mmbase.util.functions.Function)}
+     * instead. See also the source code for {@link org.mmbase.util.functions.ExampleBuilder}.
      * @param node the node whos efields are queries
      * @param field the fieldname that is requested
      * @return the result of the 'function', or null if no valid functions could be determined.
@@ -1719,7 +1720,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * avoid the overhead.
      *
      * @since MMBase-1.6
-     * @see #getValue
+     * @see {@link #getValue(MMObjectNode, String)}
      */
 
     protected Object getObjectValue(MMObjectNode node, String field) {
@@ -1730,8 +1731,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             if (pos2 != -1) {
                 String name = field.substring(pos1 + 1, pos2);
                 String function = field.substring(0, pos1);
-                if (log.isDebugEnabled()) {
-                    log.debug("function = '" + function + "', fieldname = '" + name + "'");
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("function = '" + function + "', fieldname = '" + name + "'");
                 }
                 List<String> a = new ArrayList<String>();
                 a.add(name);
@@ -1763,13 +1764,14 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * The function 'info' should exist, and this will return a Map
      * with descriptions of the possible functions.
      *
-     * Call {@link #addFunction} in your extension if you want to add functions.
+     * Call {@link #addFunction(org.mmbase.util.functions.Function)} in your extension if you want to add functions.
      *
      * @param node The node on which the function must be executed
      * @param functionName The string identifying the funcion
      * @param parameters The list with function argument or null (which means 'no arguments')
      *
-     * @see #executeFunction
+     * @see {@link #executeFunction(MMObjectNode, String, java.util.List)}
+
      * @since MMBase-1.6
      */
     // package because called from MMObjectNode
@@ -1847,17 +1849,17 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
     /**
      * Executes a function on the field of a node, and returns the result.
-     * This method is called by the builder's {@link #getValue} method.
+     * This method is called by the builder's {@link #getValue(MMObjectNode, String)} method.
      * Derived builders should override this method to provide additional functions.
      *
      * @since MMBase-1.6
      * @throws IllegalArgumentException if the argument List does not
      * fit the function
-     * @see #executeFunction
+     * @see #executeFunction(MMObjectNode, String, java.util.List)
      */
     protected Object executeFunction(MMObjectNode node, String function, List<?> arguments) {
-        if (log.isDebugEnabled()) {
-            log.debug("Executing function " + function + " on node " + node.getNumber() + " with argument " + arguments);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Executing function " + function + " on node " + node.getNumber() + " with argument " + arguments);
         }
 
         if (function.equals("info")) {
@@ -1867,7 +1869,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             }
             info.put("info", "(functionname) Returns information about a certain 'function'. Or a map of all function if no arguments.");
             if (arguments == null || arguments.isEmpty() || arguments.get(0) == null) {
-                log.info("returing " + info);
+                LOG.info("returing " + info);
                 return info;
             } else {
                 return info.get(arguments.get(0));
@@ -1892,7 +1894,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                     return substring(val, len, null);
                 }
             } catch(Exception e) {
-                log.debug(Logging.stackTrace(e));
+                LOG.debug(Logging.stackTrace(e));
                 return e.toString();
             }
         }
@@ -1955,7 +1957,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
     /**
      * Executes a function on the field of a node, and returns the result.
-     * This method is called by the builder's {@link #getValue} method.
+     * This method is called by the builder's {@link #getValue(MMObjectNode, String)} method.
      *
      * current functions are:<br />
      * on dates: date, time, timesec, longmonth, month, monthnumber, weekday, shortday, day, yearhort year<br />
@@ -1969,8 +1971,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @deprecated use {@link #getFunction(MMObjectNode, String)}
      */
     protected Object executeFunction(MMObjectNode node, String function, String field) {
-        if (log.isDebugEnabled()) {
-            log.debug("Executing function " + function + " on node " + node.getNumber() + " with argument " + field);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Executing function " + function + " on node " + node.getNumber() + " with argument " + field);
         }
         return null;
     }
@@ -1987,7 +1989,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public Vector<MMObjectNode> getRelations_main(int src) {
         InsRel bul = mmb.getInsRel();
         if (bul == null) {
-            log.error("getMMObject(): InsRel not yet loaded");
+            LOG.error("getMMObject(): InsRel not yet loaded");
             return null;
         }
         return bul.getRelationsVector(src);
@@ -2014,8 +2016,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      *
      */
     final public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
-        if (log.isDebugEnabled()) {
-            log.debug("Getting smartpath for " + documentRoot + " /" + path + "/" + nodeNumber + "/" + version);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Getting smartpath for " + documentRoot + " /" + path + "/" + nodeNumber + "/" + version);
         }
         File dir = new File(documentRoot + path);
         if (version != null) nodeNumber += "." + version;
@@ -2050,7 +2052,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             if (o != this) {
                 o.nodeRemoteChanged(machine, number, builder, ctype);
             } else {
-                log.warn(getClass().getName()  + " " + toString() + " observes itself");
+                LOG.warn(getClass().getName()  + " " + toString() + " observes itself");
             }
         }
         return true;
@@ -2074,7 +2076,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                if (o != this) {
                    o.nodeLocalChanged(machine, number, builder, ctype);
                } else {
-                   log.warn(getClass().getName()  + " " + toString() + " observes itself");
+                   LOG.warn(getClass().getName()  + " " + toString() + " observes itself");
                }
            }
        }
@@ -2091,8 +2093,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return always <code>true</code>
      */
     public boolean fieldLocalChanged(String number, String builder, String field, String value) {
-        if (log.isDebugEnabled()) {
-            log.debug("FLC=" + number + " BUL=" + builder + " FIELD=" + field + " value=" + value);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("FLC=" + number + " BUL=" + builder + " FIELD=" + field + " value=" + value);
         }
         return true;
     }
@@ -2141,7 +2143,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      *  @deprecated Will be removed?
      */
     public MMObjectNode getDefaultTeaser(MMObjectNode node, MMObjectNode tnode) {
-        log.warn("getDefaultTeaser(): Generate Teaser,Should be overridden");
+        LOG.warn("getDefaultTeaser(): Generate Teaser,Should be overridden");
         return tnode;
     }
 
@@ -2181,7 +2183,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return the result value as a <code>String</code>
      */
     public String replace(PageInfo sp, StringTokenizer tok) {
-        log.warn("replace(): replace called should be overridden");
+        LOG.warn("replace(): replace called should be overridden");
         return "";
     }
 
@@ -2336,7 +2338,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         // we need to find out what the DBState is of this field so we know
         // who to notify of this change
         int state = getDBState(fieldName);
-        log.debug("Changed field=" + fieldName + " dbstate=" + state);
+        LOG.debug("Changed field=" + fieldName + " dbstate=" + state);
 
         // still a large hack need to figure out remote changes
         if (state==0) {}
@@ -2415,8 +2417,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         try {
             return mmb.getStorageManager().getStringValue(node, getField(fieldName));
         } catch (StorageException se) {
-            log.error(se.getMessage());
-            log.error(Logging.stackTrace(se));
+            LOG.error(se.getMessage());
+            LOG.error(Logging.stackTrace(se));
             return null;
         }
     }
@@ -2428,14 +2430,14 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param node
      * @return an array of <code>byte</code> containing the complete contents of the field.
      * @since MMBase-1.8
-     * @deprecated Use {@link #getShortedInputStream}
+     * @deprecated Use {@link #getShortedInputStream(String, MMObjectNode)}
      */
     protected byte[] getShortedByte(String fieldName, MMObjectNode node) {
         if (node.getNumber() < 0) return null; // capture calls from temporary nodes
         try {
             return mmb.getStorageManager().getBinaryValue(node, getField(fieldName));
         } catch (StorageException se) {
-            log.error(se.getMessage(), se);
+            LOG.error(se.getMessage(), se);
             return null;
         }
     }
@@ -2452,7 +2454,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         try {
             return mmb.getStorageManager().getInputStreamValue(node, getField(fieldName));
         } catch (StorageException se) {
-            log.error(se.getMessage(), se);
+            LOG.error(se.getMessage(), se);
             return null;
         }
     }
@@ -2611,7 +2613,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
         // should be TYPE_NODE ???
         if (fields.get(FIELD_OBJECT_TYPE) == null) {
-            log.warn("Object 'otype' field is not defined. Please update your object.xml, or update '" + getConfigResource() + "' to extend object");
+            LOG.warn("Object 'otype' field is not defined. Please update your object.xml, or update '" + getConfigResource() + "' to extend object");
             // if not defined in XML (legacy?)
             // It does currently not work if otype is actually defined in object.xml (as a NODE field)
             CoreField def = Fields.createSystemField(FIELD_OBJECT_TYPE, Field.TYPE_NODE);
@@ -2699,7 +2701,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             Map<String, String> contextMap = ApplicationContextReader.getProperties("mmbase-builders/" + getTableName());
             properties.putAll(contextMap);
         } catch (javax.naming.NamingException ne) {
-            log.debug("Can't obtain properties from application context: " + ne.getMessage());
+            LOG.debug("Can't obtain properties from application context: " + ne.getMessage());
         }
     }
 
@@ -2717,7 +2719,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             Map<String, String> contextMap = ApplicationContextReader.getProperties(contextPath);
             map.putAll(contextMap);
         } catch (javax.naming.NamingException ne) {
-            log.debug("Can't obtain properties from application context: " + ne.getMessage());
+            LOG.debug("Can't obtain properties from application context: " + ne.getMessage());
         }
         return map;
     }
@@ -2934,7 +2936,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      * simple way to register a NodeEvent listener and a RelationEventListener
      * at the same time.
-     * @see MMBase#addNodeRelatedEventsListener
+     * @see MMBase#addNodeRelatedEventsListener(String, org.mmbase.core.event.EventListener)
      * @param listener
      * @since MMBase-1.8
      */
@@ -2958,8 +2960,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     @Override
     public void notify(NodeEvent event) {
-        if (log.isDebugEnabled()) {
-            log.debug("" + this + " received node event " + event);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("" + this + " received node event " + event);
         }
         int type = event.getType();
         eventBackwardsCompatible(event.getMachine(), event.getNodeNumber(), type);
@@ -2970,8 +2972,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     @Override
     public void notify(RelationEvent event) {
-        if (log.isDebugEnabled()) {
-            log.debug("" + this + " received relation event " + event);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("" + this + " received relation event " + event);
         }
          //for backwards compatibilty: create relation changed calls
          if (event.getRelationSourceType().equals(getTableName())) {
@@ -2991,7 +2993,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * here we handle all the backward compatibility stuff.
      * this method covers for both node and relation events.
      * @since MMBase-1.8
-     * @param event
      */
     private void eventBackwardsCompatible(String machineName, int nodeNumber, int eventType) {
         String ctype       = NodeEvent.newTypeToOldType(eventType);
@@ -3011,8 +3012,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         try {
             return mmb.getStorageManager().isNull(node, getField(fieldName));
         } catch (StorageException se) {
-            log.error(se.getMessage());
-            log.error(Logging.stackTrace(se));
+            LOG.error(se.getMessage());
+            LOG.error(Logging.stackTrace(se));
             return true;
         }
     }
