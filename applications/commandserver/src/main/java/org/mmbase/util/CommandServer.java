@@ -390,6 +390,7 @@ public class CommandServer {
                                                       try {
                                                           accept.shutdownInput();
                                                       } catch (Exception e) {
+                                                          logger.println(e.getMessage());
                                                       }
                                                   }
                                               });
