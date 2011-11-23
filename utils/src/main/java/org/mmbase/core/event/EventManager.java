@@ -94,7 +94,7 @@ public class EventManager implements SystemEventListener {
     /**
      * The received system events, and the listeners to which it was already notified
      */
-    private final Map<SystemEvent.Collectable, Set<EventListener>> receivedSystemEvents = new HashMap<SystemEvent.Collectable, Set<EventListener>>();
+    private final Map<SystemEvent.Collectable, Set<EventListener>> receivedSystemEvents = new ConcurrentHashMap<SystemEvent.Collectable, Set<EventListener>>();
 
     @Override
     public synchronized void notify(SystemEvent se) {
