@@ -132,7 +132,6 @@ public class DataTypes {
                 URL u = i.previous();
                 URLConnection con = u.openConnection();
                 if (con.getDoInput()) {
-                    log.service("Reading " + u + " with weight " + ResourceLoader.getWeight(u));
                     InputSource dataTypesSource = new InputSource(con.getInputStream());
                     dataTypesSource.setSystemId(u.toExternalForm());
                     DocumentBuilder db = DocumentReader.getDocumentBuilder(true, true,
@@ -142,6 +141,8 @@ public class DataTypes {
                     Document doc = db.parse(dataTypesSource);
                     Element dataTypesElement = doc.getDocumentElement(); // fieldtypedefinitons or datatypes element
                     String id = dataTypesElement.getAttribute("id");
+                    log.service("Reading " + u + " (" + id + ") with weight " + ResourceLoader.getWeight(u));
+
                     // Sometimes, the same jar is present twice (e.g. when symlinking during test or so)
                     if (id.length() > 0) {
                         if (readDataTypes.containsKey(id)) {
@@ -273,7 +274,7 @@ public class DataTypes {
     }
 
     /**
-     * Get the datatype a defined for a certain field of a certain node manager, of a certain cloud context.
+     * Get the datatype as defined for a certain field of a certain node manager, of a certain cloud context.
      * It does this by parsing a string with this format:   [[&lt;uri&gt;|]&lt;cloud name&gt;|]&lt;nodemanager&gt;|&lt;field&gt;
      * The point is that the string can be used as the value for an XML attribute of the datatype tag.
      * @param fieldAttribute The string describing the datatype
