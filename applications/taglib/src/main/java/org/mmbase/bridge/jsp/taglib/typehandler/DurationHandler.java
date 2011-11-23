@@ -63,7 +63,7 @@ public class DurationHandler extends AbstractTypeHandler {
         }
 
         StringBuilder buffer = new StringBuilder();
-        buffer.append("<input type=\"hidden\" class=\"").append(getClasses(node, field)).append("\" name=\"");
+        buffer.append("<input type=\"hidden\" class=\"").append(getClasses(node, field, search)).append("\" name=\"");
         buffer.append(prefix(field.getName()));
         buffer.append("\" value=\"");
         buffer.append(currentValue);

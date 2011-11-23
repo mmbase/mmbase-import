@@ -154,8 +154,9 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     /**
      * @since MMBase-1.8
      */
-    protected String getClasses(Node node, Field field) throws JspTagException {
+    protected String getClasses(Node node, Field field, boolean search) throws JspTagException {
         StringBuilder buf = new StringBuilder("mm_validate ");
+        if (search) buf.append("mm_search ");
         DataType dt = field.getDataType();
         for (String styleClass : dt.getStyleClasses()) {
             buf.append(styleClass);
@@ -237,7 +238,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             return eh.htmlInput(node, field, search);
         }
         // default implementation.
-        StringBuilder show =  new StringBuilder("<input type=\"text\" class=\"small " + getClasses(node, field) + "\" size=\"80\" ");
+        StringBuilder show =  new StringBuilder("<input type=\"text\" class=\"small " + getClasses(node, field, search) + "\" size=\"80\" ");
         addExtraAttributes(show);
         Object value = getFieldValue(node, field, ! search);
         show.append("name=\"").append(prefix(field.getName())).append("\" ");
