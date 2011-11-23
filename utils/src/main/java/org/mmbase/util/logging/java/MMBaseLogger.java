@@ -16,11 +16,11 @@ import java.util.logging.Level;
 
 /**
  * Since java 1.4 there is a Logger implemented in java itself, if you have code which requests a
- * java.util.logging.Logger object to which it will log to, and you want it to log the MMBase logger
+ * {@link java.util.logging.Logger} object to which it will log to, and you want it to log the MMBase logger
  * then, you can offer it an instance of this class, which wraps an MMBase Logger object in a
- * java.util.logging.Logger object.
+ * ${@l ink java.util.logging.Logger} object.
  *
- * For the correspondence between levels of java logging and mmbase logging see javadoc of 
+ * For the correspondence between levels of java logging and mmbase logging see javadoc of
  * {@link org.mmbase.util.logging.java.Impl}.
  *
  * @author Michiel Meeuwissen
@@ -30,18 +30,19 @@ import java.util.logging.Level;
 
 
 public class MMBaseLogger extends java.util.logging.Logger {
-    
-    Logger log = null;
+
+    final Logger log;
 
     /**
-     * Instantiates a java Logger wich logs to the MMBase logger with category {@link java.util.logging.LogRecord#getLoggerName}.
+     * Instantiates a java Logger which logs to the MMBase logger with category {@link java.util.logging.LogRecord#getLoggerName}.
      */
     public MMBaseLogger() {
         super(null, null);
+        this.log = null;
     }
 
     /**
-     * Instantiated a java Logger wich logs to the given MMBase logger.
+     * Instantiated a java Logger which logs to the given MMBase logger.
      */
     public MMBaseLogger(Logger log) {
         super(null, null);
@@ -67,7 +68,7 @@ public class MMBaseLogger extends java.util.logging.Logger {
             l.error(message);
         } else if (level >= Level.WARNING.intValue()) {
             l.warn(message);
-        } else if (level >= Level.INFO.intValue()) {            
+        } else if (level >= Level.INFO.intValue()) {
             l.info(message);
         } else if (level >= Level.CONFIG.intValue()) {
             l.service(message);
@@ -75,7 +76,7 @@ public class MMBaseLogger extends java.util.logging.Logger {
             l.debug(message);
         } else {
             l.trace(message);
-        }            
+        }
     }
 
 }

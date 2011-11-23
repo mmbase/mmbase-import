@@ -15,7 +15,7 @@ import java.io.*;
 import java.util.concurrent.*;
 
 /**
- * Straight forward implemented which simply delegates every log-statement to a list of other other loggers.
+ * Straight forward implemented which simply delegates every log-statement to a list of other loggers.
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.9.1
@@ -55,98 +55,98 @@ public class ChainedLogger implements Logger, Externalizable {
 
 
     @Override
-    public void trace (Object m) {
+    public void trace(Object m) {
         for (Logger log : loggers) {
             log.trace(m);
         }
     }
 
     @Override
-    public void trace (Object m, Throwable t) {
+    public void trace(Object m, Throwable t) {
         for (Logger log : loggers) {
             log.trace(m, t);
         }
     }
 
     @Override
-    public void debug (Object m) {
+    public void debug(Object m) {
         for (Logger log : loggers) {
             log.debug(m);
         }
     }
 
     @Override
-    public void debug (Object m, Throwable t) {
+    public void debug(Object m, Throwable t) {
         for (Logger log : loggers) {
             log.debug(m, t);
         }
     }
 
     @Override
-    public void service (Object m) {
+    public void service(Object m) {
         for (Logger log : loggers) {
             log.service(m);
         }
     }
 
     @Override
-    public void service (Object m, Throwable t) {
+    public void service(Object m, Throwable t) {
         for (Logger log : loggers) {
             log.service(m, t);
         }
     }
 
     @Override
-    public void info (Object m) {
+    public void info(Object m) {
         for (Logger log : loggers) {
             log.info(m);
         }
     }
 
     @Override
-    public void info (Object m, Throwable t) {
+    public void info(Object m, Throwable t) {
         for (Logger log : loggers) {
             log.info(m, t);
         }
     }
 
     @Override
-    public void warn (Object m) {
+    public void warn(Object m) {
         for (Logger log : loggers) {
             log.warn(m);
         }
     }
 
     @Override
-    public void warn (Object m, Throwable t) {
+    public void warn(Object m, Throwable t) {
         for (Logger log : loggers) {
             log.warn(m, t);
         }
     }
 
     @Override
-    public void error (Object m) {
+    public void error(Object m) {
         for (Logger log : loggers) {
             log.error(m);
         }
     }
 
     @Override
-    public void error (Object m, Throwable t) {
+    public void error(Object m, Throwable t) {
         for (Logger log : loggers) {
             log.error(m, t);
         }
     }
 
     @Override
-    public void fatal (Object m) {
+    public void fatal(Object m) {
         for (Logger log : loggers) {
             log.fatal(m);
         }
     }
 
     @Override
-    public void fatal (Object m, Throwable t) {
+    public void fatal(Object m, Throwable t) {
         for (Logger log : loggers) {
             log.fatal(m, t);
         }
