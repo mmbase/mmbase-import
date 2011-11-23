@@ -107,7 +107,7 @@ public class RemoteGenerator extends AbstractMojo {
              File f = artifact.getFile();
              if (f != null) {
                  getLog().info("Adding constituent " + f);
-                 remoteGenRealm.addConstituent(f.toURL());
+                 remoteGenRealm.addConstituent(f.toURI().toURL());
              } else {
                  getLog().error("Artifact " +  artifact + " has no file");
              }
