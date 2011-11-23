@@ -57,7 +57,8 @@ public class StringHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
-    @Override public String htmlInput(Node node, Field field, boolean search)        throws JspTagException {
+    @Override 
+    public String htmlInput(Node node, Field field, boolean search)        throws JspTagException {
         eh = getEnumHandler(node, field);
         if (eh != null) {
             return eh.htmlInput(node, field, search);
@@ -75,9 +76,9 @@ public class StringHandler extends AbstractTypeHandler {
                     if(field.getMaxLength() > 2048)  {
                         // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
                         // wrap attribute removed, we want to produce valid XHTML, and who is still using netscape < 6?
-                        buffer.append("<textarea class=\"big ").append(getClasses(node, field)).append("\" rows=\"10\" cols=\"80\" ");
+                        buffer.append("<textarea class=\"big ").append(getClasses(node, field, search)).append("\" rows=\"10\" cols=\"80\" ");
                     } else {
-                        buffer.append("<textarea class=\"small ").append(getClasses(node, field)).append("\" rows=\"5\" cols=\"").append(getCols(field)).append("\" ");
+                        buffer.append("<textarea class=\"small ").append(getClasses(node, field, search)).append("\" rows=\"5\" cols=\"").append(getCols(field)).append("\" ");
                     }
                     addExtraAttributes(buffer);
                     buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
@@ -106,7 +107,7 @@ public class StringHandler extends AbstractTypeHandler {
                     }
                     buffer.append("</textarea>");
                 } else { // not 'field' perhaps it's 'string'.
-                    buffer.append("<input class=\"small ").append(getClasses(node, field)).append("\" type=\"").append(dataType.isPassword() ? "password" : "text").append("\"  size=\"").append(getCols(field)).append("\" ");
+                    buffer.append("<input class=\"small ").append(getClasses(node, field, search)).append("\" type=\"").append(dataType.isPassword() ? "password" : "text").append("\"  size=\"").append(getCols(field)).append("\" ");
                     buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
                     buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");
                     String opt = tag.getOptions();
@@ -130,6 +131,9 @@ public class StringHandler extends AbstractTypeHandler {
     }
 
 
+    /**
+     * It is impossible to distinguish <code>null</code> from an empty string in an HTML form.
+     */
     @Override
     protected void setValue(Node node, String fieldName, Object value) {
         String string = value == null ? null :  org.mmbase.util.Casting.toString(value);
@@ -140,6 +144,14 @@ public class StringHandler extends AbstractTypeHandler {
     protected Object getValue(Node node, String fieldName) {
         return node.getStringValue(fieldName);
     }
+    @Override
+    protected Object convertToValidate(final Object s, final Node node, final Field field) throws JspTagException {
+        if (s == null && field.getDataType().isRequired()) {
+            return "";
+        }
+        return s;
+    }
+
 
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
@@ -156,7 +168,7 @@ public class StringHandler extends AbstractTypeHandler {
             }
         }
         String fieldValue = (String) getFieldValue(node, field);
-
+        tag.getPageContext().getRequest().setAttribute("current.field", field);
         if (fieldValue != null) {
             String fieldName = field.getName();
             if (! fieldValue.equals(node.getValue(fieldName))) {
@@ -168,7 +180,8 @@ public class StringHandler extends AbstractTypeHandler {
 
         return false;
     }
-    @Override protected Object getFieldValue(Node node, Field field) throws JspTagException {
+    @Override 
+    protected Object getFieldValue(Node node, Field field) throws JspTagException {
         String fieldName = field.getName();
         String fieldValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
 
@@ -185,14 +198,16 @@ public class StringHandler extends AbstractTypeHandler {
         return fieldValue;
     }
 
-    @Override protected boolean interpretEmptyAsNull(Field field) {
+    @Override 
+    protected boolean interpretEmptyAsNull(Field field) {
         return ! field.getDataType().isRequired();
     }
 
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    @Override public String whereHtmlInput(Field field) throws JspTagException {
+    @Override 
+    public String whereHtmlInput(Field field) throws JspTagException {
         EnumHandler e = getEnumHandler(null, field);
         if (e != null) {
             return e.whereHtmlInput(field);
@@ -205,7 +220,8 @@ public class StringHandler extends AbstractTypeHandler {
         // cannot call getSearvhValue, because sql excaping is done twice then :-(
     }
 
-    @Override protected int getOperator(Field field) {
+    @Override 
+    protected int getOperator(Field field) {
         if (field.getType() == Field.TYPE_STRING) {
             return FieldCompareConstraint.LIKE;
         } else {
@@ -214,7 +230,8 @@ public class StringHandler extends AbstractTypeHandler {
     }
 
 
-    @Override public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+    @Override 
+    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         EnumHandler e = getEnumHandler(null, field);
         if (e != null) {
             return e.whereHtmlInput(field, query);

@@ -111,7 +111,7 @@ public class DateHandler extends AbstractTypeHandler {
         boolean required = field.getDataType().isRequired();
 
         Calendar cal = getCalendarValue(node, field);
-        buffer.append("<span class=\"mm_datetime ").append(getClasses(node, field)).append("\">");
+        buffer.append("<span class=\"mm_datetime ").append(getClasses(node, field, search)).append("\">");
         buffer.append("<input type=\"hidden\" name=\"");
         buffer.append(prefix(field.getName()));
         buffer.append("\" value=\"");

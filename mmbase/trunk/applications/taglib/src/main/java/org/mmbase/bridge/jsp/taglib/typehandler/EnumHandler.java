@@ -168,7 +168,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     public String htmlInput(final Node node, final Field field, final boolean search) throws JspTagException {
         StringBuilder buffer = new StringBuilder();
         String fieldName = field.getName();
-        buffer.append("<select class=\"").append(getClasses(node, field)).append("\" name=\"").append(prefix(fieldName)).append("\" ");
+        buffer.append("<select class=\"").append(getClasses(node, field, search)).append("\" name=\"").append(prefix(fieldName)).append("\" ");
         buffer.append("id=\"").append(prefixID(fieldName)).append("\" ");
         if (multiple) {
             buffer.append("multiple=\"multiple\" ");
