@@ -14,6 +14,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+import org.mmbase.bridge.util.CloudThreadLocal;
 import org.mmbase.datatypes.handlers.Handler;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
@@ -359,7 +360,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                 // Corefield does not support getNodeManager
             }
         }
-        return null;
+        return CloudThreadLocal.currentCloud();
     }
 
     private static Cloud classCloud = null;
