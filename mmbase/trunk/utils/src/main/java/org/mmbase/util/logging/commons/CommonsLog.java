@@ -15,13 +15,13 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * Commons logging for MMBase, contains a single Log instance
- * 
+ *
  * @author Wouter Heijke
  * @version $Id$
  */
 public class CommonsLog extends AbstractSimpleImpl implements Logger {
 
-    private Log log;
+    private final Log log;
 
     public CommonsLog(Log commonsLog) {
         log = commonsLog;

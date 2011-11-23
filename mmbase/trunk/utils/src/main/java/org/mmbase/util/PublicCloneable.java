@@ -19,5 +19,5 @@ package org.mmbase.util;
  * @version $Id$
  */
 public interface PublicCloneable<C> extends Cloneable {
-    public C clone();
+    C clone();
 }

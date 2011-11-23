@@ -54,9 +54,12 @@ public class ChainedOutputStream extends OutputStream {
             o.write(b, off, len);
         }
     }
-    public   void write(int b) throws IOException {
+    public void write(int b) throws IOException {
         for (OutputStream o : streams ) {
             o.write(b);
         }
+    }
+    public String toString() {
+        return streams.toString();
     }
 }
