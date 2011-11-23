@@ -866,7 +866,12 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     public void notify(SystemEvent systemEvent) {
         if (systemEvent instanceof SystemEvent.Up) {
             up = (SystemEvent.Up) systemEvent;
-            init(true);
+        }
+        if (systemEvent instanceof ApplicationsInstalledEvent) {
+            ApplicationsInstalledEvent ie = (ApplicationsInstalledEvent) systemEvent;
+            if (ie.getCount() == 0) {
+                init(true);
+            }
         }
         if (systemEvent instanceof SystemEvent.Shutdown) {
             shutdown = (SystemEvent.Shutdown) systemEvent;
@@ -1397,7 +1402,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 Indexer current;
                 @Override
                 public void run() {
-                    log.service("New index for " + number);
+                    log.debug("New index for #" + number);
                     status = BUSY_INDEX;
                     for (Indexer indexer : indexerMap.values()) {
                         current = indexer;
