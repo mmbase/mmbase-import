@@ -21,21 +21,33 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.util.SearchUtil;
+import org.mmbase.datatypes.processors.ChainedCommitProcessor;
+import org.mmbase.datatypes.processors.CommitProcessor;
 import org.mmbase.streams.createcaches.Stage;
 import org.mmbase.streams.createcaches.Processor;
 import org.mmbase.streams.createcaches.JobDefinition;
-import org.mmbase.streams.transcoders.*;
 import org.mmbase.applications.media.State;
 
+import org.mmbase.streams.transcoders.AbstractTranscoder;
+import org.mmbase.streams.transcoders.Analyzer;
+import org.mmbase.streams.transcoders.Transcoder;
 import org.mmbase.util.MimeType;
-import org.mmbase.util.functions.*;
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.*;
 import org.mmbase.security.ActionRepository;
-import org.mmbase.datatypes.processors.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.util.functions.NodeFunction;
+import org.mmbase.util.functions.Parameter;
+import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * Triggers (re)creation of caches (streamsourcescaches) of a source node
@@ -69,7 +81,7 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
         CommitProcessor commitProcessor = url.getDataType().getCommitProcessor();
         if (commitProcessor instanceof ChainedCommitProcessor) {
             ChainedCommitProcessor chain = (ChainedCommitProcessor) commitProcessor;
-            LOG.service("Lookin in " + chain.getProcessors());
+            LOG.service("Looking in " + chain.getProcessors());
             for (CommitProcessor cp : chain.getProcessors()) {
                 if (cp instanceof Processor) {
                     return (Processor) cp;

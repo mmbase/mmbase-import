@@ -283,7 +283,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
     /**
      * Creates caches nodes when not existing (or recreate) by making a transcoding Job
      * @param ntCloud   a non transactional cloud
-     * @param int       node number of a source node
+     * @param node      node number of a source node
      * @param jdlist    job definitions
      * @return Job recognizing and/or transcoding the source stream
      */

@@ -21,16 +21,25 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.download;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.util.Map;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketException;
+import java.net.URL;
+import java.net.URLConnection;
 
-import org.mmbase.bridge.*;
-import org.mmbase.util.externalprocess.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.Node;
 import org.mmbase.servlet.FileServlet;
-import org.mmbase.util.transformers.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.transformers.Asciifier;
+
 
 /**
  * This is called by {@link DownloadFunction} and does the actual downloading and saving 
@@ -129,6 +138,7 @@ public class Downloader {
         node.setStringValue("url", urlValue);
         if (huc.getContentLength() > -1)  node.setIntValue("filesize", huc.getContentLength());
         if (huc.getContentType() != null) node.setValue("mimetype", huc.getContentType());
+        node.commit();
         
         if (log.isDebugEnabled()) {
             log.debug("Returning url field: " + urlValue);
@@ -145,7 +155,7 @@ public class Downloader {
      * @param  url  the url to open
      * @return a connection or null in case of a bad response (f.e. not a 200)
      */
-    private HttpURLConnection getURLConnection(URL url) throws SocketException, IOException, IllegalArgumentException {
+    private HttpURLConnection getURLConnection(URL url) throws IOException, IllegalArgumentException {
         URLConnection uc = url.openConnection();
         if (url.getProtocol().equals("http") || url.getProtocol().equals("https")) {
             HttpURLConnection huc = (HttpURLConnection)uc;

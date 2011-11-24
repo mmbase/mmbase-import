@@ -21,13 +21,25 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.thumbnails;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.List;
 
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.functions.*;
+
+import org.mmbase.streams.createcaches.Job;
+import org.mmbase.streams.createcaches.Processor;
+import org.mmbase.streams.createcaches.Stage;
+import org.mmbase.util.functions.NodeFunction;
+import org.mmbase.util.functions.Parameter;
+import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
  *
@@ -87,12 +99,17 @@ public class ThumbNailFunction extends NodeFunction<Node> {
         if (sourceNode == null) {
             return getDefault(node.getCloud());
         }
+        Job job = Processor.getJob(sourceNode);
+        if (job != null && job.getStage().ordinal() < Stage.READY.ordinal()) {
+            // not yet transcoding, still in stage recognizer
+            LOG.service("Not ready transcoding yet, returning default image.");
+            return getDefault(node.getCloud());
+        }
         long videoLength = node.getLongValue("length");
 
         if (offset == null) {
             offset = videoLength / 2;
         }
-
 
         // round of the offset a bit, otherwise it would be possible to create a thumbnail for every millisecond, which
         // seems a bit overdone....
