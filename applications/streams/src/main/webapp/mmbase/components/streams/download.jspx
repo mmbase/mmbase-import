@@ -15,11 +15,14 @@
       
       <mm:import externid="submit" />
       <mm:import externid="url" />
+
+      <mm:import externid="status" from="request" />
     
       <c:if test="${!empty submit and empty url}">
         <p class="err">An url is of course required.</p>
       </c:if>
       
+      <mm:notpresent referid="status">
       <mm:form>
         <mm:import id="buffer">
           <fieldset>
@@ -68,7 +71,59 @@
           <mm:functioncontainer>
             <mm:param name="url">${url}</mm:param>
             <p class="msg">Download result: <strong><mm:function name="download" /></strong></p>
+            
           </mm:functioncontainer>
+          
+          <p>
+            <mm:link page="download" referids="_node@status">
+              <a href="${_}">Check status...</a>
+            </mm:link>
+          </p>
+          
+        </mm:node>
+      </mm:present>
+      </mm:notpresent>
+
+      <mm:present referid="status">
+        <mm:node number="$status">
+
+          <mm:functioncontainer>
+            <mm:param name="key">org.mmbase.streams.download.DownloadFunction.status</mm:param>
+            <c:set var="downloadstatus"><mm:function referids="_node@node" nodemanager="properties" name="get" /></c:set>
+          </mm:functioncontainer>
+          
+          <mm:functioncontainer>
+            <mm:param name="key">org.mmbase.streams.download.DownloadFunction.url</mm:param>
+            <c:set var="downloadurl"><mm:function referids="_node@node" nodemanager="properties" name="get" /></c:set>
+          </mm:functioncontainer>
+          
+          <c:choose>
+            <c:when test="${downloadstatus eq 'ok'}">
+              <p class="msg">OK. Your download of '${downloadurl}' is ready.</p>
+            </c:when>
+            <c:when test="${fn:indexOf(downloadstatus, 'NONHTTP') gt -1 or fn:indexOf(downloadstatus, 'BADURL') gt -1}">
+              <p class="err">Url '${downloadurl}' incorrect: ${downloadstatus}.</p>
+            </c:when>
+            <c:when test="${fn:indexOf(downloadstatus, 'IOERROR') gt -1 or fn:indexOf(downloadstatus, 'UNEXPECTED') gt -1}">
+              <p class="err">Some error occured with '${downloadurl}' : ${downloadstatus}.</p>
+            </c:when>
+            <c:otherwise>
+              <p class="msg">Your download of ${downloadurl} is probably still busy. Check back again later.
+                <br />Status: ${downloadstatus}.
+              </p>
+            </c:otherwise>
+          </c:choose>
+
+          <p>
+          <mm:nodelistfunction nodemanager="properties" name="list" referids="_node@node">
+            <strong><mm:field name="key" /></strong> : <mm:field name="value" /><br />
+          </mm:nodelistfunction>
+          </p>  
+          <p>
+            <mm:link page="download" referids="_node@status">
+              <a href="${_}">Check status again...</a>
+            </mm:link>
+          </p>
         </mm:node>
       </mm:present>
 
