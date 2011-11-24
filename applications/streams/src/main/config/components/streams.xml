@@ -180,7 +180,9 @@
     <title xml:lang="nl">Download</title>
     <description xml:lang="en">Download video, audio or an image from another site.</description>
     <description xml:lang="nl">Download video, audio of een afbeelding van een andere site.</description>
-    <body jsp="download.jspx" />
+    <body jsp="download.jspx">
+      <param name="status" />
+    </body>
   </block>
 
   <block name="update"
