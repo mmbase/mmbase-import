@@ -100,7 +100,7 @@ public class Job implements Iterable<Result> {
 
     /**
      * Defines the several {@link Result}s by reading the {@link JobDefinition}s in the list.
-     * Creates streamsourcescaches for {@link Transcoder}s and asigns {@link TranscoderResult}s to
+     * Creates streamsourcescaches for {@link org.mmbase.streams.transcoders.Transcoder}s and asigns {@link TranscoderResult}s to
      * them or creates {@link RecognizerResult}s for {@link JobDefinition}s of recognizers.
      */
     @SuppressWarnings("SleepWhileHoldingLock")
