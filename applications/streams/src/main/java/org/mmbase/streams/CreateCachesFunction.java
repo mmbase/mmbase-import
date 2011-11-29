@@ -69,7 +69,7 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
         CommitProcessor commitProcessor = url.getDataType().getCommitProcessor();
         if (commitProcessor instanceof ChainedCommitProcessor) {
             ChainedCommitProcessor chain = (ChainedCommitProcessor) commitProcessor;
-            LOG.service("Lookin in " + chain.getProcessors());
+            LOG.service("Looking in " + chain.getProcessors());
             for (CommitProcessor cp : chain.getProcessors()) {
                 if (cp instanceof Processor) {
                     return (Processor) cp;

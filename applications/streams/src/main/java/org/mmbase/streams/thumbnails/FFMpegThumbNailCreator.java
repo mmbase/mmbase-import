@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.io.*;
 
+import org.mmbase.bridge.*;
 import org.mmbase.streams.createcaches.Executors;
 import org.mmbase.util.WriterOutputStream;
 import org.mmbase.util.externalprocess.CommandExecutor;
