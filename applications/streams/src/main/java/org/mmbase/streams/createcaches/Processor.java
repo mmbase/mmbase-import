@@ -283,7 +283,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
     /**
      * Creates caches nodes when not existing (or recreate) by making a transcoding Job
      * @param ntCloud   a non transactional cloud
-     * @param int       node number of a source node
+     * @param node      node number of a source node
      * @param jdlist    job definitions
      * @return Job recognizing and/or transcoding the source stream
      */
@@ -327,7 +327,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
                 LOG.debug("url: " + node.getValueWithoutProcess("url"));
             }
             if (node.isChanged(field.getName())) {
-                LOG.service("For node " + node.getNumber() + ", the field '" + field.getName() + "' is changed " + node.getChanged() + ". That means that we must schedule create caches");
+                LOG.service("For node " + node.getNumber() + ", the field '" + field.getName() + ":" + node.getStringValue(field.getName()) + "' is changed " + node.getChanged() + ". That means that we must schedule create caches");
 
                 final Cloud ntCloud = node.getCloud().getNonTransactionalCloud();
                 final int nodeNumber = node.getNumber();

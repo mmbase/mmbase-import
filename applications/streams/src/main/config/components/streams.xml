@@ -26,13 +26,20 @@
     <description xml:lang="en">Whether you may cancel jobs</description>
   </action>
 
-  <action name="retrigger_jobs" rank="administrator">
+  <action name="retrigger_jobs" rank="anonymous">
+    <!-- 'site user' in Open Images is of rank (50) lower then 'basic user' (100)
+         and needs to be able to use it with action 'download_media' -->
     <description xml:lang="en">Whether you may (re)trigger jobs</description>
   </action>
   
   <action name="update_sources" rank="basic user">
     <description xml:lang="en">Whether you can automatically update information stored in a stream node</description>
   </action>
+
+  <action name="download_media" rank="anonymous">
+    <description xml:lang="en">Allowed to use download API to put media into this application.</description>
+  </action>
+
 
   <block name="recent"
          classification="mmbase.streams"
@@ -164,6 +171,18 @@
   <block name="test_upload"
          mimetype="text/html">
     <body jsp="test_upload.jspx" />
+  </block>
+
+  <block name="download"
+         classification="mmbase.streams"
+         mimetype="text/html">
+    <title xml:lang="en">Download</title>
+    <title xml:lang="nl">Download</title>
+    <description xml:lang="en">Download video, audio or an image from another site.</description>
+    <description xml:lang="nl">Download video, audio of een afbeelding van een andere site.</description>
+    <body jsp="download.jspx">
+      <param name="status" />
+    </body>
   </block>
 
   <block name="update"
