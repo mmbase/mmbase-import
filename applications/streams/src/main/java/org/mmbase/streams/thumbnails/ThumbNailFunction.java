@@ -100,7 +100,7 @@ public class ThumbNailFunction extends NodeFunction<Node> {
             return getDefault(node.getCloud());
         }
         Job job = Processor.getJob(sourceNode);
-        if (job != null && job.getStage().ordinal() < Stage.READY.ordinal()) {
+        if (job != null && job.getStage().ordinal() < Stage.TRANSCODER.ordinal()) {
             // not yet transcoding, still in stage recognizer
             LOG.service("Not ready transcoding yet, returning default image.");
             return getDefault(node.getCloud());
