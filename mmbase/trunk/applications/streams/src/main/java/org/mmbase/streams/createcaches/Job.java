@@ -100,7 +100,7 @@ public class Job implements Iterable<Result> {
 
     /**
      * Defines the several {@link Result}s by reading the {@link JobDefinition}s in the list.
-     * Creates streamsourcescaches for {@link Transcoder}s and asigns {@link TranscoderResult}s to
+     * Creates streamsourcescaches for {@link org.mmbase.streams.transcoders.Transcoder}s and asigns {@link TranscoderResult}s to
      * them or creates {@link RecognizerResult}s for {@link JobDefinition}s of recognizers.
      */
     @SuppressWarnings("SleepWhileHoldingLock")
@@ -382,7 +382,6 @@ public class Job implements Iterable<Result> {
        } else {
            LOG.service("Will submit " + jc);
            ThreadPools.jobsExecutor.execute(new Runnable() {
-                   @Override
                    public void run() {
                        jc.init();
                        synchronized(Job.this) {
