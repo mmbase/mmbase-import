@@ -25,14 +25,13 @@ package org.mmbase.streams.download;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.*;
 
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.security.Action;
 import org.mmbase.security.ActionRepository;
@@ -60,8 +59,11 @@ public final class DownloadFunction extends NodeFunction<String> {
     private static final long serialVersionUID = 0L;
     private static final Logger log = Logging.getLoggerInstance(DownloadFunction.class);
 
+    /* url to get */
     private static final Parameter<String> URL = new Parameter<String>("url", String.class);
-    private final static Parameter[] PARAMETERS = { URL, Parameter.LOCALE };
+    /* email address to send ready to */
+    private static final Parameter<String> EMAIL = new Parameter<String>("email", String.class);
+    public final static Parameter[] PARAMETERS = { URL, EMAIL, Parameter.LOCALE };
 
     private final static String URL_KEY    = DownloadFunction.class.getName() + ".url";
     private final static String STATUS_KEY = DownloadFunction.class.getName() + ".status";
@@ -99,7 +101,6 @@ public final class DownloadFunction extends NodeFunction<String> {
         log.info("Setting status of " + node.getNumber() + " to " + status);
         setProperty(node, STATUS_KEY, status);
     }
-
     protected String getDownloadStatus(Node node) {
         return getProperty(node, STATUS_KEY);
     }
@@ -130,8 +131,56 @@ public final class DownloadFunction extends NodeFunction<String> {
                 log.debug("Created source " + src.getNodeManager().getName() + " #" + src.getNumber());
             }
         }
+
         return src;
     }
+
+    private Boolean sendMail(Node node, String email) {
+         boolean send = false;
+
+         Cloud cloud = node.getCloud();
+         String emailbuilder = "email";
+         try {
+             Module sendmail = cloud.getCloudContext().getModule("sendmail");
+             emailbuilder = sendmail.getProperty("emailbuilder");
+         } catch (NotFoundException nfe) {
+             log.warn("No email module " + nfe);
+         }
+
+         if (cloud.hasNodeManager(emailbuilder)) {
+
+             NodeManager nm = cloud.getNodeManager(emailbuilder);
+             Node message = nm.createNode();
+
+             String from = "downloader@mmbase.org";
+             try {
+                 from = "downloader@" + java.net.InetAddress.getLocalHost().getHostName();
+             } catch (UnknownHostException uhe) {
+                 log.warn("No host: " + uhe);
+             }
+             String mediaTitle = node.getStringValue("title");
+
+             message.setValue("from", from);
+             message.setValue("to", email);
+             message.setValue("subject", "Media download complete");
+             message.setValue("body", "The download of your media item '" + mediaTitle + "' has finished.\n\nKind regards, your automatic downloader");
+             message.commit();
+
+             Function mail = message.getFunction("mail");
+             Parameters mail_params = mail.createParameters();
+             mail_params.set("type", "oneshot");
+             mail.getFunctionValue(mail_params);
+
+             if (log.isDebugEnabled()) {
+                log.debug("Message download ready send to: " + email);
+             }
+             send = true;
+         } else {
+             log.warn("Can not send message - no emailbuilder installed.");
+         }
+
+         return send;
+     }
 
 
     protected Future<?> submit(final Node node, final Parameters parameters) {
@@ -158,16 +207,17 @@ public final class DownloadFunction extends NodeFunction<String> {
                     // download is ready
                     DownloadFunction.this.setDownloadUrl(node, parameters.get(URL));
                     DownloadFunction.this.setDownloadStatus(node, "ok");
-                    if (node.getNodeManager().hasField("show")) {
-                        node.setBooleanValue("show", true);
-                    }
-
-                    log.info("Found and returning: " + result);
 
                     source = getMediaSource(node);  // forces 'reload' of node?
                     source.commit();
 
-                    log.info("Calling transcoders for #" + source.getNumber());
+                    // send mail?
+                    String email = parameters.get(EMAIL);
+                    if (email != null && !"".equals(email)) {
+                        sendMail(node, email);
+                    }
+
+                    log.info("Result: " + result + ", calling transcoders for #" + source.getNumber());
                     source.getFunctionValue("triggerCaches",
                             new Parameters(org.mmbase.streams.CreateCachesFunction.PARAMETERS).set("all", true));
 
@@ -195,19 +245,18 @@ public final class DownloadFunction extends NodeFunction<String> {
 
     @Override
     public String getFunctionValue(final Node node, final Parameters parameters) {
-        if (node.getNodeManager().hasField("show")) {
-            node.setBooleanValue("show", false);
+        if (log.isDebugEnabled()) {
+            log.debug("node #" + node.getNumber());
+            log.debug("params: " + parameters);
         }
-
         String status = getDownloadStatus(node);
-        Node source;
+        int timeout = 2;
 
         if (status == null) {
             Action action = ActionRepository.getInstance().get("streams", "download_media");
             if (action == null) {
                 throw new IllegalStateException("Action could not be found");
             }
-            int timeout = 2;    // Give users just a little time to wait for download to finish
             if (node.getCloud().may(action, null)) {
                 synchronized(runningJobs) {
                     Future<?> future = runningJobs.get(node.getNumber());
@@ -233,15 +282,13 @@ public final class DownloadFunction extends NodeFunction<String> {
                     }
 
                 }
-                status = "1. Download in progress... still running after " + timeout + " seconds. Check back later.";
+                status = "Download in progress... still running after " + timeout + " seconds. Check back later.";
                 log.info(status);
                 return status;
             } else {
                 throw new org.mmbase.security.SecurityException("Not allowed");
             }
         }
-        status = "2. " + status;
-        log.info(status);
         return status;
     }
 }
