@@ -159,11 +159,13 @@ public final class DownloadFunction extends NodeFunction<String> {
                  log.warn("No host: " + uhe);
              }
              String mediaTitle = node.getStringValue("title");
+             String mediaUrl = getProperty(node, URL_KEY);
+             String body = "The download of your media item '" + mediaTitle + "' from '" + mediaUrl  + "' has finished.\n\nKind regards, your friendly downloader";
 
              message.setValue("from", from);
              message.setValue("to", email);
              message.setValue("subject", "Media download complete");
-             message.setValue("body", "The download of your media item '" + mediaTitle + "' has finished.\n\nKind regards, your automatic downloader");
+             message.setValue("body", body);
              message.commit();
 
              Function mail = message.getFunction("mail");
@@ -278,7 +280,7 @@ public final class DownloadFunction extends NodeFunction<String> {
                         }
 
                     } else {
-                        status = "Error! Another is already busy: " + ThreadPools.getString(future);
+                        status = "Error! Another download is already busy: " + ThreadPools.getString(future);
                     }
 
                 }
