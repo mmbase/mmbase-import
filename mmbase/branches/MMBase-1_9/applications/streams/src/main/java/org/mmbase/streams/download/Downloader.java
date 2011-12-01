@@ -116,7 +116,7 @@ public class Downloader {
                 log.warn("Could not find " + ef + " so could not delete it");
             }
         }
-        
+
         File f = getFile(node, field, fileNameTransformer.transform(name));
         Map<String, String> meta = FileServlet.getInstance().getMetaHeaders(f);
         meta.put("Content-Disposition", "attachment; " + FileServlet.getMetaValue("filename", name));
