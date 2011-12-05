@@ -72,7 +72,12 @@ public class WaitFunction extends NodeFunction<Node> {
     @Override
     protected Node getFunctionValue(final Node node, final Parameters parameters) {
         long result = wait(node);
-        if (result == 0) return node.getCloud().getNode("default_video_thumbnail");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("result: " + result);
+        }
+        if (result < 1) {
+            return ThumbNailFunction.getDefault(node.getCloud());
+        }
         return node;
     }
 
