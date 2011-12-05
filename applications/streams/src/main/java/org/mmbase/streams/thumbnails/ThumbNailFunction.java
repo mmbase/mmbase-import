@@ -76,11 +76,11 @@ public class ThumbNailFunction extends NodeFunction<Node> {
         LOG.warn("Could not determin source node for " + manager + " " + node);
         return null;
     }
-    private static Node getDefault(Cloud cloud) {
+    protected static Node getDefault(Cloud cloud) {
         if (cloud.hasNode("default_video_thumbnail")) {
             return cloud.getNode("default_video_thumbnail");
         } else {
-            LOG.warn("No default video thumbnail found with alias 'default_video_thumbnail' an images node f.e.");
+            LOG.warn("No default video thumbnail found with alias 'default_video_thumbnail', e.g. an images node.");
             return null;
         }
     }
@@ -151,6 +151,14 @@ public class ThumbNailFunction extends NodeFunction<Node> {
             LOG.service("Waiting");
             WaitFunction.wait(thumb);
         }
+
+        if (thumb.getIntValue("filesize") < 1) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("thumb size " + thumb.getIntValue("filesize") + ", returning default.");
+            }
+            return getDefault(thumb.getCloud());
+        }
+
         return thumb;
 
 
