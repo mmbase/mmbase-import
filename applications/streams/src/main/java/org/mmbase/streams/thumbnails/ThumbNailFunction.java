@@ -21,8 +21,8 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.thumbnails;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.List;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
@@ -33,6 +33,10 @@ import org.mmbase.streams.createcaches.Stage;
 import org.mmbase.streams.createcaches.Processor;
 
 /**
+ * Function on mediafragments (videofragments really) to make thumbnails of video streams.
+ * It uses a timeout to wait for the results of {@link WaitFunction} so it can
+ * produce a default image (alias 'default_video_thumbnail') if
+ * an exception occurs.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -44,7 +48,8 @@ public class ThumbNailFunction extends NodeFunction<Node> {
 
     public final static Parameter<Long> OFFSET = new Parameter<Long>("offset", java.lang.Long.class);
     public final static Parameter<Boolean> WAIT = new Parameter<Boolean>("wait", java.lang.Boolean.class, Boolean.FALSE);
-    public final static Parameter[] PARAMETERS = { OFFSET, WAIT };
+    public final static Parameter<Integer> TIMEOUT = new Parameter<Integer>("timeout", java.lang.Integer.class, 2);
+    public final static Parameter[] PARAMETERS = { OFFSET, WAIT, TIMEOUT };
     public ThumbNailFunction() {
         super("thumbnail", PARAMETERS);
     }
@@ -146,22 +151,26 @@ public class ThumbNailFunction extends NodeFunction<Node> {
         }
 
         Node thumb = getThumbNail(node, parameters.get(OFFSET));
+        int timeout = parameters.get(TIMEOUT);
 
-        if (parameters.get(WAIT)) {
-            LOG.service("Waiting");
-            WaitFunction.wait(thumb);
-        }
+        if (thumb.isNull("handle") && timeout > 0) {
+            LOG.service("Waiting " + timeout + " seconds.");
 
-        if (thumb.getIntValue("filesize") < 1) {
+            long result = WaitFunction.wait(thumb, timeout);
+
             if (LOG.isDebugEnabled()) {
-                LOG.debug("thumb size " + thumb.getIntValue("filesize") + ", returning default.");
+                LOG.debug("result " + result);
             }
-            return getDefault(thumb.getCloud());
+
+            if (result < 1) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.service("Returning default thumb, result: " + result );
+                }
+                return getDefault(thumb.getCloud());
+            }
         }
 
         return thumb;
-
-
     }
 
 
