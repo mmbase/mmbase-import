@@ -36,6 +36,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.security.Action;
 import org.mmbase.security.ActionRepository;
+import org.mmbase.streams.CreateSourcesWithoutProcessFunction;
 import org.mmbase.util.ThreadPools;
 import org.mmbase.util.functions.Function;
 import org.mmbase.util.functions.NodeFunction;
@@ -111,36 +112,6 @@ public final class DownloadFunction extends NodeFunction<String> {
         return getProperty(node, STATUS_KEY);
     }
 
-
-    private Node getMediaSource(Node mediafragment) {
-        mediafragment.getCloud().setProperty(org.mmbase.streams.createcaches.Processor.NOT, "no implicit processing please");
-        mediafragment.getCloud().setProperty(org.mmbase.datatypes.processors.BinaryCommitProcessor.NOT, "no implicit processing please");
-        
-        Node src = null;
-        NodeList list = SearchUtil.findRelatedNodeList(mediafragment, "mediasources", "related");
-        if (list.size() > 0) {
-            if (list.size() > 1) {
-                log.warn("more then one node found");
-            }
-            src = list.get(0);
-            if (src.getNodeValue("mediafragment") != mediafragment) {
-                src.setNodeValue("mediafragment", mediafragment);
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("Existing source " + src.getNodeManager().getName() + " #" + src.getNumber());
-            }
-        } else {
-            // create node
-            src = mediafragment.getCloud().getNodeManager("streamsources").createNode();
-            src.setNodeValue("mediafragment", mediafragment);
-            if (log.isDebugEnabled()) {
-                log.debug("Created source " + src.getNodeManager().getName() + " #" + src.getNumber());
-            }
-        }
-
-        return src;
-    }
-
     private Boolean sendMail(Node node, String email) {
          boolean send = false;
 
@@ -214,7 +185,8 @@ public final class DownloadFunction extends NodeFunction<String> {
                     URL url = new URL(parameters.get(URL));
 
                     // create streamsource node
-                    source = getMediaSource(node);
+                    //source = getMediaSource(node);
+                    source = CreateSourcesWithoutProcessFunction.getMediaSource(node);
 
                     Downloader downloader = new Downloader();
                     downloader.setUrl(url);
@@ -226,7 +198,7 @@ public final class DownloadFunction extends NodeFunction<String> {
                     DownloadFunction.this.setDownloadUrl(node, parameters.get(URL));
                     DownloadFunction.this.setDownloadStatus(node, "ok");
 
-                    source = getMediaSource(node);  // forces 'reload' of node?
+                    source = CreateSourcesWithoutProcessFunction.getMediaSource(node);  // forces 'reload' of node?
                     source.commit();
 
                     // send mail?
