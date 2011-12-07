@@ -2,7 +2,7 @@
 
 This file is part of the MMBase Streams application, 
 which is part of MMBase - an open source content management system.
-    Copyright (C) 2009-2010 André van Toly, Michiel Meeuwissen
+    Copyright (C) 2009-2011 André van Toly, Michiel Meeuwissen
 
 MMBase Streams is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,8 +28,8 @@ import org.mmbase.security.ActionRepository;
 import org.mmbase.util.logging.*;
 
 /**
- * Enables editing of url field of a streamsources node without processing (transcoding) the stream.
- * Normally an url is made when a stream is uploaded and/or gets (newly) transcoded when the url 
+ * Function on streamsources nodes to enable editing of the url field without processing (transcoding) the stream.
+ * Normally an url is only made once when a stream is uploaded, it gets (newly) transcoded when the url
  * field changes. This makes for a way to change that field without uploading and transcoding.
  * TODO: make this work for streamcaches too.
  * 
