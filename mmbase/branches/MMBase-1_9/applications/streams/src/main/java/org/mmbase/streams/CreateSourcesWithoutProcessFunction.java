@@ -39,9 +39,10 @@ public class CreateSourcesWithoutProcessFunction extends NodeFunction<Boolean> {
 
     private static final Logger LOG = Logging.getLoggerInstance(CreateSourcesWithoutProcessFunction.class);
 
-    public final static Parameter[] PARAMETERS = {
-        new Parameter("url", java.lang.String.class)
-    };
+    private static final Parameter<String> URL = new Parameter<String>("url", String.class);
+    private static final Parameter<Boolean> CACHE = new Parameter<Boolean>("cache", Boolean.class, Boolean.FALSE);
+    public final static Parameter[] PARAMETERS = { URL, CACHE };
+
     public CreateSourcesWithoutProcessFunction() {
         super("createsources", PARAMETERS);
     }
@@ -51,14 +52,20 @@ public class CreateSourcesWithoutProcessFunction extends NodeFunction<Boolean> {
         if (LOG.isDebugEnabled()) {
             LOG.debug("params: " + parameters);
         }
+        Boolean cache = parameters.get(CACHE);
+        String url = parameters.get(URL);
 
         Cloud cloud = media.getCloud();
-        cloud.setProperty(org.mmbase.streams.createcaches.Processor.NOT, "no implicit processing please");
-
-        String url = (String) parameters.get("url");
         Node source = getMediaSource(media);
-
-        source.setValueWithoutProcess("url", url);
+        if (!cache) {
+            cloud.setProperty(org.mmbase.streams.createcaches.Processor.NOT, "no implicit processing please");
+            source.setValueWithoutProcess("url", url);
+            LOG.service("New url, not transcoding new streams for #" + media.getNumber());
+        } else {
+            source = getMediaSource(media);
+            source.setStringValue("url", url);
+            LOG.service("New url for source of #" + media.getNumber() + ", will transcode caches.");
+        }
         source.commit();
 
         return true;
@@ -69,7 +76,22 @@ public class CreateSourcesWithoutProcessFunction extends NodeFunction<Boolean> {
         NodeList list = SearchUtil.findRelatedNodeList(mediafragment, "mediasources", "related");
         if (list.size() > 0) {
             if (list.size() > 1) {
-                LOG.warn(list.size() + " mediasources nodes found, using the first.");
+                NodeManager nm = mediafragment.getNodeManager();
+                NodeManager videofragments = mediafragment.getCloud().getNodeManager("videofragments");
+                NodeManager audiofragments = mediafragment.getCloud().getNodeManager("audiofragments");
+                NodeManager imagefragments = mediafragment.getCloud().getNodeManager("imagefragments");
+                if (nm.equals(videofragments)) {
+                    list = SearchUtil.findRelatedNodeList(mediafragment, "videosources", "related");
+                } else if (nm.equals(audiofragments)) {
+                    list = SearchUtil.findRelatedNodeList(mediafragment, "audiosources", "related");
+                } else if (nm.equals(imagefragments)) {
+                    list = SearchUtil.findRelatedNodeList(mediafragment, "imagesources", "related");
+                }
+                if (list.size() == 0) {
+                    LOG.warn("Nothing found in second try!");
+                    list = SearchUtil.findRelatedNodeList(mediafragment, "mediasources", "related");
+                }
+
             }
             src = list.get(0);
             if (src.getNodeValue("mediafragment") != mediafragment) {
