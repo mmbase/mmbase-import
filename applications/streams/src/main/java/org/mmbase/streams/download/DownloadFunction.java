@@ -31,9 +31,7 @@ import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sun.corba.se.spi.orbutil.threadpool.ThreadPool;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.security.Action;
 import org.mmbase.security.ActionRepository;
 import org.mmbase.streams.CreateSourcesWithoutProcessFunction;
@@ -42,6 +40,7 @@ import org.mmbase.util.functions.Function;
 import org.mmbase.util.functions.NodeFunction;
 import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.functions.Parameters;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -183,9 +182,9 @@ public final class DownloadFunction extends NodeFunction<String> {
                         log.debug("params: " + parameters);
                     }
                     URL url = new URL(parameters.get(URL));
+                    DownloadFunction.this.setDownloadUrl(node, parameters.get(URL));
 
-                    // create streamsource node
-                    //source = getMediaSource(node);
+                    // get or create streamsource node
                     source = CreateSourcesWithoutProcessFunction.getMediaSource(node);
 
                     Downloader downloader = new Downloader();
@@ -195,9 +194,7 @@ public final class DownloadFunction extends NodeFunction<String> {
                     result = downloader.download();
 
                     // download is ready
-                    DownloadFunction.this.setDownloadUrl(node, parameters.get(URL));
                     DownloadFunction.this.setDownloadStatus(node, "ok");
-
                     source = CreateSourcesWithoutProcessFunction.getMediaSource(node);  // forces 'reload' of node?
                     source.commit();
 
