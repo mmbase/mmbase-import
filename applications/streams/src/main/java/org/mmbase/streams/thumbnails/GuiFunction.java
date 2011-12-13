@@ -9,23 +9,24 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.streams.thumbnails;
 
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Node;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
+ * Thumbnails gui function, mimics behaviour of images.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
  * @since MMBase-1.9
  */
-public class GuiFunction extends NodeFunction<String> {
+public class GuiFunction extends org.mmbase.util.functions.GuiFunction {
 
     private static final Logger LOG = Logging.getLoggerInstance(GuiFunction.class);
 
     public GuiFunction() {
-        super("gui", org.mmbase.util.functions.GuiFunction.PARAMETERS);
+        super();
     }
 
     @Override

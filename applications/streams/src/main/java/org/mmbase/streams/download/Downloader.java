@@ -70,8 +70,7 @@ public class Downloader {
         directory = f;
     }
 
-    /* The following methods are copied org.mmbase.datatypes.processors.BinaryFile 
-        and should probably made accessibel (public?) there. */
+    /* TODO: The following methods are copied from org.mmbase.datatypes.processors.BinaryFile and should probably be made accessible (public?) there. */
     private static File getDirectory() {
         if (directory != null) return directory;
         File servletDir = FileServlet.getDirectory();
@@ -88,7 +87,6 @@ public class Downloader {
         buf.append(fileName);
         return  buf.toString();
     }
-    
     private Asciifier fileNameTransformer = new Asciifier();
     {
         fileNameTransformer.setReplacer("_");
@@ -118,7 +116,7 @@ public class Downloader {
                 log.warn("Could not find " + ef + " so could not delete it");
             }
         }
-        
+
         File f = getFile(node, field, fileNameTransformer.transform(name));
         Map<String, String> meta = FileServlet.getInstance().getMetaHeaders(f);
         meta.put("Content-Disposition", "attachment; " + FileServlet.getMetaValue("filename", name));
@@ -153,7 +151,7 @@ public class Downloader {
      * when it failes to open the connection. Only accepts http connections.
      *
      * @param  url  the url to open
-     * @return a connection or null in case of a bad response (f.e. not a 200)
+     * @return a connection or an execption in case of a bad response (f.e. not a 200)
      */
     private HttpURLConnection getURLConnection(URL url) throws IOException, IllegalArgumentException {
         URLConnection uc = url.openConnection();
@@ -161,11 +159,9 @@ public class Downloader {
             HttpURLConnection huc = (HttpURLConnection)uc;
             int res = huc.getResponseCode();
             if (res == -1) {
-                log.error("Server error, bad HTTP response: " + res);
-                return null;
+                throw new IOException("Server error, bad HTTP response: " + res);
             } else if (res < 200 || res >= 400) {
-                log.warn(res + " - " + huc.getResponseMessage() + " : " + url.toString());
-                return null;
+                throw new IOException(res + " - " + huc.getResponseMessage() + " : " + url.toString());
             } else {
                 return huc;
             }

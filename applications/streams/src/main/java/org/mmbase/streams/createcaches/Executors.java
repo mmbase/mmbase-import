@@ -35,7 +35,7 @@ import java.util.concurrent.*;
 
 
 /**
- * This maintains a list of reusable {@link CommandExecutor.Method}s. You can obtain on unused one with {@link
+ * This maintains a list of reusable {@link CommandExecutor.Methods}s. You can obtain on unused one with {@link
  * #getFreeExecutor}. Supposing that you are going to want to use it in a seperate thread, it also maintains ThreadPoolExecuters.
  * @author Michiel Meeuwissen
  * @since MMBase-1.9.6

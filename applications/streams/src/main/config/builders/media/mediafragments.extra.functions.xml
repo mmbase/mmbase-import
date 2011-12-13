@@ -12,5 +12,8 @@
   <function name="download">
     <class>org.mmbase.streams.download.DownloadFunction</class>
   </function>
+  <function name="createSources">
+    <class>org.mmbase.streams.CreateSourcesWithoutProcessFunction</class>
+  </function>
 
 </functionlist>

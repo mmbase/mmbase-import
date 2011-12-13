@@ -26,27 +26,31 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.security.Action;
 import org.mmbase.security.ActionRepository;
+import org.mmbase.streams.CreateSourcesWithoutProcessFunction;
 import org.mmbase.util.ThreadPools;
 import org.mmbase.util.functions.Function;
 import org.mmbase.util.functions.NodeFunction;
 import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.functions.Parameters;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 
 /**
- * Downloads a media stream from an url for a media item (mediafragments node) into Open Images. 
- * It starts a thread and calls {@link Downloader} to do the actual work. The media file itself is
+ * Downloads a media stream from an url for a media item (mediafragments node) puts it in the files
+ * directory and returns it's filename when finished. A timeout parameter let's you set number of
+ * seconds you wish to wait for the download to finish. When you specify an email address as parameter
+ * you get an email when it's really finished.
+ * The function starts a thread and calls {@link Downloader} to do the actual work. The media file itself is
  * saved in a mediasources node and transcoded by the streams application when the download finishes.
  * Url and information about success or failure of the download are saved as properties 
  * on the mediafragments node.
@@ -61,9 +65,11 @@ public final class DownloadFunction extends NodeFunction<String> {
 
     /* url to get */
     private static final Parameter<String> URL = new Parameter<String>("url", String.class);
+    /* timeout: how long you are prepaired to wait for a result, default is 5 seconds */
+    private static final Parameter<Integer> TIMEOUT = new Parameter<Integer>("timeout", Integer.class);
     /* email address to send ready to */
     private static final Parameter<String> EMAIL = new Parameter<String>("email", String.class);
-    public final static Parameter[] PARAMETERS = { URL, EMAIL, Parameter.LOCALE };
+    public final static Parameter[] PARAMETERS = { URL, EMAIL, TIMEOUT, Parameter.LOCALE };
 
     private final static String URL_KEY    = DownloadFunction.class.getName() + ".url";
     private final static String STATUS_KEY = DownloadFunction.class.getName() + ".status";
@@ -105,36 +111,6 @@ public final class DownloadFunction extends NodeFunction<String> {
         return getProperty(node, STATUS_KEY);
     }
 
-
-    private Node getMediaSource(Node mediafragment) {
-        mediafragment.getCloud().setProperty(org.mmbase.streams.createcaches.Processor.NOT, "no implicit processing please");
-        mediafragment.getCloud().setProperty(org.mmbase.datatypes.processors.BinaryCommitProcessor.NOT, "no implicit processing please");
-        
-        Node src = null;
-        NodeList list = SearchUtil.findRelatedNodeList(mediafragment, "mediasources", "related");
-        if (list.size() > 0) {
-            if (list.size() > 1) {
-                log.warn("more then one node found");
-            }
-            src = list.get(0);
-            if (src.getNodeValue("mediafragment") != mediafragment) {
-                src.setNodeValue("mediafragment", mediafragment);
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("Existing source " + src.getNodeManager().getName() + " #" + src.getNumber());
-            }
-        } else {
-            // create node
-            src = mediafragment.getCloud().getNodeManager("streamsources").createNode();
-            src.setNodeValue("mediafragment", mediafragment);
-            if (log.isDebugEnabled()) {
-                log.debug("Created source " + src.getNodeManager().getName() + " #" + src.getNumber());
-            }
-        }
-
-        return src;
-    }
-
     private Boolean sendMail(Node node, String email) {
          boolean send = false;
 
@@ -155,15 +131,27 @@ public final class DownloadFunction extends NodeFunction<String> {
              String from = "downloader@mmbase.org";
              try {
                  from = "downloader@" + java.net.InetAddress.getLocalHost().getHostName();
+                 // do a quick check if we've got something more or less valid
+                 Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
+                 Matcher m = p.matcher(from);
+                 if (!m.matches()) {
+                    from = "downloader@mmbase.org";
+                 }
              } catch (UnknownHostException uhe) {
                  log.warn("No host: " + uhe);
              }
+
              String mediaTitle = node.getStringValue("title");
+             String mediaUrl = getProperty(node, URL_KEY);
+             StringBuilder body = new StringBuilder();
+             body.append("Your media file for '").append(mediaTitle);
+             body.append("' (#").append(node.getNumber()).append(") has finished downloading from: ").append(mediaUrl);
+             body.append(" \n\nKind regards, your friendly downloader");
 
              message.setValue("from", from);
              message.setValue("to", email);
              message.setValue("subject", "Media download complete");
-             message.setValue("body", "The download of your media item '" + mediaTitle + "' has finished.\n\nKind regards, your automatic downloader");
+             message.setValue("body", body.toString());
              message.commit();
 
              Function mail = message.getFunction("mail");
@@ -194,9 +182,10 @@ public final class DownloadFunction extends NodeFunction<String> {
                         log.debug("params: " + parameters);
                     }
                     URL url = new URL(parameters.get(URL));
+                    DownloadFunction.this.setDownloadUrl(node, parameters.get(URL));
 
-                    // create streamsource node
-                    source = getMediaSource(node);
+                    // get or create streamsource node
+                    source = CreateSourcesWithoutProcessFunction.getMediaSource(node);
 
                     Downloader downloader = new Downloader();
                     downloader.setUrl(url);
@@ -205,10 +194,8 @@ public final class DownloadFunction extends NodeFunction<String> {
                     result = downloader.download();
 
                     // download is ready
-                    DownloadFunction.this.setDownloadUrl(node, parameters.get(URL));
                     DownloadFunction.this.setDownloadStatus(node, "ok");
-
-                    source = getMediaSource(node);  // forces 'reload' of node?
+                    source = CreateSourcesWithoutProcessFunction.getMediaSource(node);  // forces 'reload' of node?
                     source.commit();
 
                     // send mail?
@@ -250,7 +237,11 @@ public final class DownloadFunction extends NodeFunction<String> {
             log.debug("params: " + parameters);
         }
         String status = getDownloadStatus(node);
-        int timeout = 2;
+
+        int timeout = 5;
+        if (parameters.get(TIMEOUT) != null) {
+            timeout = parameters.get(TIMEOUT);
+        }
 
         if (status == null) {
             Action action = ActionRepository.getInstance().get("streams", "download_media");
@@ -264,26 +255,25 @@ public final class DownloadFunction extends NodeFunction<String> {
                         setDownloadStatus(node, "busy: " + System.currentTimeMillis());
                         future = submit(node, parameters);
 
-                        ThreadPools.identify(future, "Downloading... for #"  + node.getNumber()  + ", status: '" + getDownloadStatus(node) );
+                        ThreadPools.identify(future, DownloadFunction.class.getName() + " downloading... for #"  + node.getNumber()  + " - status: " + getDownloadStatus(node) );
                         String fname = ThreadPools.getString(future);
                         log.info("Future name: " + fname);
                         try {
-                            status = "Download still running after sec: " + future.get(timeout, TimeUnit.SECONDS);
+                            status = (String) future.get(timeout, TimeUnit.SECONDS);
                             log.info("status: " + status);
                         } catch (TimeoutException te) {
-                            status = "Still running after " + timeout + " seconds. Check it's status.";
+                            status = ThreadPools.getString(future);
                             log.info("TimeoutException: " + status);
                         } catch (Exception e) {
                             log.error(e);
                         }
 
                     } else {
-                        status = "Error! Another is already busy: " + ThreadPools.getString(future);
+                        status = ThreadPools.getString(future);
                     }
 
                 }
-                status = "Download in progress... still running after " + timeout + " seconds. Check back later.";
-                log.info(status);
+                log.info("status: " + status);
                 return status;
             } else {
                 throw new org.mmbase.security.SecurityException("Not allowed");
