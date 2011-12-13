@@ -71,6 +71,12 @@ public class CreateSourcesWithoutProcessFunction extends NodeFunction<Boolean> {
         return true;
     }
 
+    /**
+     * The media source node of this mediafragment, containing the original stream or file.
+     *
+     * @param   mediafragment Media node to get source from
+     * @return  mediasources node related to this mediafragment
+     */
     public static Node getMediaSource(final Node mediafragment) {
         Node src = null;
         NodeList list = SearchUtil.findRelatedNodeList(mediafragment, "mediasources", "related");
