@@ -15,6 +15,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
+ * Thumbnails gui function, mimics behaviour of images.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
