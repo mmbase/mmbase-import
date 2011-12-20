@@ -233,7 +233,7 @@ public class Related {
         public Object process(final Node node, final Field field, final Object value) {
             synchronized(node) {    // this should of course only happen once
                 Node relatedNode = getRelatedNode(node, field);
-                boolean canMakeRelation = node.getCloud() instanceof Transaction || !node.isNew();
+                boolean canMakeRelation = node.getCloud() instanceof Transaction || (!node.isNew() && node.getNumber() > 0);
                 if (relatedNode == null && canMakeRelation) {
                     if (log.isServiceEnabled()) {
                         log.service("No related node of type " + getRelatedCreateType(node).getName() + " for node " +
