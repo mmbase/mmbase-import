@@ -8,14 +8,20 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.util;
-import org.mmbase.bridge.util.BridgeCaster;
-import org.mmbase.util.transformers.*;
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.mock.*;
-
 import java.util.*;
-import org.junit.*;
-import static org.junit.Assert.*;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.mock.MockBuilderReader;
+import org.mmbase.bridge.mock.MockCloudContext;
+import org.mmbase.bridge.util.BridgeCaster;
+import org.mmbase.util.transformers.CopyCharTransformer;
+import org.mmbase.util.transformers.Xml;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 /**
  *
  * @author Michiel Meeuwissen

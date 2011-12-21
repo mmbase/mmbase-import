@@ -9,14 +9,20 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes.processors;
 
-import java.util.Arrays;
-import org.mmbase.bridge.*;
-import java.text.*;
-import java.util.regex.*;
-import java.math.*;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.FieldPosition;
+import java.text.NumberFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.mmbase.util.logging.*;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.Node;
 import org.mmbase.util.HashCodeUtil;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * A processor that gets a number as a file-size, that is, rounded with kbytes and Mb's and so on.
@@ -127,7 +133,7 @@ public class FormatQuantity implements Processor {
     }
 
 
-    /** 
+    /**
      * If a quantity is 'integer' then it can not have fractional
      * values. For example a number of bytes.
      * @since MMBase-1.9.2
@@ -137,7 +143,6 @@ public class FormatQuantity implements Processor {
     }
 
 
-    @Override
     public  Object process(Node node, Field field, Object value) {
         if (value == null) return null;
 
@@ -173,7 +178,7 @@ public class FormatQuantity implements Processor {
                                                    node.getCloud().getLocale());
 
         if (power > 0) {
-            v = v.divide(factor, 0, RoundingMode.HALF_UP);
+            v = v.divide(factor, 1, RoundingMode.HALF_UP);
         }  else {
             v = v.multiply(factor);
             //v.setScale(0, RoundingMode.HALF_UP);
@@ -222,7 +227,7 @@ public class FormatQuantity implements Processor {
         if (! o.getClass().equals(this.getClass())) return false;
         FormatQuantity f = (FormatQuantity) o;
         return k.equals(f.k) &&
-            Arrays.equals(prefixes, f.prefixes) &&
+            prefixes.equals(f.prefixes) &&
             unit.equals(f.unit) &&
             lowFormat.equals(f.lowFormat) &&
             highFormat.equals(f.highFormat) &&
