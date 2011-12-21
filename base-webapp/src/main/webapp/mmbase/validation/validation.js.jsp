@@ -1,8 +1,8 @@
 /*<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><%@ taglib uri="http://www.opensymphony.com/oscache" prefix="os" 
+%><%@ taglib uri="http://www.opensymphony.com/oscache" prefix="os"
 %><jsp:directive.page session="false" />
 *///<mm:content type="text/javascript" expires="3600" postprocessor="none"><os:cache
-time="3600" key="<%=request.getServletPath()%>" 
+time="3600" key="<%=request.getServletPath()%>"
 refresh="${param.flush eq 'true' ? true : false}" ><mm:escape escape="javascript-compress">
 /*
  * See test.jspx for example usage.
@@ -651,11 +651,11 @@ MMBaseValidator.prototype.getDataTypeXml = function(el) {
                     }
                 }
             });
-        this.log("Found " + key);
+        this.log("Found " + dataType);
 
 
     } else {
-        this.trace("Found in cache " + key);
+        this.trace("Found in cache " + dataType);
     }
     return dataType;
 };
