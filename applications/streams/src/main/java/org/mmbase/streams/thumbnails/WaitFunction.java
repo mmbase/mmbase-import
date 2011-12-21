@@ -67,7 +67,7 @@ public class WaitFunction extends NodeFunction<Node> {
                 LOG.service("Found " + result + " bytes");
                 return result;
             } catch (TimeoutException te) {
-                LOG.warn(te.getMessage(), te);
+                LOG.service("Waited for thumb " + timeout + " seconds: " + te.getMessage());
                 return 0;
             } catch (InterruptedException ie) {
                 LOG.warn(ie.getMessage(), ie);
