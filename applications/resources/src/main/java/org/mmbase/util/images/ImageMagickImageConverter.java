@@ -559,13 +559,14 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
      */
     private String calculateModulateCmd(String cmd, int scaleBase) {
         log.debug( "Calculating modulate cmd using scale base " + scaleBase + " for modulate cmd: " + cmd);
-        String modCmd = "";
+        StringBuilder buf = new StringBuilder();
         StringTokenizer st = new StringTokenizer(cmd, ",/");
         while (st.hasMoreTokens()) {
-            modCmd += scaleBase + Integer.parseInt(st.nextToken()) + ",";
+            buf.append(scaleBase).append(Integer.parseInt(st.nextToken())).append(",");
         }
+        String modCmd = buf.toString();
         if (!modCmd.equals("")) {
-            modCmd = modCmd.substring(0, modCmd.length() - 1);
+            modCmd = buf.substring(0, modCmd.length() - 1);
         }
         // remove last ',' char.
         log.debug("Modulate cmd after calculation: " + modCmd);
