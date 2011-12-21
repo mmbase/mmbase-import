@@ -9,22 +9,31 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.mmbase.core.event.NodeEvent;
-import org.mmbase.module.core.*;
-import org.mmbase.util.*;
+import org.mmbase.module.core.MMBaseContext;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.VirtualNode;
+import org.mmbase.servlet.FileServlet;
+import org.mmbase.util.Casting;
+import org.mmbase.util.SerializableInputStream;
+import org.mmbase.util.UriParser;
+import org.mmbase.util.functions.Parameter;
+import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.images.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 import org.mmbase.util.transformers.UrlEscaper;
 import org.mmbase.util.transformers.Xml;
-import org.mmbase.util.images.*;
-import org.mmbase.util.functions.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.servlet.FileServlet;
-import java.io.*;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.ServletContext;
 
 /**
  * If this class is used as the class for your builder, then an 'handle' byte field is assumed to
@@ -139,7 +148,7 @@ public class Images extends AbstractImages {
         if ("info".equals(function)) {
             List<Object> empty = new ArrayList<Object>();
             Map<String,String> info = (Map<String,String>) super.executeFunction(node, function, empty);
-            info.put("cache", "" + CACHE_PARAMETERS + " The node number of the cached converted image (icaches node)");
+            info.put("cache", Arrays.toString(CACHE_PARAMETERS) + " The node number of the cached converted image (icaches node)");
             if (args == null || args.size() == 0) {
                 return info;
             } else {
