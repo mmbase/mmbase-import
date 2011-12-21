@@ -51,6 +51,7 @@ public class FFMpegThumbNailCreator implements  Callable<Long> {
 
     private boolean useSharedDir = true;
 
+
     FFMpegThumbNailCreator(Node node, Field field) {
         Cloud myCloud = node.getCloud().getCloudContext().getCloud("mmbase", "class", null);
         this.source = myCloud.getNode(node.getIntValue("id"));

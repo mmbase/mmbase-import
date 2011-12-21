@@ -85,8 +85,9 @@ class JobCallable implements Callable<Integer> {
                 }
             }
             ntNode = ntCloud.getNode(node);
-            ntNode.getStringValue("title"); // This triggers RelatedField$Creator to create a mediafragment
-            Node mediafragment = ntNode.getNodeValue("mediafragment");
+            // This triggers RelatedField$Creator to create a mediafragment
+            ///ntNode.getStringValue("title");
+            //Node mediafragment = ntNode.getNodeValue("mediafragment");
             thisJob.setNode(ntNode);
             notifyAll();
         }
