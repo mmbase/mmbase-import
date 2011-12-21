@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.streams.thumbnails;
 
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Node;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
