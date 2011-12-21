@@ -57,7 +57,8 @@ public class VirtualNodeTest extends BridgeTest {
             VirtualNode node = new VirtualNode(map, getCloud());
             assertEquals("A", node.getStringValue("a"));
 
-            assertNotNull("" + node, node.getNodeValue("subnode"));
+            assertNotNull("" + node + " subnode is null!", node.getValue("subnode"));
+            assertNotNull("" + node + " subnode is null!", node.getNodeValue("subnode"));
             assertEquals("B", node.getNodeValue("subnode").getStringValue("b"));
         } else {
             System.out.println("Cannot test on rmmci (MMObjectBuilder needed)");
