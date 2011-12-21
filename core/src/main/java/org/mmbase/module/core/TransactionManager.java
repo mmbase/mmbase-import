@@ -92,7 +92,7 @@ public class TransactionManager {
      * Syncrhonize on the returrned collection if you're going to iterate over it.
      *
      * @param transactionName The name of the transaction to return
-     * @exception TransactionManagerExcpeption if the transaction with given name does not exist
+     * @exception TransactionManagerException if the transaction with given name does not exist
      * @return Collection containing the nodes in this transaction (as {@link org.mmbase.module.core.MMObjectNode}s).
      */
     synchronized public  Collection<MMObjectNode> getTransaction(String transactionName) throws TransactionManagerException {
@@ -117,7 +117,7 @@ public class TransactionManager {
     /**
      * Creates transaction with given name.
      * @param transactionName The name of the transaction to return
-     * @exception TransactionManagerExcpeption if the transaction with given name existed already
+     * @exception TransactionManagerException if the transaction with given name existed already
      * @return Collection containing the nodes in this transaction (so, this is an empty collection)
      */
     synchronized public Collection<MMObjectNode> createTransaction(String transactionName) throws TransactionManagerException {
@@ -374,7 +374,7 @@ public class TransactionManager {
                 if (node.getBuilder() instanceof InsRel) {
                     NodeState state = stati.get(node.getNumber());
                     if (state.changed) {
-                        NodeState sstate = stati.get(node.getIntValue("snumber"));
+                            NodeState sstate = stati.get(node.getIntValue("snumber"));
                         if (sstate != null) sstate.changed = true;
                         NodeState dstate = stati.get(node.getIntValue("dnumber"));
                         if (dstate != null) dstate.changed = true;
@@ -384,74 +384,86 @@ public class TransactionManager {
             }
 
             log.debug("Commiting nodes");
-
-            // First commit all the NODES
-            for (MMObjectNode node : nodes) {
-                if (!(node.getBuilder() instanceof InsRel)) {
-                    NodeState state = stati.get(node.getNumber());
-                    commitNode(user, node, state);
-                    node.storeValue("_exists", null);
+            MMBase.getMMBase().getStorageManagerFactory().beginTransaction();
+            boolean okay = false;
+            try {
+                // First commit all the NODES
+                for (MMObjectNode node : nodes) {
+                    if (!(node.getBuilder() instanceof InsRel)) {
+                        NodeState state = stati.get(node.getNumber());
+                        commitNode(user, node, state);
+                        node.storeValue("_exists", null);
+                    }
                 }
-            }
 
-            log.debug("Commiting relations");
+                log.debug("Commiting relations");
 
-            // Then commit all the RELATIONS
-            for (MMObjectNode node : nodes) {
-                if (node.getBuilder() instanceof InsRel) {
-                    NodeState state = stati.get(node.getNumber());
-                    commitNode(user, node, state);
-                    node.storeValue("_exists", null);
+                // Then commit all the RELATIONS
+                for (MMObjectNode node : nodes) {
+                    if (node.getBuilder() instanceof InsRel) {
+                        NodeState state = stati.get(node.getNumber());
+                        commitNode(user, node, state);
+                        node.storeValue("_exists", null);
+                    }
                 }
-            }
 
-            log.debug("Deleting relations");
+                log.debug("Deleting relations");
 
-            // Then commit all the RELATIONS that must be deleted
-            for (MMObjectNode node : nodes) {
-                NodeState state = stati.get(node.getNumber());
-                if (node.getBuilder() instanceof InsRel && state.exists == Exists.NOLONGER) {
-                    if (node.getNumber() > 0) { // related to hack in ditchRelations
+                // Then commit all the RELATIONS that must be deleted
+                for (MMObjectNode node : nodes) {
+                    NodeState state = stati.get(node.getNumber());
+                    if (node.getBuilder() instanceof InsRel && state.exists == Exists.NOLONGER) {
+                        if (node.getNumber() > 0) { // related to hack in ditchRelations
+                            // no return information
+                            if (user instanceof UserContext) {
+                                node.remove((UserContext)user);
+                            } else {
+                                node.parent.removeNode(node);
+                            }
+                        }
+                        state.state = State.COMMITED;
+                    }
+                }
+
+                log.debug("Deleting nodes");
+                // Then commit all the NODES that must be deleted
+                for (MMObjectNode node : nodes) {
+                    NodeState state = stati.get(node.getNumber());
+                    if (!(node.getBuilder() instanceof InsRel) && (state.exists == Exists.NOLONGER)) {
                         // no return information
-                        if (user instanceof UserContext) {
-                            node.remove((UserContext)user);
+                        if (node.getNumber() > 0) {
+                            if (user instanceof UserContext) {
+                                node.remove((UserContext)user);
+                            } else {
+                                node.parent.removeNode(node);
+                            }
                         } else {
-                            node.parent.removeNode(node);
+                            log.debug("Node " + node + " was never committed to the database, so does not need to be removed from it");
                         }
+                        state.state = State.COMMITED;
                     }
-                    state.state = State.COMMITED;
                 }
-            }
 
-            log.debug("Deleting nodes");
-            // Then commit all the NODES that must be deleted
-            for (MMObjectNode node : nodes) {
-                NodeState state = stati.get(node.getNumber());
-                if (!(node.getBuilder() instanceof InsRel) && (state.exists == Exists.NOLONGER)) {
-                    // no return information
-                    if (node.getNumber() > 0) {
-                        if (user instanceof UserContext) {
-                            node.remove((UserContext)user);
-                        } else {
-                            node.parent.removeNode(node);
-                        }
-                    } else {
-                        log.debug("Node " + node + " was never committed to the database, so does not need to be removed from it");
+                // check for failures
+                okay = true;
+                for (MMObjectNode node : nodes) {
+                    NodeState state = stati.get(node.getNumber());
+                    if (state.state == State.FAILED) {
+                        okay = false;
+                        log.error("Failed node " + node.toString());
                     }
-                    state.state = State.COMMITED;
                 }
-            }
 
-            // check for failures
-            boolean okay = true;
-            for (MMObjectNode node : nodes) {
-                NodeState state = stati.get(node.getNumber());
-                if (state.state == State.FAILED) {
-                    okay = false;
-                    log.error("Failed node " + node.toString());
+                MMBase.getMMBase().getStorageManagerFactory().commit();
+                return okay;
+            } catch (RuntimeException re) {
+                okay = false;
+                throw re;
+            } finally {
+                if (! okay ) {
+                    MMBase.getMMBase().getStorageManagerFactory().rollback();
                 }
             }
-            return okay;
         }
 
     }

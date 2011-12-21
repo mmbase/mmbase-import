@@ -363,7 +363,9 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     @Override
     protected void finalize() {
         if ((transactionName != null) && !(parentCloud instanceof Transaction)) {
-            cancel();
+            if (! canceled && ! committed) {
+                cancel();
+            }
         }
         try {
             super.finalize();
