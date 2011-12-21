@@ -9,10 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 import java.io.*;
-import java.util.*;
-import org.junit.*;
-import static org.junit.Assert.*;
+import java.util.Arrays;
+
 import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 
 /**
