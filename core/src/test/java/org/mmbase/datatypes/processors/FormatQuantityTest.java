@@ -9,9 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes.processors;
 
-import org.mmbase.bridge.*;
-import org.junit.*;
-import static org.junit.Assert.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 
 /**
@@ -37,6 +38,7 @@ public class FormatQuantityTest {
         assertEquals("123 B", "" + fileSize.process(null, null, "123"));
         assertEquals("123 B", "" + fileSize.process(null, null, 123));
         assertEquals("3.0 KiB", "" + fileSize.process(null, null, "3061"));
+        assertEquals("3.2 KiB", "" + fileSize.process(null, null, "3261"));
         assertEquals("0 B", "" + fileSize.process(null, null, 0));
         assertEquals(null, fileSize.process(null, null, null));
         assertEquals("-1 B", "" + fileSize.process(null, null, -1));
@@ -57,13 +59,15 @@ public class FormatQuantityTest {
         assertEquals("0 byte", "" + fileSize.process(null, null, 0.1));
     }
 
-    @Test 
+    @Test
     public void unitLessInteger() {
         FormatQuantity def = new FormatQuantity();
         def.setInteger(true);
         assertEquals("123", "" + def.process(null, null, "123"));
         assertEquals("123", "" + def.process(null, null, 123));
-        assertEquals("3.0 k", "" + def.process(null, null, 3061));
+        assertEquals("3.0 k", "" + def.process(null, null, 3011));
+        assertEquals("3.1 k", "" + def.process(null, null, 3061));
+        assertEquals("4 k", "" + def.process(null, null, 3861));
         assertEquals(null, def.process(null, null, null));
         assertEquals("-1", "" + def.process(null, null, -1));
     }
