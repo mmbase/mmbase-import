@@ -191,7 +191,7 @@ public class MMBaseEntry implements IndexEntry {
                         if (log.isTraceEnabled()) {
                             log.trace("add " + fieldName + " text, keyword " + v);
                         }
-                        Field field = new Field(fieldName, v, Field.Store.YES, Field.Index.NOT_ANALYZED);
+                        Field field = new Field(fieldName, v.trim(), Field.Store.YES, Field.Index.NOT_ANALYZED);
                         field.setBoost(fieldDefinition.boost);
                         Indexer.addField(document, field, fieldDefinition.multiple);
                     } else if (fieldDefinition.storeText) {
