@@ -384,16 +384,12 @@ public final class AnalyzerUtils implements java.io.Serializable {
             }
 
             if (updateSource) {
-                if (source.getIntValue("codec") < 0) {
-                    source.setIntValue("codec", libtoCodec(m.group(1)).toInt() );
-                }
+                source.setIntValue("codec", libtoCodec(m.group(1)).toInt() );
                 source.setIntValue("width", Integer.parseInt(m.group(3)));
                 source.setIntValue("height", Integer.parseInt(m.group(4)));
             }
             if (updateDestination && dest != null) {
-                if (dest.getIntValue("codec") < 0) {
-                    dest.setIntValue("codec", libtoCodec(m.group(1)).toInt() );
-                }
+                dest.setIntValue("codec", libtoCodec(m.group(1)).toInt() );
                 dest.setIntValue("width", Integer.parseInt(m.group(3)));
                 dest.setIntValue("height", Integer.parseInt(m.group(4)));
             }
@@ -466,9 +462,9 @@ public final class AnalyzerUtils implements java.io.Serializable {
             if (source.getNodeManager().hasField("channels") && updateSource) {
                 if (source.getIntValue("channels") < 0) source.setIntValue("channels", ch);
 
-                if (source.getNodeManager().hasField("acodec") && source.getIntValue("acodec") < 0) {
+                if (source.getNodeManager().hasField("acodec")) {
                     source.setIntValue("acodec", libtoCodec(m.group(1)).toInt() );
-                } else if (source.getIntValue("codec") < 0) {
+                } else {
                     source.setIntValue("codec", libtoCodec(m.group(1)).toInt() );
                 }
             }
