@@ -67,7 +67,7 @@ public class FormatQuantityTest {
         assertEquals("123", "" + def.process(null, null, 123));
         assertEquals("3.0 k", "" + def.process(null, null, 3011));
         assertEquals("3.1 k", "" + def.process(null, null, 3061));
-        assertEquals("4 k", "" + def.process(null, null, 3861));
+        assertEquals("3.9 k", "" + def.process(null, null, 3861));
         assertEquals(null, def.process(null, null, null));
         assertEquals("-1", "" + def.process(null, null, -1));
     }
