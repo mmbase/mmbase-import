@@ -44,6 +44,8 @@ import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * Downloads a media stream from an url for a media item (mediafragments node) puts it in the files
@@ -69,7 +71,7 @@ public final class DownloadFunction extends NodeFunction<String> {
     private static final Parameter<Integer> TIMEOUT = new Parameter<Integer>("timeout", Integer.class);
     /* email address to send ready to */
     private static final Parameter<String> EMAIL = new Parameter<String>("email", String.class);
-    public final static Parameter[] PARAMETERS = { URL, EMAIL, TIMEOUT, Parameter.LOCALE };
+    public final static Parameter[] PARAMETERS = { URL, EMAIL, TIMEOUT, Parameter.LOCALE, Parameter.REQUEST };
 
     private final static String URL_KEY    = DownloadFunction.class.getName() + ".url";
     private final static String STATUS_KEY = DownloadFunction.class.getName() + ".status";
@@ -111,7 +113,7 @@ public final class DownloadFunction extends NodeFunction<String> {
         return getProperty(node, STATUS_KEY);
     }
 
-    private Boolean sendMail(Node node, String email) {
+    private Boolean sendMail(HttpServletRequest req, Node node, String email) {
          boolean send = false;
 
          Cloud cloud = node.getCloud();
@@ -128,29 +130,46 @@ public final class DownloadFunction extends NodeFunction<String> {
              NodeManager nm = cloud.getNodeManager(emailbuilder);
              Node message = nm.createNode();
 
-             String from = "downloader@mmbase.org";
-             try {
-                 from = "downloader@" + java.net.InetAddress.getLocalHost().getHostName();
-                 // do a quick check if we've got something more or less valid
-                 Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
-                 Matcher m = p.matcher(from);
-                 if (!m.matches()) {
-                    from = "downloader@mmbase.org";
+             String host = req.getHeader("host");
+             if (host == null || "".equals(host)) {
+                 try {
+                     host = java.net.InetAddress.getLocalHost().getHostName();
+                 } catch (UnknownHostException uhe) {
+                     log.warn("No host: " + uhe);
                  }
-             } catch (UnknownHostException uhe) {
-                 log.warn("No host: " + uhe);
+             }
+             String from = "downloader@" + host;
+             // do a quick check if we've got something more or less valid
+             Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
+             Matcher m = p.matcher(from);
+             if (!m.matches()) {
+                from = "downloader@mmbase.org";
              }
 
              String mediaTitle = node.getStringValue("title");
              String mediaUrl = getProperty(node, URL_KEY);
              StringBuilder body = new StringBuilder();
-             body.append("Your media file for '").append(mediaTitle);
-             body.append("' (#").append(node.getNumber()).append(") has finished downloading from: ").append(mediaUrl);
-             body.append(" \n\nKind regards, your friendly downloader");
+
+             body.append("*This is an automated message / Dit is een geautomatiseerd bericht*");
+             body.append("\n\n*English*");
+             body.append("\n\nDear,");
+             body.append("\n\nWe have received your file belonging to media item titled '").append(mediaTitle).append("'. ");
+             body.append("In about 1 hour, you can find your submission at: ");
+             body.append("http://").append(host).append("/media/").append(node.getNumber());
+             body.append("\n\nKind regards,");
+             body.append("\n\n").append(host);
+
+             body.append("\n\n\n*Nederlands*");
+             body.append("\n\nBeste,");
+             body.append("\n\nWe hebben je bestand voor het media item met de titel '").append(mediaTitle).append("' ontvangen. ");
+             body.append("Je kunt je bijdrage hier over circa een uur terugvinden: ");
+             body.append("http://").append(host).append("/media/").append(node.getNumber());
+             body.append("\n\nMet vriendelijke groet,");
+             body.append("\n\n").append(host);
 
              message.setValue("from", from);
              message.setValue("to", email);
-             message.setValue("subject", "Media download complete");
+             message.setValue("subject", "Download complete / Download voltooid");
              message.setValue("body", body.toString());
              message.commit();
 
@@ -201,7 +220,8 @@ public final class DownloadFunction extends NodeFunction<String> {
                     // send mail?
                     String email = parameters.get(EMAIL);
                     if (email != null && !"".equals(email)) {
-                        sendMail(node, email);
+                        HttpServletRequest req = parameters.get(Parameter.REQUEST);
+                        sendMail(req, node, email);
                     }
 
                     log.info("Result: " + result + ", calling transcoders for #" + source.getNumber());
