@@ -23,7 +23,18 @@ package org.mmbase.streams.transcoders;
 
 import java.util.regex.*;
 import java.util.*;
-import org.mmbase.bridge.*;
+
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.Query;
+import org.mmbase.storage.search.Constraint;
+import org.mmbase.storage.search.RelationStep;
+import org.mmbase.storage.search.Step;
+import org.mmbase.storage.search.StepField;
+import org.mmbase.streams.UpdateSourcesFunction;
+import org.mmbase.util.functions.Parameters;
+
 import org.mmbase.util.logging.*;
 
 
@@ -131,6 +142,44 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
             if (bits > 0 && length > 0) {
                 destNode.setIntValue("bitrate", (int) (bits / length));
             }
+
+            /* The output of ffmpeg2theora includes information about the input, NOT the result.
+               Here we find the original source node and use it to start UpdateSourcesFunction to do an
+               analysis of the resulting stream. */
+            if (destNode != null) {
+                Cloud cloud = destNode.getCloud();
+                Query query = cloud.createQuery();
+
+                Step step1 = query.addStep(destNode.getNodeManager());
+                StepField nodeNumber = query.addField(destNode.getNodeManager().getName() + ".number");
+                Constraint compositeConstraint = query.createConstraint(nodeNumber, destNode.getNumber());
+
+                RelationStep relstep1 = query.addRelationStep(cloud.getNodeManager("videofragments"), "related", "source");
+                query.setAlias(relstep1, "related1");
+                RelationStep relstep2 = query.addRelationStep(cloud.getNodeManager("videostreamsources"), "related", "destination");
+                query.setAlias(relstep2, "related2");
+
+                query.addField("videostreamsources.number");
+                query.setConstraint(compositeConstraint);
+                query.setDistinct(true);
+
+                if (log.isDebugEnabled()) log.debug(query);
+
+                NodeList nl = cloud.getList(query);
+                if (nl.size() > 0) {
+                    Node node = nl.get(0); // clusternode
+                    int number = node.getIntValue("videostreamsources.number");
+                    if (log.isDebugEnabled()) log.debug("Found #" + number);
+
+                    Node originalSourceNode = cloud.getNode(number);
+                    originalSourceNode.getFunctionValue("updateSources",
+                                new Parameters(UpdateSourcesFunction.PARAMETERS).set("cache", destNode));
+
+                }
+
+
+            }
+
         }
     }
 

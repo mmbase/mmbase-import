@@ -219,8 +219,8 @@ public final class DownloadFunction extends NodeFunction<String> {
 
                     // send mail?
                     String email = parameters.get(EMAIL);
-                    HttpServletRequest req = parameters.get(Parameter.REQUEST);
                     if (email != null && !"".equals(email)) {
+                        HttpServletRequest req = parameters.get(Parameter.REQUEST);
                         sendMail(req, node, email);
                     }
 
