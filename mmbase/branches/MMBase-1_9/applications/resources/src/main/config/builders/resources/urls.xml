@@ -65,7 +65,14 @@
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <default value="http://" />
         <required value="true" />
-        <maxLength value="255" enforce="never"/>
+        <minLength value="3" enforce="onvalidate">
+          <description xml:lang="en">Url should have at least 3 characters.</description>        
+          <description xml:lang="nl">Een url moet tenminste 3 karakters bevatten.</description>
+        </minLength>
+        <maxLength value="255" enforce="onvalidate">
+          <description xml:lang="en">Url can have max 255 characters.</description>        
+          <description xml:lang="nl">Url kan niet meer dan 255 karakters bevatten.</description>
+        </maxLength>
       </datatype>
     </field>
 
