@@ -98,7 +98,7 @@ public abstract class BasicUserProvider implements UserProvider {
             userPassword = encoded ? password : encode(password);
             dbPassword = user.getStringValue(getPasswordField());
             if (encoded) {
-                log.debug("Password are encoded in db. User provided it  encoded " + userPassword);
+                log.debug("Password are encoded in db. User provided it encoded " + userPassword);
             } else {
                 log.debug("Password are encoded in db. Encoded user password " + userPassword);
             }
