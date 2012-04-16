@@ -110,6 +110,7 @@ public class FFMpegAnalyzer implements Analyzer {
                 }
             }
 
+
         }
     }
 
@@ -139,9 +140,11 @@ public class FFMpegAnalyzer implements Analyzer {
                     || sourceNode.getIntValue("state") == State.UNDEFINED.getValue() )) {
                     sourceNode.setIntValue("state", State.SOURCE.getValue());
                 }
+                util.filelastModified(sourceNode);
                 sourceNode.commit();
             }
             if (destNode != null) {
+                util.filelastModified(destNode);
                 destNode.commit();
             }
 
