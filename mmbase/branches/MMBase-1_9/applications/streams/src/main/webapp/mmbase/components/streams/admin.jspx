@@ -42,14 +42,27 @@
         </c:forEach>
           <tr>
             <th> </th>
-            <th colspan="4"> command executors (LAUNCHER is localhost)</th>
+            <th colspan="9"> 
+              Command executors
+            </th>
           </tr>
-        <!-- c:forEach items="${status.current.dataType.commitProcessor.processors[2].executors}" var="exec">
+
+          <mm:listfunction set="streams" name="listExecutors" id="exec">
+            <tr>
+              <th> </th>
+              <td colspan="9">
+                ${exec}
+              </td>
+            </tr>
+          </mm:listfunction>
           <tr>
-            <td> </td>
-            <td colspan="3">${exec}</td>
+            <th> </th>
+            <td colspan="9">
+              LAUNCHER launches commands at localhost, otherwise host and portnumber are listed. 
+              Command executors are the number of slots available to perform transcoding tasks simultaneously.
+              Default there are two: a recognizer and a transcoder.
+            </td>
           </tr>
-        </c:forEach -->
       </table>
     </mm:fieldlist>
 
