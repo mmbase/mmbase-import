@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html" session="false" import="org.mmbase.bridge.*"
+<%@ page language="java" contentType="text/html" import="org.mmbase.bridge.*,org.mmbase.datatypes.*" 
 %><%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" 
 %><%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
