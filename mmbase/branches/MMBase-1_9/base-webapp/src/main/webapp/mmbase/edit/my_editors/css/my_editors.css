@@ -207,7 +207,6 @@ textarea
     font-size: 1em;
     width: 85%;
 }
-
 .big
 {
     font-family: Monaco, "Courier New", Courier, monospace;
@@ -215,6 +214,12 @@ textarea
     width: 85%;
 }
 
+div.owner input.small { width: 20%; }
+div.owner a.close {
+	text-decoration: none;
+	line-height: 14pt;
+	margin-left: 6px;
+}
 /*
 .form-button
 {
@@ -323,7 +328,7 @@ textarea
     padding: 2px 4px 2px 4px;
     margin: 0 12px 0 12px;
     text-align: center;
-    width: 80px;
+    width: 86px;
 }
 
 #header label
