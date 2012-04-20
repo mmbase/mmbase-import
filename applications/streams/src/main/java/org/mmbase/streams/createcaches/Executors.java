@@ -35,7 +35,7 @@ import java.util.concurrent.*;
 
 
 /**
- * This maintains a list of reusable {@link CommandExecutor.Methods}s. You can obtain on unused one with {@link
+ * This maintains a list of reusable {@link CommandExecutor.Method}s. You can obtain on unused one with {@link
  * #getFreeExecutor}. Supposing that you are going to want to use it in a seperate thread, it also maintains ThreadPoolExecuters.
  * @author Michiel Meeuwissen
  * @since MMBase-1.9.6
@@ -56,6 +56,9 @@ public class Executors {
 
     private static final Map<Stage, ThreadPoolExecutor> threadPools = new EnumMap<Stage, ThreadPoolExecutor>(Stage.class);
     private static final List<CommandExecutor.Method> executors = new CopyOnWriteArrayList<CommandExecutor.Method>();
+    public static List<CommandExecutor.Method> getExecutors() {
+        return executors;
+    }
     protected static final ResourceWatcher watcher = new ResourceWatcher() {
             @Override
             public void onChange(String resource) {
