@@ -115,16 +115,19 @@ public class Job implements Iterable<Result> {
 
                 if (jd.getInId() == null) { // using the original source node
                     String url = node.getStringValue("url");
-                    if (url.length() < 0) LOG.error("No value for field url: " + url);
+                    if (url.length() < 0) {
+                        LOG.error("No value for field url: " + url);
+                        break;
+                    }
                     assert url.length() > 0;
                     File f = new File(processor.getDirectory(), url);
-                    LOG.service("New (in)file: " + f);
+                    LOG.service("New source file: " + f);
                     assert f.exists() : "No such file " + f;
 
                     // make sure there is an in file to use
                     int w = 0;
                     while (!f.exists() && !f.isFile() && w < 30) {
-                        LOG.service("Checking if (in)file exists '" + f + "'. Waiting 5 sec. to be sure filesystem is ready (" + w + ")");
+                        LOG.service("Checking if source file exists '" + f + "'. Waiting 5 sec. to be sure filesystem is ready (" + w + ")");
                         try {
                             Thread.sleep(5000);
                             w++;
@@ -132,7 +135,10 @@ public class Job implements Iterable<Result> {
                             LOG.info("Interrupted" + ie);
                         }
                     }
-                    if (!f.exists() && !f.isFile()) LOG.error("NO INFILE! '" + f + "', but continuing anyway.");
+                    if (!f.exists() && !f.isFile()) {
+                        LOG.error("BREAK, source file not found ! " + f);
+                        break;
+                    }
 
                     inURI = f.toURI();
                     inNode = node;
@@ -151,9 +157,8 @@ public class Job implements Iterable<Result> {
 
                         File f = new File(processor.getDirectory(), url);
                         LOG.service("Using (in)file '" + f + "' of cache #" + inId + " as input");
-
                         if (!f.exists() && !f.isFile()) {
-                            LOG.error("NO INFILE! '" + f );
+                            LOG.error("BREAK, source file not found ! " + f );
                             break;
                         }
 
@@ -169,6 +174,7 @@ public class Job implements Iterable<Result> {
                             // no result possible yet.
                             continue;
                         }
+
                         inURI = prevResult.getOut();
                         inNode = prevResult.getDestination();
 
@@ -338,6 +344,10 @@ public class Job implements Iterable<Result> {
                     }
                 }
 
+                if (current == null) {
+                    // probably a BREAK because of some error in findResults() 
+                    return current;
+                }
                 if (current.definition.transcoder instanceof CommandTranscoder) {
                     // Get free method
                     CommandExecutor.Method m = Executors.getFreeExecutor();
@@ -389,6 +399,14 @@ public class Job implements Iterable<Result> {
                            if (getCurrent() == null) {
                                iterator().next();
                            }
+                           
+                           if (current == null && getStage() == Stage.UNSTARTED) {
+                               LOG.error("INTERRUPT, current result still null.");
+                               interrupt();
+                               Processor.removeJob(Job.this.getNode());
+                               return;
+                           }
+
                            Stage s = getCurrent().getStage();
                            LOG.service(jc.toString() + " to " + s);
                            future = Executors.submit(s, jc);
@@ -418,7 +436,7 @@ public class Job implements Iterable<Result> {
      * Gets and/or creates the node representing the 'cached' stream (the result of a conversion),
      * see the builder property 'org.mmbase.streams.cachestype'. It first looks if it already
      * exists, if not it creates a new one.
-     * Nota that this method uses id (source node to create cache) and key (parameters for
+     * Note that this method uses id (source node to create cache) and key (parameters for
      * creation) to determine if a cache node already exists and can be re-used. If one of these
      * is changed a new cache node is made.
      *
@@ -495,10 +513,12 @@ public class Job implements Iterable<Result> {
         findResults();
     }
     public synchronized void interrupt() {
-        Node cacheNode = current.getDestination();
-        if (cacheNode != null && node.getCloud().hasNode(cacheNode.getNumber())) {
-            cacheNode.setIntValue("state", State.INTERRUPTED.getValue());
-            cacheNode.commit();
+        if (current != null) {
+            Node cacheNode = current.getDestination();
+            if (cacheNode != null && node.getCloud().hasNode(cacheNode.getNumber())) {
+                cacheNode.setIntValue("state", State.INTERRUPTED.getValue());
+                cacheNode.commit();
+            }
         }
         interrupted = true;
         if (thread != null) {

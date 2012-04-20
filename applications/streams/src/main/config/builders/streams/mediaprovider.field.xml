@@ -12,7 +12,7 @@
 
   <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
     <default value="default.provider" />
-    <required value="true" />
+    <required value="true" enforce="never" />
     <enumeration enforce="never">
       <query type="mediaproviders"  xmlns="http://www.mmbase.org/xmlns/searchquery">
         <sortorder field="name" />
