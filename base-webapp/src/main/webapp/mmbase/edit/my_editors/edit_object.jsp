@@ -1,15 +1,27 @@
-<%@ include file="inc/top.jsp" %>
-<mm:content type="text/html" postprocessor="none" escaper="none" expires="0">
+<%@ include file="inc/top.jsp" %><mm:content type="text/html" postprocessor="none" escaper="none" expires="0">
 <mm:cloud jspvar="cloud" method="loginpage" loginpage="login.jsp" rank="$rank">
 <mm:import externid="nr" escape="text/html,trimmer" />  <%-- the node we're going to edit --%>
 <mm:import id="nr" reset="true"><mm:node number="$nr" notfound="skipbody"><mm:field name="number" /><mm:import id="nodefound">y</mm:import></mm:node></mm:import>
-<mm:node number="$nr" notfound="skipbody">
+<mm:node number="$nr" notfound="skipbody" jspvar="node">
   <mm:nodeinfo type="type" id="ntype" write="false" />
   <mm:import id="pagetitle">
     <mm:hasfield name="title"><mm:field name="title" escape="inline" /></mm:hasfield>
     <mm:hasfield name="title" inverse="true"><mm:function name="gui" escape="tagstripper" /></mm:hasfield>
     : <mm:nodeinfo type="guitype" escape="lowercase" /> - my_editors
   </mm:import>
+  <mm:fieldlist fields="owner" jspvar="f">
+    <jsp:scriptlet>
+      DataType dataType = f.getDataType();
+      java.util.Iterator it = dataType.getEnumerationValues(cloud.getLocale(), cloud, node, f);
+      int count = 0; // rather stupid way to find out size, but alas
+      while(it != null && it.hasNext()) {
+          it.next();
+          count++;
+      }
+    </jsp:scriptlet>
+    <mm:import id="owners" vartype="Integer"><jsp:expression>count</jsp:expression></mm:import>
+    <mm:import id="maxowners" vartype="Integer">${initParam['mmbase.taglib.max_enumhandler_length'] == null ? 99 : initParam['mmbase.taglib.max_enumhandler_length']}</mm:import>
+  </mm:fieldlist>
 </mm:node>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl">
 <head>
@@ -84,10 +96,9 @@
   </mm:present>
   <%-- /saving changes --%>
 
-  <%-- editfields --%>
   <mm:maywrite><mm:import id="formtype">input</mm:import></mm:maywrite>
   <mm:maywrite inverse="true"><mm:import id="formtype">guivalue</mm:import></mm:maywrite>
-  <mm:fieldlist type="edit" fields="owner">
+  <mm:fieldlist type="edit">
     <div class="row">
       <label for="mm_<mm:fieldinfo type="name" />">
         <strong><mm:fieldinfo type="guiname" /></strong>
@@ -98,7 +109,35 @@
       <mm:fieldinfo type="description"><mm:isnotempty><div class="description" id="descr_<mm:fieldinfo type="name" />"><mm:write /></div></mm:isnotempty></mm:fieldinfo>
     </div>
   </mm:fieldlist>
-  <%-- /editfields --%>
+  <mm:fieldlist fields="owner">
+    <div class="row owner">
+      <label for="mm_<mm:fieldinfo type="name" />">
+        <strong><mm:fieldinfo type="guiname" /></strong>
+		<mm:fieldinfo type="description"><mm:isnotempty><a onmouseover="showBox('descr_<mm:fieldinfo type="name" />',event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />',event);return false;"><mm:fieldinfo type="name" /></a></mm:isnotempty></mm:fieldinfo>
+		<mm:fieldinfo type="description"><mm:isempty><mm:fieldinfo type="name" /></mm:isempty></mm:fieldinfo>
+      </label>
+      <mm:hasrank minvalue="administrator">
+        <c:choose>
+          <c:when test="${owners gt maxowners}">
+            <span class="content guivalue"> 
+              <mm:fieldinfo type="guivalue" /> (click to change)
+            </span>
+            <span class="content input"> 
+              <mm:fieldinfo type="input" datatype="eline" />
+              <a class="close" title="close" href="#close">x</a>
+            </span>
+          </c:when>
+          <c:otherwise>
+            <span class="content"><mm:fieldinfo type="input" /></span>
+          </c:otherwise>
+        </c:choose>
+      </mm:hasrank>
+      <mm:hasrank minvalue="administrator" inverse="true">
+        <span class="content"><mm:fieldinfo type="guivalue" /></span>
+      </mm:hasrank>
+      <mm:fieldinfo type="description"><mm:isnotempty><div class="description" id="descr_<mm:fieldinfo type="name" />"><mm:write /></div></mm:isnotempty></mm:fieldinfo>
+    </div>
+  </mm:fieldlist>
 
   <mm:compare referid="ntype" value="oalias" inverse="true">
     <%@ include file="inc/aliases.jsp" %>
