@@ -212,13 +212,17 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
 
     protected static boolean removeJob(Node node) {
         Job job = runningJobs.get(node.getNumber());
-        boolean done = job.future.isDone();
-        if (done) {
+        if (job.future != null && job.future.isDone()) {
             runningJobs.remove(node.getNumber());
+            return true;
+        } else if (job.future == null ) {
+            LOG.warn("Job " + job + " removed, it did not run/start correctly?");
+            runningJobs.remove(node.getNumber());
+            return true;
         } else {
             job.logger.info("This job has not completed yet.");
+            return false;
         }
-        return done;
     }
 
     public static String cancelJob(Node node) {
@@ -229,17 +233,18 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
             } else {
                 job.interrupt();
                 String msg = "";
-                if (job.future.isDone()) {
+                if (job.future != null && job.future.isDone()) {
                     msg = "This job has already completed. ";
                     job.logger.info(msg);
                 }
-                if (job.future.cancel(true)) {
+                if (job.future != null && job.future.cancel(true)) {
                     String message = msg + "Canceled job for node #" + node.getNumber() + " (" + job.future + ")";
                     job.logger.info(message);
                     removeJob(node);
                     return message;
                 } else {
-                    return msg + "Could not cancel " + job;
+                    removeJob(node);
+                    return msg + "Could not cancel " + job + " (did not run/start correctly?), but removed it anyway.";
                 }
             }
         } else {

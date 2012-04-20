@@ -31,4 +31,10 @@
     <param name="node" type="org.mmbase.bridge.Node" />
   </function>
 
+  <function name="listExecutors">
+    <type>class</type>
+    <class>org.mmbase.streams.createcaches.Executors</class>
+    <method>getExecutors</method>
+  </function>
+
 </functionset>

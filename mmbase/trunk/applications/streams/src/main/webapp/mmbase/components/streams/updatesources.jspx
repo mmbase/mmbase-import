@@ -33,8 +33,9 @@
         <tr>
           <th>#</th>
           <th>title</th>
-          <th>mimetype</th>
           <th>size</th>
+          <th>mimetype</th>
+          <th>codec</th>
           <th>bitrate/fps</th>
           <th>update info</th>
         </tr>
@@ -51,38 +52,39 @@
             <mm:listfunction name="filteredurls">
               <c:if test="${_.main}">
                 <mm:node number="${_.source.number}">
-                
+                <c:set var="mediatype"><mm:nodeinfo type="type" /></c:set>
                 <tr>
                   <td>${fn:toLowerCase(_.state)}</td>
                   <td>
                     <a href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a>
                   </td>
-                  <td>${_.mimeType}</td>
                   <td>${_.dimension}</td>
+                  <td>${_.mimeType}</td>
+                  <td>${_.codec}</td>
                   <td> 
                     <mm:hasfield name="bitrate"><mm:field name="bitrate" /></mm:hasfield>
                     <mm:hasfield name="fps">/<mm:field name="fps" /></mm:hasfield> 
                   </td>
                   <td>
+                      <c:if test="${fn:indexOf(mediatype, 'image') eq -1}">
+                        <c:set var="updatevalue" value="${fragment}:${_.source.number}" />
+                        <c:set var="source" value="${_.source.number}" />
                       
-                      <c:set var="updatevalue" value="${fragment}:${_.source.number}" />
-                      <c:set var="source" value="${_.source.number}" />
-                    
-                      <c:choose>
-                        <c:when test="${update eq updatevalue or batch eq 'Batch'}">
-                          
-                          <mm:booleanfunction name="updateSources">
-                            <div class="msg">Updated #${updatevalue}</div>
-                          </mm:booleanfunction>
-                          
-                        </c:when>
-                        <c:otherwise>
-                          <mm:link referids="updatevalue@update,max?,page?">
-                            <a href="${_}">update</a>
-                          </mm:link>
-                        </c:otherwise>
-                      </c:choose>
-                  
+                        <c:choose>
+                          <c:when test="${update eq updatevalue or batch eq 'Batch'}">
+                            
+                            <mm:booleanfunction name="updateSources">
+                              <div class="msg">Updated #${updatevalue}</div>
+                            </mm:booleanfunction>
+                            
+                          </c:when>
+                          <c:otherwise>
+                            <mm:link referids="updatevalue@update,max?,page?">
+                              <a href="${_}">update</a>
+                            </mm:link>
+                          </c:otherwise>
+                        </c:choose>
+                      </c:if>
                   </td>
                 </tr>
                 </mm:node>
@@ -92,6 +94,7 @@
             <mm:listfunction name="filteredurls">
               <c:if test="${!_.main}">
                 <mm:node number="${_.source.number}" notfound="skip" id="recache">
+                <c:set var="mediatype"><mm:nodeinfo type="type" /></c:set>
                 <tr>
                   <td>${fn:toLowerCase(_.state)}</td>
                   <td>
@@ -100,34 +103,37 @@
                       </mm:hasfield>
                     <a title="${key}" href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a>
                   </td>
-                  <td>${_.mimeType}</td>
                   <td>${_.dimension}</td>
+                  <td>${_.mimeType}</td>
+                  <td>${_.codec}</td>
                   <td> 
                     <mm:hasfield name="bitrate"><mm:field name="bitrate" /></mm:hasfield>
                     <mm:hasfield name="fps">/<mm:field name="fps" /></mm:hasfield> 
                   </td>
                   <td>
-                    <mm:hasfield name="id">
-                      
-                      <c:set var="recachevalue" value="${fragment}:${recache}" />
-                      <c:choose>
-                        <c:when test="${cache eq recachevalue or batch eq 'Batch'}">
-                          
-                          <mm:node number="${source}">
-                            <mm:booleanfunction name="updateSources" referids="recache@cache">
-                              <div class="msg">Updated #${recachevalue} (of source #${source})</div>
-                            </mm:booleanfunction>
-                          </mm:node>
-                          
-                        </c:when>
-                        <c:otherwise>
-                          <mm:link referids="recachevalue@cache,max?,page?">
-                            <a href="${_}">update</a>
-                          </mm:link>
-                        </c:otherwise>
-                      </c:choose>
-                      
-                    </mm:hasfield>
+                    <c:if test="${fn:indexOf(mediatype, 'image') eq -1}">
+                      <mm:hasfield name="id">
+                        
+                        <c:set var="recachevalue" value="${fragment}:${recache}" />
+                        <c:choose>
+                          <c:when test="${cache eq recachevalue or batch eq 'Batch'}">
+                            
+                            <mm:node number="${source}">
+                              <mm:booleanfunction name="updateSources" referids="recache@cache">
+                                <div class="msg">Updated #${recachevalue} (of source #${source})</div>
+                              </mm:booleanfunction>
+                            </mm:node>
+                            
+                          </c:when>
+                          <c:otherwise>
+                            <mm:link referids="recachevalue@cache,max?,page?">
+                              <a href="${_}">update</a>
+                            </mm:link>
+                          </c:otherwise>
+                        </c:choose>
+                        
+                      </mm:hasfield>
+                    </c:if>
                   </td>
                 </tr>
                 </mm:node>

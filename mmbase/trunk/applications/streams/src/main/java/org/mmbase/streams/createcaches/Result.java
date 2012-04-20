@@ -82,7 +82,7 @@ public abstract class Result {
     public abstract MimeType getMimeType();
 
     /**
-     * To what {@link Stage} of the transcoding process this result belongs. Either {@link Stage.RECOGNIZER} or {@link Stage.TRANSCODER}.
+     * To what {@link Stage} of the transcoding process this result belongs. Either {@link Stage#RECOGNIZER} or {@link Stage#TRANSCODER}.
      */
     public final Stage getStage() {
         return getJobDefinition().getStage();

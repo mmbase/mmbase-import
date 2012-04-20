@@ -21,6 +21,8 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.transcoders;
 
+import java.io.File;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +30,7 @@ import org.mmbase.applications.media.Codec;
 import org.mmbase.applications.media.State;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
+import org.mmbase.servlet.FileServlet;
 import org.mmbase.util.MimeType;
 
 
@@ -507,6 +510,16 @@ public final class AnalyzerUtils implements java.io.Serializable {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public void filelastModified(Node node) {
+        if (node.getNodeManager().hasField("filelastmodified")) {
+            File file = new File(FileServlet.getDirectory(), node.getStringValue("url"));
+            Long fileDate = file.lastModified();
+            if (fileDate > node.getLongValue("filelastmodified")) {
+                node.setDateValue("filelastmodified", new Date(fileDate));
+            }
         }
     }
 
