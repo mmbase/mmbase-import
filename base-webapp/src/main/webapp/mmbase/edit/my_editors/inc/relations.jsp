@@ -95,14 +95,40 @@ while(relIterator.hasNext()) {
               <input name="nr" type="hidden" value="<mm:write referid="nr" />" />
               <mm:maywrite><mm:import reset="true" id="formtype">input</mm:import></mm:maywrite>
               <mm:maywrite inverse="true"><mm:import id="formtype">guivalue</mm:import></mm:maywrite>
-              <mm:fieldlist type="edit" fields="owner" id="fields${relation}">
-                <div class="row">
-                  <label for="mm_<mm:fieldinfo type="name" />">
+              <mm:fieldlist type="edit" id="fields${relation}" fields="owner">
+                <c:set var="relfldname"><mm:fieldinfo type="name" /></c:set>
+                <div class="row ${relfldname}">
+                  <label for="mm_fields${relation}_${relfldname}">
                     <strong><mm:fieldinfo type="guiname" /></strong>
                     <mm:fieldinfo type="description"><mm:isnotempty><a onmouseover="showBox('descr_<mm:fieldinfo type="name" />',event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />',event);return false;"><mm:fieldinfo type="name" /></a></mm:isnotempty></mm:fieldinfo>
                     <mm:fieldinfo type="description"><mm:isempty><mm:fieldinfo type="name" /></mm:isempty></mm:fieldinfo>
                   </label>
-                  <mm:fieldinfo type="$formtype" />
+                  <c:choose>
+                    <c:when test="${relfldname ne 'owner'}">
+                      <mm:fieldinfo type="$formtype" />
+                    </c:when>
+                    <c:otherwise>
+                      <mm:hasrank minvalue="administrator">
+                        <c:choose>
+                          <c:when test="${owners gt maxowners}">
+                            <span class="content guivalue"> 
+                              <mm:fieldinfo type="guivalue" /> (click to change)
+                            </span>
+                            <span class="content input"> 
+                              <mm:fieldinfo type="input" datatype="eline" />
+                              <a class="close" title="close" href="#close">x</a>
+                            </span>
+                          </c:when>
+                          <c:otherwise>
+                            <span class="content"><mm:fieldinfo type="input" /></span>
+                          </c:otherwise>
+                        </c:choose>
+                      </mm:hasrank>
+                      <mm:hasrank minvalue="administrator" inverse="true">
+                        <mm:fieldinfo type="guivalue" />
+                      </mm:hasrank>
+                    </c:otherwise>
+                  </c:choose>
                   <mm:fieldinfo type="description"><mm:isnotempty><div class="description" id="descr_<mm:fieldinfo type="name" />"><mm:write /></div></mm:isnotempty></mm:fieldinfo>
                 </div>
               </mm:fieldlist>
