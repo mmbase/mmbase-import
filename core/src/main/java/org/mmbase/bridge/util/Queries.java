@@ -1650,7 +1650,7 @@ abstract public class Queries {
     /**
      * @since MMBase-1.9
      */
-    protected static int getDayMark(int age) {
+    public static int getDayMark(int age) {
         log.debug("finding day mark for " + age + " days ago");
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
         NodeManager dayMarks = cloud.getNodeManager("daymarks");
