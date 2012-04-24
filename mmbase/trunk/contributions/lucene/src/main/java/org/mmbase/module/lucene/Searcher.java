@@ -144,22 +144,27 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
     }
 
     public NodeList search(Cloud cloud, String value) throws ParseException {
-        return search(cloud, value, null, null, new StopAnalyzer(), null, allIndexedFields, 0, -1);
+        return search(cloud, value, null, null, new StopAnalyzer(), null, allIndexedFields, 0, -1, 0);
     }
 
     public NodeList search(Cloud cloud, String value, int offset, int max) throws ParseException {
-        return search(cloud, value, null, null, new StopAnalyzer(), null, allIndexedFields, offset, max);
+        return search(cloud, value, null, null, new StopAnalyzer(), null, allIndexedFields, offset, max, 0);
     }
 
     public NodeList search(Cloud cloud, String value, Query extraQuery, int offset, int max) throws ParseException {
-        return search(cloud, value, null, null, new StopAnalyzer(), extraQuery, allIndexedFields, offset, max);
+        return search(cloud, value, null, null, new StopAnalyzer(), extraQuery, allIndexedFields, offset, max, 0);
     }
+
     public NodeList search(Cloud cloud, String value, Filter filter, Query extraQuery, int offset, int max) throws ParseException {
-        return search(cloud, value, filter, null, new StopAnalyzer(), extraQuery, allIndexedFields, offset, max);
+        return search(cloud, value, filter, null, new StopAnalyzer(), extraQuery, allIndexedFields, offset, max, 0);
     }
 
     public NodeList search(Cloud cloud, String value, String[] sortFields, Query extraQuery, int offset, int max) throws ParseException {
-        return search(cloud, value, null, getSort(sortFields), new StopAnalyzer(), extraQuery, allIndexedFields, offset, max);
+        return search(cloud, value, null, getSort(sortFields), new StopAnalyzer(), extraQuery, allIndexedFields, offset, max, 0);
+    }
+
+    public NodeList search(Cloud cloud, String value, String[] sortFields, Query extraQuery, int offset, int max, int explain) throws ParseException {
+        return search(cloud, value, null, getSort(sortFields), new StopAnalyzer(), extraQuery, allIndexedFields, offset, max, explain);
     }
 
     public static Sort getSort(String... sortFields) {
@@ -201,7 +206,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
 
 
     public List<AnnotatedNode> searchAnnotated(final Cloud cloud, String value, Filter filter, Sort sort,
-                                               Analyzer analyzer, Query extraQuery, String[] fields, final int offset, final int max) throws ParseException  {
+                                               Analyzer analyzer, Query extraQuery, String[] fields, final int offset, final int max, int explain) throws ParseException  {
         // log the value searched
         if (searchLog.isServiceEnabled()) {
             if (extraQuery != null) {
@@ -219,7 +224,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         if (value != null && !value.equals("")) {
             final Hits hits;
             try {
-                hits = getHits(value, filter, sort, analyzer, extraQuery, fields, false);
+                hits = getHits(value, filter, sort, analyzer, extraQuery, fields, false, explain);
             } catch (java.io.FileNotFoundException fnfe) {
                 log.warn(fnfe + " returning empty list");
                 needsNewSearcher = true;
@@ -275,8 +280,8 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
     }
 
     public NodeList search(final Cloud cloud, String value, Filter filter, Sort sort,
-                           Analyzer analyzer, Query extraQuery, String[] fields, final int offset, final int max) throws ParseException  {
-        return new org.mmbase.bridge.util.CollectionNodeList(searchAnnotated(cloud, value, filter, sort, analyzer, extraQuery, fields, offset, max), cloud);
+                           Analyzer analyzer, Query extraQuery, String[] fields, final int offset, final int max, final int explain) throws ParseException  {
+        return new org.mmbase.bridge.util.CollectionNodeList(searchAnnotated(cloud, value, filter, sort, analyzer, extraQuery, fields, offset, max, explain), cloud);
     }
 
     public int searchSize(Cloud cloud, String value) {
@@ -325,10 +330,9 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         }
     }
 
-    protected Hits getHits(String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields, boolean copy) throws IOException, ParseException {
-        if (analyzer == null) analyzer = index.getAnalyzer();
+    protected Query getQuery(String value, Analyzer analyzer, Query extraQuery, String[] fields) throws IOException, ParseException {
         Query query;
-
+        if (analyzer == null) analyzer = index.getAnalyzer();
         if (fields == null || fields.length == 0) {
             QueryParser qp = new QueryParser("fulltext", analyzer);
             query = qp.parse(value);
@@ -349,10 +353,28 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
             booleanQuery.add(extraQuery, BooleanClause.Occur.MUST);
             query = booleanQuery;
         }
+        return query;
+    }
+
+    protected Hits getHits(String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields, boolean copy) throws IOException, ParseException {
+        return getHits(value, filter, sort, analyzer, extraQuery, fields, copy, 0);
+    }
+
+    protected Hits getHits(String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields, boolean copy, int explain) throws IOException, ParseException {
+        Query query = getQuery(value, analyzer, extraQuery, fields);
         IndexSearcher s = getSearcher(copy);
         if (s == null) throw new IOException("No IndexSearcher found for " + this);
-        return s.search(query, filter, sort);
+        Hits hits = s.search(query, filter, sort);
+        if (explain > 0 && hits.length() > 0) {
+             for (int i = 0; i< explain && i < hits.length(); i++) {
+                 Explanation explanation =  s.explain(query,hits.id(i));
+                 log.info("Explanation for document found ("+i+"):" + explanation);
+             }
+        }
+        return hits;
     }
+
+
 
     static final String QUERY_SYNTAX =
         "&lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | PREFIX ]:&lt;value&gt; | " +
