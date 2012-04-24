@@ -1633,7 +1633,7 @@ abstract public class Queries {
     /**
      * @since MMBase-1.9
      */
-    protected static int getDayMark(Cloud cloud, int age) {
+    public static int getDayMark(Cloud cloud, int age) {
         log.debug("finding day mark for " + age + " days ago");
         if (! cloud.hasNodeManager("daymarks")) {
             return -1;
