@@ -101,6 +101,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     protected final static Parameter<String> FIELDS     = new Parameter<String>("fields", String.class);
     protected final static Parameter<String> ANALYZER   = new Parameter<String>("analyzer", String.class);
     protected final static Parameter<Integer> OFFSET = new Parameter<Integer>("offset", Integer.class, 0);
+    protected final static Parameter<Integer> EXPLAIN = new Parameter<Integer>("explain", Integer.class, 0);
     static { OFFSET.setDescription("for creating sublists"); }
 
     protected final static Parameter<Integer> MAX = new Parameter<Integer>("max", Integer.class, Integer.MAX_VALUE);
@@ -462,7 +463,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      * This function starts a search fro a given string.
      * This function can be called through the function framework.
      */
-    protected Function<org.mmbase.bridge.NodeList> searchFunction = new AbstractFunction<org.mmbase.bridge.NodeList>("search", new Parameter<?>[] {VALUE, INDEX, FIELDS, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER, ONFAIL}, ReturnType.NODELIST) {
+    protected Function<org.mmbase.bridge.NodeList> searchFunction = new AbstractFunction<org.mmbase.bridge.NodeList>("search", new Parameter<?>[] {VALUE, INDEX, FIELDS, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER, ONFAIL, EXPLAIN}, ReturnType.NODELIST) {
         private static final long serialVersionUID = 0L;
         @Override
             public org.mmbase.bridge.NodeList getFunctionValue(Parameters arguments) {
@@ -486,6 +487,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 }
                 int offset         = arguments.get(OFFSET);
                 int max            = arguments.get(MAX);
+                int explain        = arguments.get(EXPLAIN);
                 String extraConstraints = arguments.getString(EXTRACONSTRAINTS);
                 String filter     = arguments.getString(FILTER);
                 log.debug("using analyzer " + analyzer);
@@ -510,7 +512,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                                                      analyzer,
                                                      Searcher.createQuery(extraConstraints),
                                                      fieldArray,
-                                                     offset, max);
+                                                     offset, max, 
+                                                     explain);
                 } catch (BooleanQuery.TooManyClauses tmc) {
                     if ("ignore".equals(onFail)) {
                         log.debug(tmc);
