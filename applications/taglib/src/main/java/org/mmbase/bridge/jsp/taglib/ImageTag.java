@@ -418,26 +418,31 @@ public class ImageTag extends FieldTag {
      * @return template for image
      */
     public String getTemplate(Node node, String t, int widthTemplate, int heightTemplate, String cropTemplate) {
-        if (t == null || t.length() == 0) {
-            if ((widthTemplate <= 0) && (heightTemplate <= 0)) {
-                t = "";
+        String template = "";  
+        if ((widthTemplate > 0) || (heightTemplate > 0)) {
+            if (cropTemplate != null && cropTemplate.length() != 0) {
+                template = getCropTemplate(node, widthTemplate, heightTemplate, cropTemplate);
             } else {
-                if (cropTemplate != null && cropTemplate.length() != 0) {
-                    t = getCropTemplate(node, widthTemplate, heightTemplate, cropTemplate);
-                } else {
-                    t = getResizeTemplate(node, widthTemplate, heightTemplate);
-                }
+                template = getResizeTemplate(node, widthTemplate, heightTemplate);
             }
         }
-        boolean asis = "true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.image.format.asis"));
+        if (t != null && t.length() != 0) {
+           if (template.length() == 0) {  
+             template = t;
+           } else {
+             template = template + "+" + t;
+           }
+        }
+        boolean asis = "true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.image.format.asis")) &&
+                       template.indexOf("+f(") == -1;
         if (asis) {
-            if (t.length() > 0) {
-                t = t + "+f(asis)";
+            if (template.length() > 0) {
+                template = template + "+f(asis)";
             } else {
-                t = "f(asis)";
+                template = "f(asis)";
             }
         }
-        return t;
+        return template;
     }
 
     /**
