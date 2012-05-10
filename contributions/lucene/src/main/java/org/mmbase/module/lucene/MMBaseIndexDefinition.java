@@ -22,7 +22,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.analysis.Analyzer;
 
 /**
- * An MMBase Lucene Index is configured by an MMBase Queries, and 'supbqueries' thereof. Also its
+ * An MMBase Lucene Index is configured by an MMBase Queries and 'subqueries' thereof. Also its
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
@@ -89,12 +89,12 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
             if (userCloud.mayRead(identifier)) {
                 return userCloud.getNode(identifier);
             } else {
-                log.warn("Found a unreadable node '" + identifier + "' (" + userCloud.getUser() + "), returning empty map");
-                return new MapNode(Collections.EMPTY_MAP);
+                log.warn("Found a unreadable node '" + identifier + "' (" + userCloud.getUser() + "), returning null.");
+                return null;
             }
         } else {
-            log.warn("Found a unknown node, returning empty map");
-            return new MapNode(Collections.EMPTY_MAP);
+            log.warn("Found a unknown node '" + identifier + "' (deleted?), returning null.");
+            return null;
         }
 
     }
