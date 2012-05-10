@@ -234,6 +234,11 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                 log.trace("hits " + hits + (hits != null ? " (" + hits.length() + " results)" : ""));
             }
 
+            if (hits == null || hits.length() < 0) {
+                log.warn("hits null, IndexReader closed probably");
+                return Collections.emptyList();
+            }
+
             /// lazy loading of all that stuff!
             list = new AbstractList<AnnotatedNode>() {
                 private int size = -1;
@@ -256,10 +261,15 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                             log.debug("Found " + node);
                             log.trace("Because " + Logging.stackTrace(10));
                         }
-                        Searcher.this.producedNodes++;
-                        AnnotatedNode anode = new AnnotatedNode(node);
-                        anode.putAnnotation("score", hits.score(i + offset));
-                        return anode;
+                        if (node != null) {
+                            Searcher.this.producedNodes++;
+                            AnnotatedNode anode = new AnnotatedNode(node);
+                            anode.putAnnotation("score", hits.score(i + offset));
+                            return anode;
+                        } else {
+                            log.warn("Node not found, returning null.");
+                            return null;
+                        }
                     } catch (IOException ioe) {
                         log.error(ioe);
                         return null;
@@ -355,6 +365,8 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         Query query = getQuery(value, analyzer, extraQuery, fields);
         IndexSearcher s = getSearcher(copy);
         if (s == null) throw new IOException("No IndexSearcher found for " + this);
+        IndexReader ir = s.getIndexReader();
+        if (! ir.isCurrent()) throw new IOException("IndexReader closed for " + this);
         Hits hits = s.search(query, filter, sort);
         if (explain > 0 && hits.length() > 0) {
              for (int i = 0; i< explain && i < hits.length(); i++) {
