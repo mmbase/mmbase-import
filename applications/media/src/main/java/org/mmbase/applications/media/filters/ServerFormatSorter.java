@@ -42,7 +42,7 @@ public class ServerFormatSorter extends  PreferenceSorter {
     public void configure(DocumentReader reader, Element el) {
         preferredFormats.clear();
         // reading preferredSource information
-        for (Element n3:DocumentReader.getChildElements(DocumentReader.getElementByPath(el, CONFIG_TAG))) {
+        for (Element n3:reader.getChildElements(reader.getElementByPath(el, CONFIG_TAG))) {
             String format = reader.getElementAttributeValue(n3, FORMAT_ATT);
             preferredFormats.add(Format.get(format));
             log.service("Adding preferredSource format: '"+format +"'");

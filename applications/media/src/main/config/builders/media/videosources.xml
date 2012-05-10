@@ -3,7 +3,10 @@
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
+                        http://www.mmbase.org/xmlns/builder.xsd
+                        http://www.mmbase.org/xmlns/datatypes
+                        http://www.mmbase.org/xmlns/datatypes.xsd
+                        "
     name="videosources" maintainer="mediaproject.mmbase.org" version="0" extends="mediasources">
   <names>
     <singular xml:lang="en">Video source</singular>
@@ -23,7 +26,7 @@
   </properties>
 
   <fieldlist>
-    
+
     <field name="acodec">
       <descriptions>
         <description xml:lang="en">
@@ -39,8 +42,8 @@
       </gui>
       <editor>
         <positions>
-          <input>3</input>
-          <search>3</search>
+          <input>20</input>
+          <search>20</search>
         </positions>
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
@@ -64,8 +67,8 @@
       </gui>
       <editor>
         <positions>
-          <input>4</input>
-          <search>4</search>
+          <input>21</input>
+          <search>21</search>
         </positions>
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
@@ -84,8 +87,8 @@
       </gui>
       <editor>
         <positions>
-          <input>5</input>
-          <search>5</search>
+          <input>22</input>
+          <search>22</search>
         </positions>
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
@@ -104,8 +107,8 @@
       </gui>
       <editor>
         <positions>
-          <input>5</input>
-          <search>5</search>
+          <input>23</input>
+          <search>23</search>
         </positions>
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
