@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
- */
+*/
 
 package org.mmbase.applications.media.filters;
 
@@ -112,7 +112,7 @@ public class MainFilter {
                         // not all filters necessarily have there own configuration
                         boolean found = false;
 
-                        for(Element config:DocumentReader.getChildElements(filterConfigs, FILTERCONFIG_TAG)) {
+                        for(Element config : DocumentReader.getChildElements(filterConfigs, FILTERCONFIG_TAG)) {
                             String filterAtt = reader.getElementAttributeValue(config, FILTER_ATT);
                             if (filterAtt.equals(elementId)) {
                                 log.service("Configuring " + elementId);

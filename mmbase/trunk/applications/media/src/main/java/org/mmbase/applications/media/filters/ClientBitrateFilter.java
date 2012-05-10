@@ -33,7 +33,7 @@ public class ClientBitrateFilter implements Filter {
     public void configure(DocumentReader reader, Element element) {
         bitrateFilters.clear();
         try {
-            for(Element bitrate:DocumentReader.getChildElements(DocumentReader.getElementByPath(element, CONFIG_TAG))) {
+            for(Element bitrate : DocumentReader.getChildElements(reader.getElementByPath(element, CONFIG_TAG))) {
                 BitrateInfo brfi = new BitrateInfo(bitrate);
                 log.debug("Adding BitrateFilterInfo "+brfi);
                 bitrateFilters.put(brfi.getName(), brfi);

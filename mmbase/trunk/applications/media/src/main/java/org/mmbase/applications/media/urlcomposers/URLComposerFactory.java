@@ -170,7 +170,7 @@ public class URLComposerFactory  {
             for(Element element:reader.getChildElements(MAIN_TAG, COMPOSER_TAG)) {
                 String  clazz   =  element.getAttribute("class");
                 if (clazz.length() == 0) {
-                    clazz = DocumentReader.getElementValue(element);
+                    clazz = reader.getElementValue(element);
                 }
                 String  f = element.getAttribute(FORMAT_ATT);
                 Format format;
@@ -184,8 +184,8 @@ public class URLComposerFactory  {
                 try {
                     log.debug("Adding for format " + format + " urlcomposer " + clazz);
                     ComposerConfig config = new ComposerConfig(format, Class.forName(clazz), protocol, mimeType);
-                    for(Element e : DocumentReader.getChildElements(element, "param")) {
-                        config.setProperty(e.getAttribute("name"), DocumentReader.getElementValue(e));
+                    for(Element e : reader.getChildElements(element, "param")) {
+                        config.setProperty(e.getAttribute("name"), reader.getElementValue(e));
                     }
                     urlComposerClasses.add(config);
                 } catch (ClassNotFoundException ex) {

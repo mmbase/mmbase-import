@@ -43,7 +43,7 @@ public class  BitrateLabeler  extends Labeler  {
     public void configure(DocumentReader reader, Element element) {
         bitrates.clear();
         try {
-            for(Element bitrate : DocumentReader.getChildElements(DocumentReader.getElementByPath(element, CONFIG_TAG))) {
+            for(Element bitrate : DocumentReader.getChildElements(reader.getElementByPath(element, CONFIG_TAG))) {
                 BitrateInfo bri = new BitrateInfo(bitrate);
                 log.debug("Adding BitrateInfo "+ bri);
                 bitrates.put(bri.getName(), bri);

@@ -152,7 +152,7 @@ public class MediaSources extends MMObjectBuilder {
      */
     protected String getURL(MMObjectNode source, Map<String, Object> info) {
         List<URLComposer> urls = getFilteredURLs(source, null, info);
-        if (urls.isEmpty()) return "[could not compose URL]";
+        if (urls.size() == 0) return "[could not compose URL]";
         URLComposer ri = urls.get(0);
         return ri.getURL();
     }
@@ -245,7 +245,7 @@ public class MediaSources extends MMObjectBuilder {
             info.put(FUNCTION_MIMETYPE, "() Returns the mime-type for this source");
             info.put("gui", "(state|channels|codec|format|..) Gui representation of this object.");
 
-            if (args == null || args.isEmpty()) {
+            if (args == null || args.size() == 0) {
                 return info;
             } else {
                 return info.get(args.get(0));
@@ -364,7 +364,7 @@ public class MediaSources extends MMObjectBuilder {
         if (urls == null) urls = new ArrayList<URLComposer>();
         log.debug("Getting urls for source " + source.getNumber());
         List<MMObjectNode> providers = getProviders(source);
-        if (providers.isEmpty()) {
+        if (providers.size() == 0) {
             if (defaultProvider != null) {
                 MMObjectNode provider = getNode(defaultProvider);
                 if (provider == null) {

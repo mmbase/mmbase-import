@@ -2,9 +2,43 @@
 <fieldlist
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
+                        http://www.mmbase.org/xmlns/builder.xsd
+                        http://www.mmbase.org/xmlns/datatypes
+                        http://www.mmbase.org/xmlns/datatypes.xsd
+                        http://www.mmbase.org/xmlns/searchquery
+                        http://www.mmbase.org/xmlns/searchquery.xsd
+                        "
     xmlns="http://www.mmbase.org/xmlns/builder"
     >
+
+
+  <field
+      name="length"
+      state="virtual"
+      >
+    <descriptions>
+      <description xml:lang="nl">Duur van deze source (in millisecondes)</description>
+      <description xml:lang="en">Duration of this source (in milliseconds)</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="nl">Lengte</guiname>
+      <guiname xml:lang="en">Length</guiname>
+    </gui>
+    <datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.RelatedField$Setter">
+          <param name="type">mediafragments</param>
+          <param name="searchDir">source</param>
+        </class>
+      </setprocessor>
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.RelatedField$Getter">
+          <param name="type">mediafragments</param>
+          <param name="searchDir">source</param>
+        </class>
+      </getprocessor>
+    </datatype>
+  </field>
 
   <field
       name="mediafragment"
@@ -19,6 +53,9 @@
       <guiname xml:lang="en">Fragment</guiname>
     </gui>
     <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+      <enumeration>
+        <query xmlns="http://www.mmbase.org/xmlns/searchquery" type="mediafragments"  />
+      </enumeration>
       <setprocessor>
         <!-- This field is readonly for users, but _code_ could use this setter -->
         <class name="org.mmbase.datatypes.processors.Related$Setter">
@@ -35,43 +72,15 @@
     </datatype>
   </field>
 
-  <field
-      name="length"
-      state="virtual"
-      >
-    <descriptions>
-      <description xml:lang="nl">Duur van deze source (in millisecondes)</description>
-      <description xml:lang="en">Duration of this source (in milliseconds)</description>
-    </descriptions>
-    <gui>
-      <guiname xml:lang="nl">Lengte</guiname>
-      <guiname xml:lang="en">Length</guiname>
-    </gui>
-    <datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-      <setprocessor>
-        <class name="org.mmbase.datatypes.processors.RelatedField$Setter">
-          <param name="type">mediafragments</param>
-          <param name="searchDir">source</param>
-        </class>
-      </setprocessor>
-      <getprocessor>
-        <class name="org.mmbase.datatypes.processors.RelatedField$Getter">
-          <param name="type">mediafragments</param>
-          <param name="searchDir">source</param>
-        </class>
-      </getprocessor>
-    </datatype>
-  </field>
-
 
   <field name="objecttype" state="virtual">
     <descriptions>
-      <description xml:lang="nl">Objecttype of soort media (audio, video).</description>
-      <description xml:lang="en">Objecttype or kind of media (audio, video).</description>
+      <description xml:lang="nl">Nodetype van de source</description>
+      <description xml:lang="en">Node type of the source</description>
     </descriptions>
     <gui>
-      <guiname xml:lang="nl">Objecttype</guiname>
-      <guiname xml:lang="en">Objecttype</guiname>
+      <guiname xml:lang="nl">Type</guiname>
+      <guiname xml:lang="en">Type</guiname>
     </gui>
     <datatype base="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <pattern value="videosources|audiosources" />
