@@ -123,7 +123,7 @@ public class MediaFragments extends MMObjectBuilder {
             log.debug("executeFunction  " + function + "(" + args + ") on " + node);
         }
         if (function.equals("info")) {
-            List<Object> empty = new Vector<Object>();
+            List<Object> empty = new ArrayList<Object>();
             java.util.Map<String, String> info = (java.util.Map<String, String>) super.executeFunction(node, function, empty);
             info.put(FUNCTION_URL, "(<format>)  Returns the 'best' url for this fragment. Hashtable can be filled with speed/channel/ or other info to evalute the url.");
             info.put(FUNCTION_URLS, "(info) A list of all possible URLs to this fragment (Really URLComposer.URLComposer's)");
@@ -155,7 +155,7 @@ public class MediaFragments extends MMObjectBuilder {
         } else if (FUNCTION_AVAILABLE.equals(function)) {
             if (mmb.getBuilder("publishtimes") != null) {
                 List<MMObjectNode> pt  = node.getRelatedNodes("publishtimes");
-                if (pt.size() == 0) {
+                if (pt.isEmpty()) {
                     return Boolean.TRUE;
                 } else {
                     MMObjectNode publishtime = pt.get(0);
@@ -261,6 +261,20 @@ public class MediaFragments extends MMObjectBuilder {
             }
         }
         return urls;
+    }
+    {
+        addFunction(new NodeFunction<List<URLWrapper>>("urls_wrapped", URLS_PARAMETERS) {
+                @Override
+                public List<URLWrapper> getFunctionValue(Node node, Parameters params) {
+                    List<URLWrapper> result = new ArrayList<URLWrapper>();
+                    MMObjectNode mm = MediaFragments.this.getNode(node.getNumber());
+                    List<URLComposer> list = getURLs(mm, translateURLArguments(params, null), null, null);
+                    for (URLComposer uc :list) {
+                        result.add(new URLWrapper(uc));
+                    }
+                    return result;
+                };
+            });
     }
 
     {

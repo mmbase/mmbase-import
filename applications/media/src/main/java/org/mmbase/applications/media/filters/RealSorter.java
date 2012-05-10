@@ -40,7 +40,7 @@ public class RealSorter extends  ChainSorter {
 
     /**
      * Prefer real a little if this filter is used.
-     * Other possibility: Impelmeent it that if one of both URLComposer are no reals, that they are equal then.
+     * Other possibility: Implement it that if one of both URLComposer are no reals, that they are equal then.
      */
 
     protected class RealFormatSorter extends PreferenceSorter {        

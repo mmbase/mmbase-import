@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * container for information beloning to a bitrate filter keyword.
+ * container for information belonging to a bitrate filter keyword.
  * In filter.xml the line <bitrate name="smallband" min="0" max="150000" />
  * will result in a BitrateFilterInfo inner object.
  */
