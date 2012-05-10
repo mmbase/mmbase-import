@@ -23,7 +23,7 @@ import java.util.*;
 
 /**
  * The URLComposerFactory contains the code to decide which kind of
- * URLComposer is instatiated.  This is a default implementation,
+ * URLComposer is instantiated.  This is a default implementation,
  * which can be extended for your situation (The class can be configured in
  * the mediaproviders builder xml)
  *
