@@ -42,7 +42,7 @@ public class ServerDimensionSorter extends  PreferenceSorter {
     @Override
     public void configure(DocumentReader reader, Element parent) {
         preferredDimensions.clear();
-        for (Element el: DocumentReader.getChildElements(DocumentReader.getElementByPath(parent, CONFIG_TAG))) {
+        for (Element el: reader.getChildElements(reader.getElementByPath(parent, CONFIG_TAG))) {
             String xa = el.getAttribute("x");
             String ya = el.getAttribute("y");
             preferredDimensions.add(new Dimension(xa.equals("*") ? - 1 : Integer.parseInt(xa),

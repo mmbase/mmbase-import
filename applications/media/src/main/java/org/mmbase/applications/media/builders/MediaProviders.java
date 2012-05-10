@@ -13,6 +13,7 @@ package org.mmbase.applications.media.builders;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
 import org.mmbase.applications.media.urlcomposers.URLComposerFactory;
 import org.mmbase.module.core.*;
+import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.*;
 import java.util.*;
 import java.lang.reflect.Method;
@@ -54,14 +55,16 @@ public class MediaProviders extends MMObjectBuilder {
                     if (req == null) {
                         // a bit of a hack, the function in MediaFragments should be updated to
                         // decently pass Request objects as a parameters
-                        Cloud cloud = org.mmbase.bridge.util.CloudThreadLocal.currentCloud();
+
+                        Cloud cloud = node.getCloud();
                         if (cloud != null) {
                             req = (HttpServletRequest) cloud.getProperty(org.mmbase.bridge.Cloud.PROP_REQUEST);
                         } else {
-                            cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
                             if (log.isDebugEnabled()) {
                                 log.debug("No cloud found ", new Exception());
                             }
+                            cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+                            req = (HttpServletRequest) cloud.getProperty(org.mmbase.bridge.Cloud.PROP_REQUEST);
                         }
                     }
                     if (req != null) {
