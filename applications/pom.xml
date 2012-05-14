@@ -8,9 +8,8 @@
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-parent</artifactId>
     <version>1.9-SNAPSHOT</version>
-    <relativePath>../maven-base/pom.xml</relativePath>
-  </parent>
-  
+ </parent>
+
   <groupId>org.mmbase</groupId>
   <artifactId>mmbase-applications</artifactId>
   <packaging>pom</packaging>
