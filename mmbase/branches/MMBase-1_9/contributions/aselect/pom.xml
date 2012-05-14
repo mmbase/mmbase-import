@@ -10,11 +10,8 @@
 
   <artifactId>mmbase-aselect</artifactId>
   <name>MMBase ASelect</name>
-  <version>${mmbase.version}</version>
-  <!--
-  <version>1.0</version>
-  -->
-  <packaging>war</packaging>
+  <version>1.9-SNAPSHOT</version>
+ <packaging>war</packaging>
 
   <description>
     The A-Select Authentication System (in short A-Select) is an open source innovative system for
