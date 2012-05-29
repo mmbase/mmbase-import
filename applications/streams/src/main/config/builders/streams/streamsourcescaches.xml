@@ -12,6 +12,14 @@
     <plural xml:lang="en">Streamcaches</plural>
     <plural xml:lang="nl">Streamcaches</plural>
   </names>
+  <descriptions>
+    <description xml:lang="en">
+      Streamsourcescaches are the results of transcoding a source stream into different streams.
+    </description>
+    <description xml:lang="nl">
+      Streamsourcescaches bevatten de resultaten van het transcoderen van een stream in nieuwe streams.
+    </description>
+  </descriptions>
 
 
   <descriptions>
