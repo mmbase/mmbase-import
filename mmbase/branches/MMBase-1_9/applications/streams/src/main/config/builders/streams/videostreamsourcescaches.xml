@@ -13,6 +13,14 @@
     <plural xml:lang="en">Streamscaches: Video</plural>
     <plural xml:lang="nl">Streamscaches: Video</plural>
   </names>
+  <descriptions>
+    <description xml:lang="en">
+      Streamsourcescaches are the results of transcoding a source stream into different streams, in this case video.
+    </description>
+    <description xml:lang="nl">
+      Streamsourcescaches bevatten de resultaten van het transcoderen van een stream in nieuwe streams, in dit geval video.
+    </description>
+  </descriptions>
 
   <properties>
     <property name="org.mmbase.streams.cachestype">videostreamsourcescaches</property>
