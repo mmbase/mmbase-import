@@ -128,7 +128,7 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                         list.clear();
                     }
 
-                    LOG.info("Re-transcoding " + list.size() + " caches for source #" + node.getNumber() + ", all: " + all);
+                    LOG.info("Transcoding " + list.size() + " caches for source #" + node.getNumber() + ", all: " + all);
                     if (all) {
                         jdlist = cc.getConfiguration();
                     } else if (list.size() > 0) {

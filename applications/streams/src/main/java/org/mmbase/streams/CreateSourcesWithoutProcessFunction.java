@@ -55,14 +55,11 @@ public class CreateSourcesWithoutProcessFunction extends NodeFunction<Boolean> {
         Boolean cache = parameters.get(CACHE);
         String url = parameters.get(URL);
 
-        Cloud cloud = media.getCloud();
-        Node source = getMediaSource(media);
+        Node source = getMediaSource(media, cache);
         if (!cache) {
-            cloud.setProperty(org.mmbase.streams.createcaches.Processor.NOT, "no implicit processing please");
             source.setValueWithoutProcess("url", url);
             LOG.service("New url, not transcoding new streams for #" + media.getNumber());
         } else {
-            source = getMediaSource(media);
             source.setStringValue("url", url);
             LOG.service("New url for source of #" + media.getNumber() + ", will transcode caches.");
         }
@@ -71,14 +68,25 @@ public class CreateSourcesWithoutProcessFunction extends NodeFunction<Boolean> {
         return true;
     }
 
+    public static Node getMediaSource(final Node mediafragment) {
+        return getMediaSource(mediafragment, false);
+    }
     /**
      * The media source node of this mediafragment, containing the original stream or file.
      *
      * @param   mediafragment Media node to get source from
+     * @param   cache To (re)create streamsourcescaches or not
      * @return  mediasources node related to this mediafragment
      */
-    public static Node getMediaSource(final Node mediafragment) {
+    public static Node getMediaSource(final Node mediafragment, Boolean cache) {
         Node src = null;
+
+        if (!cache) {
+            mediafragment.getCloud().setProperty(org.mmbase.streams.createcaches.Processor.NOT, "no implicit processing please");
+        } else if (mediafragment.getCloud().getProperty(org.mmbase.streams.createcaches.Processor.NOT) != null) {
+                 mediafragment.getCloud().setProperty(org.mmbase.streams.createcaches.Processor.NOT, null);
+        }
+
         NodeList list = SearchUtil.findRelatedNodeList(mediafragment, "mediasources", "related");
         if (list.size() > 0) {
             if (list.size() > 1) {

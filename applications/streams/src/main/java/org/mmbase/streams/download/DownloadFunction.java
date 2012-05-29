@@ -204,7 +204,7 @@ public final class DownloadFunction extends NodeFunction<String> {
                     DownloadFunction.this.setDownloadUrl(node, parameters.get(URL));
 
                     // get or create streamsource node
-                    source = CreateSourcesWithoutProcessFunction.getMediaSource(node);
+                    source = CreateSourcesWithoutProcessFunction.getMediaSource(node, false);
 
                     Downloader downloader = new Downloader();
                     downloader.setUrl(url);
@@ -214,7 +214,7 @@ public final class DownloadFunction extends NodeFunction<String> {
 
                     // download is ready
                     DownloadFunction.this.setDownloadStatus(node, "ok");
-                    source = CreateSourcesWithoutProcessFunction.getMediaSource(node);  // forces 'reload' of node?
+                    source = CreateSourcesWithoutProcessFunction.getMediaSource(node, true);  // should force 'reload' of node
                     source.commit();
 
                     // send mail?
