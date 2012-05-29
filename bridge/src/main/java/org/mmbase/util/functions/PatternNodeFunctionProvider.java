@@ -193,11 +193,10 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
             {
                 Matcher fields = fieldsPattern.matcher(template);
                 while (fields.find()) {
-                    String s = node.getStringValue(fields.group(1));
-                    if (s == null) {
-                        // I think getStringValue should perhaps never return null, but if it does,
-                        // avoid the NPE
-                        s = "";
+                    String s = ""; // I think getStringValue should perhaps never return null, but if it does,
+                    // avoid the NPE
+                    if (node.getNodeManager().hasField(fields.group(1))) {  // avoid NPE on non-existing fields
+                        s = node.getStringValue(fields.group(1));
                     }
                     fields.appendReplacement(sb, s);
                 }
