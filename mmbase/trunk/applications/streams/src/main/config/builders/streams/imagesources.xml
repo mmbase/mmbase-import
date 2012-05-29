@@ -15,8 +15,13 @@
     <plural xml:lang="en">Imagesources</plural>
     <plural xml:lang="nl">Afbeeldingsbronnen</plural>
   </names>
-
   <descriptions>
+    <description xml:lang="en">
+      Source file or the original image.
+    </description>
+    <description xml:lang="nl">
+      Bronbestand of de originele afbeelding.
+    </description>
   </descriptions>
 
   <properties>

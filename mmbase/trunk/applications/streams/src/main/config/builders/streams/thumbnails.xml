@@ -11,10 +11,17 @@
   <names>
     <singular xml:lang="en">Thumbnail</singular>
     <singular xml:lang="nl">Thumbnail</singular>
-
     <plural xml:lang="en">Thumbnails</plural>
     <plural xml:lang="nl">Thumbnails</plural>
   </names>
+  <descriptions>
+    <description xml:lang="en">
+      Thumbnails contain snapshots of videostreams.
+    </description>
+    <description xml:lang="nl">
+      Thumbnails bevatten momentopnames van videostreams.
+    </description>
+  </descriptions>
 
   <properties>
     <property name="Content-Disposition">inline</property>
