@@ -1,0 +1,71 @@
+<mm:content 
+    unacceptable="Please use a better browser"
+    type="application/xhtml+xml" language="client" expires="0" postprocessor="none" jspvar="locale"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output doctype-root-element="html"
+              doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
+              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+  <jsp:directive.page session="true" buffer="200kb" />
+  
+  <html lang="${locale}" xmlns="http://www.w3.org/1999/xhtml">
+  
+    
+    <!-- 
+         Offers a form for multiple existing MMBase nodes.
+         Also handles the form.
+         
+         TODO: Some way to edit relations? NODE-field editor?
+         
+         $Id$
+    -->
+    <mm:include page="head.jspx" />
+    
+    <body>
+      <mm:cloud rank="basic user">
+
+        <mm:import externid="ok">init</mm:import>
+        <mm:import externid="submitted"><mm:write referid="ok" /></mm:import>
+        <mm:import id="referids"></mm:import>
+        <mm:form id="changeform">
+          <mm:import externid="nodes" required="true" vartype="list" />
+
+          <h1>
+            <mm:link page="." referids="$referids">
+              <a href="${_}" class="back"><span class="navigate">back</span></a>
+            </mm:link>
+            ${nodes}
+            THIS IS UNFINISHED
+          </h1>
+          <mm:listnodes referid="nodes">
+            <mm:index id="index" write="false" />
+            <mm:first>
+              <mm:fieldlist type="edit" id="fields${index}"  />
+            </mm:first>
+            <mm:first inverse="true">
+              <mm:fieldlist type="edit" id="fields${index}" retain="fields${index - 1}" />
+            </mm:first>            
+          </mm:listnodes>
+
+          <table summary="fields of node ${_node}">
+            <tbody>
+              <mm:fieldlist referid="fields${fn:length(nodes)}">
+                <mm:index id="index2" write="false" />
+                <tr class="${index2 % 2 == 0 ? 'even' : 'odd'}">
+                  <td><mm:fieldinfo type="guiname" /></td>
+                  <td>
+                    <mm:fieldinfo type="input" />
+                    <mm:fieldinfo type="errors" />
+
+                  </td>
+                </tr>
+              </mm:fieldlist>
+            </tbody>
+          </table>
+        </mm:form>
+      </mm:cloud>
+    </body>
+  </html>
+</mm:content>

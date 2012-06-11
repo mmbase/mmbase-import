@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rightsrel   exportsource="mmbase://www.mmbase.org/cloudcontextsecurity" timestamp="20020516170724">
+
+  <!-- admin -->
+	<node number="728" owner="admin" snumber="520" dnumber="468" rtype="grants" dir="bidirectional">
+		<operation>all</operation>
+	</node>
+	<node number="729" owner="admin" snumber="520" dnumber="470" rtype="grants" dir="bidirectional">
+		<operation>read</operation>
+	</node>
+
+  <!-- system -->
+	<node number="718" owner="admin" snumber="518" dnumber="470" rtype="grants" dir="bidirectional">
+		<operation>read</operation>
+	</node>
+
+	<node number="779" owner="admin" snumber="518" dnumber="600" rtype="grants" dir="bidirectional">
+		<operation>create</operation>
+	</node>
+
+	<node number="722" owner="admin" snumber="518" dnumber="468" rtype="grants" dir="bidirectional">
+		<operation>write</operation>
+	</node>
+
+	<node number="724" owner="admin" snumber="518" dnumber="468" rtype="grants" dir="bidirectional">
+		<operation>change relation</operation>
+	</node>
+
+	<node number="726" owner="admin" snumber="518" dnumber="468" rtype="grants" dir="bidirectional">
+		<operation>change context</operation>
+	</node>
+
+
+  <!-- import -->
+	<node number="732" owner="admin" snumber="516" dnumber="468" rtype="grants" dir="bidirectional">
+		<operation>all</operation>
+	</node>
+	<node number="700" owner="admin" snumber="516" dnumber="470" rtype="grants" dir="bidirectional">
+		<operation>read</operation>
+	</node>
+
+  <!-- default -->
+	<node number="701" owner="admin" snumber="1000" dnumber="600" rtype="grants" dir="bidirectional">
+		<operation>all</operation>
+	</node>
+	<node number="702" owner="admin" snumber="1000" dnumber="470" rtype="grants" dir="bidirectional">
+		<operation>read</operation>
+	</node>
+
+
+  <!-- imagesmodule -->
+	<node number="703" owner="admin" snumber="1001" dnumber="600" rtype="grants" dir="bidirectional">
+		<operation>delete</operation>
+	</node>
+	<node number="704" owner="admin" snumber="1001" dnumber="468" rtype="grants" dir="bidirectional">
+		<operation>delete</operation>
+	</node>
+	<node number="712" owner="admin" snumber="1001" dnumber="470" rtype="grants" dir="bidirectional">
+		<operation>read</operation>
+	</node>
+
+  <!-- security objects may only be read, and linked to-->
+	<node number="740" owner="security" snumber="1002" dnumber="600" rtype="grants" dir="bidirectional">
+		<operation>read</operation>
+	</node>
+
+	<node number="741" owner="security" snumber="518" dnumber="468"  rtype="grants" dir="bidirectional">
+		<operation>change relation</operation>
+	</node>
+
+</rightsrel>

@@ -1,0 +1,75 @@
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    class="mm_c c_taglib b_test_node ${requestScope.componentClassName}"
+    id="${requestScope.componentId}">
+  <jsp:output omit-xml-declaration="true" />
+  <h2>Listcontainers</h2>
+  <h3><a href="http://www.mmbase.org/jira/browse/MMB-1451">MMB-1451</a></h3>
+  <mm:context id="A">
+    <mm:import id="a">default</mm:import>
+  </mm:context>
+
+  <p>Should say 'default':
+  <mm:listnodescontainer type="object">
+    <mm:constraint field="owner" referid="A.a"/>
+    <mm:listnodes max="1">
+      <mm:field name="owner" />
+    </mm:listnodes>
+  </mm:listnodescontainer>
+  </p>
+  <h3><a href="http://www.mmbase.org/jira/browse/MMB-1082">MMB-1082 (container)</a></h3>
+  <c:catch var="ex1">
+    <mm:listnodescontainer type="object">
+      <mm:addnode number="-1" />
+    </mm:listnodescontainer>
+  </c:catch>
+  <p>Should say that -1 is  not a node ${ex1}</p>
+  <h3><a href="http://www.mmbase.org/jira/browse/MMB-1082">MMB-1082 (nodes attribute)</a></h3>
+  <p>
+  <c:catch var="ex2">
+    Should be empty:
+    <mm:list path="object" nodes="-1" max="100">
+      <mm:field name="number" />
+    </mm:list>
+  </c:catch>
+  </p>
+  <p>Should be empty: ${ex2}</p>
+  <h3><a href="http://www.mmbase.org/jira/browse/MMB-1082">MMB-1082 (bridge)</a></h3>
+  <mm:cloud jspvar="cloud">
+    <p>According to MMB-1082 this should be 0:
+    <jsp:expression>cloud.getList("-1", "object", null, "number&lt;100"/* to avoid out-of-memory*/, null, null, null, false).size()</jsp:expression> (WONTFIX)</p>
+  </mm:cloud>
+  <h3><a href="http://www.mmbase.org/jira/browse/MMB-1082">MMB-1082 (query)</a></h3>
+  <mm:cloud jspvar="cloud">
+    <p>Alternative, using Query MMB-1082:
+    <c:catch var="ex3">
+      <jsp:scriptlet>
+        org.mmbase.bridge.NodeQuery q = cloud.getNodeManager("object").createQuery();
+        q.addNode(q.getNodeStep(), -1);
+      </jsp:scriptlet>
+      <jsp:expression>q.getNodeManager().getList(q).size()</jsp:expression>
+    </c:catch>
+    Should say that -1 is not a node: ${ex3}
+    </p>
+  </mm:cloud>
+
+  <h3><a href="http://www.mmbase.org/jira/browse/MMB-1830">MMB-1830. Reusing mm:listcontainer</a></h3>
+  <mm:listcontainer path="object" id="q">
+    <mm:maxnumber value="4" />
+    <p>
+      <mm:list>
+        <mm:field name="object.number" /><mm:last inverse="true">,</mm:last>
+      </mm:list>
+    </p>
+    <mm:offset value="4" />
+    <p>
+      <mm:list>
+        <mm:field name="object.number" /><mm:last inverse="true">,</mm:last>
+      </mm:list>
+    </p>
+  </mm:listcontainer>
+  <p>Should give 2 different lists of numbers</p>
+</div>

@@ -1,0 +1,39 @@
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        version="2.0"
+        xmlns:ns0="http://www.w3.org/2001/XMLSchema-instance"
+        ns0:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
+  <tlib-version>1.0</tlib-version>
+  <short-name>mm-res</short-name>
+  <uri>http://www.mmbase.org/tags/mm/resources</uri>
+
+  <tag-file>
+    <name>captcha</name>
+    <path>/META-INF/tags/mm/resources/captcha.tagx</path>
+  </tag-file>
+
+  <tag-file>
+    <name>directory</name>
+    <path>/META-INF/tags/mm/resources/directory.tagx</path>
+  </tag-file>
+
+  <tag-file>
+    <name>import</name>
+    <path>/META-INF/tags/mm/resources/import.tagx</path>
+  </tag-file>
+
+  <tag-file>
+    <name>transformation</name>
+    <path>/META-INF/tags/mm/resources/transformation.tagx</path>
+  </tag-file>
+
+  <tag-file>
+    <name>thumb</name>
+    <path>/META-INF/tags/mm/resources/thumb.tagx</path>
+  </tag-file>
+
+  <tag-file>
+    <name>turn-table</name>
+    <path>/META-INF/tags/mm/resources/turn-table.tagx</path>
+  </tag-file>
+
+</taglib>

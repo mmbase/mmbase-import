@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jsp:root
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    version="2.0"
+    >
+  <!--
+      @author Michiel Meeuwissen
+      @version $Id: relatednodes.tagx,v 1.29 2009-04-09 11:06:58 michiel Exp $
+  -->
+  <jsp:directive.tag
+      example="See /mmexamples/searchrelate"
+      description="
+                   This tag produces 1 ol with nodes of certain type, related to the current node. The nodes can be edited, and added.
+                   If this tag is used outside an mm:form tag, then the user interface can be very minimalistic. Without any commit button or so. Everything is arranged using javascript.
+                   If this tag _is_ used in an mm:form tag, then you a normal submit button must be added to commit the transaction.
+                   In the mean time, though, the changes are changed in the transaction. (So a browser crash could preserve all work).
+                   "
+      import="org.mmbase.searchrelate.*"
+      />
+
+
+  <jsp:directive.attribute name="type"        type="java.lang.String"
+                           description="Type of mmbase related nodes. Like 'type' of mm:relatednodes." />
+
+  <jsp:directive.attribute name="path"        type="java.lang.String"
+                           description="Type of mmbase related nodes. Like 'path' of mm:relatednodes." />
+
+  <jsp:directive.attribute name="element"        type="java.lang.String" />
+
+  <jsp:directive.attribute name="role"        type="java.lang.String"
+                           description="Like 'role' of mm:relatednodes, but defaults to 'posrel'"
+                           />
+  <jsp:directive.attribute name="orderby"     type="java.lang.String"
+                           description="Like orderby of mm:relatednodes, but defaults to &amp;lt;role&amp;gt;.pos"
+                           />
+
+  <jsp:directive.attribute name="direction"     type="java.lang.String"
+                           description="Direction of orderby of  mm:relatednodes, but default to &amp;lt;UP&amp;gt;.pos"
+                           />
+
+  <jsp:directive.attribute name="searchdirs"     type="java.lang.String"
+                           description="Like 'searchdirs' of mm:relatednodes"
+                           />
+
+  <jsp:directive.attribute name="fields"      type="java.lang.String"
+                           description="List of fields to show. Defaults to 'use only fieldlistType'."
+                           />
+
+  <jsp:directive.attribute name="fieldlistType"      type="java.lang.String"
+                           description="Like 'type' of mm:fieldlist. Defaults to 'list'."
+
+                           />
+
+  <jsp:directive.attribute name="icondir"      type="java.lang.String"
+                           description="Directory from which to take create/delete icons, can be empty for default icons (in which case it defaults to the 'icondir' property in searchrelate.xml, which is /mmbase/style/images)"
+                           />
+
+  <jsp:directive.attribute name="item"           type="java.lang.String"
+                           description="Jsp to use to present one li-item, can be empty for a default presentation.
+                                        This jsp will be called with 2 parameteters.
+                                        The value of the parameter 'fieldlistid' can used as an id on the mm:fieldlist you probably use, to make sure the fields inside it have unique ids too.
+                                        Furthermore there is a 'rid' parameter, which uniquely identifies the list in request. It can be used to obtain all other settings from the session.
+                                        Staticly include /mmbase/searchrelate/list/paramters.jspf to get 'parameters' as Map.
+                                        Default implementation is &lt;a href='https://scm.mmbase.org/mmbase/trunk/applications/searchrelate/src/main/webapp/mmbase/searchrelate/list/item.jspx'&gt;/mmbase/searchrelate/list/item.jspx&lt;/a&gt;, and could be used as a template for a customized version." />
+
+
+  <jsp:directive.attribute name="precreate"           type="java.lang.String"
+                           description="Jsp to call just before commit of the created node."
+                           />
+  <jsp:directive.attribute name="createposition"      type="java.lang.String"
+						   description="Position of create link. Either 'up' or 'down'. Default is down."
+						   />
+
+  <jsp:directive.attribute name="addposition"      type="java.lang.String"
+						   description="Where new items will be added to the list. Either 'up' or 'down'. Default is the value of the 'createposition' attribute"
+						   />
+
+  <jsp:directive.attribute name="constraints"           fragment="true"
+                           description="Will be called inside the relatednodescontainer, so you can add extra constraints. (Only works in mmbase ge 1.9)"
+                           />
+
+  <jsp:directive.attribute name="confirm"      type="java.lang.Boolean"
+                           description="Whether deleting must be confirmed"
+                           />
+
+  <jsp:directive.attribute name="load"      type="java.lang.Boolean"
+                           description="Whether javascript must be loaded. Normally this default to the correct value (only on first use), but sometimes,
+                                        e.g. if you use this tag again in the 'item', then you may want to put this explicitely to false"
+                           />
+
+  <jsp:directive.attribute name="sortable"      type="java.lang.Boolean"
+                           description="Using jquery-ui to sort"
+                           />
+
+  <jsp:directive.attribute name="search"      type="java.lang.Boolean"
+                           description="Include also the possibility to search existing nodes"
+                           />
+
+  <jsp:directive.attribute name="searcher"    fragment="true"
+                           description="You may provide your own implementation of the search tool"
+                           />
+
+  <jsp:directive.attribute name="implicitSearch"    type="java.lang.Boolean"
+                           description="Wether to fill automaticly even when not yet explicitely searched (defaults to the property 'implicitRepository' of searchrelate.xml, which itself defaults to 'true')" />
+
+
+  <jsp:directive.attribute name="searchRepository"      type="org.mmbase.bridge.NodeQuery"
+                           description="An mmbase Query describing in which list the searcher must search. The query should return nodes of type 'type'. (This implies search=true). See also mm-rs:related#repository." />
+
+
+  <jsp:directive.attribute name="delete"      type="java.lang.Boolean"
+                           description="Wether to inform the items to create delete buttons (defaults to inverse value of 'search')"
+                           />
+
+  <jsp:directive.attribute name="create"      type="java.lang.Boolean"
+                           description="Wether to add a create button"
+                           />
+
+  <jsp:directive.attribute name="unlink"      type="java.lang.Boolean"
+                           description="Wether to inform the items to create unlink buttons (defaults to same value as 'search')"
+                           />
+
+  <jsp:directive.attribute name="max"        type="java.lang.Integer"
+                           description="Maximum size of the list"
+                           />
+
+  <jsp:directive.attribute name="min"        type="java.lang.Integer"
+                           description="Minimum size of the list. This mainly has effect on the mmsrValidateHook event."
+                           />
+
+
+  <jsp:directive.attribute name="idvar"      type="java.lang.String"
+                           description="If specified the current 'id' of this list will be made available in the variable. For debugging mainly."
+
+                           />
+
+  <jsp:directive.attribute name="config"               type="java.lang.String"
+                           description="Configuration file. Defaults to 'searchrelate'." />
+
+
+  <jsp:scriptlet>
+    synchronized(session) {
+  </jsp:scriptlet>
+
+
+  <mm:import id="previousParameters" from="request" externid="org.mmbase.sr.relatednodes.parameters" />
+  <!-- this is set by parameters.jspf.
+       TODO.
+       -The prefix should probably be org.mmbase.searchrelate.relatednodes
+       -Is this not exactly the same as org.mmbase.searchrelate.relatednodes
+       -->
+
+  <mm:import from="request"
+             externid="org.mmbase.searchrelate.relatednodes"
+             id="parent" />
+
+  <c:choose>
+    <c:when test="${empty parent or ! empty param.requestID}">
+      <mm:import id="requestid">R<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape>${param.requestID}</mm:import>
+      <mm:import from="request" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
+    </c:when>
+    <c:otherwise>
+      <mm:import id="requestid">${fn:substringBefore(parent, '_')}</mm:import>
+      <mm:import from="session" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
+    </c:otherwise>
+  </c:choose>
+  <mm:write session="${requestid}_sequence" value="${seq + 1}" />
+  <mm:write request="${requestid}_sequence" value="${seq + 1}" />
+
+  <mm:import id="rid">${requestid}_${seq}</mm:import>
+
+  <!--
+  <c:if test="${! empty item and ! empty delete}">
+    <div class="WARNING">WARNING: It makes no sense to use both 'item' and 'delete' attributes. If you use item="", you should use mm-sr:delete in that jsp (or not)</div>
+  </c:if>
+  <c:if test="${! empty item and ! empty unlink}">
+    <div class="WARNING">WARNING: It makes no sense to use both 'item' and 'unlink' attributes. If you use item="", you should use mm-sr:unlink in that jsp (or not)</div>
+  </c:if>
+  -->
+  <mm:import id="_item">
+    <c:choose>
+      <c:when test="${empty item}">/mmbase/searchrelate/list/item.jspx</c:when>
+      <c:otherwise><mm:url absolute="context" page="${item}" /></c:otherwise>
+    </c:choose>
+  </mm:import>
+  <mm:import id="_role">${empty role and empty path ? 'posrel' : role}</mm:import><!-- role defaults to 'posrel' -->
+  <mm:import id="_direction">${empty direction? 'UP' : direction}</mm:import><!-- defaults to UP -->
+  <mm:import id="_createposition">${empty createposition ? 'bottom' : createposition}</mm:import>
+  <mm:import id="_addposition">${empty addposition? _createposition : addposition}</mm:import>
+
+
+  <mm:write request="org.mmbase.searchrelate.relatednodes" value="${rid}" />
+
+  <mm:import id="parentparameters" externid="${parent}_context" from="session" />
+
+  <mm:import id="parentformtag">${parentparameters.formtag}</mm:import>
+
+  <mm:import id="__formtag">${requestScope['org.mmbase.bridge.jsp.taglib.form'].name}</mm:import>
+  <mm:import id="_formtag">${empty __formtag ? parentformtag : __formtag}</mm:import>
+  <mm:import id="_orderby">${empty orderby ? _role : orderby}${empty orderby ? (_role eq 'posrel' ? '.pos' : '.number') : ''}</mm:import>
+  <mm:import id="_fields">${fields}</mm:import>
+  <mm:import id="_search">${empty searchRepository and empty searcher ? (empty search ? false : search) : true}</mm:import>
+  <mm:import id="_delete">${empty delete ? (! _search) : delete}</mm:import>
+  <mm:import id="_confirm">${empty confirm ? false : confirm}</mm:import>
+  <mm:import id="_create">${empty create ? 'true' : create}</mm:import>
+  <mm:import id="_unlink">${empty unlink ? (empty search ? 'false' : search) : unlink}</mm:import>
+  <mm:import id="_max">${empty max ? 1000000 : max}</mm:import>
+  <mm:import id="_min">${empty min ? 0 : min}</mm:import>
+
+
+  <jsp:directive.include file="/mmbase/searchrelate/settings.jspf" />
+
+  <mm:import id="_icondir">
+    <c:choose>
+      <c:when test="${empty icondir}">
+        <mm:treefile page="${settings.icondir}" objectlist="${requestScope['org.mmbase.includePath']}" absolute="context" />
+      </c:when>
+      <c:otherwise>${icondir}</c:otherwise>
+    </c:choose>
+  </mm:import>
+
+
+  <mm:write session="${rid}_context" value="" />
+
+  <mm:relatednodescontainer path="${path}" type="${empty path ? type : ''}" role="${_role}"
+                            searchdirs="${searchdirs}"
+                            id="query">
+    <jsp:invoke fragment="constraints" />
+    <mm:sortorder field="${_orderby}" direction="${_direction}" />
+    <mm:sortorder field="number" direction="UP" />
+  </mm:relatednodescontainer>
+
+  <mm:import id="sessionid">${rid}_context</mm:import>
+  <mm:remove from="session" referid="${rid}_context" /> <!-- make sure no accidental shit from a previous call is lingering around -->
+
+  <mm:context scope="session" id="${rid}_context">
+
+    <mm:import from="parent" id="seq"       externid="seq" />
+    <mm:import from="parent" externid="rid"   />
+    <mm:import from="parent" externid="requestid"   />
+    <mm:import from="parent" id="item"      externid="_item" />
+    <mm:import from="parent" id="role"      externid="_role" />
+    <mm:import from="parent" id="direction" externid="_direction" />
+    <mm:import from="parent" id="createposition" externid="_createposition" />
+    <mm:import from="parent" id="addposition" externid="_addposition" />
+    <mm:import from="parent" id="formtag"   externid="_formtag" />
+    <mm:import from="parent" id="fields"    externid="_fields" />
+    <mm:import from="parent" id="delete"    externid="_delete" />
+    <mm:import from="parent" id="confirm"    externid="_confirm" />
+    <mm:import from="parent" id="create"    externid="_create" />
+    <mm:import from="parent" id="unlink"    externid="_unlink" />
+    <mm:import from="parent" id="max"       externid="_max" />
+    <mm:import from="parent" id="min"       externid="_min" />
+    <mm:import from="parent" externid="fieldlistType" />
+
+    <mm:import from="parent" externid="type" />
+    <mm:import from="parent" externid="path" />
+    <mm:import from="parent" externid="searchdirs" />
+    <mm:import from="parent" id="source"   externid="_node" />
+    <mm:import from="parent" id="icondir" externid="_icondir" />
+    <mm:import from="parent" externid="sortable" />
+    <mm:import from="parent" id="search" externid="_search" />
+    <mm:import from="parent" externid="query" />
+    <mm:import from="parent" externid="parent" />
+    <mm:import from="parent" externid="parentformtag" />
+
+    <c:if test="${! empty config}">
+      <mm:import id="config">${config}</mm:import>
+    </c:if>
+
+    <mm:import id="autosubmit">${! empty parent ? parentparameters.autosubmit : empty _formtag}</mm:import>
+
+    <mm:import from="session" id="order" externid="${rid}_order" />
+
+    <mm:import id="language">${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}</mm:import>
+    <mm:import id="referrer">
+      <c:choose>
+        <c:when test="${! empty parent}"><jsp:text>${parentparameters.referrer}</jsp:text></c:when>
+        <c:otherwise><mm:url absolute="context" /></c:otherwise>
+      </c:choose>
+    </mm:import>
+    <mm:import id="fieldlistidprefix">${rid}_N${mm:escape('identifier', _node)}</mm:import>
+    <mm:import id="source_was_new">${_node.number lt 0}</mm:import>
+    <mm:import id="_number">${_node._number}</mm:import>
+
+    <mm:relatednodescontainer context="" id="clonedquery" clone="query">
+      <jsp:text>&lt;!-- QUERY: </jsp:text><mm:write value="${clonedquery.sql}" /> <jsp:text> --&gt;</jsp:text>
+      <mm:relatednodes usetransaction="true" commitonclose="false">
+        <mm:last><mm:index id="cursize" write="false"/></mm:last>
+      </mm:relatednodes>
+      <mm:notpresent referid="cursize">
+        <mm:import id="cursize">0</mm:import>
+      </mm:notpresent>
+    </mm:relatednodescontainer>
+  </mm:context>
+
+  <mm:import from="this" id="parameters" externid="${rid}_context" />
+
+
+  <mm:import from="request" id="javascript_loaded" externid="mm_list_javascript" />
+
+  <mm:import id="_load">${empty parent and ((empty javascript_loaded and empty load) or load) and load ne 'false' and param['org.mmbase.sr.relatednodes.load'] ne 'false'}</mm:import>
+  <c:if test="${_load}">
+    <c:choose>
+      <c:when test="${sortable}">
+        <mm:include page="/mmbase/jquery/jquery-ui.jspx" />
+      </c:when>
+      <c:otherwise>
+        <mm:include page="/mmbase/jquery/jquery.jspx" />
+      </c:otherwise>
+    </c:choose>
+    <script type="text/javascript" src="${mm:link('/mmbase/jquery/jquery.timer.js')}"><jsp:text>&lt;!-- IE sucks --&gt;</jsp:text></script>
+    <!-- TODO time js is more generic, of course -->
+
+    <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/Toggle.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
+    <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/List.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
+    <mm:link page="/mmbase/searchrelate/Searcher.js.jsp">
+      <mm:param name="language">${parameters.language}</mm:param>
+      <script type="text/javascript" src="${_}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
+    </mm:link>
+
+    <mm:write request="mm_list_javascript" value="yes" />
+
+    <mm-sr:heartbeat />
+  </c:if>
+
+  <c:if test="${! empty parameters.formtag}">
+    <mm:write value="${requestScope['org.mmbase.transaction'].id}" jspvar="fn" vartype="string" write="false">
+      <mm:write value="${rid}" jspvar="rid" vartype="string" write="false">
+        <jsp:scriptlet>
+          Submitter submitter = Submitter.getInstance(fn, session);
+          SessionCleaner cleaner   = SessionCleaner.getInstance(session);
+          submitter.addCallbackForEnd(cleaner);
+          cleaner.addKey(rid + "_order");
+        </jsp:scriptlet>
+      </mm:write>
+    </mm:write>
+  </c:if>
+
+  <fmt:bundle
+      xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+      basename="org.mmbase.searchrelate.resources.searchrelate">
+
+    <div id="${rid}" class="list ${parameters.query.nodeManager.name} ${pageContext.request.method}">
+
+      <c:if test="${! parameters.autosubmit and empty mm:property('org.mmbase.cloud.sessionname')}">
+        <jsp:text>WARNING: Non-autosubmitting mm-sr:relatednodes tag does not work for clouds not in the session (<mm:cloudinfo type="rank" />/<mm:cloudinfo type="user" />). It needs to keep track of transactions. </jsp:text>
+      </c:if>
+
+      <c:if test="${! empty idvar}">
+        <mm:write request="${idvar}" referid="rid" />
+        <jsp:doBody />
+      </c:if>
+
+      <div id="${type}_${rid}" class="listinfo">
+        <!-- This div contains all necessary settings, the javascript can easily access this data, in case it want to know it too.  -->
+        <c:forEach items="${parameters}" var="entry">
+          <c:choose>
+            <c:when test="${entry.key eq 'query'}">
+              <input type="hidden" name="${entry.key}"       value="${mm:escape('text/xml', entry.value.sql)}" />
+            </c:when>
+            <c:otherwise>
+              <input type="hidden" name="${entry.key}"       value="${mm:escape('text/xml', entry.value)}" />
+            </c:otherwise>
+          </c:choose>
+        </c:forEach>
+      </div>
+
+
+      <mm:relatednodescontainer referid="clonedquery">
+        <mm:relatednodes id="related" usetransaction="true" commitonclose="false" />
+      </mm:relatednodescontainer>
+
+      <mm:import id="searcher">
+        <c:if test="${parameters.search || ! empty searcher}">
+          <mm:cloud>
+            <c:choose>
+              <c:when test="${empty searcher}">
+                <c:choose>
+                  <c:when test="${empty searchRepository}">
+                    <mm-sr:search
+                        styleClass="relatednodes_search_simple"
+                        type="${query.nodeManager.name}" load="false" implicit="${empty implicitSearch ? settings['implicitRepository'] : implicitSearch}">
+                      <mm:constraint field="number" operator="IN" inverse="true" referid="related" />
+                    </mm-sr:search>
+                  </c:when>
+                  <c:otherwise>
+                    <mm-sr:relate
+                        repository="${searchRepository}" load="false"
+                        styleClass="relatednodes_search_simple"
+                        >
+                      <mm:constraint field="number" operator="IN" inverse="true" referid="related" />
+                    </mm-sr:relate>
+                  </c:otherwise>
+                </c:choose>
+              </c:when>
+              <c:otherwise>
+                <jsp:invoke fragment="searcher" />
+              </c:otherwise>
+            </c:choose>
+          </mm:cloud>
+        </c:if>
+      </mm:import>
+
+      <mm:import id="creator">
+        <c:if test="${_create}">
+          <mm:link page="/mmbase/searchrelate/list/create.jspx"
+                   referids="rid">
+            <a href="${_}"  class="create">
+              <mm-sr:button alt="+" type="create" parameters="${parameters}" />
+            </a>
+          </mm:link>
+        </c:if>
+      </mm:import>
+
+      <c:if test="${_createposition eq 'top'}">
+        <mm:write referid="creator" escape="none" />
+        <span class="status">...</span>
+        <span class="errors"><jsp:text></jsp:text></span>
+        <mm:write referid="searcher" escape="none" />
+      </c:if>
+
+      <!-- ================================================================================ -->
+      <ol class="${query.nodeManager.name}">
+
+        <mm:relatednodes referid="related"  commitonclose="false">
+          <c:catch var="e">
+            <mm:include
+                page="/mmbase/searchrelate/list/li.jspx"
+                referids="rid">
+              <mm:param name="className">origPos-<mm:index offset="0"/></mm:param>
+            </mm:include>
+          </c:catch>
+          <c:if test="${! empty e}">
+            <mm:escape>${rid}:  ${e}</mm:escape>
+          </c:if>
+        </mm:relatednodes>
+      </ol>
+      <!-- ================================================================================ -->
+      <c:if test="${_createposition eq 'bottom'}">
+        <mm:write referid="creator" escape="none" />
+        <span class="status">...</span>
+        <span class="errors"><jsp:text></jsp:text></span>
+        <mm:write referid="searcher" escape="none" />
+      </c:if>
+    </div>
+  </fmt:bundle>
+  <mm:write request="org.mmbase.searchrelate.relatednodes" referid="parameters.parent" />
+  <mm:write request="org.mmbase.sr.relatednodes.parameters" referid="previousParameters" />
+  <jsp:scriptlet>}</jsp:scriptlet>
+</jsp:root>

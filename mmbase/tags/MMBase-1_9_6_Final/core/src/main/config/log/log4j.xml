@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+   @author  Michiel Meeuwissen
+   @version $Id$
+   @since   MMBase-1.4
+-->
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"
+   [
+    <!ENTITY mmlevel    "org.mmbase.util.logging.log4j.Log4jLevel" >
+]>
+<log4j:configuration  debug="false" xmlns:log4j="http://jakarta.apache.org/log4j/"
+  >
+  <appender name="logfile" class="org.apache.log4j.ConsoleAppender" >
+    <param name="Target" value="System.out" />
+    <param name="Encoding"   value="UTF-8" />
+    <layout class="org.apache.log4j.PatternLayout">
+       <param name="ConversionPattern" value="%d{ISO8601} %-7p %c{4} - %m%n" />
+    </layout>
+  </appender>
+
+  <logger name="STDERR">
+    <level class="&mmlevel;" value ="fatal" />
+  </logger>
+
+  <root>
+    <level class="&mmlevel;" value ="service" />
+    <appender-ref ref="logfile" />
+  </root>
+
+</log4j:configuration>

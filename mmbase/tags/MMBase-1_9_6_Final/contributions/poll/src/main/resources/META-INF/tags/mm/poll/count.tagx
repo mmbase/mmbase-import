@@ -1,0 +1,42 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-poll="http://www.mmbase.org/tags/mm/poll"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    version="2.0">
+  <jsp:directive.attribute name="checkip" />  
+  <jsp:directive.attribute name="description" />  
+  <jsp:directive.variable name-given="poll" />
+  <mm:cloud method="delegate" authenticate="class">
+    <mm:node number="${_node.number}">
+      <mm:relatednodescontainer type="poll">
+        <mm:size>
+          <mm:compare value="0">
+            <mm:transaction>
+              <mm:node number="${_node.number}" id="base">
+                <mm:createnode type="poll" id="newpoll">
+                  <mm:setfield name="question"><mm:nodeinfo type="gui" node="base" /></mm:setfield>
+                  <mm:setfield name="begin">now - 1 hour</mm:setfield>
+                  <mm:setfield name="end">now + 100 year</mm:setfield>
+                  <mm:setfield name="description">${empty description ? 'automaticly generated poll for '  : description}${empty description ? base : ''}</mm:setfield>
+                </mm:createnode>
+              </mm:node>
+              <mm:createnode type="answer" id="ok">
+                <mm:setfield name="answer">OK</mm:setfield>
+              </mm:createnode>
+              <mm:createrelation source="base" destination="newpoll" role="related" />
+              <mm:createrelation source="newpoll" destination="ok" role="posrel">
+                <mm:setfield name="pos">1</mm:setfield>
+              </mm:createrelation>
+            </mm:transaction>
+          </mm:compare>
+        </mm:size>
+      </mm:relatednodescontainer>
+      <mm:relatednodes type="poll" max="1">
+        <mm:node id="poll" />
+        <mm-poll:vote poll="${_node}" checkip="${empty checkip ? '- 3 day' : checkip}" answerpos="1" checksession="false" checkcookie="false" />
+      </mm:relatednodes>
+    </mm:node>
+  </mm:cloud>
+  <jsp:doBody />
+</jsp:root>

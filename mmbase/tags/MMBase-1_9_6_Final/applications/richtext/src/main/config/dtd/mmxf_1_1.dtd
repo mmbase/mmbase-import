@@ -1,0 +1,47 @@
+<!--
+    Version 1.1 of MMXF, used in MMBase 1.8
+   -- It is now more nearly a subset of XHTML 2 (http://www.w3.org/TR/xhtml2/)
+   -- Not completely compatible with mmxf 1.0 (which was never really in use (lacking editors)).
+
+-->
+
+<!ENTITY % Block   "(p | table)*">
+<!ENTITY % Lists    "ol | ul">
+<!ENTITY % Content "(p | table)*">
+<!ENTITY % Text    "(#PCDATA | em | a | sub | sup | %Lists;)*">
+
+
+<!ELEMENT mmxf %Block; section* >
+<!ATTLIST mmxf 
+    version    NMTOKEN  #IMPLIED
+>
+<!ELEMENT section h %Block;* section* > 
+<!ATTLIST section 
+    id    NMTOKEN  #IMPLIED
+>
+<!ELEMENT h ( #PCDATA )* >
+
+<!ELEMENT p  %Text; >
+<!ATTLIST p id  NMTOKEN  #IMPLIED > 
+
+<!ELEMENT %Lists; ( li )+ >
+<!ATTLIST %Lists; id  NMTOKEN  #IMPLIED > 
+<!-- type: borrowed from HTML (mainly to support this feature of kupu), but it can simply be transformed to valid XHTML using the 'style' attribute (see mmxf2xhtml.xslt)
+    I think we don't want the 'style' attribute itself in mmxf.
+-->
+<!ATTLIST %Lists; type  NMTOKEN  #IMPLIED > 
+<!ELEMENT li ( #PCDATA | em | a)* >
+
+<!ELEMENT em ( #PCDATA )* >
+
+<!ELEMENT sub ( #PCDATA )* >
+<!ELEMENT sup ( #PCDATA )* >
+
+<!ELEMENT a  ( #PCDATA | em )* >
+<!ATTLIST a id  NMTOKEN  #REQUIRED > 
+
+<!ELEMENT table caption? tr+ >
+<!ELEMENT tr (td | th)+>
+<!ELEMENT caption %Text; >
+<!ELEMENT td (%Block; | %Text;) >
+<!ELEMENT th (%Block; | %Text;) >

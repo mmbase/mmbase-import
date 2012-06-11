@@ -1,0 +1,55 @@
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"          
+          version="1.2"
+    >
+  <mm:import id="urls" vartype="list">,.,/</mm:import>
+  <mm:import id="refs" vartype="list">false,server,context,true</mm:import>
+  <mm:import id="d">D</mm:import>
+  <mm:import id="e">E</mm:import>
+  <mm:stringlist id="page" referid="urls">
+    <h2>Page '${page}'</h2>
+    <mm:stringlist referid="refs">
+      <p>
+        <jsp:text>${_}: </jsp:text>
+        <mm:link id="id$_" page="$page" absolute="$_" referids="d">
+          <mm:param name="a" value="A" />
+          ${_}
+        </mm:link>
+        </p>
+    </mm:stringlist>
+    <h1>Reuse with EL</h1>
+    <p>${idfalse}</p>
+    <p>${idserver}</p>
+    <p>${idcontext}</p>
+    <p>${idtrue}</p>
+    <mm:stringlist referid="refs">
+      <h1>Reuse ${page} abs=${_}</h1>
+      <p>
+        abs=false 
+        <mm:link referid="id$_" referids="e">
+          <mm:param name="b">B</mm:param>
+          ${_}
+        </mm:link>
+      </p>
+      <p>
+        abs=server 
+        <mm:link referid="id$_" absolute="server" referids="e">
+          <mm:param name="b">B</mm:param>
+          ${_}
+        </mm:link>
+      </p>
+      <p>abs=context 
+      <mm:link referid="id$_" absolute="context" referids="e">
+        <mm:param name="b">B</mm:param>
+        ${_}
+      </mm:link>
+      </p>
+      <p>abs=true
+      <mm:link referid="id$_" absolute="true" referids="e">
+        <mm:param name="b">B</mm:param>
+        ${_}
+      </mm:link>
+    </p>
+    </mm:stringlist>
+  </mm:stringlist>
+</jsp:root>

@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>org.mmbase.util.logging.java</title>
+  </head>
+  <body>
+    <p>
+      Classes related to the java.util.logging package (new in java 1.4). There are two things which you may want:
+    </p>
+    <ul>
+      <li>
+        Make MMBase log with java.util.logging.Logger's. This is possible with the 'Impl' class of
+        this package, which can be configured in log.xml. So, this wraps java.util.logging.Logger in
+        org.mmbase.util.logging.Logger.
+      </li>
+      <li>
+        You have some class which asks for a java.util.logging.Logger where it will log to, and you
+        want it to log to the MMBase log. For this, the 'MMBaseLogger' class is meant. So, this
+        wraps org.mmbase.util.logging.Logger in java.util.logging.Logger.
+      </li>
+    </ul>
+    <!-- version of package description $Id$ -->
+    @since   MMBase-1.8
+  </body>
+</html>

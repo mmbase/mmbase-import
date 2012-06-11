@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<div class="loaded-with-ajax"
+     xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:cloud rank="administrator">
+    <mm:import id="max">6</mm:import>
+    <mm:node number="default.mags">
+      <h3><mm:field name="title" /></h3>
+      <mm-sr:relatednodes
+          type="news"
+          searchdirs="destination"
+          unlink="true"
+          max="${max}"
+          sortable="true"
+          config="mysearch"
+          search="true"
+          />
+    </mm:node>
+  </mm:cloud>
+  <hr />
+  <mm:escape escape="links">$URL$</mm:escape>
+
+</div>

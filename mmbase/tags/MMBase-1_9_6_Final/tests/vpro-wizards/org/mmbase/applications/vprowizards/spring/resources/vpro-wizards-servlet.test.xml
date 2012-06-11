@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+  - Application context definition for "wizard" DispatcherServlet.
+  This is a configuration for the 'new' action code.
+  -->
+<beans>
+    <bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="interceptors">
+            <list>
+                <!--  <ref bean="unicodeInterceptor"/> -->
+                <ref bean="redactieAuthenticationInterceptor" />
+                <ref bean="cacheInterceptor" />
+            </list>
+        </property>
+        <property name="mappings">
+            <props>
+                <prop key="/post">wizardController</prop>
+            </props>
+        </property>
+    </bean>
+
+	<!-- 
+    <bean name="redactieAuthenticationInterceptor" class="org.mmbase.applications.vprowizards.spring.Dummy">
+        <property name="loginPage"><value>/mmbase/vpro-wizards/system/login.jsp</value></property>
+    </bean>
+	 -->
+
+    <bean id="referrerResolver" class="org.mmbase.applications.vprowizards.spring.ReferrerResolver">
+        <property name="errorPage"><value>error-html</value></property>
+    </bean>
+    
+    <bean id="basicCommandFactory" class="org.mmbase.applications.vprowizards.spring.BasicCommandFactory">
+    	<property name="actionClasses">
+    		<list>
+				<value>org.mmbase.applications.vprowizards.spring.action.TestAction</value>
+				<value>org.mmbase.applications.vprowizards.spring.action.CreateNodeAction</value>
+				<value>org.mmbase.applications.vprowizards.spring.action.UpdateNodeAction</value>
+				<value>org.mmbase.applications.vprowizards.spring.action.DeleteNodeAction</value>
+				<value>org.mmbase.applications.vprowizards.spring.action.CreateRelationAction</value>
+				<value>org.mmbase.applications.vprowizards.spring.action.SortRelationAction</value>
+				<value>org.mmbase.applications.vprowizards.spring.action.ToggleRelationAction</value>
+				<!-- 
+				<value>org.mmbase.applications.vprowizards.spring.action.ToggelRelationAction</value>
+				 -->
+			</list>
+		</property>
+    </bean>
+    
+    <bean id="dummyFactory" class="org.mmbase.applications.vprowizards.spring.DummyCloudFactory"/>
+
+    <bean id="wizardController" class="org.mmbase.applications.vprowizards.spring.WizardController">
+        <property name="cloudFactory"><ref local="dummyFactory"/></property>
+        <property name="viewResolver"><ref local="referrerResolver"/></property>
+        <property name="commandFactory"><ref local="basicCommandFactory"/></property>
+    </bean>
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass"><value>org.springframework.web.servlet.view.JstlView</value></property>
+        <property name="prefix"><value>/mmbase/vpro-wizards/system/</value></property>
+        <property name="suffix"><value>.jsp</value></property>
+    </bean>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- one of the properties available; the maximum file size in bytes -->
+        <property name="maxUploadSize">
+            <value>5000000</value>
+        </property>
+    </bean>
+</beans>

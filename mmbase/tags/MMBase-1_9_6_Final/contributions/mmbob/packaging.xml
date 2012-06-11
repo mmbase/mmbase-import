@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packaging PUBLIC "-//MMBase/DTD packaging config 1.0//EN" "http://www.mmbase.org/dtd/packaging_1_0.dtd">
+<packaging basedir=".">
+	<package name="jars" type="java/jar" file="packaging/MMBob_forums_jars.xml" />
+	<package name="config" type="config/basic" file="packaging/MMBob_config.xml" />
+	<package name="model" type="cloud/model" file="packaging/MMBob_forums_model.xml" />
+	<package name="html" type="display/html" file="packaging/MMBob_forums_html.xml" />
+	<package name="functions" type="function/set" file="packaging/MMBob_forums_functions.xml" />
+	<bundle name="default" type="bundle/basic" file="packaging/MMBob_forums_bundle.xml" />
+</packaging>

@@ -1,0 +1,16 @@
+<list role="related" destination="publishtimes" minoccurs="0" maxoccurs="1">
+  <title xml:lang="en">Valid period</title>
+  <title xml:lang="nl">Geldigheidsperiode</title>
+  <item>
+    <field name="begin"/>
+    <field name="end"/>
+  </item>
+  <action type="create">
+    <relation destinationtype="publishtimes" role="related" >
+      <object type="publishtimes">      
+        <field name="begin" />
+        <field name="end"><!-- 2100 4102441200--></field>
+      </object>
+    </relation>
+  </action>
+</list>

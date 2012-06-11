@@ -1,0 +1,12 @@
+HOW to deploy
+
+Update the snapshots on mmbase.org:
+
+mvn -Pdeploy clean deploy
+
+
+Create a private version, and deploy it to your repository:
+
+mvn -Pdeploy -Dmy.version=eo-1 -Dmy.repository.id=eo -Dmy.repository.url=scp://cvs.eo.nl/export/home/ftp/maven
+
+

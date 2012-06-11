@@ -1,0 +1,12 @@
+<jsp:root
+    version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <mm:cloud method="asis">
+    <mm:node number="${param.node}" emptynumberiscurrentnode="true">
+      <span><jsp:text>${_node.number}: </jsp:text><mm:nodeinfo type="gui" /></span>
+    </mm:node>
+  </mm:cloud>
+</jsp:root>

@@ -1,0 +1,19 @@
+<functionlist
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    >
+
+  <function name="thumbnail">
+    <class>org.mmbase.streams.thumbnails.ThumbNailFunction</class>
+  </function>
+  <function name="download">
+    <class>org.mmbase.streams.download.DownloadFunction</class>
+  </function>
+  <function name="createSources">
+    <class>org.mmbase.streams.CreateSourcesWithoutProcessFunction</class>
+  </function>
+
+</functionlist>

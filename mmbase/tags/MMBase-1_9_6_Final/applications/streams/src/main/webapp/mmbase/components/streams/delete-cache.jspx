@@ -1,0 +1,49 @@
+<div
+    class="mm_c c_streams b_recent ${requestScope.componentClassName}"
+    id="${requestScope.componentId}"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-res="urn:jsptagdir:/WEB-INF/tags/mm/resources"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:cloud rank="administrator">
+    <p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
+    
+    <mm:import externid="cache" />
+    <mm:import externid="delete">false</mm:import>
+
+    <c:choose>
+      <c:when test="${!empty cache and delete eq 'false'}">
+        <mm:hasnode number="${cache}">
+          <div class="err">
+            <p> Are you sure you want to delete #${cache}? </p>
+            
+            <p>
+            <mm:link referids="cache">
+              <mm:param name="delete">true</mm:param>
+              <a href="${_}">Yes</a>
+            </mm:link>
+            |
+            <mm:link referids="cache">
+              <mm:param name="delete">false</mm:param>
+              <a href="${_}">No</a>
+            </mm:link>
+            </p>
+          </div>
+        </mm:hasnode>
+      </c:when>
+      <c:otherwise>
+        <mm:hasnode inverse="true" number="${cache}">
+          <p class="err">No node #${cache}, already deleted?</p>
+        </mm:hasnode>
+        <mm:hasnode number="${cache}">
+          <mm:deletenode number="${cache}" deleterelations="true" />
+          <p class="msg">Node #${cache} deleted.</p>
+        </mm:hasnode>
+      </c:otherwise>
+    </c:choose>
+    
+
+  </mm:cloud>
+</div>

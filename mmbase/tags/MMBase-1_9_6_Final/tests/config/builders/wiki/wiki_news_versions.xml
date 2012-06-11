@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    version="1" name="wiki_news_versions" maintainer="eo.nl" extends="object">
+
+  <names>
+    <singular xml:lang="en">Wiki News Version</singular>
+    <singular xml:lang="nl">Wiki Nieuws Versie</singular>
+    <plural xml:lang="en">Wiki News Versions</plural>
+    <plural xml:lang="nl">Wiki Nieuws Versies</plural>
+  </names>
+
+  <xi:include href="http://www.mmbase.org/builders/wiki/wiki_news.fields.xml" />
+
+  <xi:include href="http://www.mmbase.org/builders/versioning/versioning.fields.xml" />
+  <xi:include href="http://www.mmbase.org/builders/versioning/versioning.indexes.xml" />
+</builder>

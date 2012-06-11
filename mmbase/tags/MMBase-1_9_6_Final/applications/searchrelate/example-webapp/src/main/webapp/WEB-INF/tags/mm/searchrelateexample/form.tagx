@@ -1,0 +1,102 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm-sre="http://www.mmbase.org/tags/mm/searchrelateexample"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:directive.tag
+      example="See /mmexamples/searchrelate"
+      description=" " />
+
+  <jsp:directive.attribute name="node"
+                           type="java.lang.String"
+                           description=""/>
+
+  <jsp:directive.attribute name="name"
+                           type="java.lang.String"
+                           description=""/>
+
+  <mm:link page="/validation.js">
+    <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
+  </mm:link>
+
+
+
+  <mm:form
+      name="${name}" jspvar="trans">
+    <input type="hidden" name="mm_form_name" value="${requestScope['org.mmbase.cloud'].name}" />
+
+    <mm:import externid="debug" />
+    <mm:present referid="debug">
+      <input type="hidden"  name="debug" value="${debug}" />
+    </mm:present>
+    <mm:import externid="ct" />
+    <mm:present referid="ct">
+      <input type="hidden"  name="ct" value="${ct}" />
+    </mm:present>
+
+    <mm:import externid="cancel" />
+
+    <mm:present referid="cancel">
+      <mm:log level="info"> CANCELLING</mm:log>
+      <mm:cancel />
+      <p>Canceled</p>
+      <mm:write session="${rid}_order" value="" />
+      <mm:log level="info"> REFRESHING</mm:log>
+      <mm:refresh />
+
+    </mm:present>
+
+    <mm:node number="${empty node ? 'default.mags' : node}">
+      <jsp:doBody />
+    </mm:node>
+
+    <input type="submit" name="submit" value="submit" />
+    <jsp:text> | </jsp:text>
+    <mm:link referids="debug?,ct?">
+      <mm:param name="cancel"></mm:param>
+      <a href="${_}">cancel</a>
+    </mm:link>
+
+    <mm:import externid="submit" />
+    <mm:valid>
+      <p>Valid</p>
+      <mm:present referid="submit">
+        <mm:commit />
+        <p>Committed</p>
+        <mm:refresh />
+      </mm:present>
+    </mm:valid>
+
+
+    <c:set value="${requestScope['org.mmbase.transaction']}"  var="t"  />
+  </mm:form>
+  <c:if test="${'true' eq debug}">
+    <div class="debug">
+      <h2>Debugging</h2>
+      <p>Transaction: ${t.name}</p>
+      <p>Number of nodes in transaction: ${fn:length(t.nodes)}</p>
+      <table>
+        <tr><th>#</th><th>real number</th><th>temporary number</th><th>_exists</th><th>new</th><th>deleted</th><th>gui</th><th>snumber</th><th>dnumber</th><th>handle</th></tr>
+        <mm:listnodes referid="t.nodes" commitonclose="false">
+          <tr>
+            <th><mm:index /></th>
+            <td>${_node.number}</td>
+            <td>${_node._number}</td>
+            <td>${_node._exists}</td>
+            <td>${_node.number lt 0}</td>
+            <td>${_node._exists eq 'nolonger'}</td>
+            <td><mm:nodeinfo type="gui" /></td>
+            <td><mm:hasfield name="snumber">${_node.snumber} / ${_node._snumber}</mm:hasfield></td>
+            <td><mm:hasfield name="dnumber">${_node.dnumber} / ${_node._dnumber}</mm:hasfield></td>
+            <td><mm:hasfield name="handle"><mm:escape escape="text/xml"><c:catch var="e">H: </c:catch>${e}</mm:escape></mm:hasfield></td>
+          </tr>
+        </mm:listnodes>
+      </table>
+    </div>
+  </c:if>
+</jsp:root>
+

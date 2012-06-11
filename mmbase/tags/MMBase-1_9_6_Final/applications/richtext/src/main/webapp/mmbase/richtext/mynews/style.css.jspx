@@ -1,0 +1,144 @@
+<mm:content 
+xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    type="text/css" >
+  <jsp:directive.page session="false" />
+  <jsp:output omit-xml-declaration="true" />
+@import url(<mm:url page="/mmbase/style/css/mmbase.css" />);
+@import url(<mm:url page="/mmbase/style/css/mmxf.css" />);
+
+<!--
+<mm:import id="A">#4cb</mm:import>
+<mm:import id="B">#046</mm:import>
+-->
+<mm:import id="A">#ddd</mm:import>
+<mm:import id="B">#888</mm:import>
+
+body { 
+  margin: 0px;
+}
+
+img {
+  border: none;
+}
+#menu {
+  position: relative;
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+  background-color: ${A};
+  color: ${B};
+  border-bottom: solid 1px ${B};
+  font-weight: bold;
+}
+#menu a {
+  padding-left: 1ex;
+  padding-right: 1ex;  
+  margin-bottom: 10px;
+  color: ${B};
+}
+#menu ul {
+  padding: 0px;
+  margin: 0px;
+  background-color: ${A};
+  border-bottom: solid 1px ${B};
+  display: none;
+}
+#menu ul li {
+  margin-left: 0px;
+  padding-left: 0px;
+  display: inline;
+}
+#menu ul li a {
+  display: block;
+}
+#menu a:hover, #menu a.selected {
+  background-color: white;
+}
+
+#menu div a { 
+  display: block;
+  margin-right: 0ex;
+  padding-right: 1ex;
+}
+
+#menu a:hover { 
+  text-decoration : none;  
+}
+
+
+#content { 
+  margin-left: 1ex;
+  margin-right: 4ex;
+}
+
+#content .index {
+  margin-right: 1ex;
+}
+
+.path { 
+  margin-top: 1ex;
+  margin-left: 0px;
+  margin-right: 0px;
+  padding: 5px;
+  background-color: ${B};
+}
+.path a:visited, .path a:link, .path a:hover { 
+  color: ${A};
+}
+
+a, a:visited, a:link, a:hover {
+  color: ${B};
+}
+a:hover {
+  text-decoration: underline;
+}
+.mmxf div.note {
+ background-color: #eee;
+ border: black 1px solid;
+}
+.mmxf div.note.left {
+ border-right: black 2px solid;
+}
+.mmxf div.note.right {
+ border-left: black 2px solid;
+}
+
+#end-of-page {
+ float: left;
+ height: 1px; 
+ width: 100%;
+}
+
+.w3 { 
+  margin: 10px;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+/* for editors */
+
+/* security editors */
+div#security div#you {
+  background-color: ${A};
+  border-bottom: black 1px solid;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+
+div#security div#navigate p {
+  display: inline;
+  margin: 0;
+  margin-right: 3ex;
+}
+
+a.mm_edit {
+  background-color: yellow;
+  color: black;
+}
+a.mm_edit:hover {
+  background-color: #afa;
+  text-decoration: none;
+}
+
+</mm:content>

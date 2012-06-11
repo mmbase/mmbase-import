@@ -1,0 +1,70 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="notifyables" maintainer="mmbase.org" version="1" extends="object">
+
+  <fieldlist>
+
+    <field name="title">
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
+    </field>
+
+    <field name="message">
+      <descriptions>
+        <description xml:lang="en">Message of the to be send notification.
+        </description>
+      </descriptions>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="64000" />
+      </datatype>
+    </field>
+
+    <field name="offset">
+      <datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="-900" /> <!-- quarter of an hour beforehand -->
+        <required value="true" />
+        <maxExclusive value="0" />
+        <enumeration>
+          <entry
+              sorterclass="org.mmbase.util.ReverseComparator"
+              basename="org.mmbase.notifications.resources.offset" />
+        </enumeration>
+      </datatype>
+     </field>
+
+    <field name="lastcheck">
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="today" />
+      </datatype>
+     </field>
+
+    <field name="status">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="1" />
+        <required value="true" />
+        <enumeration>
+
+          <entry value="0"      xml:lang="nl" display="inactief" />
+          <entry value="1"      xml:lang="nl" display="actief" />
+
+          <entry value="0"      xml:lang="en" display="inactive" />
+          <entry value="1"      xml:lang="en" display="active" />
+
+        </enumeration>
+      </datatype>
+    </field>
+
+
+  </fieldlist>
+
+</builder>

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<article class="specification">
+  <articleinfo>
+    <title>Notifications</title>
+    <date>2007-11-12</date>
+    <edition>$Id$</edition>
+    <authorgroup>
+      <author>
+        <firstname>Michiel</firstname>
+        <surname>Meeuwissen</surname>
+      </author>
+    </authorgroup>
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
+      </para>
+    </legalnotice>
+  </articleinfo>
+  <section>
+    <title>Introduction</title>
+    <para>
+      The MMBase 'notifications' component provides basic functionality to implement a notification
+      mechanism using MMBase objects. That means that you can make any object 'notifyable' by
+      linking a 'notifyables' object to it. Website visitors can then subscribe to those notifyables
+      and receive notifications if something happens with the notifyable. In practice this is for
+      example used to send Short Message Service text message a certain time before the commence of
+      certain TV program.
+    </para>
+    <para>
+      So besides the MMBase code to model 'notifications' this component also contains the
+      interfaces to send (and receive) SMS messages. An implemention is provided to communicate with
+      'CM-Telecom'.
+    </para>
+  </section>
+  <section>
+    <title>Notifyables</title>
+    <para>
+      This component provides only one builder ('notifyables') and one relation type
+      ('notifications'). It does not define what objects are related to users nor what object types
+      can be related to a notifyable.
+    </para>
+    <para>
+      The only thing that is required is that those two unspecified object types contain certain
+      functions to request some information.
+    </para>
+    <figure>
+      <title>Notifications Example Cloud</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="objects.png" format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+    <section>
+      <title>Dates</title>
+      <para>
+        The object about which notifications are to be sent, must be linked to an object of type
+        'notifyable' using the role 'related', and it must provide a function 'dates', which
+        provides a list of dates at which a notification must be sent. This function must accept
+        parameters 'since' and 'until', to limit the list. This can e.g. be done like so in the
+        builder XML under concern:
+      </para>
+      <programlisting format="linespecific" id="builderxml"><![CDATA[
+      ....
+    </field>
+
+  </fieldlist>
+  <functionlist>
+    <function key="dates">
+      <class>nl.teleacnot.mmbase.functions.ProgrammeDates</class>
+    </function>
+  </functionlist>
+
+</builder>
+]]></programlisting>
+      <para>
+        Where the mentioned class can look like so:
+      </para>
+      <programlisting format="linespecific" id="builderxml"><![CDATA[
+      package nl.teleacnot.mmbase.functions;
+import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.util.DynamicDate;
+import java.util.*;
+
+/**
+ * Function wich determines for a certain t_programme node the dates for wich notifications must be
+ * issued.
+ *
+ * @author Michiel Meeuwissen
+ * @version $Id$
+ **/
+public class ProgrammeDates  {
+
+    protected Node node;
+    protected Date since;
+    protected Date until;
+    {
+        try {
+            since = DynamicDate.getInstance("yesterday");
+            until = DynamicDate.getInstance("today + 100 year");
+        } catch (org.mmbase.util.dateparser.ParseException pe) {
+            // could not happen
+        }
+    }
+
+    public void setNode(Node n) {
+        node = n;
+    }
+
+    public void setSince(Date s) {
+        since = s;
+    }
+
+    public void setUntil(Date u) {
+        until = u;
+    }
+
+    public List<Date> dates() {
+        List<Date> result = new ArrayList<Date>();
+        Cloud cloud = node.getCloud();
+        NodeManager eps = cloud.getNodeManager("t_episode");
+        NodeManager trans = cloud.getNodeManager("t_transmission");
+        NodeQuery nq = Queries.createRelatedNodesQuery(node, eps, "posrel", "destination");
+        RelationStep rstep = nq.addRelationStep(trans);
+        nq.setNodeStep(rstep.getNext());
+        Queries.addConstraint(nq, Queries.createConstraint(nq, "begin", Queries.OPERATOR_BETWEEN, since, until, false));
+
+        NodeIterator i = trans.getList(nq).nodeIterator();
+        while (i.hasNext()) {
+            Node transmission = i.nextNode();
+            result.add(transmission.getDateValue("begin"));
+        }
+        return result;
+
+    }
+
+}
+]]></programlisting>
+    </section>
+    <section>
+      <title>Contact information</title>
+      <para>
+        Users create a relation of the type 'notifications' between their user object and the
+        notifyable object if they want to receive notifications. Necessary contact information is
+        requested from the user object using the function 'phone', for the mobile phone number to
+        which SMS text must be sent and 'email' which must return an email-address.
+      </para>
+    </section>
+  </section>
+
+  <section>
+    <title>SMS Senders and Handlers</title>
+    <para>
+      One SMS Sender can be configured using the property 'class' in &lt;config
+      dir&gt;utils/sms_sender.xml. So there can be only one.
+    </para>
+    <para>
+      The file is watched, if you change it a new Sender wil be instantiated. This one instance is obtained by calling
+      org.mmbase.sms.Sender.getInstance().
+    </para>
+    <para>
+      The sender may offer the possibility to collect messages and send them in bulk. Use the method
+      'offer' is this allowed, mmbase-crontab can be used to periodically call 'trigger', to send pending messages.
+    </para>
+    <para>
+      For receival of SMS, multiple 'Handlers' can be configured though. Those are implementions of org.mmbase.sms.Handler.
+    </para>
+    <programlisting format="linespecific" id="sms_handlers"><![CDATA[
+<?xml version="1.0"?>
+<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
+<util>
+  <properties>
+    <property name="nl.teleacnot.mmbase.sms.Handler" type="map">
+      <entry>
+        <key>prefix</key>
+        <value>TELEAC </value>
+      </entry>
+    </property>
+  </properties>
+</util>
+      ]]></programlisting>
+      <para>
+        An SMS handler can decide to not handle the message, and leave it to the next one.
+      </para>
+      <para>
+        The SMS Handlers are called by the class org.mmbase.sms.Receiver. The receiver is offered
+        received messages with it's method 'offer', which is called by the implemention code for
+        actual retreival. E.g. in the case of CMTelecom this is a very simple JSP in
+        /mmbase/notifications/cmtelecom. Which can be actively called by their system. Other
+        implementations may work differntly.
+      </para>
+
+  </section>
+  <section>
+    <title>Mobile number validation</title>
+    <para>
+      This component does not itself provide the functionality to fill in the phone number of
+      users. It should however be done, and the SMS-functionality present in this component can be
+      used to implement the 'validation' protocol which should normally be present.
+    </para>
+    <para>
+      An example you can find in nl.teleacnot.example package. (A Processor for a phone number field and a Handler).
+    </para>
+  </section>
+  <section>
+    <title>Clustering</title>
+    <para>
+      This application is aware of the fact that MMBase may be 'clustered'.
+    </para>
+    <section>
+      <title>Notifications</title>
+      <para>
+        Normally you should make sure that only precisely one servers of the MMBase cluster is
+        responsible for sending the notifications. This can be arranged using the 'active' property
+        in module/notifier.xml.
+      </para>
+    </section>
+    <section>
+      <title>Sending SMS</title>
+      <para>
+        You can also, if you like, make sure that precisely one of the servers of the cluster is
+        responsible for sending the actual SMS'es. This can be, but is not necessarly the same
+        server as the one responsible for maintaining the notifications. This is done with the
+        'active' property in utils/sms_sender.xml.
+      </para>
+      <para>
+        If you've done this, and an SMS-request is originating from one of the other servers, they
+        will use the MMBase event mechanism, and issue an SMSEvent. The server responsible for
+        sending SMS will pick it up. (So make sure it is only one, otherwise the SMS may be sent
+        multiple times).
+      </para>
+    </section>
+  </section>
+</article>

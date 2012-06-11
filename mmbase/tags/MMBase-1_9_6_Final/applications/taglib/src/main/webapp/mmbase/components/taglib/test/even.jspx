@@ -1,0 +1,66 @@
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    class="mm_c c_taglib b_test_even ${requestScope.componentClassName}"
+    id="${requestScope.componentId}">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:import externid="abcde">ABC</mm:import>
+
+  <mm:import id="list" vartype="list">odd,even,odd</mm:import>
+
+  <h2>MMB-1865</h2>
+  <mm:stringlist referid="list" varStatus="status">
+    <p>
+      <mm:index /> / ${status.index}:
+      <mm:even>${_ eq 'even' ? 'ok' : 'NOT ok'}: ${_}</mm:even>
+      <mm:odd>${_ eq 'odd' ? 'ok' : 'NOT ok'}: ${_}</mm:odd>
+    </p>
+  </mm:stringlist>
+
+  <mm:import id="test1"><mm:listnodes type="object" max="2"><mm:even>even</mm:even><mm:odd>odd</mm:odd></mm:listnodes></mm:import>
+  <p>${test1 eq 'oddeven' ? 'ok' : 'NOT ok'}: ${test1}</p>
+
+  <mm:import id="test2"><mm:listnodes type="object" max="2" offset="1"><mm:even>even</mm:even><mm:odd>odd</mm:odd></mm:listnodes></mm:import>
+  <p>${test2 eq 'oddeven' ? 'ok' : 'NOT ok'}: ${test2}</p>
+
+
+  <h2>c:forEach</h2>
+  <mm:import id="listjstl" vartype="list">even,odd,even</mm:import>
+  <p>c:forEach has a indexoffset of 0. Hence the first item is even.</p>
+  <c:forEach items="${listjstl}" var="item" varStatus="status">
+    <p>
+      <mm:index /> /  ${status.index} :
+      <mm:even>${item eq 'even' ? 'ok' : 'NOT ok'}: ${item}</mm:even>
+      <mm:odd>${item eq 'odd' ? 'ok' : 'NOT ok'}: ${item}</mm:odd>
+    </p>
+  </c:forEach>
+
+  <p>If using the 'begin' attribute, then that is also te first index.</p>
+  <c:forEach  begin="5" end="8" var="i" varStatus="status">
+    <p>
+      <mm:index /> / ${status.index}:
+      ${i eq status.index ? 'ok' : 'NOT ok'}
+      <mm:even>${i % 2 eq 0  ? 'ok' : 'NOT ok'}</mm:even>
+      <mm:odd>${i % 2 eq 1  ? 'ok' : 'NOT ok'}</mm:odd>
+    </p>
+  </c:forEach>
+
+
+  <h2>Other mmbase lists have default offset 1 too</h2>
+  <mm:import id="test3">
+    <mm:listnodes type="object" max="2" varStatus="status">
+      <mm:index />
+      <jsp:text>|${status.index}|</jsp:text>
+      <mm:even>even</mm:even>
+      <mm:odd>odd</mm:odd>
+      <mm:last inverse="true">,</mm:last>
+    </mm:listnodes>
+  </mm:import>
+  <p>${test3 eq '1|1|odd,2|2|even' ? 'ok' : 'NOT ok'}: ${test3}</p>
+  <hr />
+  <p>
+    <mm:link page="test"><a href="${_}">Back</a></mm:link>
+  </p>
+</div>

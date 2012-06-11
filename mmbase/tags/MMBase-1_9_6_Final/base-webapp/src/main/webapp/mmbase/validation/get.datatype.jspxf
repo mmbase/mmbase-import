@@ -1,0 +1,56 @@
+<jsp:root
+    version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
+  <jsp:directive.page
+      session="false"
+      import="org.mmbase.bridge.*,org.mmbase.datatypes.*,java.util.*,org.mmbase.bridge.jsp.taglib.DataTypeTag"
+      />
+  <mm:import externid="datatype" jspvar="dt" vartype="string" />
+  <mm:import externid="origin" jspvar="origin" vartype="string" />
+  <mm:import externid="node" jspvar="n" vartype="string" />
+
+  <jsp:scriptlet>
+    Node node = null;
+    Field field = null;
+    DataType dataType = null;
+    Locale locale = null;
+    final boolean changed = "true".equals(request.getParameter("changed"));
+  </jsp:scriptlet>
+  <mm:cloud sessionname="${param.sessionname}" uri="${param.uri}" name="${param.cloud}" jspvar="cloud" method="asis">
+    <jsp:scriptlet>
+      locale = cloud.getLocale();
+    </jsp:scriptlet>
+    <mm:present referid="datatype">
+      <jsp:scriptlet>
+        DataTypeCollector collector;
+        if ("datatypetag".equals(origin)) {
+           collector = (DataTypeCollector) (((javax.servlet.http.HttpServletRequest) pageContext.getRequest()).getSession().getAttribute(DataTypeTag.KEY));
+           if (collector == null) {
+              throw new IllegalStateException("No collector found in session");
+           }
+        } else {
+           collector = DataTypes.getSystemCollector();
+        }
+        dataType = collector.getDataType(dt);
+      </jsp:scriptlet>
+    </mm:present>
+    <mm:notpresent referid="datatype">
+      <mm:import externid="field"       required="true" />
+      <mm:import externid="nodemanager" required="true" />
+
+      <jsp:scriptlet>
+        if (n != null &amp;&amp; ! "".equals(n)) {
+           node = cloud.getNode(n);
+        }
+      </jsp:scriptlet>
+      <mm:fieldlist nodetype="$nodemanager" fields="$field" jspvar="f">
+        <jsp:scriptlet>
+          field = f;
+          dataType = field.getDataType();
+        </jsp:scriptlet>
+      </mm:fieldlist>
+    </mm:notpresent>
+  </mm:cloud>
+</jsp:root>

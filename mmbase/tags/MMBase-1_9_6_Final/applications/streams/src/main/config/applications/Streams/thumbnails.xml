@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<thumbnails exportsource="mmbase://streams.mmbase.org/" timestamp="20090401000000">
+
+  <node number="2" owner="system" alias="default_video_thumbnail">
+    <itype>png</itype>
+    <filename>thumb_video.png</filename>
+    <handle file="thumb_video.png" />
+    <height>60</height>
+    <width>81</width>
+    <filesize>2163</filesize>
+    <id>2</id> <!-- cannot be null, so refer to self...-->
+    <time>0</time>
+  </node>
+
+</thumbnails>

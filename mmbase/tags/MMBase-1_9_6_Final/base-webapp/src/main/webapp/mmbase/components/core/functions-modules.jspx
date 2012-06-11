@@ -1,0 +1,44 @@
+<div
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+
+  <div class="codesample">
+    <p>Simple example of how to use a module-function in JSP</p>
+    <pre>
+    <mm:escape>
+    <![CDATA[
+    <mm:functioncontainer>
+       <mm:param name="signature">${'$'}{signature}</mm:param>
+       <mm:nodefunction module="sendmail" name="verifyEmail">
+          <mm:field name="status" />
+           ...
+       </mm:nodefunction>
+    </mm:functioncontainer>
+
+    ]]>
+    </mm:escape>
+  </pre>
+  </div>
+  <ul>
+    <mm:function id="modules" set="utils" name="modules" write="false" />
+
+    <c:forEach items="${modules}" var="module">
+      <li>
+        <p>${module.name}: <mm:write value="${module.description}" /></p>
+        <ul>
+          <c:forEach items="${module.functions}" var="fun">
+            <li>
+              <mm:escape>${fun}</mm:escape>
+              <p><mm:write value="${fun.description}" /></p>
+            </li>
+          </c:forEach>
+        </ul>
+      </li>
+    </c:forEach>
+  </ul>
+</div>

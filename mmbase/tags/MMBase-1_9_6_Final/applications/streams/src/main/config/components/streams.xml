@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="streams"
+    defaultblock="admin"
+    version="1"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+
+  <class name="org.mmbase.framework.BasicComponent" />
+
+  <description xml:lang="en">
+    The MMBase Streams application is designed to upload, transcode and manage media. You can upload video, audio or image files and transcode it to other formats.
+  </description>
+  <description xml:lang="nl">
+    Met de MMBase Streams applicatie kunnen media geuploaded, getranscodeerd en beheerd worden. Upload video-, audio- of afbeeldingsbestanden en transcodeer het naar andere formaten.
+  </description>
+
+  <title xml:lang="nl">Streams</title>
+  <title xml:lang="en">Streams</title>
+
+  <dependency component="media" version="1" />
+
+  <action name="cancel_jobs" rank="administrator">
+    <description xml:lang="en">Whether you may cancel jobs</description>
+  </action>
+
+  <action name="retrigger_jobs" rank="anonymous">
+    <!-- 'site user' in Open Images is of rank (50) lower then 'basic user' (100)
+         and needs to be able to use it with action 'download_media' -->
+    <description xml:lang="en">Whether you may (re)trigger jobs</description>
+  </action>
+  
+  <action name="update_sources" rank="basic user">
+    <description xml:lang="en">Whether you can automatically update information stored in a stream node</description>
+  </action>
+
+  <action name="download_media" rank="anonymous">
+    <description xml:lang="en">Allowed to use download API to put media into this application.</description>
+  </action>
+
+
+  <block name="recent"
+         classification="mmbase.streams"
+         mimetype="text/html">
+    <title xml:lang="en">Recent </title>
+    <title xml:lang="nl">Recente resources</title>
+    <description xml:lang="en">Displays recent streams in MMBase</description>
+    <description xml:lang="nl">Toont recent in MMBase ingevoerde streams</description>
+    <body jsp="recent.jspx">
+      <param name="nodetypes" />
+    </body>
+  </block>
+
+  <block name="admin"
+         classification="mmbase.streams"
+         mimetype="text/html">
+    <title xml:lang="en">Streams admin</title>
+    <title xml:lang="nl">Streams admin</title>
+    <description xml:lang="en">Streams application configuration, present application and their caches</description>
+    <description xml:lang="nl">Configuratie van streams applicatie, huidige streams en caches</description>
+    <body jsp="admin.jspx">
+      <param name="trigger" />
+      <param name="all" type="java.lang.Boolean" />
+      <param name="interrupt" />
+      <param name="cache" />
+      <param name="page" type="java.lang.Integer" />
+    </body>
+  </block>
+
+  <block name="myfragments"
+         classification="mmbase.streams"
+         mimetype="text/html">
+    <title xml:lang="en">My fragments</title>
+    <title xml:lang="nl">Mijn fragmenten</title>
+    <description xml:lang="en">Streams of current user</description>
+    <description xml:lang="nl">Streams van huidige user</description>
+    <body jsp="myfragments.jspx">
+      <param name="trigger" />
+      <param name="all" />
+      <param name="interrupt" />
+      <param name="cache" />
+      <param name="page"  type="java.lang.Integer" />
+    </body>
+  </block>
+
+  <block name="myjobs"
+         classification="mmbase.streams"
+         mimetype="text/html">
+    <title xml:lang="en">My jobs</title>
+    <title xml:lang="nl">Mijn jobs</title>
+    <description xml:lang="en">
+      Your current running media transcodings to other formats.
+    </description>
+    <description xml:lang="nl">
+      Op dit moment lopende transcoderingen van media naar andere formaten die je gestart hebt.
+    </description>
+    <body jsp="myjobs.jspx">
+      <param name="cancel" />
+    </body>
+  </block>
+
+  <block name="alljobs"
+         classification="mmbase.streams"
+         mimetype="text/html">
+    <title xml:lang="en">Jobs</title>
+    <title xml:lang="nl">Jobs</title>
+    <description xml:lang="en">
+      All current, running media transcodings to other formats.
+    </description>
+    <description xml:lang="nl">
+      Alle op dit moment lopende transcoderingen van media naar andere formaten.
+    </description>
+    <body jsp="alljobs.jspx">
+      <param name="cancel" />
+    </body>
+  </block>
+
+  <block name="batch"
+         classification="mmbase.streams"
+         mimetype="text/html">
+    <title xml:lang="en">Batch transcode</title>
+    <title xml:lang="nl">Batch transcodeer</title>
+    <description xml:lang="en">
+      Batch transcode all newly configured streams of these mediafragments, similar to 'only new'.
+      The button 'Submit' with save your settings. 
+      The button 'Batch' will start batch transcoding with the selected settings.
+      For example: choosing a maximum of 5 and as preferred source 'MPEG', will start transcoding new streams
+      (not already present recently configured streamsourcescaches) while using MPEG as its source
+      when there are multiple sources available.
+      'only new' generates all new configured streams.
+      'all' removes all existing and generates them new.
+      'recache' retranscodes an individual stream.
+    </description>
+    <description xml:lang="nl">
+      Batch transcodeer voor deze media alle nieuw geconfigureerde streams, gelijk aan 'only new'.
+      De button 'Submit' bewaart je settings.
+      De button 'Batch' start het transcoderen van meerdere streams met de geselecteerde voorkeuren.
+      Bijvoorbeeld: met een max van 5 en als source 'MPEG' worden er per keer maximaal 5 transcoderingen
+      in de queue gezet waarbij MPEG als voorkeursbestand wordt gebruikt als er meerdere sources worden
+      gevonden.
+      'only new' genereert alleen nieuw geconfigureerde streams.
+      'all' verwijdert alle bestaande en genereert alle geconfigureerde streams opnieuw.
+      'recache' genereert een enkele stream opnieuw.
+    </description>
+    <body jsp="batch.jspx">
+      <param name="trigger" />
+      <param name="all" type="java.lang.Boolean" />
+      <param name="interrupt" />
+      <param name="cache" />
+      <param name="page" type="java.lang.Integer" />
+      <param name="max"  type="java.lang.Integer" />
+      <param name="format" />
+      <param name="batch" />
+    </body>
+  </block>
+
+  <block name="upload"
+         classification="mmbase.streams"
+         mimetype="text/html">
+    <title xml:lang="en">Upload</title>
+    <title xml:lang="nl">Upload</title>
+    <description xml:lang="en">Upload video, audio or an image.</description>
+    <description xml:lang="nl">Upload video, audio of een afbeelding.</description>
+    <xi:include href="http://www.mmbase.org/components/validation.head.xml" />
+    <head jsp="upload.head.jspx" />
+    <body jsp="upload.jspx" />
+  </block>
+
+  <block name="test_upload"
+         mimetype="text/html">
+    <body jsp="test_upload.jspx" />
+  </block>
+
+  <block name="download"
+         classification="mmbase.streams"
+         mimetype="text/html">
+    <title xml:lang="en">Download</title>
+    <title xml:lang="nl">Download</title>
+    <description xml:lang="en">Download video, audio or an image from another site.</description>
+    <description xml:lang="nl">Download video, audio of een afbeelding van een andere site.</description>
+    <body jsp="download.jspx">
+      <param name="status" />
+    </body>
+  </block>
+
+  <block name="update"
+         classification="mmbase.streams"
+         mimetype="text/html">
+    <title xml:lang="en">Update stream info</title>
+    <title xml:lang="nl">Update stream info</title>
+    <description xml:lang="en">
+      Use FFmpeg (ffmpeg -i infile.mov) the information about streams in mmbase.
+    </description>
+    <description xml:lang="nl">
+      Gebruik FFmpeg (ffmpeg -i infile.mov) om informatie over streams bij te werken in mmbase.
+    </description>
+    <body jsp="updatesources.jspx">
+      <param name="update" />
+      <param name="cache" />
+      <param name="page" type="java.lang.Integer" />
+      <param name="max"  type="java.lang.Integer" />
+      <param name="batch" />
+    </body>
+  </block>
+
+  <block name="delete-cache"
+         mimetype="text/html">
+    <title xml:lang="en">Delete cache</title>
+    <title xml:lang="nl">Verwijder cache</title>
+    <description xml:lang="en">
+      Delete an individual stream (cache).
+    </description>
+    <description xml:lang="nl">
+      Verwijder een stream (cache).
+    </description>
+    <body jsp="delete-cache.jspx">
+      <param name="delete" />
+      <param name="cache" />
+    </body>
+  </block>
+
+  <block name="edit-cache"
+         mimetype="text/html">
+    <title xml:lang="en">Edit cache</title>
+    <title xml:lang="nl">Wijzig cache</title>
+    <description xml:lang="en">
+      Edit stream (cache), change key and re-transcode with new ffmpeg parameters.
+    </description>
+    <description xml:lang="nl">
+      Wijzig een stream (cache), verander key met ffmpeg parameters en re-transcode het.
+    </description>
+    <body jsp="edit-cache.jspx">
+      <param name="save" />
+      <param name="cache" />
+    </body>
+  </block>
+
+</component>

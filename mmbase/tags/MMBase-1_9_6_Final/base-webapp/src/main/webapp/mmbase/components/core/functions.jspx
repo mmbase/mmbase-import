@@ -1,0 +1,32 @@
+<mm:content
+    type="application/xml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <mm:cloud rank="basic user">
+    <div
+        class="mm_c c_core b_functions ${requestScope.className}"
+        id="${requestScope['org.mmbase.componentId']}">
+
+      <mm:import externid="type" from="request">sets</mm:import>
+
+      <ul class="tabs">
+        <c:forEach items="sets,nodes,builders,modules" var="t">
+          <li class="${type eq t ? 'current' : ''}">
+            <mm:link referids="t@type">
+              <a href="${_}">${t}</a>
+            </mm:link>
+          </li>
+        </c:forEach>
+      </ul>
+
+      <mm:include page="functions-${type}.jspx" />
+
+    </div>
+  </mm:cloud>
+</mm:content>
+

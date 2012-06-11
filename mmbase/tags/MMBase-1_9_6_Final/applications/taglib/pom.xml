@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-application-parent</artifactId>
+    <version>1.9-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>mmbase-taglib</artifactId>
+  <name>MMBase Taglib</name>
+  <packaging>war</packaging>
+  <version>${mmbase.version}</version>
+
+
+  <description>
+    The MMBase JSP Taglib is the main technology used to create dynamic pages that display content
+    from MMBase. You will probably always use this component.
+  </description>
+
+
+  <scm>
+    <url>https://scm.mmbase.org/mmbase/trunk/applications/taglib</url>
+    <connection>scm:svn:${project.scm.url}</connection>
+    <developerConnection>${project.scm.connection}</developerConnection>
+  </scm>
+
+  <build>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>assemblies/examples-assembly.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>xml-maven-plugin</artifactId>
+        <version>1.0-beta-3</version>
+        <executions>
+          <execution>
+            <goals><goal>transform</goal></goals>
+          </execution>
+        </executions>
+        <configuration>
+          <transformationSets>
+            <transformationSet>
+              <outputDir>${basedir}/target/generated/src/main/resources/META-INF</outputDir>
+              <dir>${basedir}/src/main/xml/</dir>
+              <stylesheet>${basedir}/../share/xslt/xml2tld.xslt</stylesheet>
+              <parameters>
+                <parameter><name>version</name><value>2.0</value></parameter>
+                <parameter><name>uri</name><value>http://www.mmbase.org/mmbase-taglib-2.0</value></parameter>
+              </parameters>
+              <includes><include>mmbase-taglib.xml</include></includes>
+              <fileMappers>
+                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                  <targetName>mmbase-taglib-2.tld</targetName>
+                </fileMapper>
+              </fileMappers>
+            </transformationSet>
+            <transformationSet>
+              <outputDir>${basedir}/target/generated/src/main/resources/META-INF</outputDir>
+              <dir>${basedir}/src/main/xml/</dir>
+              <stylesheet>${basedir}/../share/xslt/xml2tld.xslt</stylesheet>
+              <includes><include>mmbase-taglib.xml</include></includes>
+              <fileMappers>
+                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                  <targetName>mmbase-taglib.tld</targetName>
+                </fileMapper>
+              </fileMappers>
+            </transformationSet>
+            <!--
+            <transformationSet>
+              <dir>${basedir}/src/main/xml/</dir>
+              <stylesheet>${basedir}/../share/xslt/xml2html.xslt</stylesheet>
+              <includes>
+                <include>*.xml</include>
+              </includes>
+              <fileMappers>
+                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+                  <targetExtension>.html</targetExtension>
+                </fileMapper>
+              </fileMappers>
+            </transformationSet>
+            -->
+          </transformationSets>
+        </configuration>
+      </plugin>
+      <!--
+      <plugin>
+        <groupId>net.sourceforge.maven-taglib</groupId>
+        <artifactId>maven-taglib-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>taglibdocjar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      -->
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>7.0.0.pre5</version>
+        <configuration>
+          <!--
+          <jettyEnvXml>${basedir}/jetty-env.xml</jettyEnvXml>
+          -->
+          <systemProperties>
+          </systemProperties>
+          <webXml>${basedir}/src/test/webapp/WEB-INF/web.xml</webXml>
+          <webAppConfig>
+            <contextPath>/mmbase-taglib-test</contextPath>
+            <baseResource implementation="org.mortbay.resource.ResourceCollection">
+              <resourcesAsCSV>src/main/webapp,${basedir}/target/classes,src/test/webapp</resourcesAsCSV>
+            </baseResource>
+          </webAppConfig>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.mmbase</groupId>
+            <artifactId>mmbase-rmmci</artifactId>
+            <version>${project.version}</version>
+            <classifier>client</classifier>
+          </dependency>
+          <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2.1</version>
+          </dependency>
+        </dependencies>
+        </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-resources</artifactId>
+      <version>${project.version}</version>
+      <classifier>classes</classifier>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <!--
+        Spring has a mock imlementation of PageContext, which is used for testing some parts of this taglib.
+    -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>3.0.4.RELEASE</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>3.0.4.RELEASE</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <name>MMBase Maven2 repository</name>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+    <repository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 snapshots repository</name>
+      <url>http://www.mmbase.org/snapshots</url>
+    </repository>
+  </repositories>
+</project>

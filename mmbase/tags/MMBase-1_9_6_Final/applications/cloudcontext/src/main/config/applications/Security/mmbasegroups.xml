@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mmbasegroups   exportsource="mmbase://www.mmbase.org/cloudcontextsecurity" timestamp="20020516170724">
+	<node number="470" owner="admin" alias="mayreadallgroup">
+		<name>Everybody</name>
+		<description></description>
+	</node>
+
+	<node number="468" owner="admin">
+		<name>Administrators</name>
+		<description></description>
+	</node>
+
+	<node number="600" owner="admin" alias="defaultusergroup">
+		<name>Users</name>
+		<description></description>
+	</node>
+
+</mmbasegroups>

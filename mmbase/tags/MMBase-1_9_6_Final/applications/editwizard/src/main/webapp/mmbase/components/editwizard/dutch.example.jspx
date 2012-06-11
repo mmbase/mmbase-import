@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<div
+    class="mm_c c_editwizard b_dutch.example ${requestScope.componentClassName}"
+    id="${requestScope.componentId}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+
+  <mm:import id="ew"><mm:setting name="location" />/jsp</mm:import>
+  <mm:import id="templates">/mmbase/components/editwizard/</mm:import>
+  <mm:import id="referrer"><mm:url absolute="context" /></mm:import>
+  <mm:import externid="language">nl</mm:import>
+  <mm:write referid="language" jspvar="lang" vartype="string" >
+    <h1>Editwizard - samples, '<jsp:expression>new java.util.Locale(lang, "").getDisplayLanguage(java.util.Locale.US)</jsp:expression>' version</h1>
+  </mm:write>
+  <p>
+    This example uses the default editwizard XSL's, much like the
+    'simple' editwizard example. It does however orders the editwizards
+    to present as much in dutch as possible by passing the
+    'language=nl' argument.
+  </p>
+  <p>
+    Support for other languages can be added in
+    [editwizard-home]/data/i18n, and of course also in the builder
+    xml's. Texts in the  editwizard-xml's can also be specified
+    in more than one language by use of the 'xml:lang' attribute on the
+    elements for which it would be logical.
+  </p>
+  <table>
+    <tr><td>
+      <mm:link referids="referrer,templates,language" page="$ew/list.jsp">
+        <mm:param name="wizard">samples/people</mm:param>
+        <mm:param name="nodepath">people</mm:param>
+        <a href="${_}">Person-Test</a>
+      </mm:link>
+    </td>
+    <td>
+      A simple one-step person editor.
+    </td>
+    </tr>
+    <tr>
+      <td>
+        <mm:link referids="referrer,templates,language" page="$ew/list.jsp">
+          <mm:param name="wizard">lib/createimage</mm:param>
+          <mm:param name="nodepath">images</mm:param>
+          <a href="${_}">Images</a>
+        </mm:link>
+        </td><td>
+        You can also upload images with an editwizard. Here is shown how this can be done.
+      </td>
+    </tr>
+    <tr><td>
+      <mm:link referids="referrer,templates,language" page="$ew/list.jsp">
+        <mm:param name="wizard">samples/news</mm:param>
+        <mm:param name="nodepath">news</mm:param>
+        <a href="${_}">News</a>
+      </mm:link>
+    </td>
+    <td>
+      An editor for news articles. In the one step you can create or add a news article and relate people and images to it.
+    </td>
+    </tr>
+  </table>
+  <hr />
+  <mm:cloudinfo type="user" /> (<mm:cloudinfo type="rank" />)
+  <hr />
+  <mm:link page="examples">
+    <a class="navigate" href="${_}"><img alt="back" src="${mm:link('/mmbase/style/images/back.png')}" />
+    </a>
+  </mm:link>
+  <br />
+  <mm:link>
+    <mm:param name="language"><jsp:expression>java.util.Locale.getDefault().getLanguage()</jsp:expression></mm:param>
+    <a href="${_}>">default</a><br />
+  </mm:link>
+  <mm:link>
+    <mm:param name="language">en</mm:param>
+    <a href="${_}">english</a><br />
+  </mm:link>
+  <mm:link>
+    <mm:param name="language">nl</mm:param>
+    <a href="${_}">dutch</a><br />
+  </mm:link>
+  <mm:link>
+    <mm:param name="language">fr</mm:param>
+    <a href="${_}">french</a><br />
+  </mm:link>
+  <mm:link>
+    <mm:param name="language">it</mm:param>
+    <a href="${_}">italian</a><br />
+  </mm:link>
+  <mm:link>
+    <mm:param name="language">eo</mm:param>
+    <a href="${_}">esperanto</a><br />
+  </mm:link>
+  <mm:link>
+    <mm:param name="language">zh</mm:param>
+    <a href="${_}">chinese</a><br />
+  </mm:link>
+  <a href="mailto:editwizard@meeuw.org">Offer your help to improve/add support for your language</a><br />
+</div>

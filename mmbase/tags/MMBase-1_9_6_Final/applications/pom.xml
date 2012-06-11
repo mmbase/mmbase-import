@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-parent</artifactId>
+    <version>1.9-SNAPSHOT</version>
+ </parent>
+
+  <groupId>org.mmbase</groupId>
+  <artifactId>mmbase-applications</artifactId>
+  <packaging>pom</packaging>
+  <name>MMBase Applications</name>
+  <version>1.9-SNAPSHOT</version>
+
+  <description>
+    Applications are war overlays then can plug in some functionality into an existing MMBase installation.
+    This would normally contain at least a 'component', but it can e.g. also be only a security implementation.
+   </description>
+
+  <scm>
+    <url>https://scm.mmbase.org/mmbase/trunk/applications/</url>
+  </scm>
+
+  <build>
+    <defaultGoal>install</defaultGoal>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>mmapplications_all</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>resources</module>
+        <module>taglib</module>
+        <module>cloudcontext</module>
+        <module>crontab</module>
+        <module>dove</module>
+        <module>editwizard</module>
+        <module>email</module>
+        <module>media</module>
+        <module>notifications</module>
+        <module>searchrelate</module>
+        <module>searchrelate/example-webapp</module>
+
+        <module>richtext</module>
+        <module>richtext/content</module>
+        <module>richtext/wiki</module>
+
+        <module>rmmci</module>
+        <module>rmmci/test</module>
+
+        <module>jumpers</module>
+        <module>xmlimporter</module>
+        <module>largeobjects</module>
+        <module>oscache-cache</module>
+        <module>clustering</module>
+        <module>commandserver</module>
+        <module>cloudsecurity</module>
+        <module>streams</module>
+
+        <module>mynews</module>
+        <module>vpro-wizards</module>
+
+
+        <!-- deprecated-->
+        <module>vwms</module>
+        <module>scan</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>mmapplications_subset1</id>
+      <!--
+          No deprecated and experimental stuff, no rmmci.
+      -->
+      <modules>
+        <module>resources</module>
+        <module>taglib</module>
+        <module>cloudcontext</module>
+        <module>crontab</module>
+        <module>dove</module>
+        <module>editwizard</module>
+        <module>email</module>
+        <module>media</module>
+        <module>searchrelate</module>
+        <module>richtext</module>
+        <module>jumpers</module>
+        <module>clustering</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>mmapplications_subset_media</id>
+      <!--
+          Media oriented (e.g. suffices for open images project)
+      -->
+      <modules>
+        <module>resources</module>
+        <module>taglib</module>
+        <module>cloudcontext</module>
+        <module>crontab</module>
+        <module>email</module>
+        <module>media</module>
+        <module>streams</module>
+        <module>searchrelate</module>
+        <module>richtext</module>
+        <module>jumpers</module>
+        <module>clustering</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>test_build</id>
+      <!--
+          Very few applications, to speed up things when testing the build process itself.
+      -->
+      <modules>
+        <module>resources</module>
+        <module>editwizard</module>
+        <module>largeobjects</module>
+        <module>mynews</module>
+        <module>oscache-cache</module>
+      </modules>
+    </profile>
+
+
+    <profile>
+      <id>privaterelease</id>
+      <!--
+          This profile makes it possible to build a release with a different version number.
+          This is valid for all (sub) modules which would otherwise use '${mmbase.version}'.
+      -->
+      <activation>
+        <property>
+          <name>my.version</name>
+        </property>
+      </activation>
+
+      <properties>
+        <mmbase.version.postfix>-${my.version}</mmbase.version.postfix>
+      </properties>
+      <distributionManagement>
+        <repository>
+          <id>${my.repository.id}</id>
+          <name>Corporate repository</name>
+          <url>${my.repository.url}</url>
+          <uniqueVersion>false</uniqueVersion> <!-- hmm? -->
+        </repository>
+        <snapshotRepository>
+          <id>${my.repository.id}</id>
+          <name>Corporate snapshot repository</name>
+          <url>${my.repository.url}</url>
+          <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+      </distributionManagement>
+    </profile>
+
+  </profiles>
+
+  <distributionManagement>
+    <repository>
+      <id>mmbase</id>
+      <name>MMBase maven 2 repository</name>
+      <url>scp://mmbase.org/home/tomcat/downloads/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 Snapshot Repository</name>
+      <url>scp://mmbase.org/home/tomcat/downloads/snapshots</url>
+      <uniqueVersion>false</uniqueVersion>
+    </snapshotRepository>
+    <site>
+      <id>mmbase-website</id>
+      <url>scp://mmbase.org/home/tomcat/downloads/mm2/</url>
+    </site>
+  </distributionManagement>
+
+
+</project>

@@ -1,0 +1,23 @@
+<!ELEMENT database-filters ( filter*, url*) >
+<!ATTLIST filter resource CDATA #REQUIRED >
+
+<!ELEMENT filter ( driver-class?, driver-name?, driver-version?, driver-major-version?, driver-minor-version?, database-product-name?, database-product-version? )* >
+
+<!ELEMENT driver-class ( #PCDATA ) >
+
+<!ELEMENT driver-name ( #PCDATA ) >
+
+<!ELEMENT driver-version ( #PCDATA ) >
+
+<!ELEMENT driver-major-version ( #PCDATA ) >
+<!ATTLIST driver-major-version condition (from|equals|until) #IMPLIED >
+
+<!ELEMENT driver-minor-version ( #PCDATA ) >
+<!ATTLIST driver-minor-version condition (from|equals|until) #IMPLIED >
+
+<!ELEMENT database-product-name ( #PCDATA ) >
+
+<!ELEMENT database-product-version ( #PCDATA ) >
+
+<!ELEMENT url ( #PCDATA ) >
+<!ATTLIST url driver-class CDATA #REQUIRED >
