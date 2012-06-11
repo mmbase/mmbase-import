@@ -10,23 +10,30 @@ See http://www.MMBase.org/license
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
+  <!--
+      This pom is responsible for building the mmbase jar, and perhaps the maven site.
+
+      The example war can be build with example-webapp/pom.xml
+
+
+  -->
+
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-parent</artifactId>
-    <version>2.0-SNAPSHOT</version>
-    <relativePath>../maven-base/pom.xml</relativePath>
+    <version>1.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>mmbase-core</artifactId>
-  <name>MMBase2 Core</name>
+  <artifactId>mmbase</artifactId>
+  <name>MMBase Core</name>
 
-  <description>
-    MMBase core is the part that actually implements the MMBase bridge. The database layer implementations can be found here.
-  </description>
+  <version>${base.version}</version>
 
-  <version>2.0-SNAPSHOT</version>
+  <properties>
+    <base.version>${mmbase.version}</base.version>
+  </properties>
 
   <scm>
     <url>https://scm.mmbase.org/mmbase/trunk/core/</url>
@@ -34,6 +41,20 @@ See http://www.MMBase.org/license
 
   <build>
     <plugins>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javacc-maven-plugin</artifactId>
+        <version>2.5</version>
+        <executions>
+          <execution>
+            <id>javacc</id>
+            <goals>
+              <goal>javacc</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
@@ -44,7 +65,7 @@ See http://www.MMBase.org/license
               <mainClass>org.mmbase.Version</mainClass>
             </manifest>
             <manifestEntries>
-              <url>${project.url}</url>
+              <url>${pom.url}</url>
             </manifestEntries>
             <manifestSections>
               <manifestSection>
@@ -57,7 +78,7 @@ See http://www.MMBase.org/license
                   <SCM-Revision>${sources.version}</SCM-Revision>
                   <Distribution>${project.version}</Distribution>
                   <Build-Date>${timestamp}</Build-Date>
-                  <Description>${project.description}</Description>
+                  <Description>${pom.description}</Description>
                 </manifestEntries>
               </manifestSection>
             </manifestSections>
@@ -73,9 +94,15 @@ See http://www.MMBase.org/license
         </executions>
       </plugin>
       <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.mmbase.maven</groupId>
         <artifactId>maven-mmbase-plugin</artifactId>
-        <version>2.0-SNAPSHOT</version>
+        <version>1.9-SNAPSHOT</version>
         <executions>
           <execution>
             <id>create-index-files</id>
@@ -95,23 +122,46 @@ See http://www.MMBase.org/license
   </build>
   <dependencies>
 
+    <!--
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+      <version>4.0.1</version>
+    </dependency>
+    -->
+
 
     <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-utils</artifactId>
-      <version>${project.version}</version>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <scope>provided</scope>
     </dependency>
-
     <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-bridge</artifactId>
-      <version>${project.version}</version>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
     </dependency>
-
+    <dependency>
+      <!-- this is actually a depdency of commons-fileupload
+           which for some reason we have to maintain manually nowadays.
+      -->
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>${jsp.groupId}</groupId>
       <artifactId>jsp-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -122,8 +172,16 @@ See http://www.MMBase.org/license
     </dependency>
 
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.4.1</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.yahoo.platform.yui</groupId>
+      <artifactId>yuicompressor</artifactId>
+      <version>2.4.2</version>
       <scope>provided</scope>
     </dependency>
 
@@ -139,7 +197,6 @@ See http://www.MMBase.org/license
       <artifactId>junit</artifactId>
     </dependency>
 
-    <!--
     <dependency>
       <groupId>org.mmbase.tests</groupId>
       <artifactId>mmbase-rmmci</artifactId>
@@ -147,29 +204,29 @@ See http://www.MMBase.org/license
       <classifier>client-skinny</classifier>
       <scope>test</scope>
     </dependency>
-    -->
-    <!--
-        Spring has a mock imlementation of PageContext, which is used for testing some parts of this taglib.
-    -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-mock</artifactId>
-      <version>2.0-rc3</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>2.0-m4</version>
-      <scope>test</scope>
-    </dependency>
-
-
-
-
-
 
   </dependencies>
+
+  <reporting>
+    <plugins>
+      <!--
+      <plugin>
+        <artifactId>maven-changelog-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>taglist-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javacc-maven-plugin</artifactId>
+      </plugin>
+      -->
+    </plugins>
+  </reporting>
 
   <!--
        If your local repository is still empty, and still want to start with this pom
@@ -221,7 +278,4 @@ See http://www.MMBase.org/license
       </build>
     </profile>
   </profiles>
-    <properties>
-        <netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
-    </properties>
 </project>

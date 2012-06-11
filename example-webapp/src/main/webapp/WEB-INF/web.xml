@@ -5,7 +5,7 @@
 
   Web-app 2.4 gives the possibility to use EL (Expression Language)
 
-  $Id$
+  $Id: web.xml 35123 2009-05-12 21:20:03Z michiel $
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -101,18 +101,6 @@
   </context-param>
 
   <!--
-      mm:url (mm:link) will encode the URL (using response.encodeUrl), unless the url matches the given regexp.
-
-      Encoding the URL would add jsessionids' to the URL.
-  -->
-
-  <context-param>
-   <param-name>mmbase.taglib.url.excludeForEncoding</param-name>
-   <param-value>.*\.(ico|jpg|gif|png|css|js)</param-value> <!-- this is the default value too -->
- </context-param>
-
-
-  <!--
       Whether the server must be 'stalled' until this web-app is completely running.  Recognized by
       MMBase.  If your web-app is in an application server with other application, it is good that
       the initialization of mmbase does not stall the initialization of the complete application
@@ -127,6 +115,7 @@
     <param-name>stall-server</param-name>
     <param-value>false</param-value>
   </context-param>
+
   <!--
       When creating a query, it is not necessary to specify which of the path elements are on wich side of the join via insrel.  Using the allowed
       relations in 'typerel' this will be implicitely corrected to the correct value.  If _both_ directions are possible, and it is not specified,
@@ -137,7 +126,7 @@
   -->
   <context-param>
     <param-name>mmbase.defaultRelationStepDirection</param-name>
-    <param-value>DESTINATION</param-value> <!-- Defaults to BOTH in MMBase lt 1.9.4 or this context-param is missing -->
+    <param-value>DESTINATION</param-value>
   </context-param>
 
 
@@ -149,12 +138,11 @@
     <param-name>mmbase.servlet.images.addfilename</param-name>
     <param-value>yes</param-value>
   </context-param>
-  <!-- same for attachments -->
+  <!-- some for attachments -->
   <context-param>
     <param-name>mmbase.servlet.attachments.addfilename</param-name>
     <param-value>yes</param-value>
   </context-param>
-
 
 
   <filter>

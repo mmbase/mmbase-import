@@ -100,19 +100,18 @@ public class TimerTag extends ContextReferrerTag {
      */
 
     public long haltTimer(int handle) throws JspTagException  {
-        long duration = System.currentTimeMillis() - timers.get(handle);
-        String timerid = timerIds.get(handle);
+        long duration = System.currentTimeMillis() - timers.get(handle).longValue();
+        String id = timerIds.get(handle);
         if (log.isDebugEnabled()) {
-            log.debug("Timer " + (name != Attribute.NULL ? name.getString(this) + ":"  : "")  + timerid + ": " + (double)duration / 1000 + " s");
+            log.debug("Timer " + (name != Attribute.NULL ? name.getString(this) + ":"  : "")  + id + ": " + (double)duration / 1000 + " s");
         }
-        totalTimes.put(timerid, totalTimes.get(timerid) + duration);
+        totalTimes.put(id, totalTimes.get(id) + duration);
         return duration;
     }
 
     /**
      * Initialize timer.
      */
-    @Override
     public int doStartTag() throws JspTagException {
         if (isTimerEnabled()) {
             log.info("Starting timer " + name.getString(this));
@@ -128,7 +127,6 @@ public class TimerTag extends ContextReferrerTag {
      *
      */
 
-    @Override
     public int doAfterBody() throws JspTagException {
         if (isTimerEnabled()) {
             haltTimer(0);
@@ -150,7 +148,6 @@ public class TimerTag extends ContextReferrerTag {
         return SKIP_BODY;
 
     }
-    @Override
     public int doEndTag() throws JspTagException {
         timers.clear();
         timerIds.clear();

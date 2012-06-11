@@ -22,6 +22,6 @@ import java.sql.*;
  */
 public interface DatabaseSupport {
 
-    void init();
-    void initConnection(Connection con);
+    public void init();
+    public void initConnection(Connection con);
 }

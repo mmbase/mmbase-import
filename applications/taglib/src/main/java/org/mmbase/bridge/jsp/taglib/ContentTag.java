@@ -82,17 +82,16 @@ public class ContentTag extends LocaleTag  {
         try {
             org.mmbase.util.xml.EntityResolver.registerPublicID("-//MMBase//DTD taglibcontent 1.0//EN", "taglibcontent_1_0.dtd", ContentTag.class);
             ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot().getChildResourceLoader("taglib")) {
-                @Override
-                public void onChange(String resource) {
-                    defaultEscapers.clear();
-                    defaultPostProcessors.clear();
-                    defaultEncodings.clear();
-                    charTransformers.clear();
-                    parameterizedCharTransformerFactories.clear();
-                    contentTypes.clear();
+                    public void onChange(String resource) {
+                        defaultEscapers.clear();
+                        defaultPostProcessors.clear();
+                        defaultEncodings.clear();
+                        charTransformers.clear();
+                        parameterizedCharTransformerFactories.clear();
+                        contentTypes.clear();
                         initialize(getResourceLoader(), resource);
-                }
-            };
+                    }
+                };
             watcher.add("content.xml");
             watcher.start();
             watcher.onChange("content.xml");
@@ -140,11 +139,9 @@ public class ContentTag extends LocaleTag  {
         } else {
             return new ParameterizedTransformerFactory() {
                 final ParameterizedTransformerFactory wrapped = Transformers.getTransformerFactory(claz, " parameterizedescaper " + id);
-                @Override
                 public Transformer createTransformer(Parameters parameters) {
                     return wrapped.createTransformer(parameters);
                 }
-                @Override
                 public Parameters createParameters() {
                     Parameters params = wrapped.createParameters();
                     params.setAutoCasting(true);
@@ -245,7 +242,7 @@ public class ContentTag extends LocaleTag  {
                 }
 
                 try {
-                    ct = fact.createTransformer(fact.createParameters());
+                    ct = (CharTransformer) fact.createTransformer(fact.createParameters());
                 } catch (Exception ex) {
                     log.debug("Could not be instantiated with default parameters only: " + ex.getMessage());
                     ct = null;
@@ -470,12 +467,14 @@ public class ContentTag extends LocaleTag  {
 
     public static CharTransformer getCharTransformer(String id,  ContextReferrerTag tag) throws JspTagException {
 
-        List<String> transs = org.mmbase.util.StringSplitter.splitFunctions(id);
+        List transs = org.mmbase.util.StringSplitter.splitFunctions(id);
 
         if (transs.size() > 1) {
             ChainedCharTransformer ct = new ChainedCharTransformer();
             // Iterator ids = StringSplitter.split(id).iterator();
-            for (String i : transs) {
+            Iterator ids = transs.iterator();
+            while (ids.hasNext()) {
+                String i = (String) ids.next();
                 CharTransformer c = getSimpleCharTransformer(i, tag);
                 if (ct != COPY) {
                     ct.add(c);
@@ -564,7 +563,7 @@ public class ContentTag extends LocaleTag  {
                 addVary("Accept");
                 String acceptHeader = request.getHeader("Accept");
                 log.debug("a: " + acceptHeader);
-                boolean acceptable = acceptHeader == null || acceptHeader.indexOf(t) != -1;
+                boolean acceptable = acceptHeader == null ? true : acceptHeader.indexOf(t) != -1;
                 if (! acceptable) {
                     if (a.startsWith("CRIPPLE")) {
                         log.debug("browser doesn't accept " + t + " crippling now");

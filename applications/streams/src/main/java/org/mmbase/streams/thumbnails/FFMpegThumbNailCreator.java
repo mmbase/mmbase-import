@@ -26,12 +26,11 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.io.*;
 
-import org.mmbase.bridge.*;
 import org.mmbase.streams.createcaches.Executors;
-import org.mmbase.util.WriterOutputStream;
-import org.mmbase.util.externalprocess.CommandExecutor;
-import org.mmbase.util.externalprocess.ProcessException;
+import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.externalprocess.*;
+import org.mmbase.util.WriterOutputStream;
 
 /**
  * Contains the functionality to fill the 'handle' field of a thumbnails object. For that it uses ffmpeg.

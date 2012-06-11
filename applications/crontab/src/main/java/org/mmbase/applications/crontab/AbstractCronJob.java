@@ -23,7 +23,6 @@ public abstract class AbstractCronJob implements CronJob {
      * Stores the CronEntry in protected member cronEntry. So extensions should override
      * {@link #init()} instead (in which they can use the cronEntry member).
      */
-    @Override
     public final void init(CronEntry cronEntry) {
         this.cronEntry = cronEntry;
         init();
@@ -38,17 +37,14 @@ public abstract class AbstractCronJob implements CronJob {
     /**
      * Empty implementation (probably that's what you want)
      */
-    @Override
     public void stop() {}
 
-    @Override
-    public final CronEntry getEntry() {
+    public CronEntry getEntry() {
         return cronEntry;
     }
 
     /**
      * Implement this.
      */
-    @Override
     public abstract void run();
 }

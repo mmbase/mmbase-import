@@ -20,7 +20,6 @@ import java.util.*;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -38,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * In other words we are using security to make nodes invisible.
  *
  * @author Michiel Meeuwissen
- * @version $Id$
+ * @version $Id: BasicContextProvider.java 37281 2009-07-27 12:28:24Z michiel $
  * @since  MMBase-1.9.6
  */
 public  class WorkFlowContextProvider extends BasicContextProvider {

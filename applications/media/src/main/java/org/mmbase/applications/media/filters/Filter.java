@@ -13,6 +13,8 @@ import org.mmbase.applications.media.urlcomposers.URLComposer;
 import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import org.mmbase.util.functions.Parameter;
 
 /**
  *

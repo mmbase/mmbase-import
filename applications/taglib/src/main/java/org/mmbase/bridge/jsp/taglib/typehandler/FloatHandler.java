@@ -32,8 +32,7 @@ public class FloatHandler extends AbstractTypeHandler {
         super(tag);
     }
 
-    @Override
-    protected Object cast(Object value, Node node, Field field) {
+    @Override protected Object cast(Object value, Node node, Field field) {
         if (value == null || "".equals(value)) return "";
         return  super.cast(value, node, field);
     }

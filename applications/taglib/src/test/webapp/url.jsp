@@ -26,15 +26,6 @@
       <mm:param name="a">AA</mm:param>
     </mm:url>
   </p>
-  <p>
-    <mm:url page="index.jsp" referids="a,b,c" absolute="true" />
-  </p>
-  <p>
-    <mm:url page="http://www.mmbase.org/index.jsp" referids="a,b,c" />
-  </p>
-  <p>
-    <mm:url page="http://www.mmbase.org/index.jsp" referids="a,b,c" absolute="true" />
-  </p>
 </body>
 </html>
 </mm:content>

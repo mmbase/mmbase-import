@@ -20,6 +20,7 @@ package org.mmbase.util.images;
 public class Dimension implements java.io.Serializable {
     private static final long serialVersionUID = 2773350183942417955L;
 
+
     public static final Dimension UNDETERMINED = new Dimension(-1, -1);
     protected int x;
     protected int y;
@@ -46,17 +47,16 @@ public class Dimension implements java.io.Serializable {
         return x * y;
     }
 
-    @Override
     public String toString() {
         return "" + x + "x" + y;
     }
 
     public boolean equalsIgnoreRound(Dimension dim, int offset) {
-        return dim.x >= x - offset && dim.x <= x + offset && // x OK
-                dim.y >= y - offset && dim.y <= y + offset; // y OK
+        boolean xOk = dim.x >= x - offset && dim.x <= x + offset;
+        boolean yOk = dim.y >= y - offset && dim.y <= y + offset;
+        return xOk && yOk;
     }
 
-    @Override
     public boolean equals(Object o) {
         if (o instanceof Dimension) {
             Dimension dim = (Dimension) o;
@@ -65,12 +65,11 @@ public class Dimension implements java.io.Serializable {
             return false;
         }
     }
-    @Override
     public int hashCode() {
         return (x + 1) * (y + 1);
     }
     /**
-     * Returns true if both x and y > 0.
+     * Returns true of both x and y > 0.
      * @since MMBase-1.8.1
      */
     public boolean valid() {

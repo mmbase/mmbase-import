@@ -115,7 +115,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     public void setFields(String f) throws JspTagException {
         fields = getAttribute(f);
     }
-    protected List<String> getFieldNames() throws JspTagException {
+    protected List<String> getFields() throws JspTagException {
         return fields.getList(this);
     }
 
@@ -178,7 +178,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
      * @since MMBase-1.8.1
      */
     protected NodeManager getNodeManagerFromQuery(String id, boolean exception) throws JspTagException {
-        NodeQueryContainer qc = findParentTag(NodeQueryContainer.class, id, exception);
+        NodeQueryContainer qc = (NodeQueryContainer) findParentTag(NodeQueryContainer.class, id, exception);
         if (qc != null) {
             NodeQuery query = qc.getNodeQuery();
             return query.getNodeManager();
@@ -236,7 +236,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             if (! "".equals(type.getString(this))) {
                 returnList = nodeManager.getFields(getType());
                 if (fields != Attribute.NULL) {
-                    for (String fieldName : getFieldNames()) {
+                    for (String fieldName : getFields()) {
                         returnList.add(nodeManager.getField(fieldName));
                     }
                 }
@@ -245,12 +245,10 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
                 returnList = nodeManager.getFields();
                 if (fields != Attribute.NULL) {
                     returnList.clear();
-                    for (String fieldName : getFieldNames()) {
+                    for (String fieldName : getFields()) {
                         if (fieldName.endsWith("?")) {
-                            fieldName = fieldName.substring(0, fieldName.length() - 1);
-                            if (!nodeManager.hasField(fieldName)) {
-                                continue;
-                            }
+                            fieldName = fieldName.substring(0,fieldName.length()-1);
+                            if (!nodeManager.hasField(fieldName)) continue;
                         }
                         returnList.add(nodeManager.getField(fieldName));
                     }

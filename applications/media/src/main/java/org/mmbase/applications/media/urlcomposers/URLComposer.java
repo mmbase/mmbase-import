@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.media.urlcomposers;
 
 import org.mmbase.applications.media.builders.MediaProviders;
+import org.mmbase.applications.media.builders.MediaSources;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.HashCodeUtil;
 import org.mmbase.util.MimeType;
@@ -107,7 +108,7 @@ public class URLComposer  {
         return source.getIntValue("bitrate");
     }
     
-    /**
+   /**
      * The mime-type of the produced URL. This is not necessarily the mimetype of the source.
      * (Though it normally would be)
      */

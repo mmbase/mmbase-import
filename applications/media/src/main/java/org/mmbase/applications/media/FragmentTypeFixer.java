@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Makes sure a mediasources node has its equivalent mediafragments,
+ * Makes sure a mediasources node has its equivalent mediafragments, 
  * a videosources needs a videofragments etc.
  *
  * @author Michiel Meeuwissen
@@ -26,7 +26,6 @@ public class FragmentTypeFixer implements CommitProcessor {
     public final static String NOT = FragmentTypeFixer.class + ".NOT";
     private static final long serialVersionUID = 1L;
 
-    @Override
     public void commit(Node node, Field field) {
         if (node.getCloud().getProperty(NOT) != null) {
             log.info("Skipping because of " + NOT);

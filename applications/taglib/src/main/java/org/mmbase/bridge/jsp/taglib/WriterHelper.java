@@ -247,7 +247,7 @@ public class WriterHelper {
             }
             if (overrideWrite != null) {
                 log.debug("override-write was used --> " + overrideWrite);
-                return overrideWrite;
+                return overrideWrite.booleanValue();
             }
             boolean result = "".equals(getString()) && (! hasBody);
             log.debug("Result " + result + " with body-string '" + getString() + "' and hasbody " + hasBody);
@@ -317,10 +317,9 @@ public class WriterHelper {
 
 
     /**
-     * Sets only the value in the helper, without setting the _Stack
+     * Sets only the value in the helper, withouth setting the _Stack
      * @since MMBase-1.8
      */
-    @SuppressWarnings("UseOfObsoleteCollectionType")
     public void setValueOnly(Object v, boolean noImplicitList) throws JspTagException {
         value = null;
         if (noImplicitList && ! overrideNoImplicitList &&  vartype != TYPE_LIST && vartype != TYPE_VECTOR && vartype != TYPE_SET) {
@@ -434,7 +433,7 @@ public class WriterHelper {
                 break;
             case TYPE_BOOLEAN:
                 if (! (v instanceof Boolean)) {
-                    v = Casting.toBoolean(v);
+                    v = Boolean.valueOf(Casting.toBoolean(v));
                 }
                 break;
             case TYPE_NODE:

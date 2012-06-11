@@ -44,7 +44,6 @@ public class RealSorter extends  ChainSorter {
      */
 
     protected class RealFormatSorter extends PreferenceSorter {        
-        @Override
         protected int getPreference(URLComposer ri) {           
             if (ri.getFormat() != Format.RM) return 0; 
             return 1;
@@ -79,7 +78,6 @@ public class RealSorter extends  ChainSorter {
         /**
          * @todo
          */
-        @Override
         protected int getPreference(URLComposer ri) {
             Map<String, Object> info           = ri.getInfo();
             int wantedSpeed    = -1;
@@ -143,7 +141,6 @@ public class RealSorter extends  ChainSorter {
         /**
          * @javadoc
          */
-        @Override
         protected int getPreference(URLComposer ri) {
             Map<String, Object> info           = ri.getInfo();
             int wantedChannels = -1;

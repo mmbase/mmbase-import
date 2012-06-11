@@ -20,7 +20,6 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.bridge.Node;
 import org.mmbase.util.*;
-import org.mmbase.util.MMBaseContext;
 import org.mmbase.util.transformers.Xml;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
@@ -429,7 +428,6 @@ public class MediaFragments extends MMObjectBuilder {
      * this, so on top is the mediafragment with the sources, and on
      * the bottom is the fragment itself.
      */
-    @SuppressWarnings("empty-statement")
     public Stack<MMObjectNode> getParentFragments(MMObjectNode fragment) {
         Stack<MMObjectNode> result = new Stack<MMObjectNode>();
         if (fragment == null) return result;
@@ -500,7 +498,6 @@ public class MediaFragments extends MMObjectBuilder {
       * mediafragment, was used for speeding up listings.
       * @deprecated
       */
-    @SuppressWarnings("UseOfObsoleteCollectionType")
      private void retrieveClassificationInfo() {
 
          MMObjectBuilder lookup = mmb.getMMObject("lookup");

@@ -82,7 +82,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
         if (o instanceof Node) {
             return (Node) o;
         } else {
-            return org.mmbase.bridge.util.BridgeCaster.toNode(o, getCloudVar());
+            return org.mmbase.util.Casting.toNode(o, getCloudVar());
         }
     }
 
@@ -144,9 +144,9 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
         super.fillStandardParameters(p);
         NodeProvider np = findNodeProvider(false);
         if (np != null) {
-            Node n = np.getNodeVar();
-            if (n != null) {
-                Cloud cloud = n.getCloud();
+            Node node = np.getNodeVar();
+            if (node != null) {
+                Cloud cloud = node.getCloud();
                 p.setIfDefined(Parameter.CLOUD, cloud);
                 p.setIfDefined(Parameter.USER, cloud.getUser());
             } else {

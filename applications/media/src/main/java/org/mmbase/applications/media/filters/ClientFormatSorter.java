@@ -30,7 +30,6 @@ public class ClientFormatSorter extends  PreferenceSorter {
     public  ClientFormatSorter() {
     }
     
-    @Override
     protected int getPreference(URLComposer ri) {
         if (log.isDebugEnabled()) {
             log.debug("ri: " + ri);

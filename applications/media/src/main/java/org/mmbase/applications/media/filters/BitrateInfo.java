@@ -10,7 +10,11 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.filters;
 
+import org.mmbase.applications.media.urlcomposers.URLComposer;
+import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
+import java.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 

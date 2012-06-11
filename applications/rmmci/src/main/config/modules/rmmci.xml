@@ -11,23 +11,21 @@
 		<!--
 			<property name="port">1111</property>
 		-->
+		<!-- 
+			port number is default 1111.
+		-->
 		<!--        
 			<property name="stubport">1112</property>
 		-->
-
-		<!-- RMI name to be used to bind to the registry. DEFAULT = remotecontext -->
-    <!--
+		<!-- RMI name to be used to bind to the registry. DEFLAUT = remotecontext -->
 		<property name="bindname">remotecontext</property>
-    -->
 
 		<!-- RemoteMMCI always first tries to connect to an existing RMI registry
 			RMIRegistryServer is the server name to connect to
 			if RMIRegistryServer is not set RemoteMMCI looks for a RMIRegistryServer
 			on the host defined in the mmbaseroot.xml module. If no RMIRegistryServer
 			was found RemoteMMCI create a new registry using the host name -->
-    <!--
 		<property name="RMIRegistryServer" />
-    -->
 
 		<!-- RemoteMMCI will start a thread which will check the object binding
 			The value should be an interval in milliseconds -->

@@ -6,7 +6,7 @@
     @since  MMBase-1.6.4
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id$
+    @version $Id: exception.xsl,v 1.6 2003-12-19 11:09:35 nico Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />

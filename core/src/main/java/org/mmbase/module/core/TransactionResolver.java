@@ -27,21 +27,13 @@ class TransactionResolver {
 
     // Using predicatable iteration order to ensure that object which are created first in the transaction also receive the lowest number
     private static final Comparator<MMObjectNode> COMP = new Comparator<MMObjectNode>() {
-        @Override
         public int compare(MMObjectNode o1, MMObjectNode o2) {
             if (o1 == null || o2 == null) return 0;
             return o1.getStringValue("_number").compareTo(o2.getStringValue("_number"));
         }
 
-        @Override
         public boolean equals(Object obj) {
             return this == obj;
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 7;
-            return hash;
         }
     };
 
@@ -63,7 +55,7 @@ class TransactionResolver {
         // Get the numbers
         for (Map.Entry<String, Integer> numberEntry : numbers.entrySet()) {
             Integer num = numberEntry.getValue();
-            if (num == null || num == -1) {
+            if (num == null || num.intValue() == -1) {
                 int newNumber = mmbase.getStorageManager().createKey();
                 if (log.isDebugEnabled()) {
                     log.debug("" + numberEntry.getKey() + " -> " + newNumber);
@@ -89,7 +81,7 @@ class TransactionResolver {
                 String key = node.getStringValue(tmpField);
                 Integer number = numbers.get(key);
                 if (number != null) {
-                    node.setValue(field, number);
+                    node.setValue(field, number.intValue());
                 }
             }
         }
@@ -100,7 +92,7 @@ class TransactionResolver {
      * The 'deleteRelations' code in bridge does not work for new nodes. For now, simply implicelty drop these kind of dangling relationss too.
      * @since MMBase-1.9.2
      */
-    private void ditchDanglingRelations(final Collection<MMObjectNode> nodes) {
+    private void ditchDanglingRelations(final Collection<MMObjectNode> nodes) throws TransactionManagerException {
 
         synchronized(nodes) {
 

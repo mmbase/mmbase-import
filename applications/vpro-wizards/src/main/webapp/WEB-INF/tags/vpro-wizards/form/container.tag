@@ -13,7 +13,6 @@
     on the action for the creation of this node.
 --%>
 
-<mm:cloud method="asis">
 <%-- set the default fields --%>
 <c:set var="action" scope="request">Node</c:set>
 <c:set var="authorized" value="false" scope="request"/>
@@ -55,8 +54,6 @@
 		            <input type="hidden" name="actions[${modifier}${action}][].id" value="new"/>
 		            <input type="hidden" name="actions[${modifier}${action}][].nodeType" value="${nodetype}"/>
 		            <input type="hidden" name="actions[${modifier}${action}][].nodeAsParam" value="nodenr"/>
-		            <input type="hidden" name="actions[${modifier}${action}][].securityContext"
-                       value="${requestScope['org.mmbase.vprowizards.securityContext']}"/>
 		        </c:if>
 		        <%--if --%>
 		        <c:if test="${modifier == 'update'}">
@@ -111,4 +108,3 @@
 	    </c:otherwise>
     </c:choose>
 </div>
-</mm:cloud>

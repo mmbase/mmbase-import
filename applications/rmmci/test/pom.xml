@@ -9,16 +9,11 @@
   <artifactId>mmbase-rmmci-tests</artifactId>
   <name>MMBase RMMCI TESTS</name>
   <packaging>jar</packaging>
-  <version>2.0-SNAPSHOT</version>
+  <version>1.9-SNAPSHOT</version>
   <description>
     Performs some tests of core again, testing wether they still work
     with the minimalistic class path provided by the rmmci client jar.
   </description>
-
-  <properties>
-    <mmbase.repos>scp://mmbase.org/home/tomcat/downloads/</mmbase.repos>
-  </properties>
-
 
   <build>
     <defaultGoal>test</defaultGoal>
@@ -49,13 +44,6 @@
       </plugins>
 
     </pluginManagement>
-
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ssh</artifactId>
-      </extension>
-    </extensions>
   </build>
   <dependencies>
     <dependency>
@@ -67,27 +55,9 @@
     </dependency>
     <dependency>
       <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-bridge</artifactId>
+      <artifactId>mmbase</artifactId>
       <version>${project.version}</version>
       <classifier>tests</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-bridge</artifactId>
-      <version>${project.version}</version>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-utils</artifactId>
-      <version>${project.version}</version>
-      <classifier>tests</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-bridge</artifactId>
-      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -121,16 +91,17 @@
     <repository>
       <id>mmbase</id>
       <name>MMBase maven 2 repository</name>
-      <url>${mmbase.repos}maven2</url>
+      <url>scp://mmbase.org/home/tomcat/downloads/maven2</url>
     </repository>
     <snapshotRepository>
       <id>mmbase-snapshots</id>
       <name>MMBase Maven2 Snapshot Repository</name>
-      <url>${mmbase.repos}snapshots</url>
+      <url>scp://mmbase.org/home/tomcat/downloads/snapshots</url>
+      <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
     <site>
       <id>mmbase-website</id>
-      <url>${mmbase.repos}mm2/</url>
+      <url>scp://mmbase.org/home/tomcat/downloads/mm2/</url>
     </site>
   </distributionManagement>
 </project>

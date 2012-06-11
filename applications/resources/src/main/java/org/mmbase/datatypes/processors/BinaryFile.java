@@ -139,7 +139,7 @@ public class BinaryFile {
                 if (existing != null && ! "".equals(existing)) {
                     File ef = new File(dir, existing);
                     if (ef.exists() && ef.isFile()) {
-                        log.service("Removing existing field " + ef);
+                        log.service("Removing existing file " + ef);
                         ef.delete();
                     } else {
                         log.warn("Could not find " + ef + " so could not delete it");
@@ -187,6 +187,7 @@ public class BinaryFile {
         @Override
         public Object process(Node node, Field field, Object value) {
             if (node != null && ! node.isNew() && value instanceof String) {
+                if (((String) value).length() == 0) return value;
                 File dir = getDirectory();
                 File file = new File(dir, (String) value);
                 try {
@@ -211,7 +212,7 @@ public class BinaryFile {
             if (value == null) return null;
             String fileName = (String) value;
             if (log.isDebugEnabled()) {
-                log.debug("String processing " + fileName);
+                log.debug("String processing: " + fileName);
             }
             if (fileName.startsWith("-") && node.getNumber() > 0) {
                 File dir = getDirectory();
@@ -220,7 +221,7 @@ public class BinaryFile {
                 File to = getFile(node, field, parts[1]);
                 if (! to.getParentFile().exists()) {
                     if (! (to.getParentFile().mkdirs())) {
-                    log.warn("Could not make directories " + to.getParentFile());
+                        log.warn("Could not make directories " + to.getParentFile());
                     }
                 }
                 if (log.isDebugEnabled()) {
@@ -257,7 +258,10 @@ public class BinaryFile {
                     }
                 }
             }
-
+            
+            if (log.isDebugEnabled()) {
+                log.debug("returning: " + fileName);
+            }
             return fileName;
         }
     }

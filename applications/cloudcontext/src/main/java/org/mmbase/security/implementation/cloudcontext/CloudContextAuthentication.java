@@ -20,7 +20,7 @@ import org.mmbase.security.implementation.cloudcontext.builders.Users;
  */
 public abstract class CloudContextAuthentication extends Authentication {
 
-    public final static CloudContextAuthentication getInstance() {
+    public static CloudContextAuthentication getInstance() {
         return (CloudContextAuthentication) org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthentication();
     }
 

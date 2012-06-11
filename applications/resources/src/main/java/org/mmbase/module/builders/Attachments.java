@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
-import org.mmbase.util.MMBaseContext;
 import org.mmbase.util.transformers.UrlEscaper;
 import org.mmbase.util.transformers.Xml;
 import org.mmbase.util.functions.*;
@@ -39,11 +38,9 @@ public class Attachments extends AbstractServletBuilder {
     public static final String FIELD_SIZE       = "size";
 
 
-    @Override
     protected String getAssociation() {
         return "attachments";
     }
-    @Override
     protected String getDefaultPath() {
         return "/attachment.db";
     }
@@ -68,7 +65,6 @@ public class Attachments extends AbstractServletBuilder {
         }
     }
 
-    @Override
     protected String getSGUIIndicator(MMObjectNode node, Parameters a) {
         String field = a.getString("field");
         if (field.equals("handle") || field.equals("")) {
@@ -127,8 +123,7 @@ public class Attachments extends AbstractServletBuilder {
     }
 
     protected final Set<String> ATTACHMENTS_HANDLE_FIELDS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(new String[] {FIELD_MIMETYPE, FIELD_SIZE})));
-
-    @Override
+    // javadoc inherited
     protected Set<String> getHandleFields() {
         return ATTACHMENTS_HANDLE_FIELDS;
     }
@@ -137,7 +132,6 @@ public class Attachments extends AbstractServletBuilder {
      * If mimetype is not filled on storage in the database, then we
      * can try to do smart things.
      */
-    @Override
     protected void checkHandle(MMObjectNode node) {
         super.checkHandle(node);
         if (getField(FIELD_SIZE) != null) {
@@ -152,7 +146,6 @@ public class Attachments extends AbstractServletBuilder {
      *
      * @since MMBase-1.6.1
      */
-    @Override
     protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         log.debug("executeFunction of attachments builder");
         if ("mimetype".equals(function)) {

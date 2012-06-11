@@ -131,7 +131,6 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         return container;
     }
 
-    @Override
     public ContextContainer getContextContainer() {
         ContextContainer container = (ContextContainer)pageContext.getAttribute(CONTAINER_KEY_PREFIX + number);
         if (container == null) throw new IllegalStateException("No container for " + this.getClass().getName() + " (" + CONTAINER_KEY_PREFIX + number + "). doStartTag not yet called?");
@@ -173,7 +172,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                 log.debug("picking up from " + refid + " in " + scope.getString(this) + " ->" + o);
             }
             if (o == null || "".equals(o)) { // that means, lets ignore it.
-                log.debug("Nothing found");
+                log.debug("Nothing foudn");
                 container = createContainer(getContextProvider().getContextContainer());
             } else {
                 if (! (o instanceof ContextContainer)) {
@@ -188,8 +187,8 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                     // if for some reason, the parent in the container is from a different
                     // request. Do not accept that.
                     PageContextContainer prevPc = (PageContextContainer) prevParent;
-                    if (prevPc.getBacking().getPageContext() != pageContext) {
-                        ServletRequest prevReq = unwrap(prevPc.getBacking().getPageContext().getRequest());
+                    if (((PageContextBacking) prevPc.getBacking()).getPageContext() != pageContext) {
+                        ServletRequest prevReq = unwrap(((PageContextBacking) prevPc.getBacking()).getPageContext().getRequest());
                         if (prevReq != null && prevReq != unwrap(pageContext.getRequest())) {
                             log.warn("found a pagecontext container for a different request (" + prevReq + " !=  '" + pageContext.getRequest() + "'). Repairing");
                         } else {
@@ -387,7 +386,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
 
     @Override
     public String toString() {
-        return getClass().getName() + " with id " + getId() + " with container " + pageContext.getAttribute(CONTAINER_KEY_PREFIX + number);
+        return getClass().getName() + " with id " + getId() + " with container " + (ContextContainer)pageContext.getAttribute(CONTAINER_KEY_PREFIX + number);
     }
 }
 

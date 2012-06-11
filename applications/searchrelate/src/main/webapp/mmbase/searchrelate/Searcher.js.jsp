@@ -1,9 +1,8 @@
-/*
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<mm:content type="text/javascript" language="${param.locale}">
-<fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
-*/
+/*<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@ taglib uri="http://www.opensymphony.com/oscache" prefix="os"
+%><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"  
+%><jsp:directive.page session="false" />
+*///<mm:content type="text/javascript" expires="3600" postprocessor="none" language="${param.locale}"><os:cache time="3600"><mm:escape  escape="javascript-compress"><fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
 /**
  * Generic mmbase search & relate tool. Javascript part.
  *
@@ -39,7 +38,23 @@ $(document).ready(
 		    return true;
 		}
             });
-
+	$(window).bind("beforeunload",
+		       function() {
+			   var idss ="";
+			   $(".mm_related").each(
+			       function() {
+				   if (idss.length > 0) {
+				       idss += ",";
+				   }
+				   idss += this.id;
+			       });
+			   var params = {ids: idss };
+			   var url = "${mm:link('/mmbase/searchrelate/clearSession.jspx')}";
+			   $.ajax({async: false,
+				   url: url, type: "GET", dataType: "xml", data: params
+				  });
+		       });
+	
 	/*
 	 * If you defined in your CSS that 'implicit' search results are not visible at all, then
 	 * this method arranges the texts on the search buttons accordingly
@@ -67,7 +82,7 @@ $(document).ready(
 			 });
                  }
 		);
-
+	
 	$("input.search").
 	    live("keyup",
 		 function(e) {
@@ -106,12 +121,13 @@ MMBaseLogger.prototype.debug = function (msg) {
         if (errorTextArea) {
             errorTextArea.value = "LOG: " + msg + "\n" + errorTextArea.value;
         } else {
-            // firebug console
-            console.log(msg);
-
+	    if (console != null) {
+		// firebug console
+		console.log(msg);
+	    }
         }
     }
-}
+};
 
 /*
  * ************************************************************************************************************************
@@ -121,7 +137,6 @@ MMBaseLogger.prototype.debug = function (msg) {
  * The 'relater' encapsulated 1 or 2 'searchers', and is responsible for moving elements from one to the other.
  */
 function MMBaseRelater(d, validator) {
-    var self = this;
     this.div           = d;
     this.related       = {};    // related nodes
     this.unrelated     = {};    // unrelated nodes
@@ -149,6 +164,7 @@ function MMBaseRelater(d, validator) {
 	if (maxNumber != null) {
 	    this.current.searcher.maxNumber = maxNumber;
 	}
+	this.current.searcher.nodeManager = $(d).find("div.settings span.currentManager").html();
     } else {
         this.logger.debug("No current rep found");
     }
@@ -165,6 +181,7 @@ function MMBaseRelater(d, validator) {
     this.logger.debug("found " + this.repository + " in ");
     if (this.repository != null) {
         this.addSearcher(this.repository, "repository");
+	    this.repository.searcher.nodeManager = $(d).find("div.settings span.repositoryManager").html();
     }
     this.relateCallBack = null;
     for (var i = 0; i < MMBaseRelater.readyFunctions.length; i++) {
@@ -209,7 +226,6 @@ function MMBaseRelater(d, validator) {
     }
     
     $(this.div).trigger("mmsrRelaterReady", [self]);
-
 }
 
 /**
@@ -375,8 +391,10 @@ MMBaseRelater.prototype.getNewRelationTr = function(nodenr) {
     var url = "${mm:link('/mmbase/searchrelate/relations.tr.jspx')}";
     var queryid = this.repository.searcher.getQueryId();
     queryid = queryid.replace(/repository/i, "current");
-
-    var params = {id: queryid, node: nodenr, fields: this.repository.searcher.fields};
+    if (nodenr.match(/\d*/)) {
+        nodenr = parseInt(nodenr);
+    }
+    var params = {id: queryid, fields: this.repository.searcher.fields, node: nodenr};
     var result;
     $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
         error: function(res, status) {
@@ -794,6 +812,7 @@ function MMBaseSearcher(d, r, type, logger) {
     }
     this.logger.debug("found url to use: " + this.searchUrl);
     this.maxNumber = -1;
+    this.nodeManager = "object";
 
 }
 
@@ -806,7 +825,6 @@ MMBaseSearcher.prototype.setFields = function(fields) {
 };
 MMBaseSearcher.prototype.setAliases = function(aliases) {
     this.aliases = aliases;
-    console.log(this.aliases);
 };
 
 MMBaseSearcher.prototype.setPageSize = function(pagesize) {
@@ -1033,7 +1051,7 @@ MMBaseSearcher.prototype.create = function () {
 
 MMBaseSearcher.prototype.getTr = function(node) {
     var url = "${mm:link('/mmbase/searchrelate/node.tr.jspx')}";
-    var params = {id: this.getQueryId(), node: node, fields: this.fields, customizedir: this.customizedir, editrelations: this.canEditrelations};
+    var params = {id: this.getQueryId(), nodemanager: this.nodeManager, node: node, fields: this.fields, customizedir: this.customizedir, editrelations: this.canEditrelations};
     var result;
     $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
             complete: function(res, status){
@@ -1107,7 +1125,4 @@ MMBaseSearcher.prototype.resetTrClasses = function() {
     });
 };
 
-/*
-</fmt:bundle>
-</mm:content>
-*/
+//</fmt:bundle></mm:escape></os:cache></mm:content>

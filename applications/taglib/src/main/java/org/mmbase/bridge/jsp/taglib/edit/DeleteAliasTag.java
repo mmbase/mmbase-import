@@ -19,7 +19,6 @@ import org.mmbase.bridge.Node;
  */
 
 public class DeleteAliasTag extends CreateAliasTag {    
-    @Override
     protected void doJob(Node n, String alias) {
         n.deleteAlias(alias);
     }

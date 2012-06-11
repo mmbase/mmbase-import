@@ -110,7 +110,6 @@ public class URLComposerFactory  {
             return null; // could not get instance, this is an error, but go on anyway (implemtnation checks for null)
         }
 
-        @Override
         public String toString() {
             return "" + format + ":" + klass.getName() + " " + protocol + " " + mimeType + " " + properties;
         }
@@ -121,7 +120,6 @@ public class URLComposerFactory  {
     private ComposerConfig defaultUrlComposer = new ComposerConfig(null, defaultComposerClass, null, MimeType.ANY);
 
     private ResourceWatcher configWatcher = new ResourceWatcher() {
-        @Override
         public void onChange(String file) {
             readConfiguration(file);
         }

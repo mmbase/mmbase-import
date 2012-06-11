@@ -29,7 +29,6 @@ import java.util.concurrent.TimeoutException;
 import org.mmbase.streams.createcaches.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 

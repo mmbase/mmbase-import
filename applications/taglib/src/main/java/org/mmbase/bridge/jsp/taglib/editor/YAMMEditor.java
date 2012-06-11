@@ -44,7 +44,6 @@ public class YAMMEditor extends Editor {
     };
 
 
-    @Override
     protected Parameter[] getParameterDefinition() {
         return PARAMS;
     }
@@ -66,9 +65,8 @@ public class YAMMEditor extends Editor {
      *
      * @param context PageContext used to write a string with a link and an icon to access yammeditor.jsp
      */
-    @Override
     public void getEditorHTML(PageContext context) throws IOException {
-        String html;
+        String html = "Sorry. You should see an icon and a link to yammeditor here.";
 
         String url = parameters.getString("url");
         String icon = parameters.getString("icon");
@@ -122,7 +120,9 @@ public class YAMMEditor extends Editor {
         }
 
         List<String> nl = getNodesFromQuery(query, nodenr);
-        for (String nr : nl) {
+        Iterator<String> e = nl.iterator();         // iterate over the startnodes
+        while (e.hasNext()) {
+            String nr = e.next();
             boolean startnode = false;
 
             /* fills fld2snMap (only used to keep track of startnodes,
@@ -130,7 +130,7 @@ public class YAMMEditor extends Editor {
             when a nr is found in this map ...
             */
 
-            if (!fld2snMap.containsValue(nr)) {
+            if (!fld2snMap.containsValue(nr) ) {
                 fld2snMap.put(String.valueOf(nodenr), nr);
                 log.debug("Added nodenr : " + nodenr + " sn : " + nr + " to fld2snMap");
             } else if (fld2snMap.isEmpty()) {
@@ -173,7 +173,10 @@ public class YAMMEditor extends Editor {
             log.debug("1. added nr to list of all the nodes in query: " + nr);
         }
 
-        for(Step step : steps) {
+        Iterator<Step> si = steps.iterator();
+        while (si.hasNext()) {
+            Step step = si.next();
+
             // Get the nodes from this step
             //   (haalt alle nodes uit step, itereert erover en stopt ze in nl )
             SortedSet<Integer> nodeSet = step.getNodes();
@@ -201,7 +204,9 @@ public class YAMMEditor extends Editor {
     protected List<String> fillPathList(List<Query> ql) {
         List<String> pl = new ArrayList<String>();
 
-        for (Query q : ql) {
+        Iterator<Query> i = ql.iterator();
+        while (i.hasNext()) {
+            Query q = i.next();
             String path = getPathFromQuery(q);
             if (path.length() != 0 && !pl.contains(path)) {
                 pl.add(path);
@@ -227,7 +232,9 @@ public class YAMMEditor extends Editor {
         java.util.List<Step> steps = query.getSteps();
         log.debug("Nr of steps : " + steps.size());
         if (steps.size() > 1) {     // no need to look for a path when there is just 1 step
-            for (Step step : steps) {
+            Iterator<Step> si = steps.iterator();
+            while (si.hasNext()) {
+                Step step = si.next();
 
                 String nodenrs = "";
                 SortedSet<Integer> nodeSet = step.getNodes();    // Get the (start?)nodes from this step

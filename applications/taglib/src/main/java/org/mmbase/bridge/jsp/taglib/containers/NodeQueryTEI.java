@@ -27,7 +27,6 @@ public class NodeQueryTEI extends TagExtraInfo {
      * Implementation of TagExtraInfo return values declared here
      * should be filled at one point, in this case with the CloudTag.
      **/
-    @Override
     public VariableInfo[] getVariableInfo(TagData data){
         VariableInfo[] variableInfo = null;
 

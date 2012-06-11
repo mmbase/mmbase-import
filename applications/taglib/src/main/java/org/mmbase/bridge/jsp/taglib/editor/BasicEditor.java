@@ -52,7 +52,6 @@ public class BasicEditor extends Editor {
     };
 
 
-    @Override
     protected Parameter[] getParameterDefinition() {
         return PARAMS;
     }
@@ -63,7 +62,6 @@ public class BasicEditor extends Editor {
      *
      * @param   context The PageContext
      */
-    @Override
     public void getEditorHTML(PageContext context) throws IOException {
 
         String nodenr = "";

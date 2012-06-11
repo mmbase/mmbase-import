@@ -14,7 +14,6 @@ import java.util.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import java.util.concurrent.*;
@@ -31,7 +30,6 @@ public class MMEvents extends MMObjectBuilder {
     private int notifyWindow = 3600;
     private ScheduledFuture future = null;
 
-    @Override
     public boolean init() {
         super.init();
         String tmp = getInitParameter("NotifyWindow");
@@ -49,7 +47,6 @@ public class MMEvents extends MMObjectBuilder {
         }
         if (enableNotify) {
             future =  ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
-                @Override
                 public void run() {
                     MMEvents.this.probeCall();
                 }
@@ -61,7 +58,6 @@ public class MMEvents extends MMObjectBuilder {
         return true;
     }
 
-    @Override
     public void shutdown() {
         if (future != null) {
             future.cancel(true);
@@ -140,22 +136,20 @@ public class MMEvents extends MMObjectBuilder {
             final MMObjectNode waitNode = wnode;
             final int sleep = sleeptime;
             ThreadPools.scheduler.schedule(new Runnable() {
-                @Override
-                public void run() {
-                    log.debug("Node local change " + waitNode.getNumber());
-                    MMEvents.super.nodeLocalChanged(mmb.getMachineName(), "" + waitNode.getNumber(), tableName, "c");
-                    for (MMObjectNode a : also) {
-                        if ((a.getIntValue("start") == sleep) || (a.getIntValue("stop") == sleep)) {
-                            log.debug("Node local change " + a.getIntValue("number"));
-                            MMEvents.super.nodeLocalChanged(mmb.getMachineName(), "" + a.getNumber(), tableName, "c");
+                    public void run() {
+                        log.debug("Node local change " + waitNode.getNumber());
+                        MMEvents.super.nodeLocalChanged(mmb.getMachineName(), "" + waitNode.getNumber(), tableName, "c");
+                        for (MMObjectNode a : also) {
+                            if ((a.getIntValue("start") == sleep) || (a.getIntValue("stop") == sleep)) {
+                                log.debug("Node local change " + a.getIntValue("number"));
+                                MMEvents.super.nodeLocalChanged(mmb.getMachineName(),"" + a.getNumber(), tableName,"c");
+                            }
                         }
                     }
-                }
-            }, (sleeptime - now), TimeUnit.SECONDS);
+                }, (sleeptime - now), TimeUnit.SECONDS);
         }
     }
 
-    @Override
     public int insert(String owner,MMObjectNode node) {
         int val = node.getIntValue("start");
         int newval = (int)(System.currentTimeMillis()/1000);
@@ -171,7 +165,6 @@ public class MMEvents extends MMObjectBuilder {
         return super.insert(owner, node);
     }
 
-    @Override
     public boolean commit(MMObjectNode node) {
         int val = node.getIntValue("start");
         int newval= ( int)(System.currentTimeMillis()/1000);

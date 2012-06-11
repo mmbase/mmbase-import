@@ -16,11 +16,11 @@ import org.mmbase.util.Strip;
 import org.mmbase.bridge.Field;
 import org.mmbase.core.CoreField;
 import org.mmbase.storage.StorageManagerFactory;
-import org.mmbase.module.core.CoreQueryContext;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.storage.search.implementation.BasicSearchQuery;
+import org.mmbase.storage.search.implementation.BasicStep;
 
 /**
  * Class for the converion of a expression string to a SQL where clause.
@@ -67,7 +67,7 @@ public class QueryConvertor {
             return query;
         }
 
-        StringBuilder buffer = new StringBuilder(64);
+        StringBuffer buffer = new StringBuffer(64);
         // query = query.toLowerCase();
         DBQuery parsedQuery = new DBQuery(query);
         // log.debug("Converting: " + query);
@@ -116,14 +116,14 @@ public class QueryConvertor {
             // "where"-clause.
             // Strip leading "where ".
             constraint =
-                new ConstraintParser(CoreQueryContext.INSTANCE, query).toConstraint(where.substring(6));
+                new ConstraintParser(query).toConstraint(where.substring(6));
 
         } else if (where.substring(0, 6).equalsIgnoreCase("WHERE(")) {
             // "where"-clause, without space following "where".
             // Supported for backward compatibility.
             // Strip leading "where".
             constraint =
-                new ConstraintParser(CoreQueryContext.INSTANCE, query).toConstraint(where.substring(5));
+                new ConstraintParser(query).toConstraint(where.substring(5));
 
         } else {
             // AltaVista format.
@@ -143,15 +143,14 @@ class ParseItem {
      * Appends the converted item to the stringbuffer.
      * @param result the stringbuffer to which to add the item
      */
-    public void sqlConversion(StringBuilder result) {
+    public void sqlConversion(StringBuffer result) {
     }
 
     /**
      * Returns the converted item as a <code>String</code>
      */
-    @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
+        StringBuffer result = new StringBuffer();
         this.sqlConversion(result);
         return result.toString();
     }
@@ -164,7 +163,7 @@ class DBQuery  extends ParseItem {
     // logger
     //private static Logger log = Logging.getLoggerInstance(DBQuery.class.getName());
 
-    public List<ParseItem> items = new ArrayList<ParseItem>();
+    public Vector<ParseItem> items = new Vector<ParseItem>();
 
     /**
      * Creates the query
@@ -176,11 +175,11 @@ class DBQuery  extends ParseItem {
 
         while (parser.hasMoreTokens()) {
             item = new DBConditionItem(parser.nextToken());
-            items.add(item);
+            items.addElement(item);
 
             if (parser.hasMoreTokens()) {
                 item = new DBLogicalOperator(parser.nextToken());
-                items.add(item);
+                items.addElement(item);
             }
         }
     }
@@ -189,12 +188,13 @@ class DBQuery  extends ParseItem {
      * Appends the converted query to the stringbuffer.
      * @param result the stringbuffer to which to add the query
      */
-    @Override
-    public void sqlConversion(StringBuilder result) {
+    public void sqlConversion(StringBuffer result) {
+        Enumeration<ParseItem> enumeration = items.elements();
+
         result.append("WHERE ");
 
-        for (ParseItem pi : items) {
-            pi.sqlConversion(result);
+        while (enumeration.hasMoreElements()) {
+            enumeration.nextElement().sqlConversion(result);
         }
     }
 
@@ -259,15 +259,16 @@ class DBQuery  extends ParseItem {
 
             // Find corresponding field in query.
             StepField field = null;
-            for (StepField stepField : query.getFields()) {
-                StepField field2 = stepField;
+            Iterator<StepField> iFields = query.getFields().iterator();
+            while (iFields.hasNext()) {
+                StepField field2 = iFields.next();
                 String alias2 = field2.getStep().getAlias();
                 if (alias2 == null) {
                     alias2 = field2.getStep().getTableName();
                 }
                 if ((condition.prefix == null
                         || alias2.equals(condition.prefix))
-                        && field2.getFieldName().equals(condition.fieldName)) {
+                    && field2.getFieldName().equals(condition.fieldName)) {
                     field = field2;
                     break;
                 }
@@ -279,8 +280,9 @@ class DBQuery  extends ParseItem {
                 if (condition.prefix == null) {
                     step = query.getSteps().get(0);
                 } else {
-                    for (Step step1 : query.getSteps()) {
-                        Step step2 = step1;
+                    Iterator<Step> iSteps = query.getSteps().iterator();
+                    while (iSteps.hasNext()) {
+                        Step step2 = iSteps.next();
                         if (step2.getAlias().equals(condition.prefix)) {
                             step = step2;
                             break;
@@ -294,7 +296,7 @@ class DBQuery  extends ParseItem {
                     }
                 }
 
-                CoreField coreField = org.mmbase.module.core.MMBase.getMMBase().getBuilder(step.getTableName()).getField(condition.fieldName);
+                CoreField coreField = ((BasicStep)step).getBuilder().getField(condition.fieldName);
                 if (coreField == null) {
                     // Field not found.
                     throw new IllegalStateException("Field with name '"
@@ -477,8 +479,7 @@ class DBConditionItem extends ParseItem {
      * Appends the converted expression to the stringbuffer.
      * @param result the stringbuffer to which to add the expression
      */
-    @Override
-    public void sqlConversion(StringBuilder result) {
+    public void sqlConversion(StringBuffer result) {
         if (value instanceof DBWildcardStringValue || value instanceof DBStringValue)
             result.append("lower(").append(identifier).append(")");
             //result.append("").append(identifier).append("");

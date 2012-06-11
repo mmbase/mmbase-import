@@ -61,9 +61,10 @@ public class ForumManager {
 
     /**
      * Register the Public Ids for DTDs used by DatabaseReader
+     * This method is called by XMLEntityResolver.
      */
     public static void registerPublicIDs() {
-        EntityResolver.registerPublicID(PUBLIC_ID_MMBOBCONFIG_1_0, DTD_MMBOBCONFIG_1_0, ForumManager.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_MMBOBCONFIG_1_0, DTD_MMBOBCONFIG_1_0, ForumManager.class);
     }
 
     // is the install manager active (for dependencies reasons)
@@ -173,7 +174,7 @@ public class ForumManager {
         }
         return null;
     }
-
+    
     /**
      * Remove a forum by it's MMBase node number
      *
@@ -283,7 +284,7 @@ public class ForumManager {
             f.setSpeedPostTime(cf.getSpeedPostTime());
             f.setReplyOnEachPage(cf.getReplyOnEachPage());
             f.save(); // some basic settings, weird
-
+            
             // check if we need to copy ProfileDefs
             Iterator i = cf.getProfileDefs();
             if (i!=null) {

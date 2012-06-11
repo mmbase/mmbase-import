@@ -33,7 +33,6 @@ public class ValidTag extends ContextReferrerTag implements Condition {
         form = getAttribute(f);
     }
 
-    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
     }
@@ -42,7 +41,6 @@ public class ValidTag extends ContextReferrerTag implements Condition {
     }
 
 
-    @Override
     public int doStartTag() throws JspTagException {
         FormTag formTag = getFormTag(true, form);
         if (formTag.isValid() != getInverse()) {
@@ -52,7 +50,6 @@ public class ValidTag extends ContextReferrerTag implements Condition {
         }
     }
     
-    @Override
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
             if (bodyContent != null) {

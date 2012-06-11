@@ -24,6 +24,7 @@
 
       <mm:write referid="parameters.query" jspvar="q" vartype="org.mmbase.bridge.NodeQuery" write="false">
 
+
         <jsp:scriptlet>Node node = null;</jsp:scriptlet>
         <c:if test="${!empty nodeNumber}">
           <mm:node referid="nodeNumber" jspvar="n">

@@ -48,13 +48,11 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     }
 
 
-    @Override
     public void setJspvar(String jv) {
         nodeHelper.setJspvar(jv);
     }
 
     
-    @Override
     public Node getNodeVar() {
         return nodeHelper.getNodeVar();
     }
@@ -67,7 +65,6 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     /**
      * @since MMBase-1.8
      */
-    @Override
     public void setCommitonclose(String c) throws JspTagException {
         nodeHelper.setCommitonclose(c);
     }
@@ -81,7 +78,6 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
         nodeHelper.fillVars();
     }
                
-    @Override
     public  Query getGeneratingQuery() throws JspTagException {
         return nodeHelper.getGeneratingQuery();
     }

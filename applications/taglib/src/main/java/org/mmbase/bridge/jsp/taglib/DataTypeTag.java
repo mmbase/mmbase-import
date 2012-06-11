@@ -38,7 +38,6 @@ public class DataTypeTag extends CloudReferrerTag {
     private static final Logger log = Logging.getLoggerInstance(DataTypeTag.class);
 
     public static final String KEY = "org.mmbase.taglib.datatypecollector";
-    public static final int SCOPE = PageContext.SESSION_SCOPE;
 
     private Attribute base = Attribute.NULL;
     private Attribute nodeManager = Attribute.NULL;
@@ -66,7 +65,7 @@ public class DataTypeTag extends CloudReferrerTag {
         int scope = session == null ? PageContext.REQUEST_SCOPE : PageContext.SESSION_SCOPE;
         DataTypeCollector collector = (DataTypeCollector) pageContext.getAttribute(KEY, scope);
         if (collector == null) {
-            collector = new DataTypeCollector("");
+            collector = new DataTypeCollector(new Object());
             pageContext.setAttribute(KEY, collector, scope);
 
         }
@@ -109,7 +108,6 @@ public class DataTypeTag extends CloudReferrerTag {
         }
     }
 
-    @Override
     public int doEndTag() throws JspTagException {
         StringBuilder buf = new StringBuilder("<datatype base=\"");
         buf.append(base.getString(this)).append("\" id=\"").append(getId()).append("\" ").append(ATTR).append(">");

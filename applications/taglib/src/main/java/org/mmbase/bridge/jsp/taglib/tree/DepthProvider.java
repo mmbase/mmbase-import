@@ -17,12 +17,12 @@ package org.mmbase.bridge.jsp.taglib.tree;
  */
 public interface DepthProvider {
 
-    static final String KEY = "org.mmbase.taglib.depth";
+    public static final String KEY = "org.mmbase.taglib.depth";
 
     /**
      * Returns the 'size' of the current cluster node (the number of steps (minus the relation steps))
      */
-    int getDepth();
+    public int getDepth();
 
 
 }

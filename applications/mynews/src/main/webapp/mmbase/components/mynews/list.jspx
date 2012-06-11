@@ -43,7 +43,7 @@
         </ul>
       </mm:relatednodescontainer>
     </mm:node>
-
+     
     <mm:write referid="total" request="mynews.total" />
     
   </mm:cloud>

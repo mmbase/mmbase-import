@@ -34,9 +34,9 @@ public class SRNodeHandler extends IntegerHandler {
     }
 
     @Override
-    protected void appendClasses(Request request, StringBuilder buf, Node node, Field field, boolean search) {
+    protected void appendClasses(Request request, StringBuilder buf, Node node, Field field) {
         buf.append("mm_sr_searcher ");
-        super.appendClasses(request, buf, node, field, search);
+        super.appendClasses(request, buf, node, field);
     }
 
     Query getQuery(Cloud cloud, Node node, Field field) {
@@ -56,6 +56,10 @@ public class SRNodeHandler extends IntegerHandler {
         }
 
     }
+    @Override
+    public String check(Request request, Node node, Field field, boolean errors) {
+        return super.check(request, node, field, errors);
+    }
 
     @Override
     public String input(Request request, Node node, Field field, boolean search)  {
@@ -68,10 +72,10 @@ public class SRNodeHandler extends IntegerHandler {
             // Field to contain the actual information
             // Will be made hidden by the javascript.
             StringBuilder show =  new StringBuilder("<input type=\"text\" class=\" ");
-            appendClasses(request, show, node, field, search);
+            appendClasses(request, show, node, field);
             show.append("\" ");
             appendNameId(show, request, field);
-            Object value = getFieldValue(request, node.isNew() ? null : node, field, node.isNew());
+            Object value = getFieldValue(request, node == null || node.isNew() ? null : node, field, ! search);
             show.append("value=\"");
             show.append((value == null ? "" : Casting.toString(value)));
             show.append("\" />");

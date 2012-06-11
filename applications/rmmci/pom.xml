@@ -6,16 +6,13 @@
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-application-parent</artifactId>
-    <version>2.0-SNAPSHOT</version>
-    <relativePath>../../maven-base/applications/pom.xml</relativePath>
+    <version>1.9-SNAPSHOT</version>
   </parent>
 
   <artifactId>mmbase-rmmci</artifactId>
   <name>MMBase RMMCI</name>
   <packaging>jar</packaging>
-
-  <description>RMMCI stands for 'Remote MMBase Cloud Interfaces'. It is a 'remote' implementation of the MMBase bridge,
-  using RMI. It can be used to communicate with (another) MMBase installation.</description>
+  <version>${mmbase.version}</version>
 
   <build>
     <plugins>
@@ -26,12 +23,7 @@
         <dependencies>
           <dependency>
             <groupId>org.mmbase</groupId>
-            <artifactId>mmbase-bridge</artifactId>
-            <version>${mmbase.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.mmbase</groupId>
-            <artifactId>mmbase-utils</artifactId>
+            <artifactId>mmbase</artifactId>
             <version>${mmbase.version}</version>
           </dependency>
           <dependency>
@@ -62,7 +54,6 @@
             <include>org/mmbase/storage/search/SearchQuery.class</include>
             <include>org/mmbase/storage/search/SearchQueryWrapper.class</include>
             <include>org/mmbase/storage/search/FieldCompareConstraint.class</include>
-            <include>org/mmbase/storage/search/SearchQueryHandler.class</include>
 
             <include>org/mmbase/cache/Cacheable.class</include>
             <include>org/mmbase/security/UserContext.class</include>
@@ -89,6 +80,7 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
           <descriptors>
+            <descriptor>assembly/client.xml</descriptor>
             <descriptor>assembly/client-skinny.xml</descriptor>
             <descriptor>assemblies/examples-assembly.xml</descriptor>
           </descriptors>
@@ -111,13 +103,6 @@
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <version>${servlet.version}</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-core</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

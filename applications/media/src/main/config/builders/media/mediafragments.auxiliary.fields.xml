@@ -49,9 +49,7 @@
   </field>
 
   <field name="objecttype" state="virtual">
-    <datatype base="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
-      <pattern value="videofragments|audiofragments" enforce="onchange" />
-    </datatype>
+    <datatype base="mediafragments_objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes" />
   </field>
 
   <!-- <field> 'class'  -->

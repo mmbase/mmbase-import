@@ -51,14 +51,14 @@ public class Attribute {
      * @throws JspTagException when parsing of attributes fails
      * @since MMBase-1.9
      */
-    public static Attribute getAttribute(final String at, boolean interpretEmptyAsAbsent) throws JspTagException {
+    public static final Attribute getAttribute(final String at, boolean interpretEmptyAsAbsent) throws JspTagException {
         if (at == null) return NULL;
         if (interpretEmptyAsAbsent && at.length() == 0) {
             return NULL;
         }
         return cache.getAttribute(at);
     }
-    public static Attribute getAttribute(final String at) throws JspTagException {
+    public static final Attribute getAttribute(final String at) throws JspTagException {
         return getAttribute(at, false);
     }
 
@@ -110,7 +110,7 @@ public class Attribute {
         if (log.isDebugEnabled()) {
             log.debug("Appending " + attribute);
         }
-        if (! containsVars) buffer.append(attribute);
+        if (! containsVars) buffer.append(attribute.toString());
 
         for (Part ap : attributeParts) {
             ap.appendValue(tag, buffer);
@@ -202,9 +202,8 @@ public class Attribute {
      * String representation of this Attribute object (for debugging)
      * @see java.lang.Object#toString()
      */
-    @Override
     public String toString() {
-        return "att: " + attribute + " parts: " + attributeParts;
+        return "att: " + attribute.toString() + " parts: " + attributeParts;
     }
 
     /**
@@ -214,7 +213,7 @@ public class Attribute {
      * @throws JspTagException when parsing of attributes fails
      */
 
-    protected final void parse() throws JspTagException {
+    protected void parse() throws JspTagException {
         // search all occurrences of $
         int foundPos     = attribute.indexOf('$');
         if (foundPos == -1) {
@@ -291,6 +290,7 @@ public class Attribute {
         if (rest.length() > 0) {
             attributeParts.add(new StringPart(rest));
         }
+        return;
     }
 
     /**
@@ -311,7 +311,6 @@ public class Attribute {
          * String representation of this AttributePart (for debugging)
          * @see java.lang.Object#toString()
          */
-        @Override
         public String toString() {
             return "(" + getType() + "/" + part.toString() + ")";
         }
@@ -341,9 +340,7 @@ public class Attribute {
                 part = var;
             }
         }
-        @Override
         protected String getType() { return "Variable"; }
-        @Override
         final Object getValue(ContextReferrerTag tag) throws JspTagException {
             String v;
             if (containsVars) {
@@ -378,18 +375,16 @@ public class Attribute {
             } else {
                 evaluated = true;
                 ExprCalc cl = new ExprCalc((String) a.getValue(null));
-                part = cl.getResult();
+                part = new Double(cl.getResult());
             }
         }
-        @Override
         protected String getType() { return "Expression (" + getEvaluated() + ")"; }
-        @Override
         final Object getValue(ContextReferrerTag tag) throws JspTagException {
             if (evaluated) {
                 return part;
             } else {
                 ExprCalc cl = new ExprCalc( ((Attribute) part).getString(tag));
-                return cl.getResult();
+                return new Double(cl.getResult());
             }
         }
     }
@@ -401,9 +396,7 @@ public class Attribute {
 
     static class StringPart extends Part {
         StringPart(String o) {  part = o; }
-        @Override
         protected String getType() { return "String"; }
-        @Override
         final Object getValue(ContextReferrerTag tag) {
             return part;
         }
@@ -424,9 +417,7 @@ class AttributeCache extends Cache<String, Attribute> {
         super(1000);
     }
 
-    @Override
     public String getName()        { return "TagAttributeCache"; }
-    @Override
     public String getDescription() { return "Cache for parsed Tag Attributes"; }
     public final Attribute getAttribute(final String att) throws JspTagException {
         Attribute res = super.get(att);
@@ -452,13 +443,8 @@ class AttributeException extends JspTagException {
  */
 final class NullAttribute extends Attribute {
     NullAttribute() { }
-    @Override
     public final Object getValue(ContextReferrerTag tag) { return null; }
-    @Override
     public final String getString(ContextReferrerTag tag) { return ""; }
-    @Override
-    public final void   appendValue(ContextReferrerTag tag, StringBuilder buffer) {
-    }
-    @Override
+    public final void   appendValue(ContextReferrerTag tag, StringBuilder buffer) { return; }
     public final String toString() { return "NULLATTRIBUTE"; }
 }

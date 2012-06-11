@@ -17,7 +17,7 @@ import java.util.*;
  * java 1.5. (See also MMB-1409).
  *
  */
-public interface MultiConnection extends java.sql.Wrapper {
+public interface MultiConnection { // extends java.sql.Wrapper
 
 
     public void setLastSQL(String sql);
@@ -72,6 +72,7 @@ public interface MultiConnection extends java.sql.Wrapper {
     public int getUsage();
     public int getStartTime();
     public long getStartTimeMillis();
+    public <T> T unwrap(Class<T> iface);
     public void wrap(Connection con);
 
 

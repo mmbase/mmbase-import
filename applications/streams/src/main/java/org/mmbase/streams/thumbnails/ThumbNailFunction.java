@@ -24,13 +24,22 @@ package org.mmbase.streams.thumbnails;
 import java.io.File;
 import java.util.List;
 
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.functions.*;
+
 import org.mmbase.streams.createcaches.Job;
-import org.mmbase.streams.createcaches.Stage;
 import org.mmbase.streams.createcaches.Processor;
+import org.mmbase.streams.createcaches.Stage;
+import org.mmbase.util.functions.NodeFunction;
+import org.mmbase.util.functions.Parameter;
+import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
  * Function on mediafragments (videofragments really) to make thumbnails of video streams.

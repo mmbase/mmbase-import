@@ -35,11 +35,10 @@ public class CronJobs extends MMObjectBuilder {
     @Override public boolean init() {
         boolean res = super.init();
         org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                CronJobs.this.readJobs();
-            }
-        });
+                public void run() {
+                    CronJobs.this.readJobs();
+                }
+            });
         return res;
     }
 

@@ -47,7 +47,6 @@ public class MainFilter {
     public static final String CONFIG_FILE       = "media/filters.xml";
 
     private ResourceWatcher configWatcher = new ResourceWatcher() {
-        @Override
         public void onChange(String resource) {
             readConfiguration(resource);
         }
@@ -186,7 +185,6 @@ public class MainFilter {
         TestComparator(int i) {
             this.i = i;
         }
-        @Override
         public int compare(String o1, String o2) {
             return o1.hashCode() - o2.hashCode();
         }

@@ -62,7 +62,7 @@ public class CoreField extends AbstractField<Object> implements Field, Storable 
         // obtain maxlength from datatype where applicable
         if (dataType instanceof LengthDataType) {
             // maxlength is an int, but LengthDataType stores longs.
-            // this ispart of the bridge, so the conflict may be hard to solve
+            // this is part of the bridge, so the conflict may be hard to solve
             // without breaking backward compatibility in the bridge
             long length = ((LengthDataType)dataType).getMaxLength();
             if (length > Integer.MAX_VALUE) {
@@ -72,6 +72,7 @@ public class CoreField extends AbstractField<Object> implements Field, Storable 
             }
         }
     }
+
 
     /**
      * Copy constructor.
@@ -330,7 +331,7 @@ public class CoreField extends AbstractField<Object> implements Field, Storable 
      */
     public int compareTo(Field o) {
         int pos1 = getStoragePosition();
-        int pos2 = o.getStoragePosition();
+        int pos2 = ((CoreField)o).getStoragePosition();
         if (pos1 < pos2) {
             return -1;
         } else if (pos1 > pos2) {
@@ -369,7 +370,7 @@ public class CoreField extends AbstractField<Object> implements Field, Storable 
         this.maxLength = size;
         if (size > 0 && (dataType instanceof LengthDataType) && size < ((LengthDataType)dataType).getMaxLength()) {
             if (dataType.isFinished()) {
-                dataType = dataType.clone();
+                dataType = (DataType) dataType.clone();
             }
             ((LengthDataType)dataType).setMaxLength(size);
         }

@@ -33,7 +33,6 @@ public interface CronJob extends Runnable {
      * {@inheritDoc}
      * This is the method which is repeatedly called.
      */
-    @Override
     void run();
 
     CronEntry getEntry();

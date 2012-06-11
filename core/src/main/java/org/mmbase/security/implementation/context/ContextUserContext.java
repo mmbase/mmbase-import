@@ -33,19 +33,17 @@ public class ContextUserContext extends BasicUser implements java.io.Serializabl
     protected transient MMBaseCop manager;
 
     public ContextUserContext(String username, Rank rank, long key, MMBaseCop manager, String app) {
-        super(manager.getAuthentication(), app, username);
+        super(app);
         this.rank = rank;
         this.username = username;
         this.key = key;
         this.manager = manager;
     }
 
-    @Override
     public String getIdentifier() {
         return username;
     }
 
-    @Override
     public String getOwnerField() {
         if (manager == null) {
             manager = org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop();
@@ -59,7 +57,6 @@ public class ContextUserContext extends BasicUser implements java.io.Serializabl
         }
     }
 
-    @Override
     public Rank getRank() {
         return rank;
     }
@@ -68,17 +65,7 @@ public class ContextUserContext extends BasicUser implements java.io.Serializabl
         return key;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 79 * hash + (this.username != null ? this.username.hashCode() : 0);
-        hash = 79 * hash + (this.rank != null ? this.rank.hashCode() : 0);
-        hash = 79 * hash + (int) (this.key ^ (this.key >>> 32));
-        return hash;
-    }
 
-
-    @Override
     public boolean equals(Object o) {
         if (o instanceof ContextUserContext) {
             ContextUserContext ou = (ContextUserContext) o;

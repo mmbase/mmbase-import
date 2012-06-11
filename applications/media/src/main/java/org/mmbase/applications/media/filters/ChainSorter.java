@@ -53,7 +53,6 @@ public class ChainSorter extends  Sorter {
         }
     }
 
-    @Override
     public int compareURLComposer(URLComposer o1, URLComposer o2) {
         for (Sorter sorter : comparators) {
             int comp = sorter.compare(o1, o2); 

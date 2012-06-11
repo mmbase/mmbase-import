@@ -42,7 +42,6 @@ public class QueryNextBatchesTag extends StringListTag implements QueryContainer
         indexOffsetOffset = getAttribute(i);
     }
 
-    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
     }
@@ -51,14 +50,12 @@ public class QueryNextBatchesTag extends StringListTag implements QueryContainer
         maxtotal = getAttribute(m);
     }
 
-    @Override
     public int getIndexOffset() {
         return indexOffSet;
     }
 
 
 
-    @Override
     protected List<String> getList() throws JspTagException {
         Query query = getQuery(container);
         int offset = query.getOffset();
@@ -87,8 +84,8 @@ public class QueryNextBatchesTag extends StringListTag implements QueryContainer
                 maxSize += (availableForPrevious - numberOfPreviousBatches);
             }
 
-            int mn = getMaxNumber();
-            if (mn > 0 && maxSize > mn) maxSize = mn;
+            int max = getMaxNumber();
+            if (max > 0 && maxSize > max) maxSize = max;
 
         } else {
             maxSize = getMaxNumber();

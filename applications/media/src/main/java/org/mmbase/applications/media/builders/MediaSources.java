@@ -14,6 +14,7 @@ import java.util.*;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
 
+import org.mmbase.bridge.Node;
 
 import org.mmbase.util.functions.*;
 import org.mmbase.util.MimeType;
@@ -174,7 +175,6 @@ public class MediaSources extends MMObjectBuilder {
     /**
      * Used in the editors
      */
-    @Override
     public String getGUIIndicator(MMObjectNode source) {
 	    return "" + Format.get(source.getIntValue("format")) + "/" + source.getStringValue("bitrate") + "/" + source.getStringValue("channels");
 	/*
@@ -229,7 +229,6 @@ public class MediaSources extends MMObjectBuilder {
     /**
      * {@inheritDoc}
      */
-    @Override
     protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (log.isDebugEnabled()) {
             log.debug("executeFunction  " + function + "(" + args + ") on mediasources " + node);
@@ -502,7 +501,7 @@ public class MediaSources extends MMObjectBuilder {
         checkFields(node);
         return super.commit(node);
     }
-    
+
     @Override
     public synchronized int insert(String owner, MMObjectNode node) {
         checkFields(node);

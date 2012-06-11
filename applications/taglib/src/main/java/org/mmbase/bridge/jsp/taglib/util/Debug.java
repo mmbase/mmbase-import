@@ -27,11 +27,9 @@ public enum Debug {
     LOG,
 
     HTML {
-        @Override
         public String start(String name, Object url) {
             return "\n<!-- " + name + " page = '" + Xml.XMLEscape("" + url) + "' -->\n";
         }
-        @Override
         public String end(String name, Object url) {
             return "\n<!-- END " + name + " page = '" + Xml.XMLEscape("" + url) + "' -->\n";
         }
@@ -39,18 +37,15 @@ public enum Debug {
 
 
     CSS {
-        @Override
         public String start(String name, Object url) {
             return "\n/* " + name +  " page  = '" + url + "' */\n";
         }
-        @Override
         public String end(String name, Object url) {
             return "\n/* END " + name + " page = '" + url + "' */\n";
         }
     },
 
     XML {
-        @Override
         public String start(String name, Object url) {
             return "<!-- " + name + " page = '" + Xml.XMLEscape("" + url) + "' -->";
         }
@@ -61,11 +56,9 @@ public enum Debug {
     },
 
     PLAIN {
-        @Override
         public String start(String name, Object url) {
             return "[start:" + name + ":'" + url + "']";
         }
-        @Override
         public String end(String name, Object url) {
             return "[end:" + name + ":'" + url + "']";
         }

@@ -19,7 +19,7 @@ import java.util.*;
  * @version $Id$
  * @since MMBase-1.8
  */
-public abstract class ConnectionWrapper implements MultiConnection {
+public abstract class ConnectionWrapper { //implements Connection {
     /**
      * The wrapped connection
      */
@@ -32,7 +32,7 @@ public abstract class ConnectionWrapper implements MultiConnection {
     /**
      * Called just before every prepare statement. Can be overridden, because this default implementation is empty.
      */
-    public void setLastSQL(String sql) {
+    protected void setLastSQL(String sql) {
     }
     /**
      * @see java.sql.Connection#createStatement()
@@ -303,10 +303,10 @@ public abstract class ConnectionWrapper implements MultiConnection {
         throw new UnsupportedOperationException();
     }
     */
-    public boolean isValid(int i) {
+    public boolean isValid(int i) throws SQLException {
         throw new UnsupportedOperationException();
     }
-
+   
     /*
     public void setClientInfo(String name, String value) throws SQLClientInfoException {
         throw new UnsupportedOperationException();
@@ -316,22 +316,22 @@ public abstract class ConnectionWrapper implements MultiConnection {
     }
     */
 
-    public String getClientInfo(String name) {
+    public String getClientInfo(String name) throws SQLException {
         throw new UnsupportedOperationException();
     }
-    public Properties getClientInfo() {
-        throw new UnsupportedOperationException();
-    }
-
-
-    public Array createArrayOf(String typeName, Object[] elements) {
+    public Properties getClientInfo() throws SQLException {
         throw new UnsupportedOperationException();
     }
 
-    public Struct createStruct(String typeName, Object[] attributes) {
+    
+    public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
         throw new UnsupportedOperationException();
     }
 
+    public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+    
     public <T> T unwrap(Class<T> iface) {
         return (T) con;
     }

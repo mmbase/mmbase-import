@@ -41,27 +41,22 @@ import org.mmbase.util.logging.Logging;
 public class ContextAuthorization extends Authorization {
     private static final Logger   log = Logging.getLoggerInstance(ContextAuthorization.class);
     private Document 	    document;
-    private final ContextCache    cache = new ContextCache();
+    private ContextCache    cache = new ContextCache();
 
     protected  Cache<String, AllowingContexts> allowingContextsCache
         = new Cache<String, AllowingContexts>(200) { // 200 users.
-        @Override
-        public String getName() {
-            return "CS:AllowingContextsCache";
-        }
-        @Override
-        public String getDescription() {
-            return "Links user id to a set of contexts";
-        }
+            public String getName()        { return "CS:AllowingContextsCache"; }
+            public String getDescription() { return "Links user id to a set of contexts"; }
         };
 
+    private int            maxContextsInQuery = 50; // must be configurable
+
     /** contains elements of type = Operation */
-    private final Set<Operation>            globalAllowedOperations = new HashSet<Operation>();
-    private final Map<String, String>       replaceNotFound         = new HashMap<String, String>();
-    private final Map<UserContext, String>  userDefaultContexts     = new HashMap<UserContext, String>();
+    private Set<Operation>            globalAllowedOperations = new HashSet<Operation>();
+    private Map<String, String>       replaceNotFound         = new HashMap<String, String>();
+    private Map<UserContext, String>  userDefaultContexts     = new HashMap<UserContext, String>();
     private SortedSet<String>         allContexts;
 
-    @Override
     protected void load() {
         log.debug("using: '" + configResource + "' as config file for authentication");
         try {
@@ -108,7 +103,6 @@ public class ContextAuthorization extends Authorization {
         return defaultContext;
     }
 
-    @Override
     public void create(UserContext user, int nodeNumber) throws SecurityException {
         if (log.isDebugEnabled()) {
             log.debug("create on node #" + nodeNumber + " by user: " + user);
@@ -117,21 +111,18 @@ public class ContextAuthorization extends Authorization {
         setContext(user, nodeNumber, defaultContext);
     }
 
-    @Override
     public void update(UserContext user, int nodeNumber) throws SecurityException {
         if (log.isDebugEnabled()) {
             log.debug("update on node #" + nodeNumber+" by user: "  + user);
         }
     }
 
-    @Override
     public void remove(UserContext user, int nodeNumber) throws SecurityException{
         if (log.isDebugEnabled()) {
             log.debug("remove on node #" + nodeNumber + " by user: " + user);
         }
     }
 
-    @Override
     public void setContext(UserContext user, int nodeNumber, String context) throws SecurityException {
         // notify the log
         if (log.isDebugEnabled()) {
@@ -158,7 +149,6 @@ public class ContextAuthorization extends Authorization {
         }
     }
 
-    @Override
     public String getContext(UserContext user, int nodeNumber) throws SecurityException {
         // notify the log
         if (log.isDebugEnabled()) {
@@ -191,7 +181,6 @@ public class ContextAuthorization extends Authorization {
         }
     }
 
-    @Override
     public Set<String> getPossibleContexts(UserContext user, int nodeNumber) throws SecurityException {
         if (log.isDebugEnabled()) {
             log.debug("get possible context on node #" + nodeNumber + " by user: " + user);
@@ -254,7 +243,6 @@ public class ContextAuthorization extends Authorization {
         return node.getStringValue("owner");
     }
 
-    @Override
     public boolean check(UserContext user, int nodeNumber, Operation operation) throws SecurityException{
         if (log.isDebugEnabled()) {
             log.debug("check on node #" + nodeNumber + " by user: " + user + " for operation " + operation);
@@ -289,7 +277,7 @@ public class ContextAuthorization extends Authorization {
             Boolean result = cache.rightGet(operation, context, user.getIdentifier());
             if(result != null) {
                 log.trace("cache hit");
-                return result;
+                return result.booleanValue();
             }
         }
 
@@ -383,7 +371,7 @@ public class ContextAuthorization extends Authorization {
 
     private boolean userInGroups(String user, Set<String> groups, Set<String> done) {
         // look if we have something to do...
-        if(groups.isEmpty()) {
+        if(groups.size() == 0) {
             log.debug("entering userInGroups(recursive) with username: '"+user+"' without any groups, so user was not found..");
             return false;
         }
@@ -391,8 +379,9 @@ public class ContextAuthorization extends Authorization {
         if (log.isDebugEnabled()) {
             log.debug("entering userInGroups(recursive) with username: '" + user + "' and look if the user is in the following groups:");
 
-            for (String group : groups) {
-                log.debug("\t -> group : " + group);
+            Iterator<String> di = groups.iterator();
+            while (di.hasNext()) {
+                log.debug("\t -> group : " + di.next());
             }
         }
 
@@ -447,7 +436,6 @@ public class ContextAuthorization extends Authorization {
         return userInGroups(user, fetchedGroups, done);
     }
 
-    @Override
     public void verify(UserContext user, int nodeNumber, Operation operation) throws SecurityException {
         if (log.isDebugEnabled()) {
             if (operation.getInt() > Operation.READ_INT ) {
@@ -462,7 +450,6 @@ public class ContextAuthorization extends Authorization {
     }
 
 
-    @Override
     public boolean check(UserContext user, int nodeNumber, int srcNodeNumber, int dstNodeNumber, Operation operation) throws SecurityException {
         if (operation == Operation.CREATE) {
             // may link on both nodes
@@ -475,7 +462,6 @@ public class ContextAuthorization extends Authorization {
         }
     }
 
-    @Override
     public void verify(UserContext user, int nodeNumber, int srcNodeNumber, int dstNodeNumber, Operation operation) throws SecurityException {
         if (operation == Operation.CREATE) {
             // may link on both nodes
@@ -555,7 +541,6 @@ public class ContextAuthorization extends Authorization {
     }
 
 
-    @Override
     public QueryCheck check(UserContext userContext, Query query, Operation operation) {
         if(globalAllowedOperations.contains(operation)) {
             return COMPLETE_CHECK;
@@ -596,7 +581,6 @@ public class ContextAuthorization extends Authorization {
                 }
 
                 List<Step> steps = query.getSteps();
-                int maxContextsInQuery = 50;
                 if (steps.size() * ac.contexts.size() < maxContextsInQuery) {
                     Iterator<Step> i = steps.iterator();
                     Constraint constraint = null;
@@ -623,7 +607,7 @@ public class ContextAuthorization extends Authorization {
         }
     }
 
-    protected static class AllowingContexts {
+    private static class AllowingContexts {
         private final SortedSet<String> contexts;
         private final boolean inverse;
         AllowingContexts(SortedSet<String>  c, boolean i) {

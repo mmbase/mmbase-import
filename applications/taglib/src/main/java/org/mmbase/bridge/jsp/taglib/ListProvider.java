@@ -23,54 +23,53 @@ public interface ListProvider extends ContextProvider, LoopTag {
     /**
      * @return the size of the list
      */
-    int size();
+    public int size();
 
     /**
      * @return the index of the current item in a list
      *
      */
-    int getIndex();
+    public int getIndex();
 
 
     /**
      * @return The offset of the index (normally this will return 1)
      * @since MMBase-1.7
      */
-    int getIndexOffset();
+    public int getIndexOffset();
 
     /**
      * @return the current item in a list
      */
 
-    @Override
-    Object getCurrent();
+    public Object getCurrent();
 
 
     /**
-     * @return a boolean indicating whether the field on which was
+     * @return a boolean indicating wether the field on which was
      * sorted is changed.
      *
      */
-    boolean isChanged();
+    public boolean isChanged();
 
     /**
      * Removes the current item from the list.
      * @since MMBase-1.7
      */
-    void remove();
+    public void remove();
 
     /**
      * @since MMBase-1.9
      */
-    void setAdd(String c) throws JspTagException;
+    public void setAdd(String c) throws JspTagException;
     /**
      * @since MMBase-1.9
      */
-    void setRetain(String c) throws JspTagException;
+    public void setRetain(String c) throws JspTagException;
     /**
      * @since MMBase-1.9
      */
-    void setRemove(String c) throws JspTagException;
+    public void setRemove(String c) throws JspTagException;
 
 
     /**
@@ -82,36 +81,28 @@ public interface ListProvider extends ContextProvider, LoopTag {
         public ListProviderLoopTagStatus(ListProvider l) {
             prov = l;
         }
-        @Override
         public Object getCurrent() {
             return prov.getCurrent();
         }
-        @Override
         public int getIndex() {
             return prov.getIndex() +  prov.getIndexOffset();
         }
 
-        @Override
         public int getCount() {
             return prov.size();
         }
-        @Override
         public boolean isFirst() {
             return prov.getIndex() == 0;
         }
-        @Override
         public boolean isLast() {
             return getCount() == prov.getIndex() + 1;
         }
-        @Override
         public Integer getBegin() {
             return prov.getIndexOffset();
         }
-        @Override
         public Integer getEnd() {
             return prov.size() + prov.getIndexOffset() - 1;
         }
-        @Override
         public Integer getStep() {
             return 1;
         }

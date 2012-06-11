@@ -39,7 +39,6 @@ public class BetterStrategy extends ReleaseStrategy {
     private static final Logger relationEventLog = Logging.getLoggerInstance(BetterStrategy.class.getName() + ".relationevent");
 
     // inheritdoc
-    @Override
     public String getName() {
         return "Better Release Strategy";
     }
@@ -49,7 +48,6 @@ public class BetterStrategy extends ReleaseStrategy {
      *
      * @see org.mmbase.cache.QueryResultCacheReleaseStrategy#getDescription()
      */
-    @Override
     public String getDescription() {
         return "This strategy performs all kinds of checks to test if the node or relation event actually matches the query. " +
             "For node events the type is checked, as well as some other things. For relation events the type is checked as well as " +
@@ -58,7 +56,6 @@ public class BetterStrategy extends ReleaseStrategy {
             "outcome of a query.";
     }
 
-    @Override
     protected boolean doEvaluate(RelationEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
         return shouldRelease(event, query);
     }
@@ -70,7 +67,6 @@ public class BetterStrategy extends ReleaseStrategy {
      *
      * @return true if query should be released
      */
-    @Override
     protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
         if (log.isDebugEnabled()) {
             log.debug(event.toString());
@@ -274,7 +270,7 @@ public class BetterStrategy extends ReleaseStrategy {
 
             Integer role = step.getRole();
             if (matches &&
-                (role == null || role == event.getRole())) {
+                (role == null || role.intValue() == event.getRole())) {
                 return true;
             }
         }
@@ -312,7 +308,7 @@ public class BetterStrategy extends ReleaseStrategy {
                 if (log.isDebugEnabled()) {
                     log.debug("matching constraint found: " + constraintsForFieldList.size());
                 }
-                break;
+                break search;
             }
 
             for (StepField field : query.getFields()) {
@@ -335,7 +331,7 @@ public class BetterStrategy extends ReleaseStrategy {
                 if (log.isDebugEnabled()) {
                     log.debug("matching sortorders found: " + sortordersForFieldList.size());
                 }
-                break;
+                break search;
             }
         }
         if(log.isDebugEnabled()){
@@ -361,7 +357,7 @@ public class BetterStrategy extends ReleaseStrategy {
      * @return true if (all) the step(s) matching this event have nodes set, and non of these
      * match the number of the changed node (in which case the query should not be flused)
      */
-    private boolean checkSteps(NodeEvent event, SearchQuery query) {
+    private final boolean checkSteps(NodeEvent event, SearchQuery query) {
         //this simple optimization only works for nodeEvents
         MMBase mmb = MMBase.getMMBase();
         String eventTable = event.getBuilderName();
@@ -373,7 +369,7 @@ public class BetterStrategy extends ReleaseStrategy {
                 if (! (table.equals(eventTable) ||
                        eventBuilder.isExtensionOf(mmb.getBuilder(table)))) continue;
                 Set<Integer> nodes = step.getNodes();
-                if (nodes == null || nodes.isEmpty() ||  nodes.contains(event.getNodeNumber())) {
+                if (nodes == null || nodes.size() == 0 ||  nodes.contains(event.getNodeNumber())) {
                     return true;
                 }
             }

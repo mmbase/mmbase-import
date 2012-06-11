@@ -41,12 +41,6 @@ public class Unicast extends ClusterManager {
     /** Timeout of the connection.*/
     private int unicastTimeout = 10 * 1000;
 
-    private int version = 1;
-
-    private String peers;
-
-    private int maxMessageSize = 5 * 1025 * 1024;
-
 
     /** Sender which reads the nodesToSend Queue amd puts the message on the line */
     private ChangesSender ucs;
@@ -69,7 +63,7 @@ public class Unicast extends ClusterManager {
 
 
 
-    public Unicast() {
+    public Unicast(){
         readConfiguration(reader.getProperties());
         start();
     }
@@ -108,36 +102,9 @@ public class Unicast extends ClusterManager {
             } catch (Exception e) {}
         }
 
-        {
-
-            String tmpVersion = configuration.get("version");
-            if (tmpVersion != null && !tmpVersion.equals("")) {
-                try {
-                    version = Integer.parseInt(tmpVersion);
-                } catch (Exception e) {}
-            }
-            tmpVersion = configuration.get(org.mmbase.module.core.MMBase.getMMBase().getMachineName() + ".version");
-            if (tmpVersion != null && !tmpVersion.equals("")) {
-                try {
-                    version = Integer.parseInt(tmpVersion);
-                } catch (Exception e) {}
-            }
-        }
-
-        peers = configuration.get("peers");
-
-        String maxMessageSizeString = configuration.get("maxMessageSize");
-        if (maxMessageSizeString != null && maxMessageSizeString.length() > 0) {
-            maxMessageSize = Integer.parseInt(maxMessageSizeString);
-        }
-
         log.info("unicast host: "    + unicastHost);
         log.info("unicast port: "    + unicastPort);
         log.info("unicast timeout: " + unicastTimeout);
-        log.info("unicast version: " + version + " (" + (version > 1 ? "multiple messages" : "single message") + ")");
-        if (peers != null && peers.length() > 0) {
-            log.info("unicast peers: " + peers);
-        }
 
     }
 
@@ -148,18 +115,11 @@ public class Unicast extends ClusterManager {
         if (unicastPort == -1) {
             log.service("Not starting unicast threads because port number configured to be -1");
         } else {
-            ucs = new ChangesSender(reader.getProperties(), unicastPort, unicastTimeout, nodesToSend, send, version);
-            if (peers != null && peers.length() > 0) {
-                ucs.setOtherMachines(peers);
-            }
-            ucs.start();
-
+            ucs = new ChangesSender(reader.getProperties(), unicastPort, unicastTimeout, nodesToSend, send);
             try {
-                ucr = new ChangesReceiver(unicastHost, unicastPort, nodesToSpawn, version);
-                ucr.setMaxMessageSize(maxMessageSize);
-                ucr.start();
+                ucr = new ChangesReceiver(unicastHost, unicastPort, nodesToSpawn);
             } catch (java.io.IOException ioe) {
-                log.error(ioe.getMessage(), ioe);
+                log.error(ioe);
             }
         }
     }

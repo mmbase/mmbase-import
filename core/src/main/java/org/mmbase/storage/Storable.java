@@ -34,7 +34,7 @@ public interface Storable {
      * {@link StorageManagerFactory#getStorageIdentifier()} when it is first instantiated.
      * @return the identifier
      */
-    Object getStorageIdentifier() throws StorageException;
+    public Object getStorageIdentifier() throws StorageException;
 
     /**
      * Returns whether an object is (or, for a new object, should be) defined in the storage.
@@ -42,19 +42,19 @@ public interface Storable {
      *
      * @return <code>true</code> if the object is kept in the storage
      */
-    boolean inStorage();
+    public boolean inStorage();
 
     /**
      * Retrieves the storage type. The meaning of this type is dependent
      * on the storage implementation.
      */
-    int getStorageType();
+    public int getStorageType();
 
     /**
      * Sets the storage type. This method is called by the storage layer when first loading a builder.
      * The meaning of this type is dependent on the storage implementation.
      * @param value the value to set
      */
-    void setStorageType(int value);
+    public void setStorageType(int value);
 
 }

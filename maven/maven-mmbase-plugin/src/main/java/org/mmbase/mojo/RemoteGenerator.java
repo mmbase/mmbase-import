@@ -82,8 +82,7 @@ public class RemoteGenerator extends AbstractMojo {
       if (arts != null) {
          ClassLoader loader = getClassLoader(arts);
          for (Artifact artifact : arts) {
-            if (artifact.getGroupId().equals("org.mmbase")
-                && ! artifact.getScope().equals(Artifact.SCOPE_TEST)) {
+            if (artifact.getGroupId().equals("org.mmbase")) {
                generateBridgeClasses(loader, artifact.getFile(), objectsToWrap, remoteDir, rmiDir, proxyDir);
             }
          }
@@ -107,7 +106,7 @@ public class RemoteGenerator extends AbstractMojo {
              File f = artifact.getFile();
              if (f != null) {
                  getLog().info("Adding constituent " + f);
-                 remoteGenRealm.addConstituent(f.toURI().toURL());
+                 remoteGenRealm.addConstituent(f.toURL());
              } else {
                  getLog().error("Artifact " +  artifact + " has no file");
              }

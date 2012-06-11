@@ -61,7 +61,6 @@ public class MMBaseEntry implements IndexEntry {
         this.node = node;
     }
 
-    @Override
     public String getIdentifier() {
         if (multiLevel) {
             String alias = elementStep.getAlias();
@@ -73,7 +72,6 @@ public class MMBaseEntry implements IndexEntry {
     }
 
     // For MMBase indexing the 'key' for sub-queries is always equal to the identifier of the current node ('related nodes')
-    @Override
     public String getKey() {
         return getIdentifier();
     }
@@ -137,7 +135,6 @@ public class MMBaseEntry implements IndexEntry {
     }
 
 
-    @Override
     public void index(Document document) {
         final Map<String, Object> data = new HashMap<String, Object>();
         if (log.isTraceEnabled()) {
@@ -223,7 +220,6 @@ public class MMBaseEntry implements IndexEntry {
         }
     }
 
-    @Override
     public Collection<IndexDefinition> getSubDefinitions() {
         if (subQueries == null) {
             return Collections.emptyList();
@@ -404,7 +400,7 @@ public class MMBaseEntry implements IndexEntry {
     /**
      * Store textual data for a field to index.
      * The data is merged with any text already stored for indexing if appropriate.
-     * @param fieldname the name of the field used for indexing (the 'as' name of a field where appropriate)
+     * @param fieldName the name of the field used for indexing (the 'as' name of a field where appropriate)
      * @param value the textual value to index
      * @param data The map of fieldName/value mappings
      */
@@ -427,7 +423,7 @@ public class MMBaseEntry implements IndexEntry {
     /**
      * Store data for a field to index.
      * Data is only stored if it doesn't exist yet for this field.
-     * @param fieldname the name of the field used for indexing (the 'as' name of a field where appropriate)
+     * @param fieldName the name of the field used for indexing (the 'as' name of a field where appropriate)
      * @param value the value to index
      */
     void storeFieldData(Map<String, Object> data, String fieldName, Object value) {
@@ -441,7 +437,7 @@ public class MMBaseEntry implements IndexEntry {
 
     /**
      * Return the data of a field as a string.
-     * @param fieldname the name of the field used for indexing (the 'as' name of a field where appropriate)
+     * @param fieldName the name of the field used for indexing (the 'as' name of a field where appropriate)
      */
     String getFieldDataAsString(Map<String, ?> data, String fieldName) {
         Object o = data.get(fieldName);

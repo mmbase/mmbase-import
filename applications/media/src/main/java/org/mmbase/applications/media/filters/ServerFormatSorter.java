@@ -38,7 +38,6 @@ public class ServerFormatSorter extends  PreferenceSorter {
 
     public  ServerFormatSorter() {};
 
-    @Override
     public void configure(DocumentReader reader, Element el) {
         preferredFormats.clear();
         // reading preferredSource information
@@ -49,7 +48,6 @@ public class ServerFormatSorter extends  PreferenceSorter {
         }
     }
 
-    @Override
     protected int getPreference(URLComposer ri) {
         Format format = ri.getFormat();
         int index =  preferredFormats.indexOf(format);

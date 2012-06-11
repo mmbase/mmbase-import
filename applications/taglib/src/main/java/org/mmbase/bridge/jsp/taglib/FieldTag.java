@@ -51,13 +51,11 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
      * A fieldprovider also provides a node.
      */
 
-    @Override
     public Node getNodeVar() throws JspTagException {
         return getNode();
     }
 
 
-    @Override
     public Field getFieldVar() {
         return field;
     }
@@ -158,12 +156,13 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 
             int nodenr = node.getIntValue("number");		// nodenr of this field to pass to EditTag
             if (nodenr < 0) {
-                java.util.List<Step> steps = query.getSteps();
+                java.util.List steps = query.getSteps();
                 Step nodeStep = null;
                 if (query instanceof NodeQuery) {
                     nodeStep = ((NodeQuery) query).getNodeStep();
             	}
-                for (Step step : steps) {
+                for (int j = 0; j < steps.size(); j++) {
+                    Step step = (Step)steps.get(j);
                     if (step.equals(nodeStep)) {
                         nodenr = node.getIntValue("number");
                     } else {
@@ -299,7 +298,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                             }
                             break;
                         case Field.TYPE_BOOLEAN:
-                            value = node.getBooleanValue(fieldName);
+                            value = Boolean.valueOf(node.getBooleanValue(fieldName));
                             break;
                         case Field.TYPE_LIST:
                             value = node.getListValue(fieldName);
@@ -323,7 +322,6 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     }
 
 
-    @Override
     public int doAfterBody() throws JspException {
         return helper.doAfterBody();
     }
@@ -331,7 +329,6 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     /**
      * write the value of the field.
      **/
-    @Override
     public int doEndTag() throws JspTagException {
         log.debug("doEndTag of FieldTag");
         if ((! "".equals(helper.getString()) && getReferid() != null)) {
@@ -341,7 +338,6 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         return super.doEndTag();
     }
 
-    @Override
     public void doFinally() {
         field = null;
         fieldName = null;

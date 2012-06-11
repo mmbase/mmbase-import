@@ -17,7 +17,6 @@ import org.mmbase.servlet.BridgeServlet;
 import javax.servlet.http.HttpServletRequest;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
-import org.mmbase.util.MMBaseContext;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.magicfile.MagicFile;
 import org.mmbase.util.functions.*;
@@ -79,7 +78,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         ADD,
         DONTADD,
         IFSENSIBLE,
-        CHECKSETTING
+        CHECKSETTING;
     }
     /**
 
@@ -224,10 +223,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             MagicFile magic = MagicFile.getInstance();
             try {
                 if (extension == null) {
-                    log.debug("Getting mimetype (without help of extension)");
                     mimeType = magic.getMimeType(handle);
                 } else {
-                    log.debug("Getting mimetype (" + extension + ")");
                     mimeType = magic.getMimeType(handle, extension);
                 }
                 log.service("Found mime-type: " + mimeType);
@@ -238,8 +235,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 node.setValue(FIELD_MIMETYPE, mimeType);
             }
 
-        } else {
-            log.debug("Mimetype already set " + mimeType);
         }
         return mimeType;
     }
@@ -251,8 +246,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     protected void checkHandle(MMObjectNode node) {
         if (getField(FIELD_MIMETYPE) != null) {
             getMimeType(node);
-        } else {
-            log.debug("No mimetype field");
         }
 
     }
@@ -263,7 +256,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
     abstract protected Set<String> getHandleFields();
 
-    @Override
     public int insert(String owner, MMObjectNode node) {
         if (log.isDebugEnabled()) {
             log.debug("Inserting node " + node.getNumber() + " memory: " + SizeOf.getByteSize(node));
@@ -276,7 +268,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         return result;
     }
 
-    @Override
     public boolean commit(MMObjectNode node) {
         Collection<String> changed = node.getChanged();
         if (log.isDebugEnabled()) {
@@ -328,7 +319,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         return super.getGUIIndicator(field, node);
     }
 
-    @Override
     final public  String getGUIIndicator(MMObjectNode node, Parameters pars) {
         String field = (String) pars.get("field");
         if (field == null || "".equals(field) || FIELD_HANDLE.equals(field)) {
@@ -342,7 +332,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * This is final, because getSGUIIndicator has to be overridden in stead
      */
 
-    @Override
     final public String getGUIIndicator(String field, MMObjectNode node) { // final, override getSGUIIndicator
         return getSGUIIndicator(node, new Parameters(GUI_PARAMETERS).set("field", field));
     }
@@ -360,7 +349,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * @since MMBase-1.8
      */
     public StringBuilder getFileName(MMObjectNode node, StringBuilder buf) {
-        Cloud anonymousCloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+        Cloud anonymousCloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
         Node bridgeNode;
         if (anonymousCloud.hasNode(node.getNumber()) && anonymousCloud.mayRead(node.getNumber())) {
             bridgeNode = anonymousCloud.getNode(node.getNumber());
@@ -395,9 +384,16 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         if (backSlash > -1)  {
             fileName = fileName.substring(backSlash + 1);
         }
+        String fixedFileName = urlEscaper.transform(legalizeFileName.matcher(fileName).replaceAll("_"));
+        int extensionIndex = fixedFileName.lastIndexOf(".");
+        if (extensionIndex > 0) { //lowercase extensions (MMB-1957)
+            fixedFileName =
+                fixedFileName.substring(0, extensionIndex) +
+                fixedFileName.substring(extensionIndex).toLowerCase();
 
+        }
 
-        buf.append(urlEscaper.transform(legalizeFileName.matcher(fileName).replaceAll("_")));
+        buf.append(fixedFileName);
         return buf;
     }
 
@@ -556,7 +552,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                             log.debug("Using session " + session);
 
                             if (usesBridgeServlet &&  session != null && ! "".equals(session)) {
-                                servlet.append("session=").append(session).append("+");
+                                servlet.append("session=" + session + "+");
                             }
 
                             servlet.append(argument);
@@ -584,7 +580,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                         }
                     });
 
-        addFunction(new NodeFunction<String>("url", Parameter.REQUEST, Parameter.CLOUD) {
+        addFunction(new NodeFunction<String>("url", new Parameter[] { Parameter.REQUEST, Parameter.CLOUD }) {
                 @Override
                 public String getFunctionValue(Node node, Parameters a) {
                     Function spFunction = node.getFunction("servletpath");
@@ -655,7 +651,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      *
      */
 
-    @Override
     protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (log.isDebugEnabled()) {
             log.debug("executefunction of abstractservletbuilder for " + node.getNumber() + "." + function + " " + args);
@@ -668,7 +663,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             info.put("mimetype", "Returns the mimetype associated with this object");
             info.put("gui", "" + GUI_PARAMETERS + "Gui representation of this object.");
 
-            if (args == null || args.isEmpty()) {
+            if (args == null || args.size() == 0) {
                 return info;
             } else {
                 return info.get(args.get(0));
@@ -684,7 +679,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             if (log.isDebugEnabled()) {
                 log.debug("GUI of servlet builder with " + args);
             }
-            if (args == null || args.isEmpty()) {
+            if (args == null || args.size() == 0) {
                 return getGUIIndicator(node);
             } else {
                 Parameters a;

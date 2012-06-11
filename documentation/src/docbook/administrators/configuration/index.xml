@@ -348,104 +348,101 @@
       of XML comments in it. <example id="examplewebxml">
           <title>An example web.xml</title>
 
-          <programlisting id="web.xml"><![CDATA[
-<?xml version="1.0"?>
-<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
-<web-app>
+          <programlisting id="web.xml">
+&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd"&gt;
+&lt;web-app&gt;
 
-    <!-- comment out if necessary (only in older app-servers)
-    <context-param>
-        <param-name>mmbase.htmlrooturlpath</param-name>
-        <param-value>/mm/</param-value>
-    </context-param>
-    -->
-  <!--
+    &lt;!-- comment out if necessary (only in older app-servers)
+    &lt;context-param&gt;
+        &lt;param-name&gt;mmbase.htmlrooturlpath&lt;/param-name&gt;
+        &lt;param-value&gt;/mm/&lt;/param-value&gt;
+    &lt;/context-param&gt;
+    --&gt;
+  &lt;!--
     If you want to serve images from a different server, then you can specify the complete URL to
     the images-servlet in this property.
     The same goes for other 'servlet associations' like 'attachments' and 'downloads'.
-    -->
-  <!--
-  <context-param>
-    <param-name>mmbase.servlet.images.url</param-name>
-    <param-value>http://www.myclub.com/mmbase18images/mmbase/images/</param-value>
-  </context-param>
-  -->
+    --&gt;
+  &lt;!--
+  &lt;context-param&gt;
+    &lt;param-name&gt;mmbase.servlet.images.url&lt;/param-name&gt;
+    &lt;param-value&gt;http://www.myclub.com/mmbase18images/mmbase/images/&lt;/param-value&gt;
+  &lt;/context-param&gt;
+  --&gt;
 
 
-    <servlet>
-        <servlet-name>version</servlet-name>
-        <servlet-class>org.mmbase.servlet.MMBaseServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;version&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;org.mmbase.servlet.MMBaseServlet&lt;/servlet-class&gt;
+        &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+    &lt;/servlet&gt;
 
-    <servlet>
-        <servlet-name>images</servlet-name>
-        <display-name>images</display-name>
-        <servlet-class>org.mmbase.servlet.ImageServlet</servlet-class>
-        <init-param>
-            <param-name>expire</param-name><!-- Expire time of original images. Cached images never expire -->
-            <param-value>600</param-value><!-- 10 minutes -->
-         </init-param>
-        <init-param>
-            <param-name>convert</param-name><!- Whether to accept convertion templates -->
-            <param-value>false</param-value><!-- no -->
-         </init-param>
-        <load-on-startup>2</load-on-startup>
-    </servlet>
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;images&lt;/servlet-name&gt;
+        &lt;display-name&gt;images&lt;/display-name&gt;
+        &lt;servlet-class&gt;org.mmbase.servlet.ImageServlet&lt;/servlet-class&gt;
+        &lt;init-param&gt;
+            &lt;param-name&gt;expire&lt;/param-name&gt;&lt;!-- Expire time of original images. Cached images never expire --&gt;
+            &lt;param-value&gt;600&lt;/param-value&gt;&lt;!-- 10 minutes --&gt;
+         &lt;/init-param&gt;
+        &lt;init-param&gt;
+            &lt;param-name&gt;convert&lt;/param-name&gt;&lt;!- Whether to accept convertion templates --&gt;
+            &lt;param-value&gt;false&lt;/param-value&gt;&lt;!-- no --&gt;
+         &lt;/init-param&gt;
+        &lt;load-on-startup&gt;2&lt;/load-on-startup&gt;
+    &lt;/servlet&gt;
 
-    <servlet>
-        <servlet-name>attachments</servlet-name>
-        <display-name>attachments</display-name>
-        <servlet-class>org.mmbase.servlet.AttachmentServlet</servlet-class>
-        <init-param>
-            <param-name>expire</param-name><!-- Expire time of attachment -->
-            <param-value>600</param-value><!-- 10 minutes -->
-        </init-param>
-        <load-on-startup>3</load-on-startup>
-    </servlet>
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;attachments&lt;/servlet-name&gt;
+        &lt;display-name&gt;attachments&lt;/display-name&gt;
+        &lt;servlet-class&gt;org.mmbase.servlet.AttachmentServlet&lt;/servlet-class&gt;
+        &lt;init-param&gt;
+            &lt;param-name&gt;expire&lt;/param-name&gt;&lt;!-- Expire time of attachment --&gt;
+            &lt;param-value&gt;600&lt;/param-value&gt;&lt;!-- 10 minutes --&gt;
+        &lt;/init-param&gt;
+        &lt;load-on-startup&gt;3&lt;/load-on-startup&gt;
+    &lt;/servlet&gt;
 
-    <servlet-mapping>
-        <servlet-name>version</servlet-name>
-        <url-pattern>/version</url-pattern>
-    </servlet-mapping>
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;version&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/version&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
 
-    <servlet-mapping>
-        <servlet-name>images</servlet-name>
-        <url-pattern>/images/*</url-pattern>
-    </servlet-mapping>
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;images&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/images/*&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
 
-    <servlet-mapping>
-        <servlet-name>attachments</servlet-name>
-        <url-pattern>/attachments/*</url-pattern>
-    </servlet-mapping>
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;attachments&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/attachments/*&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
 
+    &lt;!-- The MMBase taglib
+  In Tomcat 5, this section can be left away (it will detect the jar by itself)
+  --&gt;
+    &lt;taglib&gt;
+        &lt;taglib-uri&gt;http://www.mmbase.org/mmbase-taglib-1.0&lt;/taglib-uri&gt;
+        &lt;taglib-location&gt;/WEB-INF/lib/mmbase-taglib.jar&lt;/taglib-location&gt;
 
-    <!--
-      Application context properties can be set in the web.xml too.
-      Hence, it is possible to override builder properties.
-      E.g. here we override a property of tye 'cronjobs' builder.
-    -->
-    <env-entry>
-      <env-entry-name>mmbase-builders/cronjobs/RelatedMMServersRequired</env-entry-name>
-      <env-entry-value>true</env-entry-value>
-      <env-entry-type>java.lang.Boolean</env-entry-type>
-    </env-entry>
+        &lt;!-- specifying a jar should work according to specs, but does not (yet) in all app-servers
+                 if loading the taglib fails, use a separate taglib description file --&gt;
+        &lt;!-- &lt;taglib-location&gt;/WEB-INF/mmbase-taglib.tld&lt;/taglib-location&gt; --&gt;
+    &lt;/taglib&gt;
 
+    &lt;!-- MMBase community taglib
+  In Tomcat 5, this section can be left away (it will detect the jar by itself)
+  --&gt;
+    &lt;taglib&gt;
+        &lt;taglib-uri&gt;http://www.mmbase.org/mmcommunity-taglib-1.0&lt;/taglib-uri&gt;
+        &lt;taglib-location&gt;/WEB-INF/lib/mmbase-community.jar&lt;/taglib-location&gt;
 
+        &lt;!-- or use a separate taglib description file  --&gt;
+        &lt;!-- &lt;taglib-location&gt;/WEB-INF/mmcommunity-taglib.tld&lt;/taglib-location&gt; --&gt;
+    &lt;/taglib&gt;
 
-    <resource-ref>
-      <description>
-        Datasource for the MMBase Database. This datasource must be
-        configured in the application server.
-        This entry is not needed in tomcat, but jetty needs it.
-       </description>
-      <res-ref-name>jdbc/MMBase</res-ref-name>
-      <res-type>javax.sql.DataSource</res-type>
-      <res-auth>Container</res-auth>
-    </resource-ref>
-
-</web-app>
-]]>
+&lt;/web-app&gt;
 
                     </programlisting>
         </example></para>
@@ -709,8 +706,7 @@
               this is: stderr|stdout[,&lt;logging level&gt;]. So you can only
               decide where the logging must appear, and below which level it
               should not log (the same levels as in the log4j implementation).
-              For Log4jImpl it is a file name, in which the configuration is. It may also be
-              empty, in which case log4j is left unconfigured (it be configured differently).
+              For Log4jImpl it is a file name, in which the configuration is.
               This is an XML file according to the 'DOMConfigurator' of log4j.
               The rest of this document will give a short description of how
               this file looks like.</para>

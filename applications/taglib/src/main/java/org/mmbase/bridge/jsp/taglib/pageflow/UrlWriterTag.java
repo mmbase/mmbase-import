@@ -28,7 +28,6 @@ import org.mmbase.util.logging.*;
 public class UrlWriterTag extends UrlTag  implements Writer {
     private static final Logger log = Logging.getLoggerInstance(UrlTag.class);
 
-    @Override
     public int doStartTag() throws JspTagException {
         super.doStartTag();
         helper.setValue(url);
@@ -38,12 +37,10 @@ public class UrlWriterTag extends UrlTag  implements Writer {
     }
 
 
-    @Override
     protected void initDoEndTag() throws JspTagException {
 
     }
 
-    @Override
     public int doAfterBody() throws JspException {
         return helper.doAfterBody();
     }

@@ -21,7 +21,7 @@ import org.mmbase.module.core.*;
 
 public class ThemeManager {
 
-    private static final Logger log = Logging.getLoggerInstance(ThemeManager.class);
+    private static Logger log = Logging.getLoggerInstance(ThemeManager.class);
 
     /** DTD resource filename of the themes DTD version 1.0 */
     public static final String DTD_THEMES_1_0 = "themes_1_0.dtd";
@@ -30,10 +30,10 @@ public class ThemeManager {
     public static final String PUBLIC_ID_THEMES_1_0 = "-//MMBase//DTD themes config 1.0//EN";
 
     /**
-     * Register the Public Ids for DTDs used by DatabaseReader This method is called by EntityResolver.
+     * Register the Public Ids for DTDs used by DatabaseReader This method is called by XMLEntityResolver.
      */
     public static void registerPublicIDs() {
-        EntityResolver.registerPublicID(PUBLIC_ID_THEMES_1_0, DTD_THEMES_1_0, ThemeManager.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_THEMES_1_0, DTD_THEMES_1_0, ThemeManager.class);
     }
 
     static {

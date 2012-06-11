@@ -44,7 +44,6 @@ public class CreateAliasTag extends NodeReferrerTag {
      * 
      * @todo I think doEndTag is not always called if no body!!
      **/
-    @Override
     public int doEndTag() throws JspTagException {        
         // search the node:
         Node node = getNode();

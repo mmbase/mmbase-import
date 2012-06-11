@@ -31,17 +31,28 @@
     </div>
 
     <h3><mm:field name="title" /></h3>
+    <table>
+      <mm:fieldlist fields="subtitle">
+        <tr>
+          <th><mm:fieldinfo type="guiname" /></th>
+          <th>
+            <mm:fieldinfo type="input" />
+            <mm:fieldinfo type="errors" />
+          </th>
+        </tr>
+      </mm:fieldlist>
+    </table>
 
     <mm-sr:relatednodes
         idvar="rid"
         type="news"
         role="posrel"
-        max="5"
         unlink="true"
         delete="true"
         fields="number,title"
         sortable="true"
         search="true"
+        max="5"
         >
       <h4 class="debug">${rid}</h4>
     </mm-sr:relatednodes>

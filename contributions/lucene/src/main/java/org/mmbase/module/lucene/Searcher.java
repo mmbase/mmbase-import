@@ -66,14 +66,12 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         EventManager.getInstance().addEventListener(this);
     }
 
-    @Override
     public void notify(NewSearcher.Event event) {
         if (event.getIndex().equals(index.getName())) {
             log.debug("Received " + event);
             needsNewSearcher = true;
         }
     }
-    @Override
     public void notify(FullIndexEvents.Event event) {
         if (event.getIndex().equals(index.getName())) {
             log.debug("Received " + event);
@@ -94,18 +92,17 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
             final IndexSearcher s = searcher;
             searcher = null;
             timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    try {
-                        log.debug("Shutting down a searcher for " + index);
-                        s.close();
-                    } catch (IOException ioe) {
-                        log.error("Can't close index searcher: " + ioe.getMessage());
-                    } finally {
-                        closingSearchers--;
+                    public void run() {
+                        try {
+                            log.debug("Shutting down a searcher for " + index);
+                            s.close();
+                        } catch (IOException ioe) {
+                            log.error("Can't close index searcher: " + ioe.getMessage());
+                        } finally {
+                            closingSearchers--;
+                        }
                     }
-                }
-            }, 10000);
+                }, 10000);
         }
         if (searcher == null) {
             try {
@@ -154,7 +151,6 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
     public NodeList search(Cloud cloud, String value, Query extraQuery, int offset, int max) throws ParseException {
         return search(cloud, value, null, null, new StopAnalyzer(), extraQuery, allIndexedFields, offset, max, 0);
     }
-
     public NodeList search(Cloud cloud, String value, Filter filter, Query extraQuery, int offset, int max) throws ParseException {
         return search(cloud, value, filter, null, new StopAnalyzer(), extraQuery, allIndexedFields, offset, max, 0);
     }
@@ -238,11 +234,15 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                 log.trace("hits " + hits + (hits != null ? " (" + hits.length() + " results)" : ""));
             }
 
+            if (hits == null || hits.length() < 0) {
+                log.warn("hits null, IndexReader closed probably");
+                return Collections.emptyList();
+            }
+
             /// lazy loading of all that stuff!
             list = new AbstractList<AnnotatedNode>() {
                 private int size = -1;
 
-                @Override
                 public int size() {
                     if (size == -1) {
                         int h = hits.length() - offset;
@@ -252,7 +252,6 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                     return size;
 
                 }
-                @Override
                 public AnnotatedNode get(int i) {
                     try {
                         Document doc = hits.doc(i + offset);
@@ -262,10 +261,15 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                             log.debug("Found " + node);
                             log.trace("Because " + Logging.stackTrace(10));
                         }
-                        Searcher.this.producedNodes++;
-                        AnnotatedNode anode = new AnnotatedNode(node);
-                        anode.putAnnotation("score", hits.score(i + offset));
-                        return anode;
+                        if (node != null) {
+                            Searcher.this.producedNodes++;
+                            AnnotatedNode anode = new AnnotatedNode(node);
+                            anode.putAnnotation("score", hits.score(i + offset));
+                            return anode;
+                        } else {
+                            log.warn("Node not found, returning null.");
+                            return null;
+                        }
                     } catch (IOException ioe) {
                         log.error(ioe);
                         return null;
@@ -280,7 +284,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
     }
 
     public NodeList search(final Cloud cloud, String value, Filter filter, Sort sort,
-                           Analyzer analyzer, Query extraQuery, String[] fields, final int offset, final int max, final int explain) throws ParseException  {
+                           Analyzer analyzer, Query extraQuery, String[] fields, final int offset, final int max, int explain) throws ParseException  {
         return new org.mmbase.bridge.util.CollectionNodeList(searchAnnotated(cloud, value, filter, sort, analyzer, extraQuery, fields, offset, max, explain), cloud);
     }
 
@@ -311,10 +315,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                 return -1;
             } finally {
                 if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException ioe) {
-                    }
+                    try { reader.close(); } catch (IOException ioe) {};
                 }
             }
         }
@@ -364,6 +365,8 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         Query query = getQuery(value, analyzer, extraQuery, fields);
         IndexSearcher s = getSearcher(copy);
         if (s == null) throw new IOException("No IndexSearcher found for " + this);
+        IndexReader ir = s.getIndexReader();
+        if (! ir.isCurrent()) throw new IOException("IndexReader closed for " + this);
         Hits hits = s.search(query, filter, sort);
         if (explain > 0 && hits.length() > 0) {
              for (int i = 0; i< explain && i < hits.length(); i++) {
@@ -373,8 +376,6 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         }
         return hits;
     }
-
-
 
     static final String QUERY_SYNTAX =
         "&lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | PREFIX ]:&lt;value&gt; | " +

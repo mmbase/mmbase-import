@@ -48,7 +48,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
         super(cloud);
         // determine fields and field types
         if (node.getBuilder() instanceof VirtualBuilder) {
-            VirtualBuilder virtualBuilder = (VirtualBuilder) node.getBuilder();
+            VirtualBuilder virtualBuilder = (VirtualBuilder) node.getBuilder();;
             Map<String,CoreField> fields = virtualBuilder.getFields(node);
             for (Map.Entry<String, CoreField> entry : fields.entrySet()) {
                 Field ft         = new BasicField(entry.getValue(), this);
@@ -86,6 +86,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
 
 
 
+    private static CoreField UNKNOWN_NODE_TYPE = Fields.createField("unknown_node_type", Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, DataTypes.getDataType("node"));
     /**
      * Returns the fieldlist of this nodemanager after making sure the manager is synced with the builder.
      * @since MMBase-1.8
@@ -103,7 +104,6 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
         }
     }
 
-    private static CoreField UNKNOWN_NODE_TYPE = Fields.createField("unknown_node_type", Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, DataTypes.getDataType("node"));
     public static Map<String, Field> getFieldTypes(SearchQuery query,  NodeManager nm) {
         Cloud cloud = nm.getCloud();
         Map<String, Field> fieldTypes = new HashMap<String, Field>();
@@ -116,7 +116,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
             Field ft = new VirtualNodeManagerField(nm, UNKNOWN_NODE_TYPE, name);
             fieldTypes.put(name, ft);
 
-            if (!query.isAggregating()) {
+            if (allowNonQueriedFields && ! query.isAggregating()) {
                 /// if hasField returns true also for unqueried fields
                 for (Field f : cloud.getNodeManager(step.getTableName()).getFields()) {
                     final String fieldName = name + "." + f.getName();
@@ -124,7 +124,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
                 }
             }
         }
-        if (query.isAggregating()) {
+        if (! allowNonQueriedFields || query.isAggregating()) {
             //hasField only returns true for queried fields
             for (StepField field : query.getFields()) {
                 Step step = field.getStep();
@@ -144,6 +144,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
         }
         return fieldTypes;
     }
+
 
 
     @Override
@@ -174,6 +175,35 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
         if (builder == null) return getStringValue("description");
         if (locale == null) locale = cloud.getLocale();
         return builder.getDescription(locale.getLanguage());
+    }
+
+    /**
+     */
+    public static class VirtualNodeManagerField extends FieldWrapper {
+
+        private final String name;
+        private final NodeManager nodeManager;
+        VirtualNodeManagerField(NodeManager nm, Field field, String name)  {
+            super(field);
+            this.name = name;
+            this.nodeManager = nm;
+        }
+        @Override
+        public NodeManager getNodeManager() {
+            return nodeManager;
+        }
+        @Override
+        public String getName() {
+            return name;
+        }
+        @Override
+        public int getState() {
+            return Field.STATE_VIRTUAL;
+        }
+
+        public int compareTo(Field o) {
+            return name.compareTo(o.getName());
+        }
     }
 
 }

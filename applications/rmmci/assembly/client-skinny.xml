@@ -1,5 +1,5 @@
 <assembly>
-  <id>client</id>
+  <id>client-skinny</id>
   <formats>
     <format>jar</format>
   </formats>
@@ -14,12 +14,11 @@
         <exclude>org/mmbase/config/**</exclude>
       </excludes>
     </fileSet>
+    <!--
     <fileSet>
-      <directory>${project.build.outputDirectory}</directory>
+      <directory>${project.basedir}/src/main/resources</directory>
       <outputDirectory>/</outputDirectory>
-      <includes>
-        <include>org/mmbase/config/contextproviders</include>
-      </includes>
     </fileSet>
+    -->
   </fileSets>
 </assembly>

@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.jsp.*;
-import javax.servlet.jsp.tagext.*;
 import org.springframework.mock.web.*;
 import java.util.*;
 
@@ -60,7 +59,7 @@ public  class StringListTagTest {
 
         System.out.println("" + context.getContextContainer().getClass() + " " + context.getContextContainer());
         System.out.println("" + tag.getContextContainer().getClass() + " " + tag.getContextContainer());
-        while (it == ContextReferrerTag.EVAL_BODY || it == IterationTag.EVAL_BODY_AGAIN) {
+        while (it == 2) {
             tag.doInitBody();
 
             assertEquals(fooValue, "" + context.getObject("foo")); // Should not give exception

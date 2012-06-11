@@ -19,7 +19,7 @@ import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.storage.search.implementation.BasicSearchQuery;
 import org.mmbase.storage.search.implementation.BasicStep;
 import org.mmbase.storage.search.implementation.BasicStepField;
-import org.mmbase.module.core.NodeSearchQuery;
+import org.mmbase.storage.search.implementation.NodeSearchQuery;
 
 /**
  * JUnit tests.
@@ -172,26 +172,26 @@ public class ClusterBuilderTest extends TestCase {
     public void testGetUniqueTableAlias() {
         List<String> originalAliases = Arrays.asList(new String[] {"test1", "test2"});
         Set<String> tableAliases = new HashSet<String>();
-        String alias = CoreClusterQueries.INSTANCE.getUniqueTableAlias("test", tableAliases, originalAliases);
+        String alias = instance.getUniqueTableAlias("test", tableAliases, originalAliases);
         assertTrue(alias.equals("test"));
         assertTrue(tableAliases.size() == 1);
         assertTrue(tableAliases.contains("test"));
         assertTrue(originalAliases.size() == 2);
 
-        alias = instance.clusterQueries.getUniqueTableAlias("test", tableAliases, originalAliases);
+        alias = instance.getUniqueTableAlias("test", tableAliases, originalAliases);
         assertTrue(alias.equals("test0"));
         assertTrue(tableAliases.size() == 2);
         assertTrue(tableAliases.contains("test0"));
         assertTrue(originalAliases.size() == 2);
 
-        alias = instance.clusterQueries.getUniqueTableAlias(
+        alias = instance.getUniqueTableAlias(
             "test1", tableAliases, originalAliases);
         assertTrue(alias.equals("test1"));
         assertTrue(tableAliases.size() == 3);
         assertTrue(tableAliases.contains("test1"));
         assertTrue(originalAliases.size() == 2);
 
-        alias = instance.clusterQueries.getUniqueTableAlias(
+        alias = instance.getUniqueTableAlias(
             "test", tableAliases, originalAliases);
         assertTrue(alias.equals("test3"));
         assertTrue(tableAliases.size() == 4);
@@ -199,7 +199,7 @@ public class ClusterBuilderTest extends TestCase {
         assertTrue(originalAliases.size() == 2);
 
         for (int i = 4; i < 10; i++) {
-            alias = instance.clusterQueries.getUniqueTableAlias(
+            alias = instance.getUniqueTableAlias(
                 "test" + (i - 1), tableAliases, originalAliases);
             assertTrue(alias, alias.equals("test" + i));
             assertTrue(tableAliases.size() == i + 1);
@@ -210,7 +210,7 @@ public class ClusterBuilderTest extends TestCase {
         try {
             // Can't generate another unique value for this string,
             // should throw IndexOutOfBoundsException.
-            CoreClusterQueries.INSTANCE.getUniqueTableAlias("test", tableAliases, originalAliases);
+            instance.getUniqueTableAlias("test", tableAliases, originalAliases);
             fail("Can't generate another unique value for this string, "
                 + "should throw IndexOutOfBoundsException.");
         } catch (IndexOutOfBoundsException e) {}
@@ -226,7 +226,7 @@ public class ClusterBuilderTest extends TestCase {
         assertTrue(tableAliases.contains("test"));
 
         // Alias containing white space.
-        alias = instance.clusterQueries.getUniqueTableAlias(
+        alias = instance.getUniqueTableAlias(
             "white space", tableAliases, originalAliases);
         assertTrue(alias, alias.equals("white space"));
         assertTrue(tableAliases.contains("white space"));

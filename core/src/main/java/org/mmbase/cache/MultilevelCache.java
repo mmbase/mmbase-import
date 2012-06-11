@@ -28,7 +28,7 @@ package org.mmbase.cache;
 public class MultilevelCache extends QueryResultCache {
 
     // There will be only one multilevel cache, and here it is:
-    private static final MultilevelCache multiCache;
+    private static MultilevelCache multiCache;
 
     public static MultilevelCache getCache() {
         return multiCache;

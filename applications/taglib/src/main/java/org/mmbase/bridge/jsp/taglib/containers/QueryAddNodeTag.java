@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib.containers;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.storage.search.*;
@@ -31,7 +32,6 @@ public class QueryAddNodeTag extends ContextReferrerTag implements QueryContaine
     protected Attribute element      = Attribute.NULL;
     protected Attribute node         = Attribute.NULL;
 
-    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c, true);
     }
@@ -43,7 +43,6 @@ public class QueryAddNodeTag extends ContextReferrerTag implements QueryContaine
         node = getAttribute(n);
     }
 
-    @Override
     public int doStartTag() throws JspTagException {
         Query query = getQuery(container);
         Step step;

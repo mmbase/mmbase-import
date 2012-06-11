@@ -30,7 +30,6 @@ public class Performance extends BridgeServlet {
     /**
      * @javadoc
      */
-    @Override
     public void init() throws ServletException {
         super.init();
     }
@@ -39,7 +38,6 @@ public class Performance extends BridgeServlet {
      * Called by the server when a request is done.
      * @javadoc
      */
-    @Override
     public synchronized void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         // Open	a output stream so you can write to the client
         PrintStream out = new PrintStream(res.getOutputStream());
@@ -77,6 +75,7 @@ public class Performance extends BridgeServlet {
     private long intloop() {
         long begin = new Date().getTime();
         for (int i = 0; i < 20000000; i++) {
+            ;
         }
         long end = new Date().getTime();
         return end - begin;
@@ -105,7 +104,6 @@ public class Performance extends BridgeServlet {
      * Info method, provides the user/server with some basic info on this Servlet
      * @return a descriptive text
      */
-    @Override
     public String getServletInfo() {
         return ("Performance tester, for JIT and other things");
     }

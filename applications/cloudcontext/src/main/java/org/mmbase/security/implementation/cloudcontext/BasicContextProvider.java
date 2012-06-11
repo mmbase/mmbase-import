@@ -20,7 +20,6 @@ import java.util.*;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -367,7 +366,7 @@ public  class BasicContextProvider implements ContextProvider {
                     if (users.hasField("defaultcontext")) {
                         MMBase mmb = MMBase.getMMBase();
                         BasicSearchQuery query = new BasicSearchQuery(true);
-                        Step step = query.addStep(users.getTableName());
+                        Step step = query.addStep(users);
                         BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(new BasicStepField(step, users.getField("defaultcontext")), Integer.valueOf(node.getNumber()));
                         query.setConstraint(constraint);
                         BasicAggregatedField baf = query.addAggregatedField(query.getSteps().get(0), users.getField("defaultcontext"), AggregatedField.AGGREGATION_TYPE_COUNT);
@@ -624,7 +623,7 @@ public  class BasicContextProvider implements ContextProvider {
             BasicStepField numberStepField = new BasicStepField(step, contextBuilder.getField("number"));
             BasicFieldValueConstraint numberConstraint = new BasicFieldValueConstraint(numberStepField, Integer.valueOf(contextNode.getNumber()));
 
-            BasicRelationStep relationStep = query.addRelationStep(rights.getTableName(), groupsOrUsers.getTableName());
+            BasicRelationStep relationStep = query.addRelationStep(rights, groupsOrUsers);
             relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
             ((BasicStep) relationStep.getNext()).setAlias("contexts");
 
@@ -637,7 +636,7 @@ public  class BasicContextProvider implements ContextProvider {
 
             query.setConstraint(constraint);
             query.removeFields();
-            query.addFields(relationStep.getNext(), CoreQueryContext.INSTANCE);
+            query.addFields(relationStep.getNext());
 
             try {
                 result.addList(groupsOrUsers.getStorageConnector().getNodes(query, false));

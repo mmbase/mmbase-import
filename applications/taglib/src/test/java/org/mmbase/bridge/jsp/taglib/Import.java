@@ -14,10 +14,9 @@ import javax.servlet.jsp.*;
 import java.util.*;
 
 /**
- * Mocks mm:import. It actually uses WriteTag, because ImportTag (was) hard to mock (Perhaps not any more because a
- * MockBodyContent is available in newer spring version)
+ * Mocks mm:import
  *
- * @version $Id$
+ * @version $Id: StringListTagTest.java 39651 2009-11-11 18:17:50Z michiel $
  */
 
 public  class Import {

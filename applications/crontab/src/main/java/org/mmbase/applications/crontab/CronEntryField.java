@@ -83,12 +83,10 @@ public class CronEntryField implements java.io.Serializable {
         return valid[otherValue];
     }
 
-    @Override
     public int hashCode() {
         return content.hashCode();
     }
 
-    @Override
     public boolean equals(Object o) {
         if (! (o instanceof CronEntryField)) {
             return false;

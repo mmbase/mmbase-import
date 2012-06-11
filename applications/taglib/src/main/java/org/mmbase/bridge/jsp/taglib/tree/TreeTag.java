@@ -95,7 +95,6 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
 
 
 
-    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
     }
@@ -128,7 +127,6 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     }
 
 
-    @Override
     public Stack<ShrinkTag.Entry> getShrinkStack() {
         return shrinkStack;
     }
@@ -139,50 +137,40 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
 
 
     // ContextProvider implementation
-    @Override
     public ContextContainer getContextContainer() throws JspTagException {
         if (collector == null) return getContextProvider().getContextContainer(); // to make sure old-style implemntation work (which do not initialize container)
         return collector;
     }
 
 
-    @Override
     public int size() {
         return tree.size();
     }
-    @Override
     public int getIndex() {
         return index;
     }
 
-    @Override
     public int getIndexOffset() {
         return 1;
     }
-    @Override
     public boolean isChanged() {
         return true;
     }
 
-    @Override
     public Object getCurrent() {
         return getNodeVar();
     }
 
-    @Override
     public void remove() {
         iterator.remove();
     }
 
-    @Override
     public int getPreviousDepth() {
         return previousDepth;
     }
-    @Override
     public int getDepth() {
         return depth;
     }
-    @Override
     public int getNextDepth() {
         return nextDepth;
     }
@@ -201,15 +189,12 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     }
 
 
-    @Override
     public void setAdd(String c) throws JspTagException {
         throw new UnsupportedOperationException();
     }
-    @Override
     public void setRetain(String c) throws JspTagException {
         throw new UnsupportedOperationException();
     }
-    @Override
     public void setRemove(String c) throws JspTagException {
         throw new UnsupportedOperationException();
     }
@@ -229,7 +214,6 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     /**
      * Performs the search
      */
-    @Override
     public int doStartTag() throws JspTagException {
         log.debug("starttag");
         shrinkStack = new Stack<Entry>();
@@ -342,13 +326,11 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
 
 
     }
-    @Override
     public void doInitBody() throws JspTagException {
         log.debug("initbody");
     }
 
 
-    @Override
     public int doAfterBody() throws JspTagException {
         log.debug("afterbody");
         super.doAfterBody();
@@ -409,7 +391,6 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
 
     }
 
-    @Override
     public int doEndTag() throws JspTagException {
         log.debug("endtag");
         if (getId() != null) {
@@ -434,7 +415,6 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         return super.doEndTag();
     }
 
-    @Override
     public javax.servlet.jsp.jstl.core.LoopTagStatus getLoopStatus() {
         return new ListProviderLoopTagStatus(this);
     }
@@ -450,37 +430,29 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             current = c;
             siblings = s;
         }
-        @Override
         public Object getCurrent() {
             return current;
         }
-        @Override
         public int getIndex() {
             return siblings.indexOf(current);
         }
 
-        @Override
         public int getCount() {
             return siblings.size();
         }
 
-        @Override
         public boolean isFirst() {
             return getIndex() == 0;
         }
-        @Override
         public boolean isLast() {
             return getCount() == getIndex() + 1;
         }
-        @Override
         public Integer getBegin() {
             return null;
         }
-        @Override
         public Integer getEnd() {
             return null;
         }
-        @Override
         public Integer getStep() {
             return null;
         }

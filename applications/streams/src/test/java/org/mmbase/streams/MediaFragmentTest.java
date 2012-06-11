@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application,
+This file is part of the MMBase Streams application, 
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -113,40 +113,40 @@ public class MediaFragmentTest {
     public void commitGetSetCommit() {
         for (int i = 0; i < 100; i++) {
             if (i % 10 == 0) System.out.print(".");
-            int fragmentsBefore = Queries.count(getCloud().getNodeManager("mediafragments").createQuery());
-            Node newSource = newNode();
-            newSource.commit();
-            assertTrue(newSource.getNumber() > 0);
-            newSource.getStringValue("title");
-            newSource.setStringValue("title", "test test");
-            newSource.commit();
+        int fragmentsBefore = Queries.count(getCloud().getNodeManager("mediafragments").createQuery());
+        Node newSource = newNode();
+        newSource.commit();
+        assertTrue(newSource.getNumber() > 0);
+        newSource.getStringValue("title");
+        newSource.setStringValue("title", "test test");
+        newSource.commit();
 
-            assertEquals("test test", newSource.getStringValue("title"));
-            assertNotNull(newSource.getNodeValue("mediafragment"));
-            final int mediaFragment = newSource.getNodeValue("mediafragment").getNumber();
+        assertEquals("test test", newSource.getStringValue("title"));
+        assertNotNull(newSource.getNodeValue("mediafragment"));
+        final int mediaFragment = newSource.getNodeValue("mediafragment").getNumber();
 
-            assertEquals(fragmentsBefore + 1, Queries.count(getCloud().getNodeManager("mediafragments").createQuery()));
+        assertEquals(fragmentsBefore + 1, Queries.count(getCloud().getNodeManager("mediafragments").createQuery()));
 
-            newSource.setNodeManager(newSource.getCloud().getNodeManager("videostreamsources"));
+        newSource.setNodeManager(newSource.getCloud().getNodeManager("videostreamsources"));
 
-            assertNotNull(newSource.getNodeValue("mediafragment"));
-            newSource.commit();
-            //newSource.commit(); // ADDING THIS FIXES THE FAIL!
+        assertNotNull(newSource.getNodeValue("mediafragment"));
+        newSource.commit();
+        //newSource.commit(); // ADDING THIS FIXES THE FAIL!
 
-            assertEquals("test test", newSource.getStringValue("title"));
-            //newSource.setStringValue("title", "test test test");
-            //newSource.commit();
+        assertEquals("test test", newSource.getStringValue("title"));
+        //newSource.setStringValue("title", "test test test");
+        //newSource.commit();
 
-            assertNotNull(newSource.getNodeValue("mediafragment"));
-            assertEquals(mediaFragment, newSource.getNodeValue("mediafragment").getNumber());
+        assertNotNull(newSource.getNodeValue("mediafragment"));
+        assertEquals(mediaFragment, newSource.getNodeValue("mediafragment").getNumber());
 
-            assertEquals(fragmentsBefore + 1, Queries.count(getCloud().getNodeManager("mediafragments").createQuery()));
-            assertEquals("videofragments", newSource.getCloud().getNode(mediaFragment).getNodeManager().getName());
-            assertEquals("videofragments", newSource.getNodeValue("mediafragment").getNodeManager().getName()); // FAILS!
+        assertEquals(fragmentsBefore + 1, Queries.count(getCloud().getNodeManager("mediafragments").createQuery()));
+        assertEquals("videofragments", newSource.getCloud().getNode(mediaFragment).getNodeManager().getName());
+        assertEquals("videofragments", newSource.getNodeValue("mediafragment").getNodeManager().getName()); // FAILS!
 
-            assertEquals("test test", newSource.getNodeValue("mediafragment").getStringValue("title"));
-            assertEquals("test test", newSource.getStringValue("title"));
-            assertEquals("test test", newSource.getCloud().getNode(mediaFragment).getStringValue("title"));
+        assertEquals("test test", newSource.getNodeValue("mediafragment").getStringValue("title"));
+        assertEquals("test test", newSource.getStringValue("title"));
+        assertEquals("test test", newSource.getCloud().getNode(mediaFragment).getStringValue("title"));
         }
 
     }

@@ -55,27 +55,18 @@ public class CreateRelationAction extends AbstractRelationAction {
         if(!SORT_POSITION_BEGIN.equals(sortPosition) && !SORT_POSITION_END.equals(sortPosition)){
             addGlobalError("error.field.value", new String[]{"sortPosition", sortPosition} );
         }
-
         if(!StringUtils.isBlank(sortField)){
             if(!relationManager.hasField(sortField)){
                 addGlobalError("error.field.unknown", new String[]{"sortField", this.getClass().getName(), relationManager.getName()});
             }
         }
+
         if (!hasErrors()) {
-            Relation rel;
-            if ("source".equals(searchDir)) {
-                rel = relationManager.createRelation(destinationNode, sourceNode);
-            } else {
-                rel = relationManager.createRelation(sourceNode, destinationNode);
-            }
+            Relation rel = relationManager.createRelation(sourceNode, destinationNode);
             for (Map.Entry<String, Object> entry : getRelationValues().entrySet()) {
                 rel.setValue(entry.getKey(), entry.getValue());
             }
-            log.service("Created relation " + rel);
-
             return rel;
-        } else {
-            log.warn("Not creating relation, because already in error");
         }
         return null;
     }
@@ -87,12 +78,10 @@ public class CreateRelationAction extends AbstractRelationAction {
      */
     @Override
     protected void processNode(Transaction transaction) {
-        log.info("Processing relation (sortField " + sortField + ")");
         if (!StringUtils.isBlank(sortField)) {
 
             // set the position if we need to do that
             Integer sortPositionValue = resolvePosition(transaction);
-            log.info("Resolved position value  " + sortPositionValue);
             if (sortPositionValue != null) {
                 getNode().setIntValue(sortField, sortPositionValue);
             }
@@ -113,32 +102,31 @@ public class CreateRelationAction extends AbstractRelationAction {
         }
         int position = 1;
 
-        if (sourceNode.getNumber() < 0) {
-            // Won't work for new nodes
-            return position;
+        Query q = null;
+        try {
+            // find the lowest or highest relation number
+
+            // it is unlikely that the path matches duplicate builder names here, but who knows?
+            PathBuilder pathBuilder = new PathBuilder(new String[] { sourceNode.getNodeManager().getName(), role,
+                                                                     destinationNode.getNodeManager().getName() });
+            q = Queries.createQuery(transaction, sourceNode.getNumber() + "", pathBuilder.getPath(), pathBuilder
+                                    .getStep(1)
+                                    + "." + sortField, null, pathBuilder.getStep(1) + "." + sortField,
+                                    (sortPosition.equals("begin") ? "up" : "down"), null, false);
+            q.setMaxNumber(1);
+            NodeList nl = transaction.getList(q);
+            if (nl.size() > 0) {
+                position = nl.getNode(0).getIntValue(role + "." + sortField);
+                position = (sortPosition.equals("begin") ? position - 1 : position + 1);
+            }
+
+            return Integer.valueOf(position);
+        } catch (RuntimeException e) {
+            addGlobalError("error.unexpected", new String[] { e.getMessage() });
+            log.error("something went wrong running a query to find out the position of a new relation. query: ["
+                      + q.toString() + "]", e);
         }
-
-        // find the lowest or highest relation number
-
-        // it is unlikely that the path matches duplicate builder names here, but who knows?
-        PathBuilder pathBuilder = new PathBuilder(new String[] { sourceNode.getNodeManager().getName(),
-                                                                 role,
-                                                                 destinationNode.getNodeManager().getName() });
-
-        Query q = Queries.createQuery(transaction, sourceNode.getNumber() + "", pathBuilder.getPath(),
-                                pathBuilder.getStep(1) + "." + sortField,
-                                null, pathBuilder.getStep(1) + "." + sortField,
-                                (sortPosition.equals("begin") ? "up" : "down"), null, false);
-        q.setMaxNumber(1);
-        NodeList nl = transaction.getList(q);
-        if (nl.size() > 0) {
-            position = nl.getNode(0).getIntValue(role + "." + sortField);
-            position = (sortPosition.equals("begin") ? position - 1 : position + 1);
-        } else {
-            log.warn("Query " + q + " didn't result anything");
-        }
-
-        return Integer.valueOf(position);
+        return null;
     }
 
     public String getSortPosition() {
@@ -155,14 +143,6 @@ public class CreateRelationAction extends AbstractRelationAction {
 
     public void setSortField(String sortField) {
         this.sortField = sortField;
-    }
-
-    @Override
-    public void setRole(String role) {
-        super.setRole(role);
-        if ("posrel".equals(role) && this.sortField == null) {
-            this.sortField = "pos";
-        }
     }
 
 }

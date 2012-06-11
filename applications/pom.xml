@@ -3,11 +3,18 @@
      xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-parent</artifactId>
+    <version>1.9-SNAPSHOT</version>
+ </parent>
+
   <groupId>org.mmbase</groupId>
   <artifactId>mmbase-applications</artifactId>
   <packaging>pom</packaging>
   <name>MMBase Applications</name>
-  <version>2.0-SNAPSHOT</version>
+  <version>1.9-SNAPSHOT</version>
 
   <description>
     Applications are war overlays then can plug in some functionality into an existing MMBase installation.
@@ -20,18 +27,7 @@
 
   <build>
     <defaultGoal>install</defaultGoal>
-
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ssh</artifactId>
-      </extension>
-    </extensions>
   </build>
-
-  <properties>
-    <mmbase.repos>scp://mmbase.org/home/tomcat/downloads/</mmbase.repos>
-  </properties>
 
   <profiles>
     <profile>
@@ -153,11 +149,13 @@
           <id>${my.repository.id}</id>
           <name>Corporate repository</name>
           <url>${my.repository.url}</url>
+          <uniqueVersion>false</uniqueVersion> <!-- hmm? -->
         </repository>
         <snapshotRepository>
           <id>${my.repository.id}</id>
           <name>Corporate snapshot repository</name>
           <url>${my.repository.url}</url>
+          <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
       </distributionManagement>
     </profile>
@@ -168,16 +166,17 @@
     <repository>
       <id>mmbase</id>
       <name>MMBase maven 2 repository</name>
-      <url>${mmbase.repos}maven2</url>
+      <url>scp://mmbase.org/home/tomcat/downloads/maven2</url>
     </repository>
     <snapshotRepository>
       <id>mmbase-snapshots</id>
       <name>MMBase Maven2 Snapshot Repository</name>
-      <url>${mmbase.repos}snapshots</url>
+      <url>scp://mmbase.org/home/tomcat/downloads/snapshots</url>
+      <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
     <site>
       <id>mmbase-website</id>
-      <url>${mmbase.repos}mm2/</url>
+      <url>scp://mmbase.org/home/tomcat/downloads/mm2/</url>
     </site>
   </distributionManagement>
 

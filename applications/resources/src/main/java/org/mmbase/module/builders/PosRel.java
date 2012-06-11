@@ -24,7 +24,6 @@ public class PosRel extends InsRel {
     public PosRel() {
     }
 
-    @Override
     public String getGUIIndicator(MMObjectNode node) {
         return super.getGUIIndicator(node) + ":" + node.getStringValue("pos");
     }

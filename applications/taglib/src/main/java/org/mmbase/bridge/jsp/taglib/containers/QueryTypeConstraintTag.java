@@ -37,7 +37,6 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
     protected Attribute inverse    = Attribute.NULL;
     protected Attribute descendants  = Attribute.NULL;
 
-    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
     }
@@ -63,13 +62,15 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
     protected SortedSet<Integer> getOTypes(List<String> names) throws JspTagException {
         Cloud cloud = getCloudVar();
         SortedSet<Integer> set = new TreeSet<Integer>();
+        Iterator<String> i = names.iterator();
         boolean desc = descendants.getBoolean(this, true);
-        for (String name : names) {
-            NodeManager nm = cloud.getNodeManager(name);
+        while (i.hasNext()) {
+            NodeManager nm = cloud.getNodeManager(i.next());
             set.add(nm.getNumber());
             if (desc) {
-                for (NodeManager dnm : nm.getDescendants()) {
-                    set.add(dnm.getNumber());
+                NodeManagerIterator j = nm.getDescendants().nodeManagerIterator();
+                while (j.hasNext()) {
+                    set.add(j.nextNodeManager().getNumber());
                 }
             }
         }
@@ -78,7 +79,6 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
 
 
 
-    @Override
     public int doStartTag() throws JspTagException {
         Query query = getQuery(container);
         String elementString = element.getString(this);

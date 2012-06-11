@@ -23,7 +23,6 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 
 public class LogTEI extends TagExtraInfo {
 
-    @Override
     public VariableInfo[] getVariableInfo(TagData data) {
         VariableInfo[] variableInfo = null;
 

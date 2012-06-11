@@ -15,6 +15,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import org.mmbase.util.*;
+import org.mmbase.module.core.*;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;

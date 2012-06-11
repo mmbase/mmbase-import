@@ -11,7 +11,6 @@ package org.mmbase.module.corebuilders;
 
 import java.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
@@ -113,14 +112,14 @@ public class RelDef extends MMObjectBuilder {
         relCache.remove(node.getStringValue("sname"));
         relCache.remove(node.getStringValue("sname") + "/" + node.getStringValue("dname"));
 
-        rnumberCache.remove(node.getNumber());
+        rnumberCache.remove(Integer.valueOf(node.getNumber()));
     }
 
     /**
      * @since MMBase-1.7.1
      */
     private void removeFromCache(int rnumber) {
-        Integer r = rnumber;
+        Integer r = Integer.valueOf(rnumber);
         Iterator<Map.Entry<String, Integer>> i = relCache.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry<String, Integer> entry = i.next();
@@ -142,7 +141,7 @@ public class RelDef extends MMObjectBuilder {
     private boolean readCache() {
         rnumberCache.clear();
         relCache.clear();        // add insrel (default behavior)
-        relCache.put("insrel", -1);
+        relCache.put("insrel", Integer.valueOf(-1));
         // add relation definiation names
         try {
             for (MMObjectNode n :getNodes(new NodeSearchQuery(this))) {
@@ -160,7 +159,6 @@ public class RelDef extends MMObjectBuilder {
      * @param node Relation definition to describe
      * @return A <code>String</code> of descriptive text
      */
-    @Override
     public String getGUIIndicator(MMObjectNode node) {
         int dir = node.getIntValue("dir");
         if (dir == DIR_UNIDIRECTIONAL) {
@@ -215,7 +213,7 @@ public class RelDef extends MMObjectBuilder {
      */
     public String getBuilderName(MMObjectNode node) {
         if (node == null) return "NULL";
-        return rnumberCache.get(node.getNumber());
+        return rnumberCache.get(Integer.valueOf(node.getNumber()));
     }
 
 
@@ -275,7 +273,7 @@ public class RelDef extends MMObjectBuilder {
         query.setMaxNumber(1);
         try {
             List<MMObjectNode> reldefs = getNodes(query);
-            if (!reldefs.isEmpty()) {
+            if (reldefs.size() != 0) {
                 node = reldefs.get(0);
             }
         } catch (SearchQueryException sqe) {
@@ -289,7 +287,6 @@ public class RelDef extends MMObjectBuilder {
      * Tests whether the data in a node is valid (throws an exception if this is not the case).
      * @param node The node whose data to check
      */
-    @Override
     public void testValidData(MMObjectNode node) throws InvalidDataException{
         int dir=node.getIntValue("dir");
         if ((dir!=DIR_UNIDIRECTIONAL) && (dir!=DIR_BIDIRECTIONAL)) {
@@ -304,7 +301,7 @@ public class RelDef extends MMObjectBuilder {
                 throw new InvalidDataException("Builder ("+builder+") is not a relationbuilder","builder");
             }
         }
-    }
+    };
 
     /**
      * Insert a new object, and updated the cache after an insert.
@@ -313,7 +310,6 @@ public class RelDef extends MMObjectBuilder {
      * @param node The object to insert. The object need be of the same type as the current builder.
      * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
      */
-    @Override
     public int insert(String owner, MMObjectNode node) {
         // check RelDef for duplicates
         String sname = node.getStringValue("sname");
@@ -328,7 +324,7 @@ public class RelDef extends MMObjectBuilder {
             addToCache(node);
         }
         return number;
-    }
+    };
 
 
     /**
@@ -337,7 +333,6 @@ public class RelDef extends MMObjectBuilder {
      * @param node The node to be committed
      * @return a <code>boolean</code> indicating success
      */
-    @Override
     public boolean commit(MMObjectNode node) {
         boolean success = super.commit(node);
         if (success) {
@@ -350,7 +345,6 @@ public class RelDef extends MMObjectBuilder {
      * Remove a node from the cloud.
      * @param node The node to remove.
      */
-    @Override
     public void removeNode(MMObjectNode node) {
         // check occurrences in TypeRel
         // perhaps this can also be done using getAllowedRelations() ?
@@ -394,7 +388,6 @@ public class RelDef extends MMObjectBuilder {
      * Initializes a relation to be bidirectional, and, if applicable, to use the 'insrel' builder.
      *    @param node Node to be initialized
      */
-    @Override
     public void setDefaults(MMObjectNode node) {
         node.setValue("dir", DIR_BIDIRECTIONAL);
         if (usesbuilder) {
@@ -419,7 +412,6 @@ public class RelDef extends MMObjectBuilder {
      * @return A descriptive text for the field's contents, or null if no description could be generated
      */
 
-    @Override
     public String getGUIIndicator(String field,MMObjectNode node) {
         try {
             if (field.equals("dir")) {
@@ -463,7 +455,7 @@ public class RelDef extends MMObjectBuilder {
             // add all builders that descend from InsRel
             for (MMObjectBuilder fbul : mmb.getBuilders()) {
                 if (fbul instanceof InsRel) {
-                    relBuilderCache.put(fbul.getNumber(), fbul);
+                    relBuilderCache.put(Integer.valueOf(fbul.getNumber()), fbul);
                 }
             }
         }
@@ -477,7 +469,7 @@ public class RelDef extends MMObjectBuilder {
      */
 
     public boolean isRelationBuilder(int number) {
-        return getRelBuilderCache().containsKey(number);
+        return getRelBuilderCache().containsKey(Integer.valueOf(number));
     }
 
     /**
@@ -535,7 +527,7 @@ public class RelDef extends MMObjectBuilder {
     public int getNumberByName(String role, boolean searchBidirectional) {
         Integer number = relCache.get(role);
         if (number != null) {
-            return number;
+            return number.intValue();
         }
         if (searchBidirectional) {
             NodeSearchQuery query = new NodeSearchQuery(this);
@@ -544,7 +536,7 @@ public class RelDef extends MMObjectBuilder {
             query.setMaxNumber(1);
             try {
                 List<MMObjectNode> reldefs = getNodes(query);
-                if (!reldefs.isEmpty()) {
+                if (reldefs.size() != 0) {
                     MMObjectNode node = reldefs.get(0);
                     return node.getNumber();
                 }
@@ -602,7 +594,6 @@ public class RelDef extends MMObjectBuilder {
      * @since MMBase-1.7.1
 
      */
-    @Override
     public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
         if (builder.equals(getTableName())) {
             if (ctype.equals("c") || ctype.equals("n")) {

@@ -15,7 +15,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.mmbase.core.event.*;
-import org.mmbase.util.MMBaseContext;
+import org.mmbase.core.util.DaemonThread;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -33,19 +33,15 @@ import org.mmbase.util.logging.Logging;
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
-    private static final Logger LOG = Logging.getLoggerInstance(ClusterManager.class);
+    private static final Logger log = Logging.getLoggerInstance(ClusterManager.class);
 
     protected final Statistics receive = new Statistics();
     protected final Statistics send    = new Statistics();
 
-    /**
-     * Queue with messages to send to other MMBase instances
-     */
-    protected final BlockingQueue<byte[]> nodesToSend = new LinkedBlockingQueue<byte[]>(64);
-    /**
-     * Queue with received messages from other MMBase instances
-     */
-    protected final BlockingQueue<byte[]> nodesToSpawn = new LinkedBlockingQueue<byte[]>(64);
+    /** Queue with messages to send to other MMBase instances */
+    protected BlockingQueue<byte[]> nodesToSend = new LinkedBlockingQueue<byte[]>(64);
+    /** Queue with received messages from other MMBase instances */
+    protected BlockingQueue<byte[]> nodesToSpawn = new LinkedBlockingQueue<byte[]>(64);
 
     /** Thread which processes the messages */
     protected Thread kicker = null;
@@ -55,7 +51,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
     protected boolean compatible17 = false;
 
     public final void shutdown(){
-        LOG.info("Shutting down clustering");
+        log.info("Shutting down clustering");
         stopCommunicationThreads();
         kicker.setPriority(Thread.MIN_PRIORITY);
         kicker = null;
@@ -78,24 +74,22 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
      */
     protected abstract void stopCommunicationThreads();
 
-    @Override
     public void notify(Event event){
         //we only want to propagate the local events into the cluster
         if(event.getMachine().equals(MMBase.getMMBase().getMachineName())){
             byte[] message = createMessage(event);
             if (message != null) {
                 if (message.length > 5000) {
-                    LOG.warn("Sending large event to the cluster. Serialization of  " + event + " is " + message.length + " long!");
+                    log.warn("Sending large event to the cluster. Serialization of  " + event + " is " + message.length + " long!");
                 } else {
-                    LOG.debug("Sending an event to the cluster");
+                    log.debug("Sending an event to the cluster");
                 }
                 nodesToSend.offer(message);
-                LOG.debug("send queue: " + nodesToSend.size());
             } else {
-                LOG.debug("Message was null");
+                log.debug("MEssage was null");
             }
         } else {
-            LOG.trace("Ignoring remote event from  " + event.getMachine() + " it will not be propagated");
+            log.trace("Ignoring remote event from " + event.getMachine() + " it will not be propagated");
         }
     }
 
@@ -105,8 +99,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
     protected void start() {
         /* Start up the main thread */
         if (kicker == null) {
-            kicker = new Thread(MMBaseContext.getThreadGroup(), this, "ClusterManager");
-            kicker.setDaemon(true);
+            kicker = new DaemonThread(this, "ClusterManager");
             kicker.start();
             try {
                 kicker.setPriority(Thread.NORM_PRIORITY + 1);
@@ -114,26 +107,20 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
                 // MM:a NPE is thrown here sometimes if ThreadGroup of kicker is null.
                 // which I saw happening on my jvm (ThreadGroep set to null by Thread.start).
                 // I don't understand it, but it's not worth failing ClusterManager completely.
-                LOG.warn("Could not set thread priority of Cluster Manager");
+                log.warn("Could not set thread priority of Cluster Manager");
             }
             startCommunicationThreads();
         }
     }
 
-    /**
-     * Format of a message:
-     *
-     [<17 style message>],0<serialization of event object>
-    */
     protected byte[] createMessage(Event event) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Serializing " + event);
+        if (log.isDebugEnabled()) {
+            log.debug("Serializing " + event);
         }
         try {
             long startTime = System.currentTimeMillis();
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             if (compatible17) {
-                /// this is odd, it offers events, but this method is not about that.
                 if (event instanceof  NodeEvent || event instanceof RelationEvent) {
                     NodeEvent ne;
                     if (event instanceof RelationEvent) {
@@ -167,7 +154,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             send.cost += cost;
             return bytes.toByteArray();
         } catch (IOException ioe) {
-            LOG.error(ioe.getMessage(), ioe);
+            log.error(ioe.getMessage(), ioe);
             return null;
         }
 
@@ -175,7 +162,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
 
     /** Followup number of message */
     protected int follownr = 1;
-    protected int lastReceivedMessage;
+    protected int lastRecievedMessage;
 
     /**
      * Creates MMBase 1.7 parseable message. This is simple String, which is prefixed before the actual 1.8 message.
@@ -196,70 +183,56 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             int c = 1;
             while (c > 0) {
                 // ignore backwards compatibility message
-                c = stream.read(); // first time read a , then later a 0
-                LOG.trace("Found " + c);
+                c = stream.read();
             }
             ObjectInputStream in = new ObjectInputStream(stream);
             Event event = (Event) in.readObject();
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Unserialized " + event);
+            if (log.isDebugEnabled()) {
+                log.debug("Unserialized " + event);
             }
             return event;
         } catch (StreamCorruptedException scc) {
             // not sure that this can happen, now, because of the while(c>0) trick.
-            LOG.debug(scc.getClass() + " " + scc.getMessage() + ". Supposing old style message of " + message.length + " byte ", scc);
+            log.debug(scc.getMessage() + ". Supposing old style message.");
             // Possibly, it is a message from an 1.7 system
-            String mes;
-            try {
-                mes = new String(message, "ISO-8859-1");
-            } catch (java.io.UnsupportedEncodingException uee) {
-                LOG.warn(uee);
-                mes = new String(message);
-            }
-
+            String mes = new String(message);
             NodeEvent event = parseMessageBackwardCompatible(mes);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Old style message " + event);
+            if (log.isDebugEnabled()) {
+                log.debug("Old style message " + event);
             }
             return event;
         } catch (EOFException eofe) {
             // suppose that this is a 1.7 message
-            String mes;
-            try {
-                mes = new String(message, "ISO-8859-1");
-            } catch (java.io.UnsupportedEncodingException uee) {
-                LOG.warn(uee);
-                mes = new String(message);
-            }
+            String mes = new String(message);
             NodeEvent event = parseMessageBackwardCompatible(mes);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Old style message " + event + " of " + message.length + " byte");
+            if (log.isDebugEnabled()) {
+                log.debug("Old style message " + event);
             }
             return event;
         } catch (IOException ioe) {
-            LOG.error(ioe);
+            log.error(ioe);
             return null;
         } catch (ClassNotFoundException cnfe) {
-            LOG.error(cnfe);
+            log.error(cnfe);
             return null;
         }
     }
 
     protected NodeEvent parseMessageBackwardCompatible(String message) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("RECEIVE=>" + new org.mmbase.util.transformers.UnicodeEscaper().transform(message));
+        if (log.isDebugEnabled()) {
+            log.debug("RECEIVE=>" + message);
         }
-        StringTokenizer tok = new StringTokenizer(message, ",");
+        StringTokenizer tok = new StringTokenizer(message,",");
         if (tok.hasMoreTokens()) {
             String machine = tok.nextToken();
             if (tok.hasMoreTokens()) {
                 String fnr = tok.nextToken();
                 int newFollowNr = Integer.valueOf(fnr);
-                int expectedFollowNr = lastReceivedMessage + 1;
+                int expectedFollowNr = lastRecievedMessage + 1;
                 if (newFollowNr != expectedFollowNr) {
-                    LOG.debug("Expected message " + expectedFollowNr + ", but message " + newFollowNr + " was received ");
+                    log.info("Expected message " + expectedFollowNr + ", but message " + newFollowNr + " was recieved ");
                 }
-                lastReceivedMessage = newFollowNr;
+                lastRecievedMessage = newFollowNr;
                 if (tok.hasMoreTokens()) {
                     String id = tok.nextToken();
                     if (tok.hasMoreTokens()) {
@@ -277,33 +250,32 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
                                     try {
                                         return new NodeEvent(machine, tb, Integer.valueOf(id).intValue(), null, null, NodeEvent.oldTypeToNewType(ctype));
                                     } catch (NumberFormatException nfe) {
-                                        LOG.error(message + ": colud not parse " + id + " to a node number.");
+                                        log.error(message + ": colud not parse " + id + " to a node number.");
                                     }
                                 }
                             } else {
                                 /// XXXX should we?
-                                LOG.error("XML messages not suppported any more");
+                                log.error("XML messages not suppported any more");
                             }
-                        } else LOG.error(message + ": 'ctype' could not be extracted from this string!");
-                    } else LOG.error(message + ": 'tb' could not be extracted from this string!");
-                } else LOG.error(message + ": 'id' could not be extracted from this string!");
-            } else LOG.error(message + ": 'vnr' could not be extracted from this string!");
-        } else LOG.error(message + ": 'machine' could not be extracted from this string!");
+                        } else log.error(message + ": 'ctype' could not be extracted from this string!");
+                    } else log.error(message + ": 'tb' could not be extracted from this string!");
+                } else log.error(message + ": 'id' could not be extracted from this string!");
+            } else log.error(message + ": 'vnr' could not be extracted from this string!");
+        } else log.error(message + ": 'machine' could not be extracted from this string!");
         return null;
     }
 
     /**
      * @see java.lang.Runnable#run()
      */
-    @Override
     public void run() {
         while(kicker != null) {
             try {
                 byte[] message = nodesToSpawn.take();
                 if (message == null) continue;
                 long startTime = System.currentTimeMillis();
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace("RECEIVED =>" + message.length + " bytes, queue: " + nodesToSpawn.size());
+                if (log.isDebugEnabled()) {
+                    log.trace("RECEIVED =>" + message.length + " bytes");
                 }
                 receive.count++;
                 receive.bytes += message.length;
@@ -312,14 +284,14 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
                 if (event != null) {
                     handleEvent(event);
                 } else {
-                    LOG.warn("Could not handle event, it is null");
+                    log.warn("Could not handle event, it is null");
                 }
                 receive.cost += (System.currentTimeMillis() - startTime);
             } catch (InterruptedException e) {
-                LOG.debug(Thread.currentThread().getName() +" was interruped.");
+                log.debug(Thread.currentThread().getName() +" was interruped.");
                 break;
             } catch(Throwable t) {
-                LOG.error(t.getMessage(), t);
+                log.error(t.getMessage(), t);
             }
         }
     }
@@ -332,15 +304,15 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         // check if MMBase is 100% up and running, if not eat event
         MMBase mmbase = MMBase.getMMBase();
         if (mmbase == null || !mmbase.getState()) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Ignoring event " + event + ", mmbase is not up " + mmbase);
+            if (log.isDebugEnabled()) {
+                log.debug("Ignoring event " + event + ", mmbase is not up " + mmbase);
             }
             return;
         }
         if (mmbase.getMachineName().equals(event.getMachine())) {
             // ignore changes of ourselves
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Ignoring event " + event + " it is from this (" + event.getMachine() + ") mmbase");
+            if (log.isDebugEnabled()) {
+                log.debug("Ignoring event " + event + " it is from this (" + event.getMachine() + ") mmbase");
             }
             return;
         }
@@ -348,30 +320,29 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         if (event instanceof NodeEvent) {
             MMObjectBuilder builder = mmbase.getBuilder(((NodeEvent) event).getBuilderName());
             if (builder != null && (! builder.broadcastChanges())) {
-                LOG.info("Ignoring node-event for node type " + builder + " because broad cast changes is false");
+                log.info("Ignoring node-event for node type " + builder + " because broad cast changes is false");
                 return;
             }
         }
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Handling event " + event + " for " + event.getMachine());
+        if (log.isDebugEnabled()) {
+            log.debug("Handling event " + event + " for " + event.getMachine());
         }
 
         if (spawnThreads) {
             Runnable job = new Runnable () {
-                @Override
-                public void run() {
-                    long startTime = System.currentTimeMillis();
-                    EventManager.getInstance().propagateEvent(event);
-                    receive.cost += (System.currentTimeMillis() - startTime);
-                }
-            };
+                    public void run() {
+                        long startTime = System.currentTimeMillis();
+                        EventManager.getInstance().propagateEvent(event);
+                        receive.cost += (System.currentTimeMillis() - startTime);
+                    }
+                };
             org.mmbase.util.ThreadPools.jobsExecutor.execute(job);
         } else {
             try {
                 EventManager.getInstance().propagateEvent(event);
             } catch (Throwable t) {
-                LOG.error("Exception during propagation of event: " + event + ": " + t.getMessage(), t);
+                log.error("Exception during propagation of event: " + event + ": " + t.getMessage(), t);
             }
         }
     }

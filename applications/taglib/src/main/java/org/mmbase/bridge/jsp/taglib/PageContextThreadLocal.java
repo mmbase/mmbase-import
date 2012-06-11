@@ -31,21 +31,20 @@ public class PageContextThreadLocal {
     private static final Logger LOG = Logging.getLoggerInstance(PageContextThreadLocal.class);
 
     static {
-        LOG.debug("Adding system event listener");
+        LOG.info("Adding system event listener");
         EventManager.getInstance().addEventListener(new SystemEventListener() {
-            @Override
-            public void notify(SystemEvent se) {
-                LOG.debug("Got " + se);
-                if (se instanceof SystemEvent.Shutdown) {
-                    LOG.info("Shutting down. Clearing " + threadPageContexts.get());
-                    threadPageContexts.remove();
+                @Override
+                public void notify(SystemEvent se) {
+                    LOG.debug("Got " + se);
+                    if (se instanceof SystemEvent.Shutdown) {
+                        LOG.info("Shutting down. Clearing " + threadPageContexts.get());
+                        threadPageContexts.remove();
+                    }
                 }
-            }
-            @Override
-            public int getWeight() {
-                return 0;
-            }
-        });
+                public int getWeight() {
+                    return 0;
+                }
+            });
     }
 
 

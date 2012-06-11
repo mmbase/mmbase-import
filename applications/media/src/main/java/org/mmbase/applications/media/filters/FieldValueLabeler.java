@@ -52,7 +52,6 @@ public class  FieldValueLabeler  extends Labeler  {
     }
 
 
-    @Override
     protected void label(URLComposer uc) {
         if (pattern.matcher(uc.getSource().getStringValue(field)).matches()) {
             uc.getInfo().put(key, label);

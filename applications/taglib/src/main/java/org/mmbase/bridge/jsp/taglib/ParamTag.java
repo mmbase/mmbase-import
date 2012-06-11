@@ -44,11 +44,10 @@ public class ParamTag extends AbstractParamTag implements ParamHandler {
     /**
      * @since MMBase-1.9
      */
-    @Override
     protected void addParameter(Object value) throws JspTagException {
         if (name == Attribute.NULL) {
             if (value instanceof CharSequence) {
-                for (Map.Entry<String, String> entry : StringSplitter.map(value.toString()).entrySet()) {
+                for (Map.Entry<String, String> entry : StringSplitter.map(((CharSequence) value).toString()).entrySet()) {
                     paramHandler.addParameter(entry.getKey(), entry.getValue());
                 }
             } else {

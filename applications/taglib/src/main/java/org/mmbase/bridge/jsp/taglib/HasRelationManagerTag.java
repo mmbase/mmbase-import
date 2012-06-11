@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.*;
 
 import javax.servlet.jsp.JspTagException;
@@ -19,7 +20,7 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * Straight-forward wrapper around {@link org.mmbase.bridge.Cloud#hasRelationManager}.
+ * Straight-forward wrapper arround {@link org.mmbase.bridge.Cloud#hasRelationManager}.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -33,7 +34,6 @@ public class HasRelationManagerTag extends CloudReferrerTag implements Condition
     protected Attribute destinationManager = Attribute.NULL;
     protected Attribute role               = Attribute.NULL;
 
-    @Override
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
     }

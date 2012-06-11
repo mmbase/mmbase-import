@@ -1,9 +1,9 @@
+/*<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@ taglib uri="http://www.opensymphony.com/oscache" prefix="os"
+%><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"  
+%><jsp:directive.page session="false" />
+*///<mm:content type="text/javascript" expires="3600" postprocessor="none" language="${param.locale}"><os:cache time="3600"><mm:escape  escape="javascript-compress"><fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
 /**
-<%@page contentType="text/javascript; charset=UTF-8" session="false"
-%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"
-%><fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
-<mm:content type="text/javascript">
  *
  * This javascript binds to a div.list. It happens on document.ready on every div.list in the document. You can also call {@link #init} manually, e.g. after an AJAX load.
  *
@@ -1068,7 +1068,6 @@ List.prototype.tinymce = function(el, tinyMceConfiguration) {
 
          });
  };
-/*
- </mm:content>
-</fmt:bundle>
-*/
+
+
+//</fmt:bundle></mm:escape></os:cache></mm:content>

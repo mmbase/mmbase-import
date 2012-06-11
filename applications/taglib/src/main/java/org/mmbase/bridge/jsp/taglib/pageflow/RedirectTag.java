@@ -59,7 +59,7 @@ public class RedirectTag extends UrlTag  {
             // dont set value, but redirect.
             HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
             String u = url.get();
-            log.info("Redirecting to " + u + " with " + response.getClass() + " " + response);
+            log.service("Redirecting to " + u + " with " + response.getClass() + " " + response);
             if (response.isCommitted()) {
                 log.warn("Response is already committed!");
             }
@@ -67,10 +67,7 @@ public class RedirectTag extends UrlTag  {
         } catch (java.io.IOException io) {
             throw new TaglibException(io);
         }
-	return SKIP_PAGE;
+        return SKIP_PAGE;
     }
-
-
-
 
 }

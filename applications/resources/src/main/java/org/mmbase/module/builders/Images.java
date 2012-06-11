@@ -19,12 +19,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.mmbase.core.event.NodeEvent;
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.VirtualNode;
 import org.mmbase.servlet.FileServlet;
 import org.mmbase.util.Casting;
-import org.mmbase.util.MMBaseContext;
 import org.mmbase.util.SerializableInputStream;
 import org.mmbase.util.UriParser;
 import org.mmbase.util.functions.Parameter;
@@ -53,16 +53,10 @@ public class Images extends AbstractImages {
 
     // This cache connects templates (or ckeys, if that occurs), with node numbers,
     // to avoid querying icaches.
-    private static final CKeyCache templateCacheNumberCache = new CKeyCache(500) {
-        @Override
-        public String getName() {
-            return "CkeyNumberCache";
-        }
-        @Override
-        public String getDescription() {
-            return "Connection between image conversion templates and icache node numbers";
-        }
-    };
+    private static CKeyCache templateCacheNumberCache = new CKeyCache(500) {
+            public String getName()        { return "CkeyNumberCache"; }
+            public String getDescription() { return "Connection between image conversion templates and icache node numbers"; }
+        };
     static {
         templateCacheNumberCache.putCache();
     }
@@ -117,7 +111,9 @@ public class Images extends AbstractImages {
             log.warn("Builder with name 'icaches' wasn't loaded. Cannot do image-conversions.");
         }
 
+
         if (! "false".equals(getInitParameter("InitFactory"))) {
+
             Map<String, String> map = getInitParameters("mmbase/imaging"); // TODO, this would conflict
             // with module with name 'imaging'?
             map.put("configfile", getConfigResource());
@@ -127,6 +123,7 @@ public class Images extends AbstractImages {
             } else {
                 log.warn("Image conversion factory is already inited. Ignoring " + map + " of " + getTableName());
             }
+
         }
         return true;
     }
@@ -151,8 +148,8 @@ public class Images extends AbstractImages {
         if ("info".equals(function)) {
             List<Object> empty = new ArrayList<Object>();
             Map<String,String> info = (Map<String,String>) super.executeFunction(node, function, empty);
-            info.put("cache", "" +  Arrays.toString(CACHE_PARAMETERS) + " The node number of the cached converted image (icaches node)");
-            if (args == null || args.isEmpty()) {
+            info.put("cache", Arrays.toString(CACHE_PARAMETERS) + " The node number of the cached converted image (icaches node)");
+            if (args == null || args.size() == 0) {
                 return info;
             } else {
                 return info.get(args.get(0));
@@ -173,19 +170,19 @@ public class Images extends AbstractImages {
                 return null;
             }
         } else if ("height".equals(function)) {
-            if (args.isEmpty()) {
+            if (args.size() == 0) {
                 return Integer.valueOf(getDimension(node).getHeight());
             } else {
                 return Integer.valueOf(getDimension(node, (String) args.get(0)).getHeight());
             }
         } else if ("width".equals(function)) {
-            if (args.isEmpty()) {
+            if (args.size() == 0) {
                 return Integer.valueOf(getDimension(node).getWidth());
             } else {
                 return Integer.valueOf(getDimension(node, (String) args.get(0)).getWidth());
             }
         } else if ("dimension".equals(function)) {
-            if (args.isEmpty()) {
+            if (args.size() == 0) {
                 return getDimension(node);
             } else {
                 return getDimension(node, (String) args.get(0));
@@ -283,7 +280,7 @@ public class Images extends AbstractImages {
     public static File createTemporaryFile(SerializableInputStream in, String template) throws IOException {
         long lt = 120;
         FileServlet fileServlet = FileServlet.getInstance();
-        File temporaryImages = new File(FileServlet.getDirectory(), "temporary_images");
+        File temporaryImages = new File(fileServlet.getDirectory(), "temporary_images");
         temporaryImages.mkdirs();
         final File thumb = new File(temporaryImages, in.getName() + "." + template + ".png");
         thumb.deleteOnExit();
@@ -296,12 +293,11 @@ public class Images extends AbstractImages {
             dimensions.put(thumb, dim);
             if (lt > 0) {
                 deleter.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        thumb.delete();
-                        dimensions.remove(thumb);
-                    }
-                }, lt * 1000);
+                        public void run() {
+                            thumb.delete();
+                            dimensions.remove(thumb);
+                        }
+                    }, lt * 1000);
             }
         } else {
             dim = dimensions.get(thumb);
@@ -466,6 +462,7 @@ public class Images extends AbstractImages {
         }
     }
 
+
     @Override
     public String getDefaultImageType() {
         return defaultImageType;
@@ -481,7 +478,7 @@ public class Images extends AbstractImages {
         if(super.commit(node)) {
             // when cache is invalid, invalidate
             if(imageCacheInvalid) {
-                invalidateImageCache(node);
+                invalidateImageCache(node, false);
                 templateCacheNumberCache.remove(node.getNumber());
             }
             return true;
@@ -497,7 +494,7 @@ public class Images extends AbstractImages {
      */
     @Override
     public void removeNode(MMObjectNode node) {
-        invalidateImageCache(node);
+        invalidateImageCache(node, true);
         templateCacheNumberCache.remove(node.getNumber());
         super.removeNode(node);
     }
@@ -522,11 +519,11 @@ public class Images extends AbstractImages {
      * Invalidate the Image Cache, if there is one, for a specific ImageNode
      * @param node The image node, which is the original
      */
-    private void invalidateImageCache(MMObjectNode node) {
+    private void invalidateImageCache(MMObjectNode node, boolean remove) {
         ImageCaches icache = (ImageCaches) mmb.getMMObject("icaches");
         if(icache != null) {
             // we have a icache that is active...
-            icache.invalidate(node);
+            icache.invalidate(node, remove);
         }
     }
 

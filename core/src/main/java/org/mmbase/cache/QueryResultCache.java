@@ -17,16 +17,15 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 import org.mmbase.storage.search.*;
-import org.mmbase.util.xml.DocumentReader;
-import org.w3c.dom.Element;
 
+import org.mmbase.bridge.implementation.BasicQuery;
 
 /**
  * This cache provides a base implementation to cache the result of
  * SearchQuery's. Such a cache links a SearchQuery object to a list of
- * MMObjectNodes. A cache entry is automatically invalidated if arbitrary node of
+ * MMObjectNodes. A cache entry is automaticly invalidated if arbitrary node of
  * one of the types present in the SearchQuery is changed (,created or deleted).
- * This mechanism is not very subtle but it is guaranteed to be correct. It means
+ * This mechanism is not very subtle but it is garanteed to be correct. It means
  * though that your cache can be considerably less effective for queries
  * containing node types from which often nodes are edited.
  *
@@ -63,7 +62,6 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
      */
     private final ChainedReleaseStrategy releaseStrategy;
 
-    @SuppressWarnings("LeakingThisInConstructor")
     public QueryResultCache(int size) {
         super(size);
         releaseStrategy = new ChainedReleaseStrategy();
@@ -168,8 +166,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     /**
      *
      */
-    @Override
-    public double getAverageValueLength() {
+    public double getAvarageValueLength() {
         synchronized(lock) {
             double total = 0;
             for (List<MMObjectNode> result : values()) {
@@ -187,7 +184,6 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     /**
      * @see org.mmbase.core.event.RelationEventListener#notify(org.mmbase.core.event.RelationEvent)
      */
-    @Override
     public void notify(RelationEvent event) {
         if(containsType(event)) {
             nodeChanged(event);
@@ -208,7 +204,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
                 return true;
             }
             MMBase mmb = MMBase.getMMBase();
-            String roleName = mmb.getRelDef().getBuilderName(event.getRole());
+            String roleName = mmb.getRelDef().getBuilderName(Integer.valueOf(event.getRole()));
             if (typeCounters.containsKey(roleName)) {
                 return true;
             }
@@ -238,7 +234,6 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     /**
      * @see org.mmbase.core.event.NodeEventListener#notify(org.mmbase.core.event.NodeEvent)
      */
-    @Override
     public void notify(NodeEvent event) {
         if (containsType(event)) {
             nodeChanged(event);
@@ -359,25 +354,4 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
             releaseStrategy.clear();
         }
     }
-
-    @Override
-    public void configure(Element element) {
-        super.configure(element);
-        //first remove all present strategies (this might be a reconfiguration)
-        getReleaseStrategy().removeAllStrategies();
-        log.debug("found a SearchQueryCache: " + getName());
-        //see if there are globally configured release strategies
-        Element releaseStrategies = DocumentReader.getElementByPath(element.getOwnerDocument().getDocumentElement(), "caches.releaseStrategies");
-        if (releaseStrategies != null) {
-            getReleaseStrategy().fillFromXml(releaseStrategies);
-        }
-        getReleaseStrategy().fillFromXml(element);
-
-        if (getReleaseStrategy().size() == 0) {
-            log.warn("No release-strategies configured for cache " + this + " (nor globally configured); falling back to basic release strategy");
-            addReleaseStrategy(new BasicReleaseStrategy());
-        }
-        log.service("Release strategies for " + getName() + ": " + getReleaseStrategy());
-    }
-
 }

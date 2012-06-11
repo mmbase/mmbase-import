@@ -21,7 +21,6 @@ import org.mmbase.storage.util.Index;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.legacy.QueryConvertor;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -202,7 +201,7 @@ public class StorageConnector {
         }
         MMObjectNode node = null;
 
-        Integer numberValue = number;
+        Integer numberValue = Integer.valueOf(number);
         // try cache if indicated to do so
         node = builder.getNodeFromCache(numberValue);
         if (node != null) {
@@ -573,7 +572,7 @@ public class StorageConnector {
         while (resultsIterator.hasNext()) {
             MMObjectNode node = resultsIterator.next();
             Integer number = node.getNumber();
-            if(number < 0) {
+            if(number.intValue() < 0) {
                 // never happened to me, and never should!
                 LOG.error("invalid node found, node number was invalid:" + node.getNumber()+", storage invalid?");
                 // dont know what to do with this node,...

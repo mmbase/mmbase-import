@@ -32,7 +32,6 @@ public class QuerySortOrderTag extends CloudReferrerTag implements QueryContaine
     protected Attribute part  = Attribute.NULL;
     protected Attribute casesensitive = Attribute.NULL;
 
-    @Override
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
     }
@@ -53,7 +52,6 @@ public class QuerySortOrderTag extends CloudReferrerTag implements QueryContaine
         field = getAttribute(f);
     }
 
-    @Override
     public int doStartTag() throws JspTagException {
         Query query = getQuery(container);
         int order = Queries.getSortOrder(direction.getString(this));

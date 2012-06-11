@@ -6,13 +6,13 @@
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-application-parent</artifactId>
-    <version>2.0-SNAPSHOT</version>
-    <relativePath>../../maven-base/applications/pom.xml</relativePath>
+    <version>1.9-SNAPSHOT</version>
   </parent>
 
   <artifactId>mmbase-scan</artifactId>
   <name>MMBase Scan</name>
   <packaging>war</packaging>
+  <version>${mmbase.version}</version>
 
   <description>
     SCAN is the legacy template language of MMBase. Don't use it.
@@ -35,12 +35,6 @@
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
       <version>1.4.1</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>mmbase-core</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

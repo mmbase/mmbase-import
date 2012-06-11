@@ -11,7 +11,6 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.images.*;
 import org.mmbase.util.UriParser;
@@ -99,6 +98,7 @@ public class ImageCaches extends AbstractImages {
         }
         return buf;
     }
+
     @Override
     protected boolean addFileName(MMObjectNode node, String servlet) {
         if (super.addFileName(node, servlet)) return true;
@@ -117,7 +117,6 @@ public class ImageCaches extends AbstractImages {
      * @since MMBase-1.6
      **/
 
-    @Override
     protected String getGUIIndicatorWithAlt(MMObjectNode node, String alt, Parameters a) {
         StringBuilder servlet = new StringBuilder();
         HttpServletRequest req = a.get(Parameter.REQUEST);
@@ -176,13 +175,18 @@ public class ImageCaches extends AbstractImages {
     }
 
     @Override
-    protected String getSGUIIndicatorForNode(MMObjectNode node, Parameters a) {
-        MMObjectNode origNode = originalImage(node);
-        if (origNode.getBuilder().hasField("title")) {
-            return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""), a);
+    protected String getSGUIIndicatorForNode(final MMObjectNode node, final Parameters a) {
+        final MMObjectNode origNode = originalImage(node);
+        final String title;
+        if (origNode == null) {
+            title = "";
+        } else if (origNode.getBuilder().hasField("title")) {
+            title = origNode.getStringValue("title");
         } else {
-            return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("number") : ""), a);
+            title = origNode.getStringValue("number");
         }
+        return getGUIIndicatorWithAlt(node, title, a);
+
     }
 
     /**
@@ -328,12 +332,16 @@ public class ImageCaches extends AbstractImages {
 
     /**
      * Invalidate the Image Cache for a specific Node
-     * method only accessable on package level, since only Images should call it..
+     * method only accessible on package level, since only Images should call it..
      *
      * @param imageNode The image node, which is the original of the cached modifications
      * @since MMBase-1.7
      */
     protected void invalidate(MMObjectNode imageNode) {
+        invalidate(imageNode, true);
+    }
+
+    protected void invalidate(MMObjectNode imageNode, boolean remove) {
         if (log.isDebugEnabled()) {
             log.debug("Going to invalidate the node, where the original node # " + imageNode.getNumber());
         }
@@ -351,10 +359,16 @@ public class ImageCaches extends AbstractImages {
         }
 
         for (MMObjectNode invalidNode : nodes) {
-            // delete the icache node
-            removeNode(invalidNode);
-            if (log.isDebugEnabled()) {
-                log.debug("deleted node with number#" + invalidNode.getNumber());
+            if (remove || ! invalidNode.isNull(FIELD_HANDLE)) {
+                // delete the icache node
+                removeNode(invalidNode);
+                if (log.isDebugEnabled()) {
+                    log.debug("deleted node with number#" + invalidNode.getNumber());
+                }
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("No need to delete number#" + invalidNode.getNumber() + " because it is still empty");
+                }
             }
         }
 

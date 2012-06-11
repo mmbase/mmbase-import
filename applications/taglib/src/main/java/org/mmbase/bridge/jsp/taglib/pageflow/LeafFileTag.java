@@ -12,7 +12,6 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
-import org.mmbase.bridge.util.TreeHelper;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -46,7 +45,6 @@ public class LeafFileTag extends UrlTag {
         notFound = getAttribute(n);
     }
 
-    @Override
     protected String getPage(String p) throws JspTagException {
         try {
             return th.findLeafFile(p, objectList.getValue(this).toString(),
@@ -55,7 +53,7 @@ public class LeafFileTag extends UrlTag {
             throw new TaglibException(ioe);
         }
     }
-    @Override
+
     protected void initTag(boolean internal) throws JspTagException {
         th.setCloud(getCloudVar());
         th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
@@ -67,7 +65,6 @@ public class LeafFileTag extends UrlTag {
         }
     }
 
-    @Override
     public void doFinally() {
         th.doFinally();
         super.doFinally();
@@ -75,7 +72,6 @@ public class LeafFileTag extends UrlTag {
 
 
     // override to cancel
-    @Override
     protected boolean doMakeRelative() {
     	log.debug("doMakeRelative() overridden!");
         return false;

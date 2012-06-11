@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.mmbase.applications.email.SendMail;
 import org.mmbase.util.*;
-import org.mmbase.util.MMBaseContext;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 

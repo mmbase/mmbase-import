@@ -39,11 +39,10 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml 44979 2011-01-20 09:46:46Z michiel $
+version: $Id$
 
 -->
 <taglib author="MMBase community">
-  <svn-url>$HeadURL$</svn-url>
   <description>MMBase Taglib</description>
   <display-name>MMBase Taglib</display-name>
   <tlib-version>2.0</tlib-version>
@@ -235,15 +234,15 @@ version: $Id: mmbase-taglib.xml 44979 2011-01-20 09:46:46Z michiel $
         </p>
       </info>
     </type>
-    <type name="basic">
-      <description>basic tags</description>
-      <info>
-        <p>
-          These are the most basic MMBase tags, which supply the basic functionality to access MMBase data
-          in you pages. An overview of all MMBase tags can be found in <a href="mmbase-taglib-all.html">here</a>.
-        </p>
-      </info>
-    </type>
+    <type name="mmbase.basic">
+    <description>basic tags</description>
+    <info>
+      <p>
+        These are the most basic MMBase tags, which supply the basic functionality to access MMBase data
+        in you pages. An overview of all MMBase tags can be found in <a href="mmbase-taglib-all.html">here</a>.
+      </p>
+    </info>
+  </type>
   <type name="mmbase">
     <description>mmbase tags</description>
     <info>
@@ -254,7 +253,7 @@ version: $Id: mmbase-taglib.xml 44979 2011-01-20 09:46:46Z michiel $
       </p>
     </info>
   </type>
-  <type name="security">
+  <type name="mmbase.security">
     <description>security tags</description>
     <info>
     <p>
@@ -267,7 +266,7 @@ version: $Id: mmbase-taglib.xml 44979 2011-01-20 09:46:46Z michiel $
   <description>utility tags</description>
   <info>
     <p>
-      These are the MMBase tags which do not directly relate to MMBase
+      These are the MMBase tags which do directly relate to MMBase
       data, but are merely handy to have.
     </p>
   </info>
@@ -276,13 +275,13 @@ version: $Id: mmbase-taglib.xml 44979 2011-01-20 09:46:46Z michiel $
   <description>HTML related tags</description>
   <info>
     <p>
-      Small, simple utilities (normally implemented with a tag-file), to help producing (valid) HTML.
+      Small, simple utilities (normally implmented with a tag-file), to help producing (valid) HTML.
     </p>
   </info>
   </type>
 
-  <type name="context">
-    <description>context/variable tags</description>
+  <type name="util.context">
+  <description>context/variable tags</description>
   <info>
     <p>
        All MMBase utility tags related to `contexts' and  taglib
@@ -314,60 +313,61 @@ version: $Id: mmbase-taglib.xml 44979 2011-01-20 09:46:46Z michiel $
       </p>
       <p>
         The following example demonstrates how to use tree's in mmbase taglib
-          &lt;pre&gt;
-&amp;lt;mm:import externid="node" required="true" /&amp;gt;
-&amp;lt;mm:node number="$node"&amp;gt;
+          <pre><![CDATA[
+<mm:import externid="node" required="true" />
+<mm:node number="$node">
 
-  &amp;lt;%-- the current node is used as a 'starting query', so this node itself will also be listed by mm:tree --%&amp;gt;
+  <%-- the current node is used as a 'starting query', so this node itself will also be listed by mm:tree --%>
 
-  &amp;lt;mm:treecontainer path="posrel,categories,object" searchdirs="destination"&amp;gt;
-    &amp;lt;%-- the query will be extended with posrel,categories, and then with any objects related to the categories,
+  <mm:treecontainer path="posrel,categories,object" searchdirs="destination">
+    <%-- the query will be extended with posrel,categories, and then with any objects related to the categories,
          and then with any 'posrel' related categories related to those object etc.
-    --%&amp;gt;
+    --%>
 
-    &amp;lt;%-- the categories must be order according to the 'pos' field in the posrel. --%&amp;gt;
-    &amp;lt;mm:sortorder field="posrel.pos" /&amp;gt;
+    <%-- the categories must be order according to the 'pos' field in the posrel. --%>
+    <mm:sortorder field="posrel.pos" />
 
-    &amp;lt;%-- don't do every category, but only those with 'a' in their title --%&amp;gt;
-    &amp;lt;mm:constraint field="categories.title" operator="LIKE" value="%a%" /&amp;gt;
+    <%-- don't do every category, but only those with 'a' in their title --%>
+    <mm:constraint field="categories.title" operator="LIKE" value="%a%" />
 
-    &amp;lt;%-- also some trivial sortorder on the 'object' steps --%&amp;gt;
-    &amp;lt;mm:sortorder  field="object.number" direction="up" /&amp;gt;
+    <%-- also some trivial sortorder on the 'object' steps --%>
+    <mm:sortorder  field="object.number" direction="up" />
 
-    In this tree &amp;lt;mm:size /&amp;gt; objects are presented.
+    In this tree <mm:size /> objects are presented.
 
-    &amp;lt;mm:tree&amp;gt;
+    <mm:tree>
 
-      &amp;lt;%-- If the current node provided by the tree is on the end of a 'longer branch', then we start a
+      <%-- If the current node provided by the tree is on the end of a 'longer branch', then we start a
            ul. mm:grow is iterated zero (if the previous node was _bigger or equal_) or one (if the previous
            node was _smaller_  times. (Because in a forward tree iteration the branch can not grow faster
            than that)
-           --%&amp;gt;
-      &amp;lt;mm:grow&amp;gt;
-        &amp;lt;ul&amp;gt;
-        &amp;lt;%-- we also say now already what should happen if it later 'shrinks' again. The body of this will be temporary
-             put onto a stack until it is taken of it by the mm:shrink tag. --&amp;gt;
-        &amp;lt;mm:onshrink&amp;gt;&amp;lt;/ul&amp;gt;&amp;lt;/mm:onshrink&amp;gt;
-      &amp;lt;/mm:grow&amp;gt;
+           --%>
+      <mm:grow>
+        <ul>
+        <%-- we also say now already what should happen if it later 'shrinks' again. The body of this will be temporary
+             put onto a stack until it is taken of it by the mm:shrink tag. -->
+        <mm:onshrink></ul></mm:onshrink>
+      </mm:grow>
 
-      &amp;lt;%-- a tree tag provides 'real' nodes, so in the body we can show this node --%&amp;gt;
+      <%-- a tree tag provides 'real' nodes, so in the body we can show this node --%>
 
-      &amp;lt;li&amp;gt;&amp;lt;mm:nodeinfo type="guitype" /&amp;gt;: &amp;lt;mm:field name="number" /&amp;gt; &amp;lt;mm:function name="gui" escape="none" /&amp;gt;
+      <li><mm:nodeinfo type="guitype" />: <mm:field name="number" /> <mm:function name="gui" escape="none" />
 
-      &amp;lt;mm:onshrink&amp;gt;&amp;lt;/li&amp;gt;&amp;lt;/mm:onshrink&amp;gt;
+      <mm:onshrink></li></mm:onshrink>
 
-      &amp;lt;%-- mm:shrink will use what was put onto the 'shrink tag' by the mm:onshrink tags. The body of mm:shrink
+      <%-- mm:shrink will use what was put onto the 'shrink tag' by the mm:onshrink tags. The body of mm:shrink
       will be called zero (if the next node will be bigger then the current one) or more times. How
       often it iterates depends on how often mm:onshrink was called. It will be emptied until the top element
       of the shrink tag correspends to a depth which is smaller then the current depth.
-      --%&amp;gt;
+      --%>
 
-      &amp;lt;mm:shrink /&amp;gt;
-    &amp;lt;/mm:tree&amp;gt;
+      <mm:shrink />
+    </mm:tree>
 
-  &amp;lt;/mm:treecontainer&amp;gt;
-&amp;lt;/mm:node&amp;gt;
-&lt;/pre&gt;
+  </mm:treecontainer>
+</mm:node>
+]]>
+</pre>
       </p>
       <p>
         Trees which do not need such complicated sort orders or constraints can also be used stand-alone.
@@ -390,9 +390,8 @@ version: $Id: mmbase-taglib.xml 44979 2011-01-20 09:46:46Z michiel $
         they can coincide.
       </p>
       <p>
-        An example may be:
-        <code><![CDATA[&amp;lt;mm:listnodes type="$nodetype"&amp;gt;]]></code>,
-        here the 'nodetype' variable from the
+        An example is for instance the use: &lt;mm:listnodes
+        type="$nodetype"&gt;, here the 'nodetype' variable from the
         context is referred to.
       </p>
     </info>
@@ -623,7 +622,7 @@ version: $Id: mmbase-taglib.xml 44979 2011-01-20 09:46:46Z michiel $
     </attribute>
     <see tag="listreferrer" />
     <example>
-      <![CDATA[
+      <pre><![CDATA[
 <mm:import id="list1" vartype="list">a,b,c,d,e</mm:import>
 <mm:import id="list2" vartype="list">c,d,e,f</mm:import>
 
@@ -633,9 +632,11 @@ version: $Id: mmbase-taglib.xml 44979 2011-01-20 09:46:46Z michiel $
 
 <mm:write referid="list3" /> / <mm:write referid="list4" /> / <mm:write referid="list5" />
 ]]>
+      </pre>
       This will print the following:
-
+      <pre>
 a,b,c,d,e,c,d,e,f / c,d,e / a,b
+      </pre>
     </example>
     <attribute>
       <name>varStatus</name>
@@ -679,11 +680,6 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
   <taginterface>
     <name>nodeprovider</name>
     <type>mmbase.basic</type>
-    <variable>
-      <description>The node that is provided</description>
-      <name-given>_node</name-given>
-      <variable-class>org.mmbase.bridge.Node</variable-class>
-    </variable>
     <info>
       A node provider makes an MMBase Node available to its body.
     </info>
@@ -833,10 +829,6 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
   <taginterface>
     <name>writer</name>
     <type>util</type>
-    <variable>
-      <description>The string that is produced</description>
-      <name-given>_</name-given>
-    </variable>
     <info>
       A writer is a tag that can produce output. Normally the default will be to
       written to the page, unless the tag has a body. All tags which
@@ -965,12 +957,10 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Override the default escape behaviour determined by the surrounding <a href="content.html">mm:content tag</a>.
-        <document file="../resources/org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
+        Override the default escape behaviour determined by the surrounding Content-tag.
+        <document file="org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
                   mode="escapers" />
-        <p>The value can also refer to the id of escaper tag</p>
-        <p>It is also possible to directly call the 'parameterized' escapers (see <a href="escaper.html#attribute-type">parameterized escapers</a>), by using
-        a 'function' syntax. E.g. <code>escape="paragraph(myclass)"</code>.</p>
+        <p>The value can also refer to the id of an escaper tag</p>
       </info>
       <see tag="content" />
       <see tag="escaper" />
@@ -981,7 +971,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
   <taginterface>
     <name>container</name>
     <info>
-       Container tags can be referred to by 'container-referrers'
+       Container tags can be referred to by container-referrers.
     </info>
     <since>MMBase-1.7</since>
   </taginterface>
@@ -1073,7 +1063,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
     <extends>nodereferrer</extends>
     <info>
       <p>
-        A function tag (of which there are many different types) evaluates a function. Functions can
+        A function tag (of which there are many different types) evaluate a function. Functions can
         be defined in three locations:
         <ul>
           <li>The nodemanager (for functions located in builder code)</li>
@@ -3841,7 +3831,7 @@ transaction was commited, following should result anything:
         <info>The description of the field (can be in other language)</info>
       </possiblevalue>
       <possiblevalue>
-        <value>dataype</value>
+        <value>datatype</value>
         <info>A String identifying the datatype of the field</info>
         <since>MMBase-1.8</since>
       </possiblevalue>
@@ -4206,6 +4196,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>Path for the cookie if the 'cookie' attribute is used. Works like url-tag. Defaults to / (i.e. &lt;context path&gt;)</info>
+      <since>MMBase-1.9.6</since>
     </attribute>
     <attribute>
       <name>cookiedomain</name>
@@ -4791,11 +4782,6 @@ like the parameter list or the session (where ever it is available) --&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.ImageTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
     <bodycontent>JSP</bodycontent>
-    <variable>
-      <description>The dimension of the image that will be produced</description>
-      <name-given>dimension</name-given>
-      <variable-class>org.mmbase.util.images.Dimension</variable-class>
-    </variable>
     <info>
       <p>
         Returns an URL to the image servlet. This is a NodeReferrer
@@ -7101,7 +7087,7 @@ The 0 is just counter, which starts at 0 on every page.
         <p>
           Setting the content-type can also trigger a default `escaper' and `postprocessor'.
         </p>
-        <document file="../resources/org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
+        <document file="org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
                   mode="content" />
       </info>
     </attribute>
@@ -7176,7 +7162,7 @@ The 0 is just counter, which starts at 0 on every page.
         <p>
           The following postprocessors can be specified (besides the ones defined with mm:escaper tags).
         </p>
-        <document file="../resources/org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
+        <document file="org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
                   mode="postprocessors" />
       </info>
       <see tag="escaper" />
@@ -7198,8 +7184,9 @@ The 0 is just counter, which starts at 0 on every page.
         <p>
           The following `escapers' can be specified (besides the ones defined with mm:escaper tags):
         </p>
-        <document file="../resources/org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
-                  mode="escapers" />
+        <document
+            file="org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
+            mode="escapers" />
       </info>
       <see tag="writer" attribute="escape" />
       <see tag="function" />
@@ -7257,7 +7244,7 @@ The 0 is just counter, which starts at 0 on every page.
     <tagclass>org.mmbase.bridge.jsp.taglib.EscaperTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>
-      You can define 'parameterized' escapers by this.
+      You can defined 'parameterized' escapers by this.
     </info>
     <since>MMBase-1.8</since>
     <attribute>
@@ -7265,7 +7252,7 @@ The 0 is just counter, which starts at 0 on every page.
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
-        By this id the escaper is available.
+        By the id the escaper is available.
       </info>
     </attribute>
     <attribute>
@@ -7273,7 +7260,7 @@ The 0 is just counter, which starts at 0 on every page.
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
-        Reuses the escaper identified by this, to (re)set an extra parameter or so.
+        Reuses the escaper identified by this.
       </info>
     </attribute>
     <attribute>
@@ -7282,8 +7269,9 @@ The 0 is just counter, which starts at 0 on every page.
       <rtexprvalue>true</rtexprvalue>
       <info>
         What kind of escaper.
-        <document file="../resources/org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
-                  mode="parameterizedescapers" />
+        <document
+            file="org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
+            mode="parameterizedescapers" />
       </info>
     </attribute>
     <attribute>
@@ -9216,7 +9204,6 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>base</name>
       <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
       <name>id</name>
@@ -9226,12 +9213,10 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>nodemanager</name>
       <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
       <name>field</name>
       <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
 
@@ -9277,9 +9262,9 @@ The 0 is just counter, which starts at 0 on every page.
     <info>
       Like the HTML option tag, which it produces. It only support also a 'compare' attribute to support added selected="selected" or not.
     </info>
-    <example><![CDATA[
+    <example><pre><![CDATA[
     <mm:option name="a" value="hoi" compare="${a}" />
-]]>
+]]></pre>
     </example>
     <since>MMBase-1.8.5</since>
   </tag-file>

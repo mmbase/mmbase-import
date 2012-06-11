@@ -44,7 +44,6 @@ public class FieldValueSorter extends  PreferenceSorter {
         pattern = Pattern.compile(p);
     }
 
-    @Override
     public int getPreference(URLComposer urlcomposer) {
         String value = urlcomposer.getSource().getStringValue(field);
         Matcher matcher = pattern.matcher(value);

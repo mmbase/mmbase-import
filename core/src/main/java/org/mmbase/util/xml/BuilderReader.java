@@ -18,8 +18,8 @@ import org.xml.sax.InputSource;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
-import org.mmbase.bridge.util.DataTypeSetter;
 import org.mmbase.core.util.Fields;
+import org.mmbase.core.util.DataTypeSetter;
 import org.mmbase.datatypes.*;
 import org.mmbase.datatypes.DataTypes.FieldNotFoundException;
 import org.mmbase.module.core.MMBase;
@@ -91,104 +91,9 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
         }
     }
 
-    /**
-     * Alter a specified, named FieldDef object using information obtained from the buidler configuration.
-     * Only GUI information is retrieved and stored (name and type of the field sg=hould already be specified).
-     * @since MMBase-1.6
-     * @param field The element containing the field information according to the buidler xml format
-     * @param def The field definition to alter
-     */
-    protected void decodeFieldDef(Element field, CoreField def, DataTypeCollector collector) {
-        // Gui
-        Element descriptions = getElementByPath(field, "field.descriptions");
-        if (descriptions != null) {
-            def.getLocalizedDescription().fillFromXml("description", descriptions);
-        }
-
-        // XXX: deprecated tag 'gui'
-        Element gui = getElementByPath(field, "field.gui");
-        if (gui != null) {
-            def.getLocalizedGUIName().fillFromXml("guiname", gui);
-            // XXX: even more deprecated
-            def.getLocalizedGUIName().fillFromXml("name", gui);
-        }
-
-        // Editor
-        Element editorpos = getElementByPath(field, "field.editor.positions.input");
-        if (editorpos != null) {
-            int inputPos = getEditorPos(editorpos);
-            if (inputPos > -1) inputPositions.add(inputPos);
-            def.setEditPosition(inputPos);
-        } else {
-            // if not specified, use lowest 'free' position.
-            int i = 1;
-            while (inputPositions.contains(i)) {
-                ++i;
-            }
-            inputPositions.add(i);
-            def.setEditPosition(i);
-
-        }
-        editorpos = getElementByPath(field, "field.editor.positions.list");
-        if (editorpos != null) {
-            def.setListPosition(getEditorPos(editorpos));
-        }
-        editorpos = getElementByPath(field, "field.editor.positions.search");
-        if (editorpos != null) {
-            int searchPos = getEditorPos(editorpos);
-            if (searchPos > -1) searchPositions.add(searchPos);
-            def.setSearchPosition(searchPos);
-        } else {
-            // if not specified, use lowest 'free' position, unless, db-type is BINARY (non-sensical searching on that)
-            // or the field is not in storage at all (search cannot be performed by database)
-            if (def.getType() != Field.TYPE_BINARY && !def.isVirtual()) {
-                int i = 1;
-                while (searchPositions.contains(i)) {
-                    ++i;
-                }
-                searchPositions.add(i);
-                def.setSearchPosition(i);
-            } else {
-                def.setSearchPosition(-1);
-            }
-        }
-    }
-
-    /**
-     * @since MMBase-1.8.6
-     */
-    protected void decodeFieldAttributes(Element field, CoreField def) {
-        String fieldState = getElementAttributeValue(field, "state");
-        String fieldReadOnly = getElementAttributeValue(field, "readonly");
-        // deprecated db type tag - only use if no other data is given!
-        Element dbtype = getElementByPath(field, "field.db.type");
-        if (dbtype != null) {
-            if ("".equals(fieldState))    fieldState = getElementAttributeValue(dbtype, "state");
-            if ("".equals(fieldReadOnly)) fieldReadOnly = getElementAttributeValue(dbtype, "readonly");
-        }
-
-        // state - default peristent
-        int state = Field.STATE_PERSISTENT;
-        if (!"".equals(fieldState)) { state = Fields.getState(fieldState); }
-        if (state != def.getState()) def.setState(state);
-
-
-        boolean readOnly = false;
-        if ("".equals(fieldReadOnly)) {
-            readOnly = state == Field.STATE_SYSTEM || state == Field.STATE_SYSTEM_VIRTUAL;
-        }
-        else {
-            readOnly = "true".equalsIgnoreCase(fieldReadOnly);
-        }
-
-        if (def.isReadOnly() != readOnly) {
-            def.setReadOnly(readOnly);
-        }
-    }
-
 
     @Override
-    protected final boolean resolveInheritance() {
+    protected boolean resolveInheritance() {
         String buildername = getExtends();
         if (buildername.equals("")) {
             parentBuilder = null;
@@ -287,12 +192,12 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
         Map<String, CoreField> oldset = new HashMap<String, CoreField>();
         int pos = 1;
         if (parentBuilder != null) {
-            List<CoreField> parentfields = parentBuilder.getFields(NodeManager.ORDER_CREATE);
+            Collection<CoreField> parentfields = parentBuilder.getFields();
             if (parentfields != null) {
                 // have to clone the parent fields
                 // need clone()!
                 for (CoreField f : parentfields) {
-                    CoreField newField = f.clone(f.getName());
+                    CoreField newField = (CoreField)f.clone(f.getName());
                     newField.setParent(builder);
                     while(newField.getStoragePosition() >= pos) pos++;
                     newField.finish();
@@ -386,7 +291,7 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
             Collection<Index> parentIndices = parentBuilder.getStorageConnector().getIndices().values();
             if (parentIndices != null) {
                 for (Index parentIndex : parentIndices) {
-                    Index newIndex = new Index(builder, parentIndex.getName());
+                    Index newIndex = new Index(builder, parentIndex.getName());;
                     newIndex.setUnique(parentIndex.isUnique());
                     for (Field field : parentIndex) {
                         newIndex.add(builder.getField(field.getName()));
@@ -424,9 +329,118 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
     /**
      * @since MMBase-1.8
      */
-    public Set<Function<?>> getFunctions(final MMObjectBuilder builder) {
-        return super.getFunctions(builder);
+    public Set<Function> getFunctions(final MMObjectBuilder builder) {
+        Map<String, Function> results = new HashMap<String, Function>();
+        for (Element functionList : getChildElements("builder","functionlist")) {
+            for (Element functionElement : getChildElements(functionList,"function")) {
+                final String functionName = functionElement.getAttribute("name");
+                String providerKey        = functionElement.getAttribute("key");
+                Element classElement      = getElementByPath(functionElement, "function.class");
+
+                try {
+                    Function function;
+                    final Class claz = Instantiator.getClass(classElement);
+                    log.debug("Using function class '" + claz + "'");
+                    if (Function.class.isAssignableFrom(claz)) {
+                        if (!providerKey.equals("")) {
+                            log.warn("Specified a key attribute for a Function " + claz + " in " + getSystemId() + ", this makes only sense for FunctionProviders.");
+                        }
+                        function = (Function) Instantiator.getInstance(claz, functionElement);
+                    } else if (FunctionProvider.class.isAssignableFrom(claz)) {
+                        if ("".equals(providerKey)) providerKey = functionName;
+                        if ("".equals(providerKey)) {
+                            log.error("FunctionProvider " + claz + " specified in " + getSystemId() + " without key or name");
+                            continue;
+                        }
+                        FunctionProvider provider = (FunctionProvider) Instantiator.getInstance(claz, functionElement);
+                        function = provider.getFunction(providerKey);
+                        if (function == null) {
+                            log.error("Function provider " + provider + "has no function '" + providerKey + "'");
+                            continue;
+                        }
+                    } else {
+                        if ("".equals(providerKey)) {
+                            providerKey = functionName;
+                        }
+                        if ("".equals(providerKey)) {
+                            log.error("Speficied class " + claz + " in " + getSystemId() + "/functionslist/function is not a Function or FunctionProvider and can not be wrapped in a BeanFunction, because neither key nor name attribute were specified.");
+                            continue;
+                        }
+                        java.lang.reflect.Method method = MethodFunction.getMethod(claz, providerKey);
+                        if (method == null) {
+                            log.error("Could not find  method '" + providerKey + "' in " + claz);
+                            continue;
+                        } else {
+                            if (method.getParameterTypes().length == 0) {
+                                function = BeanFunction.getFunction(claz, providerKey, new BeanFunction.Producer() {
+                                        public Object getInstance() {
+                                            try {
+                                                return BeanFunction.getInstance(claz, builder);
+                                            } catch (Exception e) {
+                                                log.error(e.getMessage(), e);
+                                                return null;
+                                            }
+                                        }
+                                        @Override
+                                        public String toString() {
+                                            return "" + claz.getName() + "." + builder.getTableName();
+                                        }
+                                    });
+                            } else {
+                                if (method.getClass().isInstance(builder)) {
+                                    function = MethodFunction.getFunction(method, providerKey, builder);
+                                } else {
+                                    function = MethodFunction.getFunction(method, providerKey);
+                                }
+                            }
+                        }
+                    }
+                    if (! functionName.equals("") && ! function.getName().equals(functionName)) {
+                        log.debug("Wrapping " + function.getName() + " to " + functionName);
+                        function = new WrappedFunction(function) {
+                                public String getName() {
+                                    return functionName;
+                                }
+                            };
+                    }
+
+                    String key = function.getName();
+                    Function existing = results.get(key);
+
+                    if (existing != null) {
+                        log.info("Function " + key + " already defined, will combine it");
+                        CombinedFunction cf;
+                        if (existing instanceof CombinedFunction) {
+                            cf = (CombinedFunction) existing;
+                        } else {
+                            cf = new CombinedFunction(key);
+                            cf.addFunction(existing);
+                        }
+                        cf.addFunction(function);
+                        function = cf;
+                    }
+
+                    NodeFunction nf = NodeFunction.wrap(function);
+                    if (nf != null) function = nf;
+
+                    results.put(key, function);
+                    log.debug("functions are now: " + results);
+                } catch (ClassNotFoundException cnfe) {
+                    log.warn(XMLWriter.write(classElement) + " " + cnfe.getClass() + " " + getSystemId() + " '" + cnfe.getMessage() + "'");
+                } catch (Throwable e) {
+                    log.error(e.getClass() + " " + getSystemId() + " " + e.getMessage(), e);
+                }
+            }
+        }
+        Set<Function> r = new HashSet<Function>();
+        for(Function fun : results.values()) {
+            r.add(fun);
+        }
+        log.debug("Found functions " + r);
+        return r;
+
     }
+
     /**
      * Construct a FieldDef object using a field Element using information
      * obtained from the builder configuration.
@@ -542,6 +556,7 @@ public class BuilderReader extends AbstractBuilderReader<CoreField> {
                     if (!"".equals(fieldRequired)) {
                         dataType.setRequired("true".equalsIgnoreCase(fieldRequired));
                     }
+
                     // default for notnull is value of required
                     def.setNotNull("true".equals(fieldNotNull) ||
                                    ("".equals(fieldNotNull) && dataType.isRequired()));

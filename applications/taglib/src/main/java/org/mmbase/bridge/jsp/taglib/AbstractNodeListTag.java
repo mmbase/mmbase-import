@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 
-abstract public class AbstractNodeListTag extends AbstractNodeProviderTag  implements ListProvider {
+abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractNodeListTag.class);
 
@@ -69,21 +69,17 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag  imple
         return listHelper.getReturnList();
     }
 
-    @Override
     public Object getCurrent() {
         return listHelper.getCurrent();
     }
 
-    @Override
     public int getIndex() {
         return listHelper.getIndex();
     }
-    @Override
     public int getIndexOffset() {
         return listHelper.getIndexOffset();
     }
 
-    @Override
     public void remove() {
         listHelper.remove();
     }
@@ -130,15 +126,12 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag  imple
     public void setComparator(String c) throws JspTagException {
         listHelper.setComparator(c);
     }
-    @Override
     public void setAdd(String c) throws JspTagException {
         listHelper.setAdd(c);
     }
-    @Override
     public void setRetain(String c) throws JspTagException {
         listHelper.setRetain(c);
     }
-    @Override
     public void setRemove(String c) throws JspTagException {
         listHelper.setRemove(c);
     }
@@ -167,8 +160,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag  imple
 
 
     protected static class NodesAndTrim {
-        boolean  needsTrim = true;
-        BridgeList<Node> nodeList = null;
+        boolean  needsTrim;
+        BridgeList<Node> nodeList;
     }
 
     protected final NodesAndTrim getNodesAndTrim(Query query) throws JspTagException {
@@ -180,20 +173,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag  imple
      */
     protected NodeList getNodeList(Query query) throws JspTagException {
         Cloud cloud = query.getCloud();
-
-
-        if (query instanceof AbstractQueryWrapper) {
-            // This is to help RMMCI. ,it should not actually be needed.
-            /*
-              java.lang.ClassCastException: org.mmbase.bridge.util.NodeQueryWrapper cannot be cast to org.mmbase.bridge.remote.MappedObject
-              at org.mmbase.bridge.remote.proxy.RemoteNodeManager_Proxy.getList(RemoteNodeManager_Proxy.java:180)
-              at org.mmbase.bridge.jsp.taglib.AbstractNodeListTag.getNodeList(AbstractNodeListTag.java:195)
-
-             */
-            query = ((AbstractQueryWrapper) query).getQuery();
-        }
-
-
         // In case this query was created in a transaction, don't bother, and still work.
         boolean inTransaction;
         if (cloud instanceof Transaction) {
@@ -212,7 +191,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag  imple
 
             if (inTransaction && usetransaction.getString(this).equals("true") && nq.getSteps().size() >= 3) {
                 Node startNode = Queries.getStartNode(nq, cloud);
-                return new org.mmbase.bridge.implementation.SimpleNodeList(Queries.getRelatedNodesInTransaction(startNode, nq), nq.getNodeManager());
+                return new org.mmbase.bridge.implementation.BasicNodeList(Queries.getRelatedNodesInTransaction(startNode, nq), nq.getNodeManager());
             } else {
                 return cloud.getNodeManager(nq.getNodeManager().getName()).getList(nq);
             }
@@ -262,7 +241,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag  imple
     }
 
     // ContextProvider implementation
-    @Override
     public ContextContainer getContextContainer() throws JspTagException {
         return listHelper.getContextContainer();
     }
@@ -378,17 +356,14 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag  imple
      * If you order a list, then the 'changed' property will be
      * true if the field on which you order changed value.
      **/
-    @Override
     public boolean isChanged() {
         return listHelper.isChanged();
     }
 
-    @Override
     public int size() {
         return listHelper.size();
     }
 
-    @Override
     public LoopTagStatus getLoopStatus() {
         return listHelper.getLoopStatus();
     }

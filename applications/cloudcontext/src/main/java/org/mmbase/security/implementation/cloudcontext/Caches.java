@@ -32,34 +32,76 @@ public abstract class Caches {
     private static final Logger log = Logging.getLoggerInstance(Caches.class);
 
 
-    protected static Cache<Integer, Rank> rankCache = new Cache<Integer,Rank>(20) {
-            public String getName()        { return "CCS:SecurityRank"; }
-            public String getDescription() { return "Caches the rank of users. User node --> Rank"; }
-        };
+    protected static final Cache<Integer, Rank> rankCache = new Cache<Integer,Rank>(20) {
+        @Override
+        public String getName() {
+            return "CCS:SecurityRank";
+        }
+        @Override
+        public String getDescription() {
+            return "Caches the rank of users. User node --> Rank";
+        }
+    };
 
-    protected static Cache<String, MMObjectNode> userCache = new Cache<String, MMObjectNode>(20) {
-            public String getName()        { return "CCS:SecurityUser"; }
-            public String getDescription() { return "Caches the users. UserName --> User Node"; }
-        };
+    protected static final Cache<String, MMObjectNode> userCache = new Cache<String, MMObjectNode>(20) {
+        @Override
+        public String getName() {
+            return "CCS:SecurityUser";
+        }
+        @Override
+        public String getDescription() {
+            return "Caches the users. UserName --> User Node";
+        }
+    };
 
 
 
 
-    protected static Cache<String, MMObjectNode> contextCache = new Cache<String, MMObjectNode>(30) { // 30 'contexts' (organisations or so)
-            public String getName()        { return "CCS:ContextCache"; }
-            public String getDescription() { return "Links owner field to Contexts MMObjectNodes"; }
-        };
+    protected static final Cache<String, MMObjectNode>contextCache = new Cache<String, MMObjectNode>(30) { // 30 'contexts' (organisations or so)
+
+        @Override
+        public String getName() {
+            return "CCS:ContextCache";
+        }
+        @Override
+        public String getDescription() {
+            return "Links owner field to Contexts MMObjectNodes";
+        }
+    };
 
 
-    protected static Cache<String, ContextProvider.AllowingContexts> allowingContextsCache = new Cache<String, ContextProvider.AllowingContexts>(200) { // 200 users.
-            public String getName()        { return "CCS:AllowingContextsCache"; }
-            public String getDescription() { return "Links user id to a set of contexts"; }
-        };
-    protected static class OperationsCache extends Cache<String, Set<MMObjectNode>> {
+    protected static final Cache<String, ContextProvider.AllowingContexts> allowingContextsCache = new Cache<String, ContextProvider.AllowingContexts>(200) { // 200 users.
+
+        @Override
+        public String getName() {
+            return "CCS:AllowingContextsCache";
+        }
+        @Override
+        public String getDescription() {
+            return "Links user id to a set of contexts";
+        }
+    };
+
+
+
+    protected static final Cache<String, Boolean> containsCache = new Cache<String, Boolean>(500) {
+        @Override
+        public String getName() {
+            return "CCS:ContainedBy";
+        }
+        @Override
+        public String getDescription() {
+            return "group + group/user --> boolean";
+        }
+    };
+    
+    protected static final class OperationsCache extends Cache<String, Set<MMObjectNode>> {
         OperationsCache() {
             super(100);
         }
+        @Override
         public String getName()        { return "CCS:SecurityOperations"; }
+        @Override
         public String getDescription() { return "The groups associated with a security operation";}
 
         public Object put(MMObjectNode context, Operation op, Set<MMObjectNode> groups) {
@@ -69,15 +111,10 @@ public abstract class Caches {
             return super.get(op.toString() + context.getNumber());
         }
 
-    };
+    }
 
 
-    protected static Cache<String, Boolean> containsCache = new Cache<String, Boolean>(500) {
-            public String getName()        { return "CCS:ContainedBy"; }
-            public String getDescription() { return "group + group/user --> boolean"; }
-        };
-
-    protected static OperationsCache operationsCache = new OperationsCache();
+    protected static final OperationsCache operationsCache = new OperationsCache();
 
 
 

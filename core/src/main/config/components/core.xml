@@ -527,7 +527,7 @@
          mimetype="text/html">
     <body>
       <class name="org.mmbase.framework.ConnectionRenderer">
-        <param name="url">http://search.twitter.com/search.atom?q=mmbase</param>
+        <param name="url">http://twitter.com/statuses/user_timeline/42594291.rss</param>
         <param name="xslt">xslt/rss.xslt</param>
       </class>
     </body>
@@ -552,7 +552,7 @@
          mimetype="text/html">
     <body>
       <class name="org.mmbase.framework.ConnectionRenderer">
-        <param name="url">http://www.mmbase.org/jira/sr/jira.issueviews:searchrequest-rss/temp/SearchRequest.xml?pid=10000&amp;fixfor=10171&amp;sorter/field=issuekey&amp;sorter/order=DESC&amp;tempMax=1000</param>
+        <param name="url">http://www.mmbase.org/jira/sr/jira.issueviews:searchrequest-rss/temp/SearchRequest.xml?pid=10000&amp;fixfor=10231&amp;sorter/field=issuekey&amp;sorter/order=DESC&amp;tempMax=1000</param>
         <param name="xslt">xslt/rss.xslt</param>
       </class>
     </body>
@@ -561,8 +561,8 @@
   <block name="releasenotes"
          classification="mmbase.about:11"
          mimetype="text/html">
-    <title xml:lang="nl">Releasenotes 1.9.2</title>
-    <title xml:lang="en">Release notes 1.9.2</title>
+    <title xml:lang="nl">Releasenotes</title>
+    <title xml:lang="en">Release notes</title>
     <description xml:lang="en">Shows the release notes straight from the bugtracker on www.mmbase.org.</description>
     <description xml:lang="nl">Toont de release notes rechtstreeks uit de bugtracker op www.mmbase.org.</description>
     <body>

@@ -56,7 +56,6 @@ public class  BitrateLabeler  extends Labeler  {
     }
 
 
-    @Override
     protected void label(URLComposer uc) {
         for (Map.Entry<String, BitrateInfo> entry : bitrates.entrySet()) {
             int bitrate = uc.getSource().getIntValue("bitrate");

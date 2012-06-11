@@ -143,7 +143,6 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
 
 
 
-    @Override
     public void addParameter(String key, Object value) throws JspTagException {
         Url.addParameter(extraParameters, key, value);
         if (url != null) {
@@ -157,7 +156,6 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
     /**
      * @since MMBase-1.9
      */
-    @Override
     public void addFrameworkParameter(String key, Object value) throws JspTagException {
         Url.addParameter(frameworkParameters, key, value);
         if (url != null) {
@@ -227,32 +225,20 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
             }
         } else {
             url = new Url(this,
-                    // A lazy wrapper around getPage.
-                    new CharSequence() {
-                        @Override
-                        public char charAt(int index) {
-                            return toString().charAt(index);
-                        }
-                        @Override
-                        public int length() {
-                            return toString().length();
-                        }
-                        @Override
-                        public CharSequence subSequence(int start, int end) {
-                            return toString().subSequence(start, end);
-                        }
-
-
-                        @Override
-                        public String toString() {
-                            try {
-                                return UrlTag.this.getPage(getPage());
-                            } catch (JspTagException je) {
-                                log.warn(je.getMessage(), je);
-                                return je.getMessage();
-                            }
-                        }
-            }, frameworkParameters, parameters, internal);
+                          // A lazy wrapper around getPage.
+                          new CharSequence() {
+                              public char charAt(int index) { return toString().charAt(index); }
+                              public int length() { return toString().length(); }
+                              public CharSequence subSequence(int start, int end) { return toString().subSequence(start, end); };
+                              public String toString() {
+                                  try {
+                                      return UrlTag.this.getPage(getPage());
+                                  } catch (JspTagException je) {
+                                      log.warn(je.getMessage(), je);
+                                      return je.getMessage();
+                                  }
+                              }
+                          }, frameworkParameters, parameters, internal);
             if (process.getBoolean(this, false)) {
                 url.setProcess();
             }
@@ -265,7 +251,6 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
         prevParamHandler = pageContext.getAttribute(ParamHandler.KEY, ParamHandler.SCOPE);
         pageContext.setAttribute(ParamHandler.KEY, new ParamHandler() {
                 // putting an object to only wrapp addParameter on the request.
-            @Override
                 public void addParameter(String k, Object v)  throws JspTagException {
                     UrlTag.this.addParameter(k, v);
                 }
@@ -275,7 +260,6 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
 
     private Object prevParamHandler;
 
-    @Override
     public int doStartTag() throws JspTagException {
         helper.initTag();
         boolean i = internal.getBoolean(this, false);
@@ -332,7 +316,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
             String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
             makeRelative = "true".equals(setting) ? Boolean.TRUE : Boolean.FALSE;
         }
-        return makeRelative;
+        return makeRelative.booleanValue();
     }
 
 
@@ -359,7 +343,6 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
         }
     }
 
-    @Override
     public int doAfterBody() throws JspException {
         if (bodyContent != null) bodyContent.clearBody(); // don't show the body.
         return helper.doAfterBody();
@@ -374,7 +357,6 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
         }
 
     }
-    @Override
     public int doEndTag() throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("endtag of url tag " + parameters + " -> " + url.get());

@@ -20,8 +20,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * Get file format, image resolution, number of bits per pixel and optionally
@@ -230,7 +229,7 @@ public class ImageInfo {
     private InputStream in;
     private DataInput din;
     private boolean collectComments = true;
-    private List<String> comments;
+    private Vector<String> comments;
     private boolean determineNumberOfImages;
     private int numberOfImages;
     private int physicalHeightDpi;
@@ -240,9 +239,9 @@ public class ImageInfo {
 
     private void addComment(String s) {
         if (comments == null) {
-            comments = new ArrayList<String>();
+            comments = new Vector<String>();
         }
-        comments.add(s);
+        comments.addElement(s);
     }
 
     /**
@@ -611,8 +610,8 @@ public class ImageInfo {
         width = getIntBigEndian(a, 14);
         height = getIntBigEndian(a, 18);
         bitsPerPixel = a[22] & 0xff;
-        int myColorType = a[23] & 0xff;
-        if (myColorType == 2 || myColorType == 6) {
+        int colorType = a[23] & 0xff;
+        if (colorType == 2 || colorType == 6) {
             bitsPerPixel *= 3;
         }
         progressive = (a[26] & 0xff) != 0;
@@ -789,7 +788,7 @@ public class ImageInfo {
         if (comments == null || index < 0 || index >= comments.size()) {
             throw new IllegalArgumentException("Not a valid comment index: " + index);
         }
-        return comments.get(index);
+        return comments.elementAt(index);
     }
 
     /**

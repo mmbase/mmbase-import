@@ -16,7 +16,6 @@ import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.cache.Cache;
 import org.mmbase.module.core.*;
-import org.mmbase.module.core.NodeSearchQuery;
 import org.mmbase.util.logging.*;
 
 /**
@@ -341,7 +340,7 @@ public class InsRel extends MMObjectBuilder {
 
     // creates a constraint for a numeric field on a query
     private BasicFieldValueConstraint getNumberConstraint(NodeSearchQuery query, String fieldName, int value) {
-        return new BasicFieldValueConstraint(query.getField(query.getBuilder().getField(fieldName)), value);
+        return new BasicFieldValueConstraint(query.getField(query.getBuilder().getField(fieldName)), Integer.valueOf(value));
     }
 
     /**
@@ -659,7 +658,7 @@ public class InsRel extends MMObjectBuilder {
                 }
             }
             if (role == -1) {
-                relatedCache.put(source, list);
+                relatedCache.put(Integer.valueOf(source), list);
             }
         }
         // oke got the Vector now lets get the correct otypes

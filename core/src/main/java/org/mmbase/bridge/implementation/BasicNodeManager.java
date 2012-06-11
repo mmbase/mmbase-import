@@ -18,7 +18,6 @@ import javax.servlet.http.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.core.CoreField;
-import org.mmbase.datatypes.DataType;
 import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -54,7 +53,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     protected MMObjectBuilder builder;
 
     // field types
-    protected final Map<String, Field> fieldTypes = new HashMap<String, Field>();
+    protected Map<String, Field> fieldTypes = new HashMap<String, Field>();
 
     /**
      * Instantiates a new NodeManager (for insert) based on a newly created node which either represents or references a builder.
@@ -63,8 +62,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
      * The NodeManager that administrates the node itself is requested from the Cloud.
      * The Nodemanager cannot be used for administartion tasks until it is isnerted (committed) in the Cloud.
      * @param node the MMObjectNode to base the NodeManager on.
-     * @param cloud the cloud to which this node belongs
-     * @param nodeid the id of the node in the temporary cloud
+     * @param Cloud the cloud to which this node belongs
+     * @param id the id of the node in the temporary cloud
      */
     BasicNodeManager(MMObjectNode node, BasicCloud cloud, int nodeid) {
         super(node, cloud, nodeid);
@@ -77,7 +76,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
      * may use other nodes, such as nodes from RelDef or TypeRel.
      * The NodeManager that administrates the node itself is requested from the Cloud.
      * @param node the MMObjectNode to base the NodeManager on.
-     * @param cloud the cloud to which this node belongs
+     * @param Cloud the cloud to which this node belongs
      */
     BasicNodeManager(MMObjectNode node, BasicCloud cloud) {
         super(node, cloud);
@@ -254,15 +253,15 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
      */
     protected void setDefaultsWithCloud(MMObjectNode node) {
         log.debug("Setting default values");
-        for (Object o : getFields()) {
-            Field field = (Field) o;
-            if (field.isVirtual()) continue;
-            if (field.getName().equals(MMObjectBuilder.FIELD_NUMBER)) continue;
-            if (field.getName().equals(MMObjectBuilder.FIELD_OWNER)) continue;
+        for (Iterator i = getFields().iterator(); i.hasNext(); ) {
+            Field field = (Field) i.next();
+            if (field.isVirtual())                         continue;
+            if (field.getName().equals(MMObjectBuilder.FIELD_NUMBER))      continue;
+            if (field.getName().equals(MMObjectBuilder.FIELD_OWNER))       continue;
             if (field.getName().equals(MMObjectBuilder.FIELD_OBJECT_TYPE)) continue;
 
             if (node.isNull(field.getName()) || "".equals(node.getStringValue(field.getName()))) { // required field are set to '', which would destroy the default value...
-                DataType dt = field.getDataType();
+                org.mmbase.datatypes.DataType dt = field.getDataType();
                 //log.info("" + field.getName() + " " + dt);
                 Object defaultValue = dt.getDefaultValue(getCloud().getLocale(), getCloud(), field);
                 if (defaultValue != null) {
@@ -300,13 +299,12 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         cloud.add(result);
         return result;
     }
-    @Override
-    public final Node createNode() {
+    public final Node createNode(
+) {
         return createBasicNode();
     }
 
 
-    @Override
     public NodeManager getParent() throws NotFoundException {
         MMObjectBuilder bul = getMMObjectBuilder().getParentBuilder();
         if (bul == null) {
@@ -316,18 +314,11 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
     }
 
-    @Override
     public NodeManagerList getDescendants() {
         List<MMObjectBuilder> descs = getMMObjectBuilder().getDescendants();
-        return new BasicNodeManagerList(descs, cloud) {
-            @Override
-            protected NodeManager convert(final Object o) {
-                return BasicNodeManager.this.cloud.getBasicNodeManager((MMObjectBuilder) o);
-            }
-        };
+        return new BasicNodeManagerList(descs, cloud);
     }
 
-    @Override
     public String getName() {
         if (builder != null) {
             return builder.getTableName();
@@ -336,7 +327,6 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
     }
 
-    @Override
     public String getProperty(String name) {
         if (builder != null) {
             return builder.getInitParameter(name);
@@ -345,7 +335,6 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
     }
 
-    @Override
     public Map<String, String> getProperties() {
         if (builder != null) {
             return Collections.unmodifiableMap(builder.getInitParameters());
@@ -354,17 +343,14 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
     }
 
-    @Override
     public String getGUIName() {
         return getGUIName(NodeManager.GUI_SINGULAR);
     }
 
-    @Override
     public String getGUIName(int plurality) {
         return getGUIName(plurality, null);
     }
 
-    @Override
     public String getGUIName(int plurality, Locale locale) {
         if (locale==null) locale = cloud.getLocale();
         if (builder!=null) {
@@ -378,12 +364,10 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
     }
 
-    @Override
     public String getDescription() {
         return getDescription(null);
     }
 
-    @Override
     public String getDescription(Locale locale) {
         if (locale == null) locale = cloud.getLocale();
         if (builder != null) {
@@ -393,12 +377,10 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
     }
 
-    @Override
     public FieldList getFields() {
         return getFields(NodeManager.ORDER_NONE);
     }
 
-    @Override
     public FieldList getFields(int order) {
         if (builder != null) {
             return new BasicFieldList(builder.getFields(order), this);
@@ -407,14 +389,12 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
     }
 
-    @Override
     public Field getField(String fieldName) throws NotFoundException {
         Field f =  getFieldTypes().get(fieldName.toLowerCase());
         if (f == null) throw new NotFoundException("Field '" + fieldName + "' does not exist in NodeManager '" + getName() + "'.(" + getFieldTypes() + ")");
         return f;
     }
 
-    @Override
     public boolean hasField(String fieldName) {
         return fieldName != null && getFieldTypes().containsKey(fieldName.toLowerCase());
     }
@@ -450,7 +430,6 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     }
 
 
-    @Override
     public NodeList getList(String constraints, String sorted, String directions) {
 //        MMObjectBuilder builder = getMMObjectBuilder();
 
@@ -477,12 +456,10 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     }
 
 
-    @Override
     public RelationManagerList getAllowedRelations() {
        return getAllowedRelations((NodeManager) null, null, null);
     }
 
-    @Override
     public RelationManagerList getAllowedRelations(String nodeManager, String role, String direction) {
         if (nodeManager==null) {
             return getAllowedRelations((NodeManager)null, role, direction);
@@ -491,7 +468,6 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
     }
 
-    @Override
     public RelationManagerList getAllowedRelations(NodeManager nodeManager, String role, String direction) {
         int thisOType = getMMObjectBuilder().getNumber();
         int requestedRole = -1;
@@ -512,7 +488,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
             typerelNodes = BasicCloudContext.mmb.getTypeRel().getAllowedRelations(thisOType);
         }
 
-        List<Node> nodes = new ArrayList<Node>();
+        List<MMObjectNode> nodes = new ArrayList<MMObjectNode>();
         while (typerelNodes.hasMoreElements()) {
             MMObjectNode n = typerelNodes.nextElement();
             if ((requestedRole == -1) || (requestedRole == n.getIntValue("rnumber"))) {
@@ -529,48 +505,44 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
                         }
                     }
                 }
-                nodes.add(BasicNodeList.convertMMObjectNodeToBridgeNode(getCloud(), this, n));
+                nodes.add(n);
             }
         }
         return new BasicRelationManagerList(nodes, cloud);
     }
 
-    @Override
     public String getInfo(String command) {
         return getInfo(command, null,null);
     }
 
-    @Override
     public String getInfo(String command, ServletRequest req,  ServletResponse resp){
-        MMObjectBuilder bul = getMMObjectBuilder();
+        MMObjectBuilder builder = getMMObjectBuilder();
         StringTokenizer tokens = new StringTokenizer(command,"-");
-        return bul.replace(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud()),tokens);
+        return builder.replace(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud()),tokens);
     }
 
-    @Override
     public NodeList getList(String command, Map parameters){
         return getList(command,parameters,null,null);
     }
 
-    @Override
     public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp){
-        MMObjectBuilder bul = getMMObjectBuilder();
+        MMObjectBuilder builder = getMMObjectBuilder();
         StringTagger params = new StringTagger("");
         if (parameters != null) {
-            for (Object o1 : parameters.entrySet()) {
-                Map.Entry entry = (Map.Entry) o1;
-                String key = (String) entry.getKey();
+            for (Iterator entries = parameters.entrySet().iterator(); entries.hasNext(); ) {
+                Map.Entry entry = (Map.Entry) entries.next();
+                String key=(String) entry.getKey();
                 Object o = entry.getValue();
                 if (o instanceof Vector) {
-                    params.setValues(key, (Vector) o);
+                    params.setValues(key,(Vector)o);
                 } else {
-                    params.setValue(key, "" + o);
+                    params.setValue(key,""+o);
                 }
             }
         }
         try {
             StringTokenizer tokens= new StringTokenizer(command,"-");
-            List<String> v = bul.getList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud()), params, tokens);
+            List<String> v = builder.getList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud()), params, tokens);
             if (v == null) {
                 v = new ArrayList<String>();
             }
@@ -580,10 +552,10 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
             } catch (Exception e) {
                 log.warn("parameter 'ITEMS' must be a int value, it was :" + params.Value("ITEMS"));
             }
-            List<String> fieldlist = params.Values("FIELDS");
-            List<MMObjectNode> res = new Vector<MMObjectNode>(v.size() / items);
+            Vector<String> fieldlist = params.Values("FIELDS");
+            Vector<MMObjectNode> res = new Vector<MMObjectNode>(v.size() / items);
             for (int i= 0; i<v.size(); i+=items) {
-                MMObjectNode node = new org.mmbase.module.core.VirtualNode(bul);
+                MMObjectNode node = new org.mmbase.module.core.VirtualNode(builder);
                 for(int j= 0; (j<items) && (j<v.size()); j++) {
                     if ((fieldlist!=null) && (j<fieldlist.size())) {
                         node.setValue(fieldlist.get(j), v.get(i+j));
@@ -603,7 +575,6 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
     }
 
-    @Override
     public boolean mayCreateNode() {
         if (builder == null) return false;
         return cloud.check(Operation.CREATE, builder.getNumber());
@@ -650,36 +621,32 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
         if (function == null) {
             if (builder == null) {
-                throw new NotFoundException("Function with name " + functionName + " does not exist (builder is null)");
+              throw new NotFoundException("Function with name " + functionName + " does not exist (builder is null)");
             } else {
-                throw new NotFoundException("Function with name " + functionName + " does not exist in " + builder.getFunctions());
+              throw new NotFoundException("Function with name " + functionName + " does not exist in " + builder.getFunctions());
             }
         }
         return function;
 
     }
 
-    @Override
     public FieldList createFieldList() {
         return new BasicFieldList(Collections.emptyList(), this);
     }
 
-    @Override
     public NodeList createNodeList() {
         return new BasicNodeList(Collections.emptyList(), this);
     }
 
-    @Override
     public RelationList createRelationList() {
         return new BasicRelationList(Collections.emptyList(), this);
     }
 
     @Override
     protected void finalize() {
-        super.finalize();
         // http://www.fasterj.com/articles/finalizer1.shtml
         // Having a non-empty finalizer can be quite expensive.
-        // BasicNodeManagers can exist very many (every cloud object needs a bunch),
+        // BasicNodeManagers can exist very many (probably as virtual node manager).
         //
         // Probably it is not actually correct to skip the finalize() of super,
         // but I think only if the node is being edited, and commit or cancel is not called.
