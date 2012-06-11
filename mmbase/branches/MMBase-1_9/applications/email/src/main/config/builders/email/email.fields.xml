@@ -49,7 +49,7 @@
     </editor>
     <datatype base="internetaddress" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <property name="maxAddress" value="1" />
-      <property name="local" value="true" />
+      <property name="local" value="false" />
       <required value="true" />
       <maxLength value="255" />
     </datatype>
