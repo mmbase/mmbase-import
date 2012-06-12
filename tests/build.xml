@@ -16,7 +16,7 @@
   <property name="tests.source.dir"        location="." />
   <property name="tests.work.dir"           location="work" />
   <property name="tests.database.dir"    value="${tests.work.dir}/data" />
-  <property name="version"                value="1.9-SNAPSHOT" />
+  <property name="version"                value="1.9.6" />
 
   <property name="ui.class" value="junit.textui.TestRunner" />
 

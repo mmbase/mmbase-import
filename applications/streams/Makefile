@@ -1,6 +1,6 @@
 
 #M2=$(HOME)/.m2/repository
-#mmbase=1.9-SNAPSHOT
+#mmbase=1.9.6
 
 #export CLASSPATH = target/classes:$(M2)/org/mmbase/mmbase/$(mmbase)/mmbase-$(mmbase).jar:$(M2)/org/mmbase/mmbase-media/$(mmbase)/mmbase-media-$(mmbase)-classes.jar:target/mmbase-streams-$(mmbase)-classes.jar:$(M2)/net/sf/fmj/fmj-nojmf/2009-04-16/fmj-nojmf-2009-04-16.jar:$(M2)/javax/media/jmf/2.1.1e/jmf-2.1.1e.jar
 
