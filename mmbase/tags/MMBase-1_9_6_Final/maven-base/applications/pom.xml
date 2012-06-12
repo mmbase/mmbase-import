@@ -6,13 +6,13 @@
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-parent</artifactId>
-    <version>1.9-SNAPSHOT</version>
+    <version>1.9.6</version>
  </parent>
 
   <artifactId>mmbase-application-parent</artifactId>
   <packaging>pom</packaging>
   <name>MMBase Applications</name>
-  <version>1.9-SNAPSHOT</version>
+  <version>1.9.6</version>
 
   <description>
     Applications are war overlays then can plug in some functionality into an existing MMBase installation.
@@ -60,7 +60,7 @@
       <plugin>
         <groupId>org.mmbase.maven</groupId>
         <artifactId>maven-mmbase-plugin</artifactId>
-        <version>1.9-SNAPSHOT</version>
+        <version>1.9.6</version>
         <executions>
           <execution>
             <id>create-index-files</id>

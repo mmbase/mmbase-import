@@ -9,7 +9,7 @@
 
 
 out:
-	java -jar taglibrarydoc-1_3/tlddoc.jar  target/mmbase-cloudcontext-1.9-SNAPSHOT.war
+	java -jar taglibrarydoc-1_3/tlddoc.jar  target/mmbase-cloudcontext-1.9.6.war
 	rsync -ra out/* mmbase.org:web/tags/mm/security
 
 

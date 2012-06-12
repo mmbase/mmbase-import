@@ -27,7 +27,7 @@ public class ArchiveScanner extends DirectoryScanner {
    public static void main(String[] args) {
       try {
          ArchiveScanner scanner = new ArchiveScanner();
-         scanner.jarfile = new JarFile("C:\\projects\\.m2\\org\\mmbase\\mmbase\\1.9-SNAPSHOT\\mmbase-1.9-SNAPSHOT.jar");
+         scanner.jarfile = new JarFile("C:\\projects\\.m2\\org\\mmbase\\mmbase\\1.9.6\\mmbase-1.9.6.jar");
          scanner.setExcludes(new String[] {"**/*.xml"});
          scanner.scan();
 

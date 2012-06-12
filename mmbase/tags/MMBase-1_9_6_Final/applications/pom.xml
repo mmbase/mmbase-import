@@ -7,14 +7,14 @@
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-parent</artifactId>
-    <version>1.9-SNAPSHOT</version>
+    <version>1.9.6</version>
  </parent>
 
   <groupId>org.mmbase</groupId>
   <artifactId>mmbase-applications</artifactId>
   <packaging>pom</packaging>
   <name>MMBase Applications</name>
-  <version>1.9-SNAPSHOT</version>
+  <version>1.9.6</version>
 
   <description>
     Applications are war overlays then can plug in some functionality into an existing MMBase installation.
