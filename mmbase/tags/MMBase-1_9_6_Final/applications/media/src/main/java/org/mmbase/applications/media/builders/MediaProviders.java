@@ -53,10 +53,10 @@ public class MediaProviders extends MMObjectBuilder {
                 if ("".equals(host)) {
                     HttpServletRequest req = parameters.get(Parameter.REQUEST);
                     if (req == null) {
-                        // a bit of a hack, the function in MediaFragments should be updated to
-                        // decently pass Request objects as a parameters
 
-                        Cloud cloud = node.getCloud();
+                        // TODO: a bit of a hack, the function in MediaFragments should be updated to decently pass Request objects as a parameters
+                        //Cloud cloud = node.getCloud();
+                        Cloud cloud = org.mmbase.bridge.util.CloudThreadLocal.currentCloud();
                         if (cloud != null) {
                             req = (HttpServletRequest) cloud.getProperty(org.mmbase.bridge.Cloud.PROP_REQUEST);
                         } else {
