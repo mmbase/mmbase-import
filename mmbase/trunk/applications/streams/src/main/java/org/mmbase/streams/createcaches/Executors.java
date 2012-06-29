@@ -81,10 +81,10 @@ public class Executors {
                                     Integer t = totals.get(s);
                                     if (t == null) t = 0;
                                     t += max;
-                                totals.put(s, t);
-                                for (int j = 1; j <= max; j++) {
-                                    newExecutors.add(new CommandExecutor.Method());
-                                }
+                                    totals.put(s, t);
+                                    for (int j = 1; j <= max; j++) {
+                                        newExecutors.add(new CommandExecutor.Method());
+                                    }
                                 } else if (el.getTagName().equals("server")) {
                                     int max = Integer.parseInt(el.getAttribute("max_simultaneous_transcoders"));
                                     Stage s = Stage.valueOf(el.getAttribute("stage").toUpperCase());
