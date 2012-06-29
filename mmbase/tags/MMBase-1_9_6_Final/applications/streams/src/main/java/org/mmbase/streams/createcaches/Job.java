@@ -128,6 +128,17 @@ public class Job implements Iterable<Result> {
                     int w = 0;
                     while (!f.exists() && !f.isFile() && w < 30) {
                         LOG.service("Checking if source file exists '" + f + "'. Waiting 5 sec. to be sure filesystem is ready (" + w + ")");
+
+                        // (already commited) node outside of this transaction may have the correct (new) url
+                        Cloud cl = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null); // using class security
+                        Node nd = cl.getNode(node.getNumber());
+                        url = nd.getStringValue("url");
+                        if (url.length() < 0) {
+                            LOG.warn("No value for field url: " + url);
+                        } else {
+                            f = new File(processor.getDirectory(), url);
+                        }
+
                         try {
                             Thread.sleep(5000);
                             w++;
