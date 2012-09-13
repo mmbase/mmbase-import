@@ -82,7 +82,7 @@ public class MMBaseEntry implements IndexEntry {
      */
     protected  Set<String> addStandardKeys(Document document) {
 
-        log.debug("Adding standard keys");
+        if (log.isDebugEnabled()) log.debug("Adding standard keys");
         // always add the 'element' number first, because that ensures that document.get("number") returns 'the' node
         final String id = getIdentifier();
         boolean elementAdded = false;
@@ -94,7 +94,7 @@ public class MMBaseEntry implements IndexEntry {
 
         if (multiLevel) {
             document.add(new Field("builder", elementManager.getName(),    Field.Store.YES, Field.Index.NOT_ANALYZED)); // keyword
-            log.debug("added builder as " + elementManager.getName() + " now checking " + node.getNodeManager().getFields());
+            if (log.isDebugEnabled()) log.debug("added builder as " + elementManager.getName() + " now checking " + node.getNodeManager().getFields());
             for (org.mmbase.bridge.Field field : node.getNodeManager().getFields()) {
                 if (field.getName().indexOf(".") >= 0 ) {
                     continue;
@@ -108,7 +108,7 @@ public class MMBaseEntry implements IndexEntry {
                         document.add(new Field("number",  "" + subNode.getNumber(), Field.Store.YES, Field.Index.NOT_ANALYZED)); // keyword
                         document.add(new Field("owner",  subNode.getStringValue("owner"), Field.Store.YES, Field.Index.NOT_ANALYZED));
                     } else {
-                        log.debug("Ignoring " + number + " because already indexed for this document");
+                        if (log.isDebugEnabled()) log.debug("Ignoring " + number + " because already indexed for this document");
                         // ignore
                     }
                     String fieldKey = number + ":" + field;
@@ -116,7 +116,7 @@ public class MMBaseEntry implements IndexEntry {
                         document.add(new Field("indexed_fields",  fieldKey, Field.Store.YES, Field.Index.NOT_ANALYZED)); // keyword
                         result.add(field.getName());
                     } else {
-                        log.debug("Ignoring " + fieldKey + " because already indexed for this document");
+                        if (log.isDebugEnabled()) log.debug("Ignoring " + fieldKey + " because already indexed for this document");
                     }
 
 		} catch (Exception e) {
@@ -125,7 +125,7 @@ public class MMBaseEntry implements IndexEntry {
             }
         } else {
             document.add(new Field("builder",  node.getNodeManager().getName(),    Field.Store.YES, Field.Index.NOT_ANALYZED)); // keyword
-            log.debug("added builder as " + node.getNodeManager().getName());
+            if (log.isDebugEnabled()) log.debug("added builder as " + node.getNodeManager().getName());
             document.add(new Field("owner",  node.getStringValue("owner"), Field.Store.YES, Field.Index.NOT_ANALYZED));
             result.add(null);
         }
@@ -154,17 +154,17 @@ public class MMBaseEntry implements IndexEntry {
                 String[] fieldNameParts = fieldDefinition.fieldName.split("\\.", 2);
                 if (fieldNameParts.length == 1) {
                     if (!prefixes.contains(null)) {
-                        log.debug("Skipping fields " + fieldDefinition.fieldName + " (" + fieldName + ")");
+                        if (log.isDebugEnabled()) log.debug("Skipping fields " + fieldDefinition.fieldName + " (" + fieldName + ")");
                         continue;
                     }
                 } else {
                     if (!prefixes.contains(fieldNameParts[0])) {
-                        log.debug("Skipping fields " + fieldDefinition.fieldName + " (" + fieldName + ")");
+                        if (log.isDebugEnabled()) log.debug("Skipping fields " + fieldDefinition.fieldName + " (" + fieldName + ")");
                         continue;
                     }
                 }
             }
-            log.debug(fieldName);
+            if (log.isDebugEnabled()) log.debug(fieldName);
             if (document.getField(fieldName) == null || !fieldDefinition.keyWord) {
                 String value = getFieldDataAsString(data, fieldName);
                 if (fieldDefinition.escaper != null) {
@@ -214,7 +214,7 @@ public class MMBaseEntry implements IndexEntry {
                 String t = "Indexed " + data + " --> " + document;
                 if (t.length() > 500) t = t.substring(0, 500) + "...";
                 log.trace("Indexed at boost " + document.getBoost() + " " +  data + " --> " + t);
-            } else {
+            } else if (log.isDebugEnabled()) {
                 log.debug("Indexed at boost " + document.getBoost() + " " + data);
             }
         }
@@ -257,7 +257,7 @@ public class MMBaseEntry implements IndexEntry {
         int number = (n == null) ? -1 : n.getNumber();
         if (! isIndexed(number, fieldName, alias)) {
             if (fd.optional != null && (! fd.optional.matcher(n.getNodeManager().getName()).matches() || ! n.getNodeManager().hasField(realFieldName))) {
-                log.debug("Skipped optional field " + fieldName + " because node " + n.getNumber() + " does not have it");
+                if (log.isDebugEnabled()) log.debug("Skipped optional field " + fieldName + " because node " + n.getNumber() + " does not have it");
                 return false;
             } else {
                 addToIndexed(number, fieldName, alias);
@@ -288,12 +288,12 @@ public class MMBaseEntry implements IndexEntry {
                 int type = org.mmbase.bridge.Field.TYPE_UNKNOWN;
                 Node n = node;
                 if (n.isNull(fieldName) || n.getSize(fieldName) == 0) {
-                    log.debug("Field '" + fieldName + "' of node " + n + " is null or has size 0");
+                    if (log.isDebugEnabled()) log.debug("Field '" + fieldName + "' of node " + n + " is null or has size 0");
                     continue;
                 }
 
                 if (fieldDefinition.stepField != null) {
-                    log.debug("found stepfield " + fieldDefinition.stepField);
+                    if (log.isDebugEnabled()) log.debug("found stepfield " + fieldDefinition.stepField);
                     org.mmbase.storage.search.StepField sf = fieldDefinition.stepField;
                     org.mmbase.bridge.Field field = cloud.getNodeManager(sf.getStep().getTableName()).getField(sf.getFieldName());
                     type = field.getDataType().getBaseType();
@@ -330,7 +330,7 @@ public class MMBaseEntry implements IndexEntry {
                     break;
                 }
                 case org.mmbase.bridge.Field.TYPE_UNKNOWN : // unknown field may be binary
-                    log.debug("field type for " + fieldName + " was unknown");
+                    if (log.isDebugEnabled()) log.debug("field type for " + fieldName + " was unknown");
                 case org.mmbase.bridge.Field.TYPE_BINARY : {
                     String mimeType = "unknown";
                     try {

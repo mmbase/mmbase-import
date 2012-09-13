@@ -68,13 +68,13 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
 
     public void notify(NewSearcher.Event event) {
         if (event.getIndex().equals(index.getName())) {
-            log.debug("Received " + event);
+            if (log.isDebugEnabled()) log.debug("Received " + event);
             needsNewSearcher = true;
         }
     }
     public void notify(FullIndexEvents.Event event) {
         if (event.getIndex().equals(index.getName())) {
-            log.debug("Received " + event);
+            if (log.isDebugEnabled()) log.debug("Received " + event);
             status = event.getStatus();
             intermediateSize = event.getIndexed();
         }
@@ -168,7 +168,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         if (sortFields != null && sortFields.length > 0) {
             if (sortFields.length == 0 || (sortFields.length == 1 &&
                                            (sortFields[0].equals("RELEVANCE") || sortFields[0].equals("")))){
-                log.debug("implicitely sorting on RELEVANCE");
+                if (log.isDebugEnabled()) log.debug("implicitely sorting on RELEVANCE");
                 sort = Sort.RELEVANCE;
             } else if (sortFields.length == 1 && sortFields[0].equals("INDEXORDER")) {
                 sort = Sort.INDEXORDER;
@@ -303,7 +303,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                 reader = IndexReader.open(copy ? index.getDirectoryForFullIndex() : index.getDirectory());
                 return reader.numDocs();
             } catch ( FileNotFoundException nfe) {
-                log.debug(nfe + " returning -1");
+                if (log.isDebugEnabled()) log.debug(nfe + " returning -1");
                 return -1;
             } catch (CorruptIndexException ci) {
                 index.addError(ci.getMessage());
@@ -343,7 +343,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         } else {
             MultiFieldQueryParser qp = new MultiFieldQueryParser(fields, analyzer);
             query = qp.parse(value);
-            log.debug("Parsing with " + fields + " " + analyzer + " " + value + " -> " + query);
+            if (log.isDebugEnabled()) log.debug("Parsing with " + fields + " " + analyzer + " " + value + " -> " + query);
         }
         if (extraQuery != null) {
             if (log.isDebugEnabled()) {

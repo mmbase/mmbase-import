@@ -175,7 +175,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
         try {
             long start = System.currentTimeMillis();
             final Connection con = getDirectConnection();
-            log.debug("About to execute " + sql + " (" + directConnections + ")");
+            if (log.isDebugEnabled()) log.debug("About to execute " + sql + " (" + directConnections + ")");
             final Statement statement = con.createStatement();
             final ResultSet results = statement.executeQuery(sql);
             if (log.isDebugEnabled()) {
@@ -219,7 +219,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
                 }
 
                 public void close() {
-                    log.debug("Closing " + con);
+                    if (log.isDebugEnabled()) log.debug("Closing " + con);
                     try {
                         if (results != null) results.close();
                         if (statement != null) statement.close();
@@ -274,9 +274,9 @@ public class JdbcIndexDefinition implements IndexDefinition {
                     if (duration > 500) {
                         log.warn("Executed " + s + " in " + duration + " ms");
                     } else if (duration > 100) {
-                        log.debug("Executed " + s + " in " + duration + " ms");
+                        if (log.isDebugEnabled()) log.debug("Executed " + s + " in " + duration + " ms");
                     } else {
-                        log.trace("Executed " + s + " in " + duration + " ms");
+                        if (log.isTraceEnabled()) log.trace("Executed " + s + " in " + duration + " ms");
                     }
                 } catch (Exception e) {
                     throw new RuntimeException(e.getMessage(), e);
@@ -367,7 +367,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
 
     public CloseableIterator<JdbcEntry> getSubCursor(String identifier) {
         if (isSub) {
-            log.debug("Using getSubCursor for " + identifier);
+            if (log.isDebugEnabled()) log.debug("Using getSubCursor for " + identifier);
             return getSqlCursor(getSql(identifier));
         } else {
             return  getSqlCursor(getFindSql(identifier));
