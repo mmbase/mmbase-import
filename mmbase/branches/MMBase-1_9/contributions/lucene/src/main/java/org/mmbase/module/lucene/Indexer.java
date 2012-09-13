@@ -220,7 +220,7 @@ public class Indexer implements Comparable<Indexer> {
         try {
             lastIndexed.load(new FileInputStream(lucenePath + java.io.File.separator + "lastIndexed.properties"));
         } catch (FileNotFoundException fnfe) {
-            log.debug(fnfe);
+            if (log.isDebugEnabled()) log.debug(fnfe);
         } catch (IOException ioe) {
             log.service(ioe);
         }
@@ -340,7 +340,7 @@ public class Indexer implements Comparable<Indexer> {
                 }
             }
         } catch (FileNotFoundException fnfe) {
-            log.debug(fnfe);
+            if (log.isDebugEnabled()) log.debug(fnfe);
         } catch (IOException ioe) {
             addError(ioe.getMessage());
             log.error(ioe);
@@ -374,7 +374,7 @@ public class Indexer implements Comparable<Indexer> {
                     if (log.isDebugEnabled()) {
                         int num = reader.docFreq(term);
                         if (num > 0) {
-                            log.debug(getName() + ": Will find " + num + " documents for number=" + number);
+                            if (log.isDebugEnabled()) log.debug(getName() + ": Will find " + num + " documents for number=" + number);
                         }
                     }
                     while(docs.next()) {
@@ -382,13 +382,13 @@ public class Indexer implements Comparable<Indexer> {
                         Document doc = reader.document(i);
                         String main = doc.get("number");
                         String indexId = doc.get("indexId");
-                        log.debug("Found main number " + main + " for subindex " + indexId + " in " + doc);
+                        if (log.isDebugEnabled()) log.debug("Found main number " + main + " for subindex " + indexId + " in " + doc);
                         if (indexId != null && indexId.equals(indexDefinition.getId())) {
-                            log.debug("Deleted #" + i + " from " + indexId);
+                            if (log.isDebugEnabled()) log.debug("Deleted #" + i + " from " + indexId);
                             mains.add(main);
                             reader.deleteDocument(i);
                         } else {
-                            log.debug("Retained #" + i + " from " + indexId + " (!= " + indexDefinition.getId());
+                            if (log.isDebugEnabled()) log.debug("Retained #" + i + " from " + indexId + " (!= " + indexDefinition.getId());
                         }
                         if (Thread.currentThread().isInterrupted()) {
                             log.service("Interrupted");
@@ -398,7 +398,7 @@ public class Indexer implements Comparable<Indexer> {
                     docs.close();
                 } catch (FileNotFoundException fnfe) {
                     // ignore, indices were simply not y et build.
-                    log.debug(fnfe);
+                    if (log.isDebugEnabled()) log.debug(fnfe);
                 } catch (IOException ioe) {
                     addError(ioe.getMessage());
                     log.error(ioe);
@@ -412,7 +412,7 @@ public class Indexer implements Comparable<Indexer> {
                   }
                 }
                 if (mains.size() > 0) {
-                    log.debug("Found lucene documents " + mains + " for node " + number + " which must be updated now");
+                    if (log.isDebugEnabled()) log.debug("Found lucene documents " + mains + " for node " + number + " which must be updated now");
                     updated += update(indexDefinition, mains);
                 } else {
                     // perhaps the object changed such, that it now would be in the index.
@@ -544,15 +544,17 @@ public class Indexer implements Comparable<Indexer> {
         int indexed = 0;
         Document document = null;
         String   lastIdentifier = null;
-        if (! i.hasNext()) {
-            log.debug("Empty iterator given to update " + writer + " in " + this);
-        } else {
-            log.debug("Update " + writer + " in " + this);
+        if (log.isDebugEnabled()) {
+            if (! i.hasNext()) {
+                log.debug("Empty iterator given to update " + writer + " in " + this);
+            } else {
+                log.debug("Update " + writer + " in " + this);
+            }
         }
         while(i.hasNext()) {
             IndexEntry entry = i.next();
             String newIdentifier = entry.getIdentifier();
-            log.debug("Indexing for " + newIdentifier);
+            if (log.isDebugEnabled()) log.debug("Indexing for " + newIdentifier);
             // This code depends on the fact that if the same nodes appear multipible times, they are at least queried like so, that they appear next to each other
             if (! newIdentifier.equals(lastIdentifier)) {
                 if (document != null) {
@@ -605,7 +607,7 @@ public class Indexer implements Comparable<Indexer> {
                     IndexEntry subEntry = i.next();
                     index(subEntry, document);
                     if (Thread.currentThread().isInterrupted()) {
-                        log.debug("Interrupted");
+                        if (log.isDebugEnabled()) log.debug("Interrupted");
                         return;
                     }
                 }
@@ -618,7 +620,7 @@ public class Indexer implements Comparable<Indexer> {
     void clear(boolean copy) {
         try {
             Directory dir = copy ? getDirectoryForFullIndex(): getDirectory();
-            log.debug("dir: " + dir);
+            if (log.isDebugEnabled()) log.debug("dir: " + dir);
             for (String file : dir.list()) {
                 if (file != null) {
                     try {

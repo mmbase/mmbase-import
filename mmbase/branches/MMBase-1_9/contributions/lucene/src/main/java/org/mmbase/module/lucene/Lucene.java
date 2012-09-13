@@ -466,7 +466,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 int explain        = arguments.get(EXPLAIN);
                 String extraConstraints = arguments.getString(EXTRACONSTRAINTS);
                 String filter     = arguments.getString(FILTER);
-                log.debug("using analyzer " + analyzer);
+                if (log.isDebugEnabled()) {
+                    log.debug("using analyzer " + analyzer);
+                }
                 /*
                 List moreConstraints = (List) arguments.get(EXTRACONSTRAINTSLIST);
                 if (moreConstraints != null && moreConstraints.size() > 0) {
@@ -492,7 +494,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                                                      explain);
                 } catch (BooleanQuery.TooManyClauses tmc) {
                     if ("ignore".equals(onFail)) {
-                        log.debug(tmc);
+                        if (log.isDebugEnabled()) {
+                            log.debug(tmc);
+                        }
                         return org.mmbase.bridge.util.BridgeCollections.EMPTY_NODELIST;
                     } else {
                         throw tmc;
@@ -541,7 +545,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 return getSearcher(index).searchSize(cloud, value,  Searcher.createFilter(filter), analyzer, Searcher.createQuery(extraConstraints), fieldArray, Boolean.TRUE.equals(arguments.get(COPY)));
             } catch (BooleanQuery.TooManyClauses tmc) {
                 if ("ignore".equals(onFail)) {
-                    log.debug(tmc);
+                    if (log.isDebugEnabled()) {
+                        log.debug(tmc);
+                    }
                     return 0;
                 } else {
                     throw tmc;
@@ -754,7 +760,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                        if (time != null) {
                            try {
                                initialWaitTime = Long.parseLong(time);
-                               log.debug("Set initial wait time to " + time + " milliseconds");
+                               if (log.isDebugEnabled()) {
+                                   log.debug("Set initial wait time to " + time + " milliseconds");
+                               }
                            } catch (NumberFormatException nfe) {
                                log.warn("Invalid value '" + time + "' for property 'initialwaittime'");
                            }
@@ -818,7 +826,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                     if (time != null) {
                         try {
                             waitTime = Long.parseLong(time);
-                            log.debug("Set wait time to " + time + " milliseconds. This long assigments remain scheduled, and can still be canceled.");
+                            if (log.isDebugEnabled()) {
+                                log.debug("Set wait time to " + time + " milliseconds. This long assigments remain scheduled, and can still be canceled.");
+                            }
                         } catch (NumberFormatException nfe) {
                             log.warn("Invalid value '" + time +" ' for property 'waittime'");
                         }
@@ -944,7 +954,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 for (Iterator i = queryDefinition.query.getSteps().iterator(); i.hasNext();) {
                     Step step = (Step) i.next();
                     MMObjectBuilder builder = mmb.getBuilder(step.getTableName());
-                    log.debug("Observing for builder " + builder.getTableName() + " for  '" + queryDefinition + "'");
+                    if (log.isDebugEnabled()) {
+                        log.debug("Observing for builder " + builder.getTableName() + " for  '" + queryDefinition + "'");
+                    }
                     builder.addEventListener(this);
                 }
             }
@@ -1097,10 +1109,14 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                                         String snodes = childElement.getAttribute("startnodes");
                                         String[] sn = snodes.split(",");
                                         if (snodes != null && !"".equals(snodes)) {
-                                            log.debug("Found startnodes '" + snodes + "' of list in index: " + indexName);
+                                            if (log.isDebugEnabled()) {
+                                                log.debug("Found startnodes '" + snodes + "' of list in index: " + indexName);
+                                            }
                                             for (int l = 0; l < sn.length; l++) {
                                                 String snr = cloud.getNodeByAlias(sn[l]).getStringValue("number");
-                                                log.debug("checking for: " + snr);
+                                                if (log.isDebugEnabled()) {
+                                                    log.debug("checking for: " + snr);
+                                                }
                                                 if (!startNodes.contains(snr)) startNodes.add(snr);
                                             }
                                         }
@@ -1270,7 +1286,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 }
                 try {
                     assignment = indexAssignments.take();
-                    log.debug("Running " + assignment);
+                    if (log.isDebugEnabled()) log.debug("Running " + assignment);
                     // do operation...
                     assignment.run();
                     status = IDLE;
@@ -1391,7 +1407,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             assign(new Assignment() {
                     Indexer current;
                     public void run() {
-                        log.debug("Update index for " + number);
+                        if (log.isDebugEnabled()) log.debug("Update index for " + number);
                         status = BUSY_INDEX;
                         for (Indexer indexer : indexerMap.values()) {
                             current = indexer;
@@ -1424,7 +1440,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             assign(new Assignment() {
                     Indexer current;
                     public void run() {
-                        log.debug("delete index for " + number); // already logged in indexer.deleteIndex
+                        if (log.isDebugEnabled()) log.debug("delete index for " + number); // already logged in indexer.deleteIndex
                         status = BUSY_INDEX;
                         for (Indexer indexer : indexerMap.values()) {
                             current = indexer;
