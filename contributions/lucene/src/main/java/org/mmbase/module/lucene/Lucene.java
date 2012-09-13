@@ -1188,7 +1188,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         if (log.isDebugEnabled()) {
             log.debug("Received relation event: " + event + Logging.stackTrace(6));
         }
-        if (scheduler != null) {
+        // LUCENE-25: I fail to see why related nodes need to be scheduled for an index update,
+        // this causes unnecessary incremental updates of nodes further up- or downstream.
+        /* if (scheduler != null) {
             switch(event.getType()) {
             case Event.TYPE_NEW:
                 //scheduler.newIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
@@ -1206,7 +1208,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 }
                 break;
             }
-        }
+        } */
     }
 
     public void notify(IdEvent event) {
