@@ -74,8 +74,6 @@ public class FFMpegThumbNailCreator implements  Callable<Long> {
 
     }
 
-
-    @Override
     public Long call() {
         int count = 1;
 

@@ -118,7 +118,7 @@ class JobCallable implements Callable<Integer> {
         try {
             Result result = thisJob.getCurrent();
             while (true) {
-                LOG.info("Checking to execute " + thisJob);
+                LOG.service("Checking to execute " + thisJob);
                 Result current = thisJob.getCurrent();
                 if (current == null || current.isReady()) {
                     if (iterator.hasNext()) {
@@ -127,7 +127,7 @@ class JobCallable implements Callable<Integer> {
                     }
                     current = thisJob.getCurrent();
 
-                    LOG.info("Found " + current);
+                    LOG.service("Found " + current);
                     if (current.isReady()) {
                         thisJob.ready();
                         Processor.runningJobs.remove(thisJob.getNode().getNumber());
@@ -146,7 +146,7 @@ class JobCallable implements Callable<Integer> {
                     return resultCount;
                 }
                 result = current;
-                LOG.info("NOW doing " + result);
+                LOG.service("NOW doing " + result);
                 final URI in  = result.getIn();
                 final URI out = result.getOut();
                 LOG.info("in -> out: " + in.toString() + " -> " + out.toString());
@@ -168,15 +168,15 @@ class JobCallable implements Callable<Integer> {
 
                     resultCount++;
                     result.ready();
-                    logger.info("RESULT " + thisJob + "(" + thisJob.getNode().getNodeManager().getName() + ":" + thisJob.getNode().getNumber() + "):" + result);
+                    logger.service("RESULT " + thisJob + "(" + thisJob.getNode().getNodeManager().getName() + ":" + thisJob.getNode().getNumber() + "):" + result);
 
                     if (thisJob.isInterrupted() || Thread.currentThread().isInterrupted()){
-                        logger.info("Interrupted");
+                        logger.service("Interrupted");
                         break;
                     }
                 } catch (InterruptedException ie) {
                     thisJob.interrupt();
-                    logger.info("Interrupted");
+                    logger.service("Interrupted");
                     break;
                 } catch (Throwable e) {
                     result.ready();
@@ -190,7 +190,7 @@ class JobCallable implements Callable<Integer> {
 
             }
             if (! thisJob.isInterrupted()) {
-                logger.info("READY " + thisJob + "(" + thisJob.getNode().getNodeManager().getName() + ":" + thisJob.getNode().getNumber() + ")");
+                logger.service("READY " + thisJob + "(" + thisJob.getNode().getNodeManager().getName() + ":" + thisJob.getNode().getNumber() + ")");
                 //thisJob.getNode().commit();
                 thisJob.ready();
                 Processor.runningJobs.remove(thisJob.getNode().getNumber());
@@ -200,8 +200,8 @@ class JobCallable implements Callable<Integer> {
             Processor.runningJobs.remove(thisJob.getNode().getNumber());
             throw e;
         } finally {
-            logger.info("FINALLY " + resultCount);
-            // needing synchronization here
+            logger.service("FINALLY " + resultCount);
+            // needing synchronization here ?
             thisJob.notifyAll(); // notify waiters
         }
         //logger.info("3: returning resultCount: " + resultCount);
