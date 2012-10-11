@@ -135,7 +135,7 @@ public class CommandExecutor {
 
             }
         } finally {
-            method.inUse = false;
+            method.setInUse(false);
         }
     }
 
