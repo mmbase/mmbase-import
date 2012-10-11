@@ -551,8 +551,9 @@ public class Job implements Iterable<Result> {
         if (isInterrupted()) {
             ready = true;
         }
-        notifyAll();
-
+        notifyAll();        
+        Executors.notifyExecutors();    // notify executors one of them is no longer in use
+        
         if (future.isDone()) {
             Processor.runningJobs.remove(getNode().getNumber());
             /* this makes no sence:
