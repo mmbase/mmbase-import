@@ -160,21 +160,28 @@ public class Executors {
     }
 
     public static CommandExecutor.Method getFreeExecutor() {
-        CommandExecutor.Method m = null;
-        synchronized(executors) {
-            for (CommandExecutor.Method e : executors) {
-                if (! e.isInUse()) {
-                    e.setInUse(true);
-                    m = e;
-                    break;
+        while (true) {
+            synchronized(executors) {
+                try {
+                    for (CommandExecutor.Method e : executors) {
+                        if (! e.isInUse()) {
+                            e.setInUse(true);
+                            return e;
+                        }
+                    }
+                    LOG.info("all " + executors.size() + " executors in use (will wait..)");
+                    executors.wait();
+                } catch (InterruptedException ie) {
+                    return null;
                 }
             }
         }
-        if (m == null) {
-            LOG.error("There should always be a free CommandExecutor. Using LAUCHER now.");
-            m = new CommandExecutor.Method();
+    }
+
+    public static void notifyExecutors() {
+        synchronized (executors) {
+            executors.notifyAll();
         }
-        return m;
     }
 
     public static Future submit(Stage s, Callable c) {

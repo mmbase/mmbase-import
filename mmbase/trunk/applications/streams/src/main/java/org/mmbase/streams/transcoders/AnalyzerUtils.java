@@ -246,8 +246,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
     public boolean output(String l, Node source, Node dest) {
         Matcher m = PATTERN_OUTPUT.matcher(l);
         if (m.matches()) {
-            log.info("### OUTPUT match: " + l);
-            if (log.isDebugEnabled()) log.debug("format: " + m.group(1));
+            if (log.isDebugEnabled()) log.debug("OUTPUT match, format: " + m.group(1));
             updateDestination = true;
             return true;
         }
