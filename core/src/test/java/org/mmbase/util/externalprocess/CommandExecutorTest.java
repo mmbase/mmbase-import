@@ -50,7 +50,7 @@ public class CommandExecutorTest {
         } else if (argv[0].equals("stderr")) {
             System.err.println(argv[1]);
         } else {
-            throw new RuntimeException("First argument shoudl be stdout or stdout");
+            throw new RuntimeException("First argument should be stdout or stdout");
         }
     }
 
