@@ -111,12 +111,12 @@ public class CreateSourcesWithoutProcessFunction extends NodeFunction<Boolean> {
             if (src.getNodeValue("mediafragment") != mediafragment) {
                 src.setNodeValue("mediafragment", mediafragment);
             }
-            LOG.service("Found existing source " + src.getNodeManager().getName() + " #" + src.getNumber());
+            LOG.service("Found " + src.getNodeManager().getName() + " #" + src.getNumber());
         } else {
             // create node
             src = mediafragment.getCloud().getNodeManager("streamsources").createNode();
             src.setNodeValue("mediafragment", mediafragment);
-            LOG.service("Created source " + src.getNodeManager().getName() + " #" + src.getNumber());
+            LOG.service("Created " + src.getNodeManager().getName() + " #" + src.getNumber());
         }
 
         return src;

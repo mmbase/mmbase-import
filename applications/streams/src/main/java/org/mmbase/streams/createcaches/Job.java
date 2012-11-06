@@ -361,7 +361,12 @@ public class Job implements Iterable<Result> {
                 }
                 if (current.definition.transcoder instanceof CommandTranscoder) {
                     // Get free method
-                    CommandExecutor.Method m = Executors.getFreeExecutor();
+                    CommandExecutor.Method m;
+                    if (current.definition.getStage() == Stage.RECOGNIZER) {
+                        m = Executors.getFreeExecutor(Stage.RECOGNIZER);
+                    } else {
+                        m = Executors.getFreeExecutor(Stage.TRANSCODER);
+                    }
                     ((CommandTranscoder) current.definition.transcoder).setMethod(m);
                 }
                 Node destination = current.getDestination();
