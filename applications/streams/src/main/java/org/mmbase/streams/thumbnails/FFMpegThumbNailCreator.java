@@ -28,6 +28,7 @@ import java.io.*;
 
 import org.mmbase.streams.createcaches.Executors;
 import org.mmbase.bridge.*;
+import org.mmbase.streams.createcaches.Stage;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.externalprocess.*;
 import org.mmbase.util.WriterOutputStream;
@@ -86,7 +87,7 @@ public class FFMpegThumbNailCreator implements  Callable<Long> {
             LOG.debug("File is empty " + input);
             return null;
         }
-        CommandExecutor.Method method = Executors.getFreeExecutor();
+        CommandExecutor.Method method = Executors.getFreeExecutor(Stage.RECOGNIZER);    // get a recognizer one, they are shortest in use
         String command = "ffmpeg";
         List<String> args = new ArrayList<String>();
         args.add("-i");
