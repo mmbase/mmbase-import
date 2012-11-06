@@ -302,9 +302,10 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
             EventManager.getInstance().addEventListener(new WeakNodeEventListener() {
                     public void notify(NodeEvent event) {
                         if (event.getNodeNumber() == node && event.getType() == Event.TYPE_DELETE) {
-                            if (thisJob.future.cancel(true)) {
-                                logger.info("Canceled " + thisJob.future + " for " + event.getBuilderName() + " " + event.getNodeNumber());
-                            }
+                            LOG.info("Delete node event received for #" + node);
+                            /* if (thisJob.future.cancel(true)) {
+                                logger.info("Job canceled " + thisJob.future + " for " + event.getBuilderName() + " " + event.getNodeNumber());
+                            } */
                         }
                     }
                     @Override
