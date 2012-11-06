@@ -79,9 +79,10 @@ class JobCallable implements Callable<Integer> {
             if (ntCloud instanceof org.mmbase.bridge.implementation.BasicCloud) {
                 try {
                     synchronized(ntCloud) {
+                        // TODO: explain why is this because after this wait at ntNode = ntCloud.getNode(node) there always seems to be a node?
                         while (! ntCloud.hasNode(node)) {
                             ntCloud.wait(1000);
-                            LOG.info("Still no node " + node + "");
+                            LOG.info("ntCloud still has no node " + node + " after 1 sec.");
                         }
                     }
                 } catch (InterruptedException ie) {
@@ -90,6 +91,7 @@ class JobCallable implements Callable<Integer> {
                 }
             }
             ntNode = ntCloud.getNode(node);
+            LOG.info("setting Job node ntNode #" + ntNode.getNumber() + ", url: " + ntNode.getStringValue("url"));
             // This triggers RelatedField$Creator to create a mediafragment
             ///ntNode.getStringValue("title");
             //Node mediafragment = ntNode.getNodeValue("mediafragment");

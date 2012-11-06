@@ -55,16 +55,19 @@ public class Executors {
     private static int transSeq = 0;
 
     private static final Map<Stage, ThreadPoolExecutor> threadPools = new EnumMap<Stage, ThreadPoolExecutor>(Stage.class);
-    private static final List<CommandExecutor.Method> executors = new CopyOnWriteArrayList<CommandExecutor.Method>();
-    public static List<CommandExecutor.Method> getExecutors() {
-        return executors;
+    private static final ConcurrentHashMap<CommandExecutor.Method, Stage> executorsMap = new ConcurrentHashMap<CommandExecutor.Method, Stage>();
+    public static Map<CommandExecutor.Method, Stage> getExecutors() {
+        return executorsMap;
     }
+
     protected static final ResourceWatcher watcher = new ResourceWatcher() {
             @Override
             public void onChange(String resource) {
                 try {
                     LOG.debug("Reading " + resource);
                     List<CommandExecutor.Method> newExecutors = new ArrayList<CommandExecutor.Method>();
+                    HashMap<CommandExecutor.Method, Stage> newexecutorsMap = new HashMap<CommandExecutor.Method, Stage>();
+
                     Document document = getResourceLoader().getDocument(resource);
                     Map<Stage, Integer> totals = new EnumMap<Stage, Integer>(Stage.class);
 
@@ -84,6 +87,7 @@ public class Executors {
                                     totals.put(s, t);
                                     for (int j = 1; j <= max; j++) {
                                         newExecutors.add(new CommandExecutor.Method());
+                                        newexecutorsMap.put(new CommandExecutor.Method(), s);
                                     }
                                 } else if (el.getTagName().equals("server")) {
                                     int max = Integer.parseInt(el.getAttribute("max_simultaneous_transcoders"));
@@ -96,6 +100,7 @@ public class Executors {
                                     int    port = Integer.parseInt(el.getAttribute("port"));
                                     for (int j = 1; j <= max; j++) {
                                         newExecutors.add(new CommandExecutor.Method(host, port));
+                                        newexecutorsMap.put(new CommandExecutor.Method(), s);
                                     }
                                 }
                             }
@@ -107,13 +112,13 @@ public class Executors {
                     } else {
                         LOG.warn("No " + resource);
                     }
-                    synchronized(executors) {
-                        executors.clear();
-                        executors.addAll(newExecutors);
+                    synchronized (executorsMap) {
+                        executorsMap.clear();
+                        executorsMap.putAll(newexecutorsMap);
                     }
-                    LOG.service("Reading of configuration file " + resource + " successfull. Executors " + executors + ". Max simultaneous transcoders: " + totals);
+                    LOG.service("Reading of configuration file " + resource + " successfull. Executors " + executorsMap + ". Max simultaneous transcoders: " + totals);
                 } catch (Exception e)  {
-                    LOG.error(e.getClass() + " " + e.getMessage() + " In " + resource + " Executors now " + executors + " (not changed)", e);
+                    LOG.error(e.getClass() + " " + e.getMessage() + " In " + resource + " Executors now " + executorsMap + " (not changed)", e);
                 }
             }
         };
@@ -142,10 +147,11 @@ public class Executors {
                 threadPools.put(s, ThreadPools.jobsExecutor);
             }
         }
-        // default configuration, 6 executors.
-        for (int i = 0; i < 6; i++) {
-            executors.add(new CommandExecutor.Method());
+        // default configuration, 5 + 1 executors.
+        for (int i = 0; i < 5; i++) {
+            executorsMap.put(new CommandExecutor.Method(), Stage.TRANSCODER);
         }
+        executorsMap.put(new CommandExecutor.Method(), Stage.RECOGNIZER);
         readConfiguration();
     }
 
@@ -160,27 +166,36 @@ public class Executors {
     }
 
     public static CommandExecutor.Method getFreeExecutor() {
+        // for backwards compatability, be sure to return one
+        return getFreeExecutor(Stage.TRANSCODER);
+    }
+
+    public static CommandExecutor.Method getFreeExecutor(Stage st) {
         while (true) {
-            synchronized(executors) {
+            synchronized(executorsMap) {
                 try {
-                    for (CommandExecutor.Method e : executors) {
-                        if (! e.isInUse()) {
-                            e.setInUse(true);
-                            return e;
+                    for (Map.Entry<CommandExecutor.Method, Stage> entry : executorsMap.entrySet()) {
+                        if (!entry.getKey().isInUse() && entry.getValue() == st) {
+                            CommandExecutor.Method m = entry.getKey();
+                            m.setInUse(true);
+                            return m;
                         }
                     }
-                    LOG.info("all " + executors.size() + " executors in use (will wait..)");
-                    executors.wait();
+
+                    LOG.info("All executors for stage " + st + " in use (will wait..)");
+                    executorsMap.wait();
+                    
                 } catch (InterruptedException ie) {
                     return null;
                 }
             }
         }
+
     }
 
     public static void notifyExecutors() {
-        synchronized (executors) {
-            executors.notifyAll();
+        synchronized (executorsMap) {
+            executorsMap.notifyAll();
         }
     }
 

@@ -44,18 +44,18 @@ public class DeleteCachesProcessor implements CommitProcessor {
     private static final Logger LOG = Logging.getLoggerInstance(DeleteCachesProcessor.class);
 
 
-
     public void commit(final Node node, final Field field) {
         if (node.getCloud().getProperty(NOT) != null) {
             LOG.service("Not doing because of property");
             return;
         }
         if (node.getNumber() > 0) {
+            LOG.service("Deleting streamsources #" + node.getNumber());
             final NodeManager caches = node.getCloud().getNodeManager("streamsourcescaches");
             NodeQuery q = caches.createQuery();
             Queries.addConstraint(q, Queries.createConstraint(q, "id", FieldCompareConstraint.EQUAL, node));
             for (Node cache : caches.getList(q)) {
-                LOG.service("deleting streamsourcescaches #" + cache.getNumber());
+                LOG.service("Deleting associated streamsourcescaches #" + cache.getNumber());
                 if (cache.mayDelete()) {
                     cache.delete(true);
                 } else {
