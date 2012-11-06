@@ -336,8 +336,6 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
                 final Cloud ntCloud = node.getCloud().getNonTransactionalCloud();
                 final int nodeNumber = node.getNumber();
                 createCaches(ntCloud, nodeNumber);
-            } else {
-                LOG.debug("Field " + field + " not changed " + node.getChanged());
             }
         } else {
             LOG.info("Cannot execute processor, because node has not yet a real number " + node);
