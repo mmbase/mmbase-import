@@ -57,9 +57,8 @@ public class Executors {
             public void onChange(String resource) {
                 try {
                     LOG.debug("Reading " + resource);
-                    List<CommandExecutor.Method> newExecutors = new ArrayList<CommandExecutor.Method>();
-                    HashMap<CommandExecutor.Method, Stage> newexecutorsMap = new HashMap<CommandExecutor.Method, Stage>();
 
+                    HashMap<CommandExecutor.Method, Stage> newexecutorsMap = new HashMap<CommandExecutor.Method, Stage>();
                     Document document = getResourceLoader().getDocument(resource);
                     Map<Stage, Integer> totals = new EnumMap<Stage, Integer>(Stage.class);
 
@@ -78,7 +77,6 @@ public class Executors {
                                     t += max;
                                     totals.put(s, t);
                                     for (int j = 1; j <= max; j++) {
-                                        newExecutors.add(new CommandExecutor.Method());
                                         newexecutorsMap.put(new CommandExecutor.Method(), s);
                                     }
                                 } else if (el.getTagName().equals("server")) {
@@ -91,8 +89,7 @@ public class Executors {
                                     String host = el.getAttribute("host");
                                     int    port = Integer.parseInt(el.getAttribute("port"));
                                     for (int j = 1; j <= max; j++) {
-                                        newExecutors.add(new CommandExecutor.Method(host, port));
-                                        newexecutorsMap.put(new CommandExecutor.Method(), s);
+                                        newexecutorsMap.put(new CommandExecutor.Method(host, port), s);
                                     }
                                 }
                             }
