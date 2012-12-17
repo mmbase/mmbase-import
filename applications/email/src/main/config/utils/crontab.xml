@@ -9,7 +9,9 @@
     <!--
         Every 5 minutes pop mail from a certain account
     -->
+    <!--
     <property name="popmail">*/5 * * * *|org.mmbase.module.smtp.PopFetcher||pop3,pop.gmail.com,mihxiltest,mmbase,,pop/gmail.properties||mitulo/</property>
+    -->
 
   </properties>
 </util>
