@@ -195,7 +195,7 @@ public class MultiConnection extends ConnectionWrapper {
         if (log.isDebugEnabled()) {
             log.trace("because", new Exception());
         }
-        
+
         state = CON_FINISHED;
         // If there is a parent object, this connection belongs to a pool and should not be closed,
         // but placed back in the pool
@@ -293,12 +293,36 @@ public class MultiConnection extends ConnectionWrapper {
     /**
      * Return the underlying real connection. NOTE: use with extreme caution! MMBase is supposed to look
      * after it's own connections. This method is public only for the reason that specific database
-     * implementations need access to this connection in order to safely clear them before they 
+     * implementations need access to this connection in order to safely clear them before they
      * can be put back in the connection pool.
      */
     public Connection getRealConnection() {
         return con;
     }
+
+
+    // I't impossible to download java 5
+    public void setClientInfo(java.util.Properties properties) throws SQLClientInfoException {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setClientInfo(String name, String value) throws SQLClientInfoException {
+        throw new UnsupportedOperationException();
+    }
+    public Clob createClob() throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+    public Blob createBlob() throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+    public NClob createNClob() throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+    public SQLXML createSQLXML() throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+
+
 }
 
 
