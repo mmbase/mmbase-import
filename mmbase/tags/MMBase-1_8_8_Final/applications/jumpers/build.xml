@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<project name="MMBase Jumpers" default="package" basedir=".">
+  <property name="java.source.version" value="1.5" />
+  <property name="project.name"     value="jumpers" />
+  <property name="project.target.templates.dir"   value="../mmexamples" />
+  <import file="../buildbase-include.xml" />
+</project>
+
+
+
+

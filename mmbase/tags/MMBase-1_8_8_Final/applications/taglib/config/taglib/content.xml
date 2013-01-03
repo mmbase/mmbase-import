@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE taglibcontent PUBLIC "-//MMBase//DTD taglibcontent 1.0//EN" "http://www.mmbase.org/dtd/taglibcontent_1_0.dtd">
+<taglibcontent defaulttype="text/html">
+    <!--
+    This is a template taglib content.xml.
+
+    You can add your own content types, escapers and postprocessors for the MMBase taglib here.
+    The default content types, escapers and postprocessors can be found in jar:file:mmbase-taglib-2.jar!/org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml
+    and can be used as an example.
+    Every other jar can contains its own org/mmbase/config/taglib/content.xml (e.g. mmbase-richtext.jar has one).
+  -->
+
+</taglibcontent>

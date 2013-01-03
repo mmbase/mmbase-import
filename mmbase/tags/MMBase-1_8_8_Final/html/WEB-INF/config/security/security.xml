@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE security PUBLIC "-//MMBase//DTD security config 1.0//EN" "http://www.mmbase.org/dtd/security_1_0.dtd">
+<!--
+    tag security:
+        attribute active: if the securityManager checks the value's
+        this value can be asked from the securityManager, to provide
+        maximum performance.
+        valid values are: "true" and "false"
+
+ -->
+<security active="true">
+
+  <!--
+      The key of the security configuration can be used to identify the security configuration. In
+      many security implementations user objects need to have the same key to be valid.
+      
+      On default this key is the current time during intialization of security. If you want that
+      users don't need to login again after restart of MMBase, then you need to fix this key,
+      because it is stored in the serialization of the User objects.
+      
+      This is also needed if Cloud and User objects are serialized because of web applications load balancing.
+  -->
+  <!--
+      <key>1234567</key>
+  -->
+
+    <!--
+        tag authentication:
+            attribute class: The class which should be used for
+            authentication, must be an derived instance of class
+            org.mmbase.security.Authentication.
+
+            attribute url: The url of the configfile which should
+            be used for configuration of of the authentication
+            class.
+
+     -->
+    <!-- the following one stores uses the builder mmbaseusers -->
+    <!-- <authentication class="org.mmbase.security.implementation.cloud.Authenticate" url="" /> -->
+
+    <!-- the following one provides a user->group*->context->object structure -->
+    <authentication class="org.mmbase.security.implementation.context.ContextAuthentication" url="context/config.xml" />
+
+    <!-- the following one provides a login, the same as in the standard editors
+         this means that the login will be looked up inside the account.properties
+     -->
+    <!--<authentication class="org.mmbase.security.implementation.basic.AuthenticationHandler" url="basic/authentication.xml" /> -->
+
+
+
+    <!--
+        You can wrap any authentication implementation to provide certain credentials to certain JAVA classes.
+        See the example 'wrapper.xml'.
+        -->
+    <!-- <authentication class="org.mmbase.security.classsecurity.ClassAuthenticationWrapper" url="wrapper.xml" />-->	 
+
+
+    <!--
+        tag authorization:
+            attribute class: The class which should be used for
+            authentication, must be an derived instance of
+            class org.mmbase.security.Authorization.
+
+            attribute url: The url of the configfile which should
+            be used for configuration of of the authorization
+            class.
+     -->
+    <!-- the following one stores uses the builder mmbaseusers -->
+    <!-- <authorization class="org.mmbase.security.implementation.cloud.Verify" url="" /> -->
+
+    <!-- the following one provides a user->group*->context->object structure -->
+    <authorization class="org.mmbase.security.implementation.context.ContextAuthorization" url="context/config.xml" />
+
+    <!-- the following one provides the checking, which means that a username from accounts.properties
+    is used inside the owner field
+     -->
+        <!--<authorization  class="org.mmbase.security.implementation.basic.OwnerAuthorization" url="../accounts.properties" /> -->
+
+    <!--
+            shared secret:
+                This shared secret is a private key that is used by systems to authenticate each other. MMBase needs this key to be able to communicate with remote builders. While installing remote builders, change this shared secret and make sure that you put the new shared secret in the configuration files of the remote builders. In this way we prevent other MMBase systems to fool around with your remote builders. -->
+    <sharedsecret>appelmoes</sharedsecret>
+</security>
+
+
+
+
+
+
+
+
+

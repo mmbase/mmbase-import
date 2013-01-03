@@ -1,0 +1,33 @@
+<PROCESSOR MMBASE>
+<HTML>
+<HEAD>
+   <TITLE>VPRO Server</TITLE>
+</HEAD>
+<BODY BACKGROUND="" TEXT="#FFFFFF" BGCOLOR="#000000" LINK="#FF0000" ALINK="#FF0000"
+VLINK="#FF0000">
+
+<LIST RELATIONS TYPE="images" NODE="$PARAM1" FIELDS="number">
+<IMG SRC="/img.db?$ITEM1">
+</LIST>
+
+<BR>
+Titel : $MOD-MMBASE-FIELD-$PARAM1-title<P>
+SubTitel : $MOD-MMBASE-FIELD-$PARAM1-subtitle<P>
+Tekst : <BR> $MOD-MMBASE-FIELD-$PARAM1-body <P>
+<P>
+
+Tracks :
+<LIST OBJECTS TYPE="cdtracks" FIELDS="number,title,discId,trackNr" WHERE="discId==E'$MOD-MMBASE-FIELD-$PARAM1-discId^'">
+	<A HREF="cdtracks.shtml?$ITEM1+$ITEM3">$ITEM4) $ITEM2</A><BR>
+</LIST>
+<P>
+<LIST RELATIONS TYPE="articles" NODE="$PARAM1" FIELDS="number,cost">
+	tekoop voor  : 
+	<A HREF="shopartikel.shtml?$ITEM1">$ITEM2</A><BR>
+</LIST>
+<P>
+<P>
+<A HREF="cds.shtml">Andere CD's</A> 
+
+</BODY>
+</HTML>
