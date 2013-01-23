@@ -485,5 +485,17 @@ public class MultiStatement implements Statement {
     public boolean isWrapperFor(Class<?> iface) {
         return iface.isAssignableFrom(s.getClass());
     }
+
+    // @Override in java 1.7
+    public  void closeOnCompletion()  throws SQLException {
+	//s.closeOnCompletion(); //java 7
+    }
+
+    // @Override in java 1.7
+    public  boolean isCloseOnCompletion() throws SQLException {
+	// return s.isCloseOnCompletion(); // java 7
+	return false;
+    }
+
 }
 
