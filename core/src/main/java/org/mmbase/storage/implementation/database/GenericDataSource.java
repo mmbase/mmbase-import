@@ -244,5 +244,10 @@ public final class GenericDataSource implements DataSource {
         return (T) jdbc;
     }
 
+    //@Override in java 7
+    public java.util.logging.Logger getParentLogger() {
+	return new org.mmbase.util.logging.java.MMBaseLogger(log);
+    }
+
 
 }
