@@ -21,7 +21,7 @@
     <plugins>
       <plugin>
         <groupId>org.mmbase.maven</groupId>
-        <artifactId>maven-mmbase-plugin</artifactId>
+        <artifactId>mmbase-maven-plugin</artifactId>
         <version>${mmbase.version}</version>
         <dependencies>
           <dependency>

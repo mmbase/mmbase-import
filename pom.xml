@@ -555,12 +555,6 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       <name>MMBase Maven2 snapshots repository</name>
       <url>http://www.mmbase.org/snapshots</url>
     </repository>
-
-    <repository>
-      <id>jboss</id>
-      <name>JBoss maven 2 repository</name>
-      <url>http://repository.jboss.com/maven2</url>
-    </repository>
   </repositories>
   <pluginRepositories>
     <pluginRepository>
