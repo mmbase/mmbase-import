@@ -546,6 +546,14 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
 
   <repositories>
     <repository>
+      <id>jboss</id>
+      <name>Maven JBoss Nexus</name>
+      <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+      <snapshots>
+	<enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
       <id>mmbase</id>
       <name>MMBase Maven2 repository</name>
       <url>http://www.mmbase.org/maven2</url>
