@@ -134,7 +134,7 @@ See http://www.MMBase.org/license
       <plugins>
         <plugin>
           <groupId>org.mmbase.maven</groupId>
-          <artifactId>maven-mmbase-plugin</artifactId>
+          <artifactId>mmbase-plugin</artifactId>
           <version>2.0-SNAPSHOT</version>
           <executions>
             <execution>
@@ -342,7 +342,7 @@ See http://www.MMBase.org/license
 
       <plugin>
         <groupId>org.mmbase.maven</groupId>
-        <artifactId>maven-mmbase-plugin</artifactId>
+        <artifactId>mmbase-maven-plugin</artifactId>
       </plugin>
 
       <plugin>

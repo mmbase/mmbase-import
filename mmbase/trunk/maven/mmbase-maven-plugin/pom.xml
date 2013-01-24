@@ -11,23 +11,23 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>maven-mmbase-plugin</artifactId>
+  <artifactId>mmbase-maven-plugin</artifactId>
   <name>MMBase Maven Plugin</name>
   <packaging>maven-plugin</packaging>
 
 
   <build>
     <defaultGoal>install</defaultGoal>
-	<plugins>
-	<plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-compiler-plugin</artifactId>
-		<configuration>
-			<source>1.5</source>
-			<target>1.5</target>
-		</configuration>
-	</plugin>
-	</plugins>
+    <plugins>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<configuration>
+	  <source>1.5</source>
+	  <target>1.5</target>
+	</configuration>
+      </plugin>
+    </plugins>
   </build>
   <dependencies>
     <dependency>
