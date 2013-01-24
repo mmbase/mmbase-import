@@ -21,6 +21,6 @@
   <modules>
     <module>codestandards</module>
     <module>assembly-descriptors</module>
-    <module>maven-mmbase-plugin</module>
+    <module>mmbase-maven-plugin</module>
   </modules>
 </project>
