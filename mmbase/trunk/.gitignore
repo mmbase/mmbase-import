@@ -1,0 +1,329 @@
+
+# /
+/.DS_Store
+/target
+/.settings
+
+# /applications/
+/applications/target
+
+# /applications/bugtracker/
+/applications/bugtracker/build
+/applications/bugtracker/build.properties
+/applications/bugtracker/.classpath
+/applications/bugtracker/.project
+/applications/bugtracker/target
+
+# /applications/bugtracker/src/main/webapp/mmbase/bugtracker/images/
+/applications/bugtracker/src/main/webapp/mmbase/bugtracker/images/arrow.png
+
+# /applications/cloudcontext/
+/applications/cloudcontext/build
+/applications/cloudcontext/build.properties
+/applications/cloudcontext/.classpath
+/applications/cloudcontext/.project
+/applications/cloudcontext/target
+/applications/cloudcontext/classes
+
+# /applications/cloudsecurity/
+/applications/cloudsecurity/build
+/applications/cloudsecurity/build.properties
+/applications/cloudsecurity/.classpath
+/applications/cloudsecurity/.project
+/applications/cloudsecurity/target
+
+# /applications/clustering/
+/applications/clustering/.DS_Store
+/applications/clustering/build
+/applications/clustering/download
+/applications/clustering/.classpath
+/applications/clustering/.project
+/applications/clustering/target
+/applications/clustering/classes
+
+# /applications/commandserver/
+/applications/commandserver/target
+/applications/commandserver/build
+
+# /applications/community/
+/applications/community/build
+/applications/community/build.properties
+/applications/community/.classpath
+/applications/community/.project
+/applications/community/target
+/applications/community/classes
+
+# /applications/crontab/
+/applications/crontab/.classpath
+/applications/crontab/.project
+/applications/crontab/target
+/applications/crontab/build
+
+# /applications/dove/
+/applications/dove/build
+/applications/dove/build.properties
+/applications/dove/.classpath
+/applications/dove/.project
+/applications/dove/target
+/applications/dove/classes
+
+# /applications/editwizard/
+/applications/editwizard/build
+/applications/editwizard/build.properties
+/applications/editwizard/.classpath
+/applications/editwizard/.project
+/applications/editwizard/target
+
+# /applications/email/
+/applications/email/build
+/applications/email/build.properties
+/applications/email/.classpath
+/applications/email/.project
+/applications/email/target
+/applications/email/classes
+
+# /applications/jumpers/
+/applications/jumpers/build
+/applications/jumpers/build.properties
+/applications/jumpers/.classpath
+/applications/jumpers/.project
+/applications/jumpers/target
+
+# /applications/largeobjects/
+/applications/largeobjects/target
+
+# /applications/media/
+/applications/media/build
+/applications/media/build.properties
+/applications/media/.classpath
+/applications/media/.project
+/applications/media/target
+/applications/media/classes
+
+# /applications/mycompany/
+/applications/mycompany/build
+/applications/mycompany/build.properties
+/applications/mycompany/.classpath
+/applications/mycompany/.project
+/applications/mycompany/target
+
+# /applications/mynews/
+/applications/mynews/build
+/applications/mynews/build.properties
+/applications/mynews/target
+
+# /applications/myyahoo/
+/applications/myyahoo/build
+/applications/myyahoo/build.properties
+/applications/myyahoo/target
+
+# /applications/notifications/
+/applications/notifications/build
+/applications/notifications/build.properties
+/applications/notifications/target
+
+# /applications/oscache-cache/
+/applications/oscache-cache/.classpath
+/applications/oscache-cache/.project
+/applications/oscache-cache/target
+/applications/oscache-cache/build
+
+# /applications/packaging/
+/applications/packaging/build
+/applications/packaging/.classpath
+/applications/packaging/.project
+/applications/packaging/target
+
+# /applications/resources/
+/applications/resources/target
+/applications/resources/build
+
+# /applications/richtext/
+/applications/richtext/target
+
+# /applications/richtext/content/
+/applications/richtext/content/target
+
+# /applications/richtext/src/main/config/xslt/test/
+/applications/richtext/src/main/config/xslt/test/build
+
+# /applications/richtext/wiki/
+/applications/richtext/wiki/target
+
+# /applications/rmmci/
+/applications/rmmci/build
+/applications/rmmci/build.properties
+/applications/rmmci/.classpath
+/applications/rmmci/.project
+/applications/rmmci/target
+
+# /applications/rmmci/test/
+/applications/rmmci/test/target
+
+# /applications/scan/
+/applications/scan/build
+/applications/scan/build.properties
+/applications/scan/.classpath
+/applications/scan/.project
+/applications/scan/target
+
+# /applications/searchrelate/
+/applications/searchrelate/build
+/applications/searchrelate/target
+/applications/searchrelate/out
+
+# /applications/searchrelate/example-webapp/
+/applications/searchrelate/example-webapp/target
+/applications/searchrelate/example-webapp/data
+
+# /applications/streams/
+/applications/streams/target
+/applications/streams/samples
+/applications/streams/results
+/applications/streams/foo.input
+
+# /applications/streams/test-app/
+/applications/streams/test-app/target
+
+# /applications/taglib/
+/applications/taglib/build
+/applications/taglib/build.properties
+/applications/taglib/.DS_Store
+/applications/taglib/.classpath
+/applications/taglib/.project
+/applications/taglib/target
+/applications/taglib/classes
+
+# /applications/vpro-wizards/
+/applications/vpro-wizards/build
+/applications/vpro-wizards/fbuild
+/applications/vpro-wizards/target
+/applications/vpro-wizards/.classpath
+/applications/vpro-wizards/.project
+/applications/vpro-wizards/.settings
+
+# /applications/vpro-wizards/src/main/webapp/mmbase/vpro-wizards/system/javascript/
+/applications/vpro-wizards/src/main/webapp/mmbase/vpro-wizards/system/javascript/fckeditor
+
+# /applications/vwms/
+/applications/vwms/.classpath
+/applications/vwms/.project
+/applications/vwms/target
+/applications/vwms/classes
+
+# /applications/xmlimporter/
+/applications/xmlimporter/build
+/applications/xmlimporter/build.properties
+/applications/xmlimporter/.classpath
+/applications/xmlimporter/.project
+/applications/xmlimporter/target
+/applications/xmlimporter/classes
+
+# /base-webapp/
+/base-webapp/target
+/base-webapp/profiles.xml
+/base-webapp/.classpath
+/base-webapp/*.log
+/base-webapp/.project
+
+# /base-webapp/src/main/webapp/mmbase/components/
+/base-webapp/src/main/webapp/mmbase/components/taglib
+/base-webapp/src/main/webapp/mmbase/components/editwizard
+/base-webapp/src/main/webapp/mmbase/components/lucene
+/base-webapp/src/main/webapp/mmbase/components/email
+/base-webapp/src/main/webapp/mmbase/components/crontab
+/base-webapp/src/main/webapp/mmbase/components/resources
+
+# /bridge/
+/bridge/target
+
+# /bridge/src/main/
+
+# /contributions/
+/contributions/target
+
+# /contributions/aselect/
+/contributions/aselect/build
+/contributions/aselect/target
+
+# /contributions/calendar/
+/contributions/calendar/target
+
+# /contributions/lucene/
+/contributions/lucene/target
+/contributions/lucene/build
+
+# /contributions/lucene/tests/
+/contributions/lucene/tests/build
+/contributions/lucene/tests/work
+
+# /contributions/mmbob/
+/contributions/mmbob/build
+/contributions/mmbob/target
+
+# /contributions/multilanguagegui/
+/contributions/multilanguagegui/build
+/contributions/multilanguagegui/target
+
+# /contributions/poll/
+/contributions/poll/target
+
+# /contributions/principletracker/
+/contributions/principletracker/target
+
+# /contributions/profilesconnector/
+/contributions/profilesconnector/build
+
+# /contributions/thememanager/
+/contributions/thememanager/build
+/contributions/thememanager/target
+
+# /core/
+/core/target
+/core/profiles.xml
+
+# /documentation/
+/documentation/target
+
+# /documentation/src/docbook/applications/
+/documentation/src/docbook/applications/*
+
+# /example-webapp/
+/example-webapp/target
+/example-webapp/data
+
+# /maven/
+/maven/target
+
+# /maven/assembly-descriptors/
+/maven/assembly-descriptors/target
+
+# /maven/codestandards/
+/maven/codestandards/target
+
+# /maven/mmbase-maven-plugin/
+/maven/mmbase-maven-plugin/target
+
+# /maven-base/
+/maven-base/target
+/maven-base/.classpath
+/maven-base/.project
+/maven-base/*.log
+
+# /tests/
+/tests/build
+/tests/build.properties
+/tests/work
+/tests/lib
+/tests/target
+
+# /tests/config/builders/
+/tests/config/builders/applications
+
+# /utils/
+/utils/target
+
+# /utils/src/main/
+
+# /utils/src/main/config/xslt/framework/test/
+/utils/src/main/config/xslt/framework/test/build
