@@ -26,6 +26,33 @@
     <jar.mainClass>org.mmbase.clustering.Converter</jar.mainClass>
   </properties>
 
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2-beta-2</version>
+        <executions>
+          <execution>
+            <id>create-executable-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+              <archive>
+                <manifest>
+                  <mainClass>org.mmbase.clustering.Converter</mainClass>
+                </manifest>
+              </archive>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 
   <dependencies>
@@ -37,6 +64,15 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-utils</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+a    </dependency>
+    <dependency>
       <groupId>jgroups</groupId>
       <artifactId>jgroups-all</artifactId>
       <version>2.2.7</version>
@@ -46,6 +82,8 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
+
+
 
   </dependencies>
   <repositories>
