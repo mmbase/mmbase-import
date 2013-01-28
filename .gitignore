@@ -1,4 +1,10 @@
 
+<<<<<<< HEAD
+=======
+.idea
+*.iml
+
+>>>>>>> 4a7c9dc732a2b746ce896ed248603a7531d8cb5b
 # /
 /.DS_Store
 /target
