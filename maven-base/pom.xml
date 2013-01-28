@@ -343,6 +343,7 @@ See http://www.MMBase.org/license
       <plugin>
         <groupId>org.mmbase.maven</groupId>
         <artifactId>mmbase-maven-plugin</artifactId>
+        <version>${project.version}</version>
       </plugin>
 
       <plugin>
