@@ -9,15 +9,18 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.clustering.unicast;
 
-import java.io.*;
-import java.net.*;
-import java.util.concurrent.*;
-import java.util.Queue;
-
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import org.mmbase.util.ThreadPools;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.*;
+import java.util.concurrent.BlockingQueue;
 
 
 /**
@@ -42,6 +45,8 @@ public class ChangesReceiver implements Runnable {
 
     private int maxMessageSize = 5 * 1024 * 1024;
 
+    private Predicate<byte[]> predicate = Predicates.<byte[]>alwaysTrue();
+
     /**
      * Construct UniCast Receiver
      * @param unicastHost host of unicast connection
@@ -63,6 +68,10 @@ public class ChangesReceiver implements Runnable {
             serverSocket.bind(address);
         }
         this.version = version;
+    }
+
+    public void setPredicate(Predicate<byte[]> predicate) {
+        this.predicate = predicate;
     }
 
     public void setMaxMessageSize(int m) {
@@ -100,10 +109,9 @@ public class ChangesReceiver implements Runnable {
      * messages in one session).
      * When ready, closes the stream.
      * @param in The stream to read from
-     * @param queue The collection of messages to add the newly read messages to
      * @since MMBase-2.0
      */
-    protected void readStreamVersion2(InputStream in, Queue<byte[]> queue) throws IOException {
+    protected void readStreamVersion2(InputStream in) throws IOException {
         DataInputStream reader = null;
         try {
             reader = new DataInputStream(in);
@@ -129,10 +137,8 @@ public class ChangesReceiver implements Runnable {
                 }
                 // maybe we should use encoding here?
                 byte[] message = writer.toByteArray();
-                queue.offer(message);
-                if (log.isDebugEnabled()) {
-                    log.debug("unicast(v" + version + ") RECEIVED=>" + message + " queue: " + queue.size());
-                }
+                offer(message, "2");
+
             }
         } finally {
             if (reader != null) {
@@ -149,10 +155,9 @@ public class ChangesReceiver implements Runnable {
      * message in one session)
      * When ready, closes the stream.
      * @param in The stream to read from
-     * @param queue The collection of messages to add the newly read message to
      * @since MMBase-2.0
      */
-    protected void readStreamVersion1(InputStream in, Queue<byte[]> queue) throws IOException {
+    protected void readStreamVersion1(InputStream in) throws IOException {
         DataInputStream reader = null;
         try {
             reader = new DataInputStream(in);
@@ -167,10 +172,7 @@ public class ChangesReceiver implements Runnable {
                 }
             }
             byte[] message = writer.toByteArray();
-            nodesToSpawn.offer(message);
-            if (log.isDebugEnabled()) {
-                log.debug("unicast(v1) RECEIVED=>" + message + " queue: " + nodesToSpawn.size());
-            }
+            offer(message, "1");
         } finally {
             if (reader != null) {
                 try {
@@ -179,6 +181,19 @@ public class ChangesReceiver implements Runnable {
                 }
             }
         }
+    }
+
+    private boolean offer(byte[] message, String v) {
+        if (predicate.apply(message)) {
+            nodesToSpawn.offer(message);
+            if (log.isDebugEnabled()) {
+                log.debug("unicast(v" + v + ") RECEIVED=>" + message + " queue: " + nodesToSpawn.size());
+            }
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     @Override
@@ -195,9 +210,9 @@ public class ChangesReceiver implements Runnable {
                     }
 
                     if (version > 1) {
-                        readStreamVersion2(socket.getInputStream(), nodesToSpawn);
+                        readStreamVersion2(socket.getInputStream());
                     } else {
-                        readStreamVersion1(socket.getInputStream(), nodesToSpawn);
+                        readStreamVersion1(socket.getInputStream());
                     }
                 } catch (SocketException e) {
                     log.warn(e.getMessage(), e);
