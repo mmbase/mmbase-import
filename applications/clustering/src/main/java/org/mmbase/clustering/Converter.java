@@ -23,13 +23,13 @@ public class Converter {
 
         final BlockingQueue<byte[]> uniToMultiNodes =  new LinkedBlockingQueue<byte[]>(64);
         final BlockingQueue<byte[]> multiToUniNodes =  new LinkedBlockingQueue<byte[]>(64);
-		final Statistics stats = new Statistics();
+        final Statistics stats = new Statistics();
 
-		startUnicastReceiver(argMap, uniToMultiNodes);
-		startUnicastSender(argMap, multiToUniNodes, stats);
+        startUnicastReceiver(argMap, uniToMultiNodes);
+        startUnicastSender(argMap, multiToUniNodes, stats);
 
-		startMulticastReceiver(argMap, multiToUniNodes);
-		startMulticastSender(argMap, uniToMultiNodes,stats);
+        startMulticastReceiver(argMap, multiToUniNodes);
+        startMulticastSender(argMap, uniToMultiNodes,stats);
 
         synchronized(Converter.class) {
             System.out.println("Waiting for interrupt");
