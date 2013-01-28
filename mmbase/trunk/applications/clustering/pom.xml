@@ -71,11 +71,7 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-<<<<<<< HEAD
-a    </dependency>
-=======
     </dependency>
->>>>>>> 4a7c9dc732a2b746ce896ed248603a7531d8cb5b
     <dependency>
       <groupId>jgroups</groupId>
       <artifactId>jgroups-all</artifactId>
