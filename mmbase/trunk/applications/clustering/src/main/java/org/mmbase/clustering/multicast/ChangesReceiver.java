@@ -9,12 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.clustering.multicast;
 
-import java.net.*;
-import java.util.concurrent.*;
-
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import org.mmbase.util.ThreadPools;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
+import java.net.UnknownHostException;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * ChangesReceiver is a thread object that builds a MultiCast Thread
@@ -45,6 +50,8 @@ public class ChangesReceiver implements Runnable {
 
     /** Datapacket receive size */
     private final int dpsize;
+
+    private Predicate<byte[]> predicate = Predicates.alwaysTrue();
 
     /**
      * Construct the MultiCast Receiver
@@ -99,6 +106,7 @@ public class ChangesReceiver implements Runnable {
         }
     }
 
+    @Override
     public void run() {
         log.info("MultiCast receiving on " + ms +  " " + ia + ":" + mport);
         // create a datapackage to receive all messages
@@ -115,9 +123,11 @@ public class ChangesReceiver implements Runnable {
                 // That's not what we want. Especially when falling back to legacy, this is translated to a String.
                 // which otherwise gets dpsize length (64k!)
                 System.arraycopy(dp.getData(), 0, message, 0, dp.getLength());
-                nodesToSpawn.offer(message);
-                if (log.isDebugEnabled()) {
-                    log.debug("multicast RECEIVED=> " + dp.getLength() + " bytes from " + ia + ":" + mport + " " + dp.getAddress());
+                if (predicate.apply(message)) {
+                    nodesToSpawn.offer(message);
+                    if (log.isDebugEnabled()) {
+                        log.debug("multicast RECEIVED=> " + dp.getLength() + " bytes from " + ia + ":" + mport + " " + dp.getAddress());
+                    }
                 }
             } catch (java.net.SocketException se) {
                 // generally happens on shutdown (ms==null)
@@ -129,4 +139,7 @@ public class ChangesReceiver implements Runnable {
         }
     }
 
+    public void setPredicate(Predicate<byte[]> predicate) {
+        this.predicate = predicate;
+    }
 }
