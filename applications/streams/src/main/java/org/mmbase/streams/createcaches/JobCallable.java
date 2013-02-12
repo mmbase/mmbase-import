@@ -82,7 +82,7 @@ class JobCallable implements Callable<Integer> {
                         // TODO: explain why is this because after this wait at ntNode = ntCloud.getNode(node) there always seems to be a node?
                         while (! ntCloud.hasNode(node)) {
                             ntCloud.wait(1000);
-                            LOG.info("ntCloud still has no node " + node + " after 1 sec.");
+                            LOG.info("ntCloud still has no node #" + node + " after 1 sec. " + ntCloud.hasNode(node));
                         }
                     }
                 } catch (InterruptedException ie) {

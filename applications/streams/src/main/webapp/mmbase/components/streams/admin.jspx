@@ -40,29 +40,34 @@
             <td>${jobdef.value.transcoder}</td>
           </tr>
         </c:forEach>
-          <tr>
-            <th> </th>
-            <th colspan="9"> 
-              Command executors
-            </th>
-          </tr>
+          
+        <tr>
+          <th colspan="9"> 
+            Command executors
+          </th>
+        </tr>
+        <tr>
+          <th> kind </th>
+          <th colspan="2"> host </th>
+          <th colspan="6"> 
+          </th>
+        </tr>
 
-          <mm:listfunction set="streams" name="listExecutors" id="exec">
-            <tr>
-              <th> </th>
-              <td colspan="9">
-                ${exec}
-              </td>
-            </tr>
-          </mm:listfunction>
+        <mm:listfunction set="streams" name="listExecutors" id="exec">
           <tr>
-            <th> </th>
-            <td colspan="9">
-              LAUNCHER launches commands at localhost, otherwise host and portnumber are listed. 
-              Command executors are the number of slots available to perform transcoding tasks simultaneously.
-              Default there are two: a recognizer and a transcoder.
-            </td>
+            <td> ${exec.value} </td>
+            <td colspan="2"> ${exec.key} </td>
+            <td colspan="6"> </td>
           </tr>
+        </mm:listfunction>
+        <tr>
+          <th> </th>
+          <td colspan="9">
+            LAUNCHER launches commands at localhost, otherwise host and portnumber are listed. 
+            Command executors are the number of slots available to perform transcoding tasks simultaneously.
+            Default there are two types: a recognizer and a transcoder.
+          </td>
+        </tr>
       </table>
     </mm:fieldlist>
 
