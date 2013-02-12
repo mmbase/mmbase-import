@@ -317,6 +317,11 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             return;
         }
 
+        if (event instanceof SystemEvent.Shutdown) {
+            log.warn("Can not handle system shutdown event when sent by other server." + event);
+            return;
+        } 
+
         if (event instanceof NodeEvent) {
             MMObjectBuilder builder = mmbase.getBuilder(((NodeEvent) event).getBuilderName());
             if (builder != null && (! builder.broadcastChanges())) {
