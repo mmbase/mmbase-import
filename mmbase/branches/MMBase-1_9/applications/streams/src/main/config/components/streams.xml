@@ -156,6 +156,48 @@
     </body>
   </block>
 
+  <block name="search"
+         classification="mmbase.streams"
+         mimetype="text/html">
+    <title xml:lang="en">Search</title>
+    <title xml:lang="nl">Zoek</title>
+    <description xml:lang="en">
+      Search media and streams in all avaliable search fields.
+    </description>
+    <description xml:lang="nl">
+      Uitgebreid zoeken naar media en streams in alle beschikbare zoekvelden.
+    </description>
+    <body jsp="search.jspx">
+      <param name="trigger" />
+      <param name="all" type="java.lang.Boolean" />
+      <param name="interrupt" />
+      <param name="cache" />
+      <param name="source" />
+      <param name="update" />
+      
+      <param name="type" />
+      <param name="search" />
+      <param name="page" type="java.lang.Integer" />
+      <param name="max"  type="java.lang.Integer" />
+    </body>
+  </block>
+
+  <block name="edit"
+         mimetype="text/html">
+    <title xml:lang="en">Edit node</title>
+    <title xml:lang="nl">Wijzig node</title>
+    <description xml:lang="en">
+      Simple, crude editor to edit media or streams nodes.
+    </description>
+    <description xml:lang="nl">
+      Eenvoudige, ruwe editor om media of streams nodes te bewerken.
+    </description>
+    <body jsp="edit.jspx">
+      <param name="save" />
+      <param name="node" />
+    </body>
+  </block>
+
   <block name="upload"
          classification="mmbase.streams"
          mimetype="text/html">
