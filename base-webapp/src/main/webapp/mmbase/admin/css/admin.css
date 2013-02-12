@@ -268,6 +268,27 @@ th.view, td.view
 th.center, td.center { text-align: center; }
 div#aboutthisredbox { display: none; }
 
+fieldset
+{
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+fieldset > div { margin: 0 0 2px 0; }
+fieldset > div > label
+{
+    float: left;
+    text-align: right;
+    display: block;
+    margin-right: 4px;
+    width: 140px;
+    font-weight: normal;
+}
+
+input.submit { margin: 4px 0 14px 144px; }
+table.searchresults { width: 100%; }
+
 /* messages, errors */
 .msg
 {
