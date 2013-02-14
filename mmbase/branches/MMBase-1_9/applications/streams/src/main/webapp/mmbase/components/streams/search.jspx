@@ -21,7 +21,7 @@
     
     <mm:import externid="search" />
     <mm:import externid="page" vartype="integer">0</mm:import>
-    <mm:import externid="max" vartype="integer">10</mm:import>
+    <mm:import externid="max" vartype="integer">25</mm:import>
     
     <mm:import externid="type">mediafragments</mm:import>
 
@@ -87,7 +87,7 @@
 
 
     <p>
-      <mm:link>
+      <mm:link page="search">
         <mm:param name="type">mediafragments</mm:param>
         <a href="${_}">media</a> -
       </mm:link>
@@ -151,6 +151,7 @@
 
         <div>
           <input type="submit" name="search" value="Search" class="search submit" />
+          
         </div>
       </fieldset>
     </mm:form>
@@ -186,6 +187,13 @@
           </mm:fieldlist>
           <th>Action</th>
         </tr>
+
+        <mm:url page="/mmbase/streams/streams/search" id="search_str" referids="type,search" write="false">
+          <mm:fieldlist nodetype="$type" type="search">
+            <mm:fieldinfo type="reusesearchinput" />
+          </mm:fieldlist>
+        </mm:url>
+
         <mm:listnodes>
           <tr>
             <td>
@@ -223,15 +231,14 @@
                      </mm:node>
                      
                      <c:choose>
-                       <c:when test="${mm:contains(joblist, thesource)}">
+                       <c:when test="${mm:contains(joblist, thesource) or (thesource eq source and _node eq cache)}">
                          <div class="msg">Transcoding: source #${thesource}</div>
                        </c:when>
                        <c:otherwise>
-                         <mm:link referids="type,_node@cache,thesource@source">
+                         <mm:link referid="search_str" referids="max,page,_node@cache,thesource@source">
                            <a href="${_}">retrigger</a> cache<br />
                          </mm:link>
-                         <!-- update stream info -->
-                         <mm:link referids="type,_node@cache,thesource@source">
+                         <mm:link referid="search_str" referids="max,page,_node@cache,thesource@source">
                            <mm:param name="update">update</mm:param>
                            <a href="${_}">update</a> info
                          </mm:link>                     
@@ -243,22 +250,23 @@
                      does not end with caches
                    </c:otherwise>
                  </c:choose>
+                 
                </mm:hasfield>
                
                <mm:hasfield name="id" inverse="true">
-                 <c:choose>
-                   <c:when test="${mm:contains(joblist,source)}">
-                     <div class="msg">Transcoding: source #${source}</div>
-                   </c:when>
-                   <c:otherwise>
-                     <mm:hasfunction name="triggerCaches">
-                       <mm:link referids="type,_node@source">
+                 <mm:hasfunction name="triggerCaches">
+                   <c:choose>
+                     <c:when test="${mm:contains(joblist,source)}">
+                       <div class="msg">Transcoding: source #${source}</div>
+                     </c:when>
+                     <c:otherwise>
+                       <mm:link referid="search_str" referids="max,page,_node@source">
                          <mm:param name="all">true</mm:param>
                          <a href="${_}">retrigger</a> all caches
                        </mm:link>
-                     </mm:hasfunction>
-                   </c:otherwise>
-                 </c:choose>
+                     </c:otherwise>
+                   </c:choose>
+                 </mm:hasfunction>
                </mm:hasfield>
                <!-- /rechaching -->
 
@@ -266,17 +274,18 @@
           </tr>
         </mm:listnodes>
 
-        
-        <mm:url page="/mmbase/streams/streams/search" id="search_str" referids="type,search" write="false">
-          <mm:fieldlist nodetype="$type" type="search">
-            <mm:fieldinfo type="reusesearchinput" />
-          </mm:fieldlist>
-        </mm:url>
 
+        <!-- paging -->
         <tfoot>
           <tr cols="100">
             <th colspan="9">
-              <mm:previousbatches >
+              <mm:previousbatches>
+                <mm:first>
+                  <mm:link referid="search_str" referids="max">
+                    <mm:param name="page"><mm:index  /></mm:param>
+                    <a href="${_}">first</a> -
+                  </mm:link>
+                </mm:first>
                 <mm:last>
                   <mm:link referid="search_str" referids="max">
                     <mm:param name="page"><mm:index  /></mm:param>
@@ -284,15 +293,15 @@
                   </mm:link>
                 </mm:last>
               </mm:previousbatches>
-              <mm:previousbatches >
+              <mm:previousbatches max="20" indexoffset="1">
                 <mm:link referid="search_str" referids="max">
-                  <mm:param name="page"><mm:index  /></mm:param>
-                  <a href="${_}"><mm:index offset="1" /></a>
+                  <mm:param name="page"><mm:index /></mm:param>
+                  <a href="${_}"><mm:index /></a>
                 </mm:link>
                 <jsp:text> - </jsp:text>
               </mm:previousbatches>
               <mm:index offset="1" />
-              <mm:nextbatches>
+              <mm:nextbatches max="20">
                 <jsp:text> - </jsp:text>
                 <mm:link referid="search_str" referids="max">
                   <mm:param name="page"><mm:index /></mm:param>
@@ -306,6 +315,12 @@
                     - <a href="${_}">next »»</a>
                   </mm:link>
                 </mm:first>
+                <mm:last>
+                  <mm:link referid="search_str" referids="max">
+                    <mm:param name="page"><mm:index  /></mm:param>
+                    - <a href="${_}">last</a>
+                  </mm:link>
+                </mm:last>
               </mm:nextbatches>
             </th>
           </tr>
