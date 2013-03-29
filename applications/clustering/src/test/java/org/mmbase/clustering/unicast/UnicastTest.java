@@ -1,11 +1,24 @@
 package org.mmbase.clustering.unicast;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.mmbase.clustering.Statistics;
-import org.mmbase.util.*;
-import java.util.*;
-import java.net.*;
-import java.io.*;
-import org.junit.*;
-import static org.junit.Assert.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 public class UnicastTest {
 
@@ -34,7 +47,9 @@ public class UnicastTest {
     }
     @Test
     public void streams() throws IOException {
-        final ChangesReceiver receiver = new ChangesReceiver(null, -1, null, 2);
+        BlockingQueue<byte[]> queue = new ArrayBlockingQueue<byte[]>(10);
+
+        final ChangesReceiver receiver = new ChangesReceiver(null, -1, queue, 2);
         //receiver.setMaxMessageSize(90000);
         final ChangesSender   sender   = new ChangesSender(new HashMap<String, String>(), -1, 100, null, new Statistics(), 2);
 
@@ -48,15 +63,16 @@ public class UnicastTest {
 
 
         // Read the byte array in again
-        LinkedList<byte[]> queue = new LinkedList<byte[]>();
         InputStream in = new ByteArrayInputStream(buffer.toByteArray());
-        receiver.readStreamVersion2(in, queue);
+        receiver.readStreamVersion2(in);
 
         // And check if the result is the same as what went in
 
         assertEquals(testSet.size(), queue.size());
+        List<byte[]> queuebytes = new ArrayList<byte[]>(queue);
         for (int i = 0 ; i < testSet.size(); i++) {
-            assertArrayEquals(testSet.get(i), queue.get(i));
+            queue.iterator();
+            assertArrayEquals(testSet.get(i), queuebytes.get(i));
         }
 
     }
@@ -66,10 +82,11 @@ public class UnicastTest {
     public void connections() throws IOException, InterruptedException {
         final int port = 1234;
         final InetSocketAddress address = new InetSocketAddress("localhost", port);
-        final ChangesReceiver receiver = new ChangesReceiver(null, -1, null, 2);
+        final BlockingQueue<byte[]> queue = new ArrayBlockingQueue<byte[]>(10);
+        final ChangesReceiver receiver = new ChangesReceiver(null, -1, queue, 2);
         //receiver.setMaxMessageSize(90000);
         final ChangesSender   sender   = new ChangesSender(new HashMap<String, String>(), -1, 10000, null, new Statistics(), 2);
-        final LinkedList<byte[]> queue = new LinkedList<byte[]>();
+
         final List<byte[]> testSet = getTestSet();
         final ServerSocket serverSocket = new ServerSocket();
         serverSocket.bind(address);
@@ -83,7 +100,7 @@ public class UnicastTest {
                         synchronized(state) {
                             Socket socket = serverSocket.accept();
                             System.out.println("Received connection " + socket);
-                            receiver.readStreamVersion2(socket.getInputStream(), queue);
+                            receiver.readStreamVersion2(socket.getInputStream());
                             System.out.println("Ready reading " + queue.size());
                             state.add(1);
                             state.notifyAll();
@@ -107,8 +124,10 @@ public class UnicastTest {
         }
 
         assertEquals(testSet.size(), queue.size());
+
+        List<byte[]> queuebytes = new ArrayList<byte[]>(queue);
         for (int i = 0 ; i < testSet.size(); i++) {
-            assertArrayEquals(testSet.get(i), queue.get(i));
+            assertArrayEquals(testSet.get(i), queuebytes.get(i));
         }
 
 
