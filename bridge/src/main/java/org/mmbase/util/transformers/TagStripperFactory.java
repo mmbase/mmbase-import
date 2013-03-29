@@ -1,15 +1,22 @@
 package org.mmbase.util.transformers;
 
-import java.util.*;
-import java.util.regex.*;
-import javax.swing.text.*;
-import javax.swing.text.html.*;
-import java.io.*;
-import org.mmbase.util.functions.*;
-
-
+import org.mmbase.util.functions.Parameter;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import javax.swing.text.AttributeSet;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTMLEditorKit;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.regex.Pattern;
 
 
 /**
@@ -35,6 +42,9 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
     public static final Parameter<Boolean> ADD_BRS     =
         new Parameter<Boolean>("addbrs", Boolean.class, Boolean.FALSE);
 
+    public static final Parameter<Boolean> CONSERVE_NEWLINES =
+            new Parameter<Boolean>("conservenewlines", Boolean.class, Boolean.FALSE);
+
     public static final Parameter<Boolean> ESCAPE_AMPS =
         new Parameter<Boolean>("escapeamps", Boolean.class, Boolean.FALSE);
 
@@ -42,7 +52,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         new Parameter<Boolean>("addnewlines", Boolean.class, Boolean.FALSE);
 
 
-    protected static final Parameter[] PARAMS = new Parameter[] { TAGS, ADD_BRS, ESCAPE_AMPS, ADD_NEWLINES };
+    protected static final Parameter[] PARAMS = new Parameter[] { TAGS, ADD_BRS, ESCAPE_AMPS, ADD_NEWLINES, CONSERVE_NEWLINES};
 
     @Override
     public Parameters createParameters() {
@@ -77,40 +87,39 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         final HTMLEditorKit.Parser parser = new ParserGetter().getParser();
         ReaderTransformer trans = new ReaderTransformer() {
             @Override
-                public Writer transform(Reader r, final Writer w) {
-                    final TagStripper callback = new TagStripper(w, tagList);
-                    callback.addBrs     = parameters.get(ADD_BRS);
-                    callback.escapeAmps = parameters.get(ESCAPE_AMPS);
-                    callback.addNewlines = parameters.get(ADD_NEWLINES);
-                    if (callback.addBrs) {
-                        // before going into the parser, make existing newlines recognizable, by replacing them by a token
-                        r = new TransformingReader(r, new ChunkedTransformer(ChunkedTransformer.XMLTEXT) {
-                                @Override
-                                protected boolean replace(String string, Writer w, Status status) throws IOException {
-                                    w.write(string.replaceAll("\n", NL_TOKEN));
-                                    return false;
-                                }
-
-                                @Override
-                                protected String base() {
-                                    return "nl";
-                                }
-
-                            });
-                    }
-                    try {
-                        parser.parse(r, callback, true);
-                    } catch (Exception e) {
-                        log.warn(e.getMessage(), e);
+            public Writer transform(Reader r, final Writer w) {
+                final TagStripper callback = new TagStripper(w, tagList);
+                callback.addBrs     = parameters.get(ADD_BRS);
+                callback.escapeAmps = parameters.get(ESCAPE_AMPS);
+                callback.addNewlines = parameters.get(ADD_NEWLINES);
+                callback.conserveNewlines = parameters.get(CONSERVE_NEWLINES);
+                // before going into the parser, make existing newlines recognizable, by replacing them by a token
+                r = new TransformingReader(r, new ChunkedTransformer(ChunkedTransformer.XMLTEXT) {
+                    @Override
+                    protected boolean replace(String string, Writer w, Status status) throws IOException {
+                        w.write(string.replaceAll("\n", NL_TOKEN));
+                        return false;
                     }
 
-                    return w;
+                    @Override
+                    protected String base() {
+                        return "nl";
+                    }
+
+                });
+                try {
+                    parser.parse(r, callback, true);
+                } catch (Exception e) {
+                    log.warn(e.getMessage(), e);
                 }
+
+                return w;
+            }
             @Override
-                public String toString() {
-                    return tagList + " " + (parameters.get(ADD_BRS) ? "(adding brs)" : "");
-                }
-            };
+            public String toString() {
+                return tagList + " " + (parameters.get(ADD_BRS) ? "(adding brs)" : "");
+            }
+        };
         if (log.isDebugEnabled()) {
             log.debug("Created " + trans);
         }
@@ -289,16 +298,17 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
     protected static class TagStripper extends HTMLEditorKit.ParserCallback {
         private final Writer out;
         private final List<Tag> tags;
-        boolean addImplied = false;
         boolean addBrs     = false;
         boolean escapeAmps = false;
         boolean addNewlines = false;
+        boolean conserveNewlines = false;
         List<HTML.Tag> impliedTags = new ArrayList<HTML.Tag>();
         List<HTML.Tag> stack       = new ArrayList<HTML.Tag>();
         int removeBody = 0;
         State state = State.DEFAULT;
         StringBuilder spaceBuffer = new StringBuilder();
         int wrote = 0;
+
 
         TagStripper(Writer out, List<Tag> t) {
             this.out = out;
@@ -363,38 +373,47 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                     out.write(t); wrote+= t.length();
 
                 } else {
+
+
+                    String nlReplacement =
+                            ((stack.get(0).isPreformatted() || stack.size() == impliedTags.size())
+                                    || conserveNewlines) ? "\n" : " ";
+
+                    String t;
+                    if (text[0] == '>') { // odd, otherwise <br /> ends up as <br />>
+                        t = new String(text).substring(1);
+                    } else {
+                        t = new String(text);
+                    }
                     if (escapeAmps) {
-                        String t;
-                        if (text[0] == '>') { // odd, otherwise <br /> ends up as <br />>
-                            t = new String(text).substring(1);
-                        } else {
-                            t = new String(text);
-                        }
                         // see comment in handleAttributes
                         t = t.replaceAll("&", "&amp;");
-                        out.write(t); wrote += t.length();
-                    } else {
-                        // no need to wrap in string first.
-                        if (text[0] == '>') {
-                            out.write(text, 1, text.length - 1);
-                            wrote += text.length - 2;
-                        } else {
-                            out.write(text);
-                            wrote += text.length;
-                        }
                     }
-
+                    t = replaceNewLInes(t, nlReplacement);
+                    out.write(t);
+                    wrote += t.length();
                 }
             } catch (IOException e) {
                 log.warn(e);
             }
         }
 
+        private String replaceNewLInes(String t, String replacement) {
+            if (t.endsWith(NL_TOKEN)) {
+                t = t.substring(0, t.length() - NL_TOKEN.length());
+            }
+            if (t.startsWith(replacement)) {
+                t = t.substring(NL_TOKEN.length());
+            }
+            t = t.replaceAll(NL_TOKEN, replacement);
+            return t;
+        }
+
         TagCheck getTag(HTML.Tag tag, MutableAttributeSet attributes) {
             //System.out.println("getting tag " + tag);
             boolean implied = attributes.containsAttribute(IMPLIED, Boolean.TRUE);
             TagCheck t;
-            if (! addImplied && implied) {
+            if (implied) {
                 t = new TagCheck(false, null);
                 impliedTags.add(tag);
             } else {
@@ -485,9 +504,10 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
             try {
                 String tagName = tag.toString();
                 TagCheck t;
-                boolean implied = impliedTags.contains(tag);
-                if (! addImplied && implied) {
+                boolean implied = impliedTags.size() > 0 && impliedTags.get(impliedTags.size() - 1).equals(tag);
+                if (implied) {
                     t = new TagCheck(false, null);
+                    impliedTags.remove(impliedTags.size() - 1);
                 } else {
                     t = allowed(tagName);
                 }

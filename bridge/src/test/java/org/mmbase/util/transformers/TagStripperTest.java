@@ -1,12 +1,9 @@
 package org.mmbase.util.transformers;
 
-import java.util.*;
-import java.io.*;
-import org.mmbase.util.*;
-import org.mmbase.util.functions.*;
-import java.util.*;
-import org.junit.*;
-import static org.junit.Assert.*;
+import org.junit.Test;
+import org.mmbase.util.functions.Parameters;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Michiel Meeuwissen
@@ -58,6 +55,7 @@ public class TagStripperTest   {
         params.set(TagStripperFactory.ADD_BRS, true);
         CharTransformer stripper = FACTORY.createTransformer(params);
         assertEquals("aaa<br class='auto' />bbb", stripper.transform("<p>aaa\nbbb</p>"));
+        //assertEquals("aaa<br class='auto' />bbb", stripper.transform("aaa\nbbb<"));
     }
 
     @Test
@@ -68,6 +66,27 @@ public class TagStripperTest   {
         assertEquals("aaa\n\nbbb", stripper.transform("<p>aaa</p><p>bbb</p>"));
         assertEquals("aaa\nbbb", stripper.transform("<p>aaa<br />bbb</p>"));
         assertEquals("aaa\nbbb", stripper.transform("<p>aaa<br>bbb</p>"));
+        assertEquals("aaa\nbbb", stripper.transform("aaa\nbbb"));
+
     }
 
+    @Test
+    public void conserveNewLines() {
+        Parameters params = FACTORY.createParameters();
+        params.set(TagStripperFactory.CONSERVE_NEWLINES, true);
+        CharTransformer stripper = FACTORY.createTransformer(params);
+        assertEquals("aaa\nbbb", stripper.transform("<p>aaa\nbbb</p>"));
+        assertEquals("aaa\nbbb", stripper.transform("aaa\nbbb"));
+    }
+
+
+    @Test
+    public void conserveNewLinesAndAddNewLInes() {
+        Parameters params = FACTORY.createParameters();
+        params.set(TagStripperFactory.CONSERVE_NEWLINES, true);
+        params.set(TagStripperFactory.ADD_NEWLINES, true);
+        CharTransformer stripper = FACTORY.createTransformer(params);
+        assertEquals("aaa\nbbb", stripper.transform("<p>aaa\nbbb</p>"));
+        assertEquals("aaa\nbbb", stripper.transform("aaa\nbbb"));
+    }
 }
