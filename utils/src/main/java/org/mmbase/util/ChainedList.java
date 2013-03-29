@@ -38,6 +38,7 @@ public class ChainedList<E> extends AbstractList<E> {
         lists.add(l);
         return this;
     }
+    @Override
     public int size() {
         int size = 0;
         for (List<? extends E> l : lists) {
@@ -45,6 +46,7 @@ public class ChainedList<E> extends AbstractList<E> {
         }
         return size;
     }
+    @Override
     public E get(int i) {
         for (List<? extends E> l : lists) {
             if (l.size() > i) {

@@ -34,31 +34,37 @@ public class ChainedOutputStream extends OutputStream {
         streams.add(o);
         return this;
     }
+    @Override
     public final void close() throws IOException {
         for (OutputStream o : streams ) {
             o.close();
         }
     }
+    @Override
     public final void flush() throws IOException {
         for (OutputStream o : streams) {
             o.flush();
         }
     }
+    @Override
     public void write(byte[] b) throws IOException {
         for (OutputStream o : streams ) {
             o.write(b);
         }
     }
+    @Override
     public void write(byte[] b, int off, int len) throws IOException {
         for (OutputStream o : streams ) {
             o.write(b, off, len);
         }
     }
+    @Override
     public void write(int b) throws IOException {
         for (OutputStream o : streams ) {
             o.write(b);
         }
     }
+    @Override
     public String toString() {
         return streams.toString();
     }

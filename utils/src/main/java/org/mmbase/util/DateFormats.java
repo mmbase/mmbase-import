@@ -95,7 +95,9 @@ public class DateFormats {
      */
 
     protected static class DayOfWeekDateFormat extends DateFormat {
+        private static final long serialVersionUID = 349580435965028582L;
         private TimeZone zone = null;
+        @Override
         public Date parse(String source, ParsePosition pos) {
             Calendar calendar = Calendar.getInstance(zone != null ? zone :  org.mmbase.util.dateparser.DateParser.defaultTimeZone);
             int day = source.charAt(0) - '0';
@@ -103,6 +105,7 @@ public class DateFormats {
             calendar.set(Calendar.DAY_OF_WEEK, day);
             return calendar.getTime();
         }
+        @Override
         public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition pos) {
             Calendar calendar = Calendar.getInstance(zone != null ? zone :  org.mmbase.util.dateparser.DateParser.defaultTimeZone);
             calendar.setTime(date);
@@ -111,6 +114,7 @@ public class DateFormats {
             return toAppendTo;
         }
 
+        @Override
         public void setTimeZone(TimeZone value) {
             zone = value;
         }
