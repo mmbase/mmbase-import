@@ -346,7 +346,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         }
 
         if (event instanceof SystemEvent.Shutdown) {
-            log.warn("Can not handle system shutdown event when sent by other server." + event);
+            LOG.warn("Can not handle system shutdown event when sent by other server." + event);
             return;
         }
 
