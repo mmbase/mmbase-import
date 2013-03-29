@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -47,7 +47,7 @@ public class UnicastTest {
     }
     @Test
     public void streams() throws IOException {
-        BlockingQueue<byte[]> queue = new ArrayBlockingQueue<byte[]>(10);
+        BlockingQueue<byte[]> queue = new LinkedBlockingQueue<byte[]>();
 
         final ChangesReceiver receiver = new ChangesReceiver(null, -1, queue, 2);
         //receiver.setMaxMessageSize(90000);
@@ -82,7 +82,7 @@ public class UnicastTest {
     public void connections() throws IOException, InterruptedException {
         final int port = 1234;
         final InetSocketAddress address = new InetSocketAddress("localhost", port);
-        final BlockingQueue<byte[]> queue = new ArrayBlockingQueue<byte[]>(10);
+        final BlockingQueue<byte[]> queue = new LinkedBlockingQueue<byte[]>();
         final ChangesReceiver receiver = new ChangesReceiver(null, -1, queue, 2);
         //receiver.setMaxMessageSize(90000);
         final ChangesSender   sender   = new ChangesSender(new HashMap<String, String>(), -1, 10000, null, new Statistics(), 2);
