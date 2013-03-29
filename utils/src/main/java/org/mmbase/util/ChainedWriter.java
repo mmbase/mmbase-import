@@ -36,6 +36,7 @@ public class ChainedWriter extends Writer {
         return this;
     }
 
+    @Override
     public Writer append(char c) throws IOException {
         for (Writer w : writers) {
             w.append(c);
@@ -43,43 +44,51 @@ public class ChainedWriter extends Writer {
         return this;
     }
 
+    @Override
     public Writer append(CharSequence csq) throws IOException {
         for (Writer w : writers) {
             w.append(csq);
         }
         return this;
     }
+    @Override
     public Writer append(CharSequence csq, int start, int end) throws IOException {
         for (Writer w : writers) {
             w.append(csq, start, end);
         }
         return this;
     }
+    @Override
     public  void close() throws IOException {
         for (Writer w : writers) {
             w.close();
         }
     }
+    @Override
     public void flush() throws IOException {
         for (Writer w : writers) {
             w.flush();
         }
     }
+    @Override
     public void write(char[] cbuf) throws IOException {
         for (Writer w : writers) {
             w.write(cbuf);
         }
     }
+    @Override
     public void write(char[] cbuf, int off, int len) throws IOException {
         for (Writer w : writers) {
             w.write(cbuf, off, len);
         }
     }
+    @Override
     public void write(int c) throws IOException {
         for (Writer w : writers) {
             w.write(c);
         }
     }
+    @Override
     public void write(String str, int off, int len) throws IOException {
         for (Writer w : writers) {
             w.write(str, off, len);
