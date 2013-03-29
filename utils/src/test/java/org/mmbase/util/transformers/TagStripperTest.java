@@ -10,8 +10,6 @@ import static org.junit.Assert.assertEquals;
  */
 public class TagStripperTest   {
 
-    private static final TagStripperFactory FACTORY = new TagStripperFactory();
-
 
     protected CharTransformer getXSS() {
         CharTransformer transformer = TagStripper.createXSSStripper().addBrs(false).escapeAmps(true);
