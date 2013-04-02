@@ -327,9 +327,7 @@ public class Processor implements CommitProcessor, java.io.Externalizable {
             return;
         }
         if (node.getNumber() > 0) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("url: " + node.getValueWithoutProcess("url"));
-            }
+            LOG.info("url: " + node.getValueWithoutProcess("url"));
             if (node.isChanged(field.getName())) {
                 LOG.service("For node " + node.getNumber() + ", the field '" + field.getName() + ":" + node.getStringValue(field.getName()) + "' is changed " + node.getChanged() + ". That means that we must schedule create caches");
 
