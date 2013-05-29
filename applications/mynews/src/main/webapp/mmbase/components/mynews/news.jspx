@@ -9,32 +9,57 @@
   <mm:cloud>
     <mm:import externid="mag">default.mags</mm:import>
     <mm:import externid="n" required="true" />
-    
     <mm:node number="$n">
-      <h1><mm:field name="title" /></h1>
+      <h1><mm:field name="title" id="pagetitle" /></h1>
       <mm:field name="subtitle"><mm:isnotempty><h2><mm:write /></h2></mm:isnotempty></mm:field>
-      <div class="intro">
-        <span class="date"><mm:field name="date"><mm:time format=":LONG" /></mm:field></span>
-        <mm:field  name="intro" escape="p,links" />
-      </div>
-      <mm:field name="body" escape="paragraph,links" />
+      <p class="intro">
+        <mm:field name="date"><mm:isnotempty><span class="online"><mm:time format=":LONG" /> </span></mm:isnotempty></mm:field>
+        <mm:field name="intro"><mm:isnotempty><mm:write escape="links" /></mm:isnotempty></mm:field>
+      </p>
+
+      <!-- urls: posrel -->
+      <mm:relatednodescontainer type="urls" role="posrel" searchdirs="destination">
+        <mm:size id="nr_urls" write="false" />
+      </mm:relatednodescontainer>
+      <c:if test="${nr_urls gt 0}">
+        <div class="related">
+          <mm:relatednodescontainer type="urls" role="posrel" searchdirs="destination">
+            <mm:sortorder field="posrel.pos" direction="UP" />
+            <ul class="urls">
+              <mm:relatednodes>
+                <li>
+                  <a title="${_node.description}" href="${_node.url}"><mm:field name="name" /></a>
+                </li>
+              </mm:relatednodes>
+            </ul>
+          </mm:relatednodescontainer>
+        </div>
+      </c:if>
+
+      <mm:field escape="p,links" name="body"/>
       
-      <mm:relatednodes type="images" role="posrel"  orderby="posrel.pos" max="3">
-        <mm:first><h2>Images</h2></mm:first>
-        <mm:image template="s(200)" mode="img" />
-      </mm:relatednodes>
-
-      <mm:relatednodes type="urls" role="posrel" orderby="posrel.pos" max="3">
-        <mm:first><h2>Links</h2></mm:first>
-        <a href="${_node.url}"><mm:field name="description"/></a><br />
-      </mm:relatednodes>
-
-      <mm:relatednodes type="people">
-        <mm:first><h2>Authors</h2></mm:first>
-        <em><mm:field name="firstname" /><jsp:text> </jsp:text><mm:field name="lastname" /></em><br />
-      </mm:relatednodes>
-    
+      <!-- images: posrel -->
+      <mm:relatednodescontainer type="images" role="posrel" searchdirs="destination">
+        <mm:sortorder field="posrel.pos" direction="UP" />
+        <mm:relatednodes>
+          <div class="images">
+            <mm:import id="lightbox_image" reset="true"><mm:image template="s(600)" /></mm:import>
+            <a class="lightbox" title="${_node.title}" href="${lightbox_image}">
+              <mm:image template="s(240)" mode="img" />
+            </a>
+            <mm:field name="title"><mm:isnotempty><mm:write /></mm:isnotempty></mm:field>
+          </div>
+        </mm:relatednodes>
+      </mm:relatednodescontainer>
+      
+      <div class="authors">
+        <mm:relatednodes type="people">
+          <mm:first><strong>Authors: </strong></mm:first>
+          <mm:field name="firstname" /><jsp:text> </jsp:text><mm:field name="lastname" />
+          <mm:last inverse="true">,</mm:last>
+        </mm:relatednodes>
+      </div>
+      
     </mm:node>
-  
   </mm:cloud>
 </div>
