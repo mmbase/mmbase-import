@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.mynews;
 import java.util.*;
-import javax.servlet.http.HttpServletRequest;
-import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.transformers.Identifier;
 import org.mmbase.util.DynamicDate;
 import org.mmbase.bridge.*;
@@ -42,12 +40,12 @@ import org.mmbase.util.logging.*;
  */
 public class MyNewsUrlConverter extends DirectoryUrlConverter {
     private static final Logger log = Logging.getLoggerInstance(MyNewsUrlConverter.class);
-
-    private static CharTransformer trans = new Identifier();
+    private Identifier trans = new Identifier();
     private boolean useTitle = false;
     private int dateDepth  = 0;
     private String renderJsp = "/mmbase/framework/render.jspx?component=mynews";
     private boolean mmweb = false;
+    private String wsReplacer = "_";
 
     public MyNewsUrlConverter(BasicFramework fw) {
         super(fw);
@@ -67,6 +65,14 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
     public void setMmweb(boolean w) {
         mmweb = w;
     }
+    public void setWhitespaceReplacer(String ws) {
+        wsReplacer = ws;
+        trans = new Identifier();
+        {
+            trans.setWhitespaceReplacer(ws);
+        }
+    }
+
 
     @Override
     public int getDefaultWeight() {
@@ -144,6 +150,7 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
                 NodeManager news = cloud.getNodeManager("news");
                 NodeQuery q = news.createQuery();
                 String like = id;
+                if (! wsReplacer.equals("_")) like = like.replaceAll(wsReplacer, "_");
                 Queries.addConstraint(q, Queries.createConstraint(q, "title", Queries.getOperator("LIKE"), like));
                 if (path.size() > 1) {
                     String[] date = new String[] {path.get(0), "01", "01"};
