@@ -24,6 +24,7 @@ package org.mmbase.streams.transcoders;
 import java.util.regex.*;
 import java.util.*;
 
+import org.mmbase.applications.media.Codec;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
@@ -84,6 +85,7 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
                 util.setUpdateDestination(true);
                 util.audio(l, source, des);
                 util.setUpdateDestination(false);
+                des.commit();
                 return;
             }
             
@@ -147,6 +149,13 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
                Here we find the original source node and use it to start UpdateSourcesFunction to do an
                analysis of the resulting stream. */
             if (destNode != null) {
+
+                if (destNode.getIntValue("codec") < 0) destNode.setIntValue("codec", Codec.THEORA.toInt() );
+                if (destNode.getNodeManager().hasField("acodec")) {
+                    if (destNode.getIntValue("codec") < 0) destNode.setIntValue("acodec", Codec.VORBIS.toInt() );
+                }
+
+
                 Cloud cloud = destNode.getCloud();
                 Query query = cloud.createQuery();
 
