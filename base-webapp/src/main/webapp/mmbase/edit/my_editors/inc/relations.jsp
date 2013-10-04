@@ -66,86 +66,86 @@ while(relIterator.hasNext()) {
     <mm:offset value="$offset" />
     <mm:import id="size" reset="true"><mm:size /></mm:import>
     <mm:listrelations>
-      <mm:context>
       <mm:import id="relation" reset="true"><mm:field name="number" /></mm:import>
       <mm:relatednode>
-      <mm:import id="my_type" reset="true"><mm:nodeinfo type="type" /></mm:import>
-      <mm:compare referid="my_type" value="<%= otherManagerName %>">
-        <mm:field name="number" id="relatednode" write="false" />
-        <tr>
-          <td class="left"><mm:maywrite><a href="<mm:url page="edit_object.jsp">
-            <mm:param name="nr"><mm:field name="number" /></mm:param>
-          </mm:url>" title="edit node"><img src="img/mmbase-edit.png" alt="edit node" width="21" height="20" /></a></mm:maywrite>
-          </td>
-          <td class="relgui"> <mm:function name="gui" /> </td>
-          <td class="buttons">
-            <a onclick="toggle('edit_<mm:write referid="relation" />');return false;" href="#" title="edit or delete relation"><img src="img/mmbase-<%= arrow %>.png" alt="edit relation" width="21" height="20" /></a>
-          </td>
-        </tr>
-        <tr style="display: none;" id="edit_<mm:write referid="relation" />">
-          <td colspan="3" class="editrelation">
-            <%-- edit relation --%>
-            <mm:compare referid="relation" value="$rel"><mm:present referid="changerel">
-              <strong class="message">The relation is changed.</strong>
-            </mm:present></mm:compare>
-            <mm:node number="$relation">
-              <mm:form>
-              <fieldset>
-              <input name="rel" type="hidden" value="<mm:write referid="relation" />" />
-              <input name="nr" type="hidden" value="<mm:write referid="nr" />" />
-              <mm:maywrite><mm:import reset="true" id="formtype">input</mm:import></mm:maywrite>
-              <mm:maywrite inverse="true"><mm:import id="formtype">guivalue</mm:import></mm:maywrite>
-              <mm:fieldlist type="edit" id="fields${relation}" fields="owner">
-                <c:set var="relfldname"><mm:fieldinfo type="name" /></c:set>
-                <div class="row ${relfldname}">
-                  <label for="mm_fields${relation}_${relfldname}">
-                    <strong><mm:fieldinfo type="guiname" /></strong>
-                    <mm:fieldinfo type="description"><mm:isnotempty><a onmouseover="showBox('descr_<mm:fieldinfo type="name" />',event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />',event);return false;"><mm:fieldinfo type="name" /></a></mm:isnotempty></mm:fieldinfo>
-                    <mm:fieldinfo type="description"><mm:isempty><mm:fieldinfo type="name" /></mm:isempty></mm:fieldinfo>
-                  </label>
-                  <c:choose>
-                    <c:when test="${relfldname ne 'owner'}">
-                      <mm:fieldinfo type="$formtype" />
-                    </c:when>
-                    <c:otherwise>
-                      <mm:hasrank minvalue="administrator">
-                        <c:choose>
-                          <c:when test="${owners gt maxowners}">
-                            <span class="content guivalue"> 
-                              <mm:fieldinfo type="guivalue" /> (click to change)
-                            </span>
-                            <span class="content input"> 
-                              <mm:fieldinfo type="input" datatype="eline" />
-                              <a class="close" title="close" href="#close">x</a>
-                            </span>
-                          </c:when>
-                          <c:otherwise>
-                            <span class="content"><mm:fieldinfo type="input" /></span>
-                          </c:otherwise>
-                        </c:choose>
-                      </mm:hasrank>
-                      <mm:hasrank minvalue="administrator" inverse="true">
-                        <mm:fieldinfo type="guivalue" />
-                      </mm:hasrank>
-                    </c:otherwise>
-                  </c:choose>
-                  <mm:fieldinfo type="description"><mm:isnotempty><div class="description" id="descr_<mm:fieldinfo type="name" />"><mm:write /></div></mm:isnotempty></mm:fieldinfo>
-                </div>
-              </mm:fieldlist>
-              <div class="row">
-                <label class="rel">&nbsp;</label>
-                <mm:maywrite><input type="submit" name="changerel" value="Change" /></mm:maywrite>
-                <mm:maydelete><input type="submit" name="deleterel" value="Delete" /></mm:maydelete>
-              </div>
-              </fieldset>
-              </mm:form>
-            </mm:node>
+        <mm:import id="my_type" reset="true"><mm:nodeinfo type="type" /></mm:import>
+        <mm:context>
+          <mm:compare referid="my_type" value="<%= otherManagerName %>">
+            <mm:field name="number" id="relatednode" write="false" />
+            <tr>
+              <td class="left"><mm:maywrite><a href="<mm:url page="edit_object.jsp">
+                <mm:param name="nr"><mm:field name="number" /></mm:param>
+              </mm:url>" title="edit node"><img src="img/mmbase-edit.png" alt="edit node" width="21" height="20" /></a></mm:maywrite>
+              </td>
+              <td class="relgui"> <mm:function name="gui" /> </td>
+              <td class="buttons">
+                <a onclick="toggle('edit_<mm:write referid="relation" />');return false;" href="#" title="edit or delete relation"><img src="img/mmbase-<%= arrow %>.png" alt="edit relation" width="21" height="20" /></a>
+              </td>
+            </tr>
+            <tr style="display: none;" id="edit_<mm:write referid="relation" />">
+              <td colspan="3" class="editrelation">
+                <%-- edit relation --%>
+                <mm:compare referid="relation" value="$rel"><mm:present referid="changerel">
+                  <strong class="message">The relation is changed.</strong>
+                </mm:present></mm:compare>
+                <mm:node number="$relation">
+                  <mm:form>
+                  <fieldset>
+                  <input name="rel" type="hidden" value="<mm:write referid="relation" />" />
+                  <input name="nr" type="hidden" value="<mm:write referid="nr" />" />
+                  <mm:maywrite><mm:import reset="true" id="formtype">input</mm:import></mm:maywrite>
+                  <mm:maywrite inverse="true"><mm:import id="formtype">guivalue</mm:import></mm:maywrite>
+                  <mm:fieldlist type="edit" id="fields${relation}" fields="owner">
+                    <c:set var="relfldname"><mm:fieldinfo type="name" /></c:set>
+                    <div class="row ${relfldname}">
+                      <label for="mm_fields${relation}_${relfldname}">
+                        <strong><mm:fieldinfo type="guiname" /></strong>
+                        <mm:fieldinfo type="description"><mm:isnotempty><a onmouseover="showBox('descr_<mm:fieldinfo type="name" />',event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />',event);return false;"><mm:fieldinfo type="name" /></a></mm:isnotempty></mm:fieldinfo>
+                        <mm:fieldinfo type="description"><mm:isempty><mm:fieldinfo type="name" /></mm:isempty></mm:fieldinfo>
+                      </label>
+                      <c:choose>
+                        <c:when test="${relfldname ne 'owner'}">
+                          <mm:fieldinfo type="$formtype" />
+                        </c:when>
+                        <c:otherwise>
+                          <mm:hasrank minvalue="administrator">
+                            <c:choose>
+                              <c:when test="${owners gt maxowners}">
+                                <span class="content guivalue"> 
+                                  <mm:fieldinfo type="guivalue" /> (click to change)
+                                </span>
+                                <span class="content input"> 
+                                  <mm:fieldinfo type="input" datatype="eline" />
+                                  <a class="close" title="close" href="#close">x</a>
+                                </span>
+                              </c:when>
+                              <c:otherwise>
+                                <span class="content"><mm:fieldinfo type="input" /></span>
+                              </c:otherwise>
+                            </c:choose>
+                          </mm:hasrank>
+                          <mm:hasrank minvalue="administrator" inverse="true">
+                            <mm:fieldinfo type="guivalue" />
+                          </mm:hasrank>
+                        </c:otherwise>
+                      </c:choose>
+                      <mm:fieldinfo type="description"><mm:isnotempty><div class="description" id="descr_<mm:fieldinfo type="name" />"><mm:write /></div></mm:isnotempty></mm:fieldinfo>
+                    </div>
+                  </mm:fieldlist>
+                  <div class="row">
+                    <label class="rel">&nbsp;</label>
+                    <mm:maywrite><input type="submit" name="changerel" value="Change" /></mm:maywrite>
+                    <mm:maydelete><input type="submit" name="deleterel" value="Delete" /></mm:maydelete>
+                  </div>
+                  </fieldset>
+                  </mm:form>
+                </mm:node>
             
-          </td>
-        </tr>
-      </mm:compare>
+              </td>
+            </tr>
+          </mm:compare>
+        </mm:context>
       </mm:relatednode>
-      </mm:context>
     </mm:listrelations>
     <tr>
       <td colspan="3" class="pager"> <!-- max: ${max} size: ${size} offset: ${offset} -->
