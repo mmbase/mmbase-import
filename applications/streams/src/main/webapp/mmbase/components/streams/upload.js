@@ -36,6 +36,7 @@ $(document).ready(function() {
 				$(pInfo).html(result);
 				//console.log('uploading: ' + i);
 			    }, 1000);
+			    return true;
 		    });
 	    });
 
