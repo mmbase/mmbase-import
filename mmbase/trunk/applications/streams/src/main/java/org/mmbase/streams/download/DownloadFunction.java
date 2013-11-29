@@ -131,6 +131,7 @@ public final class DownloadFunction extends NodeFunction<String> {
              Node message = nm.createNode();
 
              String host = req.getHeader("host");
+             if (host == null || "".equals(host)) host = req.getServerName();
              if (host == null || "".equals(host)) {
                  try {
                      host = java.net.InetAddress.getLocalHost().getHostName();
