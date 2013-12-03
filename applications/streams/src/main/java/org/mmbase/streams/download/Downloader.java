@@ -92,7 +92,19 @@ public class Downloader {
         fileNameTransformer.setReplacer("_");
         fileNameTransformer.setMoreDisallowed("[\\s!?:/,]");
     }
-    
+
+    private static String removeDupUnderscores(String str) {
+        StringBuilder res = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            if (i + 1 < str.length() && str.charAt(i) == '_' && str.charAt(i + 1) == '_') {
+                // do nothing
+            } else {
+                res.append(str.charAt(i));
+            }
+        }
+        return res.toString();
+    }
+
     public String download() throws MalformedURLException, SocketException, IOException, IllegalArgumentException {
         
         HttpURLConnection huc = getURLConnection(url);
@@ -117,7 +129,8 @@ public class Downloader {
             }
         }
 
-        File f = getFile(node, field, fileNameTransformer.transform(name));
+        String fileName = removeDupUnderscores( fileNameTransformer.transform(name) );
+        File f = getFile(node, field, fileName);
         Map<String, String> meta = FileServlet.getInstance().getMetaHeaders(f);
         meta.put("Content-Disposition", "attachment; " + FileServlet.getMetaValue("filename", name));
         FileServlet.getInstance().setMetaHeaders(f, meta);
