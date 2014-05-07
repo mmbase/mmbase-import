@@ -9,80 +9,101 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.BridgeList;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 import java.util.*;
-import org.mmbase.util.logging.*;
 
 /**
  * A list of objects.
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
+ * @author Michiel Meeuwissen
  * @version $Id$
  */
-public class BasicList extends ArrayList implements BridgeList  {
-
+public class BasicList extends AbstractList implements BridgeList, java.io.Serializable, RandomAccess  {
+    private static final long serialVersionUID = 5940343949744992633L;
     private static final Logger log = Logging.getLoggerInstance(BasicList.class);
 
-    private Map properties = new HashMap();
+    private final Map properties = new HashMap();
 
-    // during inititializion of the list, you sometimes want to switch off 
+	private boolean converted = false;
+
+	// during inititializion of the list, you sometimes want to switch off
     // also when everything is certainly converted
     boolean autoConvert = true;
 
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    private final ArrayList backing;
+
     BasicList() {
-         super();
+        super();
+        backing = new ArrayList();
     }
 
     protected BasicList(Collection c) {
-         super(c);
+        super();
+        backing = new ArrayList(c);
     }
+
 
     public Object getProperty(Object key) {
         return properties.get(key);
     }
 
     public void setProperty(Object key, Object value) {
-        properties.put(key,value);
+        properties.put(key, value);
+    }
+    public Map getProperties() {
+        return Collections.unmodifiableMap(properties);
     }
 
-    /*
-     * converts the object in teh list to the excpected format
+    /**
+     * converts the object in the list to the excpected format
      */
-    protected Object convert(Object o, int index) {
+	protected Object convert(Object o) {
         return o;
     }
-
-    public boolean contains(Object o ) {
-        // make sure every element is of the right type, ArrayList implementation does _not_ call get.
-        convertAll();
-        return super.contains(o);
-    }
-
-    public boolean remove(Object o) {
-        // make sure every element is of the right type, otherwise 'equals' is very odd..
-        convertAll();
-        return super.remove(o);
-    }
-    public boolean removeAll(Collection c) {
-        // make sure every element is of the right type, otherwise 'equals' is very odd..
-        convertAll();
-        return super.removeAll(c);
-    }
-
-    /*
-     * validates that an object can be converted to the excpected format
-     */
-    protected Object validate(Object o) throws ClassCastException {
-        return o;
-    }
-
-    public Object get(int index) {
-        if (autoConvert) {
-            return convert(super.get(index), index);
-        } else {
-            return super.get(index);
+    protected  Object convert(Object o, int index) {
+		if (! autoConvert) return o;
+        Object newO;
+        try {
+            newO = convert(o);
+            if (log.isDebugEnabled()) {
+                log.debug("Converted " + o.getClass() + " to " + newO.getClass() + " in " + getClass());
+            }
+        } catch (Throwable t) {
+            log.warn(t.getMessage(), t);
+            newO = null;
         }
+        if (newO != o) {
+            backing.set(index, newO);
+        }
+        return newO;
+    }
+
+    public  Object get(int i) {
+		return convert(backing.get(i), i);
+    }
+
+
+	public int size() {
+        return backing.size();
+    }
+
+    public Object set(int i, Object e) {
+        return convert(backing.set(i, e));
+    }
+    public void add(int i, Object e) {
+        backing.add(i, e);
+    }
+    public Object remove(int i) {
+        return convert(backing.remove(i));
     }
 
     public void sort() {
@@ -90,46 +111,40 @@ public class BasicList extends ArrayList implements BridgeList  {
     }
 
     public void sort(Comparator comparator) {
-        Collections.sort(this,comparator);
+        Collections.sort(this, comparator);
     }
 
-    public Object set(int index, Object o) {
-        return super.set(index,validate(o));
-    }
-
-    public void add(int index, Object o) {
-        autoConvert = true;
-        super.add(index,validate(o));
-    }
-
-    public boolean add(Object o) {
-        autoConvert = true;
-        return super.add(validate(o));
-    }
 
     /**
      * @since MMBase-1.6.2
      */
     protected void convertAll() {
-        log.debug("convert all");
-        for (int i = 0; i < size(); i++) {
-            convert(super.get(i), i);
+        if (! converted) {
+            log.debug("convert all");
+            for (int i = 0; i < size(); i++) {
+                convert(backing.get(i), i);
+            }
+            converted = true;
         }
-        autoConvert = false;
     }
-
 
     public Object[] toArray() { // needed when you e.g. want to sort the list.
         // make sure every element is of the right type, otherwise sorting can happen on the wrong type.
-        if (autoConvert) convertAll();
-        return super.toArray();
+        convertAll();
+        return backing.toArray();
+    }
+
+
+
+    public List subList(int fromIndex, int toIndex)  {
+        return new BasicList(super.subList(fromIndex, toIndex));
     }
 
     protected class BasicIterator implements ListIterator {
         protected ListIterator iterator;
 
         protected BasicIterator() {
-            this.iterator = listIterator();
+            this.iterator = BasicList.this.listIterator();
         }
 
         public boolean hasNext() {
@@ -158,19 +173,19 @@ public class BasicList extends ArrayList implements BridgeList  {
         }
 
         public void add(Object o) {
-            BasicList.this.autoConvert = true;
             iterator.add(o);
         }
 
-        // normally also e.g. set(Node n); and add(Node n) will be created in
-        // descendant class, because that is better for performance.
-
         public Object next() {
-            return iterator.next();
+            Object next = iterator.next();
+            int i = nextIndex();
+            return BasicList.this.convert(next, i);
         }
 
         public Object previous() {
-            return iterator.previous();
+            Object previous = iterator.previous();
+            int i = previousIndex();
+            return BasicList.this.convert(previous, i);
         }
 
     }

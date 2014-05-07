@@ -10,13 +10,20 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.MapNode;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.VirtualBuilder;
+import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.module.corebuilders.RelDef;
+import org.mmbase.module.corebuilders.TypeDef;
+import org.mmbase.module.corebuilders.TypeRel;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 import java.util.Collection;
 import java.util.Map;
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.bridge.util.MapNode;
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.util.logging.*;
 
 /**
  * A list of nodes
@@ -61,6 +68,7 @@ public class BasicNodeList extends BasicList implements NodeList {
     /**
      */
     protected Object convert(Object o, int index) {
+		if (! autoConvert) return o;
         if (o instanceof Node || o == null) {
             return o;
         }

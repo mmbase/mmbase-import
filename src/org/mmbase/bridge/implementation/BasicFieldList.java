@@ -10,9 +10,13 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
-import java.util.Collection;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.FieldIterator;
+import org.mmbase.bridge.FieldList;
+import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
+
+import java.util.Collection;
 
 /**
  * A list of fields
@@ -34,6 +38,7 @@ public class BasicFieldList extends BasicList implements FieldList {
     }
 
     public Object convert(Object o, int index) {
+		if (! autoConvert) return o;
         if (o instanceof BasicField) {
             return o;
         } else if (o instanceof Field) {
