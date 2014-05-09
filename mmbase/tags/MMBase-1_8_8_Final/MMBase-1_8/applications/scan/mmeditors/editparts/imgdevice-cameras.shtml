@@ -1,0 +1,38 @@
+
+<SCRIPT language="JavaScript">
+	<!-- Javascriptje voor aanklikken en openen van plaatjes...
+	function openWin(afbeelding) {
+		    
+		var win = window.open(afbeelding, '_blank', 'resizable=yes, scrollbars=yes, status=0');
+	}
+    	// -->
+</SCRIPT>
+		    
+<FORM METHOD="POST" ACTION="$MOD-INFO-SERVERCONTEXT^/mmeditors/Content.shtml?$PARAM3" TARGET="Content">
+<INPUT TYPE="HIDDEN" NAME="PRC-VAR-PROCESSOR" VALUE="MMEDIT">
+<INPUT TYPE="HIDDEN" NAME="SECURE" VALUE="Basic">
+<INPUT TYPE="HIDDEN" NAME="PRC-CMD-STATE-NEXTFIELD" VALUE="$PARAM1">
+
+Selecteer afbeelding:
+<BR><BR>
+
+<TABLE>
+<TR>
+<LIST BUILDER-cameras-$PARAM5 PROCESSOR="MMBASE" REVERSE=YES MAX=20 INDEXSYMBOL=# TYPEFORMAT=fullsize.#.jpg PREVIEWFORMAT=fullsize-s.#.jpg>
+     <TD>
+                  <INPUT TYPE="radio" NAME="PRC-CMD-EDIT-SETFIELDFILE_DISK-$PARAM1" VALUE="$ITEM1">
+                  <A HREF="JavaScript:openWin('$ITEM3');"><IMG alt="Afbeelding" SRC="$ITEM3" WIDTH="70" HEIGHT="50"></A>
+                  $ITEM2
+    </TD>
+
+    <LIF $MOD-CALC-($ITEMP%3)^=E0>
+        </TR>
+        <TR>
+    </IF>
+</LIST>
+</TR>
+</TABLE>
+		
+<BR>
+<INPUT TYPE="IMAGE" SRC="$MOD-INFO-SERVERCONTEXT^/mmeditors/beeld/rood.gif"> Ok
+</FORM>

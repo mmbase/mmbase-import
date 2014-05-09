@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="RichText" maintainer="mmbase.org" version="2" auto-deploy="false">
+
+  <requirements>
+    <requires name="RichTextBasics" maintainer="mmbase.org" version="1" />
+  </requirements>
+
+  <neededbuilderlist>
+    <builder maintainer="mmbase.org" version="0">content</builder> <!-- segments extends content -->
+    <builder maintainer="mmbase.org" version="0">segments</builder>
+    <builder maintainer="mmbase.org" version="0">indexrel</builder>
+  </neededbuilderlist>
+
+  <neededreldeflist>
+    <reldef builder="indexrel" source="index" target="index" direction="bidirectional" guisourcename="Index" guitargetname="Index" />
+  </neededreldeflist>
+
+  <allowedrelationlist>
+    <relation from="segments"   to="segments"   type="index" /><!-- chapter structure -->
+    <relation from="content"    to="urls"        type="idrel" /><!-- inline urls -->
+    <relation from="content"    to="images"      type="idrel" /><!-- inline images -->
+    <relation from="content"    to="attachments" type="idrel" /><!-- inline images -->
+    <relation from="content"    to="flashobjects" type="idrel" /><!-- inline images -->
+    <relation from="content"    to="segments"   type="idrel" /> <!-- cross-references-->
+    <relation from="content"    to="blocks"    type="idrel" /> <!-- notes-->
+
+    <relation from="blocks"    to="segments"    type="idrel" /> <!-- cross-references-->
+
+
+  </allowedrelationlist>
+
+  <datasourcelist />
+
+  <relationsourcelist />
+
+  <contextsourcelist />
+
+  <description><![CDATA[Installs a few builders and relations needed for  'rich text' with chapters.]]></description>
+
+  <install-notice><![CDATA[Segments with belonging idrel were created. ]]></install-notice>
+
+</application>

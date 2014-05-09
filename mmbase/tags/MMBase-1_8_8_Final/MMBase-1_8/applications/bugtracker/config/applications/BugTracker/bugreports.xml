@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugreports exportsource="mmbase://127.0.0.1/mmbase/install" timestamp="20030731153742">
+	<node number="213" owner="admin">
+		<efixedin></efixedin>
+		<bpriority>2</bpriority>
+		<fixedin></fixedin>
+		<btype>1</btype>
+		<time>1059658534</time>
+		<bugid>1</bugid>
+		<version>1</version>
+		<bstatus>1</bstatus>
+		<issue>This is a test bug, unlike all the other bugs this is fake</issue>
+		<description>This bug was part of the first installl of this application, you can remove it from the database if you are a commitor.</description>
+		<rationale></rationale>
+	</node>
+
+</bugreports>

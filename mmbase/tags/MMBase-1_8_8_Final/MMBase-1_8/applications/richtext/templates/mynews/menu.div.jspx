@@ -1,0 +1,46 @@
+<div id="menu"
+     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+     xmlns:jsp="http://java.sun.com/JSP/Page">
+  <script type="text/javascript" src="menu.js"><jsp:text> </jsp:text></script>
+  <script type="text/JavaScript">
+    addEvent(window, 'load',  function () {
+       initMenu("menu", "bottom");
+    });
+  </script>
+  <jsp:directive.page session="false" />
+  <jsp:output omit-xml-declaration="false" />
+  <jsp:directive.include file="vars.jspx" />
+  <mm:content type="text/xml" language="$language">
+    <mm:cloud method="asis">
+      <mm:context id="outer">
+      <mm:time id="now" time="now" precision="minutes" write="false" />
+      <mm:node number="$h">
+        <mm:relatednodes  type="categories" role="posrel" orderby="posrel.pos" searchdirs="destination">
+          <mm:treecontainer  type="categories" searchdirs="destination" role="posrel">
+            <mm:constraint field="begin" operator="LESS"      value="$now" />
+            <mm:constraint field="end"   operator="GREATER"  value="$now" />
+            <mm:tree id="menucat">              
+              <mm:index id="index" write="false"  />
+              <mm:depth>
+                <mm:isgreaterthan value="1">
+                  <mm:grow>
+                    <![CDATA[<ul class="${prevmenuid}">]]><mm:onshrink><![CDATA[</ul>]]></mm:onshrink>
+                  </mm:grow>
+                  <![CDATA[<li>]]><mm:onshrink><![CDATA[</li>]]></mm:onshrink>
+                </mm:isgreaterthan>
+              </mm:depth>
+              <mm:link referids="$vars,menucat@cat">
+                <a id="a${menucat}_${index}" href="${_}" class="mmenu ${menucat == cat || menucat == supercat ? 'selected' : ''}">
+                  <mm:field name="title" />
+                </a>
+              </mm:link>
+              <mm:import id="prevmenuid" context="outer" reset="true">a${menucat}_${index}</mm:import>
+              <mm:shrink />
+            </mm:tree>
+          </mm:treecontainer>
+        </mm:relatednodes>
+      </mm:node>
+      </mm:context>
+    </mm:cloud>
+  </mm:content>
+</div>

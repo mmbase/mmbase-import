@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE storage PUBLIC "-//MMBase//DTD storage config 1.0//EN" "http://www.mmbase.org/dtd/storage_1_0.dtd" >
+<storage>
+  <storagemanagerfactory classname="org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory" version="0.1" />
+  <storagemanager classname="org.mmbase.storage.implementation.database.ViewDatabaseStorageManager" version="0.1" />
+  <searchqueryhandler classname="org.mmbase.storage.search.implementation.database.BasicSqlHandler" />
+
+  <attributes>
+    <!-- No file path, then use webdir -->
+    <attribute name="database-binary-file-path"></attribute>
+
+    <attribute name="storage-identifier-case">upper</attribute>
+
+    <attribute name="max-identifier-length">30</attribute>
+
+    <!-- Oracle is a hell when is comes to blobs, so store as file instead of in the database-->
+    <option name="database-stores-binary-as-file" />
+
+    <!-- When transactions are enabled, strange things happen -->
+    <option name="database-supports-transactions" value="false" />
+
+    <option name="database-supports-insert-triggers" value="true" />
+    <option name="database-supports-delete-triggers" value="true" />
+    <option name="database-supports-update-triggers" value="true" />
+
+    <scheme name="create-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
+    <scheme name="create-object-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
+
+    <!-- 
+      If you are brave, you should use the following schemes for the primary/foreign keys:
+
+        <scheme name="create-foreign-key-scheme">CONSTRAINT {5} FOREIGN KEY ({2}) REFERENCES {3} ({4}) ON DELETE CASCADE</scheme>
+        <scheme name="create-primary-key-scheme">PRIMARY KEY ({2}), FOREIGN KEY ({2}) REFERENCES {3} ({2}) ON DELETE CASCADE</scheme>
+
+      This means that if you delete an object, you also delete
+      everything that references it. It means that a 'delete from
+      mm_object' will indeed clear your entire database. Deleting
+      an entry in the mm_typedef table will also delete all objects
+      of that type.
+
+      If you don't use the 'ON DELETE CASCADE', you will get an
+      error if you delete something to which other entries have
+      references. This is probably a good thing, because one bad
+      move can destroy your database!
+
+    -->
+    <scheme name="create-foreign-key-scheme">CONSTRAINT {5} FOREIGN KEY ({2}) REFERENCES {3} ({4})</scheme>
+    <scheme name="create-primary-key-scheme">PRIMARY KEY ({2}), FOREIGN KEY ({2}) REFERENCES {3} ({2})</scheme>
+
+    <scheme name="create-sequence-scheme" />
+    <scheme name="init-sequence-scheme" >CREATE SEQUENCE {0}_AUTOINCREMENT MINVALUE 1 START WITH {2} INCREMENT BY {3}</scheme>
+    <scheme name="update-sequence-scheme" />
+    <scheme name="read-sequence-scheme">SELECT {0}_AUTOINCREMENT.NEXTVAL FROM DUAL</scheme>
+
+    <scheme name="create-index-scheme">CREATE INDEX {3} ON {1} ({2})</scheme>
+    <scheme name="delete-index-scheme">DROP INDEX {3}</scheme>
+
+    <scheme name="create-view-scheme">CREATE OR REPLACE VIEW {1} ({3}) AS SELECT {4} FROM {2}, {6} WHERE {2}.{5} = {6}.{5}</scheme>
+
+    <!-- Insert trigger: first insert into parent, then insert into self -->
+    <scheme name="create-insert-trigger-scheme">
+      CREATE OR REPLACE TRIGGER {8}
+      INSTEAD OF INSERT ON {1}
+      FOR EACH ROW
+      BEGIN
+        INSERT INTO {3} ({6}) VALUES ({7});
+        INSERT INTO {2} ({4}) VALUES ({5});
+      END {8};
+    </scheme>
+    <!-- Delete trigger: first delete from self, then delete from parent -->
+    <scheme name="create-delete-trigger-scheme">
+      CREATE OR REPLACE TRIGGER {5}
+      INSTEAD OF DELETE ON {1}
+      FOR EACH ROW
+      BEGIN
+        DELETE FROM {2} WHERE {4} = :OLD.{4};
+        DELETE FROM {3} WHERE {4} = :OLD.{4};
+      END {5};
+    </scheme>
+    <!-- Update trigger: update both self and parent; order is not important -->
+    <scheme name="create-update-trigger-scheme">
+      CREATE OR REPLACE TRIGGER {7}
+      INSTEAD OF UPDATE ON {1}
+      FOR EACH ROW
+      BEGIN
+        UPDATE {2} SET {4} WHERE {6} = :OLD.{6};
+        UPDATE {3} SET {5} WHERE {6} = :OLD.{6};
+      END {7};
+    </scheme>
+
+  </attributes>
+
+  <!-- Oracle type mappings -->
+  <type-mappings>
+    <type-mapping name="FLOAT" type="REAL" />
+    <type-mapping name="DOUBLE" type="DOUBLE PRECISION" />
+    <type-mapping name="LONG" type="INTEGER" />
+    <type-mapping name="INTEGER" type="INTEGER" />
+    <type-mapping name="NODE" type="INTEGER" />
+    <type-mapping name="STRING" min-size="1" max-size="2000" type="nvarchar2({0,number,#####})" />
+    <type-mapping name="STRING" min-size="2000" max-size="16777216" type="nclob" />
+    <type-mapping name="XML" min-size="1" max-size="2000" type="nvarchar2({0,number,#####})" />
+    <type-mapping name="XML" min-size="2000" max-size="16777216" type="nclob" />
+    <type-mapping name="BINARY" min-size="1" max-size="16777216" type="blob" />
+
+    <type-mapping name="DATETIME" type="TIMESTAMP" />
+    <type-mapping name="BOOLEAN" type="BOOLEAN" />
+    <type-mapping name="LIST[FLOAT]"   type="FLOAT[]" />
+    <type-mapping name="LIST[DOUBLE]"  type="DOUBLE PRECISION[]" />
+    <type-mapping name="LIST[LONG]"    type="BIGINT[]" />
+    <type-mapping name="LIST[INTEGER]" type="INTEGER[]" />
+    <type-mapping name="LIST[NODE]"    type="INTEGER[]" />
+    <type-mapping name="LIST[STRING]"  type="CLOB[]" />
+    <type-mapping name="LIST[XML]"     type="CLOB[]" />
+    <type-mapping name="LIST[DATETIME]"  type="TIMESTAMP[]" />
+    <type-mapping name="LIST[BOOLEAN]"   type="BOOLEAN[]" />
+  </type-mappings>
+
+  <disallowed-fields>
+    <disallowed-field name="access" replacement="m_access"/>
+    <disallowed-field name="account" replacement="m_account"/>
+    <disallowed-field name="activate" replacement="m_activate"/>
+    <disallowed-field name="add" replacement="m_add"/>
+    <disallowed-field name="admin" replacement="m_admin"/>
+    <disallowed-field name="advise" replacement="m_advise"/>
+    <disallowed-field name="after" replacement="m_after"/>
+    <disallowed-field name="all" replacement="m_all"/>
+    <disallowed-field name="all_rows" replacement="m_all_rows"/>
+    <disallowed-field name="allocate" replacement="m_allocate"/>
+    <disallowed-field name="alter" replacement="m_alter"/>
+    <disallowed-field name="analyze" replacement="m_analyze"/>
+    <disallowed-field name="and" replacement="m_and"/>
+    <disallowed-field name="any" replacement="m_any"/>
+    <disallowed-field name="archive" replacement="m_archive"/>
+    <disallowed-field name="archivelog" replacement="m_archivelog"/>
+    <disallowed-field name="array" replacement="m_array"/>
+    <disallowed-field name="as" replacement="m_as"/>
+    <disallowed-field name="asc" replacement="m_asc"/>
+    <disallowed-field name="at" replacement="m_at"/>
+    <disallowed-field name="audit" replacement="m_audit"/>
+    <disallowed-field name="authenticated" replacement="m_authenticated"/>
+    <disallowed-field name="authorization" replacement="m_authorization"/>
+    <disallowed-field name="autoextend" replacement="m_autoextend"/>
+    <disallowed-field name="automatic" replacement="m_automatic"/>
+    <disallowed-field name="backup" replacement="m_backup"/>
+    <disallowed-field name="become" replacement="m_become"/>
+    <disallowed-field name="before" replacement="m_before"/>
+    <disallowed-field name="begin" replacement="m_begin"/>
+    <disallowed-field name="between" replacement="m_between"/>
+    <disallowed-field name="bfile" replacement="m_bfile"/>
+    <disallowed-field name="bitmap" replacement="m_bitmap"/>
+    <disallowed-field name="blob" replacement="m_blob"/>
+    <disallowed-field name="block" replacement="m_block"/>
+    <disallowed-field name="body" replacement="m_body"/>
+    <disallowed-field name="by" replacement="m_by"/>
+    <disallowed-field name="cache" replacement="m_cache"/>
+    <disallowed-field name="cache_instances" replacement="m_cache_instances"/>
+    <disallowed-field name="cancel" replacement="m_cancel"/>
+    <disallowed-field name="cascade" replacement="m_cascade"/>
+    <disallowed-field name="cast" replacement="m_cast"/>
+    <disallowed-field name="cfile" replacement="m_cfile"/>
+    <disallowed-field name="chained" replacement="m_chained"/>
+    <disallowed-field name="change" replacement="m_change"/>
+    <disallowed-field name="char" replacement="m_char"/>
+    <disallowed-field name="char_cs" replacement="m_char_cs"/>
+    <disallowed-field name="character" replacement="m_character"/>
+    <disallowed-field name="check" replacement="m_check"/>
+    <disallowed-field name="checkpoint" replacement="m_checkpoint"/>
+    <disallowed-field name="choose" replacement="m_choose"/>
+    <disallowed-field name="chunk" replacement="m_chunk"/>
+    <disallowed-field name="clear" replacement="m_clear"/>
+    <disallowed-field name="clob" replacement="m_clob"/>
+    <disallowed-field name="clone" replacement="m_clone"/>
+    <disallowed-field name="close" replacement="m_close"/>
+    <disallowed-field name="close_cached_open_cursors" replacement="m_close_cached_open_cursors"/>
+    <disallowed-field name="cluster" replacement="m_cluster"/>
+    <disallowed-field name="coalesce" replacement="m_coalesce"/>
+    <disallowed-field name="column" replacement="m_column"/>
+    <disallowed-field name="columns" replacement="m_columns"/>
+    <disallowed-field name="comment" replacement="m_comment"/>
+    <disallowed-field name="commit" replacement="m_commit"/>
+    <disallowed-field name="committed" replacement="m_committed"/>
+    <disallowed-field name="compatibility" replacement="m_compatibility"/>
+    <disallowed-field name="compile" replacement="m_compile"/>
+    <disallowed-field name="complete" replacement="m_complete"/>
+    <disallowed-field name="composite_limit" replacement="m_composite_limit"/>
+    <disallowed-field name="compress" replacement="m_compress"/>
+    <disallowed-field name="compute" replacement="m_compute"/>
+    <disallowed-field name="connect" replacement="m_connect"/>
+    <disallowed-field name="connect_time" replacement="m_connect_time"/>
+    <disallowed-field name="constraint" replacement="m_constraint"/>
+    <disallowed-field name="constraints" replacement="m_constraints"/>
+    <disallowed-field name="contents" replacement="m_contents"/>
+    <disallowed-field name="continue" replacement="m_continue"/>
+    <disallowed-field name="controlfile" replacement="m_controlfile"/>
+    <disallowed-field name="convert" replacement="m_convert"/>
+    <disallowed-field name="cost" replacement="m_cost"/>
+    <disallowed-field name="cpu_per_call" replacement="m_cpu_per_call"/>
+    <disallowed-field name="cpu_per_session" replacement="m_cpu_per_session"/>
+    <disallowed-field name="create" replacement="m_create"/>
+    <disallowed-field name="current" replacement="m_current"/>
+    <disallowed-field name="current_schema" replacement="m_current_schema"/>
+    <disallowed-field name="current_user" replacement="m_current_user"/>
+    <disallowed-field name="cursor" replacement="m_cursor"/>
+    <disallowed-field name="cycle" replacement="m_cycle"/>
+    <disallowed-field name="dangling" replacement="m_dangling"/>
+    <disallowed-field name="database" replacement="m_database"/>
+    <disallowed-field name="datafile" replacement="m_datafile"/>
+    <disallowed-field name="datafiles" replacement="m_datafiles"/>
+    <disallowed-field name="dataobjno" replacement="m_dataobjno"/>
+    <disallowed-field name="date" replacement="m_date"/>
+    <disallowed-field name="dba" replacement="m_dba"/>
+    <disallowed-field name="dbhigh" replacement="m_dbhigh"/>
+    <disallowed-field name="dblow" replacement="m_dblow"/>
+    <disallowed-field name="dbmac" replacement="m_dbmac"/>
+    <disallowed-field name="deallocate" replacement="m_deallocate"/>
+    <disallowed-field name="debug" replacement="m_debug"/>
+    <disallowed-field name="dec" replacement="m_dec"/>
+    <disallowed-field name="decimal" replacement="m_decimal"/>
+    <disallowed-field name="declare" replacement="m_declare"/>
+    <disallowed-field name="default" replacement="m_default"/>
+    <disallowed-field name="deferrable" replacement="m_deferrable"/>
+    <disallowed-field name="deferred" replacement="m_deferred"/>
+    <disallowed-field name="degree" replacement="m_degree"/>
+    <disallowed-field name="delete" replacement="m_delete"/>
+    <disallowed-field name="deref" replacement="m_deref"/>
+    <disallowed-field name="desc" replacement="m_desc"/>
+    <disallowed-field name="directory" replacement="m_directory"/>
+    <disallowed-field name="disable" replacement="m_disable"/>
+    <disallowed-field name="disconnect" replacement="m_disconnect"/>
+    <disallowed-field name="dismount" replacement="m_dismount"/>
+    <disallowed-field name="distinct" replacement="m_distinct"/>
+    <disallowed-field name="distributed" replacement="m_distributed"/>
+    <disallowed-field name="dml" replacement="m_dml"/>
+    <disallowed-field name="double" replacement="m_double"/>
+    <disallowed-field name="drop" replacement="m_drop"/>
+    <disallowed-field name="dump" replacement="m_dump"/>
+    <disallowed-field name="each" replacement="m_each"/>
+    <disallowed-field name="else" replacement="m_else"/>
+    <disallowed-field name="enable" replacement="m_enable"/>
+    <disallowed-field name="end" replacement="m_end"/>
+    <disallowed-field name="enforce" replacement="m_enforce"/>
+    <disallowed-field name="entry" replacement="m_entry"/>
+    <disallowed-field name="escape" replacement="m_escape"/>
+    <disallowed-field name="estimate" replacement="m_estimate"/>
+    <disallowed-field name="events" replacement="m_events"/>
+    <disallowed-field name="except" replacement="m_except"/>
+    <disallowed-field name="exceptions" replacement="m_exceptions"/>
+    <disallowed-field name="exchange" replacement="m_exchange"/>
+    <disallowed-field name="excluding" replacement="m_excluding"/>
+    <disallowed-field name="exclusive" replacement="m_exclusive"/>
+    <disallowed-field name="execute" replacement="m_execute"/>
+    <disallowed-field name="exists" replacement="m_exists"/>
+    <disallowed-field name="expire" replacement="m_expire"/>
+    <disallowed-field name="explain" replacement="m_explain"/>
+    <disallowed-field name="extent" replacement="m_extent"/>
+    <disallowed-field name="extents" replacement="m_extents"/>
+    <disallowed-field name="externally" replacement="m_externally"/>
+    <disallowed-field name="failed_login_attempts" replacement="m_failed_login_attempts"/>
+    <disallowed-field name="false" replacement="m_false"/>
+    <disallowed-field name="fast" replacement="m_fast"/>
+    <disallowed-field name="file" replacement="m_file"/>
+    <disallowed-field name="first_rows" replacement="m_first_rows"/>
+    <disallowed-field name="flagger" replacement="m_flagger"/>
+    <disallowed-field name="float" replacement="m_float"/>
+    <disallowed-field name="flob" replacement="m_flob"/>
+    <disallowed-field name="flush" replacement="m_flush"/>
+    <disallowed-field name="for" replacement="m_for"/>
+    <disallowed-field name="force" replacement="m_force"/>
+    <disallowed-field name="foreign" replacement="m_foreign"/>
+    <disallowed-field name="freelist" replacement="m_freelist"/>
+    <disallowed-field name="freelists" replacement="m_freelists"/>
+    <disallowed-field name="from" replacement="m_from"/>
+    <disallowed-field name="full" replacement="m_full"/>
+    <disallowed-field name="function" replacement="m_function"/>
+    <disallowed-field name="global" replacement="m_global"/>
+    <disallowed-field name="globally" replacement="m_globally"/>
+    <disallowed-field name="global_name" replacement="m_global_name"/>
+    <disallowed-field name="grant" replacement="m_grant"/>
+    <disallowed-field name="group" replacement="m_group"/>
+    <disallowed-field name="groups" replacement="m_groups"/>
+    <disallowed-field name="hash" replacement="m_hash"/>
+    <disallowed-field name="hashkeys" replacement="m_hashkeys"/>
+    <disallowed-field name="having" replacement="m_having"/>
+    <disallowed-field name="header" replacement="m_header"/>
+    <disallowed-field name="heap" replacement="m_heap"/>
+    <disallowed-field name="identified" replacement="m_identified"/>
+    <disallowed-field name="idgenerators" replacement="m_idgenerators"/>
+    <disallowed-field name="idle_time" replacement="m_idle_time"/>
+    <disallowed-field name="if" replacement="m_if"/>
+    <disallowed-field name="immediate" replacement="m_immediate"/>
+    <disallowed-field name="in" replacement="m_in"/>
+    <disallowed-field name="including" replacement="m_including"/>
+    <disallowed-field name="increment" replacement="m_increment"/>
+    <disallowed-field name="index" replacement="m_index"/>
+    <disallowed-field name="indexed" replacement="m_indexed"/>
+    <disallowed-field name="indexes" replacement="m_indexes"/>
+    <disallowed-field name="indicator" replacement="m_indicator"/>
+    <disallowed-field name="ind_partition" replacement="m_ind_partition"/>
+    <disallowed-field name="initial" replacement="m_initial"/>
+    <disallowed-field name="initially" replacement="m_initially"/>
+    <disallowed-field name="initrans" replacement="m_initrans"/>
+    <disallowed-field name="insert" replacement="m_insert"/>
+    <disallowed-field name="instance" replacement="m_instance"/>
+    <disallowed-field name="instances" replacement="m_instances"/>
+    <disallowed-field name="instead" replacement="m_instead"/>
+    <disallowed-field name="int" replacement="m_int"/>
+    <disallowed-field name="integer" replacement="m_integer"/>
+    <disallowed-field name="intermediate" replacement="m_intermediate"/>
+    <disallowed-field name="intersect" replacement="m_intersect"/>
+    <disallowed-field name="into" replacement="m_into"/>
+    <disallowed-field name="is" replacement="m_is"/>
+    <disallowed-field name="isolation" replacement="m_isolation"/>
+    <disallowed-field name="isolation_level" replacement="m_isolation_level"/>
+    <disallowed-field name="keep" replacement="m_keep"/>
+    <disallowed-field name="key" replacement="m_key"/>
+    <disallowed-field name="kill" replacement="m_kill"/>
+    <disallowed-field name="label" replacement="m_label"/>
+    <disallowed-field name="layer" replacement="m_layer"/>
+    <disallowed-field name="less" replacement="m_less"/>
+    <disallowed-field name="level" replacement="m_level"/>
+    <disallowed-field name="library" replacement="m_library"/>
+    <disallowed-field name="like" replacement="m_like"/>
+    <disallowed-field name="limit" replacement="m_limit"/>
+    <disallowed-field name="link" replacement="m_link"/>
+    <disallowed-field name="list" replacement="m_list"/>
+    <disallowed-field name="lob" replacement="m_lob"/>
+    <disallowed-field name="local" replacement="m_local"/>
+    <disallowed-field name="lock" replacement="m_lock"/>
+    <disallowed-field name="locked" replacement="m_locked"/>
+    <disallowed-field name="log" replacement="m_log"/>
+    <disallowed-field name="logfile" replacement="m_logfile"/>
+    <disallowed-field name="logging" replacement="m_logging"/>
+    <disallowed-field name="logical_reads_per_call" replacement="m_logical_reads_per_call"/>
+    <disallowed-field name="logical_reads_per_session" replacement="m_logical_reads_per_session"/>
+    <disallowed-field name="long" replacement="m_long"/>
+    <disallowed-field name="manage" replacement="m_manage"/>
+    <disallowed-field name="master" replacement="m_master"/>
+    <disallowed-field name="max" replacement="m_max"/>
+    <disallowed-field name="maxarchlogs" replacement="m_maxarchlogs"/>
+    <disallowed-field name="maxdatafiles" replacement="m_maxdatafiles"/>
+    <disallowed-field name="maxextents" replacement="m_maxextents"/>
+    <disallowed-field name="maxinstances" replacement="m_maxinstances"/>
+    <disallowed-field name="maxlogfiles" replacement="m_maxlogfiles"/>
+    <disallowed-field name="maxloghistory" replacement="m_maxloghistory"/>
+    <disallowed-field name="maxlogmembers" replacement="m_maxlogmembers"/>
+    <disallowed-field name="maxsize" replacement="m_maxsize"/>
+    <disallowed-field name="maxtrans" replacement="m_maxtrans"/>
+    <disallowed-field name="maxvalue" replacement="m_maxvalue"/>
+    <disallowed-field name="min" replacement="m_min"/>
+    <disallowed-field name="member" replacement="m_member"/>
+    <disallowed-field name="minimum" replacement="m_minimum"/>
+    <disallowed-field name="minextents" replacement="m_minextents"/>
+    <disallowed-field name="minus" replacement="m_minus"/>
+    <disallowed-field name="minvalue" replacement="m_minvalue"/>
+    <disallowed-field name="mlslabel" replacement="m_mlslabel"/>
+    <disallowed-field name="mls_label_format" replacement="m_mls_label_format"/>
+    <disallowed-field name="mode" replacement="m_mode"/>
+    <disallowed-field name="modify" replacement="m_modify"/>
+    <disallowed-field name="mount" replacement="m_mount"/>
+    <disallowed-field name="move" replacement="m_move"/>
+    <disallowed-field name="mts_dispatchers" replacement="m_mts_dispatchers"/>
+    <disallowed-field name="multiset" replacement="m_multiset"/>
+    <disallowed-field name="national" replacement="m_national"/>
+    <disallowed-field name="nchar" replacement="m_nchar"/>
+    <disallowed-field name="nchar_cs" replacement="m_nchar_cs"/>
+    <disallowed-field name="nclob" replacement="m_nclob"/>
+    <disallowed-field name="needed" replacement="m_needed"/>
+    <disallowed-field name="nested" replacement="m_nested"/>
+    <disallowed-field name="network" replacement="m_network"/>
+    <disallowed-field name="new" replacement="m_new"/>
+    <disallowed-field name="next" replacement="m_next"/>
+    <disallowed-field name="noarchivelog" replacement="m_noarchivelog"/>
+    <disallowed-field name="noaudit" replacement="m_noaudit"/>
+    <disallowed-field name="nocache" replacement="m_nocache"/>
+    <disallowed-field name="nocompress" replacement="m_nocompress"/>
+    <disallowed-field name="nocycle" replacement="m_nocycle"/>
+    <disallowed-field name="noforce" replacement="m_noforce"/>
+    <disallowed-field name="nologging" replacement="m_nologging"/>
+    <disallowed-field name="nomaxvalue" replacement="m_nomaxvalue"/>
+    <disallowed-field name="nominvalue" replacement="m_nominvalue"/>
+    <disallowed-field name="none" replacement="m_none"/>
+    <disallowed-field name="noorder" replacement="m_noorder"/>
+    <disallowed-field name="nooverride" replacement="m_nooverride"/>
+    <disallowed-field name="noparallel" replacement="m_noparallel"/>
+    <disallowed-field name="noresetlogs" replacement="m_noresetlogs"/>
+    <disallowed-field name="noreverse" replacement="m_noreverse"/>
+    <disallowed-field name="normal" replacement="m_normal"/>
+    <disallowed-field name="nosort" replacement="m_nosort"/>
+    <disallowed-field name="not" replacement="m_not"/>
+    <disallowed-field name="nothing" replacement="m_nothing"/>
+    <disallowed-field name="nowait" replacement="m_nowait"/>
+    <disallowed-field name="null" replacement="m_null"/>
+    <disallowed-field name="number" replacement="m_number"/>
+    <disallowed-field name="numeric" replacement="m_numeric"/>
+    <disallowed-field name="nvarchar2" replacement="m_nvarchar2"/>
+    <disallowed-field name="object" replacement="m_object"/>
+    <disallowed-field name="objno" replacement="m_objno"/>
+    <disallowed-field name="objno_reuse" replacement="m_objno_reuse"/>
+    <disallowed-field name="of" replacement="m_of"/>
+    <disallowed-field name="off" replacement="m_off"/>
+    <disallowed-field name="offline" replacement="m_offline"/>
+    <disallowed-field name="oid" replacement="m_oid"/>
+    <disallowed-field name="oidindex" replacement="m_oidindex"/>
+    <disallowed-field name="old" replacement="m_old"/>
+    <disallowed-field name="on" replacement="m_on"/>
+    <disallowed-field name="online" replacement="m_online"/>
+    <disallowed-field name="only" replacement="m_only"/>
+    <disallowed-field name="opcode" replacement="m_opcode"/>
+    <disallowed-field name="open" replacement="m_open"/>
+    <disallowed-field name="optimal" replacement="m_optimal"/>
+    <disallowed-field name="optimizer_goal" replacement="m_optimizer_goal"/>
+    <disallowed-field name="option" replacement="m_option"/>
+    <disallowed-field name="or" replacement="m_or"/>
+    <disallowed-field name="order" replacement="m_order"/>
+    <disallowed-field name="organization" replacement="m_organization"/>
+    <disallowed-field name="oslabel" replacement="m_oslabel"/>
+    <disallowed-field name="overflow" replacement="m_overflow"/>
+    <disallowed-field name="own" replacement="m_own"/>
+    <disallowed-field name="package" replacement="m_package"/>
+    <disallowed-field name="parallel" replacement="m_parallel"/>
+    <disallowed-field name="partition" replacement="m_partition"/>
+    <disallowed-field name="password" replacement="m_password"/>
+    <disallowed-field name="password_grace_time" replacement="m_password_grace_time"/>
+    <disallowed-field name="password_life_time" replacement="m_password_life_time"/>
+    <disallowed-field name="password_lock_time" replacement="m_password_lock_time"/>
+    <disallowed-field name="password_reuse_max" replacement="m_password_reuse_max"/>
+    <disallowed-field name="password_reuse_time" replacement="m_password_reuse_time"/>
+    <disallowed-field name="password_verify_function" replacement="m_password_verify_function"/>
+    <disallowed-field name="pctfree" replacement="m_pctfree"/>
+    <disallowed-field name="pctincrease" replacement="m_pctincrease"/>
+    <disallowed-field name="pctthreshold" replacement="m_pctthreshold"/>
+    <disallowed-field name="pctused" replacement="m_pctused"/>
+    <disallowed-field name="pctversion" replacement="m_pctversion"/>
+    <disallowed-field name="percent" replacement="m_percent"/>
+    <disallowed-field name="permanent" replacement="m_permanent"/>
+    <disallowed-field name="plan" replacement="m_plan"/>
+    <disallowed-field name="plsql_debug" replacement="m_plsql_debug"/>
+    <disallowed-field name="post_transaction" replacement="m_post_transaction"/>
+    <disallowed-field name="precision" replacement="m_precision"/>
+    <disallowed-field name="preserve" replacement="m_preserve"/>
+    <disallowed-field name="primary" replacement="m_primary"/>
+    <disallowed-field name="prior" replacement="m_prior"/>
+    <disallowed-field name="private" replacement="m_private"/>
+    <disallowed-field name="private_sga" replacement="m_private_sga"/>
+    <disallowed-field name="privilege" replacement="m_privilege"/>
+    <disallowed-field name="privileges" replacement="m_privileges"/>
+    <disallowed-field name="procedure" replacement="m_procedure"/>
+    <disallowed-field name="profile" replacement="m_profile"/>
+    <disallowed-field name="public" replacement="m_public"/>
+    <disallowed-field name="purge" replacement="m_purge"/>
+    <disallowed-field name="queue" replacement="m_queue"/>
+    <disallowed-field name="quota" replacement="m_quota"/>
+    <disallowed-field name="range" replacement="m_range"/>
+    <disallowed-field name="raw" replacement="m_raw"/>
+    <disallowed-field name="rba" replacement="m_rba"/>
+    <disallowed-field name="read" replacement="m_read"/>
+    <disallowed-field name="readup" replacement="m_readup"/>
+    <disallowed-field name="real" replacement="m_real"/>
+    <disallowed-field name="rebuild" replacement="m_rebuild"/>
+    <disallowed-field name="recover" replacement="m_recover"/>
+    <disallowed-field name="recoverable" replacement="m_recoverable"/>
+    <disallowed-field name="recovery" replacement="m_recovery"/>
+    <disallowed-field name="ref" replacement="m_ref"/>
+    <disallowed-field name="references" replacement="m_references"/>
+    <disallowed-field name="referencing" replacement="m_referencing"/>
+    <disallowed-field name="refresh" replacement="m_refresh"/>
+    <disallowed-field name="rename" replacement="m_rename"/>
+    <disallowed-field name="replace" replacement="m_replace"/>
+    <disallowed-field name="reset" replacement="m_reset"/>
+    <disallowed-field name="resetlogs" replacement="m_resetlogs"/>
+    <disallowed-field name="resize" replacement="m_resize"/>
+    <disallowed-field name="resource" replacement="m_resource"/>
+    <disallowed-field name="restricted" replacement="m_restricted"/>
+    <disallowed-field name="return" replacement="m_return"/>
+    <disallowed-field name="returning" replacement="m_returning"/>
+    <disallowed-field name="reuse" replacement="m_reuse"/>
+    <disallowed-field name="reverse" replacement="m_reverse"/>
+    <disallowed-field name="revoke" replacement="m_revoke"/>
+    <disallowed-field name="role" replacement="m_role"/>
+    <disallowed-field name="roles" replacement="m_roles"/>
+    <disallowed-field name="rollback" replacement="m_rollback"/>
+    <disallowed-field name="row" replacement="m_row"/>
+    <disallowed-field name="rowid" replacement="m_rowid"/>
+    <disallowed-field name="rownum" replacement="m_rownum"/>
+    <disallowed-field name="rows" replacement="m_rows"/>
+    <disallowed-field name="rule" replacement="m_rule"/>
+    <disallowed-field name="sample" replacement="m_sample"/>
+    <disallowed-field name="savepoint" replacement="m_savepoint"/>
+    <disallowed-field name="sb4" replacement="m_sb4"/>
+    <disallowed-field name="scan_instances" replacement="m_scan_instances"/>
+    <disallowed-field name="schema" replacement="m_schema"/>
+    <disallowed-field name="scn" replacement="m_scn"/>
+    <disallowed-field name="scope" replacement="m_scope"/>
+    <disallowed-field name="sd_all" replacement="m_sd_all"/>
+    <disallowed-field name="sd_inhibit" replacement="m_sd_inhibit"/>
+    <disallowed-field name="sd_show" replacement="m_sd_show"/>
+    <disallowed-field name="segment" replacement="m_segment"/>
+    <disallowed-field name="seg_block" replacement="m_seg_block"/>
+    <disallowed-field name="seg_file" replacement="m_seg_file"/>
+    <disallowed-field name="select" replacement="m_select"/>
+    <disallowed-field name="sequence" replacement="m_sequence"/>
+    <disallowed-field name="serializable" replacement="m_serializable"/>
+    <disallowed-field name="session" replacement="m_session"/>
+    <disallowed-field name="session_cached_cursors" replacement="m_session_cached_cursors"/>
+    <disallowed-field name="sessions_per_user" replacement="m_sessions_per_user"/>
+    <disallowed-field name="set" replacement="m_set"/>
+    <disallowed-field name="share" replacement="m_share"/>
+    <disallowed-field name="shared" replacement="m_shared"/>
+    <disallowed-field name="shared_pool" replacement="m_shared_pool"/>
+    <disallowed-field name="shrink" replacement="m_shrink"/>
+    <disallowed-field name="size" replacement="m_size"/>
+    <disallowed-field name="skip" replacement="m_skip"/>
+    <disallowed-field name="skip_unusable_indexes" replacement="m_skip_unusable_indexes"/>
+    <disallowed-field name="smallint" replacement="m_smallint"/>
+    <disallowed-field name="snapshot" replacement="m_snapshot"/>
+    <disallowed-field name="some" replacement="m_some"/>
+    <disallowed-field name="sort" replacement="m_sort"/>
+    <disallowed-field name="specification" replacement="m_specification"/>
+    <disallowed-field name="split" replacement="m_split"/>
+    <disallowed-field name="sql_trace" replacement="m_sql_trace"/>
+    <disallowed-field name="standby" replacement="m_standby"/>
+    <disallowed-field name="start" replacement="m_start"/>
+    <disallowed-field name="statement_id" replacement="m_statement_id"/>
+    <disallowed-field name="statistics" replacement="m_statistics"/>
+    <disallowed-field name="stop" replacement="m_stop"/>
+    <disallowed-field name="storage" replacement="m_storage"/>
+    <disallowed-field name="store" replacement="m_store"/>
+    <disallowed-field name="structure" replacement="m_structure"/>
+    <disallowed-field name="successful" replacement="m_successful"/>
+    <disallowed-field name="switch" replacement="m_switch"/>
+    <disallowed-field name="sys_op_enforce_not_null$" replacement="m_sys_op_enforce_not_null$"/>
+    <disallowed-field name="sys_op_ntcimg$" replacement="m_sys_op_ntcimg$"/>
+    <disallowed-field name="synonym" replacement="m_synonym"/>
+    <disallowed-field name="sysdate" replacement="m_sysdate"/>
+    <disallowed-field name="sysdba" replacement="m_sysdba"/>
+    <disallowed-field name="sysoper" replacement="m_sysoper"/>
+    <disallowed-field name="system" replacement="m_system"/>
+    <disallowed-field name="table" replacement="m_table"/>
+    <disallowed-field name="tables" replacement="m_tables"/>
+    <disallowed-field name="tablespace" replacement="m_tablespace"/>
+    <disallowed-field name="tablespace_no" replacement="m_tablespace_no"/>
+    <disallowed-field name="tabno" replacement="m_tabno"/>
+    <disallowed-field name="temporary" replacement="m_temporary"/>
+    <disallowed-field name="than" replacement="m_than"/>
+    <disallowed-field name="the" replacement="m_the"/>
+    <disallowed-field name="then" replacement="m_then"/>
+    <disallowed-field name="thread" replacement="m_thread"/>
+    <disallowed-field name="timestamp" replacement="m_timestamp"/>
+    <disallowed-field name="time" replacement="m_time"/>
+    <disallowed-field name="to" replacement="m_to"/>
+    <disallowed-field name="toplevel" replacement="m_toplevel"/>
+    <disallowed-field name="trace" replacement="m_trace"/>
+    <disallowed-field name="tracing" replacement="m_tracing"/>
+    <disallowed-field name="transaction" replacement="m_transaction"/>
+    <disallowed-field name="transitional" replacement="m_transitional"/>
+    <disallowed-field name="trigger" replacement="m_trigger"/>
+    <disallowed-field name="triggers" replacement="m_triggers"/>
+    <disallowed-field name="true" replacement="m_true"/>
+    <disallowed-field name="truncate" replacement="m_truncate"/>
+    <disallowed-field name="tx" replacement="m_tx"/>
+    <disallowed-field name="type" replacement="m_type"/>
+    <disallowed-field name="ub2" replacement="m_ub2"/>
+    <disallowed-field name="uba" replacement="m_uba"/>
+    <disallowed-field name="uid" replacement="m_uid"/>
+    <disallowed-field name="unarchived" replacement="m_unarchived"/>
+    <disallowed-field name="undo" replacement="m_undo"/>
+    <disallowed-field name="union" replacement="m_union"/>
+    <disallowed-field name="unique" replacement="m_unique"/>
+    <disallowed-field name="unlimited" replacement="m_unlimited"/>
+    <disallowed-field name="unlock" replacement="m_unlock"/>
+    <disallowed-field name="unrecoverable" replacement="m_unrecoverable"/>
+    <disallowed-field name="until" replacement="m_until"/>
+    <disallowed-field name="unusable" replacement="m_unusable"/>
+    <disallowed-field name="unused" replacement="m_unused"/>
+    <disallowed-field name="updatable" replacement="m_updatable"/>
+    <disallowed-field name="update" replacement="m_update"/>
+    <disallowed-field name="usage" replacement="m_usage"/>
+    <disallowed-field name="use" replacement="m_use"/>
+    <disallowed-field name="user" replacement="m_user"/>
+    <disallowed-field name="using" replacement="m_using"/>
+    <disallowed-field name="validate" replacement="m_validate"/>
+    <disallowed-field name="validation" replacement="m_validation"/>
+    <disallowed-field name="value" replacement="m_value"/>
+    <disallowed-field name="values" replacement="m_values"/>
+    <disallowed-field name="varchar" replacement="m_varchar"/>
+    <disallowed-field name="varchar2" replacement="m_varchar2"/>
+    <disallowed-field name="varying" replacement="m_varying"/>
+    <disallowed-field name="view" replacement="m_view"/>
+    <disallowed-field name="when" replacement="m_when"/>
+    <disallowed-field name="whenever" replacement="m_whenever"/>
+    <disallowed-field name="where" replacement="m_where"/>
+    <disallowed-field name="with" replacement="m_with"/>
+    <disallowed-field name="without" replacement="m_without"/>
+    <disallowed-field name="work" replacement="m_work"/>
+    <disallowed-field name="write" replacement="m_write"/>
+    <disallowed-field name="writedown" replacement="m_writedown"/>
+    <disallowed-field name="writeup" replacement="m_writeup"/>
+    <disallowed-field name="xid" replacement="m_xid"/>
+  </disallowed-fields>
+</storage>

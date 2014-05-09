@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="crontab"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+
+
+
+  <description xml:lang="nl">MMBase crontab</description>
+  <description xml:lang="en">MMBase crontab</description>
+
+  <block
+      classification="mmbase.admin"
+      name="crontab"
+
+      mimetype="text/html" >
+    <title xml:lang="en">Crontab scheduling</title>
+    <title xml:lang="nl">Crontab-tijdschema</title>
+    <description xml:lang="en">Administrates the mmbase crontab</description>
+    <body jsp="index.jspx">
+      <param name="kick" />
+      <param name="interrupt" />
+      <param name="threadno" />
+      <param name="stop" />
+      <param name="start" />
+      <param name="reload" />
+      <param name="machine" />
+    </body>
+  </block>
+
+  <block name="crontab-documentation"
+         classification="mmbase.documentation"
+         mimetype="text/html">
+    <title>Crontab</title>
+    <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
+    <body>
+      <class name="org.mmbase.framework.DocumentationRenderer">
+        <param name="docbook">documentation/crontab.xml</param>
+        <param name="module">applications/crontab</param>
+        <param name="includeRenderTime">xml-comments</param>
+      </class>
+    </body>
+  </block>
+
+
+</component>

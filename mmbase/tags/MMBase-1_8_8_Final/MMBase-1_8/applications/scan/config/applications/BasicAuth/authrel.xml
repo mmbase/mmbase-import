@@ -1,0 +1,22 @@
+<authrel exportsource="mmbase://wizard.xs4all.nl:8242/xsbase/xsa" timestamp="20000602143030">
+
+<node number="501" owner="system" snumber="500" dnumber="2" rtype="authrel">
+	<creat>1</creat>
+	<us>1</us>
+	<look>1</look>
+</node>
+
+<node number="502" owner="system" snumber="500" dnumber="3" rtype="authrel">
+	<creat>1</creat>
+	<us>1</us>
+	<look>1</look>
+</node>
+
+
+<node number="503" owner="system" snumber="500" dnumber="4" rtype="authrel">
+	<creat>1</creat>
+	<us>1</us>
+	<look>1</look>
+</node>
+
+</authrel>

@@ -1,0 +1,86 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="idrel" maintainer="mmbase.org" version="0" extends="insrel">
+
+  <class>org.mmbase.richtext.builders.IdRel</class>
+
+  <names>
+    <singular xml:lang="en">ID relation</singular>
+    <singular xml:lang="nl">ID relatie</singular>
+    <singular xml:lang="eo">ID-rilato</singular>
+    <plural xml:lang="en">ID relations</plural>
+    <plural xml:lang="nl">ID relaties</plural>
+    <plural xml:lang="eo">ID-rilatoj</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">This relation has an id field, that refers to an id attribute in an XML field</description>
+    <description xml:lang="nl">Deze relatie heeft een id veld, dat verwijst naar id attribuut in een XML veld</description>
+    <description xml:lang="eo">Ĉi tia rilato havas id-kampon kiu montras al id-atributo en XML-a kampo</description>
+  </descriptions>
+
+  <fieldlist>
+    <field name="id">
+      <descriptions>
+        <description xml:lang="en">
+          The ID field of the idrel relation points to an 'id' attribute of a tag in an XML field of
+          the source node of this relation.
+        </description>
+        <description xml:lang="nl">Verwijzing naar een 'id' attribuut van een tag in een XML veld in het bron-object van deze relatie. </description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">ID</guiname>
+        <guiname xml:lang="nl">ID</guiname>
+        <guiname xml:lang="eo">ID</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>3</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
+    </field>
+
+    <field name="destinationid">
+      <descriptions>
+        <description xml:lang="en">ID in the destination node</description>
+        <description xml:lang="nl">Verwijzing naar een 'id' attribuut van een tag in een XML veld in het doelobject van deze relatie.</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Destination ID</guiname>
+        <guiname xml:lang="nl">Doel-ID</guiname>
+        <guiname xml:lang="eo">Cela ID</guiname>
+      </gui>
+
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
+    </field>
+
+    <field name="class">
+      <descriptions>
+        <description xml:lang="en">CSS Class</description>
+        <description xml:lang="nl">CSS-Klasse</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Class</guiname>
+        <guiname xml:lang="nl">Klasse</guiname>
+        <guiname xml:lang="eo">Klaso</guiname>
+      </gui>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
+    </field>
+
+  </fieldlist>
+
+  <xi:include href="http://www.mmbase.org/builders/versioning/relation.fields.xml" />
+
+</builder>
