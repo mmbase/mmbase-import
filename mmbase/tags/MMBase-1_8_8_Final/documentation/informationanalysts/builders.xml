@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" []>
+<article>
+  <articleinfo>
+    <title>MMBase Builder Configuration</title>
+    <date>2005-12-18</date>
+    <edition>$Id: builders.xml,v 1.15 2006-06-12 17:53:30 andre Exp $</edition>
+    <authorgroup>
+      <author>
+        <firstname>Pierre</firstname>
+        <surname>van Rooden</surname>
+        <affiliation>
+          <orgname>Publieke Omroep</orgname>
+        </affiliation>
+      </author>
+      <author>
+        <firstname>Michiel</firstname>
+        <surname>Meeuwissen</surname>
+        <affiliation>
+          <orgname>Publieke Omroep</orgname>
+        </affiliation>
+      </author>
+    </authorgroup>
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
+      </para>
+    </legalnotice>
+  </articleinfo>
+  <section>
+    <title>Introduction</title>
+    <para>By installing applications or adding your own builder files you can expand the object types that can be used in MMBase.
+    </para>
+    <para>Active builders are stored in the <filename>builders</filename> directory of the MMbase configuration directory. New MMBase installations only contain the core builders.  In order to add an object type, you need to add a builder xml, with the name <filename>objecttype.xml</filename> somewhere in the builders directory.</para>
+    <para>You can make use of subdirectories to divide your builders in groups for easier maintenance. Note that the MMBase core builders are located under <filename>core</filename>, and that the applications by default install new builders under <filename>applications</filename>.</para>
+  </section>
+  <section>
+    <title>Builder XML Format</title>
+    <para>A builder file uses the following general format:
+    </para>
+    <programlisting format="linespecific"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="..." maintainer="..." version="..." extends="...">
+  <status>...</status>
+  <class>...</class>
+  <searchage>...</searchage>
+  <names>
+    <singular xml:lang="...">...</singular>
+    ...
+    <plural xml:lang="...">...</plural>
+    ...
+  </names>
+  <descriptions>
+    <description xml:lang="...">...</description>
+    ...
+  </descriptions>
+  <properties>
+    <property name="...">...</property>
+    ...
+  </properties>
+  <fieldlist>
+    <field>
+      <descriptions>
+        <description xml:lang="...">...</description>
+        ...
+      </descriptions>
+      <gui>
+        <guiname xml:lang="...">...</guiname>
+        ...
+      </gui>
+      <editor>
+        <positions>
+          <input>...</input>
+          <list>...</list>
+          <search>...</search>
+        </positions>
+      </editor>
+      <datatype base="..." xmlns="http://www.mmbase.org/xmlns/datatypes">
+         ... (like in datatypes.xml)...
+      </datatype>
+      <db>
+        <name>...</name>
+        <type state="..." notnull="..." key="...">...</type>
+      </db>
+    </field>
+    ... 
+  </fieldlist>
+</builder>
+    ]]></programlisting>
+    <para>Most builders include less information than given here - since they can extend from each other, you only need to supply information that overrides the default, or when you add information such as fields.
+    </para>
+    <para>The following sections explains the use and intention of each tag in detail.
+    </para>
+    <section>
+      <title>&lt;builder&gt;</title>
+      <para>The builder tag is the main tag. It's attributes define the builder's identity and place in the builder hierarchy. It is the parent of all other tags.
+      </para>
+      <variablelist>
+        <varlistentry>
+          <term>name</term>
+          <listitem><simpara>The name of the builder, which should currently be equal to the name of the builder file, without extension.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>maintainer</term>
+          <listitem><para>The maintainer of the builder. This attribute is mandatory, and should contain the name of the organization maintaining the builder. This is generally a domain name. For the core builders this value is <emphasis>mmbase.org</emphasis></para></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>version</term>
+          <listitem><simpara>The version number of the builder</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>extends</term>
+          <listitem><simpara>The name of a builder that this builder extends. If you do not specify a builder, you should fully describe the builder (include all tags). If you do specify a parent builder, you need only describe new or changed tags or attributes. The default builder that is extended is <emphasis>object</emphasis>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+        <example>
+        <title>Example Builder Tag</title>
+
+         <programlisting ><![CDATA[
+<builder name="people" maintainer="mycompany.com" version="1" extends="object">
+...
+</builder>
+         ]]></programlisting>
+        </example>
+      <section>
+        <title>&lt;status&gt;</title>
+        <anchor id="status" />
+        <para>The status tag determines whether a builder is active or not. Valid values are <constant>active</constant> and <constant>inactive</constant>.</para>
+        <para>You generally do not specify this tag unless you want to turn a builder off</para>
+        <example>
+        <title>Example Status Tag</title>
+         <programlisting ><![CDATA[
+<status>active</status>
+         ]]></programlisting>
+        </example>
+      </section>
+      <section>
+        <title>&lt;class&gt;</title>
+        <anchor id="class" />
+        <para>The java class used by this builder to administrate nodes of that builder type.</para>
+        <para>Specify this tag if you have custom behavior defined for an object type.</para>
+        <para>The default value for a builder that extends the core builder <emphasis>object</emphasis> is <classname>org.mmbase.module.builders.Dummy</classname>.</para>
+        <para>The default value for a builder that extends the core relation builder <emphasis>insrel</emphasis> is <classname>org.mmbase.module.corebuilders.InsRel</classname>.</para>
+        <example>
+        <title>Example Class Tag</title>
+         <programlisting ><![CDATA[
+<class>com.mycompany.mmbase.builders.MyPeople</class>
+         ]]></programlisting>
+        </example>
+      </section>
+      <section>
+        <title>&lt;searchage&gt;</title>
+        <anchor id="searchage" />
+        <para>The value given here is used in a number of generic editors, as a default value for the maximum age in days when searching for objects in MMBase.</para>
+        <para>Since this value is not available through the MMBase Bridge interface, this value is mostly used in older editors, that directly access the core system (such as SCAN).</para>
+        <para>The default value for a builder that extends the core builder <emphasis>object</emphasis> is <constant>1000</constant>.</para>
+        <example>
+         <title>Example Searchage Tag</title>
+         <programlisting ><![CDATA[
+<searchage>50</searchage>
+         ]]></programlisting>
+        </example>
+      </section>
+      <section>
+        <title>&lt;names&gt;</title>
+        <anchor id="names" />
+        <para>This section is used to supply gui (graphical user interface) names for the builder. The information is generally used in generic editors, as well as the default value for use in the editwizards.</para>
+        <para>You can include gui names for different languages. the system picks the correct name depending on its currently specified locale.</para>
+        <section>
+          <title>&lt;singular&gt;</title>
+          <anchor id="singular" />
+          <para>A singular presentation of the builder object type, such as 'Person' or 'Company'.</para>
+          <variablelist>
+            <varlistentry>
+              <term>xml:lang</term>
+              <listitem><simpara>The language for this name in <ulink url="http://lcweb.loc.gov/standards/iso639-2/">ISO 639-1</ulink> format. The default value is <constant>en</constant>.</simpara></listitem>
+            </varlistentry>
+          </variablelist>
+        </section>
+        <section>
+          <title>&lt;plural&gt;</title>
+          <anchor id="plural" />
+          <para>A plural presentation of the builder object type, such as 'People' or 'Companies'.</para>
+          <variablelist>
+            <varlistentry>
+              <term>xml:lang</term>
+              <listitem><simpara>The language for this name in <ulink url="http://lcweb.loc.gov/standards/iso639-2/">ISO 639</ulink> format. The default value is <constant>en</constant>.</simpara></listitem>
+            </varlistentry>
+          </variablelist>
+        </section>
+        <section>
+          <title>&lt;names&gt;</title>
+          <example>
+            <title>Example Names Tag</title>
+            <programlisting ><![CDATA[
+<names>
+  <singular xml:lang="en">Person</singular>
+  <singular xml:lang="nl">Persoon</singular>
+  <plural xml:lang="en">People</plural>
+  <plural xml:lang="nl">Personen</plural>
+</names>
+            ]]></programlisting>
+          </example>
+        </section>
+      </section>
+      <section>
+        <title>&lt;descriptions&gt;</title>
+        <anchor id="descriptions" />
+        <para>This section is used to supply a description or help text for the builder. It may include information on the type of objects, specific behavior,and how it should be used.</para>
+        <para>You can include descriptions for different languages. the system picks the correct description depending on its currently specified locale.</para>
+        <section>
+          <title>&lt;description&gt;</title>
+          <anchor id="description" />
+          <para>A description of the builder object type.</para>
+          <variablelist>
+            <varlistentry>
+              <term>xml:lang</term>
+              <listitem><simpara>The language for this description in <ulink url="http://lcweb.loc.gov/standards/iso639-2/">ISO 639-1</ulink> format. The default value is <constant>en</constant>.</simpara></listitem>
+            </varlistentry>
+          </variablelist>
+        </section>
+        <section>
+        <title>&lt;descriptions&gt;</title>
+          <example>
+            <title>Example Descriptions Tag</title>
+            <programlisting ><![CDATA[
+<descriptions>
+  <description xml:lang="en">Name and address information regarding contacts of our company.</description>
+  <description xml:lang="nl">Naam and adres gegevens van contactpersonen van ons bedrijf.</description>
+</descriptions>
+            ]]></programlisting>
+          </example>
+        </section>
+      </section>
+      <section>
+        <title>&lt;properties&gt;</title>
+        <anchor id="properties" />
+        <para>A list of name-value pairs, used by the java class specified in <emphasis>class</emphasis> as configuration parameters. You normally only specify properties for objects with specific behavior (such as Images).</para>
+        <section>
+          <title>&lt;property&gt;</title>
+          <anchor id="property" />
+          <para>One single property name-value pair</para>
+          <variablelist>
+            <varlistentry>
+              <term>name</term>
+              <listitem><simpara>The name of the property.</simpara></listitem>
+            </varlistentry>
+          </variablelist>
+        </section>
+        <section>
+          <title>&lt;properties&gt;</title>
+          <example>
+            <title>Example Properties Tag</title>
+            <programlisting ><![CDATA[
+<properties>
+  <property name="employeedbname">mysql:employees</property>
+</properties>
+            ]]></programlisting>
+          </example>
+        </section>
+      </section>
+      <section>
+        <title>&lt;fieldlist&gt;</title>
+        <anchor id="fieldlist" />
+        <para></para>
+        <section>
+          <title>&lt;field&gt;</title>
+          <anchor id="field" />
+          <para></para>
+          <section>
+            <title>&lt;descriptions&gt;</title>
+            <anchor id="field_descriptions" />
+            <para>This tag is used to supply a description or help text for the field. It may include information on the type of objects, specific behavior,and how it should be used. This description is used (among other places) in the editwizards.</para>
+            <para>You can include descriptions for different languages. The system picks the correct description depending on its currently specified locale.</para>
+            <section>
+              <title>&lt;description&gt;</title>
+              <anchor id="field_description" />
+              <para>A description of the field.</para>
+              <variablelist>
+                <varlistentry>
+                  <term>xml:lang</term>
+                  <listitem><simpara>The language for this description in <ulink url="http://lcweb.loc.gov/standards/iso639-2/">ISO 639-1</ulink> format. The default value is <constant>en</constant>.</simpara></listitem>
+                </varlistentry>
+              </variablelist>
+            </section>
+            <section>
+              <title>&lt;descriptions&gt;</title>
+              <example>
+                <title>Example Descriptions Tag</title>
+                <programlisting ><![CDATA[
+<descriptions>
+  <description xml:lang="en">First name or initials of our contact.</description>
+  <description xml:lang="nl">Voornaam of initialen van de contactpersoonen.</description>
+</descriptions>
+                ]]></programlisting>
+              </example>
+            </section>
+          </section>
+          <section>
+            <title>&lt;gui&gt;</title>
+            <anchor id="field_gui" />
+            <para>This section contains gui (graphical user interface) information for the field. The information is generally used in generic editors, as well as the default value for use in the editwizards.</para>
+            <para>This tag includes gui names for different languages to represent a label for the field. The system picks the correct name depending on its currently specified locale.</para>
+            <para>It can also contain one guitype, which explains how the field should be rendered or edited.</para>
+            <section>
+              <title>&lt;guiname&gt;</title>
+              <anchor id="field_guiname" />
+              <para>A text to use as label for the field, such as 'First Name'.</para>
+              <variablelist>
+                <varlistentry>
+                  <term>xml:lang</term>
+                  <listitem><simpara>The language for this label in <ulink url="http://lcweb.loc.gov/standards/iso639-2/">ISO 639-1</ulink> format. The default value is <constant>en</constant>.</simpara></listitem>
+                </varlistentry>
+              </variablelist>
+            </section>
+            <section>
+              <title>&lt;datatype&gt;</title>
+              <anchor id="field_datatype" />
+              <para>
+                The data type used to determine how a field should be rendered or edited. There
+                are a number of predefined values for the base attribute (defined in
+                config/datatypes.xml).
+              </para>
+              <example>
+                <title>Example DataType Tag</title>
+                <programlisting ><![CDATA[
+ <datatype base="date" xmlns="http://www.mmbase.org/xmlns/datatypes">
+     <default value="today + 100 year" />
+     <minInclusive enforce="never" value="yesterday" />
+     <maxInclusive enforce="always" value="today + 100 year" />
+ </datatype>
+ <db>
+    <name>end</name>
+    <type key="false" notnull="false" state="persistent">DATETIME</type>
+ </db>
+                ]]></programlisting>
+              </example>
+            </section>
+            <section>
+              <title>&lt;guitype&gt;</title>
+              <example>
+                <title>Example Gui Tag</title>
+                <programlisting ><![CDATA[
+<gui>
+  <guiname xml:lang="en">First name</guiname>
+  <guiname xml:lang="nl">Voornaam</guiname>
+</gui>
+                ]]></programlisting>
+              </example>
+            </section>
+          </section>
+          <section>
+            <title>&lt;editor&gt;</title>
+            <anchor id="field_editor" />
+            <para>Determines settings for this field when used in a generic editor.</para>
+            <section>
+              <title>&lt;positions&gt;</title>
+              <anchor id="field_positions" />
+              <para>Lists the positions of a field in certain types of forms.</para>
+              <section>
+                <title>&lt;input&gt;</title>
+                <anchor id="field_edit" />
+                <para>Position of the field in an edit screen. -1 means the field cannot be edited.</para>
+              </section>
+              <section>
+                <title>&lt;list&gt;</title>
+                <anchor id="field_list" />
+                <para>Position of the field in an object list. -1 means the field will not occur in a list.</para>
+              </section>
+              <section>
+                <title>&lt;search&gt;</title>
+                <anchor id="field_search" />
+                <para>Position of the field in a search form. -1 means the field cannot be searched on.</para>
+              </section>
+            </section>
+            <section>
+              <title>Example Editor Tag</title>
+              <example>
+                <title>Example Editor Tag</title>
+                <programlisting ><![CDATA[
+<editor>
+  <positions>
+    <input>4</input>
+    <list>-1</list>
+    <search>4</search>
+  </positions>
+</editor>
+                ]]></programlisting>
+              </example>
+            </section>
+          </section>
+          <section>
+            <title>&lt;db&gt;</title>
+            <anchor id="field_db" />
+            <para></para>
+            <section>
+              <title>&lt;name&gt;</title>
+              <anchor id="field_name" />
+              <para>The symbolic name of this field. The symbolic name is used to refer to the field in programming code or in a taglib or SCAN template. It is also used to map the field to a field in a database table.</para>
+            </section>
+            <section>
+              <title>&lt;type&gt;</title>
+              <anchor id="field_type" />
+              <para>the MMBASE type of the field. This determines, among other things, validation rules and the type of the field in the database.</para>
+              <para>Possible attributes are:</para>
+              <variablelist>
+                <varlistentry>
+                  <term><anchor id="field_state" />state</term>
+                  <listitem><simpara>Either <constant>persistent</constant>, <constant>system</constant> or <constant>virtual</constant>.</simpara>
+                    <simpara>A <constant>persistent</constant> or <constant>system</constant> field is stored in the database, a <constant>virtual</constant> field is generated live and not stored.</simpara>
+                    <simpara>A <constant>system</constant> field cannot be altered except by the MMBase system.</simpara>
+                  </listitem>
+                </varlistentry>
+                <varlistentry>
+                  <term><anchor id="field_notnull" />notnull</term>
+                  <listitem><simpara>Value can be <constant>true</constant> or <constant>false</constant>. If <constant>true</constant>, this field cannot be empty. This is not currently enforced except by the editwizards.</simpara></listitem>
+                </varlistentry>
+                <varlistentry>
+                  <term><anchor id="field_key" />key</term>
+                  <listitem><simpara>Value can be <constant>true</constant> or <constant>false</constant>. If <constant>true</constant>, this field must be unique.</simpara></listitem>
+                </varlistentry>
+              </variablelist>
+              <para>Possible values are:</para>
+              <variablelist>
+                <varlistentry>
+                  <term>STRING</term>
+                  <listitem><simpara>A text string.</simpara></listitem>
+                </varlistentry>
+                <varlistentry>
+                  <term>INTEGER</term>
+                  <listitem><simpara>An integer field.</simpara></listitem>
+                </varlistentry>
+                <varlistentry>
+                  <term>LONG</term>
+                  <listitem><simpara>A long (large integer) field.</simpara></listitem>
+                </varlistentry>
+                <varlistentry>
+                  <term>FLOAT</term>
+                  <listitem><simpara>A real field. Real is rather short - use DOUBLE if possible.</simpara></listitem>
+                </varlistentry>
+                <varlistentry>
+                  <term>DOUBLE</term>
+                  <listitem><simpara>A double real field.</simpara></listitem>
+                </varlistentry>
+                <varlistentry>
+                  <term>NODE</term>
+                  <listitem><simpara>A reference to another object, internally represented as that object's number.</simpara></listitem>
+                </varlistentry>
+                <varlistentry>
+                  <term>BINARY</term>
+                  <listitem><simpara>A binary field such as an image.</simpara></listitem>
+                </varlistentry>
+                <varlistentry>
+                  <term>XML</term>
+                  <listitem><simpara>A field containing an xml document.</simpara></listitem>
+                </varlistentry>
+                <varlistentry>
+                  <term>BOOLEAN</term>
+                  <listitem><simpara>True or false, yes or no etc.</simpara></listitem>
+                </varlistentry>
+                <varlistentry>
+                  <term>DATETIME</term>
+                  <listitem><simpara>A definite date/time.</simpara></listitem>
+                </varlistentry>
+              </variablelist>
+            </section>
+            <section>
+              <title>Example</title>
+              <example>
+                <title>Example db Tag</title>
+                <programlisting ><![CDATA[
+<db>
+  <name>firstname</name>
+  <type state="persistent" size="255" key="false" notnull="false">STRING</type>
+</db>
+                ]]></programlisting>
+              </example>
+            </section>
+          </section>
+        </section>
+        <section>
+          <title>A full field example</title>
+          <example>
+            <title>Example Builder Config</title>
+            <programlisting ><![CDATA[
+<fieldlist>
+  <field>
+    <descriptions>
+      <description xml:lang="en">First name or initials of our contact.</description>
+      <description xml:lang="nl">Voornaam of initialen van de contactpersoonen.</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="en">First name</guiname>
+      <guiname xml:lang="nl">Voornaam</guiname>
+    </gui>
+    <editor>
+      <positions>
+        <input>4</input>
+        <list>-1</list>
+        <search>4</search>
+      </positions>
+    </editor>
+    <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" /><!-- no newlines in names -->
+    <db>
+      <name>firstname</name>
+      <type state="persistent" size="255" key="false" notnull="false">STRING</type>
+    </db>
+  </field>
+</fieldlist>
+            ]]></programlisting>
+          </example>
+        </section>
+      </section>
+    </section>
+  </section>
+</article>

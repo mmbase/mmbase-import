@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mmbar PUBLIC "-//MMBase/DTD mmbar 1.0//EN" "http://www.mmbase.org/dtd/mmbarconfig_1_0.dtd">
+<mmbarconfig>
+ <basetesturl>http://localhost:9100/mmbar/tests/</basetesturl>
+ <machinespecs cpu="DualCore 2.16Ghz" server="Tomcat 5.5.9" database="MySQL" driver="mysqlconnector 3.0.11"  />
+ <writetests>
+	<writetest name="NodeBridgeWrite1000" action="start" class="org.mmbase.applications.mmbar.writetests.NodeBridgeWriteTest" count="1000" threads="1" >
+		<benchmark result="251" os="Mac OS X/10.4.6" cpu="DualCore 2.16Ghz" server="Tomcat 5.5.9" database="MySQL" driver="mysqlconnector 3.0.14" java="1.5.0_06" />
+	</writetest>
+	<writetest name="NodeBridgeWrite2Threads1000" action="start" class="org.mmbase.applications.mmbar.writetests.NodeBridgeWriteTest" count="1000" threads="2">
+		<benchmark result="527" os="Mac OS X/10.4.6" cpu="DualCore 2.16Ghz" server="Tomcat 5.5.9" database="MySQL" driver="mysqlconnector 3.0.14" java="1.5.0_06" />
+	</writetest>
+	<writetest name="NodeBridgeWrite10Threads1000" action="start" class="org.mmbase.applications.mmbar.writetests.NodeBridgeWriteTest" count="1000" threads="10">
+		<benchmark result="577" os="Mac OS X/10.4.6" cpu="DualCore 2.16Ghz" server="Tomcat 5.5.9" database="MySQL" driver="mysqlconnector 3.0.14" java="1.5.0_06" />
+	</writetest>
+ </writetests>
+
+
+ <readtests>
+	<readtest name="NodeBridgeRead1000" action="start" class="org.mmbase.applications.mmbar.readtests.NodeBridgeReadTest" count="1000" threads="1">
+		<description>This test reads 1000 simple nodes from mmpo_basicobject builder using the bridge</description>
+	</readtest>
+	<readtest name="NodeBridgeRead10000" action="start" class="org.mmbase.applications.mmbar.readtests.NodeBridgeReadTest" count="10000" threads="1">
+		<description>This test reads 10000 simple nodes from mmpo_basicobject builder using the bridge</description>
+	</readtest>
+	<readtest name="NodeBridgeRead1000000" action="start" class="org.mmbase.applications.mmbar.readtests.NodeBridgeReadTest" count="1000000" threads="1">
+		<description>This test reads 1000000 simple nodes from mmpo_basicobject builder using the bridge</description>
+	</readtest>
+	<readtest name="NodeHttpRead1000" action="start" class="org.mmbase.applications.mmbar.readtests.NodeHttpReadTest" count="1000" threads="1">
+		<description>This test reads 1000 webpages each getting 1 node from mmpo_basicobject builder</description>
+	</readtest>
+	<readtest name="NodeHttpRead10000" action="start" class="org.mmbase.applications.mmbar.readtests.NodeHttpReadTest" count="10000" threads="1">
+		<description>This test reads 10000 webpages each getting 1 node from mmpo_basicobject builder</description>
+	</readtest>
+	<readtest name="NodeBridge2ThreadsRead10000" action="start" class="org.mmbase.applications.mmbar.readtests.NodeBridgeReadTest" count="10000" threads="2">
+		<description>This test reads 10000 simple nodes from mmpo_basicobject builder using the bridge using 2 threads</description>
+	</readtest>
+	<readtest name="NodeBridge2ThreadsRead1000000" action="start" class="org.mmbase.applications.mmbar.readtests.NodeBridgeReadTest" count="1000000" threads="2">
+		<description>This test reads 1000000 simple nodes from mmpo_basicobject builder using the bridge using 2 threads</description>
+	</readtest>
+	<readtest name="NodeBridge10ThreadsRead10000" action="start" class="org.mmbase.applications.mmbar.readtests.NodeBridgeReadTest" count="10000" threads="10">
+		<description>This test reads 10000 simple nodes from mmpo_basicobject builder using the bridge using 10 threads</description>
+	</readtest>
+	<readtest name="NodeBridge10ThreadsRead1000000" action="start" class="org.mmbase.applications.mmbar.readtests.NodeBridgeReadTest" count="1000000" threads="10">
+		<description>This test reads 1000000 simple nodes from mmpo_basicobject builder using the bridge using 10 threads</description>
+	</readtest>
+	<readtest name="NodeHttpRead2Threads10000" action="start" class="org.mmbase.applications.mmbar.readtests.NodeHttpReadTest" count="10000" threads="2">
+		<description>This test reads 10000 webpages each getting 1 node from mmpo_basicobject builder using 2 threads</description>
+	</readtest>
+	<readtest name="NodeHttpRead10Threads10000" action="start" class="org.mmbase.applications.mmbar.readtests.NodeHttpReadTest" count="10000" threads="10">
+		<description>This test reads 10000 simple nodes from mmpo_basicobject builder using 10 threads</description>
+	</readtest>
+	<readtest name="NodeBridgeReadNoCache10000" action="start" class="org.mmbase.applications.mmbar.readtests.NodeBridgeReadTest" count="10000" threads="1">
+		<description>This test reads 10000 simple nodes from mmpo_basicobject builder nocache</description>
+		<property name="cache" value="off" />
+	</readtest>
+	<readtest name="NodeBridgeRead2ThreadsNoCache10000" action="start" class="org.mmbase.applications.mmbar.readtests.NodeBridgeReadTest" count="10000" threads="2">
+		<description>This test reads 10000 simple nodes from mmpo_basicobject builder 2 threads nocache</description>
+		<property name="cache" value="off" />
+	</readtest>
+	<readtest name="NodeBridgeRead10ThreadsNoCache10000" action="start" class="org.mmbase.applications.mmbar.readtests.NodeBridgeReadTest" count="10000" threads="10">
+		<description>This test reads 10000 simple nodes from mmpo_basicobject builder 10 threads nocache</description>
+		<property name="cache" value="off" />
+	</readtest>
+	<readtest name="NodeHttpReadNoCache10000" action="start" class="org.mmbase.applications.mmbar.readtests.NodeHttpReadTest" count="10000" threads="1">
+		<description>This test reads 10000 webpages each getting 1 node from mmpo_basicobject builder nocache</description>
+		<property name="cache" value="off" />
+	</readtest>
+	<readtest name="NodeHttpRead2ThreadsNoCache10000" action="start" class="org.mmbase.applications.mmbar.readtests.NodeHttpReadTest" count="10000" threads="2">
+		<description>This test reads 10000 webpages each getting 1 node from mmpo_basicobject builder 2 threads nocache</description>
+		<property name="cache" value="off" />
+	</readtest>
+	<readtest name="NodeHttpRead10ThreadsNoCache10000" action="start" class="org.mmbase.applications.mmbar.readtests.NodeHttpReadTest" count="10000" threads="10">
+		<description>This test reads 10000 webpages each getting 1 node from mmpo_basicobject builder 10 threads nocache</description>
+		<property name="cache" value="off" />
+	</readtest>
+</readtests>
+
+ <mixedtests>
+	<mixedtest name="NodeBridgeMixed1" action="start" class="org.mmbase.applications.mmbar.mixedtests.NodeBridgeMixedTest" count="100" threads="1" />
+</mixedtests>
+
+ <endurancetests>
+	<endurancetest name="NodeBridgeEndurance1" action="start" class="org.mmbase.applications.mmbar.endurancetests.NodeBridgeEnduranceTest" count="100" threads="1" />
+</endurancetests>
+
+</mmbarconfig>

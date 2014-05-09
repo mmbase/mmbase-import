@@ -1,0 +1,19 @@
+<!-- Author Rob Vermeulen (VPRO) -->
+<!ELEMENT mainFilter (chain, filterConfigs?)>
+
+<!ELEMENT chain (filter+)>
+<!ELEMENT filter (#PCDATA)>
+<!ATTLIST filter
+  id NMTOKEN #IMPLIED
+>
+
+
+<!ENTITY % configSubTags " "><!-- default no configs, add them in the DOCTYPE of filters.xml -->
+
+<!ELEMENT filterConfigs (config*)>
+
+<!ELEMENT config (%configSubTags;)>
+<!ATTLIST config
+  filter NMTOKEN #REQUIRED
+>
+

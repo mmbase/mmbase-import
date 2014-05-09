@@ -1,0 +1,27 @@
+<jsp:root
+    version="2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <li>
+    <mm:import externid="n" required="true" />
+    <mm:import externid="source" required="true" />
+    <mm:cloud method="asis">
+      <mm:hasnode number="$n">
+        <mm:node referid="n" id="n" />
+        <mm:node id="source" referid="source">
+          <mm:relatednodescontainer type="object">
+            <mm:constraint field="number" value="${n}" />
+            <mm:maxnumber value="1" />
+            <mm:relatednodes>
+              <jsp:text>Deleting ${_node}</jsp:text>
+              <mm:deletenode deleterelations="true" />
+            </mm:relatednodes>
+          </mm:relatednodescontainer>
+        </mm:node>
+      </mm:hasnode>
+    </mm:cloud>
+  </li>
+</jsp:root>

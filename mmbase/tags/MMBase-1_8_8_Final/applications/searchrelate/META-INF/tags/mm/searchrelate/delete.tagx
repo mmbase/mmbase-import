@@ -1,0 +1,31 @@
+<jsp:root
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    version="2.0"
+    >
+  <!--
+
+
+      @author Michiel Meeuwissen
+      @version $Id: delete.tagx,v 1.7 2008-08-08 14:29:20 michiel Exp $
+  -->
+  <jsp:directive.tag
+      example="See /mmexamples/searchrelate"
+      description="Used in li's of mm-sr:relatednodes. Produces the 'delete this item' button." />
+
+  <jsp:directive.attribute name="icondir"      type="java.lang.String" />
+  <jsp:directive.attribute name="source"       required="true" />
+  <jsp:directive.attribute name="confirm"      type="java.lang.Boolean"
+                           description="Whether deleting must be confirmed"
+                           />
+
+  <mm:link page="/mmbase/searchrelate/list/delete.jspx" referids="_node@n,source">
+    <a class="delete ${empty confirm or ! confirm ? '' : 'confirm'}"
+       href="${_}">
+      <mm-sr:button alt="-" type="delete" icondir="${icondir}" />
+    </a>
+  </mm:link>
+
+</jsp:root>

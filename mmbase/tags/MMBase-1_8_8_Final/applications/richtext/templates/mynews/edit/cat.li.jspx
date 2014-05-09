@@ -1,0 +1,20 @@
+<mm:maywrite  xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" xmlns:jsp="http://java.sun.com/JSP/Page">
+  <mm:context>
+    <![CDATA[<li>]]>
+    <a name="c${cat}"><jsp:text></jsp:text></a>
+    <mm:import id="context"><mm:field name="owner" /></mm:import>
+    <mm:nodeinfo id="actualtype" type="nodemanager" write="false" />
+    <mm:function name="gui" />
+    <mm:link referids="$args,cat@objectnumber,link_nodetypes" page="/mmbase/kupu/mmbase/">
+      <jsp:text> </jsp:text>
+      <a href="${_}">Pagina</a>
+    </mm:link>
+    
+    <mm:relatednodes  type="templates" role="block" orderby="block.pos" >
+      <jsp:directive.include file="cat.template.as.jspx" />
+      <mm:last inverse="true">, </mm:last>
+    </mm:relatednodes>
+    <mm:onshrink><![CDATA[</li>]]></mm:onshrink>
+  </mm:context>
+</mm:maywrite>
+
