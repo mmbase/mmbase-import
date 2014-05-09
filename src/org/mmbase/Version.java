@@ -56,7 +56,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static int getPatchLevel() {
-        return 8;
+        return 9;
     }
 
     /**
