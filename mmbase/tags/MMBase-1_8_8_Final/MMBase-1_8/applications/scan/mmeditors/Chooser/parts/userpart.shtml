@@ -1,3 +1,0 @@
-<LIST MULTILEVEL TYPE="people,authrel,typedef" FIELDS="people.account,typedef.name" NODE="-1" WHERE="people.account=E'$MOD-INFO-USER-NAME^'" DBSORT="typedef.name" PROCESSOR="MMBASE" MEMCACHE="NO">
-	<PART /mmeditors/Chooser/parts/attached.shtml>
-</LIST>

@@ -1,7 +1,0 @@
-<!ELEMENT authentication ( loginmodule+ ) >
-<!ELEMENT loginmodule ( property* ) >
-<!ATTLIST loginmodule class NMTOKEN #REQUIRED >
-<!ATTLIST loginmodule name CDATA #REQUIRED >
-<!ATTLIST loginmodule rank CDATA #IMPLIED >
-<!ELEMENT property ( #PCDATA ) >
-<!ATTLIST property name NMTOKEN #REQUIRED >
