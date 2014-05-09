@@ -290,46 +290,51 @@ public class MultiConnection extends ConnectionWrapper {
         return new MultiStatement(this, con.createStatement(type, concurrency, holdability));
     }
 
-	public NClob createNClob() throws SQLException {
-		return con.createNClob();
-	}
+    public NClob createNClob() throws SQLException {
+        return con.createNClob();
+    }
 
-	public SQLXML createSQLXML() throws SQLException {
-		return con.createSQLXML();
-	}
+    public SQLXML createSQLXML() throws SQLException {
+        return con.createSQLXML();
+    }
 
-	public void setClientInfo(String name, String value) throws SQLClientInfoException {
-		con.setClientInfo(name, value);
-	}
+    public void setClientInfo(String name, String value) throws SQLClientInfoException {
+        con.setClientInfo(name, value);
+    }
 
-	public void setClientInfo(Properties properties) throws SQLClientInfoException {
-		con.setClientInfo(properties);
-	}
+    public void setClientInfo(Properties properties) throws SQLClientInfoException {
+        con.setClientInfo(properties);
+    }
 
-	public void setSchema(String schema) throws SQLException {
-		con.setSchema(schema);
-	}
+    public void setSchema(String schema) throws SQLException {
+        //con.setSchema(schema);
+        throw new UnsupportedOperationException();
+    }
 
-	public String getSchema() throws SQLException {
-		return con.getSchema();
+    public String getSchema() throws SQLException {
+        //return con.getSchema();
+        throw new UnsupportedOperationException();
 
-	}
+    }
 
-	public void abort(Executor executor) throws SQLException {
-		con.abort(executor);
-	}
+    public void abort(Executor executor) throws SQLException {
+        //con.abort(executor);
+        throw new UnsupportedOperationException();
+    }
 
 
 
-	public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
-		con.setNetworkTimeout(executor, milliseconds);
-	}
+    public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
+        //con.setNetworkTimeout(executor, milliseconds);
+        throw new UnsupportedOperationException();
+    }
 
-	public int getNetworkTimeout() throws SQLException {
-		return con.getNetworkTimeout();
-	}
+    public int getNetworkTimeout() throws SQLException {
+        //return con.getNetworkTimeout();
+        throw new UnsupportedOperationException();
+    }
 
-	/**
+    /**
      * Return the underlying real connection. NOTE: use with extreme caution! MMBase is supposed to look
      * after it's own connections. This method is public only for the reason that specific database
      * implementations need access to this connection in order to safely clear them before they
@@ -339,5 +344,3 @@ public class MultiConnection extends ConnectionWrapper {
         return con;
     }
 }
-
-

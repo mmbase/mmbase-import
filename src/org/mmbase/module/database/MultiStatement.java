@@ -480,15 +480,17 @@ public class MultiStatement implements Statement {
         return false;
     }
 
-	public void closeOnCompletion() throws SQLException {
-		s.closeOnCompletion();
-	}
+    public void closeOnCompletion() throws SQLException {
+        throw new UnsupportedOperationException();
+        //s.closeOnCompletion();
+    }
 
-	public boolean isCloseOnCompletion() throws SQLException {
-		return s.isCloseOnCompletion();
-	}
+    public boolean isCloseOnCompletion() throws SQLException {
+        //return s.isCloseOnCompletion();
+        throw new UnsupportedOperationException();
+    }
 
-	public Object unwrap(Class iface) {
+    public Object unwrap(Class iface) {
         return s;
     }
 
@@ -497,4 +499,3 @@ public class MultiStatement implements Statement {
     }
 
 }
-
