@@ -7,7 +7,7 @@
     <title>Syntax</title>
     <para><programlisting><![CDATA[<list [role="{role}"] [destinationtype="{objecttype}"] [searchdir="source|destination|both|all|either"]
         [fdatapath="{xpath}"] [fparentdatapath="{xpath}"]
-        [ordertype="|inverse|string|number|inverse string|inverse number"] [orderby="{xpath|fieldname}"]
+        [ordertype="string|number"] [orderby="{xpath|fieldname}"] [directions="up|down,..."]
         [minoccurs="{number}"] [maxoccurs="{number}"]
         [hidecommand="{commandlist}"] />]]></programlisting></para>
   </formalpara>
@@ -115,10 +115,9 @@
   ...
 </list>
 ]]></programlisting>
-              will sort the list on the title of the related email objects. You can also add
-              'inverse' to the ordertpye attribute to inverse the sort-order.
+              will sort the list on the title of the related email objects. You can also use the 'directions' attribute to inverse the sort-order.
               <programlisting format="linespecific"><![CDATA[
-<list role="posrel" destinationtype="email" orderby="title" ordertype="inverse" >
+<list role="posrel" destinationtype="email" orderby="title" directions="down" >
   ...
 </list>
 ]]></programlisting>

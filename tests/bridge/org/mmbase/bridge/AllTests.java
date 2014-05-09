@@ -10,9 +10,8 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import org.mmbase.tests.BridgeTest;
+import org.mmbase.tests.MMBaseTest;
 import org.mmbase.bridge.util.*;
-import org.mmbase.bridge.implementation.*;
 import junit.framework.*;
 
 /**
@@ -31,11 +30,11 @@ public class AllTests {
     }
 
     public static Test suite() throws Exception {
-        BridgeTest.startMMBase();
+        MMBaseTest.startMMBase();
 
         // Create the test suite
         TestSuite suite= new TestSuite("Bridge Tests");
-        suite.addTestSuite(CloudContextTest.class);
+        //suite.addTestSuite(CloudContextTest.class);
         suite.addTestSuite(EmptyNodeTest.class);
         suite.addTestSuite(EmptyNodeTestTransaction.class);
         suite.addTestSuite(EmptiedNodeTest.class);
@@ -53,10 +52,6 @@ public class AllTests {
         suite.addTestSuite(FunctionsTest.class);
         suite.addTestSuite(QueriesTest.class);
         suite.addTestSuite(SerializableTest.class);
-        suite.addTestSuite(ToStringTest.class);
-        suite.addTestSuite(ProcessorTest.class);
-        suite.addTestSuite(VirtualNodeTest.class);
-        suite.addTest(BridgeTest.SHUTDOWN);
         return suite;
     }
 }

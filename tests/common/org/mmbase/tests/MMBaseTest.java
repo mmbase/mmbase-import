@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.tests;
-import junit.framework.*;
+import junit.framework.TestCase;
 
 import java.io.File;
 import java.sql.*;
@@ -44,45 +44,17 @@ public abstract class MMBaseTest extends TestCase {
      * If your test needs a running MMBase. Call this.
      */
     static public void startMMBase(boolean startDatabase) throws Exception {
-        if (startDatabase) {
-            startDatabase();
-        }
-        try {
-            MMBaseContext.init();
-            mmb = MMBase.getMMBase();
+        if (startDatabase) startDatabase();
+        MMBaseContext.init();
+        mmb = MMBase.getMMBase();
 
-            MMAdmin mmadmin = (MMAdmin) Module.getModule("mmadmin", true);
-            int i = 0;
-            while (! mmadmin.getState()) {
-                Thread.sleep(1000);
-                i++;
-                if (i % 10 == 0) System.out.println("Waiting for the mmadmin module");
-            }
-        } catch (Throwable e) {
-            System.out.println("Error during startMMBase" + e.getMessage() + " " + Logging.stackTrace(e));
-            throw new Exception(e);
+        MMAdmin mmadmin = (MMAdmin) Module.getModule("mmadmin", true);
+        while (! mmadmin.getState()) {
+            Thread.sleep(1000);
         }
-        System.out.println("--------------------------------------------------------------------------------");
+        System.out.println("================================================================================");
         System.out.println("Starting test");
     }
-
-    static public void shutdownMMBase() {
-        if (System.getProperty("nostartmmbase") == null) {
-            try {
-                MMBase.getMMBase().shutdown();
-            } catch (java.lang.NoClassDefFoundError mcdfe) {
-            }
-        }
-    }
-    static public Test SHUTDOWN = new Test() {
-                public int countTestCases() {
-                    return 0;
-                }
-                public void run(TestResult tr) {
-                    System.out.println("Shutting down");
-                    MMBaseTest.shutdownMMBase();
-                }
-            };
 
     static public void startDatabase() {
         // first try if it is running already
@@ -97,7 +69,7 @@ public abstract class MMBaseTest extends TestCase {
             String database = System.getProperty("test.database");
             if (database == null) database = "test";
             try {
-                DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/" + database, "sa", "");
+                Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/" + database, "sa", "");
                 // ok!, already running one.
                 return;
             } catch (SQLException sqe) {
@@ -115,9 +87,6 @@ public abstract class MMBaseTest extends TestCase {
                 }
             }
         }
-    }
-
-    static protected void persist() {
     }
 
     /**
@@ -140,15 +109,9 @@ public abstract class MMBaseTest extends TestCase {
         try {
             startMMBase();
             while(!mmb.isShutdown()) {
-                System.out.print(";");
-                Thread.sleep(1000);
-            }
-            System.out.println("MMBase was shut down");
-            System.exit(0);
 
+            }
         } catch (Exception e) {
-            System.err.println(e.getMessage());
-            System.exit(-1);
         }
     }
 

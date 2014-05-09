@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:jsp="http://java.sun.com/JSP/Page" 
+      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:directive.page import="org.mmbase.core.event.*,org.mmbase.module.core.*,java.util.Iterator" />
+  <jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+  <jsp:directive.include file="head.jspx" />
+  <mm:content type="text/html" language="en" expires="0">
+    <body class="basic">
+      <h1>MMBase Events</h1>
+      <jsp:scriptlet>
+        EventManager manager = EventManager.getInstance();
+      </jsp:scriptlet>
+      <mm:cloud rank="administrator">
+        <p><em><mm:time time="now" format=":FULL.FULL" /></em> - <mm:cloudinfo type="user" /></p>
+        <h2>Brokers</h2>
+        <ul>
+          <jsp:scriptlet>
+            Runtime.getRuntime().gc();
+            Iterator bi = manager.getBrokers().iterator();
+            while (bi.hasNext()) {
+              EventBroker eb = (EventBroker) bi.next();
+          </jsp:scriptlet>
+          <li onclick="this.className = this.className == 'wrapped' ? 'unwrapped' : 'wrapped';" class="wrapped">
+            <strong><jsp:expression>eb</jsp:expression></strong>
+            <ul>
+              <jsp:scriptlet>
+                Iterator eli = eb.getListeners().iterator();
+                while (eli.hasNext()) {
+                  EventListener el = (EventListener) eli.next();
+              </jsp:scriptlet>
+              <li><jsp:expression>el.getClass()</jsp:expression><jsp:text> </jsp:text><jsp:expression>el</jsp:expression></li>
+              <jsp:scriptlet>
+                }
+              </jsp:scriptlet>
+            </ul>
+          </li>
+          <jsp:scriptlet>
+            }
+          </jsp:scriptlet>
+        </ul>
+        <h2>Send an event.</h2>
+        <mm:import externid="id" jspvar="id" vartype="string"/>
+        <mm:import externid="type" jspvar="type" vartype="integer" />
+        <mm:present referid="id">
+          <jsp:scriptlet>
+            IdEvent ev = new IdEvent(MMBase.getMMBase().getMachineName(), type, id);
+            manager.propagateEvent(ev);
+          </jsp:scriptlet>
+          <p>Sending <jsp:expression>ev</jsp:expression></p>
+
+        </mm:present>
+      
+        <form>
+          <select  name="type">
+            <c:forTokens items="0:new,1:change,2:delete" var="_" delims=",">
+              <c:choose>
+                <c:when test='${type eq fn:split(_, ":")[0]}'>
+                  <option value='${fn:split(_, ":")[0]}' selected="selected">${fn:split(_, ":")[1]}</option>
+                </c:when>
+                <c:otherwise>
+                  <option value='${fn:split(_, ":")[0]}'>${fn:split(_, ":")[1]}</option>
+                </c:otherwise>
+              </c:choose>
+            </c:forTokens>
+          </select>
+          <select  name="class">
+            <c:forTokens items="IdEvent:IdEvent,NodeEvent:NodeEvent,RelationEvent:RelationEvent" var="_" delims=",">
+              <c:choose>
+                <c:when test='${class eq fn:split(_, ":")[0]}'>
+                  <option value='${fn:split(_, ":")[0]}' selected="selected">${fn:split(_, ":")[1]}</option>
+                </c:when>
+                <c:otherwise>
+                  <option value='${fn:split(_, ":")[0]}'>${fn:split(_, ":")[1]}</option>
+                </c:otherwise>
+              </c:choose>
+            </c:forTokens>
+          </select>
+          <input name="id" value="${id}"/>
+          <input type="submit" />
+        </form>
+        <table summary="Event statistics">
+          <tr>
+            <th>Numer of propagated events</th><td><jsp:expression>manager.getNumberOfPropagatedEvents()</jsp:expression></td>
+          </tr>
+          <tr>
+            <th>Cost</th><td><jsp:expression>manager.getPropagationCost()</jsp:expression> ms</td>
+          </tr>
+        </table>
+      </mm:cloud>
+    </body>
+  </mm:content>
+</html>

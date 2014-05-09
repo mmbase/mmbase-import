@@ -1,7 +1,6 @@
 package org.mmbase.storage.search.implementation.database;
 
-import org.mmbase.core.CoreField;
-import org.mmbase.module.core.NodeSearchQuery;
+import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import junit.framework.*;
@@ -13,7 +12,7 @@ import org.mmbase.module.core.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Id$
+ * @version $Id: BasicQueryHandlerTest.java,v 1.9 2006-01-26 10:43:54 michiel Exp $
  */
 public class BasicQueryHandlerTest extends TestCase {
 
@@ -40,7 +39,7 @@ public class BasicQueryHandlerTest extends TestCase {
 
     /** Insrel builder, used as relation builder example. */
     /** Test nodes, created in setUp, deleted in tearDown. */
-    private List<MMObjectNode> testNodes = new ArrayList<MMObjectNode>();
+    private List testNodes = new ArrayList();
 
     public BasicQueryHandlerTest(java.lang.String testName) {
         super(testName);
@@ -90,9 +89,9 @@ public class BasicQueryHandlerTest extends TestCase {
      */
     public void tearDown() throws Exception {
         // Remove all testnodes.
-        Iterator<MMObjectNode> iTestNodes = testNodes.iterator();
+        Iterator iTestNodes = testNodes.iterator();
         while (iTestNodes.hasNext()) {
-            MMObjectNode testNode = iTestNodes.next();
+            MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
             MMObjectBuilder builder = testNode.getBuilder();
             builder.removeRelations(testNode);
             builder.removeNode(testNode);
@@ -110,24 +109,24 @@ public class BasicQueryHandlerTest extends TestCase {
         {
             query = new BasicSearchQuery();
             BasicStep newsStep = query.addStep(news) .setAlias("news1");
-            CoreField newsTitle = news.getField("title");
+            FieldDefs newsTitle = news.getField("title");
             BasicStepField newsTitleField = query.addField(newsStep, newsTitle) .setAlias("a_title"); // should not affect result node fieldnames!
             query.addSortOrder(newsTitleField) .setDirection(SortOrder.ORDER_ASCENDING);
-            CoreField newsDescription = news.getField("body");
+            FieldDefs newsDescription = news.getField("body");
             query.addField(newsStep, newsDescription);
-            CoreField otypeDescription = news.getField("otype");
+            FieldDefs otypeDescription = news.getField("otype");
             query.addField(newsStep, otypeDescription);
-            CoreField newsOwner = news.getField("owner");
+            FieldDefs newsOwner = news.getField("owner");
             BasicStepField newsOwnerField = query.addField(newsStep, newsOwner);
             BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(newsOwnerField, JUNIT_USER);
             query.setConstraint(constraint);
-            List<MMObjectNode> resultNodes = instance.getNodes(query, mmbase.getBuilder("news"));
-            Iterator<MMObjectNode> iResultNodes = resultNodes.iterator();
-            Iterator<MMObjectNode> iTestNodes = testNodes.iterator();
+            List resultNodes = instance.getNodes(query, mmbase.getBuilder("news"));
+            Iterator iResultNodes = resultNodes.iterator();
+            Iterator iTestNodes = testNodes.iterator();
             while (iTestNodes.hasNext()) {
-                MMObjectNode testNode = iTestNodes.next();
+                MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
                 assertTrue(iResultNodes.hasNext());
-                MMObjectNode resultNode = iResultNodes.next();
+                MMObjectNode resultNode = (MMObjectNode) iResultNodes.next();
                 assertTrue(resultNode.getBuilder() == news);
                 assertTrue(resultNode.getStringValue("title") != null
                 && resultNode.getStringValue("title").length() > 0);
@@ -147,25 +146,25 @@ public class BasicQueryHandlerTest extends TestCase {
             query = new BasicSearchQuery();
             BasicStep newsStep = query.addStep(news)
                 .setAlias("news1");
-            CoreField newsTitle = news.getField("title");
+            FieldDefs newsTitle = news.getField("title");
             BasicStepField newsTitleField = query.addField(newsStep, newsTitle)
                 .setAlias("a_title"); // should not affect result node fieldnames!
             query.addSortOrder(newsTitleField)
                 .setDirection(SortOrder.ORDER_ASCENDING);
-            CoreField newsDescription = news.getField("body");
+            FieldDefs newsDescription = news.getField("body");
             query.addField(newsStep, newsDescription);
-            CoreField newsOwner = news.getField("owner");
+            FieldDefs newsOwner = news.getField("owner");
             BasicStepField newsOwnerField = query.addField(newsStep, newsOwner);
             BasicFieldValueConstraint constraint
             = new BasicFieldValueConstraint(newsOwnerField, JUNIT_USER);
             query.setConstraint(constraint);
-            List<MMObjectNode> resultNodes = instance.getNodes(query, mmbase.getClusterBuilder());
-            Iterator<MMObjectNode> iResultNodes = resultNodes.iterator();
-            Iterator<MMObjectNode> iTestNodes = testNodes.iterator();
+            List resultNodes = instance.getNodes(query, mmbase.getClusterBuilder());
+            Iterator iResultNodes = resultNodes.iterator();
+            Iterator iTestNodes = testNodes.iterator();
             while (iTestNodes.hasNext()) {
-                MMObjectNode testNode = iTestNodes.next();
+                MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
                 assertTrue(iResultNodes.hasNext());
-                MMObjectNode resultNode = iResultNodes.next();
+                MMObjectNode resultNode = (MMObjectNode) iResultNodes.next();
                 assertTrue(resultNode instanceof ClusterNode);
                 assertTrue(resultNode.getBuilder() == mmbase.getClusterBuilder());
                 assertTrue(resultNode.toString(),
@@ -185,22 +184,22 @@ public class BasicQueryHandlerTest extends TestCase {
         // Test for clusternodes using NodeSearchQuery, should still return clusternodes
         {
             NodeSearchQuery nodeQuery = new NodeSearchQuery(news);
-            CoreField newsTitle = news.getField("title");
+            FieldDefs newsTitle = news.getField("title");
             BasicStepField newsTitleField = nodeQuery.getField(newsTitle);
             nodeQuery.addSortOrder(newsTitleField)
                 .setDirection(SortOrder.ORDER_ASCENDING);
-            CoreField newsOwner = news.getField("owner");
+            FieldDefs newsOwner = news.getField("owner");
             BasicStepField newsOwnerField = nodeQuery.getField(newsOwner);
             BasicFieldValueConstraint constraint
             = new BasicFieldValueConstraint(newsOwnerField, JUNIT_USER);
             nodeQuery.setConstraint(constraint);
-            List<MMObjectNode> resultNodes = instance.getNodes(nodeQuery, mmbase.getClusterBuilder());
-            Iterator<MMObjectNode> iResultNodes = resultNodes.iterator();
-            Iterator<MMObjectNode> iTestNodes = testNodes.iterator();
+            List resultNodes = instance.getNodes(nodeQuery, mmbase.getClusterBuilder());
+            Iterator iResultNodes = resultNodes.iterator();
+            Iterator iTestNodes = testNodes.iterator();
             while (iTestNodes.hasNext()) {
-                MMObjectNode testNode = iTestNodes.next();
+                MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
                 assertTrue(iResultNodes.hasNext());
-                MMObjectNode resultNode = iResultNodes.next();
+                MMObjectNode resultNode = (MMObjectNode) iResultNodes.next();
                 assertTrue(resultNode instanceof ClusterNode);
                 assertTrue(resultNode.getBuilder() == mmbase.getClusterBuilder());
                 assertTrue(resultNode.toString(),
@@ -222,25 +221,25 @@ public class BasicQueryHandlerTest extends TestCase {
             query = new BasicSearchQuery();
             BasicStep newsStep = query.addStep(news)
                 .setAlias("news1");
-            CoreField newsTitle = news.getField("title");
+            FieldDefs newsTitle = news.getField("title");
             BasicStepField newsTitleField = query.addField(newsStep, newsTitle)
                 .setAlias("a_title");
             query.addSortOrder(newsTitleField)
                 .setDirection(SortOrder.ORDER_ASCENDING);
-            CoreField newsDescription = news.getField("body");
+            FieldDefs newsDescription = news.getField("body");
             query.addField(newsStep, newsDescription);
-            CoreField newsOwner = news.getField("owner");
+            FieldDefs newsOwner = news.getField("owner");
             BasicStepField newsOwnerField = query.addField(newsStep, newsOwner);
             BasicFieldValueConstraint constraint
             = new BasicFieldValueConstraint(newsOwnerField, JUNIT_USER);
             query.setConstraint(constraint);
-            List<MMObjectNode> resultNodes = instance.getNodes(query, new ResultBuilder(mmbase, query));
-            Iterator<MMObjectNode> iResultNodes = resultNodes.iterator();
-            Iterator<MMObjectNode> iTestNodes = testNodes.iterator();
+            List resultNodes = instance.getNodes(query, new ResultBuilder(mmbase, query));
+            Iterator iResultNodes = resultNodes.iterator();
+            Iterator iTestNodes = testNodes.iterator();
             while (iTestNodes.hasNext()) {
-                MMObjectNode testNode = iTestNodes.next();
+                MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
                 assertTrue(iResultNodes.hasNext());
-                MMObjectNode resultNode = iResultNodes.next();
+                MMObjectNode resultNode = (MMObjectNode) iResultNodes.next();
                 assertTrue(resultNode instanceof ResultNode);
                 assertTrue(resultNode.getBuilder() instanceof ResultBuilder);
                 assertTrue(resultNode.getStringValue("a_title") != null
@@ -261,7 +260,7 @@ public class BasicQueryHandlerTest extends TestCase {
             query = new BasicSearchQuery(true);
             BasicStep newsStep = query.addStep(news)
                 .setAlias("news1");
-            CoreField newsTitle = news.getField("title");
+            FieldDefs newsTitle = news.getField("title");
             query.addAggregatedField(
                 newsStep, newsTitle, AggregatedField.AGGREGATION_TYPE_MIN).
                 setAlias("minName");
@@ -269,22 +268,22 @@ public class BasicQueryHandlerTest extends TestCase {
                 newsStep, newsTitle, AggregatedField.AGGREGATION_TYPE_MAX).
                 setAlias("maxName");
 
-            CoreField newsOwner = news.getField("owner");
+            FieldDefs newsOwner = news.getField("owner");
             BasicStepField newsOwnerField = new BasicStepField(newsStep, newsOwner);
             BasicFieldValueConstraint constraint
                 = new BasicFieldValueConstraint(newsOwnerField, JUNIT_USER);
             query.setConstraint(constraint);
-            List<MMObjectNode> resultNodes = instance.getNodes(query, new ResultBuilder(mmbase, query));
+            List resultNodes = instance.getNodes(query, new ResultBuilder(mmbase, query));
             assertTrue(resultNodes.size() == 1);
 
             // Determine min/max title from testnodes.
-            Iterator<MMObjectNode> iTestNodes = testNodes.iterator();
+            Iterator iTestNodes = testNodes.iterator();
             String minName =
-                testNodes.get(0).getStringValue("title");
+                ((MMObjectNode)testNodes.get(0)).getStringValue("title");
             String maxName =
-                testNodes.get(0).getStringValue("title");
+                ((MMObjectNode)testNodes.get(0)).getStringValue("title");
             while (iTestNodes.hasNext()) {
-                MMObjectNode testNode = iTestNodes.next();
+                MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
                 String title = testNode.getStringValue("title");
                 if (title.compareTo(minName) < 0) {
                     minName = title;
@@ -301,13 +300,13 @@ public class BasicQueryHandlerTest extends TestCase {
 
         // Test weak offset support.
         query = new NodeSearchQuery(typedef);
-        List<MMObjectNode> typedefNodes = instance.getNodes(query, typedef);
+        List typedefNodes = instance.getNodes(query, typedef);
         assertTrue(
             "In order to run this test, more than 5 typedef nodes are required.",
             typedefNodes.size() > 5);
 
         query.setOffset(2);
-        List<MMObjectNode> resultNodes = instance.getNodes(query, typedef);
+        List resultNodes = instance.getNodes(query, typedef);
         assertTrue(resultNodes.size() == typedefNodes.size() - 2);
 
         query.setMaxNumber(3);

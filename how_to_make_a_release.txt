@@ -1,10 +1,6 @@
-$Id$
+$Id: how_to_make_a_release.txt 37421 2009-07-31 15:44:38Z michiel $
 
-Branching
-================================================================================
-For an actual official release you need to to the following. This involves actual changes in the repository.
 
-- Make sure all automated test-cases succeed. Check the nightly build, or run 'make all' in tests.
 - Manually test. Build or download an example war. Deploy it on recent tomcat version.
     - No warnings, errors in the log
     - No easily found problems in the example webapp
@@ -12,53 +8,24 @@ For an actual official release you need to to the following. This involves actua
 
 
 - Make a tag or branch
-   svn cp -m "Tagged 2.0.1"  https://scm.mmbase.org/mmbase/trunk  https://scm.mmbase.org/mmbase/tags/MMBase-2_0_1_Final
+   svn cp -m "Tagged 1.8.7"  https://scm.mmbase.org/mmbase/branches/MMBase-1_8   https://scm.mmbase.org/mmbase/tags/MMBase-1_8_7_Final
 
 - Check it out
-  svn co  https://scm.mmbase.org/mmbase/tags/MMBase-2_0_1_Final
+  svn co  https://scm.mmbase.org/mmbase/tags/MMBase-1_8_7_Final
 
-   And edit:
-  - core/src/main/java/org/mmbase/Version.java
-  - pom.xml
-    Change <mmbase.version.number> and <mmbase.version.postfix> to the right numbers.
-    Such as 1.9.2 and -20091104
+  Edit
+M      build-example.properties
+M      src/org/mmbase/Version.java
+M      maven-base/project.properties
+M      build.properties.version
 
-  - Fix the other poms:
-   for i in `find . -name pom.xml` ; do cat $i | sed s/2.0-SNAPSHOT/2.0.1/g > $i.new ; mv $i.new $i   ; done
+
 
   - Check this in
 
 
 - Make sure you use java 5
 
- - Build following dirs first with -N
-   maven-base
-   maven
-   maven/maven-mmbase-plugin
-   applications
-   contributions/lucene
-
- - Then:
-   mvn -P'deploy,!development,!servlet25' clean deploy
-   cd base-app
-   mvn -P'deploy,!development,setvlet25' clean deploy
-
-
-
-Custom build
-================================================================================
-If you don't have access to repository, or don't want all the hassle, it should also be possible like this:
-
-- First check out what you want to deploy. For example a certain revision:
-    svn co -r 40000 https://scm.mmbase.org/mmbase/branches/MMBase-1_9  mymmbase
-
-- Then, build using the 'my.version' option:
-   (cd mymmbase ; mvn -P'deploy,mmapplications_subset1,fastinstall' -Dmaven.test.skip=true -Dservlet.version=2.5   -Dmy.version=MyMMBaseBasedOnRevision40000  clean install)
-
-- You may also deploy it to your own repository:
-   (cd mymmbase ; mvn -P'deploy,mmapplications_subset1,fastinstall' -Dmaven.test.skip=true -Dservlet.version=2.5
-   -Dmy.version=MyMMBaseBasedOnRevision40000    -Dmy.repository.id=myrepo  -Dmy.repository.url=scp://myserver/myrepol
-   clean deploy)
 
 
 

@@ -11,7 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import java.util.*;
-import java.util.regex.Pattern;
+import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.tests.*;
 import org.mmbase.bridge.util.CollectionNodeList;
@@ -20,7 +20,7 @@ import org.mmbase.bridge.util.CollectionNodeList;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @since $Id$
+ * @since $Id: FunctionsTest.java,v 1.10 2006-01-14 19:12:08 michiel Exp $
  * @since MMBase-1.8
  */
 public class FunctionsTest extends BridgeTest {
@@ -151,7 +151,6 @@ public class FunctionsTest extends BridgeTest {
         NodeIterator i = nl.nodeIterator();
         while (i.hasNext()) {
             Node n = i.nextNode();
-            assertTrue("" + nl + " contains nulls", n != null);
             assertTrue(n.getStringValue("bloe").equals("hoi"));
         }
         nl = (NodeList) function.getFunctionValue(params);
@@ -167,127 +166,19 @@ public class FunctionsTest extends BridgeTest {
      * XXX really not complete yet
      */
     public void testFunctionSets() {
-        if (getCloudContext().getUri().equals(ContextProvider.DEFAULT_CLOUD_CONTEXT_NAME)) {
-            Function testfunc1 = FunctionSets.getFunction("utils", "randomLong");
-            assertTrue("function 'randomLong' not found (functionset 'utils')", testfunc1 != null);
-            // long randomLong = testfunc1.getFunctionValue(null);
-            Function testfunc2 = FunctionSets.getFunction("testfunctions", "testBoolean");
-            assertTrue("function 'testBoolean' not found (functionset 'testfunctions')", testfunc2 != null);
 
-            Parameters params2 = testfunc2.createParameters();
-            params2.set("inBoolean", Boolean.valueOf(true));
+        Function testfunc1 = FunctionSets.getFunction("utils", "randomLong");
+        assertTrue("function 'randomLong' not found (functionset 'utils')", testfunc1 != null);
+        // long randomLong = testfunc1.getFunctionValue(null);
+        Function testfunc2 = FunctionSets.getFunction("testfunctions", "testBoolean");
+        assertTrue("function 'testBoolean' not found (functionset 'testfunctions')", testfunc2 != null);
 
-
-            Object result = testfunc2.getFunctionValue(params2);
-            assertTrue("Expected return value of type 'Boolean', but got: '" + result + "'", result instanceof java.lang.Boolean);
-            assertTrue("function 'testBoolean' didn't return true as was expected", ((Boolean) result).booleanValue());
-        } else {
-            System.out.println("Functionsets can only be used on local cloud");
-        }
-    }
-
-    private static final Pattern NO_FUNCTION = Pattern.compile("(?i).*function.*nonexistingfunction.*");
-
-    public void testNonExistingFunctionOnRealNode() {
-        Cloud cloud = getCloud();
-        NodeList nl = cloud.getNodeManager("object").getList(null);
-        Node n = nl.get(0);
-
-        assertTrue(n.getNumber() > 0);
+        Parameters params2 = testfunc2.createParameters();
+        params2.set("inBoolean", Boolean.valueOf(true));
 
 
-        try {
-            n.getFunction("nonexistingfunction");
-            fail("Getting non-existing function should throw exception");
-        } catch (NotFoundException e) {
-            assertTrue(e.getMessage() + " does not match " + NO_FUNCTION, NO_FUNCTION.matcher(e.getMessage()).matches());
-        }
-
-
-        try {
-            n.getValue("nonexistingfunction()");
-            fail("Using non existing function should raise an exeption"); // this fails!
-        } catch (IllegalArgumentException e) {
-            // The exception should also be clear
-            assertTrue(e.getMessage() + " does not match " + NO_FUNCTION, NO_FUNCTION.matcher(e.getMessage()).matches());
-        }
-
-    }
-
-
-    public void testFunctionOnClusterNode() {
-        Cloud cloud = getCloud();
-        NodeList nl = cloud.getList("", "object", "",
-                                    "", "", "",
-                                    "", false);
-        Node n = nl.get(0);
-        assertTrue(n.getNumber() < 0);
-
-        // info implemented in MMObjectBuilder  itself, so even virtual nodes must  have it, and give something non empty
-        assertTrue(!"".equals(n.getFunctionValue("info", null).toString()));
-
-        // TODO: FAILS!!!
-        //assertTrue(!"".equals(n.getStringValue("info()")));
-
-        // could also test gui of virtual nodes themselves, they seem to give empty now.
-
-        // should be possible to call functions on elements too.
-        assertTrue(!"".equals(n.getNodeValue("object").getFunctionValue("gui", null).toString()));
-
-        // TODO: FAILS:
-        //assertTrue(!"".equals(n.getStringValue("object.gui()")));
-    }
-
-    public void testNonExistingFunctionOnClusterNode() { //MMB-1208
-        Cloud cloud = getCloud();
-        NodeList nl = cloud.getList("", "object", "",
-                                    "", "", "",
-                                    "", false);
-        Node n = nl.get(0);
-        assertTrue(n.getNumber() < 0);
-        try {
-            n.getValue("nonexistingfunction(object.number)");
-            fail("Using non existing function should raise an exeption"); // this fails!
-        } catch (IllegalArgumentException e) {
-            // The exception should also be clear
-            assertTrue(e.getMessage() + " does not match " + NO_FUNCTION, NO_FUNCTION.matcher(e.getMessage()).matches());
-        }
-        try {
-            n.getValue("object.nonexistingfunction()");
-            fail("Using non existing function should raise an exeption"); // this fails!
-        } catch (IllegalArgumentException e) {
-            // The exception should also be clear
-            assertTrue(e.getMessage() + " does not match " + NO_FUNCTION, NO_FUNCTION.matcher(e.getMessage()).matches());
-        }
-
-    }
-
-    protected void testThisNode(String function) {
-        Cloud cloud = getCloud();
-        NodeManager nm = cloud.getNodeManager("datatypes");
-        Node node1 = nm.createNode();
-        node1.commit();
-
-        Function fun = node1.getFunction(function);
-        assertNotNull(fun);
-
-        FieldValue result = node1.getFunctionValue(function, null);
-        assertNotNull(result);
-
-        Node resultNode = result.toNode();
-
-        assertNotNull(resultNode);
-
-        assertEquals(node1, resultNode);
-
-        // calling it in a a 'legacy' way
-        Node resultNode2 = node1.getNodeValue(function + "()");
-
-        assertEquals(node1, resultNode2);
-    }
-
-    public void testThisNode() {
-        testThisNode("thisnode");
-        testThisNode("thisnode2");
+        Object result = testfunc2.getFunctionValue(params2);
+        assertTrue("Expected return value of type 'Boolean', but got: '" + result + "'", result instanceof java.lang.Boolean);
+        assertTrue("function 'testBoolean' didn't return true as was expected", ((Boolean) result).booleanValue());
     }
 }

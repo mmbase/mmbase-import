@@ -1,4 +1,0 @@
-<div
-    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    id="${pageContext.session.id}"
-    class="hearbeat">${pageContext.session.maxInactiveInterval}</div>

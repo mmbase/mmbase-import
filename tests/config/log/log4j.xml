@@ -15,12 +15,7 @@
   </appender>
 
   <logger name="STDERR">
-    <level class="&mmlevel;" value ="fatal" />
-  </logger>
-
-
-  <logger name="org.mmbase.module.RemoteMMCI">
-    <level class="&mmlevel;" value ="info" />
+    <level class="&mmlevel;" value ="fatal" />	
   </logger>
 
   <root>

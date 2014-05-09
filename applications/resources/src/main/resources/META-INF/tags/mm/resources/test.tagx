@@ -1,9 +1,0 @@
-<jsp:root
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    xmlns:jsp="http://java.sun.com/JSP/Page"
-    version="2.0">
-  <jsp:directive.attribute name="voted"   fragment="true" />
-  <jsp:directive.attribute name="canvote"   fragment="true" />
-  hoi hoi
-</jsp:root>
