@@ -97,7 +97,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static boolean isRelease() {
-        return false;
+        return true;
     };
 
     /**
@@ -106,7 +106,7 @@ public class Version {
      * @since MMBase-1.7
      */
     public static String getReleaseStatus() {
-        return "";
+        return "final";
     };
 
     /**
