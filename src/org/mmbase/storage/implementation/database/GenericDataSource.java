@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.implementation.database;
 
 import java.sql.*;
+import java.util.logging.*;
 
 import javax.sql.DataSource;
 
@@ -18,6 +19,7 @@ import org.mmbase.module.core.MMBase;
 import org.mmbase.module.database.JDBC;
 import org.mmbase.storage.StorageInaccessibleException;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.Logger;
 
 /**
  * This class functions as a Datasource wrapper around the JDBC Module.
@@ -115,7 +117,11 @@ public final class GenericDataSource implements DataSource {
         return 0;
     }
 
-    // see javax.sql.DataSource
+	public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException {
+		throw new SQLFeatureNotSupportedException();
+	}
+
+	// see javax.sql.DataSource
     public java.io.PrintWriter getLogWriter() {
         return printWriter;
     }

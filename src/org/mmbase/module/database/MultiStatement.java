@@ -9,9 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.database;
 
-import java.sql.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import java.sql.*;
 
 /**
  * MultiStatement is a wrapper class for a callable Statement
@@ -479,7 +480,15 @@ public class MultiStatement implements Statement {
         return false;
     }
 
-    public Object unwrap(Class iface) {
+	public void closeOnCompletion() throws SQLException {
+		s.closeOnCompletion();
+	}
+
+	public boolean isCloseOnCompletion() throws SQLException {
+		return s.isCloseOnCompletion();
+	}
+
+	public Object unwrap(Class iface) {
         return s;
     }
 
