@@ -9,13 +9,13 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.module.database;
 
-import java.sql.*;
-import java.util.Map;
-import java.lang.reflect.Method;
-
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import java.sql.*;
+import java.util.Properties;
+import java.util.concurrent.Executor;
 
 /**
  * MultiConnection is a replacement class for Connection it provides you a
@@ -195,7 +195,7 @@ public class MultiConnection extends ConnectionWrapper {
         if (log.isDebugEnabled()) {
             log.trace("because", new Exception());
         }
-        
+
         state = CON_FINISHED;
         // If there is a parent object, this connection belongs to a pool and should not be closed,
         // but placed back in the pool
@@ -290,10 +290,49 @@ public class MultiConnection extends ConnectionWrapper {
         return new MultiStatement(this, con.createStatement(type, concurrency, holdability));
     }
 
-    /**
+	public NClob createNClob() throws SQLException {
+		return con.createNClob();
+	}
+
+	public SQLXML createSQLXML() throws SQLException {
+		return con.createSQLXML();
+	}
+
+	public void setClientInfo(String name, String value) throws SQLClientInfoException {
+		con.setClientInfo(name, value);
+	}
+
+	public void setClientInfo(Properties properties) throws SQLClientInfoException {
+		con.setClientInfo(properties);
+	}
+
+	public void setSchema(String schema) throws SQLException {
+		con.setSchema(schema);
+	}
+
+	public String getSchema() throws SQLException {
+		return con.getSchema();
+
+	}
+
+	public void abort(Executor executor) throws SQLException {
+		con.abort(executor);
+	}
+
+
+
+	public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
+		con.setNetworkTimeout(executor, milliseconds);
+	}
+
+	public int getNetworkTimeout() throws SQLException {
+		return con.getNetworkTimeout();
+	}
+
+	/**
      * Return the underlying real connection. NOTE: use with extreme caution! MMBase is supposed to look
      * after it's own connections. This method is public only for the reason that specific database
-     * implementations need access to this connection in order to safely clear them before they 
+     * implementations need access to this connection in order to safely clear them before they
      * can be put back in the connection pool.
      */
     public Connection getRealConnection() {
