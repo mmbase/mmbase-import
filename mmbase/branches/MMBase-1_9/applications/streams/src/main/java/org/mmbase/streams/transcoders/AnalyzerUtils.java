@@ -21,20 +21,20 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.transcoders;
 
-import java.io.File;
-import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.mmbase.applications.media.Codec;
 import org.mmbase.applications.media.State;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.servlet.FileServlet;
 import org.mmbase.util.MimeType;
+import org.mmbase.util.logging.ChainedLogger;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
-
-import org.mmbase.util.logging.*;
+import java.io.File;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Utility methods common for the analyzers that look for several media audio, video and images,
@@ -529,8 +529,12 @@ public final class AnalyzerUtils implements java.io.Serializable {
         if (str.equals("libmp3lame")) str = "mp3";
         if (str.equals("mpeg1video")) str = "mpeg";
         if (str.equals("mpeg2video")) str = "mpeg2";
-        if (str.startsWith("lib")) str = str.substring(3, str.length());
-
+        if (str.startsWith("lib")) {
+            int pos = str.indexOf(" ");
+            str = str.substring(3, pos);
+        } else if (str.indexOf(" ") > -1) {
+            str = str.substring(0, str.indexOf(" "));
+        }
         return Codec.get(str);
     }
 
