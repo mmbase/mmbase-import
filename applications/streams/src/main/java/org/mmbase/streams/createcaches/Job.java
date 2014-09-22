@@ -21,20 +21,35 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.createcaches;
 
-import java.io.File;
-import java.net.URI;
-import java.util.*;
-import java.util.concurrent.Future;
-
-import org.mmbase.applications.media.*;
-import org.mmbase.bridge.*;
+import org.mmbase.applications.media.State;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.ContextProvider;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.servlet.FileServlet;
 import org.mmbase.storage.search.FieldCompareConstraint;
 import org.mmbase.streams.transcoders.CommandTranscoder;
-import org.mmbase.util.*;
+import org.mmbase.util.MimeType;
+import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.ThreadPools;
 import org.mmbase.util.externalprocess.CommandExecutor;
-import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.BufferedLogger;
+import org.mmbase.util.logging.ChainedLogger;
+import org.mmbase.util.logging.Level;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+import java.io.File;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Future;
 
 /**
  * A Job is associated with a 'source' node, and describes what is currently happening to create
@@ -251,8 +266,22 @@ public class Job implements Iterable<Result> {
                     assert outFileName != null;
                     assert outFileName.length() > 0;
                     dest.setStringValue("url", outFileName);
-                    jd.transcoder.init(dest);
 
+                    int pos = outFileName.lastIndexOf("/");
+                    if (pos > 0) {  // check if directory exists
+                        String dirName = outFileName.substring(0, pos);
+                        File dir = new File(processor.getDirectory(), dirName);
+                        if (!dir.exists()) {
+                            LOG.warn("The directory '" + dir.toString() + "' does NOT exist, will try to create it.");
+                            try {
+                                dir.mkdir();
+                            } catch (SecurityException se) {
+                                LOG.error("SecurityException while trying creating directory '" + dir.toString() + "' : " + se);
+                            }
+                        }
+                    }
+
+                    jd.transcoder.init(dest);
                     dest.commit();
 
 
