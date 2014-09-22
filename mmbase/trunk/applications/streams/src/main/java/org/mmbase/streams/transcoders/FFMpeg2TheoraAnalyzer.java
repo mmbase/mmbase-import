@@ -21,9 +21,7 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.transcoders;
 
-import java.util.regex.*;
-import java.util.*;
-
+import org.mmbase.applications.media.Codec;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
@@ -34,8 +32,14 @@ import org.mmbase.storage.search.Step;
 import org.mmbase.storage.search.StepField;
 import org.mmbase.streams.UpdateSourcesFunction;
 import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.logging.ChainedLogger;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
-import org.mmbase.util.logging.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
