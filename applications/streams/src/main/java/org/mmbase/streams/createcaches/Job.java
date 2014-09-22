@@ -251,8 +251,22 @@ public class Job implements Iterable<Result> {
                     assert outFileName != null;
                     assert outFileName.length() > 0;
                     dest.setStringValue("url", outFileName);
-                    jd.transcoder.init(dest);
 
+                    int pos = outFileName.lastIndexOf("/");
+                    if (pos > 0) {  // check if directory exists
+                        String dirName = outFileName.substring(0, pos);
+                        File dir = new File(processor.getDirectory(), dirName);
+                        if (!dir.exists()) {
+                            LOG.warn("The directory '" + dir.toString() + "' does NOT exist, will try to create it.");
+                            try {
+                                dir.mkdir();
+                            } catch (SecurityException se) {
+                                LOG.error("SecurityException while trying creating directory '" + dir.toString() + "' : " + se);
+                            }
+                        }
+                    }
+
+                    jd.transcoder.init(dest);
                     dest.commit();
 
 

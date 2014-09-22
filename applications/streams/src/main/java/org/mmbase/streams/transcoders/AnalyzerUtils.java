@@ -529,8 +529,12 @@ public final class AnalyzerUtils implements java.io.Serializable {
         if (str.equals("libmp3lame")) str = "mp3";
         if (str.equals("mpeg1video")) str = "mpeg";
         if (str.equals("mpeg2video")) str = "mpeg2";
-        if (str.startsWith("lib")) str = str.substring(3, str.length());
-
+        if (str.startsWith("lib")) {
+            int pos = str.indexOf(" ");
+            str = str.substring(3, pos);
+        } else if (str.indexOf(" ") > -1) {
+            str = str.substring(0, str.indexOf(" "));
+        }
         return Codec.get(str);
     }
 
