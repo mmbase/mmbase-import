@@ -51,11 +51,11 @@ public class FFMpegSegmenterTranscoder extends CommandTranscoder {
     String acodec = null;
     String vcodec = null;
 
-    private static String httpPrefix = "http://localhost:8080/files/";
+    String httpPrefix = "http://localhost:8080/files/";
     public void setHttpPrefix(String h) {
         httpPrefix = h;
     }
-    private static String filePath= "";
+    String filePath= "";
 
     public Codec getCodec() {
         if (vcodec != null) {
