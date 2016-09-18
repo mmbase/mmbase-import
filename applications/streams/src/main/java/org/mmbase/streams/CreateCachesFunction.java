@@ -21,33 +21,28 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.mmbase.applications.media.State;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.datatypes.processors.ChainedCommitProcessor;
 import org.mmbase.datatypes.processors.CommitProcessor;
-import org.mmbase.streams.createcaches.Stage;
-import org.mmbase.streams.createcaches.Processor;
+import org.mmbase.security.ActionRepository;
 import org.mmbase.streams.createcaches.JobDefinition;
-import org.mmbase.applications.media.State;
-
+import org.mmbase.streams.createcaches.Processor;
+import org.mmbase.streams.createcaches.Stage;
 import org.mmbase.streams.transcoders.AbstractTranscoder;
 import org.mmbase.streams.transcoders.Analyzer;
 import org.mmbase.streams.transcoders.Transcoder;
 import org.mmbase.util.MimeType;
-import org.mmbase.security.ActionRepository;
 import org.mmbase.util.functions.NodeFunction;
 import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import java.util.*;
 
 /**
  * Triggers (re)creation of caches (streamsourcescaches) of a source node
@@ -241,6 +236,19 @@ public class CreateCachesFunction extends NodeFunction<Boolean> {
                 String label = "";
                 if (cache.getNodeManager().hasField("label")) {
                     label = cache.getStringValue("label");
+
+                    // iterate config keys in caches and find label if not yet there
+                    Iterator<Map.Entry<String,String>> it = configKeys.entrySet().iterator();
+                    while (label.equals("") && it.hasNext()) {
+                        Map.Entry<String, String> e = it.next();
+                        String config_id = e.getKey();
+                        String config_key = e.getValue();
+                        if (config_key.equals(key)) {
+                            label = jdlist.get(config_id).getLabel();
+                        }
+                    }
+
+
                 }
                 MimeType mt   = new MimeType( cache.getStringValue("mimetype") );
                 Transcoder tr = null;
