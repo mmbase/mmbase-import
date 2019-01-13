@@ -9,10 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-import java.util.*;
-import java.lang.reflect.*;
-import org.mmbase.util.functions.*;
 import org.mmbase.datatypes.processors.Processor;
+import org.mmbase.util.functions.BeanFunction;
+import org.mmbase.util.functions.Parameter;
+import org.mmbase.util.functions.Parameters;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * BeanTransformerFactory takes simple {@link Transformer}s class-es and wraps them into parameterixed transformer factories.

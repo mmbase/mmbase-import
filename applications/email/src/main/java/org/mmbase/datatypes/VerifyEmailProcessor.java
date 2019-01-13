@@ -8,24 +8,36 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.storage.search.*;
-import org.mmbase.util.functions.*;
-import org.mmbase.util.*;
-import org.mmbase.util.transformers.*;
-import org.mmbase.datatypes.processors.*;
 import org.mmbase.core.event.EventManager;
-import javax.mail.internet.*;
+import org.mmbase.datatypes.processors.CommitProcessor;
+import org.mmbase.datatypes.processors.Processor;
+import org.mmbase.storage.search.FieldCompareConstraint;
+import org.mmbase.util.Casting;
+import org.mmbase.util.GenericResponseWrapper;
+import org.mmbase.util.functions.Function;
+import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.transformers.Base64;
+import org.mmbase.util.transformers.CharTransformer;
+import org.mmbase.util.transformers.TagStripperFactory;
+import org.mmbase.util.transformers.Url;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.PBEParameterSpec;
+import javax.mail.internet.InternetAddress;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
+import java.text.MessageFormat;
 import java.util.*;
-import java.text.*;
-import javax.crypto.*;
-import javax.crypto.spec.*;
-import javax.servlet.http.*;
-import javax.servlet.*;
-import javax.servlet.jsp.*;
 
 /**
  * Using this class a Processor and as CommitProcessor on a certain field, adds 'email verification'

@@ -9,14 +9,17 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.mojo;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
-import org.apache.maven.plugin.*;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Mojo which copies the 'templates' and 'blocks' directory (if they exist) to the correct location
@@ -44,7 +47,6 @@ public class WebResourcesMojo extends AbstractMojo {
     /**
      *
      * @parameter expression=true
-     * @required
      */
     private boolean useDefaultExcludes;
 

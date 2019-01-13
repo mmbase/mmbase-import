@@ -9,8 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 import java.util.*;
-import org.mmbase.util.logging.*;
 
 /**
  * Extends and wraps LocalizedString. It extends to look like a 'normal' LocalizedString, but it
@@ -89,7 +91,7 @@ public class ReplacingLocalizedString extends WrappedLocalizedString {
                                         return value.getKey();
                                     }
                                     public String  getValue() {
-                                        return replace(value.getValue());
+                                        return ReplacingLocalizedString.this.replace(value.getValue());
                                     }
                                     public String setValue(String v) {
                                         throw new UnsupportedOperationException(); // map is umodifiable
