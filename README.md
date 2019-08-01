@@ -2,7 +2,7 @@
 
 
 # MMBase on Github!
-This is the code originally maintained by the subversion repository on http://mmbase.org
+This is the code originally maintained by the subversion repository on http://scm.mmbase.org/view/
 
 MMBase is the CMS we worked on in the 00's (it was open sourced in 2000). It kind of died more or less  around 2012. The site subversion and maven repositories are still up, but I suppose that will not be for ever.
 
