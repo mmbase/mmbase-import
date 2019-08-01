@@ -7,3 +7,5 @@ MMBase is the CMS we worked on in the 00's (it was open sourced in 2000). It kin
 
 I decided to migrate the code to github now, and may be split it up a bit. I may even start to reuse some code. I e.g. would sometimes still like to use the taglib. 
 
+So I just started to split out the monolithic repository 'mmbase' the parts I suppose might still be usefull, and make them available via maven central.
+
