@@ -10,11 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.mock;
 
-import javax.servlet.*;
-import org.junit.*;
-import org.springframework.mock.web.*;
-import org.springframework.core.io.*;
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 
 /**
@@ -27,15 +23,6 @@ public class MockSetupTest  {
     @Test
     public void contextInitialized() {
         MockSetup setup = new MockSetup();
-        ServletContext sx = new MockServletContext("/src/test/files/",  new FileSystemResourceLoader()) {
-                @Override
-                public ServletContext getContext(String uriPath) {
-                    return this;
-                }
-            };
-
-        ServletContextEvent sce = new ServletContextEvent(sx);
-        setup.contextInitialized(sce);
 
     }
 }

@@ -10,15 +10,14 @@ See http://www.MMBase.org/license
 
 package org.mmbase.datatypes.handlers.html;
 
-import org.mmbase.util.*;
-import javax.servlet.http.*;
-import org.springframework.mock.web.*;
-import java.util.*;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
 
-import org.junit.*;
-import static org.junit.Assert.*;
-import static org.junit.Assume.*;
+import javax.servlet.http.HttpServletRequest;
+
+import org.junit.Test;
+import org.mmbase.util.SerializableInputStream;
+
+import static org.mockito.Mockito.mock;
 
 /**
  * @version $Id$
@@ -42,9 +41,9 @@ public  class MultiPartTest {
 
     @Test
     public void basic() throws Exception {
-        MockHttpServletRequest request = new MockHttpServletRequest("POST", "/upload");
-        request.setContentType("multipart/form-data;  boundary=" + BOUNDARY);
-        request.setContent(getContent());
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        //request.setContentType("multipart/form-data;  boundary=" + BOUNDARY);
+        //request.setContent(getContent());
 
         System.out.println("" + request.getInputStream());
 

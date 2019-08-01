@@ -148,22 +148,6 @@ See http://www.MMBase.org/license
       <scope>test</scope>
     </dependency>
     -->
-    <!--
-        Spring has a mock imlementation of PageContext, which is used for testing some parts of this taglib.
-    -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-mock</artifactId>
-      <version>2.0-rc3</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>2.0-m4</version>
-      <scope>test</scope>
-    </dependency>
-
 
 
 

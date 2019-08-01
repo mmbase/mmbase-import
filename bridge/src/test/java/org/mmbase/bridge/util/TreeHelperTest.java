@@ -10,17 +10,20 @@
 
 package org.mmbase.bridge.util;
 
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.mock.*;
-import org.mmbase.util.ResourceLoader;
-import org.mmbase.util.MMBaseContext;
-import java.util.*;
-import org.junit.*;
-import org.springframework.mock.web.*;
-import org.springframework.core.io.*;
 import javax.servlet.ServletContext;
-import static org.junit.Assert.*;
-import static org.junit.Assume.*;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.mock.MockBuilderReader;
+import org.mmbase.bridge.mock.MockCloudContext;
+import org.mmbase.util.MMBaseContext;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 /**
@@ -36,12 +39,8 @@ public class TreeHelperTest  {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ServletContext sx = new MockServletContext("/src/test/files/treetests",  new FileSystemResourceLoader()) {
-                @Override
-                public ServletContext getContext(String uriPath) {
-                    return this;
-                }
-            };
+        ServletContext sx = mock(ServletContext.class);
+        when(sx.getContext(anyString())).thenReturn(sx);
         MMBaseContext.init(sx);
         org.mmbase.util.logging.SimpleTimeStampImpl.configure(org.mmbase.bridge.util.TreeHelper.class.getName(), "debug");
         MockCloudContext cc =  MockCloudContext.getInstance();

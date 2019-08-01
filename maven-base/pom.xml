@@ -446,7 +446,7 @@ See http://www.MMBase.org/license
       <dependency>
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
-        <version>1.2.1</version>
+        <version>1.4</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -458,22 +458,6 @@ See http://www.MMBase.org/license
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${junit.version}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <!--
-          Spring has a mock imlementation of javax.servlet stuff
-      -->
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-test</artifactId>
-        <version>3.0.5.RELEASE</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-core</artifactId>
-        <version>3.0.5.RELEASE</version>
         <scope>test</scope>
       </dependency>
 
