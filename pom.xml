@@ -405,7 +405,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       <plugin>
         <groupId>com.keyboardsamurais.maven</groupId>
         <artifactId>maven-timestamp-plugin</artifactId>
-        <version>0.1</version>
+        <version>1.0</version>
         <configuration>
           <propertyName>javadoctimestamp</propertyName>
           <timestampPattern>yyyy-MM-dd'T'HH:mm</timestampPattern>
