@@ -29,6 +29,10 @@
     </extensions>
   </build>
 
+  <dependencyManagement>
+
+  </dependencyManagement>
+
   <properties>
     <mmbase.repos>scp://mmbase.org/home/tomcat/downloads/</mmbase.repos>
   </properties>

@@ -13,7 +13,6 @@
   <artifactId>mmbase-searchrelate</artifactId>
   <name>MMBase Search and Relate</name>
   <packaging>war</packaging>
-  <version>${mmbase.version}</version>
 
   <properties>
     <mmbase.version.number>2.0</mmbase.version.number>
@@ -66,6 +65,7 @@
       <plugin>
         <groupId>net.sourceforge.maven-taglib</groupId>
         <artifactId>maven-taglib-plugin</artifactId>
+        <version>2.4</version>
         <configuration>
           <dontRecurseIntoSubdirs>true</dontRecurseIntoSubdirs>
         </configuration>

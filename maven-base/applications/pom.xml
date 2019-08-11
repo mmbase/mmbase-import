@@ -29,7 +29,6 @@
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-utils</artifactId>
-      <version>${mmbase.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -50,6 +49,8 @@
     </dependency>
 
   </dependencies>
+
+
 
   <scm>
     <url>https://scm.mmbase.org/mmbase/trunk/applications/</url>

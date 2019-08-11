@@ -15,7 +15,6 @@
   <artifactId>mmbase-dove</artifactId>
   <name>MMBase Dove</name>
   <packaging>jar</packaging>
-  <version>${mmbase.version}</version>
   <dependencies>
     <!-- only for DoveServlet, TODO, drop that dependency -->
     <dependency>

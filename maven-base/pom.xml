@@ -18,13 +18,11 @@ See http://www.MMBase.org/license
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.mmbase</groupId>
   <artifactId>mmbase-parent</artifactId>
   <packaging>pom</packaging>
   <name>MMBase Base</name>
 
   <properties>
-
     <servlet.version>2.5</servlet.version>
     <jsp.version>2.1</jsp.version>
     <jsp.groupId>javax.servlet.jsp</jsp.groupId>
@@ -380,6 +378,13 @@ See http://www.MMBase.org/license
 
   <dependencyManagement>
     <dependencies>
+       <dependency>
+         <groupId>org.mmbase</groupId>
+         <artifactId>mmbase-bom</artifactId>
+         <type>pom</type>
+         <version>2.0-SNAPSHOT</version>
+         <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
