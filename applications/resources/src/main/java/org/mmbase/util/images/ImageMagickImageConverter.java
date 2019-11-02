@@ -9,14 +9,20 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.util.images;
 
+import org.mmbase.util.Casting;
+import org.mmbase.util.Encode;
+import org.mmbase.util.SerializableInputStream;
+import org.mmbase.util.WriterOutputStream;
+import org.mmbase.util.externalprocess.CommandExecutor;
+import org.mmbase.util.logging.Level;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.LoggerWriter;
+import org.mmbase.util.logging.Logging;
+
 import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.mmbase.util.*;
-import org.mmbase.util.externalprocess.*;
-import org.mmbase.util.logging.*;
 
 /**
  * Converts images using ImageMagick.
@@ -30,9 +36,13 @@ import org.mmbase.util.logging.*;
 public class ImageMagickImageConverter extends AbstractImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
 
-    static final Pattern IM_VERSION_PATTERN = Pattern.compile("(?is).*?\\s(\\d+)\\.(\\d+)\\.(\\d+)(-[0-9]+)?\\s.*");
+    private static final String[] EMPTY = new String[] {};
+
+    static final Pattern IM_VERSION_PATTERN = Pattern.compile("(?is)(.*)\\s(\\d+)\\.(\\d+)\\.(\\d+)(-[0-9]+)?\\s.*");
     private static final Pattern IM_FORMAT_PATTERN  = Pattern.compile("(?is)\\s*([A-Z0-9]+)\\*?\\s+[A-Z0-9]*\\s*[r\\-]w[\\+\\-]\\s+.*");
 
+
+    private String program = "ImageMagick";
     private int imVersionMajor = 5;
     private int imVersionMinor = 5;
     private int imVersionPatch = 0;
@@ -165,15 +175,26 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
 
         {
             String imOutput = getOutput("-version").toString();
+            log.info("imOutput : " + imOutput );
             Matcher m = IM_VERSION_PATTERN.matcher(imOutput);
             if (m.matches()) {
-                imVersionMajor = Integer.parseInt(m.group(1));
-                imVersionMinor = Integer.parseInt(m.group(2));
-                imVersionPatch = Integer.parseInt(m.group(3));
-                log.service("Found ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+                String p = m.group(1);
+                log.info("p : " + p);
+                imVersionMajor = Integer.parseInt(m.group(2));
+                imVersionMinor = Integer.parseInt(m.group(3));
+                imVersionPatch = Integer.parseInt(m.group(4));
+                if (p.indexOf("GraphicsMagick") >= 0) {
+                    log.service("Found GraphicsMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+                    imVersionMajor += 5; // I have no freaking idea
+                    log.service("Supposing that that is equivalent to ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+                    program = "GraphicsMagick";
+                } else {
+                    log.service("Found ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+                }
+
             } else {
-                log.error( "converter from location " + converterPath + ", gave strange result: " + imOutput
-                           + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'. (Doesn't match " + IM_VERSION_PATTERN + ")");
+                log.error( "converter from location " + converterPath + ", gave strange result: '" + imOutput
+                           + "' conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'. (Doesn't match " + IM_VERSION_PATTERN + ")");
                 log.info("Supposing ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
 
             }
@@ -212,7 +233,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         } else {
             log.debug("ModulateScaleBase property not found, ignoring the modulateScaleBase.");
         }
-        log.info("Found ImageMagick supported formats " + validFormats + ". Using " + this);
+        log.info("Found " + program + " supported formats " + validFormats + ". Using " + this);
     }
 
     private static class ParseResult {
@@ -449,11 +470,11 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                         new File( org.mmbase.module.core.MMBaseContext.getConfigPath(),"fonts");
                         if (fontDir.isDirectory()) {
                             if (log.isDebugEnabled()) {
-                                log.debug("Using " + fontDir + " as working dir for conversion. A 'type.mgk' (see ImageMagick documentation) can be in this dir to define fonts");
+                                log.debug("Using " + fontDir + " as working dir for conversion. A 'type.mgk' (see " + program + " documentation) can be in this dir to define fonts");
                             }
                             result.cwd = fontDir;
                         } else {
-                            log.debug("Using named font without MMBase 'fonts' directory, using ImageMagick defaults only");
+                            log.debug("Using named font without MMBase 'fonts' directory, using " + program + " defaults only");
                         }
                     }
 
@@ -504,7 +525,11 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 }
                 cmds.add(cmd);
                 if (type.equals("crop") && (isMinimumVersion(6,0,5))) {
-                    cmds.add("+repage");
+                    // +repage is shortcut for -page +0+0
+                    // (http://www.mail-archive.com/lilypond-devel@gnu.org/msg24065.html),
+                    // but -page works in graphicsmagick too.
+                    cmds.add("-page");
+                    cmds.add("+0+0");
                 }
             } else {
                 key = Imaging.getAlias(key);
@@ -573,7 +598,6 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         return modCmd;
     }
 
-    private static final String[] EMPTY = new String[] {};
     /**
      * Does the actual conversion.
      *
@@ -663,6 +687,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
     }
 
 
+    @Override
     public String toString() {
         return super.toString() + " " + converterPath + " (version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch + ")";
     }
