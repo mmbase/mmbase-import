@@ -6,7 +6,9 @@
   <html  xmlns="http://www.w3.org/1999/xhtml">
     <head>
       <title>Testing MMBase/taglib</title>
-      <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js"></script>
+      <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" 
+        crossorigin="anonymous"></script>
       <style>
         html {
         background-color: #ccc;

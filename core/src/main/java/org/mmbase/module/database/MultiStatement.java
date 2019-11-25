@@ -9,9 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.database;
 
-import java.sql.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import java.sql.*;
 
 /**
  * MultiStatement is a wrapper class for a callable Statement
@@ -475,6 +476,14 @@ public class MultiStatement implements Statement {
     public boolean isPoolable() throws SQLException {
         if (s == null) throw new SQLException("Statement is closed");
         //return s.isPoolable(); // java 6
+        return false;
+    }
+
+    public void closeOnCompletion() throws SQLException {
+
+    }
+
+    public boolean isCloseOnCompletion() throws SQLException {
         return false;
     }
 

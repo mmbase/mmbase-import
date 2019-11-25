@@ -9,18 +9,22 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.implementation.database;
 
-import java.sql.*;
-
-import java.io.File;
-import javax.sql.DataSource;
-import java.lang.reflect.*;
-
 import org.mmbase.module.Module;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.database.JDBC;
 import org.mmbase.module.database.MultiConnection;
 import org.mmbase.storage.StorageInaccessibleException;
-import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+import javax.sql.DataSource;
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 
 /**
  * This class functions as a Datasource wrapper around the JDBC Module.
@@ -159,6 +163,10 @@ public final class GenericDataSource implements DataSource {
     // see javax.sql.DataSource
     public int getLoginTimeout() {
         return 0;
+    }
+
+    public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        return null;
     }
 
     // see javax.sql.DataSource

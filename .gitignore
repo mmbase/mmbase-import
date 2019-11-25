@@ -1,4 +1,10 @@
-*.iml
-target
 overlays
+# build directories
+target/
+
+# example/test content
+applications/streams/samples/
+
+# IDE's
+*.iml
 .idea

@@ -9,11 +9,14 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.module.database;
 
-import java.sql.*;
-
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * MultiConnection is a replacement class for Connection it provides you a
