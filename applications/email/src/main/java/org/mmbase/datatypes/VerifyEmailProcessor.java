@@ -8,25 +8,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes;
 
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.core.event.EventManager;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
-import org.mmbase.storage.search.*;
-import org.mmbase.util.functions.*;
-import org.mmbase.util.*;
-import org.mmbase.util.transformers.*;
 import org.mmbase.util.transformers.Base64;
-import org.mmbase.datatypes.processors.*;
-import org.mmbase.core.event.EventManager;
-import javax.mail.internet.*;
-import java.util.*;
-import java.text.*;
-import javax.crypto.*;
-import javax.crypto.spec.*;
-import javax.servlet.http.*;
-import javax.servlet.*;
-import javax.servlet.jsp.*;
 
 /**
  * Using this class a Processor and as CommitProcessor on a certain field, adds 'email verification'
