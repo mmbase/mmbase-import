@@ -60,7 +60,6 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
     <url>https://scm.mmbase.org/mmbase/branches/MMBase-1_9</url>
     <connection>scm:svn:${project.scm.url}</connection>
     <developerConnection>${project.scm.connection}</developerConnection>
-
   </scm>
 
   <issueManagement>
@@ -432,7 +431,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       <plugin>
         <groupId>com.keyboardsamurais.maven</groupId>
         <artifactId>maven-timestamp-plugin</artifactId>
-        <version>0.1</version>
+        <version>1.0</version>
         <configuration>
           <propertyName>javadoctimestamp</propertyName>
           <timestampPattern>yyyy-MM-dd'T'HH:mm</timestampPattern>
@@ -447,13 +446,6 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
         </executions>
       </plugin>
     </plugins>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ssh</artifactId>
-        <version>1.0-beta-7</version>
-      </extension>
-    </extensions>
   </build>
   <reporting>
     <plugins>
@@ -548,57 +540,36 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
 
   </reporting>
 
-
   <distributionManagement>
-    <repository>
-      <id>mmbase</id>
-      <name>MMBase maven 2 repository</name>
-      <url>scp://mmbase.org/home/tomcat/downloads/maven2</url>
-    </repository>
     <snapshotRepository>
-      <id>mmbase-snapshots</id>
-      <name>MMBase Maven2 Snapshot Repository</name>
-      <url>scp://mmbase.org/home/tomcat/downloads/snapshots</url>
-      <uniqueVersion>false</uniqueVersion>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
-    <site>
-      <id>mmbase-website</id>
-      <url>scp://mmbase.org/home/tomcat/downloads/mm2/</url>
-    </site>
+    <repository>
+      <id>ossrh-release</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
   </distributionManagement>
 
   <repositories>
-    <repository>
-      <id>mmbase</id>
-      <name>MMBase Maven2 repository</name>
-      <url>http://www.mmbase.org/maven2</url>
-    </repository>
-    <repository>
-      <id>mmbase-snapshots</id>
-      <name>MMBase Maven2 snapshots repository</name>
-      <url>http://www.mmbase.org/snapshots</url>
-    </repository>
     <repository>
       <id>jboss</id>
       <name>JBoss maven 2 repository</name>
       <url>https://repository.jboss.org/maven2</url>
     </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>mmbase</id>
-      <name>MMBase Maven2 repository</name>
-      <url>http://www.mmbase.org/maven2</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>mmbase-snapshots</id>
-      <name>MMBase Maven2 snapshots repository</name>
-      <url>http://www.mmbase.org/snapshots</url>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+       <releases>
+        <enabled>false</enabled>
+      </releases>
       <snapshots>
-        <updatePolicy>daily</updatePolicy>
+        <enabled>true</enabled>
       </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
+    </repository>
+  </repositories>
+
+
 
   <profiles>
     <profile>

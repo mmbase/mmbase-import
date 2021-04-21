@@ -107,12 +107,12 @@
       <type>war</type>
     </dependency>
 
-    <dependency>
+   <!-- TODO mmbase-repo <dependency>
       <groupId>org.mmbase.tinymce</groupId>
       <artifactId>tinymce-jquery</artifactId>
       <version>3.2.7-1</version>
       <type>war</type>
-    </dependency>
+    </dependency>-->
 
 
   </dependencies>
@@ -135,14 +135,14 @@
 
   <repositories>
     <repository>
-      <id>mmbase</id>
-      <name>MMBase Maven2 repository</name>
-      <url>http://www.mmbase.org/maven2</url>
-    </repository>
-    <repository>
-      <id>mmbase-snapshots</id>
-      <name>MMBase Maven2 snapshots repository</name>
-      <url>http://www.mmbase.org/snapshots</url>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+       <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </repository>
   </repositories>
 

@@ -61,7 +61,8 @@
     </plugins>
   </build>
   <dependencies>
-    <dependency>
+    <!-- TODO mmbase-repo -->
+   <!-- <dependency>
       <groupId>org.mmbase.jquery</groupId>
       <artifactId>jquery-ui</artifactId>
       <version>1.8-1</version>
@@ -72,24 +73,24 @@
       <artifactId>ajaxfileupload</artifactId>
       <version>1.0-beta1</version>
       <type>war</type>
-    </dependency>
-    <dependency>
+    </dependency>-->
+   <!-- <dependency>
       <groupId>org.mmbase.jquery</groupId>
       <artifactId>jquery-form</artifactId>
       <version>2.73-1</version>
       <type>war</type>
-    </dependency>
+    </dependency>-->
   </dependencies>
   <repositories>
     <repository>
-      <id>mmbase</id>
-      <name>MMBase Maven2 repository</name>
-      <url>http://www.mmbase.org/maven2</url>
-    </repository>
-    <repository>
-      <id>mmbase-snapshots</id>
-      <name>MMBase Maven2 snapshots repository</name>
-      <url>http://www.mmbase.org/snapshots</url>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+       <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </repository>
   </repositories>
 

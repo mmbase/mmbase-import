@@ -56,13 +56,13 @@
       <version>${mmbase.version}</version>
       <type>war</type>
     </dependency>
-
+<!-- TODO mmbase-repo
     <dependency>
       <groupId>org.mmbase.jquery</groupId>
       <artifactId>jquery-form</artifactId>
       <version>2.82</version>
       <type>war</type>
-    </dependency>
+    </dependency>-->
 
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -84,7 +84,7 @@
     <dependency>
       <groupId>com.yahoo.platform.yui</groupId>
       <artifactId>yuicompressor</artifactId>
-      <version>2.4.2-mmbase</version> <!-- version from http://yuilibrary.com/downloads/#yuicompressor -->
+      <version>2.4.8</version> <!-- version from http://yuilibrary.com/downloads/#yuicompressor -->
       <!-- The default in repo1 gives horrible problems because of conflicts with rhino -->
       <!-- See http://www.julienlecomte.net/blog/2008/10/80/ -->
     </dependency>

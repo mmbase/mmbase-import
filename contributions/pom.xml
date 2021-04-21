@@ -30,8 +30,9 @@
       </activation>
       <modules>
         <module>lucene</module>
+        <!-- TODO mmbase-repo
         <module>aselect</module>
-        <module>poll</module>
+        --><module>poll</module>
         <module>calendar</module>
         <module>mmbob</module>
         <module>multilanguagegui</module>
@@ -52,18 +53,29 @@
     </profile>
   </profiles>
 
-
-
   <repositories>
     <repository>
-      <id>mmbase</id>
-      <url>http://www.mmbase.org/maven2</url>
-    </repository>
-    <repository>
-      <id>mmbase-snapshots</id>
-      <name>MMBase Maven2 snapshots repository</name>
-      <url>http://www.mmbase.org/snapshots</url>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+       <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </repository>
   </repositories>
+
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh-release</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
 
 </project>

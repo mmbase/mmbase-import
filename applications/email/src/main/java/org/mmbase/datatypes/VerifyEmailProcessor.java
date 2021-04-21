@@ -16,6 +16,7 @@ import org.mmbase.storage.search.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.*;
 import org.mmbase.util.transformers.*;
+import org.mmbase.util.transformers.Base64;
 import org.mmbase.datatypes.processors.*;
 import org.mmbase.core.event.EventManager;
 import javax.mail.internet.*;

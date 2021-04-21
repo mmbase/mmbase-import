@@ -51,9 +51,9 @@
       <version>3.1-FINAL</version>
     </dependency>
     <dependency>
-      <groupId>org.textmining</groupId>
-      <artifactId>tm-extractors</artifactId>
-      <version>1.0</version>
+      <groupId>org.dspace.dependencies</groupId>
+      <artifactId>dspace-tm-extractors</artifactId>
+      <version>1.0.1</version>
     </dependency>
 
     <dependency>
@@ -72,11 +72,16 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
-
   <repositories>
     <repository>
-      <id>mmbase</id>
-      <url>http://www.mmbase.org/maven2</url>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+       <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </repository>
   </repositories>
 </project>
