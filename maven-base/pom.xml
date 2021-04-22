@@ -600,9 +600,6 @@ See http://www.MMBase.org/license
     </profile>
     <profile>
       <id>deploy</id>
-      <properties>
-        <buildnumber.doCheck>true</buildnumber.doCheck>
-      </properties>
       <build>
         <defaultGoal>deploy</defaultGoal>
         <plugins>

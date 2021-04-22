@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -21,15 +21,17 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.media.codec.video.theora;
 
-import java.util.*;
-import java.io.*;
-import java.net.*;
-import org.mmbase.util.logging.*;
+import java.io.File;
+import java.net.URL;
+
 import javax.media.*;
-import javax.media.format.*;
+import javax.media.format.VideoFormat;
 import javax.media.protocol.*;
 
-import net.sf.fmj.media.RegistryDefaults;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+
 /**
  * A wrapper around the 'ffmpeg2theora' command line utility.
 
@@ -48,7 +50,7 @@ public class FFMpeg2Theora extends com.sun.media.BasicCodec implements javax.med
     };
 
     static {
-        RegistryDefaults.registerAll(RegistryDefaults.FMJ | RegistryDefaults.FMJ_NATIVE);
+       /* RegistryDefaults.registerAll(RegistryDefaults.FMJ | RegistryDefaults.FMJ_NATIVE);
         PlugInManager.addPlugIn(FFMpeg2Theora.class.getName(), new Format[0], OUT, PlugInManager.CODEC);
 
         final List v = PackageManager.getProtocolPrefixList();
@@ -62,7 +64,7 @@ public class FFMpeg2Theora extends com.sun.media.BasicCodec implements javax.med
             } catch (Exception e) {
                 System.err.println(e.getMessage());
             }
-        }
+        }*/
 
     }
     private static final Logger log = Logging.getLoggerInstance(FFMpeg2Theora.class);

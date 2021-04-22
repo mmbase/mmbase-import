@@ -110,7 +110,7 @@
       <artifactId>junit</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.mmbase.tests</groupId>
+      <groupId>org.mmbase</groupId>
       <artifactId>mmbase-rmmci</artifactId>
       <version>1.9-SNAPSHOT</version>
       <classifier>client-skinny</classifier>

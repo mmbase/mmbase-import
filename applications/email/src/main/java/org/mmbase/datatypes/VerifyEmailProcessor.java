@@ -8,11 +8,31 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes;
 
+import java.text.MessageFormat;
+import java.util.*;
+
+import javax.crypto.*;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.PBEParameterSpec;
+import javax.mail.internet.InternetAddress;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.*;
+import javax.servlet.jsp.PageContext;
+
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.core.event.EventManager;
+import org.mmbase.datatypes.processors.CommitProcessor;
+import org.mmbase.datatypes.processors.Processor;
+import org.mmbase.storage.search.FieldCompareConstraint;
+import org.mmbase.util.Casting;
+import org.mmbase.util.GenericResponseWrapper;
+import org.mmbase.util.functions.Function;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.transformers.Base64;
+import org.mmbase.util.transformers.*;
 
 /**
  * Using this class a Processor and as CommitProcessor on a certain field, adds 'email verification'
@@ -294,7 +314,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                     }
                 }
 
-                Module emailModule   = cloud.getCloudContext().getModule("sendmail");
+                org.mmbase.bridge.Module emailModule   = cloud.getCloudContext().getModule("sendmail");
 
 
                 NodeManager emailBuilder = cloud.getNodeManager(emailModule.getProperty("emailbuilder"));
