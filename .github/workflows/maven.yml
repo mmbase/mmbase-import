@@ -5,6 +5,8 @@ on:
   push:
     branches: [ MMBase-1_9 ]
 
+   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,4 +23,3 @@ jobs:
     - name: Deploy with Maven
       run: OSSRH_PASSWORD=${{ secrets.OSSRH_PASSWORD }} mvn -B -Ddeploy  -DskipTests=true -s $GITHUB_WORKSPACE/.github/settings.xml -Dgpg.skip=true deploy
       if: ${{ github.event_name == 'push' }}
-
