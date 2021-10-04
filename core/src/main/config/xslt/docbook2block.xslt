@@ -38,8 +38,8 @@
   <xsl:param name="request" />
   <xsl:param name="formatter_requestcontext" />
 
-  <xsl:param name="repository">http://scm.mmbase.org/view/*checkout*</xsl:param>
-  <xsl:param name="project">mmbase/trunk</xsl:param>
+  <xsl:param name="repository">https://raw.githubusercontent.com/mmbase</xsl:param>
+  <xsl:param name="project">/mmbase/MMBase-1_9</xsl:param>
   <xsl:param name="module">documentation/src/docbook</xsl:param>
   <xsl:param name="baseurl"><xsl:value-of select="$repository" />/<xsl:value-of select="$project" />/<xsl:value-of select="$module" />/</xsl:param>
 

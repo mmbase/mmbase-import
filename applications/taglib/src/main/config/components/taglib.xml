@@ -157,8 +157,8 @@
     <title xml:lang="nl">Taglib - Reference (uncached)</title>
     <body>
       <class name="org.mmbase.framework.ConnectionRenderer">
-        <param name="url">http://scm.mmbase.org/view/*checkout*/mmbase/trunk/applications/taglib/src/main/xml/mmbase-taglib.xml</param>
-        <param name="xslt">http://scm.mmbase.org/view/*checkout*/mmbase/trunk/applications/share/xslt/xml2block.xslt</param>
+        <param name="url">https://raw.githubusercontent.com/mmbase/mmbase/MMBase-1_9/applications/taglib/src/main/xml/mmbase-taglib.xml</param>
+        <param name="xslt">https://raw.githubusercontent.com/mmbase/mmbase/MMBase-1_9/applications/share/xslt/xml2block.xslt</param>
         <!--
         <param name="xslt">file:///home/michiel/mmbase/trunk/applications/share/xslt/xml2block.xslt</param>
         -->
