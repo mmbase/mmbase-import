@@ -38,26 +38,26 @@ public class ImagingTest {
             new Object[] {"s(100x60)+f(jpeg)", IM | JAI},
             new Object[] {"part(10x10x30x50)", IM | JAI},
             new Object[] {"part(10x10x2000x2000)", IM | JAI},
-            new Object[] {"s(10000@)", IM},  
+            new Object[] {"s(10000@)", IM},
             new Object[] {"s(100x100@)", IM},
-            new Object[] {"s(10000x2000>)", IM | JAI}, 
+            new Object[] {"s(10000x2000>)", IM | JAI},
             new Object[] {"s(100000x2000<)", IM | JAI},
-            new Object[] {"s(4x5<)", IM | JAI}, 
+            new Object[] {"s(4x5<)", IM | JAI},
             new Object[] {"s(4x5>)", IM | JAI},
-            new Object[] {"r(90)", IM}, 
-            new Object[] {"r(45)", IM}, 
-            new Object[] {"r(198)", IM}, 
+            new Object[] {"r(90)", IM},
+            new Object[] {"r(45)", IM},
+            new Object[] {"r(198)", IM},
             new Object[] {"r(-30)", IM},
-            new Object[] {"border(5)", IM}, 
+            new Object[] {"border(5)", IM},
             new Object[] {"border(5x8)", IM},
             new Object[] {"r(45)+border(10x20)", IM},
             new Object[] {"flip", IM | JAI},
-            new Object[] {"s(100)", IM | JAI}, 
-            new Object[] {"s(x100)", IM | JAI}, 
+            new Object[] {"s(100)", IM | JAI},
+            new Object[] {"s(x100)", IM | JAI},
             new Object[] {"s(10x70)", IM | JAI},
-            new Object[] {"s(70x10)", IM | JAI},  
-            new Object[] {"s(60x70!)", IM}, 
-            new Object[] {"s(80%x150%)", IM}, 
+            new Object[] {"s(70x10)", IM | JAI},
+            new Object[] {"s(60x70!)", IM},
+            new Object[] {"s(80%x150%)", IM},
             new Object[] {"s(100x100>)", IM},
             //new Object[]  "s(100x100&gt;)", Fails
             new Object[] {"s(x100)", IM | JAI},
@@ -74,8 +74,8 @@ public class ImagingTest {
         }
         return data;
     }
-     
-    private static ImageMagickImageConverter imageMagick = new ImageMagickImageConverter();
+
+    private static final ImageMagickImageConverter imageMagick = new ImageMagickImageConverter();
     @BeforeClass
     public static void setUp() {
         Map<String, String> settings = new HashMap<String, String>();
@@ -105,18 +105,18 @@ public class ImagingTest {
     protected void test(ImageConverter converter) throws IOException {
         byte[] ba = bytes();
 
-        ImageInformer   informer   = new ImageMagickImageInformer();        
+        ImageInformer   informer   = new ImageMagickImageInformer();
         Dimension originalSize = informer.getDimension(ba);
-        
+
         final List<String> params = Imaging.parseTemplate(template);
         Dimension predictedSize = Imaging.predictDimension(originalSize, params);
 
         byte[] converted = converter.convertImage(ba, null, params);
         assertNotNull(info(), converted);
-        assertFalse(info(), converted.length == 0);
+        assertNotEquals(info(), 0, converted.length);
         Dimension convertSize  = informer.getDimension(converted);
-        assertTrue(info() + ":" + originalSize + "->" + predictedSize + " != " + convertSize, 
-                   predictedSize.equalsIgnoreRound(convertSize, 1));
+        assertTrue(info() + ":" + originalSize + "->" + predictedSize + " != " + convertSize,
+                   predictedSize.equalsIgnoreRound(convertSize, 2));
     }
     @Test
     public void jai() throws IOException {
@@ -131,5 +131,5 @@ public class ImagingTest {
         assumeTrue(imageMagick.validFormats.size() > 0);
         test(imageMagick);
     }
-    
+
 }

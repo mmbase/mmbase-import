@@ -44,7 +44,7 @@ public class Factory {
     private static final BlockingQueue<ImageConversionRequest> imageRequestQueue = new ArrayBlockingQueue<ImageConversionRequest>(maxRequests);
     private static final Map<ImageConversionReceiver, ImageConversionRequest> imageRequestTable
         = new ConcurrentHashMap<ImageConversionReceiver, ImageConversionRequest>(maxRequests);
-    private static ImageConversionRequestProcessor ireqprocessors[];
+    private static ImageConversionRequestProcessor[] ireqprocessors;
 
     /**
      * The default image format.

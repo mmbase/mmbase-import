@@ -10,14 +10,13 @@ See http://www.MMBase.org/license
 package org.mmbase.util.images;
 
 import java.util.*;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.mmbase.util.IOUtil;
-import org.mmbase.util.transformers.*;
-import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
-
-import java.io.*;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.transformers.CharTransformer;
+import org.mmbase.util.transformers.UnicodeEscaper;
 
 /**
  * Utilities related to Images.
@@ -277,8 +276,10 @@ public abstract class Imaging {
                     double a = Math.toRadians(degrees); //
                     double xorg = dim.x;
                     double yorg = dim.y;
-                    dim.x = (int) Math.round(Math.abs(Math.cos(a)) * xorg + Math.abs(Math.sin(a) * yorg));
-                    dim.y = (int) Math.round(Math.abs(Math.sin(a)) * xorg + Math.abs(Math.cos(a) * yorg));
+                    double newx = Math.abs(Math.cos(a)) * dim.x + Math.abs(Math.sin(a) * dim.y);
+                    double newy = Math.abs(Math.sin(a)) * dim.x + Math.abs(Math.cos(a) * dim.y);
+                    dim.x = (int) (Math.signum(newx) * Math.ceil(Math.abs(newx))); // round up always
+                    dim.y = (int) (Math.signum(newy) * Math.ceil(Math.abs(newy))); // round up always
 
                 } else if (type.equals("gravity")) {
                 } else if (type.equals("chop")) {

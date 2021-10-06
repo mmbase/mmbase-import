@@ -54,6 +54,8 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
     protected Set<String> excludeFormats = new TreeSet<String>();
     final Set<String> validFormats = new TreeSet<String>();
 
+    protected boolean repageBefore = true;
+
     private OutputStream getOutput(String... args) {
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -343,7 +345,9 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         ParseResult result = new ParseResult();
         List<String> cmds = result.args;
         result.cwd = null;
-
+        if (repageBefore) {
+            cmds.add("+repage");
+        }
         for (String key : params) {
             if (log.isDebugEnabled()) log.debug("parsing '" + key + "'");
             if (key == null) continue;

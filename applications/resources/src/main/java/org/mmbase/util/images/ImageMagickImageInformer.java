@@ -32,7 +32,7 @@ public class ImageMagickImageInformer implements ImageInformer {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageInformer.class);
 
     // Currently only ImageMagick works, this are the default value's
-    private static String identifyPath = "identify"; // in the path.
+    private static final String identifyPath = "identify"; // in the path.
 
     private static final Pattern IDENTIFY_PATTERN = Pattern.compile(".+?\\s.*?\\s(\\d+)x(\\d+).*");
 
