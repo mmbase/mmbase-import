@@ -1,9 +1,19 @@
 <?xml version="1.0"?>
 <!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
-<!--This resouce configuration points to the test database-->
-<Configure class="org.mortbay.jetty.webapp.WebAppContext">
-
-
+<!--This resource configuration points to the test database-->
+<Configure id="wac" class="org.eclipse.jetty.webapp.WebAppContext">
+  <New class="org.eclipse.jetty.plus.jndi.Resource">
+    <Arg></Arg>
+    <Arg>jdbc/MMBase</Arg>
+    <Arg>
+      <New class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <Set name="driverClass">org.hsqldb.jdbcDriver</Set>
+        <Set name="jdbcUrl"><SystemProperty name="jdbcUrl" default="jdbc:hsqldb:file:data/mmbase" /></Set>
+        <Set name="user">sa</Set>
+        <Set name="password"></Set>
+      </New>
+    </Arg>
+  </New>
   <!--
       'rapid' development of templates in the base-webapp would e.g. go with this:
   -->
@@ -25,44 +35,34 @@
       When using jetty:run use an hsql database in the directory 'data'.
   -->
 
-  <New  class="org.mortbay.jetty.plus.naming.EnvEntry">
+  <New  class="org.eclipse.jetty.plus.jndi.EnvEntry">
     <Arg type="java.lang.String">mmbase/mmbaseroot/database</Arg>
     <Arg type="java.lang.String">hsqldb_csv</Arg>
     <Arg type="boolean">true</Arg>
   </New>
 
-  <New  class="org.mortbay.jetty.plus.naming.EnvEntry">
+  <New  class="org.eclipse.jetty.plus.jndi.EnvEntry">
     <Arg type="java.lang.String">mmbase/mmbaseroot/datasource</Arg>
     <Arg type="java.lang.String">jdbc/MMBase</Arg>
     <Arg type="boolean">true</Arg>
   </New>
 
-  <New class="org.mortbay.jetty.plus.naming.Resource">
-    <Arg>jdbc/MMBase</Arg>
-    <Arg>
-      <New class="com.mchange.v2.c3p0.ComboPooledDataSource">
-        <Set name="driverClass">org.hsqldb.jdbcDriver</Set>
-        <Set name="jdbcUrl"><SystemProperty name="jdbcUrl" default="jdbc:hsqldb:file:data/mmbase" /></Set>
-        <Set name="user">sa</Set>
-        <Set name="password"></Set>
-      </New>
-    </Arg>
-   </New>
+
 
 
    <!--
        Put all mmbase date files there too.
    -->
-  <New  class="org.mortbay.jetty.plus.naming.EnvEntry">
+  <New  class="org.eclipse.jetty.plus.jndi.EnvEntry">
     <Arg type="java.lang.String">mmbase/mmbaseroot/datadir</Arg>
     <Arg type="java.lang.String">data</Arg>
     <Arg type="boolean">true</Arg>
   </New>
 
-  <New class="org.mortbay.jetty.plus.naming.Resource">
+  <New class="org.eclipse.jetty.plus.jndi.Resource">
     <Arg>mail/Session</Arg>
     <Arg>
-      <New class="org.mortbay.naming.factories.MailSessionReference">
+      <New class="org.eclipse.jetty.jndi.factories.MailSessionReference">
         <Set name="user">mihxiltest@gmail.com</Set>
         <Set name="password">mmbase</Set>
         <Set name="properties">
@@ -72,7 +72,6 @@
             <Put name="mail.smtp.auth">true</Put>
             <Put name="mail.smtp.starttls.enable">true</Put>
             <Put name="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</Put>
-
           </New>
         </Set>
       </New>
