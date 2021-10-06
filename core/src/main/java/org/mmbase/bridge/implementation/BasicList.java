@@ -9,9 +9,11 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
-import org.mmbase.bridge.*;
 import java.util.*;
-import org.mmbase.util.logging.*;
+
+import org.mmbase.bridge.BridgeList;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * A list of objects.
@@ -113,11 +115,30 @@ public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> 
     }
 
     public void sort() {
-        Collections.sort(this);
+        Collections.sort(backing, new ObjectComparator());
     }
 
     public void sort(Comparator<? super E> comparator) {
-        Collections.sort(this, comparator);
+        Collections.sort(backing, new WrappedComparator(comparator));
+    }
+
+    protected class ObjectComparator implements Comparator<Object> {
+
+        public int compare(Object o1, Object o2) {
+            return convert(o1).compareTo(convert(o2));
+        }
+    }
+    protected class WrappedComparator implements Comparator<Object> {
+
+        final Comparator<? super E> comparator;
+
+        public WrappedComparator(Comparator<? super E> comparator) {
+            this.comparator = comparator;
+        }
+
+        public int compare(Object o1, Object o2) {
+            return comparator.compare(convert(o1), convert(o2));
+        }
     }
 
 
