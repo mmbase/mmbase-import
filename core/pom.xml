@@ -36,7 +36,7 @@ See http://www.MMBase.org/license
   </properties>
 
   <scm>
-    <url>https://scm.mmbase.org/mmbase/trunk/core/</url>
+    <url>scm:git:https://github.com/mmbase/mmbase.git</url>
   </scm>
 
   <build>
@@ -58,7 +58,6 @@ See http://www.MMBase.org/license
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
-          <showDeprecation>true</showDeprecation>
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>

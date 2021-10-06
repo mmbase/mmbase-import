@@ -21,9 +21,6 @@
     This would normally contain at least a 'component', but it can e.g. also be only a security implementation.
    </description>
 
-  <scm>
-    <url>https://scm.mmbase.org/mmbase/trunk/applications/</url>
-  </scm>
 
   <build>
     <defaultGoal>install</defaultGoal>

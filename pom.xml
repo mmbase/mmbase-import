@@ -57,9 +57,10 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
   </licenses>
 
   <scm>
-    <url>https://scm.mmbase.org/mmbase/branches/MMBase-1_9</url>
-    <connection>scm:svn:${project.scm.url}</connection>
+    <url>https://github.com/mmbase/mmbase.git</url>
+    <connection>scm:git:${project.scm.url}</connection>
     <developerConnection>${project.scm.connection}</developerConnection>
+    <tag>MMBase-1_9</tag>
   </scm>
 
   <issueManagement>
