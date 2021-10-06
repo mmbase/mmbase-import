@@ -242,7 +242,7 @@ public class Block {
         /**
          * @javadoc
          */
-        public static Type[] getClassification(String p, boolean create) {
+        public static synchronized Type[] getClassification(String p, boolean create) {
             if (p == null || "".equals(p)) return new Type[] {NO};
             List<Type> result = new ArrayList<Type>();
             PARTS:

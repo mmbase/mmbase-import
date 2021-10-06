@@ -9,16 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.images;
 
-import java.io.*;
-import java.util.*;
-import java.util.regex.*;
-import org.mmbase.util.*;
+import java.io.IOException;
 
-import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
-import static org.junit.Assert.*;
-import static org.junit.Assume.*;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -29,11 +24,11 @@ public class ImageMagickImageConverterTest {
 
 
     public void imageMagickVersion(String version, int major, int minor, int patch) {
-       Matcher m = ImageMagickImageConverter.IM_VERSION_PATTERN.matcher(version);
-       assert(m.matches());
-       assertEquals(major, Integer.parseInt(m.group(1)));
-       assertEquals(minor, Integer.parseInt(m.group(2)));
-       assertEquals(patch, Integer.parseInt(m.group(3)));
+       ImageMagickImageConverter.Version v = ImageMagickImageConverter.Version.parse(version);
+       assert(v.matches());
+       assertEquals(major, v.getMajor());
+       assertEquals(minor, v.getMinor());
+       assertEquals(patch, v.getPatch());
     }
 
     @Test

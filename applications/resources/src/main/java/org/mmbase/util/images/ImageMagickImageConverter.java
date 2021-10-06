@@ -9,20 +9,14 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.util.images;
 
-import org.mmbase.util.Casting;
-import org.mmbase.util.Encode;
-import org.mmbase.util.SerializableInputStream;
-import org.mmbase.util.WriterOutputStream;
-import org.mmbase.util.externalprocess.CommandExecutor;
-import org.mmbase.util.logging.Level;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.LoggerWriter;
-import org.mmbase.util.logging.Logging;
-
 import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.mmbase.util.*;
+import org.mmbase.util.externalprocess.CommandExecutor;
+import org.mmbase.util.logging.*;
 
 /**
  * Converts images using ImageMagick.
@@ -41,11 +35,8 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
     static final Pattern IM_VERSION_PATTERN = Pattern.compile("(?is)(.*)\\s(\\d+)\\.(\\d+)\\.(\\d+)(-[0-9]+)?\\s.*");
     private static final Pattern IM_FORMAT_PATTERN  = Pattern.compile("(?is)\\s*([A-Z0-9]+)\\*?\\s+[A-Z0-9]*\\s*[r\\-]w[\\+\\-]\\s+.*");
 
-
+    private Version im = new Version(5, 5, 0, false);
     private String program = "ImageMagick";
-    private int imVersionMajor = 5;
-    private int imVersionMinor = 5;
-    private int imVersionPatch = 0;
 
     private String converterPath = "convert"; // in the path.
 
@@ -176,26 +167,22 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         {
             String imOutput = getOutput("-version").toString();
             log.info("imOutput : " + imOutput );
-            Matcher m = IM_VERSION_PATTERN.matcher(imOutput);
-            if (m.matches()) {
-                String p = m.group(1);
-                log.info("p : " + p);
-                imVersionMajor = Integer.parseInt(m.group(2));
-                imVersionMinor = Integer.parseInt(m.group(3));
-                imVersionPatch = Integer.parseInt(m.group(4));
-                if (p.indexOf("GraphicsMagick") >= 0) {
-                    log.service("Found GraphicsMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
-                    imVersionMajor += 5; // I have no freaking idea
-                    log.service("Supposing that that is equivalent to ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+            Version v = Version.parse(imOutput);
+            if (v.matches()) {
+
+                if (imOutput.indexOf("GraphicsMagick") >= 0) {
+                    log.service("Found GraphicsMagick version " + v);
+                    v = new Version(v.major + 5, v.minor, v.patch, true); // I have no freaking idea
+                    log.service("Supposing that that is equivalent to ImageMagick version " + v);
                     program = "GraphicsMagick";
                 } else {
-                    log.service("Found ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+                    log.service("Found ImageMagick version " + v);
                 }
 
             } else {
                 log.error( "converter from location " + converterPath + ", gave strange result: '" + imOutput
                            + "' conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'. (Doesn't match " + IM_VERSION_PATTERN + ")");
-                log.info("Supposing ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+                log.info("Supposing ImageMagick version " + v);
 
             }
         }
@@ -252,10 +239,10 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
      *  @since MMBase-1.9.2
      */
     public boolean isMinimumVersion(int major, int minor, int patch) {
-        return (imVersionMajor > major) ||
-               ((imVersionMajor == major) &&
-                ((imVersionMinor > minor) ||
-                  ((imVersionMinor == minor) && (imVersionPatch >= patch))
+        return (im.major > major) ||
+               ((im.major == major) &&
+                ((im.minor > minor) ||
+                  ((im.minor == minor) && (im.patch >= patch))
                 )
                );
     }
@@ -689,14 +676,58 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
 
     @Override
     public String toString() {
-        return super.toString() + " " + converterPath + " (version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch + ")";
+        return super.toString() + " " + converterPath + " (version " + im + ")";
+    }
+
+
+    public static class Version {
+        private final int major;
+        private final int minor;
+        private final int patch;
+        private final boolean matched;
+
+
+        private Version(int major, int minor, int patch, boolean matched) {
+            this.major = major;
+            this.minor = minor;
+            this.patch = patch;
+            this.matched = matched;
+        }
+        public static Version parse(String version) {
+            Matcher m = ImageMagickImageConverter.IM_VERSION_PATTERN.matcher(version);
+            boolean matches = m.matches();
+            if (matches) {
+                return new Version(Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)), Integer.parseInt(m.group(4)), true);
+            } else {
+                return new Version(5, 5, 0, false);
+            }
+        }
+
+        public int getMajor() {
+            return major;
+        }
+
+        public int getMinor() {
+            return minor;
+        }
+
+        public int getPatch() {
+            return patch;
+        }
+
+        public boolean matches() {
+            return matched;
+        }
+        public String toString() {
+            return "" + major + '.' + minor + '.' + patch;
+        }
     }
 
     public static void main(String[] args) throws Exception {
         String s = new BufferedReader(new InputStreamReader((System.in))).readLine();
-        Matcher m = IM_VERSION_PATTERN.matcher(s);
+        Version m = Version.parse(s);
         if (m.matches()) {
-            System.out.println("Imagemagick version " + m.group(1) + " " + m.group(2) + " " + m.group(3));
+            System.out.println("Imagemagick version " + m);
         } else {
             System.out.println("Could not find");
         }
