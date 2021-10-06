@@ -543,11 +543,11 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
 
   <distributionManagement>
     <snapshotRepository>
-      <id>ossrh</id>
+      <id>mmbase-ossrh</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
     <repository>
-      <id>ossrh-release</id>
+      <id>mmbase-ossrh-release</id>
       <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
   </distributionManagement>
