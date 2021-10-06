@@ -9,11 +9,13 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
-import org.mmbase.bridge.*;
-import org.mmbase.security.*;
-import org.mmbase.module.core.*;
 import java.util.*;
-import org.mmbase.util.logging.*;
+
+import org.mmbase.bridge.*;
+import org.mmbase.module.core.*;
+import org.mmbase.security.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * This is the base class for {@link org.mmbase.bridge.LocalContext} (which is probably its only

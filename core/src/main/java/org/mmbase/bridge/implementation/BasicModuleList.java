@@ -12,6 +12,7 @@ package org.mmbase.bridge.implementation;
 
 import java.util.Collection;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.Module;
 
 /**
  * A list of Modules
@@ -35,7 +36,7 @@ public class BasicModuleList extends BasicList<Module> implements ModuleList {
 
     public ModuleIterator moduleIterator() {
         return new BasicModuleIterator();
-    };
+    }
 
     protected class BasicModuleIterator extends BasicIterator implements ModuleIterator {
 
