@@ -1,13 +1,9 @@
 ---
 name: build
-
-
 on:
   push:
     branches: [MMBase-1_9]
   workflow_dispatch:
-
-
 
 jobs:
   build:
