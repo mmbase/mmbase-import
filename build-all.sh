@@ -11,7 +11,6 @@ cat $SETTINGS
 
 MVN="mvn $MAVEN_OPTS -s $SETTINGS -Dgpg.skip=true -B"
 
-$MVN effective-pom
 for d in  . maven-base maven maven/maven-mmbase-plugin maven-base/applications applications   ; do
     (cd $DIR/$d &&  $MVN -N clean deploy)
 done
