@@ -7,7 +7,8 @@ DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 #MVN="mvn -Dcom.sun.net.ssl.checkRevocation=false -Dhttps.protocols=TLSv1.2 -Duser.home=$DIR"
 SETTINGS=${GITHUB_WORKSPACE:-$DIR}/.github/settings.xml
 cat $SETTINGS
-echo $OSSRH_PASSWORD | md5sum
+#echo $OSSRH_PASSWORD | base64
+
 MVN="mvn $MAVEN_OPTS -s $SETTINGS -Dgpg.skip=true -B"
 
 $MVN effective-pom
