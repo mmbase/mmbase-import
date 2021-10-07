@@ -27,12 +27,4 @@ jobs:
           path: '**/target/surefire-reports/TEST-*.xml'    # Path to test results
           reporter: java-junit       # Format of test results
           only-summary: 'true'
-      - name: Deploy with Maven
-        run:  mvn -B -Ddeploy  -DskipTests=true -s $GITHUB_WORKSPACE/.github/settings.xml -Dgpg.skip=true deploy
-        if: ${{ github.event_name == 'push' }}
-      - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v2
-        with:
-          name: example-webapp
-          path: my_file.txt
 

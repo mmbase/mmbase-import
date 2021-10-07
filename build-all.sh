@@ -13,6 +13,6 @@ for d in  . maven-base maven maven/maven-mmbase-plugin maven-base/applications a
 done
 
 
-(cd $DIR && $MVN -P'deploy,!development,servlet25' clean deploy)
-(cd $DIR/base-app && $MVN -P'deploy,!development,servlet25' clean deploy)
+(cd $DIR && $MVN -P'deploy,!development' clean deploy)
+(cd $DIR/base-app && $MVN -P'deploy,!development' clean deploy)
 (cd $DIR/applications && $MVN -P'deploy,!development' clean deploy)
