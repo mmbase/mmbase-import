@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: s4u/maven-settings-action@v2
         with:
-          servers: '[{"id": "mmbase-ossrh", "username": "mihxil", "password": "${{secrets.SONATYPE_PASSWORD}}"}]'
+          servers: '[{"id": "mmbase-ossrh", "username": "mihxil", "password": "${{secrets.OSSRH_PASSWORD}}"}]'
       - uses: actions/checkout@v2
       - name: Build with Maven
         run: ./build-all.sh
