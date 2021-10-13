@@ -12,9 +12,12 @@ jobs:
     env:
       MAVEN_OPTS: -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
     steps:
+      - uses: s4u/maven-settings-action@v2
+        with:
+          servers: '[{"id": "mmbase-ossrh", "username": "mihxil", "password": "${{secrets.SONATYPE_PASSWORD}}"}]'
       - uses: actions/checkout@v2
       - name: Build with Maven
-        run: OSSRH_PASSWORD=${{ secrets.OSSRH_PASSWORD }} ./build-all.sh
+        run: ./build-all.sh
       - name: Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure()    # run this step even if previous step failed

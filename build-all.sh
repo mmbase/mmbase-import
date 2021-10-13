@@ -5,11 +5,9 @@ export MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Sl
 
 DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 #MVN="mvn -Dcom.sun.net.ssl.checkRevocation=false -Dhttps.protocols=TLSv1.2 -Duser.home=$DIR"
-SETTINGS=${GITHUB_WORKSPACE:-$DIR}/.github/settings.xml
-cat $SETTINGS
 #echo $OSSRH_PASSWORD | base64
 
-MVN="mvn $MAVEN_OPTS -s $SETTINGS -Dgpg.skip=true -B"
+MVN="mvn $MAVEN_OPTS  -Dgpg.skip=true -B"
 
 for d in  . maven-base maven maven/maven-mmbase-plugin maven-base/applications applications   ; do
     (cd $DIR/$d &&  $MVN -N clean deploy)
