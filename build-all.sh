@@ -11,8 +11,10 @@ MVN="mvn $MAVEN_OPTS  -Dgpg.skip=true -B"
 env
 echo $HOME
 cat ~/.m2/settings.xml
-$MVN help:effective-settings
-$MVN help:system
+$MVN -N help:effective-settings
+$MVN -N help:system
+
+exit
 
 for d in  . maven-base maven maven/maven-mmbase-plugin maven-base/applications applications   ; do
     (cd $DIR/$d &&  $MVN -N clean deploy)
