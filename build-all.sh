@@ -12,6 +12,7 @@ env
 echo $HOME
 cat ~/.m2/settings.xml
 $MVN help:effective-settings
+$MVN help:system
 
 for d in  . maven-base maven maven/maven-mmbase-plugin maven-base/applications applications   ; do
     (cd $DIR/$d &&  $MVN -N clean deploy)

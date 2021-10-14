@@ -164,7 +164,7 @@ See http://www.MMBase.org/license
                 <addClasspath>true</addClasspath>
               </manifest>
               <manifestEntries>
-                <url>${pom.url}</url>
+                <url>${project.url}</url>
               </manifestEntries>
               <manifestSections>
                 <manifestSection>
@@ -176,7 +176,7 @@ See http://www.MMBase.org/license
                     <SCM-Revision>${sources.version}</SCM-Revision>
                     <Distribution>${project.version}</Distribution>
                     <Build-Date>${timestamp}</Build-Date>
-                    <Description>${pom.description}</Description>
+                    <Description>${project.description}</Description>
                   </manifestEntries>
                 </manifestSection>
               </manifestSections>
@@ -357,9 +357,9 @@ See http://www.MMBase.org/license
               <addClasspath>true</addClasspath>
             </manifest>
             <manifestEntries>
-              <ExtensionName>${pom.groupId}:${pom.artifactId}</ExtensionName>
-              <ExtensionName>${pom.groupId}:${pom.artifactId}</ExtensionName>
-              <url>${pom.url}</url>
+              <ExtensionName>${project.groupId}:${project.artifactId}</ExtensionName>
+              <ExtensionName>${project.groupId}:${project.artifactId}</ExtensionName>
+              <url>${project.url}</url>
             </manifestEntries>
             <manifestSections>
               <manifestSection>
@@ -371,7 +371,7 @@ See http://www.MMBase.org/license
                   <SCM-Revision>${sources.version}</SCM-Revision>
                   <Distribution>${project.version}</Distribution>
                   <Build-Date>${timestamp}</Build-Date>
-                  <Description>${pom.description}</Description>
+                  <Description>${project.description}</Description>
                 </manifestEntries>
               </manifestSection>
             </manifestSections>
