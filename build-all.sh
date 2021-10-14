@@ -8,13 +8,6 @@ DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 #echo $OSSRH_PASSWORD | base64
 
 MVN="mvn $MAVEN_OPTS  -Dgpg.skip=true -B -Duser.home=$HOME"
-env
-echo $HOME
-cat ~/.m2/settings.xml
-$MVN -N help:effective-settings
-$MVN -N help:system
-
-exit
 
 for d in  . maven-base maven maven/maven-mmbase-plugin maven-base/applications applications   ; do
     (cd $DIR/$d &&  $MVN -N clean deploy)
