@@ -9,6 +9,8 @@ DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 MVN="mvn $MAVEN_OPTS  -Dgpg.skip=true -B"
 
+$MVN help:effective-settings
+
 for d in  . maven-base maven maven/maven-mmbase-plugin maven-base/applications applications   ; do
     (cd $DIR/$d &&  $MVN -N clean deploy)
 done
