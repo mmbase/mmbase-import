@@ -7,14 +7,13 @@
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-application-parent</artifactId>
     <version>1.9-SNAPSHOT</version>
+    <relativePath>../../maven-base/applications/pom.xml</relativePath>
   </parent>
 
 
   <artifactId>mmbase-streams</artifactId>
   <name>MMBase Streams</name>
   <packaging>war</packaging>
-  <version>${mmbase.version}</version>
-
   <description>
     Support for maintenance of media files in MMBase itself. Uploading, transcoding, and serving.
   </description>
@@ -124,18 +123,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <repositories>
-    <repository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-       <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
+
 
 
   <developers>

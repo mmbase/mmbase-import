@@ -10,13 +10,16 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.mock;
 
-import org.mmbase.bridge.mock.MockCloudContext;
-import org.mmbase.bridge.mock.MockBuilderReader;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.*;
+import org.mmbase.bridge.util.NodeMap;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.datatypes.*;
-import java.util.*;
-import org.junit.*;
+
 import static org.junit.Assert.*;
 
 
@@ -67,7 +70,7 @@ public class MockTest  {
     public void nodeManager() {
         MockCloudContext cc = new MockCloudContext();
         Cloud cloud = cc.getCloud("mmbase");
-        Map<String, DataType> map = new HashMap<String, DataType>();
+        Map<String, DataType<?>> map = new HashMap<String, DataType<?>>();
         map.put("number", Constants.DATATYPE_INTEGER);
         map.put("title", Constants.DATATYPE_STRING);
         cc.addNodeManager("aa", map);
@@ -124,7 +127,7 @@ public class MockTest  {
         MockCloudContext cc = new MockCloudContext();
         Cloud c = cc.getCloud("mmbase");
 
-        Map<String, DataType> map = new HashMap<String, DataType>();
+        Map<String, DataType<?>> map = new HashMap<String, DataType<?>>();
         map.put("number", Constants.DATATYPE_INTEGER);
         map.put("title", Constants.DATATYPE_STRING);
         cc.addNodeManager("aa", map);
@@ -139,7 +142,7 @@ public class MockTest  {
         MockCloudContext cc = new MockCloudContext();
         Cloud c = cc.getCloud("mmbase");
 
-        Map<String, DataType> map = new HashMap<String, DataType>();
+        Map<String, DataType<?>> map = new HashMap<String, DataType<?>>();
         map.put("number", Constants.DATATYPE_INTEGER);
         map.put("title", Constants.DATATYPE_STRING);
         cc.addNodeManager("aa", map);

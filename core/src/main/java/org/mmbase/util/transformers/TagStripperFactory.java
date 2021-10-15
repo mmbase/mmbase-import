@@ -1,13 +1,14 @@
 package org.mmbase.util.transformers;
 
-import java.util.*;
-import java.util.regex.*;
-import javax.swing.text.*;
-import javax.swing.text.html.*;
 import java.io.*;
-import org.mmbase.util.functions.*;
-
-
+import java.util.*;
+import java.util.regex.Pattern;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTMLEditorKit;
+import org.mmbase.util.functions.Parameter;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -42,7 +43,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         new Parameter<Boolean>("addnewlines", Boolean.class, Boolean.FALSE);
 
 
-    protected static final Parameter[] PARAMS = new Parameter[] { TAGS, ADD_BRS, ESCAPE_AMPS, ADD_NEWLINES };
+    protected static final Parameter<?>[] PARAMS = new Parameter[] { TAGS, ADD_BRS, ESCAPE_AMPS, ADD_NEWLINES };
 
     public Parameters createParameters() {
         return new Parameters(PARAMS);
@@ -81,7 +82,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                     callback.addNewlines = parameters.get(ADD_NEWLINES);
                     if (callback.addBrs) {
                         // before going into the parser, make existing newlines recognizable, by replacing them by a token
-                        r = new TransformingReader(r, new ChunkedTransformer(ChunkedTransformer.XMLTEXT) {
+                        r = new TransformingReader(r, new ChunkedTransformer<String>(ChunkedTransformer.XMLTEXT) {
                                 @Override
                                 protected boolean replace(String string, Writer w, Status status) throws IOException {
                                     w.write(string.replaceAll("\n", NL_TOKEN));

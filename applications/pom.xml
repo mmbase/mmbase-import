@@ -10,7 +10,6 @@
     <version>1.9-SNAPSHOT</version>
  </parent>
 
-  <groupId>org.mmbase</groupId>
   <artifactId>mmbase-applications</artifactId>
   <packaging>pom</packaging>
   <name>MMBase Applications</name>
@@ -158,10 +157,9 @@
     </profile>
 
   </profiles>
-
   <repositories>
     <repository>
-      <id>mmbase-ossrh</id>
+      <id>ossrh</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
        <releases>
         <enabled>false</enabled>
@@ -171,6 +169,19 @@
       </snapshots>
     </repository>
   </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+       <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 
 
   <distributionManagement>

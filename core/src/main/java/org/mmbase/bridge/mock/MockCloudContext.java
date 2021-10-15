@@ -116,9 +116,9 @@ public class MockCloudContext extends  AbstractCloudContext {
         return addNode("typedef", map);
     }
 
-    public void addNodeManager(String name, Map<String, DataType> map) {
+    public void addNodeManager(String name, Map<String, DataType<?>> map) {
         Map<String, Field> m = new HashMap<String, Field>();
-        for (Map.Entry<String, DataType> e : map.entrySet()) {
+        for (Map.Entry<String, DataType<?>> e : map.entrySet()) {
             m.put(e.getKey(), new MockField(e.getKey(), null, e.getValue()));
         }
 

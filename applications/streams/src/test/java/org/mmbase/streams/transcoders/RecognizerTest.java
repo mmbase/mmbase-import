@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -21,22 +21,21 @@ along with MMBase. If not, see <http://www.gnu.org/licenses/>.
 
 package org.mmbase.streams.transcoders;
 
-import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
-import static org.junit.Assert.*;
-import static org.junit.Assume.*;
+import java.io.File;
 import java.util.*;
-import java.io.*;
-import org.mmbase.bridge.*;
-import org.mmbase.datatypes.DataType;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeTrue;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.mmbase.bridge.CloudContext;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.mock.MockCloudContext;
 import static org.mmbase.datatypes.Constants.*;
-import org.mmbase.bridge.mock.*;
-import org.mmbase.streams.transcoders.*;
+import org.mmbase.datatypes.DataType;
 import static org.mmbase.streams.transcoders.AnalyzerUtils.*;
 import org.mmbase.util.logging.*;
-
-
 
 /**
  * @author Michiel Meeuwissen
@@ -100,8 +99,8 @@ public class RecognizerTest {
         });
     }
 
-    private static Map<String, DataType> getParent() {
-        Map<String, DataType> undef = new LinkedHashMap<String, DataType>();
+    private static Map<String, DataType<?>> getParent() {
+        Map<String, DataType<?>> undef = new LinkedHashMap<String, DataType<?>>();
         undef.put("number", DATATYPE_INTEGER);
         undef.put("mimetype", DATATYPE_STRING);
         undef.put("mediafragment", DATATYPE_NODE);
@@ -114,11 +113,11 @@ public class RecognizerTest {
     @BeforeClass
     public static void setUp() {
         {
-            Map<String, DataType> undef = getParent();
+            Map<String, DataType<?>> undef = getParent();
             MockCloudContext.getInstance().addNodeManager(MEDIA, undef);
         }
         {
-            Map<String, DataType> images = getParent();
+            Map<String, DataType<?>> images = getParent();
             images.put("height", DATATYPE_INTEGER);
             images.put("width", DATATYPE_INTEGER);
 
@@ -126,8 +125,7 @@ public class RecognizerTest {
             MockCloudContext.getInstance().addNodeManager(IMAGEC,images);
         }
         {
-            Map<String, DataType> audio = getParent();
-            audio.put("bitrate", DATATYPE_INTEGER);
+            Map<String, DataType<?>> audio = getParent();
             audio.put("bitrate", DATATYPE_INTEGER);
             audio.put("length", DATATYPE_INTEGER);
 
@@ -135,7 +133,7 @@ public class RecognizerTest {
             MockCloudContext.getInstance().addNodeManager(AUDIOC, audio);
         }
         {
-            Map<String, DataType> video = getParent();
+            Map<String, DataType<?>> video = getParent();
             video.put("height", DATATYPE_INTEGER);
             video.put("width", DATATYPE_INTEGER);
             video.put("bitrate", DATATYPE_INTEGER);
@@ -148,8 +146,8 @@ public class RecognizerTest {
         File baseDir = new File(System.getProperty("user.dir"));
         samples = new File(baseDir, "samples");
 	if (samples.exists()) {
-	    for (File sample : samples.listFiles()) {
-		files.put(sample.getName(), sample);
+        for (File sample : samples.listFiles()) {
+            files.put(sample.getName(), sample);
 	    }
 	} else {
 	    System.err.println("No " + samples + " found, tests will not be done");
@@ -167,7 +165,7 @@ public class RecognizerTest {
 
     @Test
     public void test()  throws Exception {
-	assumeTrue(samples.exists());
+        assumeTrue(samples.exists());
 
         for (int i = 0; i < 1; i++) {
             CommandTranscoder transcoder = new FFMpegTranscoder().clone();

@@ -576,6 +576,19 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
     </repository>
   </repositories>
 
+  <pluginRepositories>
+    <pluginRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+       <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+
 
 
   <profiles>
