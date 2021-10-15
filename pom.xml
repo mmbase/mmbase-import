@@ -41,18 +41,18 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
     Source Software (MPL) and all standards used are as 'open' as possible. The system can be used
     with all major operating systems, webservers and databases.
   </description>
-  <url>http://www.mmbase.org/mm2</url>
+  <url>https://www.mmbase.org/</url>
   <inceptionYear>2000</inceptionYear>
 
   <organization>
     <name>MMBase.org</name>
-    <url>http://www.mmbase.org</url>
+    <url>https://www.mmbase.org</url>
   </organization>
 
   <licenses>
     <license>
       <name>Mozilla Public License 1.0 (MPL)</name>
-      <url>http://www.mmbase.org/license</url>
+      <url>https://www.mmbase.org/license</url>
     </license>
   </licenses>
 
@@ -64,8 +64,8 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
   </scm>
 
   <issueManagement>
-    <system>JIRA</system>
-    <url>http://www.mmbase.org/jira/</url>
+    <system>github</system>
+    <url>https://github.com/mmbase/mmbase/issues</url>
   </issueManagement>
 
   <ciManagement>
@@ -86,14 +86,14 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
   <mailingLists>
     <mailingList>
       <name>MMBase discussion group</name>
-      <subscribe>http://groups.google.com/group/mmbase-discuss/subscribe</subscribe>
-      <unsubscribe>http://groups.google.com/group/mmbase-discuss/subscribe</unsubscribe>
+      <subscribe>https://groups.google.com/group/mmbase-discuss/subscribe</subscribe>
+      <unsubscribe>https://groups.google.com/group/mmbase-discuss/subscribe</unsubscribe>
       <archive>https://groups.google.com/group/mmbase-discuss/topics</archive>
     </mailingList>
     <mailingList>
       <name>MMBase SCM changes List</name>
-      <subscribe>http://groups.google.com/group/mmbase-repos/subscribe</subscribe>
-      <unsubscribe>http://groups.google.com/group/mmbase-repos/subscribe</unsubscribe>
+      <subscribe>https://groups.google.com/group/mmbase-repos/subscribe</subscribe>
+      <unsubscribe>https://groups.google.com/group/mmbase-repos/subscribe</unsubscribe>
       <archive>https://groups.google.com/group/mmbase-repos/topics</archive>
     </mailingList>
   </mailingLists>
@@ -170,9 +170,8 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
     <developer>
       <id>michiel</id>
       <name>Michiel Meeuwissen</name>
-      <email>Michiel.Meeuwissen@dynasol.nl</email>
-      <url>http://www.dynasol.nl</url>
-      <organization>Dynasol</organization>
+      <email>michiel.meeuwissen@gmail.com</email>
+      <url>https://meeuw.org/</url>
       <roles>
         <role>Release Manager</role>
       </roles>
@@ -230,7 +229,6 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
     <developer>
       <name>Sander de Boer</name>
       <id>sdboer</id>
-      <email></email>
       <organization>EO</organization>
       <timezone>1</timezone>
     </developer>
@@ -242,7 +240,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.6</version>
+        <version>3.3.1</version>
         <configuration>
 
           <maxmemory>1024</maxmemory>
@@ -250,15 +248,20 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
               Very nice, but mvn site fails on it.
               The maven site does not work anyway.
           -->
-          <stylesheetfile>${basedir}/documentation/javadoc.css</stylesheetfile>
+          <stylesheetfile>file:///${maven.multiModuleProjectDirectory}/documentation/javadoc.css</stylesheetfile>
 
           <doctitle>MMBase ${project.version}</doctitle>
           <windowtitle>MMBase ${project.version} - API</windowtitle>
           <bottom>${project.name} ${project.version} - ${javadoctimestamp}</bottom>
           <show>package</show>
+          <javaApiLinks>
+            <property>
+              <name>api_1.7</name>
+              <value>https://download.oracle.com/javase/7/docs/api</value>
+            </property>
+          </javaApiLinks>
+          <detectLinks/>
           <links>
-            <link>https://download.oracle.com/javase/7/docs/api/</link>
-            <link>https:/docs.oracle.com/javaee/5/api</link>
             <link>https://docs.oracle.com/cd/E17802_01/products/products/jsp/jstl/1.1/docs/api/</link>
             <link>https://logging.apache.org/log4j/1.2/apidocs/</link>
             <link>https://commons.apache.org/proper/commons-fileupload/apidocs/</link>
@@ -373,7 +376,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
             </tag>
 
           </tags>
-          <additionalparam>-Xdoclint:none</additionalparam>
+          <doclint>none</doclint>
         </configuration>
       </plugin>
       <plugin>
@@ -419,6 +422,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
               <value>${surefire.fork.vmargs}</value>
             </property>
           </systemProperties>
+
           <check>
             <branchRate>80</branchRate>
             <lineRate>80</lineRate>
@@ -454,9 +458,10 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.6</version>
+        <version>3.3.1</version>
         <configuration>
           <maxmemory>1024</maxmemory>
+          <doclint>none</doclint>
         </configuration>
         <reportSets>
           <reportSet>
@@ -643,9 +648,10 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.6</version>
+            <version>3.3.1</version>
             <configuration>
               <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+              <doclint>none</doclint>
               <docletArtifact>
                 <groupId>org.umlgraph</groupId>
                 <artifactId>doclet</artifactId>
