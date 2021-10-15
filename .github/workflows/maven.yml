@@ -12,6 +12,10 @@ jobs:
     env:
       MAVEN_OPTS: -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
     steps:
+      - name: Cancel previous Action
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ github.token }}
       - uses: s4u/maven-settings-action@v2
         with:
           servers: '[{"id": "mmbase-ossrh", "username": "mihxil", "password": "${{secrets.OSSRH_PASSWORD}}"}]'
@@ -26,4 +30,5 @@ jobs:
           path: '**/target/surefire-reports/TEST-*.xml'    # Path to test results
           reporter: java-junit       # Format of test results
           only-summary: 'true'
+          fail-on-error: 'false'
 
