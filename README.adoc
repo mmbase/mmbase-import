@@ -1,0 +1,11 @@
+= MMBase 1.9
+
+The last stable version of MMBase was 1.9
+
+SNAPSHOTS are now build with github actions and published to sonatype. It uses https://github.com/mmbase/docker[this docker image] to provide the necessary environment for that.
+
+I'll try to make minor release soon, so all artifacts have a version  on maven central.
+
+See also https://www.mmbase.org/[website].
+
+To build locally you could try out https://github.com/nektos/act[act] to avoid having to arrange everything yourself. Just install docker and act.
