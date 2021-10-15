@@ -139,6 +139,8 @@ public class RecognizerTest {
             video.put("bitrate", DATATYPE_INTEGER);
             video.put("channels", DATATYPE_INTEGER);
             video.put("length", DATATYPE_INTEGER);
+            video.put("fps", DATATYPE_INTEGER);
+
 
             MockCloudContext.getInstance().addNodeManager(VIDEO, video);
             MockCloudContext.getInstance().addNodeManager(VIDEOC, video);

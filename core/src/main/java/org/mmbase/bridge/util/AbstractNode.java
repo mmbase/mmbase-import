@@ -764,7 +764,7 @@ public abstract class AbstractNode implements Node {
     }
 
     public FieldValue getFunctionValue(String functionName, List<?> parameters) {
-        Function function = getFunction(functionName);
+        Function<?> function = getFunction(functionName);
         Parameters params = function.createParameters();
         // Always create a new parameters object, which makes it possible to use a Parameters object
         // not created with createParameters too.
@@ -819,7 +819,7 @@ public abstract class AbstractNode implements Node {
 
 
     /**
-     * Based on {@link getFunctions}.
+     * Based on {@link #getFunctions}.
      */
     protected Function<?> getNodeFunction(String functionName) {
         Function<?> fun = getFunctionMap().get(functionName);
@@ -830,18 +830,18 @@ public abstract class AbstractNode implements Node {
         }
     }
 
-    public Function<?> getFunction(String functionName) {
-        Function<?> function = getNodeFunction(functionName);
+    public <R> Function<R> getFunction(String functionName) {
+        Function<R> function = (Function<R>) getNodeFunction(functionName);
         if (function == null) {
             throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNumber() + " of type " + getNodeManager().getName() + "(known are " + getFunctionMap() + ")");
         }
-        return new WrappedFunction(function) {
+        return new WrappedFunction<R>(function) {
             @Override
-            public final Object getFunctionValue(Parameters params) {
+            public R getFunctionValue(Parameters params) {
                 if (params == null) params = createParameters();
                 params.setIfDefined(Parameter.NODE, AbstractNode.this);
                 params.setIfDefined(Parameter.CLOUD, AbstractNode.this.getCloud());
-                return AbstractNode.this.createFunctionValue(super.getFunctionValue(params)).get();
+                return (R) AbstractNode.this.createFunctionValue(super.getFunctionValue(params)).get();
             }
         };
     }

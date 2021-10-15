@@ -345,6 +345,8 @@ public final class AnalyzerUtils implements java.io.Serializable {
 
     private static final Pattern IMAGE2_PATTERN = Pattern.compile("^Input #\\d+?, (image\\d*), from.*?");
 
+    private static final Pattern PNG_PATTERN = Pattern.compile("^Input #\\d+?, (png_pipe), from.*?");
+
     /**
      * Matches on Input and looks for the 'image2' format which indicates that the input is an image.
      *
@@ -352,13 +354,37 @@ public final class AnalyzerUtils implements java.io.Serializable {
     public boolean image2(String l, Node source, Node dest) {
         Matcher m = IMAGE2_PATTERN.matcher(l);
         if (m.matches()) {
-            //log.info("image2 match: " + l);
+            log.info("image2 match: " + l);
             toImage(source, dest);
             return true;
         } else {
             return false;
         }
+    }
 
+      /**
+     * Matches on Input and looks for the 'image2' format which indicates that the input is an image.
+     *
+     */
+    public boolean png(String l, Node source, Node dest) {
+        Matcher m = PNG_PATTERN.matcher(l);
+        if (m.matches()) {
+            log.info("png match: " + l);
+            toImage(source, dest);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean image(String l, Node source, Node dest) {
+        if (image2(l, source, dest)) {
+            return true;
+        }
+        if (png(l, source, dest)) {
+            return true;
+        }
+        return false;
     }
 
     private static final Pattern PATTERN_DIMENSIONS    = Pattern.compile(".*?\\sVideo: (.*?), (.*?), ([0-9]+)x([0-9]+).*");
@@ -396,41 +422,44 @@ public final class AnalyzerUtils implements java.io.Serializable {
                 dest.setIntValue("height", Integer.parseInt(m.group(4)));
             }
 
-            m = VIDEOBITRATE_PATTERN.matcher(l);
-            Matcher m2 = VIDEOBITRATE2_PATTERN.matcher(l);
-            if (m.matches()) {
-                if (log.isDebugEnabled()) log.debug("bitrate: " + m.group(1));
-                int bitrate = 1000 * Integer.parseInt(m.group(1));
-                if (updateSource) {
-                    source.setIntValue("bitrate", bitrate);
+
+            if (! source.getNodeManager().getName().equals(IMAGE)) {
+
+                m = VIDEOBITRATE_PATTERN.matcher(l);
+                Matcher m2 = VIDEOBITRATE2_PATTERN.matcher(l);
+                if (m.matches()) {
+                    if (log.isDebugEnabled()) log.debug("bitrate: " + m.group(1));
+                    int bitrate = 1000 * Integer.parseInt(m.group(1));
+                    if (updateSource) {
+                        source.setIntValue("bitrate", bitrate);
+                    }
+                    if (updateDestination && dest != null) {
+                        dest.setIntValue("bitrate", bitrate);
+                    }
+                } else if (m2.matches()) {
+                    if (log.isDebugEnabled()) log.debug("bitrate: " + m2.group(1));
+                    int bitrate = 1000 * Integer.parseInt(m2.group(1));
+                    if (updateSource) {
+                        source.setIntValue("bitrate", bitrate);
+                    }
+                    if (updateDestination && dest != null) {
+                        dest.setIntValue("bitrate", bitrate);
+                    }
                 }
-                if (updateDestination && dest != null) {
-                    dest.setIntValue("bitrate", bitrate);
-                }
-            } else if (m2.matches()) {
-                if (log.isDebugEnabled()) log.debug("bitrate: " + m2.group(1));
-                int bitrate = 1000 * Integer.parseInt(m2.group(1));
-                if (updateSource) {
-                    source.setIntValue("bitrate", bitrate);
-                }
-                if (updateDestination && dest != null) {
-                    dest.setIntValue("bitrate", bitrate);
+
+                m = VIDEOFPS_PATTERN.matcher(l);
+                if (m.matches()) {
+                    if (log.isDebugEnabled()) log.debug("fps: " + m.group(1));
+                    double d = Double.parseDouble(m.group(1));
+                    int fps = (int) Math.round(d);
+                    if (updateSource) {
+                        source.setIntValue("fps", fps);
+                    }
+                    if (updateDestination && dest != null) {
+                        dest.setIntValue("fps", fps);
+                    }
                 }
             }
-
-            m = VIDEOFPS_PATTERN.matcher(l);
-            if (m.matches()) {
-                if (log.isDebugEnabled()) log.debug("fps: " + m.group(1));
-                double d = Double.parseDouble(m.group(1));
-                int fps = (int)Math.round(d);
-                if (updateSource) {
-                    source.setIntValue("fps", fps );
-                }
-                if (updateDestination && dest != null) {
-                    dest.setIntValue("fps", fps );
-                }
-            }
-
             return true;
         } else {
             return false;

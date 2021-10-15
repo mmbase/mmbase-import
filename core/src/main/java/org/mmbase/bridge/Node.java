@@ -30,7 +30,7 @@ public interface Node extends Comparable<Node> {
      * node
      * @since MMBase-1.9.1
      */
-    public static String CLOUD_COMMITNODE_KEY = "org.mmbase.cloud.commit_node";
+    String CLOUD_COMMITNODE_KEY = "org.mmbase.cloud.commit_node";
 
     /**
      * Returns the cloud this node belongs to.
@@ -952,7 +952,7 @@ public interface Node extends Comparable<Node> {
      * @return a {@link org.mmbase.util.functions.Function} object.
      * @throws NotFoundException if the function does not exist
      */
-    Function<?> getFunction(String functionName);
+    <R> Function<R> getFunction(String functionName);
 
     /**
      * Creates a parameter list for a function.

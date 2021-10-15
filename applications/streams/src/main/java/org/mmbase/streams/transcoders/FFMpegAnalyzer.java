@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2009 André van Toly, Michiel Meeuwissen
 
@@ -45,7 +45,7 @@ import org.mmbase.applications.media.State;
 public class FFMpegAnalyzer implements Analyzer {
 
     private static final Logger LOG = Logging.getLoggerInstance(FFMpegAnalyzer.class);
-    
+
     private final ChainedLogger log = new ChainedLogger(LOG);
     private final AnalyzerUtils util = new AnalyzerUtils(log);
     private List<Throwable> errors = new ArrayList<Throwable>();
@@ -55,7 +55,7 @@ public class FFMpegAnalyzer implements Analyzer {
     public void setUpdateSource(boolean b) {
         util.setUpdateSource(b);
     }
-    
+
     public void setUpdateDestination(boolean b) {
         util.setUpdateDestination(b);
     }
@@ -83,22 +83,25 @@ public class FFMpegAnalyzer implements Analyzer {
                 return;
             }
 
-            if (util.image2(l, source, des)) {
+            if (util.image(l, source, des)) {
                 canbe = AnalyzerUtils.IMAGE;
                 return;
             }
+
 
             if (util.output(l, source, des)) {
                 util.setUpdateDestination(true);
                 return;
             }
-            
-            if (util.duration(l, source, des)) {
-                return;
+
+            if (! AnalyzerUtils.IMAGE.equals(canbe)) { /* no image2 seen yet, so it can be video */
+                if (util.duration(l, source, des)) {
+                    return;
+                }
             }
 
             if (util.dimensions(l, source, des)) {
-                if (! canbe.equals(AnalyzerUtils.IMAGE)) {    /* no image2 seen yet, so it can be video */
+                if (! AnalyzerUtils.IMAGE.equals(canbe)) { /* no image2 seen yet, so it can be video */
                     canbe = AnalyzerUtils.VIDEO;
                 }
                 return;
@@ -118,12 +121,12 @@ public class FFMpegAnalyzer implements Analyzer {
         synchronized(util) {
             log.service("Ready() " + sourceNode + (destNode == null ? "" : (" -> " + destNode.getNumber())) + " = canbe: " + canbe);
 
-            if (canbe.equals(AnalyzerUtils.IMAGE) 
+            if (canbe.equals(AnalyzerUtils.IMAGE)
                             && (sourceNode.isNull("bitrate") || sourceNode.getIntValue("bitrate") <= 0)) {
                 log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an image " + sourceNode);
                 util.toImage(sourceNode, destNode);     // is already done (above) ?
 
-            } else if (canbe.equals(AnalyzerUtils.AUDIO) 
+            } else if (canbe.equals(AnalyzerUtils.AUDIO)
                             && ( !sourceNode.getNodeManager().hasField("width") || sourceNode.isNull("width") )) {
                 log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is audio " + sourceNode);
                 util.toAudio(sourceNode, destNode);
@@ -133,7 +136,7 @@ public class FFMpegAnalyzer implements Analyzer {
                 util.toVideo(sourceNode, destNode);
                 assert sourceNode.getNodeManager().getName().equals(AnalyzerUtils.VIDEO);
             }
-            
+
             if (util.getUpdateSource()) {
                 if (supported
                     && (sourceNode.getIntValue("state") == State.SOURCE_UNSUPPORTED.getValue()
