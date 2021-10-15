@@ -31,4 +31,6 @@ jobs:
           reporter: java-junit       # Format of test results
           only-summary: 'true'
           fail-on-error: 'false'
+      - uses: codecov/codecov-action@v2
+        if: github.ref == 'refs/heads/main'
 
