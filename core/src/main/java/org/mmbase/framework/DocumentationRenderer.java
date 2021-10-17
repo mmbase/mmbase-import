@@ -31,8 +31,8 @@ import org.mmbase.util.logging.Logging;
 public class DocumentationRenderer extends CachedRenderer {
     private static final Logger log = Logging.getLoggerInstance(DocumentationRenderer.class);
 
-    private String repository  = "http://scm.mmbase.org/view/*checkout*";
-    private String project     = "mmbase/trunk";
+    private String repository  = "https://raw.githubusercontent.com/mmbase/";
+    private String project     = "mmbase/MMBase-1_9";
     private String module      = "documentation/src/docbook";
 
     private String docbook     = null;
