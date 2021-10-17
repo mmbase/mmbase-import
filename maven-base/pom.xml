@@ -274,7 +274,7 @@ See http://www.MMBase.org/license
         <plugin>
           <groupId>org.mortbay.jetty</groupId>
           <artifactId>jetty-maven-plugin</artifactId>
-          <version>7.0.0.pre5</version>
+          <version>8.1.16.v20140903</version>
           <configuration>
             <systemProperties>
               <systemProperty>
