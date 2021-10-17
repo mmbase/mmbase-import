@@ -1,4 +1,4 @@
-<mm:content 
+<mm:content
     unacceptable="Please use a better browser"
     type="application/xhtml+xml" language="client" expires="0" postprocessor="none" jspvar="locale"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
@@ -9,26 +9,26 @@
               doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
               doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
   <jsp:directive.page session="true" buffer="200kb" />
-  
+
   <html lang="${locale}" xmlns="http://www.w3.org/1999/xhtml">
-  
-    
-    <!-- 
+
+
+    <!--
          Offers a form for multiple existing MMBase nodes.
          Also handles the form.
-         
+
          TODO: Some way to edit relations? NODE-field editor?
-         
+
          $Id$
     -->
     <mm:include page="head.jspx" />
-    
+
     <body>
       <mm:cloud rank="basic user">
 
         <mm:import externid="ok">init</mm:import>
         <mm:import externid="submitted"><mm:write referid="ok" /></mm:import>
-        <mm:import id="referids"></mm:import>
+        <mm:import id="referids" />
         <mm:form id="changeform">
           <mm:import externid="nodes" required="true" vartype="list" />
 
@@ -46,7 +46,7 @@
             </mm:first>
             <mm:first inverse="true">
               <mm:fieldlist type="edit" id="fields${index}" retain="fields${index - 1}" />
-            </mm:first>            
+            </mm:first>
           </mm:listnodes>
 
           <table summary="fields of node ${_node}">
