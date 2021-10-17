@@ -527,7 +527,7 @@
          mimetype="text/html">
     <body>
       <class name="org.mmbase.framework.ConnectionRenderer">
-        <param name="url">http://twitter.com/statuses/user_timeline/42594291.rss</param>
+        <param name="url">https://nitter.net/search/rss?f=tweets&amp;q=%40mmbase</param>
         <param name="xslt">xslt/rss.xslt</param>
       </class>
     </body>
