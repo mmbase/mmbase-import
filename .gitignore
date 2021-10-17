@@ -8,3 +8,4 @@ applications/streams/samples/
 # IDE's
 *.iml
 .idea
+/base-webapp/WEB-INF/data/
