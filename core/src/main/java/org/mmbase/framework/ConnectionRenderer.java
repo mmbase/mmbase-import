@@ -12,6 +12,7 @@ package org.mmbase.framework;
 import java.net.*;
 import java.io.*;
 
+import org.apache.commons.io.IOUtils;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.*;
 
@@ -83,6 +84,7 @@ public class ConnectionRenderer extends AbstractRenderer {
         if (w == null) {
             throw new NullPointerException();
         }
+        InputStream inputStream = null;
         try {
             if (log.isDebugEnabled()) {
                 log.debug("Rendering with " + blockParameters);
@@ -96,7 +98,7 @@ public class ConnectionRenderer extends AbstractRenderer {
             connection.setReadTimeout(timeOut);
             int responseCode = connection.getResponseCode();
             String contentType = connection.getContentType();
-            InputStream inputStream = connection.getInputStream();
+            inputStream = connection.getInputStream();
             if (responseCode == 200) {
                 log.debug("" + xsl);
                 if (xsl == null) {
@@ -114,8 +116,8 @@ public class ConnectionRenderer extends AbstractRenderer {
 
 
             } else {
-                log.debug("" + responseCode);
-                throw new FrameworkException("" + responseCode);
+                log.debug(u + ":" + responseCode);
+                throw new FrameworkException(u + ":" + responseCode);
             }
         } catch (java.net.ConnectException ce) {
             throw new FrameworkException(ce.getMessage(), ce);
@@ -132,6 +134,7 @@ public class ConnectionRenderer extends AbstractRenderer {
             log.debug(fe.getMessage(), fe);
             throw fe;
         } finally {
+            IOUtils.closeQuietly(inputStream, null);
             if (decorate) {
                 log.debug("Decorating");
                 try {
