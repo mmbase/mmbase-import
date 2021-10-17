@@ -14,7 +14,7 @@
   <setting name="location">
     <description xml:lang="en">Where the editwizards are installed</description>
     <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
-      <default value="/mmbase/edit/wizard/" />
+      <default value="/mmbase/edit/wizard" />
     </datatype>
   </setting>
 
