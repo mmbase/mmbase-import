@@ -958,8 +958,10 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <rtexprvalue>true</rtexprvalue>
       <info>
         Override the default escape behaviour determined by the surrounding Content-tag.
-        <document file="org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
+
+        <document file="https://raw.githubusercontent.com/mmbase/mmbase/MMBase-1_9/applications/taglib/src/main/resources/org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
                   mode="escapers" />
+
         <p>The value can also refer to the id of an escaper tag</p>
       </info>
       <see tag="content" />
