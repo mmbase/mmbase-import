@@ -185,45 +185,45 @@
   </servlet>
 
   <!-- The MMBase image serving servlet. -->
-  <servlet>
+  <!--<servlet>
     <servlet-name>images</servlet-name>
     <servlet-class>org.mmbase.servlet.ImageServlet</servlet-class>
     <init-param>
-      <!-- Expire time of original images. Cached images never expire. -->
+      &lt;!&ndash; Expire time of original images. Cached images never expire. &ndash;&gt;
       <param-name>expire</param-name>
-      <!-- 10 minutes (default is one hour)-->
+      &lt;!&ndash; 10 minutes (default is one hour)&ndash;&gt;
       <param-value>600</param-value>
     </init-param>
     <init-param>
-      <!-- Whether to accepts image conversion on the URL -->
+      &lt;!&ndash; Whether to accepts image conversion on the URL &ndash;&gt;
       <param-name>convert</param-name>
       <param-value>false</param-value>
     </init-param>
     <init-param>
-      <!-- Field of image node to use for 'last modified' -->
+      &lt;!&ndash; Field of image node to use for 'last modified' &ndash;&gt;
       <param-name>lastmodifiedfield</param-name>
       <param-value></param-value>
     </init-param>
     <load-on-startup>2</load-on-startup>
   </servlet>
-
+-->
   <!-- The MMBase attachment serving servlet. -->
-  <servlet>
+ <!-- <servlet>
     <servlet-name>attachments</servlet-name>
     <servlet-class>org.mmbase.servlet.AttachmentServlet</servlet-class>
     <init-param>
-      <!-- Expire time of original images. Cached images never expire. -->
+      &lt;!&ndash; Expire time of original images. Cached images never expire. &ndash;&gt;
       <param-name>expire</param-name>
-      <!-- 10 minutes (default is one hour)-->
+      &lt;!&ndash; 10 minutes (default is one hour)&ndash;&gt;
       <param-value>600</param-value>
     </init-param>
     <init-param>
-      <!-- Field of attachment node to use for 'last modified' -->
+      &lt;!&ndash; Field of attachment node to use for 'last modified' &ndash;&gt;
       <param-name>lastmodifiedfield</param-name>
       <param-value></param-value>
     </init-param>
     <load-on-startup>3</load-on-startup>
-  </servlet>
+  </servlet>-->
 
 
   <!-- mapping for version-request -->
@@ -232,18 +232,18 @@
     <url-pattern>/version</url-pattern>
   </servlet-mapping>
 
-  <!-- mapping for image-requests -->
+ <!-- &lt;!&ndash; mapping for image-requests &ndash;&gt;
   <servlet-mapping>
     <servlet-name>images</servlet-name>
     <url-pattern>/mmbase/images/*</url-pattern>
   </servlet-mapping>
 
-  <!-- mapping for attachment-requests -->
+  &lt;!&ndash; mapping for attachment-requests &ndash;&gt;
   <servlet-mapping>
     <servlet-name>attachments</servlet-name>
     <url-pattern>/mmbase/attachments/*</url-pattern>
   </servlet-mapping>
-
+-->
   <mime-mapping>
     <extension>mmbase-module</extension>
     <mime-type>application/java-archive</mime-type>
