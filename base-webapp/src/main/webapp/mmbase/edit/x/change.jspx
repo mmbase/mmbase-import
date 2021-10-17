@@ -40,7 +40,7 @@
               </mm:link>
               <a href="javascript:document.getElementById('changeform').submit();" class="ok"><span class="navigate">ok</span></a>
               <mm:nodeinfo type="gui" />
-              <jsp:text> (<mm:nodeinfo type="guitype" />)</jsp:text>
+              <jsp:text> (</jsp:text><mm:nodeinfo type="guitype" /><jsp:text>)</jsp:text>
               <jsp:directive.include file="logininfo.span.jspx" />
             </h1>
 
@@ -102,12 +102,12 @@
                       </mm:relatednode>
                     </td>
                   </tr>
-                </mm:listrelations>          
+                </mm:listrelations>
               </table>
             </mm:listrelationscontainer>
-          </mm:node>     
+          </mm:node>
         </div>
-      </body>      
+      </body>
     </mm:cloud>
   </html>
 </mm:content>
