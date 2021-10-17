@@ -128,6 +128,7 @@ public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> 
             return convert(o1).compareTo(convert(o2));
         }
     }
+
     protected class WrappedComparator implements Comparator<Object> {
 
         final Comparator<? super E> comparator;
@@ -136,8 +137,21 @@ public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> 
             this.comparator = comparator;
         }
 
+
         public int compare(Object o1, Object o2) {
-            return comparator.compare(convert(o1), convert(o2));
+            E e1 = convert(o1);
+            E e2 = convert(o2);
+            if (comparator == null) {
+                if (e1 != null) {
+                    return e1.compareTo(e2);
+                } else if (e2 != null) {
+                    return -1 * e2.compareTo(e1);
+                } else {
+                    return 0;
+                }
+            } else {
+                return comparator.compare(e1, e2);
+            }
         }
     }
 
