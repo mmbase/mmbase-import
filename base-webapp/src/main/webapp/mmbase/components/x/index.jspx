@@ -176,8 +176,8 @@
                 <mm:maywrite inverse="true"><mm:import id="readonly">readonly</mm:import></mm:maywrite>
                 <mm:maywrite ><mm:import id="readonly"></mm:import></mm:maywrite>
                 <mm:link referids="_node@node,$referids" page="change">
-                  <mm:import id="class">${index % 2 == 0 ? 'even' : 'odd'} ${readonly}</mm:import>
-                  <tr class="${class}">
+                  <mm:import id="clazz">${index % 2 == 0 ? 'even' : 'odd'} ${readonly}</mm:import>
+                  <tr class="${clazz}">
                     <td class="nodeselect" >
                       <input id="checkbox_${_node.number}"  value="${_node.number}"
                              class="nodesbox" type="checkbox" name="nodes"
