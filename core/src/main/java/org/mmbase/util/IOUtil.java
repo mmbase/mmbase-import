@@ -15,7 +15,7 @@ import java.nio.channels.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Various utils to consisely and efficiently deal with streams
+ * Various utils to concisely and efficiently deal with streams
  * @since MMBase-1.9.1
  * @version $Id$
  */
@@ -105,5 +105,7 @@ public final class IOUtil {
 
         return size;
     }
+
+
 
 }
