@@ -61,7 +61,7 @@ $(document).ready(
 	 * (between 'search' and 'close').
 	 */
 	 $("div.mm_related").
-	    live("mmsrPaged",
+	    on("mmsrPaged",
 		 function (e, status, relater, searcher) {
                      var anchor = $(searcher.div).find("a.search")[0];
                      anchor.searcher = searcher;
@@ -84,7 +84,7 @@ $(document).ready(
 		);
 
 	$("input.search").
-	    live("keyup",
+	    on("keyup",
 		 function(e) {
 		     var target = e.target;
 		     var anchor = $(target).closest("div.searchable").find("a.search")[0];

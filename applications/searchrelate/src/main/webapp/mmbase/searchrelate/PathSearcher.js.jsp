@@ -20,7 +20,7 @@ $(document).ready(
 );
 
 $("div.lazy").
-    live("mmsr_lazyloaded",
+    on("mmsr_lazyloaded",
          function(e) {
              var div = e.target;
              MMBasePathSearcher.prototype.init(this);
@@ -28,7 +28,7 @@ $("div.lazy").
         );
 
 $("div.mm_related.pathsearcher_ontheway").
-    live("mmsrRelate",
+    on("mmsrRelate",
          function (e, tr, relater) {
              var number = relater.getNumber(tr);
              var pathSearcher = $(e.target).closest("table.mmsr_pathsearch")[0].searcher;
@@ -39,7 +39,7 @@ $("div.mm_related.pathsearcher_ontheway").
          });
 
 $("div.mm_related.pathsearcher_end").
-    live("mmsrRelate",
+    on("mmsrRelate",
          function (e, tr, relater) {
              var number = relater.getNumber(tr);
              relater.repository.searcher.dec();

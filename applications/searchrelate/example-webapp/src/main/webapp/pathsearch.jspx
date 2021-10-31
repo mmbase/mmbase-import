@@ -10,7 +10,7 @@
   <script type="text/javascript">
     // Like this you can make something happen when the user finds a node.
     $("div.mm_related.pathsearcher_end").
-       live("mmsrRelate",
+       on("mmsrRelate",
             function (e, tr, relater) {
                alert("Found " + relater.getNumber(tr) + " for " + $(e.target).closest("table.mmsr_pathsearch").attr("id"));
             }

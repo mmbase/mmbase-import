@@ -1,6 +1,6 @@
 /*<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@ taglib uri="http://www.opensymphony.com/oscache" prefix="os"
-%><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"  
+%><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"
 %><jsp:directive.page session="false" />
 *///<mm:content type="text/javascript" expires="3600" postprocessor="none" language="${param.locale}"><os:cache time="3600"><mm:escape  escape="javascript-compress"><fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
 /**
@@ -34,7 +34,7 @@ $(document).ready(
         // This arranges the version arranged by mm-sr:relatednodes itself
         // (recognizable by the class).
         $("div.mm_related.relatednodes_search_simple").
-            live("mmsrRelate",
+            on("mmsrRelate",
                  function (e, tr, relater) {
                      var number = relater.getNumber(tr);
                      relater.repository.searcher.dec();
@@ -46,7 +46,7 @@ $(document).ready(
         // i.e, we bind to the 'mmsrRelate' event to put the selected
         // tr in the list as a new item.
         $("div.mm_related").
-            live("mmsrAddToList",
+            on("mmsrAddToList",
                  function (e, number) {
                      var div = $(e.target).closest("div.list")[0];
                      var list = div.list;
@@ -55,7 +55,7 @@ $(document).ready(
 
 
         $("div.lazy").
-            live("mmsr_lazyloaded",
+            on("mmsr_lazyloaded",
                  function(e) {
                      var div = e.target;
                      // switch on mm-sr stuf in this newly loaded block too
@@ -64,9 +64,6 @@ $(document).ready(
                 );
     }
 );
-
-
-
 
 
 function List(d) {
