@@ -19,7 +19,7 @@ import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.xml.DocumentReader;
 
 /**
- * With this class the logging is configured and it supplies the `Logger' objects.
+ * With this class the logging is configured, and it supplies the `Logger' objects.
  * <p>
  * For example:
  * <code>
@@ -126,7 +126,7 @@ public class Logging {
      *
      */
 
-    public  static void configure (ResourceLoader rl, String configFile) {
+    public static void configure(ResourceLoader rl, String configFile) {
         resourceLoader = rl;
         configWatcher = new ResourceWatcher(rl) {
             public void onChange(String s) {
