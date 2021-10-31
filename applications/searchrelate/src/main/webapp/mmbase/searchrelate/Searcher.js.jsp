@@ -1,6 +1,6 @@
 /*<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@ taglib uri="http://www.opensymphony.com/oscache" prefix="os"
-%><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"  
+%><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"
 %><jsp:directive.page session="false" />
 *///<mm:content type="text/javascript" expires="3600" postprocessor="none" language="${param.locale}"><os:cache time="3600"><mm:escape  escape="javascript-compress"><fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
 /**
@@ -27,7 +27,7 @@
 
 $(document).ready(
     function(){
-        $("div.mm_related").live(
+        $("div.mm_related").on(
 	    "click",
 	    function(ev) {
 		if (this.relater == null) {
@@ -54,7 +54,7 @@ $(document).ready(
 				   url: url, type: "GET", dataType: "xml", data: params
 				  });
 		       });
-	
+
 	/*
 	 * If you defined in your CSS that 'implicit' search results are not visible at all, then
 	 * this method arranges the texts on the search buttons accordingly
@@ -82,7 +82,7 @@ $(document).ready(
 			 });
                  }
 		);
-	
+
 	$("input.search").
 	    live("keyup",
 		 function(e) {
@@ -221,10 +221,10 @@ function MMBaseRelater(d, validator) {
     if (submit != null) {
 	$(submit).click(
 	    function(el) {
-		return self.commit(el); 
+		return self.commit(el);
 	    });
     }
-    
+
     $(this.div).trigger("mmsrRelaterReady", [self]);
 }
 

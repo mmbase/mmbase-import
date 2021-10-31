@@ -5,7 +5,7 @@
 */
 $(document).ready(
     function() {
-        $("a.toggle").live("click",
+        $("a.toggle").on("click",
                            function() {
                                var a = this;
                                var body = $(a).siblings("div.toggle_body");
@@ -15,7 +15,7 @@ $(document).ready(
                                var li = $(a).closest("li");
                                $(li).trigger("mmsrToggle", [body]);
                            });
-        $("div.list li").live("mmsrToggle",
+        $("div.list li").on("mmsrToggle",
                               function(ev, div) {
                                   // arrange lazy loading
                                   var li = ev.target;
