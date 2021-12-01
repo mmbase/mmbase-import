@@ -349,7 +349,7 @@
     <div id="${rid}" class="list ${parameters.query.nodeManager.name} ${pageContext.request.method}">
 
       <c:if test="${! parameters.autosubmit and empty mm:property('org.mmbase.cloud.sessionname')}">
-        <jsp:text>WARNING: Non-autosubmitting mm-sr:relatednodes tag does not work for clouds not in the session (<mm:cloudinfo type="rank" />/<mm:cloudinfo type="user" />). It needs to keep track of transactions. </jsp:text>
+        <jsp:text>WARNING: Non-autosubmitting mm-sr:relatednodes tag does not work for clouds not in the session (</jsp:text><mm:cloudinfo type="rank" />/<mm:cloudinfo type="user" /><jsp:text>). It needs to keep track of transactions. </jsp:text>
       </c:if>
 
       <c:if test="${! empty idvar}">
