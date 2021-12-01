@@ -23,7 +23,7 @@
         </c:when>
         <c:otherwise>
           <mm:log level="debug">Cloud:  ${parameters.formtag} </mm:log>
-          <jsp:text>&lt;!-- transaction: <mm:escape>${parameters.formtag}</mm:escape> --&gt;</jsp:text>
+          <jsp:text>&lt;!-- transaction: </jsp:text><mm:escape>${parameters.formtag}</mm:escape><jsp:text> --&gt;</jsp:text>
           <mm:form
               mode="transaction"
               name="${parameters.formtag}"
