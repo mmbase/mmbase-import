@@ -13,7 +13,7 @@
     </authorgroup>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
-      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="https://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
     </legalnotice>
   </articleinfo>
   <section id="introduction">
@@ -255,6 +255,12 @@
     <title>mm-sr:tabs</title>
     <para>
       This is an experimental tag  which could be used to easily make an editors consisting of serveral steps (like the tabs of editwizards).
+    </para>
+  </section>
+  <section id="tldoc">
+    <title>tlddoc</title>
+    <para>
+      The tlddoc of the tags can be found here <ulink url="https://www.mmbase.org/tags/mm/searchrelate/">here</ulink>
     </para>
   </section>
 </article>
