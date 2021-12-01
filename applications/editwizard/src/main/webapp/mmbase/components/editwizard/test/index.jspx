@@ -9,7 +9,7 @@
   <h2>Editwizard tests</h2>
 
   <mm:import externid="wizards"><mm:setting name="location" /></mm:import>
-  <mm:import id="jsps">${wizards}jsp</mm:import>
+  <mm:import id="jsps">${wizards}/jsp</mm:import>
 
   <mm:import id="templates">/mmbase/components/editwizard/test/</mm:import>
   <mm:import id="referrer"><mm:url absolute="context" /></mm:import>
