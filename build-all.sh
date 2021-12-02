@@ -8,12 +8,16 @@ DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 #echo $OSSRH_PASSWORD | base64
 
 MVN="mvn $MAVEN_OPTS -fae  -Dgpg.skip=true -B -Duser.home=$HOME"
+TARGET=deploy
+if [ ! -z "$1" ] ; then
+    TARGET=$1
+fi
 
 #cd $DIR/applications/streams && $MVN -P'deploy,!development' clean deploy
 #exit
 for d in  . maven-base maven maven/maven-mmbase-plugin maven-base/applications applications   ; do
-    (cd $DIR/$d &&  $MVN -N clean deploy)
+    (cd $DIR/$d &&  $MVN -N clean $TARGET)
 done
 
 
-(cd $DIR && $MVN -P'deploy,!development' clean deploy)
+(cd $DIR && $MVN -P'deploy,!development' clean $TARGET)

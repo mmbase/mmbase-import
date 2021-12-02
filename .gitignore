@@ -9,3 +9,7 @@ applications/streams/samples/
 *.iml
 .idea
 /base-webapp/WEB-INF/data/
+/tests/work/
+/example-webapp/data/
+/applications/searchrelate/out/
+/applications/streams/samplesnot/
