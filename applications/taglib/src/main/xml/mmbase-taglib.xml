@@ -7089,7 +7089,7 @@ The 0 is just counter, which starts at 0 on every page.
         <p>
           Setting the content-type can also trigger a default `escaper' and `postprocessor'.
         </p>
-        <document file="org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
+        <document file="https://raw.githubusercontent.com/mmbase/mmbase/MMBase-1_9/applications/taglib/src/main/resources/org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
                   mode="content" />
       </info>
     </attribute>
@@ -7164,7 +7164,7 @@ The 0 is just counter, which starts at 0 on every page.
         <p>
           The following postprocessors can be specified (besides the ones defined with mm:escaper tags).
         </p>
-        <document file="org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
+        <document file="https://raw.githubusercontent.com/mmbase/mmbase/MMBase-1_9/applications/taglib/src/main/resources/org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
                   mode="postprocessors" />
       </info>
       <see tag="escaper" />
@@ -7187,7 +7187,7 @@ The 0 is just counter, which starts at 0 on every page.
           The following `escapers' can be specified (besides the ones defined with mm:escaper tags):
         </p>
         <document
-            file="org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
+            file="https://raw.githubusercontent.com/mmbase/mmbase/MMBase-1_9/applications/taglib/src/main/resources/org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
             mode="escapers" />
       </info>
       <see tag="writer" attribute="escape" />
@@ -7272,7 +7272,7 @@ The 0 is just counter, which starts at 0 on every page.
       <info>
         What kind of escaper.
         <document
-            file="org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
+            file="https://raw.githubusercontent.com/mmbase/mmbase/MMBase-1_9/applications/taglib/src/main/resources/org/mmbase/bridge/jsp/taglib/resources/taglibcontent.xml"
             mode="parameterizedescapers" />
       </info>
     </attribute>
