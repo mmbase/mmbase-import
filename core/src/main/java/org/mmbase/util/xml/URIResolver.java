@@ -15,8 +15,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import org.mmbase.util.SizeMeasurable;
-import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -215,9 +214,6 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
     }
 
 
-
-
-
     public URL resolveToURL(final String href,  final String base) throws TransformerException {
         if (log.isDebugEnabled()) {
             log.debug("Using resolver  " + this + " to resolve href: " + href + "   base: " + base);
@@ -300,9 +296,14 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
     public Source resolve(String href,  String base) throws TransformerException {
         try {
             URL u = resolveToURL(href, base);
-            if (u == null) return null;
-            Source source = new StreamSource(u.openStream());
-            source.setSystemId(u.toString());
+            if (u == null) {
+                log.debug("Didn't resolve " + href);
+                return null;
+            }
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            IOUtil.copy(u.openStream(), bytes);
+            Source source = new StreamSource(new ByteArrayInputStream(bytes.toByteArray()));
+            //source.setSystemId(u.toString());
             return source;
         } catch (Exception e) {
             throw new TransformerException(e);

@@ -34,8 +34,8 @@ import org.xml.sax.*;
  * @version $Id$
  */
 public class ProfileInfo {
- 
-    static private final Logger log = Logging.getLoggerInstance(ProfileInfo.class); 
+
+    static private final Logger log = Logging.getLoggerInstance(ProfileInfo.class);
 
     private int id = -1;
     private Poster parent;
@@ -73,7 +73,7 @@ public class ProfileInfo {
 	this.forum = parent.getParent();
 	//syncExternals();
     }
- 
+
 
     public int getId() {
 	return id;
@@ -119,7 +119,7 @@ public class ProfileInfo {
                             if (n2 != null) {
                                 name = n2.getNodeValue();
                             }
-			
+
                             // decode synced
                             n2 = nm.getNamedItem("synced");
                             if (n2 != null) {
@@ -165,7 +165,7 @@ public class ProfileInfo {
 	pe.setName(name);
 	String oldvalue = getValue(name).getValue();
 	if (oldvalue==null || !oldvalue.equals(value)) {
-            pe.setValue(value);	
+            pe.setValue(value);
             pe.setSynced(false);
             setSynced(false);
             save();
@@ -184,7 +184,7 @@ public class ProfileInfo {
 
     private String encodeXML() {
 	String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-	body += "<!DOCTYPE profileinfo PUBLIC \"-//MMBase/DTD mmbob profileinfo 1.0//EN\" \"http://www.mmbase.org/dtd/mmbobprofileinfo_1_0.dtd\">\n";
+	body += "<!DOCTYPE profileinfo PUBLIC \"-//MMBase/DTD mmbob profileinfo 1.0//EN\" \"https://www.mmbase.org/dtd/mmbobprofileinfo_1_0.dtd\">\n";
 	body += "<profileinfo>\n";
 
 	Iterator pi=entries.values().iterator();
@@ -193,7 +193,7 @@ public class ProfileInfo {
             body += "\t<entry name=\""+pe.getName()+"\"><![CDATA["+pe.getValue()+"]]></entry>\n";
 	}
 	body += "</profileinfo>\n";
-	return body; 
+	return body;
     }
 
     private void syncExternals() {

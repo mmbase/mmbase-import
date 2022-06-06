@@ -159,11 +159,14 @@ public class XSLTransformer {
         if (cachedXslt == null) {
             TransformerFactory tf = FactoryCache.getCache().getFactory(uri);
             cachedXslt = tf.newTemplates(xsl);
+            tf.setURIResolver(uri);
             cache.put(xsl, cachedXslt, uri);
         } else {
             if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
         }
         Transformer transformer = cachedXslt.newTransformer();
+        transformer.setURIResolver(uri);
+
         //Transformer transformer = TransformerFactory.newInstance().newTransformer();
         if (log.isDebugEnabled()) {
             log.debug("Size of transformer " + SizeOf.getByteSize(transformer) + " bytes");

@@ -57,6 +57,10 @@ abstract public class AbstractRenderer implements Renderer {
      * requested by the contract of a ({@link Renderer.Type#BODY}) renderer for text/html.
      */
     protected void decorateIntro(RenderHints hints, Writer w, String extraClass)  throws IOException {
+        Block block = getBlock();
+        if (block == null) {
+            throw new IllegalStateException("No block in " + getClass() + " " + this);
+        }
         w.write("<div id=\"" + hints.getId() + "\"");
         w.write(" class=\"");
         if (extraClass != null) {
@@ -64,9 +68,9 @@ abstract public class AbstractRenderer implements Renderer {
             w.write(' ');
         }
         w.write("mm_c c_");
-        w.write(getBlock().getComponent().getName());
+        w.write(block.getComponent().getName());
         w.write(" b_");
-        w.write(getBlock().getName());
+        w.write(block.getName());
         w.write(" " + hints.getStyleClass());
         w.write("\">");
     }

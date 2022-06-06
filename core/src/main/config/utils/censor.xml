@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
+<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "https://www.mmbase.org/dtd/util_1_0.dtd">
 <!-- Censor is a 'transformer' (org.mmbase.util.transformers.Censor).
      and can e.g. be used as 'escaper' in Taglib.
      @since MMBase-1.8
@@ -9,7 +9,7 @@
 <util>
   <properties>
     <property name="regexps" type="map">
-      <!-- 
+      <!--
         Keys are regular expressions wich are matched to words, values are what they are to be replaced with.
         $0: the entire expiression
         $1: first capturing group http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html#cg

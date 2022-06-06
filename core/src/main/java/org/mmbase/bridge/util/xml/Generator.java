@@ -33,7 +33,7 @@ public class Generator {
 
     public final static String NAMESPACE =  "http://www.mmbase.org/xmlns/objects";
     private final static String DOCUMENTTYPE_PUBLIC =  "-//MMBase//DTD objects config 1.0//EN";
-    private final static String DOCUMENTTYPE_SYSTEM = "http://www.mmbase.org/dtd/objects_1_0.dtd";
+    private final static String DOCUMENTTYPE_SYSTEM = "https://www.mmbase.org/dtd/objects_1_0.dtd";
 
     private Document document = null;
     private final DocumentBuilder documentBuilder;

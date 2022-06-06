@@ -490,7 +490,7 @@ public class MagicParser implements DetectorProvider {
         FileWriter writer = new FileWriter(f);
 
         writer.write(
-            "<!DOCTYPE magic PUBLIC \"-//MMBase//DTD magic config 1.0//EN\" \"http://www.mmbase.org/dtd/magic_1_0.dtd\">\n<magic>\n<info>\n<version>0.1</version>\n<author>cjr@dds.nl</author>\n<description>Conversion of the UNIX 'magic' file with added mime types and extensions.</description>\n</info>\n<detectorlist>\n");
+            "<!DOCTYPE magic PUBLIC \"-//MMBase//DTD magic config 1.0//EN\" \"https://www.mmbase.org/dtd/magic_1_0.dtd\">\n<magic>\n<info>\n<version>0.1</version>\n<author>cjr@dds.nl</author>\n<description>Conversion of the UNIX 'magic' file with added mime types and extensions.</description>\n</info>\n<detectorlist>\n");
         for (Detector detector : getDetectors()) {
             if (detector instanceof BasicDetector) {
                 ((BasicDetector) detector).toXML(writer); // see TODO

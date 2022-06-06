@@ -35,19 +35,19 @@ import org.xml.sax.InputSource;
  */
 public class EntityResolver implements org.xml.sax.EntityResolver {
 
-    public static final String DOMAIN = "http://www.mmbase.org/";
+    public static final String DOMAIN = "https://www.mmbase.org/";
     public static final String DTD_SUBPATH = "dtd/";
     public static final String XMLNS_SUBPATH = "xmlns/";
     private static final String XSD_SUBPATH = "xsd/"; // deprecated
 
-    private static Logger log = Logging.getLoggerInstance(EntityResolver.class);
+    private static final Logger log = Logging.getLoggerInstance(EntityResolver.class);
     static {
         //log.setLevel(Level.DEBUG);
     }
 
     private static final String MMRESOURCES = "/org/mmbase/resources/";
 
-    private static Map<String, Resource> publicIDtoResource = new ConcurrentHashMap<String, Resource>();
+    private static final Map<String, Resource> publicIDtoResource = new ConcurrentHashMap<String, Resource>();
     // This maps public id's to classes which are know to be able to parse this XML's.
     // The package of these XML's will also contain the resources with the DTD.
 
@@ -364,7 +364,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
                     log.debug("Cannot resolve " + systemId + ", but needed for validation leaving to parser.");
                     log.debug("Find culpit: ", new Exception());
                     return null;
-                } else if (systemId.endsWith(".dtd")) {
+                } else if (systemId != null && systemId.endsWith(".dtd")) {
                     // perhaps this should not be done if it is about resolving _entities_ rather then dtd.
                     log.debug("Not validating, no need to resolve DTD (?), returning empty resource for " + systemId);
                     return new InputSource(new ByteArrayInputStream(new byte[0]));

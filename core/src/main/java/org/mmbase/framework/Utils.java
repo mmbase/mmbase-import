@@ -82,6 +82,7 @@ public abstract class Utils {
     public static void xslTransform(Parameters blockParameters, URL in, InputStream inputStream, Writer w, URL xsl) throws javax.xml.transform.TransformerException {
         /// convert using the xsl and spit out that.
         Source xml = new StreamSource(inputStream, in.toString());
+
         Result res = new StreamResult(w);
 
         Map<String, Object> params = new HashMap<String, Object>();

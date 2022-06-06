@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE magic PUBLIC "-//MMBase//DTD magic config 1.0//EN" "http://www.mmbase.org/dtd/magic_1_0.dtd">
+<!DOCTYPE magic PUBLIC "-//MMBase//DTD magic config 1.0//EN" "https://www.mmbase.org/dtd/magic_1_0.dtd">
 <magic>
   <info>
     <version>0.1</version>
@@ -2018,7 +2018,7 @@
       <mimetype>application/vnd.ms-powerpoint</mimetype>
       <extension>ppt</extension>
       <designation>Microsoft Powerpoint Document</designation>
-      <test offset="512" type="string" comparator="=">\375\377\377\377</test>      
+      <test offset="512" type="string" comparator="=">\375\377\377\377</test>
     </detector>
     <detector>
       <mimetype>application/vnd.openxmlformats-officedocument.wordprocessingml.document</mimetype>
