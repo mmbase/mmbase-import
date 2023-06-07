@@ -32,7 +32,7 @@
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
-        <artifactId>tomcat8-maven-plugin</artifactId>
+        <artifactId>tomcat-maven-plugin</artifactId>
         <version>2.2</version>
         <configuration>
           <warSourceDirectory>src/main/webapp</warSourceDirectory>
