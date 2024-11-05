@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 # exit when any command fails
 set -e
-ls -lag ~/.m2/settings.xml
-cat ~/.m2/settings.xml
-set | grep USERNAME
 export MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
 
 DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
