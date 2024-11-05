@@ -13,25 +13,33 @@ jobs:
       MAVEN_OPTS: -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
     steps:
       - name: Cancel previous Action
-        uses: styfle/cancel-workflow-action@0.9.1
-        with:
-          access_token: ${{ github.token }}
+        uses: styfle/cancel-workflow-action@0.12.1
         continue-on-error: true
-      - uses: s4u/maven-settings-action@v2
+      - uses: actions/setup-java@v4
         with:
-          servers: '[{"id": "mmbase-ossrh", "username": "mihxil", "password": "${{secrets.OSSRH_PASSWORD}}"}]'
-      - uses: actions/checkout@v2
+          distribution: temurin
+          java-version: 8
+          cache: maven
+          server-id: 'mmbase-ossrh'
+          server-username: OSSRH_USERNAME
+          server-password: OSSRH_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_SECRET_KEY }}
+          gpg-passphrase: GPG_SECRET_KEY_PASSPHRASE
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          GPG_SECRET_KEY_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }}
+      - uses: actions/checkout@v4
       - name: Build with Maven
         run: ./build-all.sh
       - name: Test Report
-        uses: dorny/test-reporter@v1
+        uses: EnricoMi/publish-unit-test-result-action@v2
         if: success() || failure()    # run this step even if previous step failed
         with:
-          name: Junit Tests
-          path: '**/target/surefire-reports/TEST-*.xml'    # Path to test results
-          reporter: java-junit       # Format of test results
-          only-summary: 'true'
-          fail-on-error: 'false'
-      - uses: codecov/codecov-action@v2
+          files: '**/target/surefire-reports/TEST-*.xml'    # Path to test
+      - uses: codecov/codecov-action@v4
         if: github.ref == 'refs/heads/MMBase-1_9'
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # required
+          verbose: true # optional (default = false)
 
