@@ -8,14 +8,18 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.util.functions;
-import org.mmbase.datatypes.*;
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.mock.*;
-import java.util.*;
-import java.util.regex.*;
-import org.junit.*;
-import static org.junit.Assert.*;
-import org.mmbase.util.logging.Logging;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.mock.MockBuilderReader;
+import org.mmbase.bridge.mock.MockCloudContext;
+import org.mmbase.bridge.util.CloudThreadLocal;
+import org.mmbase.datatypes.CastException;
+import org.mmbase.datatypes.DataTypes;
 
 /**
  *
@@ -65,7 +69,9 @@ public class ParameterTest {
     @Test
     public void autoCastNodeEnumeration() throws Exception {
         Parameter<Node> param = new Parameter<Node>("a", DataTypes.getDataType("typedef"));
-        org.mmbase.bridge.Node typedef =  MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("typedef").getList(null).getNode(0);
+        Cloud cloud = MockCloudContext.getInstance().getCloud("mmbase");
+        CloudThreadLocal.bind(cloud);
+        org.mmbase.bridge.Node typedef =  cloud.getNodeManager("typedef").getList(null).getNode(0);
         org.mmbase.bridge.Node news =  MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("news").createNode();
         news.setStringValue("title", "bla");
         news.commit();

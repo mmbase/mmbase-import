@@ -60,7 +60,7 @@
     <field name="number" state="system">
 
       <descriptions>
-        <description xml:lang="en">Unique objectnumber</description>
+        <description xml:lang="en">Unique object number</description>
         <description xml:lang="nl">Uniek objectnummer</description>
         <description xml:lang="es">Numero unico del objeto</description>
         <description xml:lang="eo">Unika numero de ĉi objekto</description>

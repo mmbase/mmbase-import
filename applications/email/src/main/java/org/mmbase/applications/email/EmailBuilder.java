@@ -9,18 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.email;
 
-import java.util.*;
-import java.util.concurrent.*;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Future;
 import org.mmbase.bridge.Node;
-
-import org.mmbase.module.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.ThreadPools;
-
+import org.mmbase.module.Module;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-
+import org.mmbase.util.ThreadPools;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -248,7 +246,7 @@ public class EmailBuilder extends MMObjectBuilder {
     /**
      *
      * @param node	Email node on which to set the type
-     * @param args	List with arguments
+     * @param parameters	List with arguments
      */
     private static void setType(Node node, Parameters parameters) {
         String type = (String) parameters.get(TYPE_PARAMETER);

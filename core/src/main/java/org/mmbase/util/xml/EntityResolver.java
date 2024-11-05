@@ -110,6 +110,9 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
             if (stream == null && clazz != null) {
                 stream = clazz.getResourceAsStream(getResource());
             }
+            if (stream == null) {
+                log.info("Could not find");
+            }
             return stream;
         }
 
