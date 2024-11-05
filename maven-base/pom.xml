@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <groupId>org.mmbase</groupId>
@@ -341,6 +341,30 @@ See http://www.MMBase.org/license
 
     </pluginManagement>
     <plugins>
+       <plugin>
+         <groupId>org.sonatype.plugins</groupId>
+         <artifactId>nexus-staging-maven-plugin</artifactId>
+         <version>1.7.0</version>
+         <extensions>true</extensions>
+         <configuration>
+           <serverId>ossrh</serverId>
+           <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+           <autoReleaseAfterClose>true</autoReleaseAfterClose>
+         </configuration>
+       </plugin>
+      <plugin>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>3.2.7</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
