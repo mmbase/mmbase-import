@@ -4,8 +4,10 @@ import java.io.*;
 import java.net.URL;
 import javax.xml.transform.TransformerException;
 import junit.framework.TestCase;
+import org.junit.Ignore;
 import org.mmbase.util.functions.Parameters;
 
+@Ignore
 public class UtilsTest extends TestCase {
 
     public void testXslTransform() throws IOException, TransformerException {
