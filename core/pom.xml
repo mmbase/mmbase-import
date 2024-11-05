@@ -71,7 +71,7 @@ See http://www.MMBase.org/license
                 <name>org/mmbase</name>
                 <manifestEntries>
                   <Vendor>MMBase Community</Vendor>
-                  <URL>http://www.mmbase.org</URL>
+                  <URL>https://www.mmbase.org</URL>
                   <Comment>The MMBase Content Management System. ${project.name} (${project.artifactId}).</Comment>
                   <Version>${project.version}.${timestamp}</Version>
                   <SCM-Revision>${sources.version}</SCM-Revision>
