@@ -15,6 +15,7 @@ jobs:
       - name: Cancel previous Action
         uses: styfle/cancel-workflow-action@0.12.1
         continue-on-error: true
+      - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
