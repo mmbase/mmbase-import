@@ -21,7 +21,7 @@ jobs:
           distribution: temurin
           java-version: 8
           cache: maven
-          server-id: 'mmbase-ossrh'
+          server-id: 'ossrh'
           server-username: OSSRH_USERNAME
           server-password: OSSRH_PASSWORD
           gpg-private-key: ${{ secrets.GPG_SECRET_KEY }}
