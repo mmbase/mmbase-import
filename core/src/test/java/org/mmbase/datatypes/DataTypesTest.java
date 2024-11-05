@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.mock.MockBuilderReader;
 import org.mmbase.bridge.mock.MockCloudContext;
+import org.mmbase.bridge.util.CloudThreadLocal;
 import org.mmbase.datatypes.util.xml.DataTypeReader;
 import org.mmbase.datatypes.util.xml.DependencyException;
 import org.mmbase.util.LocalizedString;
@@ -41,6 +42,7 @@ public class DataTypesTest  {
     @BeforeClass
     public static void setUp() throws Exception {
         LocalizedString.setDefault(new Locale("da"));
+        System.setProperty("mmbase.defaultcloudcontext", "mock:local");
         DataTypes.initialize();
         MockCloudContext.getInstance().addCore();
         MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("tests"));
@@ -401,7 +403,9 @@ public class DataTypesTest  {
     @Test
     public void typedef() throws Exception {
         NodeDataType typedefDataType = (NodeDataType) DataTypes.getDataType("typedef");
-        org.mmbase.bridge.Node typedef =  MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("typedef").getList(null).getNode(0); // a valid node
+        Cloud cloud =  MockCloudContext.getInstance().getCloud("mmbase");
+        CloudThreadLocal.bind(cloud);
+        org.mmbase.bridge.Node typedef = cloud.getNodeManager("typedef").getList(null).getNode(0); // a valid node
 
         assertEquals(typedef, typedefDataType.castToValidate(typedef, null, null));
         assertEquals(typedef.getNumber(), ((org.mmbase.bridge.Node) typedefDataType.castToValidate(typedef.getNumber(), null, null)).getNumber());
@@ -455,9 +459,15 @@ public class DataTypesTest  {
 
     @Test
     public void dataTypeOfAnotherField() {
-        NodeManager aa = MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("aa");
-        NodeManager datatypes = MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("datatypes");
-        assertEquals(aa.getField("datatypesstring").getDataType(), datatypes.getField("string").getDataType());
+
+        Cloud cloud = MockCloudContext.getInstance().getCloud("mmbase");
+        CloudThreadLocal.bind(cloud);
+        NodeManager aa = cloud.getNodeManager("aa");
+        NodeManager datatypes = cloud.getNodeManager("datatypes");
+        assertEquals(
+            aa.getField("datatypesstring").getDataType(),
+            datatypes.getField("string").getDataType()
+        );
         assertEquals(datatypes.getField("aaname").getDataType(), aa.getField("name").getDataType());
         System.out.println(aa.getField("datatypesstring") + "==" + datatypes.getField("string"));
 
