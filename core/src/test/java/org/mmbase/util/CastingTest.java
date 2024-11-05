@@ -18,6 +18,7 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.mock.MockBuilderReader;
 import org.mmbase.bridge.mock.MockCloudContext;
+import org.mmbase.bridge.util.CloudThreadLocal;
 import org.mmbase.util.transformers.CopyCharTransformer;
 import org.mmbase.util.transformers.Xml;
 /**
@@ -124,6 +125,8 @@ public class CastingTest  {
     @Test
     public void node() {
         Cloud cloud = MockCloudContext.getInstance().getCloud("mmbase");
+        CloudThreadLocal.bind(cloud);
+
         Node news = cloud.getNodeManager("news").createNode();
         news.setStringValue("title", "foobar");
         news.setDateValue("date", new Date(123000));

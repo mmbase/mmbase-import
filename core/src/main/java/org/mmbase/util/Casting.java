@@ -17,6 +17,7 @@ import javax.xml.parsers.*;
 import java.math.BigDecimal;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.util.CloudThreadLocal;
 import org.mmbase.bridge.util.NodeWrapper;
 import org.mmbase.bridge.util.NodeMap;
 import org.mmbase.bridge.util.MapNode;
@@ -207,10 +208,13 @@ public class Casting {
             } else if (type.equals(Node.class)) {
                 try {
                     if (cloud == null) {
-                        if (anonymousCloud == null || ! anonymousCloud.getUser().isValid()) {
-                            anonymousCloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+                        cloud = CloudThreadLocal.currentCloud();
+                        if (cloud == null) {
+                            if (anonymousCloud == null || !anonymousCloud.getUser().isValid()) {
+                                anonymousCloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+                            }
+                            cloud = anonymousCloud;
                         }
-                        cloud = anonymousCloud;
                     }
                     return (C) toNode(value, cloud);
                 } catch (Exception e) {
