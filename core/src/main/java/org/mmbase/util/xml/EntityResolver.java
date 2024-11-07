@@ -35,7 +35,27 @@ import org.xml.sax.InputSource;
  */
 public class EntityResolver implements org.xml.sax.EntityResolver {
 
-    public static final String DOMAIN = "https://www.mmbase.org/";
+    private static final String[] DOMAINS = {
+        "https://www.mmbase.org/",
+        "http://www.mmbase.org/"
+    };
+
+    public static final String DOMAIN = DOMAINS[0];
+
+    private boolean isMMBaseDomain(String s) {
+        return s.startsWith(DOMAINS[0]) || s.startsWith(DOMAINS[1]);
+    }
+    private  String asMMResource(String s) {
+        if (s.startsWith(DOMAINS[0])) {
+            return s.substring(DOMAINS[0].length());
+        } else if (s.startsWith(DOMAINS[1])) {
+            return s.substring(DOMAINS[1].length());
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+
     public static final String DTD_SUBPATH = "dtd/";
     public static final String XMLNS_SUBPATH = "xmlns/";
     private static final String XSD_SUBPATH = "xsd/"; // deprecated
@@ -54,7 +74,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
     /**
      * XSD's have only system ID
      */
-    private static Map<String, Resource> systemIDtoResource = new ConcurrentHashMap<String, Resource>();
+    private static final Map<String, Resource> systemIDtoResource = new ConcurrentHashMap<String, Resource>();
 
 
     /**
@@ -359,7 +379,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
         if (definitionStream == null) { // not succeeded with publicid, go trying with systemId
             log.debug("No definition stream yet");
             //does systemId contain a mmbase-dtd
-            if ((systemId == null) || (! systemId.startsWith(DOMAIN))) {
+            if ((systemId == null) || (! isMMBaseDomain(systemId))) {
                 // it's a systemId we can't do anything with,
                 // so let the parser decide what to do
 
@@ -376,7 +396,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
                     return null;
                 }
             } else {
-                final String mmResource = systemId.substring(DOMAIN.length());
+                final String mmResource = asMMResource(systemId);
                 // first, try MMBase config directory (if initialized)
                 if (log.isDebugEnabled()) {
                     log.debug("mmbase resource " + ResourceLoader.getConfigurationRoot().getResource(mmResource));
