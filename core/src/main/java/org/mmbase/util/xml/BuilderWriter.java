@@ -9,17 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.xml;
 
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
-
-import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
 import org.mmbase.datatypes.DataType;
-import org.mmbase.util.xml.EntityResolver;
-
-import org.w3c.dom.*;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Element;
 
 /**
  * Class for creating builder configuration documents.
@@ -67,7 +67,7 @@ public class BuilderWriter extends DocumentWriter  {
     protected void generate() throws DOMException {
         Element root=document.getDocumentElement();
         addComment("builder.configuration",builder.getTableName(),root);
-        root.setAttribute("name",""+builder.getTableName());
+        root.setAttribute("name",builder.getTableName());
         root.setAttribute("maintainer",builder.getMaintainer());
         root.setAttribute("version",""+builder.getVersion());
         MMObjectBuilder parent=null;

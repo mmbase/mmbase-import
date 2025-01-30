@@ -405,6 +405,9 @@ public abstract class Module extends DescribedFunctionProvider {
         synchronized(Module.class) {
             log.service("Starting modules " + modules.keySet());
             for (Module mod : modules.values()) {
+                if (mod == null){
+                    continue;
+                }
                 if (Thread.currentThread().isInterrupted()) {
                     log.info("Interrupted");
                     return;
@@ -423,6 +426,9 @@ public abstract class Module extends DescribedFunctionProvider {
                 log.debug("Initing the modules " + modules + "");
             }
             for (Module mod : modules.values()) {
+                if (mod == null) {
+                    continue;
+                }
                 if (Thread.currentThread().isInterrupted()) {
                     log.info("Interrupted");
                     return;
@@ -603,7 +609,7 @@ public abstract class Module extends DescribedFunctionProvider {
                             Class<?> newClass = Class.forName(className);
                             try {
                                 Constructor<?> constructor = newClass.getConstructor(String.class);
-                                mod =  (Module) constructor.newInstance(moduleName);
+                                mod = (Module) constructor.newInstance(moduleName);
                             } catch (NoSuchMethodException nsme) {
                                 log.service("Constructor with no name-argument is deprecated " + nsme.getMessage());
                                 mod = (Module) newClass.newInstance();
@@ -611,11 +617,11 @@ public abstract class Module extends DescribedFunctionProvider {
                             }
                         } catch (Throwable t) {
                             if (t instanceof RuntimeException) {
-                                log.error("During instantation of '" + className + "' for '" + moduleName + "': " + t.getMessage());
+                                log.error("During instantiation of '" + className + "' for '" + moduleName + "': " + t.getMessage());
                                 throw (RuntimeException) t;
                             } else {
-                                log.error("During instantation of '" + className + "' for '" + moduleName + "': " + t.getMessage(), t);
-                                return null;
+                                log.error("During instantiation of '" + className + "' for '" + moduleName + "': " + t.getMessage(), t);
+                                continue;
                             }
                         }
                     }

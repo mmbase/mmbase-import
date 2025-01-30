@@ -341,30 +341,7 @@ See http://www.MMBase.org/license
 
     </pluginManagement>
     <plugins>
-       <plugin>
-         <groupId>org.sonatype.plugins</groupId>
-         <artifactId>nexus-staging-maven-plugin</artifactId>
-         <version>1.7.0</version>
-         <extensions>true</extensions>
-         <configuration>
-           <serverId>ossrh</serverId>
-           <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-           <autoReleaseAfterClose>true</autoReleaseAfterClose>
-         </configuration>
-       </plugin>
-      <plugin>
-        <artifactId>maven-gpg-plugin</artifactId>
-        <version>3.2.7</version>
-        <executions>
-          <execution>
-            <id>sign-artifacts</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>sign</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
@@ -586,12 +563,23 @@ See http://www.MMBase.org/license
           </plugin>
           <!-- We want to sign the artifact, the POM, and all attached artifacts -->
           <plugin>
-            <artifactId>maven-gpg-plugin</artifactId>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>1.7.0</version>
+            <extensions>true</extensions>
             <configuration>
-              <passphrase>${gpg.passphrase}</passphrase>
+              <serverId>ossrh</serverId>
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+              <autoReleaseAfterClose>true</autoReleaseAfterClose>
             </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>3.2.7</version>
             <executions>
               <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
                 <goals>
                   <goal>sign</goal>
                 </goals>
