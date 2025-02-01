@@ -38,6 +38,7 @@ public class ProxyGenerator extends AbstractClassGenerator {
         buffer.append("package org.mmbase.bridge.remote.proxy;\n");
         buffer.append("\n");
         buffer.append("import org.mmbase.bridge.*;\n");
+        buffer.append("import org.mmbase.bridge.Module;\n");
         buffer.append("import org.mmbase.cache.*;\n");
         buffer.append("import org.mmbase.datatypes.*;\n");
         buffer.append("import org.mmbase.storage.search.*;\n");

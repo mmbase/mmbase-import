@@ -16,6 +16,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.Module;
 import org.mmbase.module.ProcessorModule;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.LocalizedString;

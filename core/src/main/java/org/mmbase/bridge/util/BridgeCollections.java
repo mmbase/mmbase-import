@@ -13,6 +13,7 @@ package org.mmbase.bridge.util;
 import java.io.Serializable;
 import java.util.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.Module;
 
 /**
  * Analogon of {@link java.util.Collections}. Methods speak for themselves.

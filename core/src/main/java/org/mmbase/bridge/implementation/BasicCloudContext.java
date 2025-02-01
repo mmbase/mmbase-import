@@ -12,6 +12,7 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.Module;
 import org.mmbase.module.core.*;
 import org.mmbase.security.*;
 import org.mmbase.util.logging.Logger;

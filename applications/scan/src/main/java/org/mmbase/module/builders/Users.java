@@ -11,6 +11,7 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 import org.mmbase.module.*;
+import org.mmbase.module.Module;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  */
 public class Users extends MMObjectBuilder {
 
-    private static Logger log = Logging.getLoggerInstance(Users.class.getName()); 
+    private static Logger log = Logging.getLoggerInstance(Users.class.getName());
 
     // cache the 100 most active users, enh. is to allow
     // people to set it in users.xml
@@ -31,13 +32,13 @@ public class Users extends MMObjectBuilder {
 
     // rico's funkie password generator
     protected PasswordGenerator pwgen = new PasswordGenerator ();
-    
+
     /**
     * replace call, when called in format MMBASE-BUILDER-users-xxxxx
     */
     public String replace(scanpage sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
-            String cmd=tok.nextToken();    
+            String cmd=tok.nextToken();
             if (cmd.equals("number")) {
                 int i=getNumber(sp.getSessionName());
                 if (i!=-1) {
@@ -64,7 +65,7 @@ public class Users extends MMObjectBuilder {
             }
         }
             return("");
-        }        
+        }
 
     /**
     * get the number of the user object connected to this cookie.
@@ -102,7 +103,7 @@ public class Users extends MMObjectBuilder {
                 if (e.hasMoreElements()) {
                     MMObjectNode node2=(MMObjectNode)e.nextElement();
                     if (node2!=null) {
-                        // found a related user so put it in 
+                        // found a related user so put it in
                         // cache and return it
                         int number=node2.getIntValue("number");
                         cache.put(key,new Integer(number));
@@ -122,7 +123,7 @@ public class Users extends MMObjectBuilder {
     /**
     * get account name of user (indicated by its cookie).
 	* @param key the value of the browser cookie.
-	* @return the account name. 
+	* @return the account name.
     */
     protected String getAccount(String key) {
         int number=getNumber(key);
@@ -130,8 +131,8 @@ public class Users extends MMObjectBuilder {
             MMObjectNode node=getNode(number);
             String value=node.getStringValue("account");
             return(value);
-        } 
-        return("");    
+        }
+        return("");
     }
 
 
@@ -146,8 +147,8 @@ public class Users extends MMObjectBuilder {
             MMObjectNode node=getNode(number);
             String value=node.getStringValue("email");
             return(value);
-        } 
-        return("");    
+        }
+        return("");
     }
 
 
@@ -162,18 +163,18 @@ public class Users extends MMObjectBuilder {
             MMObjectNode node=getNode(number);
             String value=node.getStringValue("password");
             return(value);
-        } 
-        return("");    
+        }
+        return("");
     }
 
     /**
     * flush caches of the (cookie defined) user
     * also signals the session module
-	* @param key the value of the browser cookie. 
+	* @param key the value of the browser cookie.
     */
     public void flushCache(String key) {
         // bug #6583, code does not check key == null
-        if(key != null) { 
+        if(key != null) {
             // remove from cache
             cache.remove(key);
             // not get module sessions and forget the session
@@ -184,5 +185,5 @@ public class Users extends MMObjectBuilder {
                 s.forgetSession(key);
             }
         }
-    }    
+    }
 }

@@ -16,6 +16,7 @@ import java.util.concurrent.*;
 
 import org.mmbase.util.*;
 import org.mmbase.module.*;
+import org.mmbase.module.Module;
 import org.mmbase.module.core.MMBase;
 
 

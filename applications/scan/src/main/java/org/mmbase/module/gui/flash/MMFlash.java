@@ -15,6 +15,7 @@ import java.io.*;
 
 import org.mmbase.util.*;
 import org.mmbase.module.*;
+import org.mmbase.module.Module;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.gui.html.*;

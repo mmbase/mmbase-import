@@ -12,6 +12,7 @@ package org.mmbase.module.builders;
 import java.util.*;
 
 import org.mmbase.module.*;
+import org.mmbase.module.Module;
 import org.mmbase.module.builders.vwms.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.Mail;

@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.Module;
 
 /**
  * The FunctionFactory instanciates {@link Function} objects. There are 6 static getFunctions

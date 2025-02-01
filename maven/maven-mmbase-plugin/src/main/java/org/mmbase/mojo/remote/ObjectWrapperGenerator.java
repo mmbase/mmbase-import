@@ -81,6 +81,7 @@ public class ObjectWrapperGenerator extends AbstractGenerator {
         buffer.append("import java.rmi.*;\n");
 
         buffer.append("import org.mmbase.bridge.*;\n");
+        buffer.append("import org.mmbase.bridge.Module;\n");
         buffer.append("import org.mmbase.cache.*;\n");
         buffer.append("import org.mmbase.datatypes.processors.*;\n");
         buffer.append("import org.mmbase.datatypes.*;\n");

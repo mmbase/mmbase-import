@@ -1,6 +1,6 @@
 /*
 
-This file is part of the MMBase Streams application, 
+This file is part of the MMBase Streams application,
 which is part of MMBase - an open source content management system.
     Copyright (C) 2011 André van Toly, Michiel Meeuwissen
 
@@ -32,6 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.Module;
 import org.mmbase.security.Action;
 import org.mmbase.security.ActionRepository;
 import org.mmbase.streams.CreateSourcesWithoutProcessFunction;
@@ -54,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * you get an email when it's really finished.
  * The function starts a thread and calls {@link Downloader} to do the actual work. The media file itself is
  * saved in a mediasources node and transcoded by the streams application when the download finishes.
- * Url and information about success or failure of the download are saved as properties 
+ * Url and information about success or failure of the download are saved as properties
  * on the mediafragments node.
  *
  * @author Michiel Meeuwissen
@@ -248,7 +249,7 @@ public final class DownloadFunction extends NodeFunction<String> {
                 return result;
             }
         });
-            
+
     }
 
     @Override

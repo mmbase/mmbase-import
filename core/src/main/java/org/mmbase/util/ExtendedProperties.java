@@ -141,8 +141,8 @@ public class ExtendedProperties extends Properties {
      * @param in the input stream
      * @exception IOException Error when reading from input stream.
      */
-    public synchronized void load(InputStream in) throws IOException {
-        in = Runtime.getRuntime().getLocalizedInputStream(in);
+    public synchronized void load(InputStream inputStream) throws IOException {
+        Reader in = new InputStreamReader(inputStream);
 
         int ch = in.read();
         while (ch != -1) {

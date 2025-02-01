@@ -12,6 +12,7 @@ package org.mmbase.bridge.util;
 
 import java.util.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.Module;
 import org.mmbase.bridge.util.BridgeCollections;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.implementation.*;
