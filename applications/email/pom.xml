@@ -12,7 +12,6 @@
   <artifactId>mmbase-email</artifactId>
   <name>MMBase Email</name>
   <packaging>war</packaging>
-  <version>${mmbase.version}</version>
 
   <properties>
     <project.name>email</project.name>

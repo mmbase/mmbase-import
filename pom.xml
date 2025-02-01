@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.mmbase</groupId>
@@ -31,7 +31,6 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
     <surefire.fork.vmargs>-ea</surefire.fork.vmargs>
 
     <project.build.sourceEncoding>iso-8859-1</project.build.sourceEncoding>
-
   </properties>
 
   <description>
@@ -81,7 +80,6 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
   <prerequisites>
     <maven>2.0.9</maven>
   </prerequisites>
-
 
   <mailingLists>
     <mailingList>
@@ -175,7 +173,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       <roles>
         <role>Release Manager</role>
       </roles>
-      <timezone>1</timezone>
+      <timezone>Europe/Amsterdam</timezone>
     </developer>
     <developer>
       <id>nklasens</id>
@@ -453,6 +451,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       </plugin>
     </plugins>
   </build>
+
   <reporting>
     <plugins>
       <plugin>
@@ -588,8 +587,6 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
-
-
 
   <profiles>
     <profile>

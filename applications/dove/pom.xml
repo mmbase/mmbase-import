@@ -14,8 +14,7 @@
   <artifactId>mmbase-dove</artifactId>
   <name>MMBase Dove</name>
   <packaging>jar</packaging>
-  <version>${mmbase.version}</version>
-   <repositories>
+  <repositories>
     <repository>
       <id>ossrh</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>

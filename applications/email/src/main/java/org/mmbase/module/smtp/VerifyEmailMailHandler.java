@@ -12,6 +12,7 @@ package org.mmbase.module.smtp;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.Module;
 import java.text.*;
 import javax.mail.*;
 

@@ -30,7 +30,6 @@ See http://www.MMBase.org/license
   <artifactId>mmbase</artifactId>
   <name>MMBase Core</name>
 
-  <version>${base.version}</version>
 
   <properties>
     <base.version>${mmbase.version}</base.version>

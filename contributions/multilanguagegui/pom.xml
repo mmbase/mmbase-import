@@ -10,7 +10,6 @@
 
   <artifactId>mmbase-multilanguagegui</artifactId>
   <name>MMBase MultilanguageGui</name>
-  <version>${mmbase.version}</version>
   <packaging>war</packaging>
 
   <description>

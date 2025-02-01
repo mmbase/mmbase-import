@@ -391,6 +391,11 @@ See http://www.MMBase.org/license
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.mmbase</groupId>
+        <artifactId>mmbase</artifactId>
+        <version>${mmbase.version}</version>
+      </dependency>
+      <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
         <version>${servlet.version}</version>

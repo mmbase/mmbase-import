@@ -12,7 +12,6 @@
   <artifactId>mmbase-notifications</artifactId>
   <name>MMBase Notifications</name>
   <packaging>war</packaging>
-  <version>${mmbase.version}</version>
 
   <description>
     The Notifications application provides basic functionality to implement a notification

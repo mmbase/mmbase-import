@@ -12,7 +12,6 @@
   <artifactId>mmbase-jumpers</artifactId>
   <name>MMBase Jumpers</name>
   <packaging>war</packaging>
-  <version>${mmbase.version}</version>
 
   <description>
     The jumpers application could be used to make short urls which

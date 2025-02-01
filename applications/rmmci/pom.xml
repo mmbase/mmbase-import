@@ -12,7 +12,6 @@
   <artifactId>mmbase-rmmci</artifactId>
   <name>MMBase RMMCI</name>
   <packaging>jar</packaging>
-  <version>${mmbase.version}</version>
 
   <build>
     <plugins>

@@ -10,7 +10,6 @@
 
   <artifactId>mmbase-thememanager</artifactId>
   <name>MMBase ThemeManager</name>
-  <version>${mmbase.version}</version>
   <packaging>war</packaging>
 
   <description>

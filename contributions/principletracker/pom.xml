@@ -9,7 +9,6 @@
 
   <artifactId>mmbase-principletracker</artifactId>
   <name>MMBase Principe Tracker</name>
-  <version>${mmbase.version}</version>
   <packaging>war</packaging>
 
   <description> </description>

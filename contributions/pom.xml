@@ -12,7 +12,6 @@
   <artifactId>mmbase-contributions-parent</artifactId>
   <packaging>pom</packaging>
   <name>MMBase Contributions</name>
-  <version>${mmbase.version}</version>
 
   <description>
   </description>

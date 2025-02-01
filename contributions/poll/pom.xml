@@ -10,7 +10,6 @@
 
   <artifactId>mmbase-poll</artifactId>
   <name>MMBase Poll</name>
-  <version>${mmbase.version}</version>
   <packaging>war</packaging>
   <description>A MMBase poll application</description>
 

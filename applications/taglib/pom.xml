@@ -12,8 +12,6 @@
   <artifactId>mmbase-taglib</artifactId>
   <name>MMBase Taglib</name>
   <packaging>war</packaging>
-  <version>${mmbase.version}</version>
-
 
   <description>
     The MMBase JSP Taglib is the main technology used to create dynamic pages that display content

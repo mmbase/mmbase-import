@@ -9,7 +9,6 @@
 
   <artifactId>mmbase-calendar</artifactId>
   <name>MMBase Calendar</name>
-  <version>${mmbase.version}</version>
   <packaging>war</packaging>
 
   <description>This is an MMBased 'calendar' applictions. It demonstrates the MMBase datetime field, with timezone

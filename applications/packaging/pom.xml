@@ -12,7 +12,6 @@
   <artifactId>mmbase-packaging</artifactId>
   <name>MMBase Packaging</name>
   <packaging>war</packaging>
-  <version>${mmbase.version}</version>
 
   <description>I think we can consider this deprecated. Use war-overlays  </description>
 

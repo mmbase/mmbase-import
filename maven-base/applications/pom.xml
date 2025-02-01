@@ -12,18 +12,20 @@
   <artifactId>mmbase-application-parent</artifactId>
   <packaging>pom</packaging>
   <name>MMBase Applications</name>
-  <version>1.9-SNAPSHOT</version>
 
   <description>
     Applications are war overlays then can plug in some functionality into an existing MMBase installation.
     This would normally contain at least a 'component', but it can e.g. also be only a security implementation.
    </description>
 
+  <properties>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase</artifactId>
-      <version>${project.version}</version>
+      <version>${mmbase.version}</version>
       <scope>provided</scope>
     </dependency>
 

@@ -13,7 +13,6 @@
   <artifactId>mmbase-applications</artifactId>
   <packaging>pom</packaging>
   <name>MMBase Applications</name>
-  <version>1.9-SNAPSHOT</version>
 
   <description>
     Applications are war overlays then can plug in some functionality into an existing MMBase installation.
