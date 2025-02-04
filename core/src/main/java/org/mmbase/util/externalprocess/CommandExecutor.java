@@ -28,7 +28,7 @@ public class CommandExecutor {
 
     private static final Logger LOG = Logging.getLoggerInstance(CommandExecutor.class);
 
-    public static enum Type {
+    public enum Type {
         LAUNCHER,
         CONNECTOR;
     }

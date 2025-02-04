@@ -69,23 +69,23 @@ public class CommandServer {
     // thread pool.
     static int number = 0;
     static final ThreadFactory FACTORY = new ThreadFactory() {
-            public Thread newThread(Runnable r) {
-                Thread t = new Thread(r, "POOL-" + (number++)) {
-                        /**
-                         * Overrides run of Thread to catch and log all exceptions. Otherwise they go through to app-server.
-                         */
-                        public void run() {
-                            try {
-                                super.run();
-                            } catch (Throwable t) {
-                                System.err.println("Error during job: " + t.getClass().getName() + " " + t.getMessage());
-                            }
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(r, "POOL-" + (number++)) {
+                /**
+                 * Overrides run of Thread to catch and log all exceptions. Otherwise they go through to app-server.
+                 */
+                public void run() {
+                    try {
+                        super.run();
+                    } catch (Throwable t) {
+                        System.err.println("Error during job: " + t.getClass().getName() + " " + t.getMessage());
+                    }
                         }
-                    };
-                t.setDaemon(true);
-                return t;
-            }
-        };
+            };
+            t.setDaemon(true);
+            return t;
+        }
+    };
 
     // direct-hand-of-executor. Resources are limited by the acceptQueue
     final static BlockingQueue<Runnable> threadQueue = new  SynchronousQueue<Runnable>(true);
@@ -338,55 +338,55 @@ public class CommandServer {
             run.run();
         } else {
             String host = args.size() > 1 ? args.get(0) : "localhost";
-            int port    = args.size() == 1 ? Integer.parseInt(args.get(0)) : Integer.parseInt(args.get(1));
+            int port = args.size() == 1 ? Integer.parseInt(args.get(0)) : Integer.parseInt(args.get(1));
 
 
-
-            final BlockingQueue<Runnable> socketQueue = new  LinkedBlockingQueue<Runnable>();
+            final BlockingQueue<Runnable> socketQueue = new LinkedBlockingQueue<Runnable>();
             threads.setCorePoolSize(numberOfThreads * 7);
             final ExecutorService socketThreads = new ThreadPoolExecutor(numberOfThreads, numberOfThreads, 5 * 60, TimeUnit.SECONDS, socketQueue, FACTORY) {
-                    @Override
-                    protected void afterExecute(Runnable r, Throwable t) {
-                        super.afterExecute(r, t);
-                        Command res;
-                        try {
-                            res =  ((FutureTask<Command>) r).get();
-                        } catch (Exception ie) {
-                            System.err.println(ie.getMessage());
-                            res = null;
-                        }
-                        System.out.println(res + " READY " + (t != null ? "(" + t + ")" : "") + " (query " + socketQueue.size() + ")");
+                @Override
+                protected void afterExecute(Runnable r, Throwable t) {
+                    super.afterExecute(r, t);
+                    Command res;
+                    try {
+                        res = ((FutureTask<Command>) r).get();
+                    } catch (Exception ie) {
+                        System.err.println(ie.getMessage());
+                        res = null;
                     }
-                };
-            ServerSocket server = new ServerSocket();
-            SocketAddress address = new InetSocketAddress(host, port);
-            server.bind(address);
-            System.out.println("Started " + server + " (using " + numberOfThreads + " threads, " + maxDuration + " ms)");
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            while (true) {
-
-                final Socket accept = server.accept();
-                accept.setSoTimeout(10000);
-                accept.setKeepAlive(false);
-                accept.setReceiveBufferSize(1024);
-                final Command command = new Command(accept.getInputStream(),
-                                              accept.getOutputStream(),
-                                              accept.getOutputStream(),
-                                              accept.toString(),
-                                              new Runnable() {
-                                                  public void run() {
-                                                      try {
-                                                          accept.shutdownInput();
-                                                      } catch (Exception e) {
-                                                      }
-                                                  }
-                                              });
-                System.out.println(command.number + " " + format.format(new Date()) + " " + " Connection " + accept + " (queue " + socketQueue.size() + ")");
-                Future<Command> future = socketThreads.submit(command, command);
-                if (maxDuration > 0) {
-                    command.setMaxDuration(maxDuration, future);
+                    System.out.println(res + " READY " + (t != null ? "(" + t + ")" : "") + " (query " + socketQueue.size() + ")");
                 }
+            };
+            try (ServerSocket server = new ServerSocket()) {
+                SocketAddress address = new InetSocketAddress(host, port);
+                server.bind(address);
+                System.out.println("Started " + server + " (using " + numberOfThreads + " threads, " + maxDuration + " ms)");
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                while (true) {
 
+                    final Socket accept = server.accept();
+                    accept.setSoTimeout(10000);
+                    accept.setKeepAlive(false);
+                    accept.setReceiveBufferSize(1024);
+                    final Command command = new Command(accept.getInputStream(),
+                        accept.getOutputStream(),
+                        accept.getOutputStream(),
+                        accept.toString(),
+                        new Runnable() {
+                            public void run() {
+                                try {
+                                    accept.shutdownInput();
+                                } catch (Exception e) {
+                                }
+                            }
+                        });
+                    System.out.println(command.number + " " + format.format(new Date()) + " " + " Connection " + accept + " (queue " + socketQueue.size() + ")");
+                    Future<Command> future = socketThreads.submit(command, command);
+                    if (maxDuration > 0) {
+                        command.setMaxDuration(maxDuration, future);
+                    }
+
+                }
             }
         }
 

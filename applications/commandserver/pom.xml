@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.mmbase</groupId>
-    <artifactId>mmbase-application-parent</artifactId>
+    <artifactId>mmbase-cms</artifactId>
     <version>1.9-SNAPSHOT</version>
   </parent>
 
   <artifactId>mmbase-commandserver</artifactId>
+  <version>1.9-SNAPSHOT</version>
+
   <name>MMBase Command Server</name>
   <packaging>jar</packaging>
 
@@ -26,11 +28,13 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <version>3.4.2</version>
         <configuration>
           <archive>
             <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
               <addClasspath>true</addClasspath>
               <mainClass>org.mmbase.util.CommandServer</mainClass>
             </manifest>
