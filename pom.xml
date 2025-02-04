@@ -263,7 +263,6 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
             <link>https://docs.oracle.com/cd/E17802_01/products/products/jsp/jstl/1.1/docs/api/</link>
             <link>https://logging.apache.org/log4j/1.2/apidocs/</link>
             <link>https://commons.apache.org/proper/commons-fileupload/apidocs/</link>
-            <link>http://lucene.apache.org/java/3_4_0/api/all/</link>
           </links>
           <groups>
             <group>
