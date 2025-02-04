@@ -22,6 +22,7 @@ import java.util.*;
  */
 abstract public class AbstractClassGenerator extends AbstractGenerator {
 
+
     protected Map<Type,Type> currentTypeSet = new HashMap<Type,Type>();
 
     public AbstractClassGenerator(Class<?> c) {
@@ -64,7 +65,7 @@ abstract public class AbstractClassGenerator extends AbstractGenerator {
                     ParameterizedType paramType = (ParameterizedType) interfaceType;
                     if (assignableType.isAssignableFrom((Class<?>) paramType.getRawType())) {
                         clazz = (Class<?>) paramType.getRawType();
-                        typeParameters = paramType.getActualTypeArguments();                 
+                        typeParameters = paramType.getActualTypeArguments();
                     }
                 }
             }
@@ -72,7 +73,7 @@ abstract public class AbstractClassGenerator extends AbstractGenerator {
         return typeParameters;
     }
 
-    
+
     public void appendTypeInfo(Type t) {
         appendTypeInfo(t, false);
     }
@@ -127,7 +128,7 @@ abstract public class AbstractClassGenerator extends AbstractGenerator {
             appendWildcardTypeInfo(t, showNameOnly, localFirst);
         }
     }
-    
+
     private void appendGenricTypeInfo(Type t, boolean showNameOnly, boolean wrapRemoteClasses) {
         GenericArrayType gat = (GenericArrayType)t;
         appendTypeInfo(gat.getGenericComponentType(), showNameOnly, wrapRemoteClasses);
@@ -190,7 +191,7 @@ abstract public class AbstractClassGenerator extends AbstractGenerator {
             }
         }
     }
-    
+
     public void appendTypeArray(Type[] t) {
         appendTypeArray(t, false);
     }
@@ -216,7 +217,7 @@ abstract public class AbstractClassGenerator extends AbstractGenerator {
             }
         }
     }
-    
+
     public void appendTypeParameters(Type[] t) {
         appendTypeParameters(t, false);
     }
@@ -300,7 +301,7 @@ abstract public class AbstractClassGenerator extends AbstractGenerator {
     protected boolean isListIterator(Class<?> currentClass) {
         return ListIterator.class.isAssignableFrom(currentClass);
     }
-    
+
     boolean needtoWrap(Type t) {
         Type ct = getComponentType(t);
         return needsRemote(ct) || isBasicTypeVariable(ct)|| isBasicClass(ct);
@@ -308,9 +309,9 @@ abstract public class AbstractClassGenerator extends AbstractGenerator {
 
     protected boolean isBasicMethod(Method m) {
         String name = m.getName();
-        return name.equals("equals") || name.equals("hashCode") || name.equals("toString");
+        return name.equals("equals") || name.equals("hashCode") || name.equals("toString") || (name.equals("clone") && m.getReturnType().equals(Object.class));
     }
-    
+
     protected boolean isCloneMethod(Method m) {
         String name = m.getName();
         return name.equals("clone");
@@ -320,7 +321,7 @@ abstract public class AbstractClassGenerator extends AbstractGenerator {
         if (isBasicMethod(m)) {
             return;
         }
-        
+
         buffer.append("  public ");
         Type[] typeParams = m.getTypeParameters();
         if (typeParams.length > 0) {
@@ -363,11 +364,11 @@ abstract public class AbstractClassGenerator extends AbstractGenerator {
         Set<String> methodsAdded = new TreeSet<String>();
         for (Method m : currentClass.getMethods()) {
             if (Modifier.isStatic(m.getModifiers())) continue;
-            if (!needsRemote(m.getDeclaringClass()) 
+            if (!needsRemote(m.getDeclaringClass())
                     && !m.getDeclaringClass().equals(Comparable.class)) continue;
             if (isBasicMethod(m)) continue;
             if (m.getDeclaringClass().getName().equals("org.mmbase.bridge.BridgeList")) continue;
-            
+
             appendMethod(m);
             methodsAdded.add(m.getName());
         }
