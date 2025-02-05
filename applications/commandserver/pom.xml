@@ -41,6 +41,15 @@
           </archive>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>8</source>
+          <target>8</target>
+          <maxmem>256M</maxmem>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
