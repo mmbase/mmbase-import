@@ -61,6 +61,9 @@ public class UtilReader {
      */
     public static void registerPublicIDs() {
         EntityResolver.registerPublicID(PUBLIC_ID_UTIL_1_0, DTD_UTIL_1_0, UtilReader.class);
+        // doesnt startup, probably because of cyclic referecnes, if this happens in DocumentReader itself.
+        DocumentReader.utilProperties = UtilReader.get("documentreader.xml").getProperties();
+
     }
 
     private static final Map<String, UtilReader> utilReaders = new HashMap<String, UtilReader>();     // file-name -> utilreader
@@ -80,12 +83,6 @@ public class UtilReader {
             }
         }
         return utilReader;
-    }
-
-    static {
-        // doesnt startup, probably because of cyclic referecnes, if this happens in DocumentReader itself.
-        DocumentReader.utilProperties = UtilReader.get("documentreader.xml").getProperties();
-
     }
 
     private class UtilFileWatcher extends ResourceWatcher {
