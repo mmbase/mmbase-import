@@ -4,9 +4,9 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
                         https://www.mmbase.org/xmlns/builder.xsd
                         http://www.mmbase.org/xmlns/datatypes
-                        http://www.mmbase.org/xmlns/datatypes.xsd
+                        https://www.mmbase.org/xmlns/datatypes.xsd
                         http://www.mmbase.org/xmlns/searchquery
-                        http://www.mmbase.org/xmlns/searchquery.xsd
+                        https://www.mmbase.org/xmlns/searchquery.xsd
                         "
     xmlns="http://www.mmbase.org/xmlns/builder"
     >

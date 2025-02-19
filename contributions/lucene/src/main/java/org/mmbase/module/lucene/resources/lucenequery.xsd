@@ -9,7 +9,7 @@
     <xsd:documentation>Lucene search query redefinition</xsd:documentation>
   </xsd:annotation>
 
-  <xsd:redefine schemaLocation="http://www.mmbase.org/xmlns/searchquery.xsd">
+  <xsd:redefine schemaLocation="https://www.mmbase.org/xmlns/searchquery.xsd">
 
     <xsd:complexType name="SearchQuery">
       <xsd:complexContent>
