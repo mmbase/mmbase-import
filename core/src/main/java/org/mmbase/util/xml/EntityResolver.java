@@ -152,8 +152,11 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
         org.mmbase.bridge.util.xml.query.QueryReader.registerSystemIDs();
 
         registerSystemID("http://www.w3.org/2001/03/xml.xsd",       "xml.xsd", null);
+        registerSystemID("https://www.w3.org/2001/03/xml.xsd",       "xml.xsd", null);
         registerSystemID("http://www.w3.org/2001/03/XMLSchema.dtd", "XMLSchema.dtd", null);
+        registerSystemID("https://www.w3.org/2001/03/XMLSchema.dtd", "XMLSchema.dtd", null);
         registerSystemID("http://www.w3.org/2001/03/datatypes.dtd", "datatypes.dtd", null);
+        registerSystemID("https://www.w3.org/2001/03/datatypes.dtd", "datatypes.dtd", null);
 
         //registerSystemID("http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd", "docbookx.dtd", null);
         //registerSystemID("http://www.oasis-open.org/docbook/xml/4.1.2/dbnotnx.mod", "dbnotnx.mod", null);
@@ -180,6 +183,9 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
      */
     public static void registerSystemID(String systemID, String xsd, Class<?> c) {
         systemIDtoResource.put(systemID, new FileResource(c, xsd));
+        if (systemID.startsWith("http://www.mmbase.org/")) {
+            systemIDtoResource.put("https://www.mmbase.org/" + systemID.substring("http://www.mmbase.org/".length()), new FileResource(c, xsd));
+        }
         if (log.isDebugEnabled()) log.debug("systemIDtoResource: " + systemID + " " + xsd + c.getName() + " " + systemIDtoResource.get(systemID));
     }
 
