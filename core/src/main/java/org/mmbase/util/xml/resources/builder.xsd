@@ -11,12 +11,12 @@
 
   <xsd:import
       namespace="http://www.w3.org/XML/1998/namespace"
-      schemaLocation="http://www.w3.org/2001/03/xml.xsd"
+      schemaLocation="https://www.w3.org/2001/03/xml.xsd"
       />
 
   <xsd:import
       namespace="http://www.mmbase.org/xmlns/datatypes"
-      schemaLocation="http://www.mmbase.org/xmlns/datatypes.xsd"
+      schemaLocation="https://www.mmbase.org/xmlns/datatypes.xsd"
       />
 
   <xsd:element name="builder">

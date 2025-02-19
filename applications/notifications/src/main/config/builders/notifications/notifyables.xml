@@ -3,7 +3,7 @@
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
+                        https://www.mmbase.org/xmlns/builder.xsd"
     name="notifyables" maintainer="mmbase.org" version="1" extends="object">
 
   <fieldlist>

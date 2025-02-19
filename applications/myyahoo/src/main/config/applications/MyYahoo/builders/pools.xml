@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder xmlns="http://www.mmbase.org/xmlns/builder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" extends="object" maintainer="www.mmbase.org" name="pools" version="0" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+<builder xmlns="http://www.mmbase.org/xmlns/builder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" extends="object" maintainer="www.mmbase.org" name="pools" version="0" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder https://www.mmbase.org/xmlns/builder.xsd">
   <status>active</status>
   <names>
     <singular xml:lang="nl">Poel</singular>

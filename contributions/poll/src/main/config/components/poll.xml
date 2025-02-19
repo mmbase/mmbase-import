@@ -4,7 +4,7 @@
     defaultblock="frontend"
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component https://www.mmbase.org/xmlns/component.xsd">
 
   <class name="org.mmbase.framework.BasicComponent" />
 
@@ -20,7 +20,7 @@
   </block>
 
   <block name="edit">
-    <description xml:lang="en">A link to an editwizard list for all polls</description>      
+    <description xml:lang="en">A link to an editwizard list for all polls</description>
     <body>
       <class name="org.mmbase.framework.EditwizardRenderer">
         <param name="list">poll/tasks/poll</param>

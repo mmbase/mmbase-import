@@ -3,8 +3,11 @@
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
-    xmlns:xi="http://www.w3.org/2001/XInclude"
+                        https://www.mmbase.org/xmlns/builder.xsd
+                        http://www.mmbase.org/xmlns/datatypes
+                        https://www.mmbase.org/xmlns/datatypes.xsd
+                        http://www.mmbase.org/xmlns/searchquery
+                        https://www.mmbase.org/xmlns/searchquery.xsd"
     name="thumbnails" maintainer="openimages.eu" version="0" extends="object">
   <class>org.mmbase.module.builders.Images</class>
 

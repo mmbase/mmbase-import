@@ -2,7 +2,7 @@
 <datatypes
     xmlns="http://www.mmbase.org/xmlns/datatypes"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes https://www.mmbase.org/xmlns/datatypes.xsd">
 
   <!-- @version $Id$ -->
 

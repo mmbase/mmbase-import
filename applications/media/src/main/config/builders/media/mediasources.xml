@@ -4,7 +4,7 @@
     xmlns:xi="http://www.w3.org/2001/XInclude"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
+                        https://www.mmbase.org/xmlns/builder.xsd"
     name="mediasources"   maintainer="mediaproject.mmbase.org" version="0" extends="object">
 
   <class>org.mmbase.applications.media.builders.MediaSources</class>
@@ -155,7 +155,7 @@
           server is determined by the related mediaprovider object.
         </description>
         <description xml:lang="nl">
-          Relatieve url van het bestand op de server. De volledige url wordt samengesteld op basis 
+          Relatieve url van het bestand op de server. De volledige url wordt samengesteld op basis
           van de gerelateerde mediaprovider.
         </description>
       </descriptions>

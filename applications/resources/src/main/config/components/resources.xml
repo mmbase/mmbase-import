@@ -4,7 +4,7 @@
     version="1"
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component https://www.mmbase.org/xmlns/component.xsd">
 
   <class name="org.mmbase.framework.BasicComponent" />
 
@@ -41,7 +41,7 @@
       installed for this to work.
     </description>
     <description xml:lang="nl">
-      Mail form, met een captcha Turing test. De 'email' builder moet 
+      Mail form, met een captcha Turing test. De 'email' builder moet
       geïnstalleerd zijn voor dit voorbeeld.
     </description>
     <body jsp="mail.jspx">

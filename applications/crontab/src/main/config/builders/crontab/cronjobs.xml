@@ -2,7 +2,10 @@
 <builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        https://www.mmbase.org/xmlns/builder.xsd
+                        http://www.mmbase.org/xmlns/datatypes
+                        https://www.mmbase.org/xmlns/datatypes.xsd"
     version="1" name="cronjobs" maintainer="mmbase.org" extends="object">
   <class>org.mmbase.applications.crontab.builders.CronJobs</class>
   <searchage>360</searchage>

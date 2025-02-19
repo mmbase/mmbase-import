@@ -3,7 +3,7 @@
     xmlns="http://www.mmbase.org/xmlns/blocktypes"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/blocktypes
-                        http://www.mmbase.org/xmlns/blocktypes.xsd">
+                        https://www.mmbase.org/xmlns/blocktypes.xsd">
 
   <blocktype name="mmbase.security"   weight="50">
     <title xml:lang="nl">Beveiliging</title>

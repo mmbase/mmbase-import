@@ -2,7 +2,7 @@
 <fieldlist
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder https://www.mmbase.org/xmlns/builder.xsd">
   <!--
       Changes are administrated in a copy of every 'versioned' builder.
       This copy must have the following extra fields.

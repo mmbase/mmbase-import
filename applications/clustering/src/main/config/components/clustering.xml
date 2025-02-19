@@ -3,7 +3,7 @@
     name="clustering"
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component https://www.mmbase.org/xmlns/component.xsd">
   <description xml:lang="en">Clustering component</description>
   <description xml:lang="nl">Clustering component</description>
 
@@ -13,9 +13,9 @@
     <title xml:lang="en">Clustering</title>
     <title xml:lang="nl">Clustering</title>
     <description xml:lang="en">
-      Tool to monitor cluster messages that are send back and forth between different 
-      MMBase instances. With the clustering application you can configure several 
-      MMBase instances to run on the same database, this tool will make sure caches 
+      Tool to monitor cluster messages that are send back and forth between different
+      MMBase instances. With the clustering application you can configure several
+      MMBase instances to run on the same database, this tool will make sure caches
       on all sides are up-to-date.
     </description>
     <description xml:lang="nl">

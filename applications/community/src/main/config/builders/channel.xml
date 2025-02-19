@@ -3,7 +3,7 @@
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
+                        https://www.mmbase.org/xmlns/builder.xsd"
     name="channel" maintainer="mmbase.org" version="0" extends="object">
   <status>active</status>
   <class>org.mmbase.applications.community.builders.Channel</class>
@@ -112,7 +112,7 @@
         <type state="persistent" notnull="true">INTEGER</type>
       </db>
     </field>
-    
+
     <field>
       <descriptions>
         <description xml:lang="en">State of the channel with regard on how to handle access: free access (0), login required to read (1 or 3), logon required to write (2 or 3)
@@ -127,7 +127,7 @@
         <positions>
           <list>3</list>
         </positions>
-      </editor>      
+      </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <default value="0" />
         <enumeration>
@@ -139,7 +139,7 @@
         <type state="persistent" notnull="true">INTEGER</type>
       </db>
     </field>
-    
+
     <field>
       <descriptions>
         <description xml:lang="en">Whether the channel is open (2), read only (1), scheduled to open (0) or closed (-1)</description>
@@ -150,7 +150,7 @@
         <guiname xml:lang="nl">Open</guiname>
       </gui>
       <editor>
-        <positions>          
+        <positions>
           <list>2</list>
         </positions>
       </editor>
@@ -165,7 +165,7 @@
         <type state="persistent" notnull="true">INTEGER</type>
       </db>
     </field>
-    
+
     <field>
       <descriptions>
         <description xml:lang="en">Highest current message number in this channel</description>
@@ -203,6 +203,6 @@
       </db>
     </field>
   </fieldlist>
-  
+
 </builder>
 

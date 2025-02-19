@@ -4,7 +4,8 @@
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xi="http://www.w3.org/2001/XInclude"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+    xsi:schemaLocation="
+              http://www.mmbase.org/xmlns/component https://www.mmbase.org/xmlns/component.xsd">
 
   <class name="org.mmbase.framework.BasicComponent" />
 
@@ -46,9 +47,9 @@
   <block name="user" mimetype="text/html">
     <title xml:lang="nl">Gebruiker</title>
     <title xml:lang="en">User</title>
-    <xi:include href="http://www.mmbase.org/components/cloudcontext_style.head.xml" />
-    <xi:include href="http://www.mmbase.org/components/validation.head.xml" />
-    <xi:include href="http://www.mmbase.org/components/widgets.head.xml" />
+    <xi:include href="https://www.mmbase.org/components/cloudcontext_style.head.xml" />
+    <xi:include href="https://www.mmbase.org/components/validation.head.xml" />
+    <xi:include href="https://www.mmbase.org/components/widgets.head.xml" />
     <body jsp="user.jspx">
       <param name="node" />
     </body>

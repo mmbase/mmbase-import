@@ -3,7 +3,9 @@
   xmlns="http://www.mmbase.org/xmlns/builder"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                      http://www.mmbase.org/xmlns/builder.xsd"
+                      https://www.mmbase.org/xmlns/builder.xsd
+                      http://www.mmbase.org/xmlns/datatypes
+                      https://www.mmbase.org/xmlns/datatypes.xsd"
   name="mmbaseranks" maintainer="www.mmbase.org" version="0" extends="object"
   defaultcontextintypedef="security"
   >

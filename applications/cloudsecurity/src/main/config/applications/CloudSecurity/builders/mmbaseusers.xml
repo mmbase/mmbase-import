@@ -1,13 +1,15 @@
 <?xml version="1.0" ?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        https://www.mmbase.org/xmlns/builder.xsd
+                        http://www.mmbase.org/xmlns/datatypes
+                        https://www.mmbase.org/xmlns/datatypes.xsd"
     name="mmbaseusers" maintainer="www.mmbase.org" version="1" extends="object">
 	<class>org.mmbase.security.implementation.cloud.UserBuilder</class>
 	<searchage>1000</searchage>
-  
+
 	<names>
 		<singular xml:lang="en">MMBase user</singular>
 		<singular xml:lang="nl">MMBase gebruiker</singular>

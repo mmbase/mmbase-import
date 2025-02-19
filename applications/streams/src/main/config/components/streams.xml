@@ -6,7 +6,7 @@
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xi="http://www.w3.org/2001/XInclude"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component https://www.mmbase.org/xmlns/component.xsd">
 
   <class name="org.mmbase.framework.BasicComponent" />
 
@@ -31,7 +31,7 @@
          and needs to be able to use it with action 'download_media' -->
     <description xml:lang="en">Whether you may (re)trigger jobs</description>
   </action>
-  
+
   <action name="update_sources" rank="basic user">
     <description xml:lang="en">Whether you can automatically update information stored in a stream node</description>
   </action>
@@ -124,7 +124,7 @@
     <title xml:lang="nl">Batch transcodeer</title>
     <description xml:lang="en">
       Batch transcode all newly configured streams of these mediafragments, similar to 'only new'.
-      The button 'Submit' with save your settings. 
+      The button 'Submit' with save your settings.
       The button 'Batch' will start batch transcoding with the selected settings.
       For example: choosing a maximum of 5 and as preferred source 'MPEG', will start transcoding new streams
       (not already present recently configured streamsourcescaches) while using MPEG as its source
@@ -174,7 +174,7 @@
       <param name="cache" />
       <param name="source" />
       <param name="update" />
-      
+
       <param name="type" />
       <param name="search" />
       <param name="page" type="java.lang.Integer" />

@@ -3,7 +3,7 @@
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
+                        https://www.mmbase.org/xmlns/builder.xsd"
     name="urls" maintainer="mmbase.org" version="1" extends="object">
   <class>org.mmbase.module.builders.Urls</class>
   <searchage>14</searchage>
@@ -66,11 +66,11 @@
         <default value="http://" />
         <required value="true" />
         <minLength value="3" enforce="onvalidate">
-          <description xml:lang="en">Url should have at least 3 characters.</description>        
+          <description xml:lang="en">Url should have at least 3 characters.</description>
           <description xml:lang="nl">Een url moet tenminste 3 karakters bevatten.</description>
         </minLength>
         <maxLength value="255" enforce="onvalidate">
-          <description xml:lang="en">Url can have max 255 characters.</description>        
+          <description xml:lang="en">Url can have max 255 characters.</description>
           <description xml:lang="nl">Url kan niet meer dan 255 karakters bevatten.</description>
         </maxLength>
       </datatype>

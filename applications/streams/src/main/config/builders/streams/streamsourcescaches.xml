@@ -2,7 +2,7 @@
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
+                        https://www.mmbase.org/xmlns/builder.xsd"
     xmlns:xi="http://www.w3.org/2001/XInclude"
     name="streamsourcescaches" maintainer="mmbase.org" version="1" extends="mediasources">
 
@@ -25,7 +25,7 @@
   </properties>
 
   <xi:include href="streamsourcescaches.fields.xml" />
-  <xi:include href="http://www.mmbase.org/builders/media/mediasources.virtual.fields.xml" />
+  <xi:include href="https://www.mmbase.org/builders/media/mediasources.virtual.fields.xml" />
 
   <functionlist>
     <function name="file">

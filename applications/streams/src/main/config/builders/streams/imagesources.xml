@@ -3,7 +3,9 @@
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
+                        https://www.mmbase.org/xmlns/builder.xsd
+                        http://www.mmbase.org/xmlns/datatypes
+                        https://www.mmbase.org/xmlns/datatypes.xsd"
     xmlns:xi="http://www.w3.org/2001/XInclude"
     name="imagesources" maintainer="openimages.eu" version="0" extends="mediasources">
 
@@ -86,9 +88,9 @@
   </fieldlist>
 
   <xi:include href="streamsources.fields.xml" />
-  <xi:include href="http://www.mmbase.org/builders/media/mediasources.virtual.fields.xml" />
+  <xi:include href="https://www.mmbase.org/builders/media/mediasources.virtual.fields.xml" />
   <xi:include href="streamsources.virtual.fields.xml" />
-  <xi:include href="http://www.mmbase.org/builders/media/mediasources.main.virtual.fields.xml" />
+  <xi:include href="https://www.mmbase.org/builders/media/mediasources.main.virtual.fields.xml" />
   <xi:include href="streamsources.functions.xml" />
 
   <xi:include href="videostreamsources.functions.xml" />

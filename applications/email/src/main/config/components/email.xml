@@ -5,7 +5,9 @@
     xmlns:xi="http://www.w3.org/2001/XInclude"
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component https://www.mmbase.org/xmlns/component.xsd
+                        http://www.mmbase.org/xmlns/datatypes
+                        https://www.mmbase.org/xmlns/datatypes.xsd">
   <description xml:lang="en">Email component</description>
   <description xml:lang="nl">E-mail component</description>
 
@@ -67,7 +69,7 @@
          mimetype="text/html">
     <title xml:lang="en">Email documentation</title>
     <title xml:lang="nl">E-mail documentatie</title>
-    <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
+    <xi:include href="https://www.mmbase.org/components/docbook.head.xml" />
     <body>
       <class name="org.mmbase.framework.DocumentationRenderer">
         <param name="docbook">email.xml</param>

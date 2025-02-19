@@ -4,7 +4,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xi="http://www.w3.org/2001/XInclude"
   xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                      http://www.mmbase.org/xmlns/builder.xsd"
+                      https://www.mmbase.org/xmlns/builder.xsd
+                      http://www.mmbase.org/xmlns/datatypes
+                      https://www.mmbase.org/xmlns/datatypes.xsd"
   name="mmbasegroups"
   maintainer="www.mmbase.org"
   version="0"
@@ -55,7 +57,7 @@
     </field>
   </fieldlist>
 
-  <xi:include href="http://www.mmbase.org/builders/cloudcontext/mmbasegroups.virtual.fields.xml" />
+  <xi:include href="https://www.mmbase.org/builders/cloudcontext/mmbasegroups.virtual.fields.xml" />
 
   <indexlist>
     <index name="name" unique="true">

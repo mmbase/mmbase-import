@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xi="http://www.w3.org/2001/XInclude"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
+                        https://www.mmbase.org/xmlns/builder.xsd"
     name="mmbaseusers" maintainer="www.mmbase.org" version="0" extends="object"
     defaultcontextintypedef="security"
     >
@@ -41,8 +41,8 @@
     -->
     <property name="allowencodedpassword">false</property>
   </properties>
-  <xi:include href="http://www.mmbase.org/builders/cloudcontext/mmbaseusers.fields.xml" />
-  <xi:include href="http://www.mmbase.org/builders/cloudcontext/mmbaseusers.virtual.fields.xml" />
+  <xi:include href="https://www.mmbase.org/builders/cloudcontext/mmbaseusers.fields.xml" />
+  <xi:include href="https://www.mmbase.org/builders/cloudcontext/mmbaseusers.virtual.fields.xml" />
 
   <indexlist>
     <index name="name">

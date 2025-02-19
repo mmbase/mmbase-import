@@ -3,9 +3,9 @@
     name="calendar"
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component https://www.mmbase.org/xmlns/component.xsd">
   <class name="org.mmbase.framework.BasicComponent">
-    
+
   </class>
   <description xml:lang="nl">Tools voor agenda's</description>
   <description xml:lang="en">Tools for a calendar</description>

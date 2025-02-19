@@ -3,7 +3,7 @@
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xi="http://www.w3.org/2001/XInclude"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder https://www.mmbase.org/xmlns/builder.xsd"
     name="wikiobject_versions" maintainer="mmbase.org" version="1" extends="object">
   <searchage>31</searchage>
   <names>
