@@ -181,8 +181,12 @@ public class TemplateCache extends Cache<TemplateCache.Key, Templates> {
         Key key = new Key(src, uri);
         Templates res = super.put(key, value);
         log.debug("Put xslt in cache with key " + key);
-        if (! templateWatcher.getResources().contains(key.getURL())) {
-            templateWatcher.add(key.getURL());
+        if (key.getURL() != null) {
+            if (!templateWatcher.getResources().contains(key.getURL())) {
+                templateWatcher.add(key.getURL());
+            }
+        } else {
+            log.debug("Cannot watch null");
         }
         if (log.isDebugEnabled()) {
             log.debug("have set watch on  " + key.getURL());
