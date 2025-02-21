@@ -192,8 +192,8 @@ public final class DownloadFunction extends NodeFunction<String> {
      }
 
 
-    protected Future<?> submit(final Node node, final Parameters parameters) {
-        return ThreadPools.jobsExecutor.submit(new Callable() {
+    protected Future<String> submit(final Node node, final Parameters parameters) {
+        return ThreadPools.jobsExecutor.submit(new Callable<String>() {
             public String call() {
                 String result = "";
                 Node source = null;

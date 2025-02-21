@@ -173,7 +173,7 @@ public class Executors {
 
                     LOG.info("All executors for stage " + st + " in use (will wait..)");
                     executorsMap.wait();
-                    
+
                 } catch (InterruptedException ie) {
                     return null;
                 }
@@ -188,7 +188,7 @@ public class Executors {
         }
     }
 
-    public static Future submit(Stage s, Callable c) {
+    public static <T> Future<T> submit(Stage s, Callable<T> c) {
         return threadPools.get(s).submit(c);
     }
 }
