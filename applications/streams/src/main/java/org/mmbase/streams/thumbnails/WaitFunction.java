@@ -62,7 +62,11 @@ public class WaitFunction extends NodeFunction<Node> {
             Future<Long> future = Executors.submit(Stage.RECOGNIZER, callable);
             try {
                 LOG.service("And waiting " + timeout + " seconds for it");
-                long result = (Long) future.get(timeout, TimeUnit.SECONDS); // wait for result
+                Long result = future.get(timeout, TimeUnit.SECONDS); // wait for result
+                if (result == null) {
+                    LOG.warn("ffmpeg thumb nail creator returned null (thumb " + thumb + "). No file found?");
+                    return 0;
+                }
                 LOG.service("Found " + result + " bytes");
                 return result;
             } catch (TimeoutException te) {
