@@ -77,14 +77,19 @@ public class FFMpegThumbNailCreator implements  Callable<Long> {
 
     public Long call() {
         int count = 1;
-
-        File input = (File) source.getFunctionValue("file", null).get();
-        if (input == null || ! input.canRead()) {
-            LOG.debug("Cannot read " + input);
-            return null;
-        }
-        if (input.length() == 0) {
-            LOG.debug("File is empty " + input);
+        File input;
+        try {
+            input = (File) source.getFunctionValue("file", null).get();
+            if (input == null || !input.canRead()) {
+                LOG.debug("Cannot read " + input);
+                return null;
+            }
+            if (input.length() == 0) {
+                LOG.debug("File is empty " + input);
+                return null;
+            }
+        } catch (NotFoundException nfe) {
+            LOG.warn(nfe.getMessage(), nfe);
             return null;
         }
         CommandExecutor.Method method = Executors.getFreeExecutor(Stage.RECOGNIZER);    // get a recognizer one, they are shortest in use
