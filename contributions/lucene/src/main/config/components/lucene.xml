@@ -51,7 +51,7 @@
       mimetype="text/html" >
     <title xml:lang="en">Lucene documentation</title>
     <title xml:lang="nl">Documentatie voor Lucene</title>
-    <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
+    <xi:include href="https://www.mmbase.org/components/docbook.head.xml" />
     <body>
       <class name="org.mmbase.framework.DocumentationRenderer">
         <param name="module">contributions/lucene</param>
