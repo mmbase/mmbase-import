@@ -10,8 +10,7 @@
 
   <mm:import externid="org.mmbase.lucene.admin.machines"
              id="machines"
-             vartype="list" from="parameters,cookie"><jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getMachineName()</jsp:expression></mm:import>
-  <mm:write cookie="org.mmbase.lucene.admin.machines" value="${machines}" />
+             vartype="list" from="parameters"><jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getMachineName()</jsp:expression></mm:import>
   <h3>Lucene admin page for ${machines}</h3>
   <p>
     <em><mm:time format="yyyy-MM-dd HH:mm:ss" time="now" /></em>
@@ -32,15 +31,17 @@
 
   <mm:function name="readOnly" module="lucene" id="readOnly" write="false" />
   <table summary="Lucene indices" border="0" cellspacing="0" cellpadding="3">
-    <col />
-    <col />
-    <col class="numeric" />
-    <col class="numeric" />
-    <col />
-    <col class="errors" />
-    <col class="numeric" />
-    <col />
-    <col />
+    <colgroup>
+      <col />
+      <col />
+      <col class="numeric" />
+      <col class="numeric" />
+      <col />
+      <col class="errors" />
+      <col class="numeric" />
+      <col />
+      <col />
+    </colgroup>
     <tr>
       <th rowspan="${readOnly ? '1' : '2'}">Name</th>
       <th rowspan="${readOnly ? '1' : '2'}">Description</th>
